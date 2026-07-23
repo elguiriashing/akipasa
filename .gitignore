@@ -1,0 +1,14 @@
+node_modules/
+.next/
+.open-next/
+.wrangler/
+.wrangler-config/
+coverage/
+playwright-report/
+test-results/
+.env*
+!.env.example
+*.tsbuildinfo
+next-env.d.ts
+cloudflare-env.d.ts
+backups/

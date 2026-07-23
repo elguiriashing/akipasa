@@ -1,0 +1,12 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.12.1
+2 info using node@v24.15.0
+3 silly config load:file:C:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:C:\Users\Alex\Documents\Andy\.npmrc
+5 silly config load:file:C:\Users\Alex\Documents\Andy\cf-home\npm\etc\npmrc
+6 verbose title npm exec wrangler login --browser false
+7 verbose argv "exec" "--" "wrangler" "login" "--browser" "false"
+8 verbose logfile logs-max:10 dir:C:\Users\Alex\Documents\Andy\cf-home\npm-cache\_logs\2026-07-23T17_45_52_417Z-
+9 verbose logfile C:\Users\Alex\Documents\Andy\cf-home\npm-cache\_logs\2026-07-23T17_45_52_417Z-debug-0.log
+10 silly logfile start cleaning logs, removing 1 files
+11 silly logfile done cleaning log files

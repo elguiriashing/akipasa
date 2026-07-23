@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#075e54" />
+    <title>Sin conexión · AkiPasa</title>
+    <style>
+      body {
+        margin: 0;
+        background: #fff7e8;
+        color: #17221f;
+        font:
+          18px/1.5 Arial,
+          sans-serif;
+      }
+      .box {
+        max-width: 38rem;
+        margin: 12vh auto;
+        padding: 2rem;
+      }
+      .brand {
+        font-weight: 900;
+        color: #075e54;
+      }
+      h1 {
+        font-size: clamp(2.5rem, 10vw, 5rem);
+        line-height: 0.95;
+        letter-spacing: -0.05em;
+      }
+      button {
+        border: 0;
+        border-radius: 0.8rem;
+        background: #075e54;
+        color: white;
+        padding: 1rem 1.2rem;
+        font: inherit;
+        font-weight: 800;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="box">
+      <p class="brand">AKIPASA<span style="color: #ff6b35">.</span></p>
+      <h1>Ahora mismo estás sin conexión.</h1>
+      <p>
+        You’re offline right now. Reconnect to see the latest events and account
+        information.
+      </p>
+      <button onclick="location.reload()">Volver a intentar · Try again</button>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+import type { NextConfig } from "next";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const nextConfig: NextConfig = {
+  typedRoutes: false,
+  outputFileTracingRoot: path.dirname(fileURLToPath(import.meta.url)),
+  allowedDevOrigins: ["127.0.0.1"],
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "vhpbvcfkcteswlsdjrfl.supabase.co",
+        pathname: "/storage/v1/object/sign/event-media/**",
+      },
+    ],
+  },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(self), payment=()",
+          },
+          { key: "X-Frame-Options", value: "DENY" },
+          {
+            key: "Cross-Origin-Opener-Policy",
+            value: "same-origin-allow-popups",
+          },
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "base-uri 'self'",
+              "form-action 'self' https://accounts.google.com",
+              "frame-ancestors 'none'",
+              "object-src 'none'",
+              "script-src 'self' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https://vhpbvcfkcteswlsdjrfl.supabase.co",
+              "font-src 'self' data:",
+              "connect-src 'self' https://vhpbvcfkcteswlsdjrfl.supabase.co wss://vhpbvcfkcteswlsdjrfl.supabase.co",
+              "manifest-src 'self'",
+              "worker-src 'self' blob:",
+              "upgrade-insecure-requests",
+            ].join("; "),
+          },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=31536000; includeSubDomains",
+          },
+        ],
+      },
+    ];
+  },
+};
+
+export default nextConfig;
