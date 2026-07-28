@@ -27,6 +27,9 @@ they carry useful information.
   path, in-flow Passport menu, and removal of the old console tab bar.
 - Desktop browser acceptance confirms the regular primary navigation and
   sticky workspace sidebar remain visible while burger controls remain hidden.
+- Connected Linux build `9291811e-e042-4dc8-b0f2-c72049532224` deployed the
+  release successfully. Both locales, both public membership routes, and 40
+  controlled production requests returned successfully.
 
 ## 2026-07-28 23:45 +02:00
 

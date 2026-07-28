@@ -19,6 +19,10 @@ Last verified: 2026-07-29.
   homepage; Account Overview links directly to billing.
 - Community and Passports use the shared workspace menu instead of duplicated
   horizontal console navigation.
+- Mobile-first membership and navigation release `351fed6` is live. Production
+  acceptance found no horizontal overflow, matched both plan headings, kept
+  the desktop navigation/sidebar behavior, and returned 40/40 successful
+  controlled requests.
 - Administrator user CRM starts empty and performs debounced server-side
   search by primary email, Google identity email, or display name.
 - Migration `0027` implements bounded administrator-only Auth lookup and
@@ -75,7 +79,7 @@ Last verified: 2026-07-29.
 
 ## 🚧 In Progress
 
-- Authenticated production browser acceptance and live 360 px visual review.
+- Authenticated production browser acceptance.
 - Monitoring for recurrence of the previous release's intermittent
   503/aborted requests.
 - Telegram `/help` and `/status` live acceptance.
@@ -92,15 +96,13 @@ Last verified: 2026-07-29.
 
 ## Next Up
 
-1. Review and publish the mobile-first membership/navigation update after
-   explicit deployment approval.
-2. Complete authenticated Checkout and webhook delivery acceptance with a
+1. Complete authenticated Checkout and webhook delivery acceptance with a
    disposable customer and explicit approval for the live payment.
-3. Continue monitoring Worker 5xx/1102 rates.
-4. Run authenticated production acceptance with disposable administrator QA
+2. Continue monitoring Worker 5xx/1102 rates.
+3. Run authenticated production acceptance with disposable administrator QA
    credentials.
-5. Inspect stale deterministic QA rows from an older run and plan a reviewed
+4. Inspect stale deterministic QA rows from an older run and plan a reviewed
    cleanup.
-6. Monitor Worker 5xx rates and investigate if intermittent crawling failures
+5. Monitor Worker 5xx rates and investigate if intermittent crawling failures
    recur outside test load.
-7. Design support conversations before adding inbox/conversation UI.
+6. Design support conversations before adding inbox/conversation UI.
