@@ -1,6 +1,6 @@
 # Project Status
 
-Last verified: 2026-07-28.
+Last verified: 2026-07-29.
 
 ## Completed
 
@@ -13,8 +13,12 @@ Last verified: 2026-07-28.
   Promotions, and Audit routes.
 - Administrator workspace with Overview, Users, Privacy, Catalogue,
   Promotions, Passports, Settings, and Audit routes.
-- Responsive collapsible desktop sidebar and accessible mobile drawer with
-  route state, initial focus, backdrop close, and Escape close.
+- Responsive collapsible desktop sidebar and accessible, bounded mobile menu
+  with route state, initial focus, explicit close, and Escape close.
+- Public membership comparison is directly available from the header and
+  homepage; Account Overview links directly to billing.
+- Community and Passports use the shared workspace menu instead of duplicated
+  horizontal console navigation.
 - Administrator user CRM starts empty and performs debounced server-side
   search by primary email, Google identity email, or display name.
 - Migration `0027` implements bounded administrator-only Auth lookup and
@@ -30,8 +34,9 @@ Last verified: 2026-07-28.
   release's recorded Worker startup was only 29 ms.
 - The corrected candidate removes anonymous Auth calls, uses a sessionless
   public Supabase client, and removes MapLibre/QR libraries from server chunks.
-- Lint, strict TypeScript, 48 tests, the production Next build, and 18 local
-  mobile browser tests pass; one credential-gated browser test is skipped.
+- Lint, strict TypeScript, 48 tests, the production Next build, and local
+  mobile/desktop navigation acceptance pass; one credential-gated production
+  browser test remains conditional on disposable QA credentials.
 - Optimized Worker version `0ebdae82-4a7f-42de-b5cb-409ac84cc184` is deployed
   to both production domains. Its upload is 7,128.55 KiB (1,390.16 KiB gzip),
   startup is 35 ms, and 40 controlled live requests returned 40 successful
@@ -64,12 +69,13 @@ Last verified: 2026-07-28.
   so it was not promoted.
 - The deployment contract now uses OpenNext's generated Worker entry directly
   and requires a connected Linux build plus version-override smoke test.
+- Connected Linux build `b3ce1533-da2e-4aea-b371-f3a3fa197160` deployed Worker
+  version `1cc76e9c-8866-40ac-83a2-1c9d58f10313`; both locales and 40
+  controlled requests passed without a Worker error.
 
 ## 🚧 In Progress
 
 - Authenticated production browser acceptance and live 360 px visual review.
-- Publish the reviewed source to the connected Cloudflare Linux build.
-- Smoke-test the connected build at 0% traffic before promotion.
 - Monitoring for recurrence of the previous release's intermittent
   503/aborted requests.
 - Telegram `/help` and `/status` live acceptance.
@@ -79,11 +85,6 @@ Last verified: 2026-07-28.
 - Authenticated browser checks require disposable QA credentials.
 - The managed Windows sandbox blocks OpenNext esbuild's parent-directory scan;
   the approved external build was denied by execution policy on 2026-07-28.
-- Publishing to the connected Cloudflare build is blocked because the managed
-  environment denies writes to `.git`; a narrow approved `git add`, commit, and
-  push is required.
-- Direct Wrangler production upload of the fresh artifact was denied by the
-  managed execution policy on 2026-07-28 despite explicit operator approval.
 - Threaded customer-support conversations require a new database/API design;
   only report cases and resolution are currently backed.
 - Clustered mapping, legal review, and backup restore need external operator or
@@ -91,16 +92,15 @@ Last verified: 2026-07-28.
 
 ## Next Up
 
-1. Commit/push the reviewed source so the configured connected Linux build can
-   produce the production candidate.
-2. Smoke-test profile, catalogue, onboarding, Checkout, and webhook delivery
-   while confirming encrypted secrets remain installed.
-3. Complete authenticated browser acceptance for the dependent release.
-4. Continue monitoring Worker 5xx/1102 rates.
-5. Run authenticated production acceptance with disposable administrator QA
+1. Review and publish the mobile-first membership/navigation update after
+   explicit deployment approval.
+2. Complete authenticated Checkout and webhook delivery acceptance with a
+   disposable customer and explicit approval for the live payment.
+3. Continue monitoring Worker 5xx/1102 rates.
+4. Run authenticated production acceptance with disposable administrator QA
    credentials.
-6. Inspect stale deterministic QA rows from an older run and plan a reviewed
+5. Inspect stale deterministic QA rows from an older run and plan a reviewed
    cleanup.
-7. Monitor Worker 5xx rates and investigate if intermittent crawling failures
+6. Monitor Worker 5xx rates and investigate if intermittent crawling failures
    recur outside test load.
-8. Design support conversations before adding inbox/conversation UI.
+7. Design support conversations before adding inbox/conversation UI.

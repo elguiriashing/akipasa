@@ -111,16 +111,18 @@ files before development, tests, type checks, and deployment.
 ## Frontend
 
 The public UI is mobile-first and localized under `/es` and `/en`. Public
-discovery, event, venue, map, auth, privacy, and legal routes are
-server-rendered where appropriate. Account, business, community, passports,
-moderation, and administration use icon-led console navigation and focused
-sub-pages to avoid long mixed-purpose screens.
+discovery, membership, event, venue, map, auth, privacy, and legal routes are
+server-rendered where appropriate. The compact mobile site menu becomes a
+regular primary navigation bar on desktop. Membership remains visible in the
+header and homepage before authentication; checkout still requires an account
+and returns to `/{locale}/account/subscription`.
 
-Authenticated workspaces use `WorkspaceShell`:
+Account, business, community, passports, moderation, and administration use
+icon-led `WorkspaceShell` navigation and focused sub-pages:
 
 - Desktop: a collapsible, sticky sidebar with route-aware links.
-- Mobile: a burger trigger and modal drawer with initial focus, Escape,
-  backdrop, and explicit close behavior.
+- Mobile: a burger trigger and bounded in-flow panel with initial focus,
+  Escape, explicit close behavior, and no viewport-covering overlay.
 - Account: eight focused routes under `/{locale}/account`.
 - Staff: six operational routes under `/{locale}/staff`; legacy
   `/{locale}/moderation` requests redirect to the matching staff workflow.

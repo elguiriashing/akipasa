@@ -5,9 +5,12 @@ import { optionalUser } from "@/lib/auth";
 import { BadgeProgress } from "@/components/BadgeProgress";
 import {
   ConsoleMetric,
-  ConsoleNav,
   ConsoleSectionHeader,
 } from "@/components/ConsoleChrome";
+import {
+  WorkspaceShell,
+  type WorkspaceItem,
+} from "@/components/WorkspaceShell";
 import { requestReward } from "./actions";
 
 function progressStyle(value: number): CSSProperties {
@@ -83,20 +86,45 @@ export default async function PassportsPage({
     (sum, balance) => sum + balance,
     0,
   );
+  const base = `/${locale}/passports`;
+  const items: WorkspaceItem[] = [
+    { href: base, label: es ? "Progreso" : "Progress", icon: "activity" },
+    {
+      href: `${base}?view=passports`,
+      label: es ? "Pasaportes" : "Passports",
+      icon: "gift",
+      count: passports?.length ? passports.length : undefined,
+    },
+    {
+      href: `${base}?view=stamps`,
+      label: es ? "Sellos" : "Stamps",
+      icon: "saved",
+      count: totalStamps || undefined,
+    },
+    ...(user
+      ? [
+          {
+            href: `${base}?view=badges`,
+            label: es ? "Insignias" : "Badges",
+            icon: "shield" as const,
+          },
+        ]
+      : []),
+  ];
 
   return (
-    <main className="shell dashboard passport-console">
-      <section className="hero">
-        <div className="eyebrow">
-          {es ? "Explora y gana" : "Explore and earn"}
-        </div>
-        <h1>{es ? "Pasaportes y sellos" : "Passports and stamps"}</h1>
-        <p className="lede">
-          {es
-            ? "Haz check-in en locales participantes. Los puntos no tienen valor en efectivo."
-            : "Check in at participating venues. Points have no cash value."}
-        </p>
-      </section>
+    <WorkspaceShell
+      title={es ? "Pasaportes y sellos" : "Passports and stamps"}
+      eyebrow={es ? "Explora y gana" : "Explore and earn"}
+      description={
+        es
+          ? "Haz check-in en locales participantes. Los puntos no tienen valor en efectivo."
+          : "Check in at participating venues. Points have no cash value."
+      }
+      homeHref={base}
+      items={items}
+      navigationTitle={es ? "Pasaportes" : "Passports"}
+    >
       {query.checkin && (
         <p className="notice">
           {query.checkin === "accepted"
@@ -123,40 +151,6 @@ export default async function PassportsPage({
               : "There are not enough stamps yet, or a request already exists."}
         </p>
       )}
-
-      <ConsoleNav
-        basePath={`/${locale}/passports`}
-        active={view}
-        label={es ? "Secciones de pasaportes" : "Passport sections"}
-        items={[
-          {
-            value: "progress",
-            label: es ? "Progreso" : "Progress",
-            icon: "XP",
-          },
-          {
-            value: "passports",
-            label: es ? "Pasaportes" : "Passports",
-            icon: "PX",
-            count: passports?.length || 0,
-          },
-          {
-            value: "stamps",
-            label: es ? "Sellos" : "Stamps",
-            icon: "ST",
-            count: totalStamps,
-          },
-          ...(user
-            ? [
-                {
-                  value: "badges",
-                  label: es ? "Insignias" : "Badges",
-                  icon: "BD",
-                },
-              ]
-            : []),
-        ]}
-      />
 
       {view === "progress" && (
         <section
@@ -398,6 +392,6 @@ export default async function PassportsPage({
           <BadgeProgress locale={locale} totalXp={totalXp} />
         </section>
       )}
-    </main>
+    </WorkspaceShell>
   );
 }

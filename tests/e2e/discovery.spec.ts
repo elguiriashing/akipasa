@@ -18,6 +18,7 @@ test("guest discovers and filters nationwide events", async ({ page }) => {
 
 test("language switch preserves route and filters", async ({ page }) => {
   await page.goto("/es?locality=barcelona&radius=25&time=all");
+  await page.locator(".site-menu > summary").click();
   await page.getByRole("link", { name: "Switch to English" }).click();
   await expect(page).toHaveURL(/\/en\?locality=barcelona&radius=25&time=all/);
   await expect(
@@ -60,6 +61,9 @@ test("passport console renders one focused sub-page at a time", async ({
   page,
 }) => {
   await page.goto("/en/passports");
+  const openWorkspaceMenu = () =>
+    page.getByRole("button", { name: /Passports menu/ }).click();
+  await openWorkspaceMenu();
   await expect(page.getByRole("link", { name: /Progress/ })).toHaveAttribute(
     "aria-current",
     "page",
@@ -79,6 +83,72 @@ test("passport console renders one focused sub-page at a time", async ({
   await expect(
     page.getByRole("heading", { name: "Explorer progress" }),
   ).toHaveCount(0);
+});
+
+test("mobile navigation is compact and opens section links in place", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/en");
+
+  const siteMenu = page.locator(".site-menu");
+  await expect(siteMenu.getByText("Menu", { exact: true })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Primary" })).toBeHidden();
+  await siteMenu.getByText("Menu", { exact: true }).click();
+  await expect(
+    page.getByRole("navigation", { name: "Mobile menu" }),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByRole("navigation", { name: "Mobile menu" })
+      .getByRole("link", { name: "Membership" }),
+  ).toHaveAttribute("href", "/en/membership");
+
+  await page.goto("/en/passports");
+  const workspaceMenu = page.getByRole("button", {
+    name: /Passports menu/,
+  });
+  await expect(workspaceMenu).toBeVisible();
+  await workspaceMenu.click();
+  const sectionNavigation = page.getByRole("navigation", {
+    name: "Passports sections",
+  });
+  await expect(sectionNavigation).toBeVisible();
+  await expect(page.locator(".workspace-drawer-layer")).toHaveCSS(
+    "position",
+    "static",
+  );
+  await expect(page.locator(".console-nav")).toHaveCount(0);
+
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/en/passports");
+  await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
+  await expect(page.locator(".site-menu")).toBeHidden();
+  await expect(page.locator(".workspace-sidebar")).toBeVisible();
+  await expect(workspaceMenu).toBeHidden();
+});
+
+test("membership offer is reachable before sign in", async ({ page }) => {
+  await page.goto("/en");
+  await expect(
+    page.getByRole("link", { name: "View memberships" }),
+  ).toHaveAttribute("href", "/en/membership#plans");
+  await page.getByRole("link", { name: "View memberships" }).click();
+  await expect(page).toHaveURL(/\/en\/membership#plans$/);
+  await expect(
+    page.getByRole("heading", {
+      name: "More local value, without the clutter",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Choose Personal Premium" }),
+  ).toHaveAttribute(
+    "href",
+    "/en/auth?next=%2Fen%2Faccount%2Fsubscription%3Fplan%3Dpremium",
+  );
+  await expect(
+    page.getByRole("link", { name: "Sign in to continue" }),
+  ).toHaveAttribute("href", "/en/auth?next=%2Fen%2Faccount%2Fsubscription");
 });
 
 test("account-only actions redirect guests safely", async ({ page }) => {
@@ -112,7 +182,8 @@ test("primary navigation, footer and document language are correct", async ({
 }) => {
   await page.goto("/en");
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
-  const primary = page.getByRole("navigation", { name: "Primary" });
+  await page.locator(".site-menu > summary").click();
+  const primary = page.getByRole("navigation", { name: "Mobile menu" });
   await expect(primary.getByRole("link", { name: "Discover" })).toHaveAttribute(
     "href",
     "/en",
@@ -127,15 +198,27 @@ test("primary navigation, footer and document language are correct", async ({
   await expect(
     primary.getByRole("link", { name: "Community" }),
   ).toHaveAttribute("href", "/en/community");
+  await expect(
+    primary.getByRole("link", { name: "Membership" }),
+  ).toHaveAttribute("href", "/en/membership");
   await expect(primary.getByRole("link", { name: "Account" })).toHaveAttribute(
     "href",
     "/en/account",
   );
-  for (const name of ["Discover", "Map", "Passports", "Community", "Account"]) {
+  for (const name of [
+    "Discover",
+    "Map",
+    "Passports",
+    "Community",
+    "Membership",
+    "Account",
+  ]) {
     await expect(primary.getByRole("link", { name })).toBeVisible();
   }
+  const mobileMenu = page.locator(".site-menu");
+  await expect(mobileMenu.getByRole("link", { name: "Sign in" })).toBeVisible();
   await expect(
-    primary.getByRole("link", { name: "Cambiar a español" }),
+    mobileMenu.getByRole("link", { name: "Cambiar a español" }),
   ).toBeVisible();
   const legal = page.getByRole("navigation", { name: "Legal information" });
   await expect(legal.getByRole("link", { name: "Privacy" })).toHaveAttribute(

@@ -225,6 +225,20 @@ html[data-theme="premium"] .brand {
   align-items: center;
 }
 
+.site-menu {
+  display: none;
+}
+
+.nav .membership-link {
+  border-color: color-mix(in oklab, var(--primary) 45%, var(--line));
+  background: color-mix(in oklab, var(--primary-soft) 72%, var(--surface));
+}
+
+.nav .nav-sign-in {
+  background: var(--ink);
+  color: var(--surface);
+}
+
 .language {
   white-space: nowrap;
   color: var(--muted);
@@ -1247,6 +1261,26 @@ html[data-theme="premium"] .card:hover {
 .workspace-mobile-trigger,
 .workspace-drawer-layer {
   display: none;
+}
+
+.workspace-menu-glyph,
+.site-menu-icon {
+  display: grid;
+  width: 2.35rem;
+  height: 2.35rem;
+  place-content: center;
+  gap: 0.25rem;
+  border-radius: 0.78rem;
+  background: color-mix(in oklab, var(--primary-soft) 72%, var(--surface));
+}
+
+.workspace-menu-glyph i,
+.site-menu-icon i {
+  display: block;
+  width: 1.1rem;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
 }
 
 .workspace-empty {
@@ -2425,6 +2459,89 @@ html[data-theme="premium"] .card:hover {
 }
 
 @media (max-width: 850px) {
+  .topbar {
+    align-items: center;
+    padding: 0.6rem 0.7rem;
+  }
+
+  .nav-desktop {
+    display: none;
+  }
+
+  .site-menu {
+    display: block;
+    position: relative;
+  }
+
+  .site-menu > summary {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2.7rem;
+    padding: 0.2rem 0.35rem 0.2rem 0.2rem;
+    border-radius: 0.8rem;
+    color: var(--ink);
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 850;
+    list-style: none;
+  }
+
+  .site-menu > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .site-menu[open] > summary {
+    background: color-mix(in oklab, var(--primary-soft) 75%, var(--surface));
+  }
+
+  .site-menu-panel {
+    position: absolute;
+    top: calc(100% + 0.7rem);
+    right: 0;
+    width: min(21rem, calc(100vw - 2rem));
+    max-height: min(70vh, 36rem);
+    overflow-y: auto;
+    padding: 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 1rem;
+    background: var(--surface);
+    box-shadow: var(--shadow-strong);
+  }
+
+  .site-menu-panel nav {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .site-menu-panel nav a {
+    min-height: 2.9rem;
+    padding: 0.78rem 0.85rem;
+    border-radius: 0.75rem;
+    color: var(--ink);
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .site-menu-panel nav a:hover,
+  .site-menu-panel nav a:focus-visible,
+  .site-menu-panel nav .membership-link {
+    background: color-mix(in oklab, var(--primary-soft) 68%, var(--surface));
+  }
+
+  .site-menu-tools {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.65rem;
+    padding-top: 0.65rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .site-menu-tools .button-strong {
+    flex: 1;
+  }
+
   .workspace-shell {
     display: block;
     width: min(100% - 1.2rem, 1440px);
@@ -2455,28 +2572,25 @@ html[data-theme="premium"] .card:hover {
   }
 
   .workspace-drawer-layer {
-    display: block;
-    position: fixed;
-    z-index: 100;
-    inset: 0;
+    display: grid;
+    position: static;
+    margin: -0.45rem 0 1rem;
   }
 
   .workspace-drawer-backdrop {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    border: 0;
-    background: rgb(10 20 16 / 58%);
+    display: none;
   }
 
   .workspace-drawer {
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: min(88vw, 21rem);
+    position: static;
+    width: 100%;
+    max-height: min(65vh, 32rem);
     overflow-y: auto;
-    padding: 1rem;
+    padding: 0.8rem;
+    border: 1px solid var(--line);
+    border-radius: 1rem;
     background: var(--surface);
-    box-shadow: 1rem 0 3rem rgb(0 0 0 / 22%);
+    box-shadow: var(--shadow-soft);
   }
 
   .workspace-drawer-close {
@@ -2551,21 +2665,6 @@ html[data-theme="premium"] .card:hover {
   .compact-facts {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
-  .topbar {
-    align-items: flex-start;
-  }
-
-  .nav {
-    max-width: 75vw;
-    overflow-x: auto;
-    padding-bottom: 0.35rem;
-    scrollbar-width: thin;
-  }
-
-  .nav a {
-    flex: 0 0 auto;
-  }
 }
 
 @media (max-width: 700px) {
@@ -2596,26 +2695,6 @@ html[data-theme="premium"] .card:hover {
 
   .shell {
     width: min(100% - 1.2rem, 1180px);
-  }
-
-  .topbar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.35rem;
-  }
-
-  .nav {
-    width: 100%;
-    max-width: none;
-    flex-wrap: wrap;
-    gap: 0.2rem;
-    overflow: visible;
-    padding-bottom: 0;
-  }
-
-  .nav a {
-    padding: 0.46rem 0.64rem;
-    font-size: 0.8rem;
   }
 
   .hero {
@@ -2826,23 +2905,239 @@ html[data-theme="premium"] .card:hover {
 
 .billing-plan-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  grid-template-columns: 1fr;
   gap: 1.25rem;
   margin-top: 1.25rem;
 }
 
 .billing-plan-card {
-  display: flex;
-  min-height: 21rem;
-  flex-direction: column;
+  display: grid;
   gap: 1rem;
 }
 
-.billing-plan-card h2 {
-  margin: 0;
-  font-size: clamp(2rem, 5vw, 3.5rem);
+.billing-plan-card.selected {
+  border-color: color-mix(in oklab, var(--primary) 70%, var(--line));
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 16%, transparent);
 }
 
-.billing-plan-card form {
+.billing-options {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.billing-plan-card .billing-option {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: color-mix(in oklab, var(--surface-alt) 72%, var(--surface));
+}
+
+.billing-option > span {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.billing-option small {
+  color: var(--muted);
+}
+
+.billing-option .billing-option-price {
+  justify-items: end;
+}
+
+.billing-option-price strong {
+  font-size: 1.45rem;
+}
+
+.billing-option .button {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.membership-cta {
+  border-color: color-mix(in oklab, var(--accent) 70%, var(--line));
+  background: color-mix(in oklab, var(--accent) 14%, var(--surface));
+  color: var(--ink);
+}
+
+.membership-page {
+  display: grid;
+  gap: 1.2rem;
+}
+
+.membership-hero {
+  display: grid;
+  gap: 1.4rem;
+  margin-top: 1rem;
+  padding: clamp(1.35rem, 5vw, 3rem);
+  overflow: hidden;
+  border: 1px solid color-mix(in oklab, var(--primary) 32%, var(--line));
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(
+      circle at 100% 0,
+      color-mix(in oklab, var(--primary) 24%, transparent),
+      transparent 48%
+    ),
+    var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.membership-hero h1 {
+  max-width: 15ch;
+  margin: 0.45rem 0 0.8rem;
+  font-size: clamp(2.2rem, 10vw, 5rem);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+.membership-hero .lede {
+  max-width: 42rem;
+  margin: 0;
+}
+
+.membership-hero-actions {
+  display: grid;
+  align-content: end;
+  justify-items: start;
+  gap: 0.65rem;
+}
+
+.membership-hero-actions small,
+.membership-footnote {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.membership-plan-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  scroll-margin-top: 7rem;
+}
+
+.membership-plan {
+  display: grid;
+  gap: 1.25rem;
+  padding: clamp(1.2rem, 4vw, 2rem);
+}
+
+.membership-plan.featured {
+  border-color: color-mix(in oklab, var(--primary) 65%, var(--line));
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklab, var(--primary-soft) 62%, var(--surface)),
+    var(--surface) 60%
+  );
+}
+
+.membership-plan-heading {
+  display: grid;
+  justify-items: start;
+  gap: 0.7rem;
+}
+
+.membership-plan h2,
+.membership-plan p {
+  margin: 0;
+}
+
+.membership-plan h2 {
+  font-size: clamp(1.65rem, 6vw, 2.5rem);
+}
+
+.membership-plan p {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.membership-price-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+}
+
+.membership-price-row > div {
+  display: grid;
+  align-content: start;
+  gap: 0.15rem;
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: color-mix(in oklab, var(--surface-alt) 72%, var(--surface));
+}
+
+.membership-price-row strong {
+  font-size: clamp(1.7rem, 8vw, 2.6rem);
+}
+
+.membership-price-row span,
+.membership-price-row small {
+  color: var(--muted);
+}
+
+.membership-annual small {
+  color: var(--primary-dark);
+  font-weight: 850;
+}
+
+.membership-plan ul {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.membership-plan li::before {
+  content: "✓";
+  margin-right: 0.55rem;
+  color: var(--primary);
+  font-weight: 950;
+}
+
+.membership-plan > .button {
+  width: 100%;
   margin-top: auto;
+}
+
+.account-membership-card {
+  display: grid;
+  align-items: center;
+  gap: 1rem;
+  border-color: color-mix(in oklab, var(--primary) 48%, var(--line));
+}
+
+.account-membership-card h2,
+.account-membership-card p {
+  margin-bottom: 0;
+}
+
+@media (min-width: 720px) {
+  .billing-plan-grid,
+  .membership-plan-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .billing-option {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+
+  .billing-option .button {
+    grid-column: auto;
+    width: auto;
+  }
+
+  .membership-hero {
+    grid-template-columns: minmax(0, 1.5fr) minmax(14rem, 0.7fr);
+  }
+
+  .account-membership-card {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
 }

@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/en/admin/users",
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 import { WorkspaceShell } from "../src/components/WorkspaceShell";
@@ -14,7 +15,7 @@ import { WorkspaceShell } from "../src/components/WorkspaceShell";
 afterEach(cleanup);
 
 describe("progressive disclosure workspace shell", () => {
-  it("uses route navigation and exposes an accessible mobile drawer trigger", () => {
+  it("uses route navigation and exposes an accessible mobile menu trigger", () => {
     render(
       <WorkspaceShell
         title="Administration"
@@ -44,7 +45,7 @@ describe("progressive disclosure workspace shell", () => {
     expect(screen.queryByText("?view=")).not.toBeInTheDocument();
   });
 
-  it("opens and closes the mobile navigation drawer", () => {
+  it("opens and closes the in-flow mobile navigation", () => {
     render(
       <WorkspaceShell
         title="Account"
@@ -62,11 +63,11 @@ describe("progressive disclosure workspace shell", () => {
       }),
     );
     expect(
-      screen.getByRole("dialog", { name: "Account navigation" }),
+      screen.getByRole("complementary", { name: "Account navigation" }),
     ).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Close" }));
     expect(
-      screen.queryByRole("dialog", { name: "Account navigation" }),
+      screen.queryByRole("complementary", { name: "Account navigation" }),
     ).not.toBeInTheDocument();
   });
 });

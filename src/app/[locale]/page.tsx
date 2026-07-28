@@ -166,6 +166,12 @@ export default async function DiscoverPage({
               <Link href={`/${locale}/map`} className="button button-ghost">
                 {m.map}
               </Link>
+              <Link
+                href={`/${locale}/membership#plans`}
+                className="button membership-cta"
+              >
+                {locale === "es" ? "Ver membresías" : "View memberships"}
+              </Link>
             </div>
           </div>
 

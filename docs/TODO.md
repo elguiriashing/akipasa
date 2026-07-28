@@ -97,6 +97,11 @@ Last reviewed: 2026-07-28.
 - [x] Replace long console pages with focused sub-pages and icon-led menus.
 - [x] Add responsive spacing and visual hierarchy to account, community,
       passports, moderation, and administration.
+- [x] Expose a public membership comparison from the homepage/header and add a
+      direct Account Overview billing action.
+- [x] Replace the mobile horizontal header and full-screen workspace overlay
+      with compact, bounded menus; move Community and Passport tabs into the
+      shared workspace navigation.
 - [ ] Select and configure a production graphical map provider if required.
 - [x] Add local authenticated Worker route integration tests for the command
       catalogue and operator execution.

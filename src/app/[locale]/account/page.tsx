@@ -102,6 +102,25 @@ export default async function AccountOverview({
           </div>
         </article>
       </section>
+      <section className="panel console-card account-membership-card">
+        <div>
+          <span className="status-pill">{es ? "Membresía" : "Membership"}</span>
+          <h2>
+            {es ? "Elige o gestiona tu plan" : "Choose or manage your plan"}
+          </h2>
+          <p>
+            {es
+              ? "Compara Premium y Business, elige facturación mensual o anual y gestiona tus pagos."
+              : "Compare Premium and Business, choose monthly or annual billing, and manage payments."}
+          </p>
+        </div>
+        <Link
+          className="button button-strong"
+          href={`/${locale}/account/subscription`}
+        >
+          {es ? "Ver membresías" : "View memberships"}
+        </Link>
+      </section>
       <section className="panel console-card">
         <span className="status-pill">
           {es ? "Gestiona un local" : "Run a business"}

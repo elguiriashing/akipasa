@@ -3,6 +3,31 @@
 This is an engineering milestone log, not a semantic-version release log.
 Entries are newest first and must not contain credentials or personal data.
 
+## 2026-07-29
+
+### Summary
+
+Shortened the path from discovery to paid membership and rebuilt navigation
+mobile-first. The homepage and public header now link directly to a public,
+bilingual membership offer; Account Overview links directly to billing; and
+the authenticated billing screen presents two plan cards with monthly and
+annual choices instead of four repeated cards.
+
+Replaced the mobile horizontal header strip with a compact menu and changed
+workspace navigation from a full-screen modal to an in-flow panel. Community
+and Passports now use the same responsive workspace navigation instead of
+duplicated console tab bars. Zero-value navigation badges are hidden until
+they carry useful information.
+
+### Verification
+
+- Lint and strict TypeScript pass.
+- Production Next build generates 83 pages.
+- Mobile browser acceptance covers the public header, membership conversion
+  path, in-flow Passport menu, and removal of the old console tab bar.
+- Desktop browser acceptance confirms the regular primary navigation and
+  sticky workspace sidebar remain visible while burger controls remain hidden.
+
 ## 2026-07-28 23:45 +02:00
 
 ### Summary

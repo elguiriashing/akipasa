@@ -5,10 +5,8 @@ import { isLocale } from "@/lib/config";
 import { openBillingPortal, startSubscriptionCheckout } from "./actions";
 
 const plans = [
-  { plan: "premium", interval: "month", price: "EUR 5", suffix: "/ month" },
-  { plan: "premium", interval: "year", price: "EUR 48", suffix: "/ year" },
-  { plan: "business", interval: "month", price: "EUR 20", suffix: "/ month" },
-  { plan: "business", interval: "year", price: "EUR 190", suffix: "/ year" },
+  { plan: "premium", monthly: "€5", yearly: "€48", saving: 12 },
+  { plan: "business", monthly: "€20", yearly: "€190", saving: 50 },
 ] as const;
 
 export default async function SubscriptionPage({
@@ -71,7 +69,7 @@ export default async function SubscriptionPage({
             : "The billing operation could not be started."}
         </p>
       )}
-      {(subscriptions?.length || grants?.length) && (
+      {Boolean(subscriptions?.length || grants?.length) && (
         <section className="panel console-card">
           <span className="status-pill">
             {es ? "Acceso actual" : "Current access"}
@@ -101,8 +99,10 @@ export default async function SubscriptionPage({
       <section className="billing-plan-grid">
         {plans.map((item) => (
           <article
-            className="panel console-card billing-plan-card"
-            key={`${item.plan}-${item.interval}`}
+            className={`panel console-card billing-plan-card${
+              query.plan === item.plan ? "selected" : ""
+            }`}
+            key={item.plan}
           >
             <span className="status-pill">
               {item.plan === "premium"
@@ -113,12 +113,6 @@ export default async function SubscriptionPage({
                   ? "Negocio"
                   : "Business"}
             </span>
-            <h2>{item.price}</h2>
-            <p>
-              {es
-                ? item.suffix.replace("month", "mes").replace("year", "ano")
-                : item.suffix}
-            </p>
             <p>
               {item.plan === "business"
                 ? es
@@ -128,17 +122,70 @@ export default async function SubscriptionPage({
                   ? "Membresia personal y acceso a ventajas Premium a medida que se publiquen."
                   : "Personal membership and access to Premium benefits as they launch."}
             </p>
-            <form action={startSubscriptionCheckout}>
-              <input type="hidden" name="locale" value={locale} />
-              <input type="hidden" name="plan" value={item.plan} />
-              <input type="hidden" name="interval" value={item.interval} />
-              <button className="button" type="submit">
-                {es ? "Continuar con Stripe" : "Continue with Stripe"}
-              </button>
-            </form>
+            <div className="billing-options">
+              <BillingOption
+                locale={locale}
+                plan={item.plan}
+                interval="month"
+                price={item.monthly}
+                label={es ? "Mensual" : "Monthly"}
+              />
+              <BillingOption
+                locale={locale}
+                plan={item.plan}
+                interval="year"
+                price={item.yearly}
+                label={es ? "Anual" : "Annual"}
+                note={es ? `Ahorra €${item.saving}` : `Save €${item.saving}`}
+              />
+            </div>
           </article>
         ))}
       </section>
     </>
+  );
+}
+
+function BillingOption({
+  locale,
+  plan,
+  interval,
+  price,
+  label,
+  note,
+}: {
+  locale: "es" | "en";
+  plan: "premium" | "business";
+  interval: "month" | "year";
+  price: string;
+  label: string;
+  note?: string;
+}) {
+  const es = locale === "es";
+  return (
+    <form action={startSubscriptionCheckout} className="billing-option">
+      <input type="hidden" name="locale" value={locale} />
+      <input type="hidden" name="plan" value={plan} />
+      <input type="hidden" name="interval" value={interval} />
+      <span>
+        <strong>{label}</strong>
+        {note && <small>{note}</small>}
+      </span>
+      <span className="billing-option-price">
+        <strong>{price}</strong>
+        <small>
+          {interval === "month"
+            ? es
+              ? "/ mes"
+              : "/ mo"
+            : es
+              ? "/ año"
+              : "/ yr"}
+        </small>
+      </span>
+      <button className="button" type="submit">
+        {es ? "Elegir" : "Choose"}
+      </button>
+    </form>
   );
 }

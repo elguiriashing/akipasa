@@ -3,9 +3,12 @@ import Link from "next/link";
 import {
   ConsoleIcon,
   ConsoleMetric,
-  ConsoleNav,
   ConsoleSectionHeader,
 } from "@/components/ConsoleChrome";
+import {
+  WorkspaceShell,
+  type WorkspaceItem,
+} from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { loadFeatureFlags } from "@/lib/feature-flags";
@@ -62,19 +65,45 @@ export default async function CommunityPage({
     reports?.filter((item) => item.state === "open").length || 0;
   const hasReportableItems = Boolean(events?.length || venues?.length);
   const requestedTarget = typeof query.target === "string" ? query.target : "";
+  const base = `/${locale}/community`;
+  const items: WorkspaceItem[] = [
+    { href: base, label: es ? "Inicio" : "Overview", icon: "home" },
+    {
+      href: `${base}?view=suggest`,
+      label: es ? "Sugerir evento" : "Suggest an event",
+      icon: "calendar",
+    },
+    {
+      href: `${base}?view=report`,
+      label: es ? "Enviar aviso" : "Report a problem",
+      icon: "megaphone",
+    },
+    {
+      href: `${base}?view=suggestions`,
+      label: es ? "Mis sugerencias" : "My suggestions",
+      icon: "inbox",
+      count: submissions?.length ? submissions.length : undefined,
+    },
+    {
+      href: `${base}?view=reports`,
+      label: es ? "Mis avisos" : "My reports",
+      icon: "activity",
+      count: reports?.length ? reports.length : undefined,
+    },
+  ];
 
   return (
-    <main className="shell dashboard community-console">
-      <section className="hero">
-        <div className="eyebrow">{es ? "Comunidad" : "Community"}</div>
-        <h1>{es ? "Haz mejor el mapa local" : "Make the local map better"}</h1>
-        <p className="lede">
-          {es
-            ? "Comparte lo que falta y avisanos cuando algo no cuadre. Nuestro equipo revisa cada aporte."
-            : "Share what is missing and tell us when something looks wrong. Our team reviews every contribution."}
-        </p>
-      </section>
-
+    <WorkspaceShell
+      title={es ? "Comunidad" : "Community"}
+      eyebrow={es ? "Aporta cuando haga falta" : "Contribute when needed"}
+      description={
+        es
+          ? "Comparte lo que falta o avísanos cuando algo no cuadre. Nuestro equipo revisa cada aporte."
+          : "Share what is missing or flag something that looks wrong. Our team reviews every contribution."
+      }
+      homeHref={base}
+      items={items}
+    >
       {query.created && (
         <p className="notice">
           {es
@@ -93,41 +122,6 @@ export default async function CommunityPage({
               : "Could not submit. Check the details or whether you already sent the same report."}
         </p>
       )}
-
-      <ConsoleNav
-        basePath={`/${locale}/community`}
-        active={view}
-        label={es ? "Secciones de comunidad" : "Community sections"}
-        items={[
-          {
-            value: "home",
-            label: es ? "Inicio" : "Home",
-            icon: "CO",
-          },
-          {
-            value: "suggest",
-            label: es ? "Sugerir" : "Suggest",
-            icon: "+E",
-          },
-          {
-            value: "report",
-            label: es ? "Avisar" : "Report",
-            icon: "!",
-          },
-          {
-            value: "suggestions",
-            label: es ? "Sugerencias" : "Suggestions",
-            icon: "EV",
-            count: submissions?.length || 0,
-          },
-          {
-            value: "reports",
-            label: es ? "Avisos" : "Reports",
-            icon: "RP",
-            count: reports?.length || 0,
-          },
-        ]}
-      />
 
       {view === "home" && (
         <section
@@ -432,7 +426,7 @@ export default async function CommunityPage({
           />
         </section>
       )}
-    </main>
+    </WorkspaceShell>
   );
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState, type ReactNode } from "react";
 
 export type WorkspaceIcon =
@@ -119,10 +119,23 @@ function WorkspaceGlyph({ icon }: { icon: WorkspaceIcon }) {
   );
 }
 
-function matchesPath(pathname: string, href: string) {
+function matchesPath(
+  pathname: string,
+  searchParams: URLSearchParams,
+  href: string,
+) {
+  const [hrefPath, query = ""] = href.split("?");
+  if (query) {
+    const expected = new URLSearchParams(query);
+    return (
+      pathname === hrefPath &&
+      [...expected].every(([key, value]) => searchParams.get(key) === value)
+    );
+  }
+  if (searchParams.has("view")) return false;
   return (
-    pathname === href ||
-    (href.split("/").length > 3 && pathname.startsWith(`${href}/`))
+    pathname === hrefPath ||
+    (hrefPath.split("/").length > 3 && pathname.startsWith(`${hrefPath}/`))
   );
 }
 
@@ -132,6 +145,7 @@ export function WorkspaceShell({
   description,
   homeHref,
   items,
+  navigationTitle = title,
   children,
 }: {
   title: string;
@@ -139,12 +153,17 @@ export function WorkspaceShell({
   description: string;
   homeHref: string;
   items: WorkspaceItem[];
+  navigationTitle?: string;
   children: ReactNode;
 }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const drawerCloseRef = useRef<HTMLButtonElement>(null);
+  const spanish = homeHref.startsWith("/es/");
+  const menuLabel = spanish ? "Menú" : "Menu";
+  const closeLabel = spanish ? "Cerrar" : "Close";
 
   useEffect(() => {
     if (!drawerOpen) return;
@@ -157,13 +176,23 @@ export function WorkspaceShell({
     return () => document.removeEventListener("keydown", closeOnEscape);
   }, [drawerOpen]);
 
+  useEffect(() => {
+    if (typeof window.matchMedia !== "function") return;
+    const desktop = window.matchMedia("(min-width: 851px)");
+    const closeOnDesktop = (event: MediaQueryListEvent) => {
+      if (event.matches) setDrawerOpen(false);
+    };
+    desktop.addEventListener("change", closeOnDesktop);
+    return () => desktop.removeEventListener("change", closeOnDesktop);
+  }, []);
+
   const navigation = (
     <>
       <div className="workspace-brand">
         <Link href={homeHref} onClick={() => setDrawerOpen(false)}>
           <span className="workspace-mark">A</span>
           <span className="workspace-brand-copy">
-            <strong>{title}</strong>
+            <strong>{navigationTitle}</strong>
             <small>{eyebrow}</small>
           </span>
         </Link>
@@ -176,9 +205,12 @@ export function WorkspaceShell({
           <span aria-hidden="true">{collapsed ? "›" : "‹"}</span>
         </button>
       </div>
-      <nav className="workspace-navigation" aria-label={`${title} sections`}>
+      <nav
+        className="workspace-navigation"
+        aria-label={`${navigationTitle} sections`}
+      >
         {items.map((item) => {
-          const active = matchesPath(pathname, item.href);
+          const active = matchesPath(pathname, searchParams, item.href);
           return (
             <Link
               href={item.href}
@@ -206,36 +238,30 @@ export function WorkspaceShell({
       <button
         className="workspace-mobile-trigger"
         type="button"
-        aria-label={`${eyebrow} ${title} menu`}
+        aria-label={`${eyebrow} ${navigationTitle} menu`}
         aria-expanded={drawerOpen}
         aria-controls="workspace-mobile-drawer"
-        onClick={() => setDrawerOpen(true)}
+        onClick={() => setDrawerOpen((value) => !value)}
       >
-        <span className="workspace-glyph">
-          <WorkspaceGlyph icon="settings" />
+        <span className="workspace-menu-glyph" aria-hidden="true">
+          <i />
+          <i />
+          <i />
         </span>
         <span>
           <small>{eyebrow}</small>
-          <strong>{title}</strong>
+          <strong>{navigationTitle}</strong>
         </span>
-        <span aria-hidden="true">Menu</span>
+        <span aria-hidden="true">{menuLabel}</span>
       </button>
 
       <aside className="workspace-sidebar">{navigation}</aside>
 
       {drawerOpen && (
         <div className="workspace-drawer-layer" id="workspace-mobile-drawer">
-          <button
-            className="workspace-drawer-backdrop"
-            type="button"
-            aria-label="Close navigation"
-            onClick={() => setDrawerOpen(false)}
-          />
           <aside
             className="workspace-drawer"
-            role="dialog"
-            aria-modal="true"
-            aria-label={`${title} navigation`}
+            aria-label={`${navigationTitle} navigation`}
           >
             <button
               ref={drawerCloseRef}
@@ -243,7 +269,7 @@ export function WorkspaceShell({
               type="button"
               onClick={() => setDrawerOpen(false)}
             >
-              Close
+              {closeLabel}
             </button>
             {navigation}
           </aside>

@@ -26,6 +26,11 @@ export default async function AccountLayout({
   const items: WorkspaceItem[] = [
     { href: base, label: es ? "Resumen" : "Overview", icon: "home" },
     {
+      href: `${base}/subscription`,
+      label: es ? "Membresía" : "Membership",
+      icon: "gift",
+    },
+    {
       href: `${base}/profile`,
       label: es ? "Perfil" : "Profile",
       icon: "person",
@@ -59,11 +64,6 @@ export default async function AccountLayout({
       href: `${base}/settings`,
       label: es ? "Ajustes" : "Settings",
       icon: "settings",
-    },
-    {
-      href: `${base}/subscription`,
-      label: es ? "Membresia" : "Membership",
-      icon: "gift",
     },
     {
       href: `/${locale}/business/apply`,
