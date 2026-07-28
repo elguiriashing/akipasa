@@ -13,6 +13,8 @@ export default defineConfig([
     ".open-next/**",
     ".wrangler/**",
     ".wrangler-config/**",
+    "automation/.wrangler/**",
+    "automation/worker-configuration.d.ts",
     "next-env.d.ts",
     "coverage/**",
     "playwright-report/**",

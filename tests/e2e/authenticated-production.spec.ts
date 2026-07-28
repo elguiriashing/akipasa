@@ -25,7 +25,12 @@ test.describe("disposable authenticated production acceptance", () => {
     await expect(
       page.getByText("Administrator", { exact: true }),
     ).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Badges" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Your next action" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Passports and rewards" }),
+    ).toBeVisible();
 
     await page.goto("/en/community");
     await expect(
@@ -42,9 +47,28 @@ test.describe("disposable authenticated production acceptance", () => {
 
     for (const route of [
       "/en/account",
+      "/en/account/profile",
+      "/en/account/saved",
+      "/en/account/following",
+      "/en/account/rewards",
+      "/en/account/activity",
+      "/en/account/privacy",
+      "/en/account/settings",
       "/en/business",
-      "/en/moderation",
+      "/en/staff",
+      "/en/staff/moderation",
+      "/en/staff/support",
+      "/en/staff/catalogue",
+      "/en/staff/promotions",
+      "/en/staff/audit",
       "/en/admin",
+      "/en/admin/users",
+      "/en/admin/catalogue",
+      "/en/admin/promotions",
+      "/en/admin/privacy",
+      "/en/admin/settings",
+      "/en/admin/passports",
+      "/en/admin/audit",
       `/en/business/venue/${venueId}`,
     ]) {
       const response = await page.goto(route, {
@@ -100,19 +124,39 @@ test.describe("disposable authenticated production acceptance", () => {
 
     await page.goto("/en/admin");
     await expect(
-      page.getByRole("heading", { name: "Catalogue and settings" }),
+      page.getByRole("heading", { name: "Operations overview" }),
     ).toBeVisible();
+    await page.goto("/en/admin/users");
     await expect(
-      page.getByRole("checkbox", {
-        name: "Community event suggestions",
-      }),
+      page.getByRole("searchbox", { name: "Search accounts" }),
+    ).toBeVisible();
+    expect(await page.locator(".user-search-result").count()).toBe(0);
+
+    await page.goto("/en/admin/settings");
+    await expect(
+      page.getByRole("heading", { name: "Platform controls" }),
+    ).toBeVisible();
+
+    await page.setViewportSize({ width: 360, height: 800 });
+    await page.goto("/en/account");
+    await expect(
+      page.getByRole("button", { name: "AkiPasa account Account menu" }),
+    ).toBeVisible();
+    await page
+      .getByRole("button", { name: "AkiPasa account Account menu" })
+      .click();
+    await expect(
+      page.getByRole("dialog", { name: "Account navigation" }),
     ).toBeVisible();
     expect(
-      await page.getByRole("button", { name: "Save control" }).count(),
-    ).toBe(3);
-    await expect(
-      page.getByRole("button", { name: "Update request" }),
-    ).toBeVisible();
+      await page.evaluate(
+        () =>
+          document.documentElement.scrollWidth >
+          document.documentElement.clientWidth + 1,
+      ),
+    ).toBe(false);
+    await page.getByRole("button", { name: "Close" }).click();
+    await page.setViewportSize({ width: 1280, height: 900 });
 
     await page.goto(`/en/business/venue/${venueId}`);
     const occurrences = page

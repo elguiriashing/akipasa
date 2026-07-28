@@ -5,13 +5,15 @@ test("guest discovers and filters nationwide events", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "What’s happening?" }),
   ).toBeVisible();
-  await page.getByLabel("Area").selectOption("madrid");
+  await page.getByLabel("Area").selectOption("barcelona");
   await page.getByLabel("Radius").selectOption("25");
   await page.getByRole("button", { name: "Show plans" }).click();
-  await expect(page).toHaveURL(/locality=madrid/);
-  await expect(
-    page.getByRole("heading", { name: "Cinema under the stars" }),
-  ).toBeVisible();
+  await expect(page).toHaveURL(/locality=barcelona/);
+  const localMarkets = page.getByRole("heading", {
+    name: "Local design market",
+  });
+  expect(await localMarkets.count()).toBeGreaterThan(0);
+  await expect(localMarkets.first()).toBeVisible();
 });
 
 test("language switch preserves route and filters", async ({ page }) => {
@@ -52,6 +54,31 @@ test("public event, venue, map and legal routes are functional", async ({
   await expect(
     page.getByRole("heading", { name: "Using AkiPasa responsibly" }),
   ).toBeVisible();
+});
+
+test("passport console renders one focused sub-page at a time", async ({
+  page,
+}) => {
+  await page.goto("/en/passports");
+  await expect(page.getByRole("link", { name: /Progress/ })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
+  await expect(
+    page.getByRole("heading", { name: "Explorer progress" }),
+  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Stamp cards" })).toHaveCount(
+    0,
+  );
+
+  await page.getByRole("link", { name: /Stamps/ }).click();
+  await expect(page).toHaveURL(/view=stamps/);
+  await expect(
+    page.getByRole("heading", { name: "Stamp cards" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Explorer progress" }),
+  ).toHaveCount(0);
 });
 
 test("account-only actions redirect guests safely", async ({ page }) => {

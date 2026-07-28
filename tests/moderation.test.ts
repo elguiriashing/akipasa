@@ -79,5 +79,23 @@ describe("community and moderation validation", () => {
         resolution: "Verified with venue",
       }).success,
     ).toBe(true);
+    expect(
+      moderationDecisionSchema.safeParse({
+        locale: "en",
+        targetType: "venue",
+        targetId: id,
+        decision: "published",
+        reason: "Business profile checked",
+      }).success,
+    ).toBe(true);
+    expect(
+      moderationDecisionSchema.safeParse({
+        locale: "en",
+        targetType: "offer",
+        targetId: id,
+        decision: "published",
+        reason: "Commercial terms checked",
+      }).success,
+    ).toBe(true);
   });
 });

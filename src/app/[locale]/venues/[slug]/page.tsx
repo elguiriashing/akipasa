@@ -5,7 +5,7 @@ import { isLocale } from "@/lib/config";
 import { translated } from "@/lib/domain";
 import { msg } from "@/lib/messages";
 import { repository } from "@/lib/repository";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { optionalUser } from "@/lib/auth";
 import { toggleFollowedVenue } from "../../engagement/actions";
 import { AnalyticsView, TrackedLink } from "@/components/AnalyticsSignal";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
@@ -22,10 +22,7 @@ export default async function VenuePage({
   const events = await repository.eventsForVenue(venue.id);
   const m = msg(locale);
   const returnTo = `/${locale}/venues/${venue.slug}`;
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { supabase, user } = await optionalUser();
   const { data: followed } = user
     ? await supabase
         .from("followed_venue_refs")

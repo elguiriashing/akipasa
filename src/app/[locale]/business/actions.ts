@@ -8,6 +8,33 @@ import { isSpainLocation, spainLocations } from "@/lib/locations";
 import { safeExternalUrlSchema } from "@/lib/auth-security";
 import { madridLocalDateTimeSchema } from "@/lib/time";
 
+const businessApplicationSchema = z.object({
+  locale: z.enum(["es", "en"]),
+  businessName: z.string().trim().min(2).max(160),
+  contactName: z.string().trim().min(2).max(120),
+  locality: z.string().trim().min(2).max(120),
+  websiteUrl: safeExternalUrlSchema,
+  message: z.string().trim().min(20).max(2000),
+});
+
+export async function submitBusinessApplication(formData: FormData) {
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const parsed = businessApplicationSchema.safeParse(
+    Object.fromEntries(formData),
+  );
+  if (!parsed.success) redirect(`/${locale}/business/apply?error=validation`);
+  const { supabase } = await requireUser(locale);
+  const { error } = await supabase.rpc("submit_business_application", {
+    p_business_name: parsed.data.businessName,
+    p_contact_name: parsed.data.contactName,
+    p_locality: parsed.data.locality,
+    p_website_url: parsed.data.websiteUrl,
+    p_message: parsed.data.message,
+  });
+  if (error) redirect(`/${locale}/business/apply?error=application`);
+  redirect(`/${locale}/business/apply?submitted=1`);
+}
+
 const venueSchema = z.object({
   locale: z.string(),
   locality: z.string().refine(isSpainLocation),

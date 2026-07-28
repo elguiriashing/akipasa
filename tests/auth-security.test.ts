@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { hasSupabaseAuthCookie } from "../src/lib/supabase/auth-cookie";
 import {
   passwordSchema,
   safeAuthDestination,
@@ -34,5 +35,18 @@ describe("authentication security", () => {
     expect(
       safeExternalUrlSchema.safeParse("data:text/html,unsafe").success,
     ).toBe(false);
+  });
+
+  it("detects only Supabase authentication cookies", () => {
+    expect(
+      hasSupabaseAuthCookie([
+        { name: "theme" },
+        { name: "sb-project-auth-token.0" },
+      ]),
+    ).toBe(true);
+    expect(hasSupabaseAuthCookie([{ name: "theme" }])).toBe(false);
+    expect(hasSupabaseAuthCookie([{ name: "sb-project-unrelated" }])).toBe(
+      false,
+    );
   });
 });

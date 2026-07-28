@@ -3,6 +3,10 @@ node_modules/
 .open-next/
 .wrangler/
 .wrangler-config/
+.wrangler-config */
+.release-snapshot-*/
+.task-logs/
+.npm-cache-recovery/
 coverage/
 playwright-report/
 test-results/
@@ -12,3 +16,5 @@ test-results/
 next-env.d.ts
 cloudflare-env.d.ts
 backups/
+automation/.dev.vars
+automation/worker-configuration.d.ts

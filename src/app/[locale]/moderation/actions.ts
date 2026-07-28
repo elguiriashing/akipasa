@@ -12,8 +12,8 @@ export async function moderateItem(formData: FormData) {
     Object.fromEntries(formData),
   );
   const locale = formData.get("locale") === "en" ? "en" : "es";
-  if (!parsed.success) redirect(`/${locale}/moderation?error=decision`);
-  const { supabase } = await requireUser(locale, `/${locale}/moderation`);
+  if (!parsed.success) redirect(`/${locale}/staff/moderation?error=decision`);
+  const { supabase } = await requireUser(locale, `/${locale}/staff/moderation`);
   const value = parsed.data;
   const { error } = await supabase.rpc("moderate_item", {
     target_type: value.targetType,
@@ -22,31 +22,31 @@ export async function moderateItem(formData: FormData) {
     reason: value.reason,
     p_duplicate_of: value.duplicateOf || null,
   });
-  if (error) redirect(`/${locale}/moderation?error=decision`);
-  redirect(`/${locale}/moderation?updated=decision`);
+  if (error) redirect(`/${locale}/staff/moderation?error=decision`);
+  redirect(`/${locale}/staff/moderation?updated=decision`);
 }
 
 export async function resolveReport(formData: FormData) {
   const parsed = reportResolutionSchema.safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
-  if (!parsed.success) redirect(`/${locale}/moderation?error=report`);
-  const { supabase } = await requireUser(locale, `/${locale}/moderation`);
+  if (!parsed.success) redirect(`/${locale}/staff/support?error=report`);
+  const { supabase } = await requireUser(locale, `/${locale}/staff/support`);
   const value = parsed.data;
   const { error } = await supabase.rpc("resolve_report", {
     report_id: value.reportId,
     decision: value.decision,
     resolution: value.resolution,
   });
-  if (error) redirect(`/${locale}/moderation?error=report`);
-  redirect(`/${locale}/moderation?updated=report`);
+  if (error) redirect(`/${locale}/staff/support?error=report`);
+  redirect(`/${locale}/staff/support?updated=report`);
 }
 
 export async function expireEvents(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
-  const { supabase } = await requireUser(locale, `/${locale}/moderation`);
+  const { supabase } = await requireUser(locale, `/${locale}/staff`);
   const { error } = await supabase.rpc("expire_finished_events", {
     reference_time: new Date().toISOString(),
   });
-  if (error) redirect(`/${locale}/moderation?error=expiry`);
-  redirect(`/${locale}/moderation?updated=expiry`);
+  if (error) redirect(`/${locale}/staff?error=expiry`);
+  redirect(`/${locale}/staff?updated=expiry`);
 }

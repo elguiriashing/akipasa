@@ -18,6 +18,14 @@
     "NEXT_PUBLIC_GOOGLE_AUTH_ENABLED": "true",
     "NEXT_PUBLIC_SUPABASE_URL": "https://vhpbvcfkcteswlsdjrfl.supabase.co",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_Mm4CJvGyIaLOWbU3g1sxIQ_Wv2jrKt1",
+    "STRIPE_PREMIUM_MONTHLY_PRICE_ID": "price_1Ty7zbGfzDhsgsQZU95Xdbrt",
+    "STRIPE_PREMIUM_YEARLY_PRICE_ID": "price_1Ty7znGfzDhsgsQZPmNfCTHA",
+    "STRIPE_BUSINESS_MONTHLY_PRICE_ID": "price_1Ty802GfzDhsgsQZPLHDu9qp",
+    "STRIPE_BUSINESS_YEARLY_PRICE_ID": "price_1Ty80FGfzDhsgsQZYrgDHG7Y",
+  },
+  "limits": {
+    "cpu_ms": 1000,
+    "subrequests": 100,
   },
   "observability": { "enabled": true },
 }

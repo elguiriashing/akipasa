@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { isLocale } from "@/lib/config";
 import { loadFeatureFlags } from "@/lib/feature-flags";
 import { requireUser } from "@/lib/auth";
@@ -11,6 +11,8 @@ import {
   submitVenueClaim,
 } from "./actions";
 import { sortedSpainLocations } from "@/lib/locations";
+import { ConsoleNav } from "@/components/ConsoleChrome";
+import { isAdministrator } from "@/lib/roles";
 
 type ManagedVenue = {
   role: string;
@@ -32,7 +34,23 @@ export default async function BusinessPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
+  const view = ["venues", "loyalty", "growth", "analytics", "claims"].includes(
+    query.view || "",
+  )
+    ? query.view!
+    : "venues";
   const { supabase, user } = await requireUser(locale);
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("app_role")
+    .eq("id", user.id)
+    .maybeSingle();
+  if (
+    profile?.app_role !== "organiser" &&
+    !isAdministrator(profile?.app_role || "")
+  ) {
+    redirect(`/${locale}/business/apply`);
+  }
   const flags = await loadFeatureFlags(supabase);
   const es = locale === "es";
   const [
@@ -91,7 +109,7 @@ export default async function BusinessPage({
       }),
   );
   return (
-    <main className="shell dashboard">
+    <main className="shell dashboard console-dashboard">
       <section className="hero">
         <div className="eyebrow">{es ? "Negocios" : "Business"}</div>
         <h1>{es ? "Tu panel" : "Your dashboard"}</h1>
@@ -115,104 +133,135 @@ export default async function BusinessPage({
             : "Could not save. Check the fields or permissions."}
         </p>
       )}
+      <ConsoleNav
+        basePath={`/${locale}/business`}
+        active={view}
+        label={es ? "Secciones de negocio" : "Business sections"}
+        items={[
+          {
+            value: "venues",
+            label: es ? "Locales" : "Venues",
+            icon: "VE",
+            count: managed.length,
+          },
+          {
+            value: "loyalty",
+            label: es ? "Fidelidad" : "Loyalty",
+            icon: "ST",
+            count: redemptions?.length || 0,
+          },
+          { value: "growth", label: es ? "Promocion" : "Growth", icon: "GR" },
+          { value: "analytics", label: "Analytics", icon: "AN" },
+          {
+            value: "claims",
+            label: es ? "Reclamar" : "Claims",
+            icon: "CL",
+            count: claims?.length || 0,
+          },
+        ]}
+      />
       <section className="dashboard-grid">
-        <div className="panel">
-          <h2>{es ? "Locales gestionados" : "Managed venues"}</h2>
-          {managed.length ? (
-            managed.map(
-              (m) =>
-                m.venues && (
-                  <div className="managed-row" key={m.venues.id}>
-                    <strong>
-                      <a href={`/${locale}/business/venue/${m.venues.id}`}>
-                        {m.venues.name} →
-                      </a>
-                    </strong>
-                    <span>
-                      {m.role} · {m.venues.status}
-                    </span>
-                  </div>
-                ),
-            )
-          ) : (
-            <p>
-              {es
-                ? "Todavía no gestionas ningún local."
-                : "You do not manage a venue yet."}
-            </p>
-          )}
-        </div>
-        <details className="panel" open={!managed.length}>
-          <summary>
-            <strong>{es ? "Crear un local" : "Create a venue"}</strong>
-          </summary>
-          <form action={createVenue} className="stack">
-            <input type="hidden" name="locale" value={locale} />
-            <label>
-              {es ? "Ciudad" : "City"}
-              <select name="locality" required defaultValue="fuengirola">
-                {sortedSpainLocations.map(([key, place]) => (
-                  <option key={key} value={key}>
-                    {place[locale]} · {place.province}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              {es ? "Nombre" : "Name"}
-              <input name="name" required minLength={2} />
-            </label>
-            <label>
-              Slug
-              <input
-                name="slug"
-                required
-                pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
-                placeholder="mi-local"
-              />
-            </label>
-            <label>
-              {es ? "Descripción en español" : "Spanish description"}
-              <textarea name="descriptionEs" required minLength={20} />
-            </label>
-            <label>
-              {es ? "Descripción en inglés" : "English description"}
-              <textarea name="descriptionEn" />
-            </label>
-            <label>
-              {es ? "Dirección" : "Address"}
-              <input name="address" required />
-            </label>
-            <div className="two-col">
+        {view === "venues" && (
+          <div className="panel">
+            <h2>{es ? "Locales gestionados" : "Managed venues"}</h2>
+            {managed.length ? (
+              managed.map(
+                (m) =>
+                  m.venues && (
+                    <div className="managed-row" key={m.venues.id}>
+                      <strong>
+                        <a href={`/${locale}/business/venue/${m.venues.id}`}>
+                          {m.venues.name} →
+                        </a>
+                      </strong>
+                      <span>
+                        {m.role} · {m.venues.status}
+                      </span>
+                    </div>
+                  ),
+              )
+            ) : (
+              <p>
+                {es
+                  ? "Todavía no gestionas ningún local."
+                  : "You do not manage a venue yet."}
+              </p>
+            )}
+          </div>
+        )}
+        {view === "venues" && (
+          <details className="panel" open={!managed.length}>
+            <summary>
+              <strong>{es ? "Crear un local" : "Create a venue"}</strong>
+            </summary>
+            <form action={createVenue} className="stack">
+              <input type="hidden" name="locale" value={locale} />
               <label>
-                Latitude
+                {es ? "Ciudad" : "City"}
+                <select name="locality" required defaultValue="fuengirola">
+                  {sortedSpainLocations.map(([key, place]) => (
+                    <option key={key} value={key}>
+                      {place[locale]} · {place.province}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                {es ? "Nombre" : "Name"}
+                <input name="name" required minLength={2} />
+              </label>
+              <label>
+                Slug
                 <input
-                  name="latitude"
-                  type="number"
-                  step="any"
-                  defaultValue="36.539"
+                  name="slug"
                   required
+                  pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
+                  placeholder="mi-local"
                 />
               </label>
               <label>
-                Longitude
-                <input
-                  name="longitude"
-                  type="number"
-                  step="any"
-                  defaultValue="-4.624"
-                  required
-                />
+                {es ? "Descripción en español" : "Spanish description"}
+                <textarea name="descriptionEs" required minLength={20} />
               </label>
-            </div>
-            <button className="button" type="submit">
-              {es
-                ? "Crear y enviar a revisión"
-                : "Create and submit for review"}
-            </button>
-          </form>
-        </details>
-        {managed.length > 0 && (
+              <label>
+                {es ? "Descripción en inglés" : "English description"}
+                <textarea name="descriptionEn" />
+              </label>
+              <label>
+                {es ? "Dirección" : "Address"}
+                <input name="address" required />
+              </label>
+              <div className="two-col">
+                <label>
+                  Latitude
+                  <input
+                    name="latitude"
+                    type="number"
+                    step="any"
+                    defaultValue="36.539"
+                    required
+                  />
+                </label>
+                <label>
+                  Longitude
+                  <input
+                    name="longitude"
+                    type="number"
+                    step="any"
+                    defaultValue="-4.624"
+                    required
+                  />
+                </label>
+              </div>
+              <button className="button" type="submit">
+                {es
+                  ? "Crear y enviar a revisión"
+                  : "Create and submit for review"}
+              </button>
+            </form>
+          </details>
+        )}
+        {view === "venues" && managed.length > 0 && (
           <details className="panel">
             <summary>
               <strong>{es ? "Crear evento" : "Create event"}</strong>
@@ -296,7 +345,7 @@ export default async function BusinessPage({
             </form>
           </details>
         )}
-        {managed.length > 0 && (
+        {view === "loyalty" && managed.length > 0 && (
           <details className="panel">
             <summary>
               <strong>
@@ -369,7 +418,7 @@ export default async function BusinessPage({
             ))}
           </details>
         )}
-        {redemptions && redemptions.length > 0 && (
+        {view === "loyalty" && redemptions && redemptions.length > 0 && (
           <section className="panel">
             <h2>{es ? "Recompensas pendientes" : "Pending rewards"}</h2>
             {redemptions.map((item) => (
@@ -394,7 +443,7 @@ export default async function BusinessPage({
             ))}
           </section>
         )}
-        {managed.length > 0 && (
+        {view === "growth" && managed.length > 0 && (
           <details className="panel">
             <summary>
               <strong>
@@ -455,28 +504,29 @@ export default async function BusinessPage({
             ))}
           </details>
         )}
-        {analytics.map(({ venue, rows }) => (
-          <section className="panel" key={venue.id}>
-            <h2>
-              {venue.name} · {es ? "últimos 30 días" : "last 30 days"}
-            </h2>
-            {rows.length ? (
-              rows.map((row) => (
-                <div className="managed-row" key={row.action}>
-                  <strong>{row.action.replaceAll("_", " ")}</strong>
-                  <span>{row.total}</span>
-                </div>
-              ))
-            ) : (
-              <p>
-                {es
-                  ? "Aún no hay actividad agregada."
-                  : "No aggregate activity yet."}
-              </p>
-            )}
-          </section>
-        ))}
-        {claimable && claimable.length > 0 && (
+        {view === "analytics" &&
+          analytics.map(({ venue, rows }) => (
+            <section className="panel" key={venue.id}>
+              <h2>
+                {venue.name} · {es ? "últimos 30 días" : "last 30 days"}
+              </h2>
+              {rows.length ? (
+                rows.map((row) => (
+                  <div className="managed-row" key={row.action}>
+                    <strong>{row.action.replaceAll("_", " ")}</strong>
+                    <span>{row.total}</span>
+                  </div>
+                ))
+              ) : (
+                <p>
+                  {es
+                    ? "Aún no hay actividad agregada."
+                    : "No aggregate activity yet."}
+                </p>
+              )}
+            </section>
+          ))}
+        {view === "claims" && claimable && claimable.length > 0 && (
           <details className="panel">
             <summary>
               <strong>{es ? "Reclamar un local" : "Claim a venue"}</strong>
@@ -505,7 +555,7 @@ export default async function BusinessPage({
             </form>
           </details>
         )}
-        {claims && claims.length > 0 && (
+        {view === "claims" && claims && claims.length > 0 && (
           <section className="panel">
             <h2>{es ? "Reclamaciones" : "Claims"}</h2>
             {claims.map((c) => (

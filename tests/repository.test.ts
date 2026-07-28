@@ -3,6 +3,7 @@ import type { DiscoveryRepository } from "../src/lib/repository";
 import {
   FixtureRepository,
   HybridDiscoveryRepository,
+  parseDatabasePoint,
 } from "../src/lib/repository";
 
 const unavailable: DiscoveryRepository = {
@@ -50,6 +51,53 @@ describe("hybrid public catalogue", () => {
       repository.venueBySlug("azotea-cobalto"),
     ).resolves.toMatchObject({
       slug: "azotea-cobalto",
+    });
+  });
+
+  it("suppresses a fixture event when a live event uses the same slug", async () => {
+    const demoResults = await fixture.discover({
+      locality: "madrid",
+      radiusKm: 25,
+      time: "all",
+      now,
+    });
+    const fixtureResult = demoResults.find(
+      (item) => item.event.slug === "cine-cobalto",
+    )!;
+    const live: DiscoveryRepository = {
+      ...unavailable,
+      discover: async () => [
+        {
+          ...fixtureResult,
+          event: { ...fixtureResult.event, id: crypto.randomUUID() },
+          occurrence: {
+            ...fixtureResult.occurrence,
+            id: crypto.randomUUID(),
+            startsAt: new Date(now.getTime() + 86_400_000).toISOString(),
+          },
+        },
+      ],
+    };
+    const hybrid = new HybridDiscoveryRepository(live, fixture);
+    const results = await hybrid.discover({
+      locality: "madrid",
+      radiusKm: 25,
+      time: "all",
+      now,
+    });
+    expect(
+      results.filter((item) => item.event.slug === "cine-cobalto"),
+    ).toHaveLength(1);
+  });
+});
+
+describe("database geography parsing", () => {
+  it("parses Supabase EWKB geography points without losing coordinates", () => {
+    expect(
+      parseDatabasePoint("0101000020E6100000B0726891ED7C12C077BE9F1A2F454240"),
+    ).toEqual({
+      longitude: -4.622,
+      latitude: 36.5405,
     });
   });
 });

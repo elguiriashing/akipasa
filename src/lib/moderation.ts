@@ -30,7 +30,7 @@ export const reportSchema = z.object({
 
 export const moderationDecisionSchema = z.object({
   locale: z.enum(["es", "en"]),
-  targetType: z.enum(["submission", "event", "venue_claim"]),
+  targetType: z.enum(["submission", "venue", "event", "offer", "venue_claim"]),
   targetId: z.string().uuid(),
   decision: z.enum(["approved", "published", "rejected"]),
   reason: z.string().trim().min(3).max(2000),

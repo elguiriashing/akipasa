@@ -1,0 +1,26 @@
+{
+  "name": "@akipasa/automation",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate:commands": "node scripts/generate-command-registry.mjs",
+    "cf-typegen": "wrangler types worker-configuration.d.ts",
+    "dev": "npm run generate:commands && wrangler dev",
+    "typecheck": "npm run generate:commands && npm run cf-typegen && tsc --noEmit",
+    "test": "npm run generate:commands && vitest run",
+    "preview:command-hub": "npm run generate:commands && vite-node scripts/render-command-hub.ts",
+    "check": "npm run typecheck && npm test && wrangler deploy --dry-run --outdir .wrangler/dry-run",
+    "deploy": "npm run generate:commands && wrangler deploy"
+  },
+  "dependencies": {
+    "hono": "^4.12.32",
+    "zod": "^3.25.28"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vite-node": "3.2.4",
+    "vitest": "^3.2.7",
+    "wrangler": "^4.113.0"
+  }
+}

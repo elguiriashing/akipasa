@@ -3,6 +3,26 @@
 -- containing `ok = true`; no test identities or content survive the rollback.
 begin;
 
+-- Make reruns deterministic even if an older acceptance session leaked QA rows.
+-- These deletes are part of this transaction and are restored by the final rollback.
+delete from passports
+where id = '77777777-7777-4777-8777-777777777777';
+delete from loyalty_programs
+where id = '55555555-5555-4555-8555-555555555555';
+delete from venues
+where id in (
+  '11111111-1111-4111-8111-111111111111',
+  '22222222-2222-4222-8222-222222222222'
+);
+delete from auth.users
+where id in (
+  'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+  'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
+  'cccccccc-cccc-4ccc-8ccc-cccccccccccc',
+  'dddddddd-dddd-4ddd-8ddd-dddddddddddd',
+  'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee'
+);
+
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password, email_confirmed_at,
   raw_app_meta_data, raw_user_meta_data, created_at, updated_at
@@ -104,6 +124,13 @@ begin
   end;
   if (select app_role from profiles where id=auth.uid()) <> 'consumer'
     then raise exception 'direct role escalation changed profile'; end if;
+  perform update_own_profile('QA Consumer Updated','en');
+  if not exists(
+    select 1 from profiles
+    where id=auth.uid()
+      and display_name='QA Consumer Updated'
+      and preferred_locale='en'
+  ) then raise exception 'self profile update RPC failed'; end if;
   perform accept_current_terms('2026-07-23','es');
   if not exists(
     select 1 from profiles
@@ -113,6 +140,13 @@ begin
       and terms_accepted_at is not null
   ) then raise exception 'terms acceptance RPC failed'; end if;
 end $$;
+select submit_business_application(
+  'QA Consumer Business',
+  'QA Consumer Updated',
+  'Fuengirola',
+  'https://invalid.example',
+  'QA business application with enough detail for staff review.'
+);
 insert into saved_events(profile_id,event_id)
 values ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','33333333-3333-4333-8333-333333333333');
 insert into recent_event_view_refs(profile_id,event_key,title,href)
@@ -262,6 +296,31 @@ reset role;
 set local role authenticated;
 set local "request.jwt.claim.sub" = 'dddddddd-dddd-4ddd-8ddd-dddddddddddd';
 select moderate_item('event','44444444-4444-4444-8444-444444444444','published','QA moderation approval');
+select review_business_application(
+  (
+    select id from business_applications
+    where applicant_id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
+  ),
+  'awaiting_payment',
+  'QA staff accepted application for payment',
+  false
+);
+select operator_update_venue(
+  '22222222-2222-4222-8222-222222222222',
+  'QA Venue B Staff Updated',
+  'Descripcion actualizada por staff suficientemente larga.',
+  'Long enough staff-updated description.',
+  'QA staff updated address',
+  'published',
+  true,
+  'QA staff catalogue update'
+);
+select operator_delete_catalogue_item(
+  'event',
+  (select id from events where slug='qa-event-a-copy'),
+  'DELETE',
+  'QA staff removes duplicated event'
+);
 select resolve_report(
   (
     select id from reports
@@ -277,6 +336,29 @@ select expire_finished_events(now());
 do $$
 begin
   if not exists(select 1 from moderation_actions where actor_id=auth.uid() and target_id='44444444-4444-4444-8444-444444444444') then raise exception 'moderation audit missing'; end if;
+  if not exists(
+    select 1 from business_applications
+    where applicant_id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
+      and state='awaiting_payment'
+      and payment_state='pending'
+      and reviewed_by=auth.uid()
+  ) then raise exception 'business application review missing'; end if;
+  if not exists(
+    select 1 from venues
+    where id='22222222-2222-4222-8222-222222222222'
+      and name='QA Venue B Staff Updated'
+  ) then raise exception 'staff operator venue update missing'; end if;
+  if exists(select 1 from events where slug='qa-event-a-copy')
+    then raise exception 'staff operator event deletion missing'; end if;
+  if (
+    select count(*) from moderation_actions
+    where actor_id=auth.uid()
+      and action in (
+        'business_application_awaiting_payment',
+        'operator_updated',
+        'operator_deleted'
+      )
+  ) <> 3 then raise exception 'staff operator audit missing'; end if;
   if not exists(
     select 1 from reports
     where reporter_id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
@@ -317,6 +399,12 @@ set local "request.jwt.claim.sub" = 'dddddddd-dddd-4ddd-8ddd-dddddddddddd';
 update venues set address='Staff must not write' where id='11111111-1111-4111-8111-111111111111';
 do $$
 begin
+  begin
+    perform * from admin_search_users('qa-admin',20);
+    raise exception 'staff Auth directory search unexpectedly succeeded';
+  exception when others then
+    if sqlerrm = 'staff Auth directory search unexpectedly succeeded' then raise; end if;
+  end;
   begin
     perform set_feature_flag('community_submissions',false,'QA staff must fail');
     raise exception 'staff feature flag change unexpectedly succeeded';
@@ -385,6 +473,15 @@ select update_deletion_request(
 );
 do $$
 begin
+  if not exists(
+    select 1 from admin_search_users('qa-admin',20)
+    where profile_id='eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee'
+      and primary_email='qa-admin@invalid.example'
+  ) then raise exception 'administrator Auth directory search missing'; end if;
+  if not exists(
+    select 1 from admin_user_record('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa')
+    where primary_email='qa-consumer@invalid.example'
+  ) then raise exception 'administrator user record missing'; end if;
   if (select address from venues where id='11111111-1111-4111-8111-111111111111') <> 'Admin inherited access verified'
     then raise exception 'administrator venue management missing';
   end if;

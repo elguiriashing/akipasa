@@ -1,57 +1,7 @@
-# Implementation status
+# Status
 
-Last verified: 2026-07-23.
+This legacy filename is retained for compatibility.
 
-## Live and demonstrably working
-
-- AkiPasa is deployed on Cloudflare at `https://akipasa.com` and `https://www.akipasa.com`; production version `2f0eb309-d22c-4f27-9821-3ba729593014` passed the OpenNext build and Wrangler upload validation before release. Worker startup time was 26 ms.
-- Spanish and English discovery covers every Spanish province, Ceuta and Melilla, with neighbourhood-level Costa del Sol entries, distance/preset-time/custom-date/category/free-or-paid/numeric-price/accessibility filters, recurring events, event and venue pages, directions, booking actions and a map-list fallback.
-- Production discovery merges published Supabase business content with clearly labelled launch demonstration fixtures. Real published venues, events, offers and loyalty programmes now appear on public pages; pending/private rows remain excluded explicitly as well as by RLS.
-- Four account types are enforced: User, Business, Staff and Administrator. Public registration starts as User; venue ownership activates business capabilities; privileged role changes are admin-only and audited. Venue owner/manager/editor membership stays separate from platform roles, and Administrator now inherits management access across every venue without synthetic membership records.
-- Email/password and Google sign-in are connected through Supabase. Passwords are hashed and stored by Supabase Auth, never by AkiPasa application tables. Auth callbacks allow localhost, the apex domain and `www`.
-- User features include favourites, followed venues, recent views, passports, earned/progress badges, loyalty balances, XP, reward requests, comprehensive private data export and deletion requests.
-- Business workspaces support venue editing, validated public phone/WhatsApp/HTTPS contact details, team permissions, event creation/editing/duplication, per-occurrence dates/status/booking links, daily/weekly recurrence generation, media upload/removal plus bilingual alt text and ordering, offers, loyalty programmes, redemption confirmation, promotion requests, aggregate analytics and locally generated scannable check-in QR material. Wall-clock form values are converted from `Europe/Madrid` correctly across daylight-saving changes.
-- Community event suggestions, event/venue reporting, staff moderation queues, venue claims, trusted-publisher review, duplicate markers and audit history are live. PostgreSQL triggers cap community submissions at 5/hour and 20/day and reports at 10/hour and 30/day per identity.
-- Administrator tools include role management, categories, Spanish business localities, audited operational feature controls, promotions, passport campaigns and featured slots. Staff cannot access administrator-only mutations. Disabled community submissions, check-ins and promotion requests are rejected by database triggers rather than relying on hidden controls.
-- Community suggestions, loyalty check-ins and promotion-request screens read those switches server-side. When paused, the mutation form is removed and replaced with a bilingual explanation; unrelated reports and existing request history remain usable.
-- Loyalty check-ins are atomic, idempotent, cooldown/rate-limited and ledger-backed. Reward redemptions require sufficient balance and venue confirmation.
-- Privacy-minimised first-party analytics record live venue/event views, directions, booking/website clicks, shares, saves and follows through a strict same-origin payload contract; businesses see only membership-checked aggregates. Sponsored placements are explicitly labelled.
-- Privacy, terms, sitemap, robots, favicon, installable manifest, offline fallback, service worker and baseline browser-security headers are included.
-- Deterministic PostgreSQL demo seed/reset commands now replace or remove only stable fictional fixture IDs and refuse every non-loopback database URL before connecting, preventing accidental use against Supabase or another remote database.
-- Database migrations `0001` through `0023` are applied to the production Supabase project with RLS and role-checked RPCs. Current legal consent is versioned, signup metadata is recorded by the profile trigger, stale accounts are routed through explicit acceptance, and direct profile updates cannot alter roles or legal-acceptance fields. Deletion requests survive identity deletion for operational evidence and can be processed only through an audited Administrator RPC; completion requires explicit deletion confirmation and an absent linked profile. Privileged RPCs explicitly revoke PostgreSQL's default `PUBLIC` execute grant. Published venue media receives narrowly scoped signed-read access while draft/private venue media remains inaccessible. Venue teams and Administrators can maintain media metadata without being able to rewrite its uploader identity. Event age and bilingual accessibility details have database constraints and public presentation. Administrator venue-management inheritance is enforced without granting that access to Staff. Administrator catalogue and operational-switch mutations are audited and database-enforced. The publisher and discovery category sets are aligned. Active Supabase Cron job `akipasa-expire-finished-events` archives finished events hourly at minute 17 UTC, with the staff control retained as a fallback.
-
-## Verification evidence
-
-- `npm run lint`: pass.
-- `npm run typecheck`: pass.
-- `npm test`: 32/32 tests pass across discovery—including custom date, numeric price and accessibility filters—locations, Madrid wall-clock/DST conversion, moderation, authentication/link security, roles, badges, private account export, feature-switch resolution, bilingual Administrator catalogue/settings controls and live-provider outage fallback.
-- `node scripts/run-e2e.mjs`: 17/17 Chrome mobile journeys pass at 360 px, including location consent/denial, navigation, language state, guest gates, all public ES/EN screens, labelled controls, overflow, internal-link integrity, authentication form contracts, analytics input rejection, SEO metadata, install/offline assets and response headers.
-- The same 17/17 non-destructive mobile journeys pass directly against `https://akipasa.com` after production version `2f0eb309-d22c-4f27-9821-3ba729593014` was deployed; the suite covers every public screen, 360 px layout, controls, links, auth contracts, headers, SEO and install/offline assets.
-- The opt-in authenticated production Playwright journey passes on mobile against a disposable Administrator identity. It verifies `/account`, `/business`, `/moderation`, `/admin` and the venue workspace, including badges, enabled community submissions and promotion requests, Administrator catalogue/feature/deletion controls, occurrence booking controls and bilingual media metadata/order controls. The fixed-ID identity, venue, event, occurrence, media, membership and deletion-request rows were all independently confirmed absent after exact cleanup.
-- A direct production HTML probe confirms the event-detail age, “all ages” fallback and accessibility sections are rendered, in addition to the database/RLS acceptance evidence.
-- Read-only production data probe: all six categories are exposed through RLS; there are currently zero published live venues/events, so the labelled demo catalogue remains the visible baseline until the first moderation approval.
-- Rollback-only `database/tests/acceptance.sql` passed against production Supabase with `ok = true`: RLS, versioned signup consent, direct role hardening, cross-owner isolation, recents, community/report rate limits, deletion-request operations, moderation/report resolution, idempotent/cooldown check-ins, passport progress, loyalty redemption, private analytics, Administrator category/city/feature operations, Staff rejection, database feature blocking and audit records were verified; the transaction left no QA data.
-- Disposable authenticated production browser acceptance passed for password sign-in, favourites, follows, check-in/XP/stamps, business and venue workspaces, scannable check-in material, moderation approval, community reporting, corrected report resolution and administrator controls. The reusable Playwright journey additionally covers role-gated route rendering, enabled community/promotion actions, Administrator catalogue/feature controls and the latest occurrence/media controls. Exact-ID cleanup removes the QA identity, membership and content after each run.
-- Scheduled-operation probe: Cron job ID `1` is active with schedule `17 * * * *`; anonymous and authenticated roles cannot execute its security-definer function. A rollback invocation returned successfully, and the acceptance suite proves a finished published event transitions to the supported `archived` state.
-- Rollback-only recurrence acceptance generated four weekly occurrences, persisted the recurrence rule, proved duplicate-safe regeneration, and confirmed authenticated execution is allowed while anonymous execution is blocked.
-- Rollback-only contact/media acceptance proves E.164 and HTTPS database constraints plus published/private object isolation; the transaction leaves no QA rows or objects.
-- Rollback-only event-safety acceptance proves age/accessibility constraints, owner-only event changes and owner-only scheduled/postponed/sold-out/cancelled occurrence changes.
-- `npm run build`: pass; 33 application routes generated.
-- Cloudflare OpenNext build and Wrangler dry-run: pass.
-- Post-deploy HTTP smoke test: apex redirect plus Spanish, English, map, auth-gated account/business/staff/admin routes, passports, legal pages, manifest, icon, robots and sitemap all return successfully.
-- Post-deploy hardening probe: CSP, HSTS, anti-framing and MIME-sniffing protection are present; live HTML contains the AKIPASA brand, Spanish tagline, nationwide catalogue and email/password plus Google authentication controls.
-- English and Spanish discovery pages now publish their own canonical URLs plus reciprocal language alternates; the incorrect English-to-Spanish canonical inherited from the root layout was removed.
-- `npm audit`: zero known vulnerabilities after upgrading Supabase, Playwright and Vitest and pinning patched transitive PostCSS/Sharp releases.
-- `npm run test:db-safety`: pass; localhost/IPv4/IPv6 loopback URLs are accepted while malformed, non-PostgreSQL, missing-database and remote/Supabase-style URLs are rejected.
-
-## External launch gates
-
-- The accessible map/list route is live, but clustered graphical mapping requires a production map-tile/provider account and key; the application deliberately does not send production traffic to the public OpenStreetMap tile endpoint.
-- Phone, Apple and X sign-in remain disabled until their upstream provider accounts, credentials and phone service are supplied. Google and email/password are usable now.
-- Privacy and terms are implementation drafts and need professional Spanish/EU legal review before being represented as legally approved.
-- A production backup restore drill must be performed by an operator with Supabase backup access.
-- Real-user magic-link/email delivery remains a manual acceptance check. Cross-owner isolation is now exercised directly against production RLS by the rollback-only database acceptance suite.
-
-## Next operational step
-
-Complete the external launch gates above, then seed or onboard real Spanish venues and events to replace the clearly fictional demonstration catalogue.
+The canonical current status is [PROJECT_STATUS.md](./PROJECT_STATUS.md).
+Verification procedures and historical evidence remain in
+[ACCEPTANCE.md](./ACCEPTANCE.md) and [CHANGELOG.md](./CHANGELOG.md).

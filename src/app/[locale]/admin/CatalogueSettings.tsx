@@ -53,24 +53,26 @@ function CategoryFields({
           pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
         />
       </label>
-      <label>
-        {es ? "Nombre en español" : "Spanish name"}
-        <input
-          name="nameEs"
-          defaultValue={category?.name_es}
-          required
-          minLength={2}
-        />
-      </label>
-      <label>
-        {es ? "Nombre en inglés" : "English name"}
-        <input
-          name="nameEn"
-          defaultValue={category?.name_en}
-          required
-          minLength={2}
-        />
-      </label>
+      <div className="two-col">
+        <label>
+          {es ? "Nombre en espanol" : "Spanish name"}
+          <input
+            name="nameEs"
+            defaultValue={category?.name_es}
+            required
+            minLength={2}
+          />
+        </label>
+        <label>
+          {es ? "Nombre en ingles" : "English name"}
+          <input
+            name="nameEn"
+            defaultValue={category?.name_en}
+            required
+            minLength={2}
+          />
+        </label>
+      </div>
       <label>
         {es ? "Motivo del cambio" : "Change reason"}
         <textarea name="reason" required minLength={10} />
@@ -93,24 +95,26 @@ function CityFields({ city, es }: { city?: City; es: boolean }) {
           pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
         />
       </label>
-      <label>
-        {es ? "Nombre en español" : "Spanish name"}
-        <input
-          name="nameEs"
-          defaultValue={city?.name_es}
-          required
-          minLength={2}
-        />
-      </label>
-      <label>
-        {es ? "Nombre en inglés" : "English name"}
-        <input
-          name="nameEn"
-          defaultValue={city?.name_en || city?.name_es}
-          required
-          minLength={2}
-        />
-      </label>
+      <div className="two-col">
+        <label>
+          {es ? "Nombre en espanol" : "Spanish name"}
+          <input
+            name="nameEs"
+            defaultValue={city?.name_es}
+            required
+            minLength={2}
+          />
+        </label>
+        <label>
+          {es ? "Nombre en ingles" : "English name"}
+          <input
+            name="nameEn"
+            defaultValue={city?.name_en || city?.name_es}
+            required
+            minLength={2}
+          />
+        </label>
+      </div>
       <div className="two-col">
         <label>
           {es ? "Latitud" : "Latitude"}
@@ -168,18 +172,35 @@ export function CatalogueSettings({
 }) {
   const es = locale === "es";
   return (
-    <section className="queue-section">
-      <h2>{es ? "Catálogo y configuración" : "Catalogue and settings"}</h2>
-      <p>
-        {es
-          ? "Los cambios requieren un motivo y quedan registrados en el historial de moderación."
-          : "Changes require a reason and are recorded in the moderation history."}
-      </p>
+    <section className="catalogue-console">
+      <div className="console-section-header">
+        <span className="console-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M5 5h14v14H5z" />
+            <path d="M8 9h8M8 13h8M8 17h5" />
+          </svg>
+          <span>CA</span>
+        </span>
+        <div>
+          <p>{es ? "Catálogo" : "Catalogue"}</p>
+          <h2>{es ? "Catálogo y configuración" : "Catalogue and settings"}</h2>
+          <span>
+            {es
+              ? "Controles visibles, editables y auditados sin desplegables ocultos."
+              : "Visible, editable and audited controls without hidden dropdowns."}
+          </span>
+        </div>
+      </div>
+
       <div className="dashboard-grid">
-        <details className="panel">
-          <summary>
-            <strong>{es ? "Categorías" : "Categories"}</strong>
-          </summary>
+        <section className="panel console-card">
+          <div className="card-title-row">
+            <span className="status-pill">{categories.length}</span>
+            <div>
+              <h3>{es ? "Categorias" : "Categories"}</h3>
+              <p>{es ? "Taxonomia de discovery." : "Discovery taxonomy."}</p>
+            </div>
+          </div>
           <form action={saveCategory} className="stack">
             <input type="hidden" name="locale" value={locale} />
             <CategoryFields es={es} />
@@ -187,30 +208,35 @@ export function CatalogueSettings({
               {es ? "Crear categoría" : "Create category"}
             </button>
           </form>
-          {categories.map((category) => (
-            <details className="managed-row" key={category.id}>
-              <summary>
-                <strong>
-                  {locale === "en" ? category.name_en : category.name_es}
-                </strong>{" "}
-                · {category.slug}
-              </summary>
-              <form action={saveCategory} className="stack">
+          <div className="settings-list">
+            {categories.map((category) => (
+              <form
+                action={saveCategory}
+                className="settings-row"
+                key={category.id}
+              >
                 <input type="hidden" name="locale" value={locale} />
                 <CategoryFields category={category} es={es} />
-                <button className="button" type="submit">
-                  {es ? "Guardar categoría" : "Save category"}
+                <button className="button secondary" type="submit">
+                  {es ? "Guardar categoria" : "Save category"}
                 </button>
               </form>
-            </details>
-          ))}
-        </details>
-        <details className="panel">
-          <summary>
-            <strong>
-              {es ? "Localidades de negocio" : "Business localities"}
-            </strong>
-          </summary>
+            ))}
+          </div>
+        </section>
+
+        <section className="panel console-card">
+          <div className="card-title-row">
+            <span className="status-pill">{cities.length}</span>
+            <div>
+              <h3>{es ? "Localidades de negocio" : "Business localities"}</h3>
+              <p>
+                {es
+                  ? "Zonas operativas y husos horarios."
+                  : "Operating areas and time zones."}
+              </p>
+            </div>
+          </div>
           <form action={saveCity} className="stack">
             <input type="hidden" name="locale" value={locale} />
             <CityFields es={es} />
@@ -218,49 +244,54 @@ export function CatalogueSettings({
               {es ? "Crear localidad" : "Create locality"}
             </button>
           </form>
-          {cities.map((city) => (
-            <details className="managed-row" key={city.id}>
-              <summary>
-                <strong>
-                  {locale === "en"
-                    ? city.name_en || city.name_es
-                    : city.name_es}
-                </strong>{" "}
-                · {city.timezone}
-              </summary>
-              <form action={saveCity} className="stack">
+          <div className="settings-list">
+            {cities.map((city) => (
+              <form action={saveCity} className="settings-row" key={city.id}>
                 <input type="hidden" name="locale" value={locale} />
                 <CityFields city={city} es={es} />
-                <button className="button" type="submit">
+                <button className="button secondary" type="submit">
                   {es ? "Guardar localidad" : "Save locality"}
                 </button>
               </form>
-            </details>
-          ))}
-        </details>
-        <section className="panel">
-          <h3>{es ? "Controles operativos" : "Operational controls"}</h3>
-          {flags.map((flag) => (
-            <form action={updateFeatureFlag} className="stack" key={flag.key}>
-              <input type="hidden" name="locale" value={locale} />
-              <input type="hidden" name="key" value={flag.key} />
-              <label>
-                <input
-                  name="enabled"
-                  type="checkbox"
-                  defaultChecked={flag.enabled}
-                />{" "}
-                {locale === "en" ? flag.label_en : flag.label_es}
-              </label>
-              <label>
-                {es ? "Motivo del cambio" : "Change reason"}
-                <textarea name="reason" required minLength={10} />
-              </label>
-              <button className="button" type="submit">
-                {es ? "Guardar control" : "Save control"}
-              </button>
-            </form>
-          ))}
+            ))}
+          </div>
+        </section>
+
+        <section className="panel console-card">
+          <div className="card-title-row">
+            <span className="status-pill">{flags.length}</span>
+            <div>
+              <h3>{es ? "Controles operativos" : "Operational controls"}</h3>
+              <p>{es ? "Interruptores de producto." : "Product switches."}</p>
+            </div>
+          </div>
+          <div className="settings-list">
+            {flags.map((flag) => (
+              <form
+                action={updateFeatureFlag}
+                className="settings-row"
+                key={flag.key}
+              >
+                <input type="hidden" name="locale" value={locale} />
+                <input type="hidden" name="key" value={flag.key} />
+                <label className="switch-row">
+                  <input
+                    name="enabled"
+                    type="checkbox"
+                    defaultChecked={flag.enabled}
+                  />
+                  <span>{locale === "en" ? flag.label_en : flag.label_es}</span>
+                </label>
+                <label>
+                  {es ? "Motivo del cambio" : "Change reason"}
+                  <textarea name="reason" required minLength={10} />
+                </label>
+                <button className="button secondary" type="submit">
+                  {es ? "Guardar control" : "Save control"}
+                </button>
+              </form>
+            ))}
+          </div>
         </section>
       </div>
     </section>

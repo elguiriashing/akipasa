@@ -4,7 +4,7 @@ import { fixtureEvents, venues } from "./fixtures";
 import { distanceKm } from "./geo";
 import { occurrenceMatches } from "./time";
 import { isSpainLocation } from "./locations";
-import { createSupabaseServerClient } from "./supabase/server";
+import { createSupabasePublicClient } from "./supabase/public";
 
 export interface DiscoveryRepository {
   discover(query: DiscoveryQuery): Promise<DiscoveryResult[]>;
@@ -100,7 +100,7 @@ function one(value: unknown): DbRecord | null {
   return value && typeof value === "object" ? (value as DbRecord) : null;
 }
 
-function point(value: DbPoint) {
+export function parseDatabasePoint(value: DbPoint) {
   if (value && typeof value === "object" && Array.isArray(value.coordinates)) {
     return {
       longitude: Number(value.coordinates[0]),
@@ -111,14 +111,34 @@ function point(value: DbPoint) {
     typeof value === "string"
       ? value.match(/POINT\(([-\d.]+) ([-\d.]+)\)/i)
       : null;
-  return match
-    ? { longitude: Number(match[1]), latitude: Number(match[2]) }
-    : { longitude: 0, latitude: 0 };
+  if (match) {
+    return { longitude: Number(match[1]), latitude: Number(match[2]) };
+  }
+  if (
+    typeof value === "string" &&
+    value.length >= 42 &&
+    /^[0-9a-f]+$/i.test(value)
+  ) {
+    const bytes = Uint8Array.from(value.match(/.{2}/g) || [], (byte) =>
+      Number.parseInt(byte, 16),
+    );
+    const view = new DataView(bytes.buffer);
+    const littleEndian = view.getUint8(0) === 1;
+    const geometryType = view.getUint32(1, littleEndian);
+    const coordinateOffset = geometryType & 0x20000000 ? 9 : 5;
+    if (bytes.length >= coordinateOffset + 16) {
+      return {
+        longitude: view.getFloat64(coordinateOffset, littleEndian),
+        latitude: view.getFloat64(coordinateOffset + 8, littleEndian),
+      };
+    }
+  }
+  return { longitude: 0, latitude: 0 };
 }
 
 function venueFromRow(row: DbRecord): Venue {
   const city = one(row.cities);
-  const coordinates = point(row.location as DbPoint);
+  const coordinates = parseDatabasePoint(row.location as DbPoint);
   return {
     id: String(row.id),
     slug: String(row.slug),
@@ -195,7 +215,7 @@ const eventFields =
 
 export class SupabaseDiscoveryRepository implements DiscoveryRepository {
   async discover(query: DiscoveryQuery) {
-    const supabase = await createSupabaseServerClient();
+    const supabase = createSupabasePublicClient();
     const { data, error } = await supabase
       .from("events")
       .select(`${eventFields},venues(${venueFields})`)
@@ -259,7 +279,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
   }
 
   async eventBySlug(slug: string) {
-    const supabase = await createSupabaseServerClient();
+    const supabase = createSupabasePublicClient();
     const { data, error } = await supabase
       .from("events")
       .select(eventFields)
@@ -271,7 +291,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
   }
 
   async venueBySlug(slug: string) {
-    const supabase = await createSupabaseServerClient();
+    const supabase = createSupabasePublicClient();
     const { data, error } = await supabase
       .from("venues")
       .select(venueFields)
@@ -340,7 +360,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
 
   async venueById(id: string) {
     if (!uuidPattern.test(id)) return null;
-    const supabase = await createSupabaseServerClient();
+    const supabase = createSupabasePublicClient();
     const { data, error } = await supabase
       .from("venues")
       .select(venueFields)
@@ -353,7 +373,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
 
   async eventsForVenue(venueId: string) {
     if (!uuidPattern.test(venueId)) return [];
-    const supabase = await createSupabaseServerClient();
+    const supabase = createSupabasePublicClient();
     const { data, error } = await supabase
       .from("events")
       .select(eventFields)
@@ -376,14 +396,10 @@ export class HybridDiscoveryRepository implements DiscoveryRepository {
       this.live.discover(query).catch(() => []),
       this.demo.discover(query),
     ]);
-    const seen = new Set(
-      live.map((item) => `${item.event.slug}:${item.occurrence.startsAt}`),
-    );
+    const liveSlugs = new Set(live.map((item) => item.event.slug));
     return [
       ...live,
-      ...demo.filter(
-        (item) => !seen.has(`${item.event.slug}:${item.occurrence.startsAt}`),
-      ),
+      ...demo.filter((item) => !liveSlugs.has(item.event.slug)),
     ].sort(
       (a, b) =>
         +new Date(a.occurrence.startsAt) - +new Date(b.occurrence.startsAt),

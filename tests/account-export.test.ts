@@ -16,6 +16,7 @@ describe("account data export contract", () => {
       "passport_progress",
       "event_submissions",
       "reports",
+      "business_applications",
       "venue_members",
       "venue_media",
       "promotion_requests",

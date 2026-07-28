@@ -5,7 +5,7 @@ import { isLocale } from "@/lib/config";
 import { msg } from "@/lib/messages";
 import { repository } from "@/lib/repository";
 import { translated } from "@/lib/domain";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { optionalUser } from "@/lib/auth";
 import { toggleSavedEvent } from "../../engagement/actions";
 import { ShareButton } from "@/components/ShareButton";
 import { AnalyticsView, TrackedLink } from "@/components/AnalyticsSignal";
@@ -30,10 +30,7 @@ export default async function EventPage({
   const bookingUrl = occurrence.bookingUrl || event.bookingUrl;
   const m = msg(locale);
   const returnTo = `/${locale}/events/${event.slug}`;
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { supabase, user } = await optionalUser();
   const { data: saved } = user
     ? await supabase
         .from("saved_event_refs")

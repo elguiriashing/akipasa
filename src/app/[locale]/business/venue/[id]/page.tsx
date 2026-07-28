@@ -1,12 +1,13 @@
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
-import QRCode from "qrcode";
+import { VenueQrCode } from "@/components/VenueQrCode";
 import { requireUser } from "@/lib/auth";
 import { config, isLocale } from "@/lib/config";
 import {
   addOccurrence,
   addTeamMember,
+  deleteEvent,
+  deleteVenue,
   duplicateEvent,
   removeVenueImage,
   saveOffer,
@@ -47,7 +48,7 @@ export default async function VenueWorkspace({
   if (!isLocale(locale) || !/^[0-9a-f-]{36}$/i.test(id)) notFound();
   const query = await searchParams;
   const es = locale === "es";
-  const { supabase } = await requireUser(
+  const { supabase, user } = await requireUser(
     locale,
     `/${locale}/business/venue/${id}`,
   );
@@ -94,19 +95,14 @@ export default async function VenueWorkspace({
       .maybeSingle(),
   ]);
   if (!venue) notFound();
+  const isOwner = members?.some(
+    (member) => member.profile_id === user.id && member.role === "owner",
+  );
   const checkInPath = program
     ? `/${locale}/check-in/${program.check_in_token}`
     : null;
   const checkInUrl = checkInPath
     ? new URL(checkInPath, config.siteUrl).toString()
-    : null;
-  const checkInQr = checkInUrl
-    ? await QRCode.toDataURL(checkInUrl, {
-        errorCorrectionLevel: "M",
-        margin: 2,
-        width: 320,
-        color: { dark: "#102b2a", light: "#ffffff" },
-      })
     : null;
   return (
     <main className="shell dashboard">
@@ -399,6 +395,40 @@ export default async function VenueWorkspace({
             </button>
           </form>
         </details>
+        {isOwner && (
+          <section className="panel console-card danger-zone">
+            <h2>{es ? "Eliminar local" : "Delete venue"}</h2>
+            <p>
+              {es
+                ? "Esto elimina tambien todos sus eventos, ofertas y programas. No se puede deshacer."
+                : "This also deletes every event, offer and programme. It cannot be undone."}
+            </p>
+            <form action={deleteVenue} className="stack">
+              <input type="hidden" name="locale" value={locale} />
+              <input type="hidden" name="venueId" value={id} />
+              <label>
+                {es ? "Motivo de eliminacion" : "Deletion reason"}
+                <textarea
+                  name="reason"
+                  required
+                  minLength={10}
+                  maxLength={2000}
+                />
+              </label>
+              <label>
+                {es
+                  ? "Escribe DELETE para confirmar"
+                  : "Type DELETE to confirm"}
+                <input name="confirmation" required pattern="DELETE" />
+              </label>
+              <button className="button danger" type="submit">
+                {es
+                  ? "Eliminar local definitivamente"
+                  : "Delete venue permanently"}
+              </button>
+            </form>
+          </section>
+        )}
         {program && (
           <section className="panel">
             <h2>{es ? "Material de check-in" : "Check-in material"}</h2>
@@ -406,13 +436,15 @@ export default async function VenueWorkspace({
               {program.title_es} · {program.stamps_required}{" "}
               {es ? "sellos" : "stamps"}
             </p>
-            {checkInQr && (
-              <Image
-                className="check-in-qr"
-                src={checkInQr}
-                width={320}
-                height={320}
-                unoptimized
+            {checkInUrl && (
+              <VenueQrCode
+                value={checkInUrl}
+                loadingLabel={es ? "Generando QR" : "Generating QR"}
+                errorLabel={
+                  es
+                    ? "No se pudo generar el cÃ³digo QR."
+                    : "The QR code could not be generated."
+                }
                 alt={
                   es
                     ? `Código QR de check-in para ${venue.name}`
@@ -711,6 +743,32 @@ export default async function VenueWorkspace({
                   </label>
                   <button className="button secondary" type="submit">
                     {es ? "Crear borrador duplicado" : "Create duplicate draft"}
+                  </button>
+                </form>
+              </details>
+              <details className="danger-zone">
+                <summary>{es ? "Eliminar evento" : "Delete event"}</summary>
+                <form action={deleteEvent} className="stack">
+                  <input type="hidden" name="locale" value={locale} />
+                  <input type="hidden" name="venueId" value={id} />
+                  <input type="hidden" name="eventId" value={event.id} />
+                  <label>
+                    {es ? "Motivo de eliminacion" : "Deletion reason"}
+                    <textarea
+                      name="reason"
+                      required
+                      minLength={10}
+                      maxLength={2000}
+                    />
+                  </label>
+                  <label>
+                    {es
+                      ? "Escribe DELETE para confirmar"
+                      : "Type DELETE to confirm"}
+                    <input name="confirmation" required pattern="DELETE" />
+                  </label>
+                  <button className="button danger" type="submit">
+                    {es ? "Eliminar evento" : "Delete event"}
                   </button>
                 </form>
               </details>

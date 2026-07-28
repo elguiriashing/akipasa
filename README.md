@@ -29,7 +29,11 @@ Supabase-hosted database URLs are rejected before a connection is opened.
 Seeding replaces only stable AkiPasa demonstration IDs in a transaction; reset
 removes only the exact demo venue, event and occurrences owned by the seed.
 
-Operational release, rollback and recovery steps are in `docs/RUNBOOK.md`; acceptance evidence is tracked in `docs/ACCEPTANCE.md` and `docs/STATUS.md`.
+Start a new engineering or AI session with `docs/AI_HANDOFF.md`. Current work
+state is in `docs/PROJECT_STATUS.md`, prioritized work is in `docs/TODO.md`,
+and milestone history is in `docs/CHANGELOG.md`. Operational release, rollback,
+and recovery steps are in `docs/RUNBOOK.md`; acceptance evidence is tracked in
+`docs/ACCEPTANCE.md`.
 
 The production-safe, rollback-only database integration suite is
 `database/tests/acceptance.sql`. Run it from the Supabase SQL editor after

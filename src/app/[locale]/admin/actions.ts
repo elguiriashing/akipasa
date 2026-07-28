@@ -3,27 +3,24 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireUser } from "@/lib/auth";
-import { appRoles } from "@/lib/roles";
+import { roleChangeSchema } from "@/lib/admin-users";
 import { madridLocalDateTimeSchema } from "@/lib/time";
-
-const roleChangeSchema = z.object({
-  profileId: z.string().uuid(),
-  role: z.enum(appRoles),
-  reason: z.string().trim().min(10).max(500),
-});
 
 export async function changePlatformRole(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const parsed = roleChangeSchema.safeParse(Object.fromEntries(formData));
-  if (!parsed.success) redirect(`/${locale}/admin?error=validation`);
-  const { supabase } = await requireUser(locale, `/${locale}/admin`);
+  if (!parsed.success) redirect(`/${locale}/admin/users?error=validation`);
+  const { supabase } = await requireUser(locale, `/${locale}/admin/users`);
   const { error } = await supabase.rpc("set_platform_role", {
     target_profile: parsed.data.profileId,
     new_role: parsed.data.role,
     reason: parsed.data.reason,
   });
-  if (error) redirect(`/${locale}/admin?error=permission`);
-  redirect(`/${locale}/admin?updated=role`);
+  if (error)
+    redirect(
+      `/${locale}/admin/users/${parsed.data.profileId}?error=permission`,
+    );
+  redirect(`/${locale}/admin/users/${parsed.data.profileId}?updated=role`);
 }
 
 const passportSchema = z.object({
@@ -45,7 +42,7 @@ export async function createPassport(formData: FormData) {
   const parsed = passportSchema.safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   if (!parsed.success || parsed.data.endsAt <= parsed.data.startsAt)
-    redirect(`/${locale}/admin?error=passport`);
+    redirect(`/${locale}/admin/passports?error=passport`);
   const { supabase, user } = await requireUser(locale, `/${locale}/admin`);
   const id = crypto.randomUUID();
   const v = parsed.data;
@@ -63,7 +60,7 @@ export async function createPassport(formData: FormData) {
     status: "published",
     created_by: user.id,
   });
-  if (error) redirect(`/${locale}/admin?error=passport`);
+  if (error) redirect(`/${locale}/admin/passports?error=passport`);
   const { error: stepError } = await supabase.from("passport_steps").insert({
     passport_id: id,
     venue_id: v.venueId,
@@ -72,9 +69,9 @@ export async function createPassport(formData: FormData) {
   });
   if (stepError) {
     await supabase.from("passports").delete().eq("id", id);
-    redirect(`/${locale}/admin?error=passport`);
+    redirect(`/${locale}/admin/passports?error=passport`);
   }
-  redirect(`/${locale}/admin?updated=passport`);
+  redirect(`/${locale}/admin/passports?updated=passport`);
 }
 
 const promotionSchema = z.object({
@@ -86,7 +83,7 @@ const promotionSchema = z.object({
 export async function updatePromotion(formData: FormData) {
   const parsed = promotionSchema.safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
-  if (!parsed.success) redirect(`/${locale}/admin?error=promotion`);
+  if (!parsed.success) redirect(`/${locale}/admin/promotions?error=promotion`);
   const { supabase, user } = await requireUser(locale, `/${locale}/admin`);
   const { error } = await supabase
     .from("promotion_requests")
@@ -97,8 +94,8 @@ export async function updatePromotion(formData: FormData) {
       updated_at: new Date().toISOString(),
     })
     .eq("id", parsed.data.requestId);
-  if (error) redirect(`/${locale}/admin?error=promotion`);
-  redirect(`/${locale}/admin?updated=promotion`);
+  if (error) redirect(`/${locale}/admin/promotions?error=promotion`);
+  redirect(`/${locale}/admin/promotions?updated=promotion`);
 }
 
 const deletionRequestSchema = z.object({
@@ -110,7 +107,7 @@ const deletionRequestSchema = z.object({
 export async function updateDeletionRequest(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const parsed = deletionRequestSchema.safeParse(Object.fromEntries(formData));
-  if (!parsed.success) redirect(`/${locale}/admin?error=deletion`);
+  if (!parsed.success) redirect(`/${locale}/admin/privacy?error=deletion`);
   const { supabase } = await requireUser(locale, `/${locale}/admin`);
   const { error } = await supabase.rpc("update_deletion_request", {
     p_request: parsed.data.requestId,
@@ -118,8 +115,8 @@ export async function updateDeletionRequest(formData: FormData) {
     p_reason: parsed.data.reason,
     p_confirmed_deleted: formData.get("confirmedDeleted") === "on",
   });
-  if (error) redirect(`/${locale}/admin?error=deletion`);
-  redirect(`/${locale}/admin?updated=deletion`);
+  if (error) redirect(`/${locale}/admin/privacy?error=deletion`);
+  redirect(`/${locale}/admin/privacy?updated=deletion`);
 }
 
 const featureSchema = z.object({
@@ -132,16 +129,19 @@ export async function createFeatureSlot(formData: FormData) {
   const parsed = featureSchema.safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   if (!parsed.success || parsed.data.endsAt <= parsed.data.startsAt)
-    redirect(`/${locale}/admin?error=feature`);
-  const { supabase, user } = await requireUser(locale, `/${locale}/admin`);
+    redirect(`/${locale}/admin/promotions?error=feature`);
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/admin/promotions`,
+  );
   const { error } = await supabase.from("feature_slots").insert({
     event_id: parsed.data.eventId,
     starts_at: parsed.data.startsAt.toISOString(),
     ends_at: parsed.data.endsAt.toISOString(),
     created_by: user.id,
   });
-  if (error) redirect(`/${locale}/admin?error=feature`);
-  redirect(`/${locale}/admin?updated=feature`);
+  if (error) redirect(`/${locale}/admin/promotions?error=feature`);
+  redirect(`/${locale}/admin/promotions?updated=feature`);
 }
 
 const categorySchema = z.object({
@@ -155,7 +155,8 @@ const categorySchema = z.object({
 export async function saveCategory(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const parsed = categorySchema.safeParse(Object.fromEntries(formData));
-  if (!parsed.success) redirect(`/${locale}/admin?error=category`);
+  if (!parsed.success)
+    redirect(`/${locale}/admin/catalogue?section=categories&error=category`);
   const { supabase } = await requireUser(locale, `/${locale}/admin`);
   const { error } = await supabase.rpc("upsert_catalog_category", {
     p_category: parsed.data.categoryId || null,
@@ -164,8 +165,9 @@ export async function saveCategory(formData: FormData) {
     p_name_en: parsed.data.nameEn,
     p_reason: parsed.data.reason,
   });
-  if (error) redirect(`/${locale}/admin?error=category`);
-  redirect(`/${locale}/admin?updated=category`);
+  if (error)
+    redirect(`/${locale}/admin/catalogue?section=categories&error=category`);
+  redirect(`/${locale}/admin/catalogue?section=categories&updated=category`);
 }
 
 const citySchema = z.object({
@@ -182,7 +184,8 @@ const citySchema = z.object({
 export async function saveCity(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const parsed = citySchema.safeParse(Object.fromEntries(formData));
-  if (!parsed.success) redirect(`/${locale}/admin?error=city`);
+  if (!parsed.success)
+    redirect(`/${locale}/admin/catalogue?section=cities&error=city`);
   const { supabase } = await requireUser(locale, `/${locale}/admin`);
   const { error } = await supabase.rpc("upsert_catalog_city", {
     p_city: parsed.data.cityId || null,
@@ -194,8 +197,8 @@ export async function saveCity(formData: FormData) {
     p_timezone: parsed.data.timezone,
     p_reason: parsed.data.reason,
   });
-  if (error) redirect(`/${locale}/admin?error=city`);
-  redirect(`/${locale}/admin?updated=city`);
+  if (error) redirect(`/${locale}/admin/catalogue?section=cities&error=city`);
+  redirect(`/${locale}/admin/catalogue?section=cities&updated=city`);
 }
 
 const flagSchema = z.object({
@@ -206,13 +209,13 @@ const flagSchema = z.object({
 export async function updateFeatureFlag(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const parsed = flagSchema.safeParse(Object.fromEntries(formData));
-  if (!parsed.success) redirect(`/${locale}/admin?error=flag`);
+  if (!parsed.success) redirect(`/${locale}/admin/settings?error=flag`);
   const { supabase } = await requireUser(locale, `/${locale}/admin`);
   const { error } = await supabase.rpc("set_feature_flag", {
     p_key: parsed.data.key,
     p_enabled: formData.get("enabled") === "on",
     p_reason: parsed.data.reason,
   });
-  if (error) redirect(`/${locale}/admin?error=flag`);
-  redirect(`/${locale}/admin?updated=flag`);
+  if (error) redirect(`/${locale}/admin/settings?error=flag`);
+  redirect(`/${locale}/admin/settings?updated=flag`);
 }

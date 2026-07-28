@@ -371,3 +371,40 @@ export async function removeVenueImage(formData: FormData) {
   if (rowError) redirect(destination(locale, venueId, "error=media"));
   redirect(destination(locale, venueId, "updated=media-removed"));
 }
+
+const deletionSchema = context.extend({
+  confirmation: z.literal("DELETE"),
+  reason: z.string().trim().min(10).max(2000),
+});
+
+export async function deleteEvent(formData: FormData) {
+  const parsed = deletionSchema
+    .extend({ eventId: z.string().uuid() })
+    .safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  if (!parsed.success) redirect(destination(locale, venueId, "error=delete"));
+  const { supabase } = await requireUser(locale);
+  const { error } = await supabase.rpc("delete_owned_event", {
+    p_event: parsed.data.eventId,
+    p_confirmation: parsed.data.confirmation,
+    p_reason: parsed.data.reason,
+  });
+  if (error) redirect(destination(locale, venueId, "error=delete"));
+  redirect(destination(locale, venueId, "updated=event-deleted"));
+}
+
+export async function deleteVenue(formData: FormData) {
+  const parsed = deletionSchema.safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  if (!parsed.success) redirect(destination(locale, venueId, "error=delete"));
+  const { supabase } = await requireUser(locale);
+  const { error } = await supabase.rpc("delete_owned_venue", {
+    p_venue: parsed.data.venueId,
+    p_confirmation: parsed.data.confirmation,
+    p_reason: parsed.data.reason,
+  });
+  if (error) redirect(destination(locale, venueId, "error=delete"));
+  redirect(`/${locale}/business?updated=venue-deleted`);
+}

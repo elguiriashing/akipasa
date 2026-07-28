@@ -1,0 +1,37 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "akipasa-automation",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-27",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "d1_databases": [
+    {
+      "binding": "AUTOMATION_DB",
+      "database_name": "akipasa-automation",
+      "database_id": "4e27f2b9-5ea4-4153-9696-46872d2211e7",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "REPLAY_KV",
+      "id": "8b26b195de894c68965d4a6222763e99",
+    },
+  ],
+  "vars": {
+    "APP_NAME": "AkiPasa OS",
+    "APP_VERSION": "0.1.0",
+    "ALLOWED_DEVICE_IDS": "alex-android-primary",
+    "COMMAND_MAX_AGE_SECONDS": "300",
+    "DASHBOARD_SESSION_TTL_SECONDS": "3600",
+    "DEFAULT_COMPANY_ID": "akipasa",
+    "EXECUTION_LOG_RETENTION_DAYS": "90",
+    "REPORT_RETENTION_DAYS": "365",
+    "TELEGRAM_API_BASE": "https://api.telegram.org",
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+  },
+}

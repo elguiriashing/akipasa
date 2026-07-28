@@ -29,7 +29,9 @@ test("root, invalid content and all guest gates resolve safely", async ({
   for (const route of [
     "/en/account",
     "/en/business",
-    "/en/moderation",
+    "/en/staff",
+    "/en/staff/support",
+    "/en/admin/users",
     "/en/admin",
     "/en/community",
     "/en/terms/accept",
@@ -38,6 +40,17 @@ test("root, invalid content and all guest gates resolve safely", async ({
     expect(response.status(), route).toBe(307);
     expect(response.headers().location, route).toContain("/en/auth?next=");
   }
+
+  const legacyModeration = await page.request.get("/en/moderation", {
+    maxRedirects: 0,
+  });
+  expect(legacyModeration.status()).toBe(307);
+  expect(legacyModeration.headers().location).toBe("/en/staff/moderation");
+  const moderationGate = await page.request.get("/en/staff/moderation", {
+    maxRedirects: 0,
+  });
+  expect(moderationGate.status()).toBe(307);
+  expect(moderationGate.headers().location).toContain("/en/auth?next=");
 
   expect(
     (await page.request.get("/en/check-in/not-a-real-token")).status(),
@@ -60,6 +73,10 @@ test("every public screen renders without overflow or unnamed controls", async (
     await expect(page.locator("main"), route).toBeVisible();
 
     const audit = await page.evaluate(() => {
+      const htmlElements = (selector: string) =>
+        Array.from(document.querySelectorAll(selector)).filter(
+          (element): element is HTMLElement => element instanceof HTMLElement,
+        );
       const visible = (element: HTMLElement) =>
         Boolean(element.offsetWidth || element.offsetHeight);
       const name = (element: HTMLElement) =>
@@ -69,23 +86,19 @@ test("every public screen renders without overflow or unnamed controls", async (
           element.textContent ||
           ""
         ).trim();
-      const unnamedActions = [
-        ...document.querySelectorAll<HTMLElement>("a,button"),
-      ]
+      const unnamedActions = htmlElements("a,button")
         .filter(visible)
         .filter((element) => !name(element))
         .map((element) => element.outerHTML.slice(0, 160));
-      const unlabeledFields = [
-        ...document.querySelectorAll<
-          HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-        >("input:not([type=hidden]),select,textarea"),
-      ]
+      const unlabeledFields = htmlElements(
+        "input:not([type=hidden]),select,textarea",
+      )
         .filter(visible)
         .filter((element) => {
           if (element.getAttribute("aria-label")) return false;
           if (
             element.id &&
-            document.querySelector(`label[for="${element.id}"]`)
+            document.querySelector(`label[for="${CSS.escape(element.id)}"]`)
           )
             return false;
           return !element.closest("label");
@@ -111,6 +124,7 @@ test("every public screen renders without overflow or unnamed controls", async (
 test("all internal links exposed on public screens return successfully", async ({
   page,
 }) => {
+  test.setTimeout(120_000);
   const paths = new Set<string>();
 
   for (const route of publicRoutes) {

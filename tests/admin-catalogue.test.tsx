@@ -12,6 +12,7 @@ vi.mock("../src/app/[locale]/admin/actions", () => ({
 }));
 
 import { CatalogueSettings } from "../src/app/[locale]/admin/CatalogueSettings";
+import { ConsoleNav } from "../src/components/ConsoleChrome";
 
 afterEach(cleanup);
 
@@ -58,6 +59,27 @@ const flags = [
 ];
 
 describe("administrator catalogue and settings", () => {
+  it("renders icon-led console sub-pages with an active destination", () => {
+    render(
+      <ConsoleNav
+        basePath="/en/admin"
+        active="catalogue"
+        label="Admin sections"
+        items={[
+          { value: "growth", label: "Growth", icon: "GR" },
+          { value: "catalogue", label: "Catalogue", icon: "CA", count: 6 },
+        ]}
+      />,
+    );
+
+    const catalogue = screen.getByRole("link", { name: /Catalogue 6/ });
+    expect(catalogue).toHaveAttribute("href", "/en/admin?view=catalogue");
+    expect(catalogue).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: /Growth/ })).not.toHaveAttribute(
+      "aria-current",
+    );
+  });
+
   it("renders accessible English create/edit controls and all feature flags", () => {
     render(
       <CatalogueSettings

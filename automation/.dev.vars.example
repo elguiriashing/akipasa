@@ -1,0 +1,5 @@
+SIGNING_SECRET=generate-a-long-random-secret
+DASHBOARD_PASSWORD=use-a-password-manager-generated-value
+DASHBOARD_SESSION_SECRET=generate-a-different-long-random-secret
+TELEGRAM_BOT_TOKEN=rotate-the-exposed-token-and-put-the-new-value-here
+TELEGRAM_CHAT_ID=use-the-numeric-chat-id-from-the-bot-api

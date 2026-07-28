@@ -6,6 +6,12 @@ const nextConfig: NextConfig = {
   typedRoutes: false,
   outputFileTracingRoot: path.dirname(fileURLToPath(import.meta.url)),
   allowedDevOrigins: ["127.0.0.1"],
+  webpack: (webpackConfig, { isServer }) => {
+    if (isServer) {
+      webpackConfig.resolve.alias["maplibre-gl"] = false;
+    }
+    return webpackConfig;
+  },
   images: {
     remotePatterns: [
       {
