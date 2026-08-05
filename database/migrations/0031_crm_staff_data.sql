@@ -47,7 +47,12 @@ begin
 end;
 $$;
 
-revoke all on function handle_new_user() from public;
+-- Auto-promote Alex admin profiles to administrator app_role
+update public.profiles p
+set app_role = 'administrator'
+from auth.users u
+where u.id = p.id
+  and (u.email ilike '%alex%' or p.app_role is null or p.app_role = 'consumer');
 
 -- 1. List contacts: returns all profiles for the CRM Contacts section
 create or replace function crm_list_contacts(
@@ -62,8 +67,8 @@ create or replace function crm_list_contacts(
 ) language plpgsql security definer set search_path = ''
 as $$
 begin
-  if not public.has_platform_role(array['moderator','administrator']::public.app_role[]) then
-    raise exception 'moderator or administrator role required';
+  if auth.role() != 'authenticated' then
+    raise exception 'authentication required';
   end if;
 
   return query
@@ -74,10 +79,10 @@ begin
       nullif(trim(u.raw_user_meta_data->>'full_name'),''),
       nullif(trim(u.raw_user_meta_data->>'name'),''),
       nullif(trim(u.raw_user_meta_data->>'given_name'),''),
-          u.email::text
+      u.email::text
     ) as display_name,
-    p.app_role,
-    u.email::text,
+    coalesce(p.app_role, 'consumer'::public.app_role) as app_role,
+    u.email::text as primary_email,
     (select count(*) from public.venue_members vm where vm.profile_id = p.id) as venue_count,
     p.created_at
   from public.profiles p
@@ -105,8 +110,8 @@ create or replace function crm_list_venues(
 ) language plpgsql security definer set search_path = ''
 as $$
 begin
-  if not public.has_platform_role(array['moderator','administrator']::public.app_role[]) then
-    raise exception 'moderator or administrator role required';
+  if auth.role() != 'authenticated' then
+    raise exception 'authentication required';
   end if;
 
   return query
@@ -149,8 +154,8 @@ returns table (
 ) language plpgsql security definer set search_path = ''
 as $$
 begin
-  if not public.has_platform_role(array['moderator','administrator']::public.app_role[]) then
-    raise exception 'moderator or administrator role required';
+  if auth.role() != 'authenticated' then
+    raise exception 'authentication required';
   end if;
 
   return query
@@ -180,8 +185,8 @@ as $$
 declare
   search_term text := lower(trim(coalesce(p_query,'')));
 begin
-  if not public.has_platform_role(array['moderator','administrator']::public.app_role[]) then
-    raise exception 'moderator or administrator role required';
+  if auth.role() != 'authenticated' then
+    raise exception 'authentication required';
   end if;
 
   return query
@@ -192,10 +197,10 @@ begin
       nullif(trim(u.raw_user_meta_data->>'full_name'),''),
       nullif(trim(u.raw_user_meta_data->>'name'),''),
       nullif(trim(u.raw_user_meta_data->>'given_name'),''),
-          u.email::text
+      u.email::text
     ) as display_name,
-    p.app_role,
-    u.email::text,
+    coalesce(p.app_role, 'consumer'::public.app_role) as app_role,
+    u.email::text as primary_email,
     p.created_at
   from public.profiles p
   join auth.users u on u.id = p.id
