@@ -219,6 +219,26 @@ begin
 end;
 $$;
 
+-- 5. CRM users view: security definer view for direct REST queries
+create or replace view public.crm_users_view as
+select
+  p.id,
+  coalesce(
+    nullif(trim(p.display_name),''),
+    nullif(trim(u.raw_user_meta_data->>'full_name'),''),
+    nullif(trim(u.raw_user_meta_data->>'name'),''),
+    nullif(trim(u.raw_user_meta_data->>'given_name'),''),
+    u.email::text
+  ) as display_name,
+  u.email::text as email,
+  coalesce(p.app_role, 'consumer'::public.app_role) as app_role,
+  p.created_at
+from public.profiles p
+join auth.users u on u.id = p.id
+where u.deleted_at is null;
+
+grant select on public.crm_users_view to authenticated;
+
 -- 5. Promote user: sets app_role (moderator or administrator) for a profile
 create or replace function crm_promote_user(
   target_profile uuid,
