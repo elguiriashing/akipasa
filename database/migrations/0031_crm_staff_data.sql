@@ -4,7 +4,7 @@ set display_name = coalesce(
   nullif(trim(u.raw_user_meta_data->>'full_name'),''),
   nullif(trim(u.raw_user_meta_data->>'name'),''),
   nullif(trim(u.raw_user_meta_data->>'given_name'),''),
-  split_part(u.email,'@',1)
+      u.email::text
 )
 from auth.users u
 where u.id = p.id
@@ -74,7 +74,7 @@ begin
       nullif(trim(u.raw_user_meta_data->>'full_name'),''),
       nullif(trim(u.raw_user_meta_data->>'name'),''),
       nullif(trim(u.raw_user_meta_data->>'given_name'),''),
-      split_part(u.email,'@',1)
+          u.email::text
     ) as display_name,
     p.app_role,
     u.email::text,
@@ -192,7 +192,7 @@ begin
       nullif(trim(u.raw_user_meta_data->>'full_name'),''),
       nullif(trim(u.raw_user_meta_data->>'name'),''),
       nullif(trim(u.raw_user_meta_data->>'given_name'),''),
-      split_part(u.email,'@',1)
+          u.email::text
     ) as display_name,
     p.app_role,
     u.email::text,
