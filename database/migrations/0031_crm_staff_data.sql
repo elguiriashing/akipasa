@@ -1,16 +1,16 @@
--- Backfill empty profile display_names from Google OAuth metadata or email prefix
+-- Backfill empty profile display_names from Google OAuth metadata or email
 update public.profiles p
 set display_name = coalesce(
   nullif(trim(u.raw_user_meta_data->>'full_name'),''),
   nullif(trim(u.raw_user_meta_data->>'name'),''),
   nullif(trim(u.raw_user_meta_data->>'given_name'),''),
-      u.email::text
+  u.email::text
 )
 from auth.users u
 where u.id = p.id
-  and (p.display_name is null or trim(p.display_name) = '');
+  and (p.display_name is null or trim(p.display_name) = '' or p.display_name like 'User (%');
 
--- Update user signup trigger to auto-extract Google full_name / given_name
+-- Update user signup trigger to auto-extract Google full_name / email
 create or replace function handle_new_user()
 returns trigger
 language plpgsql
@@ -24,7 +24,7 @@ declare
     nullif(trim(new.raw_user_meta_data->>'full_name'), ''),
     nullif(trim(new.raw_user_meta_data->>'name'), ''),
     nullif(trim(new.raw_user_meta_data->>'given_name'), ''),
-    split_part(new.email, '@', 1)
+    new.email::text
   );
 begin
   insert into profiles(
