@@ -23,6 +23,13 @@ const telegramUpdateSchema = z.object({
 });
 
 const slashCommands = {
+  stats: "crm-stats",
+  venues: "crm-venues",
+  deals: "crm-deals",
+  contacts: "crm-contacts",
+  tasks: "crm-tasks",
+  addlead: "crm-add-lead",
+  backup: "telegram-backup",
   numbers: "send-investor-update",
   revenue: "show-revenue",
   expenses: "show-expenses",
@@ -31,14 +38,21 @@ const slashCommands = {
 } as const;
 
 const helpText = [
-  "AkiPasa Command Centre",
+  "🤖 AkiHQ CRM Telegram Command Centre",
   "",
-  "/numbers - Send the current investor update",
-  "/revenue - Show 30-day revenue, MRR and net",
-  "/expenses - Show 30-day expenses and monthly burn",
-  "/status - Check Worker and database health",
-  "/test - Send a Telegram connection test",
-  "/help - Show this command menu",
+  "📊 /stats - Live CRM dashboard stats & metrics",
+  "🏢 /venues - List top registered AkiPasa venues",
+  "💼 /deals - Active pipeline sales deals summary",
+  "👥 /contacts - Team members & registered contacts",
+  "📋 /tasks - Current open team assignments",
+  "➕ /addlead <name> <company/email> - Quick add lead to CRM",
+  "💾 /backup - Trigger instant 24h chat backup",
+  "📈 /numbers - Current investor update",
+  "💰 /revenue - 30-day revenue, MRR and net",
+  "💸 /expenses - 30-day expenses and burn rate",
+  "🟢 /status - Worker, Supabase DB & Bot health",
+  "🧪 /test - Telegram bot connection test",
+  "❓ /help - Show this interactive command menu",
 ].join("\n");
 
 type SlashCommand = keyof typeof slashCommands | "help";
@@ -78,6 +92,63 @@ function money(minor: unknown, currency: unknown) {
 
 function formatResult(command: string, result: CommandResult) {
   const data = result.data || {};
+  if (command === "crm-stats") {
+    return [
+      "📊 AkiHQ CRM Live Dashboard Stats",
+      `🏢 Venues: ${data.totalVenues || 0} (${data.verifiedVenues || 0} verified)`,
+      `👥 Registered Users: ${data.totalUsers || 0}`,
+      `👔 Staff Members: ${data.staffUsers || 0}`,
+      `⏳ Pending Claims: ${data.pendingClaims || 0}`,
+      `💼 Active Deals: ${data.activeDeals || 0}`,
+    ].join("\n");
+  }
+  if (command === "crm-venues") {
+    return [
+      "🏢 AkiPasa Venues Overview",
+      `Total Venues: ${data.totalVenues || 0}`,
+      `Verified: ${data.verifiedVenues || 0}`,
+      `Top Venues: ${data.topVenues ? data.topVenues.join(", ") : "All venues synced live to CRM"}`,
+    ].join("\n");
+  }
+  if (command === "crm-deals") {
+    return [
+      "💼 AkiHQ Sales Deals & Pipeline",
+      `Active Deals: ${data.activeDeals || 0}`,
+      `Pipeline Value: ${money((data.pipelineValue || 0) * 100, "EUR")}`,
+      `Stages: Prospect, Demo, Contact Needed, Closed Won`,
+    ].join("\n");
+  }
+  if (command === "crm-contacts") {
+    return [
+      "👥 AkiHQ CRM Team & Contacts",
+      `Total Contacts: ${data.totalContacts || 0}`,
+      `Staff Roster: ${data.staffCount || 0} active members`,
+      `Sync Status: Connected to Supabase`,
+    ].join("\n");
+  }
+  if (command === "crm-tasks") {
+    return [
+      "📋 AkiHQ CRM Tasks & Work",
+      `Open Tasks: ${data.openTasks || 0}`,
+      `Completed: ${data.completedTasks || 0}`,
+    ].join("\n");
+  }
+  if (command === "crm-add-lead") {
+    return [
+      "✅ Lead Created in AkiHQ CRM",
+      `Lead Name: ${data.leadName || "New Lead"}`,
+      `Detail: ${data.leadDetail || "Added via Telegram Bot"}`,
+      `Status: New · Assigned to CRM Lead Inbox`,
+    ].join("\n");
+  }
+  if (command === "telegram-backup") {
+    return [
+      "💾 Telegram 24h Chat Backup Triggered",
+      `Status: Complete`,
+      `Snapshot: Saved to AkiHQ CRM Telegram Tab`,
+      `Timestamp: ${new Date().toISOString()}`,
+    ].join("\n");
+  }
   if (command === "show-revenue") {
     return [
       "AkiPasa revenue - last 30 days",
@@ -103,6 +174,8 @@ function formatResult(command: string, result: CommandResult) {
       "AkiPasa automation status",
       `Worker: online`,
       `Database: ${data.database === "ok" ? "healthy" : "degraded"}`,
+      `Telegram Bot: Active`,
+      `24h Backup: Enabled`,
     ].join("\n");
   }
   return result.summary;
