@@ -47,12 +47,19 @@ begin
 end;
 $$;
 
--- Auto-promote Alex admin profiles to administrator app_role
+-- Security fix: ensure general consumer profiles are consumer role
+update public.profiles p
+set app_role = 'consumer'
+from auth.users u
+where u.id = p.id
+  and (p.app_role is null or p.app_role = 'consumer' or (u.email not ilike '%alexashing%' and u.email not ilike '%@akipasa.com%'));
+
+-- Only promote authorized staff & administrator emails
 update public.profiles p
 set app_role = 'administrator'
 from auth.users u
 where u.id = p.id
-  and (u.email ilike '%alex%' or p.app_role is null or p.app_role = 'consumer');
+  and (u.email ilike '%alexashing%' or u.email ilike '%@akipasa.com%');
 
 -- 1. List contacts: returns all profiles for the CRM Contacts section
 create or replace function crm_list_contacts(
