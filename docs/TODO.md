@@ -1,6 +1,6 @@
 # TODO
 
-Last reviewed: 2026-07-28.
+Last reviewed: 2026-07-31.
 
 ## P0 - Critical
 
@@ -90,6 +90,13 @@ Last reviewed: 2026-07-28.
 
 ## P2 - Medium
 
+- [x] Add a secure native Android host that shares the production web/backend
+      behavior, including App Links, external OAuth/billing, location, uploads,
+      downloads, back/rotation state, offline retry, and URL-policy tests.
+- [ ] Open and validate the accepted Motorola Moto G24 internal-test install,
+      complete API 26/36 device acceptance, deploy and verify the staged
+      Digital Asset Links file with approval, and after Google approves the
+      submitted closed release run the required 12-tester/14-day test.
 - [x] Add desktop collapsible navigation and a keyboard-accessible mobile
       drawer with direct route links.
 - [x] Add unit/browser coverage for workspace navigation, debounced user
@@ -122,5 +129,5 @@ Last reviewed: 2026-07-28.
 - [ ] Export PDF and CSV investor reports.
 - [ ] Add AI-written summaries behind a provider interface.
 - [ ] Add email investor delivery and multiple investor groups.
-- [ ] Evaluate native applications, ticketing/payments, rotating QR tokens, and
-      additional languages.
+- [ ] Evaluate a screen-by-screen native UI rewrite, ticketing/payments,
+      rotating QR tokens, and additional languages.

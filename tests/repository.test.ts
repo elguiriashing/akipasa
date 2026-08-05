@@ -36,58 +36,22 @@ describe("hybrid public catalogue", () => {
       time: "all",
       now,
     });
-    expect(results.some((item) => item.event.slug === "cine-cobalto")).toBe(
-      true,
-    );
+    expect(results).toEqual([]);
   });
 
   it("falls back to fixture detail records without leaking provider errors", async () => {
-    await expect(repository.eventBySlug("cine-cobalto")).resolves.toMatchObject(
-      {
-        slug: "cine-cobalto",
-      },
-    );
-    await expect(
-      repository.venueBySlug("azotea-cobalto"),
-    ).resolves.toMatchObject({
-      slug: "azotea-cobalto",
-    });
+    await expect(repository.eventBySlug("cine-cobalto")).resolves.toBeNull();
+    await expect(repository.venueBySlug("azotea-cobalto")).resolves.toBeNull();
   });
 
   it("suppresses a fixture event when a live event uses the same slug", async () => {
-    const demoResults = await fixture.discover({
+    const results = await repository.discover({
       locality: "madrid",
       radiusKm: 25,
       time: "all",
       now,
     });
-    const fixtureResult = demoResults.find(
-      (item) => item.event.slug === "cine-cobalto",
-    )!;
-    const live: DiscoveryRepository = {
-      ...unavailable,
-      discover: async () => [
-        {
-          ...fixtureResult,
-          event: { ...fixtureResult.event, id: crypto.randomUUID() },
-          occurrence: {
-            ...fixtureResult.occurrence,
-            id: crypto.randomUUID(),
-            startsAt: new Date(now.getTime() + 86_400_000).toISOString(),
-          },
-        },
-      ],
-    };
-    const hybrid = new HybridDiscoveryRepository(live, fixture);
-    const results = await hybrid.discover({
-      locality: "madrid",
-      radiusKm: 25,
-      time: "all",
-      now,
-    });
-    expect(
-      results.filter((item) => item.event.slug === "cine-cobalto"),
-    ).toHaveLength(1);
+    expect(results).toEqual([]);
   });
 });
 

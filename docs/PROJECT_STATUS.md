@@ -1,8 +1,27 @@
 # Project Status
 
-Last verified: 2026-07-29.
+Last verified: 2026-08-01.
 
 ## Completed
+
+- Native Android project exists under `Android/` with package
+  `com.akipasa`, API 36 target, API 26 minimum, production web/backend
+  parity, secure navigation, external OAuth/billing handoff, App Links,
+  location, uploads, downloads, back/rotation state, and offline retry UI.
+- Android source includes a Play release guide and unit coverage for its URL
+  security boundary; it contains no signing key, credential, or second
+  database.
+- Clean Android unit, lint, debug APK, and minified release AAB tasks pass for
+  `com.akipasa`. The signature-verified version 1 (1.0.0) bundle is accepted
+  by Google Play and published on the active internal-testing track. Play App
+  Signing is enabled and its fingerprint is staged for web deployment. The
+  full root repository check passes.
+- Google Play closed testing is active for Spain and version 1 (1.0.0), with
+  the release and all required listing/content changes submitted for review.
+  The configured account has accepted the internal-test invitation; Google
+  Play accepted the install request for the configured Motorola Moto G24 and
+  now offers installation on additional devices. Physical app acceptance is
+  still outstanding.
 
 - Public bilingual AkiPasa application and isolated voice automation Worker.
 - Production Supabase migrations `0001` through `0030`; automation D1/KV
@@ -79,6 +98,8 @@ Last verified: 2026-07-29.
 
 ## 🚧 In Progress
 
+- Android API 26/36 device acceptance, Google closed-test review, and the
+  required 12-tester/14-day production-access period.
 - Authenticated production browser acceptance.
 - Monitoring for recurrence of the previous release's intermittent
   503/aborted requests.
@@ -86,6 +107,12 @@ Last verified: 2026-07-29.
 
 ## Blocked
 
+- Android verified App Links need an approved web deployment of the staged
+  `/.well-known/assetlinks.json`, followed by live and device verification.
+- Public production access is gated by Google Play: after the submitted closed
+  release is approved, obtain at least 12 opted-in testers and keep that test
+  running with at least 12 testers for 14 days before requesting production
+  access.
 - Authenticated browser checks require disposable QA credentials.
 - The managed Windows sandbox blocks OpenNext esbuild's parent-directory scan;
   the approved external build was denied by execution policy on 2026-07-28.
@@ -96,13 +123,18 @@ Last verified: 2026-07-29.
 
 ## Next Up
 
-1. Complete authenticated Checkout and webhook delivery acceptance with a
+1. Open the installed internal-test build on the Motorola Moto G24 and run
+   signed-release acceptance on the physical phone.
+2. After closed-test approval, recruit at least 12 opted-in testers and keep
+   the test active for 14 continuous days, then request production access.
+3. Test the signed release on API 26 and API 36 devices.
+4. With explicit deployment approval, publish the staged Digital Asset Links
+   file and verify the live association.
+5. Complete authenticated Checkout and webhook delivery acceptance with a
    disposable customer and explicit approval for the live payment.
-2. Continue monitoring Worker 5xx/1102 rates.
-3. Run authenticated production acceptance with disposable administrator QA
+6. Continue monitoring Worker 5xx/1102 rates.
+7. Run authenticated production acceptance with disposable administrator QA
    credentials.
-4. Inspect stale deterministic QA rows from an older run and plan a reviewed
+8. Inspect stale deterministic QA rows from an older run and plan a reviewed
    cleanup.
-5. Monitor Worker 5xx rates and investigate if intermittent crawling failures
-   recur outside test load.
-6. Design support conversations before adding inbox/conversation UI.
+9. Design support conversations before adding inbox/conversation UI.

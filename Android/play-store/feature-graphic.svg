@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="500" viewBox="0 0 1024 500" role="img" aria-labelledby="title desc">
+  <title id="title">AkiPasa — Descubre lo que pasa cerca</title>
+  <desc id="desc">Google Play feature graphic for AkiPasa.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4A1FD1"/>
+      <stop offset="1" stop-color="#7C4DFF"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#26106B" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="1024" height="500" fill="url(#background)"/>
+  <circle cx="970" cy="30" r="190" fill="#946FFF" opacity="0.45"/>
+  <circle cx="72" cy="506" r="180" fill="#35129B" opacity="0.5"/>
+  <g transform="translate(86 90) scale(.625)" filter="url(#shadow)">
+    <rect width="512" height="512" rx="128" fill="#6B35FF"/>
+    <path d="M146 352C146 281 203.7 224 274.7 224h62.6C408.3 224 466 281.7 466 352.7 466 392.4 445.7 430 412 450.6c-33.6 20.6-74.7 32.4-119.8 32.4h-22c-45 0-86.2-11.9-119.8-32.4C116.4 430 96 392.4 96 352.7V166h50v186z" fill="#E9DEFF"/>
+    <path d="M208 280l42.5 42.5L356 217M274 384h-62a62 62 0 1 1 0-124h62a62 62 0 1 1 0 124z" stroke="white" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </g>
+  <text x="470" y="220" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="82" font-weight="800" letter-spacing="1">AKIPASA</text>
+  <text x="474" y="284" fill="#E9DEFF" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="600">Descubre lo que pasa cerca.</text>
+  <rect x="474" y="325" width="132" height="8" rx="4" fill="#E9DEFF"/>
+</svg>

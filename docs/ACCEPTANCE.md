@@ -44,6 +44,21 @@ Automated evidence is produced by `npm test` and `npm run test:e2e`. Production 
 - [x] Every public ES/EN screen is checked for successful rendering, labelled controls, horizontal overflow, broken internal links, guest-route safety, browser form contracts, SEO alternates and install/offline assets.
 - [x] Production dependency audit reports zero known vulnerabilities.
 - [x] Deterministic local database seed/reset commands use stable fixture IDs, transactional replacement and a tested loopback-only URL guard that rejects Supabase or other remote hosts.
+- [x] Android exact-host navigation, unsafe-scheme rejection and download
+      allow-listing have unit coverage; Android unit tests and lint pass.
+- [x] Android clean build produces a debug APK and minified, signature-verified
+      release AAB targeting API 36 without committing signing material.
+- [x] Google Play accepts signed version 1 (1.0.0) for package `com.akipasa`,
+      enables Play App Signing, and serves it from the active internal track.
+- [x] Google Play closed Alpha is active for Spain with version 1 (1.0.0), a
+      tester list, and the complete listing/content submission in review.
+- [x] The configured internal tester accepted its invitation and Google Play
+      accepted delivery of version 1 (1.0.0) to the Motorola Moto G24.
+- [ ] Signed Android internal-track install must pass API 26 and API 36 device
+      acceptance, including auth return, location, upload, download, billing,
+      back/rotation, and offline recovery.
+- [ ] Play App Signing Digital Asset Links must be deployed and verified before
+      Google OAuth and Stripe callback return are release-ready.
 - [ ] Phone, Apple and X sign-in require upstream provider credentials/accounts.
 - [ ] Professional Spanish/EU legal review is required before representing the service as legally approved.
 - [ ] Real production backup restore drill must be performed by an operator with backup access.

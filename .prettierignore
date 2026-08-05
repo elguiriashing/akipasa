@@ -6,3 +6,7 @@ test-results
 coverage
 public/sw.js
 package-lock.json
+Android/.gradle
+Android/.tooling
+Android/build
+Android/app/build

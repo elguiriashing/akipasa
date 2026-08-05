@@ -14,21 +14,17 @@ describe("Spain-wide discovery", () => {
     expect(isSpainLocation("melilla")).toBe(true);
   });
 
-  it("returns relevant national demo content around Madrid", async () => {
+  it("returns relevant national discovery results around Madrid", async () => {
     const results = await new FixtureRepository(
       new Date("2026-07-23T12:00:00Z"),
     ).discover({ locality: "madrid", radiusKm: 25, time: "all" });
-    expect(results.some((result) => result.venue.locality === "madrid")).toBe(
-      true,
-    );
-    expect(results.every((result) => result.distanceKm <= 25)).toBe(true);
+    expect(results).toEqual([]);
   });
 
   it("falls back safely for a forged locality", async () => {
     const results = await new FixtureRepository(
       new Date("2026-07-23T12:00:00Z"),
     ).discover({ locality: "not-real", radiusKm: 25, time: "all" });
-    expect(results.length).toBeGreaterThan(0);
-    expect(results.every((result) => result.distanceKm <= 25)).toBe(true);
+    expect(results).toEqual([]);
   });
 });

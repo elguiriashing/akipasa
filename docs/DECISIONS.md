@@ -1,6 +1,6 @@
 # Engineering Decisions
 
-Last reviewed: 2026-07-28.
+Last reviewed: 2026-07-31.
 
 ## ADR-001: Next.js App Router and TypeScript
 
@@ -422,3 +422,28 @@ and rely only on the connected build.
 requires validating that no dependency was truncated. It provides stronger
 clean-build evidence but does not replace Linux connected-build logs or live
 post-deployment acceptance.
+
+## ADR-028: Ship Android through a native host before a UI rewrite
+
+**Decision:** Release the first Android client as a dependency-light native
+host for the production AkiPasa web application. Keep Supabase, server actions,
+authorization, billing, storage, and product UI authoritative in the existing
+application; implement only device integration and security boundaries in the
+Android layer.
+
+**Reasoning:** The current product has dozens of public, account, business,
+staff, and administrator routes whose mutations are Next.js server actions.
+Hosting that application provides immediate behavioral and database parity
+without exposing a service credential or creating a second set of business
+rules. Native handling is still required for App Links, external OAuth and
+billing, location consent, uploads, downloads, navigation, and offline errors.
+
+**Alternatives considered:** Rewrite every screen in Compose against direct
+Supabase calls; introduce and version a complete mobile API first; publish only
+the existing PWA; use a Trusted Web Activity with no native integration.
+
+**Trade-offs:** The Play package is native but its product interface remains
+web-delivered and requires connectivity for server-rendered features. Web
+releases affect Android immediately. Google OAuth and Stripe callbacks require
+Digital Asset Links. A future native UI rewrite remains possible, but should
+consume a reviewed mobile API rather than bypass server-side product rules.

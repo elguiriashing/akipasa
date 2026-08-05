@@ -1,6 +1,5 @@
--- Fictional demonstration records only.
--- Stable UUIDs plus replacement inside one transaction make every run deterministic.
--- Run only through `npm run db:seed:local`; its URL guard refuses non-local hosts.
+-- Production baseline configuration (Cities & Categories).
+-- Fictional demonstration records removed.
 begin;
 
 delete from event_occurrences
@@ -41,61 +40,5 @@ on conflict(id) do update set
   name_es=excluded.name_es,
   name_en=excluded.name_en;
 
-insert into venues(
-  id,city_id,slug,name,description_es,description_en,address,location,
-  verified,accessibility,status
-) values (
-  '11000000-0000-4000-8000-000000000001',
-  '10000000-0000-4000-8000-000000000001',
-  'demo-patio-del-sol',
-  'Patio del Sol · Demo',
-  'Local ficticio para desarrollo y pruebas de AkiPasa.',
-  'Fictional venue for AkiPasa development and testing.',
-  'Calle Demo 1, Fuengirola',
-  st_setsrid(st_makepoint(-4.624,36.539),4326)::geography,
-  true,
-  '{"step_free":true}'::jsonb,
-  'published'
-);
-
-insert into events(
-  id,venue_id,slug,title_es,title_en,description_es,description_en,
-  category_id,price_cents,currency,source,sponsored,booking_url,status
-) values (
-  '30000000-0000-4000-8000-000000000001',
-  '11000000-0000-4000-8000-000000000001',
-  'demo-musica-al-atardecer',
-  'Música al atardecer · Demo',
-  'Sunset music · Demo',
-  'Evento completamente ficticio para comprobar descubrimiento, horarios y recurrencia.',
-  'Entirely fictional event for testing discovery, schedules and recurrence.',
-  '20000000-0000-4000-8000-000000000001',
-  0,
-  'EUR',
-  'verified_venue',
-  false,
-  'https://example.com/akipasa-demo',
-  'published'
-);
-
-insert into event_occurrences(id,event_id,starts_at,ends_at,status) values
-  (
-    '31000000-0000-4000-8000-000000000001',
-    '30000000-0000-4000-8000-000000000001',
-    date_trunc('day',now() at time zone 'Europe/Madrid') at time zone 'Europe/Madrid'
-      + interval '1 day 19 hours',
-    date_trunc('day',now() at time zone 'Europe/Madrid') at time zone 'Europe/Madrid'
-      + interval '1 day 21 hours',
-    'scheduled'
-  ),
-  (
-    '31000000-0000-4000-8000-000000000002',
-    '30000000-0000-4000-8000-000000000001',
-    date_trunc('day',now() at time zone 'Europe/Madrid') at time zone 'Europe/Madrid'
-      + interval '8 days 19 hours',
-    date_trunc('day',now() at time zone 'Europe/Madrid') at time zone 'Europe/Madrid'
-      + interval '8 days 21 hours',
-    'scheduled'
-  );
-
 commit;
+

@@ -44,6 +44,15 @@ export function SiteHeader({
       <Link href={`/${locale}/account`} onClick={closeMenu}>
         {m.saved}
       </Link>
+      <a
+        className="nav-crm-link"
+        href={config.crmUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={closeMenu}
+      >
+        CRM
+      </a>
     </>
   );
 

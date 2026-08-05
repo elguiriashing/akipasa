@@ -1,6 +1,6 @@
 # Architecture
 
-Last updated: 2026-07-28.
+Last updated: 2026-07-31.
 
 ## Overall system architecture
 
@@ -11,6 +11,12 @@ Browser
   -> Cloudflare custom domain
   -> OpenNext/Next.js Worker
   -> Supabase Auth + PostgreSQL/PostGIS + Storage
+
+Android app
+  -> native secure WebView host
+  -> same Cloudflare custom domain and Next.js application
+  -> same Supabase Auth session, database, storage, and server rules
+  -> system browser for Google OAuth, Stripe, and external destinations
 
 Android voice trigger
   -> Tasker/Termux signing bridge
@@ -66,6 +72,7 @@ automation/
   tests/               Automation unit tests
 tests/
   e2e/                 Mobile Chromium and opt-in production acceptance
+Android/               Native Play Store client for the production web app
 docs/                  Product and operational contracts
 .github/workflows/     Automation CI/manual deployment
 ```
@@ -141,6 +148,25 @@ expose secrets. Authenticated operator commands share command implementations
 and audit logging with voice calls; external actions require a same-origin POST
 from an explicit confirmation screen. A generated operation ID is reserved
 through the same D1/KV nonce layer to prevent duplicate form submissions.
+
+### Android client
+
+`Android/` is a dependency-light native Android application targeting API 36.
+Its primary view hosts the production AkiPasa web application, so it shares the
+same database, authentication cookies, server actions, RLS, storage, billing,
+roles, and release behavior instead of duplicating them in a mobile-only data
+layer. The native boundary handles exact-host navigation, App Links, system-
+browser OAuth/billing handoff, location permission, document picking,
+downloads, back/rotation state, and offline retry UI.
+
+Only `https://akipasa.com` and its canonical `www` redirect host render inside
+the WebView. Other supported destinations open through Android; cleartext,
+file, JavaScript, intent, and unknown schemes are rejected. Google OAuth and
+Stripe return links require the Play app-signing fingerprint to be published
+at `/.well-known/assetlinks.json` before release. This client is a native
+package with a web-delivered product UI, not a screen-by-screen native UI
+rewrite. Such a rewrite would first require a versioned mobile API because the
+current mutations are Next.js server actions.
 
 ## Database
 

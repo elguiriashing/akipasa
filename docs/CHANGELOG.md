@@ -3,6 +3,50 @@
 This is an engineering milestone log, not a semantic-version release log.
 Entries are newest first and must not contain credentials or personal data.
 
+## 2026-08-01
+
+### Summary
+
+Added the first Android Play Store client under `Android/`. The native Android
+host loads the production AkiPasa application so every role and workflow uses
+the same Cloudflare/Supabase backend, database, storage, authorization, and
+billing behavior. The device layer adds restricted HTTPS navigation, external
+Google/Stripe handoff, App Links, location consent, document picking,
+authenticated downloads, back/rotation handling, and a native offline retry
+state.
+
+The project targets Android 16/API 36 with package `com.akipasa`, contains
+no credentials or signing material, and documents the Play App Signing,
+Digital Asset Links, internal-track acceptance, Data safety, and release
+process. This is intentionally a native package with a web-delivered product
+UI; it is not represented as a screen-by-screen native rewrite.
+
+### Verification
+
+- A clean Gradle run passed Android unit tests and lint, assembled an 888,744
+  byte debug APK, and produced the corrected 37,672 byte `com.akipasa`
+  release AAB. The AAB was signed with the ignored local upload key and its
+  signature verified; signing material was not added to Git or logs.
+- The full root `npm.cmd run check` passes, including formatting, lint, strict
+  types, 48 application tests, database safety, 37 automation tests, Wrangler
+  dry-run, and the 83-page production Next build.
+- Google Play accepted version 1 (1.0.0), target API 36, enabled Play App
+  Signing, and published release `AkiPasa1.0` to the active internal-testing
+  track. The app-signing fingerprint is staged in
+  `public/.well-known/assetlinks.json`; web deployment, device acceptance,
+  listing completion, and the mandatory closed-test production gate remain.
+- The Play listing, reviewer access, content rating, 18+ target audience,
+  privacy, Data safety, health, ads, category, Spain distribution, and tester
+  configuration were completed. The advertising-ID declaration records that
+  the app does not use an advertising ID, matching the manifest and dependency
+  graph. Fourteen changes, including closed-test version 1 (1.0.0), were sent
+  to Google review.
+- The closed Alpha channel is active with version 1 (1.0.0) in review. The
+  configured developer account also accepted the immediately available
+  internal-test invitation. Google Play accepted installation to the
+  configured Motorola Moto G24 and now offers installation on additional
+  devices; physical app acceptance remains pending.
+
 ## 2026-07-29
 
 ### Summary
