@@ -1,11 +1,53 @@
-begin;
+-- Backfill empty profile display_names from Google OAuth metadata or email prefix
+update public.profiles p
+set display_name = coalesce(
+  nullif(trim(u.raw_user_meta_data->>'full_name'),''),
+  nullif(trim(u.raw_user_meta_data->>'name'),''),
+  nullif(trim(u.raw_user_meta_data->>'given_name'),''),
+  split_part(u.email,'@',1)
+)
+from auth.users u
+where u.id = p.id
+  and (p.display_name is null or trim(p.display_name) = '');
 
--- ============================================================
--- CRM staff data RPCs
--- Callable by moderator and administrator roles only.
--- These expose platform data to the AkiHQ CRM without
--- relaxing existing RLS policies on the underlying tables.
--- ============================================================
+-- Update user signup trigger to auto-extract Google full_name / given_name
+create or replace function handle_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  accepted_version text := nullif(trim(new.raw_user_meta_data->>'terms_version'), '');
+  extracted_name text := coalesce(
+    nullif(trim(new.raw_user_meta_data->>'display_name'), ''),
+    nullif(trim(new.raw_user_meta_data->>'full_name'), ''),
+    nullif(trim(new.raw_user_meta_data->>'name'), ''),
+    nullif(trim(new.raw_user_meta_data->>'given_name'), ''),
+    split_part(new.email, '@', 1)
+  );
+begin
+  insert into profiles(
+    id,
+    display_name,
+    preferred_locale,
+    terms_version,
+    terms_accepted_at
+  )
+  values (
+    new.id,
+    extracted_name,
+    coalesce(nullif(new.raw_user_meta_data->>'preferred_locale', ''), 'es'),
+    accepted_version,
+    case when accepted_version is not null then now() else null end
+  )
+  on conflict (id) do update
+  set display_name = coalesce(public.profiles.display_name, excluded.display_name);
+  return new;
+end;
+$$;
+
+revoke all on function handle_new_user() from public;
 
 -- 1. List contacts: returns all profiles for the CRM Contacts section
 create or replace function crm_list_contacts(
@@ -27,7 +69,13 @@ begin
   return query
   select
     p.id,
-    coalesce(nullif(p.display_name,''), split_part(u.email,'@',1)) as display_name,
+    coalesce(
+      nullif(trim(p.display_name),''),
+      nullif(trim(u.raw_user_meta_data->>'full_name'),''),
+      nullif(trim(u.raw_user_meta_data->>'name'),''),
+      nullif(trim(u.raw_user_meta_data->>'given_name'),''),
+      split_part(u.email,'@',1)
+    ) as display_name,
     p.app_role,
     u.email::text,
     (select count(*) from public.venue_members vm where vm.profile_id = p.id) as venue_count,
@@ -139,7 +187,13 @@ begin
   return query
   select
     p.id,
-    coalesce(nullif(p.display_name,''), split_part(u.email,'@',1)) as display_name,
+    coalesce(
+      nullif(trim(p.display_name),''),
+      nullif(trim(u.raw_user_meta_data->>'full_name'),''),
+      nullif(trim(u.raw_user_meta_data->>'name'),''),
+      nullif(trim(u.raw_user_meta_data->>'given_name'),''),
+      split_part(u.email,'@',1)
+    ) as display_name,
     p.app_role,
     u.email::text,
     p.created_at
@@ -150,6 +204,8 @@ begin
       search_term = ''
       or position(search_term in lower(coalesce(u.email, ''))) > 0
       or position(search_term in lower(coalesce(p.display_name, ''))) > 0
+      or position(search_term in lower(coalesce(u.raw_user_meta_data->>'full_name', ''))) > 0
+      or position(search_term in lower(coalesce(u.raw_user_meta_data->>'name', ''))) > 0
     )
   order by
     case when lower(coalesce(u.email, '')) = search_term then 0 else 1 end,
