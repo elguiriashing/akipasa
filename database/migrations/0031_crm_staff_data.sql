@@ -117,12 +117,78 @@ begin
 end;
 $$;
 
+-- 4. Search users: returns matching AkiPasa profiles for the Team Member GUI picker
+create or replace function crm_search_users(
+  p_query text default '',
+  p_limit integer default 30
+) returns table (
+  profile_id    uuid,
+  display_name  text,
+  app_role      public.app_role,
+  primary_email text,
+  created_at    timestamptz
+) language plpgsql security definer set search_path = ''
+as $$
+declare
+  search_term text := lower(trim(coalesce(p_query,'')));
+begin
+  if not public.has_platform_role(array['moderator','administrator']::public.app_role[]) then
+    raise exception 'moderator or administrator role required';
+  end if;
+
+  return query
+  select
+    p.id,
+    coalesce(nullif(p.display_name,''), split_part(u.email,'@',1)) as display_name,
+    p.app_role,
+    u.email::text,
+    p.created_at
+  from public.profiles p
+  join auth.users u on u.id = p.id
+  where u.deleted_at is null
+    and (
+      search_term = ''
+      or position(search_term in lower(coalesce(u.email, ''))) > 0
+      or position(search_term in lower(coalesce(p.display_name, ''))) > 0
+    )
+  order by
+    case when lower(coalesce(u.email, '')) = search_term then 0 else 1 end,
+    p.created_at desc
+  limit least(greatest(coalesce(p_limit,30), 1), 100);
+end;
+$$;
+
+-- 5. Promote user: sets app_role (moderator or administrator) for a profile
+create or replace function crm_promote_user(
+  target_profile uuid,
+  new_role public.app_role
+) returns void language plpgsql security definer set search_path = ''
+as $$
+begin
+  if not public.has_platform_role(array['moderator','administrator']::public.app_role[]) then
+    raise exception 'moderator or administrator role required';
+  end if;
+  if new_role not in ('moderator', 'administrator') then
+    raise exception 'invalid role for staff promotion';
+  end if;
+
+  update public.profiles
+  set app_role = new_role, updated_at = now()
+  where id = target_profile;
+end;
+$$;
+
 -- Grant access to authenticated users (RLS inside functions enforces role check)
-revoke all on function crm_list_contacts(integer)  from public;
-revoke all on function crm_list_venues(integer)     from public;
-revoke all on function crm_dashboard_stats()        from public;
-grant execute on function crm_list_contacts(integer)  to authenticated;
-grant execute on function crm_list_venues(integer)    to authenticated;
-grant execute on function crm_dashboard_stats()       to authenticated;
+revoke all on function crm_list_contacts(integer)       from public;
+revoke all on function crm_list_venues(integer)          from public;
+revoke all on function crm_dashboard_stats()             from public;
+revoke all on function crm_search_users(text,integer)   from public;
+revoke all on function crm_promote_user(uuid,public.app_role) from public;
+
+grant execute on function crm_list_contacts(integer)       to authenticated;
+grant execute on function crm_list_venues(integer)          to authenticated;
+grant execute on function crm_dashboard_stats()             to authenticated;
+grant execute on function crm_search_users(text,integer)   to authenticated;
+grant execute on function crm_promote_user(uuid,public.app_role) to authenticated;
 
 commit;
