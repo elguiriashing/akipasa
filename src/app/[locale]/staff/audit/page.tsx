@@ -32,20 +32,37 @@ export default async function StaffAuditPage({
         }
       />
       {data?.length ? (
-        <div className="panel managed-list">
-          {data.map((item) => (
-            <div className="managed-row" key={item.id}>
-              <div>
-                <strong>
-                  {item.action} / {item.target_type}
-                </strong>
-                <span>{item.reason}</span>
-              </div>
-              <time dateTime={item.created_at}>
-                {new Date(item.created_at).toLocaleString(locale)}
-              </time>
-            </div>
-          ))}
+        <div className="audit-card-list">
+          {data.map((item) => {
+            const badgeClass =
+              item.action.includes("published") || item.action.includes("create")
+                ? "badge-success"
+                : item.action.includes("delete") || item.action.includes("reject")
+                  ? "badge-danger"
+                  : item.action.includes("role")
+                    ? "badge-warning"
+                    : "badge-neutral";
+
+            return (
+              <article className="panel audit-card" key={item.id}>
+                <div className="audit-card-header">
+                  <div className="audit-title-group">
+                    <span className={`status-pill ${badgeClass}`}>
+                      {item.action}
+                    </span>
+                    <strong className="audit-target-type">{item.target_type}</strong>
+                  </div>
+                  <time className="audit-time" dateTime={item.created_at}>
+                    {new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", {
+                      dateStyle: "medium",
+                      timeStyle: "medium",
+                    }).format(new Date(item.created_at))}
+                  </time>
+                </div>
+                <p className="audit-reason">{item.reason}</p>
+              </article>
+            );
+          })}
         </div>
       ) : (
         <WorkspaceEmpty

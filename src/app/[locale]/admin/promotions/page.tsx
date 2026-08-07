@@ -34,7 +34,7 @@ export default async function AdminPromotionsPage({
       supabase
         .from("events")
         .select("id,title_en,title_es")
-        .eq("state", "published")
+        .eq("status", "published")
         .order("title_en"),
     ]);
   const es = locale === "es";
@@ -57,14 +57,14 @@ export default async function AdminPromotionsPage({
         }
       />
       {(query.updated || query.error) && (
-        <p className="notice">
+        <p className={`notice ${query.updated ? "notice-success" : "notice-error"}`}>
           {query.updated
             ? es
-              ? "Cambio guardado."
-              : "Change saved."
+              ? "✓ Cambio guardado."
+              : "✓ Change saved."
             : es
-              ? "No se pudo guardar el cambio."
-              : "The change could not be saved."}
+              ? "✕ No se pudo guardar el cambio."
+              : "✕ The change could not be saved."}
         </p>
       )}
 
@@ -94,7 +94,7 @@ export default async function AdminPromotionsPage({
             </small>
           </span>
         </summary>
-        <form action={createFeatureSlot} className="focused-form">
+        <form action={createFeatureSlot} className="stack focused-form">
           <input type="hidden" name="locale" value={locale} />
           <label>
             {es ? "Evento publicado" : "Published event"}
@@ -109,17 +109,23 @@ export default async function AdminPromotionsPage({
               ))}
             </select>
           </label>
-          <label>
-            {es ? "Inicio" : "Starts"}
-            <input type="datetime-local" name="startsAt" required />
-          </label>
-          <label>
-            {es ? "Fin" : "Ends"}
-            <input type="datetime-local" name="endsAt" required />
-          </label>
-          <button className="button" type="submit">
-            {es ? "Programar" : "Schedule feature"}
-          </button>
+
+          <div className="form-grid-two">
+            <label>
+              {es ? "Inicio" : "Starts"}
+              <input type="datetime-local" name="startsAt" required />
+            </label>
+            <label>
+              {es ? "Fin" : "Ends"}
+              <input type="datetime-local" name="endsAt" required />
+            </label>
+          </div>
+
+          <div className="form-actions-right">
+            <button className="button primary" type="submit">
+              {es ? "Programar destacado" : "Schedule feature"}
+            </button>
+          </div>
         </form>
       </details>
 
