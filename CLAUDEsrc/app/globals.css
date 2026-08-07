@@ -190,175 +190,124 @@ h3 {
   padding-bottom: 2rem;
 }
 
-/* App shell: desktop rail + mobile bottom nav */
-.app-shell {
-  display: grid;
-  grid-template-columns: 16rem minmax(0, 1fr);
-  min-height: 100vh;
-}
-
-.app-rail {
+/* Header */
+.topbar {
   position: sticky;
-  top: 0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  gap: 1.4rem;
-  padding: 1.3rem 1rem;
-  border-right: 1px solid var(--line);
-  background: color-mix(in oklab, var(--surface) 55%, transparent);
+  top: 0.75rem;
+  z-index: 8;
+  background: color-mix(in oklab, var(--surface) 78%, transparent);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.6rem 0.9rem;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.7rem;
+  margin-bottom: 0.85rem;
 }
 
-.app-rail a,
-.app-topbar-mobile a,
-.app-bottom-nav a,
-.app-sheet a {
+html[data-theme="premium"] .topbar,
+body.theme-premium .topbar {
+  background: linear-gradient(
+    140deg,
+    color-mix(in oklab, var(--surface) 76%, transparent) 0%,
+    color-mix(in oklab, var(--surface-alt) 70%, transparent) 100%
+  );
+  border-color: var(--line);
+  box-shadow: var(--shadow-strong);
+}
+
+.topbar a,
+.footer a {
   color: inherit;
   text-decoration: none;
 }
 
-.app-rail-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.65rem;
+.brand {
   font-weight: 900;
-  font-size: 1.3rem;
+  font-size: 1.45rem;
+  line-height: 1;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  display: inline-flex;
+  align-items: baseline;
   color: var(--ink);
-  padding: 0 0.35rem;
+  gap: 0.09rem;
 }
 
-.app-rail-mark {
-  display: grid;
-  place-items: center;
-  width: 2.35rem;
-  height: 2.35rem;
-  border-radius: 0.85rem;
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  color: #1a0e05;
-  font-weight: 950;
-  flex: 0 0 auto;
+html[data-theme="premium"] .brand {
+  letter-spacing: 0.03em;
 }
 
-.app-rail-brand-dot {
+.brand-dot {
   color: var(--primary);
-  font-style: normal;
+  font-size: 1.2rem;
 }
 
-.app-rail-nav {
-  display: grid;
-  gap: 0.2rem;
-}
-
-.app-rail-nav a {
+.nav {
   display: flex;
+  flex-wrap: nowrap;
+  gap: 0.35rem;
   align-items: center;
-  gap: 0.8rem;
-  padding: 0.68rem 0.75rem;
-  border-radius: 0.85rem;
-  font-weight: 750;
-  color: var(--muted);
-  border: 1px solid transparent;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease;
 }
 
-.app-rail-nav a svg {
-  width: 1.2rem;
-  height: 1.2rem;
-  flex: 0 0 auto;
+.site-menu {
+  display: none;
 }
 
-.app-rail-nav a:hover,
-.app-rail-nav a:focus-visible {
+.nav .membership-link {
+  border-color: color-mix(in oklab, var(--primary) 55%, var(--line));
   background: var(--primary-soft);
-  color: var(--ink);
+  color: var(--primary);
 }
 
-.app-rail-nav a.active {
+.nav .nav-sign-in {
   background: linear-gradient(120deg, var(--primary), var(--primary-dark));
   color: #1a0e05;
-  box-shadow: 0 8px 18px color-mix(in oklab, var(--primary) 32%, transparent);
+  font-weight: 800;
 }
 
-.app-rail-divider {
-  height: 1px;
-  margin: 0.5rem 0.2rem;
-  background: var(--line);
-}
-
-.app-rail-bottom {
-  margin-top: auto;
-  display: grid;
-  gap: 0.65rem;
-}
-
-.app-rail-cta {
-  width: 100%;
-}
-
-.app-rail-crm {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  padding: 0.6rem 0.75rem;
-  border-radius: 0.85rem;
+.language {
+  white-space: nowrap;
   color: var(--muted);
-  font-weight: 700;
-  font-size: 0.88rem;
+  padding: 0.46rem 0.77rem;
+  display: inline-flex;
   border: 1px solid var(--line);
-}
-
-.app-rail-crm:hover {
-  color: var(--ink);
-  border-color: color-mix(in oklab, var(--primary) 40%, var(--line));
-}
-
-.app-rail-crm svg {
-  width: 1.05rem;
-  height: 1.05rem;
-}
-
-.app-rail-tools {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.app-topbar-mobile {
-  display: none;
-}
-
-.app-icon-button {
-  display: grid;
-  place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  background: color-mix(in oklab, var(--surface) 65%, transparent);
   border-radius: 999px;
-  border: 1px solid var(--line);
-  background: color-mix(in oklab, var(--surface) 60%, transparent);
+  overflow: hidden;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.nav a {
+  padding: 0.54rem 0.88rem;
+  text-decoration: none;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--muted);
+  transition: all 0.2s ease;
+  line-height: 1;
+  border: 1px solid transparent;
+}
+
+.nav a:hover,
+.nav a:focus-visible {
+  background: var(--primary-soft);
+  border-color: color-mix(in oklab, var(--primary) 40%, var(--line));
   color: var(--ink);
-  cursor: pointer;
 }
 
-.app-icon-button svg {
-  width: 1.15rem;
-  height: 1.15rem;
-}
-
-.app-content {
-  min-width: 0;
-}
-
-.app-bottom-nav {
-  display: none;
-}
-
-.app-sheet-layer {
-  display: none;
+.language:hover {
+  background: var(--primary-soft);
+  border-color: color-mix(in oklab, var(--primary) 40%, var(--line));
+  color: var(--ink);
 }
 
 /* Hero */
@@ -939,40 +888,6 @@ html[data-theme="premium"] .card:hover {
   object-fit: cover;
 }
 
-.card-media-scrim {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    185deg,
-    rgba(4, 14, 13, 0.02) 0%,
-    rgba(4, 14, 13, 0.5) 100%
-  );
-  pointer-events: none;
-}
-
-.card-media-badges {
-  position: absolute;
-  inset: 0.6rem 0.6rem auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 0.5rem;
-  z-index: 1;
-}
-
-.card-media-badges .card-pill-date {
-  background: rgba(8, 26, 24, 0.65);
-  border-color: rgba(255, 255, 255, 0.16);
-  color: #f4efe4;
-  backdrop-filter: blur(6px);
-  font-size: 0.74rem;
-}
-
-.card-media-badges .card-pill-price {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
-  white-space: nowrap;
-}
-
 .card-media-fallback {
   width: 100%;
   height: 100%;
@@ -986,8 +901,15 @@ html[data-theme="premium"] .card:hover {
 
 .card-body {
   display: grid;
-  gap: 0.4rem;
+  gap: 0.55rem;
   min-height: 0;
+}
+
+.card-topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  align-items: center;
 }
 
 .card-title-row {
@@ -1019,16 +941,15 @@ html[data-theme="premium"] .card:hover {
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  flex-wrap: wrap;
   color: var(--muted);
   font-size: 0.88rem;
 }
 
 .card-footer {
   margin-top: auto;
-  padding-top: 0.75rem;
+  padding-top: 0.9rem;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   font-weight: 700;
   color: var(--muted);
   gap: 0.65rem;
@@ -1043,17 +964,6 @@ html[data-theme="premium"] .card:hover {
   letter-spacing: 0.04em;
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  transition: gap 0.2s ease;
-}
-
-.card:hover .card-arrow {
-  gap: 0.5rem;
-}
-
-.card-arrow svg {
-  width: 0.9rem;
-  height: 0.9rem;
 }
 
 .pill,
@@ -1214,8 +1124,8 @@ html[data-theme="premium"] .card:hover {
   height: 2.5rem;
   place-items: center;
   border-radius: 0.85rem;
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  color: #1a0e05;
+  background: var(--ink);
+  color: var(--surface);
   font-weight: 950;
 }
 
@@ -1430,7 +1340,8 @@ html[data-theme="premium"] .card:hover {
   display: none;
 }
 
-.workspace-menu-glyph {
+.workspace-menu-glyph,
+.site-menu-icon {
   display: grid;
   width: 2.35rem;
   height: 2.35rem;
@@ -1440,7 +1351,8 @@ html[data-theme="premium"] .card:hover {
   background: color-mix(in oklab, var(--primary-soft) 72%, var(--surface));
 }
 
-.workspace-menu-glyph i {
+.workspace-menu-glyph i,
+.site-menu-icon i {
   display: block;
   width: 1.1rem;
   height: 2px;
@@ -2499,11 +2411,6 @@ html[data-theme="premium"] .card:hover {
   flex-wrap: wrap;
 }
 
-.footer a {
-  color: inherit;
-  text-decoration: none;
-}
-
 .footer nav {
   display: flex;
   gap: 1rem;
@@ -2629,165 +2536,86 @@ html[data-theme="premium"] .card:hover {
 }
 
 @media (max-width: 850px) {
-  .app-shell {
-    display: block;
+  .topbar {
+    align-items: center;
+    padding: 0.6rem 0.7rem;
   }
 
-  .app-rail {
+  .nav-desktop {
     display: none;
   }
 
-  .app-topbar-mobile {
-    position: sticky;
-    top: 0;
-    z-index: 8;
+  .site-menu {
+    display: block;
+    position: relative;
+  }
+
+  .site-menu > summary {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.75rem 1rem;
-    background: color-mix(in oklab, var(--surface) 82%, transparent);
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
-    border-bottom: 1px solid var(--line);
-  }
-
-  .app-content {
-    padding-bottom: calc(4.6rem + env(safe-area-inset-bottom, 0px));
-  }
-
-  .app-bottom-nav {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 9;
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    padding: 0.4rem 0.3rem calc(0.4rem + env(safe-area-inset-bottom, 0px));
-    background: color-mix(in oklab, var(--surface) 90%, transparent);
-    backdrop-filter: blur(16px) saturate(150%);
-    -webkit-backdrop-filter: blur(16px) saturate(150%);
-    border-top: 1px solid var(--line);
-  }
-
-  .app-bottom-nav a,
-  .app-bottom-nav button {
-    display: grid;
-    justify-items: center;
-    gap: 0.2rem;
-    padding: 0.4rem 0.2rem;
-    border: 0;
-    background: none;
-    color: var(--muted);
-    font-size: 0.66rem;
-    font-weight: 750;
+    gap: 0.45rem;
+    min-height: 2.7rem;
+    padding: 0.2rem 0.35rem 0.2rem 0.2rem;
+    border-radius: 0.8rem;
+    color: var(--ink);
     cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 850;
+    list-style: none;
   }
 
-  .app-bottom-nav svg {
-    width: 1.3rem;
-    height: 1.3rem;
+  .site-menu > summary::-webkit-details-marker {
+    display: none;
   }
 
-  .app-bottom-nav a.active,
-  .app-bottom-nav button.active {
-    color: var(--primary);
+  .site-menu[open] > summary {
+    background: color-mix(in oklab, var(--primary-soft) 75%, var(--surface));
   }
 
-  .app-sheet-layer {
-    display: block;
-    position: fixed;
-    inset: 0;
-    z-index: 12;
-  }
-
-  .app-sheet-backdrop {
+  .site-menu-panel {
     position: absolute;
-    inset: 0;
-    border: 0;
-    background: rgba(3, 10, 9, 0.55);
-    backdrop-filter: blur(2px);
-  }
-
-  .app-sheet {
-    position: absolute;
-    left: 0;
+    top: calc(100% + 0.7rem);
     right: 0;
-    bottom: 0;
-    max-height: 75vh;
+    width: min(21rem, calc(100vw - 2rem));
+    max-height: min(70vh, 36rem);
     overflow-y: auto;
-    padding: 0.9rem 1.1rem calc(1.4rem + env(safe-area-inset-bottom, 0px));
-    border-radius: 1.4rem 1.4rem 0 0;
-    background: var(--surface);
+    padding: 0.7rem;
     border: 1px solid var(--line);
+    border-radius: 1rem;
+    background: var(--surface);
     box-shadow: var(--shadow-strong);
   }
 
-  .app-sheet-handle {
-    width: 2.6rem;
-    height: 0.28rem;
-    margin: 0.2rem auto 0.9rem;
-    border-radius: 999px;
-    background: var(--line);
-  }
-
-  .app-sheet-close {
-    position: absolute;
-    top: 0.9rem;
-    right: 1rem;
+  .site-menu-panel nav {
     display: grid;
-    place-items: center;
-    width: 2.2rem;
-    height: 2.2rem;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: color-mix(in oklab, var(--surface) 70%, transparent);
-    color: var(--ink);
+    gap: 0.25rem;
   }
 
-  .app-sheet-close svg {
-    width: 1rem;
-    height: 1rem;
-  }
-
-  .app-sheet-nav {
-    display: grid;
-    gap: 0.3rem;
-  }
-
-  .app-sheet-nav a {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+  .site-menu-panel nav a {
     min-height: 2.9rem;
-    padding: 0.7rem 0.8rem;
-    border-radius: 0.85rem;
+    padding: 0.78rem 0.85rem;
+    border-radius: 0.75rem;
     color: var(--ink);
-    font-weight: 750;
+    font-weight: 800;
+    text-decoration: none;
   }
 
-  .app-sheet-nav a:hover,
-  .app-sheet-nav a:focus-visible {
-    background: var(--primary-soft);
+  .site-menu-panel nav a:hover,
+  .site-menu-panel nav a:focus-visible,
+  .site-menu-panel nav .membership-link {
+    background: color-mix(in oklab, var(--primary-soft) 68%, var(--surface));
   }
 
-  .app-sheet-nav svg {
-    width: 1.15rem;
-    height: 1.15rem;
-    color: var(--primary);
-  }
-
-  .app-sheet-tools {
+  .site-menu-tools {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
+    margin-top: 0.65rem;
+    padding-top: 0.65rem;
     border-top: 1px solid var(--line);
   }
 
-  .app-sheet-tools .button-strong {
+  .site-menu-tools .button-strong {
     flex: 1;
   }
 

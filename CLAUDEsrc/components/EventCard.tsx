@@ -3,7 +3,6 @@ import type { DiscoveryResult } from "@/lib/domain";
 import { translated } from "@/lib/domain";
 import type { Locale } from "@/lib/config";
 import { msg } from "@/lib/messages";
-import { Icon } from "@/components/Icons";
 import { VerifiedBadge } from "./VerifiedBadge";
 
 type EventCategory =
@@ -33,10 +32,6 @@ export function EventCard({
   const category = result.event.category as EventCategory;
   const categoryLabel = m[category];
   const primaryImage = result.venue.media?.[0];
-  const priceLabel =
-    result.event.priceCents === 0
-      ? m.free
-      : `${(result.event.priceCents / 100).toFixed(0)}€`;
 
   return (
     <Link className="card" href={`/${locale}/events/${result.event.slug}`}>
@@ -53,32 +48,45 @@ export function EventCard({
             <span>{result.event.category.slice(0, 1).toUpperCase()}</span>
           </div>
         )}
-        <div className="card-media-scrim" aria-hidden />
-        <div className="card-media-badges">
-          <span className="pill card-pill-date">{date}</span>
-          <span className="pill-pill card-pill-price">{priceLabel}</span>
-        </div>
       </div>
       <div className="card-body">
-        <h3>{translated(result.event.title, locale)}</h3>
+        <div className="card-topline">
+          <span className="pill">{date}</span>
+        </div>
+        <div className="card-title-row">
+          <h3>{translated(result.event.title, locale)}</h3>
+          <span className="pill-pill">
+            {result.event.priceCents === 0
+              ? m.free
+              : `${(result.event.priceCents / 100).toFixed(0)}€`}
+          </span>
+        </div>
         <p className="card-venue">{result.venue.name}</p>
         <p className="card-distance">{`${result.distanceKm.toFixed(1)} km`}</p>
         <div className="card-meta">
           <span className="pill-muted">{categoryLabel}</span>
-          {result.event.sponsored ? (
-            <span className="pill-price">
-              {locale === "es" ? "Patrocinado" : "Sponsored"}
-            </span>
-          ) : result.event.source === "verified_venue" ? (
-            <VerifiedBadge locale={locale} size="sm" />
+          {result.event.source === "verified_venue" ? (
+            <VerifiedBadge locale={locale} />
           ) : (
             <span className="community-chip">{m.community}</span>
           )}
         </div>
         <div className="card-footer">
-          <span className="card-arrow">
-            {locale === "es" ? "Ver plan" : "View"}
-            <Icon name="arrow-right" />
+          <span>
+            {result.event.sponsored ? (
+              locale === "es" ? (
+                "Patrocinado"
+              ) : (
+                "Sponsored"
+              )
+            ) : result.event.source === "verified_venue" ? (
+              <VerifiedBadge locale={locale} size="sm" />
+            ) : (
+              <span className="community-chip">{m.community}</span>
+            )}
+          </span>
+          <span className="card-arrow" aria-hidden>
+            {locale === "es" ? "Ver" : "View"}
           </span>
         </div>
       </div>

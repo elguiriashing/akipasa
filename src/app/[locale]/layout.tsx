@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { LocaleDocumentLanguage } from "@/components/LocaleDocumentLanguage";
-import { SiteHeader } from "@/components/SiteHeader";
+import { AppShell } from "@/components/AppShell";
 import { optionalUser } from "@/lib/auth";
 import { config, isLocale } from "@/lib/config";
 import { msg } from "@/lib/messages";
@@ -24,24 +24,25 @@ export default async function LocaleLayout({
   return (
     <>
       <LocaleDocumentLanguage locale={locale} />
-      <SiteHeader locale={locale} signedIn={Boolean(user)} />
-      {children}
-      <footer className="shell footer">
-        <span>
-          {m.demo} · {locale === "es" ? "Toda España" : "All Spain"} · ES / EN
-        </span>
-        <nav aria-label={locale === "es" ? "Legal" : "Legal information"}>
-          <Link href={`/${locale}/privacy`}>
-            {locale === "es" ? "Privacidad" : "Privacy"}
-          </Link>
-          <Link href={`/${locale}/terms`}>
-            {locale === "es" ? "Condiciones" : "Terms"}
-          </Link>
-          <a href="mailto:support@akipasa.com">
-            {locale === "es" ? "Contacto" : "Contact"}
-          </a>
-        </nav>
-      </footer>
+      <AppShell locale={locale} signedIn={Boolean(user)}>
+        {children}
+        <footer className="shell footer">
+          <span>
+            {m.demo} · {locale === "es" ? "Toda España" : "All Spain"} · ES / EN
+          </span>
+          <nav aria-label={locale === "es" ? "Legal" : "Legal information"}>
+            <Link href={`/${locale}/privacy`}>
+              {locale === "es" ? "Privacidad" : "Privacy"}
+            </Link>
+            <Link href={`/${locale}/terms`}>
+              {locale === "es" ? "Condiciones" : "Terms"}
+            </Link>
+            <a href="mailto:support@akipasa.com">
+              {locale === "es" ? "Contacto" : "Contact"}
+            </a>
+          </nav>
+        </footer>
+      </AppShell>
     </>
   );
 }
