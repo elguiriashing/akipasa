@@ -193,13 +193,14 @@ h3 {
 /* App shell: desktop rail + mobile bottom nav */
 .app-shell {
   display: grid;
-  grid-template-columns: 16rem minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr);
   min-height: 100vh;
 }
 
 .app-rail {
   position: sticky;
   top: 0;
+  width: 16rem;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -209,6 +210,13 @@ h3 {
   background: color-mix(in oklab, var(--surface) 55%, transparent);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
+  transition: width 0.2s ease;
+}
+
+.app-rail--compact {
+  width: 5rem;
+  padding: 1.3rem 0.55rem;
+  align-items: center;
 }
 
 .app-rail a,
@@ -326,6 +334,26 @@ h3 {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.app-rail--compact .app-rail-brand {
+  justify-content: center;
+  padding: 0;
+}
+
+.app-rail--compact .app-rail-nav a {
+  justify-content: center;
+  padding: 0.68rem;
+}
+
+.app-rail--compact .app-rail-cta {
+  width: 100%;
+  min-height: 2.9rem;
+  padding: 0.6rem;
+}
+
+.app-rail--compact .app-rail-bottom {
+  align-items: center;
 }
 
 .app-topbar-mobile {
@@ -1244,6 +1272,53 @@ html[data-theme="premium"] .card:hover {
   background: var(--surface);
   color: var(--ink);
   cursor: pointer;
+}
+
+.console-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding-bottom: 0.9rem;
+  margin-bottom: 0.6rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.console-switcher a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-weight: 750;
+  font-size: 0.82rem;
+  text-decoration: none;
+  background: color-mix(in oklab, var(--surface) 60%, transparent);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.console-switcher a svg {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.console-switcher a:hover {
+  color: var(--ink);
+  border-color: color-mix(in oklab, var(--primary) 35%, var(--line));
+}
+
+.console-switcher a.active {
+  background: linear-gradient(120deg, var(--primary), var(--primary-dark));
+  color: #1a0e05;
+  border-color: transparent;
+}
+
+.workspace-shell.is-collapsed .console-switcher span {
+  display: none;
 }
 
 .workspace-navigation {

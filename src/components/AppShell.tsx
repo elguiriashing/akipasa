@@ -19,6 +19,14 @@ function isActive(pathname: string, href: string) {
   return pathname === href || (href.split("/").length > 2 && pathname.startsWith(`${href}/`));
 }
 
+const consoleSegments = ["account", "admin", "staff", "business", "moderation"];
+
+function isConsoleRoute(pathname: string) {
+  const segments = pathname.split("/").filter(Boolean);
+  // segments[0] is the locale, segments[1] is the section
+  return consoleSegments.includes(segments[1] || "");
+}
+
 export function AppShell({
   locale,
   signedIn,
@@ -47,6 +55,8 @@ export function AppShell({
     { href: `/${locale}/membership`, label: es ? "Membresía" : "Membership", icon: "membership" },
   ];
 
+  const compact = isConsoleRoute(pathname);
+
   useEffect(() => {
     setSheetOpen(false);
   }, [pathname]);
@@ -64,13 +74,18 @@ export function AppShell({
   return (
     <div className="app-shell">
       {/* Desktop rail */}
-      <aside className="app-rail" aria-label={es ? "Navegación principal" : "Primary navigation"}>
+      <aside
+        className={`app-rail${compact ? " app-rail--compact" : ""}`}
+        aria-label={es ? "Navegación principal" : "Primary navigation"}
+      >
         <Link href={`/${locale}`} className="app-rail-brand" aria-label="AkiPasa">
           <span className="app-rail-mark">A</span>
-          <span>
-            {config.productName}
-            <i className="app-rail-brand-dot">.</i>
-          </span>
+          {!compact && (
+            <span>
+              {config.productName}
+              <i className="app-rail-brand-dot">.</i>
+            </span>
+          )}
         </Link>
 
         <nav className="app-rail-nav">
@@ -80,9 +95,10 @@ export function AppShell({
               href={item.href}
               className={isActive(pathname, item.href) ? "active" : undefined}
               aria-current={isActive(pathname, item.href) ? "page" : undefined}
+              title={compact ? item.label : undefined}
             >
               <Icon name={item.icon} />
-              <span>{item.label}</span>
+              {!compact && <span>{item.label}</span>}
             </Link>
           ))}
           <div className="app-rail-divider" role="separator" />
@@ -92,31 +108,38 @@ export function AppShell({
               href={item.href}
               className={isActive(pathname, item.href) ? "active" : undefined}
               aria-current={isActive(pathname, item.href) ? "page" : undefined}
+              title={compact ? item.label : undefined}
             >
               <Icon name={item.icon} />
-              <span>{item.label}</span>
+              {!compact && <span>{item.label}</span>}
             </Link>
           ))}
         </nav>
 
         <div className="app-rail-bottom">
           {!signedIn && (
-            <Link className="button button-strong app-rail-cta" href={`/${locale}/auth`}>
-              {es ? "Entrar" : "Sign in"}
+            <Link
+              className="button button-strong app-rail-cta"
+              href={`/${locale}/auth`}
+              title={compact ? (es ? "Entrar" : "Sign in") : undefined}
+            >
+              {compact ? <Icon name="account" /> : es ? "Entrar" : "Sign in"}
             </Link>
           )}
-          <a
-            className="app-rail-crm"
-            href={config.crmUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Icon name="business" />
-            <span>CRM</span>
-          </a>
+          {!compact && (
+            <a
+              className="app-rail-crm"
+              href={config.crmUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Icon name="business" />
+              <span>CRM</span>
+            </a>
+          )}
           <div className="app-rail-tools">
-            <ThemeToggle locale={locale} />
-            <LanguageLink locale={other} />
+            {!compact && <ThemeToggle locale={locale} />}
+            {!compact && <LanguageLink locale={other} />}
           </div>
         </div>
       </aside>

@@ -58,6 +58,7 @@ export function WorkspaceShell({
   homeHref,
   items,
   navigationTitle = title,
+  switcher,
   children,
 }: {
   title: string;
@@ -66,6 +67,7 @@ export function WorkspaceShell({
   homeHref: string;
   items: WorkspaceItem[];
   navigationTitle?: string;
+  switcher?: ReactNode;
   children: ReactNode;
 }) {
   const pathname = usePathname();
@@ -117,6 +119,7 @@ export function WorkspaceShell({
           <span aria-hidden="true">{collapsed ? "›" : "‹"}</span>
         </button>
       </div>
+      {switcher}
       <nav
         className="workspace-navigation"
         aria-label={`${navigationTitle} sections`}

@@ -12,6 +12,7 @@ import {
 } from "./actions";
 import { sortedSpainLocations } from "@/lib/locations";
 import { ConsoleNav } from "@/components/ConsoleChrome";
+import { ConsoleSwitcher } from "@/components/ConsoleSwitcher";
 import { isAdministrator } from "@/lib/roles";
 
 type ManagedVenue = {
@@ -110,6 +111,7 @@ export default async function BusinessPage({
   );
   return (
     <main className="shell dashboard console-dashboard">
+      <ConsoleSwitcher locale={locale} role={profile?.app_role || "organiser"} active="business" />
       <section className="hero">
         <div className="eyebrow">{es ? "Negocios" : "Business"}</div>
         <h1>{es ? "Tu panel" : "Your dashboard"}</h1>

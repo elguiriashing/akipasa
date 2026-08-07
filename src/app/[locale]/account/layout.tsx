@@ -3,6 +3,7 @@ import {
   WorkspaceShell,
   type WorkspaceItem,
 } from "@/components/WorkspaceShell";
+import { ConsoleSwitcher } from "@/components/ConsoleSwitcher";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 
@@ -18,9 +19,10 @@ export default async function AccountLayout({
   const { supabase, user } = await requireUser(locale);
   const { data: profile } = await supabase
     .from("profiles")
-    .select("display_name")
+    .select("display_name,app_role")
     .eq("id", user.id)
     .maybeSingle();
+  const role = profile?.app_role || "consumer";
   const es = locale === "es";
   const base = `/${locale}/account`;
   const items: WorkspaceItem[] = [
@@ -65,11 +67,6 @@ export default async function AccountLayout({
       label: es ? "Ajustes" : "Settings",
       icon: "settings",
     },
-    {
-      href: `/${locale}/business/apply`,
-      label: es ? "Para negocios" : "For businesses",
-      icon: "business",
-    },
   ];
 
   return (
@@ -83,6 +80,7 @@ export default async function AccountLayout({
       }
       homeHref={base}
       items={items}
+      switcher={<ConsoleSwitcher locale={locale} role={role} active="account" />}
     >
       {children}
     </WorkspaceShell>
