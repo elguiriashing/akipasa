@@ -16,13 +16,6 @@ type Flag = {
   label_en: string;
 };
 
-function coordinates(value: unknown) {
-  const point = value as { coordinates?: [number, number] } | null;
-  return point?.coordinates
-    ? { longitude: point.coordinates[0], latitude: point.coordinates[1] }
-    : null;
-}
-
 function CategoryForm({
   locale,
   category,
@@ -81,7 +74,6 @@ function CategoryForm({
 
 function CityForm({ locale, city }: { locale: "es" | "en"; city?: City }) {
   const es = locale === "es";
-  const point = coordinates(city?.center);
   return (
     <form action={saveCity} className="stack">
       <input type="hidden" name="locale" value={locale} />
