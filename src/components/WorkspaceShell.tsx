@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Icon, type IconName } from "@/components/Icons";
+import React, { useEffect, useRef, useState, type ReactNode } from "react";
+import { Icon, type IconName } from "./Icons";
 
 export type WorkspaceIcon = Extract<
   IconName,

@@ -175,8 +175,8 @@ const citySchema = z.object({
   slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
   nameEs: z.string().trim().min(2).max(120),
   nameEn: z.string().trim().min(2).max(120),
-  latitude: z.coerce.number().min(27).max(44.5),
-  longitude: z.coerce.number().min(-19).max(5),
+  latitude: z.coerce.number().min(27).max(44.5).optional(),
+  longitude: z.coerce.number().min(-19).max(5).optional(),
   timezone: z.enum(["Europe/Madrid", "Atlantic/Canary"]),
   reason: z.string().trim().min(10).max(500),
 });
@@ -192,8 +192,8 @@ export async function saveCity(formData: FormData) {
     p_slug: parsed.data.slug,
     p_name_es: parsed.data.nameEs,
     p_name_en: parsed.data.nameEn,
-    p_latitude: parsed.data.latitude,
-    p_longitude: parsed.data.longitude,
+    p_latitude: parsed.data.latitude ?? 40.4168,
+    p_longitude: parsed.data.longitude ?? -3.7038,
     p_timezone: parsed.data.timezone,
     p_reason: parsed.data.reason,
   });

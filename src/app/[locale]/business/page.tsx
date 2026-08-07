@@ -233,28 +233,6 @@ export default async function BusinessPage({
                 {es ? "Dirección" : "Address"}
                 <input name="address" required />
               </label>
-              <div className="two-col">
-                <label>
-                  Latitude
-                  <input
-                    name="latitude"
-                    type="number"
-                    step="any"
-                    defaultValue="36.539"
-                    required
-                  />
-                </label>
-                <label>
-                  Longitude
-                  <input
-                    name="longitude"
-                    type="number"
-                    step="any"
-                    defaultValue="-4.624"
-                    required
-                  />
-                </label>
-              </div>
               <button className="button" type="submit">
                 {es
                   ? "Crear y enviar a revisión"

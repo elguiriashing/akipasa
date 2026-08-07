@@ -113,32 +113,6 @@ function CityForm({ locale, city }: { locale: "es" | "en"; city?: City }) {
           minLength={2}
         />
       </label>
-      <div className="two-col">
-        <label>
-          {es ? "Latitud" : "Latitude"}
-          <input
-            name="latitude"
-            type="number"
-            step="any"
-            min="27"
-            max="44.5"
-            defaultValue={point?.latitude}
-            required
-          />
-        </label>
-        <label>
-          {es ? "Longitud" : "Longitude"}
-          <input
-            name="longitude"
-            type="number"
-            step="any"
-            min="-19"
-            max="5"
-            defaultValue={point?.longitude}
-            required
-          />
-        </label>
-      </div>
       <label>
         {es ? "Zona horaria" : "Time zone"}
         <select

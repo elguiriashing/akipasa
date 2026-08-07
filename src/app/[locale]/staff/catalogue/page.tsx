@@ -149,97 +149,126 @@ export default async function StaffCataloguePage({
         </button>
       </form>
       {rows.length ? (
-        <div className="panel managed-list">
-          {rows.map((item) => (
-            <div className="managed-row" key={String(item.id)}>
-              <div>
-                <strong>
-                  {kind === "venues"
-                    ? String(item.name)
-                    : kind === "applications"
-                      ? String(item.business_name)
-                      : String(
-                          (locale === "en"
-                            ? item.title_en || item.title_es
-                            : item.title_es || item.title_en) || item.id,
-                        )}
-                </strong>
-                <span>
-                  {kind === "venues"
-                    ? `${String(item.slug)} / ${String(item.status)}`
-                    : kind === "applications"
-                      ? `${String(item.locality)} / ${String(item.state)} / ${String(item.payment_state)}`
-                      : `${String((item.venues as { name?: string } | null)?.name || "")} / ${String(item.status)}`}
-                </span>
+        <div className="catalogue-grid">
+          {rows.map((item) => {
+            const statusStr = String(item.status || item.state || "draft");
+            const statusClass =
+              statusStr === "published"
+                ? "badge-success"
+                : statusStr === "pending" || statusStr === "under_review"
+                  ? "badge-warning"
+                  : statusStr === "rejected" || statusStr === "archived"
+                    ? "badge-danger"
+                    : "badge-neutral";
+
+            return (
+              <div className="panel catalogue-card" key={String(item.id)}>
+                <div className="catalogue-card-header">
+                  <div>
+                    <h3 className="catalogue-card-title">
+                      {kind === "venues"
+                        ? String(item.name)
+                        : kind === "applications"
+                          ? String(item.business_name)
+                          : String(
+                              (locale === "en"
+                                ? item.title_en || item.title_es
+                                : item.title_es || item.title_en) || item.id,
+                            )}
+                    </h3>
+                    <p className="catalogue-card-sub">
+                      {kind === "venues"
+                        ? String(item.slug)
+                        : kind === "applications"
+                          ? `${String(item.locality || "Spain")} · ${String(item.contact_name || "Applicant")}`
+                          : (item.venues as { name?: string } | null)?.name ||
+                            "Venue"}
+                    </p>
+                  </div>
+                  <span className={`status-pill ${statusClass}`}>
+                    {statusStr.replaceAll("_", " ")}
+                  </span>
+                </div>
+
+                <div className="catalogue-card-actions">
+                  {kind === "venues" && (
+                    <Link
+                      className="button primary small-btn"
+                      href={`/${locale}/staff/catalogue/venues/${String(item.id)}`}
+                    >
+                      {es ? "Gestionar local" : "Manage venue"} →
+                    </Link>
+                  )}
+                  {kind === "events" && (
+                    <Link
+                      className="button primary small-btn"
+                      href={`/${locale}/staff/catalogue/venues/${String(item.venue_id)}`}
+                    >
+                      {es ? "Gestionar evento" : "Manage event"} →
+                    </Link>
+                  )}
+                  {kind === "applications" && (
+                    <details className="settings-disclosure full-width-disclosure">
+                      <summary className="button secondary small-btn">
+                        {es ? "Revisar solicitud" : "Review application"}
+                      </summary>
+                      <form
+                        action={reviewBusinessApplication}
+                        className="stack focused-form"
+                        style={{ marginTop: "1rem" }}
+                      >
+                        <input type="hidden" name="locale" value={locale} />
+                        <input
+                          type="hidden"
+                          name="applicationId"
+                          value={String(item.id)}
+                        />
+                        <input
+                          type="hidden"
+                          name="applicantId"
+                          value={String(item.applicant_id)}
+                        />
+                        <label>
+                          {es ? "Decisión" : "Decision"}
+                          <select name="state" defaultValue="under_review">
+                            <option value="under_review">under_review</option>
+                            <option value="awaiting_payment">
+                              awaiting_payment
+                            </option>
+                            <option value="rejected">rejected</option>
+                          </select>
+                        </label>
+                        <label>
+                          {es ? "Acceso sin cobro" : "No-charge access"}
+                          <select name="grantKind" defaultValue="none">
+                            <option value="none">
+                              {es ? "Ninguno" : "None"}
+                            </option>
+                            <option value="trial_1_month">
+                              {es ? "Prueba de 1 mes" : "1-month trial"}
+                            </option>
+                            <option value="trial_3_month">
+                              {es ? "Prueba de 3 meses" : "3-month trial"}
+                            </option>
+                            <option value="waived">
+                              {es ? "Exención indefinida" : "Indefinite waiver"}
+                            </option>
+                          </select>
+                        </label>
+                        <label>
+                          {es ? "Motivo" : "Reason"}
+                          <textarea name="reason" required minLength={10} />
+                        </label>
+                        <button className="button" type="submit">
+                          {es ? "Guardar decisión" : "Save decision"}
+                        </button>
+                      </form>
+                    </details>
+                  )}
+                </div>
               </div>
-              {kind === "venues" && (
-                <Link
-                  className="button secondary"
-                  href={`/${locale}/staff/catalogue/venues/${String(item.id)}`}
-                >
-                  {es ? "Gestionar" : "Manage"}
-                </Link>
-              )}
-              {kind === "events" && (
-                <Link
-                  className="button secondary"
-                  href={`/${locale}/staff/catalogue/venues/${String(item.venue_id)}`}
-                >
-                  {es ? "Gestionar" : "Manage"}
-                </Link>
-              )}
-              {kind === "applications" && (
-                <details className="settings-disclosure">
-                  <summary>{es ? "Revisar" : "Review"}</summary>
-                  <form action={reviewBusinessApplication} className="stack">
-                    <input type="hidden" name="locale" value={locale} />
-                    <input
-                      type="hidden"
-                      name="applicationId"
-                      value={String(item.id)}
-                    />
-                    <input
-                      type="hidden"
-                      name="applicantId"
-                      value={String(item.applicant_id)}
-                    />
-                    <label>
-                      {es ? "Decision" : "Decision"}
-                      <select name="state" defaultValue="under_review">
-                        <option value="under_review">under_review</option>
-                        <option value="awaiting_payment">
-                          awaiting_payment
-                        </option>
-                        <option value="rejected">rejected</option>
-                      </select>
-                    </label>
-                    <label>
-                      {es ? "Acceso sin cobro" : "No-charge access"}
-                      <select name="grantKind" defaultValue="none">
-                        <option value="none">{es ? "Ninguno" : "None"}</option>
-                        <option value="trial_1_month">
-                          {es ? "Prueba de 1 mes" : "1-month trial"}
-                        </option>
-                        <option value="trial_3_month">
-                          {es ? "Prueba de 3 meses" : "3-month trial"}
-                        </option>
-                        <option value="waived">
-                          {es ? "Exencion indefinida" : "Indefinite waiver"}
-                        </option>
-                      </select>
-                    </label>
-                    <label>
-                      {es ? "Motivo" : "Reason"}
-                      <textarea name="reason" required minLength={10} />
-                    </label>
-                    <button className="button secondary" type="submit">
-                      {es ? "Guardar decision" : "Save decision"}
-                    </button>
-                  </form>
-                </details>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <WorkspaceEmpty

@@ -46,8 +46,8 @@ const venueSchema = z.object({
   descriptionEs: z.string().trim().min(20).max(2000),
   descriptionEn: z.string().trim().max(2000),
   address: z.string().trim().min(5).max(300),
-  latitude: z.coerce.number().min(-90).max(90),
-  longitude: z.coerce.number().min(-180).max(180),
+  latitude: z.coerce.number().min(-90).max(90).optional(),
+  longitude: z.coerce.number().min(-180).max(180).optional(),
 });
 export async function createVenue(formData: FormData) {
   const parsed = venueSchema.safeParse(Object.fromEntries(formData));
@@ -66,8 +66,8 @@ export async function createVenue(formData: FormData) {
     description_es: v.descriptionEs,
     description_en: v.descriptionEn,
     venue_address: v.address,
-    latitude: v.latitude,
-    longitude: v.longitude,
+    latitude: v.latitude ?? place.latitude,
+    longitude: v.longitude ?? place.longitude,
   });
   if (error) redirect(`/${locale}/business?error=venue`);
   redirect(`/${locale}/business?created=venue`);

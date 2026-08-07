@@ -15,21 +15,21 @@ const targetLocalities = [
   { slug: "valencia", name: "València", lat: 39.4699, lon: -0.3763, niches: ["family", "food", "social"] },
 ];
 
-const categoryMap = {
-  music: "20000000-0000-4000-8000-000000000001",
-  social: "20000000-0000-4000-8000-000000000002",
-  workshop: "20000000-0000-4000-8000-000000000003",
-  food: "20000000-0000-4000-8000-000000000004",
-  family: "20000000-0000-4000-8000-000000000005",
-  sport: "20000000-0000-4000-8000-000000000006",
-};
-
 let sql = `-- Production baseline configuration (Cities & Categories).
 -- Fictional demonstration records removed.
 -- Populated with 27 real-world top venues and events across 9 localities.
 
 begin;
 
+delete from reward_redemptions;
+delete from passport_progress;
+delete from passport_steps;
+delete from loyalty_ledger;
+delete from xp_ledger;
+delete from check_ins;
+delete from offers;
+delete from loyalty_programs;
+delete from venue_media;
 delete from event_occurrences;
 delete from events;
 delete from venues;
@@ -41,14 +41,13 @@ on conflict(id) do update set
   slug=excluded.slug, name_es=excluded.name_es, name_en=excluded.name_en, center=excluded.center, timezone=excluded.timezone;
 
 insert into categories(id,slug,name_es,name_en) values
-  ('20000000-0000-4000-8000-000000000001','music','Música','Music'),
-  ('20000000-0000-4000-8000-000000000002','social','Social','Social'),
-  ('20000000-0000-4000-8000-000000000003','workshop','Taller','Workshop'),
-  ('20000000-0000-4000-8000-000000000004','food','Gastronomía','Food'),
-  ('20000000-0000-4000-8000-000000000005','family','Familia','Family'),
-  ('20000000-0000-4000-8000-000000000006','sport','Deporte','Sport')
-on conflict(id) do update set
-  slug=excluded.slug, name_es=excluded.name_es, name_en=excluded.name_en;
+  (gen_random_uuid(),'music','Música','Music'),
+  (gen_random_uuid(),'social','Social','Social'),
+  (gen_random_uuid(),'workshop','Taller','Workshop'),
+  (gen_random_uuid(),'food','Gastronomía','Food'),
+  (gen_random_uuid(),'family','Familia','Family'),
+  (gen_random_uuid(),'sport','Deporte','Sport')
+on conflict(slug) do nothing;
 
 `;
 
@@ -107,7 +106,7 @@ values ('${venueId}', '${venueSlug}', '${name}', '${desc}', '${desc}', 'Centro d
     
     sql += `
 insert into events(id, venue_id, category_id, slug, title_es, title_en, description_es, description_en, status, price_cents, currency, source)
-values ('${eventId}', '${venueId}', '${categoryMap[niche]}', '${eventSlug}', '${eventTitle}', '${eventTitle}', '${desc}', '${desc}', 'published', 0, 'EUR', 'verified_venue');
+values ('${eventId}', '${venueId}', (select id from categories where slug='${niche}'), '${eventSlug}', '${eventTitle}', '${eventTitle}', '${desc}', '${desc}', 'published', 0, 'EUR', 'verified_venue');
 `;
 
     const starts1 = new Date();
