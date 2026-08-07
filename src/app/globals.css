@@ -3489,7 +3489,7 @@ html[data-theme="premium"] .card:hover {
 .catalogue-card {
   display: flex;
   flex-direction: column;
-  justify-space-between;
+  justify-content: space-between;
   padding: 1.35rem;
   border-radius: 1rem;
   background: color-mix(in oklab, var(--surface) 92%, var(--surface-card, #122420));
