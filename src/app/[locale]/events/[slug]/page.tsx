@@ -90,7 +90,7 @@ export default async function EventPage({
           style={{ backgroundImage: `url(${bgImage})` }}
         />
       )}
-      <main className="shell detail">
+      <main className="shell detail-layout">
         <AnalyticsView
           action="event_view"
           venueId={resolvedVenue.id}
@@ -102,7 +102,7 @@ export default async function EventPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <article>
+      <article className="detail-card">
         <div className="eyebrow">
           {event.source === "verified_venue" ? (
             <VerifiedBadge locale={locale} />
@@ -134,7 +134,7 @@ export default async function EventPage({
           {resolvedVenue.name} →
         </Link>
       </article>
-      <aside className="panel">
+      <aside className="detail-sidebar">
         <dl>
           <div>
             <dt>{m.time}</dt>

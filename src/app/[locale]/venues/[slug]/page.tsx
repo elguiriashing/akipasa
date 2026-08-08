@@ -41,20 +41,20 @@ export default async function VenuePage({
           style={{ backgroundImage: `url(${bgImage})` }}
         />
       )}
-      <main className="shell detail">
+      <main className="shell detail-layout">
         <AnalyticsView action="venue_view" venueId={venue.id} locale={locale} />
-      <article>
+      <article className="detail-card">
         <div className="eyebrow">
           {venue.verified ? <VerifiedBadge locale={locale} /> : m.community}
         </div>
         <h1>{venue.name}</h1>
         <p className="lede">{venue.address}</p>
         <p className="detail-copy">{translated(venue.description, locale)}</p>
-        {venue.media?.length ? (
-          <section className="venue-section">
+        {venue.media?.length && venue.media.length > 1 ? (
+          <section className="venue-section mt-8">
             <h2>{locale === "es" ? "Imágenes" : "Images"}</h2>
-            <div className="media-gallery">
-              {venue.media.map((item) => (
+            <div className="media-gallery-grid">
+              {venue.media.slice(1).map((item) => (
                 <Image
                   key={item.id}
                   src={item.url}
@@ -105,7 +105,7 @@ export default async function VenuePage({
           </section>
         ) : null}
       </article>
-      <aside className="panel">
+      <aside className="detail-sidebar">
         <dl>
           <div>
             <dt>{m.location}</dt>
