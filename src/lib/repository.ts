@@ -249,7 +249,9 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
         .createSignedUrls(pathList, 3600);
       if (signedData) {
         signedData.forEach((item) => {
-          if (item.signedUrl) signedUrlMap.set(item.path, item.signedUrl);
+          if (item.signedUrl && item.path) {
+            signedUrlMap.set(item.path, item.signedUrl);
+          }
         });
       }
     }
