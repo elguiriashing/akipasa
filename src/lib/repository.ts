@@ -234,8 +234,8 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
     rows.forEach((row) => {
       const venueRow = one(row.venues);
       if (venueRow && Array.isArray(venueRow.venue_media)) {
-        venueRow.venue_media.forEach((m: any) => {
-          if (m.storage_path) mediaPaths.add(m.storage_path);
+        venueRow.venue_media.forEach((m: Record<string, unknown>) => {
+          if (m.storage_path) mediaPaths.add(String(m.storage_path));
         });
       }
     });
@@ -263,8 +263,9 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
         
         if (Array.isArray(venueRow.venue_media)) {
           const mappedMedia = venueRow.venue_media
-            .map((item: any) => {
-              const url = signedUrlMap.get(item.storage_path);
+            .map((item: Record<string, unknown>) => {
+              const storagePath = String(item.storage_path);
+              const url = signedUrlMap.get(storagePath);
               if (!url) return null;
               return {
                 id: String(item.id),
@@ -275,8 +276,8 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
                 },
               };
             })
-            .filter((item: any): item is NonNullable<typeof item> => item !== null);
-          if (mappedMedia.length > 0) venue.media = mappedMedia;
+            .filter((item: unknown): item is NonNullable<typeof item> => item !== null);
+          if (mappedMedia.length > 0) venue.media = mappedMedia as typeof venue.media;
         }
 
         const distance = distanceKm(
