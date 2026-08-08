@@ -282,6 +282,9 @@ export default async function BusinessPage({
               </div>
 
               <div className="form-actions-right">
+                <p className="fine-print" style={{ marginRight: 'auto', alignSelf: 'center', color: 'var(--muted)' }}>
+                  {es ? "Podrás añadir imágenes una vez creado." : "You can add images after creation."}
+                </p>
                 <button className="button primary" type="submit">
                   {es ? "Crear y enviar a revisión" : "Create and submit for review"}
                 </button>
@@ -368,7 +371,7 @@ export default async function BusinessPage({
                 </label>
               </div>
 
-              <div className="form-grid-three">
+              <div className="form-grid-two">
                 <label>
                   {es ? "Precio en céntimos" : "Price in cents"}
                   <input
@@ -379,7 +382,9 @@ export default async function BusinessPage({
                     required
                   />
                 </label>
+              </div>
 
+              <div className="form-grid-two">
                 <label>
                   {es ? "Inicio" : "Starts"}
                   <input name="startsAt" type="datetime-local" required />

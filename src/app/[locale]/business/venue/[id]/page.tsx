@@ -268,7 +268,7 @@ export default async function VenueWorkspace({
           <summary>
             <strong>{es ? "Imágenes autorizadas" : "Authorised images"}</strong>
           </summary>
-          <form action={uploadVenueImage} className="stack">
+          <form action={uploadVenueImage} className="stack" encType="multipart/form-data">
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="venueId" value={id} />
             <label>

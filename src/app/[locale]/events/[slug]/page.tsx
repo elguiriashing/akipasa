@@ -80,14 +80,23 @@ export default async function EventPage({
       url: bookingUrl,
     },
   };
+  const bgImage = resolvedVenue.media?.[0]?.url;
+  
   return (
-    <main className="shell detail">
-      <AnalyticsView
-        action="event_view"
-        venueId={resolvedVenue.id}
-        eventId={event.id}
-        locale={locale}
-      />
+    <>
+      {bgImage && (
+        <div
+          className="liquid-glass-bg"
+          style={{ backgroundImage: `url(${bgImage})` }}
+        />
+      )}
+      <main className="shell detail">
+        <AnalyticsView
+          action="event_view"
+          venueId={resolvedVenue.id}
+          eventId={event.id}
+          locale={locale}
+        />
       <Script
         id="event-jsonld"
         type="application/ld+json"
@@ -247,5 +256,6 @@ export default async function EventPage({
         </div>
       </aside>
     </main>
+    </>
   );
 }

@@ -21,6 +21,30 @@
   color-scheme: dark;
 }
 
+.liquid-glass-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(20px) saturate(180%) brightness(0.6);
+  transform: scale(1.1); /* Prevent blurred edges from bleeding */
+}
+.liquid-glass-bg::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--surface-alt);
+  opacity: 0.6;
+}
+
 [data-theme="premium"],
 html.theme-premium {
   --primary: #ff9142;

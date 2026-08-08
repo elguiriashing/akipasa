@@ -218,7 +218,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
     const supabase = createSupabasePublicClient();
     const { data, error } = await supabase
       .from("events")
-      .select(`${eventFields},venues(${venueFields})`)
+      .select(`${eventFields},venues(${venueFields},venue_media(id,storage_path,alt_es,alt_en))`)
       .eq("status", "published");
     if (error) throw new Error(`Public event query failed: ${error.message}`);
     const localityKey = query.locality || "fuengirola";
@@ -227,12 +227,58 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       : config.localities.fuengirola;
     const radius = query.radiusKm || 25;
     const now = query.now || new Date();
-    return (data as unknown as DbRecord[])
+    
+    // Process rows to extract media paths
+    const rows = data as unknown as DbRecord[];
+    const mediaPaths = new Set<string>();
+    rows.forEach((row) => {
+      const venueRow = one(row.venues);
+      if (venueRow && Array.isArray(venueRow.venue_media)) {
+        venueRow.venue_media.forEach((m: any) => {
+          if (m.storage_path) mediaPaths.add(m.storage_path);
+        });
+      }
+    });
+
+    // Fetch signed URLs in bulk
+    const pathList = Array.from(mediaPaths);
+    const signedUrlMap = new Map<string, string>();
+    if (pathList.length > 0) {
+      const { data: signedData } = await supabase.storage
+        .from("event-media")
+        .createSignedUrls(pathList, 3600);
+      if (signedData) {
+        signedData.forEach((item) => {
+          if (item.signedUrl) signedUrlMap.set(item.path, item.signedUrl);
+        });
+      }
+    }
+
+    return rows
       .flatMap((row) => {
         const event = eventFromRow(row);
         const venueRow = one(row.venues);
         if (!event || !venueRow) return [];
         const venue = venueFromRow(venueRow);
+        
+        if (Array.isArray(venueRow.venue_media)) {
+          const mappedMedia = venueRow.venue_media
+            .map((item: any) => {
+              const url = signedUrlMap.get(item.storage_path);
+              if (!url) return null;
+              return {
+                id: String(item.id),
+                url,
+                alt: {
+                  es: String(item.alt_es),
+                  ...(item.alt_en ? { en: String(item.alt_en) } : {}),
+                },
+              };
+            })
+            .filter((item: any): item is NonNullable<typeof item> => item !== null);
+          if (mappedMedia.length > 0) venue.media = mappedMedia;
+        }
+
         const distance = distanceKm(
           locality.latitude,
           locality.longitude,

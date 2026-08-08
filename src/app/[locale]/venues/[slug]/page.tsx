@@ -31,9 +31,18 @@ export default async function VenuePage({
         .eq("venue_key", venue.id)
         .maybeSingle()
     : { data: null };
+  const bgImage = venue.media?.[0]?.url;
+
   return (
-    <main className="shell detail">
-      <AnalyticsView action="venue_view" venueId={venue.id} locale={locale} />
+    <>
+      {bgImage && (
+        <div
+          className="liquid-glass-bg"
+          style={{ backgroundImage: `url(${bgImage})` }}
+        />
+      )}
+      <main className="shell detail">
+        <AnalyticsView action="venue_view" venueId={venue.id} locale={locale} />
       <article>
         <div className="eyebrow">
           {venue.verified ? <VerifiedBadge locale={locale} /> : m.community}
@@ -189,5 +198,6 @@ export default async function VenuePage({
         </div>
       </aside>
     </main>
+    </>
   );
 }
