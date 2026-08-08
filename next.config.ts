@@ -4,6 +4,9 @@ import { fileURLToPath } from "node:url";
 
 const nextConfig: NextConfig = {
   typedRoutes: false,
+  serverActions: {
+    bodySizeLimit: "10mb",
+  },
   outputFileTracingRoot: path.dirname(fileURLToPath(import.meta.url)),
   allowedDevOrigins: ["127.0.0.1"],
   webpack: (webpackConfig, { isServer }) => {
