@@ -417,7 +417,35 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       .eq("status", "published")
       .maybeSingle();
     if (error) throw new Error(`Public venue query failed: ${error.message}`);
-    return data ? venueFromRow(data as unknown as DbRecord) : null;
+    const venue = data ? venueFromRow(data as unknown as DbRecord) : null;
+    if (!venue) return null;
+    const { data: media } = await supabase
+      .from("venue_media")
+      .select("id,storage_path,alt_es,alt_en")
+      .eq("venue_id", venue.id)
+      .order("sort_order")
+      .limit(12);
+    const signedMedia = await Promise.all(
+      (media || []).map(async (item) => {
+        const { data: signed } = await supabase.storage
+          .from("event-media")
+          .createSignedUrl(item.storage_path, 3600);
+        if (!signed?.signedUrl) return null;
+        return {
+          id: String(item.id),
+          url: signed.signedUrl,
+          alt: {
+            es: String(item.alt_es),
+            ...(item.alt_en ? { en: String(item.alt_en) } : {}),
+          },
+        };
+      }),
+    );
+    venue.media = signedMedia.filter(
+      (item): item is NonNullable<(typeof signedMedia)[number]> =>
+        item !== null,
+    );
+    return venue;
   }
 
   async eventsForVenue(venueId: string) {

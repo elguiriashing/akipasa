@@ -302,6 +302,7 @@ h3 {
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   transition: width 0.2s ease;
+  z-index: 10;
 }
 
 .app-rail--compact {
@@ -449,6 +450,7 @@ h3 {
 
 .app-topbar-mobile {
   display: none;
+  z-index: 10;
 }
 
 .app-icon-button {
@@ -474,10 +476,12 @@ h3 {
 
 .app-bottom-nav {
   display: none;
+  z-index: 10;
 }
 
 .app-sheet-layer {
   display: none;
+  z-index: 20;
 }
 
 /* Hero */
