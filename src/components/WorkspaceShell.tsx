@@ -78,6 +78,9 @@ export function WorkspaceShell({
   const spanish = homeHref.startsWith("/es/");
   const menuLabel = spanish ? "Menú" : "Menu";
   const closeLabel = spanish ? "Cerrar" : "Close";
+  const consumerWorkspace = ["/account", "/community", "/passports"].some(
+    (segment) => homeHref.includes(segment),
+  );
   const activeItem = items.find((item) =>
     matchesPath(pathname, searchParams, item.href),
   );
@@ -154,7 +157,11 @@ export function WorkspaceShell({
 
   return (
     <main
-      className={["workspace-shell", collapsed ? "is-collapsed" : ""]
+      className={[
+        "workspace-shell",
+        consumerWorkspace ? "consumer-workspace" : "",
+        collapsed ? "is-collapsed" : "",
+      ]
         .filter(Boolean)
         .join(" ")}
       aria-label={title}

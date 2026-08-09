@@ -27,9 +27,10 @@ export default async function AccountLayout({
   const base = `/${locale}/account`;
   const items: WorkspaceItem[] = [
     { href: base, label: es ? "Resumen" : "Overview", icon: "home" },
+    { href: `${base}/saved`, label: es ? "Guardados" : "Saved", icon: "saved" },
     {
-      href: `${base}/subscription`,
-      label: es ? "Membresía" : "Membership",
+      href: `${base}/rewards`,
+      label: es ? "Progreso" : "Progress",
       icon: "gift",
     },
     {
@@ -38,37 +39,11 @@ export default async function AccountLayout({
       icon: "person",
     },
     {
-      href: `${base}/saved`,
-      label: es ? "Eventos guardados" : "Saved events",
-      icon: "saved",
-    },
-    {
-      href: `${base}/following`,
-      label: es ? "Locales seguidos" : "Followed venues",
-      icon: "venue",
-    },
-    {
-      href: `${base}/rewards`,
-      label: es ? "Pasaportes y premios" : "Passports and rewards",
-      icon: "gift",
-    },
-    {
-      href: `${base}/activity`,
-      label: es ? "Actividad" : "Activity",
-      icon: "activity",
-    },
-    {
-      href: `${base}/privacy`,
-      label: es ? "Privacidad y datos" : "Privacy and data",
-      icon: "lock",
-    },
-    {
       href: `${base}/settings`,
       label: es ? "Ajustes" : "Settings",
       icon: "settings",
     },
   ];
-
   return (
     <WorkspaceShell
       title={profile?.display_name || (es ? "Tu cuenta" : "Your account")}

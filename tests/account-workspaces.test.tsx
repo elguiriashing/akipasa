@@ -8,45 +8,38 @@ import { AccountWorkspacePortals } from "../src/components/AccountWorkspacePorta
 
 afterEach(cleanup);
 
-describe("account privileged workspace launchpads", () => {
-  it("does not expose staff or administrator links to consumers", () => {
+describe("account progressive navigation", () => {
+  it("keeps infrequent personal tasks available without exposing internal operations", () => {
     render(<AccountWorkspacePortals locale="en" role="consumer" />);
     expect(
-      screen.queryByRole("heading", { name: "Staff operations" }),
-    ).not.toBeInTheDocument();
+      screen.getByRole("link", { name: /Followed venues/ }),
+    ).toHaveAttribute("href", "/en/account/following");
     expect(
-      screen.queryByRole("heading", { name: "Administration" }),
+      screen.getByRole("link", { name: /Recent activity/ }),
+    ).toHaveAttribute("href", "/en/account/activity");
+    expect(
+      screen.getByRole("link", { name: /Privacy and data/ }),
+    ).toHaveAttribute("href", "/en/account/privacy");
+    expect(
+      screen.queryByRole("link", { name: /Open AkiHQ/ }),
     ).not.toBeInTheDocument();
   });
 
-  it("links staff directly to every operational submenu", () => {
+  it("offers the operations workspace only to staff", () => {
     render(<AccountWorkspacePortals locale="en" role="moderator" />);
-    expect(
-      screen.getByRole("link", { name: /Customer support/ }),
-    ).toHaveAttribute("href", "/en/staff/support");
-    expect(screen.getByRole("link", { name: /Moderation/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /Open AkiHQ/ })).toHaveAttribute(
       "href",
-      "/en/staff/moderation",
+      "https://crm.akipasa.com",
     );
-    expect(
-      screen.getByRole("link", { name: /Venues and events/ }),
-    ).toHaveAttribute("href", "/en/staff/catalogue");
-    expect(
-      screen.queryByRole("heading", { name: "Administration" }),
-    ).not.toBeInTheDocument();
   });
 
-  it("gives administrators direct staff and governance links", () => {
+  it("offers the operations workspace to administrators", () => {
     render(<AccountWorkspacePortals locale="en" role="administrator" />);
-    expect(screen.getByRole("link", { name: /Moderation/ })).toHaveAttribute(
-      "href",
-      "/en/staff/moderation",
-    );
     expect(
-      screen.getByRole("link", { name: /Users and roles/ }),
-    ).toHaveAttribute("href", "/en/admin/users");
+      screen.getByRole("heading", { name: "AkiHQ operations" }),
+    ).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: /Platform settings/ }),
-    ).toHaveAttribute("href", "/en/admin/settings");
+      screen.getByRole("link", { name: /Open AkiHQ/ }),
+    ).toBeInTheDocument();
   });
 });
