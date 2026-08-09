@@ -45,6 +45,8 @@ describe("progressive disclosure workspace shell", () => {
     ).toHaveAttribute("aria-expanded", "false");
     expect(screen.queryByText("?view=")).not.toBeInTheDocument();
     const shell = screen.getByRole("main", { name: "Administration" });
+    expect(shell).toHaveClass("consumer-workspace", "workspace-grid-system");
+    expect(shell.querySelector(".workspace-grid-body")).toBeInTheDocument();
     expect(shell).not.toHaveClass("is-collapsed");
     fireEvent.click(screen.getByRole("button", { name: "Collapse sidebar" }));
     expect(shell).toHaveClass("is-collapsed");

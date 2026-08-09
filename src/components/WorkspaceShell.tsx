@@ -81,8 +81,10 @@ export function WorkspaceShell({
   const consumerWorkspace = [
     "/account",
     "/business",
+    "/admin",
     "/community",
     "/passports",
+    "/staff",
   ].some((segment) => homeHref.includes(segment));
   const activeItem = items.find((item) =>
     matchesPath(pathname, searchParams, item.href),
@@ -162,6 +164,7 @@ export function WorkspaceShell({
     <main
       className={[
         "workspace-shell",
+        "workspace-grid-system",
         consumerWorkspace ? "consumer-workspace" : "",
         collapsed ? "is-collapsed" : "",
       ]
@@ -218,7 +221,7 @@ export function WorkspaceShell({
           </div>
           <p>{description}</p>
         </header>
-        {children}
+        <div className="workspace-grid-body">{children}</div>
       </div>
     </main>
   );
