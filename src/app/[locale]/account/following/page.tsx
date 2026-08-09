@@ -29,6 +29,7 @@ export default async function FollowingPage({
         }
       />
       <AccountItems
+        locale={locale}
         items={(data || []).map((item) => ({
           id: item.venue_key,
           label: item.name,

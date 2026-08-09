@@ -215,7 +215,6 @@ export default async function StaffCataloguePage({
                       <form
                         action={reviewBusinessApplication}
                         className="stack focused-form"
-                        style={{ marginTop: "1rem" }}
                       >
                         <input type="hidden" name="locale" value={locale} />
                         <input

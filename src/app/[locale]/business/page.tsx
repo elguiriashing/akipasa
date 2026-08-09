@@ -135,7 +135,9 @@ export default async function BusinessPage({
       </section>
 
       {(query.created || query.error) && (
-        <p className={`notice ${query.created ? "notice-success" : "notice-error"}`}>
+        <p
+          className={`notice ${query.created ? "notice-success" : "notice-error"}`}
+        >
           {query.created
             ? es
               ? "✓ Guardado correctamente. Puede estar pendiente de revisión."
@@ -196,7 +198,7 @@ export default async function BusinessPage({
                         <div>
                           <strong>{m.venues.name}</strong>
                           <span>
-                            {m.role} · <small style={{ textTransform: "capitalize" }}>{m.venues.status}</small>
+                            {m.role} · <small>{m.venues.status}</small>
                           </span>
                         </div>
                         <a
@@ -223,15 +225,14 @@ export default async function BusinessPage({
 
         {/* Create Venue Form */}
         {view === "venues" && (
-          <details
-            className="panel catalogue-edit-card"
-            open={!managed.length}
-          >
-            <summary style={{ cursor: "pointer", fontWeight: 700, fontSize: "1.1rem" }}>
-              <strong>{es ? "+ Crear un nuevo local" : "+ Create a new venue"}</strong>
+          <details className="panel catalogue-edit-card" open={!managed.length}>
+            <summary>
+              <strong>
+                {es ? "+ Crear un nuevo local" : "+ Create a new venue"}
+              </strong>
             </summary>
 
-            <form action={createVenue} className="stack focused-form" style={{ marginTop: "1.2rem" }}>
+            <form action={createVenue} className="stack focused-form">
               <input type="hidden" name="locale" value={locale} />
 
               <div className="form-grid-two">
@@ -248,7 +249,12 @@ export default async function BusinessPage({
 
                 <label>
                   {es ? "Nombre del local" : "Venue name"}
-                  <input name="name" required minLength={2} placeholder="Ej. El Asador" />
+                  <input
+                    name="name"
+                    required
+                    minLength={2}
+                    placeholder="Ej. El Asador"
+                  />
                 </label>
               </div>
 
@@ -265,14 +271,23 @@ export default async function BusinessPage({
 
                 <label>
                   {es ? "Dirección física" : "Physical address"}
-                  <input name="address" required placeholder="Calle Ejemplo, 12" />
+                  <input
+                    name="address"
+                    required
+                    placeholder="Calle Ejemplo, 12"
+                  />
                 </label>
               </div>
 
               <div className="form-grid-two">
                 <label>
                   {es ? "Descripción en español" : "Spanish description"}
-                  <textarea name="descriptionEs" required minLength={20} rows={3} />
+                  <textarea
+                    name="descriptionEs"
+                    required
+                    minLength={20}
+                    rows={3}
+                  />
                 </label>
 
                 <label>
@@ -282,11 +297,15 @@ export default async function BusinessPage({
               </div>
 
               <div className="form-actions-right">
-                <p className="fine-print" style={{ marginRight: 'auto', alignSelf: 'center', color: 'var(--muted)' }}>
-                  {es ? "Podrás añadir imágenes una vez creado." : "You can add images after creation."}
+                <p className="fine-print form-action-note">
+                  {es
+                    ? "Podrás añadir imágenes una vez creado."
+                    : "You can add images after creation."}
                 </p>
                 <button className="button primary" type="submit">
-                  {es ? "Crear y enviar a revisión" : "Create and submit for review"}
+                  {es
+                    ? "Crear y enviar a revisión"
+                    : "Create and submit for review"}
                 </button>
               </div>
             </form>
@@ -296,11 +315,15 @@ export default async function BusinessPage({
         {/* Create Event Form */}
         {view === "venues" && managed.length > 0 && (
           <details className="panel catalogue-edit-card">
-            <summary style={{ cursor: "pointer", fontWeight: 700, fontSize: "1.1rem" }}>
-              <strong>{es ? "+ Crear evento o actividad" : "+ Create event or activity"}</strong>
+            <summary>
+              <strong>
+                {es
+                  ? "+ Crear evento o actividad"
+                  : "+ Create event or activity"}
+              </strong>
             </summary>
 
-            <form action={createEvent} className="stack focused-form" style={{ marginTop: "1.2rem" }}>
+            <form action={createEvent} className="stack focused-form">
               <input type="hidden" name="locale" value={locale} />
 
               <div className="form-grid-two">
@@ -333,7 +356,11 @@ export default async function BusinessPage({
               <div className="form-grid-two">
                 <label>
                   {es ? "Título en español" : "Spanish title"}
-                  <input name="titleEs" required placeholder="Ej. Noche de Jazz" />
+                  <input
+                    name="titleEs"
+                    required
+                    placeholder="Ej. Noche de Jazz"
+                  />
                 </label>
 
                 <label>
@@ -362,7 +389,12 @@ export default async function BusinessPage({
               <div className="form-grid-two">
                 <label>
                   {es ? "Descripción en español" : "Spanish description"}
-                  <textarea name="descriptionEs" required minLength={20} rows={3} />
+                  <textarea
+                    name="descriptionEs"
+                    required
+                    minLength={20}
+                    rows={3}
+                  />
                 </label>
 
                 <label>
@@ -408,11 +440,15 @@ export default async function BusinessPage({
         {/* Loyalty & Stamps View */}
         {view === "loyalty" && managed.length > 0 && (
           <details className="panel catalogue-edit-card" open>
-            <summary style={{ cursor: "pointer", fontWeight: 700, fontSize: "1.1rem" }}>
-              <strong>{es ? "Programa de Sellos y Recompensas" : "Stamps & Rewards Program"}</strong>
+            <summary>
+              <strong>
+                {es
+                  ? "Programa de Sellos y Recompensas"
+                  : "Stamps & Rewards Program"}
+              </strong>
             </summary>
 
-            <form action={saveLoyaltyProgram} className="stack focused-form" style={{ marginTop: "1.2rem" }}>
+            <form action={saveLoyaltyProgram} className="stack focused-form">
               <input type="hidden" name="locale" value={locale} />
 
               <div className="form-grid-two">
@@ -446,7 +482,12 @@ export default async function BusinessPage({
               <div className="form-grid-two">
                 <label>
                   {es ? "Nombre del programa (ES)" : "Programme name (ES)"}
-                  <input name="titleEs" required minLength={3} placeholder="Ej. Tarjeta VIP" />
+                  <input
+                    name="titleEs"
+                    required
+                    minLength={3}
+                    placeholder="Ej. Tarjeta VIP"
+                  />
                 </label>
 
                 <label>
@@ -458,12 +499,22 @@ export default async function BusinessPage({
               <div className="form-grid-two">
                 <label>
                   {es ? "Recompensa (ES)" : "Reward (ES)"}
-                  <textarea name="rewardEs" required minLength={3} rows={2} placeholder="Ej. Bebida gratis en tu 8ª visita" />
+                  <textarea
+                    name="rewardEs"
+                    required
+                    minLength={3}
+                    rows={2}
+                    placeholder="Ej. Bebida gratis en tu 8ª visita"
+                  />
                 </label>
 
                 <label>
                   {es ? "Recompensa en inglés (EN)" : "English reward (EN)"}
-                  <textarea name="rewardEn" rows={2} placeholder="e.g. Free drink on 8th visit" />
+                  <textarea
+                    name="rewardEn"
+                    rows={2}
+                    placeholder="e.g. Free drink on 8th visit"
+                  />
                 </label>
               </div>
 
@@ -475,7 +526,7 @@ export default async function BusinessPage({
             </form>
 
             {programs && programs.length > 0 && (
-              <div className="managed-list" style={{ marginTop: "1.5rem" }}>
+              <div className="managed-list">
                 {programs.map((program) => (
                   <div className="managed-row" key={program.id}>
                     <div>
@@ -484,12 +535,14 @@ export default async function BusinessPage({
                           ? program.title_en || program.title_es
                           : program.title_es}
                       </strong>
-                      <span style={{ fontSize: "0.85rem", marginTop: "0.2rem" }}>
+                      <span className="managed-meta">
                         <a
                           href={`/${locale}/check-in/${program.check_in_token}`}
-                          style={{ color: "var(--primary)", textDecoration: "underline" }}
+                          className="inline-detail-link"
                         >
-                          {es ? "Abrir enlace de check-in" : "Open check-in link"}
+                          {es
+                            ? "Abrir enlace de check-in"
+                            : "Open check-in link"}
                         </a>
                       </span>
                     </div>
@@ -504,9 +557,13 @@ export default async function BusinessPage({
         )}
 
         {view === "loyalty" && redemptions && redemptions.length > 0 && (
-          <section className="panel catalogue-edit-card" style={{ marginTop: "1.5rem" }}>
-            <h2>{es ? "Recompensas pendientes de canje" : "Pending reward redemptions"}</h2>
-            <div className="managed-list" style={{ marginTop: "1rem" }}>
+          <section className="panel catalogue-edit-card">
+            <h2>
+              {es
+                ? "Recompensas pendientes de canje"
+                : "Pending reward redemptions"}
+            </h2>
+            <div className="managed-list">
               {redemptions.map((item) => (
                 <form
                   action={confirmRedemption}
@@ -534,12 +591,16 @@ export default async function BusinessPage({
         {/* Growth & Promotion Requests */}
         {view === "growth" && managed.length > 0 && (
           <details className="panel catalogue-edit-card" open>
-            <summary style={{ cursor: "pointer", fontWeight: 700, fontSize: "1.1rem" }}>
-              <strong>{es ? "Solicitar Promoción Comercial" : "Request Commercial Promotion"}</strong>
+            <summary>
+              <strong>
+                {es
+                  ? "Solicitar Promoción Comercial"
+                  : "Request Commercial Promotion"}
+              </strong>
             </summary>
 
             {flags.promotion_requests ? (
-              <form action={requestPromotion} className="stack focused-form" style={{ marginTop: "1.2rem" }}>
+              <form action={requestPromotion} className="stack focused-form">
                 <input type="hidden" name="locale" value={locale} />
 
                 <div className="form-grid-two">
@@ -564,12 +625,18 @@ export default async function BusinessPage({
                         {es ? "Destacado patrocinado" : "Sponsored feature"}
                       </option>
                       <option value="social_campaign">
-                        {es ? "Campaña en redes sociales" : "Social media campaign"}
+                        {es
+                          ? "Campaña en redes sociales"
+                          : "Social media campaign"}
                       </option>
                       <option value="content_package">
-                        {es ? "Paquete de contenido VIP" : "VIP Content package"}
+                        {es
+                          ? "Paquete de contenido VIP"
+                          : "VIP Content package"}
                       </option>
-                      <option value="other">{es ? "Otro / Personalizado" : "Other / Custom"}</option>
+                      <option value="other">
+                        {es ? "Otro / Personalizado" : "Other / Custom"}
+                      </option>
                     </select>
                   </label>
                 </div>
@@ -596,7 +663,7 @@ export default async function BusinessPage({
                 </div>
               </form>
             ) : (
-              <p className="notice notice-error" style={{ marginTop: "1rem" }}>
+              <p className="notice notice-error">
                 {es
                   ? "Las nuevas solicitudes de promoción están pausadas temporalmente. Tus solicitudes anteriores siguen visibles."
                   : "New promotion requests are temporarily paused. Your previous requests remain visible."}
@@ -604,11 +671,13 @@ export default async function BusinessPage({
             )}
 
             {promotions && promotions.length > 0 && (
-              <div className="managed-list" style={{ marginTop: "1.5rem" }}>
+              <div className="managed-list">
                 {promotions.map((item) => (
                   <div className="managed-row" key={item.id}>
                     <strong>{item.service}</strong>
-                    <span className="status-pill badge-neutral">{item.state}</span>
+                    <span className="status-pill badge-neutral">
+                      {item.state}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -625,18 +694,16 @@ export default async function BusinessPage({
               </h2>
 
               {rows.length ? (
-                <div className="workspace-summary-grid" style={{ marginTop: "1rem" }}>
+                <div className="workspace-summary-grid">
                   {rows.map((row) => (
                     <article className="panel workspace-stat" key={row.action}>
-                      <span style={{ textTransform: "capitalize" }}>
-                        {row.action.replaceAll("_", " ")}
-                      </span>
+                      <span>{row.action.replaceAll("_", " ")}</span>
                       <strong>{row.total}</strong>
                     </article>
                   ))}
                 </div>
               ) : (
-                <div className="catalogue-empty-card" style={{ marginTop: "1rem" }}>
+                <div className="catalogue-empty-card">
                   <p>
                     {es
                       ? "Aún no hay actividad o impresiones registradas en los últimos 30 días."
@@ -650,15 +717,19 @@ export default async function BusinessPage({
         {/* Claim Venue View */}
         {view === "claims" && claimable && claimable.length > 0 && (
           <details className="panel catalogue-edit-card" open>
-            <summary style={{ cursor: "pointer", fontWeight: 700, fontSize: "1.1rem" }}>
-              <strong>{es ? "Reclamar un local existente" : "Claim an existing venue"}</strong>
+            <summary>
+              <strong>
+                {es ? "Reclamar un local existente" : "Claim an existing venue"}
+              </strong>
             </summary>
 
-            <form action={submitVenueClaim} className="stack focused-form" style={{ marginTop: "1.2rem" }}>
+            <form action={submitVenueClaim} className="stack focused-form">
               <input type="hidden" name="locale" value={locale} />
 
               <label>
-                {es ? "Selecciona el local a reclamar" : "Select venue to claim"}
+                {es
+                  ? "Selecciona el local a reclamar"
+                  : "Select venue to claim"}
                 <select name="venueId" required>
                   {claimable.map((v) => (
                     <option key={v.id} value={v.id}>
@@ -695,9 +766,9 @@ export default async function BusinessPage({
         )}
 
         {view === "claims" && claims && claims.length > 0 && (
-          <section className="panel catalogue-edit-card" style={{ marginTop: "1.5rem" }}>
+          <section className="panel catalogue-edit-card">
             <h2>{es ? "Historial de reclamaciones" : "Claims history"}</h2>
-            <div className="managed-list" style={{ marginTop: "1rem" }}>
+            <div className="managed-list">
               {claims.map((c) => (
                 <div className="managed-row" key={c.id}>
                   <strong>

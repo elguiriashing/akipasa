@@ -135,7 +135,7 @@ export default async function AccountOverview({
           {es ? "Solicitar acceso de negocio" : "Apply for business access"}
         </Link>
       </section>
-      <AccountWorkspacePortals locale={locale} />
+      <AccountWorkspacePortals locale={locale} role={role} />
     </>
   );
 }

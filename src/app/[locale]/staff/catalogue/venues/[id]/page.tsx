@@ -60,7 +60,7 @@ export default async function StaffVenueRecord({
         title={venue.name}
         description={`${venue.slug}`}
         actions={
-          <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+          <>
             <span className={`status-pill ${venueStatusClass}`}>
               {venue.status}
             </span>
@@ -70,11 +70,13 @@ export default async function StaffVenueRecord({
             >
               {es ? "← Volver a locales" : "← Back to venues"}
             </Link>
-          </div>
+          </>
         }
       />
       {(query.updated || query.error) && (
-        <p className={`notice ${query.updated ? "notice-success" : "notice-error"}`}>
+        <p
+          className={`notice ${query.updated ? "notice-success" : "notice-error"}`}
+        >
           {query.updated
             ? es
               ? "✓ Cambio guardado y auditado con éxito."
@@ -157,14 +159,18 @@ export default async function StaffVenueRecord({
                   defaultChecked={venue.verified}
                 />
                 <span>
-                  {es ? "Local verificado oficialmente" : "Officially verified venue"}
+                  {es
+                    ? "Local verificado oficialmente"
+                    : "Officially verified venue"}
                 </span>
               </label>
             </div>
           </div>
 
           <label>
-            {es ? "Motivo del cambio (auditoría obligatoria)" : "Change reason (audit log)"}
+            {es
+              ? "Motivo del cambio (auditoría obligatoria)"
+              : "Change reason (audit log)"}
             <textarea
               name="reason"
               required
@@ -188,7 +194,7 @@ export default async function StaffVenueRecord({
       </section>
 
       {/* Events List Section */}
-      <section className="queue-section" style={{ marginTop: "2rem" }}>
+      <section className="queue-section">
         <div className="catalogue-section-header">
           <h2>{es ? "Eventos asociados" : "Associated events"}</h2>
           <p className="catalogue-section-sub">
@@ -223,7 +229,10 @@ export default async function StaffVenueRecord({
                     : "Free";
 
               return (
-                <details className="panel catalogue-disclosure-card" key={event.id}>
+                <details
+                  className="panel catalogue-disclosure-card"
+                  key={event.id}
+                >
                   <summary className="catalogue-disclosure-summary">
                     <div className="disclosure-summary-main">
                       <strong>{title}</strong>
@@ -235,7 +244,10 @@ export default async function StaffVenueRecord({
                   </summary>
 
                   <div className="disclosure-body">
-                    <form action={operatorUpdateEvent} className="stack focused-form">
+                    <form
+                      action={operatorUpdateEvent}
+                      className="stack focused-form"
+                    >
                       <input type="hidden" name="locale" value={locale} />
                       <input type="hidden" name="venueId" value={venue.id} />
                       <input type="hidden" name="eventId" value={event.id} />
@@ -243,17 +255,26 @@ export default async function StaffVenueRecord({
                       <div className="form-grid-two">
                         <label>
                           {es ? "Título en español" : "Spanish title"}
-                          <input name="titleEs" defaultValue={event.title_es} required />
+                          <input
+                            name="titleEs"
+                            defaultValue={event.title_es}
+                            required
+                          />
                         </label>
                         <label>
                           {es ? "Título en inglés" : "English title"}
-                          <input name="titleEn" defaultValue={event.title_en || ""} />
+                          <input
+                            name="titleEn"
+                            defaultValue={event.title_en || ""}
+                          />
                         </label>
                       </div>
 
                       <div className="form-grid-two">
                         <label>
-                          {es ? "Descripción en español" : "Spanish description"}
+                          {es
+                            ? "Descripción en español"
+                            : "Spanish description"}
                           <textarea
                             name="descriptionEs"
                             defaultValue={event.description_es}
@@ -285,7 +306,9 @@ export default async function StaffVenueRecord({
                           />
                         </label>
                         <label>
-                          {es ? "Enlace de reserva (HTTPS)" : "HTTPS booking URL"}
+                          {es
+                            ? "Enlace de reserva (HTTPS)"
+                            : "HTTPS booking URL"}
                           <input
                             name="bookingUrl"
                             type="url"
@@ -337,16 +360,30 @@ export default async function StaffVenueRecord({
                       <div className="form-grid-two">
                         <label>
                           {es ? "Motivo de eliminación" : "Deletion reason"}
-                          <textarea name="reason" required minLength={10} rows={1} />
+                          <textarea
+                            name="reason"
+                            required
+                            minLength={10}
+                            rows={1}
+                          />
                         </label>
                         <label>
-                          {es ? "Escribe DELETE para confirmar" : "Type DELETE to confirm"}
-                          <input name="confirmation" required pattern="DELETE" placeholder="DELETE" />
+                          {es
+                            ? "Escribe DELETE para confirmar"
+                            : "Type DELETE to confirm"}
+                          <input
+                            name="confirmation"
+                            required
+                            pattern="DELETE"
+                            placeholder="DELETE"
+                          />
                         </label>
                       </div>
 
                       <button className="button danger small-btn" type="submit">
-                        {es ? "Eliminar evento permanentemente" : "Delete event permanently"}
+                        {es
+                          ? "Eliminar evento permanentemente"
+                          : "Delete event permanently"}
                       </button>
                     </form>
                   </div>
@@ -356,7 +393,7 @@ export default async function StaffVenueRecord({
           </div>
         ) : (
           <div className="panel catalogue-empty-card">
-            <p style={{ margin: 0, color: "color-mix(in oklab, var(--ink) 70%, transparent)" }}>
+            <p className="catalogue-empty-copy">
               {es
                 ? "Este local no tiene eventos ni actividades registradas todavía."
                 : "This venue has no registered events or activities yet."}
@@ -366,10 +403,12 @@ export default async function StaffVenueRecord({
       </section>
 
       {/* Danger Zone Section */}
-      <section className="panel catalogue-danger-card" style={{ marginTop: "2.5rem" }}>
+      <section className="panel catalogue-danger-card">
         <div className="catalogue-section-header">
-          <h2 style={{ color: "#f87171" }}>
-            {es ? "Zona de peligro: Eliminar local" : "Danger zone: Delete venue"}
+          <h2>
+            {es
+              ? "Zona de peligro: Eliminar local"
+              : "Danger zone: Delete venue"}
           </h2>
           <p className="catalogue-section-sub">
             {es
@@ -396,14 +435,23 @@ export default async function StaffVenueRecord({
               />
             </label>
             <label>
-              {es ? "Confirmación (Escribe DELETE)" : "Confirmation (Type DELETE)"}
-              <input name="confirmation" required pattern="DELETE" placeholder="DELETE" />
+              {es
+                ? "Confirmación (Escribe DELETE)"
+                : "Confirmation (Type DELETE)"}
+              <input
+                name="confirmation"
+                required
+                pattern="DELETE"
+                placeholder="DELETE"
+              />
             </label>
           </div>
 
           <div className="form-actions-right">
             <button className="button danger" type="submit">
-              {es ? "Eliminar local permanentemente" : "Permanently delete venue"}
+              {es
+                ? "Eliminar local permanentemente"
+                : "Permanently delete venue"}
             </button>
           </div>
         </form>

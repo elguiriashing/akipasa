@@ -65,7 +65,7 @@ export default async function AccountPrivacyPage({
                 : `Request status: ${deletion.state}`}
             </p>
           ) : (
-            <details>
+            <details className="sensitive-action">
               <summary>{es ? "Iniciar eliminación" : "Start deletion"}</summary>
               <form action={requestAccountDeletion} className="stack">
                 <input type="hidden" name="locale" value={locale} />

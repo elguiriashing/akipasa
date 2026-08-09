@@ -92,7 +92,7 @@ export function ProductionMap({
               : "Choose a marker or use the accessible list."}
           </p>
         </div>
-        <Link href={`/${locale}`}>
+        <Link className="back-link" href={`/${locale}`}>
           {locale === "es" ? "Cambiar filtros" : "Change filters"}
         </Link>
       </div>

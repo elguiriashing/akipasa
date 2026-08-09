@@ -52,7 +52,7 @@ export default async function BusinessApplicationPage({
             ? "Solicita acceso, completa la revision y gestiona locales, eventos, promociones y fidelidad."
             : "Apply for access, complete review, then manage venues, events, promotions, and loyalty."}
         </p>
-        <Link href={`/${locale}/account`}>
+        <Link className="back-link" href={`/${locale}/account`}>
           {es ? "<- Volver a la cuenta" : "<- Back to account"}
         </Link>
       </section>

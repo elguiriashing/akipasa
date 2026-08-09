@@ -29,6 +29,7 @@ export default async function SavedEventsPage({
         }
       />
       <AccountItems
+        locale={locale}
         items={(data || []).map((item) => ({
           id: item.event_key,
           label: item.title,

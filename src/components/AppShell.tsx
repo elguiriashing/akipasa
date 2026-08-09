@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { Icon, type IconName } from "@/components/Icons";
-import { LanguageLink } from "@/components/LanguageLink";
-import { ThemeToggle } from "@/components/ThemeModeControls";
-import { config, type Locale } from "@/lib/config";
-import { msg } from "@/lib/messages";
+import React, { useEffect, useRef, useState } from "react";
+import { Icon, type IconName } from "./Icons";
+import { LanguageLink } from "./LanguageLink";
+import { ThemeToggle } from "./ThemeModeControls";
+import { config, type Locale } from "../lib/config";
+import { msg } from "../lib/messages";
 
 type NavItem = {
   href: string;
@@ -16,10 +16,21 @@ type NavItem = {
 };
 
 function isActive(pathname: string, href: string) {
-  return pathname === href || (href.split("/").length > 2 && pathname.startsWith(`${href}/`));
+  return (
+    pathname === href ||
+    (href.split("/").length > 2 && pathname.startsWith(`${href}/`))
+  );
 }
 
-const consoleSegments = ["account", "admin", "staff", "business", "moderation"];
+const consoleSegments = [
+  "account",
+  "admin",
+  "staff",
+  "business",
+  "moderation",
+  "passports",
+  "community",
+];
 
 function isConsoleRoute(pathname: string) {
   const segments = pathname.split("/").filter(Boolean);
@@ -46,13 +57,21 @@ export function AppShell({
   const primaryNav: NavItem[] = [
     { href: `/${locale}`, label: m.discover, icon: "discover" },
     { href: `/${locale}/map`, label: m.map, icon: "map" },
-    { href: `/${locale}/community`, label: es ? "Comunidad" : "Community", icon: "community" },
+    {
+      href: `/${locale}/community`,
+      label: es ? "Comunidad" : "Community",
+      icon: "community",
+    },
     { href: `/${locale}/account`, label: m.saved, icon: "account" },
   ];
 
   const railExtras: NavItem[] = [
     { href: `/${locale}/passports`, label: m.passports, icon: "passport" },
-    { href: `/${locale}/membership`, label: es ? "Membresía" : "Membership", icon: "membership" },
+    {
+      href: `/${locale}/membership`,
+      label: es ? "Membresía" : "Membership",
+      icon: "membership",
+    },
   ];
 
   const compact = isConsoleRoute(pathname);
@@ -63,22 +82,33 @@ export function AppShell({
 
   useEffect(() => {
     if (!sheetOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     sheetCloseRef.current?.focus();
     const onEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") setSheetOpen(false);
     };
     document.addEventListener("keydown", onEscape);
-    return () => document.removeEventListener("keydown", onEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onEscape);
+    };
   }, [sheetOpen]);
 
   return (
     <div className="app-shell">
       {/* Desktop rail */}
       <aside
-        className={`app-rail${compact ? " app-rail--compact" : ""}`}
+        className={["app-rail", compact ? "app-rail--compact" : ""]
+          .filter(Boolean)
+          .join(" ")}
         aria-label={es ? "Navegación principal" : "Primary navigation"}
       >
-        <Link href={`/${locale}`} className="app-rail-brand" aria-label="AkiPasa">
+        <Link
+          href={`/${locale}`}
+          className="app-rail-brand"
+          aria-label="AkiPasa"
+        >
           <span className="app-rail-mark">A</span>
           {!compact && (
             <span>
@@ -126,27 +156,31 @@ export function AppShell({
               {compact ? <Icon name="account" /> : es ? "Entrar" : "Sign in"}
             </Link>
           )}
-          {!compact && (
-            <a
-              className="app-rail-crm"
-              href={config.crmUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Icon name="business" />
-              <span>CRM</span>
-            </a>
-          )}
+          <a
+            className="app-rail-crm"
+            href={config.crmUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={compact ? "CRM" : undefined}
+            aria-label={compact ? "CRM" : undefined}
+          >
+            <Icon name="business" />
+            {!compact && <span>CRM</span>}
+          </a>
           <div className="app-rail-tools">
-            {!compact && <ThemeToggle locale={locale} />}
-            {!compact && <LanguageLink locale={other} />}
+            <ThemeToggle locale={locale} compact={compact} />
+            <LanguageLink locale={other} compact={compact} />
           </div>
         </div>
       </aside>
 
       {/* Mobile top strip */}
       <header className="app-topbar-mobile">
-        <Link href={`/${locale}`} className="app-rail-brand" aria-label="AkiPasa">
+        <Link
+          href={`/${locale}`}
+          className="app-rail-brand"
+          aria-label="AkiPasa"
+        >
           {config.productName}
           <i className="app-rail-brand-dot">.</i>
         </Link>
@@ -163,10 +197,13 @@ export function AppShell({
         </button>
       </header>
 
-      <main className="app-content">{children}</main>
+      <div className="app-content">{children}</div>
 
       {/* Mobile bottom tab bar */}
-      <nav className="app-bottom-nav" aria-label={es ? "Navegación" : "Navigation"}>
+      <nav
+        className="app-bottom-nav"
+        aria-label={es ? "Navegación" : "Navigation"}
+      >
         {primaryNav.map((item) => (
           <Link
             key={item.href}
@@ -206,6 +243,12 @@ export function AppShell({
             aria-label={es ? "Más opciones" : "More options"}
           >
             <div className="app-sheet-handle" aria-hidden="true" />
+            <div className="app-sheet-heading">
+              <span>{es ? "Navegaci\u00f3n" : "Navigation"}</span>
+              <strong>
+                {es ? "M\u00e1s de AkiPasa" : "More from AkiPasa"}
+              </strong>
+            </div>
             <button
               ref={sheetCloseRef}
               type="button"
@@ -217,7 +260,17 @@ export function AppShell({
             </button>
             <nav className="app-sheet-nav">
               {railExtras.map((item) => (
-                <Link key={item.href} href={item.href} onClick={() => setSheetOpen(false)}>
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={
+                    isActive(pathname, item.href) ? "active" : undefined
+                  }
+                  aria-current={
+                    isActive(pathname, item.href) ? "page" : undefined
+                  }
+                  onClick={() => setSheetOpen(false)}
+                >
                   <Icon name={item.icon} />
                   <span>{item.label}</span>
                 </Link>

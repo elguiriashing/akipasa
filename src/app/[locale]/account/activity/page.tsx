@@ -30,6 +30,7 @@ export default async function ActivityPage({
         }
       />
       <AccountItems
+        locale={locale}
         items={(data || []).map((item) => ({
           id: `${item.event_key}-${item.viewed_at}`,
           label: item.title,

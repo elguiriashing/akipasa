@@ -121,7 +121,7 @@ export default async function VenueWorkspace({
               ? "Pendiente de verificación"
               : "Awaiting verification"}
         </p>
-        <Link href={`/${locale}/business`}>
+        <Link className="back-link" href={`/${locale}/business`}>
           ← {es ? "Volver al panel" : "Back to dashboard"}
         </Link>
       </section>
@@ -268,7 +268,11 @@ export default async function VenueWorkspace({
           <summary>
             <strong>{es ? "Imágenes autorizadas" : "Authorised images"}</strong>
           </summary>
-          <form action={uploadVenueImage} className="stack" encType="multipart/form-data">
+          <form
+            action={uploadVenueImage}
+            className="stack"
+            encType="multipart/form-data"
+          >
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="venueId" value={id} />
             <label>

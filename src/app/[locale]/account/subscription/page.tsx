@@ -99,9 +99,12 @@ export default async function SubscriptionPage({
       <section className="billing-plan-grid">
         {plans.map((item) => (
           <article
-            className={`panel console-card billing-plan-card${
-              query.plan === item.plan ? "selected" : ""
-            }`}
+            className={[
+              "panel console-card billing-plan-card",
+              query.plan === item.plan ? "selected" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
             key={item.plan}
           >
             <span className="status-pill">

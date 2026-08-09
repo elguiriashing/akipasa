@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const THEME_KEY = "akipasa.theme";
 
@@ -90,7 +90,13 @@ export function ThemeManager() {
   return null;
 }
 
-export function ThemeToggle({ locale }: { locale: "es" | "en" }) {
+export function ThemeToggle({
+  locale,
+  compact = false,
+}: {
+  locale: "es" | "en";
+  compact?: boolean;
+}) {
   const [mode, setMode] = useState<ThemeMode>("standard");
 
   useEffect(() => {
@@ -114,7 +120,13 @@ export function ThemeToggle({ locale }: { locale: "es" | "en" }) {
   return (
     <button
       type="button"
-      className="theme-toggle button"
+      className={[
+        "theme-toggle",
+        "button",
+        compact ? "theme-toggle--compact" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
       onClick={handleClick}
       aria-label={
         locale === "es"
@@ -123,7 +135,15 @@ export function ThemeToggle({ locale }: { locale: "es" | "en" }) {
       }
       aria-pressed={mode === "premium"}
     >
-      {mode === "premium" ? isStandardDefault : isPremiumDefault}
+      {compact ? (
+        <span className="theme-toggle-symbol" aria-hidden="true">
+          {mode === "premium" ? "\u2600" : "\u25d0"}
+        </span>
+      ) : mode === "premium" ? (
+        isStandardDefault
+      ) : (
+        isPremiumDefault
+      )}
     </button>
   );
 }

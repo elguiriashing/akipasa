@@ -2,10 +2,14 @@ import type { NextConfig } from "next";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+const isDevelopment = process.env.NODE_ENV !== "production";
+
 const nextConfig: NextConfig = {
   typedRoutes: false,
-  serverActions: {
-    bodySizeLimit: "10mb",
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb",
+    },
   },
   outputFileTracingRoot: path.dirname(fileURLToPath(import.meta.url)),
   allowedDevOrigins: ["127.0.0.1"],
@@ -48,7 +52,9 @@ const nextConfig: NextConfig = {
               "form-action 'self' https://accounts.google.com",
               "frame-ancestors 'none'",
               "object-src 'none'",
-              "script-src 'self' 'unsafe-inline'",
+              `script-src 'self' 'unsafe-inline'${
+                isDevelopment ? " 'unsafe-eval'" : ""
+              }`,
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://vhpbvcfkcteswlsdjrfl.supabase.co",
               "font-src 'self' data:",

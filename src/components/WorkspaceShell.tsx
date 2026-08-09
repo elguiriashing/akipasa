@@ -78,6 +78,9 @@ export function WorkspaceShell({
   const spanish = homeHref.startsWith("/es/");
   const menuLabel = spanish ? "Menú" : "Menu";
   const closeLabel = spanish ? "Cerrar" : "Close";
+  const activeItem = items.find((item) =>
+    matchesPath(pathname, searchParams, item.href),
+  );
 
   useEffect(() => {
     if (!drawerOpen) return;
@@ -133,6 +136,7 @@ export function WorkspaceShell({
               className={active ? "active" : undefined}
               onClick={() => setDrawerOpen(false)}
               key={item.href}
+              title={collapsed ? item.label : undefined}
             >
               <span className="workspace-glyph">
                 <Icon name={item.icon} />
@@ -149,7 +153,12 @@ export function WorkspaceShell({
   );
 
   return (
-    <main className={`workspace-shell${collapsed ? "is-collapsed" : ""}`}>
+    <main
+      className={["workspace-shell", collapsed ? "is-collapsed" : ""]
+        .filter(Boolean)
+        .join(" ")}
+      aria-label={title}
+    >
       <button
         className="workspace-mobile-trigger"
         type="button"
@@ -165,7 +174,7 @@ export function WorkspaceShell({
         </span>
         <span>
           <small>{eyebrow}</small>
-          <strong>{navigationTitle}</strong>
+          <strong>{activeItem?.label ?? navigationTitle}</strong>
         </span>
         <span aria-hidden="true">{menuLabel}</span>
       </button>
