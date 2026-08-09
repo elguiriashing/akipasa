@@ -5871,3 +5871,135 @@ html {
     padding-inline: 0.25rem;
   }
 }
+
+/* Desktop consumer workspaces use one global rail and one horizontal context bar. */
+@media (min-width: 851px) {
+  .consumer-workspace,
+  .consumer-workspace.is-collapsed {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.15rem;
+  }
+
+  .consumer-workspace .workspace-sidebar {
+    position: sticky;
+    top: 0.75rem;
+    z-index: 24;
+    display: grid;
+    grid-template-columns: minmax(11rem, auto) auto minmax(0, 1fr);
+    align-items: center;
+    width: 100%;
+    height: auto;
+    padding: 0.55rem 0.65rem;
+    overflow: visible;
+    border: 1px solid var(--consumer-line);
+    border-radius: 1.4rem;
+    box-shadow: 0 12px 42px rgb(0 0 0 / 10%);
+  }
+
+  .consumer-workspace .workspace-brand {
+    padding: 0 0.5rem 0 0;
+  }
+
+  .consumer-workspace .workspace-brand-copy small {
+    display: none;
+  }
+
+  .consumer-workspace .workspace-collapse {
+    display: none;
+  }
+
+  .consumer-workspace .console-switcher {
+    flex-wrap: nowrap;
+    gap: 0.15rem;
+    padding: 0 0.55rem;
+    margin: 0;
+    border: 0;
+    border-inline: 1px solid var(--consumer-line);
+  }
+
+  .consumer-workspace .console-switcher a {
+    flex: 0 0 2.45rem;
+    width: 2.45rem;
+    min-width: 2.45rem;
+    min-height: 2.45rem;
+  }
+
+  .consumer-workspace .console-switcher span,
+  .consumer-workspace.is-collapsed .console-switcher span {
+    display: none;
+  }
+
+  .consumer-workspace .workspace-navigation {
+    display: flex;
+    min-width: 0;
+    gap: 0.2rem;
+    padding-left: 0.55rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .consumer-workspace .workspace-navigation::-webkit-scrollbar {
+    display: none;
+  }
+
+  .consumer-workspace .workspace-navigation a,
+  .consumer-workspace.is-collapsed .workspace-navigation a {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    min-height: 2.85rem;
+    padding: 0.35rem 0.65rem;
+  }
+
+  .consumer-workspace .workspace-link-label,
+  .consumer-workspace.is-collapsed .workspace-link-label {
+    display: block;
+  }
+
+  .consumer-workspace .workspace-count,
+  .consumer-workspace.is-collapsed .workspace-count {
+    display: block;
+  }
+
+  .consumer-workspace .workspace-content {
+    width: min(100%, 72rem);
+    margin-inline: auto;
+  }
+
+  .consumer-workspace .workspace-page-heading {
+    padding-top: clamp(1.75rem, 4vw, 3.5rem);
+  }
+}
+
+.consumer-workspace .focused-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.consumer-workspace .focused-workspace .contribution-card {
+  width: min(100%, 52rem);
+  min-height: 0;
+  margin-inline: auto;
+}
+
+.consumer-workspace .focused-workspace .contribution-card form,
+.consumer-workspace .focused-workspace .focused-form {
+  width: 100%;
+  max-width: none;
+}
+
+.consumer-workspace .catalogue-edit-card > .focused-form,
+.consumer-workspace .catalogue-edit-card > form {
+  width: 100%;
+  max-width: none;
+}
+
+.consumer-workspace .catalogue-edit-card {
+  border-color: var(--consumer-line);
+  background: color-mix(in oklab, var(--surface) 90%, transparent);
+}
+
+@media (max-width: 540px) {
+  .consumer-workspace .focused-workspace .contribution-card {
+    width: 100%;
+  }
+}

@@ -11,7 +11,10 @@ import {
   submitVenueClaim,
 } from "./actions";
 import { sortedSpainLocations } from "@/lib/locations";
-import { ConsoleNav } from "@/components/ConsoleChrome";
+import {
+  WorkspaceShell,
+  type WorkspaceItem,
+} from "@/components/WorkspaceShell";
 import { ConsoleSwitcher } from "@/components/ConsoleSwitcher";
 import { isAdministrator } from "@/lib/roles";
 
@@ -116,24 +119,53 @@ export default async function BusinessPage({
       }),
   );
 
+  const base = `/${locale}/business`;
+  const items: WorkspaceItem[] = [
+    {
+      href: base,
+      label: es ? "Locales" : "Venues",
+      icon: "venue",
+      count: managed.length || undefined,
+    },
+    {
+      href: `${base}?view=loyalty`,
+      label: es ? "Fidelidad" : "Loyalty",
+      icon: "gift",
+      count: redemptions?.length || undefined,
+    },
+    {
+      href: `${base}?view=growth`,
+      label: es ? "Promoción" : "Growth",
+      icon: "megaphone",
+    },
+    { href: `${base}?view=analytics`, label: "Analytics", icon: "activity" },
+    {
+      href: `${base}?view=claims`,
+      label: es ? "Reclamar" : "Claims",
+      icon: "inbox",
+      count: claims?.length || undefined,
+    },
+  ];
   return (
-    <main className="shell dashboard console-dashboard">
-      <ConsoleSwitcher
-        locale={locale}
-        role={profile?.app_role || "organiser"}
-        active="business"
-      />
-
-      <section className="hero">
-        <div className="eyebrow">{es ? "Negocios" : "Business"}</div>
-        <h1>{es ? "Tu panel de control" : "Business Dashboard"}</h1>
-        <p className="lede">
-          {es
-            ? "Crea o reclama un local, gestiona promociones y programas de fidelidad."
-            : "Create or claim a venue, manage promotions and loyalty programs."}
-        </p>
-      </section>
-
+    <WorkspaceShell
+      title={es ? "Tu negocio" : "Your business"}
+      eyebrow={es ? "Panel de negocio" : "Business workspace"}
+      description={
+        es
+          ? "Gestiona tus locales, fidelidad y crecimiento desde un solo espacio."
+          : "Manage venues, loyalty, and growth from one focused workspace."
+      }
+      homeHref={base}
+      items={items}
+      navigationTitle={es ? "Negocio" : "Business"}
+      switcher={
+        <ConsoleSwitcher
+          locale={locale}
+          role={profile?.app_role || "organiser"}
+          active="business"
+        />
+      }
+    >
       {(query.created || query.error) && (
         <p
           className={`notice ${query.created ? "notice-success" : "notice-error"}`}
@@ -147,35 +179,6 @@ export default async function BusinessPage({
               : "✕ Could not save. Check the fields or permissions."}
         </p>
       )}
-
-      <ConsoleNav
-        basePath={`/${locale}/business`}
-        active={view}
-        label={es ? "Secciones de negocio" : "Business sections"}
-        items={[
-          {
-            value: "venues",
-            label: es ? "Locales" : "Venues",
-            icon: "VE",
-            count: managed.length,
-          },
-          {
-            value: "loyalty",
-            label: es ? "Fidelidad" : "Loyalty",
-            icon: "ST",
-            count: redemptions?.length || 0,
-          },
-          { value: "growth", label: es ? "Promoción" : "Growth", icon: "GR" },
-          { value: "analytics", label: "Analytics", icon: "AN" },
-          {
-            value: "claims",
-            label: es ? "Reclamar" : "Claims",
-            icon: "CL",
-            count: claims?.length || 0,
-          },
-        ]}
-      />
-
       <section className="dashboard-grid">
         {/* Managed Venues List */}
         {view === "venues" && (
@@ -781,6 +784,6 @@ export default async function BusinessPage({
           </section>
         )}
       </section>
-    </main>
+    </WorkspaceShell>
   );
 }

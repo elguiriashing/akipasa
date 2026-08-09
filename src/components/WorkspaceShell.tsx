@@ -78,9 +78,12 @@ export function WorkspaceShell({
   const spanish = homeHref.startsWith("/es/");
   const menuLabel = spanish ? "Menú" : "Menu";
   const closeLabel = spanish ? "Cerrar" : "Close";
-  const consumerWorkspace = ["/account", "/community", "/passports"].some(
-    (segment) => homeHref.includes(segment),
-  );
+  const consumerWorkspace = [
+    "/account",
+    "/business",
+    "/community",
+    "/passports",
+  ].some((segment) => homeHref.includes(segment));
   const activeItem = items.find((item) =>
     matchesPath(pathname, searchParams, item.href),
   );
