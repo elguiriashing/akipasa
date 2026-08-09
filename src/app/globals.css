@@ -5285,8 +5285,8 @@ html {
 
 .consumer-workspace .workspace-mark {
   border-radius: 50%;
-  background: var(--ink);
-  color: var(--surface);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #1a0e05;
   box-shadow: none;
 }
 
@@ -5313,8 +5313,8 @@ html {
 }
 
 .consumer-workspace .console-switcher a.active {
-  background: var(--ink);
-  color: var(--surface);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #1a0e05;
 }
 
 .consumer-workspace .workspace-navigation {
@@ -5335,14 +5335,14 @@ html {
 }
 
 .consumer-workspace .workspace-navigation a.active {
-  background: var(--ink);
-  color: var(--surface);
+  background: linear-gradient(120deg, var(--primary), var(--primary-dark));
+  color: #1a0e05;
   box-shadow: none;
 }
 
 .consumer-workspace .workspace-navigation a.active .workspace-glyph {
-  background: color-mix(in oklab, var(--surface) 16%, transparent);
-  color: var(--surface);
+  background: rgb(26 14 5 / 10%);
+  color: #1a0e05;
 }
 
 .consumer-workspace .workspace-glyph {
@@ -5583,8 +5583,8 @@ html {
 }
 
 .consumer-workspace .button:not(.secondary) {
-  background: var(--ink);
-  color: var(--surface);
+  background: linear-gradient(120deg, var(--primary), var(--primary-dark));
+  color: #1a0e05;
 }
 
 .consumer-workspace .button.secondary {
