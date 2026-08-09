@@ -107,14 +107,14 @@ function formatResult(command: string, result: CommandResult) {
       "🏢 AkiPasa Venues Overview",
       `Total Venues: ${data.totalVenues || 0}`,
       `Verified: ${data.verifiedVenues || 0}`,
-      `Top Venues: ${data.topVenues ? data.topVenues.join(", ") : "All venues synced live to CRM"}`,
+      `Top Venues: ${Array.isArray(data.topVenues) ? data.topVenues.join(", ") : "All venues synced live to CRM"}`,
     ].join("\n");
   }
   if (command === "crm-deals") {
     return [
       "💼 AkiHQ Sales Deals & Pipeline",
       `Active Deals: ${data.activeDeals || 0}`,
-      `Pipeline Value: ${money((data.pipelineValue || 0) * 100, "EUR")}`,
+      `Pipeline Value: ${money((typeof data.pipelineValue === "number" ? data.pipelineValue : 0) * 100, "EUR")}`,
       `Stages: Prospect, Demo, Contact Needed, Closed Won`,
     ].join("\n");
   }

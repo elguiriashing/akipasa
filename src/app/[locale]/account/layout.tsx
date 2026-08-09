@@ -80,7 +80,9 @@ export default async function AccountLayout({
       }
       homeHref={base}
       items={items}
-      switcher={<ConsoleSwitcher locale={locale} role={role} active="account" />}
+      switcher={
+        <ConsoleSwitcher locale={locale} role={role} active="account" />
+      }
     >
       {children}
     </WorkspaceShell>

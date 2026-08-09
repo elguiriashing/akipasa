@@ -66,7 +66,11 @@ export default async function StaffLayout({
       homeHref={base}
       items={items}
       switcher={
-        <ConsoleSwitcher locale={locale} role={profile.app_role} active="staff" />
+        <ConsoleSwitcher
+          locale={locale}
+          role={profile.app_role}
+          active="staff"
+        />
       }
     >
       {children}

@@ -43,161 +43,161 @@ export default async function VenuePage({
       )}
       <main className="shell detail-layout">
         <AnalyticsView action="venue_view" venueId={venue.id} locale={locale} />
-      <article className="detail-card">
-        <div className="eyebrow">
-          {venue.verified ? <VerifiedBadge locale={locale} /> : m.community}
-        </div>
-        <h1>{venue.name}</h1>
-        <p className="lede">{venue.address}</p>
-        <p className="detail-copy">{translated(venue.description, locale)}</p>
-        {venue.media?.length && venue.media.length > 1 ? (
-          <section className="venue-section mt-8">
-            <h2>{locale === "es" ? "Imágenes" : "Images"}</h2>
-            <div className="media-gallery-grid">
-              {venue.media.slice(1).map((item) => (
-                <Image
-                  key={item.id}
-                  src={item.url}
-                  alt={translated(item.alt, locale)}
-                  width={720}
-                  height={480}
-                  sizes="(max-width: 700px) 100vw, 50vw"
-                />
+        <article className="detail-card">
+          <div className="eyebrow">
+            {venue.verified ? <VerifiedBadge locale={locale} /> : m.community}
+          </div>
+          <h1>{venue.name}</h1>
+          <p className="lede">{venue.address}</p>
+          <p className="detail-copy">{translated(venue.description, locale)}</p>
+          {venue.media?.length && venue.media.length > 1 ? (
+            <section className="venue-section mt-8">
+              <h2>{locale === "es" ? "Imágenes" : "Images"}</h2>
+              <div className="media-gallery-grid">
+                {venue.media.slice(1).map((item) => (
+                  <Image
+                    key={item.id}
+                    src={item.url}
+                    alt={translated(item.alt, locale)}
+                    width={720}
+                    height={480}
+                    sizes="(max-width: 700px) 100vw, 50vw"
+                  />
+                ))}
+              </div>
+            </section>
+          ) : null}
+          <h2>{m.discover}</h2>
+          {events.map((event) => (
+            <p key={event.id}>
+              <Link href={`/${locale}/events/${event.slug}`}>
+                {translated(event.title, locale)} →
+              </Link>
+            </p>
+          ))}
+          {venue.offers?.length ? (
+            <section className="venue-section">
+              <h2>{locale === "es" ? "Ofertas" : "Offers"}</h2>
+              {venue.offers.map((offer) => (
+                <article className="offer-card" key={offer.id}>
+                  <h3>{translated(offer.title, locale)}</h3>
+                  <p>{translated(offer.terms, locale)}</p>
+                </article>
               ))}
+            </section>
+          ) : null}
+          {venue.loyalty?.length ? (
+            <section className="venue-section">
+              <h2>{locale === "es" ? "Fidelidad" : "Loyalty"}</h2>
+              {venue.loyalty.map((program) => (
+                <article className="offer-card" key={program.id}>
+                  <h3>{translated(program.title, locale)}</h3>
+                  <p>
+                    {program.stampsRequired}{" "}
+                    {locale === "es" ? "sellos" : "stamps"} ·{" "}
+                    {translated(program.reward, locale)}
+                  </p>
+                  <Link href={`/${locale}/passports`}>
+                    {locale === "es" ? "Ver mi progreso" : "View my progress"} →
+                  </Link>
+                </article>
+              ))}
+            </section>
+          ) : null}
+        </article>
+        <aside className="detail-sidebar">
+          <dl>
+            <div>
+              <dt>{m.location}</dt>
+              <dd>{venue.address}</dd>
             </div>
-          </section>
-        ) : null}
-        <h2>{m.discover}</h2>
-        {events.map((event) => (
-          <p key={event.id}>
-            <Link href={`/${locale}/events/${event.slug}`}>
-              {translated(event.title, locale)} →
-            </Link>
-          </p>
-        ))}
-        {venue.offers?.length ? (
-          <section className="venue-section">
-            <h2>{locale === "es" ? "Ofertas" : "Offers"}</h2>
-            {venue.offers.map((offer) => (
-              <article className="offer-card" key={offer.id}>
-                <h3>{translated(offer.title, locale)}</h3>
-                <p>{translated(offer.terms, locale)}</p>
-              </article>
-            ))}
-          </section>
-        ) : null}
-        {venue.loyalty?.length ? (
-          <section className="venue-section">
-            <h2>{locale === "es" ? "Fidelidad" : "Loyalty"}</h2>
-            {venue.loyalty.map((program) => (
-              <article className="offer-card" key={program.id}>
-                <h3>{translated(program.title, locale)}</h3>
-                <p>
-                  {program.stampsRequired}{" "}
-                  {locale === "es" ? "sellos" : "stamps"} ·{" "}
-                  {translated(program.reward, locale)}
-                </p>
-                <Link href={`/${locale}/passports`}>
-                  {locale === "es" ? "Ver mi progreso" : "View my progress"} →
-                </Link>
-              </article>
-            ))}
-          </section>
-        ) : null}
-      </article>
-      <aside className="detail-sidebar">
-        <dl>
-          <div>
-            <dt>{m.location}</dt>
-            <dd>{venue.address}</dd>
-          </div>
-          <div>
-            <dt>{m.accessibility}</dt>
-            <dd>{venue.accessible ? "✓" : "—"}</dd>
-          </div>
-        </dl>
-        <div className="actions">
-          <TrackedLink
-            className="button"
-            href={`https://www.google.com/maps/search/?api=1&query=${venue.latitude},${venue.longitude}`}
-            target="_blank"
-            rel="noreferrer"
-            action="directions_click"
-            venueId={venue.id}
-            locale={locale}
-          >
-            {m.directions}
-          </TrackedLink>
-          {venue.phone && (
-            <a className="button secondary" href={`tel:${venue.phone}`}>
-              {locale === "es" ? "Llamar" : "Call"}
-            </a>
-          )}
-          {venue.whatsappPhone && (
-            <a
-              className="button secondary"
-              href={`https://wa.me/${venue.whatsappPhone.replace(/\D/g, "")}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              WhatsApp
-            </a>
-          )}
-          {venue.websiteUrl && (
+            <div>
+              <dt>{m.accessibility}</dt>
+              <dd>{venue.accessible ? "✓" : "—"}</dd>
+            </div>
+          </dl>
+          <div className="actions">
             <TrackedLink
-              className="button secondary"
-              href={venue.websiteUrl}
+              className="button"
+              href={`https://www.google.com/maps/search/?api=1&query=${venue.latitude},${venue.longitude}`}
               target="_blank"
               rel="noreferrer"
-              action="booking_click"
+              action="directions_click"
               venueId={venue.id}
               locale={locale}
             >
-              {locale === "es" ? "Sitio web" : "Website"}
+              {m.directions}
             </TrackedLink>
-          )}
-          {user ? (
-            <form action={toggleFollowedVenue}>
-              <input type="hidden" name="locale" value={locale} />
-              <input type="hidden" name="key" value={venue.id} />
-              <input type="hidden" name="label" value={venue.name} />
-              <input type="hidden" name="href" value={returnTo} />
-              <input type="hidden" name="returnTo" value={returnTo} />
-              <input
-                type="hidden"
-                name="intent"
-                value={followed ? "remove" : "add"}
-              />
-              <button className="button secondary" type="submit">
-                {followed
-                  ? locale === "es"
-                    ? "Dejar de seguir"
-                    : "Unfollow"
-                  : locale === "es"
-                    ? "Seguir local"
-                    : "Follow venue"}
-              </button>
-            </form>
-          ) : (
+            {venue.phone && (
+              <a className="button secondary" href={`tel:${venue.phone}`}>
+                {locale === "es" ? "Llamar" : "Call"}
+              </a>
+            )}
+            {venue.whatsappPhone && (
+              <a
+                className="button secondary"
+                href={`https://wa.me/${venue.whatsappPhone.replace(/\D/g, "")}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                WhatsApp
+              </a>
+            )}
+            {venue.websiteUrl && (
+              <TrackedLink
+                className="button secondary"
+                href={venue.websiteUrl}
+                target="_blank"
+                rel="noreferrer"
+                action="booking_click"
+                venueId={venue.id}
+                locale={locale}
+              >
+                {locale === "es" ? "Sitio web" : "Website"}
+              </TrackedLink>
+            )}
+            {user ? (
+              <form action={toggleFollowedVenue}>
+                <input type="hidden" name="locale" value={locale} />
+                <input type="hidden" name="key" value={venue.id} />
+                <input type="hidden" name="label" value={venue.name} />
+                <input type="hidden" name="href" value={returnTo} />
+                <input type="hidden" name="returnTo" value={returnTo} />
+                <input
+                  type="hidden"
+                  name="intent"
+                  value={followed ? "remove" : "add"}
+                />
+                <button className="button secondary" type="submit">
+                  {followed
+                    ? locale === "es"
+                      ? "Dejar de seguir"
+                      : "Unfollow"
+                    : locale === "es"
+                      ? "Seguir local"
+                      : "Follow venue"}
+                </button>
+              </form>
+            ) : (
+              <Link
+                className="button secondary"
+                href={`/${locale}/auth?next=${encodeURIComponent(returnTo)}`}
+              >
+                {locale === "es" ? "Seguir local" : "Follow venue"}
+              </Link>
+            )}
             <Link
               className="button secondary"
-              href={`/${locale}/auth?next=${encodeURIComponent(returnTo)}`}
+              href={`/${locale}/community?target=venue:${venue.id}`}
             >
-              {locale === "es" ? "Seguir local" : "Follow venue"}
+              {locale === "es" ? "Informar de un problema" : "Report a problem"}
             </Link>
-          )}
-          <Link
-            className="button secondary"
-            href={`/${locale}/community?target=venue:${venue.id}`}
-          >
-            {locale === "es" ? "Informar de un problema" : "Report a problem"}
-          </Link>
-          <Link className="button secondary" href={`/${locale}`}>
-            {m.back}
-          </Link>
-        </div>
-      </aside>
-    </main>
+            <Link className="button secondary" href={`/${locale}`}>
+              {m.back}
+            </Link>
+          </div>
+        </aside>
+      </main>
     </>
   );
 }

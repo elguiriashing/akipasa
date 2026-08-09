@@ -35,9 +35,11 @@ export default async function StaffAuditPage({
         <div className="audit-card-list">
           {data.map((item) => {
             const badgeClass =
-              item.action.includes("published") || item.action.includes("create")
+              item.action.includes("published") ||
+              item.action.includes("create")
                 ? "badge-success"
-                : item.action.includes("delete") || item.action.includes("reject")
+                : item.action.includes("delete") ||
+                    item.action.includes("reject")
                   ? "badge-danger"
                   : item.action.includes("role")
                     ? "badge-warning"
@@ -50,7 +52,9 @@ export default async function StaffAuditPage({
                     <span className={`status-pill ${badgeClass}`}>
                       {item.action}
                     </span>
-                    <strong className="audit-target-type">{item.target_type}</strong>
+                    <strong className="audit-target-type">
+                      {item.target_type}
+                    </strong>
                   </div>
                   <time className="audit-time" dateTime={item.created_at}>
                     {new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", {

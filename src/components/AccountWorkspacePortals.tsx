@@ -101,7 +101,11 @@ export function AccountWorkspacePortals({
             target="_blank"
             rel="noopener noreferrer"
           >
-            <strong>{es ? "Abrir CRM (crm.akipasa.com)" : "Open CRM (crm.akipasa.com)"}</strong>
+            <strong>
+              {es
+                ? "Abrir CRM (crm.akipasa.com)"
+                : "Open CRM (crm.akipasa.com)"}
+            </strong>
             <span aria-hidden="true">-&gt;</span>
           </a>
         </div>

@@ -58,7 +58,9 @@ export function ConsoleSwitcher({
 }) {
   const es = locale === "es";
   const capabilities = roleCapabilities(role);
-  const available = consoleOrder.filter((entry) => capabilities[entry.requires]);
+  const available = consoleOrder.filter(
+    (entry) => capabilities[entry.requires],
+  );
 
   if (available.length < 2) return null;
 

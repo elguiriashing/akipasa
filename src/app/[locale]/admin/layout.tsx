@@ -76,7 +76,11 @@ export default async function AdminLayout({
       homeHref={base}
       items={items}
       switcher={
-        <ConsoleSwitcher locale={locale} role={profile.app_role} active="admin" />
+        <ConsoleSwitcher
+          locale={locale}
+          role={profile.app_role}
+          active="admin"
+        />
       }
     >
       {children}

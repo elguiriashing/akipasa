@@ -92,7 +92,9 @@ const paths: Record<IconName, React.ReactNode> = {
     </>
   ),
   saved: <path d="M6 3h12v18l-6-4-6 4z" />,
-  heart: <path d="M12 20.5S4 15.2 4 9.7A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 8 2.7c0 5.5-8 10.8-8 10.8Z" />,
+  heart: (
+    <path d="M12 20.5S4 15.2 4 9.7A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 8 2.7c0 5.5-8 10.8-8 10.8Z" />
+  ),
   "heart-fill": (
     <path
       d="M12 20.5S4 15.2 4 9.7A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 8 2.7c0 5.5-8 10.8-8 10.8Z"
@@ -134,7 +136,9 @@ const paths: Record<IconName, React.ReactNode> = {
   moon: <path d="M20 14.5a8.5 8.5 0 1 1-8.9-11 7 7 0 0 0 8.9 11Z" />,
   close: <path d="M6 6l12 12M18 6 6 18" />,
   chevron: <path d="m9 6 6 6-6 6" />,
-  star: <path d="m12 3 2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6-4.5-4.2 6.1-.7Z" />,
+  star: (
+    <path d="m12 3 2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6-4.5-4.2 6.1-.7Z" />
+  ),
   activity: <path d="M4 13h3l2-6 4 10 2-5h5" />,
   audit: (
     <>

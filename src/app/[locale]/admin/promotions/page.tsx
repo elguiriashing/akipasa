@@ -57,7 +57,9 @@ export default async function AdminPromotionsPage({
         }
       />
       {(query.updated || query.error) && (
-        <p className={`notice ${query.updated ? "notice-success" : "notice-error"}`}>
+        <p
+          className={`notice ${query.updated ? "notice-success" : "notice-error"}`}
+        >
           {query.updated
             ? es
               ? "✓ Cambio guardado."
