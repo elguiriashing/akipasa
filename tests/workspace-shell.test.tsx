@@ -190,3 +190,24 @@ it("keeps authorized workspaces in the persistent desktop navigation", () => {
     1,
   );
 });
+
+it("keeps the business application reachable before sign in", () => {
+  render(
+    <AppShell locale="en" signedIn={false}>
+      <main>Discovery content</main>
+    </AppShell>,
+  );
+
+  const rail = screen.getByRole("complementary", {
+    name: "Primary navigation",
+  });
+  expect(
+    within(rail).getByRole("link", { name: "Add your business" }),
+  ).toHaveAttribute("href", "/en/business/apply");
+
+  fireEvent.click(screen.getByRole("button", { name: "More options" }));
+  const dialog = screen.getByRole("dialog", { name: "More options" });
+  expect(
+    within(dialog).getByRole("link", { name: "Add your business" }),
+  ).toHaveAttribute("href", "/en/business/apply");
+});

@@ -71,15 +71,15 @@ begin
     jsonb_build_object('step_free',source.step_free),
     'published'::content_status
   from (values
-    ('a1000000-0000-4000-8000-000000000001'::uuid,'fuengirola','la-salina-social','La Salina Social','Espacio ficticio de musica y cultura junto al paseo.','Fictional music and culture space near the promenade.','Paseo Maritimo, zona centro (demo)',-4.622,36.5405,true,true),
-    ('a1000000-0000-4000-8000-000000000002'::uuid,'boliches','patio-limon','Patio Limon','Cafe ficticio con talleres y encuentros.','Fictional cafe hosting workshops and meetups.','Calle del Mercado (demo)',-4.614,36.552,true,true),
-    ('a1000000-0000-4000-8000-000000000003'::uuid,'carvajal','el-faro-lab','El Faro Lab','Espacio creativo ficticio en Carvajal.','Fictional creative space in Carvajal.','Avenida del Sol (demo)',-4.596,36.568,false,false),
-    ('a1000000-0000-4000-8000-000000000004'::uuid,'madrid','azotea-cobalto','Azotea Cobalto','Espacio cultural ficticio en Madrid.','Fictional cultural venue in Madrid.','Calle de la Luna, Madrid (demo)',-3.706,40.421,true,true),
-    ('a1000000-0000-4000-8000-000000000005'::uuid,'barcelona','taller-mar-blau','Taller Mar Blau','Taller creativo ficticio en Barcelona.','Fictional creative workshop in Barcelona.','Carrer de la Marina, Barcelona (demo)',2.177,41.392,true,true),
-    ('a1000000-0000-4000-8000-000000000006'::uuid,'valencia','patio-turia','Patio Turia','Patio gastronomico ficticio en Valencia.','Fictional food courtyard in Valencia.','Carrer del Turia, Valencia (demo)',-0.384,39.476,true,true),
-    ('a1000000-0000-4000-8000-000000000007'::uuid,'sevilla','corral-naranja','Corral Naranja','Escenario vecinal ficticio en Sevilla.','Fictional neighbourhood stage in Seville.','Alameda, Sevilla (demo)',-5.993,37.399,true,false),
-    ('a1000000-0000-4000-8000-000000000008'::uuid,'bilbao','ria-sonora','Ria Sonora','Sala musical ficticia en Bilbao.','Fictional music room in Bilbao.','Muelle de la Ria, Bilbao (demo)',-2.929,43.267,true,true),
-    ('a1000000-0000-4000-8000-000000000009'::uuid,'palma','illa-oberta','Illa Oberta','Espacio social ficticio en Palma.','Fictional social venue in Palma.','Carrer de la Mar, Palma (demo)',2.646,39.572,true,true)
+    ('a1000000-0000-4000-8000-000000000001'::uuid,'fuengirola','la-salina-social','La Salina Social','Registro historico de musica y cultura junto al paseo.','Historical music and culture record near the promenade.','Paseo Maritimo, zona centro',-4.622,36.5405,true,true),
+    ('a1000000-0000-4000-8000-000000000002'::uuid,'boliches','patio-limon','Patio Limon','Registro historico de cafe con talleres y encuentros.','Historical cafe record for workshops and meetups.','Calle del Mercado',-4.614,36.552,true,true),
+    ('a1000000-0000-4000-8000-000000000003'::uuid,'carvajal','el-faro-lab','El Faro Lab','Registro creativo historico en Carvajal.','Historical creative-space record in Carvajal.','Avenida del Sol',-4.596,36.568,false,false),
+    ('a1000000-0000-4000-8000-000000000004'::uuid,'madrid','azotea-cobalto','Azotea Cobalto','Registro cultural historico en Madrid.','Historical cultural-venue record in Madrid.','Calle de la Luna, Madrid',-3.706,40.421,true,true),
+    ('a1000000-0000-4000-8000-000000000005'::uuid,'barcelona','taller-mar-blau','Taller Mar Blau','Registro creativo historico en Barcelona.','Historical creative-workshop record in Barcelona.','Carrer de la Marina, Barcelona',2.177,41.392,true,true),
+    ('a1000000-0000-4000-8000-000000000006'::uuid,'valencia','patio-turia','Patio Turia','Registro gastronomico historico en Valencia.','Historical food-courtyard record in Valencia.','Carrer del Turia, Valencia',-0.384,39.476,true,true),
+    ('a1000000-0000-4000-8000-000000000007'::uuid,'sevilla','corral-naranja','Corral Naranja','Registro vecinal historico en Sevilla.','Historical neighbourhood-stage record in Seville.','Alameda, Sevilla',-5.993,37.399,true,false),
+    ('a1000000-0000-4000-8000-000000000008'::uuid,'bilbao','ria-sonora','Ria Sonora','Registro musical historico en Bilbao.','Historical music-room record in Bilbao.','Muelle de la Ria, Bilbao',-2.929,43.267,true,true),
+    ('a1000000-0000-4000-8000-000000000009'::uuid,'palma','illa-oberta','Illa Oberta','Registro social historico en Palma.','Historical social-venue record in Palma.','Carrer de la Mar, Palma',2.646,39.572,true,true)
   ) as source(id,city_slug,slug,name,description_es,description_en,address,longitude,latitude,verified,step_free)
   join cities on cities.slug=source.city_slug
   on conflict (slug) do nothing;
@@ -115,15 +115,15 @@ begin
     source.booking_url,
     'published'::content_status
   from (values
-    ('a3000000-0000-4000-8000-000000000001'::uuid,'la-salina-social','atardecer-jazz','Jazz al atardecer','Sunset jazz','Sesion acustica de demostracion. Evento y local ficticios.','Demo acoustic session. Event and venue are fictional.','music',0,'verified_venue',false,'https://example.com/demo-booking'),
+    ('a3000000-0000-4000-8000-000000000001'::uuid,'la-salina-social','atardecer-jazz','Jazz al atardecer','Sunset jazz','Registro historico de una sesion acustica.','Historical acoustic-session record.','music',0,'verified_venue',false,null),
     ('a3000000-0000-4000-8000-000000000002'::uuid,'patio-limon','quiz-bilingue','Quiz bilingue','Bilingual quiz','Preguntas en espanol e ingles, sin premio en efectivo.','Questions in Spanish and English, with no cash prize.','social',500,'verified_venue',false,null),
     ('a3000000-0000-4000-8000-000000000003'::uuid,'el-faro-lab','taller-carteles','Taller de carteles','Poster workshop','Actividad comunitaria pendiente de verificacion.','Community activity awaiting verification.','workshop',1200,'community',false,null),
-    ('a3000000-0000-4000-8000-000000000004'::uuid,'azotea-cobalto','cine-cobalto','Cine bajo las estrellas','Cinema under the stars','Proyeccion ficticia con coloquio posterior.','Fictional screening followed by a discussion.','culture',800,'verified_venue',false,null),
-    ('a3000000-0000-4000-8000-000000000005'::uuid,'taller-mar-blau','mercado-diseno-local','Mercado de diseno local','Local design market','Muestra ficticia de diseno independiente.','Fictional independent design showcase.','market',0,'verified_venue',false,null),
-    ('a3000000-0000-4000-8000-000000000006'::uuid,'patio-turia','ruta-tapas-turia','Ruta de tapas del Turia','Turia tapas trail','Encuentro gastronomico ficticio.','Fictional food gathering.','food',1500,'verified_venue',true,null),
-    ('a3000000-0000-4000-8000-000000000007'::uuid,'corral-naranja','patio-flamenco-abierto','Patio flamenco abierto','Open flamenco courtyard','Actuacion ficticia de artistas emergentes.','Fictional performance by emerging artists.','music',1000,'verified_venue',false,null),
-    ('a3000000-0000-4000-8000-000000000008'::uuid,'ria-sonora','ria-en-directo','La ria en directo','Live by the river','Concierto ficticio de grupos locales.','Fictional concert by local bands.','music',0,'verified_venue',false,null),
-    ('a3000000-0000-4000-8000-000000000009'::uuid,'illa-oberta','intercambio-illa','Intercambio de idiomas','Language exchange','Encuentro social ficticio y gratuito.','Fictional free social meetup.','social',0,'verified_venue',false,null)
+    ('a3000000-0000-4000-8000-000000000004'::uuid,'azotea-cobalto','cine-cobalto','Cine bajo las estrellas','Cinema under the stars','Registro historico de una proyeccion con coloquio.','Historical screening record with a discussion.','culture',800,'verified_venue',false,null),
+    ('a3000000-0000-4000-8000-000000000005'::uuid,'taller-mar-blau','mercado-diseno-local','Mercado de diseno local','Local design market','Registro historico de una muestra de diseno independiente.','Historical independent-design record.','market',0,'verified_venue',false,null),
+    ('a3000000-0000-4000-8000-000000000006'::uuid,'patio-turia','ruta-tapas-turia','Ruta de tapas del Turia','Turia tapas trail','Registro historico de un encuentro gastronomico.','Historical food-gathering record.','food',1500,'verified_venue',true,null),
+    ('a3000000-0000-4000-8000-000000000007'::uuid,'corral-naranja','patio-flamenco-abierto','Patio flamenco abierto','Open flamenco courtyard','Registro historico de artistas emergentes.','Historical emerging-artist record.','music',1000,'verified_venue',false,null),
+    ('a3000000-0000-4000-8000-000000000008'::uuid,'ria-sonora','ria-en-directo','La ria en directo','Live by the river','Registro historico de grupos locales.','Historical local-band record.','music',0,'verified_venue',false,null),
+    ('a3000000-0000-4000-8000-000000000009'::uuid,'illa-oberta','intercambio-illa','Intercambio de idiomas','Language exchange','Registro historico de un encuentro social gratuito.','Historical free social-meetup record.','social',0,'verified_venue',false,null)
   ) as source(id,venue_slug,slug,title_es,title_en,description_es,description_en,category_slug,price_cents,event_source,sponsored,booking_url)
   join venues on venues.slug=source.venue_slug
   join categories on categories.slug=source.category_slug

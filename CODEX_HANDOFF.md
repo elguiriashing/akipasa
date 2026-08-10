@@ -132,7 +132,7 @@ The marketplace is primarily operated by its participants:
 - Moderation/admin interface.
 - Basic product analytics and business-facing aggregate analytics.
 - “Promote this event”/agency enquiry workflow.
-- Seed/demo data for Fuengirola-area venues and events that is clearly fictional unless sourced with permission.
+- Fuengirola-area venue and event records must be sourced with permission.
 
 ### Explicitly excluded from MVP
 
@@ -446,12 +446,12 @@ Deliver:
 
 Done when a new developer can install dependencies, run the app and run checks from documented commands.
 
-### Phase 1 — Foundation and demo discovery
+### Phase 1 — Foundation and discovery
 
 Deliver:
 
 - Database schema/migrations for identity, venues, events and occurrences.
-- Deterministic fictional seed data around the launch area.
+- Deterministic local test records around the launch area.
 - Spanish/English application shell.
 - Public responsive discovery feed and event/venue pages.
 - Manual locality selection, time/category/price filters and correct timezone handling.
@@ -523,7 +523,7 @@ Deliver:
 - Responsive browser checks.
 - Backup/migration/rollback documentation.
 - Production deployment runbook, but no deployment without approval.
-- Complete demo script and acceptance checklist.
+- Complete walkthrough script and acceptance checklist.
 
 Done when lint, formatting, type checks, unit/integration tests and critical end-to-end tests pass, and remaining known issues are recorded rather than hidden.
 
@@ -550,7 +550,7 @@ Codex must automate these where practical and document any manual checks.
 17. Sponsored placement is labelled.
 18. Unsafe links, oversized/invalid uploads and untrusted HTML are rejected.
 19. All primary mobile flows are keyboard accessible and usable at 360 px width.
-20. Seed/reset commands produce deterministic demo state without touching production data.
+20. Seed/reset commands produce deterministic local-test state without touching production data.
 
 ## 19. Engineering rules for Codex
 
@@ -579,7 +579,7 @@ Codex may choose:
 - Folder/module names that fit framework conventions.
 - Accessible component primitives.
 - Testing tools compatible with the stack.
-- Local mock adapters and fictional seed data.
+- Local mock adapters and isolated test records.
 - Sensible default spacing, typography and temporary theme tokens.
 - Whether an implementation detail is a table, enum or validated configuration when behaviour remains equivalent.
 

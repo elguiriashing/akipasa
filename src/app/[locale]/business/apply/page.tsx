@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
+import { sortedSpainLocations } from "@/lib/locations";
 import { submitBusinessApplication } from "../actions";
 
 type BusinessApplication = {
@@ -39,125 +40,312 @@ export default async function BusinessApplicationPage({
     ),
   );
   const es = locale === "es";
+  const stateLabel: Record<string, string> = {
+    submitted: es ? "Solicitud recibida" : "Application received",
+    under_review: es ? "En revisión" : "Under review",
+    awaiting_payment: es
+      ? "Aprobado · elige un plan"
+      : "Approved · choose a plan",
+    active: es ? "Negocio activo" : "Business active",
+  };
+  const paymentLabel: Record<string, string> = {
+    not_started: es ? "No se requiere todavía" : "Not required yet",
+    pending: es ? "Pendiente" : "Pending",
+    paid: es ? "Pagado" : "Paid",
+    trial: es ? "Periodo de prueba" : "Trial",
+    waived: es ? "Sin cargo" : "No charge",
+    failed: es ? "Necesita atención" : "Needs attention",
+  };
+  const errorMessage =
+    query.error === "review_required"
+      ? es
+        ? "Antes de pagar, necesitamos revisar tu negocio. Empieza con la solicitud gratuita."
+        : "Before you pay, we need to review your business. Start with the free application."
+      : query.error === "validation"
+        ? es
+          ? "Falta algún dato o hay algo que corregir. Revisa todos los campos marcados."
+          : "A detail is missing or needs correcting. Check every marked field."
+        : es
+          ? "No hemos podido enviar la solicitud. Inténtalo de nuevo o pide ayuda."
+          : "We could not send the application. Try again or ask for help.";
+  const helpHref = `mailto:support@akipasa.com?subject=${encodeURIComponent(
+    es ? "Ayuda para añadir mi negocio" : "Help adding my business",
+  )}`;
 
   return (
-    <main className="shell dashboard">
-      <section className="hero">
-        <div className="eyebrow">
-          {es ? "AkiPasa para negocios" : "AkiPasa for businesses"}
+    <main className="shell dashboard business-application-page">
+      <section className="hero business-application-hero">
+        <div>
+          <div className="eyebrow">
+            {es
+              ? "Paso 2 de 3 · Revisión gratuita"
+              : "Step 2 of 3 · Free review"}
+          </div>
+          <h1>
+            {es ? "Añade tu negocio a AkiPasa" : "Add your business to AkiPasa"}
+          </h1>
+          <p className="lede">
+            {es
+              ? "Completa un formulario corto. Comprobaremos los datos y te avisaremos antes de pedir cualquier pago."
+              : "Complete one short form. We will check the details and tell you before asking for any payment."}
+          </p>
+          <div className="hero-actions">
+            <Link
+              className="button secondary"
+              href={`/${locale}/membership#business-plan`}
+            >
+              {es ? "Ver precio y ventajas" : "See price and benefits"}
+            </Link>
+            <a className="button button-ghost" href={helpHref}>
+              {es ? "Necesito ayuda" : "I need help"}
+            </a>
+          </div>
         </div>
-        <h1>{es ? "Publica tu negocio" : "Bring your business to AkiPasa"}</h1>
-        <p className="lede">
-          {es
-            ? "Solicita acceso, completa la revision y gestiona locales, eventos, promociones y fidelidad."
-            : "Apply for access, complete review, then manage venues, events, promotions, and loyalty."}
-        </p>
-        <Link className="back-link" href={`/${locale}/account`}>
-          {es ? "<- Volver a la cuenta" : "<- Back to account"}
-        </Link>
+        <aside className="business-application-checklist">
+          <strong>{es ? "Ten a mano:" : "Have these ready:"}</strong>
+          <ul>
+            <li>{es ? "Nombre del negocio" : "Business name"}</li>
+            <li>
+              {es ? "Tu nombre y localidad" : "Your name and town or city"}
+            </li>
+            <li>
+              {es
+                ? "Una frase sobre lo que ofreces"
+                : "One sentence about what you offer"}
+            </li>
+          </ul>
+          <small>
+            {es ? "Tiempo aproximado: 3 minutos" : "About 3 minutes"}
+          </small>
+        </aside>
       </section>
 
       {query.submitted && (
-        <p className="notice">
+        <p className="notice notice-success" role="status">
           {es
-            ? "Solicitud enviada. El equipo la revisara antes del siguiente paso."
-            : "Application submitted. Staff will review it before the next step."}
+            ? "Listo. Hemos recibido tu solicitud. No se te ha cobrado nada; el siguiente paso aparecerá aquí."
+            : "Done. We have received your application. You have not been charged; the next step will appear here."}
         </p>
       )}
       {query.error && (
-        <p className="notice">
-          {es
-            ? "No se pudo enviar la solicitud. Revisa los campos o una solicitud existente."
-            : "The application could not be submitted. Check the fields or an existing application."}
+        <p className="notice notice-error" role="alert">
+          {errorMessage}
         </p>
       )}
 
-      <section className="dashboard-grid business-application-grid">
-        <article className="panel console-card">
-          <span className="status-pill">
-            {es ? "1. Solicitud" : "1. Application"}
-          </span>
-          <h2>{es ? "Datos del negocio" : "Business details"}</h2>
-          <p>
-            {es
-              ? "Cuentanos quien eres y que quieres publicar."
-              : "Tell us who you are and what you want to publish."}
-          </p>
-        </article>
-        <article className="panel console-card">
-          <span className="status-pill">
-            {es ? "2. Revision" : "2. Review"}
-          </span>
-          <h2>{es ? "Verificacion del equipo" : "Staff verification"}</h2>
-          <p>
-            {es
-              ? "Comprobamos la relacion con el negocio y la calidad del catalogo."
-              : "We verify the business relationship and catalogue quality."}
-          </p>
-        </article>
-        <article className="panel console-card">
-          <span className="status-pill">{es ? "3. Pago" : "3. Payment"}</span>
-          <h2>
-            {es ? "EUR 20/mes o EUR 190/ano" : "EUR 20/month or EUR 190/year"}
-          </h2>
-          <p>
-            {es
-              ? "El plan anual ahorra EUR 50. El pago se abre solo despues de la revision."
-              : "The annual plan saves EUR 50. Checkout opens only after staff review."}
-          </p>
-        </article>
-      </section>
+      <ol
+        className="business-application-steps"
+        aria-label={es ? "Cómo funciona" : "How it works"}
+      >
+        <li className={!current ? "active" : "complete"}>
+          <span>1</span>
+          <div>
+            <strong>{es ? "Cuéntanos lo básico" : "Tell us the basics"}</strong>
+            <small>
+              {es ? "Gratis · unos 3 minutos" : "Free · about 3 minutes"}
+            </small>
+          </div>
+        </li>
+        <li
+          className={
+            current &&
+            current.state !== "awaiting_payment" &&
+            current.state !== "active"
+              ? "active"
+              : ""
+          }
+        >
+          <span>2</span>
+          <div>
+            <strong>
+              {es ? "Comprobamos los datos" : "We check the details"}
+            </strong>
+            <small>
+              {es ? "Sin cargos ni compromiso" : "No charge or commitment"}
+            </small>
+          </div>
+        </li>
+        <li
+          className={
+            current?.state === "awaiting_payment" || current?.state === "active"
+              ? "active"
+              : ""
+          }
+        >
+          <span>3</span>
+          <div>
+            <strong>
+              {es ? "Elige un plan y publica" : "Choose a plan and publish"}
+            </strong>
+            <small>
+              {es ? "Solo después de aprobarte" : "Only after approval"}
+            </small>
+          </div>
+        </li>
+      </ol>
 
       {current ? (
-        <section className="panel console-card">
-          <span className="status-pill">{current.state}</span>
+        <section className="panel console-card business-application-status">
+          <span className="status-pill">
+            {stateLabel[current.state] || current.state}
+          </span>
           <h2>{current.business_name}</h2>
           <p>
-            {es ? "Estado de pago" : "Payment status"}:{" "}
-            <strong>{current.payment_state}</strong>
+            {es ? "Pago" : "Payment"}:{" "}
+            <strong>
+              {paymentLabel[current.payment_state] || current.payment_state}
+            </strong>
           </p>
           {current.review_reason && <p>{current.review_reason}</p>}
           {current.state === "active" && (
-            <Link className="button" href={`/${locale}/business`}>
-              {es ? "Abrir panel de negocio" : "Open business dashboard"}
+            <Link className="button button-strong" href={`/${locale}/business`}>
+              {es ? "Añadir mi primer local" : "Add my first venue"}
             </Link>
           )}
           {current.state === "awaiting_payment" && (
-            <Link className="button" href={`/${locale}/account/subscription`}>
-              {es ? "Elegir plan y pagar" : "Choose plan and pay"}
+            <Link
+              className="button button-strong"
+              href={`/${locale}/account/subscription?plan=business`}
+            >
+              {es ? "Elegir plan Business" : "Choose a Business plan"}
             </Link>
+          )}
+          {!["active", "awaiting_payment"].includes(current.state) && (
+            <p className="fine-print">
+              {es
+                ? "No necesitas hacer nada ahora. Vuelve aquí para ver el siguiente paso."
+                : "You do not need to do anything now. Return here to see the next step."}
+            </p>
           )}
         </section>
       ) : (
-        <form
-          action={submitBusinessApplication}
-          className="panel stack focused-form"
-        >
-          <input type="hidden" name="locale" value={locale} />
-          <label>
-            {es ? "Nombre del negocio" : "Business name"}
-            <input name="businessName" required minLength={2} maxLength={160} />
-          </label>
-          <label>
-            {es ? "Persona de contacto" : "Contact name"}
-            <input name="contactName" required minLength={2} maxLength={120} />
-          </label>
-          <label>
-            {es ? "Localidad" : "Locality"}
-            <input name="locality" required minLength={2} maxLength={120} />
-          </label>
-          <label>
-            {es ? "Web HTTPS (opcional)" : "HTTPS website (optional)"}
-            <input name="websiteUrl" type="url" placeholder="https://" />
-          </label>
-          <label>
-            {es ? "Sobre el negocio" : "About the business"}
-            <textarea name="message" required minLength={20} maxLength={2000} />
-          </label>
-          <button className="button" type="submit">
-            {es ? "Enviar solicitud" : "Submit application"}
-          </button>
-        </form>
+        <section className="business-application-form-layout">
+          <form
+            action={submitBusinessApplication}
+            className="panel stack focused-form business-application-form"
+          >
+            <div>
+              <span className="status-pill">{es ? "Gratis" : "Free"}</span>
+              <h2>{es ? "Empezar la revisión" : "Start the review"}</h2>
+              <p>
+                {es
+                  ? "Todos los campos son obligatorios salvo la web."
+                  : "Every field is required except the website."}
+              </p>
+            </div>
+            <input type="hidden" name="locale" value={locale} />
+            <label htmlFor="business-name">
+              {es ? "Nombre del negocio" : "Business name"}
+            </label>
+            <input
+              id="business-name"
+              name="businessName"
+              required
+              minLength={2}
+              maxLength={160}
+              autoComplete="organization"
+              placeholder={
+                es ? "Por ejemplo, Café Central" : "For example, Central Café"
+              }
+            />
+            <label htmlFor="contact-name">
+              {es ? "Tu nombre" : "Your name"}
+            </label>
+            <input
+              id="contact-name"
+              name="contactName"
+              required
+              minLength={2}
+              maxLength={120}
+              autoComplete="name"
+            />
+            <label htmlFor="business-locality">
+              {es ? "Pueblo o ciudad" : "Town or city"}
+            </label>
+            <select
+              id="business-locality"
+              name="locality"
+              required
+              defaultValue=""
+            >
+              <option value="" disabled>
+                {es ? "Elige una localidad" : "Choose a town or city"}
+              </option>
+              {sortedSpainLocations.map(([key, place]) => (
+                <option key={key} value={place[locale]}>
+                  {place[locale]} · {place.province}
+                </option>
+              ))}
+            </select>
+            <label htmlFor="business-website">
+              {es ? "Página web (opcional)" : "Website (optional)"}
+            </label>
+            <input
+              id="business-website"
+              name="websiteUrl"
+              type="url"
+              inputMode="url"
+              autoComplete="url"
+              placeholder="https://"
+              aria-describedby="business-website-help"
+            />
+            <small id="business-website-help">
+              {es
+                ? "Si no tienes web, déjalo vacío."
+                : "Leave this empty if you do not have a website."}
+            </small>
+            <label htmlFor="business-about">
+              {es
+                ? "¿Qué ofrece tu negocio?"
+                : "What does your business offer?"}
+            </label>
+            <textarea
+              id="business-about"
+              name="message"
+              required
+              minLength={20}
+              maxLength={2000}
+              rows={5}
+              aria-describedby="business-about-help"
+              placeholder={
+                es
+                  ? "Por ejemplo: Somos una cafetería familiar con música en directo los viernes."
+                  : "For example: We are a family café with live music on Fridays."
+              }
+            />
+            <small id="business-about-help">
+              {es
+                ? "Una o dos frases son suficientes."
+                : "One or two sentences are enough."}
+            </small>
+            <button className="button button-strong" type="submit">
+              {es ? "Enviar para revisión gratuita" : "Send for free review"}
+            </button>
+            <p className="fine-print">
+              {es
+                ? "No pagarás nada hoy. Enviar este formulario no inicia una membresía."
+                : "You will not pay anything today. Sending this form does not start a membership."}
+            </p>
+          </form>
+          <aside className="panel business-application-help">
+            <span className="status-pill">
+              {es ? "Ayuda humana" : "Human help"}
+            </span>
+            <h2>
+              {es ? "¿No sabes qué escribir?" : "Not sure what to write?"}
+            </h2>
+            <p>
+              {es
+                ? "No hace falta usar palabras técnicas. Cuéntanos lo que dirías a un cliente nuevo."
+                : "You do not need technical words. Tell us what you would say to a new customer."}
+            </p>
+            <a className="button secondary" href={helpHref}>
+              {es
+                ? "Pedir ayuda para completarlo"
+                : "Ask for help completing it"}
+            </a>
+          </aside>
+        </section>
       )}
     </main>
   );

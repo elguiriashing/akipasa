@@ -472,17 +472,17 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
 export class HybridDiscoveryRepository implements DiscoveryRepository {
   constructor(
     private live = new SupabaseDiscoveryRepository(),
-    private demo = new FixtureRepository(),
+    private fallback = new FixtureRepository(),
   ) {}
   async discover(query: DiscoveryQuery) {
-    const [live, demo] = await Promise.all([
+    const [live, fallback] = await Promise.all([
       this.live.discover(query).catch(() => []),
-      this.demo.discover(query),
+      this.fallback.discover(query),
     ]);
     const liveSlugs = new Set(live.map((item) => item.event.slug));
     return [
       ...live,
-      ...demo.filter((item) => !liveSlugs.has(item.event.slug)),
+      ...fallback.filter((item) => !liveSlugs.has(item.event.slug)),
     ].sort(
       (a, b) =>
         +new Date(a.occurrence.startsAt) - +new Date(b.occurrence.startsAt),
@@ -491,29 +491,29 @@ export class HybridDiscoveryRepository implements DiscoveryRepository {
   async eventBySlug(slug: string) {
     return (
       (await this.live.eventBySlug(slug).catch(() => null)) ||
-      this.demo.eventBySlug(slug)
+      this.fallback.eventBySlug(slug)
     );
   }
   async venueBySlug(slug: string) {
     return (
       (await this.live.venueBySlug(slug).catch(() => null)) ||
-      this.demo.venueBySlug(slug)
+      this.fallback.venueBySlug(slug)
     );
   }
   async venueById(id: string) {
     return (
       (await this.live.venueById(id).catch(() => null)) ||
-      this.demo.venueById(id)
+      this.fallback.venueById(id)
     );
   }
   async eventsForVenue(venueId: string) {
-    const [live, demo] = await Promise.all([
+    const [live, fallback] = await Promise.all([
       this.live.eventsForVenue(venueId).catch(() => []),
-      this.demo.eventsForVenue(venueId),
+      this.fallback.eventsForVenue(venueId),
     ]);
     return [
       ...live,
-      ...demo.filter(
+      ...fallback.filter(
         (item) => !live.some((candidate) => candidate.slug === item.slug),
       ),
     ];

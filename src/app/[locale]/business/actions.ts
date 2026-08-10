@@ -8,6 +8,7 @@ import { requireBusinessAccess } from "@/lib/entitlements";
 import { isSpainLocation, spainLocations } from "@/lib/locations";
 import { safeExternalUrlSchema } from "@/lib/auth-security";
 import { madridLocalDateTimeSchema } from "@/lib/time";
+import { createEventSlug, createVenueSlug } from "@/lib/business";
 
 const businessApplicationSchema = z.object({
   locale: z.enum(["es", "en"]),
@@ -40,16 +41,13 @@ const venueSchema = z.object({
   locale: z.string(),
   locality: z.string().refine(isSpainLocation),
   name: z.string().trim().min(2).max(120),
-  slug: z
-    .string()
-    .trim()
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
   descriptionEs: z.string().trim().min(20).max(2000),
   descriptionEn: z.string().trim().max(2000),
   address: z.string().trim().min(5).max(300),
   latitude: z.coerce.number().min(-90).max(90).optional(),
   longitude: z.coerce.number().min(-180).max(180).optional(),
 });
+
 export async function createVenue(formData: FormData) {
   const parsed = venueSchema.safeParse(Object.fromEntries(formData));
   const locale = isLocale(String(formData.get("locale")))
@@ -63,7 +61,7 @@ export async function createVenue(formData: FormData) {
     locality_name: place.es,
     province_name: place.province,
     venue_name: v.name,
-    venue_slug: v.slug,
+    venue_slug: createVenueSlug(v.name),
     description_es: v.descriptionEs,
     description_en: v.descriptionEn,
     venue_address: v.address,
@@ -99,10 +97,6 @@ const eventSchema = z.object({
   locale: z.string(),
   venueId: z.string().uuid(),
   categoryId: z.string().uuid(),
-  slug: z
-    .string()
-    .trim()
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
   titleEs: z.string().trim().min(3).max(160),
   titleEn: z.string().trim().max(160),
   descriptionEs: z.string().trim().min(20).max(4000),
@@ -123,7 +117,7 @@ export async function createEvent(formData: FormData) {
   const { error } = await supabase.rpc("create_event_with_occurrence", {
     target_venue: e.venueId,
     category: e.categoryId,
-    event_slug: e.slug,
+    event_slug: createEventSlug(e.titleEs),
     title_es: e.titleEs,
     title_en: e.titleEn,
     description_es: e.descriptionEs,

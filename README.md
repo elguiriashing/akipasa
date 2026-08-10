@@ -10,7 +10,7 @@ Mobile-first bilingual discovery, venue and loyalty platform covering Spain.
 4. Run `npm run dev` and open `http://localhost:3000`.
 5. Run `npm run check` before handing off changes.
 
-The default `fixtures` provider uses deterministic fictional public content. Authentication and business publishing use the connected Supabase project.
+The default `fixtures` provider supplies deterministic local test records. Authentication and business publishing use the connected Supabase project.
 
 The location selector covers every Spanish province through representative city centres, plus Costa neighbourhoods. Venue records store exact coordinates and are not limited to those centres.
 
@@ -26,8 +26,8 @@ npm run db:reset:local
 
 These commands accept only `localhost`, `127.0.0.1` or `::1`. Remote and
 Supabase-hosted database URLs are rejected before a connection is opened.
-Seeding replaces only stable AkiPasa demonstration IDs in a transaction; reset
-removes only the exact demo venue, event and occurrences owned by the seed.
+Seeding replaces only stable AkiPasa local-test IDs in a transaction; reset
+removes only the exact test venue, event and occurrences owned by the seed.
 
 Start a new engineering or AI session with `docs/AI_HANDOFF.md`. Current work
 state is in `docs/PROJECT_STATUS.md`, prioritized work is in `docs/TODO.md`,

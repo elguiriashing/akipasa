@@ -74,6 +74,15 @@ export function AppShell({
       label: es ? "Membresía" : "Membership",
       icon: "membership",
     },
+    ...(!capabilities.manageOwnedVenues
+      ? [
+          {
+            href: `/${locale}/business/apply`,
+            label: es ? "Añade tu negocio" : "Add your business",
+            icon: "business" as const,
+          },
+        ]
+      : []),
   ];
 
   const workspaceNav: NavItem[] = [

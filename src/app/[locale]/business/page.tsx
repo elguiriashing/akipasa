@@ -255,16 +255,6 @@ export default async function BusinessPage({
 
               <div className="form-grid-two">
                 <label>
-                  Slug
-                  <input
-                    name="slug"
-                    required
-                    pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
-                    placeholder="mi-local"
-                  />
-                </label>
-
-                <label>
                   {es ? "Dirección física" : "Physical address"}
                   <input
                     name="address"
@@ -273,6 +263,11 @@ export default async function BusinessPage({
                   />
                 </label>
               </div>
+              <p className="fine-print">
+                {es
+                  ? "AkiPasa creará automáticamente la dirección web de tu local."
+                  : "AkiPasa will create your venue’s web address automatically."}
+              </p>
 
               <div className="form-grid-two">
                 <label>
@@ -366,19 +361,15 @@ export default async function BusinessPage({
 
               <div className="form-grid-two">
                 <label>
-                  Slug
-                  <input
-                    name="slug"
-                    required
-                    pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
-                    placeholder="noche-de-jazz"
-                  />
-                </label>
-
-                <label>
                   {es ? "Enlace de reserva (HTTPS)" : "HTTPS booking link"}
                   <input name="bookingUrl" type="url" placeholder="https://" />
                 </label>
+
+                <p className="muted">
+                  {es
+                    ? "AkiPasa creará automáticamente la dirección web del evento."
+                    : "AkiPasa will create the event web address automatically."}
+                </p>
               </div>
 
               <div className="form-grid-two">

@@ -27,7 +27,7 @@ const snapshot: FinancialSnapshot = {
 };
 
 describe("automation commands", () => {
-  it("routes the public demonstration phrase to the investor command", () => {
+  it("routes the public presentation phrase to the investor command", () => {
     expect(resolveCommand("send the boys the numbers").name).toBe(
       "send-investor-update",
     );

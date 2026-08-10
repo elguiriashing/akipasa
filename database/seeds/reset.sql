@@ -1,4 +1,4 @@
--- Removes only the exact fictional records owned by database/seeds/seed.sql.
+-- Removes only the exact local-test records owned by database/seeds/seed.sql.
 -- Run only through `npm run db:reset:local`; its URL guard refuses non-local hosts.
 begin;
 

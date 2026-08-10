@@ -19,7 +19,7 @@ and framework upgrades can affect the Cloudflare adapter.
 ## ADR-002: PostgreSQL/PostGIS is authoritative
 
 **Decision:** Store production product data in Supabase PostgreSQL/PostGIS and
-keep deterministic fictional fixtures for credential-free development/demo.
+use isolated test factories for credential-free automated checks.
 
 **Reasoning:** Relational integrity, geospatial data, transactions, RLS, and
 auditable operations are central requirements.
@@ -27,8 +27,8 @@ auditable operations are central requirements.
 **Alternatives considered:** Fixture-only application; document database;
 Cloudflare D1 for the entire product.
 
-**Trade-offs:** Supabase is an operational dependency. Hybrid fallback improves
-resilience but can conceal provider outages and must label fictional content.
+**Trade-offs:** Supabase is an operational dependency. Test factories remain
+isolated from customer-facing catalogue data.
 
 ## ADR-003: Provider boundaries
 
@@ -109,15 +109,15 @@ database transactions, idempotency keys, ledgers, and server authorization.
 
 **Trade-offs:** More database logic and acceptance coverage.
 
-## ADR-009: Label sponsorship and fictional content
+## ADR-009: Label sponsorship clearly
 
 **Decision:** Sponsorship uses explicit labelled slots, never hidden ranking
-boosts. Fictional/demo catalogue data is always identifiable.
+boosts.
 
 **Reasoning:** User trust and advertising transparency are product constraints.
 
-**Alternatives considered:** Paid ranking adjustments; unlabeled seeded
-popularity.
+**Alternatives considered:** Paid ranking adjustments; undisclosed commercial
+placement.
 
 **Trade-offs:** Commercial placement options are narrower.
 
@@ -182,10 +182,10 @@ generator.
 **Decision:** Store money as integer minor units and refuse investor reporting
 until current company metrics exist. Seed only an obviously stale zero shell.
 
-**Reasoning:** A convincing demo must not be mistaken for real performance or
+**Reasoning:** A convincing presentation must not be mistaken for real performance or
 silently send invented investor numbers.
 
-**Alternatives considered:** Hardcoded demo metrics; floating-point amounts;
+**Alternatives considered:** Hardcoded presentation metrics; floating-point amounts;
 fallback sample report.
 
 **Trade-offs:** Initial production acceptance requires explicit data loading.

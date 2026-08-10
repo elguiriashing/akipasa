@@ -20,17 +20,53 @@ export default async function AuthPage({
   const query = await searchParams;
   const es = locale === "es";
   const next = query.next || `/${locale}/account`;
+  const businessIntent = next.startsWith(`/${locale}/business/apply`);
   return (
     <main className="shell">
       <section className="hero">
-        <div className="eyebrow">{es ? "Cuenta" : "Account"}</div>
-        <h1>{es ? "Tu cuenta AkiPasa" : "Your AkiPasa account"}</h1>
+        <div className="eyebrow">
+          {businessIntent
+            ? es
+              ? "Paso 1 de 3 · Añade tu negocio"
+              : "Step 1 of 3 · Add your business"
+            : es
+              ? "Cuenta"
+              : "Account"}
+        </div>
+        <h1>
+          {businessIntent
+            ? es
+              ? "Primero, crea tu cuenta gratuita"
+              : "First, create your free account"
+            : es
+              ? "Tu cuenta AkiPasa"
+              : "Your AkiPasa account"}
+        </h1>
         <p className="lede">
-          {es
-            ? "Crea una cuenta con email, entra con Google o usa un enlace seguro."
-            : "Create an account with email, continue with Google, or use a secure link."}
+          {businessIntent
+            ? es
+              ? "Después volverás directamente a la solicitud de tu negocio. No pagarás nada hoy."
+              : "Afterwards, we will take you straight back to your business application. You will not pay anything today."
+            : es
+              ? "Crea una cuenta con email, entra con Google o usa un enlace seguro."
+              : "Create an account with email, continue with Google, or use a secure link."}
         </p>
       </section>
+      {businessIntent && (
+        <aside
+          className="auth-journey"
+          aria-label={es ? "Siguiente paso" : "Next step"}
+        >
+          <strong>
+            {es ? "Lo siguiente: datos del negocio" : "Next: business details"}
+          </strong>
+          <span>
+            {es
+              ? "Solo te pediremos el nombre, la localidad y una breve descripción."
+              : "We will only ask for its name, town or city, and a short description."}
+          </span>
+        </aside>
+      )}
       <section className="panel auth-panel">
         {query.sent && (
           <p className="notice">

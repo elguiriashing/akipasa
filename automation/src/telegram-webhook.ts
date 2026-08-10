@@ -115,7 +115,7 @@ function formatResult(command: string, result: CommandResult) {
       "💼 AkiHQ Sales Deals & Pipeline",
       `Active Deals: ${data.activeDeals || 0}`,
       `Pipeline Value: ${money((typeof data.pipelineValue === "number" ? data.pipelineValue : 0) * 100, "EUR")}`,
-      `Stages: Prospect, Demo, Contact Needed, Closed Won`,
+      `Stages: Prospect, Product Tour, Contact Needed, Closed Won`,
     ].join("\n");
   }
   if (command === "crm-contacts") {

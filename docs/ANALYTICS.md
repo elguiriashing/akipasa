@@ -4,4 +4,4 @@ Privacy-minimized event names: `discovery_search_performed`, `event_detail_viewe
 
 Properties may include entity IDs, coarse locality, filter values, result count, and rejection reason. Never capture precise consumer location or expose consumer identity in business analytics.
 
-The live MVP currently records event/venue views, directions, external booking or venue-website clicks, shares, saves and follows. The same-origin endpoint uses a strict schema: unknown properties are rejected, and the database function independently rejects personal metadata keys. Fixture/demo identifiers are deliberately not recorded.
+The live MVP currently records event/venue views, directions, external booking or venue-website clicks, shares, saves and follows. The same-origin endpoint uses a strict schema: unknown properties are rejected, and the database function independently rejects personal metadata keys. Local-test identifiers are deliberately not recorded.

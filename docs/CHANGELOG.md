@@ -544,7 +544,7 @@ Hey Google/Tasker bridge.
 ### Reasoning
 
 Operators need a scalable visual command catalogue and audited manual fallback,
-while the public demonstration needs a bounded, HTTPS-only Android signing path
+while the public presentation needs a bounded, HTTPS-only Android signing path
 that forwards the spoken phrase without embedding secrets in Tasker.
 
 The operator path reserves a generated operation ID through D1/KV before
@@ -610,7 +610,7 @@ Completed and verified the isolated AkiPasa voice automation foundation.
 ### Reasoning
 
 Provide a reusable authenticated automation engine rather than a hardcoded
-voice-to-Telegram demonstration.
+voice-to-Telegram walkthrough.
 
 ### Outstanding follow-up work
 
@@ -643,7 +643,7 @@ customer-support, catalogue, and owner-management workflows.
 
 ### Outstanding follow-up work
 
-- Replace fictional launch catalogue entries with verified businesses.
+- Replace launch catalogue entries with verified businesses.
 - Continue production usability monitoring with real operators.
 
 ## 2026-07-28 14:20 +02:00

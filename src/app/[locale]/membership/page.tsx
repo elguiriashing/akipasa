@@ -44,9 +44,21 @@ export default async function MembershipPage({
         <div className="membership-hero-actions">
           <Link
             className="button button-strong"
-            href={`/${locale}/auth?next=${encodeURIComponent(`/${locale}/account/subscription`)}`}
+            href={
+              signedIn
+                ? `/${locale}/account/subscription`
+                : `/${locale}/auth?next=${encodeURIComponent(
+                    `/${locale}/account/subscription`,
+                  )}`
+            }
           >
-            {es ? "Entrar para continuar" : "Sign in to continue"}
+            {signedIn
+              ? es
+                ? "Comparar y gestionar planes"
+                : "Compare and manage plans"
+              : es
+                ? "Entrar para continuar"
+                : "Sign in to continue"}
           </Link>
           <small>
             {es
@@ -115,6 +127,7 @@ export default async function MembershipPage({
           }
           featured
           signedIn={signedIn}
+          id="business-plan"
         />
       </section>
 
@@ -138,6 +151,7 @@ function MembershipCard({
   features,
   featured = false,
   signedIn,
+  id,
 }: {
   locale: "es" | "en";
   plan: "premium" | "business";
@@ -149,14 +163,18 @@ function MembershipCard({
   features: string[];
   featured?: boolean;
   signedIn: boolean;
+  id?: string;
 }) {
   const es = locale === "es";
   const subscriptionPath = `/${locale}/account/subscription?plan=${plan}`;
+  const destination =
+    plan === "business" ? `/${locale}/business/apply` : subscriptionPath;
   const planHref = signedIn
-    ? subscriptionPath
-    : `/${locale}/auth?next=${encodeURIComponent(subscriptionPath)}`;
+    ? destination
+    : `/${locale}/auth?next=${encodeURIComponent(destination)}`;
   return (
     <article
+      id={id}
       className={
         featured ? "panel membership-plan featured" : "panel membership-plan"
       }
@@ -194,8 +212,21 @@ function MembershipCard({
         className={`button ${featured ? "button-strong" : "secondary"}`}
         href={planHref}
       >
-        {es ? `Elegir ${title}` : `Choose ${title}`}
+        {plan === "business"
+          ? es
+            ? "Empezar la revisión gratuita"
+            : "Start the free business review"
+          : es
+            ? `Elegir ${title}`
+            : `Choose ${title}`}
       </Link>
+      {plan === "business" && (
+        <small className="membership-plan-reassurance">
+          {es
+            ? "No pagas hoy. Primero revisamos tu negocio."
+            : "No payment today. We review your business first."}
+        </small>
+      )}
     </article>
   );
 }

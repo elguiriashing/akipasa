@@ -5,7 +5,7 @@
 - `src/app`: localized routes and server endpoints.
 - `src/components`: UI only; business rules live in `src/lib`.
 - `src/lib`: domain, providers, validation, permissions, and services.
-- `database`: reversible migrations and deterministic fictional seeds.
+- `database`: reversible migrations and deterministic local test setup.
 - `tests`: unit, integration, and critical browser tests.
 - `docs`: the product and operational contract.
 

@@ -8,7 +8,7 @@ import static org.junit.Assert.assertTrue;
 public class NavigationPolicyTest {
     @Test
     public void internalNavigationRequiresHttpsAndExactHost() {
-        assertTrue(NavigationPolicy.isInternal("https://akipasa.com/es/events/demo"));
+        assertTrue(NavigationPolicy.isInternal("https://akipasa.com/es/events/sample"));
         assertTrue(NavigationPolicy.isInternal("https://www.akipasa.com/en"));
         assertFalse(NavigationPolicy.isInternal("http://akipasa.com/es"));
         assertFalse(NavigationPolicy.isInternal("https://akipasa.com.evil.example/es"));
@@ -17,9 +17,9 @@ public class NavigationPolicyTest {
     @Test
     public void externalNavigationRejectsExecutableAndUnknownSchemes() {
         assertTrue(NavigationPolicy.canOpenExternally("mailto:hola@example.com"));
-        assertTrue(NavigationPolicy.canOpenExternally("https://checkout.stripe.com/demo"));
+        assertTrue(NavigationPolicy.canOpenExternally("https://checkout.stripe.com/sample"));
         assertFalse(NavigationPolicy.canOpenExternally("javascript:alert(1)"));
-        assertFalse(NavigationPolicy.canOpenExternally("file:///data/local/tmp/demo"));
+        assertFalse(NavigationPolicy.canOpenExternally("file:///data/local/tmp/sample"));
         assertFalse(NavigationPolicy.canOpenExternally("intent://unsafe"));
     }
 

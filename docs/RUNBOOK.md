@@ -13,7 +13,7 @@
 The local fixture commands are deliberately not production tooling.
 `npm run db:seed:local` and `npm run db:reset:local` refuse any database URL
 whose hostname is not a loopback host. Production content is onboarded through
-the application and reviewed migrations, never through the demo reset command.
+the application and reviewed migrations, never through the local reset command.
 
 Run the same non-destructive browser suite against production after deployment:
 

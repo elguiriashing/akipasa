@@ -8,7 +8,7 @@ US-English. AutoVoice's own documentation says Google removed its former
 third-party Google Assistant service, so do not build the production flow
 around the archived AutoVoice Assistant integration.
 
-Recommended first demonstration:
+Recommended first walkthrough:
 
 1. Set the Android device and Google Assistant language to US-English.
 2. In Tasker, create a Profile using `Event > Tasker > Assistant Action`.

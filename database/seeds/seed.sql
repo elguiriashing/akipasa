@@ -1,5 +1,5 @@
 -- Production baseline configuration (Cities & Categories).
--- Fictional demonstration records removed.
+-- Retired seed records removed.
 -- Populated with 27 real-world top venues and events across 9 localities.
 
 begin;

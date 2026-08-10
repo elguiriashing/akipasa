@@ -7,10 +7,8 @@ const publicRoutes = [
   "/es/map",
   "/en/passports",
   "/es/passports",
-  "/en/events/cine-cobalto",
-  "/es/events/cine-cobalto",
-  "/en/venues/azotea-cobalto",
-  "/es/venues/azotea-cobalto",
+  "/en/membership",
+  "/es/membership",
   "/en/auth",
   "/es/auth",
   "/en/privacy",
@@ -29,6 +27,7 @@ test("root, invalid content and all guest gates resolve safely", async ({
   for (const route of [
     "/en/account",
     "/en/business",
+    "/en/business/apply",
     "/en/staff",
     "/en/staff/support",
     "/en/admin/users",
@@ -198,7 +197,7 @@ test("SEO, install and offline assets are coherent and public", async ({
   expect(sitemap.ok()).toBeTruthy();
   const sitemapText = await sitemap.text();
   expect(sitemapText).toContain("https://akipasa.com/en");
-  expect(sitemapText).toContain("https://akipasa.com/en/events/cine-cobalto");
+  expect(sitemapText).toContain("https://akipasa.com/en/membership");
   expect(sitemapText).not.toContain("/account");
   expect(sitemapText).not.toContain("/admin");
 

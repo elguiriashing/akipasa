@@ -159,7 +159,7 @@ send those two user messages.
 ## Remaining roadmap
 
 - Provision and accept the automation Worker end to end.
-- Replace fictional launch content progressively with verified real businesses.
+- Use verified real businesses throughout the launch catalogue.
 - Select a production map provider if graphical clustering is required.
 - Complete professional Spanish/EU legal review and a backup restore drill.
 - Validate production authentication email delivery and optional identity
@@ -184,7 +184,7 @@ send those two user messages.
 ## Important design decisions
 
 - PostgreSQL/PostGIS is authoritative for public product data; deterministic
-  fixtures remain an explicit development/demo fallback.
+  the local repository remains an explicit test-only fallback.
 - Provider boundaries prevent Supabase, maps, email, and Telegram from leaking
   into domain logic.
 - Every mutation validates input and authorizes server-side; RLS and database
@@ -218,7 +218,7 @@ Full records are in [DECISIONS.md](./DECISIONS.md).
 - Android Assistant Action availability depends on device/language; the
   documented Tasker fallback must be tested on the target phone.
 - The public graphical map requires a selected production tile/style provider.
-- Hybrid discovery intentionally falls back to fictional fixtures when the
+- Hybrid discovery intentionally falls back to local test records when the
   live provider fails; this can hide availability incidents from users.
 - Privacy and terms text are implementation drafts pending professional review.
 - A production backup restore drill and real-mail auth acceptance remain open.

@@ -88,7 +88,7 @@ database constraints, triggers, and audited RPCs.
 
 `src/lib/repository.ts` exposes a discovery interface with three adapters:
 
-- `FixtureRepository`: deterministic fictional data for credential-free work.
+- `FixtureRepository`: deterministic local records for credential-free tests.
 - `SupabaseDiscoveryRepository`: published production catalogue.
 - `HybridDiscoveryRepository`: live data plus non-conflicting labelled
   fixtures, deduplicated by slug.

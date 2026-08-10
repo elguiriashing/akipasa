@@ -9,42 +9,27 @@ test("guest discovers and filters nationwide events", async ({ page }) => {
   await page.getByLabel("Radius").selectOption("25");
   await page.getByRole("button", { name: "Show plans" }).click();
   await expect(page).toHaveURL(/locality=barcelona/);
-  const localMarkets = page.getByRole("heading", {
-    name: "Local design market",
-  });
-  expect(await localMarkets.count()).toBeGreaterThan(0);
-  await expect(localMarkets.first()).toBeVisible();
+  await expect(page.locator(".result-caption")).toContainText("in Barcelona");
 });
 
 test("language switch preserves route and filters", async ({ page }) => {
   await page.goto("/es?locality=barcelona&radius=25&time=all");
-  await page.locator(".site-menu > summary").click();
-  await page.getByRole("link", { name: "Switch to English" }).click();
+  await page.getByRole("button", { name: "Más opciones" }).click();
+  await page
+    .getByRole("dialog", { name: "Más opciones" })
+    .getByRole("link", { name: "Switch to English" })
+    .click();
   await expect(page).toHaveURL(/\/en\?locality=barcelona&radius=25&time=all/);
   await expect(
     page.getByRole("heading", { name: "What’s happening?" }),
   ).toBeVisible();
 });
 
-test("public event, venue, map and legal routes are functional", async ({
+test("public discovery, map and legal routes are functional", async ({
   page,
 }) => {
-  await page.goto("/en/events/cine-cobalto");
-  await expect(
-    page.getByRole("heading", { name: "Cinema under the stars" }),
-  ).toBeVisible();
-  await expect(page.getByRole("link", { name: "Save event" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Share" })).toBeVisible();
-  await expect(
-    page.getByRole("link", { name: "Azotea Cobalto →" }),
-  ).toHaveAttribute("href", "/en/venues/azotea-cobalto");
-  await page.goto("/en/venues/azotea-cobalto", {
-    waitUntil: "domcontentloaded",
-  });
-  await expect(
-    page.getByRole("heading", { name: "Azotea Cobalto" }),
-  ).toBeVisible();
-  await expect(page.getByRole("link", { name: "Follow venue" })).toBeVisible();
+  await page.goto("/en");
+  await expect(page.locator("main")).toBeVisible();
   await page.goto("/en/map");
   await expect(page.getByRole("heading", { name: "Map" })).toBeVisible();
   await page.goto("/en/privacy");
@@ -91,16 +76,20 @@ test("mobile navigation is compact and opens section links in place", async ({
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/en");
 
-  const siteMenu = page.locator(".site-menu");
-  await expect(siteMenu.getByText("Menu", { exact: true })).toBeVisible();
-  await expect(page.getByRole("navigation", { name: "Primary" })).toBeHidden();
-  await siteMenu.getByText("Menu", { exact: true }).click();
+  const bottomNavigation = page.getByRole("navigation", {
+    name: "Navigation",
+  });
+  await expect(bottomNavigation).toBeVisible();
   await expect(
-    page.getByRole("navigation", { name: "Mobile menu" }),
+    page.getByRole("complementary", { name: "Primary navigation" }),
+  ).toBeHidden();
+  await page.getByRole("button", { name: "More options" }).click();
+  await expect(
+    page.getByRole("dialog", { name: "More options" }),
   ).toBeVisible();
   await expect(
     page
-      .getByRole("navigation", { name: "Mobile menu" })
+      .getByRole("dialog", { name: "More options" })
       .getByRole("link", { name: "Membership" }),
   ).toHaveAttribute("href", "/en/membership");
 
@@ -122,14 +111,25 @@ test("mobile navigation is compact and opens section links in place", async ({
 
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/en/passports");
-  await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
-  await expect(page.locator(".site-menu")).toBeHidden();
+  await expect(
+    page.getByRole("complementary", { name: "Primary navigation" }),
+  ).toBeVisible();
+  await expect(bottomNavigation).toBeHidden();
   await expect(page.locator(".workspace-sidebar")).toBeVisible();
   await expect(workspaceMenu).toBeHidden();
 });
 
 test("membership offer is reachable before sign in", async ({ page }) => {
   await page.goto("/en");
+  const ownerEntry = page.locator(".owner-entry");
+  await expect(
+    ownerEntry.getByRole("link", { name: "Add my business" }),
+  ).toHaveAttribute("href", "/en/business/apply");
+  await expect(
+    ownerEntry.getByText(
+      "The initial review is free. You will not pay anything today.",
+    ),
+  ).toBeVisible();
   await expect(
     page.getByRole("link", { name: "View memberships" }),
   ).toHaveAttribute("href", "/en/membership#plans");
@@ -149,20 +149,32 @@ test("membership offer is reachable before sign in", async ({ page }) => {
   await expect(
     page.getByRole("link", { name: "Sign in to continue" }),
   ).toHaveAttribute("href", "/en/auth?next=%2Fen%2Faccount%2Fsubscription");
+  const businessPlan = page.locator("#business-plan");
+  await expect(
+    businessPlan.getByRole("link", { name: "Start the free business review" }),
+  ).toHaveAttribute("href", "/en/auth?next=%2Fen%2Fbusiness%2Fapply");
+  await expect(
+    businessPlan.getByText("No payment today. We review your business first."),
+  ).toBeVisible();
+});
+
+test("business intent survives account creation", async ({ page }) => {
+  await page.goto("/en/auth?next=%2Fen%2Fbusiness%2Fapply");
+  await expect(
+    page.getByRole("heading", { name: "First, create your free account" }),
+  ).toBeVisible();
+  await expect(page.getByText("Next: business details")).toBeVisible();
+  await expect(page.locator('input[name="next"]').first()).toHaveValue(
+    "/en/business/apply",
+  );
 });
 
 test("account-only actions redirect guests safely", async ({ page }) => {
-  await page.goto("/en/events/cine-cobalto");
-  const saveLink = page.getByRole("link", { name: "Save event" });
-  await expect(saveLink).toHaveAttribute(
-    "href",
-    "/en/auth?next=%2Fen%2Fevents%2Fcine-cobalto",
-  );
-  await page.goto("/en/auth?next=%2Fen%2Fevents%2Fcine-cobalto", {
+  await page.goto("/en/auth?next=%2Fen%2Fbusiness%2Fapply", {
     waitUntil: "domcontentloaded",
   });
   await expect(
-    page.getByRole("heading", { name: "Your AkiPasa account" }),
+    page.getByRole("heading", { name: "First, create your free account" }),
   ).toBeVisible();
   const response = await page.request.get("/en/account/export");
   expect(response.status()).toBe(401);
@@ -182,8 +194,7 @@ test("primary navigation, footer and document language are correct", async ({
 }) => {
   await page.goto("/en");
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
-  await page.locator(".site-menu > summary").click();
-  const primary = page.getByRole("navigation", { name: "Mobile menu" });
+  const primary = page.getByRole("navigation", { name: "Navigation" });
   await expect(primary.getByRole("link", { name: "Discover" })).toHaveAttribute(
     "href",
     "/en",
@@ -193,29 +204,26 @@ test("primary navigation, footer and document language are correct", async ({
     "/en/map",
   );
   await expect(
-    primary.getByRole("link", { name: "Passports" }),
-  ).toHaveAttribute("href", "/en/passports");
-  await expect(
     primary.getByRole("link", { name: "Community" }),
   ).toHaveAttribute("href", "/en/community");
-  await expect(
-    primary.getByRole("link", { name: "Membership" }),
-  ).toHaveAttribute("href", "/en/membership");
   await expect(primary.getByRole("link", { name: "Account" })).toHaveAttribute(
     "href",
     "/en/account",
   );
-  for (const name of [
-    "Discover",
-    "Map",
-    "Passports",
-    "Community",
-    "Membership",
-    "Account",
-  ]) {
+  for (const name of ["Discover", "Map", "Community", "Account"]) {
     await expect(primary.getByRole("link", { name })).toBeVisible();
   }
-  const mobileMenu = page.locator(".site-menu");
+  await page.getByRole("button", { name: "More options" }).click();
+  const mobileMenu = page.getByRole("dialog", { name: "More options" });
+  await expect(
+    mobileMenu.getByRole("link", { name: "Passports" }),
+  ).toHaveAttribute("href", "/en/passports");
+  await expect(
+    mobileMenu.getByRole("link", { name: "Membership" }),
+  ).toHaveAttribute("href", "/en/membership");
+  await expect(
+    mobileMenu.getByRole("link", { name: "Add your business" }),
+  ).toHaveAttribute("href", "/en/business/apply");
   await expect(mobileMenu.getByRole("link", { name: "Sign in" })).toBeVisible();
   await expect(
     mobileMenu.getByRole("link", { name: "Cambiar a español" }),

@@ -11,10 +11,9 @@ describe("community and moderation validation", () => {
     const result = communitySubmissionSchema.safeParse({
       locale: "es",
       venueName: "Centro Cultural",
-      venueAddress: "Calle Ficticia 12, Fuengirola",
+      venueAddress: "Calle del Mercado 12, Fuengirola",
       title: "Taller de verano",
-      description:
-        "Una actividad ficticia con información suficiente para revisión.",
+      description: "Una actividad con información suficiente para revisión.",
       startsAt: "2026-08-01T18:00",
       endsAt: "2026-08-01T20:00",
       sourceUrl: "https://example.com/evento",
@@ -28,7 +27,7 @@ describe("community and moderation validation", () => {
       venueName: "Example Hall",
       venueAddress: "12 Example Street",
       title: "Example event",
-      description: "A fictional event description long enough for review.",
+      description: "An event description with enough detail for review.",
       startsAt: "2026-08-01T20:00",
       endsAt: "2026-08-01T18:00",
       sourceUrl: "",
