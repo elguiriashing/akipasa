@@ -1,13 +1,31 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { Icon } from "./Icons";
 
 const THEME_KEY = "akipasa.theme";
+const THEME_EVENT = "akipasa:theme-change";
 
-type ThemeMode = "standard" | "premium";
+type ThemeMode = "light" | "dark";
 
 const themeTokens: Record<ThemeMode, Record<string, string>> = {
-  standard: {
+  light: {
+    "--primary": "#f56623",
+    "--primary-dark": "#d94b0b",
+    "--primary-soft": "rgba(245, 102, 35, 0.13)",
+    "--accent": "#ff9c62",
+    "--ink": "#123b36",
+    "--muted": "#607a74",
+    "--line": "rgba(18, 59, 54, 0.13)",
+    "--surface": "#fffaf1",
+    "--surface-alt": "#f3ecdf",
+    "--sand": "#e8ddca",
+    "--teal": "#0c9d82",
+    "--teal-dark": "#08715e",
+    "--shadow-soft": "0 16px 38px rgba(40, 48, 42, 0.12)",
+    "--shadow-strong": "0 26px 54px rgba(40, 48, 42, 0.18)",
+  },
+  dark: {
     "--primary": "#ff7a33",
     "--primary-dark": "#e85f18",
     "--primary-soft": "rgba(255, 122, 51, 0.16)",
@@ -23,38 +41,33 @@ const themeTokens: Record<ThemeMode, Record<string, string>> = {
     "--shadow-soft": "0 16px 40px rgba(3, 12, 11, 0.4)",
     "--shadow-strong": "0 26px 56px rgba(2, 9, 8, 0.6)",
   },
-  premium: {
-    "--primary": "#ff9142",
-    "--primary-dark": "#ef7418",
-    "--primary-soft": "rgba(255, 145, 66, 0.14)",
-    "--accent": "#ffcf8a",
-    "--ink": "#f7f3ea",
-    "--muted": "#93a6b8",
-    "--line": "rgba(247, 243, 234, 0.08)",
-    "--surface": "#0c1720",
-    "--surface-alt": "#060d13",
-    "--sand": "#0f2029",
-    "--teal": "#2fd6c4",
-    "--teal-dark": "#0f8f83",
-    "--shadow-soft": "0 20px 48px rgba(0, 3, 8, 0.55)",
-    "--shadow-strong": "0 28px 68px rgba(0, 2, 6, 0.78)",
-  },
 };
 
-function validTheme(value: string | null): ThemeMode {
-  return value === "premium" || value === "standard" ? value : "standard";
+function systemTheme(): ThemeMode {
+  return typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+}
+
+function validTheme(value: string | null | undefined): ThemeMode | null {
+  if (value === "light" || value === "dark") return value;
+  // Both legacy choices were dark palettes. Preserve the user's appearance
+  // while migrating the setting away from subscription terminology.
+  if (value === "standard" || value === "premium") return "dark";
+  return null;
 }
 
 function readThemePreference(): ThemeMode {
-  if (typeof window === "undefined") return "standard";
-  return validTheme(window.localStorage.getItem(THEME_KEY));
+  if (typeof window === "undefined") return "dark";
+  return validTheme(window.localStorage.getItem(THEME_KEY)) ?? systemTheme();
 }
 
-function hydrateThemeOnLoad() {
+function hydrateThemeOnLoad(): ThemeMode {
   try {
     return readThemePreference();
   } catch {
-    return "standard";
+    return "dark";
   }
 }
 
@@ -63,14 +76,27 @@ function applyTheme(theme: ThemeMode) {
   const body = document.body;
   root.dataset.theme = theme;
   body.dataset.theme = theme;
-  root.classList.remove("theme-standard", "theme-premium");
+  root.classList.remove(
+    "theme-light",
+    "theme-dark",
+    "theme-standard",
+    "theme-premium",
+  );
   root.classList.add(`theme-${theme}`);
-  body.classList.remove("theme-standard", "theme-premium");
+  body.classList.remove(
+    "theme-light",
+    "theme-dark",
+    "theme-standard",
+    "theme-premium",
+  );
   body.classList.add(`theme-${theme}`);
   Object.entries(themeTokens[theme]).forEach(([key, value]) => {
     root.style.setProperty(key, value);
   });
   window.localStorage.setItem(THEME_KEY, theme);
+  window.dispatchEvent(
+    new CustomEvent<ThemeMode>(THEME_EVENT, { detail: theme }),
+  );
 }
 
 export function ThemeManager() {
@@ -79,8 +105,7 @@ export function ThemeManager() {
 
     const handleStorage = (event: StorageEvent) => {
       if (event.key === THEME_KEY) {
-        const next = validTheme(event.newValue);
-        applyTheme(next);
+        applyTheme(validTheme(event.newValue) ?? systemTheme());
       }
     };
     window.addEventListener("storage", handleStorage);
@@ -90,60 +115,39 @@ export function ThemeManager() {
   return null;
 }
 
-export function ThemeToggle({
-  locale,
-  compact = false,
-}: {
-  locale: "es" | "en";
-  compact?: boolean;
-}) {
-  const [mode, setMode] = useState<ThemeMode>("standard");
+export function ThemeToggle({ locale }: { locale: "es" | "en" }) {
+  const [mode, setMode] = useState<ThemeMode>("dark");
 
   useEffect(() => {
     setMode(hydrateThemeOnLoad());
+    const handleThemeChange = (event: Event) => {
+      setMode((event as CustomEvent<ThemeMode>).detail);
+    };
+    window.addEventListener(THEME_EVENT, handleThemeChange);
+    return () => window.removeEventListener(THEME_EVENT, handleThemeChange);
   }, []);
 
-  const isPremiumDefault = locale === "en" ? "Premium" : "Premium";
-  const isStandardDefault = locale === "es" ? "Est\u00e1ndar" : "Standard";
-
-  const nextMode: ThemeMode = mode === "standard" ? "premium" : "standard";
+  const nextMode: ThemeMode = mode === "dark" ? "light" : "dark";
+  const label =
+    locale === "es"
+      ? `Cambiar a modo ${nextMode === "light" ? "claro" : "oscuro"}`
+      : `Switch to ${nextMode} mode`;
 
   function handleClick() {
-    const resolvedMode =
-      validTheme(document.documentElement.dataset.theme || mode) === "standard"
-        ? "premium"
-        : "standard";
-    applyTheme(resolvedMode);
-    setMode(resolvedMode);
+    const current = validTheme(document.documentElement.dataset.theme) ?? mode;
+    applyTheme(current === "dark" ? "light" : "dark");
   }
 
   return (
     <button
       type="button"
-      className={[
-        "theme-toggle",
-        "button",
-        compact ? "theme-toggle--compact" : "",
-      ]
-        .filter(Boolean)
-        .join(" ")}
+      className="theme-toggle theme-toggle--compact button"
       onClick={handleClick}
-      aria-label={
-        locale === "es"
-          ? `Cambiar a vista ${nextMode === "premium" ? "premium" : "est\u00e1ndar"}`
-          : `Switch to ${nextMode} theme`
-      }
-      aria-pressed={mode === "premium"}
+      aria-label={label}
+      title={label}
+      aria-pressed={mode === "dark"}
     >
-      {compact ? (
-        <span className="theme-toggle-symbol" aria-hidden="true">
-          {mode === "premium" ? "\u2600" : "\u25d0"}
-        </span>
-      ) : mode === "premium" ? (
-        isStandardDefault
-      ) : (
-        isPremiumDefault
-      )}
+      <Icon name={nextMode === "light" ? "sun" : "moon"} />
     </button>
   );
 }

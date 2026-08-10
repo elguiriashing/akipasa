@@ -13,7 +13,14 @@ vi.mock("next/navigation", () => ({
 import { AppShell } from "../src/components/AppShell";
 import { WorkspaceShell } from "../src/components/WorkspaceShell";
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  window.localStorage.clear();
+  delete document.documentElement.dataset.theme;
+  delete document.body.dataset.theme;
+  document.documentElement.className = "";
+  document.body.className = "";
+});
 
 describe("progressive disclosure workspace shell", () => {
   it("uses route navigation and exposes an accessible mobile menu trigger", () => {
@@ -79,8 +86,10 @@ describe("progressive disclosure workspace shell", () => {
   });
 });
 
-it("uses the compact application rail on console routes", () => {
-  render(
+it("uses one persistent rail state and a real light/dark icon control", () => {
+  window.localStorage.setItem("akipasa.theme", "dark");
+
+  const first = render(
     <AppShell locale="en" signedIn={true}>
       <main>Console content</main>
     </AppShell>,
@@ -89,9 +98,36 @@ it("uses the compact application rail on console routes", () => {
   const rail = screen.getByRole("complementary", {
     name: "Primary navigation",
   });
-  expect(rail).toHaveClass("app-rail--compact");
+  expect(rail).not.toHaveClass("app-rail--compact");
   expect(screen.getByRole("link", { name: "CRM" })).toBeInTheDocument();
+
+  const themeToggle = screen.getByRole("button", {
+    name: "Switch to light mode",
+  });
+  expect(themeToggle).toHaveClass("theme-toggle--compact");
+  expect(themeToggle.querySelector("svg")).toBeInTheDocument();
+  expect(screen.queryByText(/premium|standard/i)).not.toBeInTheDocument();
+
+  fireEvent.click(screen.getByRole("button", { name: "Collapse sidebar" }));
+  expect(rail).toHaveClass("app-rail--compact");
+  expect(window.localStorage.getItem("akipasa.sidebar.collapsed")).toBe("true");
   expect(
-    screen.getByRole("button", { name: /Switch to premium theme/i }),
-  ).toHaveClass("theme-toggle--compact");
+    screen.getByRole("button", { name: "Expand sidebar" }),
+  ).toBeInTheDocument();
+
+  fireEvent.click(themeToggle);
+  expect(document.documentElement.dataset.theme).toBe("light");
+  expect(
+    screen.getByRole("button", { name: "Switch to dark mode" }),
+  ).toBeInTheDocument();
+
+  first.unmount();
+  render(
+    <AppShell locale="en" signedIn={true}>
+      <main>Another console page</main>
+    </AppShell>,
+  );
+  expect(
+    screen.getByRole("complementary", { name: "Primary navigation" }),
+  ).toHaveClass("app-rail--compact");
 });

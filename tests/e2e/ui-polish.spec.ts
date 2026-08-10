@@ -173,4 +173,69 @@ test.describe("polished public UI", () => {
       .evaluate((element) => getComputedStyle(element).gridTemplateColumns);
     expect(columns.trim().split(/\s+/)).toHaveLength(2);
   });
+  test("sidebar and light/dark choices stay consistent across routes", async ({
+    page,
+  }) => {
+    test.setTimeout(120_000);
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.goto("/en");
+    await page.evaluate(() => {
+      window.localStorage.setItem("akipasa.theme", "dark");
+      window.localStorage.removeItem("akipasa.sidebar.collapsed");
+    });
+    await page.reload();
+
+    const rail = page.getByRole("complementary", {
+      name: "Primary navigation",
+    });
+    await expect(rail).not.toHaveClass(/app-rail--compact/);
+    await expect(
+      page.getByRole("button", { name: "Switch to light mode" }),
+    ).toBeVisible();
+
+    await page.getByRole("button", { name: "Collapse sidebar" }).click();
+    await expect(rail).toHaveClass(/app-rail--compact/);
+    expect(
+      await page.evaluate(() =>
+        window.localStorage.getItem("akipasa.sidebar.collapsed"),
+      ),
+    ).toBe("true");
+
+    await page.goto("/en/passports");
+    await expect(
+      page.getByRole("complementary", { name: "Primary navigation" }),
+    ).toHaveClass(/app-rail--compact/);
+    await page.getByRole("button", { name: "Expand sidebar" }).click();
+    await expect(
+      page.getByRole("complementary", { name: "Primary navigation" }),
+    ).not.toHaveClass(/app-rail--compact/);
+
+    const themeToggle = page.getByRole("button", {
+      name: "Switch to light mode",
+    });
+    await expect(themeToggle.locator("svg")).toBeVisible();
+    await expect(themeToggle).toHaveText("");
+    await themeToggle.click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await expect(page.locator("html")).toHaveCSS("color-scheme", "light");
+    expect(
+      await page.evaluate(() => window.localStorage.getItem("akipasa.theme")),
+    ).toBe("light");
+
+    await page.goto("/en/membership");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await expect(
+      page.getByRole("button", { name: "Switch to dark mode" }),
+    ).toBeVisible();
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.getByRole("button", { name: "More options" }).click();
+    const mobileThemeToggle = page
+      .getByRole("dialog", { name: "More options" })
+      .getByRole("button", { name: "Switch to dark mode" });
+    await expect(mobileThemeToggle.locator("svg")).toBeVisible();
+    await expect(mobileThemeToggle).toHaveText("");
+    await mobileThemeToggle.click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  });
 });

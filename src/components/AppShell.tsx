@@ -15,27 +15,13 @@ type NavItem = {
   icon: IconName;
 };
 
+const SIDEBAR_KEY = "akipasa.sidebar.collapsed";
+
 function isActive(pathname: string, href: string) {
   return (
     pathname === href ||
     (href.split("/").length > 2 && pathname.startsWith(`${href}/`))
   );
-}
-
-const consoleSegments = [
-  "account",
-  "admin",
-  "staff",
-  "business",
-  "moderation",
-  "passports",
-  "community",
-];
-
-function isConsoleRoute(pathname: string) {
-  const segments = pathname.split("/").filter(Boolean);
-  // segments[0] is the locale, segments[1] is the section
-  return consoleSegments.includes(segments[1] || "");
 }
 
 export function AppShell({
@@ -52,6 +38,7 @@ export function AppShell({
   const es = locale === "es";
   const other = es ? "en" : "es";
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [compact, setCompact] = useState(false);
   const sheetCloseRef = useRef<HTMLButtonElement>(null);
 
   const primaryNav: NavItem[] = [
@@ -74,11 +61,37 @@ export function AppShell({
     },
   ];
 
-  const compact = isConsoleRoute(pathname);
-
   useEffect(() => {
     setSheetOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    try {
+      setCompact(window.localStorage.getItem(SIDEBAR_KEY) === "true");
+    } catch {
+      setCompact(false);
+    }
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === SIDEBAR_KEY) {
+        setCompact(event.newValue === "true");
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
+  function toggleSidebar() {
+    setCompact((current) => {
+      const next = !current;
+      try {
+        window.localStorage.setItem(SIDEBAR_KEY, String(next));
+      } catch {
+        // The control still works when storage is unavailable.
+      }
+      return next;
+    });
+  }
 
   useEffect(() => {
     if (!sheetOpen) return;
@@ -168,9 +181,35 @@ export function AppShell({
             {!compact && <span>CRM</span>}
           </a>
           <div className="app-rail-tools">
-            <ThemeToggle locale={locale} compact={compact} />
+            <ThemeToggle locale={locale} />
             <LanguageLink locale={other} compact={compact} />
           </div>
+          <button
+            type="button"
+            className="app-rail-collapse"
+            onClick={toggleSidebar}
+            aria-label={
+              compact
+                ? es
+                  ? "Expandir barra lateral"
+                  : "Expand sidebar"
+                : es
+                  ? "Contraer barra lateral"
+                  : "Collapse sidebar"
+            }
+            title={
+              compact
+                ? es
+                  ? "Expandir barra lateral"
+                  : "Expand sidebar"
+                : undefined
+            }
+          >
+            <Icon name="chevron" />
+            {!compact && (
+              <span>{es ? "Contraer barra" : "Collapse sidebar"}</span>
+            )}
+          </button>
         </div>
       </aside>
 
