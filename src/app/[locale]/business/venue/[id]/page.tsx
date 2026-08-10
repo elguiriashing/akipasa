@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { VenueQrCode } from "@/components/VenueQrCode";
-import { requireUser } from "@/lib/auth";
+import { requireBusinessAccess } from "@/lib/entitlements";
 import { config, isLocale } from "@/lib/config";
 import {
   addOccurrence,
@@ -48,7 +48,7 @@ export default async function VenueWorkspace({
   if (!isLocale(locale) || !/^[0-9a-f-]{36}$/i.test(id)) notFound();
   const query = await searchParams;
   const es = locale === "es";
-  const { supabase, user } = await requireUser(
+  const { supabase, user } = await requireBusinessAccess(
     locale,
     `/${locale}/business/venue/${id}`,
   );
@@ -76,7 +76,7 @@ export default async function VenueWorkspace({
       .order("created_at", { ascending: false }),
     supabase
       .from("offers")
-      .select("id,title_es,title_en,starts_at,ends_at,status")
+      .select("id,title_es,title_en,starts_at,ends_at,status,audience")
       .eq("venue_id", id)
       .order("starts_at", { ascending: false }),
     supabase
@@ -239,6 +239,17 @@ export default async function VenueWorkspace({
               {es ? "Condiciones en inglés" : "English terms"}
               <textarea name="termsEn" />
             </label>
+            <label>
+              {es ? "Quién puede verla" : "Who can see it"}
+              <select name="audience" defaultValue="public">
+                <option value="public">
+                  {es ? "Todo el mundo" : "Everyone"}
+                </option>
+                <option value="premium">
+                  {es ? "Solo miembros Premium" : "Premium members only"}
+                </option>
+              </select>
+            </label>
             <div className="two-col">
               <label>
                 {es ? "Inicio" : "Starts"}
@@ -260,7 +271,14 @@ export default async function VenueWorkspace({
                   ? offer.title_en || offer.title_es
                   : offer.title_es}
               </strong>
-              <span>{offer.status}</span>
+              <span>
+                {offer.status} ·{" "}
+                {offer.audience === "premium"
+                  ? "Premium"
+                  : es
+                    ? "Pública"
+                    : "Public"}
+              </span>
             </div>
           ))}
         </details>
@@ -446,7 +464,7 @@ export default async function VenueWorkspace({
                 loadingLabel={es ? "Generando QR" : "Generating QR"}
                 errorLabel={
                   es
-                    ? "No se pudo generar el cÃ³digo QR."
+                    ? "No se pudo generar el código QR."
                     : "The QR code could not be generated."
                 }
                 alt={

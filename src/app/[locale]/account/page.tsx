@@ -24,7 +24,7 @@ export default async function AccountOverview({
   ] = await Promise.all([
     supabase
       .from("profiles")
-      .select("display_name,app_role,preferred_locale")
+      .select("display_name,app_role,preferred_locale,membership_tier")
       .eq("id", user.id)
       .maybeSingle(),
     supabase
@@ -37,6 +37,7 @@ export default async function AccountOverview({
   ]);
   const totalXp = xp?.reduce((sum, entry) => sum + entry.delta, 0) || 0;
   const role = profile?.app_role || "consumer";
+  const premium = profile?.membership_tier === "premium";
 
   return (
     <>
@@ -71,7 +72,9 @@ export default async function AccountOverview({
       </section>
       <section className="dashboard-grid">
         <article className="panel console-card">
-          <span className="status-pill">{roleLabel(role, locale)}</span>
+          <span className="status-pill">
+            {premium ? "Premium" : roleLabel(role, locale)}
+          </span>
           <h2>{profile?.display_name || user.email}</h2>
           <p>{user.email}</p>
           <Link
@@ -106,19 +109,39 @@ export default async function AccountOverview({
         <div>
           <span className="status-pill">{es ? "Membresía" : "Membership"}</span>
           <h2>
-            {es ? "Elige o gestiona tu plan" : "Choose or manage your plan"}
+            {premium
+              ? es
+                ? "Tus ventajas Premium están activas"
+                : "Your Premium benefits are active"
+              : es
+                ? "Elige o gestiona tu plan"
+                : "Choose or manage your plan"}
           </h2>
           <p>
-            {es
-              ? "Compara Premium y Business, elige facturación mensual o anual y gestiona tus pagos."
-              : "Compare Premium and Business, choose monthly or annual billing, and manage payments."}
+            {premium
+              ? es
+                ? "Accede a ofertas para miembros, 2x XP y exportaciones de calendario."
+                : "Use member-only offers, 2x XP, and calendar exports."
+              : es
+                ? "Compara Premium y Business, elige facturación mensual o anual y gestiona tus pagos."
+                : "Compare Premium and Business, choose monthly or annual billing, and manage payments."}
           </p>
         </div>
         <Link
           className="button button-strong"
-          href={`/${locale}/account/subscription`}
+          href={
+            premium
+              ? "/" + locale + "/account/premium"
+              : "/" + locale + "/account/subscription"
+          }
         >
-          {es ? "Ver membresías" : "View memberships"}
+          {premium
+            ? es
+              ? "Abrir Premium"
+              : "Open Premium"
+            : es
+              ? "Ver membresías"
+              : "View memberships"}
         </Link>
       </section>
       <section className="panel console-card">

@@ -16,6 +16,22 @@ export async function startSubscriptionCheckout(formData: FormData) {
     locale,
     `/${locale}/account/subscription`,
   );
+  const { data: existingSubscriptions } = await supabase
+    .from("billing_subscriptions")
+    .select("status,current_period_end")
+    .eq("profile_id", user.id)
+    .eq("plan_code", parsed.data.plan)
+    .in("status", ["active", "trialing"]);
+  const activeSubscription = (existingSubscriptions || []).some(
+    (subscription) =>
+      !subscription.current_period_end ||
+      new Date(subscription.current_period_end) > new Date(),
+  );
+  if (activeSubscription)
+    redirect(
+      `/${locale}/account/subscription?plan=${parsed.data.plan}&error=active`,
+    );
+
   if (parsed.data.plan === "business") {
     const { data: application } = await supabase
       .from("business_applications")
@@ -41,6 +57,8 @@ export async function startSubscriptionCheckout(formData: FormData) {
     client_reference_id: user.id,
     success_url: successUrl,
     cancel_url: cancelUrl,
+    locale,
+    allow_promotion_codes: "true",
     "metadata[profile_id]": user.id,
     "metadata[plan_code]": parsed.data.plan,
     "metadata[billing_interval]": parsed.data.interval,

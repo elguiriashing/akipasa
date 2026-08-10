@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requireUser } from "@/lib/auth";
+import { requireBusinessAccess } from "@/lib/entitlements";
 import { safeExternalUrlSchema } from "@/lib/auth-security";
 import { madridLocalDateTimeSchema } from "@/lib/time";
 
@@ -37,7 +37,7 @@ export async function updateVenue(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=venue"));
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase
     .from("venues")
     .update({
@@ -78,7 +78,7 @@ export async function updateEvent(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=event"));
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireBusinessAccess(locale);
   const v = parsed.data;
   const { error } = await supabase
     .from("events")
@@ -112,7 +112,7 @@ export async function updateOccurrenceStatus(formData: FormData) {
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success)
     redirect(destination(locale, venueId, "error=occurrence-status"));
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase
     .from("event_occurrences")
     .update({ status: parsed.data.status })
@@ -137,7 +137,7 @@ export async function updateOccurrence(formData: FormData) {
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success || parsed.data.endsAt <= parsed.data.startsAt)
     redirect(destination(locale, venueId, "error=occurrence"));
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase
     .from("event_occurrences")
     .update({
@@ -164,7 +164,7 @@ export async function addOccurrence(formData: FormData) {
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success)
     redirect(destination(locale, venueId, "error=occurrence"));
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase.rpc("add_owned_event_occurrence", {
     p_event: parsed.data.eventId,
     p_starts: parsed.data.startsAt.toISOString(),
@@ -189,7 +189,7 @@ export async function setRecurrence(formData: FormData) {
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success || parsed.data.endsAt <= parsed.data.startsAt)
     redirect(destination(locale, venueId, "error=recurrence"));
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireBusinessAccess(locale);
   const value = parsed.data;
   const { error } = await supabase.rpc("set_owned_event_recurrence", {
     p_event: value.eventId,
@@ -214,7 +214,7 @@ export async function duplicateEvent(formData: FormData) {
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success)
     redirect(destination(locale, venueId, "error=duplicate"));
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase.rpc("duplicate_owned_event", {
     p_event: parsed.data.eventId,
     p_slug: parsed.data.slug,
@@ -230,6 +230,7 @@ export async function saveOffer(formData: FormData) {
       titleEn: z.string().trim().max(160),
       termsEs: z.string().trim().min(10).max(2000),
       termsEn: z.string().trim().max(2000),
+      audience: z.enum(["public", "premium"]),
       startsAt: madridLocalDateTimeSchema,
       endsAt: madridLocalDateTimeSchema,
     })
@@ -238,7 +239,7 @@ export async function saveOffer(formData: FormData) {
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success || parsed.data.endsAt <= parsed.data.startsAt)
     redirect(destination(locale, venueId, "error=offer"));
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireBusinessAccess(locale);
   const v = parsed.data;
   const { error } = await supabase.from("offers").insert({
     id: crypto.randomUUID(),
@@ -247,6 +248,7 @@ export async function saveOffer(formData: FormData) {
     title_en: v.titleEn || null,
     terms_es: v.termsEs,
     terms_en: v.termsEn || null,
+    audience: v.audience,
     starts_at: v.startsAt.toISOString(),
     ends_at: v.endsAt.toISOString(),
     status: "pending",
@@ -265,7 +267,7 @@ export async function addTeamMember(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=member"));
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase.rpc("add_venue_member", {
     p_venue: parsed.data.venueId,
     p_profile: parsed.data.profileId,
@@ -294,7 +296,7 @@ export async function uploadVenueImage(formData: FormData) {
     file.size > 10 * 1024 * 1024
   )
     redirect(destination(locale, venueId, "error=media"));
-  const { supabase, user } = await requireUser(locale);
+  const { supabase, user } = await requireBusinessAccess(locale);
   const extension = file.type.split("/")[1].replace("jpeg", "jpg");
   const path = `${parsed.data.venueId}/${crypto.randomUUID()}.${extension}`;
   const { error: uploadError } = await supabase.storage
@@ -330,7 +332,7 @@ export async function updateVenueImageMetadata(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=media"));
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase
     .from("venue_media")
     .update({
@@ -351,7 +353,7 @@ export async function removeVenueImage(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=media"));
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireBusinessAccess(locale);
   const { data: media } = await supabase
     .from("venue_media")
     .select("storage_path")
@@ -384,7 +386,7 @@ export async function deleteEvent(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=delete"));
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase.rpc("delete_owned_event", {
     p_event: parsed.data.eventId,
     p_confirmation: parsed.data.confirmation,
@@ -399,7 +401,7 @@ export async function deleteVenue(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=delete"));
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase.rpc("delete_owned_venue", {
     p_venue: parsed.data.venueId,
     p_confirmation: parsed.data.confirmation,

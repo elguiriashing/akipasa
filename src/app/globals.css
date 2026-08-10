@@ -3552,7 +3552,8 @@ html[data-theme="premium"] .card:hover {
   font-weight: 850;
 }
 
-.membership-plan ul {
+.membership-plan ul,
+.membership-benefit-list {
   display: grid;
   gap: 0.55rem;
   margin: 0;
@@ -3560,8 +3561,9 @@ html[data-theme="premium"] .card:hover {
   list-style: none;
 }
 
-.membership-plan li::before {
-  content: "✓";
+.membership-plan li::before,
+.membership-benefit-list li::before {
+  content: "\2713";
   margin-right: 0.55rem;
   color: var(--primary);
   font-weight: 950;

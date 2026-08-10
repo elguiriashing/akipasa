@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { isLocale } from "@/lib/config";
 import { loadFeatureFlags } from "@/lib/feature-flags";
-import { requireUser } from "@/lib/auth";
+import { requireBusinessAccess } from "@/lib/entitlements";
 import {
   confirmRedemption,
   createEvent,
@@ -45,7 +45,7 @@ export default async function BusinessPage({
     ? query.view!
     : "venues";
 
-  const { supabase, user } = await requireUser(locale);
+  const { supabase, user } = await requireBusinessAccess(locale);
   const { data: profile } = await supabase
     .from("profiles")
     .select("app_role")

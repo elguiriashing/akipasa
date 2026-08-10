@@ -31,6 +31,27 @@ export default async function VenuePage({
         .eq("venue_key", venue.id)
         .maybeSingle()
     : { data: null };
+  const { data: premiumOfferRows } = user
+    ? await supabase
+        .from("offers")
+        .select("id,title_es,title_en,terms_es,terms_en,starts_at,ends_at")
+        .eq("venue_id", venue.id)
+        .eq("status", "published")
+        .eq("audience", "premium")
+        .lte("starts_at", new Date().toISOString())
+        .gte("ends_at", new Date().toISOString())
+    : { data: null };
+  const visibleOffers = [
+    ...(venue.offers || []).map((offer) => ({ ...offer, premium: false })),
+    ...(premiumOfferRows || []).map((offer) => ({
+      id: offer.id,
+      title: { es: offer.title_es, en: offer.title_en || undefined },
+      terms: { es: offer.terms_es, en: offer.terms_en || undefined },
+      startsAt: offer.starts_at,
+      endsAt: offer.ends_at,
+      premium: true,
+    })),
+  ];
   const bgImage = venue.media?.[0]?.url;
 
   return (
@@ -75,11 +96,16 @@ export default async function VenuePage({
               </Link>
             </p>
           ))}
-          {venue.offers?.length ? (
+          {visibleOffers.length ? (
             <section className="venue-section">
               <h2>{locale === "es" ? "Ofertas" : "Offers"}</h2>
-              {venue.offers.map((offer) => (
+              {visibleOffers.map((offer) => (
                 <article className="offer-card" key={offer.id}>
+                  {offer.premium && (
+                    <span className="status-pill">
+                      {locale === "es" ? "Oferta Premium" : "Premium offer"}
+                    </span>
+                  )}
                   <h3>{translated(offer.title, locale)}</h3>
                   <p>{translated(offer.terms, locale)}</p>
                 </article>

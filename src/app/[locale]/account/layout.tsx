@@ -19,7 +19,7 @@ export default async function AccountLayout({
   const { supabase, user } = await requireUser(locale);
   const { data: profile } = await supabase
     .from("profiles")
-    .select("display_name,app_role")
+    .select("display_name,app_role,membership_tier")
     .eq("id", user.id)
     .maybeSingle();
   const role = profile?.app_role || "consumer";
@@ -33,6 +33,15 @@ export default async function AccountLayout({
       label: es ? "Progreso" : "Progress",
       icon: "gift",
     },
+    ...(profile?.membership_tier === "premium"
+      ? [
+          {
+            href: `${base}/premium`,
+            label: "Premium",
+            icon: "gift" as const,
+          },
+        ]
+      : []),
     {
       href: `${base}/profile`,
       label: es ? "Perfil" : "Profile",

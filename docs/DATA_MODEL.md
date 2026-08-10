@@ -2,7 +2,20 @@
 
 Canonical events own translated content and have many timestamped occurrences. Venues belong to cities and have members, claims, and media. Consumer actions include saves, follows, reports, check-ins, append-only XP/stamp/redemption ledgers, and passport progress. Operations include moderation actions, promotion requests, analytics events, and labelled feature slots. Privileged rows require server authorization and PostgreSQL row-level security.
 
-Accounts use four product-facing platform roles: User (`consumer`), Business (`organiser`), Staff (`moderator`) and Admin (`administrator`). These are deliberately separate from venue membership roles (`owner`, `manager`, `editor`): a business team member receives permissions only for the venues they belong to, while platform Staff receives moderation access without inheriting business ownership. Admin inherits User, Business and Staff capabilities and can manage any venue through server-side row-level policies. Public signup always starts as User; creating a venue promotes that profile to Business, and only an Admin can grant or remove privileged platform roles.
+Paid membership is derived from active Stripe subscriptions or audited staff
+grants. `profiles.membership_tier` and `profiles.business_plan_active` are
+webhook-maintained projections for presentation and routing; billing rows
+remain authoritative. Stripe subscription events carry monotonic event time so
+late webhook deliveries cannot restore stale access. Premium offer visibility
+and Business venue operations are also enforced by RLS/RPC authorization.
+
+Premium check-ins award 20 XP instead of 10 while keeping stamps at one, so a
+paid plan does not accelerate redeemable loyalty value. Offers declare a
+`public` or `premium` audience. Premium calendar exports are generated on
+authenticated, entitlement-checked routes and do not create durable calendar
+data.
+
+Accounts use four product-facing platform roles: User (`consumer`), Business (`organiser`), Staff (`moderator`) and Admin (`administrator`). These are deliberately separate from venue membership roles (`owner`, `manager`, `editor`): a business team member receives permissions only for the venues they belong to, while platform Staff receives moderation access without inheriting business ownership. Admin inherits User, Business and Staff capabilities and can manage any venue through server-side row-level policies. Public signup always starts as User; an active Business payment or audited grant promotes that profile to Business, while Staff and Admin roles remain privileged operator grants.
 
 Profiles store paired `terms_version` and `terms_accepted_at` evidence. The
 database requires both values or neither, and clients may directly update only

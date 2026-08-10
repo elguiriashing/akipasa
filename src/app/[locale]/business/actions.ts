@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { isLocale } from "@/lib/config";
 import { requireUser } from "@/lib/auth";
+import { requireBusinessAccess } from "@/lib/entitlements";
 import { isSpainLocation, spainLocations } from "@/lib/locations";
 import { safeExternalUrlSchema } from "@/lib/auth-security";
 import { madridLocalDateTimeSchema } from "@/lib/time";
@@ -55,7 +56,7 @@ export async function createVenue(formData: FormData) {
     ? (String(formData.get("locale")) as "es" | "en")
     : "es";
   if (!parsed.success) redirect(`/${locale}/business?error=venue`);
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireBusinessAccess(locale);
   const v = parsed.data;
   const place = spainLocations[v.locality];
   const { error } = await supabase.rpc("create_owned_venue_in_spain", {
@@ -84,7 +85,7 @@ export async function submitVenueClaim(formData: FormData) {
     ? (String(formData.get("locale")) as "es" | "en")
     : "es";
   if (!parsed.success) redirect(`/${locale}/business?error=claim`);
-  const { supabase, user } = await requireUser(locale);
+  const { supabase, user } = await requireBusinessAccess(locale);
   const { error } = await supabase.from("venue_claims").insert({
     venue_id: parsed.data.venueId,
     claimant_id: user.id,
@@ -117,7 +118,7 @@ export async function createEvent(formData: FormData) {
     ? (String(formData.get("locale")) as "es" | "en")
     : "es";
   if (!parsed.success) redirect(`/${locale}/business?error=event`);
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireBusinessAccess(locale);
   const e = parsed.data;
   const { error } = await supabase.rpc("create_event_with_occurrence", {
     target_venue: e.venueId,
@@ -150,7 +151,7 @@ export async function saveLoyaltyProgram(formData: FormData) {
   const parsed = loyaltySchema.safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   if (!parsed.success) redirect(`/${locale}/business?error=loyalty`);
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireBusinessAccess(locale);
   const value = parsed.data;
   const { error } = await supabase.from("loyalty_programs").upsert(
     {
@@ -172,7 +173,7 @@ export async function confirmRedemption(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const id = z.string().uuid().safeParse(formData.get("redemptionId"));
   if (!id.success) redirect(`/${locale}/business?error=redemption`);
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase.rpc("confirm_reward_redemption", {
     p_redemption: id.data,
   });
@@ -196,7 +197,7 @@ export async function requestPromotion(formData: FormData) {
   const parsed = promotionSchema.safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   if (!parsed.success) redirect(`/${locale}/business?error=promotion`);
-  const { supabase, user } = await requireUser(locale);
+  const { supabase, user } = await requireBusinessAccess(locale);
   const { error } = await supabase.from("promotion_requests").insert({
     venue_id: parsed.data.venueId,
     requester_id: user.id,

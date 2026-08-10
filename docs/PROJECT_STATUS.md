@@ -1,8 +1,15 @@
 # Project Status
 
-Last verified: 2026-08-01.
+Last verified: 2026-08-10.
 
 ## Completed
+
+- Local migration `0033` implements webhook-driven Premium and Business
+  profile reconciliation, stale-event protection, paid-offer RLS, Business
+  operation gates, and 2x Premium XP without increasing stamps.
+- Premium now includes member-only venue offers and protected single-event or
+  saved-plan calendar exports, with concrete public/account billing copy and a
+  focused Premium account page.
 
 - Native Android project exists under `Android/` with package
   `com.akipasa`, API 36 target, API 26 minimum, production web/backend

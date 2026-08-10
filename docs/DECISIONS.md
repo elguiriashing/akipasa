@@ -447,3 +447,30 @@ web-delivered and requires connectivity for server-rendered features. Web
 releases affect Android immediately. Google OAuth and Stripe callbacks require
 Digital Asset Links. A future native UI rewrite remains possible, but should
 consume a reviewed mobile API rather than bypass server-side product rules.
+
+## ADR-029: Derive paid product access from billing events
+
+**Decision:** Keep Stripe subscription and audited staff-grant rows
+authoritative. Reconcile denormalized Premium and Business profile flags in
+PostgreSQL triggers, ignore out-of-order Stripe events, and enforce paid access
+again in RLS/RPCs and protected routes.
+
+Premium includes member-only venue offers, 2x non-cash XP on accepted
+check-ins, and calendar exports for events and saved plans. Business activates
+the Business profile and gates venue, event, loyalty, promotion, and analytics
+tools.
+
+**Reasoning:** A Checkout success redirect is forgeable and can arrive before
+or without final subscription state. Central reconciliation gives the web,
+database, Stripe webhook, and staff grants one access contract. The selected
+Premium benefits build on existing discovery and loyalty behavior without
+introducing delivery-heavy discounts or cash-equivalent rewards.
+
+**Alternatives considered:** Client-side role changes after Checkout; one
+generic paid flag; Premium-only content without enforceable benefits; doubling
+stamps as well as XP.
+
+**Trade-offs:** Entitlement changes are eventually consistent with Stripe,
+profile flags must never be user-editable, and calendar exports perform bounded
+catalogue reads. Business cancellation removes paid tools even when catalogue
+ownership records must be retained.

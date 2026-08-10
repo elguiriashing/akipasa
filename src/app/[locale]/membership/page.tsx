@@ -75,8 +75,16 @@ export default async function MembershipPage({
           saving={es ? "Ahorra €12 al año" : "Save €12 each year"}
           features={
             es
-              ? ["Ventajas Premium al publicarse", "Progreso en un solo lugar"]
-              : ["Premium benefits as they launch", "Progress in one place"]
+              ? [
+                  "Ofertas exclusivas en locales participantes",
+                  "Doble XP en cada check-in aceptado",
+                  "Exportación de eventos y guardados al calendario",
+                ]
+              : [
+                  "Member-only offers at participating venues",
+                  "Double XP on every accepted check-in",
+                  "Calendar export for events and saved plans",
+                ]
           }
           signedIn={signedIn}
         />
@@ -94,8 +102,16 @@ export default async function MembershipPage({
           saving={es ? "Ahorra €50 al año" : "Save €50 each year"}
           features={
             es
-              ? ["Locales y eventos", "Fidelidad y promociones"]
-              : ["Venues and events", "Loyalty and promotions"]
+              ? [
+                  "Perfil de negocio y equipo",
+                  "Locales, eventos y analítica",
+                  "Fidelidad, promociones y ofertas Premium",
+                ]
+              : [
+                  "Business profile and team",
+                  "Venues, events, and analytics",
+                  "Loyalty, promotions, and Premium offers",
+                ]
           }
           featured
           signedIn={signedIn}

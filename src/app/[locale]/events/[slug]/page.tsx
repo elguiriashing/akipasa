@@ -31,14 +31,20 @@ export default async function EventPage({
   const m = msg(locale);
   const returnTo = `/${locale}/events/${event.slug}`;
   const { supabase, user } = await optionalUser();
-  const { data: saved } = user
-    ? await supabase
-        .from("saved_event_refs")
-        .select("event_key")
-        .eq("profile_id", user.id)
-        .eq("event_key", event.id)
-        .maybeSingle()
-    : { data: null };
+  const [{ data: saved }, { data: premium }] = user
+    ? await Promise.all([
+        supabase
+          .from("saved_event_refs")
+          .select("event_key")
+          .eq("profile_id", user.id)
+          .eq("event_key", event.id)
+          .maybeSingle(),
+        supabase.rpc("has_active_entitlement", {
+          p_profile: user.id,
+          p_plan: "premium",
+        }),
+      ])
+    : [{ data: null }, { data: false }];
   if (user) {
     await supabase.from("recent_event_view_refs").upsert(
       {
@@ -246,6 +252,23 @@ export default async function EventPage({
               eventId={event.id}
               locale={locale}
             />
+            {premium ? (
+              <a
+                className="button secondary"
+                href={"/" + locale + "/events/" + event.slug + "/calendar"}
+              >
+                {locale === "es" ? "Añadir al calendario" : "Add to calendar"}
+              </a>
+            ) : user ? (
+              <Link
+                className="button secondary"
+                href={"/" + locale + "/account/subscription?plan=premium"}
+              >
+                {locale === "es"
+                  ? "Calendario con Premium"
+                  : "Calendar with Premium"}
+              </Link>
+            ) : null}
             <Link
               className="button secondary"
               href={`/${locale}/community?target=event:${event.id}`}

@@ -50,7 +50,7 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for data flows and boundaries.
 - `src/components`: reusable presentation and console navigation components.
 - `src/lib`: domain models, provider adapters, permissions, validation, time,
   analytics, moderation, and Supabase clients.
-- `database`: 30 ordered Supabase/PostgreSQL migrations, deterministic local
+- `database`: 33 ordered Supabase/PostgreSQL migrations, deterministic local
   seed tooling, and rollback-only acceptance SQL.
 - `automation`: independent Worker, commands, security, dashboard, D1
   migrations, tests, and Android signing client.
@@ -67,8 +67,7 @@ Cloudflare documents 1102 as request CPU exhaustion, and the account is
 currently on the 10 ms free request allowance. Account tools use eight
 dedicated routes. Staff operations use six routes under `/{locale}/staff`; the
 former moderation URL remains a compatibility redirect. Administration uses
-eight focused routes, including a searchable user CRM. Production Supabase is
-migrated through `0027`.
+eight focused routes, including a searchable user CRM. Production Supabase is migrated through `0030`; local migration `0033` is pending deployment..
 
 The deployed correction skips Supabase Auth for requests without a Supabase
 session cookie and uses a sessionless client for public catalogue reads.

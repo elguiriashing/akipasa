@@ -23,26 +23,47 @@ export default async function SubscriptionPage({
     locale,
     `/${locale}/account/subscription`,
   );
-  const [{ data: subscriptions }, { data: grants }, { data: customer }] =
-    await Promise.all([
-      supabase
-        .from("billing_subscriptions")
-        .select(
-          "plan_code,billing_interval,status,current_period_end,cancel_at_period_end",
-        )
-        .eq("profile_id", user.id),
-      supabase
-        .from("staff_billing_grants")
-        .select("plan_code,grant_kind,expires_at")
-        .eq("profile_id", user.id)
-        .eq("active", true),
-      supabase
-        .from("billing_customers")
-        .select("stripe_customer_id")
-        .eq("profile_id", user.id)
-        .maybeSingle(),
-    ]);
+  const [
+    { data: subscriptions },
+    { data: grants },
+    { data: customer },
+    { data: profile },
+  ] = await Promise.all([
+    supabase
+      .from("billing_subscriptions")
+      .select(
+        "plan_code,billing_interval,status,current_period_end,cancel_at_period_end",
+      )
+      .eq("profile_id", user.id),
+    supabase
+      .from("staff_billing_grants")
+      .select("plan_code,grant_kind,expires_at")
+      .eq("profile_id", user.id)
+      .eq("active", true),
+    supabase
+      .from("billing_customers")
+      .select("stripe_customer_id")
+      .eq("profile_id", user.id)
+      .maybeSingle(),
+    supabase
+      .from("profiles")
+      .select("membership_tier,business_plan_active")
+      .eq("id", user.id)
+      .maybeSingle(),
+  ]);
   const es = locale === "es";
+  const errorMessage =
+    query.error === "active"
+      ? es
+        ? "Este plan ya está activo en tu cuenta."
+        : "This plan is already active on your account."
+      : query.error === "business_required"
+        ? es
+          ? "Necesitas un plan Business activo para abrir esas herramientas."
+          : "You need an active Business plan to open those tools."
+        : es
+          ? "No se pudo iniciar la operación de facturación."
+          : "The billing operation could not be started.";
 
   return (
     <>
@@ -62,18 +83,27 @@ export default async function SubscriptionPage({
             : "Checkout completed. Membership will appear after Stripe confirms the webhook."}
         </p>
       )}
-      {query.error && (
-        <p className="notice">
-          {es
-            ? "No se pudo iniciar la operacion de facturacion."
-            : "The billing operation could not be started."}
-        </p>
-      )}
-      {Boolean(subscriptions?.length || grants?.length) && (
+      {query.error && <p className="notice">{errorMessage}</p>}
+      {Boolean(
+        subscriptions?.length ||
+          grants?.length ||
+          profile?.membership_tier === "premium" ||
+          profile?.business_plan_active,
+      ) && (
         <section className="panel console-card">
           <span className="status-pill">
             {es ? "Acceso actual" : "Current access"}
           </span>
+          {profile?.membership_tier === "premium" && (
+            <p>
+              <strong>Premium</strong>: {es ? "activo" : "active"}
+            </p>
+          )}
+          {profile?.business_plan_active && (
+            <p>
+              <strong>Business</strong>: {es ? "activo" : "active"}
+            </p>
+          )}
           {subscriptions?.map((item) => (
             <p key={`${item.plan_code}-${item.billing_interval}`}>
               <strong>{item.plan_code}</strong>: {item.status} (
@@ -122,9 +152,37 @@ export default async function SubscriptionPage({
                   ? "Publica y gestiona locales, eventos, fidelidad y promociones tras la revision."
                   : "Publish and manage venues, events, loyalty, and promotions after review."
                 : es
-                  ? "Membresia personal y acceso a ventajas Premium a medida que se publiquen."
-                  : "Personal membership and access to Premium benefits as they launch."}
+                  ? "Ofertas para miembros, doble XP y calendarios para tus planes."
+                  : "Member-only offers, double XP, and calendar tools for your plans."}
             </p>
+            <ul className="membership-benefit-list">
+              {(item.plan === "premium"
+                ? es
+                  ? [
+                      "Ofertas Premium en locales participantes",
+                      "20 XP por check-in aceptado",
+                      "Exportación de eventos y guardados",
+                    ]
+                  : [
+                      "Premium offers at participating venues",
+                      "20 XP per accepted check-in",
+                      "Event and saved-plan exports",
+                    ]
+                : es
+                  ? [
+                      "Perfil y herramientas de negocio",
+                      "Locales, eventos y analítica",
+                      "Fidelidad, promociones y ofertas Premium",
+                    ]
+                  : [
+                      "Business profile and tools",
+                      "Venues, events, and analytics",
+                      "Loyalty, promotions, and Premium offers",
+                    ]
+              ).map((benefit) => (
+                <li key={benefit}>{benefit}</li>
+              ))}
+            </ul>
             <div className="billing-options">
               <BillingOption
                 locale={locale}

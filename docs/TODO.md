@@ -63,8 +63,10 @@ Last reviewed: 2026-07-31.
 - [x] Create the restricted Stripe key and production webhook endpoint and
       install all three encrypted Worker secrets without placing credentials in
       source or documentation.
-- [ ] Deploy and complete a real checkout/webhook acceptance without exposing
-      credentials.
+- [x] Implement concrete Premium benefits, profile projections, stale Stripe
+      event protection, cancellation reconciliation, and paid Business gates.
+- [ ] Apply migration `0033`, deploy, and complete real Premium and Business
+      checkout/webhook/cancellation acceptance without exposing credentials.
 - [x] Diagnose the Windows-built candidate at 0% traffic and restore the
       generated OpenNext entry point after reproducing a Next.js
       `workUnitAsyncStorage` invariant.

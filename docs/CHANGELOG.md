@@ -3,6 +3,34 @@
 This is an engineering milestone log, not a semantic-version release log.
 Entries are newest first and must not contain credentials or personal data.
 
+## 2026-08-10
+
+### Summary
+
+Implemented real Premium and Business fulfillment. Signed Stripe subscription
+events now reconcile profile membership, activate or revoke Business access,
+and reject stale out-of-order updates. Premium members receive member-only
+venue offers, 20 XP instead of 10 per accepted check-in, protected event and
+saved-plan calendar exports, and a focused Premium account page.
+
+Business pages and mutations now require an active Business entitlement, and
+businesses can publish offers specifically for Premium members. Membership and
+billing pages describe the concrete benefits and display the profile's
+authoritative access state.
+
+### Verification
+
+- Formatting, ESLint, strict TypeScript, and all 51 unit/component tests pass.
+- Local database safety checks pass.
+- Tests cover Stripe signature validation, event-order protection, paid
+  profile projections, calendar escaping, and billing-data exports.
+- Browser acceptance compiled the 85-page production build and passed 17
+  tests, including membership and responsive UI; one credential-gated test was
+  skipped. Eight pre-existing public-discovery checks still target expired
+  catalogue content and removed navigation selectors.
+- Production migration and live checkout/webhook/cancellation acceptance
+  remain pending deployment approval.
+
 ## 2026-08-01
 
 ### Summary
