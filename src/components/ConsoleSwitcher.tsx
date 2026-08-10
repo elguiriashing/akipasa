@@ -1,7 +1,8 @@
+import React from "react";
 import Link from "next/link";
-import { Icon } from "@/components/Icons";
-import type { Locale } from "@/lib/config";
-import { roleCapabilities } from "@/lib/roles";
+import { Icon } from "./Icons";
+import type { Locale } from "../lib/config";
+import { roleCapabilities } from "../lib/roles";
 
 export type ConsoleKey = "account" | "business" | "staff" | "admin";
 
@@ -51,10 +52,12 @@ export function ConsoleSwitcher({
   locale,
   role,
   active,
+  onNavigate,
 }: {
   locale: Locale;
   role: string;
-  active: ConsoleKey;
+  active?: ConsoleKey;
+  onNavigate?: () => void;
 }) {
   const es = locale === "es";
   const capabilities = roleCapabilities(role);
@@ -75,6 +78,7 @@ export function ConsoleSwitcher({
           href={`/${locale}/${entry.path}`}
           className={entry.key === active ? "active" : undefined}
           aria-current={entry.key === active ? "page" : undefined}
+          onClick={onNavigate}
         >
           <Icon name={entry.icon} />
           <span>{es ? entry.es : entry.en}</span>

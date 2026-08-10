@@ -20,11 +20,24 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const m = msg(locale);
-  const { user } = await optionalUser();
+  const { supabase, user } = await optionalUser();
+  const profile = user
+    ? (
+        await supabase
+          .from("profiles")
+          .select("app_role")
+          .eq("id", user.id)
+          .maybeSingle()
+      ).data
+    : null;
   return (
     <>
       <LocaleDocumentLanguage locale={locale} />
-      <AppShell locale={locale} signedIn={Boolean(user)}>
+      <AppShell
+        locale={locale}
+        signedIn={Boolean(user)}
+        role={profile?.app_role || "consumer"}
+      >
         {children}
         <footer className="shell footer">
           <span>

@@ -2,7 +2,13 @@
 
 import React from "react";
 import "@testing-library/jest-dom/vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("next/navigation", () => ({
@@ -130,4 +136,30 @@ it("uses one persistent rail state and a real light/dark icon control", () => {
   expect(
     screen.getByRole("complementary", { name: "Primary navigation" }),
   ).toHaveClass("app-rail--compact");
+});
+it("puts every authorized workspace in the main mobile menu", () => {
+  render(
+    <AppShell locale="en" signedIn={true} role="administrator">
+      <main>Account content</main>
+    </AppShell>,
+  );
+
+  fireEvent.click(screen.getByRole("button", { name: "More options" }));
+  const dialog = screen.getByRole("dialog", { name: "More options" });
+  const workspaces = within(dialog).getByRole("navigation", {
+    name: "Switch workspace",
+  });
+
+  expect(
+    within(workspaces).getByRole("link", { name: "Account" }),
+  ).toHaveAttribute("href", "/en/account");
+  expect(
+    within(workspaces).getByRole("link", { name: "Business" }),
+  ).toHaveAttribute("href", "/en/business");
+  expect(
+    within(workspaces).getByRole("link", { name: "Staff" }),
+  ).toHaveAttribute("href", "/en/staff");
+  expect(
+    within(workspaces).getByRole("link", { name: "Admin" }),
+  ).toHaveAttribute("href", "/en/admin");
 });

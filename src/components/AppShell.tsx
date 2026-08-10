@@ -6,8 +6,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { Icon, type IconName } from "./Icons";
 import { LanguageLink } from "./LanguageLink";
 import { ThemeToggle } from "./ThemeModeControls";
+import { ConsoleSwitcher, type ConsoleKey } from "./ConsoleSwitcher";
 import { config, type Locale } from "../lib/config";
 import { msg } from "../lib/messages";
+import { roleCapabilities } from "../lib/roles";
 
 type NavItem = {
   href: string;
@@ -27,10 +29,12 @@ function isActive(pathname: string, href: string) {
 export function AppShell({
   locale,
   signedIn,
+  role = "consumer",
   children,
 }: {
   locale: Locale;
   signedIn: boolean;
+  role?: string;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -40,6 +44,17 @@ export function AppShell({
   const [sheetOpen, setSheetOpen] = useState(false);
   const [compact, setCompact] = useState(false);
   const sheetCloseRef = useRef<HTMLButtonElement>(null);
+  const section = pathname.split("/").filter(Boolean)[1];
+  const activeWorkspace = ["account", "business", "staff", "admin"].includes(
+    section || "",
+  )
+    ? (section as ConsoleKey)
+    : undefined;
+  const capabilities = roleCapabilities(role);
+  const hasMultipleWorkspaces =
+    capabilities.manageOwnedVenues ||
+    capabilities.moderatePlatform ||
+    capabilities.administerPlatform;
 
   const primaryNav: NavItem[] = [
     { href: `/${locale}`, label: m.discover, icon: "discover" },
@@ -297,6 +312,19 @@ export function AppShell({
             >
               <Icon name="close" />
             </button>
+            {signedIn && hasMultipleWorkspaces && (
+              <section className="app-sheet-workspaces">
+                <span className="app-sheet-section-label">
+                  {es ? "Tus espacios" : "Your workspaces"}
+                </span>
+                <ConsoleSwitcher
+                  locale={locale}
+                  role={role}
+                  active={activeWorkspace}
+                  onNavigate={() => setSheetOpen(false)}
+                />
+              </section>
+            )}
             <nav className="app-sheet-nav">
               {railExtras.map((item) => (
                 <Link
