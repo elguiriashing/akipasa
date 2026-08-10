@@ -423,54 +423,31 @@ h3 {
   text-transform: uppercase;
 }
 
-.owner-entry {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 0.85fr);
-  gap: clamp(1.25rem, 3vw, 2.5rem);
-  align-items: center;
-  margin: 1rem 0;
-  padding: clamp(1.25rem, 3vw, 2.25rem);
-  border: 1px solid color-mix(in oklab, var(--primary) 35%, var(--line));
-  border-radius: var(--radius-xl);
-  background:
-    radial-gradient(
-      circle at 100% 0,
-      color-mix(in oklab, var(--primary) 18%, transparent),
-      transparent 45%
-    ),
-    color-mix(in oklab, var(--surface) 92%, transparent);
-  box-shadow: var(--shadow-soft);
-}
-
-.owner-entry-copy {
-  display: grid;
-  gap: 0.85rem;
-}
-
-.owner-entry-copy h2,
-.owner-entry-copy p {
-  margin: 0;
-}
-
-.owner-entry-copy h2 {
-  max-width: 18ch;
-  font-size: clamp(1.75rem, 3.5vw, 3.1rem);
-  line-height: 1;
-}
-
-.owner-entry-copy p {
-  max-width: 62ch;
+.owner-nudge {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem;
+  margin: 1.5rem 0 0.25rem;
   color: var(--muted);
-  line-height: 1.55;
+  font-size: 0.86rem;
 }
 
-.owner-entry-reassurance,
+.owner-nudge a {
+  color: inherit;
+  font-weight: 850;
+  text-underline-offset: 0.2em;
+}
+
+.owner-nudge a:hover {
+  color: var(--text);
+}
+
 .membership-plan-reassurance {
   color: var(--muted);
   font-weight: 700;
 }
 
-.owner-entry-steps,
 .business-application-steps {
   display: grid;
   gap: 0.65rem;
@@ -479,7 +456,6 @@ h3 {
   list-style: none;
 }
 
-.owner-entry-steps li,
 .business-application-steps li {
   display: flex;
   align-items: center;
@@ -490,7 +466,6 @@ h3 {
   background: color-mix(in oklab, var(--surface-alt) 65%, transparent);
 }
 
-.owner-entry-steps li > span,
 .business-application-steps li > span {
   display: grid;
   flex: 0 0 2rem;
@@ -503,13 +478,11 @@ h3 {
   font-weight: 950;
 }
 
-.owner-entry-steps li > div,
 .business-application-steps li > div {
   display: grid;
   gap: 0.15rem;
 }
 
-.owner-entry-steps small,
 .business-application-steps small {
   color: var(--muted);
 }
@@ -608,13 +581,11 @@ h3 {
 }
 
 @media (max-width: 850px) {
-  .owner-entry,
   .business-application-hero,
   .business-application-form-layout {
     grid-template-columns: 1fr;
   }
 
-  .owner-entry-steps,
   .business-application-steps {
     grid-template-columns: 1fr;
   }

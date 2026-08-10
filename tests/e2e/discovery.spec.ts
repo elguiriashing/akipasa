@@ -121,15 +121,13 @@ test("mobile navigation is compact and opens section links in place", async ({
 
 test("membership offer is reachable before sign in", async ({ page }) => {
   await page.goto("/en");
-  const ownerEntry = page.locator(".owner-entry");
+  await expect(page.locator(".owner-entry")).toHaveCount(0);
+  const ownerEntry = page.locator(".owner-nudge");
   await expect(
-    ownerEntry.getByRole("link", { name: "Add my business" }),
+    ownerEntry.getByRole("link", { name: "List it on AkiPasa" }),
   ).toHaveAttribute("href", "/en/business/apply");
-  await expect(
-    ownerEntry.getByText(
-      "The initial review is free. You will not pay anything today.",
-    ),
-  ).toBeVisible();
+  await expect(ownerEntry.getByText("Run a business?")).toBeVisible();
+  await expect(page.locator("#results ~ .owner-nudge")).toBeVisible();
   await expect(
     page.getByRole("link", { name: "View memberships" }),
   ).toHaveAttribute("href", "/en/membership#plans");

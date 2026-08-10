@@ -199,92 +199,6 @@ export default async function DiscoverPage({
         </div>
       </section>
 
-      <section className="owner-entry" aria-labelledby="owner-entry-title">
-        <div className="owner-entry-copy">
-          <div className="eyebrow">
-            {locale === "es"
-              ? "Para propietarios de negocios"
-              : "For business owners"}
-          </div>
-          <h2 id="owner-entry-title">
-            {locale === "es"
-              ? "Haz que te encuentren. Publica tus planes. Haz que vuelvan."
-              : "Get found. Share what’s on. Give people a reason to return."}
-          </h2>
-          <p>
-            {locale === "es"
-              ? "Añade tu local a AkiPasa y gestiona eventos, promociones y fidelidad desde un solo lugar."
-              : "Add your venue to AkiPasa, then manage events, promotions, and loyalty in one place."}
-          </p>
-          <div className="hero-actions">
-            <Link
-              className="button button-strong"
-              href={`/${locale}/business/apply`}
-            >
-              {locale === "es" ? "Añadir mi negocio" : "Add my business"}
-            </Link>
-            <Link
-              className="button secondary"
-              href={`/${locale}/membership#business-plan`}
-            >
-              {locale === "es"
-                ? "Ver precio y ventajas"
-                : "See price and benefits"}
-            </Link>
-          </div>
-          <small className="owner-entry-reassurance">
-            {locale === "es"
-              ? "La revisión inicial es gratuita. No pagarás nada hoy."
-              : "The initial review is free. You will not pay anything today."}
-          </small>
-        </div>
-        <ol className="owner-entry-steps">
-          <li>
-            <span>1</span>
-            <div>
-              <strong>
-                {locale === "es"
-                  ? "Cuéntanos sobre tu negocio"
-                  : "Tell us about your business"}
-              </strong>
-              <small>
-                {locale === "es" ? "Unos 3 minutos" : "About 3 minutes"}
-              </small>
-            </div>
-          </li>
-          <li>
-            <span>2</span>
-            <div>
-              <strong>
-                {locale === "es"
-                  ? "Comprobamos los datos"
-                  : "We check the details"}
-              </strong>
-              <small>
-                {locale === "es"
-                  ? "Sin cargos ni compromiso"
-                  : "No charge or commitment"}
-              </small>
-            </div>
-          </li>
-          <li>
-            <span>3</span>
-            <div>
-              <strong>
-                {locale === "es"
-                  ? "Elige un plan y publica"
-                  : "Choose a plan and publish"}
-              </strong>
-              <small>
-                {locale === "es"
-                  ? "Solo después de la aprobación"
-                  : "Only after approval"}
-              </small>
-            </div>
-          </li>
-        </ol>
-      </section>
-
       <div className="quick-strip" role="navigation" aria-label={m.discover}>
         {timeTabs.map((tab) => (
           <Link
@@ -485,6 +399,16 @@ export default async function DiscoverPage({
       ) : (
         <p className="notice">{m.noResults}</p>
       )}
+
+      <p className="owner-nudge">
+        <span>
+          {locale === "es" ? "¿Tienes un negocio?" : "Run a business?"}
+        </span>
+        <Link href={`/${locale}/business/apply`}>
+          {locale === "es" ? "Añádelo a AkiPasa" : "List it on AkiPasa"}
+          <span aria-hidden="true"> →</span>
+        </Link>
+      </p>
     </main>
   );
 }
