@@ -3,7 +3,6 @@ import {
   WorkspaceShell,
   type WorkspaceItem,
 } from "@/components/WorkspaceShell";
-import { ConsoleSwitcher } from "@/components/ConsoleSwitcher";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { isAdministrator } from "@/lib/roles";
@@ -75,13 +74,6 @@ export default async function AdminLayout({
       }
       homeHref={base}
       items={items}
-      switcher={
-        <ConsoleSwitcher
-          locale={locale}
-          role={profile.app_role}
-          active="admin"
-        />
-      }
     >
       {children}
     </WorkspaceShell>

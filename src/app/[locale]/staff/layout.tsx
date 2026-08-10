@@ -3,7 +3,6 @@ import {
   WorkspaceShell,
   type WorkspaceItem,
 } from "@/components/WorkspaceShell";
-import { ConsoleSwitcher } from "@/components/ConsoleSwitcher";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { canModerate } from "@/lib/roles";
@@ -65,13 +64,6 @@ export default async function StaffLayout({
       }
       homeHref={base}
       items={items}
-      switcher={
-        <ConsoleSwitcher
-          locale={locale}
-          role={profile.app_role}
-          active="staff"
-        />
-      }
     >
       {children}
     </WorkspaceShell>

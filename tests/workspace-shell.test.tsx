@@ -163,3 +163,30 @@ it("puts every authorized workspace in the main mobile menu", () => {
     within(workspaces).getByRole("link", { name: "Admin" }),
   ).toHaveAttribute("href", "/en/admin");
 });
+
+it("keeps authorized workspaces in the persistent desktop navigation", () => {
+  render(
+    <AppShell locale="en" signedIn={true} role="administrator">
+      <main>Discovery content</main>
+    </AppShell>,
+  );
+
+  const rail = screen.getByRole("complementary", {
+    name: "Primary navigation",
+  });
+  expect(within(rail).getByText("Your workspaces")).toBeInTheDocument();
+  expect(within(rail).getByRole("link", { name: "Business" })).toHaveAttribute(
+    "href",
+    "/en/business",
+  );
+  expect(within(rail).getByRole("link", { name: "Staff" })).toHaveAttribute(
+    "href",
+    "/en/staff",
+  );
+  expect(
+    within(rail).getByRole("link", { name: "Administration" }),
+  ).toHaveAttribute("href", "/en/admin");
+  expect(screen.getAllByRole("button", { name: "More options" })).toHaveLength(
+    1,
+  );
+});

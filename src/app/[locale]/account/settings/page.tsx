@@ -1,9 +1,7 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { WorkspacePageHeader } from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
-import { canModerate, isAdministrator } from "@/lib/roles";
 import { signOut } from "../../auth/actions";
 
 export default async function AccountSettingsPage({
@@ -13,14 +11,9 @@ export default async function AccountSettingsPage({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const { supabase, user } = await requireUser(locale);
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("app_role")
-    .eq("id", user.id)
-    .maybeSingle();
-  const role = profile?.app_role || "consumer";
+  await requireUser(locale);
   const es = locale === "es";
+
   return (
     <>
       <WorkspacePageHeader
@@ -28,31 +21,11 @@ export default async function AccountSettingsPage({
         title={es ? "Ajustes" : "Settings"}
         description={
           es
-            ? "Accesos de trabajo y controles de sesión."
-            : "Workspaces and session controls."
+            ? "Controles de sesión para este dispositivo."
+            : "Session controls for this device."
         }
       />
-      <section className="dashboard-grid">
-        <article className="panel console-card">
-          <h2>{es ? "Espacios disponibles" : "Available workspaces"}</h2>
-          <div className="stack">
-            {(role === "organiser" || isAdministrator(role)) && (
-              <Link className="button secondary" href={`/${locale}/business`}>
-                {es ? "Negocio" : "Business"}
-              </Link>
-            )}
-            {canModerate(role) && (
-              <Link className="button secondary" href={`/${locale}/staff`}>
-                {es ? "Operaciones de staff" : "Staff operations"}
-              </Link>
-            )}
-            {isAdministrator(role) && (
-              <Link className="button secondary" href={`/${locale}/admin`}>
-                {es ? "Administración" : "Administration"}
-              </Link>
-            )}
-          </div>
-        </article>
+      <section>
         <article className="panel console-card">
           <h2>{es ? "Sesión" : "Session"}</h2>
           <p>

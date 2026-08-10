@@ -76,6 +76,36 @@ export function AppShell({
     },
   ];
 
+  const workspaceNav: NavItem[] = [
+    ...(capabilities.manageOwnedVenues
+      ? [
+          {
+            href: `/${locale}/business`,
+            label: es ? "Negocio" : "Business",
+            icon: "business" as const,
+          },
+        ]
+      : []),
+    ...(capabilities.moderatePlatform
+      ? [
+          {
+            href: `/${locale}/staff`,
+            label: "Staff",
+            icon: "shield" as const,
+          },
+        ]
+      : []),
+    ...(capabilities.administerPlatform
+      ? [
+          {
+            href: `/${locale}/admin`,
+            label: es ? "Administración" : "Administration",
+            icon: "settings" as const,
+          },
+        ]
+      : []),
+  ];
+
   useEffect(() => {
     setSheetOpen(false);
   }, [pathname]);
@@ -159,6 +189,32 @@ export function AppShell({
               {!compact && <span>{item.label}</span>}
             </Link>
           ))}
+          {signedIn && workspaceNav.length > 0 && (
+            <>
+              <div className="app-rail-divider" role="separator" />
+              {!compact && (
+                <span className="app-rail-section-label">
+                  {es ? "Tus espacios" : "Your workspaces"}
+                </span>
+              )}
+              {workspaceNav.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={
+                    isActive(pathname, item.href) ? "active" : undefined
+                  }
+                  aria-current={
+                    isActive(pathname, item.href) ? "page" : undefined
+                  }
+                  title={compact ? item.label : undefined}
+                >
+                  <Icon name={item.icon} />
+                  {!compact && <span>{item.label}</span>}
+                </Link>
+              ))}
+            </>
+          )}
           <div className="app-rail-divider" role="separator" />
           {railExtras.map((item) => (
             <Link
@@ -238,17 +294,6 @@ export function AppShell({
           {config.productName}
           <i className="app-rail-brand-dot">.</i>
         </Link>
-        <button
-          type="button"
-          className="app-icon-button"
-          aria-haspopup="dialog"
-          aria-expanded={sheetOpen}
-          aria-controls="app-more-sheet"
-          onClick={() => setSheetOpen(true)}
-          aria-label={es ? "Más opciones" : "More options"}
-        >
-          <Icon name="more" />
-        </button>
       </header>
 
       <div className="app-content">{children}</div>
@@ -276,6 +321,7 @@ export function AppShell({
           aria-haspopup="dialog"
           aria-expanded={sheetOpen}
           aria-controls="app-more-sheet"
+          aria-label={es ? "Más opciones" : "More options"}
         >
           <Icon name="more" />
           <span>{es ? "Más" : "More"}</span>

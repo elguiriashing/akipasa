@@ -15,7 +15,6 @@ import {
   WorkspaceShell,
   type WorkspaceItem,
 } from "@/components/WorkspaceShell";
-import { ConsoleSwitcher } from "@/components/ConsoleSwitcher";
 import { isAdministrator } from "@/lib/roles";
 
 type ManagedVenue = {
@@ -158,13 +157,6 @@ export default async function BusinessPage({
       homeHref={base}
       items={items}
       navigationTitle={es ? "Negocio" : "Business"}
-      switcher={
-        <ConsoleSwitcher
-          locale={locale}
-          role={profile?.app_role || "organiser"}
-          active="business"
-        />
-      }
     >
       {(query.created || query.error) && (
         <p

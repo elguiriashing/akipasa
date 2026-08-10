@@ -414,6 +414,15 @@ h3 {
   background: var(--line);
 }
 
+.app-rail-section-label {
+  padding: 0 0.75rem 0.2rem;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .app-rail-bottom {
   margin-top: auto;
   display: grid;

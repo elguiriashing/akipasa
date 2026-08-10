@@ -4,7 +4,6 @@ import { LocaleDocumentLanguage } from "@/components/LocaleDocumentLanguage";
 import { AppShell } from "@/components/AppShell";
 import { optionalUser } from "@/lib/auth";
 import { config, isLocale } from "@/lib/config";
-import { msg } from "@/lib/messages";
 
 export function generateStaticParams() {
   return config.locales.map((locale) => ({ locale }));
@@ -19,7 +18,6 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const m = msg(locale);
   const { supabase, user } = await optionalUser();
   const profile = user
     ? (
@@ -40,9 +38,7 @@ export default async function LocaleLayout({
       >
         {children}
         <footer className="shell footer">
-          <span>
-            {m.demo} · {locale === "es" ? "Toda España" : "All Spain"} · ES / EN
-          </span>
+          <span>{locale === "es" ? "Toda España" : "All Spain"} · ES / EN</span>
           <nav aria-label={locale === "es" ? "Legal" : "Legal information"}>
             <Link href={`/${locale}/privacy`}>
               {locale === "es" ? "Privacidad" : "Privacy"}

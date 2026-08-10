@@ -3,7 +3,6 @@ import {
   WorkspaceShell,
   type WorkspaceItem,
 } from "@/components/WorkspaceShell";
-import { ConsoleSwitcher } from "@/components/ConsoleSwitcher";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 
@@ -22,7 +21,6 @@ export default async function AccountLayout({
     .select("display_name,app_role,membership_tier")
     .eq("id", user.id)
     .maybeSingle();
-  const role = profile?.app_role || "consumer";
   const es = locale === "es";
   const base = `/${locale}/account`;
   const items: WorkspaceItem[] = [
@@ -64,9 +62,6 @@ export default async function AccountLayout({
       }
       homeHref={base}
       items={items}
-      switcher={
-        <ConsoleSwitcher locale={locale} role={role} active="account" />
-      }
     >
       {children}
     </WorkspaceShell>
