@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { LocaleDocumentLanguage } from "@/components/LocaleDocumentLanguage";
 import { AppShell } from "@/components/AppShell";
+import { SupportAgentLauncher } from "@/components/support/SupportAgentLauncher";
 import { optionalUser } from "@/lib/auth";
 import { config, isLocale } from "@/lib/config";
 
@@ -46,9 +47,13 @@ export default async function LocaleLayout({
             <Link href={`/${locale}/terms`}>
               {locale === "es" ? "Condiciones" : "Terms"}
             </Link>
-            <a href="mailto:support@akipasa.com">
-              {locale === "es" ? "Contacto" : "Contact"}
-            </a>
+            <SupportAgentLauncher
+              locale={locale}
+              surface="site_contact"
+              label={locale === "es" ? "Contacto" : "Contact"}
+              className="footer-support-trigger"
+              signedIn={Boolean(user)}
+            />
           </nav>
         </footer>
       </AppShell>

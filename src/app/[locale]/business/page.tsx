@@ -10,7 +10,7 @@ import {
   saveLoyaltyProgram,
   submitVenueClaim,
 } from "./actions";
-import { sortedSpainLocations } from "@/lib/locations";
+import { SpainAddressAutocomplete } from "@/components/SpainAddressAutocomplete";
 import {
   WorkspaceShell,
   type WorkspaceItem,
@@ -232,17 +232,6 @@ export default async function BusinessPage({
 
               <div className="form-grid-two">
                 <label>
-                  {es ? "Ciudad / Ubicación" : "City / Location"}
-                  <select name="locality" required defaultValue="fuengirola">
-                    {sortedSpainLocations.map(([key, place]) => (
-                      <option key={key} value={key}>
-                        {place[locale]} · {place.province}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label>
                   {es ? "Nombre del local" : "Venue name"}
                   <input
                     name="name"
@@ -254,14 +243,7 @@ export default async function BusinessPage({
               </div>
 
               <div className="form-grid-two">
-                <label>
-                  {es ? "Dirección física" : "Physical address"}
-                  <input
-                    name="address"
-                    required
-                    placeholder="Calle Ejemplo, 12"
-                  />
-                </label>
+                <SpainAddressAutocomplete locale={locale} mode="address" />
               </div>
               <p className="fine-print">
                 {es

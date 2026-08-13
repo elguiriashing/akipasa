@@ -5,6 +5,7 @@ import { isLocale } from "@/lib/config";
 import { translated } from "@/lib/domain";
 import { msg } from "@/lib/messages";
 import { repository } from "@/lib/repository";
+import { googleMapsDirectionsUrl } from "@/lib/maps";
 import { optionalUser } from "@/lib/auth";
 import { toggleFollowedVenue } from "../../engagement/actions";
 import { AnalyticsView, TrackedLink } from "@/components/AnalyticsSignal";
@@ -145,7 +146,7 @@ export default async function VenuePage({
           <div className="actions">
             <TrackedLink
               className="button"
-              href={`https://www.google.com/maps/search/?api=1&query=${venue.latitude},${venue.longitude}`}
+              href={googleMapsDirectionsUrl(venue)}
               target="_blank"
               rel="noreferrer"
               action="directions_click"

@@ -214,6 +214,52 @@ h3 {
   resize: vertical;
 }
 
+.address-autocomplete {
+  position: relative;
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.address-results {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% - 1.55rem);
+  right: 0;
+  left: 0;
+  max-height: 19rem;
+  margin: 0;
+  padding: 0.35rem;
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: var(--surface);
+  box-shadow: 0 1rem 2.5rem rgb(0 0 0 / 18%);
+}
+
+.address-results li {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.65rem 0.75rem;
+  cursor: pointer;
+  border-radius: 0.6rem;
+}
+
+.address-results li[aria-selected="true"] {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.address-results span,
+.address-status {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.address-status-error {
+  color: var(--primary-dark);
+}
+
 .stack label.consent-row {
   grid-template-columns: auto 1fr;
   align-items: start;
@@ -567,6 +613,13 @@ h3 {
 .business-application-help p {
   color: var(--muted);
   line-height: 1.55;
+}
+
+.footer-support-trigger {
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
 }
 
 .business-application-status {

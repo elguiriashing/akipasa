@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { VenueQrCode } from "@/components/VenueQrCode";
 import { requireBusinessAccess } from "@/lib/entitlements";
+import { SpainAddressAutocomplete } from "@/components/SpainAddressAutocomplete";
 import { config, isLocale } from "@/lib/config";
 import {
   addOccurrence,
@@ -164,10 +165,11 @@ export default async function VenueWorkspace({
                 defaultValue={venue.description_en || ""}
               />
             </label>
-            <label>
-              {es ? "Dirección" : "Address"}
-              <input name="address" defaultValue={venue.address} required />
-            </label>
+            <SpainAddressAutocomplete
+              locale={locale}
+              mode="address"
+              defaultValue={venue.address}
+            />
             <label>
               {es ? "Teléfono público" : "Public phone"}
               <input

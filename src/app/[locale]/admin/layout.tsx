@@ -33,6 +33,11 @@ export default async function AdminLayout({
       icon: "users",
     },
     {
+      href: `${base}/ai-team`,
+      label: es ? "Equipo de IA" : "AI Team",
+      icon: "activity",
+    },
+    {
       href: `${base}/privacy`,
       label: es ? "Privacidad" : "Privacy requests",
       icon: "lock",

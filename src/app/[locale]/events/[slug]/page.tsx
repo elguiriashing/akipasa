@@ -4,6 +4,7 @@ import Script from "next/script";
 import { isLocale } from "@/lib/config";
 import { msg } from "@/lib/messages";
 import { repository } from "@/lib/repository";
+import { googleMapsDirectionsUrl } from "@/lib/maps";
 import { translated } from "@/lib/domain";
 import { optionalUser } from "@/lib/auth";
 import { toggleSavedEvent } from "../../engagement/actions";
@@ -184,7 +185,7 @@ export default async function EventPage({
           <div className="actions">
             <TrackedLink
               className="button"
-              href={`https://www.google.com/maps/search/?api=1&query=${resolvedVenue.latitude},${resolvedVenue.longitude}`}
+              href={googleMapsDirectionsUrl(resolvedVenue)}
               target="_blank"
               rel="noreferrer"
               action="directions_click"
