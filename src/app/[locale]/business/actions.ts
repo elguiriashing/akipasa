@@ -177,25 +177,47 @@ export async function confirmRedemption(formData: FormData) {
   redirect(`/${locale}/business?created=redemption`);
 }
 
-const promotionSchema = z.object({
-  locale: z.enum(["es", "en"]),
-  venueId: z.string().uuid(),
-  service: z.enum([
-    "featured_listing",
-    "social_campaign",
-    "content_package",
-    "other",
-  ]),
-  message: z.string().trim().min(20).max(2000),
-});
+const promotionSchema = z
+  .object({
+    locale: z.enum(["es", "en"]),
+    venueId: z.string().uuid(),
+    eventId: z.union([z.string().uuid(), z.literal("")]),
+    service: z.enum([
+      "featured_listing",
+      "social_campaign",
+      "content_package",
+      "other",
+    ]),
+    message: z.string().trim().min(20).max(2000),
+  })
+  .superRefine((value, context) => {
+    if (value.service === "featured_listing" && !value.eventId) {
+      context.addIssue({
+        code: "custom",
+        path: ["eventId"],
+        message: "A published event is required",
+      });
+    }
+  });
 
 export async function requestPromotion(formData: FormData) {
   const parsed = promotionSchema.safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   if (!parsed.success) redirect(`/${locale}/business?error=promotion`);
   const { supabase, user } = await requireBusinessAccess(locale);
+  if (parsed.data.eventId) {
+    const { data: event } = await supabase
+      .from("events")
+      .select("id")
+      .eq("id", parsed.data.eventId)
+      .eq("venue_id", parsed.data.venueId)
+      .eq("status", "published")
+      .maybeSingle();
+    if (!event) redirect(`/${locale}/business?error=promotion`);
+  }
   const { error } = await supabase.from("promotion_requests").insert({
     venue_id: parsed.data.venueId,
+    event_id: parsed.data.eventId || null,
     requester_id: user.id,
     service: parsed.data.service,
     message: parsed.data.message,

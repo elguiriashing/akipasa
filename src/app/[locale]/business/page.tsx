@@ -11,6 +11,7 @@ import {
   submitVenueClaim,
 } from "./actions";
 import { SpainAddressAutocomplete } from "@/components/SpainAddressAutocomplete";
+import { PromotionRequestFields } from "@/components/PromotionRequestFields";
 import {
   WorkspaceShell,
   type WorkspaceItem,
@@ -103,6 +104,17 @@ export default async function BusinessPage({
   ]);
 
   const managed = (members || []) as unknown as ManagedVenue[];
+  const managedVenueIds = managed.flatMap((item) =>
+    item.venues ? [item.venues.id] : [],
+  );
+  const { data: promotionEvents } = managedVenueIds.length
+    ? await supabase
+        .from("events")
+        .select("id,venue_id,title_es,title_en")
+        .in("venue_id", managedVenueIds)
+        .eq("status", "published")
+        .order("title_es")
+    : { data: [] };
   const analytics = await Promise.all(
     managed
       .filter((item) => item.venues)
@@ -571,10 +583,25 @@ export default async function BusinessPage({
               <form action={requestPromotion} className="stack focused-form">
                 <input type="hidden" name="locale" value={locale} />
 
-                <div className="form-grid-two">
+                <PromotionRequestFields
+                  locale={locale}
+                  venues={managed.flatMap((item) =>
+                    item.venues
+                      ? [{ id: item.venues.id, name: item.venues.name }]
+                      : [],
+                  )}
+                  events={(promotionEvents || []).map((event) => ({
+                    id: event.id,
+                    venueId: event.venue_id,
+                    title:
+                      (es ? event.title_es : event.title_en) || event.title_es,
+                  }))}
+                />
+
+                <div className="form-grid-two" hidden>
                   <label>
                     {es ? "Local" : "Venue"}
-                    <select name="venueId" required>
+                    <select name="legacyVenueId" disabled>
                       {managed.map(
                         (item) =>
                           item.venues && (
@@ -588,7 +615,7 @@ export default async function BusinessPage({
 
                   <label>
                     {es ? "Tipo de servicio" : "Service type"}
-                    <select name="service">
+                    <select name="legacyService" disabled>
                       <option value="featured_listing">
                         {es ? "Destacado patrocinado" : "Sponsored feature"}
                       </option>

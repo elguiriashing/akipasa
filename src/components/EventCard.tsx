@@ -39,7 +39,10 @@ export function EventCard({
       : `${(result.event.priceCents / 100).toFixed(0)}€`;
 
   return (
-    <Link className="card" href={`/${locale}/events/${result.event.slug}`}>
+    <Link
+      className={`card${result.event.sponsored ? " card-featured" : ""}`}
+      href={`/${locale}/events/${result.event.slug}`}
+    >
       <div className="card-media">
         {primaryImage ? (
           /* eslint-disable-next-line @next/next/no-img-element */
@@ -66,8 +69,8 @@ export function EventCard({
         <div className="card-meta">
           <span className="pill-muted">{categoryLabel}</span>
           {result.event.sponsored ? (
-            <span className="pill-price">
-              {locale === "es" ? "Patrocinado" : "Sponsored"}
+            <span className="pill-price featured-chip">
+              {locale === "es" ? "Destacado" : "Featured"}
             </span>
           ) : result.event.source === "verified_venue" ? (
             <VerifiedBadge locale={locale} size="sm" />

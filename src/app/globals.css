@@ -6468,3 +6468,194 @@ html {
     justify-self: stretch;
   }
 }
+
+/* Public catalogue: restrained featured placement and polished detail views. */
+.card-featured {
+  border-color: color-mix(in oklab, var(--primary) 34%, var(--line));
+  box-shadow:
+    0 12px 34px color-mix(in oklab, var(--primary) 9%, transparent),
+    var(--shadow-soft);
+}
+
+.card-featured::before {
+  opacity: 0.72;
+}
+
+.featured-chip {
+  background: color-mix(in oklab, var(--primary-soft) 82%, var(--surface));
+  border: 1px solid color-mix(in oklab, var(--primary) 35%, var(--line));
+  color: var(--ink);
+}
+
+.detail-card-primary,
+.detail-sidebar-polished {
+  overflow: hidden;
+  padding: 0;
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklab, var(--surface) 90%, transparent),
+    color-mix(in oklab, var(--surface-alt) 78%, transparent)
+  );
+}
+
+.detail-cover {
+  min-height: clamp(12rem, 28vw, 22rem);
+  background-position: center;
+  background-size: cover;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+
+.detail-cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 45%,
+    color-mix(in oklab, var(--surface) 72%, transparent)
+  );
+}
+
+.detail-intro {
+  padding: clamp(1.35rem, 4vw, 2.5rem);
+}
+
+.detail-intro > h1 {
+  max-width: 14ch;
+}
+
+.detail-intro > .lede {
+  max-width: 58ch;
+}
+
+.detail-intro > .detail-copy {
+  max-width: 68ch;
+  margin: 1.7rem 0;
+}
+
+.venue-context-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: min(100%, 32rem);
+  margin-top: 1.6rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid color-mix(in oklab, var(--primary) 35%, var(--line));
+  border-radius: 1rem;
+  background: color-mix(in oklab, var(--primary-soft) 68%, transparent);
+  color: var(--ink) !important;
+  text-decoration: none !important;
+  box-shadow: inset 3px 0 0 var(--primary);
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.venue-context-link:hover {
+  transform: translateX(3px);
+  border-color: color-mix(in oklab, var(--primary) 60%, var(--line));
+  background: color-mix(in oklab, var(--primary-soft) 90%, transparent);
+}
+
+.detail-sidebar-heading {
+  display: grid;
+  gap: 0.2rem;
+  padding: 1.35rem 1.5rem 1.1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.detail-sidebar-heading span {
+  color: var(--primary);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.detail-sidebar-heading strong {
+  font-size: 1.08rem;
+  line-height: 1.3;
+}
+
+.detail-facts {
+  display: grid;
+  gap: 0 !important;
+  margin: 0;
+  padding: 0 1.5rem;
+}
+
+.detail-facts > div {
+  display: grid;
+  gap: 0.28rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid color-mix(in oklab, var(--line) 78%, transparent);
+}
+
+.detail-facts > div:last-child {
+  border-bottom: 0;
+}
+
+.detail-facts dt {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.detail-facts dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.94rem;
+  font-weight: 720;
+  line-height: 1.45;
+}
+
+.detail-actions {
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0 1.5rem 1.5rem;
+}
+
+.detail-actions .button {
+  width: 100%;
+}
+
+.detail-actions .button:first-child {
+  box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 18%, transparent);
+}
+
+.detail-event-row {
+  margin: 0.7rem 0 0;
+}
+
+.detail-event-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: color-mix(in oklab, var(--surface-alt) 72%, transparent);
+  color: var(--ink) !important;
+  text-decoration: none !important;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.detail-event-link:hover {
+  transform: translateX(3px);
+  border-color: color-mix(in oklab, var(--primary) 52%, var(--line));
+}
+
+@media (max-width: 540px) {
+  .detail-card-primary,
+  .detail-sidebar-polished {
+    padding: 0;
+  }
+}

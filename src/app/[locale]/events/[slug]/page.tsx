@@ -109,40 +109,58 @@ export default async function EventPage({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <article className="detail-card">
-          <div className="eyebrow">
-            {event.source === "verified_venue" ? (
-              <VerifiedBadge locale={locale} />
-            ) : (
-              m.community
+        <article className="detail-card detail-card-primary">
+          {bgImage ? (
+            <div
+              className="detail-cover"
+              style={{ backgroundImage: `url(${bgImage})` }}
+              aria-hidden
+            />
+          ) : null}
+          <div className="detail-intro">
+            <div className="eyebrow">
+              {event.source === "verified_venue" ? (
+                <VerifiedBadge locale={locale} />
+              ) : (
+                m.community
+              )}
+            </div>
+            <h1>{translated(event.title, locale)}</h1>
+            {occurrence.status !== "scheduled" && (
+              <p className="notice" role="status">
+                {locale === "es"
+                  ? {
+                      cancelled: "Este evento está cancelado.",
+                      postponed: "Este evento ha sido aplazado.",
+                      sold_out: "Este evento está agotado.",
+                    }[occurrence.status]
+                  : {
+                      cancelled: "This event is cancelled.",
+                      postponed: "This event has been postponed.",
+                      sold_out: "This event is sold out.",
+                    }[occurrence.status]}
+              </p>
             )}
-          </div>
-          <h1>{translated(event.title, locale)}</h1>
-          {occurrence.status !== "scheduled" && (
-            <p className="notice" role="status">
-              {locale === "es"
-                ? {
-                    cancelled: "Este evento está cancelado.",
-                    postponed: "Este evento ha sido aplazado.",
-                    sold_out: "Este evento está agotado.",
-                  }[occurrence.status]
-                : {
-                    cancelled: "This event is cancelled.",
-                    postponed: "This event has been postponed.",
-                    sold_out: "This event is sold out.",
-                  }[occurrence.status]}
+            <p className="lede">
+              {date} · {resolvedVenue.name}
             </p>
-          )}
-          <p className="lede">
-            {date} · {resolvedVenue.name}
-          </p>
-          <p className="detail-copy">{translated(event.description, locale)}</p>
-          <Link href={`/${locale}/venues/${resolvedVenue.slug}`}>
-            {resolvedVenue.name} →
-          </Link>
+            <p className="detail-copy">
+              {translated(event.description, locale)}
+            </p>
+            <Link
+              className="venue-context-link"
+              href={`/${locale}/venues/${resolvedVenue.slug}`}
+            >
+              {resolvedVenue.name} →
+            </Link>
+          </div>
         </article>
-        <aside className="detail-sidebar">
-          <dl>
+        <aside className="detail-sidebar detail-sidebar-polished">
+          <div className="detail-sidebar-heading">
+            <span>{locale === "es" ? "En resumen" : "At a glance"}</span>
+            <strong>{translated(event.title, locale)}</strong>
+          </div>
+          <dl className="detail-facts">
             <div>
               <dt>{m.time}</dt>
               <dd>{date}</dd>
@@ -182,7 +200,7 @@ export default async function EventPage({
               </dd>
             </div>
           </dl>
-          <div className="actions">
+          <div className="actions detail-actions">
             <TrackedLink
               className="button"
               href={googleMapsDirectionsUrl(resolvedVenue)}
