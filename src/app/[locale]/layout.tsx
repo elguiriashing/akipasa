@@ -5,6 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import { SupportAgentLauncher } from "@/components/support/SupportAgentLauncher";
 import { optionalUser } from "@/lib/auth";
 import { config, isLocale } from "@/lib/config";
+import { PersonalisationConsent } from "@/components/PersonalisationConsent";
 
 export function generateStaticParams() {
   return config.locales.map((locale) => ({ locale }));
@@ -32,6 +33,7 @@ export default async function LocaleLayout({
   return (
     <>
       <LocaleDocumentLanguage locale={locale} />
+      <PersonalisationConsent locale={locale} />
       <AppShell
         locale={locale}
         signedIn={Boolean(user)}

@@ -133,3 +133,14 @@ Last reviewed: 2026-07-31.
 - [ ] Add email investor delivery and multiple investor groups.
 - [ ] Evaluate a screen-by-screen native UI rewrite, ticketing/payments,
       rotating QR tokens, and additional languages.
+
+# Personalisation follow-up
+
+- [ ] Run legal review of consent copy, lawful bases and retention periods.
+- [ ] Add alerts for missed or repeatedly full scheduled retention batches and aggregation health.
+- [ ] Add category-specific distance/time/planning-horizon features.
+- [ ] Add feed/map tracking to every remaining card and map marker surface.
+- [ ] Add notification/email delivery lifecycle integrations.
+- [ ] Add trusted ticket/booking provider conversion webhooks.
+- [ ] Add partner organisations, hashed API keys, edge rate limiting, usage metering and OpenAPI publication behind the disabled `partner_api` flag.
+- [ ] Add social/collaborative and embedding candidate sources after Phase 1 has sufficient clean data.

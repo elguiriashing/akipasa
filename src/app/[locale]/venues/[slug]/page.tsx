@@ -175,19 +175,28 @@ export default async function VenuePage({
               {m.directions}
             </TrackedLink>
             {venue.phone && (
-              <a className="button secondary" href={`tel:${venue.phone}`}>
+              <TrackedLink
+                className="button secondary"
+                href={`tel:${venue.phone}`}
+                action="phone_click"
+                venueId={venue.id}
+                locale={locale}
+              >
                 {locale === "es" ? "Llamar" : "Call"}
-              </a>
+              </TrackedLink>
             )}
             {venue.whatsappPhone && (
-              <a
+              <TrackedLink
                 className="button secondary"
                 href={`https://wa.me/${venue.whatsappPhone.replace(/\D/g, "")}`}
                 target="_blank"
                 rel="noreferrer"
+                action="whatsapp_click"
+                venueId={venue.id}
+                locale={locale}
               >
                 WhatsApp
-              </a>
+              </TrackedLink>
             )}
             {venue.websiteUrl && (
               <TrackedLink

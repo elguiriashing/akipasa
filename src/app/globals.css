@@ -6210,7 +6210,7 @@ html {
     top: 0.75rem;
     z-index: 24;
     display: grid;
-    grid-template-columns: minmax(11rem, auto) auto minmax(0, 1fr);
+    grid-template-columns: minmax(9.5rem, auto) minmax(0, 1fr);
     align-items: center;
     width: 100%;
     height: auto;
@@ -6258,13 +6258,38 @@ html {
     display: flex;
     min-width: 0;
     gap: 0.2rem;
-    padding-left: 0.55rem;
+    padding: 0 0.35rem 0.4rem 0.55rem;
     overflow-x: auto;
-    scrollbar-width: none;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--primary) 55%, var(--line))
+      transparent;
+    overscroll-behavior-inline: contain;
+    scroll-behavior: smooth;
+    touch-action: pan-x;
+    cursor: grab;
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 0.55rem,
+      black calc(100% - 0.55rem),
+      transparent
+    );
   }
 
   .consumer-workspace .workspace-navigation::-webkit-scrollbar {
-    display: none;
+    height: 0.35rem;
+  }
+
+  .consumer-workspace .workspace-navigation::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--primary) 55%, var(--line));
+  }
+
+  .consumer-workspace .workspace-navigation.is-dragging {
+    cursor: grabbing;
+    scroll-behavior: auto;
+    user-select: none;
   }
 
   .consumer-workspace .workspace-navigation a,
@@ -6272,12 +6297,15 @@ html {
     flex: 0 0 auto;
     justify-content: flex-start;
     min-height: 2.85rem;
-    padding: 0.35rem 0.65rem;
+    padding: 0.35rem 0.55rem;
+    font-size: 0.8rem;
   }
 
   .consumer-workspace .workspace-link-label,
   .consumer-workspace.is-collapsed .workspace-link-label {
     display: block;
+    overflow: visible;
+    text-overflow: clip;
   }
 
   .consumer-workspace .workspace-count,
@@ -6657,5 +6685,81 @@ html {
   .detail-card-primary,
   .detail-sidebar-polished {
     padding: 0;
+  }
+}
+.personalisation-consent {
+  position: fixed;
+  z-index: 1200;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  display: flex;
+  width: min(42rem, calc(100vw - 2rem));
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.1rem;
+  color: var(--text, #f9f6ee);
+  background: color-mix(in srgb, var(--surface, #103b35) 94%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent, #ff6f2c) 35%, transparent);
+  border-radius: 1.15rem;
+  box-shadow: 0 1rem 3rem rgb(0 0 0 / 28%);
+  backdrop-filter: blur(18px);
+}
+
+.personalisation-consent p {
+  max-width: 48rem;
+  margin: 0.3rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: inherit;
+  opacity: 0.82;
+}
+
+.personalisation-consent-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.55rem;
+}
+
+.card-recommendation-reason {
+  margin: 0.2rem 0 0;
+  color: var(--accent, #ff6f2c);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.event-preference-form {
+  width: 100%;
+}
+
+.event-preference-form > summary {
+  cursor: pointer;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--line, rgb(255 255 255 / 16%));
+  border-radius: 999px;
+  text-align: center;
+  font-weight: 750;
+  list-style: none;
+}
+
+.event-preference-form > summary::-webkit-details-marker {
+  display: none;
+}
+
+.event-preference-form[open] > summary {
+  margin-bottom: 0.7rem;
+}
+
+@media (max-width: 720px) {
+  .personalisation-consent {
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .personalisation-consent-actions .button {
+    flex: 1;
   }
 }

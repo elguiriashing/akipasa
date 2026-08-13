@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/config";
 import { msg } from "@/lib/messages";
-import { repository } from "@/lib/repository";
+import { recommendDiscovery } from "@/lib/personalisation/server";
 import { translated } from "@/lib/domain";
 import { config } from "@/lib/config";
 import { ProductionMap } from "@/components/ProductionMap";
@@ -17,9 +17,13 @@ export default async function MapPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const m = msg(locale);
-  const results = await repository.discover({ radiusKm: 15, time: "all" });
+  const recommendations = await recommendDiscovery({
+    query: { radiusKm: 15, time: "all" },
+    surface: "map",
+  });
+  const results = recommendations.items.map((item) => item.result);
   const mapPoints = results.map((result) => ({
-    id: result.occurrence.id,
+    id: result.event.id,
     latitude: result.venue.latitude,
     longitude: result.venue.longitude,
     title: translated(result.event.title, locale),
@@ -41,8 +45,16 @@ export default async function MapPage({
         />
       )}
       <div className="grid">
-        {results.map((r) => (
-          <EventCard key={r.occurrence.id} result={r} locale={locale} />
+        {recommendations.items.map((item, position) => (
+          <EventCard
+            key={item.result.occurrence.id}
+            result={item.result}
+            locale={locale}
+            position={position}
+            recommendationRequestId={recommendations.requestId}
+            reasonCodes={item.reasonCodes}
+            surface="map"
+          />
         ))}
       </div>
     </main>

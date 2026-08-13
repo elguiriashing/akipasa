@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import type { Locale } from "@/lib/config";
+import { trackBehaviour } from "@/lib/personalisation/client";
 
 export type MapPoint = {
   id: string;
@@ -25,6 +26,13 @@ export function ProductionMap({
   const container = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    trackBehaviour({
+      eventType: "map_opened",
+      surface: "map",
+      entityType: "feed",
+      entityId: crypto.randomUUID(),
+      metadata: { result_count: points.length },
+    });
     if (!container.current || !styleUrl || points.length === 0) return;
     let disposed = false;
     let cleanup = () => {};
@@ -55,6 +63,14 @@ export function ProductionMap({
         marker.href = point.href;
         marker.setAttribute("aria-label", `${point.title}, ${point.venue}`);
         marker.title = `${point.title} · ${point.venue}`;
+        marker.addEventListener("click", () =>
+          trackBehaviour({
+            eventType: "map_pin_clicked",
+            surface: "map",
+            entityType: "event",
+            entityId: point.id,
+          }),
+        );
         return new maplibregl.Marker({ element: marker })
           .setLngLat([point.longitude, point.latitude])
           .addTo(map);

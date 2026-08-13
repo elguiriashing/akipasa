@@ -23,6 +23,10 @@ export default async function AdminLayout({
     .eq("id", user.id)
     .maybeSingle();
   if (!profile || !isAdministrator(profile.app_role)) notFound();
+  const { count: pendingApplications } = await supabase
+    .from("business_applications")
+    .select("*", { count: "exact", head: true })
+    .in("state", ["submitted", "under_review", "awaiting_payment"]);
   const es = locale === "es";
   const base = `/${locale}/admin`;
   const items: WorkspaceItem[] = [
@@ -33,8 +37,19 @@ export default async function AdminLayout({
       icon: "users",
     },
     {
+      href: `${base}/business-applications`,
+      label: es ? "Solicitudes de negocio" : "Business applications",
+      icon: "business",
+      count: pendingApplications || undefined,
+    },
+    {
       href: `${base}/ai-team`,
       label: es ? "Equipo de IA" : "AI Team",
+      icon: "activity",
+    },
+    {
+      href: `${base}/personalisation`,
+      label: es ? "Personalización" : "Personalisation",
       icon: "activity",
     },
     {

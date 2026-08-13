@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 
 import React from "react";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import "@testing-library/jest-dom/vitest";
 import {
   cleanup,
@@ -29,6 +31,16 @@ afterEach(() => {
 });
 
 describe("progressive disclosure workspace shell", () => {
+  it("keeps crowded desktop workspace navigation horizontally reachable", () => {
+    const source = readFileSync(
+      resolve(process.cwd(), "src/components/WorkspaceShell.tsx"),
+      "utf8",
+    );
+    expect(source).toContain("scrollNavigation");
+    expect(source).toContain("startNavigationDrag");
+    expect(source).toContain("setPointerCapture");
+    expect(source).toContain("scrollIntoView");
+  });
   it("uses route navigation and exposes an accessible mobile menu trigger", () => {
     render(
       <WorkspaceShell

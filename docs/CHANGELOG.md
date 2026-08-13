@@ -3,6 +3,16 @@
 This is an engineering milestone log, not a semantic-version release log.
 Entries are newest first and must not contain credentials or personal data.
 
+## 2026-08-13 - Personalisation and recommendation foundation
+
+- Add versioned, batched behavioural ingestion with idempotency, RLS, privacy validation, consent and reset controls.
+- Add persistent short/long-term preference features with confidence, decay and diminishing repeated signals.
+- Add a shared contextual weighted ranker, diversity/exploration controls, relevance-gated sponsored boost, reasons and request/item logs.
+- Wire homepage impressions, skips, dwell, opens, quick exits, filters, saves/follows, Going, Not interested, CTA signals and verified check-ins.
+- Add versioned internal recommendation API and future partner/experiment boundaries.
+- Add an aggregate-only administrator Personalisation dashboard for recommendation health, outcomes and active ranker configuration.
+- Make crowded desktop workspace navigation reachable with a visible horizontal scrollbar, wheel scrolling, touch scrolling, pointer dragging and automatic active-item reveal.
+
 ## 2026-08-10
 
 ### Summary
