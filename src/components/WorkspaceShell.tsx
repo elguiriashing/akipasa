@@ -105,16 +105,20 @@ export function WorkspaceShell({
       startX: event.clientX,
       scrollLeft: navigation.scrollLeft,
     };
-    navigation.setPointerCapture(event.pointerId);
-    navigation.classList.add("is-dragging");
   }
 
   function moveNavigationDrag(event: React.PointerEvent<HTMLElement>) {
     const navigation = desktopNavigationRef.current;
     if (!navigation || !dragState.current.active) return;
     const distance = event.clientX - dragState.current.startX;
-    if (Math.abs(distance) > 5) dragState.current.moved = true;
+    if (!dragState.current.moved) {
+      if (Math.abs(distance) <= 5) return;
+      dragState.current.moved = true;
+      navigation.setPointerCapture(event.pointerId);
+      navigation.classList.add("is-dragging");
+    }
     navigation.scrollLeft = dragState.current.scrollLeft - distance;
+    event.preventDefault();
   }
 
   function endNavigationDrag(event: React.PointerEvent<HTMLElement>) {

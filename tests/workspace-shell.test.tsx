@@ -13,6 +13,22 @@ import {
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+class TestPointerEvent extends MouseEvent {
+  pointerId: number;
+  pointerType: string;
+
+  constructor(
+    type: string,
+    init: MouseEventInit & { pointerId?: number; pointerType?: string },
+  ) {
+    super(type, init);
+    this.pointerId = init.pointerId ?? 0;
+    this.pointerType = init.pointerType ?? "mouse";
+  }
+}
+
+Object.defineProperty(window, "PointerEvent", { value: TestPointerEvent });
+
 vi.mock("next/navigation", () => ({
   usePathname: () => "/en/admin/users",
   useSearchParams: () => new URLSearchParams(),
@@ -41,6 +57,113 @@ describe("progressive disclosure workspace shell", () => {
     expect(source).toContain("setPointerCapture");
     expect(source).toContain("scrollIntoView");
   });
+
+  it("keeps a desktop navigation click intact until the pointer actually drags", () => {
+    render(
+      <WorkspaceShell
+        title="Administration"
+        eyebrow="Platform control"
+        description="Focused workflows"
+        homeHref="/en/admin"
+        items={[
+          { href: "/en/admin", label: "Overview", icon: "home" },
+          { href: "/en/admin/users", label: "Users and roles", icon: "users" },
+        ]}
+      >
+        <p>Selected workflow</p>
+      </WorkspaceShell>,
+    );
+
+    const link = screen.getByRole("link", { name: "Users and roles" });
+    const navigation = link.closest("nav") as HTMLElement;
+    Object.defineProperties(navigation, {
+      scrollWidth: { configurable: true, value: 800 },
+      clientWidth: { configurable: true, value: 400 },
+    });
+    const setPointerCapture = vi.fn();
+    navigation.setPointerCapture = setPointerCapture;
+    navigation.hasPointerCapture = vi.fn(() => false);
+
+    fireEvent.pointerDown(link, {
+      button: 0,
+      clientX: 120,
+      pointerId: 1,
+      pointerType: "mouse",
+    });
+    fireEvent.pointerUp(link, {
+      button: 0,
+      clientX: 120,
+      pointerId: 1,
+      pointerType: "mouse",
+    });
+
+    expect(setPointerCapture).not.toHaveBeenCalled();
+    link.setAttribute("href", "#users");
+    expect(fireEvent.click(link)).toBe(true);
+  });
+
+  it("captures and scrolls only after a genuine desktop navigation drag", () => {
+    render(
+      <WorkspaceShell
+        title="Administration"
+        eyebrow="Platform control"
+        description="Focused workflows"
+        homeHref="/en/admin"
+        items={[
+          { href: "/en/admin", label: "Overview", icon: "home" },
+          { href: "/en/admin/users", label: "Users and roles", icon: "users" },
+        ]}
+      >
+        <p>Selected workflow</p>
+      </WorkspaceShell>,
+    );
+
+    const link = screen.getByRole("link", { name: "Users and roles" });
+    const navigation = link.closest("nav") as HTMLElement;
+    Object.defineProperties(navigation, {
+      scrollLeft: { configurable: true, value: 0, writable: true },
+      scrollWidth: { configurable: true, value: 800 },
+      clientWidth: { configurable: true, value: 400 },
+    });
+    const setPointerCapture = vi.fn();
+    navigation.setPointerCapture = setPointerCapture;
+    navigation.hasPointerCapture = vi.fn(() => true);
+    navigation.releasePointerCapture = vi.fn();
+
+    fireEvent.pointerDown(link, {
+      button: 0,
+      clientX: 120,
+      pointerId: 2,
+      pointerType: "mouse",
+    });
+    fireEvent.pointerMove(navigation, {
+      clientX: 116,
+      pointerId: 2,
+      pointerType: "mouse",
+    });
+    expect(setPointerCapture).not.toHaveBeenCalled();
+    expect(navigation.scrollLeft).toBe(0);
+
+    fireEvent.pointerMove(navigation, {
+      clientX: 100,
+      pointerId: 2,
+      pointerType: "mouse",
+    });
+    expect(setPointerCapture).toHaveBeenCalledWith(2);
+    expect(navigation).toHaveClass("is-dragging");
+    expect(navigation.scrollLeft).toBe(20);
+
+    fireEvent.pointerUp(navigation, {
+      clientX: 100,
+      pointerId: 2,
+      pointerType: "mouse",
+    });
+    expect(navigation).not.toHaveClass("is-dragging");
+    expect(navigation.releasePointerCapture).toHaveBeenCalledWith(2);
+    link.setAttribute("href", "#users");
+    expect(fireEvent.click(link)).toBe(false);
+  });
+
   it("uses route navigation and exposes an accessible mobile menu trigger", () => {
     render(
       <WorkspaceShell
