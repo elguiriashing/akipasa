@@ -133,6 +133,26 @@ export async function createEvent(formData: FormData) {
   redirect(`/${locale}/business?created=event`);
 }
 
+const reuseEventSchema = z.object({
+  locale: z.enum(["es", "en"]),
+  eventId: z.string().uuid(),
+  sourceSlug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+});
+
+export async function reuseEvent(formData: FormData) {
+  const parsed = reuseEventSchema.safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  if (!parsed.success)
+    redirect(`/${locale}/business?view=events&error=duplicate`);
+  const { supabase } = await requireBusinessAccess(locale);
+  const { error } = await supabase.rpc("duplicate_owned_event", {
+    p_event: parsed.data.eventId,
+    p_slug: `${parsed.data.sourceSlug}-copy-${crypto.randomUUID().slice(0, 8)}`,
+  });
+  if (error) redirect(`/${locale}/business?view=events&error=duplicate`);
+  redirect(`/${locale}/business?view=events&created=duplicate`);
+}
+
 const loyaltySchema = z.object({
   locale: z.enum(["es", "en"]),
   venueId: z.string().uuid(),

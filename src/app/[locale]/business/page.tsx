@@ -7,6 +7,7 @@ import {
   createEvent,
   createVenue,
   requestPromotion,
+  reuseEvent,
   saveLoyaltyProgram,
   submitVenueClaim,
 } from "./actions";
@@ -29,6 +30,22 @@ type ManagedVenue = {
   } | null;
 };
 
+type BusinessEvent = {
+  id: string;
+  venue_id: string;
+  slug: string;
+  title_es: string;
+  title_en: string | null;
+  status: string;
+  created_at: string;
+  event_occurrences: Array<{
+    id: string;
+    starts_at: string;
+    ends_at: string;
+    status: string;
+  }>;
+};
+
 export default async function BusinessPage({
   params,
   searchParams,
@@ -39,9 +56,14 @@ export default async function BusinessPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
-  const view = ["venues", "loyalty", "growth", "analytics", "claims"].includes(
-    query.view || "",
-  )
+  const view = [
+    "venues",
+    "events",
+    "loyalty",
+    "growth",
+    "analytics",
+    "claims",
+  ].includes(query.view || "")
     ? query.view!
     : "venues";
 
@@ -107,14 +129,45 @@ export default async function BusinessPage({
   const managedVenueIds = managed.flatMap((item) =>
     item.venues ? [item.venues.id] : [],
   );
-  const { data: promotionEvents } = managedVenueIds.length
-    ? await supabase
-        .from("events")
-        .select("id,venue_id,title_es,title_en")
-        .in("venue_id", managedVenueIds)
-        .eq("status", "published")
-        .order("title_es")
-    : { data: [] };
+  const [{ data: promotionEvents }, { data: managedEvents }] =
+    managedVenueIds.length
+      ? await Promise.all([
+          supabase
+            .from("events")
+            .select("id,venue_id,title_es,title_en")
+            .in("venue_id", managedVenueIds)
+            .eq("status", "published")
+            .order("title_es"),
+          supabase
+            .from("events")
+            .select(
+              "id,venue_id,slug,title_es,title_en,status,created_at,event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status)",
+            )
+            .in("venue_id", managedVenueIds)
+            .order("created_at", { ascending: false }),
+        ])
+      : [{ data: [] }, { data: [] }];
+  const businessEvents = (managedEvents || []) as unknown as BusinessEvent[];
+  const venueNames = new Map(
+    managed.flatMap((item) =>
+      item.venues ? [[item.venues.id, item.venues.name] as const] : [],
+    ),
+  );
+  const now = Date.now();
+  const archivedEvents = businessEvents.filter(
+    (event) => event.status === "archived",
+  );
+  const pastEvents = businessEvents.filter(
+    (event) =>
+      event.status !== "archived" &&
+      event.event_occurrences.length > 0 &&
+      event.event_occurrences.every(
+        (occurrence) => new Date(occurrence.ends_at).getTime() < now,
+      ),
+  );
+  const currentEvents = businessEvents.filter(
+    (event) => !archivedEvents.includes(event) && !pastEvents.includes(event),
+  );
   const analytics = await Promise.all(
     managed
       .filter((item) => item.venues)
@@ -137,6 +190,12 @@ export default async function BusinessPage({
       label: es ? "Locales" : "Venues",
       icon: "venue",
       count: managed.length || undefined,
+    },
+    {
+      href: `${base}?view=events`,
+      label: es ? "Eventos" : "Events",
+      icon: "calendar",
+      count: businessEvents.length || undefined,
     },
     {
       href: `${base}?view=loyalty`,
@@ -184,6 +243,156 @@ export default async function BusinessPage({
         </p>
       )}
       <section className="dashboard-grid">
+        {view === "events" && (
+          <section className="panel catalogue-edit-card dashboard-grid-full">
+            <div className="catalogue-section-header">
+              <div>
+                <span className="eyebrow">
+                  {es ? "Cat\u00e1logo de eventos" : "Event catalogue"}
+                </span>
+                <h2>{es ? "Tus eventos" : "Your events"}</h2>
+                <p className="catalogue-section-sub">
+                  {es
+                    ? "Gestiona los eventos activos, revisa el historial y reutiliza cualquier ficha como borrador."
+                    : "Manage active events, review the history, and reuse any listing as a new draft."}
+                </p>
+              </div>
+              <a className="button button-strong" href={`${base}#create-event`}>
+                {es ? "Crear evento" : "Create event"}
+              </a>
+            </div>
+
+            {businessEvents.length ? (
+              <div className="stack">
+                {[
+                  {
+                    key: "current",
+                    label: es
+                      ? "Actuales y pr\u00f3ximos"
+                      : "Current and upcoming",
+                    events: currentEvents,
+                  },
+                  {
+                    key: "past",
+                    label: es ? "Anteriores" : "Past",
+                    events: pastEvents,
+                  },
+                  {
+                    key: "archived",
+                    label: es ? "Archivados" : "Archived",
+                    events: archivedEvents,
+                  },
+                ].map((group) => (
+                  <section key={group.key}>
+                    <div className="section-head">
+                      <h3>{group.label}</h3>
+                      <span className="count">{group.events.length}</span>
+                    </div>
+                    {group.events.length ? (
+                      <div className="catalogue-grid">
+                        {group.events.map((event) => {
+                          const occurrences = [...event.event_occurrences].sort(
+                            (a, b) =>
+                              new Date(a.starts_at).getTime() -
+                              new Date(b.starts_at).getTime(),
+                          );
+                          const referenceOccurrence =
+                            occurrences.find(
+                              (occurrence) =>
+                                new Date(occurrence.ends_at).getTime() >= now,
+                            ) || occurrences.at(-1);
+                          return (
+                            <article className="catalogue-card" key={event.id}>
+                              <div>
+                                <div className="catalogue-card-header">
+                                  <div>
+                                    <h4 className="catalogue-card-title">
+                                      {locale === "en"
+                                        ? event.title_en || event.title_es
+                                        : event.title_es}
+                                    </h4>
+                                    <p className="catalogue-card-sub">
+                                      {venueNames.get(event.venue_id) ||
+                                        (es ? "Local" : "Venue")}
+                                    </p>
+                                  </div>
+                                  <span
+                                    className={`status-pill ${event.status === "published" ? "badge-success" : event.status === "archived" ? "badge-neutral" : "badge-warning"}`}
+                                  >
+                                    {event.status}
+                                  </span>
+                                </div>
+                                <p className="muted">
+                                  {referenceOccurrence
+                                    ? new Intl.DateTimeFormat(locale, {
+                                        dateStyle: "medium",
+                                        timeStyle: "short",
+                                        timeZone: "Europe/Madrid",
+                                      }).format(
+                                        new Date(referenceOccurrence.starts_at),
+                                      )
+                                    : es
+                                      ? "Sin fecha programada"
+                                      : "No date scheduled"}
+                                </p>
+                              </div>
+                              <div className="catalogue-card-actions form-actions">
+                                <a
+                                  className="button secondary small-btn"
+                                  href={`/${locale}/business/venue/${event.venue_id}#event-${event.id}`}
+                                >
+                                  {es ? "Gestionar" : "Manage"}
+                                </a>
+                                <form action={reuseEvent}>
+                                  <input
+                                    type="hidden"
+                                    name="locale"
+                                    value={locale}
+                                  />
+                                  <input
+                                    type="hidden"
+                                    name="eventId"
+                                    value={event.id}
+                                  />
+                                  <input
+                                    type="hidden"
+                                    name="sourceSlug"
+                                    value={event.slug}
+                                  />
+                                  <button
+                                    className="button small-btn"
+                                    type="submit"
+                                  >
+                                    {es ? "Reutilizar" : "Reuse"}
+                                  </button>
+                                </form>
+                              </div>
+                            </article>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <p className="catalogue-empty-card">
+                        {es
+                          ? "No hay eventos en esta secci\u00f3n."
+                          : "No events in this section."}
+                      </p>
+                    )}
+                  </section>
+                ))}
+              </div>
+            ) : (
+              <div className="catalogue-empty-card">
+                <p>
+                  {es
+                    ? "Todav\u00eda no hay eventos. Crea el primero y aparecer\u00e1 aqu\u00ed."
+                    : "No events yet. Create the first one and it will appear here."}
+                </p>
+              </div>
+            )}
+          </section>
+        )}
+
         {/* Managed Venues List */}
         {view === "venues" && (
           <div className="panel catalogue-edit-card">
@@ -297,8 +506,12 @@ export default async function BusinessPage({
         )}
 
         {/* Create Event Form */}
-        {view === "venues" && managed.length > 0 && (
-          <details className="panel catalogue-edit-card">
+        {(view === "venues" || view === "events") && managed.length > 0 && (
+          <details
+            id="create-event"
+            className="panel catalogue-edit-card dashboard-grid-full"
+            open={view === "events" && !businessEvents.length}
+          >
             <summary>
               <strong>
                 {es

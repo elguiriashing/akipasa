@@ -32,6 +32,11 @@ export default async function AdminLayout({
   const items: WorkspaceItem[] = [
     { href: base, label: es ? "Resumen" : "Overview", icon: "home" },
     {
+      href: `${base}/promotions`,
+      label: es ? "Solicitudes comerciales" : "Commercial requests",
+      icon: "megaphone",
+    },
+    {
       href: `${base}/users`,
       label: es ? "Usuarios y roles" : "Users and roles",
       icon: "users",
@@ -61,11 +66,6 @@ export default async function AdminLayout({
       href: `${base}/catalogue`,
       label: es ? "Catálogo" : "Catalogue",
       icon: "venue",
-    },
-    {
-      href: `${base}/promotions`,
-      label: es ? "Promociones" : "Promotions",
-      icon: "megaphone",
     },
     {
       href: `${base}/passports`,

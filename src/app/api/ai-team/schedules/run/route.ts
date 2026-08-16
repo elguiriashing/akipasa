@@ -31,6 +31,7 @@ export async function POST(request: Request) {
           message: schedule.prompt,
           requestKind: "scheduled",
           taskId: schedule.task_id,
+          administratorAuthorized: true,
         });
         results.push({ scheduleId: schedule.schedule_id, ok: true });
       } catch (runError) {

@@ -91,6 +91,21 @@ export default async function AdminOverview({
       </section>
       <section className="dashboard-grid">
         <article className="panel console-card admin-attention-card">
+          <span className="status-pill">{promotions || 0}</span>
+          <h2>{es ? "Solicitudes comerciales" : "Commercial requests"}</h2>
+          <p>
+            {es
+              ? "Revisa promociones, servicios destacados y seguimientos comerciales pendientes."
+              : "Review promotions, featured services, and pending commercial follow-ups."}
+          </p>
+          <Link
+            className="button button-strong"
+            href={`/${locale}/admin/promotions`}
+          >
+            {es ? "Abrir solicitudes comerciales" : "Open commercial requests"}
+          </Link>
+        </article>
+        <article className="panel console-card admin-attention-card">
           <span className="status-pill">{businessApplications || 0}</span>
           <h2>{es ? "Solicitudes de negocio" : "Business applications"}</h2>
           <p>

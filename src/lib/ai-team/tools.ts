@@ -83,6 +83,53 @@ const toolDefinitions: AIToolDefinition[] = [
     },
   },
   {
+    name: "crm_create_knowledge_article",
+    description:
+      "Save a durable internal Knowledge article in AkiHQ. Use this for research, procedures, decisions, technical notes, and reusable deliverables requested by the operator.",
+    permission: "crm:knowledge:create",
+    approvalRequired: false,
+    parameters: {
+      type: "object",
+      properties: {
+        title: { type: "string", minLength: 2, maxLength: 200 },
+        category: { type: "string", minLength: 2, maxLength: 80 },
+        content: { type: "string", minLength: 1, maxLength: 24000 },
+      },
+      required: ["title", "category", "content"],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "crm_create_calendar_event",
+    description:
+      "Save a durable internal Calendar entry in AkiHQ. Use this for meetings, deadlines, follow-ups, milestones, bookings, and scheduled operational work requested by the operator.",
+    permission: "crm:calendar:create",
+    approvalRequired: false,
+    parameters: {
+      type: "object",
+      properties: {
+        title: { type: "string", minLength: 2, maxLength: 200 },
+        start: { type: "string", format: "date-time" },
+        end: { type: "string", format: "date-time" },
+        type: {
+          type: "string",
+          enum: [
+            "Team",
+            "Client",
+            "Sales",
+            "Production",
+            "Milestone",
+            "Booking",
+          ],
+        },
+        location: { type: "string", maxLength: 300 },
+        notes: { type: "string", maxLength: 8000 },
+      },
+      required: ["title", "start", "end", "type", "location", "notes"],
+      additionalProperties: false,
+    },
+  },
+  {
     name: "crm_request_workspace_record_change",
     description:
       "Request administrator approval to create or update a core AkiHQ CRM record. The change is not applied until the approval is executed.",
@@ -255,6 +302,31 @@ const workspaceTaskSchema = z.object({
   assignee_id: z.string().trim().min(1).max(160).nullable(),
   project_id: z.string().trim().min(1).max(160).nullable(),
 });
+const knowledgeArticleSchema = z.object({
+  title: z.string().trim().min(2).max(200),
+  category: z.string().trim().min(2).max(80),
+  content: z.string().trim().min(1).max(24_000),
+});
+const calendarEventSchema = z
+  .object({
+    title: z.string().trim().min(2).max(200),
+    start: z.string().datetime(),
+    end: z.string().datetime(),
+    type: z.enum([
+      "Team",
+      "Client",
+      "Sales",
+      "Production",
+      "Milestone",
+      "Booking",
+    ]),
+    location: z.string().trim().max(300),
+    notes: z.string().trim().max(8000),
+  })
+  .refine((input) => new Date(input.end) >= new Date(input.start), {
+    message: "Calendar event end must not be before its start",
+    path: ["end"],
+  });
 const workspaceFieldValueSchema = z.union([
   z.string().max(8000),
   z.number().finite(),
@@ -701,6 +773,90 @@ async function runSafeTool(
       task_id: task.id,
       status: task.status,
       synchronized_at: savedAt,
+    };
+  }
+
+  if (name === "crm_create_knowledge_article") {
+    const input = knowledgeArticleSchema.parse(rawArguments);
+    const workspaceId = activeWorkspaceId(context);
+    const now = new Date().toISOString();
+    const recordId = "kb_ai_" + crypto.randomUUID();
+    const article = {
+      id: recordId,
+      title: input.title,
+      category: input.category,
+      authorId: context.actorId || "",
+      content: input.content,
+      source: "AI Team",
+      createdByAgentKey: context.agent.agent_key,
+      createdAt: now,
+      updatedAt: now,
+    };
+    const { error } = await context.service
+      .from("crm_workspace_records")
+      .upsert(
+        {
+          workspace_id: workspaceId,
+          record_type: "article",
+          record_id: recordId,
+          data: article,
+          updated_by: context.actorId,
+        },
+        { onConflict: "workspace_id,record_type,record_id" },
+      );
+    assertResult(error);
+    await logActivity(
+      context,
+      "crm.knowledge.created",
+      "Created Knowledge article: " + input.title,
+      { workspace_id: workspaceId, article_id: recordId },
+    );
+    return { workspace_id: workspaceId, article_id: recordId, saved: true };
+  }
+
+  if (name === "crm_create_calendar_event") {
+    const input = calendarEventSchema.parse(rawArguments);
+    const workspaceId = activeWorkspaceId(context);
+    const now = new Date().toISOString();
+    const recordId = "ev_ai_" + crypto.randomUUID();
+    const event = {
+      id: recordId,
+      title: input.title,
+      start: input.start,
+      end: input.end,
+      type: input.type,
+      color: "#7c8cff",
+      location: input.location,
+      notes: input.notes,
+      attendees: [],
+      source: "AI Team",
+      createdByAgentKey: context.agent.agent_key,
+      createdAt: now,
+      updatedAt: now,
+    };
+    const { error } = await context.service
+      .from("crm_workspace_records")
+      .upsert(
+        {
+          workspace_id: workspaceId,
+          record_type: "event",
+          record_id: recordId,
+          data: event,
+          updated_by: context.actorId,
+        },
+        { onConflict: "workspace_id,record_type,record_id" },
+      );
+    assertResult(error);
+    await logActivity(
+      context,
+      "crm.calendar.created",
+      "Created Calendar entry: " + input.title,
+      { workspace_id: workspaceId, calendar_event_id: recordId },
+    );
+    return {
+      workspace_id: workspaceId,
+      calendar_event_id: recordId,
+      saved: true,
     };
   }
 

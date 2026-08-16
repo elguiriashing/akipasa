@@ -71,7 +71,7 @@ export default async function VenueWorkspace({
     supabase
       .from("events")
       .select(
-        "id,slug,title_es,title_en,description_es,description_en,price_cents,booking_url,minimum_age,accessibility_notes_es,accessibility_notes_en,status,event_occurrences(id,starts_at,ends_at,status,booking_url)",
+        "id,slug,title_es,title_en,description_es,description_en,price_cents,booking_url,minimum_age,accessibility_notes_es,accessibility_notes_en,status,event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status,booking_url)",
       )
       .eq("venue_id", id)
       .order("created_at", { ascending: false }),
@@ -491,7 +491,11 @@ export default async function VenueWorkspace({
         <h2>{es ? "Eventos" : "Events"}</h2>
         {events?.length ? (
           events.map((event) => (
-            <article className="panel queue-card" key={event.id}>
+            <article
+              id={`event-${event.id}`}
+              className="panel queue-card"
+              key={event.id}
+            >
               <h3>
                 {locale === "en"
                   ? event.title_en || event.title_es

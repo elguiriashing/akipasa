@@ -111,7 +111,7 @@ Last reviewed: 2026-07-31.
 - [x] Replace the mobile horizontal header and full-screen workspace overlay
       with compact, bounded menus; move Community and Passport tabs into the
       shared workspace navigation.
-- [ ] Select and configure a production graphical map provider if required.
+- [x] Configure a production graphical map with a no-key OpenFreeMap default and a custom MapLibre style override.
 - [x] Add local authenticated Worker route integration tests for the command
       catalogue and operator execution.
 - [ ] Add dashboard login rate limiting and remote Worker route acceptance.

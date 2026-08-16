@@ -15,6 +15,7 @@
   "vars": {
     "NEXT_PUBLIC_PRODUCT_NAME": "AkiPasa",
     "NEXT_PUBLIC_DATA_PROVIDER": "hybrid",
+    "NEXT_PUBLIC_MAP_STYLE_URL": "https://tiles.openfreemap.org/styles/liberty",
     "NEXT_PUBLIC_GOOGLE_AUTH_ENABLED": "true",
     "NEXT_PUBLIC_SUPABASE_URL": "https://vhpbvcfkcteswlsdjrfl.supabase.co",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_Mm4CJvGyIaLOWbU3g1sxIQ_Wv2jrKt1",
