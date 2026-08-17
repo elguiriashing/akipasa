@@ -2,6 +2,7 @@ import { z } from "zod";
 import { aiErrorResponse, requireAIAdministrator } from "@/lib/ai-team/auth";
 import { requireSameOrigin } from "@/lib/ai-team/request-security";
 import { executeApprovedTool } from "@/lib/ai-team/tools";
+import { runAIAgent } from "@/lib/ai-team/gateway";
 import type { AIAgent } from "@/lib/ai-team/types";
 
 const actionSchema = z.discriminatedUnion("action", [
@@ -17,6 +18,14 @@ const actionSchema = z.discriminatedUnion("action", [
     description: z.string().trim().min(2).max(8000),
     assignedAgentId: z.string().uuid(),
     priority: z.number().int().min(1).max(5),
+  }),
+  z.object({
+    action: z.literal("run_task"),
+    taskId: z.string().uuid(),
+  }),
+  z.object({
+    action: z.literal("cancel_task"),
+    taskId: z.string().uuid(),
   }),
   z.object({
     action: z.literal("update_budget"),
@@ -98,6 +107,43 @@ export async function POST(request: Request) {
         .select("id,status")
         .single();
       assertResult(error);
+      return Response.json({ ok: true, task: data });
+    }
+
+    if (action.action === "run_task") {
+      const now = new Date().toISOString();
+      const { data: task, error } = await service
+        .from("ai_tasks")
+        .update({ status: "in_progress", started_at: now, updated_at: now })
+        .eq("id", action.taskId)
+        .eq("status", "queued")
+        .select("id,title,description,assigned_agent_id")
+        .maybeSingle();
+      assertResult(error);
+      if (!task) throw new Error("Task is no longer queued");
+      const result = await runAIAgent({
+        service,
+        agentId: task.assigned_agent_id,
+        actorId: user.id,
+        requestKind: "task",
+        taskId: task.id,
+        administratorAuthorized: true,
+        message: task.description,
+      });
+      return Response.json({ ok: true, taskId: task.id, result });
+    }
+
+    if (action.action === "cancel_task") {
+      const now = new Date().toISOString();
+      const { data, error } = await service
+        .from("ai_tasks")
+        .update({ status: "cancelled", completed_at: now, updated_at: now })
+        .eq("id", action.taskId)
+        .eq("status", "queued")
+        .select("id,status")
+        .maybeSingle();
+      assertResult(error);
+      if (!data) throw new Error("Task is no longer queued");
       return Response.json({ ok: true, task: data });
     }
 

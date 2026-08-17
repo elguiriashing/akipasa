@@ -165,11 +165,23 @@ class OpenAIResponsesAdapter implements AIProviderAdapter {
         } catch {
           parsedArguments = {};
         }
-        const result = await request.executeTool({
-          id: item.call_id || crypto.randomUUID(),
-          name: item.name || "unknown",
-          arguments: parsedArguments,
-        });
+        let result: unknown;
+        try {
+          result = await request.executeTool({
+            id: item.call_id || crypto.randomUUID(),
+            name: item.name || "unknown",
+            arguments: parsedArguments,
+          });
+        } catch (error) {
+          result = {
+            ok: false,
+            error: "tool_execution_failed",
+            message:
+              error instanceof Error
+                ? error.message.slice(0, 2_000)
+                : "The tool could not be executed",
+          };
+        }
         input.push({
           type: "function_call_output",
           call_id: item.call_id,

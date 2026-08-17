@@ -622,6 +622,33 @@ h3 {
   background: transparent;
 }
 
+.global-support-trigger {
+  position: fixed;
+  z-index: 45;
+  right: 1.4rem;
+  bottom: 1.4rem;
+  padding: 0.78rem 1rem;
+  border: 1px solid rgba(255, 125, 42, 0.72);
+  border-radius: 999px;
+  color: #fff8ec;
+  background: linear-gradient(135deg, #ff6418, #d94b0c);
+  box-shadow: 0 0.8rem 2rem rgba(7, 25, 24, 0.34);
+  font-weight: 900;
+}
+
+.global-support-trigger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 1rem 2.4rem rgba(255, 100, 24, 0.24);
+}
+
+@media (max-width: 850px) {
+  .global-support-trigger {
+    right: 0.85rem;
+    bottom: calc(5.1rem + env(safe-area-inset-bottom, 0px));
+    padding: 0.68rem 0.85rem;
+  }
+}
+
 .business-application-status {
   max-width: 48rem;
   margin-inline: auto;
@@ -5056,6 +5083,12 @@ html {
 
 .map-marker-market > span {
   background: #d64a35;
+}
+
+.map-marker-source-community > span {
+  background: linear-gradient(145deg, #c44cff, #7d35d8);
+  border-color: rgba(255, 238, 255, 0.92);
+  box-shadow: 0 10px 24px rgba(142, 54, 217, 0.5);
 }
 
 .map-popup-card {

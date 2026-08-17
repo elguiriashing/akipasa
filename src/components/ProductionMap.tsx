@@ -14,6 +14,7 @@ export type MapPoint = {
   category: string;
   startsAt: string;
   priceLabel: string;
+  source: "verified_venue" | "community";
 };
 
 const markerGlyphs: Record<string, string> = {
@@ -158,7 +159,7 @@ export function ProductionMap({
         bounds.extend([point.longitude, point.latitude]);
         const button = document.createElement("button");
         button.type = "button";
-        button.className = `map-marker map-marker-${point.category}`;
+        button.className = `map-marker map-marker-${point.category} map-marker-source-${point.source}`;
         button.setAttribute("aria-label", `${point.title}, ${point.venue}`);
         button.title = `${point.title} / ${point.venue}`;
         const pin = document.createElement("span");

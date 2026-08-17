@@ -636,6 +636,24 @@ async function runSafeTool(
   rawArguments: unknown,
   context: AIToolContext,
 ): Promise<unknown> {
+  const normalizedArguments = (() => {
+    if (!rawArguments || typeof rawArguments !== "object") return rawArguments;
+    const record = rawArguments as Record<string, unknown>;
+    for (const key of ["arguments", "input", "article", "knowledge_article"]) {
+      const candidate = record[key];
+      if (
+        candidate &&
+        typeof candidate === "object" &&
+        !Array.isArray(candidate)
+      ) {
+        return candidate;
+      }
+    }
+    const values = Object.values(record);
+    return values.length === 1 && values[0] && typeof values[0] === "object"
+      ? values[0]
+      : rawArguments;
+  })();
   if (name === "crm_workspace_overview") {
     const { workspaceId, snapshot, updatedAt } = await loadWorkspace(context);
     const deals = workspaceRecords(snapshot, "deal");
@@ -777,7 +795,7 @@ async function runSafeTool(
   }
 
   if (name === "crm_create_knowledge_article") {
-    const input = knowledgeArticleSchema.parse(rawArguments);
+    const input = knowledgeArticleSchema.parse(normalizedArguments);
     const workspaceId = activeWorkspaceId(context);
     const now = new Date().toISOString();
     const recordId = "kb_ai_" + crypto.randomUUID();

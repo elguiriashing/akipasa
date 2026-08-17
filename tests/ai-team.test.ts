@@ -126,6 +126,85 @@ describe("AI Team boundaries", () => {
     await expect(request).rejects.not.toThrow(/akipasa|SECRET-VALUE|PHYA/);
   });
 
+  it("returns tool validation failures to the model so it can recover", async () => {
+    process.env.OPENAI_API_KEY = "test-key";
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            id: "resp_1",
+            output: [
+              {
+                type: "function_call",
+                call_id: "call_1",
+                name: "crm_create_knowledge_article",
+                arguments: "{}",
+              },
+            ],
+            usage: { input_tokens: 10, output_tokens: 5 },
+          }),
+          { status: 200, headers: { "content-type": "application/json" } },
+        ),
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            id: "resp_2",
+            output: [
+              {
+                type: "message",
+                content: [{ type: "output_text", text: "Recovered" }],
+              },
+            ],
+            usage: { input_tokens: 12, output_tokens: 3 },
+          }),
+          { status: 200, headers: { "content-type": "application/json" } },
+        ),
+      );
+
+    const result = await createAIProvider("openai").run({
+      model: "gpt-5.6-luna",
+      instructions: "Correct invalid tool calls.",
+      messages: [{ role: "user", content: "Save the research" }],
+      tools: [
+        {
+          name: "crm_create_knowledge_article",
+          description: "Save knowledge",
+          permission: "crm:knowledge:create",
+          approvalRequired: false,
+          parameters: {
+            type: "object",
+            properties: {},
+            required: [],
+            additionalProperties: false,
+          },
+        },
+      ],
+      maxOutputTokens: 100,
+      maxProviderRounds: 3,
+      safetyIdentifier: "test",
+      executeTool: async () => {
+        throw new Error("title, category, and content are required");
+      },
+    });
+
+    expect(result.text).toBe("Recovered");
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    const secondRequest = JSON.parse(
+      String((fetchMock.mock.calls[1][1] as RequestInit).body),
+    );
+    expect(secondRequest.input).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          type: "function_call_output",
+          call_id: "call_1",
+          output: expect.stringContaining("tool_execution_failed"),
+        }),
+      ]),
+    );
+  });
+
   it("uses a stable conservative token estimate", () => {
     expect(estimateTokens("12345678")).toBe(3);
     expect(estimateTokens("")).toBe(1);
@@ -160,6 +239,19 @@ describe("AI Team boundaries", () => {
     expect(sql).toContain("when v_rejected_without_usage then 0");
     expect(sql).toContain("coalesce(input_tokens, 0) = 0");
     expect(sql).toContain("coalesce(output_tokens, 0) = 0");
+  });
+
+  it("raises the internal provider round guard for longer tool workflows", () => {
+    const sql = readFileSync(
+      join(
+        process.cwd(),
+        "database",
+        "migrations",
+        "0053_raise_ai_provider_round_limit.sql",
+      ),
+      "utf8",
+    );
+    expect(sql).toContain("p_max_provider_rounds not between 1 and 16");
   });
 
   it("isolates customer Support chats from shared memory and CRM tools", () => {

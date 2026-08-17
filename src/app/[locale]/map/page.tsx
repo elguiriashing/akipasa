@@ -104,6 +104,7 @@ export default async function MapPage({
       result.event.priceCents === 0
         ? m.free
         : `${(result.event.priceCents / 100).toFixed(0)}\u20ac`,
+    source: result.event.source,
   }));
 
   return (

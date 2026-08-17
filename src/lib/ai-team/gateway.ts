@@ -9,7 +9,7 @@ import { availableTools, executeToolCall } from "./tools";
 import type { AIAgent, AIConversationMessage } from "./types";
 
 const maxOutputTokens = 1200;
-const maxProviderRounds = 6;
+const maxProviderRounds = 16;
 
 type RunAgentInput = {
   service: SupabaseClient;

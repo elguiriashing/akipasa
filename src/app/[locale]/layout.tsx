@@ -58,6 +58,13 @@ export default async function LocaleLayout({
             />
           </nav>
         </footer>
+        <SupportAgentLauncher
+          locale={locale}
+          surface="site_contact"
+          label={locale === "es" ? "✦ Soporte" : "✦ Support"}
+          className="global-support-trigger"
+          signedIn={Boolean(user)}
+        />
       </AppShell>
     </>
   );
