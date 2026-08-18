@@ -56,9 +56,9 @@ const nextConfig: NextConfig = {
                 isDevelopment ? " 'unsafe-eval'" : ""
               }`,
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://vhpbvcfkcteswlsdjrfl.supabase.co",
+              "img-src 'self' data: blob: https://vhpbvcfkcteswlsdjrfl.supabase.co https://tiles.openfreemap.org",
               "font-src 'self' data:",
-              "connect-src 'self' https://vhpbvcfkcteswlsdjrfl.supabase.co wss://vhpbvcfkcteswlsdjrfl.supabase.co",
+              "connect-src 'self' https://vhpbvcfkcteswlsdjrfl.supabase.co wss://vhpbvcfkcteswlsdjrfl.supabase.co https://tiles.openfreemap.org",
               "manifest-src 'self'",
               "worker-src 'self' blob:",
               "upgrade-insecure-requests",

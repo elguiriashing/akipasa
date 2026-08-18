@@ -5,7 +5,6 @@ import { z } from "zod";
 import { isLocale } from "@/lib/config";
 import { requireUser } from "@/lib/auth";
 import { requireBusinessAccess } from "@/lib/entitlements";
-import { isSpainLocation, spainLocations } from "@/lib/locations";
 import { safeExternalUrlSchema } from "@/lib/auth-security";
 import { madridLocalDateTimeSchema } from "@/lib/time";
 import { createEventSlug, createVenueSlug } from "@/lib/business";
@@ -39,13 +38,17 @@ export async function submitBusinessApplication(formData: FormData) {
 
 const venueSchema = z.object({
   locale: z.string(),
-  locality: z.string().refine(isSpainLocation),
+  locality: z.string().trim().min(2).max(120),
+  province: z.string().trim().min(2).max(120),
+  postalCode: z.string().trim().max(20),
+  addressSelection: z.literal("selected"),
+  addressProviderId: z.string().trim().min(1).max(160),
   name: z.string().trim().min(2).max(120),
   descriptionEs: z.string().trim().min(20).max(2000),
   descriptionEn: z.string().trim().max(2000),
   address: z.string().trim().min(5).max(300),
-  latitude: z.coerce.number().min(-90).max(90).optional(),
-  longitude: z.coerce.number().min(-180).max(180).optional(),
+  latitude: z.coerce.number().min(27).max(44.5),
+  longitude: z.coerce.number().min(-19).max(5),
 });
 
 export async function createVenue(formData: FormData) {
@@ -56,17 +59,16 @@ export async function createVenue(formData: FormData) {
   if (!parsed.success) redirect(`/${locale}/business?error=venue`);
   const { supabase } = await requireBusinessAccess(locale);
   const v = parsed.data;
-  const place = spainLocations[v.locality];
   const { error } = await supabase.rpc("create_owned_venue_in_spain", {
-    locality_name: place.es,
-    province_name: place.province,
+    locality_name: v.locality,
+    province_name: v.province,
     venue_name: v.name,
     venue_slug: createVenueSlug(v.name),
     description_es: v.descriptionEs,
     description_en: v.descriptionEn,
     venue_address: v.address,
-    latitude: v.latitude ?? place.latitude,
-    longitude: v.longitude ?? place.longitude,
+    latitude: v.latitude,
+    longitude: v.longitude,
   });
   if (error) redirect(`/${locale}/business?error=venue`);
   redirect(`/${locale}/business?created=venue`);
@@ -131,6 +133,26 @@ export async function createEvent(formData: FormData) {
   redirect(`/${locale}/business?created=event`);
 }
 
+const reuseEventSchema = z.object({
+  locale: z.enum(["es", "en"]),
+  eventId: z.string().uuid(),
+  sourceSlug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+});
+
+export async function reuseEvent(formData: FormData) {
+  const parsed = reuseEventSchema.safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  if (!parsed.success)
+    redirect(`/${locale}/business?view=events&error=duplicate`);
+  const { supabase } = await requireBusinessAccess(locale);
+  const { error } = await supabase.rpc("duplicate_owned_event", {
+    p_event: parsed.data.eventId,
+    p_slug: `${parsed.data.sourceSlug}-copy-${crypto.randomUUID().slice(0, 8)}`,
+  });
+  if (error) redirect(`/${locale}/business?view=events&error=duplicate`);
+  redirect(`/${locale}/business?view=events&created=duplicate`);
+}
+
 const loyaltySchema = z.object({
   locale: z.enum(["es", "en"]),
   venueId: z.string().uuid(),
@@ -175,25 +197,47 @@ export async function confirmRedemption(formData: FormData) {
   redirect(`/${locale}/business?created=redemption`);
 }
 
-const promotionSchema = z.object({
-  locale: z.enum(["es", "en"]),
-  venueId: z.string().uuid(),
-  service: z.enum([
-    "featured_listing",
-    "social_campaign",
-    "content_package",
-    "other",
-  ]),
-  message: z.string().trim().min(20).max(2000),
-});
+const promotionSchema = z
+  .object({
+    locale: z.enum(["es", "en"]),
+    venueId: z.string().uuid(),
+    eventId: z.union([z.string().uuid(), z.literal("")]),
+    service: z.enum([
+      "featured_listing",
+      "social_campaign",
+      "content_package",
+      "other",
+    ]),
+    message: z.string().trim().min(20).max(2000),
+  })
+  .superRefine((value, context) => {
+    if (value.service === "featured_listing" && !value.eventId) {
+      context.addIssue({
+        code: "custom",
+        path: ["eventId"],
+        message: "A published event is required",
+      });
+    }
+  });
 
 export async function requestPromotion(formData: FormData) {
   const parsed = promotionSchema.safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   if (!parsed.success) redirect(`/${locale}/business?error=promotion`);
   const { supabase, user } = await requireBusinessAccess(locale);
+  if (parsed.data.eventId) {
+    const { data: event } = await supabase
+      .from("events")
+      .select("id")
+      .eq("id", parsed.data.eventId)
+      .eq("venue_id", parsed.data.venueId)
+      .eq("status", "published")
+      .maybeSingle();
+    if (!event) redirect(`/${locale}/business?error=promotion`);
+  }
   const { error } = await supabase.from("promotion_requests").insert({
     venue_id: parsed.data.venueId,
+    event_id: parsed.data.eventId || null,
     requester_id: user.id,
     service: parsed.data.service,
     message: parsed.data.message,

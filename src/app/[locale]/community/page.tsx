@@ -12,6 +12,7 @@ import {
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { loadFeatureFlags } from "@/lib/feature-flags";
+import { SpainAddressAutocomplete } from "@/components/SpainAddressAutocomplete";
 import { submitCommunityEvent, submitReport } from "./actions";
 
 export default async function CommunityPage({
@@ -37,6 +38,7 @@ export default async function CommunityPage({
     { data: venues },
     { data: submissions },
     { data: reports },
+    { data: categories },
   ] = await Promise.all([
     supabase
       .from("events")
@@ -58,6 +60,10 @@ export default async function CommunityPage({
       .select("id,target_type,reason,state,created_at")
       .eq("reporter_id", user.id)
       .order("created_at", { ascending: false }),
+    supabase
+      .from("categories")
+      .select("id,slug,name_es,name_en")
+      .order("name_es"),
   ]);
   const pendingSuggestions =
     submissions?.filter((item) => item.state === "pending").length || 0;
@@ -232,11 +238,30 @@ export default async function CommunityPage({
                         {es ? "Nombre del local" : "Venue name"}
                         <input name="venueName" required minLength={2} />
                       </label>
-                      <label>
-                        {es ? "Direccion" : "Address"}
-                        <input name="venueAddress" required minLength={5} />
-                      </label>
+                      <SpainAddressAutocomplete
+                        locale={locale}
+                        mode="address"
+                        name="venueAddress"
+                        label={es ? "Direccion" : "Address"}
+                      />
                     </div>
+                    <label>
+                      {es ? "Categoria" : "Category"}
+                      <select name="categoryId" required defaultValue="">
+                        <option value="" disabled>
+                          {es
+                            ? "Selecciona una categoria"
+                            : "Choose a category"}
+                        </option>
+                        {(categories || []).map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {es
+                              ? category.name_es
+                              : category.name_en || category.name_es}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
                     <label>
                       {es ? "Titulo del evento" : "Event title"}
                       <input name="title" required minLength={3} />

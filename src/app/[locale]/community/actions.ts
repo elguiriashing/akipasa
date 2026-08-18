@@ -13,13 +13,20 @@ export async function submitCommunityEvent(formData: FormData) {
   const { supabase } = await requireUser(locale, `/${locale}/community`);
   const value = parsed.data;
   const { error } = await supabase.rpc("submit_community_event", {
-    venue_name: value.venueName,
-    venue_address: value.venueAddress,
-    event_title: value.title,
-    event_description: value.description,
-    starts_at: value.startsAt.toISOString(),
-    ends_at: value.endsAt.toISOString(),
-    source_url: value.sourceUrl,
+    p_venue_name: value.venueName,
+    p_venue_address: value.venueAddress,
+    p_address_provider_id: value.addressProviderId,
+    p_locality_name: value.locality,
+    p_province_name: value.province,
+    p_postal_code: value.postalCode,
+    p_latitude: value.latitude,
+    p_longitude: value.longitude,
+    p_category_id: value.categoryId,
+    p_event_title: value.title,
+    p_event_description: value.description,
+    p_starts_at: value.startsAt.toISOString(),
+    p_ends_at: value.endsAt.toISOString(),
+    p_source_url: value.sourceUrl,
   });
   if (error)
     redirect(

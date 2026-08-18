@@ -23,14 +23,39 @@ export default async function AdminLayout({
     .eq("id", user.id)
     .maybeSingle();
   if (!profile || !isAdministrator(profile.app_role)) notFound();
+  const { count: pendingApplications } = await supabase
+    .from("business_applications")
+    .select("*", { count: "exact", head: true })
+    .in("state", ["submitted", "under_review", "awaiting_payment"]);
   const es = locale === "es";
   const base = `/${locale}/admin`;
   const items: WorkspaceItem[] = [
     { href: base, label: es ? "Resumen" : "Overview", icon: "home" },
     {
+      href: `${base}/promotions`,
+      label: es ? "Solicitudes comerciales" : "Commercial requests",
+      icon: "megaphone",
+    },
+    {
       href: `${base}/users`,
       label: es ? "Usuarios y roles" : "Users and roles",
       icon: "users",
+    },
+    {
+      href: `${base}/business-applications`,
+      label: es ? "Solicitudes de negocio" : "Business applications",
+      icon: "business",
+      count: pendingApplications || undefined,
+    },
+    {
+      href: `${base}/ai-team`,
+      label: es ? "Equipo de IA" : "AI Team",
+      icon: "activity",
+    },
+    {
+      href: `${base}/personalisation`,
+      label: es ? "Personalización" : "Personalisation",
+      icon: "activity",
     },
     {
       href: `${base}/privacy`,
@@ -41,11 +66,6 @@ export default async function AdminLayout({
       href: `${base}/catalogue`,
       label: es ? "Catálogo" : "Catalogue",
       icon: "venue",
-    },
-    {
-      href: `${base}/promotions`,
-      label: es ? "Promociones" : "Promotions",
-      icon: "megaphone",
     },
     {
       href: `${base}/passports`,

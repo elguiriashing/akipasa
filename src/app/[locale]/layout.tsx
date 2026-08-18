@@ -2,8 +2,10 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { LocaleDocumentLanguage } from "@/components/LocaleDocumentLanguage";
 import { AppShell } from "@/components/AppShell";
+import { SupportAgentLauncher } from "@/components/support/SupportAgentLauncher";
 import { optionalUser } from "@/lib/auth";
 import { config, isLocale } from "@/lib/config";
+import { PersonalisationConsent } from "@/components/PersonalisationConsent";
 
 export function generateStaticParams() {
   return config.locales.map((locale) => ({ locale }));
@@ -31,6 +33,7 @@ export default async function LocaleLayout({
   return (
     <>
       <LocaleDocumentLanguage locale={locale} />
+      <PersonalisationConsent locale={locale} />
       <AppShell
         locale={locale}
         signedIn={Boolean(user)}
@@ -46,11 +49,22 @@ export default async function LocaleLayout({
             <Link href={`/${locale}/terms`}>
               {locale === "es" ? "Condiciones" : "Terms"}
             </Link>
-            <a href="mailto:support@akipasa.com">
-              {locale === "es" ? "Contacto" : "Contact"}
-            </a>
+            <SupportAgentLauncher
+              locale={locale}
+              surface="site_contact"
+              label={locale === "es" ? "Contacto" : "Contact"}
+              className="footer-support-trigger"
+              signedIn={Boolean(user)}
+            />
           </nav>
         </footer>
+        <SupportAgentLauncher
+          locale={locale}
+          surface="site_contact"
+          label={locale === "es" ? "✦ Soporte" : "✦ Support"}
+          className="global-support-trigger"
+          signedIn={Boolean(user)}
+        />
       </AppShell>
     </>
   );

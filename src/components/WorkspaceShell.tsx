@@ -73,8 +73,15 @@ export function WorkspaceShell({
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const drawerCloseRef = useRef<HTMLButtonElement>(null);
+  const desktopNavigationRef = useRef<HTMLElement>(null);
+  const dragState = useRef({
+    active: false,
+    moved: false,
+    startX: 0,
+    scrollLeft: 0,
+  });
   const spanish = homeHref.startsWith("/es/");
-  const menuLabel = spanish ? "Menú" : "Menu";
+  const menuLabel = spanish ? "MenÃº" : "Menu";
   const closeLabel = spanish ? "Cerrar" : "Close";
   const consumerWorkspace = [
     "/account",
@@ -87,6 +94,49 @@ export function WorkspaceShell({
   const activeItem = items.find((item) =>
     matchesPath(pathname, searchParams, item.href),
   );
+
+  function startNavigationDrag(event: React.PointerEvent<HTMLElement>) {
+    if (event.pointerType === "touch" || event.button !== 0) return;
+    const navigation = desktopNavigationRef.current;
+    if (!navigation || navigation.scrollWidth <= navigation.clientWidth) return;
+    dragState.current = {
+      active: true,
+      moved: false,
+      startX: event.clientX,
+      scrollLeft: navigation.scrollLeft,
+    };
+  }
+
+  function moveNavigationDrag(event: React.PointerEvent<HTMLElement>) {
+    const navigation = desktopNavigationRef.current;
+    if (!navigation || !dragState.current.active) return;
+    const distance = event.clientX - dragState.current.startX;
+    if (!dragState.current.moved) {
+      if (Math.abs(distance) <= 5) return;
+      dragState.current.moved = true;
+      navigation.setPointerCapture(event.pointerId);
+      navigation.classList.add("is-dragging");
+    }
+    navigation.scrollLeft = dragState.current.scrollLeft - distance;
+    event.preventDefault();
+  }
+
+  function endNavigationDrag(event: React.PointerEvent<HTMLElement>) {
+    const navigation = desktopNavigationRef.current;
+    if (!navigation) return;
+    dragState.current.active = false;
+    navigation.classList.remove("is-dragging");
+    if (navigation.hasPointerCapture(event.pointerId))
+      navigation.releasePointerCapture(event.pointerId);
+  }
+
+  function scrollNavigation(event: React.WheelEvent<HTMLElement>) {
+    const navigation = desktopNavigationRef.current;
+    if (!navigation || navigation.scrollWidth <= navigation.clientWidth) return;
+    if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+    navigation.scrollLeft += event.deltaY;
+    event.preventDefault();
+  }
 
   useEffect(() => {
     if (!drawerOpen) return;
@@ -109,6 +159,20 @@ export function WorkspaceShell({
     return () => desktop.removeEventListener("change", closeOnDesktop);
   }, []);
 
+  useEffect(() => {
+    const navigation = desktopNavigationRef.current;
+    const active = navigation?.querySelector<HTMLElement>(
+      '[aria-current="page"]',
+    );
+    if (typeof active?.scrollIntoView === "function") {
+      active.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "nearest",
+      });
+    }
+  }, [pathname, searchParams]);
+
   const navigation = (
     <>
       <div className="workspace-brand">
@@ -125,12 +189,18 @@ export function WorkspaceShell({
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           onClick={() => setCollapsed((value) => !value)}
         >
-          <span aria-hidden="true">{collapsed ? "›" : "‹"}</span>
+          <span aria-hidden="true">{collapsed ? "â€º" : "â€¹"}</span>
         </button>
       </div>
       <nav
         className="workspace-navigation"
         aria-label={`${navigationTitle} sections`}
+        ref={desktopNavigationRef}
+        onPointerDown={startNavigationDrag}
+        onPointerMove={moveNavigationDrag}
+        onPointerUp={endNavigationDrag}
+        onPointerCancel={endNavigationDrag}
+        onWheel={scrollNavigation}
       >
         {items.map((item) => {
           const active = matchesPath(pathname, searchParams, item.href);
@@ -139,7 +209,14 @@ export function WorkspaceShell({
               href={item.href}
               aria-current={active ? "page" : undefined}
               className={active ? "active" : undefined}
-              onClick={() => setDrawerOpen(false)}
+              onClick={(event) => {
+                if (dragState.current.moved) {
+                  event.preventDefault();
+                  dragState.current.moved = false;
+                  return;
+                }
+                setDrawerOpen(false);
+              }}
               key={item.href}
               title={collapsed ? item.label : undefined}
             >

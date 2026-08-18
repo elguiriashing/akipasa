@@ -5,6 +5,7 @@ import { isLocale } from "@/lib/config";
 import { translated } from "@/lib/domain";
 import { msg } from "@/lib/messages";
 import { repository } from "@/lib/repository";
+import { googleMapsDirectionsUrl } from "@/lib/maps";
 import { optionalUser } from "@/lib/auth";
 import { toggleFollowedVenue } from "../../engagement/actions";
 import { AnalyticsView, TrackedLink } from "@/components/AnalyticsSignal";
@@ -64,75 +65,94 @@ export default async function VenuePage({
       )}
       <main className="shell detail-layout">
         <AnalyticsView action="venue_view" venueId={venue.id} locale={locale} />
-        <article className="detail-card">
-          <div className="eyebrow">
-            {venue.verified ? <VerifiedBadge locale={locale} /> : m.community}
-          </div>
-          <h1>{venue.name}</h1>
-          <p className="lede">{venue.address}</p>
-          <p className="detail-copy">{translated(venue.description, locale)}</p>
-          {venue.media?.length && venue.media.length > 1 ? (
-            <section className="venue-section mt-8">
-              <h2>{locale === "es" ? "Imágenes" : "Images"}</h2>
-              <div className="media-gallery-grid">
-                {venue.media.slice(1).map((item) => (
-                  <Image
-                    key={item.id}
-                    src={item.url}
-                    alt={translated(item.alt, locale)}
-                    width={720}
-                    height={480}
-                    sizes="(max-width: 700px) 100vw, 50vw"
-                  />
-                ))}
-              </div>
-            </section>
+        <article className="detail-card detail-card-primary">
+          {bgImage ? (
+            <div
+              className="detail-cover"
+              style={{ backgroundImage: `url(${bgImage})` }}
+              aria-hidden
+            />
           ) : null}
-          <h2>{m.discover}</h2>
-          {events.map((event) => (
-            <p key={event.id}>
-              <Link href={`/${locale}/events/${event.slug}`}>
-                {translated(event.title, locale)} →
-              </Link>
+          <div className="detail-intro">
+            <div className="eyebrow">
+              {venue.verified ? <VerifiedBadge locale={locale} /> : m.community}
+            </div>
+            <h1>{venue.name}</h1>
+            <p className="lede">{venue.address}</p>
+            <p className="detail-copy">
+              {translated(venue.description, locale)}
             </p>
-          ))}
-          {visibleOffers.length ? (
-            <section className="venue-section">
-              <h2>{locale === "es" ? "Ofertas" : "Offers"}</h2>
-              {visibleOffers.map((offer) => (
-                <article className="offer-card" key={offer.id}>
-                  {offer.premium && (
-                    <span className="status-pill">
-                      {locale === "es" ? "Oferta Premium" : "Premium offer"}
-                    </span>
-                  )}
-                  <h3>{translated(offer.title, locale)}</h3>
-                  <p>{translated(offer.terms, locale)}</p>
-                </article>
-              ))}
-            </section>
-          ) : null}
-          {venue.loyalty?.length ? (
-            <section className="venue-section">
-              <h2>{locale === "es" ? "Fidelidad" : "Loyalty"}</h2>
-              {venue.loyalty.map((program) => (
-                <article className="offer-card" key={program.id}>
-                  <h3>{translated(program.title, locale)}</h3>
-                  <p>
-                    {program.stampsRequired}{" "}
-                    {locale === "es" ? "sellos" : "stamps"} ·{" "}
-                    {translated(program.reward, locale)}
-                  </p>
-                  <Link href={`/${locale}/passports`}>
-                    {locale === "es" ? "Ver mi progreso" : "View my progress"} →
-                  </Link>
-                </article>
-              ))}
-            </section>
-          ) : null}
+            {venue.media?.length && venue.media.length > 1 ? (
+              <section className="venue-section mt-8">
+                <h2>{locale === "es" ? "Imágenes" : "Images"}</h2>
+                <div className="media-gallery-grid">
+                  {venue.media.slice(1).map((item) => (
+                    <Image
+                      key={item.id}
+                      src={item.url}
+                      alt={translated(item.alt, locale)}
+                      width={720}
+                      height={480}
+                      sizes="(max-width: 700px) 100vw, 50vw"
+                    />
+                  ))}
+                </div>
+              </section>
+            ) : null}
+            <h2>{m.discover}</h2>
+            {events.map((event) => (
+              <p className="detail-event-row" key={event.id}>
+                <Link
+                  className="detail-event-link"
+                  href={`/${locale}/events/${event.slug}`}
+                >
+                  {translated(event.title, locale)} →
+                </Link>
+              </p>
+            ))}
+            {visibleOffers.length ? (
+              <section className="venue-section">
+                <h2>{locale === "es" ? "Ofertas" : "Offers"}</h2>
+                {visibleOffers.map((offer) => (
+                  <article className="offer-card" key={offer.id}>
+                    {offer.premium && (
+                      <span className="status-pill">
+                        {locale === "es" ? "Oferta Premium" : "Premium offer"}
+                      </span>
+                    )}
+                    <h3>{translated(offer.title, locale)}</h3>
+                    <p>{translated(offer.terms, locale)}</p>
+                  </article>
+                ))}
+              </section>
+            ) : null}
+            {venue.loyalty?.length ? (
+              <section className="venue-section">
+                <h2>{locale === "es" ? "Fidelidad" : "Loyalty"}</h2>
+                {venue.loyalty.map((program) => (
+                  <article className="offer-card" key={program.id}>
+                    <h3>{translated(program.title, locale)}</h3>
+                    <p>
+                      {program.stampsRequired}{" "}
+                      {locale === "es" ? "sellos" : "stamps"} ·{" "}
+                      {translated(program.reward, locale)}
+                    </p>
+                    <Link href={`/${locale}/passports`}>
+                      {locale === "es" ? "Ver mi progreso" : "View my progress"}{" "}
+                      →
+                    </Link>
+                  </article>
+                ))}
+              </section>
+            ) : null}
+          </div>
         </article>
-        <aside className="detail-sidebar">
-          <dl>
+        <aside className="detail-sidebar detail-sidebar-polished">
+          <div className="detail-sidebar-heading">
+            <span>{locale === "es" ? "Datos del local" : "Venue details"}</span>
+            <strong>{venue.name}</strong>
+          </div>
+          <dl className="detail-facts">
             <div>
               <dt>{m.location}</dt>
               <dd>{venue.address}</dd>
@@ -142,10 +162,10 @@ export default async function VenuePage({
               <dd>{venue.accessible ? "✓" : "—"}</dd>
             </div>
           </dl>
-          <div className="actions">
+          <div className="actions detail-actions">
             <TrackedLink
               className="button"
-              href={`https://www.google.com/maps/search/?api=1&query=${venue.latitude},${venue.longitude}`}
+              href={googleMapsDirectionsUrl(venue)}
               target="_blank"
               rel="noreferrer"
               action="directions_click"
@@ -155,19 +175,28 @@ export default async function VenuePage({
               {m.directions}
             </TrackedLink>
             {venue.phone && (
-              <a className="button secondary" href={`tel:${venue.phone}`}>
+              <TrackedLink
+                className="button secondary"
+                href={`tel:${venue.phone}`}
+                action="phone_click"
+                venueId={venue.id}
+                locale={locale}
+              >
                 {locale === "es" ? "Llamar" : "Call"}
-              </a>
+              </TrackedLink>
             )}
             {venue.whatsappPhone && (
-              <a
+              <TrackedLink
                 className="button secondary"
                 href={`https://wa.me/${venue.whatsappPhone.replace(/\D/g, "")}`}
                 target="_blank"
                 rel="noreferrer"
+                action="whatsapp_click"
+                venueId={venue.id}
+                locale={locale}
               >
                 WhatsApp
-              </a>
+              </TrackedLink>
             )}
             {venue.websiteUrl && (
               <TrackedLink

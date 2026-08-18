@@ -14,6 +14,26 @@ export interface DiscoveryRepository {
   eventsForVenue(venueId: string): Promise<Event[]>;
 }
 
+export function rankDiscoveryResults(
+  results: DiscoveryResult[],
+  now = new Date(),
+) {
+  return [...results].sort((a, b) => {
+    const aActive =
+      new Date(a.occurrence.startsAt) <= now &&
+      new Date(a.occurrence.endsAt) > now;
+    const bActive =
+      new Date(b.occurrence.startsAt) <= now &&
+      new Date(b.occurrence.endsAt) > now;
+    return (
+      Number(b.event.sponsored) - Number(a.event.sponsored) ||
+      Number(bActive) - Number(aActive) ||
+      +new Date(a.occurrence.startsAt) - +new Date(b.occurrence.startsAt) ||
+      a.distanceKm - b.distanceKm
+    );
+  });
+}
+
 export class FixtureRepository implements DiscoveryRepository {
   constructor(private now = new Date()) {}
   async discover(query: DiscoveryQuery) {
@@ -23,55 +43,42 @@ export class FixtureRepository implements DiscoveryRepository {
       : config.localities.fuengirola;
     const radius = query.radiusKm || 25;
     const time = query.time || "all";
-    return fixtureEvents(this.now)
-      .flatMap((event) => {
-        const venue = venues.find((v) => v.id === event.venueId)!;
-        const distance = distanceKm(
-          locality.latitude,
-          locality.longitude,
-          venue.latitude,
-          venue.longitude,
-        );
-        if (
-          distance > radius ||
-          (query.category && event.category !== query.category) ||
-          (query.price === "free" && event.priceCents > 0) ||
-          (query.price === "paid" && event.priceCents === 0) ||
-          (query.minPriceCents !== undefined &&
-            event.priceCents < query.minPriceCents) ||
-          (query.maxPriceCents !== undefined &&
-            event.priceCents > query.maxPriceCents) ||
-          (query.accessible && !venue.accessible)
+    const results = fixtureEvents(this.now).flatMap((event) => {
+      const venue = venues.find((v) => v.id === event.venueId)!;
+      const distance = distanceKm(
+        locality.latitude,
+        locality.longitude,
+        venue.latitude,
+        venue.longitude,
+      );
+      if (
+        distance > radius ||
+        (query.category && event.category !== query.category) ||
+        (query.price === "free" && event.priceCents > 0) ||
+        (query.price === "paid" && event.priceCents === 0) ||
+        (query.minPriceCents !== undefined &&
+          event.priceCents < query.minPriceCents) ||
+        (query.maxPriceCents !== undefined &&
+          event.priceCents > query.maxPriceCents) ||
+        (query.accessible && !venue.accessible)
+      )
+        return [];
+      return event.occurrences
+        .filter(
+          (o) =>
+            o.status === "scheduled" &&
+            occurrenceMatches(o.startsAt, o.endsAt, time, this.now) &&
+            (!query.dateFrom || new Date(o.endsAt) > query.dateFrom) &&
+            (!query.dateTo || new Date(o.startsAt) < query.dateTo),
         )
-          return [];
-        return event.occurrences
-          .filter(
-            (o) =>
-              o.status === "scheduled" &&
-              occurrenceMatches(o.startsAt, o.endsAt, time, this.now) &&
-              (!query.dateFrom || new Date(o.endsAt) > query.dateFrom) &&
-              (!query.dateTo || new Date(o.startsAt) < query.dateTo),
-          )
-          .map((occurrence) => ({
-            event,
-            occurrence,
-            venue,
-            distanceKm: distance,
-          }));
-      })
-      .sort((a, b) => {
-        const aActive =
-          new Date(a.occurrence.startsAt) <= this.now &&
-          new Date(a.occurrence.endsAt) > this.now;
-        const bActive =
-          new Date(b.occurrence.startsAt) <= this.now &&
-          new Date(b.occurrence.endsAt) > this.now;
-        return (
-          Number(bActive) - Number(aActive) ||
-          +new Date(a.occurrence.startsAt) - +new Date(b.occurrence.startsAt) ||
-          a.distanceKm - b.distanceKm
-        );
-      });
+        .map((occurrence) => ({
+          event,
+          occurrence,
+          venue,
+          distanceKm: distance,
+        }));
+    });
+    return rankDiscoveryResults(results, this.now);
   }
   async eventBySlug(slug: string) {
     return fixtureEvents(this.now).find((e) => e.slug === slug) || null;
@@ -160,7 +167,7 @@ function venueFromRow(row: DbRecord): Venue {
   };
 }
 
-function eventFromRow(row: DbRecord): Event | null {
+function eventFromRow(row: DbRecord, now = new Date()): Event | null {
   const category = one(row.categories);
   const occurrences = Array.isArray(row.event_occurrences)
     ? (row.event_occurrences as DbRecord[])
@@ -190,7 +197,14 @@ function eventFromRow(row: DbRecord): Event | null {
     priceCents: Number(row.price_cents || 0),
     currency: "EUR",
     source: row.source === "community" ? "community" : "verified_venue",
-    sponsored: Boolean(row.sponsored),
+    sponsored:
+      Boolean(row.sponsored) ||
+      (Array.isArray(row.feature_slots) &&
+        (row.feature_slots as DbRecord[]).some(
+          (slot) =>
+            new Date(String(slot.starts_at)) <= now &&
+            new Date(String(slot.ends_at)) > now,
+        )),
     bookingUrl: row.booking_url ? String(row.booking_url) : undefined,
     minimumAge:
       row.minimum_age === null || row.minimum_age === undefined
@@ -211,7 +225,7 @@ function eventFromRow(row: DbRecord): Event | null {
 const venueFields =
   "id,slug,name,description_es,description_en,address,location,verified,accessibility,contact_phone,whatsapp_phone,website_url,cities(slug)";
 const eventFields =
-  "id,venue_id,slug,title_es,title_en,description_es,description_en,price_cents,currency,source,sponsored,booking_url,minimum_age,accessibility_notes_es,accessibility_notes_en,categories(slug),event_occurrences(id,starts_at,ends_at,status,booking_url)";
+  "id,venue_id,slug,title_es,title_en,description_es,description_en,price_cents,currency,source,sponsored,booking_url,minimum_age,accessibility_notes_es,accessibility_notes_en,categories(slug),event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status,booking_url),feature_slots(starts_at,ends_at)";
 
 export class SupabaseDiscoveryRepository implements DiscoveryRepository {
   async discover(query: DiscoveryQuery) {
@@ -258,79 +272,73 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       }
     }
 
-    return rows
-      .flatMap((row) => {
-        const event = eventFromRow(row);
-        const venueRow = one(row.venues);
-        if (!event || !venueRow) return [];
-        const venue = venueFromRow(venueRow);
+    const results = rows.flatMap((row) => {
+      const event = eventFromRow(row);
+      const venueRow = one(row.venues);
+      if (!event || !venueRow) return [];
+      const venue = venueFromRow(venueRow);
 
-        if (Array.isArray(venueRow.venue_media)) {
-          const mappedMedia = venueRow.venue_media
-            .map((item: Record<string, unknown>) => {
-              const storagePath = String(item.storage_path);
-              const url = signedUrlMap.get(storagePath);
-              if (!url) return null;
-              return {
-                id: String(item.id),
-                url,
-                alt: {
-                  es: String(item.alt_es),
-                  ...(item.alt_en ? { en: String(item.alt_en) } : {}),
-                },
-              };
-            })
-            .filter(
-              (item: unknown): item is NonNullable<typeof item> =>
-                item !== null,
-            );
-          if (mappedMedia.length > 0)
-            venue.media = mappedMedia as typeof venue.media;
-        }
-
-        const distance = distanceKm(
-          locality.latitude,
-          locality.longitude,
-          venue.latitude,
-          venue.longitude,
-        );
-        if (
-          distance > radius ||
-          (query.category && event.category !== query.category) ||
-          (query.price === "free" && event.priceCents > 0) ||
-          (query.price === "paid" && event.priceCents === 0) ||
-          (query.minPriceCents !== undefined &&
-            event.priceCents < query.minPriceCents) ||
-          (query.maxPriceCents !== undefined &&
-            event.priceCents > query.maxPriceCents) ||
-          (query.accessible && !venue.accessible)
-        )
-          return [];
-        return event.occurrences
+      if (Array.isArray(venueRow.venue_media)) {
+        const mappedMedia = venueRow.venue_media
+          .map((item: Record<string, unknown>) => {
+            const storagePath = String(item.storage_path);
+            const url = signedUrlMap.get(storagePath);
+            if (!url) return null;
+            return {
+              id: String(item.id),
+              url,
+              alt: {
+                es: String(item.alt_es),
+                ...(item.alt_en ? { en: String(item.alt_en) } : {}),
+              },
+            };
+          })
           .filter(
-            (occurrence) =>
-              occurrence.status === "scheduled" &&
-              occurrenceMatches(
-                occurrence.startsAt,
-                occurrence.endsAt,
-                query.time || "all",
-                now,
-              ) &&
-              (!query.dateFrom ||
-                new Date(occurrence.endsAt) > query.dateFrom) &&
-              (!query.dateTo || new Date(occurrence.startsAt) < query.dateTo),
-          )
-          .map((occurrence) => ({
-            event,
-            occurrence,
-            venue,
-            distanceKm: distance,
-          }));
-      })
-      .sort(
-        (a, b) =>
-          +new Date(a.occurrence.startsAt) - +new Date(b.occurrence.startsAt),
+            (item: unknown): item is NonNullable<typeof item> => item !== null,
+          );
+        if (mappedMedia.length > 0)
+          venue.media = mappedMedia as typeof venue.media;
+      }
+
+      const distance = distanceKm(
+        locality.latitude,
+        locality.longitude,
+        venue.latitude,
+        venue.longitude,
       );
+      if (
+        distance > radius ||
+        (query.category && event.category !== query.category) ||
+        (query.price === "free" && event.priceCents > 0) ||
+        (query.price === "paid" && event.priceCents === 0) ||
+        (query.minPriceCents !== undefined &&
+          event.priceCents < query.minPriceCents) ||
+        (query.maxPriceCents !== undefined &&
+          event.priceCents > query.maxPriceCents) ||
+        (query.accessible && !venue.accessible)
+      )
+        return [];
+      return event.occurrences
+        .filter(
+          (occurrence) =>
+            occurrence.status === "scheduled" &&
+            occurrenceMatches(
+              occurrence.startsAt,
+              occurrence.endsAt,
+              query.time || "all",
+              now,
+            ) &&
+            (!query.dateFrom || new Date(occurrence.endsAt) > query.dateFrom) &&
+            (!query.dateTo || new Date(occurrence.startsAt) < query.dateTo),
+        )
+        .map((occurrence) => ({
+          event,
+          occurrence,
+          venue,
+          distanceKm: distance,
+        }));
+    });
+    return rankDiscoveryResults(results, now);
   }
 
   async eventBySlug(slug: string) {
@@ -464,7 +472,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       .eq("status", "published");
     if (error) throw new Error(`Public event query failed: ${error.message}`);
     return (data as unknown as DbRecord[])
-      .map(eventFromRow)
+      .map((row) => eventFromRow(row))
       .filter((event): event is Event => Boolean(event));
   }
 }
@@ -480,12 +488,9 @@ export class HybridDiscoveryRepository implements DiscoveryRepository {
       this.fallback.discover(query),
     ]);
     const liveSlugs = new Set(live.map((item) => item.event.slug));
-    return [
-      ...live,
-      ...fallback.filter((item) => !liveSlugs.has(item.event.slug)),
-    ].sort(
-      (a, b) =>
-        +new Date(a.occurrence.startsAt) - +new Date(b.occurrence.startsAt),
+    return rankDiscoveryResults(
+      [...live, ...fallback.filter((item) => !liveSlugs.has(item.event.slug))],
+      query.now || new Date(),
     );
   }
   async eventBySlug(slug: string) {
