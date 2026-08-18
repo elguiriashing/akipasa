@@ -32,6 +32,7 @@ export async function POST(request: Request) {
           requestKind: "scheduled",
           taskId: schedule.task_id,
           administratorAuthorized: true,
+          allowWebSearch: schedule.allow_web_search === true,
         });
         results.push({ scheduleId: schedule.schedule_id, ok: true });
       } catch (runError) {

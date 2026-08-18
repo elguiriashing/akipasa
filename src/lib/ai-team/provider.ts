@@ -102,13 +102,18 @@ class OpenAIResponsesAdapter implements AIProviderAdapter {
           model: request.model,
           instructions: request.instructions,
           input,
-          tools: request.tools.map((tool) => ({
-            type: "function",
-            name: tool.name,
-            description: tool.description,
-            parameters: tool.parameters,
-            strict: tool.strict !== false,
-          })),
+          tools: [
+            ...(request.enableWebSearch
+              ? [{ type: "web_search", search_context_size: "medium" }]
+              : []),
+            ...request.tools.map((tool) => ({
+              type: "function",
+              name: tool.name,
+              description: tool.description,
+              parameters: tool.parameters,
+              strict: tool.strict !== false,
+            })),
+          ],
           max_output_tokens: request.maxOutputTokens,
           parallel_tool_calls: false,
           reasoning: { effort: "low" },

@@ -205,6 +205,44 @@ describe("AI Team boundaries", () => {
     );
   });
 
+  it("adds governed OpenAI web search when the internal agent permission enables it", async () => {
+    process.env.OPENAI_API_KEY = "test-key";
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          id: "resp_web",
+          output: [
+            {
+              type: "message",
+              content: [{ type: "output_text", text: "Researched" }],
+            },
+          ],
+          usage: { input_tokens: 8, output_tokens: 2 },
+        }),
+        { status: 200, headers: { "content-type": "application/json" } },
+      ),
+    );
+
+    await createAIProvider("openai").run({
+      model: "gpt-5.6-luna",
+      instructions: "Research current facts.",
+      messages: [{ role: "user", content: "Find current evidence" }],
+      tools: [],
+      enableWebSearch: true,
+      maxOutputTokens: 100,
+      maxProviderRounds: 1,
+      safetyIdentifier: "test",
+      executeTool: async () => ({}),
+    });
+
+    const body = JSON.parse(
+      String((fetchMock.mock.calls[0][1] as RequestInit).body),
+    );
+    expect(body.tools).toEqual([
+      { type: "web_search", search_context_size: "medium" },
+    ]);
+  });
+
   it("uses a stable conservative token estimate", () => {
     expect(estimateTokens("12345678")).toBe(3);
     expect(estimateTokens("")).toBe(1);
@@ -252,6 +290,29 @@ describe("AI Team boundaries", () => {
       "utf8",
     );
     expect(sql).toContain("p_max_provider_rounds not between 1 and 16");
+  });
+
+  it("grants web research explicitly through the internal agent permission model", () => {
+    const sql = readFileSync(
+      join(process.cwd(), "database", "migrations", "0055_ai_web_research.sql"),
+      "utf8",
+    );
+    const gateway = readFileSync(
+      join(process.cwd(), "src", "lib", "ai-team", "gateway.ts"),
+      "utf8",
+    );
+    const chatRoute = readFileSync(
+      join(process.cwd(), "src", "app", "api", "ai-team", "chat", "route.ts"),
+      "utf8",
+    );
+    expect(sql).toContain('"web:search"');
+    expect(sql).toContain("agent_key in");
+    expect(sql).not.toContain("'support'");
+    expect(sql).toContain("allow_web_search boolean not null default false");
+    expect(gateway).toContain("input.allowWebSearch === true");
+    expect(chatRoute).toContain(
+      "allowWebSearch: z.boolean().optional().default(false)",
+    );
   });
 
   it("isolates customer Support chats from shared memory and CRM tools", () => {

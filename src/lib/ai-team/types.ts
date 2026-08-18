@@ -47,6 +47,7 @@ export type AIProviderRunRequest = {
   instructions: string;
   messages: AIConversationMessage[];
   tools: AIToolDefinition[];
+  enableWebSearch?: boolean;
   maxOutputTokens: number;
   maxProviderRounds: number;
   safetyIdentifier: string;

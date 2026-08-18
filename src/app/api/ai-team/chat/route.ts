@@ -6,6 +6,7 @@ import { requireSameOrigin } from "@/lib/ai-team/request-security";
 const chatSchema = z.object({
   agentKey: z.string().regex(/^[a-z][a-z0-9_]{1,31}$/),
   message: z.string().trim().min(1).max(8000),
+  allowWebSearch: z.boolean().optional().default(false),
   workspaceId: z
     .string()
     .regex(/^[a-zA-Z0-9_-]{2,80}$/)
@@ -35,6 +36,7 @@ export async function POST(request: Request) {
       requestKind: "chat",
       workspaceId: parsed.data.workspaceId,
       administratorAuthorized: true,
+      allowWebSearch: parsed.data.allowWebSearch,
     });
     return Response.json({ ok: true, ...result });
   } catch (error) {

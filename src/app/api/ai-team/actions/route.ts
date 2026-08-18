@@ -18,6 +18,7 @@ const actionSchema = z.discriminatedUnion("action", [
     description: z.string().trim().min(2).max(8000),
     assignedAgentId: z.string().uuid(),
     priority: z.number().int().min(1).max(5),
+    allowWebSearch: z.boolean().optional().default(false),
   }),
   z.object({
     action: z.literal("run_task"),
@@ -47,6 +48,7 @@ const actionSchema = z.discriminatedUnion("action", [
     name: z.string().trim().min(2).max(120),
     prompt: z.string().trim().min(5).max(8000),
     intervalMinutes: z.number().int().min(5).max(43200),
+    allowWebSearch: z.boolean().optional().default(false),
   }),
   z.object({
     action: z.literal("toggle_schedule"),
@@ -103,6 +105,7 @@ export async function POST(request: Request) {
           assigned_agent_id: action.assignedAgentId,
           created_by_profile_id: user.id,
           priority: action.priority,
+          allow_web_search: action.allowWebSearch,
         })
         .select("id,status")
         .single();
@@ -117,7 +120,7 @@ export async function POST(request: Request) {
         .update({ status: "in_progress", started_at: now, updated_at: now })
         .eq("id", action.taskId)
         .eq("status", "queued")
-        .select("id,title,description,assigned_agent_id")
+        .select("id,title,description,assigned_agent_id,allow_web_search")
         .maybeSingle();
       assertResult(error);
       if (!task) throw new Error("Task is no longer queued");
@@ -129,6 +132,7 @@ export async function POST(request: Request) {
         taskId: task.id,
         administratorAuthorized: true,
         message: task.description,
+        allowWebSearch: task.allow_web_search === true,
       });
       return Response.json({ ok: true, taskId: task.id, result });
     }
@@ -201,6 +205,7 @@ export async function POST(request: Request) {
             Date.now() + action.intervalMinutes * 60_000,
           ).toISOString(),
           created_by: user.id,
+          allow_web_search: action.allowWebSearch,
         })
         .select("id")
         .single();
