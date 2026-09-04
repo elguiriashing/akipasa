@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
-import { sortedSpainLocations } from "@/lib/locations";
+import { SupportAgentLauncher } from "@/components/support/SupportAgentLauncher";
+import { SpainAddressAutocomplete } from "@/components/SpainAddressAutocomplete";
 import { submitBusinessApplication } from "../actions";
 
 type BusinessApplication = {
@@ -68,10 +69,6 @@ export default async function BusinessApplicationPage({
         : es
           ? "No hemos podido enviar la solicitud. Inténtalo de nuevo o pide ayuda."
           : "We could not send the application. Try again or ask for help.";
-  const helpHref = `mailto:support@akipasa.com?subject=${encodeURIComponent(
-    es ? "Ayuda para añadir mi negocio" : "Help adding my business",
-  )}`;
-
   return (
     <main className="shell dashboard business-application-page">
       <section className="hero business-application-hero">
@@ -96,9 +93,14 @@ export default async function BusinessApplicationPage({
             >
               {es ? "Ver precio y ventajas" : "See price and benefits"}
             </Link>
-            <a className="button button-ghost" href={helpHref}>
-              {es ? "Necesito ayuda" : "I need help"}
-            </a>
+            <SupportAgentLauncher
+              locale={locale}
+              surface="business_application"
+              label={es ? "Necesito ayuda" : "I need help"}
+              className="button button-ghost"
+              signedIn
+              captureBusinessForm
+            />
           </div>
         </div>
         <aside className="business-application-checklist">
@@ -259,24 +261,7 @@ export default async function BusinessApplicationPage({
               maxLength={120}
               autoComplete="name"
             />
-            <label htmlFor="business-locality">
-              {es ? "Pueblo o ciudad" : "Town or city"}
-            </label>
-            <select
-              id="business-locality"
-              name="locality"
-              required
-              defaultValue=""
-            >
-              <option value="" disabled>
-                {es ? "Elige una localidad" : "Choose a town or city"}
-              </option>
-              {sortedSpainLocations.map(([key, place]) => (
-                <option key={key} value={place[locale]}>
-                  {place[locale]} · {place.province}
-                </option>
-              ))}
-            </select>
+            <SpainAddressAutocomplete locale={locale} mode="locality" />
             <label htmlFor="business-website">
               {es ? "Página web (opcional)" : "Website (optional)"}
             </label>
@@ -339,11 +324,18 @@ export default async function BusinessApplicationPage({
                 ? "No hace falta usar palabras técnicas. Cuéntanos lo que dirías a un cliente nuevo."
                 : "You do not need technical words. Tell us what you would say to a new customer."}
             </p>
-            <a className="button secondary" href={helpHref}>
-              {es
-                ? "Pedir ayuda para completarlo"
-                : "Ask for help completing it"}
-            </a>
+            <SupportAgentLauncher
+              locale={locale}
+              surface="business_application"
+              label={
+                es
+                  ? "Pedir ayuda para completarlo"
+                  : "Ask for help completing it"
+              }
+              className="button secondary"
+              signedIn
+              captureBusinessForm
+            />
           </aside>
         </section>
       )}

@@ -22,6 +22,11 @@ export async function updateVenue(formData: FormData) {
       descriptionEs: z.string().trim().min(20).max(2000),
       descriptionEn: z.string().trim().max(2000),
       address: z.string().trim().min(5).max(300),
+      addressSelection: z.enum(["selected", "unchanged"]),
+      locality: z.string().trim().max(120),
+      province: z.string().trim().max(120),
+      latitude: z.union([z.literal(""), z.coerce.number().min(27).max(44.5)]),
+      longitude: z.union([z.literal(""), z.coerce.number().min(-19).max(5)]),
       accessible: z.string().optional(),
       contactPhone: z.union([
         z.literal(""),
@@ -38,13 +43,34 @@ export async function updateVenue(formData: FormData) {
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=venue"));
   const { supabase } = await requireBusinessAccess(locale);
+  if (parsed.data.addressSelection === "selected") {
+    if (
+      !parsed.data.locality ||
+      !parsed.data.province ||
+      parsed.data.latitude === "" ||
+      parsed.data.longitude === ""
+    ) {
+      redirect(destination(locale, venueId, "error=venue"));
+    }
+    const { error: locationError } = await supabase.rpc(
+      "update_venue_location_in_spain",
+      {
+        p_venue: parsed.data.venueId,
+        p_locality_name: parsed.data.locality,
+        p_province_name: parsed.data.province,
+        p_address: parsed.data.address,
+        p_latitude: parsed.data.latitude,
+        p_longitude: parsed.data.longitude,
+      },
+    );
+    if (locationError) redirect(destination(locale, venueId, "error=venue"));
+  }
   const { error } = await supabase
     .from("venues")
     .update({
       name: parsed.data.name,
       description_es: parsed.data.descriptionEs,
       description_en: parsed.data.descriptionEn || null,
-      address: parsed.data.address,
       accessibility: { step_free: parsed.data.accessible === "on" },
       contact_phone: parsed.data.contactPhone || null,
       whatsapp_phone: parsed.data.whatsappPhone || null,

@@ -4,6 +4,12 @@ export const featureFlagKeys = [
   "community_submissions",
   "loyalty_check_ins",
   "promotion_requests",
+  "personalised_feed",
+  "recommendation_reasons",
+  "sponsored_recommendations",
+  "experimental_ranking",
+  "social_recommendations",
+  "partner_api",
 ] as const;
 
 export type FeatureFlagKey = (typeof featureFlagKeys)[number];
@@ -13,6 +19,12 @@ export const defaultFeatureFlags: FeatureFlags = {
   community_submissions: true,
   loyalty_check_ins: true,
   promotion_requests: true,
+  personalised_feed: true,
+  recommendation_reasons: true,
+  sponsored_recommendations: true,
+  experimental_ranking: false,
+  social_recommendations: false,
+  partner_api: false,
 };
 
 export function resolveFeatureFlags(

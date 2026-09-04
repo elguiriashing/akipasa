@@ -32,6 +32,7 @@ export default async function AdminOverview({
     { count: venues },
     { count: pendingPrivacy },
     { count: promotions },
+    { count: businessApplications },
     { data: recent },
   ] = await Promise.all([
     supabase.from("profiles").select("*", { count: "exact", head: true }),
@@ -44,6 +45,10 @@ export default async function AdminOverview({
       .from("promotion_requests")
       .select("*", { count: "exact", head: true })
       .in("state", ["new", "contacted", "qualified"]),
+    supabase
+      .from("business_applications")
+      .select("*", { count: "exact", head: true })
+      .in("state", ["submitted", "under_review", "awaiting_payment"]),
     supabase
       .from("moderation_actions")
       .select("id,action,target_type,reason,created_at")
@@ -85,6 +90,36 @@ export default async function AdminOverview({
         />
       </section>
       <section className="dashboard-grid">
+        <article className="panel console-card admin-attention-card">
+          <span className="status-pill">{promotions || 0}</span>
+          <h2>{es ? "Solicitudes comerciales" : "Commercial requests"}</h2>
+          <p>
+            {es
+              ? "Revisa promociones, servicios destacados y seguimientos comerciales pendientes."
+              : "Review promotions, featured services, and pending commercial follow-ups."}
+          </p>
+          <Link
+            className="button button-strong"
+            href={`/${locale}/admin/promotions`}
+          >
+            {es ? "Abrir solicitudes comerciales" : "Open commercial requests"}
+          </Link>
+        </article>
+        <article className="panel console-card admin-attention-card">
+          <span className="status-pill">{businessApplications || 0}</span>
+          <h2>{es ? "Solicitudes de negocio" : "Business applications"}</h2>
+          <p>
+            {es
+              ? "Revisa solicitudes, solicita el pago o concede una prueba de 1 o 3 meses."
+              : "Review applications, request payment, or grant a 1- or 3-month trial."}
+          </p>
+          <Link
+            className="button button-strong"
+            href={`/${locale}/admin/business-applications`}
+          >
+            {es ? "Abrir solicitudes de negocio" : "Open business applications"}
+          </Link>
+        </article>
         <article className="panel console-card">
           <span className="status-pill">{pendingPrivacy || 0}</span>
           <h2>{es ? "Prioridad de privacidad" : "Privacy priority"}</h2>

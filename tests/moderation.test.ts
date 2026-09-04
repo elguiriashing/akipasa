@@ -7,11 +7,23 @@ import {
 } from "../src/lib/moderation";
 
 describe("community and moderation validation", () => {
+  const selectedLocation = {
+    addressSelection: "selected",
+    locality: "Fuengirola",
+    province: "Málaga",
+    postalCode: "29640",
+    latitude: 36.53927,
+    longitude: -4.62261,
+    addressProviderId: "01.29.MUN_290540016257",
+    categoryId: "20000000-0000-4000-8000-000000000002",
+  } as const;
+
   it("accepts a valid community suggestion", () => {
     const result = communitySubmissionSchema.safeParse({
       locale: "es",
       venueName: "Centro Cultural",
       venueAddress: "Calle del Mercado 12, Fuengirola",
+      ...selectedLocation,
       title: "Taller de verano",
       description: "Una actividad con información suficiente para revisión.",
       startsAt: "2026-08-01T18:00",
@@ -26,6 +38,7 @@ describe("community and moderation validation", () => {
       locale: "en",
       venueName: "Example Hall",
       venueAddress: "12 Example Street",
+      ...selectedLocation,
       title: "Example event",
       description: "An event description with enough detail for review.",
       startsAt: "2026-08-01T20:00",
@@ -41,6 +54,7 @@ describe("community and moderation validation", () => {
         locale: "es",
         venueName: "Sala",
         venueAddress: "Calle 123",
+        ...selectedLocation,
         title: "Evento",
         description: "Descripción suficientemente larga para revisar.",
         startsAt: "2026-08-01T18:00",
@@ -57,6 +71,22 @@ describe("community and moderation validation", () => {
         details: "Detalles suficientes",
       }).success,
     ).toBe(false);
+  });
+
+  it("rejects a typed address that was not selected from map data", () => {
+    const result = communitySubmissionSchema.safeParse({
+      locale: "es",
+      venueName: "Sala",
+      venueAddress: "Calle Capitan 8",
+      ...selectedLocation,
+      addressSelection: "",
+      title: "Evento comunitario",
+      description: "Descripcion suficientemente larga para moderacion.",
+      startsAt: "2026-08-01T18:00",
+      endsAt: "2026-08-01T20:00",
+      sourceUrl: "",
+    });
+    expect(result.success).toBe(false);
   });
 
   it("requires auditable moderator reasons", () => {

@@ -3,11 +3,12 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { isLocale } from "@/lib/config";
 import { msg } from "@/lib/messages";
-import { repository } from "@/lib/repository";
+import { recommendDiscovery } from "@/lib/personalisation/server";
 import type { TimeWindow } from "@/lib/domain";
 import { EventCard } from "@/components/EventCard";
 import { isSpainLocation, sortedSpainLocations } from "@/lib/locations";
 import { UseMyLocation } from "@/components/UseMyLocation";
+import { DiscoveryIntentSignal } from "@/components/DiscoveryIntentSignal";
 
 export const dynamic = "force-dynamic";
 
@@ -121,18 +122,22 @@ export default async function DiscoverPage({
     { value: "all", label: m.all },
   ];
 
-  const results = await repository.discover({
-    locality,
-    radiusKm: radius,
-    time,
-    category,
-    price,
-    minPriceCents,
-    maxPriceCents,
-    dateFrom,
-    dateTo,
-    accessible,
+  const recommendations = await recommendDiscovery({
+    query: {
+      locality,
+      radiusKm: radius,
+      time,
+      category,
+      price,
+      minPriceCents,
+      maxPriceCents,
+      dateFrom,
+      dateTo,
+      accessible,
+    },
+    surface: "discover",
   });
+  const results = recommendations.items.map((item) => item.result);
 
   const resultText =
     results.length === 1
@@ -145,6 +150,17 @@ export default async function DiscoverPage({
 
   return (
     <main className="shell">
+      <DiscoveryIntentSignal
+        active={Object.keys(query).length > 0}
+        metadata={{
+          locality,
+          radius_km: radius,
+          time,
+          category: category || "any",
+          price: price || "any",
+          accessible,
+        }}
+      />
       <section className="hero">
         <div className="hero-inner">
           <div className="hero-copy">
@@ -388,11 +404,14 @@ export default async function DiscoverPage({
 
       {results.length ? (
         <div className="grid">
-          {results.map((result) => (
+          {recommendations.items.map((item, position) => (
             <EventCard
-              key={result.occurrence.id}
-              result={result}
+              key={item.result.occurrence.id}
+              result={item.result}
               locale={locale}
+              position={position}
+              recommendationRequestId={recommendations.requestId}
+              reasonCodes={item.reasonCodes}
             />
           ))}
         </div>

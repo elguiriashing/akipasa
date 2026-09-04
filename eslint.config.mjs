@@ -11,9 +11,8 @@ export default defineConfig([
   globalIgnores([
     ".next/**",
     ".open-next/**",
-    ".wrangler/**",
+    "**/.wrangler/**",
     ".wrangler-config/**",
-    "automation/.wrangler/**",
     "automation/worker-configuration.d.ts",
     "next-env.d.ts",
     "coverage/**",
