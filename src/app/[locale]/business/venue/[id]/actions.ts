@@ -443,14 +443,15 @@ export async function deleteEvent(formData: FormData) {
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
-  if (!parsed.success) redirect(destination(locale, venueId, "error=delete"));
+  if (!parsed.success)
+    redirect(destination(locale, venueId, "error=event-delete"));
   const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase.rpc("delete_owned_event", {
     p_event: parsed.data.eventId,
     p_confirmation: parsed.data.confirmation,
     p_reason: parsed.data.reason,
   });
-  if (error) redirect(destination(locale, venueId, "error=delete"));
+  if (error) redirect(destination(locale, venueId, "error=event-delete"));
   redirect(destination(locale, venueId, "updated=event-deleted"));
 }
 
@@ -458,14 +459,15 @@ export async function deleteVenue(formData: FormData) {
   const parsed = deletionSchema.safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
-  if (!parsed.success) redirect(destination(locale, venueId, "error=delete"));
+  if (!parsed.success)
+    redirect(destination(locale, venueId, "error=venue-delete"));
   const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase.rpc("delete_owned_venue", {
     p_venue: parsed.data.venueId,
     p_confirmation: parsed.data.confirmation,
     p_reason: parsed.data.reason,
   });
-  if (error) redirect(destination(locale, venueId, "error=delete"));
+  if (error) redirect(destination(locale, venueId, "error=venue-delete"));
   redirect(`/${locale}/business?updated=venue-deleted`);
 }
 

@@ -3,6 +3,16 @@
 This is an engineering milestone log, not a semantic-version release log.
 Entries are newest first and must not contain credentials or personal data.
 
+## 2026-09-14 - Compact venue management dashboard
+
+- Replace the long venue management page with an overview and focused Profile,
+  Events, Rewards, Check-in, Bookings, and Team sections in English and Spanish.
+- Use compact forms, shared icons, responsive tool cards, inline checkboxes,
+  smaller QR previews, and expandable event controls and venue access settings.
+- Retain every existing server form and permission check. Keep unsaved input
+  when switching tabs, support keyboard navigation and browser history, and
+  reopen the relevant section after saves, errors, and existing event links.
+
 ## 2026-09-14 - Business workspace action styling
 
 - Give Open AkiHQ and Manage venue consistent pill buttons with shared icons,
