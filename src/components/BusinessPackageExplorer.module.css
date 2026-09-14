@@ -1,0 +1,248 @@
+.explorer {
+  min-width: 0;
+  padding-block: clamp(1.5rem, 4vw, 2.75rem);
+  border-bottom: 1px solid var(--line);
+}
+
+.heading {
+  display: grid;
+  gap: 1.25rem;
+}
+.heading h2 {
+  margin: 0.5rem 0 0;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+.selector {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+}
+.selector label,
+.caption,
+.empty,
+.action small {
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.selector select {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0.75rem 2.2rem 0.75rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  color: var(--ink);
+  background-color: color-mix(in srgb, var(--surface-alt) 55%, transparent);
+  font-size: 1rem;
+}
+.selector select:focus-visible,
+.planSwitch button:focus-visible,
+.disclosure summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+.empty {
+  margin: 1rem 0 0;
+}
+.preview {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.planSwitch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.3rem;
+  padding: 0.3rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+}
+.planSwitch button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0.65rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 0.65rem;
+  color: var(--muted);
+  background: transparent;
+  box-shadow: none;
+  font-size: 0.9rem;
+  text-transform: none;
+  letter-spacing: normal;
+  cursor: pointer;
+}
+.planSwitch button[aria-pressed="true"] {
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--line));
+  background: var(--primary-soft);
+}
+.planSwitch button:hover {
+  color: var(--ink);
+  transform: none;
+}
+.planSwitch button span {
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+.caption {
+  margin: 0 0 0.75rem;
+}
+.toolHighlights {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.toolHighlights li {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+  color: var(--ink);
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+.toolHighlights svg {
+  flex: 0 0 1.15rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  color: var(--primary);
+}
+.disclosure {
+  min-width: 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.disclosure summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 44px;
+  padding: 0.65rem 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  list-style: none;
+  cursor: pointer;
+}
+.disclosure summary::-webkit-details-marker {
+  display: none;
+}
+.disclosure summary::after {
+  content: none;
+}
+.disclosure summary > svg {
+  flex: 0 0 1rem;
+  width: 1rem;
+  height: 1rem;
+  transform: rotate(90deg);
+}
+.disclosure[open] summary > svg {
+  transform: rotate(-90deg);
+}
+.allTools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0.25rem 0 0.75rem;
+  list-style: none;
+}
+.allTools li {
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+.action {
+  display: grid;
+  align-content: start;
+  gap: 0.6rem;
+}
+.action > a {
+  width: 100%;
+  min-height: 48px;
+  gap: 0.6rem;
+  border-radius: 999px;
+}
+.action svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+.action small {
+  text-align: center;
+  font-size: 0.75rem;
+}
+.extras summary > span {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.65rem;
+}
+.extras summary small {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 400;
+}
+.extras dl {
+  margin: 0;
+  padding-bottom: 0.5rem;
+  font-size: 0.85rem;
+}
+.extras dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.55rem;
+}
+.extras dd {
+  flex-shrink: 0;
+  margin: 0;
+  color: var(--muted);
+}
+@media (min-width: 800px) {
+  .heading {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.75fr);
+    align-items: end;
+    gap: 3rem;
+  }
+  .preview {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.75fr);
+    column-gap: 3rem;
+    align-items: start;
+  }
+  .planSwitch {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .highlights {
+    grid-column: 1;
+    grid-row: 1 / 3;
+  }
+  .action {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .disclosure {
+    grid-column: 1;
+  }
+  .extras {
+    grid-column: 2;
+  }
+}

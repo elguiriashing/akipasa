@@ -2,118 +2,193 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Icon, type IconName } from "@/components/Icons";
 import {
   businessCategories,
   businessExtras,
   businessPackageTools,
+  getBusinessPackageHighlights,
+  type BusinessPlan,
+  type BusinessTool,
 } from "@/lib/business-packages";
+import styles from "./BusinessPackageExplorer.module.css";
 
-const labels: Record<string, string> = {
-  crm: "CRM",
-  "crm-social": "CRM (Social Media)",
-  employees: "People",
-  dashboard: "Dashboard",
-  tasks: "Tasks",
-  calendar: "Calendar",
-  sales: "Invoices",
-  knowledge: "Knowledge",
-  inventory: "Inventory",
-  inbox: "Inbox",
-  pos: "POS",
-  collaboration: "Team Chat",
-};
+const tools: Record<BusinessTool, { en: string; es: string; icon: IconName }> =
+  {
+    crm: {
+      en: "Customer management",
+      es: "Gestión de clientes",
+      icon: "community",
+    },
+    "crm-social": {
+      en: "Social media",
+      es: "Redes sociales",
+      icon: "megaphone",
+    },
+    employees: { en: "People", es: "Equipo", icon: "users" },
+    dashboard: { en: "Dashboard", es: "Panel de control", icon: "activity" },
+    tasks: { en: "Tasks", es: "Tareas", icon: "audit" },
+    calendar: { en: "Calendar", es: "Calendario", icon: "calendar" },
+    sales: { en: "Invoices", es: "Facturas", icon: "business" },
+    knowledge: {
+      en: "Knowledge base",
+      es: "Base de conocimiento",
+      icon: "saved",
+    },
+    inventory: { en: "Inventory", es: "Inventario", icon: "venue" },
+    inbox: { en: "Inbox", es: "Bandeja de entrada", icon: "inbox" },
+    pos: { en: "Point of sale", es: "Punto de venta", icon: "business" },
+    collaboration: { en: "Team chat", es: "Chat de equipo", icon: "community" },
+  };
 
 export function BusinessPackageExplorer({ locale }: { locale: "es" | "en" }) {
   const es = locale === "es";
-  const [category, setCategory] = useState<(typeof businessCategories)[number]>(
-    businessCategories[0],
-  );
+  const [categoryKey, setCategoryKey] = useState("");
+  const [plan, setPlan] = useState<BusinessPlan>("business");
+  const category = businessCategories.find((item) => item.key === categoryKey);
+  const included = businessPackageTools[plan];
+  const planName = plan === "business" ? (es ? "Básico" : "Basic") : "Pro";
+
   return (
     <section
-      className="panel business-package-explorer"
+      className={styles.explorer}
       aria-labelledby="business-package-heading"
     >
-      <div className="membership-plan-heading">
-        <span className="status-pill">
-          {es ? "Paquetes por negocio" : "Packages by business"}
-        </span>
-        <h2 id="business-package-heading">
-          {es ? "Selecciona tu tipo de negocio" : "Select your business type"}
-        </h2>
-        <select
-          value={category.key}
-          onChange={(event) =>
-            setCategory(
-              businessCategories.find(
-                (item) => item.key === event.target.value,
-              ) || businessCategories[0],
-            )
-          }
-        >
-          {businessCategories.map((item) => (
-            <option key={item.key} value={item.key}>
-              {es ? item.es : item.en}
-            </option>
-          ))}
-        </select>
-        <p>
-          {es
-            ? "Herramientas recomendadas para este tipo:"
-            : "Recommended focus for this type:"}{" "}
-          {category.focus.join(", ")}.
-        </p>
-      </div>
-      <div className="business-package-comparison">
-        {(["business", "business_pro"] as const).map((plan) => (
-          <article key={plan} className="business-package-column">
-            <h3>{plan === "business" ? "Business Basico" : "Business Pro"}</h3>
-            <ul>
-              {businessPackageTools[plan].map((tool) => (
-                <li key={tool}>{labels[tool]}</li>
-              ))}
-            </ul>
-            {plan === "business" && (
-              <small>
-                {es
-                  ? "CRM sin Social, Equipo IA ni publicar empresas en el mapa."
-                  : "CRM excludes Social, AI Team, and pushing companies to the map."}
-              </small>
-            )}
-            {plan === "business_pro" && (
-              <small>
-                {es
-                  ? "Incluye CRM Social. Las herramientas internas de AkiHQ nunca se incluyen."
-                  : "Includes CRM Social. Internal AkiHQ tools are never included."}
-              </small>
-            )}
-            <Link
-              className="button button-strong"
-              href={`/${locale}/business/apply?category=${category.key}&plan=${plan}`}
-            >
+      <header className={styles.heading}>
+        <div>
+          <span className="eyebrow">
+            {es ? "Para tu negocio" : "For your business"}
+          </span>
+          <h2 id="business-package-heading">
+            {es ? "Tus herramientas, de un vistazo" : "Your tools at a glance"}
+          </h2>
+        </div>
+        <div className={styles.selector}>
+          <label htmlFor="business-package-category">
+            {es ? "Tipo de negocio" : "Business type"}
+          </label>
+          <select
+            id="business-package-category"
+            value={categoryKey}
+            onChange={(event) => setCategoryKey(event.target.value)}
+            aria-controls="business-package-preview"
+          >
+            <option value="" disabled>
               {es
-                ? `Elegir ${plan === "business" ? "Basico" : "Pro"}`
-                : `Choose ${plan === "business" ? "Basico" : "Pro"}`}
-            </Link>
-          </article>
-        ))}
-      </div>
-      <div className="business-package-extras">
-        <h3>
-          {es
-            ? "Complementos para cualquier paquete"
-            : "Extras for either package"}
-        </h3>
-        {businessExtras.map((extra) => (
-          <div key={extra.key}>
-            <strong>{es ? extra.es : extra.en}</strong>
-            <span>{extra.price}</span>
+                ? "Selecciona tu tipo de negocio"
+                : "Select your business type"}
+            </option>
+            {businessCategories.map((item) => (
+              <option key={item.key} value={item.key}>
+                {item[locale]}
+              </option>
+            ))}
+          </select>
+        </div>
+      </header>
+
+      <div id="business-package-preview">
+        {category ? (
+          <div className={styles.preview}>
+            <div
+              className={styles.planSwitch}
+              role="group"
+              aria-label={es ? "Plan de negocio" : "Business plan"}
+            >
+              {(["business", "business_pro"] as const).map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  aria-pressed={plan === value}
+                  onClick={() => setPlan(value)}
+                >
+                  <strong>
+                    {value === "business" ? (es ? "Básico" : "Basic") : "Pro"}
+                  </strong>
+                  <span>
+                    {value === "business" ? "€20" : "€60"}
+                    {es ? "/mes" : "/month"}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            <div
+              className={styles.highlights}
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <p className={styles.caption}>
+                {es
+                  ? `Incluido en ${planName} · ${category.es}`
+                  : `Included in ${planName} · ${category.en}`}
+              </p>
+              <ul className={styles.toolHighlights}>
+                {getBusinessPackageHighlights(category, plan).map((tool) => (
+                  <li key={tool}>
+                    <Icon name={tools[tool].icon} />
+                    <span>{tools[tool][locale]}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <details className={styles.disclosure} key={plan}>
+              <summary>
+                <span>
+                  {es
+                    ? `Ver las ${included.length} herramientas incluidas`
+                    : `See all ${included.length} included tools`}
+                </span>
+                <Icon name="chevron" />
+              </summary>
+              <ul className={styles.allTools}>
+                {included.map((tool) => (
+                  <li key={tool}>{tools[tool][locale]}</li>
+                ))}
+              </ul>
+            </details>
+
+            <div className={styles.action}>
+              <Link
+                className="button button-strong"
+                href={`/${locale}/business/apply?category=${category.key}&plan=${plan}`}
+              >
+                {es ? `Continuar con ${planName}` : `Continue with ${planName}`}
+                <Icon name="arrow-right" />
+              </Link>
+              <small>
+                {es
+                  ? "Sin pago hoy. Primero revisamos tu negocio."
+                  : "No payment today. We review your business first."}
+              </small>
+            </div>
+
+            <details className={`${styles.disclosure} ${styles.extras}`}>
+              <summary>
+                <span>
+                  {es ? "Complementos opcionales" : "Optional extras"}
+                  <small>{es ? "Próximamente" : "Coming soon"}</small>
+                </span>
+                <Icon name="chevron" />
+              </summary>
+              <dl>
+                {businessExtras.map((extra) => (
+                  <div key={extra.key}>
+                    <dt>{extra[locale]}</dt>
+                    <dd>{es ? extra.priceEs : extra.price}</dd>
+                  </div>
+                ))}
+              </dl>
+            </details>
           </div>
-        ))}
-        <small>
-          {es
-            ? "Los complementos se activarán en facturación cuando sus precios de Stripe estén configurados."
-            : "Extras will become purchasable after their Stripe prices and webhook handling are configured."}
-        </small>
+        ) : (
+          <p className={styles.empty}>
+            {es
+              ? "Elige tu actividad para ver las herramientas incluidas en cada plan."
+              : "Choose your activity to explore the tools included in each plan."}
+          </p>
+        )}
       </div>
     </section>
   );

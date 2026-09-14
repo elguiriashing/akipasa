@@ -24,44 +24,57 @@ export const businessPackageTools = {
   ],
 } as const;
 
+export type BusinessPlan = keyof typeof businessPackageTools;
+export type BusinessTool = (typeof businessPackageTools)[BusinessPlan][number];
+
 export const businessCategories = [
   {
     key: "food",
     en: "Food & hospitality",
     es: "Gastronomía y hostelería",
-    focus: ["POS", "Inventory", "Invoices"],
+    focus: ["pos", "inventory", "sales"],
   },
   {
     key: "music",
     en: "Music & nightlife",
     es: "Música y ocio nocturno",
-    focus: ["Calendar", "People", "Team Chat"],
+    focus: ["calendar", "employees", "collaboration"],
   },
   {
     key: "social",
     en: "Social venue",
     es: "Local social",
-    focus: ["CRM", "Inbox", "Calendar"],
+    focus: ["crm", "inbox", "calendar"],
   },
   {
     key: "workshop",
     en: "Classes & workshops",
     es: "Clases y talleres",
-    focus: ["People", "Tasks", "Knowledge"],
+    focus: ["employees", "tasks", "knowledge"],
   },
   {
     key: "family",
     en: "Family activities",
     es: "Actividades familiares",
-    focus: ["Calendar", "Knowledge", "Inbox"],
+    focus: ["calendar", "knowledge", "inbox"],
   },
   {
     key: "sport",
     en: "Sport & fitness",
     es: "Deporte y fitness",
-    focus: ["People", "Calendar", "Invoices"],
+    focus: ["employees", "calendar", "sales"],
   },
 ] as const;
+
+export function getBusinessPackageHighlights(
+  category: (typeof businessCategories)[number],
+  plan: BusinessPlan,
+): BusinessTool[] {
+  const included: readonly BusinessTool[] = businessPackageTools[plan];
+  return [...new Set<BusinessTool>([...category.focus, ...included])]
+    .filter((tool) => included.includes(tool))
+    .slice(0, 3);
+}
 
 export const businessExtras = [
   {
@@ -69,18 +82,21 @@ export const businessExtras = [
     en: "Extra dashboard seat",
     es: "Usuario adicional",
     price: "€0.99/month",
+    priceEs: "0,99 €/mes",
   },
   {
     key: "integrations",
     en: "Integrations",
     es: "Integraciones",
     price: "€3.99/month",
+    priceEs: "3,99 €/mes",
   },
   {
     key: "profile_boost",
     en: "Profile boost credit",
     es: "Crédito de impulso de perfil",
     price: "€15 each",
+    priceEs: "15 € / unidad",
   },
 ] as const;
 

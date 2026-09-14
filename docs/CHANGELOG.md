@@ -3,6 +3,21 @@
 This is an engineering milestone log, not a semantic-version release log.
 Entries are newest first and must not contain credentials or personal data.
 
+## 2026-09-14 - Compact business membership tools
+
+- Replace the repeated Basic/Pro tool columns with a venue selector, a compact
+  plan switch, three relevant included tools, and one application link.
+- Keep the complete tool list and upcoming extras in collapsed disclosures.
+  Localize tool names and extra prices in English and Spanish, and remove
+  internal implementation notes from the purchasing flow.
+- Use scoped styles, existing theme colours, visible input borders, and
+  comfortable touch targets; preserve plan entitlements, prices, and the
+  selected venue/plan in the application URL.
+- Add regression coverage for plan inclusion, every venue category, both
+  languages, mobile/desktop layout, and light/dark themes.
+- Declare the existing AkiHQ service binding for clean checkout builds, which
+  previously relied on an ignored, locally generated type file.
+
 ## 2026-08-13 - Personalisation and recommendation foundation
 
 - Add versioned, batched behavioural ingestion with idempotency, RLS, privacy validation, consent and reset controls.
