@@ -1,7 +1,9 @@
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
-import { verifyStripeSignature } from "@/lib/stripe";
+import { stripeBillingPlanForPrice, verifyStripeSignature } from "@/lib/stripe";
+import { readBoundedText, RequestSecurityError } from "@/lib/request-security";
 
 export const runtime = "nodejs";
+const MAX_STRIPE_WEBHOOK_BYTES = 256_000;
 
 type StripeEvent = {
   id: string;
@@ -63,8 +65,18 @@ async function processEvent(event: StripeEvent) {
 
   const metadata = (object.metadata || {}) as Record<string, unknown>;
   const profileId = stringValue(metadata.profile_id);
-  const planCode = stringValue(metadata.plan_code);
-  const billingInterval = stringValue(metadata.billing_interval);
+  const subscriptionItems = object.items as
+    | {
+        data?: Array<{
+          price?: { id?: unknown };
+        }>;
+      }
+    | undefined;
+  const priceId = stringValue(subscriptionItems?.data?.[0]?.price?.id);
+  const pricePlan = stripeBillingPlanForPrice(priceId);
+  const planCode = pricePlan?.plan || stringValue(metadata.plan_code);
+  const billingInterval =
+    pricePlan?.interval || stringValue(metadata.billing_interval);
   const subscriptionId = stringValue(object.id);
   const customerId = stringValue(object.customer);
   const objectStatus = stringValue(object.status);
@@ -75,7 +87,7 @@ async function processEvent(event: StripeEvent) {
     !profileId ||
     !subscriptionId ||
     !customerId ||
-    !["premium", "business"].includes(planCode || "") ||
+    !["premium", "business", "business_pro"].includes(planCode || "") ||
     !["month", "year"].includes(billingInterval || "") ||
     !status ||
     !subscriptionStatuses.has(status) ||
@@ -110,7 +122,17 @@ async function processEvent(event: StripeEvent) {
 }
 
 export async function POST(request: Request) {
-  const payload = await request.text();
+  let payload: string;
+  try {
+    payload = await readBoundedText(request, MAX_STRIPE_WEBHOOK_BYTES);
+  } catch (error) {
+    if (error instanceof RequestSecurityError)
+      return new Response(
+        error.status === 413 ? "Payload too large" : "Invalid payload",
+        { status: error.status },
+      );
+    return new Response("Invalid payload", { status: 400 });
+  }
   const header = request.headers.get("stripe-signature") || "";
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!secret || !(await verifyStripeSignature(payload, header, secret)))

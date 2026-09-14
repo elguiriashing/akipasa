@@ -3,7 +3,6 @@ import Link from "next/link";
 import { canModerate, isAdministrator } from "../lib/roles";
 import { config } from "../lib/config";
 import { Icon } from "./Icons";
-import { WorkspacePageHeader } from "./WorkspaceShell";
 
 const personalDestinations = [
   ["/following", "Followed venues", "Locales seguidos", "venue"],
@@ -25,15 +24,10 @@ export function AccountWorkspacePortals({
   return (
     <>
       <section className="workspace-portal-section account-more-section">
-        <WorkspacePageHeader
-          eyebrow={es ? "Más" : "More"}
-          title={es ? "Cuando lo necesites" : "When you need it"}
-          description={
-            es
-              ? "Las tareas menos frecuentes, fuera de tu camino diario."
-              : "Less frequent account tasks, kept out of your everyday path."
-          }
-        />
+        <header className="account-utility-heading">
+          <span>{es ? "Tu cuenta" : "Your account"}</span>
+          <h2>{es ? "Más opciones" : "More options"}</h2>
+        </header>
         <div className="workspace-portal-grid account-more-grid">
           {personalDestinations.map(([path, enLabel, esLabel, icon]) => (
             <Link
@@ -51,15 +45,10 @@ export function AccountWorkspacePortals({
 
       {hasOperationsAccess && (
         <section className="workspace-portal-section account-operations-link">
-          <WorkspacePageHeader
-            eyebrow={es ? "Equipo" : "Team"}
-            title={es ? "Operaciones AkiHQ" : "AkiHQ operations"}
-            description={
-              es
-                ? "CRM, ventas, facturación y tareas para el equipo operativo."
-                : "CRM, sales, billing, and tasks for the operations team."
-            }
-          />
+          <header className="account-utility-heading">
+            <span>{es ? "Equipo" : "Team"}</span>
+            <h2>{es ? "Operaciones AkiHQ" : "AkiHQ operations"}</h2>
+          </header>
           <a
             className="workspace-portal-link account-more-link"
             href={config.crmUrl}

@@ -30,3 +30,22 @@ export async function requireBusinessAccess(
 
   return context;
 }
+
+export async function requireBusinessProAccess(
+  locale: Locale,
+  next = `/${locale}/business`,
+) {
+  const context = await requireBusinessAccess(locale, next);
+  const { data: active, error } = await context.supabase.rpc(
+    "has_active_entitlement",
+    {
+      p_profile: context.user.id,
+      p_plan: "business_pro",
+    },
+  );
+  if (error || !active)
+    redirect(
+      `/${locale}/account/subscription?plan=business_pro&error=business_pro_required`,
+    );
+  return context;
+}

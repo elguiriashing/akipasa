@@ -6,6 +6,7 @@ import { z } from "zod";
 import { requireBusinessAccess } from "@/lib/entitlements";
 import { safeExternalUrlSchema } from "@/lib/auth-security";
 import { madridLocalDateTimeSchema } from "@/lib/time";
+import { reviewPendingCatalogueItem } from "@/lib/automatic-moderation";
 
 const context = z.object({
   locale: z.enum(["es", "en"]),
@@ -42,7 +43,7 @@ export async function updateVenue(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=venue"));
-  const { supabase } = await requireBusinessAccess(locale);
+  const { supabase, user } = await requireBusinessAccess(locale);
   if (parsed.data.addressSelection === "selected") {
     if (
       !parsed.data.locality ||
@@ -79,6 +80,11 @@ export async function updateVenue(formData: FormData) {
     })
     .eq("id", parsed.data.venueId);
   if (error) redirect(destination(locale, venueId, "error=venue"));
+  await reviewPendingCatalogueItem({
+    targetType: "venue",
+    targetId: parsed.data.venueId,
+    requesterId: user.id,
+  });
   revalidatePath(destination(locale, venueId, ""));
   redirect(destination(locale, venueId, "updated=venue"));
 }
@@ -104,7 +110,7 @@ export async function updateEvent(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=event"));
-  const { supabase } = await requireBusinessAccess(locale);
+  const { supabase, user } = await requireBusinessAccess(locale);
   const v = parsed.data;
   const { error } = await supabase
     .from("events")
@@ -123,6 +129,11 @@ export async function updateEvent(formData: FormData) {
     .eq("id", v.eventId)
     .eq("venue_id", v.venueId);
   if (error) redirect(destination(locale, venueId, "error=event"));
+  await reviewPendingCatalogueItem({
+    targetType: "event",
+    targetId: v.eventId,
+    requesterId: user.id,
+  });
   redirect(destination(locale, venueId, "updated=event"));
 }
 
@@ -405,6 +416,27 @@ const deletionSchema = context.extend({
   reason: z.string().trim().min(10).max(2000),
 });
 
+const unclaimSchema = context.extend({
+  confirmation: z.literal("UNCLAIM"),
+  reason: z.string().trim().min(10).max(2000),
+});
+
+export async function unclaimVenue(formData: FormData) {
+  const parsed = unclaimSchema.safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  if (!parsed.success) redirect(destination(locale, venueId, "error=unclaim"));
+  const { supabase } = await requireBusinessAccess(locale);
+  const { error } = await supabase.rpc("unclaim_owned_venue", {
+    p_venue: parsed.data.venueId,
+    p_confirmation: parsed.data.confirmation,
+    p_reason: parsed.data.reason,
+  });
+  if (error) redirect(destination(locale, venueId, "error=unclaim"));
+  revalidatePath(`/${locale}/business`);
+  redirect(`/${locale}/business?updated=venue-unclaimed`);
+}
+
 export async function deleteEvent(formData: FormData) {
   const parsed = deletionSchema
     .extend({ eventId: z.string().uuid() })
@@ -435,4 +467,227 @@ export async function deleteVenue(formData: FormData) {
   });
   if (error) redirect(destination(locale, venueId, "error=delete"));
   redirect(`/${locale}/business?updated=venue-deleted`);
+}
+
+export async function createStampCard(formData: FormData) {
+  const parsed = context
+    .extend({
+      titleEs: z.string().trim().min(3).max(160),
+      titleEn: z.string().trim().max(160),
+      rewardEs: z.string().trim().min(3).max(500),
+      rewardEn: z.string().trim().max(500),
+      stampsRequired: z.coerce.number().int().min(2).max(50),
+    })
+    .safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  if (!parsed.success) redirect(destination(locale, venueId, "error=stamp"));
+  const { supabase } = await requireBusinessAccess(locale);
+  const { error } = await supabase.from("loyalty_programs").insert({
+    venue_id: parsed.data.venueId,
+    title_es: parsed.data.titleEs,
+    title_en: parsed.data.titleEn || null,
+    reward_es: parsed.data.rewardEs,
+    reward_en: parsed.data.rewardEn || null,
+    stamps_required: parsed.data.stampsRequired,
+    active: true,
+  });
+  redirect(
+    destination(locale, venueId, error ? "error=stamp" : "updated=stamp"),
+  );
+}
+
+export async function createBusinessReward(formData: FormData) {
+  const parsed = context
+    .extend({
+      titleEs: z.string().trim().min(3).max(160),
+      titleEn: z.string().trim().max(160),
+      descriptionEs: z.string().trim().min(3).max(1000),
+      descriptionEn: z.string().trim().max(1000),
+      claimWindowDays: z.coerce.number().int().min(1).max(365),
+    })
+    .safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  if (!parsed.success) redirect(destination(locale, venueId, "error=reward"));
+  const { supabase } = await requireBusinessAccess(locale);
+  const { error } = await supabase.from("business_rewards").insert({
+    venue_id: parsed.data.venueId,
+    title_es: parsed.data.titleEs,
+    title_en: parsed.data.titleEn || null,
+    description_es: parsed.data.descriptionEs,
+    description_en: parsed.data.descriptionEn || null,
+    claim_window_days: parsed.data.claimWindowDays,
+    active: true,
+  });
+  redirect(
+    destination(locale, venueId, error ? "error=reward" : "updated=reward"),
+  );
+}
+
+export async function assignReward(formData: FormData) {
+  const parsed = context
+    .extend({
+      rewardId: z.string().uuid(),
+      targetType: z.enum(["stamp", "passport"]),
+      targetId: z.string().uuid(),
+      accessTier: z.enum(["free", "premium"]).default("free"),
+    })
+    .safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  if (!parsed.success)
+    redirect(destination(locale, venueId, "error=assignment"));
+  const { supabase } = await requireBusinessAccess(locale);
+  const { error } =
+    parsed.data.targetType === "stamp"
+      ? await supabase.from("loyalty_program_rewards").upsert({
+          program_id: parsed.data.targetId,
+          reward_id: parsed.data.rewardId,
+        })
+      : await supabase.from("passport_rewards").upsert({
+          passport_id: parsed.data.targetId,
+          reward_id: parsed.data.rewardId,
+          access_tier: parsed.data.accessTier,
+        });
+  redirect(
+    destination(
+      locale,
+      venueId,
+      error ? "error=assignment" : "updated=assignment",
+    ),
+  );
+}
+
+export async function createCheckInCredential(formData: FormData) {
+  const parsed = context
+    .extend({ label: z.string().trim().min(2).max(80) })
+    .safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  if (!parsed.success)
+    redirect(destination(locale, venueId, "error=credential"));
+  const { supabase, user } = await requireBusinessAccess(locale);
+  const { error } = await supabase.from("venue_checkin_credentials").insert({
+    venue_id: parsed.data.venueId,
+    label: parsed.data.label,
+    created_by: user.id,
+  });
+  redirect(
+    destination(
+      locale,
+      venueId,
+      error ? "error=credential" : "updated=credential",
+    ),
+  );
+}
+
+export async function redeemRewardClaim(formData: FormData) {
+  const parsed = context
+    .extend({ claimCode: z.string().uuid() })
+    .safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  if (!parsed.success)
+    redirect(destination(locale, venueId, "error=redemption"));
+  const { supabase } = await requireBusinessAccess(locale);
+  const { error } = await supabase.rpc("redeem_reward_claim", {
+    p_code: parsed.data.claimCode,
+  });
+  redirect(
+    destination(
+      locale,
+      venueId,
+      error ? "error=redemption" : "updated=redemption",
+    ),
+  );
+}
+
+export async function saveBookingSettings(formData: FormData) {
+  const parsed = context
+    .extend({
+      mode: z.enum(["external", "request", "disabled"]),
+      requiresDeposit: z.string().optional(),
+      depositCents: z.union([
+        z.literal(""),
+        z.coerce.number().int().min(0).max(1000000),
+      ]),
+      instructionsEs: z.string().trim().max(1000),
+      instructionsEn: z.string().trim().max(1000),
+    })
+    .safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  if (!parsed.success) redirect(destination(locale, venueId, "error=booking"));
+  const { supabase } = await requireBusinessAccess(locale);
+  const { error } = await supabase.from("venue_booking_settings").upsert({
+    venue_id: parsed.data.venueId,
+    mode: parsed.data.mode,
+    requires_deposit: parsed.data.requiresDeposit === "on",
+    deposit_cents:
+      parsed.data.depositCents === "" ? null : parsed.data.depositCents,
+    instructions_es: parsed.data.instructionsEs || null,
+    instructions_en: parsed.data.instructionsEn || null,
+    active: parsed.data.mode !== "disabled",
+  });
+  redirect(
+    destination(locale, venueId, error ? "error=booking" : "updated=booking"),
+  );
+}
+
+export async function createBookingSlot(formData: FormData) {
+  const parsed = context
+    .extend({
+      startsAt: madridLocalDateTimeSchema,
+      endsAt: madridLocalDateTimeSchema,
+      capacity: z.coerce.number().int().min(1).max(10000),
+    })
+    .safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  if (!parsed.success || parsed.data.endsAt <= parsed.data.startsAt)
+    redirect(destination(locale, venueId, "error=booking-slot"));
+  const { supabase } = await requireBusinessAccess(locale);
+  const { error } = await supabase.from("venue_availability_slots").insert({
+    venue_id: parsed.data.venueId,
+    starts_at: parsed.data.startsAt.toISOString(),
+    ends_at: parsed.data.endsAt.toISOString(),
+    capacity: parsed.data.capacity,
+  });
+  redirect(
+    destination(
+      locale,
+      venueId,
+      error ? "error=booking-slot" : "updated=booking-slot",
+    ),
+  );
+}
+
+export async function updateBookingRequest(formData: FormData) {
+  const parsed = context
+    .extend({
+      requestId: z.string().uuid(),
+      status: z.enum(["confirmed", "declined", "completed"]),
+    })
+    .safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  if (!parsed.success)
+    redirect(destination(locale, venueId, "error=booking-request"));
+  const { supabase } = await requireBusinessAccess(locale);
+  const { error } = await supabase
+    .from("booking_requests")
+    .update({
+      status: parsed.data.status,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", parsed.data.requestId)
+    .eq("venue_id", parsed.data.venueId);
+  redirect(
+    destination(
+      locale,
+      venueId,
+      error ? "error=booking-request" : "updated=booking-request",
+    ),
+  );
 }

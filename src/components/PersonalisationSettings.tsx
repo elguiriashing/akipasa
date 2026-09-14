@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import type { Locale } from "@/lib/config";
 
 export function PersonalisationSettings({
@@ -21,7 +21,11 @@ export function PersonalisationSettings({
     const response = await fetch("/api/v1/personalisation/consent", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ analytics: next, personalisation: next }),
+      body: JSON.stringify({
+        analytics: next,
+        personalisation: next,
+        marketing: next,
+      }),
     }).catch(() => null);
     if (!response?.ok) return setStatus("error");
     setEnabled(next);
@@ -62,9 +66,14 @@ export function PersonalisationSettings({
           disabled={status === "saving"}
         />
         {es
-          ? "Usar mis interacciones para personalizar AkiPasa"
-          : "Use my interactions to personalise AkiPasa"}
+          ? "Personalizar AkiPasa y la publicidad usando mis interacciones"
+          : "Personalise AkiPasa and advertising using my interactions"}
       </label>
+      <p className="muted">
+        {es
+          ? "Una sola opción controla las recomendaciones y el perfil publicitario. Puedes retirar el permiso en cualquier momento."
+          : "One choice controls recommendations and the advertising profile. You can withdraw permission at any time."}
+      </p>
       <button
         className="button secondary"
         type="button"

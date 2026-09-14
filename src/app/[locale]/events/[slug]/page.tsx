@@ -32,6 +32,22 @@ export default async function EventPage({
   const m = msg(locale);
   const returnTo = `/${locale}/events/${event.slug}`;
   const { supabase, user } = await optionalUser();
+  const [{ data: bookingSettings }, { data: publicEngagement }] =
+    await Promise.all([
+      supabase
+        .from("venue_booking_settings")
+        .select("mode")
+        .eq("venue_id", resolvedVenue.id)
+        .eq("active", true)
+        .maybeSingle(),
+      supabase.rpc("event_public_engagement", { p_event: event.id }),
+    ]);
+  const goingCount =
+    publicEngagement &&
+    typeof publicEngagement === "object" &&
+    "going" in publicEngagement
+      ? Number(publicEngagement.going) || 0
+      : 0;
   const [{ data: saved }, { data: premium }, { data: eventPreference }] = user
     ? await Promise.all([
         supabase
@@ -182,6 +198,12 @@ export default async function EventPage({
               <dd>{resolvedVenue.address}</dd>
             </div>
             <div>
+              <dt>{locale === "es" ? "Asistencia" : "Attendance"}</dt>
+              <dd>
+                {goingCount} {locale === "es" ? "personas van" : "going"}
+              </dd>
+            </div>
+            <div>
               <dt>{locale === "es" ? "Edad" : "Age"}</dt>
               <dd>
                 {event.minimumAge === undefined
@@ -234,6 +256,17 @@ export default async function EventPage({
                 >
                   {m.booking}
                 </TrackedLink>
+              )}
+            {!bookingUrl &&
+              bookingSettings?.mode === "request" &&
+              occurrence.status !== "cancelled" &&
+              occurrence.status !== "sold_out" && (
+                <Link
+                  className="button secondary"
+                  href={`/${locale}/events/${event.slug}/book`}
+                >
+                  {locale === "es" ? "Solicitar reserva" : "Request booking"}
+                </Link>
               )}
             {user ? (
               <form action={toggleSavedEvent}>

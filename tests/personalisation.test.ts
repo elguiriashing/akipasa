@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import type { DiscoveryResult } from "../src/lib/domain";
 import { behaviourBatchSchema } from "../src/lib/personalisation/schema";
 import {
@@ -92,6 +94,43 @@ describe("behaviour schema", () => {
   });
 });
 
+describe("advertising profile privacy contract", () => {
+  it("seeds lifecycle records but gates learned segments on explicit consent", () => {
+    const migration = readFileSync(
+      join(
+        process.cwd(),
+        "database/migrations/0058_consent_aware_advertising_profiles.sql",
+      ),
+      "utf8",
+    );
+    expect(migration).toContain("after insert on public.profiles");
+    expect(migration).toContain(
+      "new.personalisation_enabled and new.marketing_enabled",
+    );
+    expect(migration).toContain("ap.collection_status = 'eligible'");
+    expect(migration).toContain(
+      "alter table public.advertising_profiles enable row level security",
+    );
+    expect(migration).toContain("administrator role required");
+    expect(migration).not.toMatch(/email|phone|precise_location|fingerprint/i);
+  });
+
+  it("keeps individual analytics lookup bounded and administrator-only", () => {
+    const migration = readFileSync(
+      join(
+        process.cwd(),
+        "database/migrations/0059_admin_individual_analytics_search.sql",
+      ),
+      "utf8",
+    );
+    expect(migration).toContain("administrator role required");
+    expect(migration).toContain("char_length(v_query) < 2");
+    expect(migration).toContain("p_limit > 25");
+    expect(migration).toContain("limit 6");
+    expect(migration).not.toMatch(/metadata|context|latitude|longitude|phone/i);
+  });
+});
+
 describe("internal API request security", () => {
   it("accepts same-origin fetches and rejects cross-origin requests", () => {
     expect(() =>
@@ -108,6 +147,33 @@ describe("internal API request security", () => {
         }),
       ),
     ).toThrow(RequestSecurityError);
+  });
+});
+
+describe("public analytics abuse controls", () => {
+  it("routes anonymous writes through a service-only atomic session quota", () => {
+    const route = readFileSync("src/app/api/analytics/route.ts", "utf8");
+    const migration = readFileSync(
+      "database/migrations/0079_rate_limit_public_analytics.sql",
+      "utf8",
+    );
+    expect(route).toContain("requireSameOriginRequest(request)");
+    expect(route).toContain('get("ak_session_id")');
+    expect(route).toContain('rpc("record_analytics_limited"');
+    expect(route).toContain('request.headers.get("cf-connecting-ip")');
+    expect(route).toContain('createHmac("sha256", secret)');
+    expect(migration).toContain(
+      "on conflict (source_hash, window_start) do update",
+    );
+    expect(migration).toContain(
+      "if v_count > 120 then raise exception 'analytics rate limit exceeded'",
+    );
+    expect(migration).toContain(
+      "revoke all on function public.record_analytics(analytics_action,uuid,uuid,jsonb) from public, anon",
+    );
+    expect(migration).toContain(
+      "grant execute on function public.record_analytics_limited(analytics_action,uuid,uuid,jsonb,uuid,uuid,text) to service_role",
+    );
   });
 });
 

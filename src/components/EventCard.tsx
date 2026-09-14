@@ -52,7 +52,12 @@ export function EventCard({
     minute: "2-digit",
   }).format(new Date(result.occurrence.startsAt));
   const category = result.event.category as EventCategory;
-  const categoryLabel = m[category];
+  const categoryLabel =
+    m[category] ||
+    result.event.category
+      .split("-")
+      .map((word) => word.slice(0, 1).toUpperCase() + word.slice(1))
+      .join(" ");
   const primaryImage = result.venue.media?.[0];
   const priceLabel =
     result.event.priceCents === 0

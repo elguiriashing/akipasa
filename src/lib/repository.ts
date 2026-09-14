@@ -41,13 +41,21 @@ export class FixtureRepository implements DiscoveryRepository {
     const locality = isSpainLocation(localityKey)
       ? config.localities[localityKey]
       : config.localities.fuengirola;
+    const center = {
+      latitude: Number.isFinite(query.latitude)
+        ? query.latitude!
+        : locality.latitude,
+      longitude: Number.isFinite(query.longitude)
+        ? query.longitude!
+        : locality.longitude,
+    };
     const radius = query.radiusKm || 25;
     const time = query.time || "all";
     const results = fixtureEvents(this.now).flatMap((event) => {
       const venue = venues.find((v) => v.id === event.venueId)!;
       const distance = distanceKm(
-        locality.latitude,
-        locality.longitude,
+        center.latitude,
+        center.longitude,
         venue.latitude,
         venue.longitude,
       );
@@ -158,6 +166,8 @@ function venueFromRow(row: DbRecord): Venue {
     address: String(row.address),
     ...coordinates,
     verified: Boolean(row.verified),
+    claimStatus: (row.accessibility as { claim_status?: string } | null)
+      ?.claim_status,
     accessible: Boolean(
       (row.accessibility as { step_free?: boolean } | null)?.step_free,
     ),
@@ -241,6 +251,14 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
     const locality = isSpainLocation(localityKey)
       ? config.localities[localityKey]
       : config.localities.fuengirola;
+    const center = {
+      latitude: Number.isFinite(query.latitude)
+        ? query.latitude!
+        : locality.latitude,
+      longitude: Number.isFinite(query.longitude)
+        ? query.longitude!
+        : locality.longitude,
+    };
     const radius = query.radiusKm || 25;
     const now = query.now || new Date();
 
@@ -301,8 +319,8 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       }
 
       const distance = distanceKm(
-        locality.latitude,
-        locality.longitude,
+        center.latitude,
+        center.longitude,
         venue.latitude,
         venue.longitude,
       );

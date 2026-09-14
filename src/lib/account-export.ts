@@ -23,6 +23,7 @@ export const accountExportTables = [
   ["promotion_requests", "requester_id"],
   ["analytics_events", "profile_id"],
   ["personalisation_settings", "profile_id"],
+  ["advertising_profiles", "profile_id"],
   ["preference_profiles", "profile_id"],
   ["behaviour_events", "profile_id"],
   ["user_event_preferences", "profile_id"],

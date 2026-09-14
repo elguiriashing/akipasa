@@ -6,6 +6,7 @@ import {
   confirmRedemption,
   createEvent,
   createVenue,
+  openCrmWorkspace,
   requestPromotion,
   reuseEvent,
   saveLoyaltyProgram,
@@ -92,6 +93,7 @@ export default async function BusinessPage({
     { data: programs },
     { data: redemptions },
     { data: promotions },
+    { data: businessPro },
   ] = await Promise.all([
     supabase
       .from("venue_members")
@@ -101,6 +103,7 @@ export default async function BusinessPage({
       .from("venues")
       .select("id,name")
       .eq("status", "published")
+      .contains("accessibility", { claim_status: "unclaimed" })
       .order("name"),
     supabase
       .from("venue_claims")
@@ -123,6 +126,10 @@ export default async function BusinessPage({
       .from("promotion_requests")
       .select("id,venue_id,service,state,created_at")
       .order("created_at", { ascending: false }),
+    supabase.rpc("has_active_entitlement", {
+      p_profile: user.id,
+      p_plan: "business_pro",
+    }),
   ]);
 
   const managed = (members || []) as unknown as ManagedVenue[];
@@ -394,6 +401,73 @@ export default async function BusinessPage({
         )}
 
         {/* Managed Venues List */}
+        {view === "venues" && (
+          <section
+            id="akihq"
+            className="panel catalogue-edit-card dashboard-grid-full"
+          >
+            <div className="catalogue-section-header">
+              <div>
+                <span className="eyebrow">Business Pro</span>
+                <h2>AkiHQ CRM</h2>
+                <p className="catalogue-section-sub">
+                  {businessPro
+                    ? es
+                      ? "Abre el espacio operativo privado de uno de tus locales. Cada equipo y sus datos permanecen aislados."
+                      : "Open the private operating workspace for one of your venues. Each team and its data remain isolated."
+                    : es
+                      ? "Business Pro añade AkiHQ CRM, inventario inteligente y hasta cuatro usuarios al panel de negocio."
+                      : "Business Pro adds AkiHQ CRM, smart inventory, and up to four users to the business portal."}
+                </p>
+              </div>
+              {!businessPro && (
+                <a
+                  className="button button-strong"
+                  href={`/${locale}/account/subscription?plan=business_pro`}
+                >
+                  {es ? "Ver Business Pro" : "View Business Pro"}
+                </a>
+              )}
+            </div>
+            {businessPro && (
+              <div className="managed-list">
+                {managed.flatMap((item) =>
+                  item.venues && item.role === "owner"
+                    ? [
+                        <form
+                          action={openCrmWorkspace}
+                          className="managed-row"
+                          key={item.venues.id}
+                        >
+                          <input type="hidden" name="locale" value={locale} />
+                          <input
+                            type="hidden"
+                            name="venueId"
+                            value={item.venues.id}
+                          />
+                          <div>
+                            <strong>{item.venues.name}</strong>
+                            <span>
+                              {es
+                                ? "Espacio privado · 4 usuarios incluidos"
+                                : "Private workspace · 4 users included"}
+                            </span>
+                          </div>
+                          <button
+                            className="button button-strong"
+                            type="submit"
+                          >
+                            {es ? "Abrir AkiHQ" : "Open AkiHQ"}
+                          </button>
+                        </form>,
+                      ]
+                    : [],
+                )}
+              </div>
+            )}
+          </section>
+        )}
+
         {view === "venues" && (
           <div className="panel catalogue-edit-card">
             <div className="catalogue-section-header">
@@ -938,7 +1012,15 @@ export default async function BusinessPage({
                 {es
                   ? "Selecciona el local a reclamar"
                   : "Select venue to claim"}
-                <select name="venueId" required>
+                <select
+                  name="venueId"
+                  required
+                  defaultValue={
+                    claimable.some((venue) => venue.id === query.venueId)
+                      ? query.venueId
+                      : undefined
+                  }
+                >
                   {claimable.map((v) => (
                     <option key={v.id} value={v.id}>
                       {v.name}

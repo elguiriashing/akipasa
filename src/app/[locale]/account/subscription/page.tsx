@@ -3,10 +3,22 @@ import { WorkspacePageHeader } from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { openBillingPortal, startSubscriptionCheckout } from "./actions";
+import { businessCategories } from "@/lib/business-packages";
 
 const plans = [
-  { plan: "premium", monthly: "€5", yearly: "€48", saving: 12 },
+  {
+    plan: "premium",
+    monthly: "\u20ac1.99",
+    yearly: "\u20ac19.99",
+    saving: 3.89,
+  },
   { plan: "business", monthly: "€20", yearly: "€190", saving: 50 },
+  {
+    plan: "business_pro",
+    monthly: "€60",
+    yearly: "€570",
+    saving: 150,
+  },
 ] as const;
 
 export default async function SubscriptionPage({
@@ -47,7 +59,7 @@ export default async function SubscriptionPage({
       .maybeSingle(),
     supabase
       .from("profiles")
-      .select("membership_tier,business_plan_active")
+      .select("membership_tier,business_plan_active,business_tier")
       .eq("id", user.id)
       .maybeSingle(),
   ]);
@@ -61,9 +73,13 @@ export default async function SubscriptionPage({
         ? es
           ? "Necesitas un plan Business activo para abrir esas herramientas."
           : "You need an active Business plan to open those tools."
-        : es
-          ? "No se pudo iniciar la operación de facturación."
-          : "The billing operation could not be started.";
+        : query.error === "business_pro_required"
+          ? es
+            ? "Necesitas Business Pro para acceder a AkiHQ CRM."
+            : "You need Business Pro to access AkiHQ CRM."
+          : es
+            ? "No se pudo iniciar la operación de facturación."
+            : "The billing operation could not be started.";
 
   return (
     <>
@@ -81,6 +97,13 @@ export default async function SubscriptionPage({
           {es
             ? "Pago completado. La membresia aparecera cuando Stripe confirme el webhook."
             : "Checkout completed. Membership will appear after Stripe confirms the webhook."}
+        </p>
+      )}
+      {query.upgrade === "pending" && (
+        <p className="notice">
+          {es
+            ? "La mejora a Business Pro está en curso. El acceso a AkiHQ aparecerá en cuanto Stripe confirme el pago."
+            : "Your Business Pro upgrade is processing. AkiHQ access will appear as soon as Stripe confirms payment."}
         </p>
       )}
       {query.error && <p className="notice">{errorMessage}</p>}
@@ -101,7 +124,12 @@ export default async function SubscriptionPage({
           )}
           {profile?.business_plan_active && (
             <p>
-              <strong>Business</strong>: {es ? "activo" : "active"}
+              <strong>
+                {profile.business_tier === "business_pro"
+                  ? "Business Pro"
+                  : "Business"}
+              </strong>
+              : {es ? "activo" : "active"}
             </p>
           )}
           {subscriptions?.map((item) => (
@@ -142,18 +170,24 @@ export default async function SubscriptionPage({
                 ? es
                   ? "Premium personal"
                   : "Personal Premium"
-                : es
-                  ? "Negocio"
-                  : "Business"}
+                : item.plan === "business_pro"
+                  ? "Business Pro"
+                  : es
+                    ? "Negocio"
+                    : "Business"}
             </span>
             <p>
-              {item.plan === "business"
+              {item.plan === "business_pro"
                 ? es
-                  ? "Publica y gestiona locales, eventos, fidelidad y promociones tras la revision."
-                  : "Publish and manage venues, events, loyalty, and promotions after review."
-                : es
-                  ? "Ofertas para miembros, doble XP y calendarios para tus planes."
-                  : "Member-only offers, double XP, and calendar tools for your plans."}
+                  ? "AkiHQ CRM seguro, cuatro usuarios incluidos e inventario inteligente para operaciones avanzadas."
+                  : "Secure AkiHQ CRM, four included users, and smart inventory for advanced operations."
+                : item.plan === "business"
+                  ? es
+                    ? "Publica y gestiona locales, eventos, fidelidad y promociones tras la revision."
+                    : "Publish and manage venues, events, loyalty, and promotions after review."
+                  : es
+                    ? "Ofertas para miembros, doble XP y calendarios para tus planes."
+                    : "Member-only offers, double XP, and calendar tools for your plans."}
             </p>
             <ul className="membership-benefit-list">
               {(item.plan === "premium"
@@ -168,17 +202,29 @@ export default async function SubscriptionPage({
                       "20 XP per accepted check-in",
                       "Event and saved-plan exports",
                     ]
-                : es
-                  ? [
-                      "Perfil y herramientas de negocio",
-                      "Locales, eventos y analítica",
-                      "Fidelidad, promociones y ofertas Premium",
-                    ]
-                  : [
-                      "Business profile and tools",
-                      "Venues, events, and analytics",
-                      "Loyalty, promotions, and Premium offers",
-                    ]
+                : item.plan === "business_pro"
+                  ? es
+                    ? [
+                        "Todo lo incluido en Business",
+                        "AkiHQ CRM con espacios de trabajo aislados",
+                        "Hasta cuatro usuarios e inventario inteligente",
+                      ]
+                    : [
+                        "Everything in Business",
+                        "AkiHQ CRM with isolated workspaces",
+                        "Up to four users and smart inventory",
+                      ]
+                  : es
+                    ? [
+                        "Perfil y herramientas de negocio",
+                        "Locales, eventos y analítica",
+                        "Fidelidad, promociones y ofertas Premium",
+                      ]
+                    : [
+                        "Business profile and tools",
+                        "Venues, events, and analytics",
+                        "Loyalty, promotions, and Premium offers",
+                      ]
               ).map((benefit) => (
                 <li key={benefit}>{benefit}</li>
               ))}
@@ -190,6 +236,7 @@ export default async function SubscriptionPage({
                 interval="month"
                 price={item.monthly}
                 label={es ? "Mensual" : "Monthly"}
+                businessCategory={query.category}
               />
               <BillingOption
                 locale={locale}
@@ -198,6 +245,7 @@ export default async function SubscriptionPage({
                 price={item.yearly}
                 label={es ? "Anual" : "Annual"}
                 note={es ? `Ahorra €${item.saving}` : `Save €${item.saving}`}
+                businessCategory={query.category}
               />
             </div>
           </article>
@@ -214,13 +262,15 @@ function BillingOption({
   price,
   label,
   note,
+  businessCategory,
 }: {
   locale: "es" | "en";
-  plan: "premium" | "business";
+  plan: "premium" | "business" | "business_pro";
   interval: "month" | "year";
   price: string;
   label: string;
   note?: string;
+  businessCategory?: string;
 }) {
   const es = locale === "es";
   return (
@@ -228,6 +278,25 @@ function BillingOption({
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="plan" value={plan} />
       <input type="hidden" name="interval" value={interval} />
+      {plan !== "premium" && (
+        <label className="billing-business-category">
+          <span>{es ? "Tipo de negocio" : "Business type"}</span>
+          <select
+            name="businessCategory"
+            defaultValue={
+              businessCategories.some((item) => item.key === businessCategory)
+                ? businessCategory
+                : "food"
+            }
+          >
+            {businessCategories.map((category) => (
+              <option key={category.key} value={category.key}>
+                {es ? category.es : category.en}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
       <span>
         <strong>{label}</strong>
         {note && <small>{note}</small>}

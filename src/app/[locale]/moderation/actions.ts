@@ -26,6 +26,16 @@ export async function moderateItem(formData: FormData) {
   redirect(`/${locale}/staff/moderation?updated=decision`);
 }
 
+export async function setAutomaticModeration(formData: FormData) {
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const enabled = formData.get("enabled") === "true";
+  const { supabase } = await requireUser(locale, `/${locale}/staff/moderation`);
+  const { error } = await supabase.rpc("set_automatic_moderation", {
+    p_enabled: enabled,
+  });
+  if (error) redirect(`/${locale}/staff/moderation?error=automatic-mode`);
+  redirect(`/${locale}/staff/moderation?updated=automatic-mode`);
+}
 export async function resolveReport(formData: FormData) {
   const parsed = reportResolutionSchema.safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";

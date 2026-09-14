@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ConsoleMetric } from "@/components/ConsoleChrome";
-import { WorkspacePageHeader } from "@/components/WorkspaceShell";
+import { Icon, type IconName } from "@/components/Icons";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 
@@ -56,96 +55,149 @@ export default async function AdminOverview({
       .limit(5),
   ]);
   const es = locale === "es";
+  const attention =
+    (pendingPrivacy || 0) + (promotions || 0) + (businessApplications || 0);
+  const tools: Array<{
+    href: string;
+    icon: IconName;
+    title: string;
+    detail: string;
+    count?: number;
+  }> = [
+    {
+      href: `/${locale}/admin/business-applications`,
+      icon: "business",
+      title: es ? "Solicitudes de negocio" : "Business applications",
+      detail: es ? "Revisión, pagos y pruebas" : "Review, payments and trials",
+      count: businessApplications || 0,
+    },
+    {
+      href: `/${locale}/admin/promotions`,
+      icon: "megaphone",
+      title: es ? "Solicitudes comerciales" : "Commercial requests",
+      detail: es ? "Promoción y seguimiento" : "Promotion and follow-up",
+      count: promotions || 0,
+    },
+    {
+      href: `/${locale}/admin/privacy`,
+      icon: "lock",
+      title: es ? "Privacidad" : "Privacy",
+      detail: es ? "Solicitudes y cumplimiento" : "Requests and compliance",
+      count: pendingPrivacy || 0,
+    },
+    {
+      href: `/${locale}/admin/users`,
+      icon: "users",
+      title: es ? "Usuarios y roles" : "Users and roles",
+      detail: es ? "Acceso y permisos" : "Access and permissions",
+    },
+    {
+      href: `/${locale}/admin/catalogue`,
+      icon: "venue",
+      title: es ? "Catálogo" : "Catalogue",
+      detail: es
+        ? `${venues || 0} locales registrados`
+        : `${venues || 0} registered venues`,
+    },
+    {
+      href: `/${locale}/admin/ai-team`,
+      icon: "activity",
+      title: es ? "Equipo de IA" : "AI Team",
+      detail: es ? "Agentes y automatización" : "Agents and automation",
+    },
+    {
+      href: `/${locale}/admin/personalisation`,
+      icon: "person",
+      title: es ? "Personalización" : "Personalisation",
+      detail: es
+        ? "Experiencia y recomendaciones"
+        : "Experience and recommendations",
+    },
+    {
+      href: `/${locale}/admin/passports`,
+      icon: "gift",
+      title: es ? "Pasaportes" : "Passports",
+      detail: es ? "Programas y recompensas" : "Programs and rewards",
+    },
+    {
+      href: `/${locale}/admin/settings`,
+      icon: "settings",
+      title: es ? "Configuración" : "Platform settings",
+      detail: es ? "Controles de plataforma" : "Platform controls",
+    },
+    {
+      href: `/${locale}/admin/audit`,
+      icon: "audit",
+      title: es ? "Auditoría" : "Audit history",
+      detail: es ? "Historial verificable" : "Verifiable history",
+    },
+  ];
   return (
-    <>
-      <WorkspacePageHeader
-        eyebrow={es ? "Estado" : "State of play"}
-        title={es ? "Resumen operativo" : "Operations overview"}
-        description={
-          es
-            ? "Señales, alertas y accesos directos. Los controles detallados viven en su propia sección."
-            : "Signals, alerts and next actions. Detailed controls live in their own section."
-        }
-      />
-      <section className="metrics-grid">
-        <ConsoleMetric
-          label={es ? "Usuarios" : "Users"}
-          value={users || 0}
-          detail={es ? "Perfiles registrados" : "Registered profiles"}
-        />
-        <ConsoleMetric
-          label={es ? "Locales" : "Venues"}
-          value={venues || 0}
-          detail={es ? "Catálogo total" : "Total catalogue"}
-        />
-        <ConsoleMetric
-          label={es ? "Privacidad" : "Privacy"}
-          value={pendingPrivacy || 0}
-          detail={es ? "Solicitudes abiertas" : "Open requests"}
-        />
-        <ConsoleMetric
-          label={es ? "Comercial" : "Commercial"}
-          value={promotions || 0}
-          detail={es ? "Solicitudes activas" : "Active requests"}
-        />
+    <div className="operations-overview admin-operations-overview">
+      <section className="operations-hero">
+        <span>{es ? "Estado de plataforma" : "Platform status"}</span>
+        <h2>
+          {attention
+            ? es
+              ? `${attention} asuntos requieren atención`
+              : `${attention} items need attention`
+            : es
+              ? "Operación estable"
+              : "Operations are stable"}
+        </h2>
+        <p>
+          {es
+            ? `${users || 0} usuarios · ${venues || 0} locales`
+            : `${users || 0} users · ${venues || 0} venues`}
+        </p>
+        <Link href={`/${locale}/admin/business-applications`}>
+          {es ? "Atender prioridad" : "Open priority"}
+          <Icon name="arrow-right" />
+        </Link>
       </section>
-      <section className="dashboard-grid">
-        <article className="panel console-card admin-attention-card">
-          <span className="status-pill">{promotions || 0}</span>
-          <h2>{es ? "Solicitudes comerciales" : "Commercial requests"}</h2>
-          <p>
-            {es
-              ? "Revisa promociones, servicios destacados y seguimientos comerciales pendientes."
-              : "Review promotions, featured services, and pending commercial follow-ups."}
-          </p>
-          <Link
-            className="button button-strong"
-            href={`/${locale}/admin/promotions`}
-          >
-            {es ? "Abrir solicitudes comerciales" : "Open commercial requests"}
-          </Link>
-        </article>
-        <article className="panel console-card admin-attention-card">
-          <span className="status-pill">{businessApplications || 0}</span>
-          <h2>{es ? "Solicitudes de negocio" : "Business applications"}</h2>
-          <p>
-            {es
-              ? "Revisa solicitudes, solicita el pago o concede una prueba de 1 o 3 meses."
-              : "Review applications, request payment, or grant a 1- or 3-month trial."}
-          </p>
-          <Link
-            className="button button-strong"
-            href={`/${locale}/admin/business-applications`}
-          >
-            {es ? "Abrir solicitudes de negocio" : "Open business applications"}
-          </Link>
-        </article>
-        <article className="panel console-card">
-          <span className="status-pill">{pendingPrivacy || 0}</span>
-          <h2>{es ? "Prioridad de privacidad" : "Privacy priority"}</h2>
-          <p>
-            {es
-              ? "Revisa las solicitudes pendientes y registra cada operación."
-              : "Review pending requests and record every operation."}
-          </p>
-          <Link className="button" href={`/${locale}/admin/privacy`}>
-            {es ? "Abrir solicitudes" : "Open requests"}
-          </Link>
-        </article>
-        <article className="panel console-card">
-          <h2>{es ? "Gestión de usuarios" : "User management"}</h2>
-          <p>
-            {es
-              ? "Busca primero; ningún usuario se selecciona automáticamente."
-              : "Search first; no user is selected automatically."}
-          </p>
-          <Link className="button secondary" href={`/${locale}/admin/users`}>
-            {es ? "Buscar usuario" : "Search users"}
-          </Link>
-        </article>
+      <section
+        className="operations-pulse"
+        aria-label={es ? "Estado de administración" : "Administration status"}
+      >
+        <div>
+          <strong>{businessApplications || 0}</strong>
+          <span>{es ? "negocios" : "businesses"}</span>
+        </div>
+        <div>
+          <strong>{promotions || 0}</strong>
+          <span>{es ? "comercial" : "commercial"}</span>
+        </div>
+        <div>
+          <strong>{pendingPrivacy || 0}</strong>
+          <span>{es ? "privacidad" : "privacy"}</span>
+        </div>
       </section>
-      <section className="panel">
-        <h2>{es ? "Cambios recientes" : "Recent changes"}</h2>
+      <section className="operations-tools">
+        <header>
+          <span>{es ? "Control" : "Control"}</span>
+          <h2>{es ? "Áreas de trabajo" : "Work areas"}</h2>
+        </header>
+        <nav>
+          {tools.map((tool) => (
+            <Link href={tool.href} key={tool.href}>
+              <span>
+                <Icon name={tool.icon} />
+              </span>
+              <span>
+                <strong>{tool.title}</strong>
+                <small>{tool.detail}</small>
+              </span>
+              {tool.count !== undefined && <b>{tool.count}</b>}
+              <Icon name="chevron" />
+            </Link>
+          ))}
+        </nav>
+      </section>
+      <section className="operations-recent">
+        <header>
+          <span>{es ? "Registro" : "Log"}</span>
+          <h2>{es ? "Cambios recientes" : "Recent changes"}</h2>
+        </header>
         <div className="managed-list">
           {(recent || []).map((item) => (
             <div className="managed-row" key={item.id}>
@@ -160,8 +212,13 @@ export default async function AdminOverview({
               </time>
             </div>
           ))}
+          {!recent?.length && (
+            <p className="muted">
+              {es ? "Aún no hay cambios recientes." : "No recent changes yet."}
+            </p>
+          )}
         </div>
       </section>
-    </>
+    </div>
   );
 }

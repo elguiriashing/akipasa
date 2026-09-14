@@ -24,6 +24,7 @@ describe("account data export contract", () => {
       "venue_media",
       "promotion_requests",
       "analytics_events",
+      "advertising_profiles",
       "account_deletion_requests",
     ]) {
       expect(tables.has(required), required).toBe(true);

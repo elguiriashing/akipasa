@@ -211,6 +211,14 @@ export default async function VenuePage({
                 {locale === "es" ? "Sitio web" : "Website"}
               </TrackedLink>
             )}
+            {venue.claimStatus === "unclaimed" && (
+              <Link
+                className="button secondary"
+                href={`/${locale}/business?view=claims&venueId=${venue.id}`}
+              >
+                {locale === "es" ? "Reclamar este local" : "Claim this venue"}
+              </Link>
+            )}
             {user ? (
               <form action={toggleFollowedVenue}>
                 <input type="hidden" name="locale" value={locale} />

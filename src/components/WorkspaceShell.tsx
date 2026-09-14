@@ -72,7 +72,6 @@ export function WorkspaceShell({
   const searchParams = useSearchParams();
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const drawerCloseRef = useRef<HTMLButtonElement>(null);
   const desktopNavigationRef = useRef<HTMLElement>(null);
   const dragState = useRef({
     active: false,
@@ -81,8 +80,7 @@ export function WorkspaceShell({
     scrollLeft: 0,
   });
   const spanish = homeHref.startsWith("/es/");
-  const menuLabel = spanish ? "MenÃº" : "Menu";
-  const closeLabel = spanish ? "Cerrar" : "Close";
+  const menuLabel = spanish ? "Menú" : "Menu";
   const consumerWorkspace = [
     "/account",
     "/business",
@@ -91,6 +89,17 @@ export function WorkspaceShell({
     "/passports",
     "/staff",
   ].some((segment) => homeHref.includes(segment));
+  const workspaceKind = homeHref.includes("/business")
+    ? "business-workspace"
+    : homeHref.includes("/staff")
+      ? "staff-workspace"
+      : homeHref.includes("/admin")
+        ? "admin-workspace"
+        : homeHref.includes("/account")
+          ? "account-workspace"
+          : homeHref.includes("/passports")
+            ? "passports-workspace"
+            : "";
   const activeItem = items.find((item) =>
     matchesPath(pathname, searchParams, item.href),
   );
@@ -141,7 +150,6 @@ export function WorkspaceShell({
   useEffect(() => {
     if (!drawerOpen) return;
 
-    drawerCloseRef.current?.focus();
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") setDrawerOpen(false);
     };
@@ -189,7 +197,7 @@ export function WorkspaceShell({
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           onClick={() => setCollapsed((value) => !value)}
         >
-          <span aria-hidden="true">{collapsed ? "â€º" : "â€¹"}</span>
+          <span aria-hidden="true">{collapsed ? "›" : "‹"}</span>
         </button>
       </div>
       <nav
@@ -240,6 +248,7 @@ export function WorkspaceShell({
         "workspace-shell",
         "workspace-grid-system",
         consumerWorkspace ? "consumer-workspace" : "",
+        workspaceKind,
         collapsed ? "is-collapsed" : "",
       ]
         .filter(Boolean)
@@ -274,14 +283,6 @@ export function WorkspaceShell({
             className="workspace-drawer"
             aria-label={`${navigationTitle} navigation`}
           >
-            <button
-              ref={drawerCloseRef}
-              className="workspace-drawer-close"
-              type="button"
-              onClick={() => setDrawerOpen(false)}
-            >
-              {closeLabel}
-            </button>
             {navigation}
           </aside>
         </div>

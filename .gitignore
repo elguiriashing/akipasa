@@ -18,3 +18,4 @@ cloudflare-env.d.ts
 backups/
 automation/.dev.vars
 automation/worker-configuration.d.ts
+supabase/.temp

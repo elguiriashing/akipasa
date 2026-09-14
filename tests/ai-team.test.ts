@@ -76,6 +76,7 @@ describe("AI Team boundaries", () => {
       "crm_workspace_overview",
       "crm_search_workspace",
       "crm_get_workspace_record",
+      "crm_get_single_media_category_link",
       "crm_create_workspace_task",
       "crm_request_workspace_record_change",
     ]);
@@ -340,5 +341,129 @@ describe("AI Team boundaries", () => {
     expect(supportRoute).toContain('chatAudience: "customer"');
     expect(supportRoute).toContain("requireAIUser(request)");
     expect(supportRoute).not.toContain("requireAIAdministrator");
+  });
+
+  it("gives Telegram CRM calendar requests decisive defaults", () => {
+    const route = readFileSync(
+      join(
+        process.cwd(),
+        "src",
+        "app",
+        "api",
+        "ai-team",
+        "telegram",
+        "run",
+        "route.ts",
+      ),
+      "utf8",
+    );
+    expect(route).toContain('timeZone: "Europe/Madrid"');
+    expect(route).toContain("Current UTC instant");
+    expect(route).toContain("assume the current local year");
+    expect(route).toContain("current local month");
+    expect(route).toContain("Do not ask for a time zone");
+    expect(route).toContain("If duration is omitted, use 60 minutes");
+    expect(route).toContain("call crm_create_calendar_event now");
+    expect(route).toContain("Inspect the destination before mutating");
+  });
+
+  it("gives the administrator Telegram bot governed workspace management and self-extension", () => {
+    const tools = readFileSync(
+      join(process.cwd(), "src", "lib", "ai-team", "tools.ts"),
+      "utf8",
+    );
+    const route = readFileSync(
+      join(
+        process.cwd(),
+        "src",
+        "app",
+        "api",
+        "ai-team",
+        "telegram",
+        "run",
+        "route.ts",
+      ),
+      "utf8",
+    );
+    const migration = readFileSync(
+      join(
+        process.cwd(),
+        "database",
+        "migrations",
+        "0056_ai_workspace_management.sql",
+      ),
+      "utf8",
+    );
+
+    expect(route).toContain('"crm_create_workspace_project"');
+    expect(route).toContain('"crm_manage_workspace_record"');
+    expect(route).toContain('"ai_request_tool_capability"');
+    expect(route).toContain("allowWebSearch: true");
+    expect(route).toContain("use IDs returned by earlier tools immediately");
+    expect(tools).toContain(
+      'status: z.enum(["todo", "in-progress", "review", "done"])',
+    );
+    expect(tools).toContain('z.enum(["create", "update"])');
+    expect(tools).not.toContain('z.enum(["create", "update", "delete"])');
+    expect(tools).toContain('activation: "administrator_approval_required"');
+    expect(migration).toContain('"crm:workspace:manage"');
+    expect(migration).toContain('"ai:tools:request"');
+  });
+
+  it("connects verified media and all synchronized AkiHQ modules to Manager and Coder", () => {
+    const tools = readFileSync(
+      join(process.cwd(), "src", "lib", "ai-team", "tools.ts"),
+      "utf8",
+    );
+    const route = readFileSync(
+      join(
+        process.cwd(),
+        "src",
+        "app",
+        "api",
+        "ai-team",
+        "telegram",
+        "run",
+        "route.ts",
+      ),
+      "utf8",
+    );
+    const config = readFileSync(join(process.cwd(), "wrangler.jsonc"), "utf8");
+    const migration = readFileSync(
+      join(
+        process.cwd(),
+        "database",
+        "migrations",
+        "0057_ai_full_workspace_and_agent_configuration.sql",
+      ),
+      "utf8",
+    );
+
+    expect(config).toContain('"AKIHQ_GATEWAY"');
+    expect(tools).toContain('name: "crm_get_single_media_category_link"');
+    expect(tools).toContain('name: "crm_post_team_chat_message"');
+    expect(tools).toContain('name: "ai_request_agent_configuration_change"');
+    for (const entity of [
+      "event",
+      "product",
+      "invoice",
+      "page",
+      "form",
+      "automation",
+      "employee",
+      "article",
+    ]) {
+      expect(tools).toContain(`${entity}: new Set(`);
+    }
+    expect(route).toContain('"crm_get_single_media_category_link"');
+    expect(route).toContain('"crm_post_team_chat_message"');
+    expect(route).toContain('"ai_request_agent_configuration_change"');
+    expect(route).toContain(
+      "Create the Knowledge article only after that tool returns exactly one verified item",
+    );
+    expect(migration).toContain('"crm:workspace:manage"');
+    expect(migration).toContain('"ai:agents:request_change"');
+    expect(migration).toContain("where agent_key = 'manager'");
+    expect(migration).not.toContain("where agent_key = 'coder'");
   });
 });

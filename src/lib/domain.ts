@@ -11,6 +11,7 @@ export type Venue = {
   latitude: number;
   longitude: number;
   verified: boolean;
+  claimStatus?: string;
   accessible: boolean;
   phone?: string;
   whatsappPhone?: string;
@@ -65,6 +66,8 @@ export type Event = {
 export type TimeWindow = "now" | "tonight" | "tomorrow" | "weekend" | "all";
 export type DiscoveryQuery = {
   locality?: string;
+  latitude?: number;
+  longitude?: number;
   radiusKm?: number;
   time?: TimeWindow;
   dateFrom?: Date;

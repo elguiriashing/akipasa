@@ -138,5 +138,10 @@ export async function setEventPreference(formData: FormData) {
       metadata: parsed.data.reason ? { reason: parsed.data.reason } : {},
     });
   }
+  if (!error && parsed.data.state === "clear") {
+    await supabase.rpc("undo_event_preference_signal", {
+      p_event: parsed.data.eventId,
+    });
+  }
   revalidatePath(parsed.data.returnTo);
 }

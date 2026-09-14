@@ -34,6 +34,10 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(),
 }));
 
+// The native search popover and its Next router integration are covered by
+// city-discovery.spec.ts in a real browser; these tests isolate navigation.
+vi.mock("../src/components/GlobalSearch", () => ({ GlobalSearch: () => null }));
+
 import { AppShell } from "../src/components/AppShell";
 import { WorkspaceShell } from "../src/components/WorkspaceShell";
 
@@ -212,15 +216,14 @@ describe("progressive disclosure workspace shell", () => {
         <p>Content</p>
       </WorkspaceShell>,
     );
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: /AkiPasa account Account menu/i,
-      }),
-    );
+    const menuButton = screen.getByRole("button", {
+      name: /AkiPasa account Account menu/i,
+    });
+    fireEvent.click(menuButton);
     expect(
       screen.getByRole("complementary", { name: "Account navigation" }),
     ).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Close" }));
+    fireEvent.click(menuButton);
     expect(
       screen.queryByRole("complementary", { name: "Account navigation" }),
     ).not.toBeInTheDocument();

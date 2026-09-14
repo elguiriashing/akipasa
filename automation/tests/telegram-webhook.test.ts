@@ -28,6 +28,16 @@ function environment(options?: { replayed?: boolean }) {
       TELEGRAM_CHAT_ID: "-5114676407",
       TELEGRAM_WEBHOOK_SECRET:
         "telegram-webhook-secret-with-at-least-32-characters",
+      TELEGRAM_ADMIN_USER_IDS: "123456",
+      AI_SCHEDULER_SECRET: "scheduler-secret-with-at-least-32-characters",
+      PUBLIC_APP: {
+        fetch: vi.fn().mockResolvedValue(
+          Response.json({
+            ok: true,
+            text: "Calendar event created: Team sync.",
+          }),
+        ),
+      },
       TELEGRAM_API_BASE: "https://api.telegram.test",
     } as unknown as Bindings,
     prepare,
@@ -51,6 +61,7 @@ function webhookRequest(
       update_id: options?.updateId || 731,
       message: {
         message_id: 42,
+        from: { id: 123456, username: "alex", first_name: "Alex" },
         chat: {
           id: options?.chatId || -5114676407,
           type: "group",
@@ -64,6 +75,8 @@ function webhookRequest(
 describe("Telegram command parsing", () => {
   it.each([
     ["/help", "help"],
+    ["/whoami", "whoami"],
+    ["/crm create a calendar event", "crm"],
     ["/commands@akipasabot", "help"],
     ["/numbers", "numbers"],
     ["/revenue@akipasabot now", "revenue"],
@@ -122,7 +135,7 @@ describe("Telegram webhook", () => {
     expect(fixture.prepare).toHaveBeenCalledWith(
       expect.stringContaining("INSERT INTO execution_logs"),
     );
-    expect(fixture.put).toHaveBeenCalledWith("nonce:telegram-group:731", "1", {
+    expect(fixture.put).toHaveBeenCalledWith("nonce:telegram:123456:731", "1", {
       expirationTtl: 172_800,
     });
     const telegramBody = JSON.parse(
@@ -151,6 +164,39 @@ describe("Telegram webhook", () => {
     expect(telegramBody.text).toContain("Database: healthy");
   });
 
+  it("reports the sender identity with /whoami", async () => {
+    const fixture = environment();
+    const telegramFetch = vi
+      .fn()
+      .mockResolvedValue(
+        Response.json({ ok: true, result: { message_id: 101 } }),
+      );
+    vi.stubGlobal("fetch", telegramFetch);
+    const response = await app.fetch(webhookRequest("/whoami"), fixture.env);
+    expect(response.status).toBe(200);
+    expect(
+      JSON.parse(String(telegramFetch.mock.calls[0][1]?.body)).text,
+    ).toContain("123456");
+  });
+
+  it("routes an administrator /crm instruction through the public app service binding", async () => {
+    const fixture = environment();
+    const telegramFetch = vi
+      .fn()
+      .mockResolvedValue(
+        Response.json({ ok: true, result: { message_id: 102 } }),
+      );
+    vi.stubGlobal("fetch", telegramFetch);
+    const response = await app.fetch(
+      webhookRequest("/crm create a calendar event"),
+      fixture.env,
+    );
+    expect(response.status).toBe(200);
+    expect(fixture.env.PUBLIC_APP.fetch).toHaveBeenCalledOnce();
+    expect(
+      JSON.parse(String(telegramFetch.mock.calls[0][1]?.body)).text,
+    ).toContain("Calendar event created");
+  });
   it("acknowledges a duplicate update without executing it again", async () => {
     const fixture = environment({ replayed: true });
     const telegramFetch = vi.fn();

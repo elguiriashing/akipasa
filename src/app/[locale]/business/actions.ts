@@ -8,6 +8,8 @@ import { requireBusinessAccess } from "@/lib/entitlements";
 import { safeExternalUrlSchema } from "@/lib/auth-security";
 import { madridLocalDateTimeSchema } from "@/lib/time";
 import { createEventSlug, createVenueSlug } from "@/lib/business";
+import { reviewPendingCatalogueItem } from "@/lib/automatic-moderation";
+import { businessCategories } from "@/lib/business-packages";
 
 const businessApplicationSchema = z.object({
   locale: z.enum(["es", "en"]),
@@ -16,6 +18,10 @@ const businessApplicationSchema = z.object({
   locality: z.string().trim().min(2).max(120),
   websiteUrl: safeExternalUrlSchema,
   message: z.string().trim().min(20).max(2000),
+  businessCategory: z.enum(
+    businessCategories.map((item) => item.key) as [string, ...string[]],
+  ),
+  plan: z.enum(["business", "business_pro"]),
 });
 
 export async function submitBusinessApplication(formData: FormData) {
@@ -31,9 +37,34 @@ export async function submitBusinessApplication(formData: FormData) {
     p_locality: parsed.data.locality,
     p_website_url: parsed.data.websiteUrl,
     p_message: parsed.data.message,
+    p_business_category: parsed.data.businessCategory,
+    p_plan_code: parsed.data.plan,
   });
   if (error) redirect(`/${locale}/business/apply?error=application`);
   redirect(`/${locale}/business/apply?submitted=1`);
+}
+
+const crmWorkspaceSchema = z.object({
+  locale: z.enum(["es", "en"]),
+  venueId: z.string().uuid(),
+});
+
+export async function openCrmWorkspace(formData: FormData) {
+  const parsed = crmWorkspaceSchema.safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  if (!parsed.success) redirect(`/${locale}/business?error=crm_workspace`);
+  const { supabase } = await requireBusinessAccess(
+    locale,
+    `/${locale}/business`,
+  );
+  const { data: workspaceId, error } = await supabase.rpc(
+    "crm_provision_workspace_for_venue",
+    { p_venue: parsed.data.venueId },
+  );
+  if (error || typeof workspaceId !== "string")
+    redirect(`/${locale}/business?error=crm_workspace`);
+  const crmUrl = process.env.NEXT_PUBLIC_AKIHQ_URL || "https://crm.akipasa.com";
+  redirect(`${crmUrl}/?workspace=${encodeURIComponent(workspaceId)}`);
 }
 
 const venueSchema = z.object({
@@ -57,20 +88,30 @@ export async function createVenue(formData: FormData) {
     ? (String(formData.get("locale")) as "es" | "en")
     : "es";
   if (!parsed.success) redirect(`/${locale}/business?error=venue`);
-  const { supabase } = await requireBusinessAccess(locale);
+  const { supabase, user } = await requireBusinessAccess(locale);
   const v = parsed.data;
-  const { error } = await supabase.rpc("create_owned_venue_in_spain", {
-    locality_name: v.locality,
-    province_name: v.province,
-    venue_name: v.name,
-    venue_slug: createVenueSlug(v.name),
-    description_es: v.descriptionEs,
-    description_en: v.descriptionEn,
-    venue_address: v.address,
-    latitude: v.latitude,
-    longitude: v.longitude,
-  });
+  const { data: venueId, error } = await supabase.rpc(
+    "create_owned_venue_in_spain",
+    {
+      locality_name: v.locality,
+      province_name: v.province,
+      venue_name: v.name,
+      venue_slug: createVenueSlug(v.name),
+      description_es: v.descriptionEs,
+      description_en: v.descriptionEn,
+      venue_address: v.address,
+      latitude: v.latitude,
+      longitude: v.longitude,
+    },
+  );
   if (error) redirect(`/${locale}/business?error=venue`);
+  if (typeof venueId === "string") {
+    await reviewPendingCatalogueItem({
+      targetType: "venue",
+      targetId: venueId,
+      requesterId: user.id,
+    });
+  }
   redirect(`/${locale}/business?created=venue`);
 }
 
@@ -114,22 +155,32 @@ export async function createEvent(formData: FormData) {
     ? (String(formData.get("locale")) as "es" | "en")
     : "es";
   if (!parsed.success) redirect(`/${locale}/business?error=event`);
-  const { supabase } = await requireBusinessAccess(locale);
+  const { supabase, user } = await requireBusinessAccess(locale);
   const e = parsed.data;
-  const { error } = await supabase.rpc("create_event_with_occurrence", {
-    target_venue: e.venueId,
-    category: e.categoryId,
-    event_slug: createEventSlug(e.titleEs),
-    title_es: e.titleEs,
-    title_en: e.titleEn,
-    description_es: e.descriptionEs,
-    description_en: e.descriptionEn,
-    price_cents: e.priceCents,
-    booking_url: e.bookingUrl,
-    starts_at: e.startsAt.toISOString(),
-    ends_at: e.endsAt.toISOString(),
-  });
+  const { data: eventId, error } = await supabase.rpc(
+    "create_event_with_occurrence",
+    {
+      target_venue: e.venueId,
+      category: e.categoryId,
+      event_slug: createEventSlug(e.titleEs),
+      title_es: e.titleEs,
+      title_en: e.titleEn,
+      description_es: e.descriptionEs,
+      description_en: e.descriptionEn,
+      price_cents: e.priceCents,
+      booking_url: e.bookingUrl,
+      starts_at: e.startsAt.toISOString(),
+      ends_at: e.endsAt.toISOString(),
+    },
+  );
   if (error) redirect(`/${locale}/business?error=event`);
+  if (typeof eventId === "string") {
+    await reviewPendingCatalogueItem({
+      targetType: "event",
+      targetId: eventId,
+      requesterId: user.id,
+    });
+  }
   redirect(`/${locale}/business?created=event`);
 }
 
@@ -169,18 +220,15 @@ export async function saveLoyaltyProgram(formData: FormData) {
   if (!parsed.success) redirect(`/${locale}/business?error=loyalty`);
   const { supabase } = await requireBusinessAccess(locale);
   const value = parsed.data;
-  const { error } = await supabase.from("loyalty_programs").upsert(
-    {
-      venue_id: value.venueId,
-      title_es: value.titleEs,
-      title_en: value.titleEn || null,
-      reward_es: value.rewardEs,
-      reward_en: value.rewardEn || null,
-      stamps_required: value.stampsRequired,
-      active: true,
-    },
-    { onConflict: "venue_id" },
-  );
+  const { error } = await supabase.from("loyalty_programs").insert({
+    venue_id: value.venueId,
+    title_es: value.titleEs,
+    title_en: value.titleEn || null,
+    reward_es: value.rewardEs,
+    reward_en: value.rewardEn || null,
+    stamps_required: value.stampsRequired,
+    active: true,
+  });
   if (error) redirect(`/${locale}/business?error=loyalty`);
   redirect(`/${locale}/business?created=loyalty`);
 }

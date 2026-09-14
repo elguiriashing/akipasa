@@ -21,36 +21,54 @@ export default async function AuthPage({
   const es = locale === "es";
   const next = query.next || `/${locale}/account`;
   const businessIntent = next.startsWith(`/${locale}/business/apply`);
+  const mode = ["signup", "magic", "recover"].includes(query.mode ?? "")
+    ? query.mode
+    : "signin";
+  const modeHref = (target: string) => {
+    const search = new URLSearchParams({ mode: target });
+    if (query.next) search.set("next", query.next);
+    return `/${locale}/auth?${search.toString()}`;
+  };
   return (
-    <main className="shell">
-      <section className="hero">
-        <div className="eyebrow">
-          {businessIntent
-            ? es
-              ? "Paso 1 de 3 · Añade tu negocio"
-              : "Step 1 of 3 · Add your business"
-            : es
-              ? "Cuenta"
-              : "Account"}
+    <main className="auth-page">
+      <section className="auth-intro">
+        <div className="auth-intro-copy">
+          <div className="eyebrow">
+            {businessIntent
+              ? es
+                ? "Paso 1 de 3 · Añade tu negocio"
+                : "Step 1 of 3 · Add your business"
+              : es
+                ? "Cuenta"
+                : "Account"}
+          </div>
+          <h1>
+            {businessIntent
+              ? es
+                ? "Primero, crea tu cuenta gratuita"
+                : "First, create your free account"
+              : es
+                ? "Tu cuenta AkiPasa"
+                : "Your AkiPasa account"}
+          </h1>
+          <p className="lede">
+            {businessIntent
+              ? es
+                ? "Después volverás directamente a la solicitud de tu negocio. No pagarás nada hoy."
+                : "Afterwards, we will take you straight back to your business application. You will not pay anything today."
+              : es
+                ? "Crea una cuenta con email, entra con Google o usa un enlace seguro."
+                : "Create an account with email, continue with Google, or use a secure link."}
+          </p>
         </div>
-        <h1>
-          {businessIntent
-            ? es
-              ? "Primero, crea tu cuenta gratuita"
-              : "First, create your free account"
-            : es
-              ? "Tu cuenta AkiPasa"
-              : "Your AkiPasa account"}
-        </h1>
-        <p className="lede">
-          {businessIntent
-            ? es
-              ? "Después volverás directamente a la solicitud de tu negocio. No pagarás nada hoy."
-              : "Afterwards, we will take you straight back to your business application. You will not pay anything today."
-            : es
-              ? "Crea una cuenta con email, entra con Google o usa un enlace seguro."
-              : "Create an account with email, continue with Google, or use a secure link."}
-        </p>
+        <div className="auth-intro-note" aria-hidden="true">
+          <span>{es ? "Tu lugar para" : "Your place for"}</span>
+          <strong>
+            {es
+              ? "descubrir · conectar · volver"
+              : "discover · connect · return"}
+          </strong>
+        </div>
       </section>
       {businessIntent && (
         <aside
@@ -67,7 +85,7 @@ export default async function AuthPage({
           </span>
         </aside>
       )}
-      <section className="panel auth-panel">
+      <section className="auth-focus-panel">
         {query.sent && (
           <p className="notice">
             {es
@@ -103,7 +121,60 @@ export default async function AuthPage({
               : "Authentication could not be completed. Check the details and try again."}
           </p>
         )}
-        {config.googleAuthEnabled && (
+        <nav
+          className="auth-modes"
+          aria-label={es ? "Opciones de acceso" : "Access options"}
+        >
+          <a
+            className={mode === "signin" ? "active" : ""}
+            href={modeHref("signin")}
+          >
+            {es ? "Entrar" : "Sign in"}
+          </a>
+          <a
+            className={mode === "signup" ? "active" : ""}
+            href={modeHref("signup")}
+          >
+            {es ? "Crear cuenta" : "Create account"}
+          </a>
+        </nav>
+        <div className="auth-form-head">
+          <span>
+            {mode === "signup"
+              ? es
+                ? "Empieza gratis"
+                : "Start for free"
+              : mode === "magic"
+                ? es
+                  ? "Enlace seguro"
+                  : "Secure link"
+                : mode === "recover"
+                  ? es
+                    ? "Recupera tu acceso"
+                    : "Recover access"
+                  : es
+                    ? "Te damos la bienvenida"
+                    : "Welcome back"}
+          </span>
+          <h2>
+            {mode === "signup"
+              ? es
+                ? "Crea tu cuenta"
+                : "Create your account"
+              : mode === "magic"
+                ? es
+                  ? "Entra sin contraseña"
+                  : "Sign in without a password"
+                : mode === "recover"
+                  ? es
+                    ? "Restablece tu contraseña"
+                    : "Reset your password"
+                  : es
+                    ? "Entra en AkiPasa"
+                    : "Sign in to AkiPasa"}
+          </h2>
+        </div>
+        {config.googleAuthEnabled && mode !== "recover" && mode !== "magic" && (
           <>
             <form action={signInWithGoogle} className="stack">
               <input type="hidden" name="locale" value={locale} />
@@ -119,97 +190,77 @@ export default async function AuthPage({
             </div>
           </>
         )}
-        <div className="auth-grid">
-          <details open>
-            <summary>
-              <strong>{es ? "Crear cuenta" : "Create account"}</strong>
-            </summary>
-            <form action={signUpWithPassword} className="stack">
-              <input type="hidden" name="locale" value={locale} />
-              <input type="hidden" name="next" value={next} />
-              <label>
-                Email
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                />
-              </label>
-              <label>
+        {mode === "signup" && (
+          <form action={signUpWithPassword} className="stack">
+            <input type="hidden" name="locale" value={locale} />
+            <input type="hidden" name="next" value={next} />
+            <label>
+              Email
+              <input name="email" type="email" required autoComplete="email" />
+            </label>
+            <label>
+              {es ? "Contraseña" : "Password"}
+              <input
+                name="password"
+                type="password"
+                required
+                minLength={12}
+                maxLength={128}
+                autoComplete="new-password"
+                aria-describedby="password-help"
+              />
+            </label>
+            <small id="password-help">
+              {es
+                ? "12+ caracteres, con mayúscula, minúscula y número."
+                : "12+ characters with uppercase, lowercase, and a number."}
+            </small>
+            <label>
+              {es ? "Repetir contraseña" : "Confirm password"}
+              <input
+                name="confirmPassword"
+                type="password"
+                required
+                minLength={12}
+                maxLength={128}
+                autoComplete="new-password"
+              />
+            </label>
+            <TermsConsent locale={locale} suffix="password" />
+            <button className="button" type="submit">
+              {es ? "Crear cuenta" : "Create account"}
+            </button>
+          </form>
+        )}
+        {mode === "signin" && (
+          <form action={signInWithPassword} className="stack">
+            <input type="hidden" name="locale" value={locale} />
+            <input type="hidden" name="next" value={next} />
+            <label>
+              Email
+              <input name="email" type="email" required autoComplete="email" />
+            </label>
+            <label>
+              <span className="auth-label-line">
                 {es ? "Contraseña" : "Password"}
-                <input
-                  name="password"
-                  type="password"
-                  required
-                  minLength={12}
-                  maxLength={128}
-                  autoComplete="new-password"
-                  aria-describedby="password-help"
-                />
-              </label>
-              <small id="password-help">
-                {es
-                  ? "12+ caracteres, con mayúscula, minúscula y número."
-                  : "12+ characters with uppercase, lowercase, and a number."}
-              </small>
-              <label>
-                {es ? "Repetir contraseña" : "Confirm password"}
-                <input
-                  name="confirmPassword"
-                  type="password"
-                  required
-                  minLength={12}
-                  maxLength={128}
-                  autoComplete="new-password"
-                />
-              </label>
-              <TermsConsent locale={locale} suffix="password" />
-              <button className="button" type="submit">
-                {es ? "Crear cuenta" : "Create account"}
-              </button>
-            </form>
-          </details>
-          <details>
-            <summary>
-              <strong>
-                {es ? "Entrar con contraseña" : "Sign in with password"}
-              </strong>
-            </summary>
-            <form action={signInWithPassword} className="stack">
-              <input type="hidden" name="locale" value={locale} />
-              <input type="hidden" name="next" value={next} />
-              <label>
-                Email
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                />
-              </label>
-              <label>
-                {es ? "Contraseña" : "Password"}
-                <input
-                  name="password"
-                  type="password"
-                  required
-                  maxLength={128}
-                  autoComplete="current-password"
-                />
-              </label>
-              <button className="button" type="submit">
-                {es ? "Entrar" : "Sign in"}
-              </button>
-            </form>
-          </details>
-        </div>
-        <details className="magic-link">
-          <summary>
-            <strong>
-              {es ? "Entrar sin contraseña" : "Sign in without a password"}
-            </strong>
-          </summary>
+                <a href={modeHref("recover")}>
+                  {es ? "¿La has olvidado?" : "Forgot it?"}
+                </a>
+              </span>
+              <input
+                name="password"
+                type="password"
+                required
+                maxLength={128}
+                autoComplete="current-password"
+              />
+            </label>
+            <button className="button" type="submit">
+              {es ? "Entrar" : "Sign in"}
+            </button>
+          </form>
+        )}
+        {mode === "magic" && (
           <form action={requestMagicLink} className="stack">
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="next" value={next} />
@@ -226,13 +277,8 @@ export default async function AuthPage({
               {es ? "Enviar enlace" : "Send sign-in link"}
             </button>
           </form>
-        </details>
-        <details className="magic-link">
-          <summary>
-            <strong>
-              {es ? "He olvidado mi contraseña" : "Forgot my password"}
-            </strong>
-          </summary>
+        )}
+        {mode === "recover" && (
           <form action={requestPasswordReset} className="stack">
             <input type="hidden" name="locale" value={locale} />
             <label htmlFor="recovery-email">Email</label>
@@ -248,7 +294,19 @@ export default async function AuthPage({
               {es ? "Enviar enlace de recuperación" : "Send recovery link"}
             </button>
           </form>
-        </details>
+        )}
+        <div className="auth-secondary">
+          {mode !== "magic" && (
+            <a href={modeHref("magic")}>
+              {es ? "Usar un enlace de acceso" : "Use a sign-in link"}
+            </a>
+          )}
+          {(mode === "magic" || mode === "recover") && (
+            <a href={modeHref("signin")}>
+              {es ? "Volver a entrar" : "Back to sign in"}
+            </a>
+          )}
+        </div>
       </section>
     </main>
   );

@@ -10,6 +10,9 @@ const schema = z.object({
   locale: z.enum(["es", "en"]),
   token: z.string().uuid(),
   idempotencyKey: z.string().uuid(),
+  latitude: z.coerce.number().min(-90).max(90),
+  longitude: z.coerce.number().min(-180).max(180),
+  accuracy: z.coerce.number().int().min(0).max(500),
 });
 
 export async function completeCheckIn(formData: FormData) {
@@ -23,6 +26,9 @@ export async function completeCheckIn(formData: FormData) {
   const { data, error } = await supabase.rpc("check_in_by_token", {
     p_token: parsed.data.token,
     p_idempotency_key: parsed.data.idempotencyKey,
+    p_latitude: parsed.data.latitude,
+    p_longitude: parsed.data.longitude,
+    p_accuracy_meters: parsed.data.accuracy,
   });
   const state = error
     ? "invalid"

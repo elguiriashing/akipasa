@@ -19,7 +19,11 @@ export function PersonalisationConsent({ locale }: { locale: Locale }) {
     await fetch("/api/v1/personalisation/consent", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ analytics: enabled, personalisation: enabled }),
+      body: JSON.stringify({
+        analytics: enabled,
+        personalisation: enabled,
+        marketing: enabled,
+      }),
     }).catch(() => undefined);
   }
 
@@ -41,8 +45,8 @@ export function PersonalisationConsent({ locale }: { locale: Locale }) {
         </strong>
         <p>
           {locale === "es"
-            ? "Con tu permiso, usamos interacciones como aperturas, guardados y saltos para ordenar mejor tus planes. Puedes desactivarlo o borrarlo cuando quieras."
-            : "With your permission, we use interactions such as opens, saves and skips to rank plans better. You can disable or erase this whenever you want."}
+            ? "Con tu permiso, usamos interacciones como aperturas, guardados y saltos para ordenar mejor tus planes y personalizar la publicidad. Puedes desactivarlo o borrarlo cuando quieras."
+            : "With your permission, we use interactions such as opens, saves and skips to rank plans and personalise advertising. You can disable or erase this whenever you want."}
         </p>
       </div>
       <div className="personalisation-consent-actions">

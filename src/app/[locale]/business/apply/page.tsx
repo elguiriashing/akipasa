@@ -4,6 +4,7 @@ import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { SupportAgentLauncher } from "@/components/support/SupportAgentLauncher";
 import { SpainAddressAutocomplete } from "@/components/SpainAddressAutocomplete";
+import { businessCategories } from "@/lib/business-packages";
 import { submitBusinessApplication } from "../actions";
 
 type BusinessApplication = {
@@ -13,6 +14,8 @@ type BusinessApplication = {
   payment_state: string;
   review_reason: string | null;
   created_at: string;
+  business_category: string | null;
+  plan_code: string;
 };
 
 export default async function BusinessApplicationPage({
@@ -25,13 +28,22 @@ export default async function BusinessApplicationPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
+  const selectedCategory = businessCategories.some(
+    (item) => item.key === query.category,
+  )
+    ? query.category!
+    : "food";
+  const selectedPlan =
+    query.plan === "business_pro" ? "business_pro" : "business";
   const { supabase, user } = await requireUser(
     locale,
     `/${locale}/business/apply`,
   );
   const { data } = await supabase
     .from("business_applications")
-    .select("id,business_name,state,payment_state,review_reason,created_at")
+    .select(
+      "id,business_name,state,payment_state,review_reason,created_at,business_category,plan_code",
+    )
     .eq("applicant_id", user.id)
     .order("created_at", { ascending: false });
   const applications = (data || []) as BusinessApplication[];
@@ -207,7 +219,7 @@ export default async function BusinessApplicationPage({
           {current.state === "awaiting_payment" && (
             <Link
               className="button button-strong"
-              href={`/${locale}/account/subscription?plan=business`}
+              href={`/${locale}/account/subscription?plan=${current.plan_code === "business_pro" ? "business_pro" : "business"}&category=${current.business_category || "food"}`}
             >
               {es ? "Elegir plan Business" : "Choose a Business plan"}
             </Link>
@@ -236,6 +248,22 @@ export default async function BusinessApplicationPage({
               </p>
             </div>
             <input type="hidden" name="locale" value={locale} />
+            <input type="hidden" name="plan" value={selectedPlan} />
+            <label htmlFor="business-category">
+              {es ? "Tipo de negocio" : "Business type"}
+            </label>
+            <select
+              id="business-category"
+              name="businessCategory"
+              defaultValue={selectedCategory}
+              required
+            >
+              {businessCategories.map((category) => (
+                <option key={category.key} value={category.key}>
+                  {es ? category.es : category.en}
+                </option>
+              ))}
+            </select>
             <label htmlFor="business-name">
               {es ? "Nombre del negocio" : "Business name"}
             </label>

@@ -16,7 +16,9 @@ describe("admin business application workflow", () => {
 
     expect(layout).toContain("Business applications");
     expect(layout).toContain("pendingApplications");
-    expect(overview).toContain("Open business applications");
+    expect(overview).toContain(
+      "href={`/${locale}/admin/business-applications`}",
+    );
     expect(queue).toContain("trial_1_month");
     expect(queue).toContain("trial_3_month");
     expect(queue).toContain("waived");

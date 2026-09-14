@@ -96,6 +96,23 @@ export async function searchSpainAddresses(
   const parsed = cartoCiudadResponseSchema.safeParse(await response.json());
   if (!parsed.success) throw new Error("Unexpected CartoCiudad response");
 
+  const localityCoordinates = new Map<
+    string,
+    { latitude: number; longitude: number }
+  >();
+  for (const candidate of parsed.data) {
+    if (!hasSpainCoordinates(candidate.lat, candidate.lng)) continue;
+    const municipality = tidy(candidate.muni).toLocaleLowerCase("es");
+    const province = tidy(candidate.province).toLocaleLowerCase("es");
+    const key = `${municipality}|${province}`;
+    if (municipality && province && !localityCoordinates.has(key)) {
+      localityCoordinates.set(key, {
+        latitude: candidate.lat,
+        longitude: candidate.lng,
+      });
+    }
+  }
+
   const seen = new Set<string>();
   return parsed.data
     .flatMap((candidate): SpainAddressSuggestion[] => {
@@ -108,20 +125,38 @@ export async function searchSpainAddresses(
       const hasCoordinates = hasSpainCoordinates(candidate.lat, candidate.lng);
 
       if (mode === "locality") {
-        if (type !== "municipio" || !locality || !province) return [];
-        const key = `${locality}|${province}`.toLocaleLowerCase("es");
+        if (
+          type === "portal" ||
+          !province ||
+          (type !== "municipio" && !hasCoordinates)
+        )
+          return [];
+        const place = tidy(
+          type === "municipio"
+            ? locality
+            : candidate.poblacion || candidate.address || locality,
+        );
+        if (!place) return [];
+        const key = `${place}|${province}`.toLocaleLowerCase("es");
         if (seen.has(key)) return [];
         seen.add(key);
+        const fallbackCoordinates = localityCoordinates.get(
+          `${locality.toLocaleLowerCase("es")}|${province.toLocaleLowerCase("es")}`,
+        );
         return [
           {
             id: candidate.id,
-            label: normalizedLabel([locality, province]),
-            address: locality,
-            locality,
+            label: normalizedLabel([place, province]),
+            address: place,
+            locality: place,
             province,
             postalCode,
-            latitude: hasCoordinates ? candidate.lat : null,
-            longitude: hasCoordinates ? candidate.lng : null,
+            latitude: hasCoordinates
+              ? candidate.lat
+              : (fallbackCoordinates?.latitude ?? null),
+            longitude: hasCoordinates
+              ? candidate.lng
+              : (fallbackCoordinates?.longitude ?? null),
             kind: "locality",
             provider: "cartociudad",
           },

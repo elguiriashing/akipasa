@@ -1,13 +1,18 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { EventCard } from "@/components/EventCard";
 import { ProductionMap } from "@/components/ProductionMap";
 import { UseMyLocation } from "@/components/UseMyLocation";
+import { SpainLocationPicker } from "@/components/SpainLocationPicker";
+import { AutoSubmitFilters } from "@/components/AutoSubmitFilters";
 import { config, isLocale } from "@/lib/config";
 import type { TimeWindow } from "@/lib/domain";
 import { translated } from "@/lib/domain";
-import { isSpainLocation, sortedSpainLocations } from "@/lib/locations";
+import { discoveryLocationFromQuery } from "@/lib/discovery-location";
 import { msg } from "@/lib/messages";
 import { recommendDiscovery } from "@/lib/personalisation/server";
+import { repository } from "@/lib/repository";
+import { publishedVenues } from "@/lib/unclaimed-venues";
 
 export const dynamic = "force-dynamic";
 
@@ -38,11 +43,12 @@ export default async function MapPage({
   const query = await searchParams;
   const m = msg(locale);
 
-  const requestedLocality =
-    typeof query.locality === "string" ? query.locality : "fuengirola";
-  const locality = isSpainLocation(requestedLocality)
-    ? requestedLocality
-    : "fuengirola";
+  const selectedLocation = discoveryLocationFromQuery(query, locale);
+  const {
+    locality,
+    center: searchCenter,
+    name: localityName,
+  } = selectedLocation;
   const requestedRadius = Number(
     typeof query.radius === "string" ? query.radius : 25,
   );
@@ -72,26 +78,36 @@ export default async function MapPage({
   const dateFrom = parseDate(query.dateFrom);
   const dateTo = parseDate(query.dateTo, true);
   const accessible = query.accessible === "on";
-  const localityConfig = config.localities[locality];
-  const localityName = localityConfig[locale];
-
+  const discoveryQuery = {
+    locality,
+    latitude: searchCenter.latitude,
+    longitude: searchCenter.longitude,
+    radiusKm: radius,
+    time,
+    category,
+    price,
+    minPriceCents,
+    maxPriceCents,
+    dateFrom,
+    dateTo,
+    accessible,
+  };
   const recommendations = await recommendDiscovery({
-    query: {
-      locality,
-      radiusKm: radius,
-      time,
-      category,
-      price,
-      minPriceCents,
-      maxPriceCents,
-      dateFrom,
-      dateTo,
-      accessible,
-    },
+    query: discoveryQuery,
     surface: "map",
   });
   const results = recommendations.items.map((item) => item.result);
-  const mapPoints = results.map((result) => ({
+  const [nationwideEvents, allVenueRows] = await Promise.all([
+    repository.discover({
+      locality,
+      latitude: searchCenter.latitude,
+      longitude: searchCenter.longitude,
+      radiusKm: 5000,
+      time: "all",
+    }),
+    publishedVenues({ center: searchCenter }),
+  ]);
+  const eventPoints = nationwideEvents.map((result) => ({
     id: result.event.id,
     latitude: result.venue.latitude,
     longitude: result.venue.longitude,
@@ -106,16 +122,29 @@ export default async function MapPage({
         : `${(result.event.priceCents / 100).toFixed(0)}\u20ac`,
     source: result.event.source,
   }));
+  const venueRows = allVenueRows.filter((venue) => venue.distanceKm <= radius);
+  const venuePoints = allVenueRows.map((venue) => ({
+    id: venue.id,
+    latitude: venue.latitude,
+    longitude: venue.longitude,
+    title: venue.name,
+    venue: venue.address,
+    href: `/${locale}/venues/${venue.slug}`,
+    category: locale === "es" ? "Local" : "Venue",
+    source: venue.claimStatus,
+    kind: "venue" as const,
+  }));
+  const mapPoints = [...eventPoints, ...venuePoints];
 
   return (
-    <main className="shell">
-      <section className="hero">
+    <main className="shell discover-page map-page">
+      <section className="hero map-page-hero">
         <div className="eyebrow">{m.map}</div>
         <h1>{locale === "es" ? "Mapa de planes" : "Event map"}</h1>
         <p className="lede">
           {locale === "es"
-            ? `Explora ${localityName}, ajusta los filtros aqu\u00ed y abre cualquier marcador.`
-            : `Explore ${localityName}, adjust filters here, and open any marker.`}
+            ? "Explora planes cerca de ti por toda Espa\u00f1a."
+            : "Explore plans near you across Spain."}
         </p>
       </section>
 
@@ -125,6 +154,8 @@ export default async function MapPage({
         method="get"
         key={[
           locality,
+          searchCenter.latitude,
+          searchCenter.longitude,
           radius,
           time,
           category || "any",
@@ -136,25 +167,24 @@ export default async function MapPage({
           accessible,
         ].join("-")}
       >
-        <details className="filter-group" open>
+        <details className="filter-group filter-group-primary" open>
           <summary className="filter-summary">
             <span>{locale === "es" ? "Filtros del mapa" : "Map filters"}</span>
             <span className="filter-summary-caption">
               {locale === "es"
-                ? "El mapa y la lista usan la misma ubicaci\u00f3n"
-                : "The map and list use the same location"}
+                ? "Estos filtros solo cambian las listas de abajo"
+                : "These filters only change the lists below"}
             </span>
           </summary>
           <div className="filter-grid">
-            <div className="field">
-              <label htmlFor="locality">{m.location}</label>
-              <select id="locality" name="locality" defaultValue={locality}>
-                {sortedSpainLocations.map(([key, value]) => (
-                  <option key={key} value={key}>
-                    {value[locale]}
-                  </option>
-                ))}
-              </select>
+            <div className="field location-filter-field">
+              <SpainLocationPicker
+                locale={locale}
+                defaultName={localityName}
+                defaultLocality={locality}
+                defaultLatitude={searchCenter.latitude}
+                defaultLongitude={searchCenter.longitude}
+              />
               <UseMyLocation locale={locale} />
             </div>
             <div className="field">
@@ -273,21 +303,14 @@ export default async function MapPage({
             </label>
           </div>
         </details>
-        <div className="filter-actions">
-          <button className="button button-strong" type="submit">
-            {m.apply}
-          </button>
-        </div>
+        <AutoSubmitFilters formId="map-filters" />
       </form>
 
       <ProductionMap
         locale={locale}
         points={mapPoints}
         styleUrl={config.mapStyleUrl}
-        center={{
-          latitude: localityConfig.latitude,
-          longitude: localityConfig.longitude,
-        }}
+        center={searchCenter}
       />
 
       <section aria-labelledby="map-results-title">
@@ -315,6 +338,61 @@ export default async function MapPage({
           <p className="notice">{m.noResults}</p>
         )}
       </section>
+
+      {venueRows.length ? (
+        <section aria-labelledby="map-venues-title">
+          <div className="section-head">
+            <h2 id="map-venues-title">
+              {locale === "es" ? "Negocios cerca de ti" : "Businesses near you"}
+            </h2>
+            <span className="count">{venueRows.length}</span>
+          </div>
+          <p className="result-caption">
+            {locale === "es"
+              ? "Locales publicados cerca de la ubicación seleccionada."
+              : "Published venues near the selected location."}
+          </p>
+          <div className="grid">
+            {venueRows.map((venue) => (
+              <Link
+                key={venue.id}
+                className="card"
+                href={`/${locale}/venues/${venue.slug}`}
+              >
+                <div className="card-media">
+                  <div className="card-media-fallback" aria-hidden>
+                    <span>{venue.name.slice(0, 1).toUpperCase()}</span>
+                  </div>
+                  <div className="card-media-scrim" aria-hidden />
+                  <div className="card-media-badges">
+                    <span className="pill card-pill-date">
+                      {venue.claimStatus === "claimed"
+                        ? locale === "es"
+                          ? "Local"
+                          : "Venue"
+                        : locale === "es"
+                          ? "Sin reclamar"
+                          : "Unclaimed"}
+                    </span>
+                  </div>
+                </div>
+                <div className="card-body">
+                  <h3>{venue.name}</h3>
+                  <p className="card-venue">{venue.address}</p>
+                  <p className="card-distance">
+                    {`${venue.distanceKm.toFixed(1)} km`}
+                  </p>
+                  <div className="card-footer">
+                    <span className="card-arrow">
+                      {locale === "es" ? "Ver negocio" : "View business"}
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
     </main>
   );
 }

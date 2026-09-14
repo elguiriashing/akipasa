@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { VenueQrCode } from "@/components/VenueQrCode";
@@ -7,16 +8,25 @@ import { config, isLocale } from "@/lib/config";
 import {
   addOccurrence,
   addTeamMember,
+  assignReward,
+  createBookingSlot,
+  createBusinessReward,
+  createCheckInCredential,
+  createStampCard,
   deleteEvent,
   deleteVenue,
   duplicateEvent,
+  redeemRewardClaim,
   removeVenueImage,
+  saveBookingSettings,
   saveOffer,
   setRecurrence,
   updateEvent,
+  updateBookingRequest,
   updateOccurrence,
   updateVenue,
   updateVenueImageMetadata,
+  unclaimVenue,
   uploadVenueImage,
 } from "./actions";
 
@@ -59,7 +69,14 @@ export default async function VenueWorkspace({
     { data: offers },
     { data: members },
     { data: media },
-    { data: program },
+    { data: programs },
+    { data: credentials },
+    { data: rewards },
+    { data: passportOptions },
+    { data: bookingSettings },
+    { data: bookingSlots },
+    { data: bookingRequests },
+    { data: audience },
   ] = await Promise.all([
     supabase
       .from("venues")
@@ -91,16 +108,56 @@ export default async function VenueWorkspace({
       .order("sort_order"),
     supabase
       .from("loyalty_programs")
-      .select("id,check_in_token,title_es,stamps_required")
+      .select(
+        "id,title_es,title_en,reward_es,reward_en,stamps_required,active,loyalty_program_rewards(reward_id)",
+      )
+      .eq("venue_id", id)
+      .order("stamps_required"),
+    supabase
+      .from("venue_checkin_credentials")
+      .select("id,token,label,active")
+      .eq("venue_id", id)
+      .eq("active", true),
+    supabase
+      .from("business_rewards")
+      .select(
+        "id,title_es,title_en,description_es,description_en,claim_window_days,active",
+      )
+      .eq("venue_id", id)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("passports")
+      .select("id,title_es,title_en,passport_steps!inner(venue_id)")
+      .eq("passport_steps.venue_id", id)
+      .eq("status", "published"),
+    supabase
+      .from("venue_booking_settings")
+      .select(
+        "mode,requires_deposit,deposit_cents,instructions_es,instructions_en,active",
+      )
       .eq("venue_id", id)
       .maybeSingle(),
+    supabase
+      .from("venue_availability_slots")
+      .select("id,starts_at,ends_at,capacity,active")
+      .eq("venue_id", id)
+      .order("starts_at"),
+    supabase
+      .from("booking_requests")
+      .select(
+        "id,party_size,contact_name,contact_email,contact_phone,notes,status,created_at,venue_availability_slots(starts_at,ends_at)",
+      )
+      .eq("venue_id", id)
+      .order("created_at", { ascending: false }),
+    supabase.rpc("venue_event_audience_summary", { p_venue: id }),
   ]);
   if (!venue) notFound();
   const isOwner = members?.some(
     (member) => member.profile_id === user.id && member.role === "owner",
   );
-  const checkInPath = program
-    ? `/${locale}/check-in/${program.check_in_token}`
+  const primaryCredential = credentials?.[0];
+  const checkInPath = primaryCredential
+    ? `/${locale}/check-in/${primaryCredential.token}`
     : null;
   const checkInUrl = checkInPath
     ? new URL(checkInPath, config.siteUrl).toString()
@@ -420,72 +477,495 @@ export default async function VenueWorkspace({
           </form>
         </details>
         {isOwner && (
-          <section className="panel console-card danger-zone">
-            <h2>{es ? "Eliminar local" : "Delete venue"}</h2>
-            <p>
-              {es
-                ? "Esto elimina tambien todos sus eventos, ofertas y programas. No se puede deshacer."
-                : "This also deletes every event, offer and programme. It cannot be undone."}
-            </p>
-            <form action={deleteVenue} className="stack">
-              <input type="hidden" name="locale" value={locale} />
-              <input type="hidden" name="venueId" value={id} />
-              <label>
-                {es ? "Motivo de eliminacion" : "Deletion reason"}
-                <textarea
-                  name="reason"
-                  required
-                  minLength={10}
-                  maxLength={2000}
-                />
-              </label>
-              <label>
-                {es
-                  ? "Escribe DELETE para confirmar"
-                  : "Type DELETE to confirm"}
-                <input name="confirmation" required pattern="DELETE" />
-              </label>
-              <button className="button danger" type="submit">
+          <section className="panel console-card venue-access-zone">
+            <div className="stack">
+              <div>
+                <p className="eyebrow">
+                  {es ? "Acceso al local" : "Venue access"}
+                </p>
+                <h2>{es ? "Desvincular local" : "Unlink venue"}</h2>
+                <p>
+                  {es
+                    ? "Quita este local de tu cuenta sin borrar su ficha, eventos ni historial. Si eres la última persona propietaria, el local seguirá publicado como no reclamado."
+                    : "Remove this venue from your account without deleting its listing, events or history. If you are the last owner, it stays published as unclaimed."}
+                </p>
+              </div>
+              <form action={unclaimVenue} className="stack">
+                <input type="hidden" name="locale" value={locale} />
+                <input type="hidden" name="venueId" value={id} />
+                <label>
+                  {es ? "Motivo de desvinculación" : "Reason for unlinking"}
+                  <textarea
+                    name="reason"
+                    required
+                    minLength={10}
+                    maxLength={2000}
+                  />
+                </label>
+                <label>
+                  {es
+                    ? "Escribe UNCLAIM para confirmar"
+                    : "Type UNCLAIM to confirm"}
+                  <input name="confirmation" required pattern="UNCLAIM" />
+                </label>
+                <button className="button secondary" type="submit">
+                  {es ? "Desvincular sin borrar" : "Unlink without deleting"}
+                </button>
+              </form>
+            </div>
+            <details className="danger-zone">
+              <summary>
                 {es
                   ? "Eliminar local definitivamente"
                   : "Delete venue permanently"}
+              </summary>
+              <div className="stack">
+                <p>
+                  {es
+                    ? "Usa esta opción solo si el local y todo su contenido deben desaparecer."
+                    : "Use this only when the venue and all of its content must disappear."}
+                </p>
+                <form action={deleteVenue} className="stack">
+                  <input type="hidden" name="locale" value={locale} />
+                  <input type="hidden" name="venueId" value={id} />
+                  <label>
+                    {es ? "Motivo de eliminación" : "Deletion reason"}
+                    <textarea
+                      name="reason"
+                      required
+                      minLength={10}
+                      maxLength={2000}
+                    />
+                  </label>
+                  <label>
+                    {es
+                      ? "Escribe DELETE para confirmar"
+                      : "Type DELETE to confirm"}
+                    <input name="confirmation" required pattern="DELETE" />
+                  </label>
+                  <button className="button danger" type="submit">
+                    {es
+                      ? "Eliminar local definitivamente"
+                      : "Delete venue permanently"}
+                  </button>
+                </form>
+              </div>
+            </details>
+          </section>
+        )}
+        <section className="panel loyalty-workbench">
+          <h2>{es ? "Sellos y recompensas" : "Stamps and rewards"}</h2>
+          <p>
+            {es
+              ? "Un solo check-in suma en todas las tarjetas activas y en los pasaportes que el cliente haya iniciado."
+              : "One check-in credits every active stamp card and each passport the customer has started."}
+          </p>
+          <div className="reward-card-list">
+            {(programs || []).map((program: any) => (
+              <article className="stamp-card" key={program.id}>
+                <span className="status-pill">
+                  {program.stamps_required} {es ? "sellos" : "stamps"}
+                </span>
+                <h3>
+                  {locale === "en"
+                    ? program.title_en || program.title_es
+                    : program.title_es}
+                </h3>
+                <p>
+                  {locale === "en"
+                    ? program.reward_en || program.reward_es
+                    : program.reward_es}
+                </p>
+              </article>
+            ))}
+          </div>
+          <details>
+            <summary>
+              {es ? "Crear tarjeta de sellos" : "Create stamp card"}
+            </summary>
+            <form action={createStampCard} className="stack">
+              <input type="hidden" name="locale" value={locale} />
+              <input type="hidden" name="venueId" value={id} />
+              <div className="two-col">
+                <label>
+                  {es ? "Titulo" : "Title"}
+                  <input name="titleEs" required minLength={3} />
+                </label>
+                <label>
+                  {es ? "Titulo ingles" : "English title"}
+                  <input name="titleEn" />
+                </label>
+              </div>
+              <div className="two-col">
+                <label>
+                  {es ? "Premio resumido" : "Reward summary"}
+                  <input name="rewardEs" required minLength={3} />
+                </label>
+                <label>
+                  {es ? "Premio ingles" : "English reward"}
+                  <input name="rewardEn" />
+                </label>
+              </div>
+              <label>
+                {es ? "Check-ins necesarios" : "Check-ins required"}
+                <input
+                  name="stampsRequired"
+                  type="number"
+                  min="2"
+                  max="50"
+                  defaultValue="5"
+                  required
+                />
+              </label>
+              <button className="button" type="submit">
+                {es ? "Crear tarjeta" : "Create card"}
               </button>
             </form>
-          </section>
-        )}
-        {program && (
-          <section className="panel">
-            <h2>{es ? "Material de check-in" : "Check-in material"}</h2>
-            <p>
-              {program.title_es} · {program.stamps_required}{" "}
-              {es ? "sellos" : "stamps"}
-            </p>
-            {checkInUrl && (
-              <VenueQrCode
-                value={checkInUrl}
-                loadingLabel={es ? "Generando QR" : "Generating QR"}
-                errorLabel={
-                  es
-                    ? "No se pudo generar el código QR."
-                    : "The QR code could not be generated."
-                }
-                alt={
-                  es
-                    ? `Código QR de check-in para ${venue.name}`
-                    : `Check-in QR code for ${venue.name}`
-                }
+          </details>
+          <details>
+            <summary>{es ? "Crear recompensa" : "Create reward"}</summary>
+            <form action={createBusinessReward} className="stack">
+              <input type="hidden" name="locale" value={locale} />
+              <input type="hidden" name="venueId" value={id} />
+              <div className="two-col">
+                <label>
+                  {es ? "Nombre" : "Name"}
+                  <input name="titleEs" required />
+                </label>
+                <label>
+                  {es ? "Nombre ingles" : "English name"}
+                  <input name="titleEn" />
+                </label>
+              </div>
+              <label>
+                {es ? "Descripcion y condiciones" : "Description and terms"}
+                <textarea name="descriptionEs" required />
+              </label>
+              <label>
+                {es ? "Descripcion inglesa" : "English description"}
+                <textarea name="descriptionEn" />
+              </label>
+              <label>
+                {es ? "Dias para canjear" : "Days to redeem"}
+                <input
+                  name="claimWindowDays"
+                  type="number"
+                  min="1"
+                  max="365"
+                  defaultValue="30"
+                  required
+                />
+              </label>
+              <button className="button" type="submit">
+                {es ? "Crear recompensa" : "Create reward"}
+              </button>
+            </form>
+          </details>
+          {!!rewards?.length && (
+            <details>
+              <summary>{es ? "Asignar recompensa" : "Assign reward"}</summary>
+              <form action={assignReward} className="stack">
+                <input type="hidden" name="locale" value={locale} />
+                <input type="hidden" name="venueId" value={id} />
+                <label>
+                  {es ? "Recompensa" : "Reward"}
+                  <select name="rewardId" required>
+                    {rewards.map((reward: any) => (
+                      <option value={reward.id} key={reward.id}>
+                        {locale === "en"
+                          ? reward.title_en || reward.title_es
+                          : reward.title_es}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  {es ? "Tipo" : "Type"}
+                  <select name="targetType">
+                    <option value="stamp">
+                      {es ? "Tarjeta de sellos" : "Stamp card"}
+                    </option>
+                    <option value="passport">
+                      {es ? "Pasaporte" : "Passport"}
+                    </option>
+                  </select>
+                </label>
+                <label>
+                  {es ? "Tarjeta o pasaporte" : "Card or passport"}
+                  <select name="targetId" required>
+                    {(programs || []).map((program: any) => (
+                      <option value={program.id} key={program.id}>
+                        {es ? "Sellos" : "Stamps"}: {program.title_es}
+                      </option>
+                    ))}
+                    {(passportOptions || []).map((passport: any) => (
+                      <option value={passport.id} key={passport.id}>
+                        {es ? "Pasaporte" : "Passport"}:{" "}
+                        {locale === "en"
+                          ? passport.title_en || passport.title_es
+                          : passport.title_es}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  {es ? "Nivel" : "Tier"}
+                  <select name="accessTier">
+                    <option value="free">{es ? "Todos" : "Everyone"}</option>
+                    <option value="premium">Premium</option>
+                  </select>
+                </label>
+                <button className="button secondary" type="submit">
+                  {es ? "Asignar" : "Assign"}
+                </button>
+              </form>
+            </details>
+          )}
+        </section>
+        <section className="panel">
+          <h2>{es ? "Material de check-in" : "Check-in material"}</h2>
+          <p>
+            {es
+              ? "QR supervisado con geovalla. NFC puede apuntar a la misma URL."
+              : "Supervised geofenced QR. An NFC tag can point to the same URL."}
+          </p>
+          {checkInUrl && (
+            <VenueQrCode
+              value={checkInUrl}
+              loadingLabel={es ? "Generando QR" : "Generating QR"}
+              errorLabel={
+                es
+                  ? "No se pudo generar el código QR."
+                  : "The QR code could not be generated."
+              }
+              alt={
+                es
+                  ? `Código QR de check-in para ${venue.name}`
+                  : `Check-in QR code for ${venue.name}`
+              }
+            />
+          )}
+          <a className="button" href={checkInPath || undefined}>
+            {es ? "Probar destino del QR" : "Test QR destination"}
+          </a>
+          <p className="muted">
+            {es
+              ? "Descarga o imprime este código y colócalo donde el personal pueda supervisar los check-ins."
+              : "Download or print this code and place it where staff can supervise check-ins."}
+          </p>
+          <form action={createCheckInCredential} className="inline-form">
+            <input type="hidden" name="locale" value={locale} />
+            <input type="hidden" name="venueId" value={id} />
+            <input
+              name="label"
+              placeholder={es ? "Barra principal" : "Main counter"}
+              required
+            />
+            <button className="button secondary" type="submit">
+              {es ? "Nuevo QR / NFC" : "New QR / NFC"}
+            </button>
+          </form>
+          <form action={redeemRewardClaim} className="stack redemption-form">
+            <input type="hidden" name="locale" value={locale} />
+            <input type="hidden" name="venueId" value={id} />
+            <label>
+              {es ? "Codigo de recompensa del cliente" : "Customer reward code"}
+              <input
+                name="claimCode"
+                required
+                placeholder="00000000-0000-0000-0000-000000000000"
               />
-            )}
-            <a className="button" href={checkInPath || undefined}>
-              {es ? "Probar destino del QR" : "Test QR destination"}
-            </a>
+            </label>
+            <button className="button" type="submit">
+              {es ? "Validar y canjear" : "Validate and redeem"}
+            </button>
+          </form>
+        </section>
+        <section className="panel">
+          <h2>{es ? "Audiencia de eventos" : "Event audience"}</h2>
+          <p>
+            {es
+              ? "Los desgloses demograficos solo aparecen con al menos 5 asistentes."
+              : "Demographic breakdowns only appear with at least 5 attendees."}
+          </p>
+          <div className="managed-list">
+            {(audience || []).map((row: any) => {
+              const event = (events || []).find(
+                (item: any) => item.id === row.event_id,
+              );
+              return (
+                <div className="managed-row" key={row.event_id}>
+                  <div>
+                    <strong>
+                      {event
+                        ? locale === "en"
+                          ? event.title_en || event.title_es
+                          : event.title_es
+                        : row.event_id}
+                    </strong>
+                    <span>
+                      {row.going_count} {es ? "personas van" : "going"}
+                    </span>
+                  </div>
+                  <span className="status-pill">
+                    {Object.keys(row.age_bands || {}).length
+                      ? es
+                        ? "Desglose disponible"
+                        : "Breakdown available"
+                      : es
+                        ? "Privacidad protegida"
+                        : "Privacy protected"}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+        <section className="panel booking-workbench">
+          <h2>{es ? "Reservas" : "Bookings"}</h2>
+          <p>
+            {es
+              ? "Usa enlaces externos o acepta solicitudes sencillas. La venta de asientos numerados queda fuera de este flujo."
+              : "Use external links or accept simple requests. Numbered-seat ticketing stays outside this flow."}
+          </p>
+          <form action={saveBookingSettings} className="stack">
+            <input type="hidden" name="locale" value={locale} />
+            <input type="hidden" name="venueId" value={id} />
+            <label>
+              {es ? "Modo" : "Mode"}
+              <select
+                name="mode"
+                defaultValue={bookingSettings?.mode || "external"}
+              >
+                <option value="external">
+                  {es ? "Enlace externo" : "External link"}
+                </option>
+                <option value="request">
+                  {es ? "Solicitudes AkiPasa" : "AkiPasa requests"}
+                </option>
+                <option value="disabled">
+                  {es ? "Desactivado" : "Disabled"}
+                </option>
+              </select>
+            </label>
+            <label className="check-row">
+              <input
+                type="checkbox"
+                name="requiresDeposit"
+                defaultChecked={bookingSettings?.requires_deposit || false}
+              />{" "}
+              {es ? "Requiere deposito" : "Requires deposit"}
+            </label>
+            <label>
+              {es ? "Deposito en centimos" : "Deposit in cents"}
+              <input
+                name="depositCents"
+                type="number"
+                min="0"
+                defaultValue={bookingSettings?.deposit_cents || ""}
+              />
+            </label>
+            <label>
+              {es ? "Instrucciones" : "Instructions"}
+              <textarea
+                name="instructionsEs"
+                defaultValue={bookingSettings?.instructions_es || ""}
+              />
+            </label>
+            <label>
+              {es ? "Instrucciones inglesas" : "English instructions"}
+              <textarea
+                name="instructionsEn"
+                defaultValue={bookingSettings?.instructions_en || ""}
+              />
+            </label>
+            <button className="button secondary" type="submit">
+              {es ? "Guardar reservas" : "Save booking settings"}
+            </button>
+          </form>
+          <details>
+            <summary>
+              {es ? "Anadir disponibilidad" : "Add availability"}
+            </summary>
+            <form action={createBookingSlot} className="stack">
+              <input type="hidden" name="locale" value={locale} />
+              <input type="hidden" name="venueId" value={id} />
+              <div className="two-col">
+                <label>
+                  {es ? "Inicio" : "Starts"}
+                  <input name="startsAt" type="datetime-local" required />
+                </label>
+                <label>
+                  {es ? "Fin" : "Ends"}
+                  <input name="endsAt" type="datetime-local" required />
+                </label>
+              </div>
+              <label>
+                {es ? "Capacidad" : "Capacity"}
+                <input
+                  name="capacity"
+                  type="number"
+                  min="1"
+                  defaultValue="1"
+                  required
+                />
+              </label>
+              <button className="button" type="submit">
+                {es ? "Crear horario" : "Create slot"}
+              </button>
+            </form>
+          </details>
+          {!!bookingSlots?.length && (
             <p className="muted">
-              {es
-                ? "Descarga o imprime este código y colócalo donde el personal pueda supervisar los check-ins."
-                : "Download or print this code and place it where staff can supervise check-ins."}
+              {bookingSlots.length}{" "}
+              {es ? "horarios configurados" : "slots configured"}
             </p>
-          </section>
-        )}
+          )}
+          {!!bookingRequests?.length && (
+            <div className="managed-list">
+              {bookingRequests.map((request: any) => (
+                <form
+                  action={updateBookingRequest}
+                  className="managed-row"
+                  key={request.id}
+                >
+                  <input type="hidden" name="locale" value={locale} />
+                  <input type="hidden" name="venueId" value={id} />
+                  <input type="hidden" name="requestId" value={request.id} />
+                  <div>
+                    <strong>
+                      {request.contact_name} · {request.party_size}
+                    </strong>
+                    <span>
+                      {request.contact_email} · {request.status}
+                    </span>
+                  </div>
+                  <select
+                    name="status"
+                    defaultValue={
+                      request.status === "requested"
+                        ? "confirmed"
+                        : request.status
+                    }
+                  >
+                    <option value="confirmed">
+                      {es ? "Confirmar" : "Confirm"}
+                    </option>
+                    <option value="declined">
+                      {es ? "Rechazar" : "Decline"}
+                    </option>
+                    <option value="completed">
+                      {es ? "Completada" : "Completed"}
+                    </option>
+                  </select>
+                  <button className="button secondary" type="submit">
+                    {es ? "Actualizar" : "Update"}
+                  </button>
+                </form>
+              ))}
+            </div>
+          )}
+        </section>
       </section>
       <section className="queue-section">
         <h2>{es ? "Eventos" : "Events"}</h2>

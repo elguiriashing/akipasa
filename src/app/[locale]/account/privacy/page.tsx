@@ -24,7 +24,7 @@ export default async function AccountPrivacyPage({
     .maybeSingle();
   const { data: personalisation } = await supabase
     .from("personalisation_settings")
-    .select("personalisation_enabled")
+    .select("personalisation_enabled,marketing_enabled")
     .eq("profile_id", user.id)
     .maybeSingle();
   const es = locale === "es";
@@ -53,7 +53,10 @@ export default async function AccountPrivacyPage({
       <section className="dashboard-grid">
         <PersonalisationSettings
           locale={locale}
-          initialEnabled={Boolean(personalisation?.personalisation_enabled)}
+          initialEnabled={Boolean(
+            personalisation?.personalisation_enabled &&
+              personalisation?.marketing_enabled,
+          )}
         />
         <article className="panel console-card">
           <h2>{es ? "Exportación" : "Export"}</h2>

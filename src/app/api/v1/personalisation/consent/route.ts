@@ -9,7 +9,11 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 
 const schema = z
-  .object({ analytics: z.boolean(), personalisation: z.boolean() })
+  .object({
+    analytics: z.boolean(),
+    personalisation: z.boolean(),
+    marketing: z.boolean(),
+  })
   .strict();
 
 export async function POST(request: Request) {
@@ -25,6 +29,7 @@ export async function POST(request: Request) {
         profile_id: auth.user.id,
         analytics_enabled: parsed.data.analytics,
         personalisation_enabled: parsed.data.personalisation,
+        marketing_enabled: parsed.data.marketing,
         updated_at: new Date().toISOString(),
       });
       if (error)
@@ -48,6 +53,17 @@ export async function DELETE(request: Request) {
     if (auth.user) {
       const { error } = await supabase.rpc("reset_personalisation_data");
       if (error)
+        return NextResponse.json({ error: "unavailable" }, { status: 503 });
+      const { error: consentError } = await supabase
+        .from("personalisation_settings")
+        .update({
+          analytics_enabled: false,
+          personalisation_enabled: false,
+          marketing_enabled: false,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("profile_id", auth.user.id);
+      if (consentError)
         return NextResponse.json({ error: "unavailable" }, { status: 503 });
     } else if (anonymousId) {
       const service = createSupabaseServiceClient();

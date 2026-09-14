@@ -35,6 +35,7 @@ import {
 import { runMaintenance } from "./maintenance";
 import { executeOperatorCommand } from "./operator-command";
 import { handleTelegramWebhook } from "./telegram-webhook";
+import { handleAkiHQTelegramRequest } from "./telegram-dashboard";
 
 const app = new Hono<AppEnvironment>();
 const maximumBodyBytes = 16_384;
@@ -162,6 +163,10 @@ app.post("/voice", async (context) => {
     );
   }
 });
+
+app.all("/internal/akihq/telegram/*", (context) =>
+  handleAkiHQTelegramRequest(context.req.raw, context.env),
+);
 
 app.post("/telegram/webhook", (context) =>
   handleTelegramWebhook(context.req.raw, context.env, context.get("requestId")),

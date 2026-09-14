@@ -29,3 +29,43 @@ export function requireSameOriginRequest(request: Request) {
   }
   throw new RequestSecurityError("Same-origin request required");
 }
+
+export async function readBoundedText(request: Request, maximumBytes: number) {
+  const declaredLength = Number(request.headers.get("content-length") || 0);
+  if (Number.isFinite(declaredLength) && declaredLength > maximumBytes)
+    throw new RequestSecurityError(
+      "Payload too large",
+      413,
+      "payload_too_large",
+    );
+
+  if (!request.body) return "";
+  const reader = request.body.getReader();
+  const decoder = new TextDecoder("utf-8", { fatal: true });
+  let byteLength = 0;
+  let text = "";
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      byteLength += value.byteLength;
+      if (byteLength > maximumBytes) {
+        await reader.cancel();
+        throw new RequestSecurityError(
+          "Payload too large",
+          413,
+          "payload_too_large",
+        );
+      }
+      text += decoder.decode(value, { stream: true });
+    }
+    return text + decoder.decode();
+  } catch (error) {
+    if (error instanceof RequestSecurityError) throw error;
+    throw new RequestSecurityError(
+      "Invalid UTF-8 payload",
+      400,
+      "invalid_payload",
+    );
+  }
+}

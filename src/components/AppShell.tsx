@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
+import { GlobalSearch } from "./GlobalSearch";
 import { Icon, type IconName } from "./Icons";
 import { LanguageLink } from "./LanguageLink";
 import { ThemeToggle } from "./ThemeModeControls";
@@ -30,11 +31,13 @@ export function AppShell({
   locale,
   signedIn,
   role = "consumer",
+  ownerConsole = false,
   children,
 }: {
   locale: Locale;
   signedIn: boolean;
   role?: string;
+  ownerConsole?: boolean;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -54,7 +57,8 @@ export function AppShell({
   const hasMultipleWorkspaces =
     capabilities.manageOwnedVenues ||
     capabilities.moderatePlatform ||
-    capabilities.administerPlatform;
+    capabilities.administerPlatform ||
+    ownerConsole;
 
   const primaryNav: NavItem[] = [
     { href: `/${locale}`, label: m.discover, icon: "discover" },
@@ -86,6 +90,15 @@ export function AppShell({
   ];
 
   const workspaceNav: NavItem[] = [
+    ...(ownerConsole
+      ? [
+          {
+            href: `/${locale}/owner`,
+            label: es ? "Propietario" : "Owner console",
+            icon: "settings" as const,
+          },
+        ]
+      : []),
     ...(capabilities.manageOwnedVenues
       ? [
           {
@@ -293,6 +306,9 @@ export function AppShell({
         </div>
       </aside>
 
+      <Suspense fallback={null}>
+        <GlobalSearch locale={locale} />
+      </Suspense>
       {/* Mobile top strip */}
       <header className="app-topbar-mobile">
         <Link
