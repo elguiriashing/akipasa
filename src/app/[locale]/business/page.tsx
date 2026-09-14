@@ -14,6 +14,7 @@ import {
 } from "./actions";
 import { SpainAddressAutocomplete } from "@/components/SpainAddressAutocomplete";
 import { PromotionRequestFields } from "@/components/PromotionRequestFields";
+import { Icon } from "@/components/Icons";
 import {
   WorkspaceShell,
   type WorkspaceItem,
@@ -454,10 +455,12 @@ export default async function BusinessPage({
                             </span>
                           </div>
                           <button
-                            className="button button-strong"
+                            className="button button-strong business-venue-action"
                             type="submit"
                           >
+                            <Icon name="business" />
                             {es ? "Abrir AkiHQ" : "Open AkiHQ"}
+                            <Icon name="arrow-right" />
                           </button>
                         </form>,
                       ]
@@ -492,10 +495,12 @@ export default async function BusinessPage({
                           </span>
                         </div>
                         <a
-                          className="button secondary small-btn"
+                          className="button secondary business-venue-action"
                           href={`/${locale}/business/venue/${m.venues.id}`}
                         >
-                          {es ? "Gestionar →" : "Manage →"}
+                          <Icon name="venue" />
+                          {es ? "Gestionar local" : "Manage venue"}
+                          <Icon name="arrow-right" />
                         </a>
                       </div>
                     ),

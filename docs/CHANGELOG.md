@@ -3,6 +3,13 @@
 This is an engineering milestone log, not a semantic-version release log.
 Entries are newest first and must not contain credentials or personal data.
 
+## 2026-09-14 - Business workspace action styling
+
+- Give Open AkiHQ and Manage venue consistent pill buttons with shared icons,
+  visible labels, theme colours, and full-width mobile touch targets.
+- Scope the fix to these venue actions so generic compact-row styles cannot
+  squash them or hide their labels; retain the existing destinations and forms.
+
 ## 2026-09-14 - Compact business membership tools
 
 - Replace the repeated Basic/Pro tool columns with a venue selector, a compact

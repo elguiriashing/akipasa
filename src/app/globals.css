@@ -12400,3 +12400,55 @@ html[data-owner-focus="true"] .app-content {
     background: color-mix(in srgb, var(--primary) 22%, var(--surface-alt));
   }
 }
+
+/* Venue actions keep their labels and shared icons at every viewport size. */
+.business-workspace .managed-row .button.business-venue-action {
+  flex: 0 0 auto;
+  gap: 0.6rem;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 3rem;
+  padding: 0.8rem 1.15rem;
+  overflow: visible;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: linear-gradient(115deg, var(--primary), var(--teal));
+  color: #0a1210;
+  font-size: 0.9rem;
+  line-height: 1.25;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.business-workspace .managed-row .button.business-venue-action.secondary {
+  border-color: color-mix(in srgb, var(--teal) 35%, var(--line));
+  background: color-mix(in srgb, var(--surface) 75%, transparent);
+  color: var(--ink);
+}
+
+.business-workspace .managed-row .button.business-venue-action::after {
+  content: none;
+}
+
+.business-workspace .managed-row .button.business-venue-action:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -5px;
+}
+
+.business-venue-action svg {
+  flex: 0 0 auto;
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.business-venue-action.secondary svg {
+  color: var(--primary);
+}
+
+@media (max-width: 540px) {
+  .business-workspace .managed-row .button.business-venue-action {
+    width: 100%;
+  }
+}
