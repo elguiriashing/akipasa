@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
+import { cache } from "react";
+import { localizedMetadata, languageUrls, serializeJsonLd } from "@/lib/seo";
 import Link from "next/link";
-import Script from "next/script";
 import { isLocale } from "@/lib/config";
 import { msg } from "@/lib/messages";
 import { repository } from "@/lib/repository";
@@ -11,6 +12,27 @@ import { ShareButton } from "@/components/ShareButton";
 import { AnalyticsView, TrackedLink } from "@/components/AnalyticsSignal";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 
+const loadEvent = cache((slug: string) => repository.eventBySlug(slug));
+const loadVenue = cache((id: string) => repository.venueById(id));
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}) {
+  const { locale, slug } = await params;
+  if (!isLocale(locale)) notFound();
+  const event = await loadEvent(slug);
+  if (!event?.occurrences.length || !(await loadVenue(event.venueId)))
+    notFound();
+  return localizedMetadata(
+    locale,
+    `/events/${encodeURIComponent(event.slug)}`,
+    translated(event.title, locale),
+    translated(event.description, locale),
+  );
+}
+
 export default async function EventPage({
   params,
 }: {
@@ -18,9 +40,9 @@ export default async function EventPage({
 }) {
   const { locale, slug } = await params;
   if (!isLocale(locale)) notFound();
-  const event = await repository.eventBySlug(slug);
-  if (!event) notFound();
-  const resolvedVenue = await repository.venueById(event.venueId);
+  const event = await loadEvent(slug);
+  if (!event?.occurrences.length) notFound();
+  const resolvedVenue = await loadVenue(event.venueId);
   if (!resolvedVenue) notFound();
   const occurrence =
     event.occurrences.find(
@@ -66,6 +88,9 @@ export default async function EventPage({
     "@context": "https://schema.org",
     "@type": "Event",
     name: translated(event.title, locale),
+    description: translated(event.description, locale),
+    url: languageUrls(`/events/${encodeURIComponent(event.slug)}`)[locale],
+    inLanguage: locale,
     startDate: occurrence.startsAt,
     endDate: occurrence.endsAt,
     eventStatus:
@@ -103,10 +128,10 @@ export default async function EventPage({
           eventId={event.id}
           locale={locale}
         />
-        <Script
+        <script
           id="event-jsonld"
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
         />
         <article className="detail-card">
           <div className="eyebrow">

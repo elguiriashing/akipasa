@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import { config } from "@/lib/config";
 import { PwaRegistration } from "@/components/PwaRegistration";
 import { ThemeManager } from "@/components/ThemeModeControls";
+import { headers } from "next/headers";
+import { isLocale } from "@/lib/config";
+import { serializeJsonLd, siteOrigin } from "@/lib/seo";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://akipasa.com"),
@@ -39,12 +42,28 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const requestLocale = (await headers()).get("x-akipasa-locale");
+  const locale =
+    requestLocale && isLocale(requestLocale) ? requestLocale : "es";
   return (
-    <html lang="es">
+    <html lang={locale}>
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: serializeJsonLd({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "@id": `${siteOrigin}/#website`,
+              name: "AkiPasa",
+              url: siteOrigin,
+              inLanguage: ["es", "en"],
+            }),
+          }}
+        />
         <PwaRegistration />
         <ThemeManager />
         {children}

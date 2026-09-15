@@ -395,3 +395,6 @@ export default async function PassportsPage({
     </WorkspaceShell>
   );
 }
+import { publicPageMetadata } from "@/lib/page-metadata";
+
+export const generateMetadata = publicPageMetadata("/passports");

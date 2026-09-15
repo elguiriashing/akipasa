@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+import { cache } from "react";
+import { localizedMetadata, languageUrls, serializeJsonLd } from "@/lib/seo";
 import Link from "next/link";
 import Image from "next/image";
 import { isLocale } from "@/lib/config";
@@ -10,6 +12,25 @@ import { toggleFollowedVenue } from "../../engagement/actions";
 import { AnalyticsView, TrackedLink } from "@/components/AnalyticsSignal";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 
+const loadVenue = cache((slug: string) => repository.venueBySlug(slug));
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}) {
+  const { locale, slug } = await params;
+  if (!isLocale(locale)) notFound();
+  const venue = await loadVenue(slug);
+  if (!venue) notFound();
+  return localizedMetadata(
+    locale,
+    `/venues/${encodeURIComponent(venue.slug)}`,
+    venue.name,
+    `${venue.address}. ${translated(venue.description, locale)}`,
+  );
+}
+
 export default async function VenuePage({
   params,
 }: {
@@ -17,7 +38,7 @@ export default async function VenuePage({
 }) {
   const { locale, slug } = await params;
   if (!isLocale(locale)) notFound();
-  const venue = await repository.venueBySlug(slug);
+  const venue = await loadVenue(slug);
   if (!venue) notFound();
   const events = await repository.eventsForVenue(venue.id);
   const m = msg(locale);
@@ -56,6 +77,21 @@ export default async function VenuePage({
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: serializeJsonLd({
+            "@context": "https://schema.org",
+            "@type": "Place",
+            name: venue.name,
+            description: translated(venue.description, locale),
+            address: venue.address,
+            url: languageUrls(`/venues/${encodeURIComponent(venue.slug)}`)[
+              locale
+            ],
+          }),
+        }}
+      />
       {bgImage && (
         <div
           className="liquid-glass-bg"

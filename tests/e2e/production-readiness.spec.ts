@@ -191,11 +191,20 @@ test("SEO, install and offline assets are coherent and public", async ({
   expect(robots.ok()).toBeTruthy();
   const robotsText = await robots.text();
   expect(robotsText).toContain("Sitemap: https://akipasa.com/sitemap.xml");
-  expect(robotsText).toContain("Disallow: /en/admin");
+  expect(robotsText).toContain("Disallow: /api/");
+  // Private pages can be crawled to read their explicit noindex headers.
+  const auth = await page.request.get("/en/auth");
+  expect(auth.headers()["x-robots-tag"]).toBe("noindex, nofollow");
 
   const sitemap = await page.request.get("/sitemap.xml");
   expect(sitemap.ok()).toBeTruthy();
-  const sitemapText = await sitemap.text();
+  expect(await sitemap.text()).toContain(
+    "https://akipasa.com/sitemap-pages.xml",
+  );
+  expect(sitemap.headers()["set-cookie"]).toBeUndefined();
+  const pagesSitemap = await page.request.get("/sitemap-pages.xml");
+  expect(pagesSitemap.ok()).toBeTruthy();
+  const sitemapText = await pagesSitemap.text();
   expect(sitemapText).toContain("https://akipasa.com/en");
   expect(sitemapText).toContain("https://akipasa.com/en/membership");
   expect(sitemapText).not.toContain("/account");

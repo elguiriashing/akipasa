@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { publicPageMetadata } from "@/lib/page-metadata";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { isLocale } from "@/lib/config";
@@ -11,21 +11,7 @@ import { UseMyLocation } from "@/components/UseMyLocation";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  return {
-    title:
-      locale === "en" ? "Discover nearby events" : "Descubre eventos cercanos",
-    alternates: {
-      canonical: `/${locale}`,
-      languages: { es: "/es", en: "/en" },
-    },
-  };
-}
+export const generateMetadata = publicPageMetadata("");
 
 export default async function DiscoverPage({
   params,

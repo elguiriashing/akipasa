@@ -5,6 +5,11 @@ import { fileURLToPath } from "node:url";
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 const nextConfig: NextConfig = {
+  async rewrites() {
+    // Keep sitemap files at the site root so robots discovery covers all URLs,
+    // even before the sitemap is submitted in Search Console.
+    return [{ source: "/sitemap-:file", destination: "/sitemaps/:file" }];
+  },
   typedRoutes: false,
   experimental: {
     serverActions: {

@@ -48,3 +48,6 @@ export default async function MapPage({
     </main>
   );
 }
+import { publicPageMetadata } from "@/lib/page-metadata";
+
+export const generateMetadata = publicPageMetadata("/map");

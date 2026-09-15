@@ -56,3 +56,6 @@ export default async function PrivacyPage({
     </main>
   );
 }
+import { publicPageMetadata } from "@/lib/page-metadata";
+
+export const generateMetadata = publicPageMetadata("/privacy");

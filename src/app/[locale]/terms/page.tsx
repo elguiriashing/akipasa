@@ -49,3 +49,6 @@ export default async function TermsPage({
     </main>
   );
 }
+import { publicPageMetadata } from "@/lib/page-metadata";
+
+export const generateMetadata = publicPageMetadata("/terms");

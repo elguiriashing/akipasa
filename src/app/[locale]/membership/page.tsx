@@ -1,16 +1,10 @@
-import type { Metadata } from "next";
+import { publicPageMetadata } from "@/lib/page-metadata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { optionalUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 
-export function generateMetadata(): Metadata {
-  return {
-    title: "Membership",
-    description:
-      "Choose an AkiPasa personal or business membership with secure Stripe billing.",
-  };
-}
+export const generateMetadata = publicPageMetadata("/membership");
 
 export default async function MembershipPage({
   params,
