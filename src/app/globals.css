@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "maplibre-gl/dist/maplibre-gl.css";
 
 :root {
   --primary: #ff7a33;
@@ -4941,7 +4940,7 @@ html {
 }
 
 @media (max-width: 850px) {
-  .maplibregl-ctrl-group button {
+  .production-map .maplibregl-ctrl-group button {
     width: 2.75rem;
     height: 2.75rem;
   }

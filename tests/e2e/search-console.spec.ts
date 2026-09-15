@@ -66,5 +66,51 @@ test("sign-in is excluded from indexing and the root redirect is permanent", asy
   expect(auth.headers()["x-robots-tag"]).toBe("noindex, nofollow");
   const root = await request.get("/", { maxRedirects: 0 });
   expect(root.status()).toBe(308);
-  expect(root.headers().location).toBe("/es");
+  expect(new URL(root.headers().location, "https://akipasa.com").pathname).toBe(
+    "/es",
+  );
+  const campaign = await request.get("/?utm_source=poster", {
+    maxRedirects: 0,
+  });
+  expect(campaign.status()).toBe(308);
+  expect(
+    new URL(campaign.headers().location, "https://akipasa.com").pathname,
+  ).toBe("/es");
+  expect(
+    new URL(campaign.headers().location, "https://akipasa.com").search,
+  ).toBe("?utm_source=poster");
+});
+
+test("homepage excludes map CSS while the map route retains it and analytics has a narrowly scoped CSP", async ({
+  request,
+}) => {
+  async function cssFor(path: string) {
+    const response = await request.get(path);
+    expect(response.status()).toBe(200);
+    const html = await response.text();
+    const styles = [
+      ...html.matchAll(/<link\b[^>]*href="([^"]+\.css(?:\?[^"]*)?)"[^>]*>/g),
+    ].map((match) => match[1]);
+    expect(styles.length).toBeGreaterThan(0);
+    const sheets = await Promise.all(
+      [...new Set(styles)].map(async (href) => {
+        const sheet = await request.get(href);
+        expect(sheet.status()).toBe(200);
+        return sheet.text();
+      }),
+    );
+    return {
+      css: sheets.join("\n"),
+      csp: response.headers()["content-security-policy"],
+    };
+  }
+  const home = await cssFor("/en");
+  expect(home.css).not.toContain(".maplibregl-map");
+  expect(home.csp).toContain(
+    "https://static.cloudflareinsights.com/beacon.min.js/",
+  );
+  expect(home.csp).toContain("object-src 'none'");
+  expect(home.csp).toContain("frame-ancestors 'none'");
+  const map = await cssFor("/en/map");
+  expect(map.css).toContain(".maplibregl-map");
 });

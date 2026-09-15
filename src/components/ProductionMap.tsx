@@ -1,5 +1,6 @@
 "use client";
 
+import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import type { Locale } from "@/lib/config";

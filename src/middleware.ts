@@ -3,9 +3,15 @@ import { refreshSession } from "@/lib/supabase/middleware";
 import { shouldNoindex } from "@/lib/seo";
 
 export async function middleware(request: NextRequest) {
-  if (request.nextUrl.hostname === "www.akipasa.com") {
+  // Resolve the canonical landing URL before session refresh and page rendering.
+  // Combine www + root normalization into one hop and preserve query parameters.
+  if (
+    request.nextUrl.hostname === "www.akipasa.com" ||
+    request.nextUrl.pathname === "/"
+  ) {
     const target = request.nextUrl.clone();
-    target.hostname = "akipasa.com";
+    if (target.hostname === "www.akipasa.com") target.hostname = "akipasa.com";
+    if (target.pathname === "/") target.pathname = "/es";
     return NextResponse.redirect(target, 308);
   }
   const pathname = request.nextUrl.pathname;

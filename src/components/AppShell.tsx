@@ -176,11 +176,15 @@ export function AppShell({
           className="app-rail-brand"
           aria-label="AkiPasa"
         >
-          <span className="app-rail-mark">A</span>
+          <span className="app-rail-mark" aria-hidden="true">
+            A
+          </span>
           {!compact && (
             <span>
               {config.productName}
-              <i className="app-rail-brand-dot">.</i>
+              <i className="app-rail-brand-dot" aria-hidden="true">
+                .
+              </i>
             </span>
           )}
         </Link>
@@ -301,7 +305,9 @@ export function AppShell({
           aria-label="AkiPasa"
         >
           {config.productName}
-          <i className="app-rail-brand-dot">.</i>
+          <i className="app-rail-brand-dot" aria-hidden="true">
+            .
+          </i>
         </Link>
       </header>
 
