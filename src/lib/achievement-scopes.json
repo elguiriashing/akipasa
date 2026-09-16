@@ -1,0 +1,494 @@
+{
+  "cities": [
+    {
+      "key": "a-coruna",
+      "es": "A Coruña",
+      "en": "A Coruña",
+      "aliases": ["a-coruna", "la-coruna"]
+    },
+    {
+      "key": "albacete",
+      "es": "Albacete",
+      "en": "Albacete",
+      "aliases": ["albacete"]
+    },
+    {
+      "key": "alicante",
+      "es": "Alicante",
+      "en": "Alicante",
+      "aliases": ["alicante", "alacant"]
+    },
+    {
+      "key": "almeria",
+      "es": "Almería",
+      "en": "Almería",
+      "aliases": ["almeria"]
+    },
+    {
+      "key": "avila",
+      "es": "Ávila",
+      "en": "Ávila",
+      "aliases": ["avila"]
+    },
+    {
+      "key": "badajoz",
+      "es": "Badajoz",
+      "en": "Badajoz",
+      "aliases": ["badajoz"]
+    },
+    {
+      "key": "barcelona",
+      "es": "Barcelona",
+      "en": "Barcelona",
+      "aliases": ["barcelona"]
+    },
+    {
+      "key": "bilbao",
+      "es": "Bilbao",
+      "en": "Bilbao",
+      "aliases": ["bilbao"]
+    },
+    {
+      "key": "burgos",
+      "es": "Burgos",
+      "en": "Burgos",
+      "aliases": ["burgos"]
+    },
+    {
+      "key": "caceres",
+      "es": "Cáceres",
+      "en": "Cáceres",
+      "aliases": ["caceres"]
+    },
+    {
+      "key": "cadiz",
+      "es": "Cádiz",
+      "en": "Cádiz",
+      "aliases": ["cadiz"]
+    },
+    {
+      "key": "castellon",
+      "es": "Castelló de la Plana",
+      "en": "Castellón",
+      "aliases": ["castellon", "castello-de-la-plana"]
+    },
+    {
+      "key": "ceuta",
+      "es": "Ceuta",
+      "en": "Ceuta",
+      "aliases": ["ceuta"]
+    },
+    {
+      "key": "ciudad-real",
+      "es": "Ciudad Real",
+      "en": "Ciudad Real",
+      "aliases": ["ciudad-real"]
+    },
+    {
+      "key": "cordoba",
+      "es": "Córdoba",
+      "en": "Córdoba",
+      "aliases": ["cordoba"]
+    },
+    {
+      "key": "cuenca",
+      "es": "Cuenca",
+      "en": "Cuenca",
+      "aliases": ["cuenca"]
+    },
+    {
+      "key": "donostia-san-sebastian",
+      "es": "Donostia / San Sebastián",
+      "en": "San Sebastián",
+      "aliases": ["donostia-san-sebastian", "san-sebastian", "donostia"]
+    },
+    {
+      "key": "girona",
+      "es": "Girona",
+      "en": "Girona",
+      "aliases": ["girona", "gerona"]
+    },
+    {
+      "key": "granada",
+      "es": "Granada",
+      "en": "Granada",
+      "aliases": ["granada"]
+    },
+    {
+      "key": "guadalajara",
+      "es": "Guadalajara",
+      "en": "Guadalajara",
+      "aliases": ["guadalajara"]
+    },
+    {
+      "key": "huelva",
+      "es": "Huelva",
+      "en": "Huelva",
+      "aliases": ["huelva"]
+    },
+    {
+      "key": "huesca",
+      "es": "Huesca",
+      "en": "Huesca",
+      "aliases": ["huesca"]
+    },
+    {
+      "key": "jaen",
+      "es": "Jaén",
+      "en": "Jaén",
+      "aliases": ["jaen"]
+    },
+    {
+      "key": "las-palmas",
+      "es": "Las Palmas de Gran Canaria",
+      "en": "Las Palmas",
+      "aliases": ["las-palmas", "las-palmas-de-gran-canaria"]
+    },
+    {
+      "key": "leon",
+      "es": "León",
+      "en": "León",
+      "aliases": ["leon"]
+    },
+    {
+      "key": "lleida",
+      "es": "Lleida",
+      "en": "Lleida",
+      "aliases": ["lleida", "lerida"]
+    },
+    {
+      "key": "logrono",
+      "es": "Logroño",
+      "en": "Logroño",
+      "aliases": ["logrono"]
+    },
+    {
+      "key": "lugo",
+      "es": "Lugo",
+      "en": "Lugo",
+      "aliases": ["lugo"]
+    },
+    {
+      "key": "madrid",
+      "es": "Madrid",
+      "en": "Madrid",
+      "aliases": ["madrid"]
+    },
+    {
+      "key": "malaga",
+      "es": "Málaga",
+      "en": "Málaga",
+      "aliases": ["malaga"]
+    },
+    {
+      "key": "melilla",
+      "es": "Melilla",
+      "en": "Melilla",
+      "aliases": ["melilla"]
+    },
+    {
+      "key": "murcia",
+      "es": "Murcia",
+      "en": "Murcia",
+      "aliases": ["murcia"]
+    },
+    {
+      "key": "ourense",
+      "es": "Ourense",
+      "en": "Ourense",
+      "aliases": ["ourense"]
+    },
+    {
+      "key": "oviedo",
+      "es": "Oviedo",
+      "en": "Oviedo",
+      "aliases": ["oviedo"]
+    },
+    {
+      "key": "palencia",
+      "es": "Palencia",
+      "en": "Palencia",
+      "aliases": ["palencia"]
+    },
+    {
+      "key": "palma",
+      "es": "Palma",
+      "en": "Palma",
+      "aliases": ["palma", "palma-de-mallorca"]
+    },
+    {
+      "key": "pamplona",
+      "es": "Pamplona / Iruña",
+      "en": "Pamplona",
+      "aliases": ["pamplona", "pamplona-iruna"]
+    },
+    {
+      "key": "pontevedra",
+      "es": "Pontevedra",
+      "en": "Pontevedra",
+      "aliases": ["pontevedra"]
+    },
+    {
+      "key": "salamanca",
+      "es": "Salamanca",
+      "en": "Salamanca",
+      "aliases": ["salamanca"]
+    },
+    {
+      "key": "santa-cruz-tenerife",
+      "es": "Santa Cruz de Tenerife",
+      "en": "Santa Cruz de Tenerife",
+      "aliases": ["santa-cruz-tenerife", "santa-cruz-de-tenerife"]
+    },
+    {
+      "key": "santander",
+      "es": "Santander",
+      "en": "Santander",
+      "aliases": ["santander"]
+    },
+    {
+      "key": "segovia",
+      "es": "Segovia",
+      "en": "Segovia",
+      "aliases": ["segovia"]
+    },
+    {
+      "key": "sevilla",
+      "es": "Sevilla",
+      "en": "Seville",
+      "aliases": ["sevilla", "seville"]
+    },
+    {
+      "key": "soria",
+      "es": "Soria",
+      "en": "Soria",
+      "aliases": ["soria"]
+    },
+    {
+      "key": "tarragona",
+      "es": "Tarragona",
+      "en": "Tarragona",
+      "aliases": ["tarragona"]
+    },
+    {
+      "key": "teruel",
+      "es": "Teruel",
+      "en": "Teruel",
+      "aliases": ["teruel"]
+    },
+    {
+      "key": "toledo",
+      "es": "Toledo",
+      "en": "Toledo",
+      "aliases": ["toledo"]
+    },
+    {
+      "key": "valencia",
+      "es": "València",
+      "en": "Valencia",
+      "aliases": ["valencia"]
+    },
+    {
+      "key": "valladolid",
+      "es": "Valladolid",
+      "en": "Valladolid",
+      "aliases": ["valladolid"]
+    },
+    {
+      "key": "vitoria-gasteiz",
+      "es": "Vitoria-Gasteiz",
+      "en": "Vitoria-Gasteiz",
+      "aliases": ["vitoria-gasteiz", "vitoria"]
+    },
+    {
+      "key": "zamora",
+      "es": "Zamora",
+      "en": "Zamora",
+      "aliases": ["zamora"]
+    },
+    {
+      "key": "zaragoza",
+      "es": "Zaragoza",
+      "en": "Zaragoza",
+      "aliases": ["zaragoza"]
+    },
+    {
+      "key": "vigo",
+      "es": "Vigo",
+      "en": "Vigo",
+      "aliases": ["vigo"]
+    },
+    {
+      "key": "gijon",
+      "es": "Gijón",
+      "en": "Gijón",
+      "aliases": ["gijon"]
+    },
+    {
+      "key": "elche",
+      "es": "Elche",
+      "en": "Elche",
+      "aliases": ["elche", "elx"]
+    },
+    {
+      "key": "jerez",
+      "es": "Jerez de la Frontera",
+      "en": "Jerez de la Frontera",
+      "aliases": ["jerez", "jerez-de-la-frontera"]
+    },
+    {
+      "key": "cartagena",
+      "es": "Cartagena",
+      "en": "Cartagena",
+      "aliases": ["cartagena"]
+    },
+    {
+      "key": "marbella",
+      "es": "Marbella",
+      "en": "Marbella",
+      "aliases": ["marbella"]
+    },
+    {
+      "key": "santiago",
+      "es": "Santiago de Compostela",
+      "en": "Santiago de Compostela",
+      "aliases": ["santiago", "santiago-de-compostela"]
+    },
+    {
+      "key": "merida",
+      "es": "Mérida",
+      "en": "Mérida",
+      "aliases": ["merida"]
+    },
+    {
+      "key": "badalona",
+      "es": "Badalona",
+      "en": "Badalona",
+      "aliases": ["badalona"]
+    },
+    {
+      "key": "sabadell",
+      "es": "Sabadell",
+      "en": "Sabadell",
+      "aliases": ["sabadell"]
+    },
+    {
+      "key": "la-laguna",
+      "es": "San Cristóbal de La Laguna",
+      "en": "San Cristóbal de La Laguna",
+      "aliases": ["la-laguna", "san-cristobal-de-la-laguna"]
+    },
+    {
+      "key": "ibiza",
+      "es": "Ibiza",
+      "en": "Ibiza",
+      "aliases": ["ibiza", "eivissa"]
+    },
+    {
+      "key": "alcala",
+      "es": "Alcalá de Henares",
+      "en": "Alcalá de Henares",
+      "aliases": ["alcala", "alcala-de-henares"]
+    },
+    {
+      "key": "terrassa",
+      "es": "Terrassa",
+      "en": "Terrassa",
+      "aliases": ["terrassa"]
+    },
+    {
+      "key": "fuengirola",
+      "es": "Fuengirola",
+      "en": "Fuengirola",
+      "aliases": [
+        "fuengirola",
+        "boliches",
+        "los-boliches",
+        "carvajal",
+        "torreblanca-carvajal"
+      ]
+    }
+  ],
+  "categories": [
+    {
+      "key": "restaurant",
+      "es": "Restaurantes",
+      "en": "Restaurants",
+      "title_es": "Foodie",
+      "title_en": "Foodie",
+      "icon": "venue"
+    },
+    {
+      "key": "cafe",
+      "es": "Cafeterías",
+      "en": "Cafés",
+      "title_es": "Ruta del café",
+      "title_en": "Coffee trail",
+      "icon": "heart"
+    },
+    {
+      "key": "bar",
+      "es": "Bares y tapas",
+      "en": "Bars & tapas",
+      "title_es": "De tapas",
+      "title_en": "Tapas explorer",
+      "icon": "venue"
+    },
+    {
+      "key": "nightlife",
+      "es": "Ocio nocturno",
+      "en": "Nightlife",
+      "title_es": "Vida nocturna",
+      "title_en": "Night owl",
+      "icon": "star"
+    },
+    {
+      "key": "culture",
+      "es": "Arte y cultura",
+      "en": "Arts & culture",
+      "title_es": "Pasión cultural",
+      "title_en": "Culture seeker",
+      "icon": "discover"
+    },
+    {
+      "key": "shopping",
+      "es": "Tiendas y mercados",
+      "en": "Shops & markets",
+      "title_es": "Compra local",
+      "title_en": "Shop local",
+      "icon": "gift"
+    },
+    {
+      "key": "sport",
+      "es": "Deporte",
+      "en": "Sport",
+      "title_es": "Espíritu deportivo",
+      "title_en": "Active explorer",
+      "icon": "heart"
+    },
+    {
+      "key": "wellness",
+      "es": "Bienestar",
+      "en": "Wellness",
+      "title_es": "Tiempo para ti",
+      "title_en": "Wellness seeker",
+      "icon": "heart"
+    },
+    {
+      "key": "family",
+      "es": "Planes familiares",
+      "en": "Family activities",
+      "title_es": "En familia",
+      "title_en": "Family adventurer",
+      "icon": "gift"
+    },
+    {
+      "key": "outdoors",
+      "es": "Naturaleza y aire libre",
+      "en": "Nature & outdoors",
+      "title_es": "Al aire libre",
+      "title_en": "Outdoor explorer",
+      "icon": "discover"
+    }
+  ]
+}

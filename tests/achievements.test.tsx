@@ -14,6 +14,9 @@ import {
   achievementBadge,
   type Achievement,
 } from "../src/lib/achievements";
+import { AchievementCollection } from "../src/components/AchievementCollection";
+import scopes from "../src/lib/achievement-scopes.json";
+import cityPhotos from "../src/lib/city-photos.json";
 import { badgeProgress } from "../src/lib/badges";
 import { AchievementManager } from "../src/app/[locale]/admin/achievements/AchievementManager";
 
@@ -37,6 +40,10 @@ const milestone: Achievement = {
   description_es: "Explora la costa con 250 XP.",
   description_en: "Explore the coast with 250 XP.",
   minimum_xp: 250,
+  condition_type: "xp",
+  target_count: 250,
+  city_key: null,
+  category_key: null,
   icon: "discover",
   active: true,
   updated_at: "2026-09-16T10:00:00+00:00",
@@ -125,5 +132,99 @@ describe("managed achievements", () => {
     expect(dialog.getByRole("checkbox")).toBeRequired();
     expect(dialog.getByRole("checkbox")).not.toBeChecked();
     expect(dialog.getByText(/Their XP is preserved/)).toBeInTheDocument();
+  });
+});
+
+describe("activity conditions", () => {
+  it("rejects invented scopes and contradictory conditions", () => {
+    expect(
+      achievementSchema.safeParse({
+        ...milestone,
+        condition_type: "venues",
+        target_count: 5,
+        city_key: "fuengirola",
+        category_key: "restaurant",
+      }).success,
+    ).toBe(true);
+    for (const change of [
+      { condition_type: "arbitrary_code" },
+      { target_count: 0 },
+      { target_count: 1.5 },
+      { city_key: "made-up" },
+      { category_key: "invented" },
+      { condition_type: "xp", city_key: "fuengirola" },
+    ])
+      expect(
+        achievementSchema.safeParse({ ...milestone, ...change }).success,
+      ).toBe(false);
+  });
+  it("lets admins configure a city and category together", () => {
+    render(
+      <AchievementManager
+        locale="en"
+        achievements={[
+          {
+            ...milestone,
+            condition_type: "venues",
+            target_count: 5,
+            city_key: "fuengirola",
+            category_key: "restaurant",
+          },
+        ]}
+      />,
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Edit Coastal explorer" }),
+    );
+    expect(screen.getByLabelText("Condition")).toHaveValue("venues");
+    expect(screen.getByLabelText("City")).toHaveValue("fuengirola");
+    expect(screen.getByLabelText("Category")).toHaveValue("restaurant");
+    expect(screen.getByLabelText("Target")).toHaveValue(5);
+    fireEvent.change(screen.getByLabelText("Condition"), {
+      target: { value: "active_days" },
+    });
+    expect(screen.queryByLabelText("City")).not.toBeInTheDocument();
+  });
+});
+
+describe("member achievement collection", () => {
+  it("covers all frontend major cities plus Fuengirola", () => {
+    expect(scopes.cities.map((city) => city.key).sort()).toEqual(
+      [...new Set([...Object.keys(cityPhotos), "fuengirola"])].sort(),
+    );
+  });
+  it("limits initial cards, searches cities and filters earned badges", () => {
+    const items = Array.from({ length: 30 }, (_, n) => ({
+      ...milestone,
+      key: `fixture_${n}`,
+      title_en: n === 29 ? "Fuengirola Amateur" : `Explorer ${n}`,
+      condition_type: "venues" as const,
+      target_count: 5,
+      city_key: n === 29 ? "fuengirola" : "madrid",
+      current_count: n === 29 ? 5 : 2,
+      unlocked_at: n === 29 ? "2026-09-16T10:00:00Z" : null,
+    }));
+    render(<AchievementCollection locale="en" items={items} totalXp={50} />);
+    expect(screen.getAllByRole("article")).toHaveLength(12);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Discover more achievements" }),
+    );
+    expect(screen.getAllByRole("article")).toHaveLength(24);
+    fireEvent.change(screen.getByLabelText("Progress"), {
+      target: { value: "earned" },
+    });
+    expect(screen.getAllByRole("article")).toHaveLength(1);
+    expect(
+      screen.getByRole("heading", { name: "Fuengirola Amateur" }),
+    ).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Progress"), {
+      target: { value: "all" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Cities" }));
+    fireEvent.change(screen.getByLabelText("City"), {
+      target: { value: "fuengirola" },
+    });
+    expect(screen.getAllByRole("article")).toHaveLength(1);
+    expect(screen.getByRole("progressbar")).toHaveAttribute("value", "5");
   });
 });

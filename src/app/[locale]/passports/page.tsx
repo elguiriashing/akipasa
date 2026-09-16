@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/config";
 import { optionalUser } from "@/lib/auth";
+import { AchievementCelebration } from "@/components/AchievementCelebration";
 import { BadgeProgress } from "@/components/BadgeProgress";
 import {
   ConsoleMetric,
@@ -158,8 +159,8 @@ export default async function PassportsPage({
         <p className="notice">
           {query.checkin === "accepted"
             ? es
-              ? "Check-in aceptado: +1 sello y +10 XP."
-              : "Check-in accepted: +1 stamp and +10 XP."
+              ? "Check-in aceptado. Tu XP y tus sellos se han actualizado."
+              : "Check-in accepted. Your XP and stamps have been updated."
             : query.checkin === "cooldown"
               ? es
                 ? "Ya hiciste check-in aqui en las ultimas seis horas."
@@ -168,6 +169,9 @@ export default async function PassportsPage({
                 ? "No se pudo aceptar el check-in."
                 : "The check-in could not be accepted."}
         </p>
+      )}
+      {user && query.checkin === "accepted" && (
+        <AchievementCelebration locale={locale} checkInId={query.visit} />
       )}
       {query.reward && (
         <p className="notice">

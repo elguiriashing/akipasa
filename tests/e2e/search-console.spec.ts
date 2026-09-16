@@ -7,11 +7,13 @@ test("current discovery layout is retained and achievement management requires s
     const page = await request.get(`/${locale}`);
     expect(page.status()).toBe(200);
     expect(await page.text()).toContain('id="city-discovery-title"');
-    const admin = await request.get(`/${locale}/admin/achievements`, {
-      maxRedirects: 0,
-    });
-    expect([303, 307]).toContain(admin.status());
-    expect(admin.headers().location).toContain(`/${locale}/auth?next=`);
+    for (const path of ["achievements", "achievements/venues"]) {
+      const admin = await request.get(`/${locale}/admin/${path}`, {
+        maxRedirects: 0,
+      });
+      expect([303, 307]).toContain(admin.status());
+      expect(admin.headers().location).toContain(`/${locale}/auth?next=`);
+    }
   }
 });
 

@@ -57,5 +57,13 @@ export async function completeCheckIn(formData: FormData) {
       // The verified check-in remains successful if behavioural logging fails.
     }
   }
-  redirect(`/${locale}/passports?checkin=${encodeURIComponent(state)}`);
+  const checkInId = z
+    .string()
+    .uuid()
+    .safeParse((data as { check_in_id?: string } | null)?.check_in_id);
+  const receipt =
+    state === "accepted" && checkInId.success ? `&visit=${checkInId.data}` : "";
+  redirect(
+    `/${locale}/passports?checkin=${encodeURIComponent(state)}${receipt}`,
+  );
 }

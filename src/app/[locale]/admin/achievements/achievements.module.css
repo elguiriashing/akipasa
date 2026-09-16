@@ -501,3 +501,52 @@
     border-color: color-mix(in srgb, var(--accent) 40%, transparent);
   }
 }
+
+.toolbar select {
+  min-width: 0;
+  max-width: 100%;
+  min-height: 44px;
+  border-radius: 12px;
+  padding: 8px 12px;
+  background: #123832;
+  color: #eaf0e5;
+  border: 1px solid #49635b;
+}
+.venueRow {
+  margin: 10px 0;
+  border: 1px solid rgba(156, 201, 181, 0.2);
+  border-radius: 16px;
+  padding: 16px;
+  background: rgba(12, 42, 37, 0.65);
+}
+.venueRow summary {
+  cursor: pointer;
+}
+.venueRow summary small {
+  display: block;
+  color: #b8ccc3;
+  margin-top: 6px;
+  font-size: 12px;
+}
+.venueRow form {
+  margin-top: 16px;
+}
+.categoryChecks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  border: 0;
+  padding: 12px 0;
+  margin: 0 0 12px;
+}
+.categoryChecks label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.categoryChecks input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}

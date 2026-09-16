@@ -51,14 +51,18 @@ export async function saveAchievement(
   const parsed = achievementSchema.safeParse({
     ...Object.fromEntries(form),
     active: form.get("active") === "true",
+    city_key: form.get("city_key") || null,
+    category_key: form.get("category_key") || null,
+    minimum_xp:
+      form.get("condition_type") === "xp" ? form.get("target_count") : 1000000,
   });
   const creating = form.get("mode") === "create";
   const version = revision.safeParse(form.get("updated_at"));
   if (!parsed.success || (!creating && !version.success))
     return {
       error: es
-        ? "Revisa los textos y el objetivo de XP (1–1.000.000)."
-        : "Check both translations and the XP target (1–1,000,000).",
+        ? "Revisa los textos, la condición y el objetivo (1–1.000.000)."
+        : "Check both translations, the condition and target (1–1,000,000).",
     };
   const query = creating
     ? supabase.from("achievements").insert(parsed.data)

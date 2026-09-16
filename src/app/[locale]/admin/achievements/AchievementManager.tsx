@@ -6,6 +6,11 @@ import { Icon } from "../../../../components/Icons";
 import type { Locale } from "../../../../lib/config";
 import {
   achievementIcons,
+  achievementMetrics,
+  metricLabels,
+  achievementScopes,
+  achievementTarget,
+  achievementCondition,
   type Achievement,
   type AchievementActionState,
 } from "../../../../lib/achievements";
@@ -29,6 +34,8 @@ export function AchievementManager({
 }) {
   const es = locale === "es";
   const [search, setSearch] = useState("");
+  const [limit, setLimit] = useState(24);
+  const [metric, setMetric] = useState("all");
   const [filter, setFilter] = useState("all");
   const [editor, setEditor] = useState<{
     item: Achievement;
@@ -40,6 +47,7 @@ export function AchievementManager({
   const visible = achievements.filter(
     (item) =>
       (filter === "all" || item.active === (filter === "active")) &&
+      (metric === "all" || item.condition_type === metric) &&
       `${item.title_es} ${item.title_en} ${item.description_es} ${item.description_en}`
         .toLocaleLowerCase(locale)
         .includes(search.trim().toLocaleLowerCase(locale)),
@@ -54,6 +62,10 @@ export function AchievementManager({
         description_es: "",
         description_en: "",
         minimum_xp: 10,
+        condition_type: "xp",
+        target_count: 10,
+        city_key: null,
+        category_key: null,
         icon: "star",
         active: false,
         updated_at: "",
@@ -95,7 +107,7 @@ export function AchievementManager({
         </span>
         <span>
           <Icon name="activity" size={16} />
-          {es ? "Se desbloquean con XP" : "Unlocked with XP"}
+          {es ? "Condiciones de actividad" : "Activity milestones"}
         </span>
       </div>
       {notice && (
@@ -103,6 +115,12 @@ export function AchievementManager({
           {notice}
         </p>
       )}
+      <a className={styles.edit} href={`/${locale}/admin/achievements/venues`}>
+        <Icon name="venue" size={18} />
+        {es
+          ? "Clasificar locales para los logros"
+          : "Classify venues for achievements"}
+      </a>
       <div className={styles.toolbar}>
         <label className={styles.search}>
           <Icon name="search" size={18} />
@@ -114,6 +132,23 @@ export function AchievementManager({
             onChange={(event) => setSearch(event.target.value)}
           />
         </label>
+        <select
+          aria-label={es ? "Tipo de condición" : "Condition type"}
+          value={metric}
+          onChange={(event) => {
+            setMetric(event.target.value);
+            setLimit(24);
+          }}
+        >
+          <option value="all">
+            {es ? "Todas las condiciones" : "All conditions"}
+          </option>
+          {achievementMetrics.map((type) => (
+            <option key={type} value={type}>
+              {metricLabels[type][locale]}
+            </option>
+          ))}
+        </select>
         <div
           className={styles.filters}
           role="group"
@@ -135,7 +170,7 @@ export function AchievementManager({
         </div>
       </div>
       <div className={styles.grid}>
-        {visible.map((item) => (
+        {visible.slice(0, limit).map((item) => (
           <article className={styles.card} key={item.key}>
             <div className={styles.cardTop}>
               <span className={styles.emblem}>
@@ -154,8 +189,8 @@ export function AchievementManager({
             <h3>{item[`title_${locale}`]}</h3>
             <p>{item[`description_${locale}`]}</p>
             <div className={styles.threshold}>
-              <strong>{item.minimum_xp.toLocaleString(locale)}</strong>
-              <span>XP</span>
+              <strong>{achievementTarget(item).toLocaleString(locale)}</strong>
+              <span>{achievementCondition(item, locale)}</span>
               <small>{es ? "para desbloquear" : "to unlock"}</small>
             </div>
             <footer className={styles.cardFooter}>
@@ -178,6 +213,14 @@ export function AchievementManager({
           </article>
         ))}
       </div>
+      {visible.length > limit && (
+        <button
+          className={styles.secondary}
+          onClick={() => setLimit(limit + 24)}
+        >
+          {es ? "Mostrar más" : "Show more"} ({visible.length - limit})
+        </button>
+      )}
       {!visible.length && (
         <div className={styles.empty}>
           <Icon name="star" size={32} />
@@ -342,7 +385,9 @@ function AchievementEditor({
               {draft[`title_${language}`] ||
                 (es ? "Tu próximo logro" : "Your next achievement")}
             </strong>
-            <span>{draft.minimum_xp || 0} XP</span>
+            <span>
+              {achievementTarget(draft)} · {achievementCondition(draft, locale)}
+            </span>
           </div>
         </div>
         <fieldset disabled={pending} className={styles.fields}>
@@ -410,19 +455,96 @@ function AchievementEditor({
               </label>
             </div>
           ))}
+          <label>
+            {es ? "Condición" : "Condition"}
+            <select
+              name="condition_type"
+              value={draft.condition_type || "xp"}
+              onChange={(event) =>
+                setDraft({
+                  ...draft,
+                  condition_type: event.target
+                    .value as Achievement["condition_type"],
+                  city_key: null,
+                  category_key: null,
+                })
+              }
+            >
+              {achievementMetrics.map((type) => (
+                <option key={type} value={type}>
+                  {metricLabels[type][locale]}
+                </option>
+              ))}
+            </select>
+          </label>
+          {draft.condition_type === "venues" && (
+            <div className={styles.formRow}>
+              <label>
+                {es ? "Ciudad" : "City"}
+                <select
+                  name="city_key"
+                  value={draft.city_key || ""}
+                  onChange={(event) =>
+                    setDraft({ ...draft, city_key: event.target.value || null })
+                  }
+                >
+                  <option value="">
+                    {es ? "Cualquier ciudad" : "Any city"}
+                  </option>
+                  {achievementScopes.cities.map((city) => (
+                    <option key={city.key} value={city.key}>
+                      {city[locale]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                {es ? "Categoría" : "Category"}
+                <select
+                  name="category_key"
+                  value={draft.category_key || ""}
+                  onChange={(event) =>
+                    setDraft({
+                      ...draft,
+                      category_key: event.target.value || null,
+                    })
+                  }
+                >
+                  <option value="">
+                    {es ? "Cualquier categoría" : "Any category"}
+                  </option>
+                  {achievementScopes.categories.map((category) => (
+                    <option key={category.key} value={category.key}>
+                      {category[locale]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+          )}
           <div className={styles.formRow}>
             <label>
-              {es ? "Objetivo de XP" : "XP target"}
+              {draft.condition_type === "xp"
+                ? es
+                  ? "Objetivo de XP"
+                  : "XP target"
+                : es
+                  ? "Objetivo"
+                  : "Target"}
               <input
-                name="minimum_xp"
+                name="target_count"
                 type="number"
                 min={1}
                 max={1000000}
                 step={1}
                 required
-                value={draft.minimum_xp || ""}
+                value={achievementTarget(draft) || ""}
                 onChange={(event) =>
-                  setDraft({ ...draft, minimum_xp: Number(event.target.value) })
+                  setDraft({
+                    ...draft,
+                    minimum_xp: Number(event.target.value),
+                    target_count: Number(event.target.value),
+                  })
                 }
               />
             </label>
@@ -461,8 +583,8 @@ function AchievementEditor({
         </fieldset>
         <p className={styles.hint}>
           {es
-            ? "Usa ambas traducciones. Los logros se calculan con el XP actual: cambiar el objetivo o la visibilidad también cambia las insignias que ven los usuarios. No modifica su XP."
-            : "Complete both translations. Achievements use current XP: changing the target or visibility also changes the badges users see. Their XP stays unchanged."}
+            ? "Solo cuentan los check-ins aceptados. Los locales distintos no cuentan visitas repetidas. Los logros ya ganados se conservan al cambiar la condición; ocultar o eliminar un logro lo quita del catálogo visible. No modifica el XP."
+            : "Only accepted check-ins count. Distinct places exclude repeat visits. Earned badges survive condition changes; hiding or deleting a definition removes it from the visible catalogue. XP stays unchanged."}
         </p>
         {state.error && (
           <p role="alert" className={styles.error}>

@@ -1,14 +1,9 @@
 import { createSupabaseServerClient } from "./supabase/server";
-import { achievementBadge, type Achievement } from "./achievements";
+import type { AchievementProgress } from "./achievements";
 
-export async function activeAchievementBadges() {
+export async function myAchievements() {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("achievements")
-    .select("*")
-    .eq("active", true)
-    .order("minimum_xp")
-    .order("key");
-  if (error) throw new Error("Unable to load achievements");
-  return (data as Achievement[]).map(achievementBadge);
+  const { data, error } = await supabase.rpc("my_achievement_progress");
+  if (error) throw new Error("Unable to load achievement progress");
+  return (data || []) as AchievementProgress[];
 }
