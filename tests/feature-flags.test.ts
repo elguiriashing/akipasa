@@ -20,6 +20,12 @@ describe("operational feature flags", () => {
       community_submissions: false,
       loyalty_check_ins: false,
       promotion_requests: true,
+      personalised_feed: true,
+      recommendation_reasons: true,
+      sponsored_recommendations: true,
+      experimental_ranking: false,
+      social_recommendations: false,
+      partner_api: false,
     });
   });
 });

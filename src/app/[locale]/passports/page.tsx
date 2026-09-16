@@ -1,4 +1,6 @@
 import type { CSSProperties } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/config";
 import { optionalUser } from "@/lib/auth";
@@ -11,7 +13,11 @@ import {
   WorkspaceShell,
   type WorkspaceItem,
 } from "@/components/WorkspaceShell";
-import { requestReward } from "./actions";
+import {
+  claimPassportReward,
+  claimStampReward,
+  enrollPassport,
+} from "./actions";
 
 function progressStyle(value: number): CSSProperties {
   return {
@@ -42,11 +48,13 @@ export default async function PassportsPage({
     { data: ledger },
     { data: xp },
     { data: progress },
+    { data: enrollments },
+    { data: claims },
   ] = await Promise.all([
     supabase
       .from("passports")
       .select(
-        "id,slug,title_es,title_en,description_es,description_en,reward_es,reward_en,starts_at,ends_at,passport_steps(id,label_es,label_en,venues(name))",
+        "id,slug,title_es,title_en,description_es,description_en,reward_es,reward_en,starts_at,ends_at,access_tier,completion_window_days,passport_steps(id,label_es,label_en,venues(name)),passport_rewards(access_tier,business_rewards(id,title_es,title_en,description_es,description_en))",
       )
       .eq("status", "published")
       .lte("starts_at", new Date().toISOString())
@@ -54,7 +62,7 @@ export default async function PassportsPage({
     supabase
       .from("loyalty_programs")
       .select(
-        "id,title_es,title_en,reward_es,reward_en,stamps_required,venues(name)",
+        "id,title_es,title_en,reward_es,reward_en,stamps_required,venues(name),loyalty_program_rewards(business_rewards(id,title_es,title_en,description_es,description_en))",
       )
       .eq("active", true),
     user
@@ -69,8 +77,24 @@ export default async function PassportsPage({
     user
       ? supabase
           .from("passport_progress")
-          .select("step_id")
+          .select("step_id,enrollment_id")
           .eq("profile_id", user.id)
+      : Promise.resolve({ data: [] }),
+    user
+      ? supabase
+          .from("passport_enrollments")
+          .select("id,passport_id,started_at,expires_at,completed_at,state")
+          .eq("profile_id", user.id)
+          .in("state", ["active", "completed", "redeemed"])
+      : Promise.resolve({ data: [] }),
+    user
+      ? supabase
+          .from("reward_claims")
+          .select(
+            "id,claim_code,status,expires_at,business_rewards(title_es,title_en,venues(name))",
+          )
+          .eq("profile_id", user.id)
+          .order("created_at", { ascending: false })
       : Promise.resolve({ data: [] }),
   ]);
   const balances = new Map<string, number>();
@@ -80,11 +104,16 @@ export default async function PassportsPage({
       (balances.get(entry.program_id) || 0) + entry.delta,
     ),
   );
-  const completed = new Set(progress?.map((entry) => entry.step_id));
+  const enrollmentByPassport = new Map(
+    (enrollments || []).map((entry) => [entry.passport_id, entry]),
+  );
   const totalXp = xp?.reduce((sum, entry) => sum + entry.delta, 0) || 0;
   const totalStamps = [...balances.values()].reduce(
     (sum, balance) => sum + balance,
     0,
+  );
+  const completedSteps = new Set(
+    (progress || []).map((entry: any) => entry.step_id),
   );
   const base = `/${locale}/passports`;
   const items: WorkspaceItem[] = [
@@ -142,13 +171,24 @@ export default async function PassportsPage({
       )}
       {query.reward && (
         <p className="notice">
-          {query.reward === "requested"
+          {query.reward === "ready"
             ? es
-              ? "Recompensa solicitada. Enseñala al personal del local."
-              : "Reward requested. Show it to venue staff."
+              ? "Recompensa lista. Tu codigo aparece en Progreso."
+              : "Reward ready. Your code appears in Progress."
             : es
-              ? "Aun no hay sellos suficientes o ya existe una solicitud."
-              : "There are not enough stamps yet, or a request already exists."}
+              ? "La recompensa no esta disponible o ya existe una solicitud."
+              : "The reward is unavailable, or a claim already exists."}
+        </p>
+      )}
+      {query.passport && (
+        <p className="notice">
+          {query.passport === "started"
+            ? es
+              ? "Pasaporte iniciado. Tienes 30 dias para completar la ruta."
+              : "Passport started. You have 30 days to complete the route."
+            : es
+              ? "No se pudo iniciar este pasaporte."
+              : "This passport could not be started."}
         </p>
       )}
 
@@ -174,7 +214,7 @@ export default async function PassportsPage({
           />
           <ConsoleMetric
             label={es ? "Pasos" : "Steps"}
-            value={completed.size}
+            value={completedSteps.size}
             detail={es ? "Completados" : "Completed"}
           />
         </section>
@@ -206,6 +246,35 @@ export default async function PassportsPage({
             </div>
             <p className="metric">{totalXp}</p>
           </section>
+          {!!claims?.length && (
+            <section className="panel">
+              <h2>{es ? "Recompensas listas" : "Rewards ready"}</h2>
+              <p>
+                {es
+                  ? "Ensenale el codigo al personal. Caduca en la fecha indicada y solo puede canjearse una vez."
+                  : "Show the code to venue staff. It expires on the date shown and can only be redeemed once."}
+              </p>
+              <div className="reward-card-list">
+                {claims.map((claim: any) => (
+                  <article className="stamp-card" key={claim.id}>
+                    <span className="status-pill">{claim.status}</span>
+                    <h3>
+                      {locale === "en"
+                        ? claim.business_rewards?.title_en ||
+                          claim.business_rewards?.title_es
+                        : claim.business_rewards?.title_es}
+                    </h3>
+                    <p>{claim.business_rewards?.venues?.name}</p>
+                    <code className="claim-code">{claim.claim_code}</code>
+                    <p>
+                      {es ? "Caduca" : "Expires"}{" "}
+                      {new Date(claim.expires_at).toLocaleDateString(locale)}
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
         </section>
       )}
 
@@ -224,64 +293,160 @@ export default async function PassportsPage({
           <div className="panel passport-column">
             {passports?.length ? (
               <div className="reward-card-list">
-                {passports.map((passport) => (
-                  <article className="passport-card" key={passport.id}>
-                    <div className="card-title-row">
-                      <span className="console-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24">
-                          <path d="M6 4h12v16H6z" />
-                          <path d="M9 8h6M9 12h6M9 16h4" />
-                        </svg>
-                        <span>PX</span>
-                      </span>
-                      <h3>
+                {passports.map((passport: any) => {
+                  const enrollment: any = enrollmentByPassport.get(passport.id);
+                  const completed = new Set(
+                    (progress || [])
+                      .filter(
+                        (entry: any) => entry.enrollment_id === enrollment?.id,
+                      )
+                      .map((entry: any) => entry.step_id),
+                  );
+                  const rewards = (passport.passport_rewards || [])
+                    .filter((item: any) => item.business_rewards)
+                    .map((item: any) => item.business_rewards);
+                  return (
+                    <article className="passport-card" key={passport.id}>
+                      <div className="card-title-row">
+                        <span className="console-icon" aria-hidden="true">
+                          <svg viewBox="0 0 24 24">
+                            <path d="M6 4h12v16H6z" />
+                            <path d="M9 8h6M9 12h6M9 16h4" />
+                          </svg>
+                          <span>PX</span>
+                        </span>
+                        <h3>
+                          {locale === "en"
+                            ? passport.title_en || passport.title_es
+                            : passport.title_es}
+                        </h3>
+                      </div>
+                      <p>
                         {locale === "en"
-                          ? passport.title_en || passport.title_es
-                          : passport.title_es}
-                      </h3>
-                    </div>
-                    <p>
-                      {locale === "en"
-                        ? passport.description_en || passport.description_es
-                        : passport.description_es}
-                    </p>
-                    <div className="step-list">
-                      {passport.passport_steps.map((step) => (
-                        <div className="step-row" key={step.id}>
+                          ? passport.description_en || passport.description_es
+                          : passport.description_es}
+                      </p>
+                      <div className="inline-actions">
+                        <span className="status-pill">
+                          {passport.access_tier === "premium"
+                            ? "Premium"
+                            : es
+                              ? "Gratis"
+                              : "Free"}
+                        </span>
+                        <span className="status-pill">
+                          {passport.completion_window_days}{" "}
+                          {es ? "dias" : "days"}
+                        </span>
+                        {enrollment && (
                           <span className="status-pill">
-                            {completed.has(step.id)
-                              ? es
-                                ? "Hecho"
-                                : "Done"
-                              : es
-                                ? "Pendiente"
-                                : "Open"}
+                            {enrollment.state}
                           </span>
-                          <p>
-                            {locale === "en"
-                              ? step.label_en || step.label_es
-                              : step.label_es}
-                            <span>
-                              {
-                                (
-                                  step.venues as unknown as {
-                                    name: string;
-                                  } | null
-                                )?.name
-                              }
+                        )}
+                      </div>
+                      {enrollment?.state === "active" && (
+                        <p>
+                          {es ? "Completa antes del" : "Complete by"}{" "}
+                          <strong>
+                            {new Date(enrollment.expires_at).toLocaleDateString(
+                              locale,
+                            )}
+                          </strong>
+                        </p>
+                      )}
+                      <div className="step-list">
+                        {passport.passport_steps.map((step: any) => (
+                          <div className="step-row" key={step.id}>
+                            <span className="status-pill">
+                              {completed.has(step.id)
+                                ? es
+                                  ? "Hecho"
+                                  : "Done"
+                                : es
+                                  ? "Pendiente"
+                                  : "Open"}
                             </span>
-                          </p>
+                            <p>
+                              {locale === "en"
+                                ? step.label_en || step.label_es
+                                : step.label_es}
+                              <span>
+                                {
+                                  (
+                                    step.venues as unknown as {
+                                      name: string;
+                                    } | null
+                                  )?.name
+                                }
+                              </span>
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                      <strong className="reward-strip">
+                        {es ? "Recompensa:" : "Reward:"}{" "}
+                        {locale === "en"
+                          ? passport.reward_en || passport.reward_es
+                          : passport.reward_es}
+                      </strong>
+                      {!user ? (
+                        <Link
+                          className="button"
+                          href={`/${locale}/auth?mode=signin&next=${encodeURIComponent(`/${locale}/passports?view=passports`)}`}
+                        >
+                          {es
+                            ? "Inicia sesion para empezar"
+                            : "Sign in to start"}
+                        </Link>
+                      ) : !enrollment ? (
+                        <form action={enrollPassport}>
+                          <input type="hidden" name="locale" value={locale} />
+                          <input
+                            type="hidden"
+                            name="passportId"
+                            value={passport.id}
+                          />
+                          <button className="button" type="submit">
+                            {es ? "Empezar pasaporte" : "Start passport"}
+                          </button>
+                        </form>
+                      ) : enrollment.state === "completed" ? (
+                        <div className="reward-choice-grid">
+                          <h4>
+                            {es ? "Elige una recompensa" : "Choose one reward"}
+                          </h4>
+                          {rewards.map((reward: any) => (
+                            <form action={claimPassportReward} key={reward.id}>
+                              <input
+                                type="hidden"
+                                name="locale"
+                                value={locale}
+                              />
+                              <input
+                                type="hidden"
+                                name="enrollmentId"
+                                value={enrollment.id}
+                              />
+                              <input
+                                type="hidden"
+                                name="rewardId"
+                                value={reward.id}
+                              />
+                              <button
+                                className="button secondary"
+                                type="submit"
+                              >
+                                {locale === "en"
+                                  ? reward.title_en || reward.title_es
+                                  : reward.title_es}
+                              </button>
+                            </form>
+                          ))}
                         </div>
-                      ))}
-                    </div>
-                    <strong className="reward-strip">
-                      {es ? "Recompensa:" : "Reward:"}{" "}
-                      {locale === "en"
-                        ? passport.reward_en || passport.reward_es
-                        : passport.reward_es}
-                    </strong>
-                  </article>
-                ))}
+                      ) : null}
+                    </article>
+                  );
+                })}
               </div>
             ) : (
               <p className="empty-state">
@@ -350,17 +515,38 @@ export default async function PassportsPage({
                           : program.reward_es}
                       </p>
                       {user && balance >= program.stamps_required && (
-                        <form action={requestReward}>
-                          <input type="hidden" name="locale" value={locale} />
-                          <input
-                            type="hidden"
-                            name="programId"
-                            value={program.id}
-                          />
-                          <button className="button" type="submit">
-                            {es ? "Solicitar recompensa" : "Request reward"}
-                          </button>
-                        </form>
+                        <div className="reward-choice-grid">
+                          {((program as any).loyalty_program_rewards || []).map(
+                            (item: any) => {
+                              const reward = item.business_rewards;
+                              if (!reward) return null;
+                              return (
+                                <form action={claimStampReward} key={reward.id}>
+                                  <input
+                                    type="hidden"
+                                    name="locale"
+                                    value={locale}
+                                  />
+                                  <input
+                                    type="hidden"
+                                    name="programId"
+                                    value={program.id}
+                                  />
+                                  <input
+                                    type="hidden"
+                                    name="rewardId"
+                                    value={reward.id}
+                                  />
+                                  <button className="button" type="submit">
+                                    {locale === "en"
+                                      ? reward.title_en || reward.title_es
+                                      : reward.title_es}
+                                  </button>
+                                </form>
+                              );
+                            },
+                          )}
+                        </div>
                       )}
                     </article>
                   );

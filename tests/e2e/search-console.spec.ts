@@ -1,5 +1,20 @@
 import { expect, test } from "@playwright/test";
 
+test("current discovery layout is retained and achievement management requires sign-in", async ({
+  request,
+}) => {
+  for (const locale of ["es", "en"]) {
+    const page = await request.get(`/${locale}`);
+    expect(page.status()).toBe(200);
+    expect(await page.text()).toContain('id="city-discovery-title"');
+    const admin = await request.get(`/${locale}/admin/achievements`, {
+      maxRedirects: 0,
+    });
+    expect([303, 307]).toContain(admin.status());
+    expect(admin.headers().location).toContain(`/${locale}/auth?next=`);
+  }
+});
+
 test("sitemap index and root-level child files are crawlable XML without sessions", async ({
   request,
 }) => {

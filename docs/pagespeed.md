@@ -27,8 +27,12 @@ The original report is a saved run. A new live mobile/desktop PageSpeed run is
 needed after deployment to measure the resulting score; no score increase is
 assumed from source changes alone.
 
-Verification: `npm run check` passed, including the production build. The build
-manifest associates MapLibre CSS only with the map route. Shared CSS fell from
-32,338 to 22,321 gzip bytes (about 31%). The HTTP end-to-end suite could not start
-because this checkout lacks the runtime Supabase environment configuration;
-browser acceptance and a fresh live PageSpeed run remain unverified.
+The initial patch was tested on the older master UI: its shared stylesheet fell
+from 32,338 to 22,321 gzip bytes. That result is historical, not a measurement of
+the current redesign. See `deployment-source.md` for the source reconciliation.
+
+The combined September 16 release preserves the current redesigned UI and these
+fixes. Its shared CSS is 44,173 gzip bytes; MapLibre styles remain map-only. The
+production and OpenNext builds passed. HTTP tests confirm sitemap/metadata,
+redirect and CSP behavior plus the CSS split. A real-browser visual check and a
+fresh live PageSpeed run remain outstanding.

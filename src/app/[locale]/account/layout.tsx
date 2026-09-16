@@ -27,6 +27,16 @@ export default async function AccountLayout({
     { href: base, label: es ? "Resumen" : "Overview", icon: "home" },
     { href: `${base}/saved`, label: es ? "Guardados" : "Saved", icon: "saved" },
     {
+      href: `${base}/following`,
+      label: es ? "Siguiendo" : "Following",
+      icon: "venue",
+    },
+    {
+      href: `${base}/activity`,
+      label: es ? "Actividad" : "Activity",
+      icon: "activity",
+    },
+    {
       href: `${base}/rewards`,
       label: es ? "Progreso" : "Progress",
       icon: "gift",
@@ -49,6 +59,16 @@ export default async function AccountLayout({
       href: `${base}/settings`,
       label: es ? "Ajustes" : "Settings",
       icon: "settings",
+    },
+    {
+      href: `${base}/privacy`,
+      label: es ? "Privacidad" : "Privacy",
+      icon: "lock",
+    },
+    {
+      href: `${base}/subscription`,
+      label: es ? "Membresía" : "Membership",
+      icon: "gift",
     },
   ];
   return (

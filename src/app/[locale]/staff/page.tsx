@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ConsoleMetric } from "@/components/ConsoleChrome";
-import { WorkspacePageHeader } from "@/components/WorkspaceShell";
+import { Icon, type IconName } from "@/components/Icons";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 
@@ -44,62 +43,122 @@ export default async function StaffOverview({
   ]);
   const es = locale === "es";
   const pending = (venues || 0) + (events || 0) + (submissions || 0);
+  const actions: Array<{
+    href: string;
+    icon: IconName;
+    title: string;
+    detail: string;
+    count?: number;
+  }> = [
+    {
+      href: `/${locale}/staff/moderation`,
+      icon: "shield",
+      title: es ? "Cola de publicación" : "Publishing queue",
+      detail: es
+        ? "Locales, eventos y contenido"
+        : "Venues, events and content",
+      count: pending,
+    },
+    {
+      href: `/${locale}/staff/support`,
+      icon: "inbox",
+      title: es ? "Soporte" : "Customer support",
+      detail: es ? "Casos enviados por usuarios" : "User-submitted cases",
+      count: reports || 0,
+    },
+    {
+      href: `/${locale}/staff/creators`,
+      icon: "users",
+      title: es ? "Creadores" : "Creators",
+      detail: es ? "Perfiles y verificaciones" : "Profiles and verification",
+    },
+    {
+      href: `/${locale}/staff/catalogue`,
+      icon: "venue",
+      title: es ? "Catálogo" : "Catalogue",
+      detail: es
+        ? "Locales y eventos publicados"
+        : "Published venues and events",
+    },
+    {
+      href: `/${locale}/staff/promotions`,
+      icon: "megaphone",
+      title: es ? "Promociones" : "Promotions",
+      detail: es ? "Campañas y solicitudes" : "Campaigns and requests",
+    },
+    {
+      href: `/${locale}/staff/audit`,
+      icon: "audit",
+      title: es ? "Auditoría" : "Audit history",
+      detail: es ? "Registro de decisiones" : "Decision log",
+    },
+  ];
   return (
-    <>
-      <WorkspacePageHeader
-        eyebrow={es ? "Hoy" : "Today"}
-        title={es ? "Qué necesita atención" : "What needs attention"}
-        description={
-          es
-            ? "Alertas y siguientes acciones, no todas las herramientas a la vez."
-            : "Alerts and next actions, not every tool at once."
-        }
-      />
-      <section className="metrics-grid">
-        <ConsoleMetric
-          label={es ? "Por revisar" : "Awaiting review"}
-          value={pending}
-          detail={es ? "Contenido entrante" : "Incoming content"}
-        />
-        <ConsoleMetric
-          label={es ? "Casos abiertos" : "Open cases"}
-          value={reports || 0}
-          detail={es ? "Avisos de usuarios" : "User reports"}
-        />
-        <ConsoleMetric
-          label={es ? "Locales pendientes" : "Pending venues"}
-          value={venues || 0}
-          detail={es ? "Alta de negocios" : "Business onboarding"}
-        />
+    <div className="operations-overview">
+      <section className="operations-hero">
+        <span>{es ? "Prioridad de hoy" : "Today’s priority"}</span>
+        <h2>
+          {pending
+            ? es
+              ? `${pending} elementos esperan revisión`
+              : `${pending} items await review`
+            : es
+              ? "Todo está al día"
+              : "Everything is up to date"}
+        </h2>
+        <p>
+          {es
+            ? "Entra directamente en la tarea que necesita atención."
+            : "Go straight to the work that needs attention."}
+        </p>
+        <Link href={`/${locale}/staff/moderation`}>
+          {es ? "Revisar ahora" : "Review now"}
+          <Icon name="arrow-right" />
+        </Link>
       </section>
-      <section className="dashboard-grid">
-        <article className="panel console-card">
-          <span className="status-pill">{pending}</span>
-          <h2>{es ? "Cola de publicación" : "Publishing queue"}</h2>
-          <p>
-            {es
-              ? "Revisa locales, eventos, ofertas, comunidad y reclamaciones."
-              : "Review venues, events, offers, community items and claims."}
-          </p>
-          <Link className="button" href={`/${locale}/staff/moderation`}>
-            {es ? "Abrir moderación" : "Open moderation"}
-          </Link>
-        </article>
-        <article className="panel console-card">
-          <span className="status-pill">{reports || 0}</span>
-          <h2>{es ? "Soporte" : "Customer support"}</h2>
-          <p>
-            {es
-              ? "Los avisos y problemas enviados por usuarios."
-              : "Reports and problems submitted by users."}
-          </p>
-          <Link className="button secondary" href={`/${locale}/staff/support`}>
-            {es ? "Ver casos" : "View cases"}
-          </Link>
-        </article>
+      <section
+        className="operations-pulse"
+        aria-label={es ? "Estado operativo" : "Operational status"}
+      >
+        <div>
+          <strong>{pending}</strong>
+          <span>{es ? "por revisar" : "to review"}</span>
+        </div>
+        <div>
+          <strong>{reports || 0}</strong>
+          <span>{es ? "casos" : "cases"}</span>
+        </div>
+        <div>
+          <strong>{venues || 0}</strong>
+          <span>{es ? "locales" : "venues"}</span>
+        </div>
       </section>
-      <section className="panel">
-        <h2>{es ? "Actividad reciente" : "Recent activity"}</h2>
+      <section className="operations-tools">
+        <header>
+          <span>{es ? "Herramientas" : "Tools"}</span>
+          <h2>{es ? "Elige una tarea" : "Choose a task"}</h2>
+        </header>
+        <nav>
+          {actions.map((action) => (
+            <Link href={action.href} key={action.href}>
+              <span>
+                <Icon name={action.icon} />
+              </span>
+              <span>
+                <strong>{action.title}</strong>
+                <small>{action.detail}</small>
+              </span>
+              {action.count !== undefined && <b>{action.count}</b>}
+              <Icon name="chevron" />
+            </Link>
+          ))}
+        </nav>
+      </section>
+      <section className="operations-recent">
+        <header>
+          <span>{es ? "Registro" : "Log"}</span>
+          <h2>{es ? "Actividad reciente" : "Recent activity"}</h2>
+        </header>
         <div className="managed-list">
           {(recent || []).map((item) => (
             <div className="managed-row" key={item.id}>
@@ -114,8 +173,15 @@ export default async function StaffOverview({
               </time>
             </div>
           ))}
+          {!recent?.length && (
+            <p className="muted">
+              {es
+                ? "Aún no hay actividad reciente."
+                : "No recent activity yet."}
+            </p>
+          )}
         </div>
       </section>
-    </>
+    </div>
   );
 }

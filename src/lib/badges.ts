@@ -1,8 +1,9 @@
 import type { Locale } from "./config";
 
 export type BadgeDefinition = {
-  key: "first_step" | "local_regular" | "city_insider";
+  key: string;
   minimumXp: number;
+  icon?: "discover" | "star" | "venue" | "gift" | "heart";
   name: Record<Locale, string>;
   description: Record<Locale, string>;
 };
@@ -37,11 +38,18 @@ export const badgeDefinitions: readonly BadgeDefinition[] = [
   },
 ] as const;
 
-export function badgeProgress(totalXp: number) {
-  const safeXp = Math.max(0, Math.floor(totalXp));
-  const earned = badgeDefinitions.filter((badge) => safeXp >= badge.minimumXp);
-  const next =
-    badgeDefinitions.find((badge) => safeXp < badge.minimumXp) ?? null;
+export function badgeProgress(
+  totalXp: number,
+  definitions: readonly BadgeDefinition[] = badgeDefinitions,
+) {
+  const safeXp = Number.isFinite(totalXp)
+    ? Math.max(0, Math.floor(totalXp))
+    : 0;
+  const sorted = [...definitions].sort(
+    (a, b) => a.minimumXp - b.minimumXp || a.key.localeCompare(b.key),
+  );
+  const earned = sorted.filter((badge) => safeXp >= badge.minimumXp);
+  const next = sorted.find((badge) => safeXp < badge.minimumXp) ?? null;
   return {
     earned,
     next,

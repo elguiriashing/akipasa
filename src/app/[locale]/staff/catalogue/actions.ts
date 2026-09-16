@@ -20,6 +20,11 @@ const venueSchema = z.object({
   descriptionEs: z.string().trim().min(20).max(2000),
   descriptionEn: z.string().trim().max(2000),
   address: z.string().trim().min(5).max(300),
+  addressSelection: z.enum(["selected", "unchanged"]),
+  locality: z.string().trim().max(120),
+  province: z.string().trim().max(120),
+  latitude: z.union([z.literal(""), z.coerce.number().min(27).max(44.5)]),
+  longitude: z.union([z.literal(""), z.coerce.number().min(-19).max(5)]),
   status: contentStatus,
   reason: z.string().trim().min(10).max(2000),
 });
@@ -38,6 +43,29 @@ export async function operatorUpdateVenue(formData: FormData) {
     locale,
     `/${locale}/staff/catalogue/venues/${venueId}`,
   );
+  if (parsed.data.addressSelection === "selected") {
+    if (
+      !parsed.data.locality ||
+      !parsed.data.province ||
+      parsed.data.latitude === "" ||
+      parsed.data.longitude === ""
+    ) {
+      redirect(venueDestination(locale, venueId, "error=venue"));
+    }
+    const { error: locationError } = await supabase.rpc(
+      "update_venue_location_in_spain",
+      {
+        p_venue: parsed.data.venueId,
+        p_locality_name: parsed.data.locality,
+        p_province_name: parsed.data.province,
+        p_address: parsed.data.address,
+        p_latitude: parsed.data.latitude,
+        p_longitude: parsed.data.longitude,
+      },
+    );
+    if (locationError)
+      redirect(venueDestination(locale, venueId, "error=venue"));
+  }
   const { error } = await supabase.rpc("operator_update_venue", {
     p_venue: parsed.data.venueId,
     p_name: parsed.data.name,

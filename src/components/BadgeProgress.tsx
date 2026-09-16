@@ -1,8 +1,10 @@
 import { ConsoleIcon } from "@/components/ConsoleChrome";
-import { badgeDefinitions, badgeProgress } from "@/lib/badges";
+import { badgeProgress } from "@/lib/badges";
+import { activeAchievementBadges } from "@/lib/achievement-repository";
+import { Icon } from "./Icons";
 import type { Locale } from "@/lib/config";
 
-export function BadgeProgress({
+export async function BadgeProgress({
   locale,
   totalXp,
 }: {
@@ -10,7 +12,8 @@ export function BadgeProgress({
   totalXp: number;
 }) {
   const es = locale === "es";
-  const { earned, next, remainingXp } = badgeProgress(totalXp);
+  const definitions = await activeAchievementBadges();
+  const { earned, next, remainingXp } = badgeProgress(totalXp, definitions);
 
   return (
     <section className="panel console-card badge-progress">
@@ -23,7 +26,7 @@ export function BadgeProgress({
         <div>
           <h3>{es ? "Insignias" : "Badges"}</h3>
           <p>
-            {earned.length} / {badgeDefinitions.length}{" "}
+            {earned.length} / {definitions.length}{" "}
             {es ? "conseguidas" : "earned"}
           </p>
         </div>
@@ -33,7 +36,7 @@ export function BadgeProgress({
           {earned.map((badge) => (
             <div className="badge-item" key={badge.key}>
               <span className="badge-mark">
-                {badge.name[locale].slice(0, 1)}
+                <Icon name={badge.icon || "star"} size={22} />
               </span>
               <div>
                 <strong>{badge.name[locale]}</strong>
@@ -45,8 +48,12 @@ export function BadgeProgress({
       ) : (
         <p className="empty-state">
           {es
-            ? "Tu primera insignia se desbloquea con un check-in valido."
-            : "Your first badge unlocks after one valid check-in."}
+            ? definitions.length
+              ? "Sigue sumando XP para desbloquear tu próxima insignia."
+              : "Próximamente habrá nuevos logros."
+            : definitions.length
+              ? "Keep earning XP to unlock your next badge."
+              : "New achievements are coming soon."}
         </p>
       )}
       {next ? (
@@ -57,13 +64,13 @@ export function BadgeProgress({
             {remainingXp} XP {es ? "para desbloquear" : "to unlock"}
           </small>
         </div>
-      ) : (
+      ) : definitions.length > 0 ? (
         <p className="reward-strip">
           {es
             ? "Has desbloqueado todas las insignias actuales."
             : "You have unlocked every current badge."}
         </p>
-      )}
+      ) : null}
     </section>
   );
 }

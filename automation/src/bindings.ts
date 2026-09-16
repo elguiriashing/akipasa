@@ -5,6 +5,9 @@ export type SecretBindings = {
   TELEGRAM_BOT_TOKEN: string;
   TELEGRAM_CHAT_ID: string;
   TELEGRAM_WEBHOOK_SECRET: string;
+  TELEGRAM_ADMIN_USER_IDS: string;
+  AI_SCHEDULER_SECRET: string;
+  AKIHQ_TELEGRAM_GATEWAY_SECRET: string;
 };
 
 export type Bindings = Cloudflare.Env & SecretBindings;

@@ -33,6 +33,11 @@ export default async function StaffLayout({
       icon: "inbox",
     },
     {
+      href: `${base}/creators`,
+      label: es ? "Creadores" : "Creators",
+      icon: "users",
+    },
+    {
       href: `${base}/moderation`,
       label: es ? "Moderación" : "Moderation",
       icon: "shield",

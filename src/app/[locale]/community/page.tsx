@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import {
   ConsoleIcon,
@@ -12,7 +12,9 @@ import {
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { loadFeatureFlags } from "@/lib/feature-flags";
+import { SpainAddressAutocomplete } from "@/components/SpainAddressAutocomplete";
 import { submitCommunityEvent, submitReport } from "./actions";
+import { communityCreatorItems } from "@/components/community/CreatorDirectoryPage";
 
 export default async function CommunityPage({
   params,
@@ -24,11 +26,14 @@ export default async function CommunityPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
-  const view = ["home", "suggest", "report", "suggestions", "reports"].includes(
+  const view = ["suggest", "report", "suggestions", "reports"].includes(
     query.view || "",
   )
     ? query.view!
-    : "home";
+    : query.target
+      ? "report"
+      : "home";
+  if (view === "home") redirect(`/${locale}/community/creators`);
   const { supabase, user } = await requireUser(locale, `/${locale}/community`);
   const flags = await loadFeatureFlags(supabase);
   const es = locale === "es";
@@ -37,6 +42,7 @@ export default async function CommunityPage({
     { data: venues },
     { data: submissions },
     { data: reports },
+    { data: categories },
   ] = await Promise.all([
     supabase
       .from("events")
@@ -58,6 +64,10 @@ export default async function CommunityPage({
       .select("id,target_type,reason,state,created_at")
       .eq("reporter_id", user.id)
       .order("created_at", { ascending: false }),
+    supabase
+      .from("categories")
+      .select("id,slug,name_es,name_en")
+      .order("name_es"),
   ]);
   const pendingSuggestions =
     submissions?.filter((item) => item.state === "pending").length || 0;
@@ -66,31 +76,10 @@ export default async function CommunityPage({
   const hasReportableItems = Boolean(events?.length || venues?.length);
   const requestedTarget = typeof query.target === "string" ? query.target : "";
   const base = `/${locale}/community`;
-  const items: WorkspaceItem[] = [
-    { href: base, label: es ? "Inicio" : "Overview", icon: "home" },
-    {
-      href: `${base}?view=suggest`,
-      label: es ? "Sugerir evento" : "Suggest an event",
-      icon: "calendar",
-    },
-    {
-      href: `${base}?view=report`,
-      label: es ? "Enviar aviso" : "Report a problem",
-      icon: "megaphone",
-    },
-    {
-      href: `${base}?view=suggestions`,
-      label: es ? "Mis sugerencias" : "My suggestions",
-      icon: "inbox",
-      count: submissions?.length ? submissions.length : undefined,
-    },
-    {
-      href: `${base}?view=reports`,
-      label: es ? "Mis avisos" : "My reports",
-      icon: "activity",
-      count: reports?.length ? reports.length : undefined,
-    },
-  ];
+  const items: WorkspaceItem[] = communityCreatorItems(locale, {
+    suggestions: submissions?.length || 0,
+    reports: reports?.length || 0,
+  });
 
   return (
     <WorkspaceShell
@@ -166,6 +155,26 @@ export default async function CommunityPage({
           <div className="workspace-launcher">
             <Link
               className="workspace-launch-card"
+              href={`/${locale}/community/creators`}
+            >
+              <ConsoleIcon label="CR" />
+              <strong>
+                {es ? "Descubrir creadores" : "Discover creators"}
+              </strong>
+              <span aria-hidden="true">&rarr;</span>
+            </Link>
+            <Link
+              className="workspace-launch-card"
+              href={`/${locale}/community/creator`}
+            >
+              <ConsoleIcon label="ME" />
+              <strong>
+                {es ? "Gestionar mi perfil" : "Manage my creator profile"}
+              </strong>
+              <span aria-hidden="true">&rarr;</span>
+            </Link>
+            <Link
+              className="workspace-launch-card"
               href={`/${locale}/community?view=suggest`}
             >
               <ConsoleIcon label="+E" />
@@ -232,11 +241,30 @@ export default async function CommunityPage({
                         {es ? "Nombre del local" : "Venue name"}
                         <input name="venueName" required minLength={2} />
                       </label>
-                      <label>
-                        {es ? "Direccion" : "Address"}
-                        <input name="venueAddress" required minLength={5} />
-                      </label>
+                      <SpainAddressAutocomplete
+                        locale={locale}
+                        mode="address"
+                        name="venueAddress"
+                        label={es ? "Direccion" : "Address"}
+                      />
                     </div>
+                    <label>
+                      {es ? "Categoria" : "Category"}
+                      <select name="categoryId" required defaultValue="">
+                        <option value="" disabled>
+                          {es
+                            ? "Selecciona una categoria"
+                            : "Choose a category"}
+                        </option>
+                        {(categories || []).map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {es
+                              ? category.name_es
+                              : category.name_en || category.name_es}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
                     <label>
                       {es ? "Titulo del evento" : "Event title"}
                       <input name="title" required minLength={3} />

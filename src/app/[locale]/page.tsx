@@ -3,11 +3,13 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { isLocale } from "@/lib/config";
 import { msg } from "@/lib/messages";
-import { repository } from "@/lib/repository";
+import { recommendDiscovery } from "@/lib/personalisation/server";
 import type { TimeWindow } from "@/lib/domain";
+import { CityDiscovery } from "@/components/CityDiscovery";
 import { EventCard } from "@/components/EventCard";
-import { isSpainLocation, sortedSpainLocations } from "@/lib/locations";
-import { UseMyLocation } from "@/components/UseMyLocation";
+import { DiscoveryIntentSignal } from "@/components/DiscoveryIntentSignal";
+import { nearbyUnclaimedVenues } from "@/lib/unclaimed-venues";
+import { discoveryLocationFromQuery } from "@/lib/discovery-location";
 
 export const dynamic = "force-dynamic";
 
@@ -25,11 +27,12 @@ export default async function DiscoverPage({
   const query = await searchParams;
   const m = msg(locale);
 
-  const requestedLocality =
-    typeof query.locality === "string" ? query.locality : "fuengirola";
-  const locality = isSpainLocation(requestedLocality)
-    ? requestedLocality
-    : "fuengirola";
+  const selectedLocation = discoveryLocationFromQuery(query, locale);
+  const {
+    locality,
+    center: searchCenter,
+    name: localityName,
+  } = selectedLocation;
   const requestedRadius = Number(
     typeof query.radius === "string" ? query.radius : 25,
   );
@@ -77,15 +80,14 @@ export default async function DiscoverPage({
   const dateFrom = parseDate(query.dateFrom);
   const dateTo = parseDate(query.dateTo, true);
   const accessible = query.accessible === "on";
-  const localityName =
-    sortedSpainLocations.find(([key]) => key === locality)?.[1]?.[locale] ??
-    locality;
-
   const formatTimeFilterUrl = (nextTime: TimeWindow) => {
     const params = new URLSearchParams();
     params.set("locality", locality);
+    params.set("locationName", localityName);
+    params.set("latitude", String(searchCenter.latitude));
+    params.set("longitude", String(searchCenter.longitude));
     params.set("radius", String(radius));
-    if (nextTime) params.set("time", nextTime);
+    params.set("time", nextTime);
     if (category) params.set("category", category);
     if (price) params.set("price", price);
     if (minPriceCents !== undefined)
@@ -98,26 +100,27 @@ export default async function DiscoverPage({
     if (accessible) params.set("accessible", "on");
     return `/${locale}?${params}`;
   };
-
-  const timeTabs: Array<{ value: TimeWindow; label: string }> = [
-    { value: "now", label: m.now },
-    { value: "tonight", label: m.tonight },
-    { value: "tomorrow", label: m.tomorrow },
-    { value: "weekend", label: m.weekend },
-    { value: "all", label: m.all },
-  ];
-
-  const results = await repository.discover({
-    locality,
+  const recommendations = await recommendDiscovery({
+    query: {
+      locality,
+      latitude: searchCenter.latitude,
+      longitude: searchCenter.longitude,
+      radiusKm: radius,
+      time,
+      category,
+      price,
+      minPriceCents,
+      maxPriceCents,
+      dateFrom,
+      dateTo,
+      accessible,
+    },
+    surface: "discover",
+  });
+  const results = recommendations.items.map((item) => item.result);
+  const nearbyVenues = await nearbyUnclaimedVenues({
+    center: searchCenter,
     radiusKm: radius,
-    time,
-    category,
-    price,
-    minPriceCents,
-    maxPriceCents,
-    dateFrom,
-    dateTo,
-    accessible,
   });
 
   const resultText =
@@ -130,235 +133,21 @@ export default async function DiscoverPage({
         : "events found";
 
   return (
-    <main className="shell">
-      <section className="hero">
-        <div className="hero-inner">
-          <div className="hero-copy">
-            <div className="eyebrow">{m.eyebrow}</div>
-            <h1>{m.heading}</h1>
-            <p className="lede">{m.intro}</p>
-            <p className="hero-meta">
-              {locale === "es"
-                ? `Explora planes en ${localityName} y descubre qu\u00e9 pasa a tu alrededor.`
-                : `Explore plans in ${localityName} and discover what's on near you.`}
-            </p>
-            <div className="hero-actions">
-              <Link
-                href={`/${locale}#results`}
-                className="button button-strong"
-              >
-                {locale === "es" ? "Descubrir ahora" : "Discover now"}
-              </Link>
-              <Link href={`/${locale}/map`} className="button button-ghost">
-                {m.map}
-              </Link>
-              <Link
-                href={`/${locale}/membership#plans`}
-                className="button membership-cta"
-              >
-                {locale === "es" ? "Ver membresías" : "View memberships"}
-              </Link>
-            </div>
-          </div>
-
-          <aside className="hero-panel" aria-label={m.discover}>
-            <div className="panel-block">
-              <span>{locale === "es" ? "Zona activa" : "Active area"}</span>
-              <strong>{localityName}</strong>
-              <small>{`${radius} km radius`}</small>
-            </div>
-            <div className="panel-block">
-              <span>
-                {locale === "es"
-                  ? "Disponibilidad en vivo"
-                  : "Live availability"}
-              </span>
-              <strong>{results.length}</strong>
-              <small>{resultText}</small>
-            </div>
-            <div className="panel-block">
-              <span>{locale === "es" ? "Momento" : "Time window"}</span>
-              <strong>{m[time]}</strong>
-              <small>{locale === "es" ? "en este momento" : "for now"}</small>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <div className="quick-strip" role="navigation" aria-label={m.discover}>
-        {timeTabs.map((tab) => (
-          <Link
-            key={tab.value}
-            href={formatTimeFilterUrl(tab.value)}
-            className={`chip ${time === tab.value ? "chip-active" : ""}`}
-            aria-current={time === tab.value ? "page" : undefined}
-          >
-            {tab.label}
-          </Link>
-        ))}
-      </div>
-
-      <form
-        className="filters-shell"
-        method="get"
-        key={[
+    <main className="shell discover-page">
+      <DiscoveryIntentSignal
+        active={Object.keys(query).length > 0}
+        metadata={{
           locality,
-          radius,
+          latitude: searchCenter.latitude,
+          longitude: searchCenter.longitude,
+          radius_km: radius,
           time,
-          category || "any",
-          price || "any",
-          minPriceCents ?? "",
-          maxPriceCents ?? "",
-          String(query.dateFrom || ""),
-          String(query.dateTo || ""),
+          category: category || "any",
+          price: price || "any",
           accessible,
-        ].join("-")}
-      >
-        <details className="filter-group" open>
-          <summary className="filter-summary">
-            <span>
-              {locale === "es" ? "Filtros r\u00e1pidos" : "Quick filters"}
-            </span>
-            <span className="filter-summary-caption">
-              {locale === "es"
-                ? "Ajusta tu b\u00fasqueda en segundos"
-                : "Adjust your discovery in seconds"}
-            </span>
-          </summary>
-          <div className="filter-grid">
-            <div className="field">
-              <label htmlFor="locality">{m.location}</label>
-              <select id="locality" name="locality" defaultValue={locality}>
-                {sortedSpainLocations.map(([key, value]) => (
-                  <option key={key} value={key}>
-                    {value[locale]}
-                  </option>
-                ))}
-              </select>
-              <UseMyLocation locale={locale} />
-            </div>
-            <div className="field">
-              <label htmlFor="radius">{m.radius}</label>
-              <select id="radius" name="radius" defaultValue={String(radius)}>
-                {[5, 15, 25, 50, 100].map((v) => (
-                  <option key={v} value={v}>
-                    {v} km
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="field">
-              <label htmlFor="time">{m.time}</label>
-              <select id="time" name="time" defaultValue={time}>
-                {(
-                  ["now", "tonight", "tomorrow", "weekend", "all"] as const
-                ).map((v) => (
-                  <option key={v} value={v}>
-                    {m[v]}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="field">
-              <label htmlFor="category">{m.category}</label>
-              <select
-                id="category"
-                name="category"
-                defaultValue={category || "any"}
-              >
-                <option value="any">{m.any}</option>
-                <option value="music">{m.music}</option>
-                <option value="social">{m.social}</option>
-                <option value="workshop">{m.workshop}</option>
-                <option value="culture">{m.culture}</option>
-                <option value="market">{m.market}</option>
-                <option value="food">{m.food}</option>
-              </select>
-            </div>
-          </div>
-        </details>
-        <details className="filter-group">
-          <summary className="filter-summary">
-            <span>{locale === "es" ? "M\u00e1s filtros" : "More filters"}</span>
-            <span className="filter-summary-caption">
-              {locale === "es"
-                ? "Precio, fechas y accesibilidad"
-                : "Price, dates and accessibility"}
-            </span>
-          </summary>
-          <div className="filter-grid filter-grid-secondary">
-            <div className="field">
-              <label htmlFor="minPrice">{m.minimumPrice}</label>
-              <input
-                id="minPrice"
-                name="minPrice"
-                type="number"
-                min="0"
-                step="0.01"
-                defaultValue={
-                  minPriceCents === undefined ? "" : minPriceCents / 100
-                }
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="maxPrice">{m.maximumPrice}</label>
-              <input
-                id="maxPrice"
-                name="maxPrice"
-                type="number"
-                min="0"
-                step="0.01"
-                defaultValue={
-                  maxPriceCents === undefined ? "" : maxPriceCents / 100
-                }
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="price">{m.price}</label>
-              <select id="price" name="price" defaultValue={price || "any"}>
-                <option value="any">{m.any}</option>
-                <option value="free">{m.free}</option>
-                <option value="paid">{m.paid}</option>
-              </select>
-            </div>
-            <div className="field">
-              <label htmlFor="dateFrom">{m.dateFrom}</label>
-              <input
-                id="dateFrom"
-                name="dateFrom"
-                type="date"
-                defaultValue={
-                  typeof query.dateFrom === "string" ? query.dateFrom : ""
-                }
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="dateTo">{m.dateTo}</label>
-              <input
-                id="dateTo"
-                name="dateTo"
-                type="date"
-                defaultValue={
-                  typeof query.dateTo === "string" ? query.dateTo : ""
-                }
-              />
-            </div>
-            <label className="field checkbox-field">
-              <input
-                name="accessible"
-                type="checkbox"
-                defaultChecked={accessible}
-              />
-              <span>{m.accessibleOnly}</span>
-            </label>
-          </div>
-        </details>
-        <div className="filter-actions">
-          <button className="button button-strong" type="submit">
-            {m.apply}
-          </button>
-        </div>
-      </form>
+        }}
+      />
+      <CityDiscovery locale={locale} />
 
       <section id="results">
         <div className="section-head">
@@ -374,17 +163,104 @@ export default async function DiscoverPage({
 
       {results.length ? (
         <div className="grid">
-          {results.map((result) => (
+          {recommendations.items.map((item, position) => (
             <EventCard
-              key={result.occurrence.id}
-              result={result}
+              key={item.result.occurrence.id}
+              result={item.result}
               locale={locale}
+              position={position}
+              recommendationRequestId={recommendations.requestId}
+              reasonCodes={item.reasonCodes}
             />
           ))}
         </div>
       ) : (
-        <p className="notice">{m.noResults}</p>
+        <section className="discovery-empty" aria-labelledby="empty-title">
+          <div>
+            <span className="discovery-empty-mark" aria-hidden="true">
+              A
+            </span>
+            <h3 id="empty-title">
+              {locale === "es"
+                ? "No hay planes cerca de ti"
+                : "No plans nearby yet"}
+            </h3>
+            <p>{m.noResults}</p>
+          </div>
+          <div className="discovery-empty-actions">
+            <Link
+              className="button button-strong"
+              href={formatTimeFilterUrl("all").replace(
+                `radius=${radius}`,
+                `radius=${Math.min(100, radius < 25 ? 25 : radius < 50 ? 50 : 100)}`,
+              )}
+            >
+              {locale === "es" ? "Ampliar radio" : "Expand radius"}
+            </Link>
+            <Link
+              className="button button-ghost"
+              href={formatTimeFilterUrl("tomorrow")}
+            >
+              {locale === "es" ? "Ver mañana" : "See tomorrow"}
+            </Link>
+            <Link
+              className="button button-ghost"
+              href={`/${locale}/map?locality=${encodeURIComponent(locality)}&locationName=${encodeURIComponent(localityName)}&latitude=${searchCenter.latitude}&longitude=${searchCenter.longitude}&radius=${radius}&time=${time}`}
+            >
+              {locale === "es" ? "Explorar mapa" : "Explore map"}
+            </Link>
+          </div>
+        </section>
       )}
+
+      {nearbyVenues.length ? (
+        <section aria-labelledby="nearby-venues-title">
+          <div className="section-head">
+            <h2 id="nearby-venues-title">
+              {locale === "es" ? "Negocios cerca de ti" : "Businesses near you"}
+            </h2>
+            <span className="count">{nearbyVenues.length}</span>
+          </div>
+          <p className="result-caption">
+            {locale === "es"
+              ? "Negocios publicados como no reclamados mientras sus propietarios completan la verificación."
+              : "Businesses published as unclaimed while their owners complete verification."}
+          </p>
+          <div className="grid">
+            {nearbyVenues.map((venue) => (
+              <Link
+                key={venue.id}
+                className="card venue-card"
+                href={`/${locale}/venues/${venue.slug}`}
+              >
+                <div className="card-media">
+                  <div className="card-media-fallback" aria-hidden>
+                    <span>{venue.name.slice(0, 1).toUpperCase()}</span>
+                  </div>
+                  <div className="card-media-scrim" aria-hidden />
+                  <div className="card-media-badges">
+                    <span className="pill card-pill-date">
+                      {locale === "es" ? "No reclamado" : "Unclaimed"}
+                    </span>
+                  </div>
+                </div>
+                <div className="card-body">
+                  <h3>{venue.name}</h3>
+                  <p className="card-venue">{venue.address}</p>
+                  <p className="card-distance">
+                    {`${venue.distanceKm.toFixed(1)} km`}
+                  </p>
+                  <div className="card-footer">
+                    <span className="card-arrow">
+                      {locale === "es" ? "Ver negocio" : "View business"}
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <p className="owner-nudge">
         <span>

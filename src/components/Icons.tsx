@@ -39,9 +39,17 @@ export type IconName =
   | "shield"
   | "users"
   | "venue"
-  | "arrow-right";
+  | "arrow-right"
+  | "plus"
+  | "trash";
 
 const paths: Record<IconName, React.ReactNode> = {
+  plus: <path d="M12 5v14M5 12h14" />,
+  trash: (
+    <>
+      <path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14M10 11v6M14 11v6" />
+    </>
+  ),
   discover: (
     <>
       <circle cx="12" cy="12" r="9" />
@@ -212,11 +220,14 @@ const paths: Record<IconName, React.ReactNode> = {
 
 export function Icon({
   name,
+  size,
   ...props
-}: { name: IconName } & SVGProps<SVGSVGElement>) {
+}: { name: IconName; size?: number } & SVGProps<SVGSVGElement>) {
   return (
     <svg
       viewBox="0 0 24 24"
+      width={size}
+      height={size}
       fill="none"
       stroke="currentColor"
       strokeWidth={1.8}

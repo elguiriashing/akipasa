@@ -1,5 +1,7 @@
 # Analytics taxonomy
 
+The legacy venue-dashboard counter remains for compatibility. The canonical behavioural and recommendation platform is documented in `TRACKING_EVENTS.md`, `RECOMMENDATIONS.md` and `DATA_PRIVACY.md`.
+
 Privacy-minimized event names: `discovery_search_performed`, `event_detail_viewed`, `venue_detail_viewed`, `directions_clicked`, `external_booking_clicked`, `share_initiated`, `event_saved`, `venue_followed`, `check_in_accepted`, `check_in_rejected`, `passport_step_completed`, and `promotion_requested`.
 
 Properties may include entity IDs, coarse locality, filter values, result count, and rejection reason. Never capture precise consumer location or expose consumer identity in business analytics.

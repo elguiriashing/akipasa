@@ -430,3 +430,7 @@ Slash command in configured group
   -> reply or external command delivery
   -> execution audit + dashboard metrics
 ```
+
+# Personalisation and recommendations (2026-08-13)
+
+The central recommendation boundary is `src/lib/personalisation/server.ts`; ranking components are in `src/lib/personalisation/ranking.ts`. Versioned ingestion is `/api/v1/behaviour/events` and versioned internal recommendations are `/api/v1/recommendations`. The existing discovery repository remains candidate infrastructure, so homepage, maps, AI tools and future partner gateways can converge on one engine. See `docs/RECOMMENDATIONS.md`.

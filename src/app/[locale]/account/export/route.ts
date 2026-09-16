@@ -24,7 +24,42 @@ export async function GET() {
       return { table, data: data || [], failed: Boolean(error) };
     }),
   );
-  const failedTables = entries
+  const preferenceProfile = entries.find(
+    (entry) => entry.table === "preference_profiles",
+  )?.data?.[0] as { id?: string } | undefined;
+  const derivedEntries = preferenceProfile?.id
+    ? await Promise.all(
+        [
+          "user_preference_signals",
+          "recommendation_requests",
+          "experiment_assignments",
+        ].map(async (table) => {
+          const { data, error } = await supabase
+            .from(table)
+            .select("*")
+            .eq("preference_profile_id", preferenceProfile.id!);
+          return { table, data: data || [], failed: Boolean(error) };
+        }),
+      )
+    : [];
+  const recommendationIds = (
+    derivedEntries.find((entry) => entry.table === "recommendation_requests")
+      ?.data || []
+  )
+    .map((row) => (row as { id?: string }).id)
+    .filter((id): id is string => Boolean(id));
+  const recommendationItems = recommendationIds.length
+    ? await supabase
+        .from("recommendation_items")
+        .select("*")
+        .in("recommendation_request_id", recommendationIds)
+    : { data: [], error: null };
+  derivedEntries.push({
+    table: "recommendation_items",
+    data: recommendationItems.data || [],
+    failed: Boolean(recommendationItems.error),
+  });
+  const failedTables = [...entries, ...derivedEntries]
     .filter((entry) => entry.failed)
     .map((entry) => entry.table);
   if (failedTables.length)
@@ -42,7 +77,10 @@ export async function GET() {
       email: user.email,
       authentication: exportableAuthentication(user),
       data: Object.fromEntries(
-        entries.map((entry) => [entry.table, entry.data]),
+        [...entries, ...derivedEntries].map((entry) => [
+          entry.table,
+          entry.data,
+        ]),
       ),
     },
     {

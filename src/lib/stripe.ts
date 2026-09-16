@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const billingPlanSchema = z.object({
-  plan: z.enum(["premium", "business"]),
+  plan: z.enum(["premium", "business", "business_pro"]),
   interval: z.enum(["month", "year"]),
 });
 
@@ -12,7 +12,22 @@ const priceEnvironmentNames = {
   "premium:year": "STRIPE_PREMIUM_YEARLY_PRICE_ID",
   "business:month": "STRIPE_BUSINESS_MONTHLY_PRICE_ID",
   "business:year": "STRIPE_BUSINESS_YEARLY_PRICE_ID",
+  "business_pro:month": "STRIPE_BUSINESS_PRO_MONTHLY_PRICE_ID",
+  "business_pro:year": "STRIPE_BUSINESS_PRO_YEARLY_PRICE_ID",
 } as const;
+
+export function stripeBillingPlanForPrice(priceId: string | null) {
+  if (!priceId) return null;
+  for (const [key, environmentName] of Object.entries(priceEnvironmentNames)) {
+    if (process.env[environmentName] !== priceId) continue;
+    const [plan, interval] = key.split(":") as [
+      BillingPlan["plan"],
+      BillingPlan["interval"],
+    ];
+    return { plan, interval };
+  }
+  return null;
+}
 
 export function stripePriceId({ plan, interval }: BillingPlan) {
   const name = priceEnvironmentNames[`${plan}:${interval}`];
@@ -24,6 +39,7 @@ export function stripePriceId({ plan, interval }: BillingPlan) {
 export async function stripeRequest<T>(
   path: string,
   parameters: URLSearchParams,
+  idempotencyKey?: string,
 ): Promise<T> {
   const secret = process.env.STRIPE_SECRET_KEY;
   if (!secret) throw new Error("STRIPE_SECRET_KEY is not configured");
@@ -32,8 +48,23 @@ export async function stripeRequest<T>(
     headers: {
       Authorization: `Bearer ${secret}`,
       "Content-Type": "application/x-www-form-urlencoded",
+      ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}),
     },
     body: parameters,
+  });
+  const result = (await response.json()) as T & {
+    error?: { message?: string };
+  };
+  if (!response.ok)
+    throw new Error(result.error?.message || "Stripe request failed");
+  return result;
+}
+
+export async function stripeRetrieve<T>(path: string): Promise<T> {
+  const secret = process.env.STRIPE_SECRET_KEY;
+  if (!secret) throw new Error("STRIPE_SECRET_KEY is not configured");
+  const response = await fetch(`https://api.stripe.com/v1${path}`, {
+    headers: { Authorization: `Bearer ${secret}` },
   });
   const result = (await response.json()) as T & {
     error?: { message?: string };

@@ -7,6 +7,25 @@ import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { createFeatureSlot, updatePromotion } from "../actions";
 
+function madridInputValue(value?: string | null) {
+  if (!value) return "";
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Madrid",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  })
+    .formatToParts(new Date(value))
+    .reduce<Record<string, string>>((result, part) => {
+      result[part.type] = part.value;
+      return result;
+    }, {});
+  return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
+}
+
 export default async function AdminPromotionsPage({
   params,
   searchParams,
@@ -23,7 +42,7 @@ export default async function AdminPromotionsPage({
       supabase
         .from("promotion_requests")
         .select(
-          "id,service,message,state,operator_notes,created_at,venues(name)",
+          "id,venue_id,event_id,service,message,state,operator_notes,created_at,venues(name),events(title_es,title_en),feature_slots(starts_at,ends_at)",
         )
         .order("created_at", { ascending: false }),
       supabase
@@ -33,7 +52,7 @@ export default async function AdminPromotionsPage({
         .limit(50),
       supabase
         .from("events")
-        .select("id,title_en,title_es")
+        .select("id,venue_id,title_en,title_es")
         .eq("status", "published")
         .order("title_en"),
     ]);
@@ -171,16 +190,30 @@ export default async function AdminPromotionsPage({
               const venue = item.venues as unknown as {
                 name?: string | null;
               } | null;
+              const selectedEvent = item.events as unknown as {
+                title_es?: string | null;
+                title_en?: string | null;
+              } | null;
+              const rawRequestSlot = item.feature_slots as unknown;
+              const requestSlot = (
+                Array.isArray(rawRequestSlot)
+                  ? rawRequestSlot[0]
+                  : rawRequestSlot
+              ) as { starts_at: string; ends_at: string } | null | undefined;
               return (
                 <details className="panel settings-row" key={item.id}>
                   <summary>
-                    {venue?.name || (es ? "Local" : "Venue")} / {item.service}
+                    {venue?.name || (es ? "Local" : "Venue")} /{" "}
+                    {(es ? selectedEvent?.title_es : selectedEvent?.title_en) ||
+                      selectedEvent?.title_es ||
+                      item.service}
                     <span className="status-pill">{item.state}</span>
                   </summary>
                   <p>{item.message}</p>
                   <form action={updatePromotion} className="stack">
                     <input type="hidden" name="locale" value={locale} />
                     <input type="hidden" name="requestId" value={item.id} />
+                    <input type="hidden" name="service" value={item.service} />
                     <label>
                       {es ? "Estado" : "State"}
                       <select name="state" defaultValue={item.state}>
@@ -191,6 +224,64 @@ export default async function AdminPromotionsPage({
                         <option value="lost">Lost</option>
                       </select>
                     </label>
+                    {item.service === "featured_listing" ? (
+                      <>
+                        <label>
+                          {es ? "Evento destacado" : "Featured event"}
+                          <select
+                            name="eventId"
+                            defaultValue={item.event_id || ""}
+                            required
+                          >
+                            <option value="" disabled>
+                              {es ? "Selecciona un evento" : "Select an event"}
+                            </option>
+                            {(events || [])
+                              .filter(
+                                (event) => event.venue_id === item.venue_id,
+                              )
+                              .map((event) => (
+                                <option value={event.id} key={event.id}>
+                                  {(es ? event.title_es : event.title_en) ||
+                                    event.title_es}
+                                </option>
+                              ))}
+                          </select>
+                        </label>
+                        <div className="form-grid-two">
+                          <label>
+                            {es ? "Inicio del destacado" : "Feature starts"}
+                            <input
+                              type="datetime-local"
+                              name="startsAt"
+                              defaultValue={madridInputValue(
+                                requestSlot?.starts_at,
+                              )}
+                            />
+                          </label>
+                          <label>
+                            {es ? "Fin del destacado" : "Feature ends"}
+                            <input
+                              type="datetime-local"
+                              name="endsAt"
+                              defaultValue={madridInputValue(
+                                requestSlot?.ends_at,
+                              )}
+                            />
+                          </label>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <input
+                          type="hidden"
+                          name="eventId"
+                          value={item.event_id || ""}
+                        />
+                        <input type="hidden" name="startsAt" value="" />
+                        <input type="hidden" name="endsAt" value="" />
+                      </>
+                    )}
                     <label>
                       {es ? "Notas internas" : "Internal notes"}
                       <textarea

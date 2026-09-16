@@ -2,7 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
-import { sortedSpainLocations } from "@/lib/locations";
+import { SupportAgentLauncher } from "@/components/support/SupportAgentLauncher";
+import { SpainAddressAutocomplete } from "@/components/SpainAddressAutocomplete";
+import { businessCategories } from "@/lib/business-packages";
 import { submitBusinessApplication } from "../actions";
 
 type BusinessApplication = {
@@ -12,6 +14,8 @@ type BusinessApplication = {
   payment_state: string;
   review_reason: string | null;
   created_at: string;
+  business_category: string | null;
+  plan_code: string;
 };
 
 export default async function BusinessApplicationPage({
@@ -24,13 +28,22 @@ export default async function BusinessApplicationPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
+  const selectedCategory = businessCategories.some(
+    (item) => item.key === query.category,
+  )
+    ? query.category!
+    : "food";
+  const selectedPlan =
+    query.plan === "business_pro" ? "business_pro" : "business";
   const { supabase, user } = await requireUser(
     locale,
     `/${locale}/business/apply`,
   );
   const { data } = await supabase
     .from("business_applications")
-    .select("id,business_name,state,payment_state,review_reason,created_at")
+    .select(
+      "id,business_name,state,payment_state,review_reason,created_at,business_category,plan_code",
+    )
     .eq("applicant_id", user.id)
     .order("created_at", { ascending: false });
   const applications = (data || []) as BusinessApplication[];
@@ -68,10 +81,6 @@ export default async function BusinessApplicationPage({
         : es
           ? "No hemos podido enviar la solicitud. Inténtalo de nuevo o pide ayuda."
           : "We could not send the application. Try again or ask for help.";
-  const helpHref = `mailto:support@akipasa.com?subject=${encodeURIComponent(
-    es ? "Ayuda para añadir mi negocio" : "Help adding my business",
-  )}`;
-
   return (
     <main className="shell dashboard business-application-page">
       <section className="hero business-application-hero">
@@ -96,9 +105,14 @@ export default async function BusinessApplicationPage({
             >
               {es ? "Ver precio y ventajas" : "See price and benefits"}
             </Link>
-            <a className="button button-ghost" href={helpHref}>
-              {es ? "Necesito ayuda" : "I need help"}
-            </a>
+            <SupportAgentLauncher
+              locale={locale}
+              surface="business_application"
+              label={es ? "Necesito ayuda" : "I need help"}
+              className="button button-ghost"
+              signedIn
+              captureBusinessForm
+            />
           </div>
         </div>
         <aside className="business-application-checklist">
@@ -205,7 +219,7 @@ export default async function BusinessApplicationPage({
           {current.state === "awaiting_payment" && (
             <Link
               className="button button-strong"
-              href={`/${locale}/account/subscription?plan=business`}
+              href={`/${locale}/account/subscription?plan=${current.plan_code === "business_pro" ? "business_pro" : "business"}&category=${current.business_category || "food"}`}
             >
               {es ? "Elegir plan Business" : "Choose a Business plan"}
             </Link>
@@ -234,6 +248,22 @@ export default async function BusinessApplicationPage({
               </p>
             </div>
             <input type="hidden" name="locale" value={locale} />
+            <input type="hidden" name="plan" value={selectedPlan} />
+            <label htmlFor="business-category">
+              {es ? "Tipo de negocio" : "Business type"}
+            </label>
+            <select
+              id="business-category"
+              name="businessCategory"
+              defaultValue={selectedCategory}
+              required
+            >
+              {businessCategories.map((category) => (
+                <option key={category.key} value={category.key}>
+                  {es ? category.es : category.en}
+                </option>
+              ))}
+            </select>
             <label htmlFor="business-name">
               {es ? "Nombre del negocio" : "Business name"}
             </label>
@@ -259,24 +289,7 @@ export default async function BusinessApplicationPage({
               maxLength={120}
               autoComplete="name"
             />
-            <label htmlFor="business-locality">
-              {es ? "Pueblo o ciudad" : "Town or city"}
-            </label>
-            <select
-              id="business-locality"
-              name="locality"
-              required
-              defaultValue=""
-            >
-              <option value="" disabled>
-                {es ? "Elige una localidad" : "Choose a town or city"}
-              </option>
-              {sortedSpainLocations.map(([key, place]) => (
-                <option key={key} value={place[locale]}>
-                  {place[locale]} · {place.province}
-                </option>
-              ))}
-            </select>
+            <SpainAddressAutocomplete locale={locale} mode="locality" />
             <label htmlFor="business-website">
               {es ? "Página web (opcional)" : "Website (optional)"}
             </label>
@@ -339,11 +352,18 @@ export default async function BusinessApplicationPage({
                 ? "No hace falta usar palabras técnicas. Cuéntanos lo que dirías a un cliente nuevo."
                 : "You do not need technical words. Tell us what you would say to a new customer."}
             </p>
-            <a className="button secondary" href={helpHref}>
-              {es
-                ? "Pedir ayuda para completarlo"
-                : "Ask for help completing it"}
-            </a>
+            <SupportAgentLauncher
+              locale={locale}
+              surface="business_application"
+              label={
+                es
+                  ? "Pedir ayuda para completarlo"
+                  : "Ask for help completing it"
+              }
+              className="button secondary"
+              signedIn
+              captureBusinessForm
+            />
           </aside>
         </section>
       )}

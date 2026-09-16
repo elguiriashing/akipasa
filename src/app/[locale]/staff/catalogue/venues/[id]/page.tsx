@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { WorkspacePageHeader } from "@/components/WorkspaceShell";
+import { SpainAddressAutocomplete } from "@/components/SpainAddressAutocomplete";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import {
@@ -108,10 +109,11 @@ export default async function StaffVenueRecord({
               <input name="name" defaultValue={venue.name} required />
             </label>
 
-            <label>
-              {es ? "Dirección física" : "Physical address"}
-              <input name="address" defaultValue={venue.address} required />
-            </label>
+            <SpainAddressAutocomplete
+              locale={locale}
+              mode="address"
+              defaultValue={venue.address}
+            />
           </div>
 
           <div className="form-grid-two">

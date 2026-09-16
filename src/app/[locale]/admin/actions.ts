@@ -77,23 +77,48 @@ export async function createPassport(formData: FormData) {
 const promotionSchema = z.object({
   locale: z.enum(["es", "en"]),
   requestId: z.string().uuid(),
+  service: z.enum([
+    "featured_listing",
+    "social_campaign",
+    "content_package",
+    "other",
+  ]),
   state: z.enum(["new", "contacted", "qualified", "won", "lost"]),
+  eventId: z.union([z.string().uuid(), z.literal("")]),
+  startsAt: z.string(),
+  endsAt: z.string(),
   notes: z.string().trim().max(2000),
 });
 export async function updatePromotion(formData: FormData) {
   const parsed = promotionSchema.safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   if (!parsed.success) redirect(`/${locale}/admin/promotions?error=promotion`);
-  const { supabase, user } = await requireUser(locale, `/${locale}/admin`);
-  const { error } = await supabase
-    .from("promotion_requests")
-    .update({
-      state: parsed.data.state,
-      operator_notes: parsed.data.notes || null,
-      updated_by: user.id,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", parsed.data.requestId);
+  const schedulesFeature =
+    parsed.data.service === "featured_listing" && parsed.data.state === "won";
+  const startsAt = schedulesFeature
+    ? madridLocalDateTimeSchema.safeParse(parsed.data.startsAt)
+    : null;
+  const endsAt = schedulesFeature
+    ? madridLocalDateTimeSchema.safeParse(parsed.data.endsAt)
+    : null;
+  if (
+    schedulesFeature &&
+    (!parsed.data.eventId ||
+      !startsAt?.success ||
+      !endsAt?.success ||
+      endsAt.data <= startsAt.data)
+  ) {
+    redirect(`/${locale}/admin/promotions?error=promotion`);
+  }
+  const { supabase } = await requireUser(locale, `/${locale}/admin`);
+  const { error } = await supabase.rpc("resolve_promotion_request", {
+    p_request: parsed.data.requestId,
+    p_state: parsed.data.state,
+    p_notes: parsed.data.notes,
+    p_event: parsed.data.eventId || null,
+    p_starts: startsAt?.success ? startsAt.data.toISOString() : null,
+    p_ends: endsAt?.success ? endsAt.data.toISOString() : null,
+  });
   if (error) redirect(`/${locale}/admin/promotions?error=promotion`);
   redirect(`/${locale}/admin/promotions?updated=promotion`);
 }

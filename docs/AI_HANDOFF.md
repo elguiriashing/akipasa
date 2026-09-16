@@ -160,7 +160,9 @@ send those two user messages.
 
 - Provision and accept the automation Worker end to end.
 - Use verified real businesses throughout the launch catalogue.
-- Select a production map provider if graphical clustering is required.
+- The public map uses MapLibre GL JS with OpenFreeMap's no-key OpenStreetMap
+  vector style by default. Set `NEXT_PUBLIC_MAP_STYLE_URL` to move to a custom
+  hosted or self-hosted MapLibre style without changing the UI.
 - Complete professional Spanish/EU legal review and a backup restore drill.
 - Validate production authentication email delivery and optional identity
   providers.
@@ -217,7 +219,8 @@ Full records are in [DECISIONS.md](./DECISIONS.md).
   been sent from the user's account for final end-to-end acceptance.
 - Android Assistant Action availability depends on device/language; the
   documented Tasker fallback must be tested on the target phone.
-- The public graphical map requires a selected production tile/style provider.
+- OpenFreeMap is the zero-config public tile/style provider. Reassess hosted or
+  self-hosted capacity if map traffic becomes commercially significant.
 - Hybrid discovery intentionally falls back to local test records when the
   live provider fails; this can hide availability incidents from users.
 - Privacy and terms text are implementation drafts pending professional review.
@@ -297,7 +300,7 @@ Public application:
 - `NEXT_PUBLIC_SITE_URL`
 - `NEXT_PUBLIC_DATA_PROVIDER`
 - `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED`
-- `NEXT_PUBLIC_MAP_STYLE_URL`
+- `NEXT_PUBLIC_MAP_STYLE_URL` (optional; defaults to OpenFreeMap Liberty)
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `STRIPE_SECRET_KEY`

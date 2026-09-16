@@ -3,6 +3,48 @@
 This is an engineering milestone log, not a semantic-version release log.
 Entries are newest first and must not contain credentials or personal data.
 
+## 2026-09-14 - Compact venue management dashboard
+
+- Replace the long venue management page with an overview and focused Profile,
+  Events, Rewards, Check-in, Bookings, and Team sections in English and Spanish.
+- Use compact forms, shared icons, responsive tool cards, inline checkboxes,
+  smaller QR previews, and expandable event controls and venue access settings.
+- Retain every existing server form and permission check. Keep unsaved input
+  when switching tabs, support keyboard navigation and browser history, and
+  reopen the relevant section after saves, errors, and existing event links.
+
+## 2026-09-14 - Business workspace action styling
+
+- Give Open AkiHQ and Manage venue consistent pill buttons with shared icons,
+  visible labels, theme colours, and full-width mobile touch targets.
+- Scope the fix to these venue actions so generic compact-row styles cannot
+  squash them or hide their labels; retain the existing destinations and forms.
+
+## 2026-09-14 - Compact business membership tools
+
+- Replace the repeated Basic/Pro tool columns with a venue selector, a compact
+  plan switch, three relevant included tools, and one application link.
+- Keep the complete tool list and upcoming extras in collapsed disclosures.
+  Localize tool names and extra prices in English and Spanish, and remove
+  internal implementation notes from the purchasing flow.
+- Use scoped styles, existing theme colours, visible input borders, and
+  comfortable touch targets; preserve plan entitlements, prices, and the
+  selected venue/plan in the application URL.
+- Add regression coverage for plan inclusion, every venue category, both
+  languages, mobile/desktop layout, and light/dark themes.
+- Declare the existing AkiHQ service binding for clean checkout builds, which
+  previously relied on an ignored, locally generated type file.
+
+## 2026-08-13 - Personalisation and recommendation foundation
+
+- Add versioned, batched behavioural ingestion with idempotency, RLS, privacy validation, consent and reset controls.
+- Add persistent short/long-term preference features with confidence, decay and diminishing repeated signals.
+- Add a shared contextual weighted ranker, diversity/exploration controls, relevance-gated sponsored boost, reasons and request/item logs.
+- Wire homepage impressions, skips, dwell, opens, quick exits, filters, saves/follows, Going, Not interested, CTA signals and verified check-ins.
+- Add versioned internal recommendation API and future partner/experiment boundaries.
+- Add an aggregate-only administrator Personalisation dashboard for recommendation health, outcomes and active ranker configuration.
+- Make crowded desktop workspace navigation reachable with a visible horizontal scrollbar, wheel scrolling, touch scrolling, pointer dragging and automatic active-item reveal.
+
 ## 2026-08-10
 
 ### Summary

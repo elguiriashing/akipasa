@@ -4,6 +4,7 @@ import { WorkspacePageHeader } from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { StaffQueue, type StaffQueueItem } from "../StaffQueue";
+import { setAutomaticModeration } from "../../moderation/actions";
 
 const queues = ["venues", "events", "offers", "community", "claims"] as const;
 type Queue = (typeof queues)[number];
@@ -56,8 +57,26 @@ export default async function StaffModerationPage({
   const queue: Queue = queues.includes(query.queue as Queue)
     ? (query.queue as Queue)
     : "venues";
-  const { supabase } = await requireUser(locale, `/${locale}/staff/moderation`);
-  const { data } = await loadQueue(supabase, queue);
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/staff/moderation`,
+  );
+  const [{ data }, { data: automaticMode }, { data: profile }] =
+    await Promise.all([
+      loadQueue(supabase, queue),
+      supabase
+        .from("automatic_moderation_settings")
+        .select("enabled,changed_at")
+        .eq("singleton", true)
+        .maybeSingle(),
+      supabase
+        .from("profiles")
+        .select("app_role")
+        .eq("id", user.id)
+        .maybeSingle(),
+    ]);
+  const automaticEnabled = automaticMode?.enabled === true;
+  const canChangeAutomaticMode = profile?.app_role === "administrator";
   const es = locale === "es";
   const labels: Record<Queue, string> = {
     venues: es ? "Locales" : "Venues",
@@ -98,6 +117,58 @@ export default async function StaffModerationPage({
               : "Decision failed."}
         </p>
       )}
+      <section
+        className="settings-row moderation-mode-card"
+        aria-labelledby="moderation-mode-title"
+      >
+        <div>
+          <p className="eyebrow">{es ? "Modo de revisión" : "Review mode"}</p>
+          <h2 id="moderation-mode-title">
+            {automaticEnabled
+              ? es
+                ? "Moderación automática activa"
+                : "Automatic moderation is on"
+              : es
+                ? "Moderación manual activa"
+                : "Manual moderation is on"}
+          </h2>
+          <p>
+            {es
+              ? "En modo automático, el agente de catálogo revisa nuevas solicitudes de locales, eventos de negocios y eventos comunitarios. Los casos inciertos o los errores permanecen en esta cola."
+              : "In automatic mode, the catalogue agent reviews new venue, business event, and community event requests. Uncertain cases and service failures stay in this queue."}
+          </p>
+        </div>
+        <form action={setAutomaticModeration}>
+          <input type="hidden" name="locale" value={locale} />
+          <input
+            type="hidden"
+            name="enabled"
+            value={automaticEnabled ? "false" : "true"}
+          />
+          <button
+            className={`button moderation-mode-toggle${automaticEnabled ? "active" : ""}`}
+            type="submit"
+            aria-pressed={automaticEnabled}
+            disabled={!canChangeAutomaticMode}
+            title={
+              !canChangeAutomaticMode
+                ? es
+                  ? "Solo un administrador puede cambiar este modo"
+                  : "Only an administrator can change this mode"
+                : undefined
+            }
+          >
+            <span aria-hidden="true" className="moderation-mode-indicator" />
+            {automaticEnabled
+              ? es
+                ? "Automático"
+                : "Automatic"
+              : es
+                ? "Manual"
+                : "Manual"}
+          </button>
+        </form>
+      </section>
       <nav
         className="workspace-subnav"
         aria-label={es ? "Colas de moderación" : "Moderation queues"}

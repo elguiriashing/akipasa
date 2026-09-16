@@ -474,3 +474,7 @@ stamps as well as XP.
 profile flags must never be user-editable, and calendar exports perform bounded
 catalogue reads. Business cancellation removes paid tools even when catalogue
 ownership records must be retained.
+
+# 2026-08-13: Central, explainable recommendation platform
+
+Recommendation logic lives behind one service boundary and begins with an explainable weighted ranker. Raw exposure is distinct from preference; skips are weak, explicit rejection is strong, repeated signals diminish, recent and long-term interests decay separately, and sponsored placement requires organic relevance. Behavioural collection is consented, pseudonymous where possible, bounded and non-blocking. Commercial partner access will call the same service through a separately authenticated/metered gateway.

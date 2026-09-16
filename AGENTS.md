@@ -25,3 +25,13 @@ On Windows use `npm.cmd` if PowerShell blocks `npm.ps1`. Run `npm run check` bef
 ## Definition of done
 
 Behavior is done only when its automated checks pass, the result is inspected, documentation is current, and remaining limitations are explicit.
+
+## Public-site deployment source
+
+The public site deploys from `master`. Fetch its latest tip before starting.
+The September 2026 redesign previously lived on
+`agent/ai-team-spain-address-search`; deploying the older master tree caused a
+UI regression. Keep the reconciliation documented in `docs/deployment-source.md`.
+Do not replace the current discovery, membership or business screens with older
+branch copies. `main` is the CRM source, not the public site. Before accepting a
+deployment, verify the CityDiscovery homepage and the new route on the live host.
