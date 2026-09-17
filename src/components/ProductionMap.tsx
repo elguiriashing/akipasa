@@ -1,7 +1,7 @@
 "use client";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Locale } from "@/lib/config";
 import { trackBehaviour } from "@/lib/personalisation/client";
 
@@ -189,6 +189,9 @@ export function ProductionMap({
   center: { latitude: number; longitude: number };
 }) {
   const container = useRef<HTMLDivElement>(null);
+  const [venueStatus, setVenueStatus] = useState<
+    "loading" | "ready" | "limited" | "error"
+  >("loading");
 
   useEffect(() => {
     trackBehaviour({
@@ -200,6 +203,9 @@ export function ProductionMap({
     });
     if (!container.current || !styleUrl) return;
     let disposed = false;
+    let visiblePoints = points;
+    let request: AbortController | undefined;
+    let reloadTimer: ReturnType<typeof setTimeout> | undefined;
     let cleanup = () => {};
 
     void import("maplibre-gl").then((maplibregl) => {
@@ -212,6 +218,7 @@ export function ProductionMap({
         attributionControl: false,
         maxPitch: 48,
         cooperativeGestures: true,
+        renderWorldCopies: false,
       });
       map.addControl(
         new maplibregl.NavigationControl({ showCompass: false }),
@@ -351,7 +358,7 @@ export function ProductionMap({
         });
         map.on("click", "discovery-unclustered", (event) => {
           const feature = event.features?.[0];
-          const point = points.find(
+          const point = visiblePoints.find(
             (candidate) => candidate.id === String(feature?.properties?.id),
           );
           if (!point) return;
@@ -371,6 +378,79 @@ export function ProductionMap({
             entityId: point.id,
           });
         });
+        const refreshVenues = async () => {
+          request?.abort();
+          const controller = new AbortController();
+          request = controller;
+          setVenueStatus("loading");
+          const bounds = map.getBounds();
+          const query = new URLSearchParams({
+            west: String(Math.max(-180, bounds.getWest())),
+            east: String(Math.min(180, bounds.getEast())),
+            south: String(Math.max(-85, bounds.getSouth())),
+            north: String(Math.min(85, bounds.getNorth())),
+          });
+          try {
+            const response = await fetch("/api/map/venues?" + query, {
+              signal: controller.signal,
+            });
+            if (!response.ok) throw new Error("Map unavailable");
+            const data: {
+              rows: Array<{
+                id: string;
+                slug: string;
+                name: string;
+                address: string;
+                latitude: number;
+                longitude: number;
+                claimStatus: "claimed" | "unclaimed";
+              }>;
+              hasMore: boolean;
+            } = await response.json();
+            if (disposed || controller.signal.aborted) return;
+            visiblePoints = [
+              ...points,
+              ...data.rows.map((venue) => ({
+                id: venue.id,
+                latitude: venue.latitude,
+                longitude: venue.longitude,
+                title: venue.name,
+                venue: venue.address,
+                href: `/${locale}/venues/${venue.slug}`,
+                category: locale === "es" ? "Local" : "Venue",
+                source: venue.claimStatus,
+                kind: "venue" as const,
+              })),
+            ];
+            (
+              map.getSource(
+                "discovery-points",
+              ) as import("maplibre-gl").GeoJSONSource
+            ).setData({
+              type: "FeatureCollection",
+              features: visiblePoints.map((point) => ({
+                type: "Feature",
+                geometry: {
+                  type: "Point",
+                  coordinates: [point.longitude, point.latitude],
+                },
+                properties: { id: point.id, source: point.source },
+              })),
+            });
+            setVenueStatus(data.hasMore ? "limited" : "ready");
+          } catch {
+            if (!disposed && !controller.signal.aborted)
+              setVenueStatus("error");
+          }
+        };
+        map.on("moveend", () => {
+          request?.abort();
+          clearTimeout(reloadTimer);
+          reloadTimer = setTimeout(() => {
+            void refreshVenues();
+          }, 350);
+        });
+        void refreshVenues();
         for (const layer of ["discovery-clusters", "discovery-unclustered"]) {
           map.on("mouseenter", layer, () => {
             map.getCanvas().style.cursor = "pointer";
@@ -387,6 +467,8 @@ export function ProductionMap({
 
     return () => {
       disposed = true;
+      request?.abort();
+      clearTimeout(reloadTimer);
       cleanup();
     };
   }, [center.latitude, center.longitude, locale, points, styleUrl]);
@@ -400,14 +482,31 @@ export function ProductionMap({
           </h2>
           <p>
             {locale === "es"
-              ? `${points.length} eventos y locales por toda España.`
-              : `${points.length} events and venues across Spain.`}
+              ? "Explora España. Los locales se cargan al mover el mapa."
+              : "Explore Spain. Venues load as you move the map."}
           </p>
         </div>
         <a className="back-link" href="#map-filters">
           {locale === "es" ? "Cambiar filtros" : "Change filters"}
         </a>
       </div>
+      <p className="result-caption" role="status">
+        {venueStatus === "loading"
+          ? locale === "es"
+            ? "Cargando locales…"
+            : "Loading venues…"
+          : venueStatus === "limited"
+            ? locale === "es"
+              ? "Mostrando hasta 2.000 locales. Acerca el mapa para ver todos los de una zona más pequeña."
+              : "Showing up to 2,000 venues. Zoom in to see all venues in a smaller area."
+            : venueStatus === "error"
+              ? locale === "es"
+                ? "No se pudieron actualizar los locales. Mueve el mapa para reintentar."
+                : "Could not refresh venues. Move the map to retry."
+              : locale === "es"
+                ? "Locales de la zona visible."
+                : "Venues in the visible area."}
+      </p>
       <div className="production-map-wrap">
         <div
           className="production-map"

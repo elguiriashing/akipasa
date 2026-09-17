@@ -1,3 +1,5 @@
+import { ResultPagination } from "@/components/ResultPagination";
+import { resultPage, resultSlice } from "@/lib/result-pagination";
 import { publicPageMetadata } from "@/lib/page-metadata";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -8,7 +10,7 @@ import type { TimeWindow } from "@/lib/domain";
 import { CityDiscovery } from "@/components/CityDiscovery";
 import { EventCard } from "@/components/EventCard";
 import { DiscoveryIntentSignal } from "@/components/DiscoveryIntentSignal";
-import { nearbyUnclaimedVenues } from "@/lib/unclaimed-venues";
+import { nearbyVenuePage } from "@/lib/unclaimed-venues";
 import { discoveryLocationFromQuery } from "@/lib/discovery-location";
 
 export const dynamic = "force-dynamic";
@@ -118,7 +120,13 @@ export default async function DiscoverPage({
     surface: "discover",
   });
   const results = recommendations.items.map((item) => item.result);
-  const nearbyVenues = await nearbyUnclaimedVenues({
+  const eventPage = resultSlice(
+    recommendations.items,
+    resultPage(query.eventPage),
+  );
+  const venuePage = await nearbyVenuePage({
+    page: resultPage(query.venuePage),
+    unclaimedOnly: true,
     center: searchCenter,
     radiusKm: radius,
   });
@@ -163,12 +171,12 @@ export default async function DiscoverPage({
 
       {results.length ? (
         <div className="grid">
-          {recommendations.items.map((item, position) => (
+          {eventPage.rows.map((item, position) => (
             <EventCard
               key={item.result.occurrence.id}
               result={item.result}
               locale={locale}
-              position={position}
+              position={(eventPage.page - 1) * 20 + position}
               recommendationRequestId={recommendations.requestId}
               reasonCodes={item.reasonCodes}
             />
@@ -213,13 +221,23 @@ export default async function DiscoverPage({
         </section>
       )}
 
-      {nearbyVenues.length ? (
-        <section aria-labelledby="nearby-venues-title">
+      <ResultPagination
+        locale={locale}
+        path={`/${locale}`}
+        query={query}
+        pageKey="eventPage"
+        anchor="results"
+        page={eventPage.page}
+        total={eventPage.total}
+      />
+
+      {venuePage.total ? (
+        <section id="venue-results" aria-labelledby="nearby-venues-title">
           <div className="section-head">
             <h2 id="nearby-venues-title">
               {locale === "es" ? "Negocios cerca de ti" : "Businesses near you"}
             </h2>
-            <span className="count">{nearbyVenues.length}</span>
+            <span className="count">{venuePage.total}</span>
           </div>
           <p className="result-caption">
             {locale === "es"
@@ -227,7 +245,7 @@ export default async function DiscoverPage({
               : "Businesses published as unclaimed while their owners complete verification."}
           </p>
           <div className="grid">
-            {nearbyVenues.map((venue) => (
+            {venuePage.rows.map((venue) => (
               <Link
                 key={venue.id}
                 className="card venue-card"
@@ -259,6 +277,15 @@ export default async function DiscoverPage({
               </Link>
             ))}
           </div>
+          <ResultPagination
+            locale={locale}
+            path={`/${locale}`}
+            query={query}
+            pageKey="venuePage"
+            anchor="venue-results"
+            page={venuePage.page}
+            total={venuePage.total}
+          />
         </section>
       ) : null}
 

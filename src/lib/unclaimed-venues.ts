@@ -73,76 +73,27 @@ export function venueClaimStatus(accessibility: unknown) {
     : ("claimed" as const);
 }
 
-export async function nearbyVenues({
+export async function nearbyVenuePage({
   center,
   radiusKm,
+  page = 1,
+  unclaimedOnly = false,
 }: {
   center: { latitude: number; longitude: number };
   radiusKm: number;
-}) {
-  return (await publishedVenues({ center })).filter(
-    (venue) => venue.distanceKm <= radiusKm,
+  page?: number;
+  unclaimedOnly?: boolean;
+}): Promise<{ rows: NearbyVenue[]; total: number; page: number }> {
+  const { data, error } = await createSupabasePublicClient().rpc(
+    "public_nearby_venue_page",
+    {
+      p_lat: center.latitude,
+      p_lng: center.longitude,
+      p_radius: radiusKm,
+      p_page: page,
+      p_unclaimed: unclaimedOnly,
+    },
   );
-}
-
-export async function publishedVenues({
-  center,
-}: {
-  center: { latitude: number; longitude: number };
-}) {
-  const supabase = createSupabasePublicClient();
-  const rows: Array<{
-    id: string;
-    slug: string;
-    name: string;
-    address: string;
-    location: unknown;
-    accessibility: unknown;
-  }> = [];
-  const pageSize = 1000;
-  for (let from = 0; ; from += pageSize) {
-    const { data, error } = await supabase
-      .from("venues")
-      .select("id,slug,name,address,location,accessibility")
-      .eq("status", "published")
-      .order("id")
-      .range(from, from + pageSize - 1);
-    if (error) throw new Error(`Public venue query failed: ${error.message}`);
-    const page = (data || []) as typeof rows;
-    rows.push(...page);
-    if (page.length < pageSize) break;
-  }
-
-  return rows
-    .flatMap((venue): NearbyVenue[] => {
-      const coordinates = geographyPointCoordinates(venue.location);
-      if (!coordinates) return [];
-      const { longitude, latitude } = coordinates;
-      const distanceKm = geographicDistanceKm(center, {
-        latitude,
-        longitude,
-      });
-      return [
-        {
-          id: venue.id,
-          slug: venue.slug,
-          name: venue.name,
-          address: venue.address,
-          latitude,
-          longitude,
-          distanceKm,
-          claimStatus: venueClaimStatus(venue.accessibility),
-        },
-      ];
-    })
-    .sort((left, right) => left.distanceKm - right.distanceKm);
-}
-
-export async function nearbyUnclaimedVenues(options: {
-  center: { latitude: number; longitude: number };
-  radiusKm: number;
-}) {
-  return (await nearbyVenues(options)).filter(
-    (venue) => venue.claimStatus === "unclaimed",
-  );
+  if (error) throw new Error(`Public venue query failed: ${error.message}`);
+  return data;
 }

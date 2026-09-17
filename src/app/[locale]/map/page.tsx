@@ -1,3 +1,5 @@
+import { ResultPagination } from "@/components/ResultPagination";
+import { resultPage, resultSlice } from "@/lib/result-pagination";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { EventCard } from "@/components/EventCard";
@@ -12,7 +14,7 @@ import { discoveryLocationFromQuery } from "@/lib/discovery-location";
 import { msg } from "@/lib/messages";
 import { recommendDiscovery } from "@/lib/personalisation/server";
 import { repository } from "@/lib/repository";
-import { publishedVenues } from "@/lib/unclaimed-venues";
+import { nearbyVenuePage } from "@/lib/unclaimed-venues";
 
 export const dynamic = "force-dynamic";
 
@@ -97,7 +99,11 @@ export default async function MapPage({
     surface: "map",
   });
   const results = recommendations.items.map((item) => item.result);
-  const [nationwideEvents, allVenueRows] = await Promise.all([
+  const eventPage = resultSlice(
+    recommendations.items,
+    resultPage(query.eventPage),
+  );
+  const [nationwideEvents, venuePage] = await Promise.all([
     repository.discover({
       locality,
       latitude: searchCenter.latitude,
@@ -105,7 +111,11 @@ export default async function MapPage({
       radiusKm: 5000,
       time: "all",
     }),
-    publishedVenues({ center: searchCenter }),
+    nearbyVenuePage({
+      center: searchCenter,
+      radiusKm: radius,
+      page: resultPage(query.venuePage),
+    }),
   ]);
   const eventPoints = nationwideEvents.map((result) => ({
     id: result.event.id,
@@ -122,19 +132,7 @@ export default async function MapPage({
         : `${(result.event.priceCents / 100).toFixed(0)}\u20ac`,
     source: result.event.source,
   }));
-  const venueRows = allVenueRows.filter((venue) => venue.distanceKm <= radius);
-  const venuePoints = allVenueRows.map((venue) => ({
-    id: venue.id,
-    latitude: venue.latitude,
-    longitude: venue.longitude,
-    title: venue.name,
-    venue: venue.address,
-    href: `/${locale}/venues/${venue.slug}`,
-    category: locale === "es" ? "Local" : "Venue",
-    source: venue.claimStatus,
-    kind: "venue" as const,
-  }));
-  const mapPoints = [...eventPoints, ...venuePoints];
+  const mapPoints = eventPoints;
 
   return (
     <main className="shell discover-page map-page">
@@ -313,7 +311,7 @@ export default async function MapPage({
         center={searchCenter}
       />
 
-      <section aria-labelledby="map-results-title">
+      <section id="results" aria-labelledby="map-results-title">
         <div className="section-head">
           <h2 id="map-results-title">
             {locale === "es" ? "Planes cerca de ti" : "Plans near you"}
@@ -322,12 +320,12 @@ export default async function MapPage({
         </div>
         {recommendations.items.length ? (
           <div className="grid">
-            {recommendations.items.map((item, position) => (
+            {eventPage.rows.map((item, position) => (
               <EventCard
                 key={item.result.occurrence.id}
                 result={item.result}
                 locale={locale}
-                position={position}
+                position={(eventPage.page - 1) * 20 + position}
                 recommendationRequestId={recommendations.requestId}
                 reasonCodes={item.reasonCodes}
                 surface="map"
@@ -339,13 +337,23 @@ export default async function MapPage({
         )}
       </section>
 
-      {venueRows.length ? (
-        <section aria-labelledby="map-venues-title">
+      <ResultPagination
+        locale={locale}
+        path={`/${locale}/map`}
+        query={query}
+        pageKey="eventPage"
+        anchor="results"
+        page={eventPage.page}
+        total={eventPage.total}
+      />
+
+      {venuePage.total ? (
+        <section id="venue-results" aria-labelledby="map-venues-title">
           <div className="section-head">
             <h2 id="map-venues-title">
               {locale === "es" ? "Negocios cerca de ti" : "Businesses near you"}
             </h2>
-            <span className="count">{venueRows.length}</span>
+            <span className="count">{venuePage.total}</span>
           </div>
           <p className="result-caption">
             {locale === "es"
@@ -353,7 +361,7 @@ export default async function MapPage({
               : "Published venues near the selected location."}
           </p>
           <div className="grid">
-            {venueRows.map((venue) => (
+            {venuePage.rows.map((venue) => (
               <Link
                 key={venue.id}
                 className="card"
@@ -391,6 +399,15 @@ export default async function MapPage({
               </Link>
             ))}
           </div>
+          <ResultPagination
+            locale={locale}
+            path={`/${locale}/map`}
+            query={query}
+            pageKey="venuePage"
+            anchor="venue-results"
+            page={venuePage.page}
+            total={venuePage.total}
+          />
         </section>
       ) : null}
     </main>
