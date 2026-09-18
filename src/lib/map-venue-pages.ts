@@ -9,7 +9,7 @@ export type MapVenue = {
 };
 
 // Batches bound individual requests, not coverage. Continue until the server
-// confirms exhaustion. A changed viewport cancels the entire traversal.
+// confirms exhaustion. Cancelling the load stops the entire traversal.
 export async function* mapVenuePages(
   bounds: URLSearchParams,
   signal: AbortSignal,
@@ -37,4 +37,25 @@ export async function* mapVenuePages(
     yield data.rows;
     cursor = data.hasMore ? data.nextCursor : null;
   } while (cursor);
+}
+
+// The map keeps this complete dataset for its lifetime. Panning and zooming
+// only affect MapLibre rendering; neither supplies bounds nor restarts loading.
+export async function loadSpainMapVenues(
+  signal: AbortSignal,
+  onProgress: (count: number) => void,
+  request: typeof fetch = fetch,
+): Promise<MapVenue[]> {
+  const bounds = new URLSearchParams({
+    west: "-19",
+    east: "5",
+    south: "27",
+    north: "45",
+  });
+  const venues: MapVenue[] = [];
+  for await (const rows of mapVenuePages(bounds, signal, request)) {
+    venues.push(...rows);
+    onProgress(venues.length);
+  }
+  return venues;
 }

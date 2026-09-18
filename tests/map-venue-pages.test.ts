@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
-import { mapVenuePages, type MapVenue } from "../src/lib/map-venue-pages";
+import {
+  mapVenuePages,
+  loadSpainMapVenues,
+  type MapVenue,
+} from "../src/lib/map-venue-pages";
 
 const bounds = new URLSearchParams({
   west: "-19",
@@ -38,7 +42,7 @@ describe("complete map coverage", () => {
     expect(request).toHaveBeenCalledTimes(51);
   });
 
-  it("does not request another batch after a viewport change", async () => {
+  it("does not request another batch after the map unmounts", async () => {
     const controller = new AbortController();
     const request = vi.fn(async () =>
       Response.json({
@@ -77,4 +81,40 @@ describe("complete map coverage", () => {
     const pages = mapVenuePages(bounds, new AbortController().signal, request);
     await expect(pages.next()).rejects.toThrow("did not advance");
   });
+});
+
+it("publishes a complete Spain dataset only after all batches finish", async () => {
+  let finishSecond!: (response: Response) => void;
+  const second = new Promise<Response>((resolve) => {
+    finishSecond = resolve;
+  });
+  const request = vi
+    .fn()
+    .mockResolvedValueOnce(
+      Response.json({
+        rows: [{ id: id(1) }],
+        hasMore: true,
+        nextCursor: id(1),
+      }),
+    )
+    .mockReturnValueOnce(second);
+  const progress = vi.fn();
+  const publish = vi.fn();
+  const loaded = loadSpainMapVenues(
+    new AbortController().signal,
+    progress,
+    request,
+  ).then(publish);
+  await vi.waitFor(() => expect(request).toHaveBeenCalledTimes(2));
+  expect(progress).toHaveBeenCalledWith(1);
+  expect(publish).not.toHaveBeenCalled();
+  const query = new URL(String(request.mock.calls[0][0]), "https://example.com")
+    .searchParams;
+  expect(Object.fromEntries(query)).toEqual(Object.fromEntries(bounds));
+  finishSecond(
+    Response.json({ rows: [{ id: id(2) }], hasMore: false, nextCursor: null }),
+  );
+  await loaded;
+  expect(publish).toHaveBeenCalledTimes(1);
+  expect(publish).toHaveBeenCalledWith([{ id: id(1) }, { id: id(2) }]);
 });
