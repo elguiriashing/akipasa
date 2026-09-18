@@ -1,13 +1,19 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "akipasa",
-  "main": ".open-next/worker.js",
+  "main": "custom-worker.ts",
   "compatibility_date": "2026-07-22",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS",
   },
+  "durable_objects": {
+    "bindings": [{ "name": "MAP_SNAPSHOTS", "class_name": "MapSnapshot" }],
+  },
+  "migrations": [
+    { "tag": "map-snapshot-v1", "new_sqlite_classes": ["MapSnapshot"] },
+  ],
   "services": [
     { "binding": "AKIHQ_GATEWAY", "service": "akihq-integration-gateway" },
   ],

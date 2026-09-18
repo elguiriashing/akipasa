@@ -2,7 +2,11 @@
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
-import { loadSpainMapVenues } from "@/lib/map-venue-pages";
+import {
+  loadMapSnapshot,
+  mapVenueDetailSchema,
+  type MapVenueDetail,
+} from "@/lib/map-snapshot";
 import type { Locale } from "@/lib/config";
 import { trackBehaviour } from "@/lib/personalisation/client";
 
@@ -206,6 +210,9 @@ export function ProductionMap({
     if (!container.current || !styleUrl) return;
     let disposed = false;
     let visiblePoints = points;
+    let pointIndex = new Map(points.map((point) => [point.id, point]));
+    const details = new Map<string, MapVenueDetail>();
+    let popupRequest: AbortController | undefined;
     let request: AbortController | undefined;
     let cleanup = () => {};
 
@@ -357,21 +364,60 @@ export function ProductionMap({
           ).coordinates;
           map.easeTo({ center: coordinates, zoom });
         });
-        map.on("click", "discovery-unclustered", (event) => {
+        map.on("click", "discovery-unclustered", async (event) => {
           const feature = event.features?.[0];
-          const point = visiblePoints.find(
-            (candidate) => candidate.id === String(feature?.properties?.id),
-          );
+          const point = pointIndex.get(String(feature?.properties?.id));
           if (!point) return;
-          new maplibregl.Popup({
+          popupRequest?.abort();
+          const controller = new AbortController();
+          popupRequest = controller;
+          const popup = new maplibregl.Popup({
             offset: 16,
             closeButton: false,
             className: "akipasa-map-popup",
             maxWidth: "260px",
-          })
-            .setLngLat([point.longitude, point.latitude])
-            .setDOMContent(popupContent(point, locale))
-            .addTo(map);
+          }).setLngLat([point.longitude, point.latitude]);
+          popup.on("close", () => controller.abort());
+          if (point.kind !== "venue") {
+            popup.setDOMContent(popupContent(point, locale)).addTo(map);
+          } else {
+            const loading = document.createElement("p");
+            loading.textContent =
+              locale === "es" ? "Cargando negocio…" : "Loading business…";
+            popup.setDOMContent(loading).addTo(map);
+            try {
+              let detail = details.get(point.id);
+              if (!detail) {
+                const response = await fetch(`/api/map/venue/${point.id}`, {
+                  signal: controller.signal,
+                });
+                if (!response.ok) throw new Error("Venue unavailable");
+                detail = mapVenueDetailSchema.parse(await response.json());
+                if (detail.id !== point.id) throw new Error("Unexpected venue");
+                if (details.size >= 200) details.clear();
+                details.set(point.id, detail);
+              }
+              if (disposed || controller.signal.aborted) return;
+              popup.setDOMContent(
+                popupContent(
+                  {
+                    ...point,
+                    title: detail.name,
+                    venue: detail.address ?? "",
+                    href: `/${locale}/venues/${detail.slug}`,
+                    source: detail.claimStatus,
+                  },
+                  locale,
+                ),
+              );
+            } catch {
+              if (disposed || controller.signal.aborted) return;
+              loading.textContent =
+                locale === "es"
+                  ? "No se pudo cargar este negocio. Vuelve a tocar el marcador para reintentar."
+                  : "Could not load this business. Tap its pin to retry.";
+            }
+          }
           trackBehaviour({
             eventType: "map_pin_clicked",
             surface: "map",
@@ -387,28 +433,31 @@ export function ProductionMap({
           try {
             // Load once across Spain. Do not replace the source with partial
             // batches or refetch on pan/zoom: both destabilize cluster centres.
-            const venues = await loadSpainMapVenues(
-              controller.signal,
-              (count) => {
-                if (!disposed && !controller.signal.aborted)
-                  setLoadedVenues(count);
-              },
-            );
+            const snapshot = await loadMapSnapshot(controller.signal);
             if (disposed || controller.signal.aborted) return;
             visiblePoints = [
               ...points,
-              ...venues.map((venue) => ({
-                id: venue.id,
-                latitude: venue.latitude,
-                longitude: venue.longitude,
-                title: venue.name,
-                venue: venue.address,
-                href: `/${locale}/venues/${venue.slug}`,
-                category: locale === "es" ? "Local" : "Venue",
-                source: venue.claimStatus,
-                kind: "venue" as const,
-              })),
+              ...snapshot.markers.map(
+                ([id, longitude, latitude, unclaimed]) => ({
+                  id,
+                  latitude,
+                  longitude,
+                  title: "",
+                  venue: "",
+                  href: "",
+                  category: locale === "es" ? "Local" : "Venue",
+                  source:
+                    unclaimed === 1
+                      ? ("unclaimed" as const)
+                      : ("claimed" as const),
+                  kind: "venue" as const,
+                }),
+              ),
             ];
+            pointIndex = new Map(
+              visiblePoints.map((point) => [point.id, point]),
+            );
+            setLoadedVenues(snapshot.count);
             (
               map.getSource(
                 "discovery-points",
@@ -449,6 +498,7 @@ export function ProductionMap({
     return () => {
       disposed = true;
       request?.abort();
+      popupRequest?.abort();
       cleanup();
     };
   }, [center.latitude, center.longitude, locale, points, styleUrl]);
@@ -473,8 +523,8 @@ export function ProductionMap({
       <p className="result-caption" role="status">
         {venueStatus === "loading"
           ? locale === "es"
-            ? `Preparando el mapa de España… ${loadedVenues.toLocaleString(locale)} cargados.`
-            : `Preparing the Spain map… ${loadedVenues.toLocaleString(locale)} loaded.`
+            ? "Preparando el mapa de España…"
+            : "Preparing the Spain map…"
           : venueStatus === "error"
             ? locale === "es"
               ? "No se pudieron cargar los locales. Recarga la página para reintentar."
