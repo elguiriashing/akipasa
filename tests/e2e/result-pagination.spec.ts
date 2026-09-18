@@ -41,3 +41,19 @@ test("map list is bounded and marker API validates its viewport", async ({
   expect(data.rows.length).toBeLessThanOrEqual(2000);
   expect(typeof data.hasMore).toBe("boolean");
 });
+
+test("map API continues beyond its first batch", async ({ request }) => {
+  const url = "/api/map/venues?west=-19&east=5&south=27&north=45";
+  const first = await (await request.get(url)).json();
+  expect(first.hasMore).toBe(true);
+  expect(first.nextCursor).toBeTruthy();
+  const second = await (
+    await request.get(url + "&after=" + first.nextCursor)
+  ).json();
+  expect(second.rows.length).toBeGreaterThan(0);
+  const firstIds = new Set(first.rows.map((row: { id: string }) => row.id));
+  expect(second.rows.some((row: { id: string }) => firstIds.has(row.id))).toBe(
+    false,
+  );
+  expect((await request.get(url + "&after=bad")).status()).toBe(400);
+});

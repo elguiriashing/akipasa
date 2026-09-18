@@ -7,6 +7,7 @@ const bounds = z
     east: z.coerce.number().finite().min(-180).max(180),
     south: z.coerce.number().finite().min(-85).max(85),
     north: z.coerce.number().finite().min(-85).max(85),
+    after: z.string().uuid().optional(),
   })
   .refine((b) => b.west < b.east && b.south < b.north);
 
@@ -18,12 +19,13 @@ export async function GET(request: Request) {
     return Response.json({ error: "Invalid map bounds" }, { status: 400 });
   const b = parsed.data;
   const { data, error } = await createSupabasePublicClient().rpc(
-    "public_map_venue_window",
+    "public_map_venue_page",
     {
       p_west: b.west,
       p_east: b.east,
       p_south: b.south,
       p_north: b.north,
+      p_after: b.after ?? null,
     },
   );
   if (error)

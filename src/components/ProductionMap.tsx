@@ -2,6 +2,7 @@
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
+import { mapVenuePages } from "@/lib/map-venue-pages";
 import type { Locale } from "@/lib/config";
 import { trackBehaviour } from "@/lib/personalisation/client";
 
@@ -189,9 +190,10 @@ export function ProductionMap({
   center: { latitude: number; longitude: number };
 }) {
   const container = useRef<HTMLDivElement>(null);
-  const [venueStatus, setVenueStatus] = useState<
-    "loading" | "ready" | "limited" | "error"
-  >("loading");
+  const [venueStatus, setVenueStatus] = useState<"loading" | "ready" | "error">(
+    "loading",
+  );
+  const [loadedVenues, setLoadedVenues] = useState(0);
 
   useEffect(() => {
     trackBehaviour({
@@ -391,53 +393,43 @@ export function ProductionMap({
             north: String(Math.min(85, bounds.getNorth())),
           });
           try {
-            const response = await fetch("/api/map/venues?" + query, {
-              signal: controller.signal,
-            });
-            if (!response.ok) throw new Error("Map unavailable");
-            const data: {
-              rows: Array<{
-                id: string;
-                slug: string;
-                name: string;
-                address: string;
-                latitude: number;
-                longitude: number;
-                claimStatus: "claimed" | "unclaimed";
-              }>;
-              hasMore: boolean;
-            } = await response.json();
-            if (disposed || controller.signal.aborted) return;
-            visiblePoints = [
-              ...points,
-              ...data.rows.map((venue) => ({
-                id: venue.id,
-                latitude: venue.latitude,
-                longitude: venue.longitude,
-                title: venue.name,
-                venue: venue.address,
-                href: `/${locale}/venues/${venue.slug}`,
-                category: locale === "es" ? "Local" : "Venue",
-                source: venue.claimStatus,
-                kind: "venue" as const,
-              })),
-            ];
-            (
-              map.getSource(
-                "discovery-points",
-              ) as import("maplibre-gl").GeoJSONSource
-            ).setData({
-              type: "FeatureCollection",
-              features: visiblePoints.map((point) => ({
-                type: "Feature",
-                geometry: {
-                  type: "Point",
-                  coordinates: [point.longitude, point.latitude],
-                },
-                properties: { id: point.id, source: point.source },
-              })),
-            });
-            setVenueStatus(data.hasMore ? "limited" : "ready");
+            const venuePoints: MapPoint[] = [];
+            setLoadedVenues(0);
+            for await (const rows of mapVenuePages(query, controller.signal)) {
+              if (disposed || controller.signal.aborted) return;
+              venuePoints.push(
+                ...rows.map((venue) => ({
+                  id: venue.id,
+                  latitude: venue.latitude,
+                  longitude: venue.longitude,
+                  title: venue.name,
+                  venue: venue.address,
+                  href: `/${locale}/venues/${venue.slug}`,
+                  category: locale === "es" ? "Local" : "Venue",
+                  source: venue.claimStatus,
+                  kind: "venue" as const,
+                })),
+              );
+              visiblePoints = [...points, ...venuePoints];
+              (
+                map.getSource(
+                  "discovery-points",
+                ) as import("maplibre-gl").GeoJSONSource
+              ).setData({
+                type: "FeatureCollection",
+                features: visiblePoints.map((point) => ({
+                  type: "Feature",
+                  geometry: {
+                    type: "Point",
+                    coordinates: [point.longitude, point.latitude],
+                  },
+                  properties: { id: point.id, source: point.source },
+                })),
+              });
+              setLoadedVenues(venuePoints.length);
+            }
+            if (!disposed && !controller.signal.aborted)
+              setVenueStatus("ready");
           } catch {
             if (!disposed && !controller.signal.aborted)
               setVenueStatus("error");
@@ -493,19 +485,15 @@ export function ProductionMap({
       <p className="result-caption" role="status">
         {venueStatus === "loading"
           ? locale === "es"
-            ? "Cargando locales…"
-            : "Loading venues…"
-          : venueStatus === "limited"
+            ? `Cargando todos los locales de esta zona… ${loadedVenues.toLocaleString(locale)} cargados.`
+            : `Loading all venues in this area… ${loadedVenues.toLocaleString(locale)} loaded.`
+          : venueStatus === "error"
             ? locale === "es"
-              ? "Mostrando hasta 2.000 locales. Acerca el mapa para ver todos los de una zona más pequeña."
-              : "Showing up to 2,000 venues. Zoom in to see all venues in a smaller area."
-            : venueStatus === "error"
-              ? locale === "es"
-                ? "No se pudieron actualizar los locales. Mueve el mapa para reintentar."
-                : "Could not refresh venues. Move the map to retry."
-              : locale === "es"
-                ? "Locales de la zona visible."
-                : "Venues in the visible area."}
+              ? "Carga incompleta. Mueve el mapa para reintentar."
+              : "Loading incomplete. Move the map to retry."
+            : locale === "es"
+              ? `Todos los locales de la zona visible: ${loadedVenues.toLocaleString(locale)}.`
+              : `All venues in the visible area: ${loadedVenues.toLocaleString(locale)}.`}
       </p>
       <div className="production-map-wrap">
         <div
