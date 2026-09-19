@@ -1,4 +1,5 @@
 import { config } from "./config";
+import { normalizeAddressLabel } from "./maps";
 import type { DiscoveryQuery, DiscoveryResult, Event, Venue } from "./domain";
 import { fixtureEvents, venues } from "./fixtures";
 import { distanceKm } from "./geo";
@@ -163,7 +164,7 @@ function venueFromRow(row: DbRecord): Venue {
       en: row.description_en ? String(row.description_en) : undefined,
     },
     locality: String(city?.slug || "fuengirola"),
-    address: String(row.address),
+    address: normalizeAddressLabel(String(row.address)),
     ...coordinates,
     verified: Boolean(row.verified),
     claimStatus: (row.accessibility as { claim_status?: string } | null)

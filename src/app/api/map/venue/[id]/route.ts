@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { normalizeAddressLabel } from "@/lib/maps";
 import { createSupabasePublicClient } from "@/lib/supabase/public";
 
 export async function GET(
@@ -32,7 +33,9 @@ export async function GET(
       id: data.id,
       slug: data.slug,
       name: data.name,
-      address: data.address,
+      address: data.address
+        ? normalizeAddressLabel(data.address)
+        : data.address,
       claimStatus:
         data.accessibility?.claim_status === "unclaimed"
           ? "unclaimed"

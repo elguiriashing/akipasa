@@ -1,5 +1,13 @@
+// Repair the exact country-label corruption observed in legacy CRM publishing.
+// Do not reinterpret the whole address: its other accents are valid UTF-8.
+export function normalizeAddressLabel(address: string) {
+  return address.replaceAll("Espa\u00d2\u00b1a", "España");
+}
+
 export function googleMapsDirectionsUrl({
   address,
+  latitude,
+  longitude,
 }: {
   address: string;
   latitude?: number;
@@ -7,6 +15,20 @@ export function googleMapsDirectionsUrl({
 }) {
   const url = new URL("https://www.google.com/maps/dir/");
   url.searchParams.set("api", "1");
-  url.searchParams.set("destination", address);
+  const hasCoordinates =
+    typeof latitude === "number" &&
+    typeof longitude === "number" &&
+    Number.isFinite(latitude) &&
+    Number.isFinite(longitude) &&
+    Math.abs(latitude) <= 90 &&
+    Math.abs(longitude) <= 180 &&
+    // The repository uses 0,0 for missing coordinates.
+    (latitude !== 0 || longitude !== 0);
+  url.searchParams.set(
+    "destination",
+    hasCoordinates
+      ? `${latitude},${longitude}`
+      : normalizeAddressLabel(address),
+  );
   return url.toString();
 }

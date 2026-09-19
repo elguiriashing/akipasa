@@ -1,5 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { googleMapsDirectionsUrl } from "../src/lib/maps";
+import {
+  googleMapsDirectionsUrl,
+  normalizeAddressLabel,
+} from "../src/lib/maps";
 import { searchSpainAddresses } from "../src/lib/spain-addresses";
 
 afterEach(() => vi.unstubAllGlobals());
@@ -89,7 +92,7 @@ describe("Spanish address search", () => {
     });
   });
 
-  it("opens Google Maps directions with the human-readable address", () => {
+  it("opens Google Maps directions with the actual venue coordinates", () => {
     const url = new URL(
       googleMapsDirectionsUrl({
         address: "Avenida Antonio Machado 11, Benalmádena, Málaga, España",
@@ -99,6 +102,48 @@ describe("Spanish address search", () => {
     );
     expect(url.origin).toBe("https://www.google.com");
     expect(url.searchParams.get("api")).toBe("1");
-    expect(url.searchParams.get("destination")).toContain("Benalmádena");
+    expect(url.searchParams.get("destination")).toBe("36.60069,-4.51558");
+  });
+
+  it("repairs only the known country corruption, preserving valid accents", () => {
+    const correct = "Avenida Marítima 63, Almuñécar, Málaga, España";
+    expect(normalizeAddressLabel(correct.replace("España", "EspaÒ±a"))).toBe(
+      correct,
+    );
+    expect(normalizeAddressLabel(correct)).toBe(correct);
+    expect(normalizeAddressLabel("Rua São João, Portugal")).toBe(
+      "Rua São João, Portugal",
+    );
+  });
+
+  it.each([
+    {},
+    { latitude: 0, longitude: 0 },
+    { latitude: NaN, longitude: -4 },
+    { latitude: 36, longitude: Infinity },
+    { latitude: 91, longitude: -4 },
+    { latitude: 36, longitude: 181 },
+    { latitude: 36 },
+  ])(
+    "falls back to a repaired, URL-encoded address for invalid coordinates: %j",
+    (coordinates) => {
+      const address = "Calle Peñón & Mar, EspaÒ±a";
+      const url = new URL(googleMapsDirectionsUrl({ address, ...coordinates }));
+      expect(url.searchParams.get("destination")).toBe(
+        "Calle Peñón & Mar, España",
+      );
+      expect([...url.searchParams.keys()]).toEqual(["api", "destination"]);
+    },
+  );
+
+  it("retains a valid zero coordinate on one axis", () => {
+    const url = new URL(
+      googleMapsDirectionsUrl({
+        address: "Fallback",
+        latitude: 40,
+        longitude: 0,
+      }),
+    );
+    expect(url.searchParams.get("destination")).toBe("40,0");
   });
 });
