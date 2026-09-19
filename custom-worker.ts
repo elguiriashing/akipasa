@@ -13,7 +13,8 @@ const worker = {
     env: MapEdgeEnv,
     ctx: { waitUntil(work: Promise<unknown>): void },
   ) {
-    if (new URL(request.url).pathname === "/api/map/snapshot") {
+    const path = new URL(request.url).pathname;
+    if (path === "/api/map/snapshot" || path.startsWith("/api/map/tiles/")) {
       const cache = (caches as unknown as { default: MapEdgeCache }).default;
       return serveMapSnapshot(request, env, cache, (work) =>
         ctx.waitUntil(work),

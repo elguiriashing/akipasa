@@ -1,3 +1,4 @@
+import { parseMapTile, tileKey } from "../src/lib/map-tiles";
 export type MapEdgeEnv = {
   MAP_SNAPSHOTS: {
     idFromName(name: string): unknown;
@@ -19,7 +20,14 @@ export async function serveMapSnapshot(
     return new Response(null, { status: 405, headers: { Allow: "GET, HEAD" } });
   // Ignore query strings, user cookies and host aliases. This contains only
   // public markers, built using the publishable key and normal venue RLS.
-  const key = new Request("https://akipasa.com/api/map/snapshot");
+  const path = new URL(request.url).pathname;
+  const tile = parseMapTile(path);
+  if (path !== "/api/map/snapshot" && !tile)
+    return new Response("Invalid map tile", { status: 400 });
+  const key = new Request(
+    "https://akipasa.com" +
+      (tile ? `/api/map/tiles/${tileKey(tile)}` : "/api/map/snapshot"),
+  );
   let result = await cache.match(key);
   const hit = Boolean(result);
   if (!result) {
@@ -40,7 +48,11 @@ export async function serveMapSnapshot(
   headers.set("X-Map-Cache", hit ? "HIT" : "MISS");
   if (result.ok)
     headers.set("Cache-Control", "public, max-age=60, s-maxage=300");
-  if (result.ok && request.headers.get("If-None-Match") === headers.get("ETag"))
+  if (
+    result.ok &&
+    headers.has("ETag") &&
+    request.headers.get("If-None-Match") === headers.get("ETag")
+  )
     return new Response(null, { status: 304, headers });
   return new Response(request.method === "HEAD" ? null : result.body, {
     status: result.status,

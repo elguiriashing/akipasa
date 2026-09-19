@@ -85,6 +85,28 @@ try {
     { headers: { "If-None-Match": etag } },
   );
   assert.equal(unchanged.status, 304);
+  // Separate tile cache entries share the same persistent nationwide build.
+  const n = 2 ** 10,
+    x = Math.floor(((-4.624 + 180) / 360) * n),
+    lat = (36.539 * Math.PI) / 180;
+  const y = Math.floor(((1 - Math.asinh(Math.tan(lat)) / Math.PI) / 2) * n);
+  const tile = await mf.dispatchFetch(
+    `https://akipasa.com/api/map/tiles/10/${x}/${y}`,
+  );
+  assert.equal(
+    (await tile.json()).count,
+    count,
+    "dense tiles must not be truncated",
+  );
+  const empty = await mf.dispatchFetch(
+    `https://akipasa.com/api/map/tiles/10/${x + 10}/${y}`,
+  );
+  assert.equal(
+    (await empty.json()).count,
+    0,
+    "tile cache keys must not collide",
+  );
+  assert.equal(builds, 1, "exploring new tiles must reuse the snapshot");
   await mf.dispose();
   mf = new Miniflare(options);
   const restored = await mf.dispatchFetch(

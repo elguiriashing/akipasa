@@ -1,3 +1,4 @@
+import { MapTileIndex, parseMapTile, tileKey } from "../src/lib/map-tiles";
 import {
   MapSnapshotCache,
   type CachedMapSnapshot,
@@ -24,6 +25,8 @@ export type SnapshotEnvironment = {
 
 export class MapSnapshot {
   private cache: MapSnapshotCache;
+  private tileIndex?: MapTileIndex;
+  private tileEtag?: string;
   constructor(
     private state: SnapshotState,
     env: SnapshotEnvironment,
@@ -114,16 +117,29 @@ export class MapSnapshot {
       },
     );
   }
-  async fetch() {
+  async fetch(request: Request) {
     try {
       const snapshot = await this.cache.read((work) =>
         this.state.waitUntil(work),
       );
-      return new Response(snapshot.body, {
+      const tile = parseMapTile(new URL(request.url).pathname);
+      let body = snapshot.body,
+        etag = snapshot.etag;
+      if (tile) {
+        if (!this.tileIndex || this.tileEtag !== snapshot.etag) {
+          this.tileIndex = new MapTileIndex(
+            mapSnapshotSchema.parse(JSON.parse(snapshot.body)),
+          );
+          this.tileEtag = snapshot.etag;
+        }
+        body = JSON.stringify(this.tileIndex.read(tile));
+        etag = snapshot.etag.slice(0, -1) + "-" + tileKey(tile) + '"';
+      }
+      return new Response(body, {
         headers: {
           "Content-Type": "application/json; charset=utf-8",
           "Cache-Control": "public, max-age=60, s-maxage=300",
-          ETag: snapshot.etag,
+          ETag: etag,
           "X-Map-Snapshot-Created": new Date(snapshot.createdAt).toISOString(),
         },
       });

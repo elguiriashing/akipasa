@@ -2,11 +2,8 @@
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
-import {
-  loadMapSnapshot,
-  mapVenueDetailSchema,
-  type MapVenueDetail,
-} from "@/lib/map-snapshot";
+import { mapVenueDetailSchema, type MapVenueDetail } from "@/lib/map-snapshot";
+import { MapTileLoader } from "@/lib/map-tiles";
 import type { Locale } from "@/lib/config";
 import { trackBehaviour } from "@/lib/personalisation/client";
 
@@ -213,7 +210,9 @@ export function ProductionMap({
     let pointIndex = new Map(points.map((point) => [point.id, point]));
     const details = new Map<string, MapVenueDetail>();
     let popupRequest: AbortController | undefined;
-    let request: AbortController | undefined;
+    const request = new AbortController();
+    const tileLoader = new MapTileLoader();
+    let timer: ReturnType<typeof setTimeout> | undefined;
     let cleanup = () => {};
 
     void import("maplibre-gl").then((maplibregl) => {
@@ -425,23 +424,37 @@ export function ProductionMap({
             entityId: point.id,
           });
         });
+        let loading = false,
+          queued = false;
         const loadVenues = async () => {
-          const controller = new AbortController();
-          request = controller;
+          if (disposed) return;
+          if (loading) {
+            queued = true;
+            return;
+          }
+          loading = true;
           setVenueStatus("loading");
-          setLoadedVenues(0);
+          const bounds = map.getBounds();
           try {
-            // Load once across Spain. Do not replace the source with partial
-            // batches or refetch on pan/zoom: both destabilize cluster centres.
-            const snapshot = await loadMapSnapshot(controller.signal);
-            if (disposed || controller.signal.aborted) return;
-            visiblePoints = [
-              ...points,
-              ...snapshot.markers.map(
-                ([id, longitude, latitude, unclaimed]) => ({
+            const result = await tileLoader.load(
+              {
+                west: bounds.getWest(),
+                east: bounds.getEast(),
+                south: bounds.getSouth(),
+                north: bounds.getNorth(),
+              },
+              map.getZoom(),
+              request.signal,
+            );
+            if (disposed) return;
+            if (result.added) {
+              const markers = tileLoader.values();
+              visiblePoints = [
+                ...points,
+                ...markers.map(([id, longitude, latitude, unclaimed]) => ({
                   id,
-                  latitude,
                   longitude,
+                  latitude,
                   title: "",
                   venue: "",
                   href: "",
@@ -451,35 +464,42 @@ export function ProductionMap({
                       ? ("unclaimed" as const)
                       : ("claimed" as const),
                   kind: "venue" as const,
-                }),
-              ),
-            ];
-            pointIndex = new Map(
-              visiblePoints.map((point) => [point.id, point]),
-            );
-            setLoadedVenues(snapshot.count);
-            (
-              map.getSource(
-                "discovery-points",
-              ) as import("maplibre-gl").GeoJSONSource
-            ).setData({
-              type: "FeatureCollection",
-              features: visiblePoints.map((point) => ({
-                type: "Feature",
-                geometry: {
-                  type: "Point",
-                  coordinates: [point.longitude, point.latitude],
-                },
-                properties: { id: point.id, source: point.source },
-              })),
-            });
-            if (!disposed && !controller.signal.aborted)
-              setVenueStatus("ready");
-          } catch {
-            if (!disposed && !controller.signal.aborted)
-              setVenueStatus("error");
+                })),
+              ];
+              pointIndex = new Map(
+                visiblePoints.map((point) => [point.id, point]),
+              );
+              setLoadedVenues(markers.length);
+              (
+                map.getSource(
+                  "discovery-points",
+                ) as import("maplibre-gl").GeoJSONSource
+              ).setData({
+                type: "FeatureCollection",
+                features: visiblePoints.map((point) => ({
+                  type: "Feature",
+                  geometry: {
+                    type: "Point",
+                    coordinates: [point.longitude, point.latitude],
+                  },
+                  properties: { id: point.id, source: point.source },
+                })),
+              });
+            }
+            setVenueStatus(result.failed ? "error" : "ready");
+          } finally {
+            loading = false;
+            if (queued && !disposed) {
+              queued = false;
+              void loadVenues();
+            }
           }
         };
+        const scheduleLoad = () => {
+          clearTimeout(timer);
+          timer = setTimeout(() => void loadVenues(), 180);
+        };
+        map.on("moveend", scheduleLoad);
         void loadVenues();
         for (const layer of ["discovery-clusters", "discovery-unclustered"]) {
           map.on("mouseenter", layer, () => {
@@ -497,7 +517,8 @@ export function ProductionMap({
 
     return () => {
       disposed = true;
-      request?.abort();
+      clearTimeout(timer);
+      request.abort();
       popupRequest?.abort();
       cleanup();
     };
@@ -512,8 +533,8 @@ export function ProductionMap({
           </h2>
           <p>
             {locale === "es"
-              ? "Todos los locales de España en un solo mapa."
-              : "All venues across Spain on one map."}
+              ? "Explora España. Los locales se cargan al explorar el mapa."
+              : "Explore Spain. Venues load as you explore the map."}
           </p>
         </div>
         <a className="back-link" href="#map-filters">
@@ -523,15 +544,15 @@ export function ProductionMap({
       <p className="result-caption" role="status">
         {venueStatus === "loading"
           ? locale === "es"
-            ? "Preparando el mapa de España…"
-            : "Preparing the Spain map…"
+            ? "Cargando locales de esta zona…"
+            : "Loading venues in this area…"
           : venueStatus === "error"
             ? locale === "es"
-              ? "No se pudieron cargar los locales. Recarga la página para reintentar."
-              : "Could not load venues. Refresh the page to retry."
+              ? "No se pudo completar esta zona. Mueve el mapa para reintentar; los locales cargados se conservan."
+              : "Could not finish loading this area. Move the map to retry; loaded venues are retained."
             : locale === "es"
-              ? `Locales de toda España: ${loadedVenues.toLocaleString(locale)}.`
-              : `Venues across Spain: ${loadedVenues.toLocaleString(locale)}.`}
+              ? `Locales cargados: ${loadedVenues.toLocaleString(locale)}.`
+              : `Loaded venues: ${loadedVenues.toLocaleString(locale)}.`}
       </p>
       <div className="production-map-wrap">
         <div
