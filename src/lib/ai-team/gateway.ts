@@ -247,6 +247,7 @@ ${input.additionalInstructions || "None."}`;
     reservationId = String(reservation.reservation_id);
 
     const result = await provider.run({
+      enableWebSearch,
       model: agent.model,
       instructions,
       messages,

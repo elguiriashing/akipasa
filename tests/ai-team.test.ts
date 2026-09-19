@@ -1,3 +1,5 @@
+import { runAIAgent } from "../src/lib/ai-team/gateway";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -466,4 +468,67 @@ describe("AI Team boundaries", () => {
     expect(migration).toContain("where agent_key = 'manager'");
     expect(migration).not.toContain("where agent_key = 'coder'");
   });
+});
+
+it("passes authorized web search through the gateway into the provider request", async () => {
+  process.env.OPENAI_API_KEY = "test-key";
+  const requests: Array<{ tools: Array<{ type: string }> }> = [];
+  vi.spyOn(globalThis, "fetch").mockImplementation(async (_url, init) => {
+    requests.push(JSON.parse(String(init?.body)));
+    return Response.json({
+      id: "response-test",
+      output_text: "Checked",
+      usage: { input_tokens: 1, output_tokens: 1 },
+    });
+  });
+  for (const [permission, requested, customer, expected] of [
+    [true, true, false, true],
+    [false, true, false, false],
+    [true, false, false, false],
+    [true, true, true, false],
+  ]) {
+    const service = {
+      from: (table: string) => {
+        const result = {
+          data:
+            table === "ai_agents"
+              ? agent(permission ? ["web:search"] : [])
+              : [],
+          error: null,
+          count: 0,
+        };
+        const query = {
+          select: () => query,
+          eq: () => query,
+          update: () => query,
+          insert: () => query,
+          maybeSingle: async () => result,
+          then: (resolve: (value: typeof result) => unknown) =>
+            Promise.resolve(result).then(resolve),
+        };
+        return query;
+      },
+      rpc: async (name: string) => ({
+        data:
+          name === "reserve_ai_budget"
+            ? { reservation_id: "reservation-test" }
+            : null,
+        error: null,
+      }),
+    } as unknown as SupabaseClient;
+    await runAIAgent({
+      service,
+      actorId: "admin",
+      agentKey: "manager",
+      requestKind: "task",
+      message: "Research the business address",
+      includeMemory: false,
+      allowedToolNames: [],
+      allowWebSearch: requested,
+      chatAudience: customer ? "customer" : "operator",
+    });
+    expect(
+      requests.at(-1)?.tools.some((tool) => tool.type === "web_search"),
+    ).toBe(expected);
+  }
 });
