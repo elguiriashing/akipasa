@@ -163,3 +163,189 @@ it("does not cache an aborted tile as successfully loaded", async () => {
   expect(retry).toHaveBeenCalled();
   expect(loader.values()).toHaveLength(1);
 });
+
+it("restores fresh public tiles across map instances without network requests", async () => {
+  const entries = new Map<
+    string,
+    import("../src/lib/map-browser-cache").CachedMapTile
+  >();
+  const cache = {
+    read: async (key: string) => entries.get(key) ?? null,
+    write: async (
+      key: string,
+      value: import("../src/lib/map-browser-cache").CachedMapTile,
+    ) => {
+      entries.set(key, value);
+    },
+  };
+  const index = new MapTileIndex(snapshot([marker(0)]));
+  const request = vi.fn(async (url: RequestInfo | URL) =>
+    Response.json(index.read(parseMapTile(String(url))!)),
+  );
+  await new MapTileLoader(cache).load(local, 10, signal(), request);
+  request.mockClear();
+  const returned = new MapTileLoader(cache);
+  const render = vi.fn();
+  await returned.load(local, 10, signal(), request, render);
+  expect(returned.values()).toEqual([marker(0)]);
+  expect(render).toHaveBeenCalledOnce();
+  expect(request).not.toHaveBeenCalled();
+});
+
+it("renders stale tiles before refresh, replaces removed/moved markers, and keeps unrelated areas", async () => {
+  const { MAP_CACHE_FRESH_MS } = await import("../src/lib/map-browser-cache");
+  let now = Date.now();
+  const entries = new Map<
+    string,
+    import("../src/lib/map-browser-cache").CachedMapTile
+  >();
+  const cache = {
+    read: async (key: string) => entries.get(key) ?? null,
+    write: async (
+      key: string,
+      value: import("../src/lib/map-browser-cache").CachedMapTile,
+    ) => {
+      entries.set(key, value);
+    },
+  };
+  const old = new MapTileIndex(
+    snapshot([marker(0), marker(1), marker(2, -3.7, 40.4)]),
+  );
+  const request = (index: MapTileIndex) =>
+    vi.fn(async (url: RequestInfo | URL) =>
+      Response.json(index.read(parseMapTile(String(url))!)),
+    );
+  await new MapTileLoader(cache, () => now).load(
+    local,
+    10,
+    signal(),
+    request(old),
+  );
+  now += MAP_CACHE_FRESH_MS + 1;
+  const loader = new MapTileLoader(cache, () => now);
+  await loader.load(
+    { west: -3.71, east: -3.69, south: 40.39, north: 40.41 },
+    10,
+    signal(),
+    request(old),
+  );
+  let hydrated = false;
+  const fresh = request(new MapTileIndex(snapshot([marker(1, -4.625, 36.54)])));
+  const network = vi.fn(async (url: RequestInfo | URL) => {
+    expect(hydrated).toBe(true);
+    return fresh(url);
+  });
+  await loader.load(local, 10, signal(), network, () => {
+    hydrated = true;
+    expect(loader.values()).toContainEqual(marker(0));
+  });
+  expect(loader.values()).toHaveLength(2);
+  expect(loader.values()).toContainEqual(marker(1, -4.625, 36.54));
+  expect(loader.values()).toContainEqual(marker(2, -3.7, 40.4));
+  expect(loader.values()).not.toContainEqual(marker(0));
+});
+
+it("keeps stale markers on network failure but ignores expired data and tolerates unavailable storage", async () => {
+  const { MAP_CACHE_MAX_AGE_MS } = await import("../src/lib/map-browser-cache");
+  const now = Date.now();
+  const index = new MapTileIndex(snapshot([marker(0)]));
+  let savedAt = now - 600_000;
+  const cache = {
+    read: async (key: string) => ({
+      data: index.read(parseMapTile("/api/map/tiles/" + key)!),
+      savedAt,
+    }),
+    write: async () => {
+      throw Error("quota");
+    },
+  };
+  const loader = new MapTileLoader(cache, () => now);
+  expect(
+    (
+      await loader.load(
+        local,
+        10,
+        signal(),
+        async () => new Response(null, { status: 503 }),
+      )
+    ).failed,
+  ).toBe(true);
+  expect(loader.values()).toEqual([marker(0)]);
+  savedAt = now - MAP_CACHE_MAX_AGE_MS - 1;
+  const expired = new MapTileLoader(cache, () => now);
+  await expired.load(
+    local,
+    10,
+    signal(),
+    async () => new Response(null, { status: 503 }),
+  );
+  expect(expired.values()).toEqual([]);
+  const denied = new MapTileLoader({
+    ...cache,
+    read: async () => {
+      throw Error("denied");
+    },
+  });
+  await denied.load(local, 10, signal(), async (url) =>
+    Response.json(index.read(parseMapTile(String(url))!)),
+  );
+  expect(denied.values()).toEqual([marker(0)]);
+});
+
+it("persists validated tiles in IndexedDB, bounds storage, and discards expired/corrupt entries", async () => {
+  const { IDBFactory } = await import("fake-indexeddb");
+  const { BrowserMapTileCache, MAP_CACHE_MAX_AGE_MS } = await import(
+    "../src/lib/map-browser-cache"
+  );
+  vi.stubGlobal("indexedDB", new IDBFactory());
+  try {
+    const first = new BrowserMapTileCache();
+    const entry = { data: snapshot([marker(0)]), savedAt: Date.now() };
+    await first.write("11/0/0", entry);
+    expect(await new BrowserMapTileCache().read("11/0/0")).toEqual(entry);
+    await first.write("old", {
+      ...entry,
+      savedAt: Date.now() - MAP_CACHE_MAX_AGE_MS - 1,
+    });
+    expect(await first.read("old")).toBeNull();
+    await first.write("corrupt", {
+      ...entry,
+      data: { ...entry.data, count: 999 },
+    });
+    expect(await first.read("corrupt")).toBeNull();
+    for (let i = 0; i < 260; i++)
+      await first.write(`12/${i}/0`, {
+        data: snapshot([]),
+        savedAt: Date.now(),
+      });
+    const records = await new Promise<Array<{ bytes: number }>>(
+      (resolve, reject) => {
+        const request = indexedDB.open("akipasa-map-tiles-v1", 1);
+        request.onsuccess = () => {
+          const get = request.result
+            .transaction("tiles")
+            .objectStore("tiles")
+            .getAll();
+          get.onsuccess = () => {
+            request.result.close();
+            resolve(get.result);
+          };
+          get.onerror = () => reject(get.error);
+        };
+      },
+    );
+    expect(records.length).toBeLessThanOrEqual(256);
+    expect(
+      records.reduce((sum, entry) => sum + entry.bytes, 0),
+    ).toBeLessThanOrEqual(12 * 1024 * 1024);
+    expect(await first.read("11/0/0")).toBeNull();
+    // Oversized results remain usable by the loader but are not persisted.
+    await first.write("oversized", {
+      ...entry,
+      data: snapshot(Array.from({ length: 100000 }, (_, i) => marker(i))),
+    });
+    expect(await first.read("oversized")).toBeNull();
+  } finally {
+    vi.unstubAllGlobals();
+  }
+});

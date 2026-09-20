@@ -424,6 +424,42 @@ export function ProductionMap({
             entityId: point.id,
           });
         });
+        const renderVenues = () => {
+          if (disposed) return;
+          const markers = tileLoader.values();
+          visiblePoints = [
+            ...points,
+            ...markers.map(([id, longitude, latitude, unclaimed]) => ({
+              id,
+              longitude,
+              latitude,
+              title: "",
+              venue: "",
+              href: "",
+              category: locale === "es" ? "Local" : "Venue",
+              source:
+                unclaimed === 1 ? ("unclaimed" as const) : ("claimed" as const),
+              kind: "venue" as const,
+            })),
+          ];
+          pointIndex = new Map(visiblePoints.map((point) => [point.id, point]));
+          setLoadedVenues(markers.length);
+          (
+            map.getSource(
+              "discovery-points",
+            ) as import("maplibre-gl").GeoJSONSource
+          ).setData({
+            type: "FeatureCollection",
+            features: visiblePoints.map((point) => ({
+              type: "Feature",
+              geometry: {
+                type: "Point",
+                coordinates: [point.longitude, point.latitude],
+              },
+              properties: { id: point.id, source: point.source },
+            })),
+          });
+        };
         let loading = false,
           queued = false;
         const loadVenues = async () => {
@@ -445,46 +481,12 @@ export function ProductionMap({
               },
               map.getZoom(),
               request.signal,
+              fetch,
+              renderVenues,
             );
             if (disposed) return;
             if (result.added) {
-              const markers = tileLoader.values();
-              visiblePoints = [
-                ...points,
-                ...markers.map(([id, longitude, latitude, unclaimed]) => ({
-                  id,
-                  longitude,
-                  latitude,
-                  title: "",
-                  venue: "",
-                  href: "",
-                  category: locale === "es" ? "Local" : "Venue",
-                  source:
-                    unclaimed === 1
-                      ? ("unclaimed" as const)
-                      : ("claimed" as const),
-                  kind: "venue" as const,
-                })),
-              ];
-              pointIndex = new Map(
-                visiblePoints.map((point) => [point.id, point]),
-              );
-              setLoadedVenues(markers.length);
-              (
-                map.getSource(
-                  "discovery-points",
-                ) as import("maplibre-gl").GeoJSONSource
-              ).setData({
-                type: "FeatureCollection",
-                features: visiblePoints.map((point) => ({
-                  type: "Feature",
-                  geometry: {
-                    type: "Point",
-                    coordinates: [point.longitude, point.latitude],
-                  },
-                  properties: { id: point.id, source: point.source },
-                })),
-              });
+              renderVenues();
             }
             setVenueStatus(result.failed ? "error" : "ready");
           } finally {

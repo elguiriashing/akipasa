@@ -1,4 +1,10 @@
 import {
+  BrowserMapTileCache,
+  MAP_CACHE_FRESH_MS,
+  MAP_CACHE_MAX_AGE_MS,
+  type MapTileCache,
+} from "./map-browser-cache";
+import {
   mapSnapshotSchema,
   type CompactMapMarker,
   type MapMarkerSnapshot,
@@ -99,7 +105,11 @@ export class MapTileIndex {
 // One loader per mounted map. Completed tiles (including empty ones) and markers
 // survive panning/zooming. A coarse loaded tile covers all its descendants.
 export class MapTileLoader {
-  private loaded = new Set<string>();
+  private loaded = new Map<string, number>();
+  constructor(
+    private cache: MapTileCache = new BrowserMapTileCache(),
+    private now = Date.now,
+  ) {}
   private markers = new Map<string, CompactMapMarker>();
   values() {
     return [...this.markers.values()];
@@ -108,13 +118,15 @@ export class MapTileLoader {
     for (let z = tile.z; z >= 0; z--) {
       const scale = 2 ** (tile.z - z);
       if (
-        this.loaded.has(
-          tileKey({
-            z,
-            x: Math.floor(tile.x / scale),
-            y: Math.floor(tile.y / scale),
-          }),
-        )
+        this.now() -
+          (this.loaded.get(
+            tileKey({
+              z,
+              x: Math.floor(tile.x / scale),
+              y: Math.floor(tile.y / scale),
+            }),
+          ) ?? 0) <
+        MAP_CACHE_FRESH_MS
       )
         return true;
     }
@@ -125,12 +137,59 @@ export class MapTileLoader {
     zoom: number,
     signal: AbortSignal,
     request: typeof fetch = fetch,
+    onUpdate?: () => void,
   ) {
-    const queue = tilesForBounds(bounds, zoom).filter(
+    const candidates = tilesForBounds(bounds, zoom).filter(
       (tile) => !this.covered(tile),
     );
     let failed = false,
       added = false;
+    const apply = (tile: MapTile, data: MapMarkerSnapshot, savedAt: number) => {
+      let changed = false;
+      const incoming = new Set(data.markers.map((marker) => marker[0]));
+      // Replace this geographic area, including deletions and relocated markers.
+      for (const [id, marker] of this.markers) {
+        if (
+          tileKey(markerTile(marker[1], marker[2], tile.z)) === tileKey(tile) &&
+          !incoming.has(id)
+        ) {
+          this.markers.delete(id);
+          changed = true;
+        }
+      }
+      for (const marker of data.markers) {
+        const old = this.markers.get(marker[0]);
+        if (!old || old.some((value, i) => value !== marker[i])) changed = true;
+        this.markers.set(marker[0], marker);
+      }
+      this.loaded.set(tileKey(tile), savedAt);
+      added ||= changed;
+      return changed;
+    };
+    const cached = await Promise.all(
+      candidates.map(async (tile) => {
+        try {
+          return { tile, entry: await this.cache.read(tileKey(tile)) };
+        } catch {
+          return { tile, entry: null };
+        }
+      }),
+    );
+    if (signal.aborted) return { failed: false, added: false };
+    let hydrated = false;
+    for (const { tile, entry } of cached.sort(
+      (a, b) => (a.entry?.savedAt ?? 0) - (b.entry?.savedAt ?? 0),
+    )) {
+      if (
+        entry &&
+        this.now() - entry.savedAt >= 0 &&
+        this.now() - entry.savedAt <= MAP_CACHE_MAX_AGE_MS
+      ) {
+        hydrated = apply(tile, entry.data, entry.savedAt) || hydrated;
+      }
+    }
+    if (hydrated) onUpdate?.();
+    const queue = candidates.filter((tile) => !this.covered(tile));
     await Promise.all(
       Array.from({ length: Math.min(4, queue.length) }, async () => {
         while (queue.length && !signal.aborted) {
@@ -142,13 +201,11 @@ export class MapTileLoader {
             if (!response.ok) throw new Error("Map area unavailable");
             const data = mapSnapshotSchema.parse(await response.json());
             signal.throwIfAborted();
-            for (const marker of data.markers) {
-              const old = this.markers.get(marker[0]);
-              if (!old || old.some((value, i) => value !== marker[i]))
-                added = true;
-              this.markers.set(marker[0], marker);
-            }
-            this.loaded.add(tileKey(tile));
+            const savedAt = this.now();
+            apply(tile, data, savedAt);
+            void this.cache
+              .write(tileKey(tile), { data, savedAt })
+              .catch(() => {});
           } catch {
             failed = true;
           }

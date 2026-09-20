@@ -7,3 +7,21 @@ Completed tile coverage and marker IDs stay in memory for the mounted map, inclu
 Cloudflare partitions the same shared public snapshot into tiles inside the existing Durable Object. Edge cache keys include tile coordinates; snapshots still refresh once per shared cache lifecycle, not per visitor/pan. Only three zoom indexes remain in server memory. No new database query or provider is introduced. Venue details remain fetched on click and cards retain their independent limits. The legacy snapshot endpoint stays available for compatibility.
 
 Cache scope is the mounted map; changing filters/remounting or refreshing starts a fresh client cache. The existing snapshot freshness rules still apply. Tile loading reduces initial transfer/parse work; speed remains dependent on connection and cold cache state.
+
+## Persistent browser cache
+
+Public compact marker tiles now persist across map remounts and browser visits in
+IndexedDB (`akipasa-map-tiles-v1`). Only requested geographic tiles are read; the
+entire nationwide dataset is not preloaded. Cached tiles render before network
+refreshes. Tiles fetched within five minutes avoid another request; older tiles
+(up to 24 hours) display while the visible area refreshes on reopening or movement.
+Refreshes replace markers within each tile, removing deleted/moved markers there,
+while retaining other explored areas. Unvisited areas refresh when revisited.
+
+Storage is bounded to 256 tiles and approximately 12 MiB of serialized payload,
+pruning oldest saved tiles on writes. Browsers may evict storage at any time.
+Unavailable/blocked storage falls back to normal network loading; read/open waits
+are bounded. Failed refreshes retain usable cached markers. Cache freshness is
+additional to the existing shared snapshot/edge freshness window. It is not a
+live status feed. Events, user data and venue detail cards are not persisted by
+this cache, and clicking a venue still checks its public details independently.
