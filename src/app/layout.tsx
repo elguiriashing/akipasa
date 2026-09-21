@@ -6,7 +6,6 @@ import { ThemeManager } from "@/components/ThemeModeControls";
 import { headers } from "next/headers";
 import { isLocale } from "@/lib/config";
 import { serializeJsonLd, siteOrigin } from "@/lib/seo";
-import Script from "next/script";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://akipasa.com"),
@@ -51,20 +50,23 @@ export default async function RootLayout({
     requestLocale && isLocale(requestLocale) ? requestLocale : "es";
   return (
     <html lang={locale}>
-      <body>
-        <Script
+      <head>
+        <script
+          async
           src="https://www.googletagmanager.com/gtag/js?id=G-PW8547QDGD"
-          strategy="beforeInteractive"
         />
-        <Script id="google-analytics" strategy="beforeInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', 'G-PW8547QDGD');
-          `}
-        </Script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-PW8547QDGD');
+            `,
+          }}
+        />
+      </head>
+      <body>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
