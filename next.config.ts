@@ -57,13 +57,13 @@ const nextConfig: NextConfig = {
               "form-action 'self' https://accounts.google.com",
               "frame-ancestors 'none'",
               "object-src 'none'",
-              `script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com/beacon.min.js https://static.cloudflareinsights.com/beacon.min.js/${
+              `script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com/beacon.min.js https://static.cloudflareinsights.com/beacon.min.js/${
                 isDevelopment ? " 'unsafe-eval'" : ""
               }`,
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://vhpbvcfkcteswlsdjrfl.supabase.co https://tiles.openfreemap.org",
+              "img-src 'self' data: blob: https://vhpbvcfkcteswlsdjrfl.supabase.co https://tiles.openfreemap.org https://*.google-analytics.com https://*.analytics.google.com",
               "font-src 'self' data:",
-              "connect-src 'self' https://vhpbvcfkcteswlsdjrfl.supabase.co wss://vhpbvcfkcteswlsdjrfl.supabase.co https://tiles.openfreemap.org",
+              "connect-src 'self' https://vhpbvcfkcteswlsdjrfl.supabase.co wss://vhpbvcfkcteswlsdjrfl.supabase.co https://tiles.openfreemap.org https://*.google-analytics.com https://*.analytics.google.com",
               "manifest-src 'self'",
               "worker-src 'self' blob:",
               "upgrade-insecure-requests",
