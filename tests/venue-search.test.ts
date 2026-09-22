@@ -39,11 +39,9 @@ describe("venue search helpers", () => {
       },
     ];
 
-    expect(rankVenueSearchResults(rows, "rock bar").map((row) => row.id)).toEqual([
-      "1",
-      "2",
-      "3",
-    ]);
+    expect(
+      rankVenueSearchResults(rows, "rock bar").map((row) => row.id),
+    ).toEqual(["1", "2", "3"]);
   });
 
   it("matches accents consistently while ranking", () => {
