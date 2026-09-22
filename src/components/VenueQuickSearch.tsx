@@ -85,7 +85,10 @@ export function VenueQuickSearch({ locale }: { locale: Locale }) {
           aria-expanded={showResults}
         />
         {loading && (
-          <span className={styles.loading} aria-label={es ? "Buscando" : "Searching"}>
+          <span
+            className={styles.loading}
+            aria-label={es ? "Buscando" : "Searching"}
+          >
             …
           </span>
         )}
