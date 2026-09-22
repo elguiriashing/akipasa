@@ -3,6 +3,7 @@ export type VenueSearchResult = {
   slug: string;
   name: string;
   address: string | null;
+  locality?: string | null;
 };
 
 const searchStopWords = new Set([
@@ -102,7 +103,7 @@ export function venueSearchProbes(query: string) {
 function searchCoverage(row: VenueSearchResult, tokens: string[]) {
   if (tokens.length === 0) return 0;
   const haystack = comparableVenueSearch(
-    `${row.name} ${row.address || ""}`,
+    `${row.name} ${row.locality || ""} ${row.address || ""}`,
   );
   return tokens.filter((token) => haystack.includes(token)).length / tokens.length;
 }
@@ -110,8 +111,9 @@ function searchCoverage(row: VenueSearchResult, tokens: string[]) {
 function rowScore(row: VenueSearchResult, query: string) {
   const normalizedQuery = comparableVenueSearch(query);
   const name = comparableVenueSearch(row.name);
+  const locality = comparableVenueSearch(row.locality || "");
   const address = comparableVenueSearch(row.address || "");
-  const haystack = `${name} ${address}`.trim();
+  const haystack = `${name} ${locality} ${address}`.trim();
   const tokens = venueSearchTokens(query);
   const segments = normalizeVenueSearch(query)
     .split(/[,;|]+/)
@@ -132,9 +134,18 @@ function rowScore(row: VenueSearchResult, query: string) {
 
   const coverage = searchCoverage(row, tokens);
   const nameMatches = tokens.filter((token) => name.includes(token)).length;
+  const localityMatches = tokens.filter((token) =>
+    locality.includes(token),
+  ).length;
   const addressMatches = tokens.filter((token) => address.includes(token)).length;
 
-  return 20 - coverage * 10 - nameMatches * 1.5 - addressMatches * 0.35;
+  return (
+    20 -
+    coverage * 10 -
+    nameMatches * 1.5 -
+    localityMatches * 0.9 -
+    addressMatches * 0.35
+  );
 }
 
 export function rankVenueSearchResults(
