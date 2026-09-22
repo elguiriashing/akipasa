@@ -18,7 +18,7 @@
 .global-search-panel {
   position: fixed;
   inset: 4.3rem max(1.25rem, env(safe-area-inset-right)) auto auto;
-  width: min(720px, calc(100vw - 2.5rem));
+  width: min(680px, calc(100vw - 2.5rem));
   max-height: calc(100dvh - 5.5rem);
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -56,23 +56,35 @@
 .global-search-hint {
   color: var(--muted);
   font-size: 0.82rem;
-  margin: 0.7rem 0 1.2rem;
+  margin: 0.2rem 0 0.75rem;
 }
 .global-search-panel .filters-shell {
   display: grid;
-  gap: 0.8rem;
+  gap: 0.6rem;
   padding: 0;
   margin: 0;
   background: transparent;
   border: 0;
   box-shadow: none;
 }
+
+.global-search-panel .filter-group {
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--line) 78%, var(--primary) 22%);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface-alt) 58%, transparent);
+  box-shadow: none;
+}
+
+.global-search-panel .filter-group[open] > .filter-summary {
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 82%, transparent);
+}
 .global-search-panel .filter-grid,
 .global-search-panel .filter-grid-secondary {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-  padding: 1rem;
+  gap: 0.75rem;
+  padding: 0.8rem;
   overflow: visible;
 }
 .global-search-panel .filter-group:not([open]) .filter-grid {
