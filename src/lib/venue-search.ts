@@ -90,7 +90,7 @@ export function venueSearchProbes(query: string) {
     .sort((a, b) => b.length - a.length)
     .slice(0, 6);
 
-  const probes = new Set<string>();
+  const probes = new Set<string>(base);
   for (const part of base) {
     for (const variant of singleAccentVariants(part)) {
       probes.add(variant);
