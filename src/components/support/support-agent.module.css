@@ -3,12 +3,6 @@
   cursor: pointer;
 }
 
-.trigger::after {
-  display: block;
-  line-height: 1;
-  transform: translateY(-3px);
-}
-
 .backdrop {
   position: fixed;
   z-index: 1000;
