@@ -4,10 +4,11 @@ import {
   escapeVenueSearchPattern,
   normalizeVenueSearch,
   rankVenueSearchResults,
+  venueSearchProbes,
 } from "@/lib/venue-search";
 
 const querySchema = z.object({
-  q: z.string().max(120).optional().default(""),
+  q: z.string().max(160).optional().default(""),
 });
 
 export async function GET(request: Request) {
@@ -20,13 +21,22 @@ export async function GET(request: Request) {
   const query = normalizeVenueSearch(parsed.data.q);
   if (query.length < 2) return Response.json({ rows: [] });
 
-  const pattern = `%${escapeVenueSearchPattern(query)}%`;
+  const probes = venueSearchProbes(query);
+  if (probes.length === 0) return Response.json({ rows: [] });
+
+  const filters = probes
+    .flatMap((probe) => {
+      const pattern = `%${escapeVenueSearchPattern(probe)}%`;
+      return [`name.ilike.${pattern}`, `address.ilike.${pattern}`];
+    })
+    .join(",");
+
   const { data, error } = await createSupabasePublicClient()
     .from("venues")
     .select("id,slug,name,address")
     .eq("status", "published")
-    .ilike("name", pattern)
-    .limit(24);
+    .or(filters)
+    .limit(120);
 
   if (error)
     return Response.json(
