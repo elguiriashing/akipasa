@@ -49,6 +49,23 @@ export function SupportAgentLauncher({
   const mailSubject = es ? "Ayuda con AkiPasa" : "Help with AkiPasa";
   const mailHref =
     "mailto:support@akipasa.com?subject=" + encodeURIComponent(mailSubject);
+  const globalTrigger = className
+    ?.split(/\s+/)
+    .includes("global-support-trigger");
+
+  const triggerContent = globalTrigger ? (
+    <>
+      <span className="global-support-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M9.1 9a3 3 0 1 1 5.82 1c0 2-2.92 2.55-2.92 4" />
+          <path d="M12 18h.01" />
+        </svg>
+      </span>
+      <span className="global-support-label">{label}</span>
+    </>
+  ) : (
+    label
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -113,7 +130,7 @@ export function SupportAgentLauncher({
   if (!signedIn) {
     return (
       <a className={className} href={mailHref}>
-        {label}
+        {triggerContent}
       </a>
     );
   }
@@ -125,7 +142,7 @@ export function SupportAgentLauncher({
         className={[styles.trigger, className].filter(Boolean).join(" ")}
         onClick={() => setOpen(true)}
       >
-        {label}
+        {triggerContent}
       </button>
       {open && (
         <div className={styles.backdrop} onMouseDown={() => setOpen(false)}>
