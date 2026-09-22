@@ -6,7 +6,7 @@
 .trigger::after {
   display: block;
   line-height: 1;
-  transform: translateY(-1px);
+  transform: translateY(-3px);
 }
 
 .backdrop {
