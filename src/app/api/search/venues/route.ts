@@ -33,7 +33,7 @@ export async function GET(request: Request) {
 
   const { data, error } = await createSupabasePublicClient()
     .from("venues")
-    .select("id,slug,name,address")
+    .select("id,slug,name,address,cities(slug)")
     .eq("status", "published")
     .or(filters)
     .limit(120);
@@ -44,8 +44,19 @@ export async function GET(request: Request) {
       { status: 503 },
     );
 
+  const rows = (data || []).map((row) => {
+    const city = Array.isArray(row.cities) ? row.cities[0] : row.cities;
+    return {
+      id: row.id,
+      slug: row.slug,
+      name: row.name,
+      address: row.address,
+      locality: city?.slug || null,
+    };
+  });
+
   return Response.json(
-    { rows: rankVenueSearchResults(data || [], query) },
+    { rows: rankVenueSearchResults(rows, query) },
     {
       headers: {
         "Cache-Control": "public, max-age=20, s-maxage=60",
