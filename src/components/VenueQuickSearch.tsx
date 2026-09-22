@@ -64,7 +64,9 @@ export function VenueQuickSearch({ locale }: { locale: Locale }) {
         <span id="venue-search-label">
           {es ? "Ir directamente a un local" : "Jump straight to a venue"}
         </span>
-        <small>{es ? "Busca por nombre" : "Search by name"}</small>
+        <small>
+          {es ? "Nombre, ciudad o dirección" : "Name, city or address"}
+        </small>
       </div>
 
       <div className={styles.inputWrap}>
@@ -75,8 +77,8 @@ export function VenueQuickSearch({ locale }: { locale: Locale }) {
           onChange={(event) => setQuery(event.target.value)}
           placeholder={
             es
-              ? "Bar, restaurante, club, cine…"
-              : "Bar, restaurant, club, cinema…"
+              ? "Local, ciudad o dirección…"
+              : "Venue, city or address…"
           }
           autoComplete="off"
           spellCheck={false}
