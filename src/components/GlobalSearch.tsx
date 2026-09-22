@@ -11,6 +11,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Icon } from "./Icons";
 import { SpainLocationPicker } from "./SpainLocationPicker";
 import { UseMyLocation } from "./UseMyLocation";
+import { VenueQuickSearch } from "./VenueQuickSearch";
 import { discoveryLocationFromQuery } from "@/lib/discovery-location";
 import { msg } from "@/lib/messages";
 import type { Locale } from "@/lib/config";
@@ -107,8 +108,8 @@ export function GlobalSearch({ locale }: { locale: Locale }) {
         type="button"
         disabled={!hydrated}
         popoverTarget="site-search-panel"
-        aria-label={es ? "Buscar planes" : "Search plans"}
-        title={es ? "Buscar planes" : "Search plans"}
+        aria-label={es ? "Buscar en AkiPasa" : "Search AkiPasa"}
+        title={es ? "Buscar en AkiPasa" : "Search AkiPasa"}
       >
         <Icon name="search" />
       </button>
@@ -118,14 +119,14 @@ export function GlobalSearch({ locale }: { locale: Locale }) {
         className="global-search-panel"
         popover="auto"
         role="search"
-        aria-label={es ? "Buscar planes" : "Search plans"}
+        aria-label={es ? "Buscar en AkiPasa" : "Search AkiPasa"}
       >
         <div className="global-search-heading">
           <div>
             <span className="eyebrow">
-              {es ? "A tu manera" : "Your kind of day"}
+              {es ? "Busca. Filtra. Encuentra." : "Search. Filter. Go."}
             </span>
-            <h2>{es ? "Encuentra tu próximo plan" : "Find your next plan"}</h2>
+            <h2>{es ? "Buscar en AkiPasa" : "Search AkiPasa"}</h2>
           </div>
           <button
             type="button"
@@ -137,10 +138,13 @@ export function GlobalSearch({ locale }: { locale: Locale }) {
             <Icon name="close" />
           </button>
         </div>
+
+        <VenueQuickSearch locale={locale} />
+
         <p className="global-search-hint">
           {es
-            ? "Los resultados se actualizan al cambiar los filtros."
-            : "Results update as you change the filters."}
+            ? "O usa los filtros para descubrir planes por zona, fecha y categoría."
+            : "Or use the filters to discover plans by area, date and category."}
         </p>
         <form
           ref={bindFilters}
@@ -166,11 +170,11 @@ export function GlobalSearch({ locale }: { locale: Locale }) {
           <details className="filter-group filter-group-primary" open>
             <summary className="filter-summary">
               <span>
-                {locale === "es" ? "Filtros r\u00e1pidos" : "Quick filters"}
+                {locale === "es" ? "Filtros rápidos" : "Quick filters"}
               </span>
               <span className="filter-summary-caption">
                 {locale === "es"
-                  ? "Ajusta tu b\u00fasqueda en segundos"
+                  ? "Ajusta tu búsqueda en segundos"
                   : "Adjust your discovery in seconds"}
               </span>
             </summary>
@@ -235,9 +239,7 @@ export function GlobalSearch({ locale }: { locale: Locale }) {
             onToggle={(event) => setMoreOpen(event.currentTarget.open)}
           >
             <summary className="filter-summary">
-              <span>
-                {locale === "es" ? "M\u00e1s filtros" : "More filters"}
-              </span>
+              <span>{locale === "es" ? "Más filtros" : "More filters"}</span>
               <span className="filter-summary-caption">
                 {locale === "es"
                   ? "Precio, fechas y accesibilidad"

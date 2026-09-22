@@ -1,0 +1,168 @@
+.search {
+  display: grid;
+  gap: 0.55rem;
+  margin: 1rem 0 0.85rem;
+}
+
+.heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-inline: 0.1rem;
+}
+
+.heading > span {
+  color: var(--ink);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.heading small {
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 50px;
+  border: 1px solid color-mix(in srgb, var(--primary) 32%, var(--line));
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface-alt) 76%, transparent);
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    background 0.16s ease;
+}
+
+.inputWrap:focus-within {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--surface-alt) 88%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 16%, transparent);
+}
+
+.inputWrap > svg {
+  position: absolute;
+  left: 0.95rem;
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--primary);
+  pointer-events: none;
+}
+
+.inputWrap input {
+  width: 100%;
+  min-width: 0;
+  min-height: 50px;
+  padding: 0.75rem 2.7rem 0.75rem 2.75rem;
+  border: 0;
+  outline: 0;
+  color: var(--ink);
+  background: transparent;
+  font: inherit;
+  font-size: 16px;
+}
+
+.inputWrap input::placeholder {
+  color: color-mix(in srgb, var(--muted) 76%, transparent);
+}
+
+.inputWrap input::-webkit-search-cancel-button {
+  filter: invert(1);
+  opacity: 0.6;
+}
+
+.loading {
+  position: absolute;
+  right: 1rem;
+  color: var(--muted);
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.results {
+  display: grid;
+  gap: 0.2rem;
+  max-height: 18rem;
+  overflow-y: auto;
+  padding: 0.35rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-alt) 88%, var(--surface));
+  box-shadow: 0 14px 30px rgb(2 12 11 / 24%);
+}
+
+.result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  min-height: 50px;
+  padding: 0.65rem 0.75rem;
+  border-radius: 11px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.result:hover,
+.result:focus-visible {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  outline: none;
+}
+
+.result > span {
+  min-width: 0;
+}
+
+.result strong,
+.result small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.result strong {
+  font-size: 0.88rem;
+}
+
+.result small {
+  margin-top: 0.18rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.result > svg {
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  color: var(--primary);
+}
+
+.status {
+  margin: 0;
+  padding: 0.8rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+@media (max-width: 560px) {
+  .search {
+    margin-top: 0.8rem;
+  }
+
+  .heading small {
+    display: none;
+  }
+
+  .inputWrap,
+  .inputWrap input {
+    min-height: 48px;
+  }
+
+  .results {
+    max-height: 14.5rem;
+  }
+}
