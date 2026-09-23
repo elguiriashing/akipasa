@@ -78,3 +78,13 @@ The repository-wide `npm run check` currently stops at pre-existing formatting
 in VenueQuickSearch and venue-search. Its existing lint warnings include the
 Google Analytics script and the search input's ARIA role. Changed new components
 are linted separately, and typecheck, unit tests and build are run directly.
+
+## Shared ecosystem styling
+
+AkiDuermo now consumes AkiPasa's global colour tokens and inherited font stack,
+shared `Icon` component, orange A brand mark and ThemeManager/ThemeToggle.
+Cards, pill buttons, selected states and navigation follow the same visual
+language in both light and dark modes. Theme preferences are saved per origin.
+The accommodation map classification and forest-green pins remain unchanged.
+The stay navigation is available on desktop and fixed above the mobile safe
+area; mobile form text stays at 16px and interactive controls at least 44px.

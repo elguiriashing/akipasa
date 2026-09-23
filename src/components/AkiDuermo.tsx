@@ -10,6 +10,8 @@ import {
   staySchema,
   type Stay,
 } from "@/lib/akiduermo";
+import { Icon } from "./Icons";
+import { ThemeToggle } from "./ThemeModeControls";
 import styles from "./AkiDuermo.module.css";
 const StayMap = dynamic(
   () => import("./ProductionMap").then((m) => m.ProductionMap),
@@ -46,34 +48,6 @@ const destinations = [
     lng: 2.17,
   },
 ];
-function Moon() {
-  return (
-    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <path
-        d="M25 20A12 12 0 0 1 12 5a12 12 0 1 0 13 15Z"
-        fill="currentColor"
-      />
-      <path
-        d="M24 4v6M21 7h6"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-function Bed() {
-  return (
-    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-      <path
-        d="M7 36V19m34 17V23H7m0 10h34M12 22v-9h24v9m-12-9v9"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
 export function AkiDuermo() {
   const [destination, setDestination] = useState("");
   const [search, setSearch] = useState("");
@@ -167,16 +141,27 @@ export function AkiDuermo() {
   return (
     <div className={styles.app}>
       <header className={styles.header}>
-        <Link href="/akiduermo" className={styles.logo}>
-          <Moon />
+        <Link
+          href="/akiduermo"
+          className={`app-rail-brand ${styles.logo}`}
+          aria-label="AkiDuermo home"
+        >
+          <span className="app-rail-mark" aria-hidden="true">
+            A
+          </span>
           <span>
-            Aki<span>Duermo</span>
-            <i>•</i>
+            AkiDuermo
+            <i className="app-rail-brand-dot" aria-hidden="true">
+              .
+            </i>
           </span>
         </Link>
         <div className={styles.headerRight}>
           <span className={styles.preview}>EARLY PREVIEW</span>
-          <a href="https://akipasa.com/en">Go out with AkiPasa ↗</a>
+          <ThemeToggle locale="en" />
+          <a href="https://akipasa.com/en">
+            Go out with AkiPasa <Icon name="arrow-right" size={18} />
+          </a>
         </div>
       </header>
       <main>
@@ -203,7 +188,7 @@ export function AkiDuermo() {
               Find your place in Spain.
             </p>
             <span className={styles.heroLocation}>
-              ↗ Málaga, Costa del Sol
+              <Icon name="map" size={16} /> Málaga, Costa del Sol
             </span>
           </div>
         </section>
@@ -226,7 +211,7 @@ export function AkiDuermo() {
             }}
           >
             <label className={styles.destination}>
-              ⌖{" "}
+              <Icon name="search" size={20} />
               <span>
                 WHERE TO?
                 <input
@@ -290,11 +275,11 @@ export function AkiDuermo() {
               </span>
             </label>
             <button className={styles.searchButton} type="submit">
-              Find a stay <span>↗</span>
+              <Icon name="search" size={20} /> Find a stay
             </button>
           </form>
           <p className={styles.searchNote}>
-            ✧ A new way to stay, from the people behind AkiPasa.{" "}
+            A new way to stay, from the people behind AkiPasa.{" "}
             <span>Browse now · Bookings coming later</span>
           </p>
         </section>
@@ -323,7 +308,9 @@ export function AkiDuermo() {
                   <strong>{d.name}</strong>
                   <small>{d.tag}</small>
                 </span>
-                <i>↗</i>
+                <i>
+                  <Icon name="arrow-right" size={18} />
+                </i>
               </button>
             ))}
           </div>
@@ -344,7 +331,8 @@ export function AkiDuermo() {
               className={styles.mapButton}
               onClick={() => setView(view === "map" ? "explore" : "map")}
             >
-              {view === "map" ? "☷ List view" : "⌖ Map view"}
+              <Icon name={view === "map" ? "audit" : "map"} size={18} />
+              {view === "map" ? "List view" : "Map view"}
             </button>
           </div>
           <div
@@ -411,7 +399,7 @@ export function AkiDuermo() {
                     <article key={stay.id} className={styles.card}>
                       <div className={styles.propertyVisual}>
                         <div>
-                          <Bed />
+                          <Icon name="bed" size={40} />
                           <span>
                             {stayTypeNames[stay.accommodationType] ||
                               "Accommodation"}
@@ -424,11 +412,20 @@ export function AkiDuermo() {
                           aria-pressed={saved.some((x) => x.id === stay.id)}
                           onClick={() => toggleSaved(stay)}
                         >
-                          {saved.some((x) => x.id === stay.id) ? "♥" : "♡"}
+                          <Icon
+                            name={
+                              saved.some((x) => x.id === stay.id)
+                                ? "heart-fill"
+                                : "heart"
+                            }
+                            size={21}
+                          />
                         </button>
                       </div>
                       <div className={styles.cardBody}>
-                        <span className={styles.city}>⌖ {stay.city}</span>
+                        <span className={styles.city}>
+                          <Icon name="map" size={14} /> {stay.city}
+                        </span>
                         <h3>{stay.name}</h3>
                         <p>{stay.address}</p>
                         <div className={styles.cardFoot}>
@@ -440,7 +437,7 @@ export function AkiDuermo() {
                             aria-label={`View ${stay.name}`}
                             onClick={() => setSelected(stay)}
                           >
-                            ↗
+                            <Icon name="arrow-right" size={20} />
                           </button>
                         </div>
                       </div>
@@ -461,7 +458,12 @@ export function AkiDuermo() {
                     disabled={page === 1 || loading}
                     onClick={() => setPage((p) => p - 1)}
                   >
-                    ← Previous
+                    <Icon
+                      name="arrow-right"
+                      size={16}
+                      className={styles.backArrow}
+                    />{" "}
+                    Previous
                   </button>
                   <span>
                     Page {page} of {Math.ceil(total / 12)}
@@ -470,7 +472,7 @@ export function AkiDuermo() {
                     disabled={page * 12 >= total || loading}
                     onClick={() => setPage((p) => p + 1)}
                   >
-                    Next →
+                    Next <Icon name="arrow-right" size={16} />
                   </button>
                 </div>
               )}
@@ -478,7 +480,7 @@ export function AkiDuermo() {
           )}
         </section>
         <section className={styles.crossSell}>
-          <Moon />
+          <Icon name="discover" size={32} />
           <div>
             <span className={styles.kicker}>
               THE NIGHT IS ONLY HALF THE STORY
@@ -489,11 +491,13 @@ export function AkiDuermo() {
               adventures around it.
             </p>
           </div>
-          <a href="https://akipasa.com/en">Explore AkiPasa ↗</a>
+          <a href="https://akipasa.com/en">
+            Explore AkiPasa <Icon name="arrow-right" size={18} />
+          </a>
         </section>
         <footer className={styles.footer}>
           <strong>
-            AkiDuermo<span>•</span>
+            AkiDuermo<span>.</span>
           </strong>
           <p>A new chapter in the AkiPasa family.</p>
           <div>
@@ -513,7 +517,8 @@ export function AkiDuermo() {
               ?.scrollIntoView({ behavior: "smooth" });
           }}
         >
-          <span>⌕</span>Explore
+          <Icon name="discover" size={22} />
+          Explore
         </button>
         <button
           aria-pressed={view === "saved"}
@@ -524,7 +529,8 @@ export function AkiDuermo() {
               ?.scrollIntoView({ behavior: "smooth" });
           }}
         >
-          <span>♡</span>Saved{saved.length ? ` (${saved.length})` : ""}
+          <Icon name="saved" size={22} />
+          Saved{saved.length ? ` (${saved.length})` : ""}
         </button>
         <button
           aria-pressed={view === "map"}
@@ -535,10 +541,12 @@ export function AkiDuermo() {
               ?.scrollIntoView({ behavior: "smooth" });
           }}
         >
-          <span>⌖</span>Map
+          <Icon name="map" size={22} />
+          Map
         </button>
         <a href="https://akipasa.com/en">
-          <span>↗</span>AkiPasa
+          <Icon name="activity" size={22} />
+          AkiPasa
         </a>
       </nav>
       {selected && (
@@ -554,10 +562,10 @@ export function AkiDuermo() {
               aria-label="Close property details"
               onClick={() => setSelected(null)}
             >
-              ×
+              <Icon name="close" size={22} />
             </button>
           </form>
-          <Bed />
+          <Icon name="bed" size={40} />
           <span className={styles.kicker}>
             {stayTypeNames[selected.accommodationType] || "Accommodation"}
           </span>
@@ -574,13 +582,13 @@ export function AkiDuermo() {
               target="_blank"
               rel="noopener noreferrer nofollow"
             >
-              Visit property website ↗
+              Visit property website <Icon name="arrow-right" size={18} />
             </a>
           )}
           <a
             href={`https://akipasa.com/en/venues/${encodeURIComponent(selected.slug)}`}
           >
-            View listing on AkiPasa ↗
+            View listing on AkiPasa <Icon name="arrow-right" size={18} />
           </a>
           <button
             className={styles.mapButton}

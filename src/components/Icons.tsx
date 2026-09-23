@@ -7,6 +7,7 @@ import React, { type SVGProps } from "react";
  * each component inventing its own inline <svg>.
  */
 export type IconName =
+  | "bed"
   | "discover"
   | "map"
   | "community"
@@ -44,6 +45,7 @@ export type IconName =
   | "trash";
 
 const paths: Record<IconName, React.ReactNode> = {
+  bed: <path d="M3 19V9m18 10V11H3m0 6h18M6 11V5h12v6M12 5v6" />,
   plus: <path d="M12 5v14M5 12h14" />,
   trash: (
     <>

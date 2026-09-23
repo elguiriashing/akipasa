@@ -85,7 +85,7 @@ export default async function RootLayout({
           }}
         />
         {!isAkiDuermo && <PwaRegistration />}
-        {!isAkiDuermo && <ThemeManager />}
+        <ThemeManager />
         {children}
       </body>
     </html>
