@@ -465,7 +465,8 @@
   font-weight: 400;
   margin-top: 3px;
 }
-.cardFoot button {
+.cardFoot button,
+.viewStay {
   flex-shrink: 0;
   display: grid;
   place-items: center;

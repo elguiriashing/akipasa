@@ -99,3 +99,19 @@ and saved stays. A first-party language cookie remembers the choice for a year;
 the locale before setting the server-rendered document language and metadata.
 Map labels, accessibility text, trip summaries, property categories and AkiPasa
 links follow the selected language; imported property names remain unchanged.
+
+### Dedicated stay pages and host isolation
+
+Explore cards and map popups now share canonical AkiDuermo `/stays/[slug]`
+links, preserving EN/ES. Old localized venue links on the stay host redirect to
+these pages. Other primary-app routes redirect to akipasa.com; mutation requests
+and unrelated API endpoints are rejected on the stay host to prevent a second
+AkiPasa shell or broken authentication flow.
+
+Property pages read only published accommodation via the public Supabase client.
+They include actual property media when available, explicit photo placeholders,
+overview, location, verified-information caveats, device-local saving, language
+and theme controls, and a responsive date/guest planning panel. No room inventory,
+rates, availability, reviews or reservations are fabricated. The form is a preview
+and does not create a booking or take payment. Property website and directions
+links are external; activity discovery explicitly links to the primary domain.

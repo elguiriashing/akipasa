@@ -9,6 +9,7 @@ import {
   markerSource,
   type DiscoveryVertical,
 } from "@/lib/accommodation";
+import { stayHref } from "@/lib/akiduermo-routing";
 import { MapTileLoader } from "@/lib/map-tiles";
 import type { Locale } from "@/lib/config";
 import { trackBehaviour } from "@/lib/personalisation/client";
@@ -170,9 +171,13 @@ function popupContent(point: MapPoint, locale: Locale) {
   link.href = point.href;
   link.textContent =
     point.kind === "venue"
-      ? locale === "es"
-        ? "Ver negocio"
-        : "View business"
+      ? point.source === "accommodation"
+        ? locale === "es"
+          ? "Ver alojamiento"
+          : "View stay"
+        : locale === "es"
+          ? "Ver negocio"
+          : "View business"
       : locale === "es"
         ? "Ver evento"
         : "View event";
@@ -199,8 +204,10 @@ export function ProductionMap({
   center,
   initialVertical = "activities",
   showVerticalTabs = true,
+  venueDestination = "akipasa",
 }: {
   locale: Locale;
+  venueDestination?: "akipasa" | "akiduermo";
   initialVertical?: DiscoveryVertical;
   showVerticalTabs?: boolean;
   points: MapPoint[];
@@ -432,7 +439,10 @@ export function ProductionMap({
                     ...point,
                     title: detail.name,
                     venue: detail.address ?? "",
-                    href: `/${locale}/venues/${detail.slug}`,
+                    href:
+                      venueDestination === "akiduermo"
+                        ? stayHref(detail.slug, locale)
+                        : `/${locale}/venues/${detail.slug}`,
                     source:
                       detail.discoveryVertical === "accommodation"
                         ? "accommodation"
@@ -572,7 +582,14 @@ export function ProductionMap({
       popupRequest?.abort();
       cleanup();
     };
-  }, [center.latitude, center.longitude, locale, points, styleUrl]);
+  }, [
+    center.latitude,
+    center.longitude,
+    locale,
+    points,
+    styleUrl,
+    venueDestination,
+  ]);
 
   return (
     <section className="map-panel" aria-labelledby="production-map-title">

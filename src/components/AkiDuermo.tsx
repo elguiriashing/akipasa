@@ -1,16 +1,12 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { config } from "@/lib/config";
-import {
-  stayTypeNames,
-  safePropertyWebsite,
-  staySchema,
-  type Stay,
-} from "@/lib/akiduermo";
+import { stayTypeNames, staySchema, type Stay } from "@/lib/akiduermo";
 import { stayText, type StayLocale } from "@/lib/akiduermo-i18n";
+import { stayHref } from "@/lib/akiduermo-routing";
 import { Icon } from "./Icons";
 import { ThemeToggle } from "./ThemeModeControls";
 import styles from "./AkiDuermo.module.css";
@@ -82,12 +78,6 @@ export function AkiDuermo({
   const [retry, setRetry] = useState(0);
   const [saved, setSaved] = useState<Stay[]>([]);
   const [view, setView] = useState<"explore" | "saved" | "map">("explore");
-  const [selected, setSelected] = useState<Stay | null>(null);
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
-    if (selected && dialogRef.current && !dialogRef.current.open)
-      dialogRef.current.showModal();
-  }, [selected]);
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState("2");
@@ -131,14 +121,6 @@ export function AkiDuermo({
       });
     return () => abort.abort();
   }, [search, type, page, retry]);
-  useEffect(() => {
-    if (!selected) return;
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelected(null);
-    };
-    document.addEventListener("keydown", handler);
-    return () => document.removeEventListener("keydown", handler);
-  }, [selected]);
   function toggleSaved(stay: Stay) {
     setSaved((prev) => {
       const next = prev.some((x) => x.id === stay.id)
@@ -420,6 +402,7 @@ export function AkiDuermo({
                 center={{ latitude: center.lat, longitude: center.lng }}
                 initialVertical="accommodation"
                 showVerticalTabs={false}
+                venueDestination="akiduermo"
               />
             </div>
           ) : (
@@ -472,7 +455,11 @@ export function AkiDuermo({
                         <span className={styles.city}>
                           <Icon name="map" size={14} /> {stay.city}
                         </span>
-                        <h3>{stay.name}</h3>
+                        <h3>
+                          <Link href={stayHref(stay.slug, locale)}>
+                            {stay.name}
+                          </Link>
+                        </h3>
                         <p>{stay.address}</p>
                         <div className={styles.cardFoot}>
                           <span>
@@ -481,12 +468,13 @@ export function AkiDuermo({
                               {t("Rates & availability coming later")}
                             </small>
                           </span>
-                          <button
+                          <Link
+                            className={styles.viewStay}
+                            href={stayHref(stay.slug, locale)}
                             aria-label={`${t("View")} ${stay.name}`}
-                            onClick={() => setSelected(stay)}
                           >
                             <Icon name="arrow-right" size={20} />
-                          </button>
+                          </Link>
                         </div>
                       </div>
                     </article>
@@ -603,59 +591,6 @@ export function AkiDuermo({
           AkiPasa
         </a>
       </nav>
-      {selected && (
-        <dialog
-          ref={dialogRef}
-          onCancel={() => setSelected(null)}
-          onClose={() => setSelected(null)}
-          className={styles.dialog}
-          aria-labelledby="stay-title"
-        >
-          <form method="dialog">
-            <button
-              aria-label={t("Close property details")}
-              onClick={() => setSelected(null)}
-            >
-              <Icon name="close" size={22} />
-            </button>
-          </form>
-          <Icon name="bed" size={40} />
-          <span className={styles.kicker}>
-            {t(stayTypeNames[selected.accommodationType] || "Accommodation")}
-          </span>
-          <h2 id="stay-title">{selected.name}</h2>
-          <p>{selected.address}</p>
-          <p className={styles.trip}>
-            {t(
-              "This listing is unclaimed and awaits property verification. Prices, facilities and availability have not been confirmed.",
-            )}
-          </p>
-          {selected.website && (
-            <a
-              className={styles.dialogCta}
-              href={safePropertyWebsite(selected.website) || undefined}
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-            >
-              {t("Visit property website")}{" "}
-              <Icon name="arrow-right" size={18} />
-            </a>
-          )}
-          <a
-            href={`https://akipasa.com/${locale}/venues/${encodeURIComponent(selected.slug)}`}
-          >
-            {t("View listing on AkiPasa")} <Icon name="arrow-right" size={18} />
-          </a>
-          <button
-            className={styles.mapButton}
-            onClick={() => toggleSaved(selected)}
-          >
-            {saved.some((x) => x.id === selected.id)
-              ? t("Remove from saved")
-              : t("Save this stay")}
-          </button>
-        </dialog>
-      )}
     </div>
   );
 }

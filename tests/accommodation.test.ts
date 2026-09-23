@@ -82,3 +82,26 @@ it("localizes search, property categories and verification copy", () => {
     "AC Hotel Málaga Palacio",
   );
 });
+
+import { stayHref, stayHostRoute } from "../src/lib/akiduermo-routing";
+it("routes map and explore stays to dedicated subpages", () => {
+  expect(stayHref("hotel-malaga", "es")).toBe(
+    "https://akiduermo.akipasa.com/stays/hotel-malaga?lang=es",
+  );
+  expect(stayHostRoute("/stays/hotel-malaga")).toEqual({
+    kind: "rewrite",
+    path: "/akiduermo/stays/hotel-malaga",
+  });
+  expect(stayHostRoute("/en/venues/hotel-malaga")).toEqual({
+    kind: "legacy",
+    path: "/stays/hotel-malaga",
+    locale: "en",
+  });
+});
+it("isolates AkiDuermo from primary application and mutation endpoints", () => {
+  for (const path of ["/en", "/es/login", "/en/account", "/auth/callback"])
+    expect(stayHostRoute(path).kind).toBe("primary");
+  expect(stayHostRoute("/api/bookings").kind).toBe("reject");
+  expect(stayHostRoute("/api/stays").kind).toBe("public");
+  expect(stayHostRoute("/api/map/venues").kind).toBe("public");
+});

@@ -1,22 +1,21 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { refreshSession } from "@/lib/supabase/middleware";
 import { stayLocale } from "@/lib/akiduermo-i18n";
+import { stayHostRoute } from "@/lib/akiduermo-routing";
 import { shouldNoindex } from "@/lib/seo";
 
 export async function middleware(request: NextRequest) {
   const isAkiDuermo = request.nextUrl.hostname === "akiduermo.akipasa.com";
+  const isStayPath =
+    request.nextUrl.pathname === "/akiduermo" ||
+    request.nextUrl.pathname.startsWith("/akiduermo/");
   request.headers.set(
     "x-akipasa-product",
-    isAkiDuermo || request.nextUrl.pathname === "/akiduermo"
-      ? "akiduermo"
-      : "akipasa",
+    isAkiDuermo || isStayPath ? "akiduermo" : "akipasa",
   );
-  if (
-    (isAkiDuermo && request.nextUrl.pathname === "/") ||
-    request.nextUrl.pathname === "/akiduermo"
-  ) {
-    const target = request.nextUrl.clone();
-    target.pathname = "/akiduermo";
+  if (isAkiDuermo || isStayPath) {
+    if (isAkiDuermo && !["GET", "HEAD"].includes(request.method))
+      return new NextResponse(null, { status: 404 });
     request.headers.set(
       "x-akipasa-locale",
       stayLocale(
@@ -24,9 +23,29 @@ export async function middleware(request: NextRequest) {
         request.cookies.get("akiduermo_locale")?.value,
       ),
     );
-    const response = NextResponse.rewrite(target, {
-      request: { headers: request.headers },
-    });
+    const route = isAkiDuermo
+      ? stayHostRoute(request.nextUrl.pathname)
+      : { kind: "public" as const, path: request.nextUrl.pathname };
+    const target = request.nextUrl.clone();
+    target.pathname = route.path;
+    if (route.kind === "legacy") {
+      target.searchParams.set("lang", route.locale!);
+      return NextResponse.redirect(target, 308);
+    }
+    if (route.kind === "canonical") return NextResponse.redirect(target, 308);
+    if (route.kind === "primary") {
+      target.hostname = "akipasa.com";
+      target.protocol = "https:";
+      target.port = "";
+      return NextResponse.redirect(target, 307);
+    }
+    if (route.kind === "reject") return new NextResponse(null, { status: 404 });
+    const response =
+      route.kind === "rewrite"
+        ? NextResponse.rewrite(target, {
+            request: { headers: request.headers },
+          })
+        : NextResponse.next({ request: { headers: request.headers } });
     response.headers.set("X-Robots-Tag", "noindex, nofollow");
     return response;
   }
