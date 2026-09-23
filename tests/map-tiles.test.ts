@@ -17,9 +17,10 @@ const marker = (i: number, lon = -4.624, lat = 36.539): CompactMapMarker => [
   lon,
   lat,
   1,
+  0,
 ];
 const snapshot = (markers: CompactMapMarker[]): MapMarkerSnapshot => ({
-  version: 1,
+  version: 2,
   generatedAt: "2026-09-19T00:00:00Z",
   count: markers.length,
   markers,
@@ -73,7 +74,7 @@ it("preserves successful tiles on failure and retries only failed areas", async 
   let failing = true;
   const target = tileKey(tilesForBounds(local, 10)[0]);
   const request = vi.fn(async (url: RequestInfo | URL) =>
-    String(url).endsWith(target) && failing
+    String(url).split("?")[0].endsWith(target) && failing
       ? new Response(null, { status: 503 })
       : Response.json(snapshot([marker(1)])),
   );
@@ -320,7 +321,7 @@ it("persists validated tiles in IndexedDB, bounds storage, and discards expired/
       });
     const records = await new Promise<Array<{ bytes: number }>>(
       (resolve, reject) => {
-        const request = indexedDB.open("akipasa-map-tiles-v1", 1);
+        const request = indexedDB.open("akipasa-map-tiles-v2", 1);
         request.onsuccess = () => {
           const get = request.result
             .transaction("tiles")

@@ -45,7 +45,11 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const requestLocale = (await headers()).get("x-akipasa-locale");
+  const requestHeaders = await headers();
+  const isAkiDuermo = requestHeaders.get("x-akipasa-product") === "akiduermo";
+  const requestLocale = isAkiDuermo
+    ? "en"
+    : requestHeaders.get("x-akipasa-locale");
   const locale =
     requestLocale && isLocale(requestLocale) ? requestLocale : "es";
   return (
@@ -74,14 +78,14 @@ export default async function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               "@id": `${siteOrigin}/#website`,
-              name: "AkiPasa",
-              url: siteOrigin,
+              name: isAkiDuermo ? "AkiDuermo" : "AkiPasa",
+              url: isAkiDuermo ? "https://akiduermo.akipasa.com" : siteOrigin,
               inLanguage: ["es", "en"],
             }),
           }}
         />
-        <PwaRegistration />
-        <ThemeManager />
+        {!isAkiDuermo && <PwaRegistration />}
+        {!isAkiDuermo && <ThemeManager />}
         {children}
       </body>
     </html>

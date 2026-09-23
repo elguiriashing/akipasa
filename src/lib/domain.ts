@@ -12,6 +12,7 @@ export type Venue = {
   longitude: number;
   verified: boolean;
   claimStatus?: string;
+  discoveryVertical?: "activities" | "accommodation";
   accessible: boolean;
   phone?: string;
   whatsappPhone?: string;

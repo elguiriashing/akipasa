@@ -81,7 +81,7 @@ export class MapSnapshot {
       },
       async (): Promise<CachedMapSnapshot> => {
         const response = await fetch(
-          `${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/rpc/public_map_marker_snapshot`,
+          `${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/rpc/public_map_marker_snapshot_v2`,
           {
             method: "POST",
             headers: {
@@ -134,6 +134,20 @@ export class MapSnapshot {
         }
         body = JSON.stringify(this.tileIndex.read(tile));
         etag = snapshot.etag.slice(0, -1) + "-" + tileKey(tile) + '"';
+      }
+      if (new URL(request.url).searchParams.get("v") !== "2") {
+        // Existing open tabs still use v1. Give them activity-only markers.
+        const snapshot = mapSnapshotSchema.parse(JSON.parse(body));
+        const markers = snapshot.markers
+          .filter((marker) => marker[4] === 0)
+          .map((marker) => marker.slice(0, 4));
+        body = JSON.stringify({
+          ...snapshot,
+          version: 1,
+          markers,
+          count: markers.length,
+        });
+        etag = etag.slice(0, -1) + '-legacy"';
       }
       return new Response(body, {
         headers: {

@@ -20,6 +20,7 @@
   "routes": [
     { "pattern": "akipasa.com", "custom_domain": true },
     { "pattern": "www.akipasa.com", "custom_domain": true },
+    { "pattern": "akiduermo.akipasa.com", "custom_domain": true },
   ],
   "vars": {
     "NEXT_PUBLIC_PRODUCT_NAME": "AkiPasa",

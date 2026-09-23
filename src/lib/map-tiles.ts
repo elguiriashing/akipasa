@@ -19,7 +19,7 @@ export type MapBounds = {
 export const tileKey = ({ z, x, y }: MapTile) => `${z}/${x}/${y}`;
 export function parseMapTile(path: string): MapTile | null {
   const match = /^\/api\/map\/tiles\/(\d{1,2})\/(\d{1,4})\/(\d{1,4})$/.exec(
-    path,
+    path.split("?")[0],
   );
   if (!match) return null;
   const [z, x, y] = match.slice(1).map(Number);
@@ -95,7 +95,7 @@ export class MapTileIndex {
     }
     const markers = level.get(tileKey(tile)) || [];
     return {
-      version: 1,
+      version: 2,
       generatedAt: this.snapshot.generatedAt,
       count: markers.length,
       markers,
@@ -195,9 +195,12 @@ export class MapTileLoader {
         while (queue.length && !signal.aborted) {
           const tile = queue.shift()!;
           try {
-            const response = await request(`/api/map/tiles/${tileKey(tile)}`, {
-              signal,
-            });
+            const response = await request(
+              `/api/map/tiles/${tileKey(tile)}?v=2`,
+              {
+                signal,
+              },
+            );
             if (!response.ok) throw new Error("Map area unavailable");
             const data = mapSnapshotSchema.parse(await response.json());
             signal.throwIfAborted();

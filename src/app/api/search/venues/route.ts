@@ -35,6 +35,7 @@ export async function GET(request: Request) {
     .from("venues")
     .select("id,slug,name,address,cities(slug)")
     .eq("status", "published")
+    .eq("discovery_vertical", "activities")
     .or(filters)
     .limit(120);
 

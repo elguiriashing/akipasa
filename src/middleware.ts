@@ -3,6 +3,23 @@ import { refreshSession } from "@/lib/supabase/middleware";
 import { shouldNoindex } from "@/lib/seo";
 
 export async function middleware(request: NextRequest) {
+  const isAkiDuermo = request.nextUrl.hostname === "akiduermo.akipasa.com";
+  request.headers.set(
+    "x-akipasa-product",
+    isAkiDuermo || request.nextUrl.pathname === "/akiduermo"
+      ? "akiduermo"
+      : "akipasa",
+  );
+  if (isAkiDuermo && request.nextUrl.pathname === "/") {
+    const target = request.nextUrl.clone();
+    target.pathname = "/akiduermo";
+    request.headers.set("x-akipasa-locale", "en");
+    const response = NextResponse.rewrite(target, {
+      request: { headers: request.headers },
+    });
+    response.headers.set("X-Robots-Tag", "noindex, nofollow");
+    return response;
+  }
   // Resolve the canonical landing URL before session refresh and page rendering.
   // Combine www + root normalization into one hop and preserve query parameters.
   if (

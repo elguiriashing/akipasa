@@ -11,6 +11,7 @@ import { googleMapsDirectionsUrl } from "@/lib/maps";
 import { optionalUser } from "@/lib/auth";
 import { toggleFollowedVenue } from "../../engagement/actions";
 import { AnalyticsView, TrackedLink } from "@/components/AnalyticsSignal";
+import { accommodationLabel } from "@/lib/accommodation";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 
 const loadVenue = cache((slug: string) => repository.venueBySlug(slug));
@@ -102,6 +103,11 @@ export default async function VenuePage({
       <main className="shell detail-layout">
         <AnalyticsView action="venue_view" venueId={venue.id} locale={locale} />
         <article className="detail-card detail-card-primary">
+          {venue.discoveryVertical === "accommodation" && (
+            <span className="accommodation-badge">
+              {accommodationLabel(locale)}
+            </span>
+          )}
           {bgImage ? (
             <div
               className="detail-cover"

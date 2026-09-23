@@ -20,19 +20,22 @@ export async function serveMapSnapshot(
     return new Response(null, { status: 405, headers: { Allow: "GET, HEAD" } });
   // Ignore query strings, user cookies and host aliases. This contains only
   // public markers, built using the publishable key and normal venue RLS.
-  const path = new URL(request.url).pathname;
+  const url = new URL(request.url);
+  const path = url.pathname;
+  const schemaVersion = url.searchParams.get("v") === "2" ? 2 : 1;
   const tile = parseMapTile(path);
   if (path !== "/api/map/snapshot" && !tile)
     return new Response("Invalid map tile", { status: 400 });
   const key = new Request(
     "https://akipasa.com" +
-      (tile ? `/api/map/tiles/${tileKey(tile)}` : "/api/map/snapshot"),
+      (tile ? `/api/map/tiles/${tileKey(tile)}` : "/api/map/snapshot") +
+      `?v=${schemaVersion}`,
   );
   let result = await cache.match(key);
   const hit = Boolean(result);
   if (!result) {
     const object = env.MAP_SNAPSHOTS.get(
-      env.MAP_SNAPSHOTS.idFromName("spain-public-v1"),
+      env.MAP_SNAPSHOTS.idFromName("spain-public-v2"),
     );
     result = await object.fetch(key);
     if (result.ok) {

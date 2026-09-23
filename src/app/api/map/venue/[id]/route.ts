@@ -14,7 +14,7 @@ export async function GET(
     return Response.json({ error: "Invalid venue" }, { status: 400 });
   const { data, error } = await createSupabasePublicClient()
     .from("venues")
-    .select("id,slug,name,address,accessibility")
+    .select("id,slug,name,address,accessibility,discovery_vertical")
     .eq("id", parsed.data)
     .eq("status", "published")
     .maybeSingle();
@@ -36,6 +36,7 @@ export async function GET(
       address: data.address
         ? normalizeAddressLabel(data.address)
         : data.address,
+      discoveryVertical: data.discovery_vertical,
       claimStatus:
         data.accessibility?.claim_status === "unclaimed"
           ? "unclaimed"

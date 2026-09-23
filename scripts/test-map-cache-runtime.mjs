@@ -26,7 +26,7 @@ const bundle = await build({
 let builds = 0;
 const count = 100001;
 const payload = JSON.stringify({
-  version: 1,
+  version: 2,
   generatedAt: new Date().toISOString(),
   count,
   markers: Array.from({ length: count }, (_, i) => [
@@ -34,6 +34,7 @@ const payload = JSON.stringify({
     -4.624,
     36.539,
     1,
+    0,
   ]),
 });
 const options = {

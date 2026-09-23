@@ -169,6 +169,10 @@ function venueFromRow(row: DbRecord): Venue {
     verified: Boolean(row.verified),
     claimStatus: (row.accessibility as { claim_status?: string } | null)
       ?.claim_status,
+    discoveryVertical:
+      row.discovery_vertical === "accommodation"
+        ? "accommodation"
+        : "activities",
     accessible: Boolean(
       (row.accessibility as { step_free?: boolean } | null)?.step_free,
     ),

@@ -12483,3 +12483,34 @@ html[data-owner-focus="true"] .app-content {
     width: 100%;
   }
 }
+
+.map-vertical-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+.map-vertical-tabs button {
+  border: 1px solid #49665e;
+  border-radius: 24px;
+  padding: 10px 16px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  min-height: 44px;
+}
+.map-vertical-tabs button[aria-pressed="true"] {
+  background: #166534;
+  color: #fff;
+  border-color: #7aad86;
+}
+.map-legend-accommodation {
+  background: #166534;
+}
+.accommodation-badge {
+  display: inline-block;
+  border-radius: 20px;
+  padding: 6px 12px;
+  color: #fff;
+  background: #166534;
+}

@@ -128,7 +128,7 @@ it("edge hits and conditional requests avoid the origin and canonicalize cache k
   expect(second.headers.get("X-Map-Cache")).toBe("HIT");
   expect(origin).toHaveBeenCalledTimes(1);
   expect(cache.put.mock.calls[0][0].url).toBe(
-    "https://akipasa.com/api/map/snapshot",
+    "https://akipasa.com/api/map/snapshot?v=1",
   );
 });
 
@@ -155,10 +155,11 @@ it("loads 100,001 markers with one request, without names or address payloads", 
     -4.6,
     36.5,
     1,
+    0,
   ]);
   const request = vi.fn(async () =>
     Response.json({
-      version: 1,
+      version: 2,
       generatedAt: "2026-09-18",
       count: markers.length,
       markers,

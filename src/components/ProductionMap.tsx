@@ -3,6 +3,12 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
 import { mapVenueDetailSchema, type MapVenueDetail } from "@/lib/map-snapshot";
+import {
+  accommodationLabel,
+  markerIsVisible,
+  markerSource,
+  type DiscoveryVertical,
+} from "@/lib/accommodation";
 import { MapTileLoader } from "@/lib/map-tiles";
 import type { Locale } from "@/lib/config";
 import { trackBehaviour } from "@/lib/personalisation/client";
@@ -17,7 +23,12 @@ export type MapPoint = {
   category: string;
   startsAt?: string;
   priceLabel?: string;
-  source: "verified_venue" | "community" | "claimed" | "unclaimed";
+  source:
+    | "verified_venue"
+    | "community"
+    | "claimed"
+    | "unclaimed"
+    | "accommodation";
   kind?: "event" | "venue";
 };
 
@@ -145,13 +156,15 @@ function popupContent(point: MapPoint, locale: Locale) {
     : "";
   meta.textContent =
     point.kind === "venue"
-      ? point.source === "claimed"
-        ? locale === "es"
-          ? "Local"
-          : "Venue"
-        : locale === "es"
-          ? "Local sin reclamar"
-          : "Unclaimed venue"
+      ? point.source === "accommodation"
+        ? accommodationLabel(locale)
+        : point.source === "claimed"
+          ? locale === "es"
+            ? "Local"
+            : "Venue"
+          : locale === "es"
+            ? "Local sin reclamar"
+            : "Unclaimed venue"
       : `${date} · ${point.priceLabel}`;
   const link = document.createElement("a");
   link.href = point.href;
@@ -184,8 +197,12 @@ export function ProductionMap({
   points,
   styleUrl,
   center,
+  initialVertical = "activities",
+  showVerticalTabs = true,
 }: {
   locale: Locale;
+  initialVertical?: DiscoveryVertical;
+  showVerticalTabs?: boolean;
   points: MapPoint[];
   styleUrl: string;
   center: { latitude: number; longitude: number };
@@ -195,6 +212,13 @@ export function ProductionMap({
     "loading",
   );
   const [loadedVenues, setLoadedVenues] = useState(0);
+  const [vertical, setVertical] = useState<DiscoveryVertical>(initialVertical);
+  const verticalRef = useRef<DiscoveryVertical>(initialVertical);
+  const renderVenuesRef = useRef<(() => void) | null>(null);
+  useEffect(() => {
+    verticalRef.current = vertical;
+    renderVenuesRef.current?.();
+  }, [vertical]);
 
   useEffect(() => {
     trackBehaviour({
@@ -297,6 +321,9 @@ export function ProductionMap({
         map.addImage("pin-unclaimed", markerImage("#7b858f", "venue"), {
           pixelRatio: 2,
         });
+        map.addImage("pin-accommodation", markerImage("#166534", "venue"), {
+          pixelRatio: 2,
+        });
         map.addLayer({
           id: "discovery-clusters",
           type: "symbol",
@@ -334,6 +361,8 @@ export function ProductionMap({
             "icon-image": [
               "match",
               ["get", "source"],
+              "accommodation",
+              "pin-accommodation",
               "community",
               "pin-community",
               "claimed",
@@ -404,7 +433,14 @@ export function ProductionMap({
                     title: detail.name,
                     venue: detail.address ?? "",
                     href: `/${locale}/venues/${detail.slug}`,
-                    source: detail.claimStatus,
+                    source:
+                      detail.discoveryVertical === "accommodation"
+                        ? "accommodation"
+                        : detail.claimStatus,
+                    category:
+                      detail.discoveryVertical === "accommodation"
+                        ? accommodationLabel(locale)
+                        : point.category,
                   },
                   locale,
                 ),
@@ -426,21 +462,30 @@ export function ProductionMap({
         });
         const renderVenues = () => {
           if (disposed) return;
-          const markers = tileLoader.values();
+          const markers = tileLoader
+            .values()
+            .filter((marker) => markerIsVisible(marker, verticalRef.current));
           visiblePoints = [
-            ...points,
-            ...markers.map(([id, longitude, latitude, unclaimed]) => ({
-              id,
-              longitude,
-              latitude,
-              title: "",
-              venue: "",
-              href: "",
-              category: locale === "es" ? "Local" : "Venue",
-              source:
-                unclaimed === 1 ? ("unclaimed" as const) : ("claimed" as const),
-              kind: "venue" as const,
-            })),
+            ...(verticalRef.current === "activities" ? points : []),
+            ...markers.map((marker) => {
+              const [id, longitude, latitude] = marker;
+              return {
+                id,
+                longitude,
+                latitude,
+                title: "",
+                venue: "",
+                href: "",
+                category:
+                  marker[4] === 1
+                    ? accommodationLabel(locale)
+                    : locale === "es"
+                      ? "Local"
+                      : "Venue",
+                source: markerSource(marker),
+                kind: "venue" as const,
+              };
+            }),
           ];
           pointIndex = new Map(visiblePoints.map((point) => [point.id, point]));
           setLoadedVenues(markers.length);
@@ -460,6 +505,8 @@ export function ProductionMap({
             })),
           });
         };
+        renderVenuesRef.current = renderVenues;
+        renderVenues();
         let loading = false,
           queued = false;
         const loadVenues = async () => {
@@ -519,6 +566,7 @@ export function ProductionMap({
 
     return () => {
       disposed = true;
+      renderVenuesRef.current = null;
       clearTimeout(timer);
       request.abort();
       popupRequest?.abort();
@@ -531,7 +579,11 @@ export function ProductionMap({
       <div className="map-heading">
         <div>
           <h2 id="production-map-title">
-            {locale === "es" ? "Mapa de eventos" : "Event map"}
+            {vertical === "accommodation"
+              ? accommodationLabel(locale)
+              : locale === "es"
+                ? "Mapa de eventos"
+                : "Event map"}
           </h2>
           <p>
             {locale === "es"
@@ -543,6 +595,28 @@ export function ProductionMap({
           {locale === "es" ? "Cambiar filtros" : "Change filters"}
         </a>
       </div>
+      {showVerticalTabs && (
+        <div
+          className="map-vertical-tabs"
+          role="group"
+          aria-label={locale === "es" ? "Tipo de lugares" : "Place type"}
+        >
+          <button
+            type="button"
+            aria-pressed={vertical === "activities"}
+            onClick={() => setVertical("activities")}
+          >
+            {locale === "es" ? "Planes y locales" : "Events & venues"}
+          </button>
+          <button
+            type="button"
+            aria-pressed={vertical === "accommodation"}
+            onClick={() => setVertical("accommodation")}
+          >
+            {accommodationLabel(locale)}
+          </button>
+        </div>
+      )}
       <p className="result-caption" role="status">
         {venueStatus === "loading"
           ? locale === "es"
@@ -568,30 +642,41 @@ export function ProductionMap({
           aria-label={locale === "es" ? "Leyenda del mapa" : "Map legend"}
         >
           <strong>{locale === "es" ? "Leyenda" : "Legend"}</strong>
-          <span>
-            <i className="map-legend-pin map-legend-verified">
-              <b>E</b>
-            </i>
-            {locale === "es" ? "Evento verificado" : "Verified event"}
-          </span>
-          <span>
-            <i className="map-legend-pin map-legend-community">
-              <b>E</b>
-            </i>
-            {locale === "es" ? "Evento comunitario" : "Community event"}
-          </span>
-          <span>
-            <i className="map-legend-pin map-legend-claimed">
-              <b>V</b>
-            </i>
-            {locale === "es" ? "Local" : "Venue"}
-          </span>
-          <span>
-            <i className="map-legend-pin map-legend-unclaimed">
-              <b>V</b>
-            </i>
-            {locale === "es" ? "Local sin reclamar" : "Unclaimed venue"}
-          </span>
+          {vertical === "accommodation" ? (
+            <span>
+              <i className="map-legend-pin map-legend-accommodation">
+                <b>A</b>
+              </i>
+              {accommodationLabel(locale)}
+            </span>
+          ) : (
+            <>
+              <span>
+                <i className="map-legend-pin map-legend-verified">
+                  <b>E</b>
+                </i>
+                {locale === "es" ? "Evento verificado" : "Verified event"}
+              </span>
+              <span>
+                <i className="map-legend-pin map-legend-community">
+                  <b>E</b>
+                </i>
+                {locale === "es" ? "Evento comunitario" : "Community event"}
+              </span>
+              <span>
+                <i className="map-legend-pin map-legend-claimed">
+                  <b>V</b>
+                </i>
+                {locale === "es" ? "Local" : "Venue"}
+              </span>
+              <span>
+                <i className="map-legend-pin map-legend-unclaimed">
+                  <b>V</b>
+                </i>
+                {locale === "es" ? "Local sin reclamar" : "Unclaimed venue"}
+              </span>
+            </>
+          )}
         </aside>
       </div>
     </section>

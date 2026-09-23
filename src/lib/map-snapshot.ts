@@ -5,10 +5,11 @@ export const compactMarkerSchema = z.tuple([
   z.number().finite().min(-180).max(180),
   z.number().finite().min(-90).max(90),
   z.union([z.literal(0), z.literal(1)]),
+  z.union([z.literal(0), z.literal(1)]),
 ]);
 export const mapSnapshotSchema = z
   .object({
-    version: z.literal(1),
+    version: z.literal(2),
     generatedAt: z.string(),
     count: z.number().int().nonnegative(),
     markers: z.array(compactMarkerSchema),
@@ -21,7 +22,7 @@ export async function loadMapSnapshot(
   signal: AbortSignal,
   request: typeof fetch = fetch,
 ) {
-  const response = await request("/api/map/snapshot", { signal });
+  const response = await request("/api/map/snapshot?v=2", { signal });
   if (!response.ok) throw new Error("Map unavailable");
   const data = mapSnapshotSchema.parse(await response.json());
   signal.throwIfAborted();
@@ -34,5 +35,6 @@ export const mapVenueDetailSchema = z.object({
   name: z.string(),
   address: z.string().nullable(),
   claimStatus: z.enum(["claimed", "unclaimed"]),
+  discoveryVertical: z.enum(["activities", "accommodation"]),
 });
 export type MapVenueDetail = z.infer<typeof mapVenueDetailSchema>;
