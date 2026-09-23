@@ -1,6 +1,8 @@
 export type StayLocale = "en" | "es";
 
 const spanish: Record<string, string> = {
+  "No saved stays match these filters.":
+    "Ningún alojamiento guardado coincide con estos filtros.",
   "AkiDuermo home": "Inicio de AkiDuermo",
   "EARLY PREVIEW": "VISTA PREVIA",
   "Go out with AkiPasa": "Sal con AkiPasa",

@@ -105,3 +105,59 @@ it("isolates AkiDuermo from primary application and mutation endpoints", () => {
   expect(stayHostRoute("/api/stays").kind).toBe("public");
   expect(stayHostRoute("/api/map/venues").kind).toBe("public");
 });
+
+import { filterSavedStays, loadStayMapMatches } from "../src/lib/stay-filters";
+it("filters saved accommodation by type and accented destination", () => {
+  const row = {
+    id: hotel[0],
+    slug: "hotel",
+    name: "Casa Málaga",
+    address: "Málaga",
+    city: "Málaga",
+    website: null,
+    accommodationType: "hotel",
+  };
+  const apartment = {
+    ...row,
+    id: cafe[0],
+    name: "Apartment",
+    accommodationType: "apartment",
+  };
+  expect(filterSavedStays([row, apartment], "hotel", "malaga")).toEqual([row]);
+  expect(filterSavedStays([row, apartment], "all", "")).toHaveLength(2);
+  expect(filterSavedStays([row], "apartment", "")).toEqual([]);
+});
+it("loads map matches past the card and database page limits", async () => {
+  const request = async (url: string | URL | Request) => {
+    const page = new URL(
+      String(url),
+      "https://akiduermo.akipasa.com",
+    ).searchParams.get("page");
+    return Response.json({
+      ids: page === "1" ? [hotel[0]] : [cafe[0]],
+      total: 1001,
+    });
+  };
+  const ids = await loadStayMapMatches(
+    "hotel",
+    "",
+    new AbortController().signal,
+    request as typeof fetch,
+  );
+  expect([...ids]).toEqual([hotel[0], cafe[0]]);
+});
+it("does not show partial map matches when a later page fails", async () => {
+  let page = 0;
+  const request = async () =>
+    ++page === 1
+      ? Response.json({ ids: [hotel[0]], total: 1001 })
+      : new Response(null, { status: 503 });
+  await expect(
+    loadStayMapMatches(
+      "hotel",
+      "",
+      new AbortController().signal,
+      request as typeof fetch,
+    ),
+  ).rejects.toThrow("Stay filters unavailable");
+});

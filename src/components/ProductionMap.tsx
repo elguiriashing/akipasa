@@ -205,9 +205,11 @@ export function ProductionMap({
   initialVertical = "activities",
   showVerticalTabs = true,
   venueDestination = "akipasa",
+  venueIds = null,
 }: {
   locale: Locale;
   venueDestination?: "akipasa" | "akiduermo";
+  venueIds?: ReadonlySet<string> | null;
   initialVertical?: DiscoveryVertical;
   showVerticalTabs?: boolean;
   points: MapPoint[];
@@ -220,12 +222,14 @@ export function ProductionMap({
   );
   const [loadedVenues, setLoadedVenues] = useState(0);
   const [vertical, setVertical] = useState<DiscoveryVertical>(initialVertical);
+  const venueIdsRef = useRef(venueIds);
   const verticalRef = useRef<DiscoveryVertical>(initialVertical);
   const renderVenuesRef = useRef<(() => void) | null>(null);
   useEffect(() => {
     verticalRef.current = vertical;
+    venueIdsRef.current = venueIds;
     renderVenuesRef.current?.();
-  }, [vertical]);
+  }, [vertical, venueIds]);
 
   useEffect(() => {
     trackBehaviour({
@@ -240,6 +244,8 @@ export function ProductionMap({
     let visiblePoints = points;
     let pointIndex = new Map(points.map((point) => [point.id, point]));
     const details = new Map<string, MapVenueDetail>();
+    let activePopup: import("maplibre-gl").Popup | undefined;
+    let activePopupId: string | undefined;
     let popupRequest: AbortController | undefined;
     const request = new AbortController();
     const tileLoader = new MapTileLoader();
@@ -406,12 +412,15 @@ export function ProductionMap({
           popupRequest?.abort();
           const controller = new AbortController();
           popupRequest = controller;
+          activePopup?.remove();
+          activePopupId = point.id;
           const popup = new maplibregl.Popup({
             offset: 16,
             closeButton: false,
             className: "akipasa-map-popup",
             maxWidth: "260px",
           }).setLngLat([point.longitude, point.latitude]);
+          activePopup = popup;
           popup.on("close", () => controller.abort());
           if (point.kind !== "venue") {
             popup.setDOMContent(popupContent(point, locale)).addTo(map);
@@ -474,7 +483,11 @@ export function ProductionMap({
           if (disposed) return;
           const markers = tileLoader
             .values()
-            .filter((marker) => markerIsVisible(marker, verticalRef.current));
+            .filter(
+              (marker) =>
+                markerIsVisible(marker, verticalRef.current) &&
+                (!venueIdsRef.current || venueIdsRef.current.has(marker[0])),
+            );
           visiblePoints = [
             ...(verticalRef.current === "activities" ? points : []),
             ...markers.map((marker) => {
@@ -498,6 +511,8 @@ export function ProductionMap({
             }),
           ];
           pointIndex = new Map(visiblePoints.map((point) => [point.id, point]));
+          if (activePopupId && !pointIndex.has(activePopupId))
+            activePopup?.remove();
           setLoadedVenues(markers.length);
           (
             map.getSource(

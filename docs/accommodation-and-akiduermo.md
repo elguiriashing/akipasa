@@ -115,3 +115,12 @@ and theme controls, and a responsive date/guest planning panel. No room inventor
 rates, availability, reviews or reservations are fabricated. The form is a preview
 and does not create a booking or take payment. Property website and directions
 links are external; activity discovery explicitly links to the primary domain.
+
+Property-type and destination filters are shared between Explore, Saved and Map.
+Changing a filter does not change the active view, and switching views preserves
+selection. Saved results are filtered locally; the badge retains the total saved
+count. Map matching loads all published matching accommodation IDs in bounded
+1,000-ID pages (four requests at a time), independently of card pagination, and
+filters the geographic tile markers before clustering. Filter updates preserve
+the current map camera and close popups excluded by the new filter. Aborted or
+failed filter requests never apply partial or stale results.

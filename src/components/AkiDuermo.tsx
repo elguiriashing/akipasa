@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { config } from "@/lib/config";
-import { stayTypeNames, staySchema, type Stay } from "@/lib/akiduermo";
-import { stayText, type StayLocale } from "@/lib/akiduermo-i18n";
-import { stayHref } from "@/lib/akiduermo-routing";
+import { config } from "../lib/config";
+import { stayTypeNames, staySchema, type Stay } from "../lib/akiduermo";
+import { stayText, type StayLocale } from "../lib/akiduermo-i18n";
+import { filterSavedStays, loadStayMapMatches } from "../lib/stay-filters";
+import { stayHref } from "../lib/akiduermo-routing";
 import { Icon } from "./Icons";
 import { ThemeToggle } from "./ThemeModeControls";
 import styles from "./AkiDuermo.module.css";
@@ -15,6 +16,7 @@ const StayMap = dynamic(
   { ssr: false },
 );
 const noEvents: [] = [];
+const noMapMatches = new Set<string>();
 const destinations = [
   {
     name: "Málaga",
@@ -78,6 +80,36 @@ export function AkiDuermo({
   const [retry, setRetry] = useState(0);
   const [saved, setSaved] = useState<Stay[]>([]);
   const [view, setView] = useState<"explore" | "saved" | "map">("explore");
+  const [mapMatches, setMapMatches] = useState<{
+    key: string;
+    ids: Set<string>;
+  } | null>(null);
+  const [mapFilterError, setMapFilterError] = useState("");
+  const mapFilterKey = JSON.stringify([type, search]);
+  const needsMapFilter = type !== "all" || !!search.trim();
+  useEffect(() => {
+    if (view !== "map" || !needsMapFilter || mapMatches?.key === mapFilterKey)
+      return;
+    const abort = new AbortController();
+    setMapFilterError("");
+    loadStayMapMatches(type, search, abort.signal)
+      .then((ids) => {
+        if (!abort.signal.aborted) setMapMatches({ key: mapFilterKey, ids });
+      })
+      .catch(() => {
+        if (!abort.signal.aborted)
+          setMapFilterError("We couldn’t load stays just now.");
+      });
+    return () => abort.abort();
+  }, [
+    view,
+    type,
+    search,
+    needsMapFilter,
+    mapFilterKey,
+    mapMatches?.key,
+    retry,
+  ]);
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState("2");
@@ -139,12 +171,10 @@ export function AkiDuermo({
   function chooseDestination(name: string) {
     setDestination(name);
     setSearch(name);
-    setType("all");
     setPage(1);
-    setView("explore");
     document.getElementById("stays")?.scrollIntoView({ behavior: "smooth" });
   }
-  const shown = view === "saved" ? saved : rows;
+  const shown = view === "saved" ? filterSavedStays(saved, type, search) : rows;
   const center = destinations.find((d) => d.name === search) || destinations[0];
   return (
     <div className={styles.app}>
@@ -219,7 +249,6 @@ export function AkiDuermo({
               e.preventDefault();
               setSearch(destination);
               setPage(1);
-              setView("explore");
               setTrip(
                 checkIn && checkOut ? { checkIn, checkOut, guests } : null,
               );
@@ -368,7 +397,6 @@ export function AkiDuermo({
                   onClick={() => {
                     setType(key);
                     setPage(1);
-                    setView("explore");
                   }}
                 >
                   {t(name)}
@@ -378,7 +406,7 @@ export function AkiDuermo({
           </div>
           <p className={styles.results} role="status">
             {view === "saved"
-              ? `${saved.length} ${t("saved on this device")}`
+              ? `${shown.length} ${t("saved on this device")}`
               : loading
                 ? t("Finding your next stay…")
                 : error
@@ -395,6 +423,16 @@ export function AkiDuermo({
           )}
           {view === "map" ? (
             <div className={styles.stayMap}>
+              {needsMapFilter && mapMatches?.key !== mapFilterKey && (
+                <p role="status">
+                  {t(mapFilterError || "Finding your next stay…")}
+                  {mapFilterError && (
+                    <button onClick={() => setRetry((v) => v + 1)}>
+                      {t("Try again")}
+                    </button>
+                  )}
+                </p>
+              )}
               <StayMap
                 locale={locale}
                 points={noEvents}
@@ -403,11 +441,18 @@ export function AkiDuermo({
                 initialVertical="accommodation"
                 showVerticalTabs={false}
                 venueDestination="akiduermo"
+                venueIds={
+                  needsMapFilter
+                    ? mapMatches?.key === mapFilterKey
+                      ? mapMatches.ids
+                      : noMapMatches
+                    : null
+                }
               />
             </div>
           ) : (
             <>
-              {error ? (
+              {error && view !== "saved" ? (
                 <button
                   className={styles.mapButton}
                   onClick={() => setRetry((v) => v + 1)}
@@ -481,10 +526,12 @@ export function AkiDuermo({
                   ))}
                 </div>
               )}
-              {!loading && !error && !shown.length && (
+              {(view === "saved" || (!loading && !error)) && !shown.length && (
                 <p className={styles.empty}>
                   {view === "saved"
-                    ? t("Tap the heart on a stay to keep it here.")
+                    ? saved.length
+                      ? t("No saved stays match these filters.")
+                      : t("Tap the heart on a stay to keep it here.")
                     : t(
                         "No stays found. Try a nearby town or another property type.",
                       )}
