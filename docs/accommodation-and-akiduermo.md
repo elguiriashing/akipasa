@@ -88,3 +88,6 @@ language in both light and dark modes. Theme preferences are saved per origin.
 The accommodation map classification and forest-green pins remain unchanged.
 The stay navigation is available on desktop and fixed above the mobile safe
 area; mobile form text stays at 16px and interactive controls at least 44px.
+
+On mobile and tablet, the hero and search card are separated by a 16px gap,
+with aligned outer edges. The overlapping search treatment is desktop-only.

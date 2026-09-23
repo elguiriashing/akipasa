@@ -682,6 +682,9 @@
   }
 }
 @media (max-width: 850px) {
+  .searchWrap {
+    margin-top: 16px;
+  }
   .header {
     min-height: 72px;
     padding: 12px 24px;
@@ -778,8 +781,8 @@
     margin-top: 14px;
   }
   .searchWrap {
-    margin-top: -24px;
-    padding: 0 24px;
+    margin-top: 16px;
+    padding: 0 16px;
   }
   .search {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
