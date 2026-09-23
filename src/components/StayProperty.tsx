@@ -392,6 +392,12 @@ export function StayProperty({
             <form
               onSubmit={(e) => {
                 e.preventDefault();
+                const values = new FormData(e.currentTarget);
+                const arrival = String(values.get("checkIn") || "");
+                const departure = String(values.get("checkOut") || "");
+                if (!arrival || departure <= arrival) return;
+                setCheckIn(arrival);
+                setCheckOut(departure);
                 setPlan(true);
               }}
               onChange={() => setPlan(false)}
@@ -401,6 +407,7 @@ export function StayProperty({
                   {text("Check in", "Entrada")}
                   <input
                     aria-label={text("Check in", "Entrada")}
+                    name="checkIn"
                     type="date"
                     required
                     min={new Date().toISOString().slice(0, 10)}
@@ -415,6 +422,7 @@ export function StayProperty({
                   {text("Check out", "Salida")}
                   <input
                     aria-label={text("Check out", "Salida")}
+                    name="checkOut"
                     type="date"
                     required
                     min={
