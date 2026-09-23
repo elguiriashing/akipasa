@@ -47,9 +47,7 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const requestHeaders = await headers();
   const isAkiDuermo = requestHeaders.get("x-akipasa-product") === "akiduermo";
-  const requestLocale = isAkiDuermo
-    ? "en"
-    : requestHeaders.get("x-akipasa-locale");
+  const requestLocale = requestHeaders.get("x-akipasa-locale");
   const locale =
     requestLocale && isLocale(requestLocale) ? requestLocale : "es";
   return (

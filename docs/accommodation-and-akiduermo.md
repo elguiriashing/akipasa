@@ -91,3 +91,11 @@ area; mobile form text stays at 16px and interactive controls at least 44px.
 
 On mobile and tablet, the hero and search card are separated by a 16px gap,
 with aligned outer edges. The overlapping search treatment is desktop-only.
+
+AkiDuermo supports English and Spanish using a header EN/ES switch beside the
+shared theme control. Switching keeps the current search, dates, map/list view
+and saved stays. A first-party language cookie remembers the choice for a year;
+`?lang=es` or `?lang=en` overrides it for shareable links. Middleware validates
+the locale before setting the server-rendered document language and metadata.
+Map labels, accessibility text, trip summaries, property categories and AkiPasa
+links follow the selected language; imported property names remain unchanged.

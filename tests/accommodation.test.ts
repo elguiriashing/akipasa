@@ -62,3 +62,23 @@ it("never turns imported website content into executable or credential-bearing l
     "https://example.org/hotel",
   );
 });
+
+import { stayLocale, stayText } from "../src/lib/akiduermo-i18n";
+it("restores a supported language and gives explicit links precedence", () => {
+  expect(stayLocale(null, "es")).toBe("es");
+  expect(stayLocale("en", "es")).toBe("en");
+  expect(stayLocale("es", "en")).toBe("es");
+  expect(stayLocale("invalid", "es")).toBe("es");
+  expect(stayLocale("invalid", "invalid")).toBe("en");
+});
+it("localizes search, property categories and verification copy", () => {
+  expect(stayText("es", "Find a stay")).toBe("Buscar alojamiento");
+  expect(stayText("es", "Guest houses")).toBe("Hostales y pensiones");
+  expect(stayText("es", "Listings awaiting property verification")).toBe(
+    "Alojamientos pendientes de verificación",
+  );
+  expect(stayText("en", "Find a stay")).toBe("Find a stay");
+  expect(stayText("es", "AC Hotel Málaga Palacio")).toBe(
+    "AC Hotel Málaga Palacio",
+  );
+});

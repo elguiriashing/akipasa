@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { refreshSession } from "@/lib/supabase/middleware";
+import { stayLocale } from "@/lib/akiduermo-i18n";
 import { shouldNoindex } from "@/lib/seo";
 
 export async function middleware(request: NextRequest) {
@@ -10,10 +11,19 @@ export async function middleware(request: NextRequest) {
       ? "akiduermo"
       : "akipasa",
   );
-  if (isAkiDuermo && request.nextUrl.pathname === "/") {
+  if (
+    (isAkiDuermo && request.nextUrl.pathname === "/") ||
+    request.nextUrl.pathname === "/akiduermo"
+  ) {
     const target = request.nextUrl.clone();
     target.pathname = "/akiduermo";
-    request.headers.set("x-akipasa-locale", "en");
+    request.headers.set(
+      "x-akipasa-locale",
+      stayLocale(
+        request.nextUrl.searchParams.get("lang"),
+        request.cookies.get("akiduermo_locale")?.value,
+      ),
+    );
     const response = NextResponse.rewrite(target, {
       request: { headers: request.headers },
     });

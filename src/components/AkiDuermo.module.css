@@ -956,3 +956,27 @@
     transition: none;
   }
 }
+.languageToggle {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+}
+.languageToggle:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+/* Allow longer translated copy and larger text without clipping the hero. */
+@media (max-width: 850px) {
+  .hero {
+    height: auto;
+    min-height: 300px;
+  }
+}
