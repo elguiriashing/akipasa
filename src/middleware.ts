@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { refreshSession } from "@/lib/supabase/middleware";
 import { stayLocale } from "@/lib/akiduermo-i18n";
-import { stayHostRoute } from "@/lib/akiduermo-routing";
+import { stayHostRoute, stayHostMethodAllowed } from "@/lib/akiduermo-routing";
 import { shouldNoindex } from "@/lib/seo";
 
 export async function middleware(request: NextRequest) {
@@ -14,7 +14,10 @@ export async function middleware(request: NextRequest) {
     isAkiDuermo || isStayPath ? "akiduermo" : "akipasa",
   );
   if (isAkiDuermo || isStayPath) {
-    if (isAkiDuermo && !["GET", "HEAD"].includes(request.method))
+    if (
+      isAkiDuermo &&
+      !stayHostMethodAllowed(request.nextUrl.pathname, request.method)
+    )
       return new NextResponse(null, { status: 404 });
     request.headers.set(
       "x-akipasa-locale",

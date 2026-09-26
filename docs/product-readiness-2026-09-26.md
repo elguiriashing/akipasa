@@ -21,7 +21,7 @@ For rollback, revert frontend commits first; retain the additive stamp-cost colu
 
 Local database fixture tests exercise validation, balance/replay, scoped reporting and passport claims. Geometry is stubbed in that fixture, so actual spatial filtering is checked separately against the live read-only catalogue. The fixture engine does not prove independent-session PostgreSQL concurrency: the shared row-lock design still needs an actual simultaneous device/session acceptance pass. No real user stamps or rewards are created to test production. No external email or payment is sent.
 
-Verified: the full public check passed 239 application tests, 41 automation tests, database safety, formatting, lint, type checking and the production build. HQ passed 315 tests with one pre-existing skip. The live database contract reports ready; an anonymous Fuengirola-area viewport returned 220 stays. Inspect live home, privacy choices, membership and AkiDuermo handoff/map. An authenticated browser is needed for owner/staff acceptance below.
+Verified: the full public check passed 240 application tests, 41 automation tests, database safety, formatting, lint, type checking and the production build. HQ passed 315 tests with one pre-existing skip. The live database contract reports ready; an anonymous Fuengirola-area viewport returned 220 stays. Inspect live home, privacy choices, membership and AkiDuermo handoff/map. An authenticated browser is needed for owner/staff acceptance below.
 
 ## Alex's acceptance checklist
 

@@ -131,3 +131,18 @@ it("allows privacy choices on the stay host without enabling unrelated APIs", ()
   expect(stayHostRoute("/api/v1/personalisation/consent").kind).toBe("public");
   expect(stayHostRoute("/api/admin").kind).toBe("reject");
 });
+
+import { stayHostMethodAllowed } from "../src/lib/akiduermo-routing";
+it("permits only consent POST on the read-only stay host", () => {
+  expect(stayHostMethodAllowed("/api/v1/personalisation/consent", "POST")).toBe(
+    true,
+  );
+  for (const method of ["POST", "PATCH", "DELETE"]) {
+    expect(stayHostMethodAllowed("/api/stays", method)).toBe(false);
+    expect(stayHostMethodAllowed("/api/admin", method)).toBe(false);
+  }
+  expect(
+    stayHostMethodAllowed("/api/v1/personalisation/consent", "DELETE"),
+  ).toBe(false);
+  expect(stayHostMethodAllowed("/api/stays", "GET")).toBe(true);
+});

@@ -31,3 +31,10 @@ export function stayHostRoute(pathname: string) {
     return { kind: "reject" as const, path: pathname };
   return { kind: "primary" as const, path: pathname };
 }
+
+export function stayHostMethodAllowed(pathname: string, method: string) {
+  return (
+    ["GET", "HEAD"].includes(method) ||
+    (pathname === "/api/v1/personalisation/consent" && method === "POST")
+  );
+}
