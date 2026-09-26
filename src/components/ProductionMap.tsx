@@ -224,6 +224,7 @@ export function ProductionMap({
   center: { latitude: number; longitude: number };
 }) {
   const [mapTruncated, setMapTruncated] = useState(false);
+  const [mapUnavailable, setMapUnavailable] = useState(false);
   const stayType = stayFilters?.type;
   const stayQuery = stayFilters?.q;
   const container = useRef<HTMLDivElement>(null);
@@ -250,6 +251,7 @@ export function ProductionMap({
       metadata: { result_count: points.length },
     });
     if (!container.current || !styleUrl) return;
+    setMapUnavailable(false);
     let disposed = false;
     let visiblePoints = points;
     let pointIndex = new Map(points.map((point) => [point.id, point]));
@@ -262,370 +264,381 @@ export function ProductionMap({
     let timer: ReturnType<typeof setTimeout> | undefined;
     let cleanup = () => {};
 
-    void import("maplibre-gl").then((maplibregl) => {
-      if (disposed || !container.current) return;
-      const map = new maplibregl.Map({
-        container: container.current,
-        style: styleUrl,
-        center: [center.longitude, center.latitude],
-        zoom: 10.5,
-        attributionControl: false,
-        maxPitch: 48,
-        cooperativeGestures: true,
-        renderWorldCopies: false,
-      });
-      map.addControl(
-        new maplibregl.NavigationControl({ showCompass: false }),
-        "top-right",
-      );
-      navigator.geolocation?.getCurrentPosition(
-        ({ coords }) => {
-          if (disposed) return;
-          map.jumpTo({
-            center: [coords.longitude, coords.latitude],
-            zoom: 10.5,
-          });
-        },
-        () => {
-          // The selected search location remains the fallback when GPS is
-          // unavailable or the visitor declines browser location access.
-        },
-        { enableHighAccuracy: false, maximumAge: 300_000, timeout: 5_000 },
-      );
-      map.addControl(
-        new maplibregl.GeolocateControl({
-          positionOptions: { enableHighAccuracy: false },
-          trackUserLocation: false,
-        }),
-        "top-right",
-      );
-      map.addControl(new maplibregl.ScaleControl({ unit: "metric" }));
-      map.addControl(
-        new maplibregl.AttributionControl({ compact: true }),
-        "bottom-right",
-      );
-      map.once("load", () => {
-        tuneMapPalette(map);
-        map.addSource("discovery-points", {
-          type: "geojson",
-          data: {
-            type: "FeatureCollection",
-            features: points.map((point) => ({
-              type: "Feature",
-              geometry: {
-                type: "Point",
-                coordinates: [point.longitude, point.latitude],
-              },
-              properties: { id: point.id, source: point.source },
-            })),
-          },
-          cluster: true,
-          clusterMaxZoom: 14,
-          clusterRadius: 52,
+    void import("maplibre-gl")
+      .then((maplibregl) => {
+        if (disposed || !container.current) return;
+        const map = new maplibregl.Map({
+          container: container.current,
+          style: styleUrl,
+          center: [center.longitude, center.latitude],
+          zoom: 10.5,
+          attributionControl: false,
+          maxPitch: 48,
+          cooperativeGestures: true,
+          renderWorldCopies: false,
         });
-        map.addImage("cluster-small", clusterImage(38, "#f59e0b"), {
-          pixelRatio: 2,
-        });
-        map.addImage("cluster-medium", clusterImage(48, "#f07818"), {
-          pixelRatio: 2,
-        });
-        map.addImage("cluster-large", clusterImage(60, "#d94f0b"), {
-          pixelRatio: 2,
-        });
-        map.addImage("pin-verified", markerImage("#ff6413", "event"), {
-          pixelRatio: 2,
-        });
-        map.addImage("pin-community", markerImage("#a43ee8", "event"), {
-          pixelRatio: 2,
-        });
-        map.addImage("pin-claimed", markerImage("#2784e6", "venue"), {
-          pixelRatio: 2,
-        });
-        map.addImage("pin-unclaimed", markerImage("#7b858f", "venue"), {
-          pixelRatio: 2,
-        });
-        map.addImage("pin-accommodation", markerImage("#166534", "venue"), {
-          pixelRatio: 2,
-        });
-        map.addLayer({
-          id: "discovery-clusters",
-          type: "symbol",
-          source: "discovery-points",
-          filter: ["has", "point_count"],
-          layout: {
-            "icon-image": [
-              "step",
-              ["get", "point_count"],
-              "cluster-small",
-              10,
-              "cluster-medium",
-              35,
-              "cluster-large",
-            ],
-            "icon-allow-overlap": true,
-            "icon-ignore-placement": true,
-            "text-field": ["get", "point_count_abbreviated"],
-            "text-size": 13,
-            "text-allow-overlap": true,
-            "text-ignore-placement": true,
-          },
-          paint: {
-            "text-color": "#171008",
-            "text-halo-color": "#fff7ea",
-            "text-halo-width": 1,
-          },
-        });
-        map.addLayer({
-          id: "discovery-unclustered",
-          type: "symbol",
-          source: "discovery-points",
-          filter: ["!", ["has", "point_count"]],
-          layout: {
-            "icon-image": [
-              "match",
-              ["get", "source"],
-              "accommodation",
-              "pin-accommodation",
-              "community",
-              "pin-community",
-              "claimed",
-              "pin-claimed",
-              "unclaimed",
-              "pin-unclaimed",
-              "pin-verified",
-            ],
-            "icon-anchor": "bottom",
-            "icon-allow-overlap": true,
-            "icon-ignore-placement": true,
-          },
-        });
-
-        map.on("click", "discovery-clusters", async (event) => {
-          const feature = map.queryRenderedFeatures(event.point, {
-            layers: ["discovery-clusters"],
-          })[0];
-          const clusterId = Number(feature?.properties?.cluster_id);
-          if (!Number.isFinite(clusterId)) return;
-          const source = map.getSource(
-            "discovery-points",
-          ) as import("maplibre-gl").GeoJSONSource;
-          const zoom = await source.getClusterExpansionZoom(clusterId);
-          const coordinates = (
-            feature.geometry as { type: "Point"; coordinates: [number, number] }
-          ).coordinates;
-          map.easeTo({ center: coordinates, zoom });
-        });
-        map.on("click", "discovery-unclustered", async (event) => {
-          const feature = event.features?.[0];
-          const point = pointIndex.get(String(feature?.properties?.id));
-          if (!point) return;
-          popupRequest?.abort();
-          const controller = new AbortController();
-          popupRequest = controller;
-          activePopup?.remove();
-          activePopupId = point.id;
-          const popup = new maplibregl.Popup({
-            offset: 16,
-            closeButton: false,
-            className: "akipasa-map-popup",
-            maxWidth: "260px",
-          }).setLngLat([point.longitude, point.latitude]);
-          activePopup = popup;
-          popup.on("close", () => controller.abort());
-          if (point.kind !== "venue") {
-            popup.setDOMContent(popupContent(point, locale)).addTo(map);
-          } else {
-            const loading = document.createElement("p");
-            loading.textContent =
-              locale === "es" ? "Cargando negocio…" : "Loading business…";
-            popup.setDOMContent(loading).addTo(map);
-            try {
-              let detail = details.get(point.id);
-              if (!detail) {
-                const response = await fetch(`/api/map/venue/${point.id}`, {
-                  signal: controller.signal,
-                });
-                if (!response.ok) throw new Error("Venue unavailable");
-                detail = mapVenueDetailSchema.parse(await response.json());
-                if (detail.id !== point.id) throw new Error("Unexpected venue");
-                if (details.size >= 200) details.clear();
-                details.set(point.id, detail);
-              }
-              if (disposed || controller.signal.aborted) return;
-              popup.setDOMContent(
-                popupContent(
-                  {
-                    ...point,
-                    title: detail.name,
-                    venue: detail.address ?? "",
-                    href:
-                      venueDestination === "akiduermo"
-                        ? stayHref(detail.slug, locale)
-                        : `/${locale}/venues/${detail.slug}`,
-                    source:
-                      detail.discoveryVertical === "accommodation"
-                        ? "accommodation"
-                        : detail.claimStatus,
-                    category:
-                      detail.discoveryVertical === "accommodation"
-                        ? accommodationLabel(locale)
-                        : point.category,
-                  },
-                  locale,
-                ),
-              );
-            } catch {
-              if (disposed || controller.signal.aborted) return;
-              loading.textContent =
-                locale === "es"
-                  ? "No se pudo cargar este negocio. Vuelve a tocar el marcador para reintentar."
-                  : "Could not load this business. Tap its pin to retry.";
-            }
-          }
-          trackBehaviour({
-            eventType: "map_pin_clicked",
-            surface: "map",
-            entityType: point.kind === "venue" ? "venue" : "event",
-            entityId: point.id,
-          });
-        });
-        let stayMarkers: CompactMapMarker[] = [];
-        const renderVenues = () => {
-          if (disposed) return;
-          const markers = (
-            stayType !== undefined ? stayMarkers : tileLoader.values()
-          ).filter(
-            (marker) =>
-              markerIsVisible(marker, verticalRef.current) &&
-              (!venueIdsRef.current || venueIdsRef.current.has(marker[0])),
-          );
-          visiblePoints = [
-            ...(verticalRef.current === "activities" ? points : []),
-            ...markers.map((marker) => {
-              const [id, longitude, latitude] = marker;
-              return {
-                id,
-                longitude,
-                latitude,
-                title: "",
-                venue: "",
-                href: "",
-                category:
-                  marker[4] === 1
-                    ? accommodationLabel(locale)
-                    : locale === "es"
-                      ? "Local"
-                      : "Venue",
-                source: markerSource(marker),
-                kind: "venue" as const,
-              };
-            }),
-          ];
-          pointIndex = new Map(visiblePoints.map((point) => [point.id, point]));
-          if (activePopupId && !pointIndex.has(activePopupId))
-            activePopup?.remove();
-          setLoadedVenues(markers.length);
-          (
-            map.getSource(
-              "discovery-points",
-            ) as import("maplibre-gl").GeoJSONSource
-          ).setData({
-            type: "FeatureCollection",
-            features: visiblePoints.map((point) => ({
-              type: "Feature",
-              geometry: {
-                type: "Point",
-                coordinates: [point.longitude, point.latitude],
-              },
-              properties: { id: point.id, source: point.source },
-            })),
-          });
-        };
-        renderVenuesRef.current = renderVenues;
-        renderVenues();
-        let loading = false,
-          queued = false;
-        const loadVenues = async () => {
-          if (disposed) return;
-          if (loading) {
-            queued = true;
-            return;
-          }
-          loading = true;
-          setVenueStatus("loading");
-          const bounds = map.getBounds();
-          try {
-            if (stayType !== undefined) {
-              const params = new URLSearchParams({
-                west: String(Math.max(-180, bounds.getWest())),
-                east: String(Math.min(180, bounds.getEast())),
-                south: String(Math.max(-85, bounds.getSouth())),
-                north: String(Math.min(85, bounds.getNorth())),
-                type: stayType,
-                q: stayQuery || "",
-              });
-              const response = await fetch(`/api/map/stays?${params}`, {
-                signal: request.signal,
-              });
-              if (!response.ok) throw new Error("Stay map unavailable");
-              const data = await response.json();
+        map.addControl(
+          new maplibregl.NavigationControl({ showCompass: false }),
+          "top-right",
+        );
+        if (stayType === undefined)
+          navigator.geolocation?.getCurrentPosition(
+            ({ coords }) => {
               if (disposed) return;
-              stayMarkers = compactMarkerSchema
-                .array()
-                .max(1001)
-                .parse(data.markers)
-                .slice(0, 1000);
-              setMapTruncated(Boolean(data.truncated));
-              renderVenues();
-              setVenueStatus("ready");
+              map.jumpTo({
+                center: [coords.longitude, coords.latitude],
+                zoom: 10.5,
+              });
+            },
+            () => {
+              // The selected search location remains the fallback when GPS is
+              // unavailable or the visitor declines browser location access.
+            },
+            { enableHighAccuracy: false, maximumAge: 300_000, timeout: 5_000 },
+          );
+        map.addControl(
+          new maplibregl.GeolocateControl({
+            positionOptions: { enableHighAccuracy: false },
+            trackUserLocation: false,
+          }),
+          "top-right",
+        );
+        map.addControl(new maplibregl.ScaleControl({ unit: "metric" }));
+        map.addControl(
+          new maplibregl.AttributionControl({ compact: true }),
+          "bottom-right",
+        );
+        map.once("load", () => {
+          tuneMapPalette(map);
+          map.addSource("discovery-points", {
+            type: "geojson",
+            data: {
+              type: "FeatureCollection",
+              features: points.map((point) => ({
+                type: "Feature",
+                geometry: {
+                  type: "Point",
+                  coordinates: [point.longitude, point.latitude],
+                },
+                properties: { id: point.id, source: point.source },
+              })),
+            },
+            cluster: true,
+            clusterMaxZoom: 14,
+            clusterRadius: 52,
+          });
+          map.addImage("cluster-small", clusterImage(38, "#f59e0b"), {
+            pixelRatio: 2,
+          });
+          map.addImage("cluster-medium", clusterImage(48, "#f07818"), {
+            pixelRatio: 2,
+          });
+          map.addImage("cluster-large", clusterImage(60, "#d94f0b"), {
+            pixelRatio: 2,
+          });
+          map.addImage("pin-verified", markerImage("#ff6413", "event"), {
+            pixelRatio: 2,
+          });
+          map.addImage("pin-community", markerImage("#a43ee8", "event"), {
+            pixelRatio: 2,
+          });
+          map.addImage("pin-claimed", markerImage("#2784e6", "venue"), {
+            pixelRatio: 2,
+          });
+          map.addImage("pin-unclaimed", markerImage("#7b858f", "venue"), {
+            pixelRatio: 2,
+          });
+          map.addImage("pin-accommodation", markerImage("#166534", "venue"), {
+            pixelRatio: 2,
+          });
+          map.addLayer({
+            id: "discovery-clusters",
+            type: "symbol",
+            source: "discovery-points",
+            filter: ["has", "point_count"],
+            layout: {
+              "icon-image": [
+                "step",
+                ["get", "point_count"],
+                "cluster-small",
+                10,
+                "cluster-medium",
+                35,
+                "cluster-large",
+              ],
+              "icon-allow-overlap": true,
+              "icon-ignore-placement": true,
+              "text-field": ["get", "point_count_abbreviated"],
+              "text-size": 13,
+              "text-allow-overlap": true,
+              "text-ignore-placement": true,
+            },
+            paint: {
+              "text-color": "#171008",
+              "text-halo-color": "#fff7ea",
+              "text-halo-width": 1,
+            },
+          });
+          map.addLayer({
+            id: "discovery-unclustered",
+            type: "symbol",
+            source: "discovery-points",
+            filter: ["!", ["has", "point_count"]],
+            layout: {
+              "icon-image": [
+                "match",
+                ["get", "source"],
+                "accommodation",
+                "pin-accommodation",
+                "community",
+                "pin-community",
+                "claimed",
+                "pin-claimed",
+                "unclaimed",
+                "pin-unclaimed",
+                "pin-verified",
+              ],
+              "icon-anchor": "bottom",
+              "icon-allow-overlap": true,
+              "icon-ignore-placement": true,
+            },
+          });
+
+          map.on("click", "discovery-clusters", async (event) => {
+            const feature = map.queryRenderedFeatures(event.point, {
+              layers: ["discovery-clusters"],
+            })[0];
+            const clusterId = Number(feature?.properties?.cluster_id);
+            if (!Number.isFinite(clusterId)) return;
+            const source = map.getSource(
+              "discovery-points",
+            ) as import("maplibre-gl").GeoJSONSource;
+            const zoom = await source.getClusterExpansionZoom(clusterId);
+            const coordinates = (
+              feature.geometry as {
+                type: "Point";
+                coordinates: [number, number];
+              }
+            ).coordinates;
+            map.easeTo({ center: coordinates, zoom });
+          });
+          map.on("click", "discovery-unclustered", async (event) => {
+            const feature = event.features?.[0];
+            const point = pointIndex.get(String(feature?.properties?.id));
+            if (!point) return;
+            popupRequest?.abort();
+            const controller = new AbortController();
+            popupRequest = controller;
+            activePopup?.remove();
+            activePopupId = point.id;
+            const popup = new maplibregl.Popup({
+              offset: 16,
+              closeButton: false,
+              className: "akipasa-map-popup",
+              maxWidth: "260px",
+            }).setLngLat([point.longitude, point.latitude]);
+            activePopup = popup;
+            popup.on("close", () => controller.abort());
+            if (point.kind !== "venue") {
+              popup.setDOMContent(popupContent(point, locale)).addTo(map);
+            } else {
+              const loading = document.createElement("p");
+              loading.textContent =
+                locale === "es" ? "Cargando negocio…" : "Loading business…";
+              popup.setDOMContent(loading).addTo(map);
+              try {
+                let detail = details.get(point.id);
+                if (!detail) {
+                  const response = await fetch(`/api/map/venue/${point.id}`, {
+                    signal: controller.signal,
+                  });
+                  if (!response.ok) throw new Error("Venue unavailable");
+                  detail = mapVenueDetailSchema.parse(await response.json());
+                  if (detail.id !== point.id)
+                    throw new Error("Unexpected venue");
+                  if (details.size >= 200) details.clear();
+                  details.set(point.id, detail);
+                }
+                if (disposed || controller.signal.aborted) return;
+                popup.setDOMContent(
+                  popupContent(
+                    {
+                      ...point,
+                      title: detail.name,
+                      venue: detail.address ?? "",
+                      href:
+                        venueDestination === "akiduermo"
+                          ? stayHref(detail.slug, locale)
+                          : `/${locale}/venues/${detail.slug}`,
+                      source:
+                        detail.discoveryVertical === "accommodation"
+                          ? "accommodation"
+                          : detail.claimStatus,
+                      category:
+                        detail.discoveryVertical === "accommodation"
+                          ? accommodationLabel(locale)
+                          : point.category,
+                    },
+                    locale,
+                  ),
+                );
+              } catch {
+                if (disposed || controller.signal.aborted) return;
+                loading.textContent =
+                  locale === "es"
+                    ? "No se pudo cargar este negocio. Vuelve a tocar el marcador para reintentar."
+                    : "Could not load this business. Tap its pin to retry.";
+              }
+            }
+            trackBehaviour({
+              eventType: "map_pin_clicked",
+              surface: "map",
+              entityType: point.kind === "venue" ? "venue" : "event",
+              entityId: point.id,
+            });
+          });
+          let stayMarkers: CompactMapMarker[] = [];
+          const renderVenues = () => {
+            if (disposed) return;
+            const markers = (
+              stayType !== undefined ? stayMarkers : tileLoader.values()
+            ).filter(
+              (marker) =>
+                markerIsVisible(marker, verticalRef.current) &&
+                (!venueIdsRef.current || venueIdsRef.current.has(marker[0])),
+            );
+            visiblePoints = [
+              ...(verticalRef.current === "activities" ? points : []),
+              ...markers.map((marker) => {
+                const [id, longitude, latitude] = marker;
+                return {
+                  id,
+                  longitude,
+                  latitude,
+                  title: "",
+                  venue: "",
+                  href: "",
+                  category:
+                    marker[4] === 1
+                      ? accommodationLabel(locale)
+                      : locale === "es"
+                        ? "Local"
+                        : "Venue",
+                  source: markerSource(marker),
+                  kind: "venue" as const,
+                };
+              }),
+            ];
+            pointIndex = new Map(
+              visiblePoints.map((point) => [point.id, point]),
+            );
+            if (activePopupId && !pointIndex.has(activePopupId))
+              activePopup?.remove();
+            setLoadedVenues(markers.length);
+            (
+              map.getSource(
+                "discovery-points",
+              ) as import("maplibre-gl").GeoJSONSource
+            ).setData({
+              type: "FeatureCollection",
+              features: visiblePoints.map((point) => ({
+                type: "Feature",
+                geometry: {
+                  type: "Point",
+                  coordinates: [point.longitude, point.latitude],
+                },
+                properties: { id: point.id, source: point.source },
+              })),
+            });
+          };
+          renderVenuesRef.current = renderVenues;
+          renderVenues();
+          let loading = false,
+            queued = false;
+          const loadVenues = async () => {
+            if (disposed) return;
+            if (loading) {
+              queued = true;
               return;
             }
-            const result = await tileLoader.load(
-              {
-                west: bounds.getWest(),
-                east: bounds.getEast(),
-                south: bounds.getSouth(),
-                north: bounds.getNorth(),
-              },
-              map.getZoom(),
-              request.signal,
-              fetch,
-              renderVenues,
-            );
-            if (disposed) return;
-            if (result.added) {
-              renderVenues();
+            loading = true;
+            setVenueStatus("loading");
+            const bounds = map.getBounds();
+            try {
+              if (stayType !== undefined) {
+                const params = new URLSearchParams({
+                  west: String(Math.max(-180, bounds.getWest())),
+                  east: String(Math.min(180, bounds.getEast())),
+                  south: String(Math.max(-85, bounds.getSouth())),
+                  north: String(Math.min(85, bounds.getNorth())),
+                  type: stayType,
+                  q: stayQuery || "",
+                });
+                const response = await fetch(`/api/map/stays?${params}`, {
+                  signal: request.signal,
+                });
+                if (!response.ok) throw new Error("Stay map unavailable");
+                const data = await response.json();
+                if (disposed) return;
+                stayMarkers = compactMarkerSchema
+                  .array()
+                  .max(1001)
+                  .parse(data.markers)
+                  .slice(0, 1000);
+                setMapTruncated(Boolean(data.truncated));
+                renderVenues();
+                setVenueStatus("ready");
+                return;
+              }
+              const result = await tileLoader.load(
+                {
+                  west: bounds.getWest(),
+                  east: bounds.getEast(),
+                  south: bounds.getSouth(),
+                  north: bounds.getNorth(),
+                },
+                map.getZoom(),
+                request.signal,
+                fetch,
+                renderVenues,
+              );
+              if (disposed) return;
+              if (result.added) {
+                renderVenues();
+              }
+              setVenueStatus(result.failed ? "error" : "ready");
+            } catch {
+              if (!disposed) setVenueStatus("error");
+            } finally {
+              loading = false;
+              if (queued && !disposed) {
+                queued = false;
+                void loadVenues();
+              }
             }
-            setVenueStatus(result.failed ? "error" : "ready");
-          } catch {
-            if (!disposed) setVenueStatus("error");
-          } finally {
-            loading = false;
-            if (queued && !disposed) {
-              queued = false;
-              void loadVenues();
-            }
+          };
+          const scheduleLoad = () => {
+            clearTimeout(timer);
+            timer = setTimeout(() => void loadVenues(), 180);
+          };
+          map.on("moveend", scheduleLoad);
+          void loadVenues();
+          for (const layer of ["discovery-clusters", "discovery-unclustered"]) {
+            map.on("mouseenter", layer, () => {
+              map.getCanvas().style.cursor = "pointer";
+            });
+            map.on("mouseleave", layer, () => {
+              map.getCanvas().style.cursor = "";
+            });
           }
+        });
+        cleanup = () => {
+          map.remove();
         };
-        const scheduleLoad = () => {
-          clearTimeout(timer);
-          timer = setTimeout(() => void loadVenues(), 180);
-        };
-        map.on("moveend", scheduleLoad);
-        void loadVenues();
-        for (const layer of ["discovery-clusters", "discovery-unclustered"]) {
-          map.on("mouseenter", layer, () => {
-            map.getCanvas().style.cursor = "pointer";
-          });
-          map.on("mouseleave", layer, () => {
-            map.getCanvas().style.cursor = "";
-          });
-        }
+      })
+      .catch(() => {
+        if (!disposed) setMapUnavailable(true);
       });
-      cleanup = () => {
-        map.remove();
-      };
-    });
 
     return () => {
       disposed = true;
@@ -697,17 +710,21 @@ export function ProductionMap({
         </div>
       )}
       <p className="result-caption" role="status">
-        {venueStatus === "loading"
+        {mapUnavailable
           ? locale === "es"
-            ? "Cargando locales de esta zona…"
-            : "Loading venues in this area…"
-          : venueStatus === "error"
+            ? "Este navegador no puede mostrar el mapa. Usa la vista de lista para seguir explorando."
+            : "This browser cannot display the map. Use list view to keep exploring."
+          : venueStatus === "loading"
             ? locale === "es"
-              ? "No se pudo completar esta zona. Mueve el mapa para reintentar; los locales cargados se conservan."
-              : "Could not finish loading this area. Move the map to retry; loaded venues are retained."
-            : locale === "es"
-              ? `Locales cargados: ${loadedVenues.toLocaleString(locale)}.`
-              : `Loaded venues: ${loadedVenues.toLocaleString(locale)}.`}
+              ? "Cargando locales de esta zona…"
+              : "Loading venues in this area…"
+            : venueStatus === "error"
+              ? locale === "es"
+                ? "No se pudo completar esta zona. Mueve el mapa para reintentar; los locales cargados se conservan."
+                : "Could not finish loading this area. Move the map to retry; loaded venues are retained."
+              : locale === "es"
+                ? `Locales cargados: ${loadedVenues.toLocaleString(locale)}.`
+                : `Loaded venues: ${loadedVenues.toLocaleString(locale)}.`}
       </p>
       <div className="production-map-wrap">
         <div

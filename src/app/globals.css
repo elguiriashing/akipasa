@@ -8682,8 +8682,8 @@ html {
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.1rem;
-  color: var(--text, #f9f6ee);
-  background: color-mix(in srgb, var(--surface, #103b35) 94%, transparent);
+  color: #123c35;
+  background: #fffaf1;
   border: 1px solid color-mix(in srgb, var(--accent, #ff6f2c) 35%, transparent);
   border-radius: 1.15rem;
   box-shadow: 0 1rem 3rem rgb(0 0 0 / 28%);
@@ -12523,4 +12523,18 @@ html[data-owner-focus="true"] .app-content {
   max-height: 85dvh;
   overflow-y: auto;
   z-index: 1000;
+}
+
+.personalisation-consent .consent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin-top: 0.65rem;
+  color: inherit;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.personalisation-consent .consent-row input {
+  flex: 0 0 auto;
+  margin-top: 0.2rem;
 }
