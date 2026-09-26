@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
+import { OwnerReadiness } from "@/components/OwnerReadiness";
 import { Icon } from "@/components/Icons";
 import { VenueDashboard } from "@/components/VenueDashboard";
 import { getVenueDashboardSection } from "@/lib/venue-dashboard";
@@ -66,6 +67,13 @@ export default async function VenueWorkspace({
     locale,
     `/${locale}/business/venue/${id}`,
   );
+  const [{ data: canManage }, { data: platformStaff }] = await Promise.all([
+    supabase.rpc("is_venue_member", { target_venue: id }),
+    supabase.rpc("has_platform_role", {
+      allowed_roles: ["moderator", "administrator"],
+    }),
+  ]);
+  if (!canManage && !platformStaff) notFound();
   const [
     { data: venue },
     { data: events },
@@ -80,6 +88,7 @@ export default async function VenueWorkspace({
     { data: bookingSlots },
     { data: bookingRequests },
     { data: audience },
+    { data: ownerResults, error: ownerResultsError },
   ] = await Promise.all([
     supabase
       .from("venues")
@@ -153,6 +162,7 @@ export default async function VenueWorkspace({
       .eq("venue_id", id)
       .order("created_at", { ascending: false }),
     supabase.rpc("venue_event_audience_summary", { p_venue: id }),
+    supabase.rpc("venue_owner_results", { p_venue: id }),
   ]);
   if (!venue) notFound();
   const isOwner = members?.some(
@@ -189,6 +199,37 @@ export default async function VenueWorkspace({
             .length || 0,
         members: members?.length || 0,
       }}
+      overview={
+        <OwnerReadiness
+          locale={locale}
+          venueId={id}
+          profileComplete={Boolean(
+            venue.description_es &&
+              (venue.contact_phone ||
+                venue.website_url ||
+                venue.whatsapp_phone),
+          )}
+          photos={media?.length || 0}
+          upcomingEvents={
+            (events || []).filter(
+              (event) =>
+                event.status === "published" &&
+                (event.event_occurrences || []).some(
+                  (occurrence: { status: string; ends_at: string }) =>
+                    occurrence.status === "scheduled" &&
+                    new Date(occurrence.ends_at).getTime() > Date.now(),
+                ),
+            ).length
+          }
+          loyaltyReady={Boolean(
+            programs?.some(
+              (program) =>
+                program.active && program.loyalty_program_rewards?.length,
+            ),
+          )}
+          results={ownerResultsError ? null : ownerResults}
+        />
+      }
       sections={{
         profile: (
           <>

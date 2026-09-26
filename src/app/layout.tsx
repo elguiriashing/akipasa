@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import Script from "next/script";
+import { ConsentAnalytics } from "@/components/ConsentAnalytics";
+import { PersonalisationConsent } from "@/components/PersonalisationConsent";
 import { config } from "@/lib/config";
 import { PwaRegistration } from "@/components/PwaRegistration";
 import { ThemeManager } from "@/components/ThemeModeControls";
@@ -53,24 +54,6 @@ export default async function RootLayout({
     requestLocale && isLocale(requestLocale) ? requestLocale : "es";
   return (
     <html lang={locale}>
-      <head>
-        <Script
-          strategy="afterInteractive"
-          src="https://www.googletagmanager.com/gtag/js?id=G-PW8547QDGD"
-        />
-        <Script
-          id="akipasa-google-analytics"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-PW8547QDGD');
-            `,
-          }}
-        />
-      </head>
       <body>
         <script
           type="application/ld+json"
@@ -88,6 +71,8 @@ export default async function RootLayout({
         {!isAkiDuermo && <PwaRegistration />}
         <ThemeManager />
         {children}
+        <ConsentAnalytics />
+        <PersonalisationConsent locale={locale} />
       </body>
     </html>
   );

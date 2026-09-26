@@ -1,31 +1,38 @@
+import { z } from "zod";
 import { createSupabasePublicClient } from "@/lib/supabase/public";
 import { stayQuerySchema } from "@/lib/akiduermo";
-import { staySearchFilters } from "@/lib/stay-filters";
+const schema = stayQuerySchema
+  .extend({
+    west: z.coerce.number().min(-180).max(180),
+    east: z.coerce.number().min(-180).max(180),
+    south: z.coerce.number().min(-85).max(85),
+    north: z.coerce.number().min(-85).max(85),
+  })
+  .refine((b) => b.west < b.east && b.south < b.north);
 export async function GET(request: Request) {
-  const parsed = stayQuerySchema.safeParse(
+  const parsed = schema.safeParse(
     Object.fromEntries(new URL(request.url).searchParams),
   );
-  if (!parsed.success || parsed.data.page > 100)
-    return Response.json({ error: "Invalid stay filters" }, { status: 400 });
-  const { q, type, page } = parsed.data;
-  let query = createSupabasePublicClient()
-    .from("venues")
-    .select("id", { count: "exact" })
-    .eq("status", "published")
-    .eq("discovery_vertical", "accommodation");
-  if (type !== "all") query = query.eq("accommodation_type", type);
-  const search = staySearchFilters(q);
-  if (search) query = query.or(search);
-  const { data, error, count } = await query
-    .order("id")
-    .range((page - 1) * 1000, page * 1000 - 1);
+  if (!parsed.success)
+    return Response.json({ error: "Invalid stay viewport" }, { status: 400 });
+  const b = parsed.data;
+  const { data, error } = await createSupabasePublicClient().rpc(
+    "public_stay_viewport",
+    {
+      p_west: b.west,
+      p_east: b.east,
+      p_south: b.south,
+      p_north: b.north,
+      p_type: b.type,
+      p_query: b.q,
+    },
+  );
   if (error)
     return Response.json(
-      { error: "Stay filters temporarily unavailable" },
-      { status: 503, headers: { "Cache-Control": "no-store" } },
+      { error: "Stay map temporarily unavailable" },
+      { status: 503 },
     );
-  return Response.json(
-    { ids: (data || []).map((row) => row.id), total: count || 0 },
-    { headers: { "Cache-Control": "public, max-age=30, s-maxage=60" } },
-  );
+  return Response.json(data, {
+    headers: { "Cache-Control": "public, max-age=30, s-maxage=60" },
+  });
 }

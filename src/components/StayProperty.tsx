@@ -1,4 +1,5 @@
 "use client";
+import { nearbyEventsHref, tripSchema } from "@/lib/trip-links";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -29,6 +30,14 @@ export function StayProperty({
   const [guests, setGuests] = useState("2");
   const [plan, setPlan] = useState(false);
   useEffect(() => {
+    const trip = tripSchema.safeParse(
+      Object.fromEntries(new URLSearchParams(window.location.search)),
+    );
+    if (trip.success) {
+      setCheckIn(trip.data.checkIn || "");
+      setCheckOut(trip.data.checkOut || "");
+      setGuests(String(trip.data.guests));
+    }
     try {
       const stored = JSON.parse(
         localStorage.getItem("akiduermo-saved-v1") || "[]",
@@ -371,7 +380,16 @@ export function StayProperty({
               </p>
               <a
                 className={base.mapButton}
-                href={`https://akipasa.com/${locale}`}
+                href={nearbyEventsHref(
+                  locale,
+                  stay.city,
+                  checkIn,
+                  checkOut,
+                  typeof stay.latitude === "number" &&
+                    typeof stay.longitude === "number"
+                    ? { latitude: stay.latitude, longitude: stay.longitude }
+                    : undefined,
+                )}
               >
                 {text("Explore AkiPasa", "Descubre AkiPasa")}
                 <Icon name="arrow-right" size={18} />

@@ -63,6 +63,19 @@ export default async function MembershipPage({
         </div>
       </section>
 
+      <section className="panel">
+        <h2>
+          {es ? "Tu local en AkiPasa: gratis" : "Your venue on AkiPasa: free"}
+        </h2>
+        <p>
+          {es
+            ? "Reclama tu local y, tras aprobar la titularidad, gestiona tu ficha, fotos, eventos y fidelidad sin suscripción. AkiHQ es una ampliación opcional."
+            : "Claim your venue and, after ownership approval, manage your page, photos, events and loyalty without a subscription. AkiHQ is an optional upgrade."}
+        </p>
+        <Link className="button" href={`/${locale}/business?view=claims`}>
+          {es ? "Reclamar mi local" : "Claim my venue"}
+        </Link>
+      </section>
       <section
         className="membership-plan-grid"
         id="plans"
@@ -100,11 +113,11 @@ export default async function MembershipPage({
         <MembershipCard
           locale={locale}
           plan="business"
-          title={es ? "AkiPasa Business" : "AkiPasa Business"}
+          title="AkiHQ Business"
           description={
             es
-              ? "Para locales y organizadores que quieren publicar, gestionar y fidelizar."
-              : "For venues and organisers ready to publish, manage, and build loyalty."
+              ? "Para negocios que quieren añadir herramientas de CRM, tareas y equipo a su ficha gratuita."
+              : "For businesses adding CRM, task and team tools to their free listing."
           }
           monthly="€20"
           yearly="€190"
@@ -129,7 +142,7 @@ export default async function MembershipPage({
         <MembershipCard
           locale={locale}
           plan="business_pro"
-          title="AkiPasa Business Pro"
+          title="AkiHQ Pro"
           description={
             es
               ? "Para negocios que necesitan un CRM operativo seguro, equipo e inventario inteligente."
@@ -157,6 +170,21 @@ export default async function MembershipPage({
       </section>
 
       <BusinessPackageExplorer locale={locale} />
+      <section className="panel">
+        <h2>
+          {es ? "Disponibilidad de las herramientas" : "Tool availability"}
+        </h2>
+        <p>
+          {es
+            ? "AkiHQ incluye herramientas de gestión según el plan y los permisos del equipo. Conectar un correo o una red social externa requiere un proveedor compatible y configuración: no está disponible para todos los clientes todavía."
+            : "AkiHQ includes management tools according to plan and team permissions. Connecting an external mailbox or social network requires a supported provider and setup: this is not available to all customers yet."}
+        </p>
+        <p>
+          {es
+            ? "Webs, marketing, Telegram y analítica de plataforma son herramientas internas. Los pagos con tarjeta, impresión física y presentación fiscal requieren configuración y validación adicionales. AkiDuermo aún no acepta reservas ni pagos."
+            : "Sites, marketing, Telegram and platform analytics are internal tools. Card payments, physical printing and fiscal submission require additional configuration and validation. AkiDuermo does not yet accept bookings or payments."}
+        </p>
+      </section>
 
       <p className="membership-footnote">
         {es

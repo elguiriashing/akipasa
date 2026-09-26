@@ -48,3 +48,8 @@ export function safePropertyWebsite(value: string | null): string | null {
     return null;
   }
 }
+
+// Display cleanup only. Imported names and provenance remain unchanged in storage.
+export function cleanStayName(name: string) {
+  return name.replace(/^[\s,;"']+|[\s,;"']+$/g, "").trim() || name;
+}

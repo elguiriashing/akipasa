@@ -81,7 +81,13 @@ export function trackBehaviour(input: TrackBehaviourInput) {
 
 export async function flushBehaviour(useBeacon = false) {
   hydrateQueue();
-  if (!consentGranted() || !queue.length) return;
+  if (!consentGranted()) {
+    queue = [];
+    clearTimeout(flushTimer);
+    persistQueue();
+    return;
+  }
+  if (!queue.length) return;
   const batch = queue.slice(0, 25);
   const body = JSON.stringify({ events: batch });
   if (useBeacon && navigator.sendBeacon) {
@@ -112,6 +118,13 @@ export async function flushBehaviour(useBeacon = false) {
 }
 
 if (typeof window !== "undefined") {
+  window.addEventListener("akipasa:consent-changed", () => {
+    if (!consentGranted()) {
+      queue = [];
+      clearTimeout(flushTimer);
+      persistQueue();
+    }
+  });
   window.addEventListener("online", () => void flushBehaviour());
   window.addEventListener("pagehide", () => void flushBehaviour(true));
 }

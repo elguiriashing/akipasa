@@ -12,12 +12,12 @@ import { afterEach, expect, it, vi } from "vitest";
 import { AkiDuermo } from "../src/components/AkiDuermo";
 vi.mock("next/dynamic", () => ({
   default: () =>
-    function TestMap({ venueIds }: { venueIds: Set<string> | null }) {
-      return (
-        <div data-testid="stay-map">
-          {venueIds ? [...venueIds].join(",") : "all"}
-        </div>
-      );
+    function TestMap({
+      stayFilters,
+    }: {
+      stayFilters: { type: string; q: string };
+    }) {
+      return <div data-testid="stay-map">{stayFilters.type}</div>;
     },
 }));
 vi.mock("../src/components/ThemeModeControls", () => ({
@@ -79,7 +79,7 @@ it("keeps the active view and shared filter when switching Saved, Map and Explor
   ).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Map" }));
   await waitFor(() =>
-    expect(screen.getByTestId("stay-map")).toHaveTextContent(hotel.id),
+    expect(screen.getByTestId("stay-map")).toHaveTextContent("hotel"),
   );
   fireEvent.click(screen.getByRole("button", { name: "Apartments" }));
   expect(screen.getByRole("button", { name: "Map" })).toHaveAttribute(

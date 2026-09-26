@@ -22,6 +22,7 @@ export function stayHostRoute(pathname: string) {
     };
   if (
     pathname === "/api/stays" ||
+    pathname === "/api/v1/personalisation/consent" ||
     pathname.startsWith("/api/map/") ||
     pathname.startsWith("/_next/")
   )

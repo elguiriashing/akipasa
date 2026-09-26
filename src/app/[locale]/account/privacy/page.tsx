@@ -53,10 +53,7 @@ export default async function AccountPrivacyPage({
       <section className="dashboard-grid">
         <PersonalisationSettings
           locale={locale}
-          initialEnabled={Boolean(
-            personalisation?.personalisation_enabled &&
-              personalisation?.marketing_enabled,
-          )}
+          initialEnabled={Boolean(personalisation?.personalisation_enabled)}
         />
         <article className="panel console-card">
           <h2>{es ? "Exportación" : "Export"}</h2>

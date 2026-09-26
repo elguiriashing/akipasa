@@ -10,7 +10,6 @@ import {
   defaultOwnerPreferences,
   type OwnerPreferences,
 } from "@/lib/owner-console";
-import { PersonalisationConsent } from "@/components/PersonalisationConsent";
 
 const ownerBackgroundBucket = "owner-backgrounds";
 
@@ -69,7 +68,6 @@ export default async function LocaleLayout({
   return (
     <>
       <LocaleDocumentLanguage locale={locale} />
-      <PersonalisationConsent locale={locale} />
       <AppShell
         locale={locale}
         signedIn={Boolean(user)}

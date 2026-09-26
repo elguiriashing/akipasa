@@ -2,7 +2,12 @@
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
-import { mapVenueDetailSchema, type MapVenueDetail } from "@/lib/map-snapshot";
+import {
+  compactMarkerSchema,
+  type CompactMapMarker,
+  mapVenueDetailSchema,
+  type MapVenueDetail,
+} from "@/lib/map-snapshot";
 import {
   accommodationLabel,
   markerIsVisible,
@@ -206,16 +211,21 @@ export function ProductionMap({
   showVerticalTabs = true,
   venueDestination = "akipasa",
   venueIds = null,
+  stayFilters,
 }: {
   locale: Locale;
   venueDestination?: "akipasa" | "akiduermo";
   venueIds?: ReadonlySet<string> | null;
+  stayFilters?: { type: string; q: string };
   initialVertical?: DiscoveryVertical;
   showVerticalTabs?: boolean;
   points: MapPoint[];
   styleUrl: string;
   center: { latitude: number; longitude: number };
 }) {
+  const [mapTruncated, setMapTruncated] = useState(false);
+  const stayType = stayFilters?.type;
+  const stayQuery = stayFilters?.q;
   const container = useRef<HTMLDivElement>(null);
   const [venueStatus, setVenueStatus] = useState<"loading" | "ready" | "error">(
     "loading",
@@ -479,15 +489,16 @@ export function ProductionMap({
             entityId: point.id,
           });
         });
+        let stayMarkers: CompactMapMarker[] = [];
         const renderVenues = () => {
           if (disposed) return;
-          const markers = tileLoader
-            .values()
-            .filter(
-              (marker) =>
-                markerIsVisible(marker, verticalRef.current) &&
-                (!venueIdsRef.current || venueIdsRef.current.has(marker[0])),
-            );
+          const markers = (
+            stayType !== undefined ? stayMarkers : tileLoader.values()
+          ).filter(
+            (marker) =>
+              markerIsVisible(marker, verticalRef.current) &&
+              (!venueIdsRef.current || venueIdsRef.current.has(marker[0])),
+          );
           visiblePoints = [
             ...(verticalRef.current === "activities" ? points : []),
             ...markers.map((marker) => {
@@ -544,6 +555,31 @@ export function ProductionMap({
           setVenueStatus("loading");
           const bounds = map.getBounds();
           try {
+            if (stayType !== undefined) {
+              const params = new URLSearchParams({
+                west: String(Math.max(-180, bounds.getWest())),
+                east: String(Math.min(180, bounds.getEast())),
+                south: String(Math.max(-85, bounds.getSouth())),
+                north: String(Math.min(85, bounds.getNorth())),
+                type: stayType,
+                q: stayQuery || "",
+              });
+              const response = await fetch(`/api/map/stays?${params}`, {
+                signal: request.signal,
+              });
+              if (!response.ok) throw new Error("Stay map unavailable");
+              const data = await response.json();
+              if (disposed) return;
+              stayMarkers = compactMarkerSchema
+                .array()
+                .max(1001)
+                .parse(data.markers)
+                .slice(0, 1000);
+              setMapTruncated(Boolean(data.truncated));
+              renderVenues();
+              setVenueStatus("ready");
+              return;
+            }
             const result = await tileLoader.load(
               {
                 west: bounds.getWest(),
@@ -561,6 +597,8 @@ export function ProductionMap({
               renderVenues();
             }
             setVenueStatus(result.failed ? "error" : "ready");
+          } catch {
+            if (!disposed) setVenueStatus("error");
           } finally {
             loading = false;
             if (queued && !disposed) {
@@ -604,6 +642,8 @@ export function ProductionMap({
     points,
     styleUrl,
     venueDestination,
+    stayType,
+    stayQuery,
   ]);
 
   return (
@@ -627,6 +667,13 @@ export function ProductionMap({
           {locale === "es" ? "Cambiar filtros" : "Change filters"}
         </a>
       </div>
+      {mapTruncated && (
+        <p role="status">
+          {locale === "es"
+            ? "Mostrando 1.000 alojamientos. Acerca el mapa para ver todos los de una zona."
+            : "Showing 1,000 stays. Zoom in to see all stays in an area."}
+        </p>
+      )}
       {showVerticalTabs && (
         <div
           className="map-vertical-tabs"

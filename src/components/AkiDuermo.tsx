@@ -1,4 +1,5 @@
 "use client";
+import { nearbyEventsHref, type TripIntent } from "../lib/trip-links";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,7 +7,7 @@ import dynamic from "next/dynamic";
 import { config } from "../lib/config";
 import { stayTypeNames, staySchema, type Stay } from "../lib/akiduermo";
 import { stayText, type StayLocale } from "../lib/akiduermo-i18n";
-import { filterSavedStays, loadStayMapMatches } from "../lib/stay-filters";
+import { filterSavedStays } from "../lib/stay-filters";
 import { stayHref } from "../lib/akiduermo-routing";
 import { Icon } from "./Icons";
 import { ThemeToggle } from "./ThemeModeControls";
@@ -16,7 +17,6 @@ const StayMap = dynamic(
   { ssr: false },
 );
 const noEvents: [] = [];
-const noMapMatches = new Set<string>();
 const destinations = [
   {
     name: "Málaga",
@@ -49,8 +49,10 @@ const destinations = [
 ];
 export function AkiDuermo({
   initialLocale = "en",
+  initialTrip,
 }: {
   initialLocale?: StayLocale;
+  initialTrip?: TripIntent;
 }) {
   const [locale, setLocale] = useState<StayLocale>(initialLocale);
   const t = (text: string) => stayText(locale, text);
@@ -69,8 +71,8 @@ export function AkiDuermo({
         ? "AkiDuermo · Un buen día merece una gran estancia"
         : "AkiDuermo · A good day deserves a great stay";
   }, [locale]);
-  const [destination, setDestination] = useState("");
-  const [search, setSearch] = useState("");
+  const [destination, setDestination] = useState(initialTrip?.q || "");
+  const [search, setSearch] = useState(initialTrip?.q || "");
   const [type, setType] = useState("all");
   const [page, setPage] = useState(1);
   const [rows, setRows] = useState<Stay[]>([]);
@@ -80,44 +82,22 @@ export function AkiDuermo({
   const [retry, setRetry] = useState(0);
   const [saved, setSaved] = useState<Stay[]>([]);
   const [view, setView] = useState<"explore" | "saved" | "map">("explore");
-  const [mapMatches, setMapMatches] = useState<{
-    key: string;
-    ids: Set<string>;
-  } | null>(null);
-  const [mapFilterError, setMapFilterError] = useState("");
-  const mapFilterKey = JSON.stringify([type, search]);
-  const needsMapFilter = type !== "all" || !!search.trim();
-  useEffect(() => {
-    if (view !== "map" || !needsMapFilter || mapMatches?.key === mapFilterKey)
-      return;
-    const abort = new AbortController();
-    setMapFilterError("");
-    loadStayMapMatches(type, search, abort.signal)
-      .then((ids) => {
-        if (!abort.signal.aborted) setMapMatches({ key: mapFilterKey, ids });
-      })
-      .catch(() => {
-        if (!abort.signal.aborted)
-          setMapFilterError("We couldn’t load stays just now.");
-      });
-    return () => abort.abort();
-  }, [
-    view,
-    type,
-    search,
-    needsMapFilter,
-    mapFilterKey,
-    mapMatches?.key,
-    retry,
-  ]);
-  const [checkIn, setCheckIn] = useState("");
-  const [checkOut, setCheckOut] = useState("");
-  const [guests, setGuests] = useState("2");
+  const [checkIn, setCheckIn] = useState(initialTrip?.checkIn || "");
+  const [checkOut, setCheckOut] = useState(initialTrip?.checkOut || "");
+  const [guests, setGuests] = useState(String(initialTrip?.guests || 2));
   const [trip, setTrip] = useState<{
     checkIn: string;
     checkOut: string;
     guests: string;
-  } | null>(null);
+  } | null>(
+    initialTrip?.checkIn && initialTrip?.checkOut
+      ? {
+          checkIn: initialTrip.checkIn,
+          checkOut: initialTrip.checkOut,
+          guests: String(initialTrip.guests),
+        }
+      : null,
+  );
   useEffect(() => {
     try {
       const data = JSON.parse(
@@ -175,7 +155,20 @@ export function AkiDuermo({
     document.getElementById("stays")?.scrollIntoView({ behavior: "smooth" });
   }
   const shown = view === "saved" ? filterSavedStays(saved, type, search) : rows;
-  const center = destinations.find((d) => d.name === search) || destinations[0];
+  const normalizedDestination = (value: string) =>
+    value
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+  const center =
+    initialTrip?.latitude !== undefined &&
+    initialTrip?.longitude !== undefined &&
+    search === initialTrip.q
+      ? { name: search, lat: initialTrip.latitude, lng: initialTrip.longitude }
+      : destinations.find(
+          (d) =>
+            normalizedDestination(d.name) === normalizedDestination(search),
+        ) || destinations[0];
   return (
     <div className={styles.app}>
       <header className={styles.header}>
@@ -423,16 +416,6 @@ export function AkiDuermo({
           )}
           {view === "map" ? (
             <div className={styles.stayMap}>
-              {needsMapFilter && mapMatches?.key !== mapFilterKey && (
-                <p role="status">
-                  {t(mapFilterError || "Finding your next stay…")}
-                  {mapFilterError && (
-                    <button onClick={() => setRetry((v) => v + 1)}>
-                      {t("Try again")}
-                    </button>
-                  )}
-                </p>
-              )}
               <StayMap
                 locale={locale}
                 points={noEvents}
@@ -441,13 +424,7 @@ export function AkiDuermo({
                 initialVertical="accommodation"
                 showVerticalTabs={false}
                 venueDestination="akiduermo"
-                venueIds={
-                  needsMapFilter
-                    ? mapMatches?.key === mapFilterKey
-                      ? mapMatches.ids
-                      : noMapMatches
-                    : null
-                }
+                stayFilters={{ type, q: search }}
               />
             </div>
           ) : (
@@ -501,7 +478,9 @@ export function AkiDuermo({
                           <Icon name="map" size={14} /> {stay.city}
                         </span>
                         <h3>
-                          <Link href={stayHref(stay.slug, locale)}>
+                          <Link
+                            href={`${stayHref(stay.slug, locale)}&${new URLSearchParams({ checkIn, checkOut, guests })}`}
+                          >
                             {stay.name}
                           </Link>
                         </h3>
@@ -515,7 +494,7 @@ export function AkiDuermo({
                           </span>
                           <Link
                             className={styles.viewStay}
-                            href={stayHref(stay.slug, locale)}
+                            href={`${stayHref(stay.slug, locale)}&${new URLSearchParams({ checkIn, checkOut, guests })}`}
                             aria-label={`${t("View")} ${stay.name}`}
                           >
                             <Icon name="arrow-right" size={20} />
@@ -577,7 +556,19 @@ export function AkiDuermo({
               )}
             </p>
           </div>
-          <a href={`https://akipasa.com/${locale}`}>
+          <a
+            href={nearbyEventsHref(
+              locale,
+              search || center.name,
+              checkIn,
+              checkOut,
+              !search ||
+                normalizedDestination(search) ===
+                  normalizedDestination(center.name)
+                ? { latitude: center.lat, longitude: center.lng }
+                : undefined,
+            )}
+          >
             {t("Explore AkiPasa")} <Icon name="arrow-right" size={18} />
           </a>
         </section>

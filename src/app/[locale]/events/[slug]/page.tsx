@@ -1,3 +1,4 @@
+import { eventStayHref } from "@/lib/trip-links";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { localizedMetadata, languageUrls, serializeJsonLd } from "@/lib/seo";
@@ -419,6 +420,28 @@ export default async function EventPage({
                 </form>
               </details>
             ) : null}
+            <a
+              className="button secondary"
+              href={eventStayHref(
+                locale,
+                resolvedVenue.locality,
+                occurrence.startsAt,
+                occurrence.endsAt,
+                {
+                  latitude: resolvedVenue.latitude,
+                  longitude: resolvedVenue.longitude,
+                },
+              )}
+            >
+              {locale === "es"
+                ? "Buscar alojamiento para este evento"
+                : "Find a stay for this event"}
+            </a>
+            <p className="muted">
+              {locale === "es"
+                ? "AkiDuermo está en vista previa: las fechas son orientativas, sin disponibilidad ni pago de reservas."
+                : "AkiDuermo is a preview: dates are for planning, with no live availability or booking payment."}
+            </p>
             <ShareButton
               title={translated(event.title, locale)}
               label={locale === "es" ? "Compartir" : "Share"}

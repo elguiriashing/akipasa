@@ -29,6 +29,7 @@ export function VenueDashboard({
   feedback,
   counts,
   sections,
+  overview,
 }: {
   locale: "en" | "es";
   name: string;
@@ -39,6 +40,7 @@ export function VenueDashboard({
   feedback?: "success" | "error";
   counts: Counts;
   sections: Record<ToolSection, ReactNode>;
+  overview?: ReactNode;
 }) {
   const es = locale === "es";
   const [active, setActive] = useState(initialSection);
@@ -304,6 +306,7 @@ export function VenueDashboard({
               : "Choose what you want to manage."}
           </p>
         </div>
+        {overview}
         <div className={styles.tools}>
           {tools.map((tool) => (
             <button

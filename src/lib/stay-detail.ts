@@ -1,8 +1,11 @@
+import { parseDatabasePoint } from "./repository";
 import { cache } from "react";
 import { createSupabasePublicClient } from "./supabase/public";
-import { safePropertyWebsite, type Stay } from "./akiduermo";
+import { cleanStayName, safePropertyWebsite, type Stay } from "./akiduermo";
 import { normalizeAddressLabel } from "./maps";
 export type StayDetail = Stay & {
+  latitude?: number;
+  longitude?: number;
   descriptionEs: string;
   descriptionEn: string;
   photos: { url: string; altEs: string; altEn: string }[];
@@ -14,7 +17,7 @@ export const loadStayDetail = cache(
     const { data, error } = await client
       .from("venues")
       .select(
-        "id,slug,name,address,description_es,description_en,accommodation_type,website_url,cities(name_es)",
+        "id,slug,name,address,location,description_es,description_en,accommodation_type,website_url,cities(name_es)",
       )
       .eq("slug", slug)
       .eq("status", "published")
@@ -45,9 +48,10 @@ export const loadStayDetail = cache(
       )
     ).filter((photo): photo is NonNullable<typeof photo> => photo !== null);
     return {
+      ...parseDatabasePoint(data.location),
       id: data.id,
       slug: data.slug,
-      name: data.name,
+      name: cleanStayName(data.name),
       address: normalizeAddressLabel(data.address || ""),
       accommodationType: data.accommodation_type || "hotel",
       website: safePropertyWebsite(data.website_url),

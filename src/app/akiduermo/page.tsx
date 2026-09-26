@@ -1,3 +1,4 @@
+import { tripSchema } from "@/lib/trip-links";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { AkiDuermo } from "@/components/AkiDuermo";
@@ -20,7 +21,17 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: { canonical: "https://akiduermo.akipasa.com" },
   };
 }
-export default async function AkiDuermoPage() {
+export default async function AkiDuermoPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | undefined>>;
+}) {
   const locale = stayLocale((await headers()).get("x-akipasa-locale"));
-  return <AkiDuermo initialLocale={locale} />;
+  const trip = tripSchema.safeParse(await searchParams);
+  return (
+    <AkiDuermo
+      initialLocale={locale}
+      initialTrip={trip.success ? trip.data : undefined}
+    />
+  );
 }

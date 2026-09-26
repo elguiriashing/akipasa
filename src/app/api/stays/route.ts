@@ -1,5 +1,9 @@
 import { createSupabasePublicClient } from "@/lib/supabase/public";
-import { safePropertyWebsite, stayQuerySchema } from "@/lib/akiduermo";
+import {
+  cleanStayName,
+  safePropertyWebsite,
+  stayQuerySchema,
+} from "@/lib/akiduermo";
 import { staySearchFilters } from "@/lib/stay-filters";
 
 export async function GET(request: Request) {
@@ -34,7 +38,7 @@ export async function GET(request: Request) {
       rows: (data || []).map((row) => ({
         id: row.id,
         slug: row.slug,
-        name: row.name,
+        name: cleanStayName(row.name),
         address: row.address,
         accommodationType: row.accommodation_type,
         website: safePropertyWebsite(row.website_url),

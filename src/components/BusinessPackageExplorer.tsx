@@ -21,8 +21,8 @@ const tools: Record<BusinessTool, { en: string; es: string; icon: IconName }> =
       icon: "community",
     },
     "crm-social": {
-      en: "Social media",
-      es: "Redes sociales",
+      en: "Social media — provider pilot",
+      es: "Redes sociales — piloto de proveedores",
       icon: "megaphone",
     },
     employees: { en: "People", es: "Equipo", icon: "users" },
@@ -36,7 +36,11 @@ const tools: Record<BusinessTool, { en: string; es: string; icon: IconName }> =
       icon: "saved",
     },
     inventory: { en: "Inventory", es: "Inventario", icon: "venue" },
-    inbox: { en: "Inbox", es: "Bandeja de entrada", icon: "inbox" },
+    inbox: {
+      en: "Inbox (external mail in pilot)",
+      es: "Bandeja (correo externo en piloto)",
+      icon: "inbox",
+    },
     pos: { en: "Point of sale", es: "Punto de venta", icon: "business" },
     collaboration: { en: "Team chat", es: "Chat de equipo", icon: "community" },
   };

@@ -12514,3 +12514,13 @@ html[data-owner-focus="true"] .app-content {
   color: #fff;
   background: #166534;
 }
+
+.privacy-preferences {
+  padding: 1rem;
+  text-align: center;
+}
+.personalisation-consent {
+  max-height: 85dvh;
+  overflow-y: auto;
+  z-index: 1000;
+}

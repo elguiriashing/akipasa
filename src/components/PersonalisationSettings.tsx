@@ -1,6 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
+import {
+  readPrivacyChoices,
+  writePrivacyChoices,
+  openPrivacyChoices,
+} from "../lib/privacy-consent";
 import type { Locale } from "@/lib/config";
 
 export function PersonalisationSettings({
@@ -17,17 +22,17 @@ export function PersonalisationSettings({
   const es = locale === "es";
   async function save(next: boolean) {
     setStatus("saving");
-    document.cookie = `ak_personalisation=${next ? "granted" : "denied"}; Path=/; Max-Age=31536000; SameSite=Lax${location.protocol === "https:" ? "; Secure" : ""}`;
+    const choices = { ...readPrivacyChoices(), personalisation: next };
+    if (!next) writePrivacyChoices(choices);
     const response = await fetch("/api/v1/personalisation/consent", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
-        analytics: next,
-        personalisation: next,
-        marketing: next,
+        ...choices,
       }),
     }).catch(() => null);
     if (!response?.ok) return setStatus("error");
+    writePrivacyChoices(choices);
     setEnabled(next);
     setStatus("saved");
   }
@@ -45,8 +50,11 @@ export function PersonalisationSettings({
       method: "DELETE",
     }).catch(() => null);
     if (!response?.ok) return setStatus("error");
-    document.cookie =
-      "ak_personalisation=denied; Path=/; Max-Age=31536000; SameSite=Lax";
+    writePrivacyChoices({
+      analytics: false,
+      personalisation: false,
+      marketing: false,
+    });
     setEnabled(false);
     setStatus("saved");
   }
@@ -66,14 +74,21 @@ export function PersonalisationSettings({
           disabled={status === "saving"}
         />
         {es
-          ? "Personalizar AkiPasa y la publicidad usando mis interacciones"
-          : "Personalise AkiPasa and advertising using my interactions"}
+          ? "Personalizar recomendaciones usando mis interacciones"
+          : "Personalise recommendations using my interactions"}
       </label>
       <p className="muted">
         {es
-          ? "Una sola opción controla las recomendaciones y el perfil publicitario. Puedes retirar el permiso en cualquier momento."
-          : "One choice controls recommendations and the advertising profile. You can withdraw permission at any time."}
+          ? "La medición y la publicidad tienen opciones separadas. Puedes retirar el permiso en cualquier momento."
+          : "Measurement and advertising have separate choices. You can withdraw permission at any time."}
       </p>
+      <button
+        className="button secondary"
+        type="button"
+        onClick={openPrivacyChoices}
+      >
+        {es ? "Todas las opciones de privacidad" : "All privacy choices"}
+      </button>
       <button
         className="button secondary"
         type="button"
