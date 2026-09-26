@@ -126,14 +126,17 @@ export async function submitVenueClaim(formData: FormData) {
     ? (String(formData.get("locale")) as "es" | "en")
     : "es";
   if (!parsed.success) redirect(`/${locale}/business?error=claim`);
-  const { supabase, user } = await requireBusinessAccess(locale);
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/business?view=claims&venueId=${parsed.data.venueId}`,
+  );
   const { error } = await supabase.from("venue_claims").insert({
     venue_id: parsed.data.venueId,
     claimant_id: user.id,
     evidence: parsed.data.evidence,
   });
   if (error) redirect(`/${locale}/business?error=claim`);
-  redirect(`/${locale}/business?created=claim`);
+  redirect(`/${locale}/business?view=claims&created=claim`);
 }
 
 const eventSchema = z.object({

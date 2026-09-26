@@ -1,5 +1,10 @@
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
-import { stripeBillingPlanForPrice, verifyStripeSignature } from "@/lib/stripe";
+import {
+  stripeBillingPlanForPrice,
+  stripeSubscriptionPeriodEnd,
+  stripeProcessingError,
+  verifyStripeSignature,
+} from "@/lib/stripe";
 import { readBoundedText, RequestSecurityError } from "@/lib/request-security";
 
 export const runtime = "nodejs";
@@ -114,7 +119,7 @@ async function processEvent(event: StripeEvent) {
     p_plan: planCode,
     p_interval: billingInterval,
     p_status: status,
-    p_current_period_end: unixDate(object.current_period_end),
+    p_current_period_end: stripeSubscriptionPeriodEnd(object),
     p_cancel_at_period_end: object.cancel_at_period_end === true,
     p_event_created_at: unixDate(event.created),
   });
@@ -165,22 +170,25 @@ export async function POST(request: Request) {
 
   try {
     await processEvent(event);
-    await supabase
+    const { error: completionError } = await supabase
       .from("stripe_webhook_events")
       .update({
         state: "processed",
         processed_at: new Date().toISOString(),
       })
       .eq("event_id", event.id);
+    if (completionError) throw completionError;
     return Response.json({ received: true });
   } catch (error) {
-    await supabase
+    const { error: failureError } = await supabase
       .from("stripe_webhook_events")
       .update({
         state: "failed",
-        error: error instanceof Error ? error.message.slice(0, 1000) : "error",
+        error: stripeProcessingError(error),
       })
       .eq("event_id", event.id);
+    if (failureError)
+      console.error("Stripe event failure could not be recorded", event.id);
     return new Response("Webhook processing failed", { status: 500 });
   }
 }

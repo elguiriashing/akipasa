@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { isLocale } from "@/lib/config";
 import { loadFeatureFlags } from "@/lib/feature-flags";
+import { requireUser } from "@/lib/auth";
 import { requireBusinessAccess } from "@/lib/entitlements";
 import {
   confirmRedemption,
@@ -69,7 +70,11 @@ export default async function BusinessPage({
     ? query.view!
     : "venues";
 
-  const { supabase, user } = await requireBusinessAccess(locale);
+  const claimView = view === "claims";
+  const returnPath = `/${locale}/business?${new URLSearchParams({ view, ...(query.venueId ? { venueId: query.venueId } : {}) })}`;
+  const { supabase, user } = claimView
+    ? await requireUser(locale, returnPath)
+    : await requireBusinessAccess(locale, returnPath);
   const { data: profile } = await supabase
     .from("profiles")
     .select("app_role")
@@ -77,6 +82,7 @@ export default async function BusinessPage({
     .maybeSingle();
 
   if (
+    !claimView &&
     profile?.app_role !== "organiser" &&
     !isAdministrator(profile?.app_role || "")
   ) {
@@ -86,6 +92,13 @@ export default async function BusinessPage({
   const flags = await loadFeatureFlags(supabase);
   const es = locale === "es";
 
+  let claimableQuery = supabase
+    .from("venues")
+    .select("id,name")
+    .eq("status", "published")
+    .contains("accessibility", { claim_status: "unclaimed" });
+  if (query.venueId && /^[0-9a-f-]{36}$/i.test(query.venueId))
+    claimableQuery = claimableQuery.eq("id", query.venueId);
   const [
     { data: members },
     { data: categories },
@@ -100,12 +113,7 @@ export default async function BusinessPage({
       .from("venue_members")
       .select("role,venues(id,name,slug,status,verified)"),
     supabase.from("categories").select("id,name_es,name_en").order("name_es"),
-    supabase
-      .from("venues")
-      .select("id,name")
-      .eq("status", "published")
-      .contains("accessibility", { claim_status: "unclaimed" })
-      .order("name"),
+    claimableQuery.order("name"),
     supabase
       .from("venue_claims")
       .select("id,status,created_at,venues(name)")

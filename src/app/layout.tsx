@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import Script from "next/script";
 import { config } from "@/lib/config";
 import { PwaRegistration } from "@/components/PwaRegistration";
 import { ThemeManager } from "@/components/ThemeModeControls";
@@ -53,11 +54,13 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <head>
-        <script
-          async
+        <Script
+          strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-PW8547QDGD"
         />
-        <script
+        <Script
+          id="akipasa-google-analytics"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];

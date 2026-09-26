@@ -83,10 +83,12 @@
 }
 
 .results {
-  display: grid;
-  gap: 0.2rem;
+  display: block;
+  min-height: 0;
   max-height: 18rem;
   overflow-y: auto;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
   padding: 0.35rem;
   border: 1px solid var(--line);
   border-radius: 14px;
@@ -165,4 +167,15 @@
   .results {
     max-height: 14.5rem;
   }
+}
+
+.more {
+  display: block;
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
 }

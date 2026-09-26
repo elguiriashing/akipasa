@@ -7,6 +7,31 @@ export const billingPlanSchema = z.object({
 
 export type BillingPlan = z.infer<typeof billingPlanSchema>;
 
+// Basil and later put renewal dates on subscription items. Retain support for
+// older webhook payloads; never silently grant a date-less active subscription.
+export function stripeSubscriptionPeriodEnd(object: Record<string, unknown>) {
+  const items = object.items as
+    | { data?: Array<{ current_period_end?: unknown }> }
+    | undefined;
+  const candidates = (items?.data || [])
+    .map((item) => item.current_period_end)
+    .filter(
+      (value): value is number =>
+        typeof value === "number" && Number.isFinite(value) && value > 0,
+    );
+  const legacy = object.current_period_end;
+  const seconds = candidates.length ? Math.min(...candidates) : legacy;
+  if (typeof seconds !== "number" || !Number.isFinite(seconds) || seconds <= 0)
+    throw new Error("Subscription renewal date is missing");
+  return new Date(seconds * 1000).toISOString();
+}
+
+export function stripeProcessingError(error: unknown) {
+  return error && typeof error === "object" && "message" in error
+    ? String(error.message).slice(0, 1000)
+    : "Webhook processing error";
+}
+
 const priceEnvironmentNames = {
   "premium:month": "STRIPE_PREMIUM_MONTHLY_PRICE_ID",
   "premium:year": "STRIPE_PREMIUM_YEARLY_PRICE_ID",

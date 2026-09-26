@@ -1,3 +1,4 @@
+import { SubscriptionRefresh } from "@/components/SubscriptionRefresh";
 import { notFound } from "next/navigation";
 import { WorkspacePageHeader } from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
@@ -92,11 +93,15 @@ export default async function SubscriptionPage({
             : "Choose monthly or annual billing. Stripe processes payment and lets you cancel in its secure portal."
         }
       />
+      {query.checkout === "success" &&
+        !subscriptions?.some(
+          (item) => item.status === "active" || item.status === "trialing",
+        ) && <SubscriptionRefresh locale={locale} />}
       {query.checkout === "success" && (
         <p className="notice">
           {es
-            ? "Pago completado. La membresia aparecera cuando Stripe confirme el webhook."
-            : "Checkout completed. Membership will appear after Stripe confirms the webhook."}
+            ? "Pago completado. La membresía se actualiza automáticamente al recibir la confirmación de Stripe."
+            : "Checkout completed. Membership updates automatically when confirmation arrives from Stripe."}
         </p>
       )}
       {query.upgrade === "pending" && (
