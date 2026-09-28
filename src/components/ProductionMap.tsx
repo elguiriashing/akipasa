@@ -209,6 +209,7 @@ export function ProductionMap({
   center,
   initialVertical = "activities",
   showVerticalTabs = true,
+  fullScreen = false,
   venueDestination = "akipasa",
   venueIds = null,
   stayFilters,
@@ -219,6 +220,7 @@ export function ProductionMap({
   stayFilters?: { type: string; q: string };
   initialVertical?: DiscoveryVertical;
   showVerticalTabs?: boolean;
+  fullScreen?: boolean;
   points: MapPoint[];
   styleUrl: string;
   center: { latitude: number; longitude: number };
@@ -274,7 +276,7 @@ export function ProductionMap({
           zoom: 10.5,
           attributionControl: false,
           maxPitch: 48,
-          cooperativeGestures: true,
+          cooperativeGestures: !fullScreen,
           renderWorldCopies: false,
         });
         map.addControl(
@@ -654,6 +656,7 @@ export function ProductionMap({
     locale,
     points,
     styleUrl,
+    fullScreen,
     venueDestination,
     stayType,
     stayQuery,

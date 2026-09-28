@@ -131,6 +131,7 @@ export default async function MapPage({
   return (
     <main className="shell discover-page map-page">
       <ProductionMap
+        fullScreen
         locale={locale}
         points={mapPoints}
         styleUrl={config.mapStyleUrl}

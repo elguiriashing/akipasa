@@ -16,6 +16,8 @@ screens so the business tools retain their existing layout.
   A native modal right drawer contains paginated nearby results. Its heading
   identifies the selected locality: these lists represent search filters, not
   the current dragged map bounds. Preserve nationwide map browsing.
+  Full-screen maps allow one-finger panning and normal wheel zoom; embedded
+  maps retain cooperative gestures so users can scroll their containing page.
 - Community directory: compact introduction/action row, search, category chips,
   then smaller creator cards. Avoid repeated titles.
 - Creator editor: Profile, Images and Events tabs; keep panels mounted to retain
