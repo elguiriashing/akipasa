@@ -636,7 +636,17 @@
   gap: 4px;
 }
 .global-search-panel .location-helper {
-  display: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+}
+.global-search-panel .location-helper button {
+  min-height: 44px;
+  padding: 8px 10px;
+}
+.global-search-panel .location-helper small {
+  font-size: 0.72rem;
 }
 .global-search-panel .checkbox-field {
   align-items: center;
