@@ -1049,6 +1049,8 @@ body:has(.map-page) > .privacy-preferences .button {
 /* Shared consumer detail screen: one identity, compact facts, grouped actions. */
 .app-detail-page.detail-layout {
   display: grid;
+  align-content: start;
+  min-height: 0;
   grid-template-columns: minmax(0, 1fr);
   gap: 4px;
   max-width: 960px;
