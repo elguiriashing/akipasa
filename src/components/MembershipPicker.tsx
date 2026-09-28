@@ -5,11 +5,15 @@ import { Children, useEffect, useId, useState, type ReactNode } from "react";
 export function MembershipPicker({
   locale,
   children,
+  initialPlan,
 }: {
   locale: "es" | "en";
   children: ReactNode;
+  initialPlan?: string;
 }) {
-  const [active, setActive] = useState(0);
+  const initialIndex =
+    initialPlan === "business_pro" ? 2 : initialPlan === "business" ? 1 : 0;
+  const [active, setActive] = useState(initialIndex);
   const id = useId();
   const labels = [locale === "es" ? "Personal" : "Personal", "Business", "Pro"];
   const panels = Children.toArray(children);
@@ -20,12 +24,12 @@ export function MembershipPicker({
           ? 2
           : window.location.hash === "#business-plan"
             ? 1
-            : 0,
+            : initialIndex,
       );
     selectHash();
     window.addEventListener("hashchange", selectHash);
     return () => window.removeEventListener("hashchange", selectHash);
-  }, []);
+  }, [initialIndex]);
   return (
     <div className="membership-picker">
       <div

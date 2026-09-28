@@ -1524,3 +1524,217 @@ body:has(.membership-app) > .privacy-preferences .button {
     display: none;
   }
 }
+
+/* Signed-in billing uses the same compact plan picker as membership. */
+.account-workspace:has(.subscription-app) {
+  min-height: 0;
+  padding-bottom: 0;
+}
+.account-workspace:has(.subscription-app) .workspace-page-heading {
+  display: none;
+}
+.account-workspace:has(.subscription-app) .workspace-content {
+  min-height: 0;
+  padding-block: 10px;
+  align-content: start;
+}
+.subscription-app {
+  width: 100%;
+  max-width: 620px;
+  margin-inline: auto;
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+.subscription-heading h1 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+.subscription-access {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  font-size: 0.8rem;
+}
+.subscription-access > .status-pill {
+  flex-basis: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 0.65rem;
+}
+.subscription-access p {
+  margin: 0;
+}
+.subscription-access > form {
+  margin-left: auto;
+}
+.subscription-access .button {
+  min-height: 44px;
+  padding: 8px 12px;
+  font-size: 0.78rem;
+}
+.subscription-records {
+  order: 2;
+  flex-basis: 100%;
+}
+.subscription-records summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding-block: 12px;
+  font-size: 0.75rem;
+}
+.subscription-records p {
+  padding-block: 4px;
+  overflow-wrap: anywhere;
+}
+.subscription-app .billing-plan-card {
+  display: grid;
+  gap: 10px;
+  padding: 12px 0 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: none;
+}
+.subscription-app .billing-plan-card > .status-pill {
+  display: none;
+}
+.subscription-app .billing-plan-card > p {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+.subscription-app .membership-benefit-list {
+  margin: 0;
+  gap: 5px;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+.subscription-app .billing-option {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+  padding: 0;
+  border: 0;
+}
+.subscription-intervals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.subscription-intervals legend {
+  margin-bottom: 6px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.subscription-intervals label {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: center;
+  gap: 2px 8px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+.subscription-intervals label:has(:checked) {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, var(--surface));
+}
+.subscription-intervals label:focus-within {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.subscription-intervals input {
+  width: 16px;
+  height: 16px;
+  min-height: 0;
+  margin: 0;
+  accent-color: var(--primary);
+}
+.subscription-intervals strong,
+.subscription-intervals small {
+  grid-column: 2;
+}
+.subscription-intervals strong {
+  font-size: 1.35rem;
+}
+.subscription-intervals small {
+  font-size: 0.65rem;
+  color: var(--muted);
+}
+.subscription-app .billing-business-category {
+  display: grid;
+  gap: 4px;
+  font-size: 0.75rem;
+}
+.subscription-app .billing-business-category select {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 10px;
+  font-size: 1rem;
+  border-radius: 10px;
+}
+.subscription-app .billing-option > .button {
+  min-height: 44px;
+  padding: 10px;
+  font-size: 0.85rem;
+  border-radius: 12px;
+}
+.subscription-note {
+  margin: 0;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.app-content:has(.subscription-app) > .footer {
+  margin-top: 8px;
+  padding: 8px 12px;
+  gap: 4px;
+  font-size: 0.7rem;
+}
+body:has(.subscription-app) > .privacy-preferences {
+  padding: 4px 12px 12px;
+}
+@media (max-width: 850px) {
+  .app-shell:has(.subscription-app) {
+    min-height: 0;
+  }
+  .app-shell:has(.subscription-app) .app-content {
+    padding-bottom: 0;
+  }
+  .account-workspace:has(.subscription-app) {
+    padding: 4px 12px 0;
+    gap: 4px;
+  }
+  .account-workspace:has(.subscription-app) .workspace-mobile-trigger {
+    min-height: 44px;
+    padding: 4px 8px;
+    gap: 8px;
+  }
+  .account-workspace:has(.subscription-app) .workspace-mobile-trigger small {
+    display: none;
+  }
+  .account-workspace:has(.subscription-app) .workspace-menu-glyph {
+    width: 36px;
+    height: 36px;
+  }
+  .app-content:has(.subscription-app) > .footer > span {
+    display: none;
+  }
+  body:has(.subscription-app) > .privacy-preferences {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+  .app-shell:has(.subscription-app) .global-support-trigger {
+    display: none;
+  }
+}

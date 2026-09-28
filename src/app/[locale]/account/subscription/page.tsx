@@ -1,6 +1,6 @@
 import { SubscriptionRefresh } from "@/components/SubscriptionRefresh";
 import { notFound } from "next/navigation";
-import { WorkspacePageHeader } from "@/components/WorkspaceShell";
+import { MembershipPicker } from "@/components/MembershipPicker";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { openBillingPortal, startSubscriptionCheckout } from "./actions";
@@ -83,16 +83,10 @@ export default async function SubscriptionPage({
             : "The billing operation could not be started.";
 
   return (
-    <>
-      <WorkspacePageHeader
-        eyebrow={es ? "Membresia" : "Membership"}
-        title={es ? "Planes y facturacion" : "Plans and billing"}
-        description={
-          es
-            ? "Elige mensual o anual. Stripe procesa el pago y puedes cancelar desde su portal seguro."
-            : "Choose monthly or annual billing. Stripe processes payment and lets you cancel in its secure portal."
-        }
-      />
+    <section className="subscription-app">
+      <header className="subscription-heading">
+        <h1>{es ? "Planes y facturación" : "Plans and billing"}</h1>
+      </header>
       {query.checkout === "success" &&
         !subscriptions?.some(
           (item) => item.status === "active" || item.status === "trialing",
@@ -118,7 +112,7 @@ export default async function SubscriptionPage({
           profile?.membership_tier === "premium" ||
           profile?.business_plan_active,
       ) && (
-        <section className="panel console-card">
+        <section className="subscription-access">
           <span className="status-pill">
             {es ? "Acceso actual" : "Current access"}
           </span>
@@ -137,18 +131,21 @@ export default async function SubscriptionPage({
               : {es ? "activo" : "active"}
             </p>
           )}
-          {subscriptions?.map((item) => (
-            <p key={`${item.plan_code}-${item.billing_interval}`}>
-              <strong>{item.plan_code}</strong>: {item.status} (
-              {item.billing_interval})
-            </p>
-          ))}
-          {grants?.map((item) => (
-            <p key={`${item.plan_code}-${item.grant_kind}`}>
-              <strong>{item.plan_code}</strong>: {item.grant_kind}
-              {item.expires_at ? ` - ${item.expires_at.slice(0, 10)}` : ""}
-            </p>
-          ))}
+          <details className="subscription-records">
+            <summary>{es ? "Detalles del acceso" : "Access details"}</summary>
+            {subscriptions?.map((item) => (
+              <p key={`${item.plan_code}-${item.billing_interval}`}>
+                <strong>{item.plan_code}</strong>: {item.status} (
+                {item.billing_interval})
+              </p>
+            ))}
+            {grants?.map((item) => (
+              <p key={`${item.plan_code}-${item.grant_kind}`}>
+                <strong>{item.plan_code}</strong>: {item.grant_kind}
+                {item.expires_at ? ` - ${item.expires_at.slice(0, 10)}` : ""}
+              </p>
+            ))}
+          </details>
           {customer && (
             <form action={openBillingPortal}>
               <input type="hidden" name="locale" value={locale} />
@@ -159,7 +156,7 @@ export default async function SubscriptionPage({
           )}
         </section>
       )}
-      <section className="billing-plan-grid">
+      <MembershipPicker locale={locale} initialPlan={query.plan}>
         {plans.map((item) => (
           <article
             className={[
@@ -234,47 +231,39 @@ export default async function SubscriptionPage({
                 <li key={benefit}>{benefit}</li>
               ))}
             </ul>
-            <div className="billing-options">
-              <BillingOption
-                locale={locale}
-                plan={item.plan}
-                interval="month"
-                price={item.monthly}
-                label={es ? "Mensual" : "Monthly"}
-                businessCategory={query.category}
-              />
-              <BillingOption
-                locale={locale}
-                plan={item.plan}
-                interval="year"
-                price={item.yearly}
-                label={es ? "Anual" : "Annual"}
-                note={es ? `Ahorra €${item.saving}` : `Save €${item.saving}`}
-                businessCategory={query.category}
-              />
-            </div>
+            <BillingOption
+              locale={locale}
+              plan={item.plan}
+              monthly={item.monthly}
+              yearly={item.yearly}
+              saving={item.saving}
+              businessCategory={query.category}
+            />
           </article>
         ))}
-      </section>
-    </>
+      </MembershipPicker>
+      <p className="subscription-note">
+        {es
+          ? "Pago seguro con Stripe. Gestiona o cancela desde tu portal de facturación."
+          : "Secure payment with Stripe. Manage or cancel from your billing portal."}
+      </p>
+    </section>
   );
 }
 
 function BillingOption({
   locale,
   plan,
-  interval,
-  price,
-  label,
-  note,
+  monthly,
+  yearly,
+  saving,
   businessCategory,
 }: {
   locale: "es" | "en";
   plan: "premium" | "business" | "business_pro";
-  interval: "month" | "year";
-  price: string;
-  label: string;
-  note?: string;
+  monthly: string;
+  yearly: string;
+  saving: number;
   businessCategory?: string;
 }) {
   const es = locale === "es";
@@ -282,7 +271,36 @@ function BillingOption({
     <form action={startSubscriptionCheckout} className="billing-option">
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="plan" value={plan} />
-      <input type="hidden" name="interval" value={interval} />
+      <fieldset className="subscription-intervals">
+        <legend>{es ? "Facturación" : "Billing interval"}</legend>
+        {(["month", "year"] as const).map((interval) => (
+          <label key={interval}>
+            <input
+              type="radio"
+              name="interval"
+              value={interval}
+              defaultChecked={interval === "month"}
+            />
+            <span>
+              {interval === "month"
+                ? es
+                  ? "Mensual"
+                  : "Monthly"
+                : es
+                  ? "Anual"
+                  : "Annual"}
+            </span>
+            <strong>{interval === "month" ? monthly : yearly}</strong>
+            <small>
+              {interval === "year"
+                ? `${es ? "Ahorra" : "Save"} €${saving}`
+                : es
+                  ? "Cada mes"
+                  : "Every month"}
+            </small>
+          </label>
+        ))}
+      </fieldset>
       {plan !== "premium" && (
         <label className="billing-business-category">
           <span>{es ? "Tipo de negocio" : "Business type"}</span>
@@ -302,24 +320,8 @@ function BillingOption({
           </select>
         </label>
       )}
-      <span>
-        <strong>{label}</strong>
-        {note && <small>{note}</small>}
-      </span>
-      <span className="billing-option-price">
-        <strong>{price}</strong>
-        <small>
-          {interval === "month"
-            ? es
-              ? "/ mes"
-              : "/ mo"
-            : es
-              ? "/ año"
-              : "/ yr"}
-        </small>
-      </span>
       <button className="button" type="submit">
-        {es ? "Elegir" : "Choose"}
+        {es ? "Continuar" : "Continue"}
       </button>
     </form>
   );

@@ -57,3 +57,14 @@ Public source is master. Validate formatting, lint, types, tests and build;
 inspect mobile layouts and verify the deployed map and CityDiscovery homepage.
 Authenticated save/upload checks require a signed-in account and are separate
 from local component tests; do not alter a real profile for visual testing.
+
+## Account subscription
+
+Signed-in billing now shares the membership tabs, honoring the incoming plan query.
+The account identity hero is omitted on this route. Current access and portal management
+stay above the picker; raw subscription and grant records expand on demand.
+Each plan has a single checkout form with native monthly/annual radio cards, explicit
+prices and annual savings, one business-category selector and one Continue action.
+Server checkout validation, access grants, billing portal and processing notices are preserved.
+Scoped mobile spacing removes the footer gap and leaves navigation clearance after
+privacy controls. Small screens and enlarged text retain natural scrolling.
