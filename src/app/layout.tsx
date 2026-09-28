@@ -1,4 +1,5 @@
 import "./globals.css";
+import "./compact-app.css";
 import type { Metadata } from "next";
 import { ConsentAnalytics } from "@/components/ConsentAnalytics";
 import { PersonalisationConsent } from "@/components/PersonalisationConsent";

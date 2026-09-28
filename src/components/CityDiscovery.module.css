@@ -249,3 +249,49 @@
     transition: none;
   }
 }
+
+@media (max-width: 650px) {
+  .discovery {
+    gap: 18px;
+    padding-top: 0;
+  }
+  .heading {
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .heading h1,
+  .heading h2 {
+    font-size: 1.2rem;
+    max-width: none;
+  }
+  .heading .eyebrow,
+  .heading p:not([aria-live]) {
+    display: none;
+  }
+  .row,
+  .nearby {
+    grid-auto-columns: 43%;
+    gap: 10px;
+    padding-bottom: 6px;
+  }
+  .photo,
+  .nearby .photo {
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+  }
+  .caption {
+    padding-top: 5px;
+  }
+  .caption h3 {
+    font-size: 0.95rem;
+  }
+  .caption span {
+    font-size: 0.7rem;
+  }
+  .scrollControls {
+    display: none;
+  }
+  .credits {
+    margin-top: -10px;
+  }
+}

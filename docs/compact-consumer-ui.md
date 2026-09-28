@@ -1,0 +1,40 @@
+# Compact consumer UI — September 2026
+
+## Layout plan and review
+
+Keep the green/orange visual identity and the existing bottom navigation. Use a
+50px mobile top bar, a 64px bottom bar plus device safe areas, 44px controls,
+12px section spacing and restrained typography. Scope these changes to consumer
+screens so the business tools retain their existing layout.
+
+- Explore: two city tiles in each swipeable row, compact venue rows and short
+  empty states. Keep photo credits reachable and pagination intact.
+- Search: one shared search/filter popover, two-column filters and collapsed
+  advanced options. Map searches stay on the map route.
+- Map: remaining viewport is the map. No duplicate hero or filter form. Place
+  layer controls and the list button over the map; expand the legend on demand.
+  A native modal right drawer contains paginated nearby results. Its heading
+  identifies the selected locality: these lists represent search filters, not
+  the current dragged map bounds. Preserve nationwide map browsing.
+- Community directory: compact introduction/action row, search, category chips,
+  then smaller creator cards. Avoid repeated titles.
+- Creator editor: Profile, Images and Events tabs; keep panels mounted to retain
+  unsaved input. Short paired fields, compact category chips, optional English
+  translation and URL fields in disclosures. Expand invalid collapsed fields.
+  Keep save accessible above the bottom navigation.
+- Public creator profiles: shorter cover, single name, horizontal stats,
+  condensed gallery, FAQ and contact sections.
+- Event pages: shorter cover, compact facts and actions; retain readable full
+  descriptions and all booking/report/save functionality.
+
+Review improvements: do not force long content into one fixed screen. Only the
+map has fixed viewport height. Forms and descriptions scroll naturally, with
+44px tap targets and 16px input text. Use native dialog focus management and
+Escape dismissal; editor tabs support arrow keys, Home and End.
+
+## Release
+
+Public source is master. Validate formatting, lint, types, tests and build;
+inspect mobile layouts and verify the deployed map and CityDiscovery homepage.
+Authenticated save/upload checks require a signed-in account and are separate
+from local component tests; do not alter a real profile for visual testing.

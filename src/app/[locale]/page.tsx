@@ -242,11 +242,6 @@ export default async function DiscoverPage({
             </h2>
             <span className="count">{venuePage.total}</span>
           </div>
-          <p className="result-caption">
-            {locale === "es"
-              ? "Negocios publicados como no reclamados mientras sus propietarios completan la verificación."
-              : "Businesses published as unclaimed while their owners complete verification."}
-          </p>
           <div className="grid">
             {venuePage.rows.map((venue) => (
               <Link

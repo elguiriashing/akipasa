@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import { StudioTabs } from "@/components/community/StudioTabs";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
@@ -85,7 +86,7 @@ export default async function CreatorStudioPage({
             <span className="eyebrow">
               {es ? "Comunidad creadora" : "Creator community"}
             </span>
-            <h1>{es ? "Tu estudio de creador" : "Your creator studio"}</h1>
+            <h2>{es ? "Mi estudio" : "Creator studio"}</h2>
             <p>
               {es
                 ? "Construye tu escaparate y deja que tu catálogo crezca con cada evento publicado."
@@ -127,316 +128,332 @@ export default async function CreatorStudioPage({
               : "Your profile does not meet the verification requirements yet. Review your progress at the bottom of this page."}
           </p>
         )}
-        <nav
-          className="creator-studio-jumpnav"
-          aria-label={es ? "Secciones del estudio" : "Studio sections"}
-        >
-          <a href="#showcase">{es ? "Imágenes" : "Showcase"}</a>
-          <a href="#profile">{es ? "Perfil" : "Profile"}</a>
-          <a href="#events">{es ? "Eventos" : "Events"}</a>
-        </nav>
-        <section className="panel profile-media-manager" id="showcase">
-          <div className="creator-studio-section-heading">
-            <div>
-              <span className="eyebrow">
-                {es ? "Identidad visual" : "Visual identity"}
-              </span>
-              <h2>
-                {es
-                  ? "Haz que tu página sea reconocible"
-                  : "Make your page unmistakably yours"}
-              </h2>
-            </div>
-            <p>
-              {es
-                ? "Tu foto y portada también se sincronizan con tu perfil de cuenta."
-                : "Your photo and cover stay synchronized with your account profile."}
-            </p>
-          </div>
-          <div className="two-col">
-            {(["avatar", "banner"] as const).map((kind) => (
-              <form
-                action={uploadProfileMedia}
-                className="creator-media-upload"
-                key={kind}
-              >
-                <input type="hidden" name="locale" value={locale} />
-                <input type="hidden" name="kind" value={kind} />
-                <input type="hidden" name="returnTo" value="creator" />
-                <div className={`creator-media-preview is-${kind}`}>
-                  {(
-                    kind === "avatar" ? profile?.avatar_url : profile?.cover_url
-                  ) ? (
-                    <img
-                      src={
-                        (kind === "avatar"
-                          ? profile?.avatar_url
-                          : profile?.cover_url) || ""
-                      }
-                      alt=""
-                    />
-                  ) : (
-                    <span>
-                      {kind === "avatar"
-                        ? (profile?.display_name || "A").slice(0, 1)
-                        : "AkiPasa"}
-                    </span>
-                  )}
-                </div>
-                <label>
-                  {kind === "avatar"
-                    ? es
-                      ? "Foto de perfil"
-                      : "Profile photo"
-                    : es
-                      ? "Imagen de portada"
-                      : "Cover image"}
-                  <input
-                    name="file"
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    required
-                  />
-                </label>
-                <button className="button secondary" type="submit">
-                  {es ? "Actualizar" : "Update"}
-                </button>
-              </form>
-            ))}
-          </div>
-        </section>
-        <form
-          action={saveCreatorProfile}
-          className="panel stack focused-form creator-studio-form"
-          id="profile"
-        >
-          <div className="creator-studio-section-heading">
-            <div>
-              <span className="eyebrow">
-                {es ? "Página pública" : "Public page"}
-              </span>
-              <h2>
-                {es ? "Cuenta tu historia" : "Tell people what you create"}
-              </h2>
-            </div>
-            <p>
-              {es
-                ? "Los campos en español e inglés permiten que tu página llegue a más personas."
-                : "Spanish and English fields help your page reach more people."}
-            </p>
-          </div>
-          <input type="hidden" name="locale" value={locale} />
-          <div className="two-col">
-            <label>
-              {es ? "Nombre público" : "Public name"}
-              <input
-                name="displayName"
-                required
-                minLength={2}
-                maxLength={100}
-                defaultValue={profile?.display_name || ""}
-              />
-            </label>
-            <label>
-              Slug
-              <input
-                name="slug"
-                required
-                pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
-                defaultValue={profile?.slug || ""}
-                placeholder="alex-creates"
-              />
-            </label>
-          </div>
-          <div className="two-col">
-            <label>
-              {es ? "Titular" : "Headline"}
-              <input
-                name="headlineEs"
-                maxLength={180}
-                defaultValue={profile?.headline_es || ""}
-              />
-            </label>
-            <label>
-              Headline (EN)
-              <input
-                name="headlineEn"
-                maxLength={180}
-                defaultValue={profile?.headline_en || ""}
-              />
-            </label>
-          </div>
-          <label>
-            {es ? "Biografía" : "Biography"}
-            <textarea
-              name="bioEs"
-              required
-              minLength={40}
-              maxLength={4000}
-              defaultValue={profile?.bio_es || ""}
-            />
-          </label>
-          <label>
-            Biography (EN)
-            <textarea
-              name="bioEn"
-              minLength={40}
-              maxLength={4000}
-              defaultValue={profile?.bio_en || ""}
-            />
-          </label>
-          <div className="two-col">
-            <label>
-              {es ? "Zona" : "Area"}
-              <input
-                name="locality"
-                maxLength={120}
-                defaultValue={profile?.locality || ""}
-              />
-            </label>
-            <label>
-              {es ? "Provincia" : "Province"}
-              <input
-                name="province"
-                maxLength={120}
-                defaultValue={profile?.province || ""}
-              />
-            </label>
-          </div>
-          <div className="two-col">
-            <label>
-              {es ? "Foto de perfil (URL HTTPS)" : "Profile photo (HTTPS URL)"}
-              <input
-                name="avatarUrl"
-                type="url"
-                defaultValue={profile?.avatar_url || ""}
-              />
-            </label>
-            <label>
-              {es ? "Portada (URL HTTPS)" : "Cover (HTTPS URL)"}
-              <input
-                name="coverUrl"
-                type="url"
-                defaultValue={profile?.cover_url || ""}
-              />
-            </label>
-          </div>
-          <div className="two-col">
-            <label>
-              Website
-              <input
-                name="websiteUrl"
-                type="url"
-                defaultValue={profile?.website_url || ""}
-              />
-            </label>
-            <label>
-              Instagram
-              <input
-                name="instagramUrl"
-                type="url"
-                defaultValue={profile?.instagram_url || ""}
-              />
-            </label>
-          </div>
-          <label>
-            YouTube
-            <input
-              name="youtubeUrl"
-              type="url"
-              defaultValue={profile?.youtube_url || ""}
-            />
-          </label>
-          <fieldset className="creator-category-picker">
-            <legend>
-              {es ? "Categorías (hasta 6)" : "Categories (up to 6)"}
-            </legend>
-            <div>
-              {(categories || []).map((category) => (
-                <label key={category.id}>
-                  <input
-                    type="checkbox"
-                    name="categoryIds"
-                    value={category.id}
-                    defaultChecked={selectedCategoryIds.has(category.id)}
-                  />
-                  <span>
-                    {es
-                      ? category.name_es
-                      : category.name_en || category.name_es}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
-          <label>
-            {es ? "Visibilidad" : "Visibility"}
-            <select name="publish" defaultValue={profile?.state || "draft"}>
-              <option value="draft">{es ? "Borrador" : "Draft"}</option>
-              <option value="published">{es ? "Público" : "Public"}</option>
-            </select>
-          </label>
-          <button className="button button-strong" type="submit">
-            {es ? "Guardar perfil" : "Save profile"}
-          </button>
-        </form>
-        <section className="panel stack creator-event-manager" id="events">
-          <div className="card-title-row">
-            <div>
-              <span className="eyebrow">
-                {es ? "Tu programación" : "Your programme"}
-              </span>
-              <h2>{es ? "Mis eventos" : "My events"}</h2>
+        <StudioTabs locale={locale}>
+          <section className="panel profile-media-manager" id="showcase">
+            <div className="creator-studio-section-heading">
+              <div>
+                <span className="eyebrow">
+                  {es ? "Identidad visual" : "Visual identity"}
+                </span>
+                <h2>
+                  {es
+                    ? "Haz que tu página sea reconocible"
+                    : "Make your page unmistakably yours"}
+                </h2>
+              </div>
               <p>
                 {es
-                  ? "Gestiona tus propuestas y abre el catalogo que ya se ha publicado."
-                  : "Track your submissions and open the catalogue that is already published."}
+                  ? "Tu foto y portada también se sincronizan con tu perfil de cuenta."
+                  : "Your photo and cover stay synchronized with your account profile."}
               </p>
             </div>
-            <Link className="button" href={`/${locale}/community?view=suggest`}>
-              {es ? "Anadir evento" : "Add event"}
-            </Link>
-          </div>
-          <div className="managed-list">
-            {(hostedEvents || []).map((event) => (
-              <Link
-                className="managed-row"
-                key={event.id}
-                href={`/${locale}/events/${event.slug}`}
-              >
-                <div>
-                  <strong>
-                    {locale === "en"
-                      ? event.title_en || event.title_es
-                      : event.title_es}
-                  </strong>
-                  <span>{es ? "Evento publicado" : "Published event"}</span>
-                </div>
-                <span className="status-pill">{event.status}</span>
-              </Link>
-            ))}
-            {(submittedEvents || [])
-              .filter((event) => !event.published_event_id)
-              .map((event) => (
-                <div className="managed-row" key={event.id}>
-                  <div>
-                    <strong>{event.title}</strong>
-                    <span>
-                      {new Date(event.created_at).toLocaleDateString(locale)}
-                    </span>
+            <div className="two-col">
+              {(["avatar", "banner"] as const).map((kind) => (
+                <form
+                  action={uploadProfileMedia}
+                  className="creator-media-upload"
+                  key={kind}
+                >
+                  <input type="hidden" name="locale" value={locale} />
+                  <input type="hidden" name="kind" value={kind} />
+                  <input type="hidden" name="returnTo" value="creator" />
+                  <div className={`creator-media-preview is-${kind}`}>
+                    {(
+                      kind === "avatar"
+                        ? profile?.avatar_url
+                        : profile?.cover_url
+                    ) ? (
+                      <img
+                        src={
+                          (kind === "avatar"
+                            ? profile?.avatar_url
+                            : profile?.cover_url) || ""
+                        }
+                        alt=""
+                      />
+                    ) : (
+                      <span>
+                        {kind === "avatar"
+                          ? (profile?.display_name || "A").slice(0, 1)
+                          : "AkiPasa"}
+                      </span>
+                    )}
                   </div>
-                  <span className="status-pill">{event.state}</span>
-                </div>
+                  <label>
+                    {kind === "avatar"
+                      ? es
+                        ? "Foto de perfil"
+                        : "Profile photo"
+                      : es
+                        ? "Imagen de portada"
+                        : "Cover image"}
+                    <input
+                      name="file"
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      required
+                    />
+                  </label>
+                  <button className="button secondary" type="submit">
+                    {es ? "Actualizar" : "Update"}
+                  </button>
+                </form>
               ))}
-            {!hostedEvents?.length && !submittedEvents?.length && (
-              <p className="empty-state">
+            </div>
+          </section>
+          <form
+            action={saveCreatorProfile}
+            className="panel stack focused-form creator-studio-form"
+            id="profile"
+          >
+            <div className="creator-studio-section-heading">
+              <div>
+                <span className="eyebrow">
+                  {es ? "Página pública" : "Public page"}
+                </span>
+                <h2>
+                  {es ? "Cuenta tu historia" : "Tell people what you create"}
+                </h2>
+              </div>
+              <p>
                 {es
-                  ? "Aun no has creado ningun evento."
-                  : "You have not created an event yet."}
+                  ? "Los campos en español e inglés permiten que tu página llegue a más personas."
+                  : "Spanish and English fields help your page reach more people."}
               </p>
-            )}
-          </div>
-        </section>
+            </div>
+            <input type="hidden" name="locale" value={locale} />
+            <div className="two-col">
+              <label>
+                {es ? "Nombre público" : "Public name"}
+                <input
+                  name="displayName"
+                  required
+                  minLength={2}
+                  maxLength={100}
+                  defaultValue={profile?.display_name || ""}
+                />
+              </label>
+              <label>
+                Slug
+                <input
+                  name="slug"
+                  required
+                  pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
+                  defaultValue={profile?.slug || ""}
+                  placeholder="alex-creates"
+                />
+              </label>
+            </div>
+            <div className="two-col">
+              <label>
+                {es ? "Titular" : "Headline"}
+                <input
+                  name="headlineEs"
+                  maxLength={180}
+                  defaultValue={profile?.headline_es || ""}
+                />
+              </label>
+            </div>
+            <label>
+              {es ? "Biografía" : "Biography"}
+              <textarea
+                name="bioEs"
+                required
+                minLength={40}
+                maxLength={4000}
+                defaultValue={profile?.bio_es || ""}
+              />
+            </label>
+            <details className="studio-optional">
+              <summary>
+                {es ? "Traducción al inglés" : "English translation"}
+              </summary>{" "}
+              <label>
+                Headline (EN)
+                <input
+                  name="headlineEn"
+                  maxLength={180}
+                  defaultValue={profile?.headline_en || ""}
+                />
+              </label>{" "}
+              <label>
+                Biography (EN)
+                <textarea
+                  name="bioEn"
+                  minLength={40}
+                  maxLength={4000}
+                  defaultValue={profile?.bio_en || ""}
+                />
+              </label>
+            </details>
+            <div className="two-col">
+              <label>
+                {es ? "Zona" : "Area"}
+                <input
+                  name="locality"
+                  maxLength={120}
+                  defaultValue={profile?.locality || ""}
+                />
+              </label>
+              <label>
+                {es ? "Provincia" : "Province"}
+                <input
+                  name="province"
+                  maxLength={120}
+                  defaultValue={profile?.province || ""}
+                />
+              </label>
+            </div>
+            <details className="studio-optional">
+              <summary>
+                {es ? "Enlaces e imágenes por URL" : "Links and image URLs"}
+              </summary>
+              <div className="two-col">
+                <label>
+                  {es
+                    ? "Foto de perfil (URL HTTPS)"
+                    : "Profile photo (HTTPS URL)"}
+                  <input
+                    name="avatarUrl"
+                    type="url"
+                    defaultValue={profile?.avatar_url || ""}
+                  />
+                </label>
+                <label>
+                  {es ? "Portada (URL HTTPS)" : "Cover (HTTPS URL)"}
+                  <input
+                    name="coverUrl"
+                    type="url"
+                    defaultValue={profile?.cover_url || ""}
+                  />
+                </label>
+              </div>
+              <div className="two-col">
+                <label>
+                  Website
+                  <input
+                    name="websiteUrl"
+                    type="url"
+                    defaultValue={profile?.website_url || ""}
+                  />
+                </label>
+                <label>
+                  Instagram
+                  <input
+                    name="instagramUrl"
+                    type="url"
+                    defaultValue={profile?.instagram_url || ""}
+                  />
+                </label>
+              </div>
+              <label>
+                YouTube
+                <input
+                  name="youtubeUrl"
+                  type="url"
+                  defaultValue={profile?.youtube_url || ""}
+                />
+              </label>
+            </details>
+            <details className="studio-optional">
+              <summary>
+                {es ? "Categorías (hasta 6)" : "Categories (up to 6)"}
+              </summary>
+              <fieldset className="creator-category-picker">
+                <legend>
+                  {es ? "Categorías (hasta 6)" : "Categories (up to 6)"}
+                </legend>
+                <div>
+                  {(categories || []).map((category) => (
+                    <label key={category.id}>
+                      <input
+                        type="checkbox"
+                        name="categoryIds"
+                        value={category.id}
+                        defaultChecked={selectedCategoryIds.has(category.id)}
+                      />
+                      <span>
+                        {es
+                          ? category.name_es
+                          : category.name_en || category.name_es}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            </details>
+            <label>
+              {es ? "Visibilidad" : "Visibility"}
+              <select name="publish" defaultValue={profile?.state || "draft"}>
+                <option value="draft">{es ? "Borrador" : "Draft"}</option>
+                <option value="published">{es ? "Público" : "Public"}</option>
+              </select>
+            </label>
+            <button className="button button-strong studio-save" type="submit">
+              {es ? "Guardar perfil" : "Save profile"}
+            </button>
+          </form>
+          <section className="panel stack creator-event-manager" id="events">
+            <div className="card-title-row">
+              <div>
+                <span className="eyebrow">
+                  {es ? "Tu programación" : "Your programme"}
+                </span>
+                <h2>{es ? "Mis eventos" : "My events"}</h2>
+                <p>
+                  {es
+                    ? "Gestiona tus propuestas y abre el catalogo que ya se ha publicado."
+                    : "Track your submissions and open the catalogue that is already published."}
+                </p>
+              </div>
+              <Link
+                className="button"
+                href={`/${locale}/community?view=suggest`}
+              >
+                {es ? "Anadir evento" : "Add event"}
+              </Link>
+            </div>
+            <div className="managed-list">
+              {(hostedEvents || []).map((event) => (
+                <Link
+                  className="managed-row"
+                  key={event.id}
+                  href={`/${locale}/events/${event.slug}`}
+                >
+                  <div>
+                    <strong>
+                      {locale === "en"
+                        ? event.title_en || event.title_es
+                        : event.title_es}
+                    </strong>
+                    <span>{es ? "Evento publicado" : "Published event"}</span>
+                  </div>
+                  <span className="status-pill">{event.status}</span>
+                </Link>
+              ))}
+              {(submittedEvents || [])
+                .filter((event) => !event.published_event_id)
+                .map((event) => (
+                  <div className="managed-row" key={event.id}>
+                    <div>
+                      <strong>{event.title}</strong>
+                      <span>
+                        {new Date(event.created_at).toLocaleDateString(locale)}
+                      </span>
+                    </div>
+                    <span className="status-pill">{event.state}</span>
+                  </div>
+                ))}
+              {!hostedEvents?.length && !submittedEvents?.length && (
+                <p className="empty-state">
+                  {es
+                    ? "Aun no has creado ningun evento."
+                    : "You have not created an event yet."}
+                </p>
+              )}
+            </div>
+          </section>
+        </StudioTabs>
         {profile?.state === "published" &&
           !["verified", "pending"].includes(profile.verification_state) && (
             <form
