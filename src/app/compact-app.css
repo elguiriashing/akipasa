@@ -993,3 +993,25 @@
     right: 8px;
   }
 }
+
+@media (max-width: 850px) {
+  .app-content > .community-workspace {
+    width: 100%;
+    margin: 0;
+    min-height: calc(100dvh - var(--app-top) - var(--app-bottom));
+  }
+  .app-content:has(> .community-workspace) > .footer,
+  .app-content:has(> .discover-page:not(.map-page)) > .footer {
+    margin-top: 12px;
+    padding-block: 12px;
+    font-size: 0.75rem;
+  }
+  .community-workspace .workspace-page-heading {
+    display: block;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
