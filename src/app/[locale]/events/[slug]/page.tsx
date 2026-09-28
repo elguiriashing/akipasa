@@ -145,7 +145,7 @@ export default async function EventPage({
           style={{ backgroundImage: `url(${bgImage})` }}
         />
       )}
-      <main className="shell detail-layout compact-event-page">
+      <main className="shell detail-layout app-detail-page compact-event-page">
         <AnalyticsView
           action="event_view"
           venueId={resolvedVenue.id}
@@ -157,6 +157,9 @@ export default async function EventPage({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
         />
+        <Link className="detail-back" href={`/${locale}`}>
+          ← {m.discover}
+        </Link>
         <article className="detail-card detail-card-primary">
           {bgImage ? (
             <div
@@ -189,10 +192,325 @@ export default async function EventPage({
                     }[occurrence.status]}
               </p>
             )}
-            <p className="lede">
-              {date} · {resolvedVenue.name}
-            </p>
-            <details className="event-description">
+            <Link
+              className="detail-venue-link"
+              href={`/${locale}/venues/${resolvedVenue.slug}`}
+            >
+              {resolvedVenue.name} →
+            </Link>
+            <div className="detail-overview">
+              <dl className="detail-facts">
+                <div>
+                  <dt>{m.time}</dt>
+                  <dd>{date}</dd>
+                </div>
+                <div>
+                  <dt>{m.price}</dt>
+                  <dd>
+                    {event.priceCents ? `${event.priceCents / 100} €` : m.free}
+                  </dd>
+                </div>
+                <div>
+                  <dt>{m.location}</dt>
+                  <dd>{resolvedVenue.address}</dd>
+                </div>
+                <div>
+                  <dt>{locale === "es" ? "Asistencia" : "Attendance"}</dt>
+                  <dd>
+                    {goingCount} {locale === "es" ? "personas van" : "going"}
+                  </dd>
+                </div>
+                <div>
+                  <dt>{locale === "es" ? "Edad" : "Age"}</dt>
+                  <dd>
+                    {event.minimumAge === undefined
+                      ? locale === "es"
+                        ? "Todas las edades"
+                        : "All ages"
+                      : `${event.minimumAge}+`}
+                  </dd>
+                </div>
+                <div>
+                  <dt>{locale === "es" ? "Accesibilidad" : "Accessibility"}</dt>
+                  <dd>
+                    {event.accessibilityNotes
+                      ? translated(event.accessibilityNotes, locale)
+                      : resolvedVenue.accessible
+                        ? locale === "es"
+                          ? "Acceso sin escalones indicado"
+                          : "Step-free access indicated"
+                        : locale === "es"
+                          ? "Contacta con el local para confirmar"
+                          : "Contact the venue to confirm"}
+                  </dd>
+                </div>
+              </dl>
+              <div className="actions detail-actions">
+                <TrackedLink
+                  className="button"
+                  href={googleMapsDirectionsUrl(resolvedVenue)}
+                  target="_blank"
+                  rel="noreferrer"
+                  action="directions_click"
+                  venueId={resolvedVenue.id}
+                  eventId={event.id}
+                  locale={locale}
+                >
+                  {m.directions}
+                </TrackedLink>
+                {bookingUrl &&
+                  occurrence.status !== "cancelled" &&
+                  occurrence.status !== "sold_out" && (
+                    <TrackedLink
+                      className="button secondary"
+                      href={bookingUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      action="booking_click"
+                      venueId={resolvedVenue.id}
+                      eventId={event.id}
+                      locale={locale}
+                    >
+                      {m.booking}
+                    </TrackedLink>
+                  )}
+                {!bookingUrl &&
+                  bookingSettings?.mode === "request" &&
+                  occurrence.status !== "cancelled" &&
+                  occurrence.status !== "sold_out" && (
+                    <Link
+                      className="button secondary"
+                      href={`/${locale}/events/${event.slug}/book`}
+                    >
+                      {locale === "es"
+                        ? "Solicitar reserva"
+                        : "Request booking"}
+                    </Link>
+                  )}
+                {user ? (
+                  <form action={toggleSavedEvent}>
+                    <input type="hidden" name="locale" value={locale} />
+                    <input type="hidden" name="key" value={event.id} />
+                    <input
+                      type="hidden"
+                      name="label"
+                      value={translated(event.title, locale)}
+                    />
+                    <input type="hidden" name="href" value={returnTo} />
+                    <input type="hidden" name="returnTo" value={returnTo} />
+                    <input
+                      type="hidden"
+                      name="intent"
+                      value={saved ? "remove" : "add"}
+                    />
+                    <button className="button secondary" type="submit">
+                      {saved
+                        ? locale === "es"
+                          ? "Quitar de favoritos"
+                          : "Remove favorite"
+                        : locale === "es"
+                          ? "Guardar evento"
+                          : "Save event"}
+                    </button>
+                  </form>
+                ) : (
+                  <Link
+                    className="button secondary"
+                    href={`/${locale}/auth?next=${encodeURIComponent(returnTo)}`}
+                  >
+                    {locale === "es" ? "Guardar evento" : "Save event"}
+                  </Link>
+                )}
+                {user ? (
+                  <form
+                    action={setEventPreference}
+                    className="event-preference-form"
+                  >
+                    <input type="hidden" name="locale" value={locale} />
+                    <input type="hidden" name="eventId" value={event.id} />
+                    <input type="hidden" name="returnTo" value={returnTo} />
+                    <input
+                      type="hidden"
+                      name="state"
+                      value={
+                        eventPreference?.state === "going" ? "clear" : "going"
+                      }
+                    />
+                    <button className="button secondary" type="submit">
+                      {eventPreference?.state === "going"
+                        ? locale === "es"
+                          ? "Ya no voy"
+                          : "No longer going"
+                        : locale === "es"
+                          ? "Voy"
+                          : "Going"}
+                    </button>
+                  </form>
+                ) : null}
+                <ShareButton
+                  title={translated(event.title, locale)}
+                  label={locale === "es" ? "Compartir" : "Share"}
+                  copiedLabel={
+                    locale === "es" ? "Enlace copiado" : "Link copied"
+                  }
+                  venueId={resolvedVenue.id}
+                  eventId={event.id}
+                  locale={locale}
+                />
+                <details className="detail-more">
+                  <summary>
+                    {locale === "es" ? "Más opciones" : "More options"}
+                  </summary>
+                  <div className="detail-more-actions">
+                    {user ? (
+                      <details className="event-preference-form">
+                        <summary>
+                          {eventPreference?.state === "not_interested"
+                            ? locale === "es"
+                              ? "No me interesa ✓"
+                              : "Not interested ✓"
+                            : locale === "es"
+                              ? "No me interesa"
+                              : "Not interested"}
+                        </summary>
+                        <form action={setEventPreference} className="stack">
+                          <input type="hidden" name="locale" value={locale} />
+                          <input
+                            type="hidden"
+                            name="eventId"
+                            value={event.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="returnTo"
+                            value={returnTo}
+                          />
+                          <input
+                            type="hidden"
+                            name="state"
+                            value={
+                              eventPreference?.state === "not_interested"
+                                ? "clear"
+                                : "not_interested"
+                            }
+                          />
+                          {eventPreference?.state !== "not_interested" ? (
+                            <select
+                              name="reason"
+                              defaultValue=""
+                              aria-label={
+                                locale === "es"
+                                  ? "Motivo opcional"
+                                  : "Optional reason"
+                              }
+                            >
+                              <option value="">
+                                {locale === "es"
+                                  ? "Motivo opcional"
+                                  : "Optional reason"}
+                              </option>
+                              <option value="not_my_thing">
+                                {locale === "es"
+                                  ? "No es lo mío"
+                                  : "Not my thing"}
+                              </option>
+                              <option value="too_far">
+                                {locale === "es"
+                                  ? "Demasiado lejos"
+                                  : "Too far"}
+                              </option>
+                              <option value="too_expensive">
+                                {locale === "es"
+                                  ? "Demasiado caro"
+                                  : "Too expensive"}
+                              </option>
+                              <option value="wrong_time">
+                                {locale === "es" ? "Mal horario" : "Wrong time"}
+                              </option>
+                              <option value="already_seen">
+                                {locale === "es"
+                                  ? "Ya lo he visto"
+                                  : "Already seen"}
+                              </option>
+                            </select>
+                          ) : (
+                            <input type="hidden" name="reason" value="" />
+                          )}
+                          <button className="button secondary" type="submit">
+                            {eventPreference?.state === "not_interested"
+                              ? locale === "es"
+                                ? "Deshacer"
+                                : "Undo"
+                              : locale === "es"
+                                ? "Confirmar"
+                                : "Confirm"}
+                          </button>
+                        </form>
+                      </details>
+                    ) : null}
+                    <a
+                      className="button secondary"
+                      href={eventStayHref(
+                        locale,
+                        resolvedVenue.locality,
+                        occurrence.startsAt,
+                        occurrence.endsAt,
+                        {
+                          latitude: resolvedVenue.latitude,
+                          longitude: resolvedVenue.longitude,
+                        },
+                      )}
+                    >
+                      {locale === "es"
+                        ? "Buscar alojamiento para este evento"
+                        : "Find a stay for this event"}
+                    </a>
+                    <p className="muted">
+                      {locale === "es"
+                        ? "AkiDuermo está en vista previa: las fechas son orientativas, sin disponibilidad ni pago de reservas."
+                        : "AkiDuermo is a preview: dates are for planning, with no live availability or booking payment."}
+                    </p>
+
+                    {premium ? (
+                      <TrackedLink
+                        className="button secondary"
+                        href={
+                          "/" + locale + "/events/" + event.slug + "/calendar"
+                        }
+                        action="calendar_add"
+                        venueId={resolvedVenue.id}
+                        eventId={event.id}
+                        locale={locale}
+                      >
+                        {locale === "es"
+                          ? "Añadir al calendario"
+                          : "Add to calendar"}
+                      </TrackedLink>
+                    ) : user ? (
+                      <Link
+                        className="button secondary"
+                        href={
+                          "/" + locale + "/account/subscription?plan=premium"
+                        }
+                      >
+                        {locale === "es"
+                          ? "Calendario con Premium"
+                          : "Calendar with Premium"}
+                      </Link>
+                    ) : null}
+                    <Link
+                      className="button secondary"
+                      href={`/${locale}/community?target=event:${event.id}`}
+                    >
+                      {locale === "es"
+                        ? "Informar de un problema"
+                        : "Report a problem"}
+                    </Link>
+                  </div>
+                </details>
+              </div>
+            </div>
+            <details className="event-description" open>
               <summary>
                 {locale === "es" ? "Sobre este evento" : "About this event"}
               </summary>
@@ -200,293 +518,8 @@ export default async function EventPage({
                 {translated(event.description, locale)}
               </p>
             </details>
-            <Link
-              className="venue-context-link"
-              href={`/${locale}/venues/${resolvedVenue.slug}`}
-            >
-              {resolvedVenue.name} →
-            </Link>
           </div>
         </article>
-        <aside className="detail-sidebar detail-sidebar-polished">
-          <div className="detail-sidebar-heading">
-            <span>{locale === "es" ? "En resumen" : "At a glance"}</span>
-            <strong>{translated(event.title, locale)}</strong>
-          </div>
-          <dl className="detail-facts">
-            <div>
-              <dt>{m.time}</dt>
-              <dd>{date}</dd>
-            </div>
-            <div>
-              <dt>{m.price}</dt>
-              <dd>
-                {event.priceCents ? `${event.priceCents / 100} €` : m.free}
-              </dd>
-            </div>
-            <div>
-              <dt>{m.location}</dt>
-              <dd>{resolvedVenue.address}</dd>
-            </div>
-            <div>
-              <dt>{locale === "es" ? "Asistencia" : "Attendance"}</dt>
-              <dd>
-                {goingCount} {locale === "es" ? "personas van" : "going"}
-              </dd>
-            </div>
-            <div>
-              <dt>{locale === "es" ? "Edad" : "Age"}</dt>
-              <dd>
-                {event.minimumAge === undefined
-                  ? locale === "es"
-                    ? "Todas las edades"
-                    : "All ages"
-                  : `${event.minimumAge}+`}
-              </dd>
-            </div>
-            <div>
-              <dt>{locale === "es" ? "Accesibilidad" : "Accessibility"}</dt>
-              <dd>
-                {event.accessibilityNotes
-                  ? translated(event.accessibilityNotes, locale)
-                  : resolvedVenue.accessible
-                    ? locale === "es"
-                      ? "Acceso sin escalones indicado"
-                      : "Step-free access indicated"
-                    : locale === "es"
-                      ? "Contacta con el local para confirmar"
-                      : "Contact the venue to confirm"}
-              </dd>
-            </div>
-          </dl>
-          <div className="actions detail-actions">
-            <TrackedLink
-              className="button"
-              href={googleMapsDirectionsUrl(resolvedVenue)}
-              target="_blank"
-              rel="noreferrer"
-              action="directions_click"
-              venueId={resolvedVenue.id}
-              eventId={event.id}
-              locale={locale}
-            >
-              {m.directions}
-            </TrackedLink>
-            {bookingUrl &&
-              occurrence.status !== "cancelled" &&
-              occurrence.status !== "sold_out" && (
-                <TrackedLink
-                  className="button secondary"
-                  href={bookingUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  action="booking_click"
-                  venueId={resolvedVenue.id}
-                  eventId={event.id}
-                  locale={locale}
-                >
-                  {m.booking}
-                </TrackedLink>
-              )}
-            {!bookingUrl &&
-              bookingSettings?.mode === "request" &&
-              occurrence.status !== "cancelled" &&
-              occurrence.status !== "sold_out" && (
-                <Link
-                  className="button secondary"
-                  href={`/${locale}/events/${event.slug}/book`}
-                >
-                  {locale === "es" ? "Solicitar reserva" : "Request booking"}
-                </Link>
-              )}
-            {user ? (
-              <form action={toggleSavedEvent}>
-                <input type="hidden" name="locale" value={locale} />
-                <input type="hidden" name="key" value={event.id} />
-                <input
-                  type="hidden"
-                  name="label"
-                  value={translated(event.title, locale)}
-                />
-                <input type="hidden" name="href" value={returnTo} />
-                <input type="hidden" name="returnTo" value={returnTo} />
-                <input
-                  type="hidden"
-                  name="intent"
-                  value={saved ? "remove" : "add"}
-                />
-                <button className="button secondary" type="submit">
-                  {saved
-                    ? locale === "es"
-                      ? "Quitar de favoritos"
-                      : "Remove favorite"
-                    : locale === "es"
-                      ? "Guardar evento"
-                      : "Save event"}
-                </button>
-              </form>
-            ) : (
-              <Link
-                className="button secondary"
-                href={`/${locale}/auth?next=${encodeURIComponent(returnTo)}`}
-              >
-                {locale === "es" ? "Guardar evento" : "Save event"}
-              </Link>
-            )}
-            {user ? (
-              <form
-                action={setEventPreference}
-                className="event-preference-form"
-              >
-                <input type="hidden" name="locale" value={locale} />
-                <input type="hidden" name="eventId" value={event.id} />
-                <input type="hidden" name="returnTo" value={returnTo} />
-                <input
-                  type="hidden"
-                  name="state"
-                  value={eventPreference?.state === "going" ? "clear" : "going"}
-                />
-                <button className="button secondary" type="submit">
-                  {eventPreference?.state === "going"
-                    ? locale === "es"
-                      ? "Ya no voy"
-                      : "No longer going"
-                    : locale === "es"
-                      ? "Voy"
-                      : "Going"}
-                </button>
-              </form>
-            ) : null}
-            {user ? (
-              <details className="event-preference-form">
-                <summary>
-                  {eventPreference?.state === "not_interested"
-                    ? locale === "es"
-                      ? "No me interesa ✓"
-                      : "Not interested ✓"
-                    : locale === "es"
-                      ? "No me interesa"
-                      : "Not interested"}
-                </summary>
-                <form action={setEventPreference} className="stack">
-                  <input type="hidden" name="locale" value={locale} />
-                  <input type="hidden" name="eventId" value={event.id} />
-                  <input type="hidden" name="returnTo" value={returnTo} />
-                  <input
-                    type="hidden"
-                    name="state"
-                    value={
-                      eventPreference?.state === "not_interested"
-                        ? "clear"
-                        : "not_interested"
-                    }
-                  />
-                  {eventPreference?.state !== "not_interested" ? (
-                    <select
-                      name="reason"
-                      defaultValue=""
-                      aria-label={
-                        locale === "es" ? "Motivo opcional" : "Optional reason"
-                      }
-                    >
-                      <option value="">
-                        {locale === "es"
-                          ? "Motivo opcional"
-                          : "Optional reason"}
-                      </option>
-                      <option value="not_my_thing">
-                        {locale === "es" ? "No es lo mío" : "Not my thing"}
-                      </option>
-                      <option value="too_far">
-                        {locale === "es" ? "Demasiado lejos" : "Too far"}
-                      </option>
-                      <option value="too_expensive">
-                        {locale === "es" ? "Demasiado caro" : "Too expensive"}
-                      </option>
-                      <option value="wrong_time">
-                        {locale === "es" ? "Mal horario" : "Wrong time"}
-                      </option>
-                      <option value="already_seen">
-                        {locale === "es" ? "Ya lo he visto" : "Already seen"}
-                      </option>
-                    </select>
-                  ) : (
-                    <input type="hidden" name="reason" value="" />
-                  )}
-                  <button className="button secondary" type="submit">
-                    {eventPreference?.state === "not_interested"
-                      ? locale === "es"
-                        ? "Deshacer"
-                        : "Undo"
-                      : locale === "es"
-                        ? "Confirmar"
-                        : "Confirm"}
-                  </button>
-                </form>
-              </details>
-            ) : null}
-            <a
-              className="button secondary"
-              href={eventStayHref(
-                locale,
-                resolvedVenue.locality,
-                occurrence.startsAt,
-                occurrence.endsAt,
-                {
-                  latitude: resolvedVenue.latitude,
-                  longitude: resolvedVenue.longitude,
-                },
-              )}
-            >
-              {locale === "es"
-                ? "Buscar alojamiento para este evento"
-                : "Find a stay for this event"}
-            </a>
-            <p className="muted">
-              {locale === "es"
-                ? "AkiDuermo está en vista previa: las fechas son orientativas, sin disponibilidad ni pago de reservas."
-                : "AkiDuermo is a preview: dates are for planning, with no live availability or booking payment."}
-            </p>
-            <ShareButton
-              title={translated(event.title, locale)}
-              label={locale === "es" ? "Compartir" : "Share"}
-              copiedLabel={locale === "es" ? "Enlace copiado" : "Link copied"}
-              venueId={resolvedVenue.id}
-              eventId={event.id}
-              locale={locale}
-            />
-            {premium ? (
-              <TrackedLink
-                className="button secondary"
-                href={"/" + locale + "/events/" + event.slug + "/calendar"}
-                action="calendar_add"
-                venueId={resolvedVenue.id}
-                eventId={event.id}
-                locale={locale}
-              >
-                {locale === "es" ? "Añadir al calendario" : "Add to calendar"}
-              </TrackedLink>
-            ) : user ? (
-              <Link
-                className="button secondary"
-                href={"/" + locale + "/account/subscription?plan=premium"}
-              >
-                {locale === "es"
-                  ? "Calendario con Premium"
-                  : "Calendar with Premium"}
-              </Link>
-            ) : null}
-            <Link
-              className="button secondary"
-              href={`/${locale}/community?target=event:${event.id}`}
-            >
-              {locale === "es" ? "Informar de un problema" : "Report a problem"}
-            </Link>
-            <Link className="button secondary" href={`/${locale}`}>
-              {m.back}
-            </Link>
-          </div>
-        </aside>
       </main>
     </>
   );

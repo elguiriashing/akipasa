@@ -12,6 +12,7 @@ import { optionalUser } from "@/lib/auth";
 import { toggleFollowedVenue } from "../../engagement/actions";
 import { AnalyticsView, TrackedLink } from "@/components/AnalyticsSignal";
 import { accommodationLabel } from "@/lib/accommodation";
+import { ShareButton } from "@/components/ShareButton";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 
 const loadVenue = cache((slug: string) => repository.venueBySlug(slug));
@@ -100,8 +101,11 @@ export default async function VenuePage({
           style={{ backgroundImage: `url(${bgImage})` }}
         />
       )}
-      <main className="shell detail-layout">
+      <main className="shell detail-layout app-detail-page compact-venue-page">
         <AnalyticsView action="venue_view" venueId={venue.id} locale={locale} />
+        <Link className="detail-back" href={`/${locale}`}>
+          ← {m.discover}
+        </Link>
         <article className="detail-card detail-card-primary">
           {venue.discoveryVertical === "accommodation" && (
             <span className="accommodation-badge">
@@ -117,10 +121,144 @@ export default async function VenuePage({
           ) : null}
           <div className="detail-intro">
             <div className="eyebrow">
-              {venue.verified ? <VerifiedBadge locale={locale} /> : m.community}
+              {venue.verified ? (
+                <VerifiedBadge locale={locale} />
+              ) : venue.claimStatus === "unclaimed" ? (
+                locale === "es" ? (
+                  "Local sin reclamar"
+                ) : (
+                  "Unclaimed venue"
+                )
+              ) : (
+                m.community
+              )}
             </div>
             <h1>{venue.name}</h1>
             <p className="lede">{venue.address}</p>
+            <div className="detail-overview">
+              {venue.accessible && (
+                <p className="detail-access">
+                  ✓{" "}
+                  {locale === "es"
+                    ? "Acceso sin escalones indicado"
+                    : "Step-free access indicated"}
+                </p>
+              )}
+              <div className="actions detail-actions">
+                <TrackedLink
+                  className="button"
+                  href={googleMapsDirectionsUrl(venue)}
+                  target="_blank"
+                  rel="noreferrer"
+                  action="directions_click"
+                  venueId={venue.id}
+                  locale={locale}
+                >
+                  {m.directions}
+                </TrackedLink>
+                {venue.phone && (
+                  <TrackedLink
+                    className="button secondary"
+                    href={`tel:${venue.phone}`}
+                    action="phone_click"
+                    venueId={venue.id}
+                    locale={locale}
+                  >
+                    {locale === "es" ? "Llamar" : "Call"}
+                  </TrackedLink>
+                )}
+                {venue.whatsappPhone && (
+                  <TrackedLink
+                    className="button secondary"
+                    href={`https://wa.me/${venue.whatsappPhone.replace(/\D/g, "")}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    action="whatsapp_click"
+                    venueId={venue.id}
+                    locale={locale}
+                  >
+                    WhatsApp
+                  </TrackedLink>
+                )}
+                {venue.websiteUrl && (
+                  <TrackedLink
+                    className="button secondary"
+                    href={venue.websiteUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    action="booking_click"
+                    venueId={venue.id}
+                    locale={locale}
+                  >
+                    {locale === "es" ? "Sitio web" : "Website"}
+                  </TrackedLink>
+                )}
+                {user ? (
+                  <form action={toggleFollowedVenue}>
+                    <input type="hidden" name="locale" value={locale} />
+                    <input type="hidden" name="key" value={venue.id} />
+                    <input type="hidden" name="label" value={venue.name} />
+                    <input type="hidden" name="href" value={returnTo} />
+                    <input type="hidden" name="returnTo" value={returnTo} />
+                    <input
+                      type="hidden"
+                      name="intent"
+                      value={followed ? "remove" : "add"}
+                    />
+                    <button className="button secondary" type="submit">
+                      {followed
+                        ? locale === "es"
+                          ? "Dejar de seguir"
+                          : "Unfollow"
+                        : locale === "es"
+                          ? "Seguir local"
+                          : "Follow venue"}
+                    </button>
+                  </form>
+                ) : (
+                  <Link
+                    className="button secondary"
+                    href={`/${locale}/auth?next=${encodeURIComponent(returnTo)}`}
+                  >
+                    {locale === "es" ? "Seguir local" : "Follow venue"}
+                  </Link>
+                )}
+                <ShareButton
+                  title={venue.name}
+                  label={locale === "es" ? "Compartir" : "Share"}
+                  copiedLabel={
+                    locale === "es" ? "Enlace copiado" : "Link copied"
+                  }
+                  venueId={venue.id}
+                  locale={locale}
+                />
+                <details className="detail-more">
+                  <summary>
+                    {locale === "es" ? "Más opciones" : "More options"}
+                  </summary>
+                  <div className="detail-more-actions">
+                    {venue.claimStatus === "unclaimed" && (
+                      <Link
+                        className="button secondary"
+                        href={`/${locale}/business?view=claims&venueId=${venue.id}`}
+                      >
+                        {locale === "es"
+                          ? "Reclamar este local"
+                          : "Claim this venue"}
+                      </Link>
+                    )}
+                    <Link
+                      className="button secondary"
+                      href={`/${locale}/community?target=venue:${venue.id}`}
+                    >
+                      {locale === "es"
+                        ? "Informar de un problema"
+                        : "Report a problem"}
+                    </Link>
+                  </div>
+                </details>
+              </div>
+            </div>
             <p className="detail-copy">
               {translated(venue.description, locale)}
             </p>
@@ -135,13 +273,15 @@ export default async function VenuePage({
                       alt={translated(item.alt, locale)}
                       width={720}
                       height={480}
-                      sizes="(max-width: 700px) 100vw, 50vw"
+                      sizes="180px"
                     />
                   ))}
                 </div>
               </section>
             ) : null}
-            <h2>{m.discover}</h2>
+            {events.length > 0 && (
+              <h2>{locale === "es" ? "Eventos" : "Events"}</h2>
+            )}
             {events.map((event) => (
               <p className="detail-event-row" key={event.id}>
                 <Link
@@ -189,119 +329,6 @@ export default async function VenuePage({
             ) : null}
           </div>
         </article>
-        <aside className="detail-sidebar detail-sidebar-polished">
-          <div className="detail-sidebar-heading">
-            <span>{locale === "es" ? "Datos del local" : "Venue details"}</span>
-            <strong>{venue.name}</strong>
-          </div>
-          <dl className="detail-facts">
-            <div>
-              <dt>{m.location}</dt>
-              <dd>{venue.address}</dd>
-            </div>
-            <div>
-              <dt>{m.accessibility}</dt>
-              <dd>{venue.accessible ? "✓" : "—"}</dd>
-            </div>
-          </dl>
-          <div className="actions detail-actions">
-            <TrackedLink
-              className="button"
-              href={googleMapsDirectionsUrl(venue)}
-              target="_blank"
-              rel="noreferrer"
-              action="directions_click"
-              venueId={venue.id}
-              locale={locale}
-            >
-              {m.directions}
-            </TrackedLink>
-            {venue.phone && (
-              <TrackedLink
-                className="button secondary"
-                href={`tel:${venue.phone}`}
-                action="phone_click"
-                venueId={venue.id}
-                locale={locale}
-              >
-                {locale === "es" ? "Llamar" : "Call"}
-              </TrackedLink>
-            )}
-            {venue.whatsappPhone && (
-              <TrackedLink
-                className="button secondary"
-                href={`https://wa.me/${venue.whatsappPhone.replace(/\D/g, "")}`}
-                target="_blank"
-                rel="noreferrer"
-                action="whatsapp_click"
-                venueId={venue.id}
-                locale={locale}
-              >
-                WhatsApp
-              </TrackedLink>
-            )}
-            {venue.websiteUrl && (
-              <TrackedLink
-                className="button secondary"
-                href={venue.websiteUrl}
-                target="_blank"
-                rel="noreferrer"
-                action="booking_click"
-                venueId={venue.id}
-                locale={locale}
-              >
-                {locale === "es" ? "Sitio web" : "Website"}
-              </TrackedLink>
-            )}
-            {venue.claimStatus === "unclaimed" && (
-              <Link
-                className="button secondary"
-                href={`/${locale}/business?view=claims&venueId=${venue.id}`}
-              >
-                {locale === "es" ? "Reclamar este local" : "Claim this venue"}
-              </Link>
-            )}
-            {user ? (
-              <form action={toggleFollowedVenue}>
-                <input type="hidden" name="locale" value={locale} />
-                <input type="hidden" name="key" value={venue.id} />
-                <input type="hidden" name="label" value={venue.name} />
-                <input type="hidden" name="href" value={returnTo} />
-                <input type="hidden" name="returnTo" value={returnTo} />
-                <input
-                  type="hidden"
-                  name="intent"
-                  value={followed ? "remove" : "add"}
-                />
-                <button className="button secondary" type="submit">
-                  {followed
-                    ? locale === "es"
-                      ? "Dejar de seguir"
-                      : "Unfollow"
-                    : locale === "es"
-                      ? "Seguir local"
-                      : "Follow venue"}
-                </button>
-              </form>
-            ) : (
-              <Link
-                className="button secondary"
-                href={`/${locale}/auth?next=${encodeURIComponent(returnTo)}`}
-              >
-                {locale === "es" ? "Seguir local" : "Follow venue"}
-              </Link>
-            )}
-            <Link
-              className="button secondary"
-              href={`/${locale}/community?target=venue:${venue.id}`}
-            >
-              {locale === "es" ? "Informar de un problema" : "Report a problem"}
-            </Link>
-            <Link className="button secondary" href={`/${locale}`}>
-              {m.back}
-            </Link>
-          </div>
-        </aside>
       </main>
     </>
   );

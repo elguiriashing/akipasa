@@ -26,8 +26,14 @@ screens so the business tools retain their existing layout.
   Keep save accessible above the bottom navigation.
 - Public creator profiles: shorter cover, single name, horizontal stats,
   condensed gallery, FAQ and contact sections.
-- Event pages: shorter cover, compact facts and actions; retain readable full
-  descriptions and all booking/report/save functionality.
+- Venue and event detail pages: one shared compact surface, identity shown once,
+  short optional cover, facts and primary actions before longer content.
+  Venue address appears once; omit empty events headings and unknown-access
+  placeholder rows. Keep follow/save/share visible, group claim/report/calendar
+  and trip-planning links in a native “More options” disclosure. Preserve all
+  booking eligibility, authentication return URLs and engagement forms.
+  Venue galleries scroll horizontally; event descriptions start expanded.
+  Use 44px actions, paired mobile facts/actions and three columns on desktop.
 
 Review improvements: do not force long content into one fixed screen. Only the
 map has fixed viewport height. Forms and descriptions scroll naturally, with
