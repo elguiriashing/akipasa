@@ -1336,3 +1336,191 @@ body:has(.app-detail-page) > .privacy-preferences .button {
   min-height: 44px;
   padding-right: 48px;
 }
+
+/* Membership is a plan picker, with optional comparison below. */
+.membership-app.membership-page {
+  min-height: 0;
+  max-width: 620px;
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+}
+.membership-app .membership-app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.membership-app-header h1 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+.membership-app-header a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 0.8rem;
+  color: var(--primary);
+}
+.membership-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 3px;
+  gap: 3px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+.membership-tabs button {
+  min-height: 44px;
+  padding: 8px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.membership-tabs button[aria-selected="true"] {
+  background: var(--primary);
+  color: #10251f;
+  font-weight: 750;
+}
+.membership-picker [role="tabpanel"][hidden] {
+  display: none;
+}
+.membership-app .membership-plan,
+.membership-app .membership-plan.featured {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  padding: 14px 2px 8px;
+  border: 0;
+  background: transparent;
+}
+.membership-app .membership-plan-heading {
+  gap: 4px;
+}
+.membership-app .membership-plan-heading .status-pill {
+  display: none;
+}
+.membership-app .membership-plan h2 {
+  font-size: 1.2rem;
+}
+.membership-app .membership-plan p {
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+.membership-app .membership-price-row {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.membership-app .membership-price-row > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 6px;
+}
+.membership-app .membership-price-row strong {
+  font-size: 1.65rem;
+  line-height: 1.1;
+}
+.membership-app .membership-price-row span {
+  font-size: 0.75rem;
+}
+.membership-app .membership-price-row small {
+  flex-basis: 100%;
+  font-size: 0.7rem;
+}
+.membership-app .membership-plan ul {
+  gap: 6px;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+.membership-app .membership-plan > .button {
+  grid-column: 1;
+  min-height: 44px;
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+}
+.membership-app .membership-plan-reassurance {
+  grid-column: 1;
+  margin: 0;
+  font-size: 0.7rem;
+}
+.membership-free-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px solid var(--line);
+  font-size: 0.78rem;
+}
+.membership-free-row a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  flex-shrink: 0;
+  color: var(--primary);
+}
+.membership-details {
+  border-top: 1px solid var(--line);
+}
+.membership-details > summary {
+  min-height: 44px;
+  padding: 12px 0;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+.membership-details p,
+.membership-details .membership-footnote {
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.membership-details .panel {
+  margin-top: 12px;
+  padding: 12px;
+}
+.membership-details h2 {
+  font-size: 1rem;
+}
+.membership-app .membership-billing-note {
+  margin: 0;
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+.app-content:has(> .membership-app) > .footer {
+  max-width: 620px;
+  margin-top: 0;
+  padding: 8px 12px;
+  gap: 4px;
+  font-size: 0.7rem;
+}
+body:has(.membership-app) > .privacy-preferences {
+  padding: 4px 12px 12px;
+}
+body:has(.membership-app) > .privacy-preferences .button {
+  min-height: 44px;
+  padding: 8px 12px;
+  font-size: 0.75rem;
+}
+@media (max-width: 850px) {
+  .app-shell:has(.membership-app) {
+    min-height: 0;
+  }
+  .app-shell:has(.membership-app) .app-content {
+    padding-bottom: 0;
+  }
+  .app-content:has(> .membership-app) > .footer > span {
+    display: none;
+  }
+  body:has(.membership-app) > .privacy-preferences {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+  .app-shell:has(.membership-app) .global-support-trigger {
+    display: none;
+  }
+}

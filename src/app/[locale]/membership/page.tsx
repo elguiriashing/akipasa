@@ -1,6 +1,7 @@
 import { publicPageMetadata } from "@/lib/page-metadata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { MembershipPicker } from "@/components/MembershipPicker";
 import { BusinessPackageExplorer } from "@/components/BusinessPackageExplorer";
 import { optionalUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
@@ -19,68 +20,20 @@ export default async function MembershipPage({
   const signedIn = Boolean(user);
 
   return (
-    <main className="shell membership-page">
-      <section className="membership-hero">
-        <div>
-          <div className="eyebrow">
-            {es ? "Elige lo que necesitas" : "Choose what you need"}
-          </div>
-          <h1>
-            {es
-              ? "Más valor local, sin complicaciones"
-              : "More local value, without the clutter"}
-          </h1>
-          <p className="lede">
-            {es
-              ? "Opciones claras para explorar, gestionar un negocio o dirigir operaciones con AkiHQ."
-              : "Clear options for discovery, business management, or advanced operations with AkiHQ."}
-          </p>
-        </div>
-        <div className="membership-hero-actions">
-          <Link
-            className="button button-strong"
-            href={
-              signedIn
-                ? `/${locale}/account/subscription`
-                : `/${locale}/auth?next=${encodeURIComponent(
-                    `/${locale}/account/subscription`,
-                  )}`
-            }
-          >
-            {signedIn
-              ? es
-                ? "Comparar y gestionar planes"
-                : "Compare and manage plans"
-              : es
-                ? "Entrar para continuar"
-                : "Sign in to continue"}
-          </Link>
-          <small>
-            {es
-              ? "Pagos seguros gestionados por Stripe. Cancela desde el portal de facturación."
-              : "Secure Stripe billing. Cancel from the billing portal."}
-          </small>
-        </div>
-      </section>
-
-      <section className="panel">
-        <h2>
-          {es ? "Tu local en AkiPasa: gratis" : "Your venue on AkiPasa: free"}
-        </h2>
-        <p>
-          {es
-            ? "Reclama tu local y, tras aprobar la titularidad, gestiona tu ficha, fotos, eventos y fidelidad sin suscripción. AkiHQ es una ampliación opcional."
-            : "Claim your venue and, after ownership approval, manage your page, photos, events and loyalty without a subscription. AkiHQ is an optional upgrade."}
-        </p>
-        <Link className="button" href={`/${locale}/business?view=claims`}>
-          {es ? "Reclamar mi local" : "Claim my venue"}
+    <main className="shell membership-page membership-app">
+      <header className="membership-app-header">
+        <h1>{es ? "Membresía" : "Membership"}</h1>
+        <Link
+          href={
+            signedIn
+              ? `/${locale}/account/subscription`
+              : `/${locale}/auth?next=${encodeURIComponent(`/${locale}/account/subscription`)}`
+          }
+        >
+          {es ? "Gestionar" : "Manage"}
         </Link>
-      </section>
-      <section
-        className="membership-plan-grid"
-        id="plans"
-        aria-label={es ? "Planes de membresía" : "Membership plans"}
-      >
+      </header>
+      <MembershipPicker locale={locale}>
         <MembershipCard
           locale={locale}
           plan="premium"
@@ -167,29 +120,53 @@ export default async function MembershipPage({
           signedIn={signedIn}
           id="business-pro-plan"
         />
-      </section>
-
-      <BusinessPackageExplorer locale={locale} />
-      <section className="panel">
-        <h2>
-          {es ? "Disponibilidad de las herramientas" : "Tool availability"}
-        </h2>
+      </MembershipPicker>
+      <div className="membership-free-row">
+        <span>
+          {es ? "Tu local en AkiPasa: gratis" : "Your venue on AkiPasa: free"}
+        </span>
+        <Link href={`/${locale}/business?view=claims`}>
+          {es ? "Reclamar →" : "Claim →"}
+        </Link>
+      </div>
+      <details className="membership-details">
+        <summary>
+          {es
+            ? "Comparar herramientas y condiciones"
+            : "Compare tools and conditions"}
+        </summary>
         <p>
           {es
-            ? "AkiHQ incluye herramientas de gestión según el plan y los permisos del equipo. Conectar un correo o una red social externa requiere un proveedor compatible y configuración: no está disponible para todos los clientes todavía."
-            : "AkiHQ includes management tools according to plan and team permissions. Connecting an external mailbox or social network requires a supported provider and setup: this is not available to all customers yet."}
+            ? "Tras aprobar la titularidad, gestiona tu ficha, fotos, eventos y fidelidad sin suscripción. AkiHQ es una ampliación opcional."
+            : "After ownership approval, manage your page, photos, events and loyalty without a subscription. AkiHQ is an optional upgrade."}
         </p>
-        <p>
-          {es
-            ? "Webs, marketing, Telegram y analítica de plataforma son herramientas internas. Los pagos con tarjeta, impresión física y presentación fiscal requieren configuración y validación adicionales. AkiDuermo aún no acepta reservas ni pagos."
-            : "Sites, marketing, Telegram and platform analytics are internal tools. Card payments, physical printing and fiscal submission require additional configuration and validation. AkiDuermo does not yet accept bookings or payments."}
-        </p>
-      </section>
+        <BusinessPackageExplorer locale={locale} />
+        <section className="panel">
+          <h2>
+            {es ? "Disponibilidad de las herramientas" : "Tool availability"}
+          </h2>
+          <p>
+            {es
+              ? "AkiHQ incluye herramientas de gestión según el plan y los permisos del equipo. Conectar un correo o una red social externa requiere un proveedor compatible y configuración: no está disponible para todos los clientes todavía."
+              : "AkiHQ includes management tools according to plan and team permissions. Connecting an external mailbox or social network requires a supported provider and setup: this is not available to all customers yet."}
+          </p>
+          <p>
+            {es
+              ? "Webs, marketing, Telegram y analítica de plataforma son herramientas internas. Los pagos con tarjeta, impresión física y presentación fiscal requieren configuración y validación adicionales. AkiDuermo aún no acepta reservas ni pagos."
+              : "Sites, marketing, Telegram and platform analytics are internal tools. Card payments, physical printing and fiscal submission require additional configuration and validation. AkiDuermo does not yet accept bookings or payments."}
+          </p>
+        </section>
 
-      <p className="membership-footnote">
+        <p className="membership-footnote">
+          {es
+            ? "El acceso de negocio está sujeto a revisión. Los puntos, sellos y pasaportes no tienen valor en efectivo."
+            : "Business access is subject to review. Points, stamps, and passports have no cash value."}
+        </p>
+      </details>
+      <p className="membership-billing-note">
         {es
-          ? "El acceso de negocio está sujeto a revisión. Los puntos, sellos y pasaportes no tienen valor en efectivo."
-          : "Business access is subject to review. Points, stamps, and passports have no cash value."}
+          ? "Pago seguro con Stripe · Cancela desde facturación"
+          : "Secure Stripe billing · Cancel from billing settings"}
       </p>
     </main>
   );

@@ -40,6 +40,17 @@ map has fixed viewport height. Forms and descriptions scroll naturally, with
 44px tap targets and 16px input text. Use native dialog focus management and
 Escape dismissal; editor tabs support arrow keys, Home and End.
 
+## Membership
+
+The membership route uses Personal, Business and Pro tabs with keyboard navigation.
+Only one plan is visible at a time; monthly and annual prices remain side by side.
+Keep existing plan/authentication destinations and prices. Business and Pro hash
+links select their respective panels. Free venue claiming stays visible; the full
+business-tool explorer, availability notes and conditions are in a disclosure.
+The core selector targets one mobile screen, allowing natural scroll for expanded
+information, smaller screens and larger accessibility text. Footer and privacy
+controls follow content with bottom-navigation clearance only at the end.
+
 ## Release
 
 Public source is master. Validate formatting, lint, types, tests and build;
