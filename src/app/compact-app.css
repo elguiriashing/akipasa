@@ -1303,3 +1303,36 @@ body:has(.app-detail-page) > .privacy-preferences .button {
     padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
   }
 }
+
+.akipasa-map-popup .maplibregl-popup-close-button {
+  top: 6px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgb(45 212 191 / 35%);
+  border-radius: 12px;
+  background: #16423b;
+  color: #fff;
+  font: 26px/1 sans-serif;
+  cursor: pointer;
+}
+.akipasa-map-popup .maplibregl-popup-close-button:hover {
+  background: #24584c;
+}
+.akipasa-map-popup .maplibregl-popup-close-button:focus-visible {
+  outline: 3px solid #ff9a52;
+  outline-offset: 2px;
+}
+.akipasa-map-popup .map-popup-category {
+  display: flex;
+  align-items: center;
+  min-height: 38px;
+  padding-right: 48px;
+}
+.akipasa-map-popup .maplibregl-popup-content > p {
+  min-height: 44px;
+  padding-right: 48px;
+}

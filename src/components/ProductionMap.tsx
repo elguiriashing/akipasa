@@ -277,6 +277,9 @@ export function ProductionMap({
           attributionControl: false,
           maxPitch: 48,
           cooperativeGestures: !fullScreen,
+          locale: {
+            "Popup.Close": locale === "es" ? "Cerrar tarjeta" : "Close card",
+          },
           renderWorldCopies: false,
         });
         map.addControl(
@@ -435,7 +438,7 @@ export function ProductionMap({
             activePopupId = point.id;
             const popup = new maplibregl.Popup({
               offset: 16,
-              closeButton: false,
+              closeButton: true,
               className: "akipasa-map-popup",
               maxWidth: "260px",
             }).setLngLat([point.longitude, point.latitude]);
