@@ -1268,3 +1268,38 @@ body:has(.map-page) > .privacy-preferences .button {
     font-size: 0.75rem;
   }
 }
+
+/* Detail-page footer must sit above the decorative image, with navigation
+   clearance after the final privacy control rather than before it. */
+.app-content:has(> .app-detail-page) > .liquid-glass-bg {
+  pointer-events: none;
+}
+.app-content:has(> .app-detail-page) > .footer,
+body:has(.app-detail-page) > .privacy-preferences {
+  position: relative;
+  z-index: 1;
+}
+body:has(.app-detail-page) > .privacy-preferences {
+  padding: 8px 12px 12px;
+}
+body:has(.app-detail-page) > .privacy-preferences .button {
+  min-height: 44px;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+}
+@media (max-width: 850px) {
+  .app-shell:has(.app-detail-page) {
+    min-height: 0;
+  }
+  .app-shell:has(.app-detail-page) .app-content {
+    padding-bottom: 0;
+  }
+  .app-content:has(> .app-detail-page) > .footer {
+    margin-top: 0;
+    gap: 6px;
+    padding-block: 8px;
+  }
+  body:has(.app-detail-page) > .privacy-preferences {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+}
