@@ -145,7 +145,7 @@ export default async function EventPage({
           style={{ backgroundImage: `url(${bgImage})` }}
         />
       )}
-      <main className="shell detail-layout">
+      <main className="shell detail-layout compact-event-page">
         <AnalyticsView
           action="event_view"
           venueId={resolvedVenue.id}
@@ -192,9 +192,14 @@ export default async function EventPage({
             <p className="lede">
               {date} · {resolvedVenue.name}
             </p>
-            <p className="detail-copy">
-              {translated(event.description, locale)}
-            </p>
+            <details className="event-description">
+              <summary>
+                {locale === "es" ? "Sobre este evento" : "About this event"}
+              </summary>
+              <p className="detail-copy">
+                {translated(event.description, locale)}
+              </p>
+            </details>
             <Link
               className="venue-context-link"
               href={`/${locale}/venues/${resolvedVenue.slug}`}

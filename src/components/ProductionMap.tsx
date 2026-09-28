@@ -733,11 +733,11 @@ export function ProductionMap({
           role="application"
           aria-label={locale === "es" ? "Mapa interactivo" : "Interactive map"}
         />
-        <aside
+        <details
           className="map-legend"
           aria-label={locale === "es" ? "Leyenda del mapa" : "Map legend"}
         >
-          <strong>{locale === "es" ? "Leyenda" : "Legend"}</strong>
+          <summary>{locale === "es" ? "Leyenda" : "Legend"}</summary>
           {vertical === "accommodation" ? (
             <span>
               <i className="map-legend-pin map-legend-accommodation">
@@ -773,7 +773,7 @@ export function ProductionMap({
               </span>
             </>
           )}
-        </aside>
+        </details>
       </div>
     </section>
   );

@@ -100,7 +100,9 @@ export function WorkspaceShell({
           ? "account-workspace"
           : homeHref.includes("/passports")
             ? "passports-workspace"
-            : "";
+            : homeHref.includes("/community")
+              ? "community-workspace"
+              : "";
   const activeItem = items.find((item) =>
     matchesPath(pathname, searchParams, item.href),
   );
