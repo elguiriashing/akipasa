@@ -5,7 +5,7 @@ import { requireUser } from "@/lib/auth";
 import { config } from "@/lib/config";
 import {
   billingPlanSchema,
-  stripePriceId,
+  stripeValidatedPriceId,
   stripeRequest,
   stripeRetrieve,
 } from "@/lib/stripe";
@@ -46,7 +46,13 @@ export async function startSubscriptionCheckout(formData: FormData) {
     (subscription) =>
       subscription.plan_code === parsed.data.plan && isCurrent(subscription),
   );
-  if (activeSubscription)
+  const alreadyPro =
+    parsed.data.plan === "business" &&
+    (existingSubscriptions || []).some(
+      (subscription) =>
+        subscription.plan_code === "business_pro" && isCurrent(subscription),
+    );
+  if (activeSubscription || alreadyPro)
     redirect(
       `/${locale}/account/subscription?plan=${parsed.data.plan}&error=active`,
     );
@@ -62,10 +68,7 @@ export async function startSubscriptionCheckout(formData: FormData) {
       .eq("applicant_id", user.id)
       .eq("state", "awaiting_payment")
       .maybeSingle();
-    if (
-      !application &&
-      !(parsed.data.plan === "business_pro" && existingBusiness)
-    )
+    if (!application && !existingBusiness)
       redirect(`/${locale}/business/apply?error=review_required`);
     if (application) {
       const { error: packageError } = await supabase.rpc(
@@ -88,6 +91,13 @@ export async function startSubscriptionCheckout(formData: FormData) {
     .eq("profile_id", user.id)
     .maybeSingle();
 
+  let selectedPriceId: string;
+  try {
+    selectedPriceId = await stripeValidatedPriceId(parsed.data);
+  } catch {
+    redirect(`/${locale}/account/subscription?error=checkout`);
+  }
+
   const activeBusinessSubscription = (existingSubscriptions || []).find(
     (subscription) =>
       subscription.plan_code === "business" && isCurrent(subscription),
@@ -107,15 +117,13 @@ export async function startSubscriptionCheckout(formData: FormData) {
         `/subscriptions/${subscriptionId}`,
         new URLSearchParams({
           "items[0][id]": itemId,
-          "items[0][price]": stripePriceId(parsed.data),
+          "items[0][price]": selectedPriceId,
           "items[0][quantity]": "1",
           payment_behavior: "pending_if_incomplete",
           proration_behavior: "always_invoice",
           "expand[0]": "latest_invoice",
-          "metadata[profile_id]": user.id,
-          "metadata[plan_code]": "business_pro",
-          "metadata[billing_interval]": parsed.data.interval,
-          "metadata[business_category]": selectedBusinessCategory,
+          // Keep pending updates compatible with the account's Clover API.
+          // Ownership is already stored; webhook access follows the paid price.
         }),
         `business-pro-upgrade:${user.id}:${activeBusinessSubscription.stripe_subscription_id}:${parsed.data.interval}`,
       );
@@ -138,7 +146,7 @@ export async function startSubscriptionCheckout(formData: FormData) {
   const cancelUrl = `${config.siteUrl}/${locale}/account/subscription?checkout=cancelled`;
   const parameters = new URLSearchParams({
     mode: "subscription",
-    "line_items[0][price]": stripePriceId(parsed.data),
+    "line_items[0][price]": selectedPriceId,
     "line_items[0][quantity]": "1",
     client_reference_id: user.id,
     success_url: successUrl,

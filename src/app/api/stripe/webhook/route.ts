@@ -1,6 +1,9 @@
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import {
   stripeBillingPlanForPrice,
+  stripeEventSubscriptionId,
+  stripeObjectId,
+  stripeRetrieve,
   stripeSubscriptionPeriodEnd,
   stripeProcessingError,
   verifyStripeSignature,
@@ -21,6 +24,8 @@ const subscriptionEvents = new Set([
   "customer.subscription.created",
   "customer.subscription.updated",
   "customer.subscription.deleted",
+  "customer.subscription.paused",
+  "customer.subscription.resumed",
 ]);
 const subscriptionStatuses = new Set([
   "active",
@@ -44,32 +49,31 @@ function unixDate(value: unknown) {
 }
 
 async function processEvent(event: StripeEvent) {
-  const object = event.data.object;
+  let object = event.data.object;
   const supabase = createSupabaseServiceClient();
 
-  if (event.type === "checkout.session.completed") {
-    const profileId =
-      stringValue(object.client_reference_id) ||
-      stringValue((object.metadata as Record<string, unknown>)?.profile_id);
-    const customerId = stringValue(object.customer);
-    if (profileId && customerId) {
-      const { error } = await supabase.from("billing_customers").upsert(
-        {
-          profile_id: profileId,
-          stripe_customer_id: customerId,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "profile_id" },
-      );
-      if (error) throw error;
-    }
+  const checkoutEvent =
+    event.type === "checkout.session.completed" ||
+    event.type === "checkout.session.async_payment_succeeded";
+  const invoiceEvent =
+    event.type === "invoice.paid" || event.type === "invoice.payment_failed";
+  if (!checkoutEvent && !invoiceEvent && !subscriptionEvents.has(event.type))
     return;
-  }
-
-  if (!subscriptionEvents.has(event.type)) return;
+  if (
+    checkoutEvent &&
+    !["paid", "no_payment_required"].includes(String(object.payment_status))
+  )
+    return;
+  const relatedSubscription = stripeEventSubscriptionId(event.type, object);
+  if (!relatedSubscription) return; // One-off payments on this shared Stripe account.
+  // Retrieve current state: a delayed invoice/Checkout event must not restore
+  // access after a subsequent cancellation or downgrade.
+  object = await stripeRetrieve<Record<string, unknown>>(
+    `/subscriptions/${encodeURIComponent(relatedSubscription)}`,
+  );
 
   const metadata = (object.metadata || {}) as Record<string, unknown>;
-  const profileId = stringValue(metadata.profile_id);
+
   const subscriptionItems = object.items as
     | {
         data?: Array<{
@@ -79,11 +83,36 @@ async function processEvent(event: StripeEvent) {
     | undefined;
   const priceId = stringValue(subscriptionItems?.data?.[0]?.price?.id);
   const pricePlan = stripeBillingPlanForPrice(priceId);
-  const planCode = pricePlan?.plan || stringValue(metadata.plan_code);
-  const billingInterval =
-    pricePlan?.interval || stringValue(metadata.billing_interval);
+  // Unknown prices belong to other products; metadata cannot grant a paid tier.
+  if (!pricePlan) return;
+  const planCode = pricePlan.plan;
+  const billingInterval = pricePlan.interval;
   const subscriptionId = stringValue(object.id);
-  const customerId = stringValue(object.customer);
+  const customerId = stripeObjectId(object.customer);
+  const { data: existingSubscription, error: subscriptionLookupError } =
+    await supabase
+      .from("billing_subscriptions")
+      .select("profile_id,stripe_customer_id")
+      .eq("stripe_subscription_id", relatedSubscription)
+      .maybeSingle();
+  if (subscriptionLookupError) throw subscriptionLookupError;
+  const { data: existingCustomer, error: customerLookupError } = await supabase
+    .from("billing_customers")
+    .select("profile_id")
+    .eq("stripe_customer_id", customerId || "")
+    .maybeSingle();
+  if (customerLookupError) throw customerLookupError;
+  const profileId =
+    existingSubscription?.profile_id ||
+    existingCustomer?.profile_id ||
+    stringValue(metadata.profile_id);
+  if (
+    existingSubscription &&
+    existingSubscription.stripe_customer_id !== customerId
+  )
+    throw new Error("Subscription customer mismatch");
+  if (existingCustomer && existingCustomer.profile_id !== profileId)
+    throw new Error("Subscription ownership mismatch");
   const objectStatus = stringValue(object.status);
   const status =
     event.type === "customer.subscription.deleted" ? "canceled" : objectStatus;

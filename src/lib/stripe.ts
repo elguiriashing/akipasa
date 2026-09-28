@@ -51,6 +51,11 @@ export function stripeBillingPlanForPrice(priceId: string | null) {
     ];
     return { plan, interval };
   }
+  // Archived prices remain valid for existing subscribers, never new checkout.
+  if (priceId === "price_1Ty7zbGfzDhsgsQZU95Xdbrt")
+    return { plan: "premium", interval: "month" } as BillingPlan;
+  if (priceId === "price_1Ty7znGfzDhsgsQZPmNfCTHA")
+    return { plan: "premium", interval: "year" } as BillingPlan;
   return null;
 }
 
@@ -59,6 +64,67 @@ export function stripePriceId({ plan, interval }: BillingPlan) {
   const value = process.env[name];
   if (!value) throw new Error(`${name} is not configured`);
   return value;
+}
+
+// Amounts shown on the public membership page, in euro cents.
+export const billingAmounts = {
+  "premium:month": 199,
+  "premium:year": 1999,
+  "business:month": 2000,
+  "business:year": 19000,
+  "business_pro:month": 6000,
+  "business_pro:year": 57000,
+} as const;
+
+export async function stripeValidatedPriceId(selection: BillingPlan) {
+  const id = stripePriceId(selection);
+  const price = await stripeRetrieve<{
+    id: string;
+    active: boolean;
+    currency: string;
+    unit_amount: number;
+    recurring?: { interval: string; interval_count: number };
+  }>(`/prices/${encodeURIComponent(id)}`);
+  if (
+    price.id !== id ||
+    !price.active ||
+    price.currency !== "eur" ||
+    price.unit_amount !==
+      billingAmounts[`${selection.plan}:${selection.interval}`] ||
+    price.recurring?.interval !== selection.interval ||
+    price.recurring.interval_count !== 1
+  )
+    throw new Error("Stripe price does not match the advertised package");
+  return id;
+}
+
+export function stripeObjectId(value: unknown): string | null {
+  if (typeof value === "string") return value;
+  if (
+    value &&
+    typeof value === "object" &&
+    "id" in value &&
+    typeof value.id === "string"
+  )
+    return value.id;
+  return null;
+}
+
+export function stripeEventSubscriptionId(
+  type: string,
+  object: Record<string, unknown>,
+) {
+  if (type.startsWith("customer.subscription."))
+    return stripeObjectId(object.id);
+  if (type.startsWith("checkout.session."))
+    return stripeObjectId(object.subscription);
+  const parent = object.parent as
+    | { subscription_details?: { subscription?: unknown } }
+    | undefined;
+  return (
+    stripeObjectId(parent?.subscription_details?.subscription) ||
+    stripeObjectId(object.subscription)
+  );
 }
 
 export async function stripeRequest<T>(

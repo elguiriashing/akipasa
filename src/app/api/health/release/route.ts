@@ -10,12 +10,20 @@ export async function GET() {
       data?.database_ready === true &&
       data?.release === "2026-09-26-product-readiness";
     return Response.json(
-      { release: "2026-09-26-product-readiness", databaseReady: ready },
+      {
+        release: "2026-09-26-product-readiness",
+        billingRelease: "2026-09-28-billing-catalogue",
+        databaseReady: ready,
+      },
       { status: ready ? 200 : 503, headers: { "Cache-Control": "no-store" } },
     );
   } catch {
     return Response.json(
-      { release: "2026-09-26-product-readiness", databaseReady: false },
+      {
+        release: "2026-09-26-product-readiness",
+        billingRelease: "2026-09-28-billing-catalogue",
+        databaseReady: false,
+      },
       { status: 503, headers: { "Cache-Control": "no-store" } },
     );
   }

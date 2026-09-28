@@ -1,9 +1,12 @@
 import { readFileSync } from "node:fs";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { buildCalendar } from "../src/lib/calendar";
 import { readBoundedText } from "../src/lib/request-security";
 import {
   stripeBillingPlanForPrice,
+  stripeValidatedPriceId,
+  stripeEventSubscriptionId,
+  billingAmounts,
   verifyStripeSignature,
 } from "../src/lib/stripe";
 
@@ -153,5 +156,246 @@ describe("paid entitlement contracts", () => {
     if (previous === undefined)
       delete process.env.STRIPE_BUSINESS_PRO_MONTHLY_PRICE_ID;
     else process.env.STRIPE_BUSINESS_PRO_MONTHLY_PRICE_ID = previous;
+  });
+});
+
+describe("live catalogue validation", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
+  });
+  const selections = [
+    ["premium", "month", "STRIPE_PREMIUM_MONTHLY_PRICE_ID"],
+    ["premium", "year", "STRIPE_PREMIUM_YEARLY_PRICE_ID"],
+    ["business", "month", "STRIPE_BUSINESS_MONTHLY_PRICE_ID"],
+    ["business", "year", "STRIPE_BUSINESS_YEARLY_PRICE_ID"],
+    ["business_pro", "month", "STRIPE_BUSINESS_PRO_MONTHLY_PRICE_ID"],
+    ["business_pro", "year", "STRIPE_BUSINESS_PRO_YEARLY_PRICE_ID"],
+  ] as const;
+  it.each(selections)(
+    "validates and maps %s %s",
+    async (plan, interval, env) => {
+      vi.stubEnv(env, "price_selected");
+      vi.stubEnv("STRIPE_SECRET_KEY", "test-key");
+      vi.stubGlobal(
+        "fetch",
+        vi.fn().mockResolvedValue(
+          Response.json({
+            id: "price_selected",
+            active: true,
+            currency: "eur",
+            unit_amount: billingAmounts[`${plan}:${interval}`],
+            recurring: { interval, interval_count: 1 },
+          }),
+        ),
+      );
+      expect(await stripeValidatedPriceId({ plan, interval })).toBe(
+        "price_selected",
+      );
+      expect(stripeBillingPlanForPrice("price_selected")).toEqual({
+        plan,
+        interval,
+      });
+    },
+  );
+  it.each([
+    { unit_amount: 500 },
+    { active: false },
+    { currency: "usd" },
+    { recurring: { interval: "year", interval_count: 1 } },
+    { recurring: { interval: "month", interval_count: 3 } },
+  ])("blocks an incorrect catalogue price: %j", async (override) => {
+    vi.stubEnv("STRIPE_PREMIUM_MONTHLY_PRICE_ID", "price_selected");
+    vi.stubEnv("STRIPE_SECRET_KEY", "test-key");
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        Response.json({
+          id: "price_selected",
+          active: true,
+          currency: "eur",
+          unit_amount: 199,
+          recurring: { interval: "month", interval_count: 1 },
+          ...override,
+        }),
+      ),
+    );
+    await expect(
+      stripeValidatedPriceId({ plan: "premium", interval: "month" }),
+    ).rejects.toThrow("advertised package");
+  });
+  it("resolves both invoice API shapes and expanded Stripe objects", () => {
+    expect(
+      stripeEventSubscriptionId("invoice.paid", {
+        parent: { subscription_details: { subscription: "sub_new" } },
+      }),
+    ).toBe("sub_new");
+    expect(
+      stripeEventSubscriptionId("invoice.payment_failed", {
+        subscription: "sub_legacy",
+      }),
+    ).toBe("sub_legacy");
+    expect(
+      stripeEventSubscriptionId("checkout.session.async_payment_succeeded", {
+        subscription: { id: "sub_expanded" },
+      }),
+    ).toBe("sub_expanded");
+    expect(stripeEventSubscriptionId("invoice.paid", {})).toBeNull();
+    expect(stripeBillingPlanForPrice("price_unrelated")).toBeNull();
+  });
+});
+
+const webhookDb = vi.hoisted(() => ({
+  rpc: vi.fn(),
+  from: vi.fn(),
+}));
+vi.mock("@/lib/supabase/service", () => ({
+  createSupabaseServiceClient: () => webhookDb,
+}));
+vi.mock("@/lib/stripe", async () => await import("../src/lib/stripe"));
+vi.mock(
+  "@/lib/request-security",
+  async () => await import("../src/lib/request-security"),
+);
+
+describe("payment event fulfillment", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
+    vi.clearAllMocks();
+  });
+  async function deliver(
+    type: string,
+    object: Record<string, unknown>,
+    status = "active",
+    price = "price_premium",
+    duplicate = false,
+  ) {
+    vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_test");
+    vi.stubEnv("STRIPE_SECRET_KEY", "test-key");
+    vi.stubEnv("STRIPE_PREMIUM_MONTHLY_PRICE_ID", "price_premium");
+    const fetchMock = vi.fn().mockResolvedValue(
+      Response.json({
+        id: "sub_test",
+        customer: "cus_test",
+        status,
+        metadata: { profile_id: "profile_test", plan_code: "business_pro" },
+        items: {
+          data: [{ price: { id: price }, current_period_end: 2_000_000_000 }],
+        },
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    webhookDb.rpc.mockImplementation(async (name: string) => ({
+      data: name === "claim_stripe_webhook_event" ? !duplicate : true,
+      error: null,
+    }));
+    webhookDb.from.mockImplementation(() => {
+      const chain = {
+        select: () => chain,
+        eq: () => chain,
+        maybeSingle: async () => ({ data: null, error: null }),
+        upsert: async () => ({ error: null }),
+        update: () => ({ eq: async () => ({ error: null }) }),
+      };
+      return chain;
+    });
+    const created = Math.floor(Date.now() / 1000);
+    const payload = JSON.stringify({
+      id: "evt_test",
+      type,
+      created,
+      data: { object },
+    });
+    const { POST } = await import("../src/app/api/stripe/webhook/route");
+    const response = await POST(
+      new Request("https://akipasa.com/api/stripe/webhook", {
+        method: "POST",
+        body: payload,
+        headers: {
+          "stripe-signature": await sign(payload, created, "whsec_test"),
+        },
+      }),
+    );
+    return {
+      response,
+      fetchMock,
+      sync: webhookDb.rpc.mock.calls.filter(
+        ([name]) => name === "sync_stripe_subscription",
+      ),
+    };
+  }
+  it.each([
+    [
+      "checkout.session.completed",
+      { subscription: "sub_test", payment_status: "paid" },
+      "active",
+    ],
+    [
+      "checkout.session.async_payment_succeeded",
+      { subscription: "sub_test", payment_status: "paid" },
+      "active",
+    ],
+    [
+      "invoice.paid",
+      { parent: { subscription_details: { subscription: "sub_test" } } },
+      "active",
+    ],
+    ["invoice.payment_failed", { subscription: "sub_test" }, "past_due"],
+    ["customer.subscription.deleted", { id: "sub_test" }, "canceled"],
+    ["customer.subscription.paused", { id: "sub_test" }, "paused"],
+    ["customer.subscription.resumed", { id: "sub_test" }, "active"],
+  ])(
+    "syncs %s from Stripe to the correct access tier",
+    async (type, object, status) => {
+      const result = await deliver(
+        type as string,
+        object as Record<string, unknown>,
+        status as string,
+      );
+      expect(result.response.status).toBe(200);
+      expect(result.sync).toHaveLength(1);
+      expect(result.sync[0][1]).toMatchObject({
+        p_plan: "premium",
+        p_interval: "month",
+        p_status: status,
+        p_profile: "profile_test",
+      });
+    },
+  );
+  it("does not grant unpaid Checkout or duplicate events", async () => {
+    const unpaid = await deliver("checkout.session.completed", {
+      subscription: "sub_test",
+      payment_status: "unpaid",
+    });
+    expect(unpaid.sync).toHaveLength(0);
+    expect(unpaid.fetchMock).not.toHaveBeenCalled();
+    const duplicate = await deliver(
+      "invoice.paid",
+      { subscription: "sub_test" },
+      "active",
+      "price_premium",
+      true,
+    );
+    expect(duplicate.sync).toHaveLength(0);
+    expect(duplicate.fetchMock).not.toHaveBeenCalled();
+  });
+  it("does not grant access for unrelated products with misleading metadata", async () => {
+    const result = await deliver(
+      "customer.subscription.created",
+      { id: "sub_test" },
+      "active",
+      "price_unrelated",
+    );
+    expect(result.response.status).toBe(200);
+    expect(result.sync).toHaveLength(0);
+  });
+  it("uses current cancellation state when an old paid invoice arrives", async () => {
+    const result = await deliver(
+      "invoice.paid",
+      { subscription: "sub_test" },
+      "canceled",
+    );
+    expect(result.sync[0][1]).toMatchObject({ p_status: "canceled" });
   });
 });
