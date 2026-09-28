@@ -357,8 +357,7 @@ export default async function CreatorStudioPage({
             </details>
             <details className="studio-optional">
               <summary>
-                {es ? "Categorías" : "Categories"} · {selectedCategoryIds.size}
-                /6
+                {es ? "Categorías (hasta 6)" : "Categories (up to 6)"}
               </summary>
               <fieldset className="creator-category-picker">
                 <legend>
