@@ -1025,3 +1025,23 @@
     clip-path: inset(50%);
   }
 }
+
+/* Keep privacy controls reachable without adding a second page below the map. */
+body:has(.map-page) > .privacy-preferences {
+  position: fixed;
+  z-index: 4;
+  right: 12px;
+  bottom: 76px;
+  padding: 0;
+}
+body:has(.map-page) > .privacy-preferences .button {
+  min-height: 44px;
+  padding: 8px 10px;
+  font-size: 0.72rem;
+  background: var(--surface);
+}
+@media (max-width: 850px) {
+  body:has(.map-page) > .privacy-preferences {
+    bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+}
