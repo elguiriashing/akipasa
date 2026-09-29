@@ -5,7 +5,7 @@ import { requireUser } from "@/lib/auth";
 import { config } from "@/lib/config";
 import {
   billingPlanSchema,
-  stripeValidatedPriceId,
+  stripePriceId,
   stripeRequest,
   stripeRetrieve,
 } from "@/lib/stripe";
@@ -91,13 +91,6 @@ export async function startSubscriptionCheckout(formData: FormData) {
     .eq("profile_id", user.id)
     .maybeSingle();
 
-  let selectedPriceId: string;
-  try {
-    selectedPriceId = await stripeValidatedPriceId(parsed.data);
-  } catch {
-    redirect(`/${locale}/account/subscription?error=checkout`);
-  }
-
   const activeBusinessSubscription = (existingSubscriptions || []).find(
     (subscription) =>
       subscription.plan_code === "business" && isCurrent(subscription),
@@ -117,7 +110,7 @@ export async function startSubscriptionCheckout(formData: FormData) {
         `/subscriptions/${subscriptionId}`,
         new URLSearchParams({
           "items[0][id]": itemId,
-          "items[0][price]": selectedPriceId,
+          "items[0][price]": stripePriceId(parsed.data),
           "items[0][quantity]": "1",
           payment_behavior: "pending_if_incomplete",
           proration_behavior: "always_invoice",
@@ -146,7 +139,7 @@ export async function startSubscriptionCheckout(formData: FormData) {
   const cancelUrl = `${config.siteUrl}/${locale}/account/subscription?checkout=cancelled`;
   const parameters = new URLSearchParams({
     mode: "subscription",
-    "line_items[0][price]": selectedPriceId,
+    "line_items[0][price]": stripePriceId(parsed.data),
     "line_items[0][quantity]": "1",
     client_reference_id: user.id,
     success_url: successUrl,
