@@ -182,6 +182,7 @@ export async function CreatorDirectoryPage({
             <Link
               className={!category ? "active" : ""}
               href={`/${locale}/community/creators`}
+              prefetch={false}
             >
               {es ? "Todos" : "All"}
             </Link>
@@ -190,6 +191,7 @@ export async function CreatorDirectoryPage({
                 className={category === item.slug ? "active" : ""}
                 key={item.slug}
                 href={`/${locale}/community/creators?category=${encodeURIComponent(item.slug)}`}
+                prefetch={false}
               >
                 {es ? item.name_es : item.name_en || item.name_es}
               </Link>
@@ -217,6 +219,7 @@ export async function CreatorDirectoryPage({
                     </div>
                     <Link
                       href={`/${locale}/community/creators?category=${encodeURIComponent(item.slug)}`}
+                      prefetch={false}
                     >
                       {es ? "Ver todos" : "View all"}{" "}
                       <span aria-hidden="true">→</span>
@@ -320,6 +323,7 @@ function CreatorCard({
     <Link
       className="creator-card creator-card-v2"
       href={`/${locale}/community/creators/${creator.slug}`}
+      prefetch={false}
     >
       <div className="creator-card-media">
         {creator.cover_url ? (
