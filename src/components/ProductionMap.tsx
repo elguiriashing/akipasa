@@ -15,6 +15,7 @@ import {
   type DiscoveryVertical,
 } from "@/lib/accommodation";
 import { stayHref } from "@/lib/akiduermo-routing";
+import { applyMapTheme, readMapTheme } from "@/lib/map-theme";
 import { MapTileLoader } from "@/lib/map-tiles";
 import type { Locale } from "@/lib/config";
 import { trackBehaviour } from "@/lib/personalisation/client";
@@ -37,40 +38,6 @@ export type MapPoint = {
     | "accommodation";
   kind?: "event" | "venue";
 };
-
-function tuneMapPalette(map: import("maplibre-gl").Map) {
-  for (const layer of map.getStyle().layers || []) {
-    const id = layer.id.toLowerCase();
-    try {
-      if (layer.type === "background")
-        map.setPaintProperty(layer.id, "background-color", "#14213d");
-      if (layer.type === "fill" && /water/.test(id))
-        map.setPaintProperty(layer.id, "fill-color", "#294d71");
-      if (layer.type === "fill" && /park|wood|forest|grass/.test(id))
-        map.setPaintProperty(layer.id, "fill-color", "#233c51");
-      if (layer.type === "fill" && /building/.test(id))
-        map.setPaintProperty(layer.id, "fill-color", "#334864");
-      if (layer.type === "fill" && /land|residential/.test(id))
-        map.setPaintProperty(layer.id, "fill-color", "#1c2d4b");
-      if (layer.type === "line" && /motorway|trunk|primary/.test(id))
-        map.setPaintProperty(layer.id, "line-color", "#f26b1d");
-      if (layer.type === "line" && /road|street|path/.test(id))
-        map.setPaintProperty(layer.id, "line-color", "#697991");
-      if (
-        layer.type === "symbol" &&
-        map.getPaintProperty(layer.id, "text-color") !== undefined
-      )
-        map.setPaintProperty(layer.id, "text-color", "#e5eaf2");
-      if (
-        layer.type === "symbol" &&
-        map.getPaintProperty(layer.id, "text-halo-color") !== undefined
-      )
-        map.setPaintProperty(layer.id, "text-halo-color", "#14213d");
-    } catch {
-      // External styles do not guarantee that every property is mutable.
-    }
-  }
-}
 
 function clusterImage(diameter: number, fill: string): ImageData {
   const pixelRatio = 2;
@@ -282,6 +249,22 @@ export function ProductionMap({
           },
           renderWorldCopies: false,
         });
+        let mapStyleReady = false;
+        const syncMapTheme = () => {
+          if (!disposed && mapStyleReady) {
+            applyMapTheme(map, readMapTheme(document.documentElement));
+          }
+        };
+        const themeObserver = new MutationObserver(syncMapTheme);
+        themeObserver.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ["data-theme", "class"],
+        });
+        const onMapStyleLoad = () => {
+          mapStyleReady = true;
+          syncMapTheme();
+        };
+        map.on("style.load", onMapStyleLoad);
         map.addControl(
           new maplibregl.NavigationControl({ showCompass: false }),
           "top-right",
@@ -314,7 +297,7 @@ export function ProductionMap({
           "bottom-right",
         );
         map.once("load", () => {
-          tuneMapPalette(map);
+          syncMapTheme();
           map.addSource("discovery-points", {
             type: "geojson",
             data: {
@@ -638,6 +621,8 @@ export function ProductionMap({
           }
         });
         cleanup = () => {
+          themeObserver.disconnect();
+          map.off("style.load", onMapStyleLoad);
           map.remove();
         };
       })

@@ -38,3 +38,14 @@ automation dry-run and production build). The production UI was inspected at
 and map: all 16 combinations had the expected palette/logo and no horizontal
 overflow. Preview data used local fixtures and empty read-only database responses.
 Live authenticated accounts and external map tiles were not verified here.
+
+## Map follow-up
+
+The basemap now follows the active light/dark theme, including changes while the
+map is open. Palette updates repaint existing layers without replacing the map,
+resetting the camera, or touching discovery marker layers. Dark mode retains
+navy land and blue water; light mode uses cream land, pale blue water and navy
+labels. Theme observers are disconnected when the map unmounts.
+
+Map vertical filters have separate opaque button surfaces without an enclosing
+panel. The legend follows the theme and its collapsed summary is 36px tall.

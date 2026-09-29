@@ -6853,10 +6853,10 @@ html {
   display: grid;
   gap: 0.35rem;
   padding: 0.65rem 0.75rem;
-  border: 1px solid rgb(255 247 234 / 24%);
+  border: 1px solid var(--line);
   border-radius: 0.75rem;
-  background: rgb(20 33 61 / 88%);
-  color: #faf7f2;
+  background: var(--surface);
+  color: var(--ink);
   box-shadow: 0 8px 24px rgb(0 0 0 / 28%);
   backdrop-filter: blur(10px);
   font-size: 0.72rem;
@@ -12495,18 +12495,18 @@ html[data-owner-focus="true"] .app-content {
   margin: 12px 0;
 }
 .map-vertical-tabs button {
-  border: 1px solid #49665e;
+  border: 1px solid var(--line);
   border-radius: 24px;
   padding: 10px 16px;
-  background: transparent;
-  color: inherit;
+  background: var(--surface);
+  color: var(--ink);
   cursor: pointer;
   min-height: 44px;
 }
 .map-vertical-tabs button[aria-pressed="true"] {
-  background: #166534;
-  color: #fff;
-  border-color: #7aad86;
+  background: var(--primary);
+  color: #14213d;
+  border-color: var(--primary);
 }
 .map-legend-accommodation {
   background: #166534;
