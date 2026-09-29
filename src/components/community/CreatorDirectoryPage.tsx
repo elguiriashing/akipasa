@@ -327,7 +327,12 @@ function CreatorCard({
     >
       <div className="creator-card-media">
         {creator.cover_url ? (
-          <img\n            src={creator.cover_url}\n            alt=""\n            loading="lazy"\n            decoding="async"\n          />
+          <img
+            src={creator.cover_url}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
         ) : creator.avatar_url ? (
           <img
             className="creator-card-avatar-backdrop"
@@ -344,7 +349,12 @@ function CreatorCard({
         <span className="creator-card-gradient" aria-hidden="true" />
         <span className="creator-avatar">
           {creator.avatar_url ? (
-            <img\n              src={creator.avatar_url}\n              alt=""\n              loading="lazy"\n              decoding="async"\n            />
+            <img
+              src={creator.avatar_url}
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
           ) : (
             creator.display_name.slice(0, 1)
           )}
