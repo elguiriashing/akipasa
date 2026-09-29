@@ -81,7 +81,7 @@
     var(--surface-alt);
 }
 .photoPlaceholder svg {
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
 }
 .photoPlaceholder strong {
   font-size: clamp(23px, 3vw, 34px);
@@ -102,7 +102,7 @@
   padding: 22px 26px;
 }
 .galleryNote > svg {
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
   flex-shrink: 0;
 }
 .galleryNote p {
@@ -179,7 +179,7 @@
   padding: 18px;
 }
 .facts svg {
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
   flex-shrink: 0;
 }
 .facts span {
@@ -203,7 +203,7 @@
 }
 .notice > svg,
 .location > svg {
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
   flex-shrink: 0;
 }
 .notice p {
@@ -214,7 +214,7 @@
   gap: 8px;
   align-items: center;
   font-weight: 600;
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
 }
 .details {
   margin: 0;
@@ -245,7 +245,7 @@
   background: linear-gradient(135deg, #f9772015, #24aa9415);
 }
 .crossSell > svg {
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
 }
 .crossSell a {
   display: inline-flex;

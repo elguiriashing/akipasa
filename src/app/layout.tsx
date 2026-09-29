@@ -1,6 +1,7 @@
 import "./globals.css";
 import "./compact-app.css";
-import type { Metadata } from "next";
+import "./brand.css";
+import type { Metadata, Viewport } from "next";
 import { ConsentAnalytics } from "@/components/ConsentAnalytics";
 import { PersonalisationConsent } from "@/components/PersonalisationConsent";
 import { config } from "@/lib/config";
@@ -9,6 +10,8 @@ import { ThemeManager } from "@/components/ThemeModeControls";
 import { headers } from "next/headers";
 import { isLocale } from "@/lib/config";
 import { serializeJsonLd, siteOrigin } from "@/lib/seo";
+
+export const viewport: Viewport = { themeColor: "#14213D" };
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://akipasa.com"),

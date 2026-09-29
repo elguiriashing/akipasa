@@ -70,7 +70,7 @@
   cursor: pointer;
 }
 .primary {
-  color: #17221d;
+  color: #1b1f28;
   border-color: transparent;
   background: linear-gradient(110deg, var(--primary), var(--accent));
   white-space: nowrap;
@@ -313,7 +313,7 @@
   box-shadow: 0 30px 100px #0008;
 }
 .dialog::backdrop {
-  background: #031411bb;
+  background: #111b32bb;
   backdrop-filter: blur(5px);
 }
 .dialogHeader {
@@ -471,7 +471,7 @@
   min-height: 20px;
   margin: 0;
   flex-shrink: 0;
-  accent-color: var(--primary);
+  accent-color: var(--primary-text, var(--primary));
 }
 @media (max-width: 550px) {
   .hero {
@@ -508,7 +508,7 @@
   min-height: 44px;
   border-radius: 12px;
   padding: 8px 12px;
-  background: #123832;
+  background: #121e37;
   color: #eaf0e5;
   border: 1px solid #49635b;
 }
@@ -517,7 +517,7 @@
   border: 1px solid rgba(156, 201, 181, 0.2);
   border-radius: 16px;
   padding: 16px;
-  background: rgba(12, 42, 37, 0.65);
+  background: rgba(20, 33, 61, 0.65);
 }
 .venueRow summary {
   cursor: pointer;

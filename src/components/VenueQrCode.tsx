@@ -21,7 +21,7 @@ export function VenueQrCode({
     void import("qrcode")
       .then(async ({ default: QRCode }) => {
         const dataUrl = await QRCode.toDataURL(value, {
-          color: { dark: "#102b2a", light: "#ffffff" },
+          color: { dark: "#121c30", light: "#ffffff" },
           errorCorrectionLevel: "M",
           margin: 2,
           width: 320,

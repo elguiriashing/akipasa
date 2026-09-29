@@ -13,7 +13,7 @@
 }
 .global-search-trigger:hover {
   border-color: var(--primary);
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
 }
 .global-search-panel {
   position: fixed;

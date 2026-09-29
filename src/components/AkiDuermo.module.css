@@ -72,7 +72,7 @@
 .hero {
   height: 380px;
   position: relative;
-  color: #fffaf1;
+  color: #ffffff;
   max-width: 1200px;
   margin: 24px auto 0;
   border-radius: var(--radius-xl);
@@ -86,7 +86,7 @@
 .heroShade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, #0a2422ef, #0a242280 65%, #0a242233);
+  background: linear-gradient(90deg, #14213def, #14213d80 65%, #14213d33);
 }
 .heroContent {
   position: relative;
@@ -99,27 +99,27 @@
   letter-spacing: 0.14em;
   font-weight: 800;
   text-transform: uppercase;
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
 }
 .hero .eyebrow {
-  color: #ffb26b;
+  color: #ffbe2e;
 }
 .hero h1 {
   font-size: clamp(36px, 4.2vw, 56px);
   line-height: 1.08;
   letter-spacing: -0.045em;
   margin: 16px 0;
-  color: #fffaf1;
+  color: #ffffff;
   font-weight: 850;
 }
 .hero h1 em {
   font: inherit;
-  color: #ffb26b;
+  color: #ffbe2e;
 }
 .hero p {
   font-size: 15px;
   line-height: 1.65;
-  color: #f4efe4;
+  color: #faf7f2;
 }
 .heroLocation {
   position: absolute;
@@ -132,7 +132,7 @@
   border: 1px solid #ffffff40;
   border-radius: 999px;
   padding: 7px 12px;
-  background: #0a242280;
+  background: #14213d80;
 }
 .searchWrap {
   position: relative;
@@ -159,7 +159,7 @@
   gap: 10px;
 }
 .search label > svg {
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
 }
 .search label > span {
   display: block;
@@ -202,7 +202,7 @@
   justify-content: center;
   gap: 8px;
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  color: #1a0e05;
+  color: #14213d;
   border: 0;
   border-radius: 999px;
   font-size: 14px;
@@ -261,7 +261,7 @@
   overflow: hidden;
   position: relative;
   text-align: left;
-  color: #fffaf1;
+  color: #ffffff;
   background: var(--surface);
   padding: 0;
 }
@@ -276,7 +276,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(transparent 25%, #0a2422ed);
+  background: linear-gradient(transparent 25%, #14213ded);
 }
 .destinationCard > span {
   position: absolute;
@@ -295,7 +295,7 @@
   display: block;
   font-size: 12px;
   line-height: 1.6;
-  color: #f4efe4;
+  color: #faf7f2;
 }
 .destinationCard i {
   position: absolute;
@@ -308,7 +308,7 @@
   height: 34px;
   display: grid;
   place-items: center;
-  background: #0a242240;
+  background: #14213d40;
 }
 .mapButton,
 .pagination button {
@@ -347,13 +347,13 @@
 .filters button[aria-pressed="true"] {
   background: var(--primary-soft);
   border-color: var(--primary);
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
 }
 .filters button:hover,
 .mapButton:hover,
 .pagination button:not(:disabled):hover {
   border-color: var(--primary);
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
 }
 .results {
   font-size: 13px;
@@ -391,7 +391,7 @@
   width: 40px;
   height: 40px;
   margin: 0 auto 10px;
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
 }
 .propertyVisual > div > span {
   font-size: 15px;
@@ -418,7 +418,7 @@
   color: var(--ink);
 }
 .saveButton[aria-pressed="true"] {
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
   border-color: var(--primary);
 }
 .cardBody {
@@ -475,7 +475,7 @@
   border-radius: 50%;
   border: 1px solid var(--line);
   background: var(--primary-soft);
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
 }
 .pagination {
   display: flex;
@@ -506,7 +506,7 @@
 .crossSell > svg {
   width: 48px;
   height: 48px;
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
 }
 .crossSell p {
   font-size: 14px;
@@ -529,7 +529,7 @@
   letter-spacing: -0.045em;
 }
 .footer strong span {
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
 }
 .footer p {
   font-size: 13px;
@@ -577,7 +577,7 @@
   border-radius: 999px;
 }
 .bottomNav [aria-pressed="true"] {
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
   background: var(--primary-soft);
 }
 .empty,
@@ -617,13 +617,13 @@
   box-shadow: var(--shadow-strong);
 }
 .dialog::backdrop {
-  background: #03120fd1;
+  background: #111b32d1;
   backdrop-filter: blur(4px);
 }
 .dialog > svg {
   display: block;
   margin-bottom: 15px;
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
 }
 .dialog h2 {
   font-size: 27px;
@@ -657,7 +657,7 @@
   font-size: 14px;
 }
 .dialog a.dialogCta {
-  color: #1a0e05;
+  color: #14213d;
 }
 .stayMap {
   background: var(--surface);
@@ -972,7 +972,7 @@
 }
 .languageToggle:hover {
   border-color: var(--primary);
-  color: var(--primary);
+  color: var(--primary-text, var(--primary));
 }
 /* Allow longer translated copy and larger text without clipping the hero. */
 @media (max-width: 850px) {
