@@ -30,3 +30,11 @@ Taglines are “Go out. Explore. Enjoy.” and “Sal. Explora. Disfruta.”
 This checkout is the public-site `master` source. The separate CRM source on
 `main` is not included in this change. No payment configuration, subscriptions,
 venue data or production records are changed.
+
+Validation: `npm run check` passed in an isolated checkout (formatting, lint,
+TypeScript, 266 app/subscription tests, 41 automation tests, database safety,
+automation dry-run and production build). The production UI was inspected at
+390px and 1440px in light and dark modes for discovery, membership, authentication
+and map: all 16 combinations had the expected palette/logo and no horizontal
+overflow. Preview data used local fixtures and empty read-only database responses.
+Live authenticated accounts and external map tiles were not verified here.

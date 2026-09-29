@@ -5,6 +5,9 @@
   --brand-yellow: #ffbe2e;
   --brand-cream: #faf7f2;
   --surface-muted: var(--surface-alt);
+  --text: var(--ink);
+  --text-soft: var(--muted);
+  --primary-contrast: #14213d;
 }
 .brand-logo {
   display: inline-flex;
@@ -64,4 +67,11 @@ body.theme-dark {
   .app-topbar-mobile .brand-logo {
     gap: 0.4rem;
   }
+}
+
+.global-support-trigger,
+.app-rail-cta,
+.chip-active {
+  background: var(--primary);
+  color: var(--primary-contrast);
 }

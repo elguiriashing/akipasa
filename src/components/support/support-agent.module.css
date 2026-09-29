@@ -20,7 +20,7 @@
   width: min(42rem, 100%);
   max-height: min(44rem, calc(100vh - 2rem));
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, #48b7a4 35%, var(--line, #d8d8d8));
+  border: 1px solid color-mix(in srgb, var(--primary) 35%, var(--line, #d8d8d8));
   border-radius: 1.25rem;
   color: var(--text, #17272f);
   background: var(--surface, #fff);
@@ -46,7 +46,7 @@
 }
 
 .badge {
-  color: #167b6d;
+  color: var(--primary-text, var(--primary));
   font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -149,8 +149,8 @@
   padding: 0.7rem 1rem;
   border: 0;
   border-radius: 0.7rem;
-  color: #fff;
-  background: #167b6d;
+  color: #14213d;
+  background: var(--primary);
   font-weight: 800;
   cursor: pointer;
 }
