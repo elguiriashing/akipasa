@@ -1,4 +1,1 @@
-export {
-  CreatorDirectoryPage as default,
-  dynamic,
-} from "@/components/community/CreatorDirectoryPage";
+export { CreatorDirectoryPage as default } from "@/components/community/CreatorDirectoryPage";
