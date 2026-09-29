@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @next/next/no-img-element */
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { unstable_cache } from "next/cache";
 import { isLocale } from "@/lib/config";
 import { createSupabasePublicClient } from "@/lib/supabase/public";
 import {
@@ -8,7 +9,29 @@ import {
   type WorkspaceItem,
 } from "@/components/WorkspaceShell";
 
-export const dynamic = "force-dynamic";
+const getCreators = unstable_cache(
+  async (q: string, locality: string) => {
+    const supabase = createSupabasePublicClient();
+    let request = supabase
+      .from("creator_profiles")
+      .select(
+        "profile_id,slug,display_name,headline_es,headline_en,bio_es,bio_en,locality,province,avatar_url,cover_url,verification_state,creator_categories(categories(slug,name_es,name_en)),events(id,status,event_occurrences!event_occurrences_event_id_fkey(starts_at,ends_at))",
+      )
+      .eq("state", "published")
+      .order("updated_at", { ascending: false });
+
+    if (q) {
+      request = request.or(
+        `display_name.ilike.%${q}%,headline_es.ilike.%${q}%,headline_en.ilike.%${q}%`,
+      );
+    }
+    if (locality) request = request.ilike("locality", locality);
+    const { data } = await request;
+    return (data || []) as any[];
+  },
+  ["creator-directory-v1"],
+  { revalidate: 120 },
+);
 
 type CreatorsPageProps = {
   params: Promise<{ locale: string }>;
@@ -68,25 +91,7 @@ export async function CreatorDirectoryPage({
   const q = (query.q || "").trim();
   const locality = (query.locality || "").trim();
   const category = (query.category || "").trim();
-  const supabase = createSupabasePublicClient();
-
-  let request = supabase
-    .from("creator_profiles")
-    .select(
-      "profile_id,slug,display_name,headline_es,headline_en,bio_es,bio_en,locality,province,avatar_url,cover_url,verification_state,creator_categories(categories(slug,name_es,name_en)),events(id,status,event_occurrences!event_occurrences_event_id_fkey(starts_at,ends_at))",
-    )
-    .eq("state", "published")
-    .order("updated_at", { ascending: false });
-
-  if (q) {
-    request = request.or(
-      `display_name.ilike.%${q}%,headline_es.ilike.%${q}%,headline_en.ilike.%${q}%`,
-    );
-  }
-  if (locality) request = request.ilike("locality", locality);
-
-  const { data } = await request;
-  const allCreators = (data || []) as any[];
+  const allCreators = await getCreators(q, locality);
   const categories = Array.from(
     new Map(
       allCreators
@@ -318,12 +323,14 @@ function CreatorCard({
     >
       <div className="creator-card-media">
         {creator.cover_url ? (
-          <img src={creator.cover_url} alt="" />
+          <img src={creator.cover_url} alt="" loading="lazy" decoding="async" />
         ) : creator.avatar_url ? (
           <img
             className="creator-card-avatar-backdrop"
             src={creator.avatar_url}
             alt=""
+            loading="lazy"
+            decoding="async"
           />
         ) : (
           <span className="creator-card-monogram" aria-hidden="true">
@@ -333,7 +340,7 @@ function CreatorCard({
         <span className="creator-card-gradient" aria-hidden="true" />
         <span className="creator-avatar">
           {creator.avatar_url ? (
-            <img src={creator.avatar_url} alt="" />
+            <img src={creator.avatar_url} alt="" loading="lazy" decoding="async" />
           ) : (
             creator.display_name.slice(0, 1)
           )}
