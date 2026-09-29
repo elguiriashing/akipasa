@@ -8,41 +8,6 @@ const THEME_EVENT = "akipasa:theme-change";
 
 type ThemeMode = "light" | "dark";
 
-const themeTokens: Record<ThemeMode, Record<string, string>> = {
-  light: {
-    "--primary": "#f56623",
-    "--primary-dark": "#d94b0b",
-    "--primary-soft": "rgba(245, 102, 35, 0.13)",
-    "--accent": "#ff9c62",
-    "--ink": "#123b36",
-    "--muted": "#607a74",
-    "--line": "rgba(18, 59, 54, 0.13)",
-    "--surface": "#fffaf1",
-    "--surface-alt": "#f3ecdf",
-    "--sand": "#e8ddca",
-    "--teal": "#0c9d82",
-    "--teal-dark": "#08715e",
-    "--shadow-soft": "0 16px 38px rgba(40, 48, 42, 0.12)",
-    "--shadow-strong": "0 26px 54px rgba(40, 48, 42, 0.18)",
-  },
-  dark: {
-    "--primary": "#ff7a33",
-    "--primary-dark": "#e85f18",
-    "--primary-soft": "rgba(255, 122, 51, 0.16)",
-    "--accent": "#ffb26b",
-    "--ink": "#f4efe4",
-    "--muted": "#a9c4bd",
-    "--line": "rgba(244, 239, 228, 0.1)",
-    "--surface": "#103532",
-    "--surface-alt": "#0a2422",
-    "--sand": "#14403a",
-    "--teal": "#17b897",
-    "--teal-dark": "#0d7a63",
-    "--shadow-soft": "0 16px 40px rgba(3, 12, 11, 0.4)",
-    "--shadow-strong": "0 26px 56px rgba(2, 9, 8, 0.6)",
-  },
-};
-
 function systemTheme(): ThemeMode {
   return typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-color-scheme: dark)").matches
@@ -83,6 +48,9 @@ function applyTheme(theme: ThemeMode) {
     "theme-premium",
   );
   root.classList.add(`theme-${theme}`);
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute("content", theme === "dark" ? "#14213D" : "#FAF7F2");
   body.classList.remove(
     "theme-light",
     "theme-dark",
@@ -90,10 +58,11 @@ function applyTheme(theme: ThemeMode) {
     "theme-premium",
   );
   body.classList.add(`theme-${theme}`);
-  Object.entries(themeTokens[theme]).forEach(([key, value]) => {
-    root.style.setProperty(key, value);
-  });
-  window.localStorage.setItem(THEME_KEY, theme);
+  try {
+    window.localStorage.setItem(THEME_KEY, theme);
+  } catch {
+    // Appearance still works when browser storage is unavailable.
+  }
   window.dispatchEvent(
     new CustomEvent<ThemeMode>(THEME_EVENT, { detail: theme }),
   );
@@ -101,7 +70,7 @@ function applyTheme(theme: ThemeMode) {
 
 export function ThemeManager() {
   useEffect(() => {
-    applyTheme(readThemePreference());
+    applyTheme(hydrateThemeOnLoad());
 
     const handleStorage = (event: StorageEvent) => {
       if (event.key === THEME_KEY) {

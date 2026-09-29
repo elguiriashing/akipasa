@@ -2,12 +2,12 @@ import { spainLocations } from "./locations";
 
 export const config = {
   productName: process.env.NEXT_PUBLIC_PRODUCT_NAME || "AkiPasa",
-  wordmark: "AKIPASA",
+  wordmark: "AkiPasa",
   handle: "akipasa",
   domain: "akipasa.com",
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://akipasa.com",
   crmUrl: process.env.NEXT_PUBLIC_CRM_URL || "https://crm.akipasa.com",
-  tagline: { es: "Todo lo que pasa cerca de ti.", en: "Where things happen." },
+  tagline: { es: "Sal. Explora. Disfruta.", en: "Go out. Explore. Enjoy." },
   dataProvider: process.env.NEXT_PUBLIC_DATA_PROVIDER || "fixtures",
   mapStyleUrl:
     process.env.NEXT_PUBLIC_MAP_STYLE_URL ||

@@ -1,5 +1,7 @@
 "use client";
 
+import { BrandMark } from "./BrandLogo";
+
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState, type ReactNode } from "react";
@@ -188,7 +190,9 @@ export function WorkspaceShell({
     <>
       <div className="workspace-brand">
         <Link href={homeHref} onClick={() => setDrawerOpen(false)}>
-          <span className="workspace-mark">A</span>
+          <span className="workspace-mark" aria-hidden="true">
+            <BrandMark />
+          </span>
           <span className="workspace-brand-copy">
             <strong>{navigationTitle}</strong>
             <small>{eyebrow}</small>

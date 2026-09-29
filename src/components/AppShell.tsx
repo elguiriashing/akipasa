@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { Suspense, useEffect, useRef, useState } from "react";
+import { BrandLogo } from "./BrandLogo";
 import { GlobalSearch } from "./GlobalSearch";
 import { Icon, type IconName } from "./Icons";
 import { LanguageLink } from "./LanguageLink";
@@ -189,17 +190,7 @@ export function AppShell({
           className="app-rail-brand"
           aria-label="AkiPasa"
         >
-          <span className="app-rail-mark" aria-hidden="true">
-            A
-          </span>
-          {!compact && (
-            <span>
-              {config.productName}
-              <i className="app-rail-brand-dot" aria-hidden="true">
-                .
-              </i>
-            </span>
-          )}
+          <BrandLogo compact={compact} />
         </Link>
 
         <nav className="app-rail-nav">
@@ -320,10 +311,7 @@ export function AppShell({
           className="app-rail-brand"
           aria-label="AkiPasa"
         >
-          {config.productName}
-          <i className="app-rail-brand-dot" aria-hidden="true">
-            .
-          </i>
+          <BrandLogo />
         </Link>
       </header>
 

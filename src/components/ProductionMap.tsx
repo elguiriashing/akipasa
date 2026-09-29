@@ -43,29 +43,29 @@ function tuneMapPalette(map: import("maplibre-gl").Map) {
     const id = layer.id.toLowerCase();
     try {
       if (layer.type === "background")
-        map.setPaintProperty(layer.id, "background-color", "#071f1e");
+        map.setPaintProperty(layer.id, "background-color", "#14213d");
       if (layer.type === "fill" && /water/.test(id))
-        map.setPaintProperty(layer.id, "fill-color", "#0b4f55");
+        map.setPaintProperty(layer.id, "fill-color", "#294d71");
       if (layer.type === "fill" && /park|wood|forest|grass/.test(id))
-        map.setPaintProperty(layer.id, "fill-color", "#123c35");
+        map.setPaintProperty(layer.id, "fill-color", "#233c51");
       if (layer.type === "fill" && /building/.test(id))
-        map.setPaintProperty(layer.id, "fill-color", "#31514b");
+        map.setPaintProperty(layer.id, "fill-color", "#334864");
       if (layer.type === "fill" && /land|residential/.test(id))
-        map.setPaintProperty(layer.id, "fill-color", "#0d2d2a");
+        map.setPaintProperty(layer.id, "fill-color", "#1c2d4b");
       if (layer.type === "line" && /motorway|trunk|primary/.test(id))
-        map.setPaintProperty(layer.id, "line-color", "#cf7542");
+        map.setPaintProperty(layer.id, "line-color", "#f26b1d");
       if (layer.type === "line" && /road|street|path/.test(id))
-        map.setPaintProperty(layer.id, "line-color", "#56736d");
+        map.setPaintProperty(layer.id, "line-color", "#697991");
       if (
         layer.type === "symbol" &&
         map.getPaintProperty(layer.id, "text-color") !== undefined
       )
-        map.setPaintProperty(layer.id, "text-color", "#d7dfd9");
+        map.setPaintProperty(layer.id, "text-color", "#e5eaf2");
       if (
         layer.type === "symbol" &&
         map.getPaintProperty(layer.id, "text-halo-color") !== undefined
       )
-        map.setPaintProperty(layer.id, "text-halo-color", "#082321");
+        map.setPaintProperty(layer.id, "text-halo-color", "#14213d");
     } catch {
       // External styles do not guarantee that every property is mutable.
     }
@@ -88,7 +88,7 @@ function clusterImage(diameter: number, fill: string): ImageData {
   context.fill();
   context.globalAlpha = 1;
   context.lineWidth = 3 * pixelRatio;
-  context.strokeStyle = "#fff7ea";
+  context.strokeStyle = "#faf7f2";
   context.stroke();
   return context.getImageData(0, 0, canvas.width, canvas.height);
 }
@@ -112,10 +112,10 @@ function markerImage(fill: string, kind: "event" | "venue"): ImageData {
   context.fillStyle = fill;
   context.fill();
   context.lineWidth = 2.5;
-  context.strokeStyle = "#fff7ea";
+  context.strokeStyle = "#faf7f2";
   context.stroke();
-  context.strokeStyle = "#fff7ea";
-  context.fillStyle = "#fff7ea";
+  context.strokeStyle = "#faf7f2";
+  context.fillStyle = "#faf7f2";
   context.lineWidth = 2;
   if (kind === "event") {
     context.strokeRect(12, 13, 12, 11);
@@ -335,13 +335,13 @@ export function ProductionMap({
           map.addImage("cluster-small", clusterImage(38, "#f59e0b"), {
             pixelRatio: 2,
           });
-          map.addImage("cluster-medium", clusterImage(48, "#f07818"), {
+          map.addImage("cluster-medium", clusterImage(48, "#f26b1d"), {
             pixelRatio: 2,
           });
-          map.addImage("cluster-large", clusterImage(60, "#d94f0b"), {
+          map.addImage("cluster-large", clusterImage(60, "#d9540c"), {
             pixelRatio: 2,
           });
-          map.addImage("pin-verified", markerImage("#ff6413", "event"), {
+          map.addImage("pin-verified", markerImage("#f26b1d", "event"), {
             pixelRatio: 2,
           });
           map.addImage("pin-community", markerImage("#a43ee8", "event"), {
@@ -379,8 +379,8 @@ export function ProductionMap({
               "text-ignore-placement": true,
             },
             paint: {
-              "text-color": "#171008",
-              "text-halo-color": "#fff7ea",
+              "text-color": "#14213d",
+              "text-halo-color": "#faf7f2",
               "text-halo-width": 1,
             },
           });
