@@ -1742,3 +1742,360 @@ body:has(.subscription-app) > .privacy-preferences {
     display: none;
   }
 }
+
+/* Compact responsive polish for the remaining workspace screens. */
+.business-application-page {
+  width: min(100%, 76rem);
+  margin-inline: auto;
+  padding: 1rem clamp(0.75rem, 2vw, 1.5rem) 2rem;
+  display: grid;
+  gap: 1rem;
+}
+.business-application-page .business-application-hero {
+  min-height: 0;
+  padding: clamp(1rem, 2.4vw, 1.8rem);
+  align-items: center;
+  gap: 1.25rem;
+  border-radius: 20px;
+}
+.business-application-page .business-application-hero h1 {
+  max-width: 15ch;
+  margin: 0.25rem 0 0.5rem;
+  font-size: clamp(1.65rem, 3.1vw, 2.65rem);
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+}
+.business-application-page .business-application-hero .lede {
+  max-width: 55ch;
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+.business-application-page .business-application-hero .hero-actions {
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+.business-application-page .business-application-checklist {
+  padding: 0.9rem 1rem;
+  border-radius: 15px;
+}
+.business-application-page .business-application-checklist ul {
+  margin: 0.35rem 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+}
+.business-application-page .business-application-steps {
+  gap: 0.55rem;
+  margin: 0;
+}
+.business-application-page .business-application-steps li {
+  min-height: 60px;
+  padding: 0.65rem 0.8rem;
+  border-radius: 14px;
+}
+.business-application-page .business-application-form-layout {
+  grid-template-columns: minmax(0, 1.6fr) minmax(15rem, 0.8fr);
+  align-items: start;
+  gap: 1rem;
+}
+.business-application-page .business-application-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  column-gap: 0.8rem;
+  row-gap: 0.55rem;
+  padding: 1rem;
+  border-radius: 18px;
+}
+.business-application-page .business-application-form > :first-child,
+.business-application-page .business-application-form > input[type="hidden"],
+.business-application-page
+  .business-application-form
+  > :is(textarea, small, button, .fine-print) {
+  grid-column: 1 / -1;
+}
+.business-application-page .business-application-form > div:first-child h2 {
+  margin: 0.25rem 0;
+  font-size: 1.2rem;
+}
+.business-application-page .business-application-form > p {
+  margin: 0;
+}
+.business-application-page .business-application-form > label {
+  align-self: end;
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+}
+.business-application-page
+  .business-application-form
+  :is(input, select, textarea) {
+  min-height: 44px;
+  width: 100%;
+  min-width: 0;
+  padding: 0.65rem 0.75rem;
+  border-radius: 11px;
+  font-size: 16px;
+}
+.business-application-page .business-application-form textarea {
+  min-height: 90px;
+}
+.business-application-page .business-application-help {
+  padding: 1rem;
+  border-radius: 18px;
+}
+.business-application-page .business-application-help h2 {
+  font-size: 1.15rem;
+}
+
+.account-workspace:has(.account-profile-page) .workspace-page-heading {
+  padding: 0 0 0.8rem;
+  margin-bottom: 0.75rem;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+.account-workspace:has(.account-profile-page) .workspace-page-heading h1 {
+  font-size: clamp(1.45rem, 3vw, 2rem);
+}
+.account-profile-page {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 58rem;
+}
+.account-profile-page .profile-media-manager {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+}
+.account-profile-page .profile-media-manager h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+.account-profile-page .profile-media-manager p {
+  margin: 0.25rem 0 0.65rem;
+  font-size: 0.8rem;
+}
+.account-profile-page .profile-media-manager .two-col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  border: 0;
+}
+.account-profile-page .profile-media-manager form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+.account-profile-page .profile-media-manager form label {
+  min-width: 0;
+  font-size: 0.78rem;
+}
+.account-profile-page .profile-media-manager input[type="file"] {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 0.35rem;
+  font-size: 0.75rem;
+}
+.account-profile-page .profile-media-manager .button {
+  min-height: 40px;
+  padding: 0.5rem 0.75rem;
+  white-space: nowrap;
+}
+.account-profile-page > .focused-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem 0.85rem;
+  max-width: none;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+}
+.account-profile-page > .focused-form > label,
+.account-profile-page > .focused-form > .form-grid-two,
+.account-profile-page > .focused-form > .form-grid-three,
+.account-profile-page > .focused-form > button {
+  min-width: 0;
+  margin: 0;
+}
+.account-profile-page > .focused-form > label:has(textarea),
+.account-profile-page > .focused-form > label:has(input[disabled]),
+.account-profile-page > .focused-form > button {
+  grid-column: 1 / -1;
+}
+.account-profile-page > .focused-form :is(.form-grid-two, .form-grid-three) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+.account-profile-page > .focused-form :is(input, select, textarea) {
+  min-height: 42px;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  font-size: 16px;
+}
+.account-profile-page > .focused-form textarea {
+  min-height: 76px;
+}
+.account-profile-page > .focused-form label {
+  gap: 0.3rem;
+  font-size: 0.78rem;
+}
+.account-profile-page > .focused-form button {
+  min-height: 44px;
+  margin-top: 0.2rem;
+}
+
+@media (max-width: 760px) {
+  .business-application-page {
+    gap: 0.75rem;
+    padding-top: 0.35rem;
+  }
+  .business-application-page .business-application-hero {
+    padding: 1rem;
+    border-radius: 16px;
+  }
+  .business-application-page .business-application-hero h1 {
+    font-size: clamp(1.55rem, 7vw, 2.1rem);
+  }
+  .business-application-page .business-application-hero .lede {
+    font-size: 0.85rem;
+  }
+  .business-application-page .business-application-checklist {
+    display: none;
+  }
+  .business-application-page .business-application-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem;
+  }
+  .business-application-page .business-application-steps li {
+    display: grid;
+    justify-items: start;
+    gap: 0.35rem;
+    min-height: 0;
+    padding: 0.55rem;
+  }
+  .business-application-page .business-application-steps li > span {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  .business-application-page .business-application-steps strong {
+    font-size: 0.69rem;
+    line-height: 1.2;
+  }
+  .business-application-page .business-application-steps small {
+    display: none;
+  }
+  .business-application-page .business-application-form-layout {
+    grid-template-columns: 1fr;
+  }
+  .business-application-page .business-application-form {
+    grid-template-columns: 1fr;
+    padding: 0.85rem;
+    gap: 0.5rem;
+  }
+  .business-application-page .business-application-form > * {
+    grid-column: 1 !important;
+  }
+  .business-application-page .business-application-form .fine-print {
+    font-size: 0.75rem;
+  }
+  .business-application-page .business-application-help {
+    padding: 0.85rem;
+  }
+  .account-profile-page {
+    gap: 0.55rem;
+  }
+  .account-profile-page .profile-media-manager {
+    padding: 0.75rem;
+  }
+  .account-profile-page .profile-media-manager .two-col {
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+  }
+  .account-profile-page .profile-media-manager form {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .account-profile-page > .focused-form {
+    grid-template-columns: 1fr;
+    padding: 0.85rem;
+    gap: 0.6rem;
+  }
+  .account-profile-page > .focused-form > * {
+    grid-column: 1 !important;
+  }
+  .account-profile-page > .focused-form :is(.form-grid-two, .form-grid-three) {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+  .community-workspace .creator-directory,
+  .community-workspace .creator-studio-page {
+    padding-block: 0.5rem 1rem;
+    gap: 0.9rem;
+  }
+  .community-workspace .creator-studio-hero {
+    align-items: center;
+  }
+  .community-workspace .creator-studio-hero-actions {
+    width: 100%;
+  }
+  .community-workspace .creator-studio-form .two-col {
+    grid-template-columns: 1fr;
+  }
+  .community-workspace .creator-review-queue > .panel {
+    padding: 0.85rem;
+    border-radius: 14px;
+  }
+  .community-workspace .creator-profile-v2 {
+    border-radius: 18px;
+  }
+  .community-workspace .creator-profile-v2 .creator-cover {
+    min-height: 190px;
+    padding: 12px;
+  }
+  .community-workspace .creator-profile-v2 .creator-profile-identity {
+    width: 100%;
+    padding: 1rem 0 0;
+    gap: 0.65rem;
+  }
+  .community-workspace .creator-profile-v2 .creator-profile-title h1 {
+    font-size: 1.4rem;
+  }
+  .community-workspace .creator-profile-v2 .creator-profile-content-v2 {
+    gap: 0.9rem;
+    padding: 0.85rem 0;
+  }
+}
+@media (min-width: 761px) {
+  .community-workspace .creator-directory {
+    max-width: 78rem;
+    margin-inline: auto;
+    gap: 1.25rem;
+    padding-block: 1rem 2rem;
+  }
+  .community-workspace .creator-discovery-intro h2 {
+    font-size: clamp(1.5rem, 2.5vw, 2.1rem);
+  }
+  .community-workspace .creator-search {
+    grid-template-columns: minmax(0, 2fr) minmax(12rem, 1fr) auto;
+  }
+  .community-workspace .creator-card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+  .community-workspace .creator-card {
+    border-radius: 16px;
+  }
+  .community-workspace .creator-profile-v2 {
+    border-radius: 22px;
+  }
+}

@@ -25,7 +25,7 @@ export default async function ProfilePage({
   const es = locale === "es";
 
   return (
-    <>
+    <div className="account-profile-page">
       <WorkspacePageHeader
         eyebrow={es ? "Identidad" : "Identity"}
         title={es ? "Perfil" : "Profile"}
@@ -248,6 +248,6 @@ export default async function ProfilePage({
           {es ? "Guardar perfil" : "Save profile"}
         </button>
       </form>
-    </>
+    </div>
   );
 }

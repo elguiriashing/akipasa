@@ -544,3 +544,89 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Keep venue management dense and comfortable on both pointer and touch screens. */
+.dashboard {
+  padding-top: 0.5rem;
+}
+.header {
+  padding-block: 0.35rem 0.8rem;
+}
+.tabs {
+  position: sticky;
+  top: 0.5rem;
+  z-index: 4;
+  padding: 0.25rem;
+  border-radius: 0.8rem;
+  background: color-mix(in srgb, var(--surface-alt) 92%, transparent);
+  backdrop-filter: blur(14px);
+}
+.tabs button {
+  min-height: 40px;
+  padding: 0.45rem 0.65rem;
+}
+.section {
+  padding-top: 0.8rem;
+}
+.sectionHeading {
+  margin-bottom: 0.7rem;
+}
+.tool {
+  padding: 0.9rem;
+  border-radius: 0.85rem;
+}
+.dashboard .section :global(.panel) {
+  padding: 0.85rem;
+  border-radius: 0.8rem;
+}
+@media (max-width: 600px) {
+  .dashboard {
+    width: calc(100% - 1rem);
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  .header {
+    gap: 0.5rem;
+    padding-block: 0.2rem 0.65rem;
+  }
+  .identity h1 {
+    font-size: clamp(1.3rem, 6vw, 1.8rem);
+  }
+  .status {
+    font-size: 0.68rem;
+  }
+  .publicLink {
+    min-height: 38px;
+    padding-inline: 0.65rem;
+  }
+  .tabs {
+    top: 0.25rem;
+    justify-content: flex-start;
+    gap: 0.15rem;
+    scroll-snap-type: x proximity;
+  }
+  .tabs button {
+    flex: 0 0 auto;
+    min-height: 40px;
+    padding-inline: 0.65rem;
+    scroll-snap-align: start;
+  }
+  .sectionHeading h2 {
+    font-size: 1.1rem;
+  }
+  .sectionHeading p {
+    font-size: 0.78rem;
+  }
+  .dashboard .section :global(.panel) {
+    padding: 0.75rem;
+  }
+  .dashboard .section :global(.venue-form-columns),
+  .dashboard .section :global(.venue-tool-columns) {
+    gap: 0.65rem;
+  }
+  .dashboard .section :global(.venue-form-columns > .stack) {
+    gap: 0.6rem;
+  }
+  .dashboard .section :global(.button) {
+    min-height: 42px;
+  }
+}
