@@ -327,12 +327,7 @@ function CreatorCard({
     >
       <div className="creator-card-media">
         {creator.cover_url ? (
-          <img
-            src={creator.cover_url}
-            alt=""
-            loading="lazy"
-            decoding="async"
-          />
+          <img src={creator.cover_url} alt="" loading="lazy" decoding="async" />
         ) : creator.avatar_url ? (
           <img
             className="creator-card-avatar-backdrop"
