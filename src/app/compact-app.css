@@ -1961,6 +1961,10 @@ body:has(.subscription-app) > .privacy-preferences {
   }
 
   .account-workspace:has(.account-profile-page) .workspace-content {
+    grid-row: 2;
+  }
+
+  .account-workspace:has(.account-profile-page) .workspace-content {
     gap: 0.7rem;
   }
 
