@@ -1,5 +1,14 @@
 import { expect, test } from "@playwright/test";
 
+// Passport interactions model returning visitors; privacy tests exercise first load.
+test.beforeEach(async ({ page }, testInfo) => {
+  if (!/accept all|reject optional|passport fits/.test(testInfo.title)) {
+    await page.addInitScript(() => {
+      document.cookie = "ak_consent_version=2; Path=/";
+    });
+  }
+});
+
 test("city pages reuse discovery photos, turn with keys, and expose real discovery links", async ({
   page,
 }) => {
@@ -241,3 +250,90 @@ test("reject optional disables motion without requesting sensor permission", asy
   await page.reload();
   await expect(page.getByRole("button", { name: "Enable tilt" })).toBeVisible();
 });
+
+for (const viewport of [
+  { name: "small phone", width: 320, height: 740, columns: 3, spread: 1 },
+  { name: "phone", width: 390, height: 844, columns: 3, spread: 1 },
+  { name: "tablet portrait", width: 820, height: 1180, columns: 6, spread: 1 },
+  { name: "tablet landscape", width: 1024, height: 768, columns: 6, spread: 2 },
+  { name: "desktop", width: 1440, height: 1000, columns: 1, spread: 2 },
+]) {
+  test(`passport fits ${viewport.name} with comfortable controls`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(viewport);
+    await page.route("**/api/v1/personalisation/consent", (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: "{}",
+      }),
+    );
+    await page.goto("/en/passports");
+    const privacy = page.locator("aside.personalisation-consent");
+    await expect(privacy).toBeVisible();
+    expect(
+      await privacy.evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        return (
+          r.x >= 0 &&
+          r.right <= innerWidth &&
+          r.y >= 0 &&
+          r.bottom <= innerHeight
+        );
+      }),
+    ).toBe(true);
+    await privacy
+      .getByRole("button", { name: "Accept all", exact: true })
+      .click();
+    const bookmarks = page.getByRole("navigation", {
+      name: "Passport chapters",
+    });
+    expect(
+      await bookmarks.evaluate(
+        (el) => getComputedStyle(el).gridTemplateColumns.split(" ").length,
+      ),
+    ).toBe(viewport.columns);
+    await page.getByRole("button", { name: "Open passport" }).click();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await page.getByRole("searchbox", { name: "Find a city" }).fill("malaga");
+    await page.getByRole("button", { name: /^Málaga/ }).click();
+    expect(
+      await page
+        .getByRole("link", { name: "Explore Málaga" })
+        .evaluate(
+          (el) =>
+            getComputedStyle(
+              el.parentElement!.parentElement!,
+            ).gridTemplateColumns.split(" ").length,
+        ),
+    ).toBe(viewport.spread);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    expect(
+      await page
+        .locator("main button, main a.button, main summary")
+        .evaluateAll((elements) =>
+          elements
+            .filter((el) => {
+              const r = el.getBoundingClientRect();
+              return (
+                r.width > 0 && r.height > 0 && (r.width < 44 || r.height < 44)
+              );
+            })
+            .map((el) => el.textContent),
+        ),
+    ).toEqual([]);
+    await page.screenshot({
+      path: `test-results/passport-${viewport.name.replaceAll(" ", "-")}.png`,
+      fullPage: true,
+    });
+  });
+}

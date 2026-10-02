@@ -30,3 +30,10 @@ Acceptance: cover/index/chapter navigation, accent-insensitive city search,
 discovery photo reuse and links, arrow page turns, mobile overflow, legacy chapter
 links and reward feedback, reduced-motion behavior, denied sensor permission.
 Physical gyroscope feel requires a phone check after publication.
+
+Responsive layouts: phones up to 700px stack city art and journal with six chapters
+in a 3-by-2 grid. Tablets from 701px to 1100px use six chapter tabs below the book;
+portrait tablets stack city spreads, while landscape tablets keep two columns.
+Desktop keeps the chapter bookmarks beside the two-page spread. Interactive
+controls use at least 44px touch targets, city search uses 16px text to avoid phone
+focus zoom, and the privacy panel scrolls within the viewport with wrapping actions.

@@ -54,6 +54,7 @@
   z-index: 2;
 }
 .bookmarks button {
+  min-height: 44px;
   text-align: left;
   border: 1px solid #335066;
   border-radius: 0 9px 9px 0;
@@ -466,6 +467,9 @@
   font-size: 10px;
 }
 .credit summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
   cursor: pointer;
 }
 .credit p {
@@ -542,6 +546,7 @@
   margin: 26px 0 16px;
 }
 .search input {
+  min-height: 48px;
   width: 100%;
   background: #0b1928;
   color: #eaf0f7;
@@ -549,6 +554,7 @@
   border-radius: 6px;
   padding: 13px;
   font: inherit;
+  font-size: 16px;
 }
 .cityIndex {
   display: grid;
@@ -558,6 +564,7 @@
   overflow: auto;
 }
 .cityIndex button {
+  min-height: 48px;
   display: flex;
   justify-content: space-between;
   gap: 8px;
@@ -570,7 +577,12 @@
   text-align: left;
   font-size: 12px;
 }
+.cityIndex button span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
 .cityIndex small {
+  flex-shrink: 0;
   color: #819cb2;
   font: 9px monospace;
 }
@@ -595,12 +607,14 @@
   margin: 20px 108px 0 0;
 }
 .motionControls button {
+  min-height: 44px;
+  min-width: 44px;
   border: 1px solid #4c6579;
   background: transparent;
   color: var(--ink, #c9d9e6);
   border-radius: 6px;
   padding: 8px 12px;
-  font-size: 11px;
+  font-size: 13px;
   cursor: pointer;
 }
 .motionControls button[aria-pressed="true"] {
@@ -640,6 +654,69 @@
 .atlas button:hover:not(:disabled) {
   border-color: #f3b382;
 }
+/* Tablets keep full-size chapter tabs below the notebook. */
+@media (min-width: 701px) and (max-width: 1100px) {
+  .atlas {
+    padding: 28px 18px 36px;
+  }
+  .desk {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .book {
+    order: 1;
+  }
+  .bookmarks {
+    position: static;
+    order: 2;
+    width: 100%;
+    margin-top: 12px;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .bookmarks button {
+    border-radius: 8px;
+    padding: 12px 5px;
+    font-size: 12px;
+    text-align: center;
+  }
+  .bookmarks button span {
+    display: none;
+  }
+  .bookmarks button[aria-current] {
+    transform: translateY(3px);
+  }
+  .controls,
+  .motionControls,
+  .summary {
+    margin-right: 0;
+  }
+  .spread {
+    gap: 22px;
+  }
+  .cityArt {
+    min-height: 0;
+  }
+}
+@media (min-width: 701px) and (max-width: 900px) {
+  .spread {
+    grid-template-columns: 1fr;
+  }
+  .cityArt {
+    max-width: 460px;
+    margin: auto;
+    aspect-ratio: 4 / 5;
+  }
+  .journal {
+    max-width: 540px;
+    margin: auto;
+    width: 100%;
+  }
+  .cityIndex {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
 @media (max-width: 700px) {
   .atlas {
     padding: 22px 12px 30px;
@@ -661,21 +738,22 @@
     font-size: 18px;
   }
   .desk {
-    padding: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
   }
   .bookmarks {
-    top: auto;
-    bottom: 0;
-    right: 5px;
-    left: 10px;
-    width: auto;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 3px;
+    position: static;
+    order: 2;
+    width: 100%;
+    margin-top: 10px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
   }
   .bookmarks button {
-    padding: 8px 2px;
-    font-size: 9px;
-    border-radius: 0 0 6px 6px;
+    padding: 12px 6px;
+    font-size: 12px;
+    border-radius: 8px;
     text-align: center;
   }
   .bookmarks button span {
@@ -685,6 +763,7 @@
     transform: translateY(4px);
   }
   .book {
+    order: 1;
     border-left-width: 6px;
     padding: 6px 6px 6px 12px;
   }
@@ -742,9 +821,6 @@
   .motionControls,
   .summary {
     margin-right: 0;
-  }
-  .controls button {
-    padding: 10px;
   }
   .readout {
     font-size: 10px;
