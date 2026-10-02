@@ -8,10 +8,11 @@ export function foilTarget(
   const dx = ((gamma - origin.gamma + 540) % 360) - 180;
   const dy = ((beta - origin.beta + 540) % 360) - 180;
   const a = (angle * Math.PI) / 180;
+  const sensitivity = 1.2 / 28;
   const clamp = (n: number) => Math.max(-1, Math.min(1, n));
   return {
-    x: clamp((dx * Math.cos(a) + dy * Math.sin(a)) / 28),
-    y: clamp((dy * Math.cos(a) - dx * Math.sin(a)) / 28),
+    x: clamp((dx * Math.cos(a) + dy * Math.sin(a)) * sensitivity),
+    y: clamp((dy * Math.cos(a) - dx * Math.sin(a)) * sensitivity),
   };
 }
 export function foilProperties(x: number, y: number) {

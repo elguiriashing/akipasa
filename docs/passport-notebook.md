@@ -15,7 +15,8 @@ visible above the book. The global app navigation is retained.
 
 The photo and cover foil reuse the Holo Lab's normalized position, smoothing,
 prismatic gradients, microfoil, glare and hidden branding reveal. Phone tilt
-starts automatically, centred on the first valid sensor reading. Only the photo card tilts together
+starts automatically, centred on the first valid sensor reading. Sensor input
+has 1.2× gain (20% more response), with the same maximum card tilt and foil limits. Only the photo card tilts together
 with its foil; the notebook, journal and chapter controls stay steady. Browsers requiring permission still
 need a user gesture; the privacy choices include a separate on-device motion tick
 and Accept all requests motion permission directly from the click, before saving
