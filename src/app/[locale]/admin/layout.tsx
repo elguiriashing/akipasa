@@ -68,6 +68,11 @@ export default async function AdminLayout({
       icon: "venue",
     },
     {
+      href: `${base}/venue-relevance`,
+      label: es ? "Relevancia del catálogo" : "Catalogue relevance",
+      icon: "venue",
+    },
+    {
       href: `${base}/passports`,
       label: es ? "Pasaportes" : "Passports",
       icon: "gift",

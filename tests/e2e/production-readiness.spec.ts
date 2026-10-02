@@ -31,6 +31,7 @@ test("root, invalid content and all guest gates resolve safely", async ({
     "/en/staff",
     "/en/staff/support",
     "/en/admin/users",
+    "/en/admin/venue-relevance",
     "/en/admin",
     "/en/community",
     "/en/terms/accept",
@@ -39,6 +40,18 @@ test("root, invalid content and all guest gates resolve safely", async ({
     expect(response.status(), route).toBe(307);
     expect(response.headers().location, route).toContain("/en/auth?next=");
   }
+
+  const relevanceApi = await page.request.get("/api/admin/venue-relevance");
+  expect(relevanceApi.status()).toBe(401);
+  expect(relevanceApi.headers()["cache-control"]).toContain("no-store");
+  const crossOriginDecision = await page.request.post(
+    "/api/admin/venue-relevance",
+    {
+      headers: { origin: "https://untrusted.example" },
+      data: {},
+    },
+  );
+  expect(crossOriginDecision.status()).toBe(403);
 
   const legacyModeration = await page.request.get("/en/moderation", {
     maxRedirects: 0,

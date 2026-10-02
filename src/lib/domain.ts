@@ -13,6 +13,9 @@ export type Venue = {
   verified: boolean;
   claimStatus?: string;
   discoveryVertical?: "activities" | "accommodation";
+  discoveryEnabled?: boolean;
+  recommendationWeight?: number;
+  chainName?: string;
   accessible: boolean;
   phone?: string;
   whatsappPhone?: string;

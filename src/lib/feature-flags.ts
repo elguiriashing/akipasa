@@ -10,6 +10,7 @@ export const featureFlagKeys = [
   "experimental_ranking",
   "social_recommendations",
   "partner_api",
+  "venue_relevance",
 ] as const;
 
 export type FeatureFlagKey = (typeof featureFlagKeys)[number];
@@ -25,6 +26,7 @@ export const defaultFeatureFlags: FeatureFlags = {
   experimental_ranking: false,
   social_recommendations: false,
   partner_api: false,
+  venue_relevance: false,
 };
 
 export function resolveFeatureFlags(

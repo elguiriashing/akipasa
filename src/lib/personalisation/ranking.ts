@@ -1,3 +1,4 @@
+import { recommendationWeight } from "../venue-relevance";
 import type { DiscoveryResult } from "@/lib/domain";
 
 export type PreferenceDimension =
@@ -147,85 +148,90 @@ export function rankRecommendations({
   config?: RankingConfig;
   requestSeed?: string;
 }): RankedRecommendation[] {
-  const scored = candidates.map((result) => {
-    const category = affinity(signals, "category", result.event.category);
-    const venue = affinity(signals, "venue", result.venue.id);
-    const price = affinity(
-      signals,
-      "price",
-      priceBucket(result.event.priceCents),
-    );
-    const distance = Math.exp(
-      -result.distanceKm / Math.max(2, radiusKm * 0.65),
-    );
-    const temporal = temporalRelevance(result, now);
-    const quality = result.venue.verified ? 1 : 0.45;
-    const freshness = clamp(
-      1 -
-        Math.max(
-          0,
-          new Date(result.occurrence.startsAt).getTime() - now.getTime(),
-        ) /
-          (1000 * 60 * 60 * 24 * 30),
-    );
-    const intent =
-      sessionCategory && result.event.category === sessionCategory ? 1 : 0;
-    const negative =
-      Math.abs(Math.min(0, category)) + Math.abs(Math.min(0, venue));
-    const positiveCategory = Math.max(0, category);
-    const positiveVenue = Math.max(0, venue);
-    const positivePrice = Math.max(0, price);
-    const components = {
-      category_affinity: positiveCategory * config.weights.categoryAffinity,
-      venue_affinity: positiveVenue * config.weights.venueAffinity,
-      price_affinity: positivePrice * config.weights.priceAffinity,
-      distance_relevance: distance * config.weights.distanceRelevance,
-      temporal_relevance: temporal * config.weights.temporalRelevance,
-      quality: quality * config.weights.quality,
-      freshness: freshness * config.weights.freshness,
-      session_intent: intent * config.weights.sessionIntent,
-      negative_affinity: -negative * config.weights.negativeAffinity,
-    };
-    const organicScore = clamp(
-      Object.values(components).reduce((total, value) => total + value, 0),
-    );
-    const exploration =
-      signals.length > 0 &&
-      category === 0 &&
-      deterministicUnit(`${requestSeed}:${result.event.id}`) <
-        config.explorationRatio;
-    const explorationBonus = exploration ? 0.035 : 0;
-    const sponsored =
-      result.event.sponsored &&
-      organicScore >= config.sponsoredMinimumRelevance;
-    const finalScore = clamp(
-      organicScore * (sponsored ? config.sponsoredMultiplier : 1) +
-        explorationBonus,
-      0,
-      1.2,
-    );
-    const reasons: RecommendationReason[] = [];
-    if (positiveCategory > 0.12) reasons.push("because_you_like_category");
-    if (positiveVenue > 0.12) reasons.push("from_a_venue_you_like");
-    if (positivePrice > 0.12) reasons.push("matches_your_budget");
-    if (result.distanceKm <= Math.min(5, radiusKm * 0.35))
-      reasons.push("nearby");
-    if (temporal === 1) reasons.push("happening_now");
-    else if (temporal >= 0.8) reasons.push("starting_soon");
-    if (quality === 1) reasons.push("verified_quality");
-    if (exploration) reasons.push("something_new");
-    if (sponsored) reasons.push("sponsored_relevant");
-    return {
-      result,
-      organicScore,
-      finalScore,
-      components,
-      reasonCodes: reasons.slice(0, 3),
-      sponsored,
-      exploration,
-      candidateSource: result.event.sponsored ? "sponsored_eligible" : "nearby",
-    };
-  });
+  const scored = candidates
+    .filter((result) => result.venue.discoveryEnabled !== false)
+    .map((result) => {
+      const category = affinity(signals, "category", result.event.category);
+      const venue = affinity(signals, "venue", result.venue.id);
+      const price = affinity(
+        signals,
+        "price",
+        priceBucket(result.event.priceCents),
+      );
+      const distance = Math.exp(
+        -result.distanceKm / Math.max(2, radiusKm * 0.65),
+      );
+      const temporal = temporalRelevance(result, now);
+      const quality = result.venue.verified ? 1 : 0.45;
+      const freshness = clamp(
+        1 -
+          Math.max(
+            0,
+            new Date(result.occurrence.startsAt).getTime() - now.getTime(),
+          ) /
+            (1000 * 60 * 60 * 24 * 30),
+      );
+      const intent =
+        sessionCategory && result.event.category === sessionCategory ? 1 : 0;
+      const negative =
+        Math.abs(Math.min(0, category)) + Math.abs(Math.min(0, venue));
+      const positiveCategory = Math.max(0, category);
+      const positiveVenue = Math.max(0, venue);
+      const positivePrice = Math.max(0, price);
+      const components = {
+        category_affinity: positiveCategory * config.weights.categoryAffinity,
+        venue_affinity: positiveVenue * config.weights.venueAffinity,
+        price_affinity: positivePrice * config.weights.priceAffinity,
+        distance_relevance: distance * config.weights.distanceRelevance,
+        temporal_relevance: temporal * config.weights.temporalRelevance,
+        quality: quality * config.weights.quality,
+        freshness: freshness * config.weights.freshness,
+        session_intent: intent * config.weights.sessionIntent,
+        negative_affinity: -negative * config.weights.negativeAffinity,
+      };
+      const organicScore = clamp(
+        Object.values(components).reduce((total, value) => total + value, 0) *
+          recommendationWeight(result.venue.recommendationWeight),
+      );
+      const exploration =
+        signals.length > 0 &&
+        category === 0 &&
+        deterministicUnit(`${requestSeed}:${result.event.id}`) <
+          config.explorationRatio;
+      const explorationBonus = exploration ? 0.035 : 0;
+      const sponsored =
+        result.event.sponsored &&
+        organicScore >= config.sponsoredMinimumRelevance;
+      const finalScore = clamp(
+        organicScore * (sponsored ? config.sponsoredMultiplier : 1) +
+          explorationBonus,
+        0,
+        1.2,
+      );
+      const reasons: RecommendationReason[] = [];
+      if (positiveCategory > 0.12) reasons.push("because_you_like_category");
+      if (positiveVenue > 0.12) reasons.push("from_a_venue_you_like");
+      if (positivePrice > 0.12) reasons.push("matches_your_budget");
+      if (result.distanceKm <= Math.min(5, radiusKm * 0.35))
+        reasons.push("nearby");
+      if (temporal === 1) reasons.push("happening_now");
+      else if (temporal >= 0.8) reasons.push("starting_soon");
+      if (quality === 1) reasons.push("verified_quality");
+      if (exploration) reasons.push("something_new");
+      if (sponsored) reasons.push("sponsored_relevant");
+      return {
+        result,
+        organicScore,
+        finalScore,
+        components,
+        reasonCodes: reasons.slice(0, 3),
+        sponsored,
+        exploration,
+        candidateSource: result.event.sponsored
+          ? "sponsored_eligible"
+          : "nearby",
+      };
+    });
 
   scored.sort(
     (a, b) =>

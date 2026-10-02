@@ -1,3 +1,8 @@
+import { loadFeatureFlags } from "./feature-flags";
+import {
+  effectiveVenueRelevance,
+  recommendationWeight,
+} from "./venue-relevance";
 import { config } from "./config";
 import { normalizeAddressLabel } from "./maps";
 import type { DiscoveryQuery, DiscoveryResult, Event, Venue } from "./domain";
@@ -30,6 +35,8 @@ export function rankDiscoveryResults(
       Number(b.event.sponsored) - Number(a.event.sponsored) ||
       Number(bActive) - Number(aActive) ||
       +new Date(a.occurrence.startsAt) - +new Date(b.occurrence.startsAt) ||
+      a.distanceKm / recommendationWeight(a.venue.recommendationWeight) -
+        b.distanceKm / recommendationWeight(b.venue.recommendationWeight) ||
       a.distanceKm - b.distanceKm
     );
   });
@@ -173,6 +180,9 @@ function venueFromRow(row: DbRecord): Venue {
       row.discovery_vertical === "accommodation"
         ? "accommodation"
         : "activities",
+    discoveryEnabled: row.discovery_enabled !== false,
+    recommendationWeight: recommendationWeight(row.recommendation_weight),
+    chainName: typeof row.chain_name === "string" ? row.chain_name : undefined,
     accessible: Boolean(
       (row.accessibility as { step_free?: boolean } | null)?.step_free,
     ),
@@ -238,7 +248,7 @@ function eventFromRow(row: DbRecord, now = new Date()): Event | null {
 }
 
 const venueFields =
-  "id,slug,name,description_es,description_en,address,location,verified,accessibility,contact_phone,whatsapp_phone,website_url,cities(slug)";
+  "id,slug,name,description_es,description_en,address,location,verified,accessibility,contact_phone,whatsapp_phone,website_url,discovery_vertical,discovery_enabled,recommendation_weight,chain_name,cities(slug)";
 const eventFields =
   "id,venue_id,slug,title_es,title_en,description_es,description_en,price_cents,currency,source,sponsored,booking_url,minimum_age,accessibility_notes_es,accessibility_notes_en,categories(slug),event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status,booking_url),feature_slots(starts_at,ends_at)";
 
@@ -252,6 +262,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       )
       .eq("status", "published");
     if (error) throw new Error(`Public event query failed: ${error.message}`);
+    const flags = await loadFeatureFlags(supabase);
     const localityKey = query.locality || "fuengirola";
     const locality = isSpainLocation(localityKey)
       ? config.localities[localityKey]
@@ -300,6 +311,11 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       const venueRow = one(row.venues);
       if (!event || !venueRow) return [];
       const venue = venueFromRow(venueRow);
+      Object.assign(
+        venue,
+        effectiveVenueRelevance(venueRow, flags.venue_relevance),
+      );
+      if (!venue.discoveryEnabled) return [];
 
       if (Array.isArray(venueRow.venue_media)) {
         const mappedMedia = venueRow.venue_media

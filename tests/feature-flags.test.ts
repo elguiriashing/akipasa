@@ -26,6 +26,7 @@ describe("operational feature flags", () => {
       experimental_ranking: false,
       social_recommendations: false,
       partner_api: false,
+      venue_relevance: false,
     });
   });
 });

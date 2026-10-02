@@ -1,3 +1,4 @@
+import { loadFeatureFlags } from "@/lib/feature-flags";
 import { createSupabasePublicClient } from "@/lib/supabase/public";
 import {
   cleanStayName,
@@ -13,7 +14,9 @@ export async function GET(request: Request) {
   if (!parsed.success)
     return Response.json({ error: "Invalid search" }, { status: 400 });
   const { q, type, page } = parsed.data;
-  let query = createSupabasePublicClient()
+  const supabase = createSupabasePublicClient();
+  const flags = await loadFeatureFlags(supabase);
+  let query = supabase
     .from("venues")
     .select(
       "id,slug,name,address,accommodation_type,website_url,cities(name_es)",
@@ -21,6 +24,7 @@ export async function GET(request: Request) {
     )
     .eq("status", "published")
     .eq("discovery_vertical", "accommodation");
+  if (flags.venue_relevance) query = query.eq("discovery_enabled", true);
   if (type !== "all") query = query.eq("accommodation_type", type);
   const search = staySearchFilters(q);
   if (search) query = query.or(search);
