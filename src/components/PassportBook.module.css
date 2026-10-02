@@ -180,6 +180,14 @@
   --fx: 50%;
   --fy: 50%;
   --reveal: 0;
+  --ghost-x: 0px;
+  --ghost-y: 0px;
+  --echo-x: 0px;
+  --echo-y: 0px;
+  --base-x: 0px;
+  --base-y: 0px;
+  --spectral-strength: 0.14;
+  --sweep-angle: 115deg;
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -216,7 +224,7 @@
   background-size: 280% 280%;
   background-position: var(--fx) var(--fy);
   mix-blend-mode: color-dodge;
-  opacity: 0.4;
+  opacity: 0.52;
   mask-image: radial-gradient(
     ellipse at var(--mx) var(--my),
     #000 5%,
@@ -258,7 +266,7 @@
     transparent 65%
   );
   mix-blend-mode: screen;
-  opacity: 0.6;
+  opacity: 0.4;
 }
 .secret {
   position: absolute;
@@ -296,6 +304,10 @@
 .holo[data-shine="false"] {
   transform: none;
 }
+.holo[data-shine="false"] .negative,
+.holo[data-shine="false"] .echo,
+.holo[data-shine="false"] .lightSweep,
+.holo[data-shine="false"] .depthVignette,
 .holo[data-shine="false"] .foil,
 .holo[data-shine="false"] .microfoil,
 .holo[data-shine="false"] .glare,
@@ -391,6 +403,92 @@
 .cityArt > img {
   object-fit: cover;
 }
+/* Same photograph, optically separated into opposing spectral planes. */
+.photoLayer {
+  transform: translate(var(--base-x), var(--base-y)) scale(1.025);
+}
+.negative,
+.echo,
+.lightSweep,
+.depthVignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.negative,
+.echo {
+  overflow: hidden;
+  opacity: var(--spectral-strength);
+  mix-blend-mode: screen;
+  mask-size: 240% 240%;
+  mask-position: var(--fx) var(--fy);
+}
+.negative {
+  mix-blend-mode: difference;
+  mask-image: linear-gradient(
+    var(--sweep-angle),
+    transparent 25%,
+    #0004 38%,
+    #000 48%,
+    #000 58%,
+    transparent 72%
+  );
+}
+.negative img,
+.echo img {
+  object-fit: cover;
+  will-change: transform;
+}
+.negative img {
+  filter: invert(1) grayscale(1) sepia(1) saturate(5) hue-rotate(135deg)
+    contrast(1.5);
+  transform: translate(var(--ghost-x), var(--ghost-y)) scale(1.09);
+}
+.echo {
+  opacity: calc(var(--spectral-strength) * 0.55);
+  mask-position: var(--mx) var(--my);
+  mask-image: linear-gradient(
+    calc(var(--sweep-angle) + 65deg),
+    transparent 28%,
+    #000 48%,
+    #0008 60%,
+    transparent 74%
+  );
+}
+.echo img {
+  filter: invert(0.9) grayscale(1) sepia(1) saturate(6) hue-rotate(285deg)
+    contrast(1.4);
+  transform: translate(var(--echo-x), var(--echo-y)) scale(1.065);
+}
+.lightSweep {
+  background: linear-gradient(
+    var(--sweep-angle),
+    transparent 30%,
+    #a85dff33 40%,
+    #63eaff88 47%,
+    #fffbd5c9 50%,
+    #ff82cf88 53%,
+    #ffd18522 61%,
+    transparent 70%
+  );
+  background-size: 240% 240%;
+  background-position: var(--fx) var(--fy);
+  mix-blend-mode: color-dodge;
+  opacity: calc(0.25 + var(--spectral-strength) * 0.65);
+}
+.depthVignette {
+  background: radial-gradient(
+    ellipse at var(--mx) var(--my),
+    transparent 28%,
+    #07172c22 68%,
+    #03102199 100%
+  );
+  mix-blend-mode: multiply;
+}
+.holo[data-shine="false"] .photoLayer {
+  transform: none;
+}
 .shade {
   position: absolute;
   inset: 0;
@@ -400,7 +498,7 @@
     #07182722 45%,
     #071427ee
   );
-  z-index: 1;
+  z-index: 3;
   pointer-events: none;
 }
 .artTop,

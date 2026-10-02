@@ -497,10 +497,39 @@ export function PassportBook({
                   <Image
                     src={city.photo.src}
                     alt={`${city[locale]} — ${city.photo.landmark}`}
+                    className={styles.photoLayer}
                     fill
                     sizes="(max-width: 700px) 90vw, 480px"
                     unoptimized
                   />
+                  <span
+                    className={styles.negative}
+                    aria-hidden="true"
+                    data-testid="passport-negative"
+                  >
+                    <Image
+                      src={city.photo.src}
+                      alt=""
+                      fill
+                      sizes="(max-width: 700px) 90vw, 480px"
+                      unoptimized
+                    />
+                  </span>
+                  <span
+                    className={styles.echo}
+                    aria-hidden="true"
+                    data-testid="passport-echo"
+                  >
+                    <Image
+                      src={city.photo.src}
+                      alt=""
+                      fill
+                      sizes="(max-width: 700px) 90vw, 480px"
+                      unoptimized
+                    />
+                  </span>
+                  <span className={styles.lightSweep} aria-hidden="true" />
+                  <span className={styles.depthVignette} aria-hidden="true" />
                   <span className={styles.shade} />
                   {layers}
                   <div className={styles.artTop}>

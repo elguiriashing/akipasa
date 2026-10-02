@@ -37,3 +37,10 @@ portrait tablets stack city spreads, while landscape tablets keep two columns.
 Desktop keeps the chapter bookmarks beside the two-page spread. Interactive
 controls use at least 44px touch targets, city search uses 16px text to avoid phone
 focus zoom, and the privacy panel scrolls within the viewport with wrapping actions.
+
+City artwork now has two image-derived spectral planes: a cyan inverted negative
+and an opposing magenta echo. Both reuse the current city photo, shift in opposite
+directions with tilt, and appear through moving lenticular masks. A prismatic
+light sweep and directional vignette give the print depth. No new assets, image
+rights, WebGL context or sensor uploads are involved. Foil OFF and reduced motion
+hide every optical layer and restore the untransformed source photo.

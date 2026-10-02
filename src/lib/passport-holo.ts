@@ -19,7 +19,16 @@ export function foilProperties(x: number, y: number) {
     Math.max(0, 1 - Math.abs(x * 0.8 + y * 0.6 - 0.35) / 0.42),
     2,
   );
+  const depth = Math.min(1, Math.hypot(x, y));
   return {
+    "--ghost-x": `${x * 10}px`,
+    "--ghost-y": `${y * 10}px`,
+    "--echo-x": `${-x * 6}px`,
+    "--echo-y": `${-y * 6}px`,
+    "--base-x": `${-x * 2}px`,
+    "--base-y": `${-y * 2}px`,
+    "--spectral-strength": String(0.14 + depth * 0.56),
+    "--sweep-angle": `${115 + x * 32 - y * 18}deg`,
     "--rx": `${-y * 3}deg`,
     "--ry": `${x * 4}deg`,
     "--mx": `${50 + x * 47}%`,

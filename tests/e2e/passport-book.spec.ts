@@ -341,3 +341,71 @@ for (const viewport of [
     });
   });
 }
+
+test("spectral photo planes react to tilt and disappear with foil off", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/en/passports");
+  await page.getByRole("button", { name: "Open passport" }).click();
+  await page.getByRole("searchbox", { name: "Find a city" }).fill("malaga");
+  await page.getByRole("button", { name: /^Málaga/ }).click();
+  const negative = page.getByTestId("passport-negative");
+  const echo = page.getByTestId("passport-echo");
+  await expect(negative.locator("img")).toHaveAttribute(
+    "src",
+    "/images/cities/malaga.webp",
+  );
+  await expect(echo.locator("img")).toHaveAttribute(
+    "src",
+    "/images/cities/malaga.webp",
+  );
+  await expect(page.getByRole("img", { name: /Málaga/ })).toHaveCount(1);
+  await page.locator('[data-shine="true"]').screenshot({
+    path: "test-results/passport-spectral-neutral.png",
+    animations: "disabled",
+  });
+  await page.evaluate(() => {
+    window.dispatchEvent(
+      new DeviceOrientationEvent("deviceorientation", { beta: 40, gamma: 0 }),
+    );
+    window.dispatchEvent(
+      new DeviceOrientationEvent("deviceorientation", { beta: 54, gamma: 22 }),
+    );
+  });
+  await expect
+    .poll(() =>
+      negative.evaluate((el) =>
+        Number.parseFloat(getComputedStyle(el).opacity),
+      ),
+    )
+    .toBeGreaterThan(0.5);
+  await expect
+    .poll(() =>
+      negative
+        .locator("img")
+        .evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).m41),
+    )
+    .toBeGreaterThan(4);
+  await expect
+    .poll(() =>
+      echo
+        .locator("img")
+        .evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).m41),
+    )
+    .toBeLessThan(-2);
+  await expect(page.locator("[data-tilt]")).toHaveCSS("transform", "none");
+  await expect(negative).toHaveCSS("mix-blend-mode", "difference");
+  await expect(negative.locator("img")).toHaveCSS("filter", /invert\(1\)/);
+  await page.locator('[data-shine="true"]').screenshot({
+    path: "test-results/passport-spectral-tilted.png",
+    animations: "disabled",
+  });
+  await page.getByRole("button", { name: "Foil: ON" }).click();
+  await expect(negative).toBeHidden();
+  await expect(echo).toBeHidden();
+  await expect(page.getByRole("img", { name: /Málaga/ })).toHaveCSS(
+    "transform",
+    "none",
+  );
+});
