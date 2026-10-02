@@ -1,4 +1,12 @@
 import { expect, test } from "@playwright/test";
+import { createRequire } from "node:module";
+
+// Sharp 0.35's ESM exports omit its bundled declarations in bundler resolution.
+const sharp = createRequire(`${process.cwd()}/package.json`)("sharp") as (
+  input: Buffer,
+) => {
+  stats: () => Promise<{ channels: Array<{ mean: number }> }>;
+};
 
 // Passport interactions model returning visitors; privacy tests exercise first load.
 test.beforeEach(async ({ page }, testInfo) => {
@@ -379,7 +387,7 @@ test("spectral photo planes react to tilt and disappear with foil off", async ({
         Number.parseFloat(getComputedStyle(el).opacity),
       ),
     )
-    .toBeGreaterThan(0.5);
+    .toBeGreaterThan(0.2);
   await expect
     .poll(() =>
       negative
@@ -395,12 +403,58 @@ test("spectral photo planes react to tilt and disappear with foil off", async ({
     )
     .toBeLessThan(-2);
   await expect(page.locator("[data-tilt]")).toHaveCSS("transform", "none");
-  await expect(negative).toHaveCSS("mix-blend-mode", "difference");
+  await expect(negative).toHaveCSS("mix-blend-mode", "normal");
   await expect(negative.locator("img")).toHaveCSS("filter", /invert\(1\)/);
   await page.locator('[data-shine="true"]').screenshot({
     path: "test-results/passport-spectral-tilted.png",
     animations: "disabled",
   });
+  // Exercise rendered frames while the sensor changes: static screenshots alone
+  // missed the backdrop-blending flashes reported on moving phone cards.
+  const mask = await negative.evaluate((el) => getComputedStyle(el).maskImage);
+  let previousBrightness: number | undefined;
+  for (const [beta, gamma] of [
+    [53, 20],
+    [49, 15],
+    [44, 8],
+    [40, 0],
+    [36, -8],
+    [31, -15],
+    [27, -20],
+  ]) {
+    await page.evaluate(
+      async ({ beta, gamma }) => {
+        window.dispatchEvent(
+          new DeviceOrientationEvent("deviceorientation", { beta, gamma }),
+        );
+        for (let frame = 0; frame < 4; frame++)
+          await new Promise<void>((resolve) =>
+            requestAnimationFrame(() => resolve()),
+          );
+      },
+      { beta, gamma },
+    );
+    const card = page.locator('[data-shine="true"]');
+    expect(
+      await card.evaluate((el) =>
+        [...el.querySelectorAll("span, img")].every(
+          (layer) => getComputedStyle(layer).mixBlendMode === "normal",
+        ),
+      ),
+    ).toBe(true);
+    await expect(negative).toHaveCSS("mask-image", mask);
+    const opacity = await negative.evaluate((el) =>
+      Number(getComputedStyle(el).opacity),
+    );
+    expect(opacity).toBeGreaterThanOrEqual(0.1);
+    expect(opacity).toBeLessThanOrEqual(0.3);
+    const { channels } = await sharp(await card.screenshot()).stats();
+    const brightness =
+      channels.slice(0, 3).reduce((sum, channel) => sum + channel.mean, 0) / 3;
+    if (previousBrightness !== undefined)
+      expect(Math.abs(brightness - previousBrightness)).toBeLessThan(28);
+    previousBrightness = brightness;
+  }
   await page.getByRole("button", { name: "Foil: ON" }).click();
   await expect(negative).toBeHidden();
   await expect(echo).toBeHidden();

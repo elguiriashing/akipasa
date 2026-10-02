@@ -175,6 +175,8 @@
   --ry: 0deg;
   transform: perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry));
   transform-origin: center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   --mx: 50%;
   --my: 50%;
   --fx: 50%;
@@ -186,8 +188,7 @@
   --echo-y: 0px;
   --base-x: 0px;
   --base-y: 0px;
-  --spectral-strength: 0.14;
-  --sweep-angle: 115deg;
+  --spectral-strength: 0.1;
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -223,10 +224,9 @@
   );
   background-size: 280% 280%;
   background-position: var(--fx) var(--fy);
-  mix-blend-mode: color-dodge;
-  opacity: 0.52;
+  opacity: 0.18;
   mask-image: radial-gradient(
-    ellipse at var(--mx) var(--my),
+    ellipse at center,
     #000 5%,
     #0009 35%,
     transparent 78%
@@ -246,27 +246,24 @@
       transparent 1px,
       transparent 5px
     );
-  mix-blend-mode: soft-light;
-  opacity: 0.6;
+  opacity: 0.16;
   mask-image: linear-gradient(
     125deg,
     transparent 20%,
     black 50%,
     transparent 78%
   );
-  mask-size: 280% 280%;
-  mask-position: var(--fx) var(--fy);
 }
 .glare {
   background: radial-gradient(
-    ellipse at var(--mx) var(--my),
+    ellipse at center,
     #fff7 0%,
     #ceefff44 10%,
     #ffffff0b 35%,
     transparent 65%
   );
-  mix-blend-mode: screen;
-  opacity: 0.4;
+  opacity: 0.24;
+  transform: translate(var(--ghost-x), var(--ghost-y)) scale(1.12);
 }
 .secret {
   position: absolute;
@@ -283,7 +280,6 @@
   transform: rotate(-18deg);
   color: #dcffff;
   opacity: var(--reveal);
-  mix-blend-mode: screen;
   text-shadow:
     2px 0 #ff83dc,
     -2px 0 #66ecff;
@@ -403,7 +399,8 @@
 .cityArt > img {
   object-fit: cover;
 }
-/* Same photograph, optically separated into opposing spectral planes. */
+/* Alpha-only spectral planes: avoid backdrop blends during 3D compositing.
+   Keep masks and filters static; only image transforms and bounded opacity move. */
 .photoLayer {
   transform: translate(var(--base-x), var(--base-y)) scale(1.025);
 }
@@ -420,14 +417,10 @@
 .echo {
   overflow: hidden;
   opacity: var(--spectral-strength);
-  mix-blend-mode: screen;
-  mask-size: 240% 240%;
-  mask-position: var(--fx) var(--fy);
 }
 .negative {
-  mix-blend-mode: difference;
   mask-image: linear-gradient(
-    var(--sweep-angle),
+    115deg,
     transparent 25%,
     #0004 38%,
     #000 48%,
@@ -438,7 +431,6 @@
 .negative img,
 .echo img {
   object-fit: cover;
-  will-change: transform;
 }
 .negative img {
   filter: invert(1) grayscale(1) sepia(1) saturate(5) hue-rotate(135deg)
@@ -447,9 +439,8 @@
 }
 .echo {
   opacity: calc(var(--spectral-strength) * 0.55);
-  mask-position: var(--mx) var(--my);
   mask-image: linear-gradient(
-    calc(var(--sweep-angle) + 65deg),
+    180deg,
     transparent 28%,
     #000 48%,
     #0008 60%,
@@ -463,7 +454,7 @@
 }
 .lightSweep {
   background: linear-gradient(
-    var(--sweep-angle),
+    115deg,
     transparent 30%,
     #a85dff33 40%,
     #63eaff88 47%,
@@ -472,19 +463,17 @@
     #ffd18522 61%,
     transparent 70%
   );
-  background-size: 240% 240%;
-  background-position: var(--fx) var(--fy);
-  mix-blend-mode: color-dodge;
-  opacity: calc(0.25 + var(--spectral-strength) * 0.65);
+  inset: -15%;
+  transform: translate(var(--echo-x), var(--echo-y));
+  opacity: 0.22;
 }
 .depthVignette {
   background: radial-gradient(
-    ellipse at var(--mx) var(--my),
+    ellipse at center,
     transparent 28%,
     #07172c22 68%,
     #03102199 100%
   );
-  mix-blend-mode: multiply;
 }
 .holo[data-shine="false"] .photoLayer {
   transform: none;

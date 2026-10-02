@@ -40,7 +40,10 @@ focus zoom, and the privacy panel scrolls within the viewport with wrapping acti
 
 City artwork now has two image-derived spectral planes: a cyan inverted negative
 and an opposing magenta echo. Both reuse the current city photo, shift in opposite
-directions with tilt, and appear through moving lenticular masks. A prismatic
+directions with tilt, and appear through fixed lenticular masks. Alpha-only colour overlays replace
+backdrop-dependent difference and colour-dodge blends to avoid black/white
+compositing flashes on tilted cards. Spectral opacity stays between 0.1 and 0.3;
+mask angles and filters remain static during movement. A prismatic
 light sweep and directional vignette give the print depth. No new assets, image
 rights, WebGL context or sensor uploads are involved. Foil OFF and reduced motion
 hide every optical layer and restore the untransformed source photo.
