@@ -81,10 +81,6 @@
   color: #273544;
 }
 .book {
-  --rx: 0deg;
-  --ry: 0deg;
-  transform: rotateX(var(--rx)) rotateY(var(--ry));
-  transform-origin: center;
   position: relative;
   border-radius: 8px 18px 18px 8px;
   border: 1px solid #345269;
@@ -175,6 +171,10 @@
   padding-top: 15px;
 }
 .holo {
+  --rx: 0deg;
+  --ry: 0deg;
+  transform: perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry));
+  transform-origin: center;
   --mx: 50%;
   --my: 50%;
   --fx: 50%;

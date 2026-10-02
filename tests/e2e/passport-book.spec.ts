@@ -151,13 +151,17 @@ test("horizontal touch gestures turn pages without changing vertical scroll", as
   await expect(index).toBeVisible();
 });
 
-test("default tilt calibrates at load and rotates the whole book", async ({
+test("default tilt calibrates at load and rotates only the photo card", async ({
   page,
 }) => {
   await page.goto("/en/passports");
   await expect(
     page.getByRole("button", { name: "Disable tilt" }),
   ).toBeVisible();
+  await page.getByRole("button", { name: "Open passport" }).click();
+  await page.getByRole("searchbox", { name: "Find a city" }).fill("malaga");
+  await page.getByRole("button", { name: /^Málaga/ }).click();
+  const card = page.locator('[data-shine="true"]');
   const book = page.locator('[data-tilt="on"]');
   await page.evaluate(() =>
     window.dispatchEvent(
@@ -166,7 +170,7 @@ test("default tilt calibrates at load and rotates the whole book", async ({
   );
   await expect
     .poll(() =>
-      book.evaluate((el) =>
+      card.evaluate((el) =>
         Number.parseFloat((el as HTMLElement).style.getPropertyValue("--ry")),
       ),
     )
@@ -178,18 +182,18 @@ test("default tilt calibrates at load and rotates the whole book", async ({
   );
   await expect
     .poll(() =>
-      book.evaluate((el) =>
+      card.evaluate((el) =>
         Number.parseFloat((el as HTMLElement).style.getPropertyValue("--ry")),
       ),
     )
     .toBeGreaterThan(1);
   await expect
-    .poll(() => book.evaluate((el) => getComputedStyle(el).transform))
+    .poll(() => card.evaluate((el) => getComputedStyle(el).transform))
     .not.toBe("none");
-  await expect(page.locator('[data-shine="true"]')).toHaveCSS(
-    "transform",
-    "none",
-  );
+  await expect(book).toHaveCSS("transform", "none");
+  await expect(
+    page.getByRole("link", { name: "Explore Málaga" }),
+  ).toBeVisible();
 });
 
 test("accept all requests required motion permission within the click", async ({

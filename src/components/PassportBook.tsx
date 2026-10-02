@@ -67,7 +67,6 @@ export function PassportBook({
   const [reduced, setReduced] = useState(false);
   const [shine, setShine] = useState(true);
   const surface = useRef<HTMLDivElement>(null);
-  const book = useRef<HTMLDivElement>(null);
   const pageHeading = useRef<HTMLHeadingElement>(null);
   const firstPage = useRef(true);
   const origin = useRef<{ beta: number; gamma: number } | null>(null);
@@ -133,8 +132,8 @@ export function PassportBook({
   }, [page]);
   useEffect(() => {
     if (reduced || !shine) {
-      book.current?.style.setProperty("--rx", "0deg");
-      book.current?.style.setProperty("--ry", "0deg");
+      surface.current?.style.setProperty("--rx", "0deg");
+      surface.current?.style.setProperty("--ry", "0deg");
       return;
     }
     let frame = 0,
@@ -145,11 +144,8 @@ export function PassportBook({
       const t = 1 - Math.exp(-Math.min(last ? now - last : 16, 64) / 85);
       x += (target.current.x - x) * t;
       y += (target.current.y - y) * t;
-      for (const [key, value] of Object.entries(foilProperties(x, y))) {
-        if (key === "--rx" || key === "--ry")
-          book.current?.style.setProperty(key, value);
-        else surface.current?.style.setProperty(key, value);
-      }
+      for (const [key, value] of Object.entries(foilProperties(x, y)))
+        surface.current?.style.setProperty(key, value);
       last = now;
       frame = requestAnimationFrame(render);
     };
@@ -304,7 +300,6 @@ export function PassportBook({
           ))}
         </nav>
         <div
-          ref={book}
           className={styles.book}
           data-tilt={motion ? "on" : "off"}
           data-direction={direction}
