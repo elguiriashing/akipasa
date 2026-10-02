@@ -12,6 +12,14 @@ import {
 import { majorCities, cityDiscoveryHref } from "@/lib/city-discovery";
 import type { Locale } from "@/lib/config";
 import { foilProperties, foilTarget } from "@/lib/passport-holo";
+import {
+  readMotionPreference,
+  writeMotionPreference,
+  motionPreferenceEvent,
+  motionPermissionEvent,
+  requestPassportMotion,
+  type MotionEventType,
+} from "@/lib/passport-motion";
 import styles from "./PassportBook.module.css";
 
 const cities = [...majorCities].sort((a, b) => a.es.localeCompare(b.es, "es"));
@@ -23,9 +31,6 @@ const chapters = [
   "stamps",
   "badges",
 ];
-type MotionEventType = typeof DeviceOrientationEvent & {
-  requestPermission?: () => Promise<string>;
-};
 
 export function PassportBook({
   locale,
@@ -62,6 +67,7 @@ export function PassportBook({
   const [reduced, setReduced] = useState(false);
   const [shine, setShine] = useState(true);
   const surface = useRef<HTMLDivElement>(null);
+  const book = useRef<HTMLDivElement>(null);
   const pageHeading = useRef<HTMLHeadingElement>(null);
   const firstPage = useRef(true);
   const origin = useRef<{ beta: number; gamma: number } | null>(null);
@@ -88,8 +94,35 @@ export function PassportBook({
       if (media.matches) setMotion(false);
     };
     update();
+    const start = () => {
+      if (
+        !media.matches &&
+        window.isSecureContext &&
+        window.DeviceOrientationEvent &&
+        readMotionPreference() !== false
+      )
+        setMotion(true);
+    };
+    const preference = (event: Event) => {
+      if ((event as CustomEvent<boolean>).detail) start();
+      else {
+        setMotion(false);
+        target.current = { x: 0, y: 0 };
+      }
+    };
+    const permission = (event: Event) => {
+      if ((event as CustomEvent<boolean>).detail) start();
+      else setMotion(false);
+    };
+    start();
     media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
+    window.addEventListener(motionPreferenceEvent, preference);
+    window.addEventListener(motionPermissionEvent, permission);
+    return () => {
+      media.removeEventListener("change", update);
+      window.removeEventListener(motionPreferenceEvent, preference);
+      window.removeEventListener(motionPermissionEvent, permission);
+    };
   }, []);
   useEffect(() => {
     if (firstPage.current) {
@@ -99,7 +132,11 @@ export function PassportBook({
     pageHeading.current?.focus({ preventScroll: true });
   }, [page]);
   useEffect(() => {
-    if ((!city && page !== 0) || reduced || !shine) return;
+    if (reduced || !shine) {
+      book.current?.style.setProperty("--rx", "0deg");
+      book.current?.style.setProperty("--ry", "0deg");
+      return;
+    }
     let frame = 0,
       last = 0,
       x = 0,
@@ -108,8 +145,11 @@ export function PassportBook({
       const t = 1 - Math.exp(-Math.min(last ? now - last : 16, 64) / 85);
       x += (target.current.x - x) * t;
       y += (target.current.y - y) * t;
-      for (const [key, value] of Object.entries(foilProperties(x, y)))
-        surface.current?.style.setProperty(key, value);
+      for (const [key, value] of Object.entries(foilProperties(x, y))) {
+        if (key === "--rx" || key === "--ry")
+          book.current?.style.setProperty(key, value);
+        else surface.current?.style.setProperty(key, value);
+      }
       last = now;
       frame = requestAnimationFrame(render);
     };
@@ -164,9 +204,13 @@ export function PassportBook({
       if (!received) {
         setMotion(false);
         setStatus(
-          es
-            ? "No se recibió movimiento. Prueba a tocar la foto o revisa los permisos del navegador."
-            : "No motion received. Touch the photo or check your browser’s motion permissions.",
+          (window.DeviceOrientationEvent as MotionEventType)?.requestPermission
+            ? es
+              ? "Activa la inclinación para permitir el acceso al movimiento."
+              : "Enable tilt to allow motion access."
+            : es
+              ? "No se recibió movimiento. Puedes tocar la foto para mover la luz."
+              : "No motion received. Touch the photo to move the light.",
         );
       }
     }, 3500);
@@ -178,20 +222,15 @@ export function PassportBook({
   }, [motion, reduced, shine, es]);
   async function enableMotion() {
     if (motion) {
+      writeMotionPreference(false);
       setMotion(false);
+      target.current = { x: 0, y: 0 };
       setStatus("");
       return;
     }
     try {
-      if (!window.isSecureContext || !window.DeviceOrientationEvent)
-        throw new Error("unavailable");
-      const permission = (window.DeviceOrientationEvent as MotionEventType)
-        .requestPermission;
-      if (
-        permission &&
-        (await permission.call(window.DeviceOrientationEvent)) !== "granted"
-      )
-        throw new Error("denied");
+      if (!(await requestPassportMotion())) throw new Error("denied");
+      writeMotionPreference(true);
       origin.current = null;
       latest.current = null;
       setMotion(true);
@@ -265,7 +304,9 @@ export function PassportBook({
           ))}
         </nav>
         <div
+          ref={book}
           className={styles.book}
+          data-tilt={motion ? "on" : "off"}
           data-direction={direction}
           data-motion={reduced ? "off" : "on"}
           onKeyDown={(event) => {
@@ -562,23 +603,9 @@ export function PassportBook({
         </div>
       </div>
       <div className={styles.controls}>
-        <button
-          disabled={page === 0}
-          onClick={() => go(page - 1)}
-          aria-label={es ? "Página anterior" : "Previous page"}
-        >
-          ← <span>{es ? "Anterior" : "Previous"}</span>
-        </button>
         <span className={styles.readout} aria-live="polite">
           {title} · {page + 1}/{total}
         </span>
-        <button
-          disabled={page === total - 1}
-          onClick={() => go(page + 1)}
-          aria-label={es ? "Página siguiente" : "Next page"}
-        >
-          <span>{es ? "Siguiente" : "Next"}</span> →
-        </button>
       </div>
       <div className={styles.motionControls}>
         <button

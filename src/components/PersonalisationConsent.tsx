@@ -8,23 +8,41 @@ import {
   type PrivacyChoices,
 } from "../lib/privacy-consent";
 
+import {
+  readMotionPreference,
+  writeMotionPreference,
+  requestPassportMotion,
+} from "../lib/passport-motion";
+
 export function PersonalisationConsent({ locale }: { locale: Locale }) {
   const [visible, setVisible] = useState(false);
   const [choices, setChoices] = useState<PrivacyChoices>(deniedChoices);
+  const [motionChoice, setMotionChoice] = useState(false);
+  const [motionDenied, setMotionDenied] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(false);
   const es = locale === "es";
   useEffect(() => {
+    setMotionChoice(readMotionPreference() === true);
     setChoices(readPrivacyChoices());
     setVisible(!document.cookie.split("; ").includes("ak_consent_version=2"));
     const open = () => {
+      setMotionChoice(readMotionPreference() === true);
       setChoices(readPrivacyChoices());
       setVisible(true);
     };
     window.addEventListener("akipasa:privacy-open", open);
     return () => window.removeEventListener("akipasa:privacy-open", open);
   }, []);
-  async function choose(next: PrivacyChoices) {
+  async function choose(next: PrivacyChoices, motionEnabled = motionChoice) {
+    // Request inside the click gesture, before the consent network request.
+    const permission = motionEnabled
+      ? requestPassportMotion()
+      : Promise.resolve(true);
+    writeMotionPreference(motionEnabled);
+    setMotionChoice(motionEnabled);
+    setMotionDenied(false);
+    void permission.then((granted) => setMotionDenied(!granted));
     setSaving(true);
     setError(false);
     // Withdrawal takes effect locally even when the server is unavailable.
@@ -109,6 +127,29 @@ export function PersonalisationConsent({ locale }: { locale: Locale }) {
                 {label}
               </label>
             ))}
+            <label className="consent-row">
+              <input
+                type="checkbox"
+                checked={motionChoice}
+                disabled={saving}
+                onChange={(event) => setMotionChoice(event.target.checked)}
+              />
+              {es
+                ? "Inclinación del pasaporte con el movimiento del móvil"
+                : "Passport tilt using phone motion"}
+            </label>
+            <p className="muted">
+              {es
+                ? "El movimiento se usa solo en tu dispositivo. Si hace falta, el navegador pedirá permiso al guardar o aceptar todo."
+                : "Motion is used only on your device. When required, your browser will ask for permission when you save or accept all."}
+            </p>
+            {motionDenied && (
+              <p role="status">
+                {es
+                  ? "Movimiento no disponible. Puedes activarlo después en el pasaporte."
+                  : "Motion unavailable. You can enable it later in your passport."}
+              </p>
+            )}
             {error && (
               <p role="alert">
                 {es
@@ -121,9 +162,21 @@ export function PersonalisationConsent({ locale }: { locale: Locale }) {
             <button
               className="button secondary"
               disabled={saving}
-              onClick={() => void choose({ ...deniedChoices })}
+              onClick={() => void choose({ ...deniedChoices }, false)}
             >
               {es ? "Rechazar opcionales" : "Reject optional"}
+            </button>
+            <button
+              className="button"
+              disabled={saving}
+              onClick={() =>
+                void choose(
+                  { analytics: true, personalisation: true, marketing: true },
+                  true,
+                )
+              }
+            >
+              {es ? "Aceptar todo" : "Accept all"}
             </button>
             <button
               className="button"

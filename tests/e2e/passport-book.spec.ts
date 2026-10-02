@@ -19,7 +19,11 @@ test("city pages reuse discovery photos, turn with keys, and expose real discove
   await expect(
     page.getByRole("heading", { name: "Málaga", exact: true, level: 2 }),
   ).toHaveCount(0);
-  await page.getByRole("button", { name: "Previous page" }).click();
+  await page.locator("h2").filter({ hasText: /.+/ }).first().press("ArrowLeft");
+  await expect(page.getByRole("button", { name: "Previous page" })).toHaveCount(
+    0,
+  );
+  await expect(page.getByRole("button", { name: "Next page" })).toHaveCount(0);
   await expect(
     page.getByRole("heading", { name: "Málaga", exact: true, level: 2 }),
   ).toBeVisible();
@@ -61,6 +65,7 @@ test("denied motion permission falls back to touch", async ({ page }) => {
     });
   });
   await page.goto("/en/passports");
+  await expect(page.getByRole("button", { name: "Enable tilt" })).toBeVisible();
   await page.getByRole("button", { name: "Enable tilt" }).click();
   await expect(
     page.getByRole("status").filter({ hasText: "Motion unavailable" }),
@@ -78,6 +83,7 @@ test("granted tilt drives the foil and can be recentered", async ({ page }) => {
     });
   });
   await page.goto("/en/passports");
+  await expect(page.getByRole("button", { name: "Enable tilt" })).toBeVisible();
   await page.getByRole("button", { name: "Enable tilt" }).click();
   await page.evaluate(() => {
     window.dispatchEvent(
@@ -134,4 +140,104 @@ test("horizontal touch gestures turn pages without changing vertical scroll", as
     changedTouches: [{ identifier: 1, clientX: 190, clientY: 380 }],
   });
   await expect(index).toBeVisible();
+});
+
+test("default tilt calibrates at load and rotates the whole book", async ({
+  page,
+}) => {
+  await page.goto("/en/passports");
+  await expect(
+    page.getByRole("button", { name: "Disable tilt" }),
+  ).toBeVisible();
+  const book = page.locator('[data-tilt="on"]');
+  await page.evaluate(() =>
+    window.dispatchEvent(
+      new DeviceOrientationEvent("deviceorientation", { beta: 63, gamma: 18 }),
+    ),
+  );
+  await expect
+    .poll(() =>
+      book.evaluate((el) =>
+        Number.parseFloat((el as HTMLElement).style.getPropertyValue("--ry")),
+      ),
+    )
+    .toBe(0);
+  await page.evaluate(() =>
+    window.dispatchEvent(
+      new DeviceOrientationEvent("deviceorientation", { beta: 75, gamma: 32 }),
+    ),
+  );
+  await expect
+    .poll(() =>
+      book.evaluate((el) =>
+        Number.parseFloat((el as HTMLElement).style.getPropertyValue("--ry")),
+      ),
+    )
+    .toBeGreaterThan(1);
+  await expect
+    .poll(() => book.evaluate((el) => getComputedStyle(el).transform))
+    .not.toBe("none");
+  await expect(page.locator('[data-shine="true"]')).toHaveCSS(
+    "transform",
+    "none",
+  );
+});
+
+test("accept all requests required motion permission within the click", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(window.DeviceOrientationEvent, "requestPermission", {
+      value: async () => {
+        (window as Window & { motionRequests?: number }).motionRequests =
+          ((window as Window & { motionRequests?: number }).motionRequests ||
+            0) + 1;
+        return "granted";
+      },
+      configurable: true,
+    });
+  });
+  await page.route("**/api/v1/personalisation/consent", (route) =>
+    route.fulfill({ status: 200, contentType: "application/json", body: "{}" }),
+  );
+  await page.goto("/en");
+  await page.getByRole("button", { name: "Accept all", exact: true }).click();
+  expect(
+    await page.evaluate(
+      () => (window as Window & { motionRequests?: number }).motionRequests,
+    ),
+  ).toBe(1);
+  expect(
+    await page.evaluate(() => localStorage.getItem("akipasa:passport-motion")),
+  ).toBe("on");
+  await page.goto("/en/passports");
+  await expect(
+    page.getByRole("button", { name: "Disable tilt" }),
+  ).toBeVisible();
+});
+
+test("reject optional disables motion without requesting sensor permission", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(window.DeviceOrientationEvent, "requestPermission", {
+      value: async () => {
+        throw new Error("Should not request motion");
+      },
+      configurable: true,
+    });
+  });
+  await page.route("**/api/v1/personalisation/consent", (route) =>
+    route.fulfill({ status: 200, contentType: "application/json", body: "{}" }),
+  );
+  await page.goto("/en/passports");
+  await page
+    .getByRole("button", { name: "Reject optional", exact: true })
+    .click();
+  await expect(page.locator('[data-tilt="off"]')).toBeVisible();
+  expect(
+    await page.evaluate(() => localStorage.getItem("akipasa:passport-motion")),
+  ).toBe("off");
+  await page.reload();
+  await expect(page.getByRole("button", { name: "Enable tilt" })).toBeVisible();
 });

@@ -8,14 +8,19 @@ come from the same catalogue as CityDiscovery. City pages indicate destinations,
 not claimed visits or earned stamps; only existing verified records drive XP,
 rewards, progress and badges. Existing server actions and authorization remain.
 
-Page turns support buttons, horizontal swipes and arrow keys from the page
+Page turns support bookmarks, horizontal swipes and arrow keys from the page
 heading. Search ignores accents. Legacy `?view=progress|passports|stamps|badges`
 links still open the requested chapter; check-in and reward feedback remains
 visible above the book. The global app navigation is retained.
 
 The photo and cover foil reuse the Holo Lab's normalized position, smoothing,
 prismatic gradients, microfoil, glare and hidden branding reveal. Phone tilt
-requires a user gesture and browser permission where required; denied access or
+starts automatically, centred on the first valid sensor reading. The whole notebook
+tilts together with its photograph and foil. Browsers requiring permission still
+need a user gesture; the privacy choices include a separate on-device motion tick
+and Accept all requests motion permission directly from the click, before saving
+cookie choices. Browser permission is distinct from cookie consent. Rejection of
+optional choices also switches off motion locally. Denied access or
 missing sensor data falls back to touch/mouse. Recenter and screen rotation reset
 the neutral orientation. Reduced motion disables tilt and page animations. Foil
 can be switched off, event listeners are cleaned up, hidden tabs suspend the
