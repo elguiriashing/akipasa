@@ -42,26 +42,26 @@ test("public discovery, map and legal routes are functional", async ({
   ).toBeVisible();
 });
 
-test("passport console renders one focused sub-page at a time", async ({
-  page,
-}) => {
+test("passport notebook opens chapters in place", async ({ page }) => {
   await page.goto("/en/passports");
-  const openWorkspaceMenu = () =>
-    page.getByRole("button", { name: /Passports menu/ }).click();
-  await openWorkspaceMenu();
-  await expect(page.getByRole("link", { name: /Progress/ })).toHaveAttribute(
-    "aria-current",
-    "page",
-  );
+  await page.getByRole("button", { name: "Open passport" }).click();
+  await expect(
+    page.getByRole("searchbox", { name: "Find a city" }),
+  ).toBeVisible();
+  await page
+    .getByRole("navigation", { name: "Passport chapters" })
+    .getByRole("button", { name: /My journey/ })
+    .click();
   await expect(
     page.getByRole("heading", { name: "Explorer progress" }),
   ).toBeVisible();
   await expect(page.getByRole("heading", { name: "Stamp cards" })).toHaveCount(
     0,
   );
-
-  await page.getByRole("link", { name: /Stamps/ }).click();
-  await expect(page).toHaveURL(/view=stamps/);
+  await page
+    .getByRole("navigation", { name: "Passport chapters" })
+    .getByRole("button", { name: /Stamps/ })
+    .click();
   await expect(
     page.getByRole("heading", { name: "Stamp cards" }),
   ).toBeVisible();
@@ -94,29 +94,17 @@ test("mobile navigation is compact and opens section links in place", async ({
   ).toHaveAttribute("href", "/en/membership");
 
   await page.goto("/en/passports");
-  const workspaceMenu = page.getByRole("button", {
-    name: /Passports menu/,
-  });
-  await expect(workspaceMenu).toBeVisible();
-  await workspaceMenu.click();
-  const sectionNavigation = page.getByRole("navigation", {
-    name: "Passports sections",
-  });
-  await expect(sectionNavigation).toBeVisible();
-  await expect(page.locator(".workspace-drawer-layer")).toHaveCSS(
-    "position",
-    "static",
-  );
+  const chapters = page.getByRole("navigation", { name: "Passport chapters" });
+  await expect(chapters).toBeVisible();
+  await expect(chapters.getByRole("button")).toHaveCount(6);
   await expect(page.locator(".console-nav")).toHaveCount(0);
-
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/en/passports");
   await expect(
     page.getByRole("complementary", { name: "Primary navigation" }),
   ).toBeVisible();
   await expect(bottomNavigation).toBeHidden();
-  await expect(page.locator(".workspace-sidebar")).toBeVisible();
-  await expect(workspaceMenu).toBeHidden();
+  await expect(chapters).toBeVisible();
 });
 
 test("membership offer is reachable before sign in", async ({ page }) => {

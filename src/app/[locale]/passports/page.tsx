@@ -10,10 +10,7 @@ import {
   ConsoleMetric,
   ConsoleSectionHeader,
 } from "@/components/ConsoleChrome";
-import {
-  WorkspaceShell,
-  type WorkspaceItem,
-} from "@/components/WorkspaceShell";
+import { PassportBook } from "@/components/PassportBook";
 import {
   claimPassportReward,
   claimStampReward,
@@ -116,173 +113,163 @@ export default async function PassportsPage({
   const completedSteps = new Set(
     (progress || []).map((entry: any) => entry.step_id),
   );
-  const base = `/${locale}/passports`;
-  const items: WorkspaceItem[] = [
-    { href: base, label: es ? "Progreso" : "Progress", icon: "activity" },
-    {
-      href: `${base}?view=passports`,
-      label: es ? "Pasaportes" : "Passports",
-      icon: "gift",
-      count: passports?.length ? passports.length : undefined,
-    },
-    {
-      href: `${base}?view=stamps`,
-      label: es ? "Sellos" : "Stamps",
-      icon: "saved",
-      count: totalStamps || undefined,
-    },
-    ...(user
-      ? [
-          {
-            href: `${base}?view=badges`,
-            label: es ? "Insignias" : "Badges",
-            icon: "shield" as const,
-          },
-        ]
-      : []),
-  ];
-
   return (
-    <WorkspaceShell
-      title={es ? "Pasaportes y sellos" : "Passports and stamps"}
-      eyebrow={es ? "Explora y gana" : "Explore and earn"}
-      description={
-        es
-          ? "Haz check-in en locales participantes. Los puntos no tienen valor en efectivo."
-          : "Check in at participating venues. Points have no cash value."
+    <PassportBook
+      key={
+        query.view ||
+        (query.checkin || query.reward || query.passport ? "progress" : "cover")
       }
-      homeHref={base}
-      items={items}
-      navigationTitle={es ? "Pasaportes" : "Passports"}
-    >
-      {query.checkin && (
-        <p className="notice">
-          {query.checkin === "accepted"
-            ? es
-              ? "Check-in aceptado. Tu XP y tus sellos se han actualizado."
-              : "Check-in accepted. Your XP and stamps have been updated."
-            : query.checkin === "cooldown"
-              ? es
-                ? "Ya hiciste check-in aqui en las ultimas seis horas."
-                : "You already checked in here within six hours."
-              : es
-                ? "No se pudo aceptar el check-in."
-                : "The check-in could not be accepted."}
-        </p>
-      )}
-      {user && query.checkin === "accepted" && (
-        <AchievementCelebration locale={locale} checkInId={query.visit} />
-      )}
-      {query.reward && (
-        <p className="notice">
-          {query.reward === "ready"
-            ? es
-              ? "Recompensa lista. Tu codigo aparece en Progreso."
-              : "Reward ready. Your code appears in Progress."
-            : es
-              ? "La recompensa no esta disponible o ya existe una solicitud."
-              : "The reward is unavailable, or a claim already exists."}
-        </p>
-      )}
-      {query.passport && (
-        <p className="notice">
-          {query.passport === "started"
-            ? es
-              ? "Pasaporte iniciado. Tienes 30 dias para completar la ruta."
-              : "Passport started. You have 30 days to complete the route."
-            : es
-              ? "No se pudo iniciar este pasaporte."
-              : "This passport could not be started."}
-        </p>
-      )}
-
-      {view === "progress" && (
-        <section
-          className="metrics-grid"
-          aria-label={es ? "Resumen" : "Summary"}
-        >
-          <ConsoleMetric
-            label="XP"
-            value={totalXp}
-            detail={es ? "Progreso total" : "Total progress"}
-          />
-          <ConsoleMetric
-            label={es ? "Pasaportes" : "Passports"}
-            value={passports?.length || 0}
-            detail={es ? "Rutas activas" : "Active routes"}
-          />
-          <ConsoleMetric
-            label={es ? "Sellos" : "Stamps"}
-            value={totalStamps}
-            detail={es ? "Acumulados" : "Collected"}
-          />
-          <ConsoleMetric
-            label={es ? "Pasos" : "Steps"}
-            value={completedSteps.size}
-            detail={es ? "Completados" : "Completed"}
-          />
-        </section>
-      )}
-
-      {view === "progress" && (
-        <section className="console-section">
-          <ConsoleSectionHeader
-            label={es ? "Progreso" : "Progress"}
-            title={es ? "Tu viaje como explorador" : "Your explorer journey"}
-            description={
-              es
-                ? "Una vista clara de tu nivel y de lo que has desbloqueado."
-                : "A clear view of your level and everything you have unlocked."
-            }
-            icon="XP"
-          />
-          <section className="panel rewards-summary">
-            <div>
-              <span className="status-pill">XP</span>
-              <h2>{es ? "Progreso del explorador" : "Explorer progress"}</h2>
-              {!user && (
-                <p>
-                  {es
-                    ? "Inicia sesion para guardar tu progreso."
-                    : "Sign in to save your progress."}
-                </p>
-              )}
-            </div>
-            <p className="metric">{totalXp}</p>
-          </section>
-          {!!claims?.length && (
-            <section className="panel">
-              <h2>{es ? "Recompensas listas" : "Rewards ready"}</h2>
-              <p>
-                {es
-                  ? "Ensenale el codigo al personal. Caduca en la fecha indicada y solo puede canjearse una vez."
-                  : "Show the code to venue staff. It expires on the date shown and can only be redeemed once."}
-              </p>
-              <div className="reward-card-list">
-                {claims.map((claim: any) => (
-                  <article className="stamp-card" key={claim.id}>
-                    <span className="status-pill">{claim.status}</span>
-                    <h3>
-                      {locale === "en"
-                        ? claim.business_rewards?.title_en ||
-                          claim.business_rewards?.title_es
-                        : claim.business_rewards?.title_es}
-                    </h3>
-                    <p>{claim.business_rewards?.venues?.name}</p>
-                    <code className="claim-code">{claim.claim_code}</code>
-                    <p>
-                      {es ? "Caduca" : "Expires"}{" "}
-                      {new Date(claim.expires_at).toLocaleDateString(locale)}
-                    </p>
-                  </article>
-                ))}
-              </div>
-            </section>
+      locale={locale}
+      initialView={
+        query.view
+          ? view
+          : query.checkin || query.reward || query.passport
+            ? "progress"
+            : "cover"
+      }
+      signedIn={Boolean(user)}
+      totalXp={totalXp}
+      totalStamps={totalStamps}
+      notices={
+        <>
+          {query.checkin && (
+            <p className="notice">
+              {query.checkin === "accepted"
+                ? es
+                  ? "Check-in aceptado. Tu XP y tus sellos se han actualizado."
+                  : "Check-in accepted. Your XP and stamps have been updated."
+                : query.checkin === "cooldown"
+                  ? es
+                    ? "Ya hiciste check-in aqui en las ultimas seis horas."
+                    : "You already checked in here within six hours."
+                  : es
+                    ? "No se pudo aceptar el check-in."
+                    : "The check-in could not be accepted."}
+            </p>
           )}
-        </section>
-      )}
+          {user && query.checkin === "accepted" && (
+            <AchievementCelebration locale={locale} checkInId={query.visit} />
+          )}
+          {query.reward && (
+            <p className="notice">
+              {query.reward === "ready"
+                ? es
+                  ? "Recompensa lista. Tu codigo aparece en Progreso."
+                  : "Reward ready. Your code appears in Progress."
+                : es
+                  ? "La recompensa no esta disponible o ya existe una solicitud."
+                  : "The reward is unavailable, or a claim already exists."}
+            </p>
+          )}
+          {query.passport && (
+            <p className="notice">
+              {query.passport === "started"
+                ? es
+                  ? "Pasaporte iniciado. Tienes 30 dias para completar la ruta."
+                  : "Passport started. You have 30 days to complete the route."
+                : es
+                  ? "No se pudo iniciar este pasaporte."
+                  : "This passport could not be started."}
+            </p>
+          )}
+        </>
+      }
+      progress={
+        <>
+          {
+            <section
+              className="metrics-grid"
+              aria-label={es ? "Resumen" : "Summary"}
+            >
+              <ConsoleMetric
+                label="XP"
+                value={totalXp}
+                detail={es ? "Progreso total" : "Total progress"}
+              />
+              <ConsoleMetric
+                label={es ? "Pasaportes" : "Passports"}
+                value={passports?.length || 0}
+                detail={es ? "Rutas activas" : "Active routes"}
+              />
+              <ConsoleMetric
+                label={es ? "Sellos" : "Stamps"}
+                value={totalStamps}
+                detail={es ? "Acumulados" : "Collected"}
+              />
+              <ConsoleMetric
+                label={es ? "Pasos" : "Steps"}
+                value={completedSteps.size}
+                detail={es ? "Completados" : "Completed"}
+              />
+            </section>
+          }
 
-      {view === "passports" && (
+          {
+            <section className="console-section">
+              <ConsoleSectionHeader
+                label={es ? "Progreso" : "Progress"}
+                title={
+                  es ? "Tu viaje como explorador" : "Your explorer journey"
+                }
+                description={
+                  es
+                    ? "Una vista clara de tu nivel y de lo que has desbloqueado."
+                    : "A clear view of your level and everything you have unlocked."
+                }
+                icon="XP"
+              />
+              <section className="panel rewards-summary">
+                <div>
+                  <span className="status-pill">XP</span>
+                  <h2>
+                    {es ? "Progreso del explorador" : "Explorer progress"}
+                  </h2>
+                  {!user && (
+                    <p>
+                      {es
+                        ? "Inicia sesion para guardar tu progreso."
+                        : "Sign in to save your progress."}
+                    </p>
+                  )}
+                </div>
+                <p className="metric">{totalXp}</p>
+              </section>
+              {!!claims?.length && (
+                <section className="panel">
+                  <h2>{es ? "Recompensas listas" : "Rewards ready"}</h2>
+                  <p>
+                    {es
+                      ? "Ensenale el codigo al personal. Caduca en la fecha indicada y solo puede canjearse una vez."
+                      : "Show the code to venue staff. It expires on the date shown and can only be redeemed once."}
+                  </p>
+                  <div className="reward-card-list">
+                    {claims.map((claim: any) => (
+                      <article className="stamp-card" key={claim.id}>
+                        <span className="status-pill">{claim.status}</span>
+                        <h3>
+                          {locale === "en"
+                            ? claim.business_rewards?.title_en ||
+                              claim.business_rewards?.title_es
+                            : claim.business_rewards?.title_es}
+                        </h3>
+                        <p>{claim.business_rewards?.venues?.name}</p>
+                        <code className="claim-code">{claim.claim_code}</code>
+                        <p>
+                          {es ? "Caduca" : "Expires"}{" "}
+                          {new Date(claim.expires_at).toLocaleDateString(
+                            locale,
+                          )}
+                        </p>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              )}
+            </section>
+          }
+        </>
+      }
+      routes={
         <section className="console-section">
           <ConsoleSectionHeader
             label={es ? "Explora" : "Explore"}
@@ -461,9 +448,8 @@ export default async function PassportsPage({
             )}
           </div>
         </section>
-      )}
-
-      {view === "stamps" && (
+      }
+      stamps={
         <section className="console-section">
           <ConsoleSectionHeader
             label={es ? "Fidelidad" : "Loyalty"}
@@ -565,24 +551,35 @@ export default async function PassportsPage({
             )}
           </div>
         </section>
-      )}
-
-      {user && view === "badges" && (
-        <section className="console-section">
-          <ConsoleSectionHeader
-            label={es ? "Coleccion" : "Collection"}
-            title={es ? "Insignias del explorador" : "Explorer badges"}
-            description={
-              es
-                ? "Hitos que celebran tu actividad local."
-                : "Milestones that celebrate your local activity."
-            }
-            icon="BD"
-          />
-          <BadgeProgress locale={locale} totalXp={totalXp} />
-        </section>
-      )}
-    </WorkspaceShell>
+      }
+      badges={
+        user ? (
+          <section className="console-section">
+            <ConsoleSectionHeader
+              label={es ? "Coleccion" : "Collection"}
+              title={es ? "Insignias del explorador" : "Explorer badges"}
+              description={
+                es
+                  ? "Hitos que celebran tu actividad local."
+                  : "Milestones that celebrate your local activity."
+              }
+              icon="BD"
+            />
+            <BadgeProgress locale={locale} totalXp={totalXp} />
+          </section>
+        ) : (
+          <p className="notice">
+            <Link
+              href={`/${locale}/auth?mode=signin&next=${encodeURIComponent(`/${locale}/passports?view=badges`)}`}
+            >
+              {es
+                ? "Inicia sesión para ver tus insignias"
+                : "Sign in to see your badges"}
+            </Link>
+          </p>
+        )
+      }
+    />
   );
 }
 import { publicPageMetadata } from "@/lib/page-metadata";

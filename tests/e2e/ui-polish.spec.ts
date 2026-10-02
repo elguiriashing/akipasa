@@ -128,51 +128,31 @@ test.describe("polished public UI", () => {
     await summary.click();
     await expect(passwordPanel).not.toHaveAttribute("open", "");
   });
-  test("workspace menus stay compact and dense across breakpoints", async ({
+  test("passport chapter bookmarks stay available across breakpoints", async ({
     page,
   }) => {
-    await page.setViewportSize({ width: 1440, height: 1000 });
     const pageErrors: string[] = [];
     page.on("pageerror", (error) => pageErrors.push(error.message));
-    await page.goto("/en/passports");
-
-    const desktopGlyphs = await page
-      .locator(".workspace-sidebar .workspace-glyph")
-      .evaluateAll((elements) =>
-        elements.map((element) => {
-          const style = getComputedStyle(element);
-          return {
-            width: element.getBoundingClientRect().width,
-            marginBottom: Number.parseFloat(style.marginBottom),
-          };
-        }),
-      );
-
-    expect(desktopGlyphs.length).toBeGreaterThan(0);
-    for (const glyph of desktopGlyphs) {
-      expect(glyph.width).toBeLessThanOrEqual(40);
-      expect(glyph.marginBottom).toBe(0);
+    for (const width of [1440, 390]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto("/en/passports");
+      const chapters = page.getByRole("navigation", {
+        name: "Passport chapters",
+      });
+      await expect(chapters).toBeVisible();
+      await expect(chapters.getByRole("button")).toHaveCount(6);
+      await expect(
+        page.getByRole("button", { name: "Open passport" }),
+      ).toBeVisible();
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
     }
-
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("/en/passports");
-    const trigger = page.locator(".workspace-mobile-trigger");
-    await expect(trigger).toBeVisible();
-    await trigger.click();
     expect(pageErrors).toEqual([]);
-    await expect(trigger).toHaveAttribute("aria-expanded", "true");
-    await page.waitForTimeout(100);
-    await expect(page.locator(".workspace-drawer")).toBeVisible();
-
-    const mobileLinks = page.locator(
-      ".workspace-drawer .workspace-navigation a",
-    );
-    expect(await mobileLinks.count()).toBeGreaterThan(1);
-    const columns = await page
-      .locator(".workspace-drawer .workspace-navigation")
-      .evaluate((element) => getComputedStyle(element).gridTemplateColumns);
-    expect(columns.trim().split(/\s+/)).toHaveLength(2);
   });
+
   test("sidebar and light/dark choices stay consistent across routes", async ({
     page,
   }) => {
