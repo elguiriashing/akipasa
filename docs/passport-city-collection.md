@@ -32,4 +32,12 @@ Rollback application source to the previous commit if necessary. Preserve all ne
 
 The isolated database suite covers role denial, cross-member reads, direct private-table denial, double submissions, grants with zero visits, mixed presets, reset boundaries, city aliases, repeated/rejected visits and natural award preservation. Physical device gyro feel is not proven by desktop automation.
 
-Earned category seals now sit inside the city artwork and travel with its tilt. Unawarded seals are absent. Tapping a seal opens its inline progress beside/below the card; a compact category selector also exposes unearned categories. The admin preview retains the full category grid. Seal tiers preserve the same award data and metallic treatments.
+Earned category seals now sit inside the city artwork and travel with its tilt. Level-zero seals stay visible as muted grey, dashed medallions in the same ten positions. They remain selectable to show progress. Tapping a seal opens its inline progress beside/below the card; a compact category selector also exposes unearned categories. The admin preview retains the full category grid. Seal tiers preserve the same award data and metallic treatments.
+
+## Fast admin awards and history
+
+Apply award, Apply preset and Revoke act immediately using the shared required reason; there is no separate review/confirmation step. Applying a tier atomically supersedes every active manual grant in the same member/family (city and category), including a higher or same tier and regardless of test/recognition purpose. Other cities, categories and members are untouched. City ranks follow the same replacement rule. Presets replace each category in the chosen city without changing its city rank. Natural unlocks remain the displayed floor and are never revoked by these actions.
+
+Previous grants remain in history as Replaced, linked to the replacement grant. Each grant records the replaced IDs in administrator audit metadata. Identical request retries are no-ops even after a newer grant; reusing a request with different data is rejected. Per-member and per-request transaction locks prevent overlapping replacement operations.
+
+History uses server-side pages of 15 compact cards, ordered by time and ID, with city and status filters. Revoked and Replaced are distinct statuses. The reason field is also available beside history actions, and feedback appears locally. Page numbers clamp after removals or filtering; no 200-record truncation remains.

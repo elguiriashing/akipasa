@@ -59,7 +59,6 @@
 .identity,
 .form,
 .preview,
-.review,
 .history {
   border: 1px solid var(--border, #d2d9df);
   border-radius: 14px;
@@ -102,28 +101,109 @@
   font-size: 12px;
   line-height: 1.5;
 }
-.review {
-  border-color: #e58b40;
+.historyControls {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  gap: 12px;
+  align-items: end;
 }
-.review p {
+.historyGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+.historyGrid article {
+  border: 1px solid var(--border, #d2d9df);
+  border-radius: 12px;
+  padding: 14px;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.grantHeading {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  font-size: 13px;
   overflow-wrap: anywhere;
 }
-.review button {
-  margin-right: 10px;
-}
-.history article {
-  padding: 14px 0;
-  border-bottom: 1px solid var(--border, #d2d9df);
+.grantIcon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--surface-alt, #edf3f4);
+  color: #33746c;
+  font-size: 22px;
 }
 .history p {
   font-size: 12px;
   overflow-wrap: anywhere;
+  line-height: 1.5;
 }
-.history button {
-  margin: 8px;
+.historyGrid p {
+  margin: 0;
+  width: 100%;
 }
-.history span {
+.historyGrid details {
+  width: 100%;
   font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.historyGrid summary {
+  cursor: pointer;
+  padding: 6px 0;
+}
+.grantStatus {
+  font-size: 11px;
+  border-radius: 20px;
+  padding: 5px 8px;
+  background: var(--surface-alt, #edf3f4);
+}
+.historyGrid button {
+  font-size: 12px;
+  padding: 8px;
+}
+.pagination {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18px;
+}
+.pagination span {
+  font-size: 12px;
+  text-align: center;
+}
+@media (max-width: 1100px) {
+  .historyGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .historyControls {
+    grid-template-columns: 1fr 1fr;
+  }
+  .historyControls label:last-child {
+    grid-column: 1/-1;
+  }
+}
+@media (max-width: 560px) {
+  .historyGrid {
+    grid-template-columns: 1fr;
+  }
+  .historyControls {
+    grid-template-columns: 1fr;
+  }
+  .pagination {
+    gap: 6px;
+  }
+  .pagination button {
+    padding: 8px;
+  }
 }
 .preview a {
   display: block;
@@ -142,7 +222,6 @@
   .identity,
   .form,
   .preview,
-  .review,
   .history {
     padding: 14px;
   }

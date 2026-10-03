@@ -290,7 +290,6 @@ export function CityCardStamps({
       ),
     ),
   }));
-  if (!slots.some((x) => x.progress.tier > 0)) return null;
   return (
     <div
       className={styles.cardStamps}
@@ -299,34 +298,26 @@ export function CityCardStamps({
         locale === "es" ? "Sellos en la tarjeta" : "Stamps on this card"
       }
     >
-      {slots.map(({ category, progress }) =>
-        progress.tier === 0 ? (
-          <span
-            key={category.key}
-            className={styles.emptyStamp}
-            aria-hidden="true"
-          />
-        ) : (
-          <button
-            key={category.key}
-            type="button"
-            className={`${styles.stamp} ${styles.cardStamp}`}
-            data-tier={progress.tier}
-            aria-label={`${category[locale]} · ${tierName(progress.tier, locale)}`}
-            title={`${category[locale]} · ${tierName(progress.tier, locale)}`}
-            aria-expanded={selected === category.key}
-            aria-controls={`stamp-detail-${city}`}
-            onClick={() =>
-              onSelect(selected === category.key ? null : category.key)
-            }
-          >
-            <span className={styles.medallion} aria-hidden="true">
-              {stampSymbols[category.key]}
-              <i>{["", "I", "II", "III", "IV", "V"][progress.tier]}</i>
-            </span>
-          </button>
-        ),
-      )}
+      {slots.map(({ category, progress }) => (
+        <button
+          key={category.key}
+          type="button"
+          className={`${styles.stamp} ${styles.cardStamp}`}
+          data-tier={progress.tier}
+          aria-label={`${category[locale]} · ${tierName(progress.tier, locale)}`}
+          title={`${category[locale]} · ${tierName(progress.tier, locale)}`}
+          aria-expanded={selected === category.key}
+          aria-controls={`stamp-detail-${city}`}
+          onClick={() =>
+            onSelect(selected === category.key ? null : category.key)
+          }
+        >
+          <span className={styles.medallion} aria-hidden="true">
+            {stampSymbols[category.key]}
+            <i>{["·", "I", "II", "III", "IV", "V"][progress.tier]}</i>
+          </span>
+        </button>
+      ))}
     </div>
   );
 }

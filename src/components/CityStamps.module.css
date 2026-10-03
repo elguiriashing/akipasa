@@ -293,7 +293,11 @@
   }
 }
 
-.emptyStamp {
-  min-height: 54px;
-  pointer-events: none;
+.cardStamps .cardStamp[data-tier="0"] .medallion {
+  color: #b4c0c8;
+  border-style: dashed;
+  opacity: 0.6;
+  background: #142b3ea6;
+  box-shadow: none;
+  filter: grayscale(1);
 }

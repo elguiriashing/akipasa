@@ -8,6 +8,7 @@ const requestSchema = z.object({
   action: z.enum([
     "search",
     "read",
+    "history",
     "mark_test",
     "grant",
     "preset",
@@ -45,7 +46,7 @@ export async function passportAdminAction(
           ? "No se pudo completar. Revisa el usuario, nivel y motivo."
           : "Could not complete. Check the member, tier and reason.",
     };
-  if (!["read", "search"].includes(parsed.data.action))
+  if (!["read", "history", "search"].includes(parsed.data.action))
     for (const l of ["es", "en"]) {
       revalidatePath(`/${l}/passports`);
       revalidatePath(`/${l}/account/rewards`);

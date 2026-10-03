@@ -341,7 +341,7 @@ for (const viewport of [
   });
 }
 
-test("unearned city cards stay unstamped and offer category progress", async ({
+test("unearned city cards show grey stamp slots and offer category progress", async ({
   page,
 }) => {
   await page.goto("/en/passports?city=fuengirola");
@@ -352,7 +352,7 @@ test("unearned city cards stay unstamped and offer category progress", async ({
     "src",
     "/passport-placeholder.svg",
   );
-  await expect(card.locator("button[data-tier]")).toHaveCount(0);
+  await expect(card.locator('button[data-tier="0"]')).toHaveCount(10);
   await expect(
     page.getByLabel("View stamp progress").locator("option"),
   ).toHaveCount(11);

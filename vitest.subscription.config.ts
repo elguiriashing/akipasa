@@ -4,5 +4,11 @@ import { fileURLToPath } from "node:url";
 export default defineConfig({
   resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
   esbuild: { jsx: "automatic" },
-  test: { include: ["tests/subscription-ui.test.tsx"], environment: "jsdom" },
+  test: {
+    include: [
+      "tests/subscription-ui.test.tsx",
+      "tests/passport-awards-ui.test.tsx",
+    ],
+    environment: "jsdom",
+  },
 });
