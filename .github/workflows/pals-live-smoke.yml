@@ -1,0 +1,75 @@
+name: Verify restricted preview on live host
+on:
+  push:
+    branches: [master]
+    paths:
+      - "src/app/pals/**"
+      - "src/lib/pals/**"
+      - "src/components/pals/**"
+      - "src/middleware.ts"
+      - "src/lib/auth-security.ts"
+      - ".github/workflows/pals-live-smoke.yml"
+permissions:
+  contents: read
+concurrency:
+  group: pals-live-smoke
+  cancel-in-progress: true
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Wait for deployment and verify anonymous privacy boundaries
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          const origin = 'https://akipasa.com';
+          const wait = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
+          async function request(path, options = {}) {
+            const response = await fetch(origin + path, { ...options, signal: AbortSignal.timeout(15000), redirect: 'manual' });
+            return { response, text: await response.text() };
+          }
+          function privateResponse(response, status) {
+            assert.equal(response.status, status);
+            assert.match(response.headers.get('cache-control') || '', /private/i);
+            assert.match(response.headers.get('cache-control') || '', /no-store/i);
+            assert.match(response.headers.get('x-robots-tag') || '', /noindex/i);
+            console.log(JSON.stringify({ status: response.status, cacheControl: response.headers.get('cache-control'), robots: response.headers.get('x-robots-tag') }));
+          }
+          let ready = false;
+          for (let attempt = 1; attempt <= 36; attempt++) {
+            try {
+              const { response, text } = await request('/pals');
+              if (response.status === 401 && text.includes('Private preview')) {
+                privateResponse(response, 401);
+                assert.ok(text.includes('/en/auth?next=%2Fpals'));
+                assert.ok(!text.includes('PALS_CLIENT') && !text.includes('Lost &amp; found'));
+                ready = true;
+                break;
+              }
+              console.log(`Waiting for private preview deployment: attempt ${attempt}, status ${response.status}`);
+            } catch (error) { console.log(`Waiting for private preview deployment: attempt ${attempt}, ${error.message}`); }
+            await wait(15000);
+          }
+          assert.ok(ready, 'The private preview did not become ready during the bounded deployment window');
+          privateResponse((await request('/pals/api')).response, 401);
+          privateResponse((await request('/pals/marker')).response, 404);
+          privateResponse((await request('/pals', { headers: { Cookie: 'akipals_preview=1' } })).response, 401);
+          privateResponse((await request('/pals/api', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'https://example.invalid' }, body: '{}' })).response, 403);
+          const command = { id: crypto.randomUUID(), version: 0, action: { type: 'parcel' } };
+          privateResponse((await request('/pals/api', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: origin }, body: JSON.stringify(command) })).response, 401);
+          for (const path of ['/en', '/es']) {
+            const { response, text } = await request(path);
+            assert.equal(response.status, 200, `${path} must remain available`);
+            assert.ok(text.includes('AkiPasa'), `${path} must retain the site document`);
+            assert.ok(!/href=["'](?:https:\/\/akipasa\.com)?\/pals(?:["'/?#])/i.test(text), `${path} must not advertise the preview`);
+            console.log(`${path}: available; no preview navigation link`);
+          }
+          const sitemap = await request('/sitemap.xml');
+          assert.equal(sitemap.response.status, 200);
+          assert.ok(!sitemap.text.includes('/pals'));
+          console.log('Live private page, API, portrait, forged preference cookie, cross-site writes, anonymous writes, public homepages and sitemap boundary checks passed. No authenticated game actions or production save writes were performed.');
+          NODE
