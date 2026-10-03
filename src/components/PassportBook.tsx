@@ -12,7 +12,7 @@ import {
 } from "react";
 import { cityDiscoveryHref } from "@/lib/city-discovery";
 import { passportCities } from "@/lib/passport-cities";
-import { CityStamps } from "./CityStamps";
+import { CityStamps, CityCardStamps } from "./CityStamps";
 import {
   familyProgress,
   cardFinish,
@@ -102,6 +102,7 @@ export function PassportBook({
   );
   const [direction, setDirection] = useState(1);
   const [search, setSearch] = useState("");
+  const [selectedStamp, setSelectedStamp] = useState<string | null>(null);
   const [motion, setMotion] = useState(false);
   const [status, setStatus] = useState("");
   const [reduced, setReduced] = useState(false);
@@ -127,6 +128,7 @@ export function PassportBook({
       const bounded = Math.max(0, Math.min(total - 1, next));
       setDirection(bounded >= page ? 1 : -1);
       setPage(bounded);
+      setSelectedStamp(null);
       const url = new URL(window.location.href);
       if (bounded >= chapters.length) {
         url.searchParams.set("city", cities[bounded - chapters.length].key);
@@ -595,6 +597,15 @@ export function PassportBook({
                     <span>ES</span>
                   </div>
                   <div className={styles.artBottom}>
+                    {!collectionError && (
+                      <CityCardStamps
+                        city={city.key}
+                        locale={locale}
+                        families={collection?.families || []}
+                        selected={selectedStamp}
+                        onSelect={setSelectedStamp}
+                      />
+                    )}
                     <span>
                       {es ? "DESTINO" : "DESTINATION"}{" "}
                       {String(page - chapters.length + 1).padStart(2, "0")}
@@ -606,6 +617,9 @@ export function PassportBook({
                 <div className={styles.journal}>
                   <CityStamps
                     key={city.key}
+                    compact
+                    selectedCategory={selectedStamp}
+                    onSelectCategory={setSelectedStamp}
                     city={city.key}
                     locale={locale}
                     families={collection?.families || []}

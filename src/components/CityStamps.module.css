@@ -227,3 +227,73 @@
     transition: none;
   }
 }
+
+.categoryPicker {
+  display: grid;
+  gap: 8px;
+  font-size: 12px;
+}
+.categoryPicker select {
+  min-width: 0;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px;
+  border: 1px solid #526879;
+  border-radius: 9px;
+  background: var(--passport-surface, #142b3e);
+  color: inherit;
+  font: inherit;
+}
+.cardStamps {
+  --passport-surface: #152a3c;
+  --stamp-bronze: #efad74;
+  --stamp-silver: #e0edf7;
+  --stamp-gold: #ffe08b;
+  --stamp-platinum: #bceff1;
+  --stamp-holo: #edd5ff;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 7px 4px;
+  margin-bottom: 20px;
+  pointer-events: auto;
+}
+.cardStamp,
+.cardStamp:hover,
+.cardStamp[aria-expanded="true"] {
+  padding: 4px 0 7px;
+  min-height: 54px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  justify-content: center;
+}
+.cardStamps .cardStamp[data-tier] .medallion {
+  width: clamp(36px, 11cqw, 54px);
+  height: clamp(36px, 11cqw, 54px);
+  font-size: clamp(19px, 5cqw, 27px);
+  background-color: #142b3ee6;
+  box-shadow:
+    0 2px 7px #04101b80,
+    inset 0 0 0 2px #ffffff25;
+}
+.cardStamp:focus-visible,
+.cardStamp[aria-expanded="true"] {
+  outline: 2px solid #fff0c9;
+  outline-offset: 1px;
+}
+.cardStamp[data-tier="5"] .medallion {
+  background-size: 180% 180%;
+  background-position: var(--mx, 50%) var(--my, 50%);
+}
+@container (max-width: 260px) {
+  .cardStamps {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 3px;
+    margin-bottom: 12px;
+  }
+}
+
+.emptyStamp {
+  min-height: 54px;
+  pointer-events: none;
+}

@@ -18,15 +18,24 @@ export function CityStamps({
   families,
   error,
   signedIn,
+  compact = false,
+  selectedCategory,
+  onSelectCategory,
 }: {
   city: string;
   locale: Locale;
   families: PassportFamily[];
   error?: boolean;
   signedIn: boolean;
+  compact?: boolean;
+  selectedCategory?: string | null;
+  onSelectCategory?: (category: string | null) => void;
 }) {
   const es = locale === "es";
-  const [selected, setSelected] = useState<string | null>(null);
+  const [localSelected, setLocalSelected] = useState<string | null>(null);
+  const selected =
+    selectedCategory === undefined ? localSelected : selectedCategory;
+  const setSelected = onSelectCategory || setLocalSelected;
   const card = families.find((f) => f.city_key === city && !f.category_key);
   const p = familyProgress(card);
   const list = stampCategories.map((c) => ({
@@ -85,41 +94,60 @@ export function CityStamps({
           ? "Cada sello crece con tus visitas a distintos locales de esta categoría en la ciudad."
           : "Each stamp grows as you visit different places in that category within this city."}
       </p>
-      <div className={styles.grid}>
-        {list.map(({ category: c, family: f }) => {
-          const s = familyProgress(f);
-          return (
-            <button
-              key={c.key}
-              className={styles.stamp}
-              data-tier={s.tier}
-              aria-expanded={selected === c.key}
-              aria-controls={`stamp-detail-${city}`}
-              onClick={() => setSelected(selected === c.key ? null : c.key)}
-            >
-              <span className={styles.medallion} aria-hidden="true">
-                {stampSymbols[c.key]}
-                <i>
-                  {s.tier ? ["", "I", "II", "III", "IV", "V"][s.tier] : "·"}
-                </i>
-              </span>
-              <strong>{c[locale]}</strong>
-              <span>{tierName(s.tier, locale)}</span>
-              <small>
-                {s.tier
-                  ? `${s.count} ${es ? "lugares" : "places"}`
-                  : f?.available
-                    ? es
-                      ? "Empieza aquí"
-                      : "Start here"
-                    : es
-                      ? "Próximamente"
-                      : "Coming soon"}
-              </small>
-            </button>
-          );
-        })}
-      </div>
+      {compact ? (
+        <label className={styles.categoryPicker}>
+          <span>{es ? "Ver progreso de un sello" : "View stamp progress"}</span>
+          <select
+            value={selected || ""}
+            onChange={(event) => setSelected(event.target.value || null)}
+          >
+            <option value="">
+              {es ? "Elige una categoría" : "Choose a category"}
+            </option>
+            {list.map(({ category: c, family: f }) => (
+              <option key={c.key} value={c.key}>
+                {c[locale]} · {tierName(familyProgress(f).tier, locale)}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : (
+        <div className={styles.grid}>
+          {list.map(({ category: c, family: f }) => {
+            const s = familyProgress(f);
+            return (
+              <button
+                key={c.key}
+                className={styles.stamp}
+                data-tier={s.tier}
+                aria-expanded={selected === c.key}
+                aria-controls={`stamp-detail-${city}`}
+                onClick={() => setSelected(selected === c.key ? null : c.key)}
+              >
+                <span className={styles.medallion} aria-hidden="true">
+                  {stampSymbols[c.key]}
+                  <i>
+                    {s.tier ? ["", "I", "II", "III", "IV", "V"][s.tier] : "·"}
+                  </i>
+                </span>
+                <strong>{c[locale]}</strong>
+                <span>{tierName(s.tier, locale)}</span>
+                <small>
+                  {s.tier
+                    ? `${s.count} ${es ? "lugares" : "places"}`
+                    : f?.available
+                      ? es
+                        ? "Empieza aquí"
+                        : "Start here"
+                      : es
+                        ? "Próximamente"
+                        : "Coming soon"}
+                </small>
+              </button>
+            );
+          })}
+        </div>
+      )}
       {detail && (
         <section id={`stamp-detail-${city}`} className={styles.detail}>
           <header>
@@ -238,5 +266,67 @@ export function CityStamps({
         </Link>
       )}
     </section>
+  );
+}
+
+export function CityCardStamps({
+  city,
+  locale,
+  families,
+  selected,
+  onSelect,
+}: {
+  city: string;
+  locale: Locale;
+  families: PassportFamily[];
+  selected: string | null;
+  onSelect: (category: string | null) => void;
+}) {
+  const slots = stampCategories.map((category) => ({
+    category,
+    progress: familyProgress(
+      families.find(
+        (f) => f.city_key === city && f.category_key === category.key,
+      ),
+    ),
+  }));
+  if (!slots.some((x) => x.progress.tier > 0)) return null;
+  return (
+    <div
+      className={styles.cardStamps}
+      role="group"
+      aria-label={
+        locale === "es" ? "Sellos en la tarjeta" : "Stamps on this card"
+      }
+    >
+      {slots.map(({ category, progress }) =>
+        progress.tier === 0 ? (
+          <span
+            key={category.key}
+            className={styles.emptyStamp}
+            aria-hidden="true"
+          />
+        ) : (
+          <button
+            key={category.key}
+            type="button"
+            className={`${styles.stamp} ${styles.cardStamp}`}
+            data-tier={progress.tier}
+            aria-label={`${category[locale]} · ${tierName(progress.tier, locale)}`}
+            title={`${category[locale]} · ${tierName(progress.tier, locale)}`}
+            aria-expanded={selected === category.key}
+            aria-controls={`stamp-detail-${city}`}
+            onClick={() =>
+              onSelect(selected === category.key ? null : category.key)
+            }
+          >
+            <span className={styles.medallion} aria-hidden="true">
+              {stampSymbols[category.key]}
+              <i>{["", "I", "II", "III", "IV", "V"][progress.tier]}</i>
+            </span>
+          </button>
+        ),
+      )}
+    </div>
   );
 }

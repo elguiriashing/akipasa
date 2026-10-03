@@ -18,7 +18,7 @@ Fuengirola has no entry in the current city photo catalogue. It receives an expl
 
 ## UI and loading
 
-City details are inline, one category at a time. Functional content stays in grid/document flow and optical effects stay clipped inside the photograph. Only the current photo reacts to tilt; input sensitivity remains 1.2×. Reduced motion and Foil OFF preserve tier labels. Stamp finishes are static to avoid ten independent animation loops. The desktop layout is a card plus a three-column stamp grid; mobile uses a two-column grid below the card. City query links preserve navigation and focus re-entry refreshes signed-in progress.
+City details are inline, one category at a time. Functional content stays in grid/document flow and optical effects stay clipped inside the photograph. Only the current photo reacts to tilt; input sensitivity remains 1.2×. Reduced motion and Foil OFF preserve tier labels. Stamp finishes are static to avoid ten independent animation loops. Earned stamps are embedded in the card artwork on every screen size; the adjacent/below-card area holds compact progress controls and inline details. City query links preserve navigation and focus re-entry refreshes signed-in progress.
 
 Business loyalty is labelled separately. Existing view=stamps and view=badges links remain valid. The legacy achievements API now serves global achievements and earned archive entries; local families are available through the compact passport_collection API. All current consumers use the city-collection link to reach local stamps. Check-in celebrations group new milestones by family and link to the relevant city.
 
@@ -31,3 +31,5 @@ Run npm run check, npm run test:passport-db and targeted browser layout/interact
 Rollback application source to the previous commit if necessary. Preserve all new natural and manual awards. The migration retains the old schema and does not change reward ledgers. A data rollback should disable newly seeded stamp definitions and restore the 50 legacy definitions' active/archive state in an audited transaction, never delete visits or grants. Reinstating the old global progress function is optional for the old interface but must use its captured definition. Do not run a down migration that drops award history.
 
 The isolated database suite covers role denial, cross-member reads, direct private-table denial, double submissions, grants with zero visits, mixed presets, reset boundaries, city aliases, repeated/rejected visits and natural award preservation. Physical device gyro feel is not proven by desktop automation.
+
+Earned category seals now sit inside the city artwork and travel with its tilt. Unawarded seals are absent. Tapping a seal opens its inline progress beside/below the card; a compact category selector also exposes unearned categories. The admin preview retains the full category grid. Seal tiers preserve the same award data and metallic treatments.

@@ -1008,3 +1008,16 @@
   --stamp-platinum: #a4dadf;
   --stamp-holo: #d0bbff;
 }
+
+.cityArt {
+  container-type: inline-size;
+}
+
+.cityArt .artBottom {
+  left: clamp(12px, 4cqw, 22px);
+  right: clamp(12px, 4cqw, 22px);
+}
+
+.cityArt {
+  min-height: 400px;
+}

@@ -341,7 +341,7 @@ for (const viewport of [
   });
 }
 
-test("unearned city cards stay plain and expose ten inline category stamps", async ({
+test("unearned city cards stay unstamped and offer category progress", async ({
   page,
 }) => {
   await page.goto("/en/passports?city=fuengirola");
@@ -352,10 +352,13 @@ test("unearned city cards stay plain and expose ten inline category stamps", asy
     "src",
     "/passport-placeholder.svg",
   );
-  await expect(page.locator("button[data-tier]")).toHaveCount(10);
+  await expect(card.locator("button[data-tier]")).toHaveCount(0);
+  await expect(
+    page.getByLabel("View stamp progress").locator("option"),
+  ).toHaveCount(11);
   await expect(page.getByTestId("passport-negative")).toBeHidden();
   await expect(page.getByTestId("passport-echo")).toBeHidden();
-  await page.locator("button[data-tier]").first().click();
+  await page.getByLabel("View stamp progress").selectOption("restaurant");
   await expect(
     page.getByRole("button", { name: "Close details" }),
   ).toBeVisible();
