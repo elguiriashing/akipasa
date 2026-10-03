@@ -970,7 +970,8 @@ export function stats(s: State): Record<Stat, number> {
     const item = s.equipment.find((i) => i.id === id);
     if (!item) continue;
     result[getDesign(item.design).stat] += Math.floor(item.level / 2);
-    for (const module of item.sockets) if (module) result[module] += 2;
+    for (const fittedModule of item.sockets)
+      if (fittedModule) result[fittedModule] += 2;
   }
   return result;
 }
@@ -1252,16 +1253,16 @@ export function applyAction(
         ];
       const socketCount = ctx.random() < 0.15 ? 3 : ctx.random() < 0.4 ? 2 : 1;
       const item = addItem(s, picked.id, ctx, socketCount);
-      const module =
+      const fittedModule =
         STATS[Math.min(2, Math.floor(Math.max(0, ctx.random()) * 3))];
-      s.modules[module] += 1;
+      s.modules[fittedModule] += 1;
       s.threads += 40;
       s.scrap += 15;
       s.xp += 10;
       say(
         s,
         "Lost & found, now yours",
-        `${item ? picked.name + ` · ${socketCount} socket${socketCount > 1 ? "s" : ""}` : "Inventory full: appearance collected and +16 bonus Scrap"}. +40 Threads, +15 Scrap, +1 ${module} module.`,
+        `${item ? picked.name + ` · ${socketCount} socket${socketCount > 1 ? "s" : ""}` : "Inventory full: appearance collected and +16 bonus Scrap"}. +40 Threads, +15 Scrap, +1 ${fittedModule} module.`,
         picked.id,
       );
       break;
