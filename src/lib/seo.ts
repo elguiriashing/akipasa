@@ -47,6 +47,7 @@ export function localizedMetadata(
 
 export function shouldNoindex(pathname: string) {
   return (
+    /^\/pals(?:\/|$)/.test(pathname) ||
     /^\/api(?:\/|$)/.test(pathname) ||
     /^\/(es|en)\/(account|admin|staff|owner|business|moderation|auth|community|check-in)(?:\/|$)/.test(
       pathname,

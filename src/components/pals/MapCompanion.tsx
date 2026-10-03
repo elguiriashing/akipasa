@@ -5,7 +5,9 @@ import { useEffect } from "react";
 /** Mounted by the map's server page only for an authorised, opted-in preview account. */
 export function MapCompanion({ portrait }: { portrait: string }) {
   useEffect(() => {
-    const imageUrl = URL.createObjectURL(new Blob([portrait], { type: "image/svg+xml" }));
+    const imageUrl = URL.createObjectURL(
+      new Blob([portrait], { type: "image/svg+xml" }),
+    );
     const marked = new Set<HTMLElement>();
     const style = document.createElement("style");
     style.textContent = `
@@ -18,29 +20,40 @@ export function MapCompanion({ portrait }: { portrait: string }) {
     `;
     document.head.appendChild(style);
     const decorate = () => {
-      document.querySelectorAll<HTMLElement>(".maplibregl-user-location-dot").forEach((dot) => {
-        if (dot.dataset.akipalsLocation) return;
-        dot.dataset.akipalsLocation = "true";
-        marked.add(dot);
-        const button = document.createElement("button");
-        button.className = "akipals-location-button";
-        button.type = "button";
-        button.setAttribute("aria-label", "Your AkiPal location. Open your wardrobe.");
-        button.title = "Your AkiPal · visible only to you";
-        const image = document.createElement("img");
-        image.src = imageUrl;
-        image.alt = "";
-        button.appendChild(image);
-        button.addEventListener("click", (event) => { event.stopPropagation(); window.location.assign("/pals"); });
-        dot.appendChild(button);
-      });
+      document
+        .querySelectorAll<HTMLElement>(".maplibregl-user-location-dot")
+        .forEach((dot) => {
+          if (dot.dataset.akipalsLocation) return;
+          dot.dataset.akipalsLocation = "true";
+          marked.add(dot);
+          const button = document.createElement("button");
+          button.className = "akipals-location-button";
+          button.type = "button";
+          button.setAttribute(
+            "aria-label",
+            "Your AkiPal location. Open your wardrobe.",
+          );
+          button.title = "Your AkiPal · visible only to you";
+          const image = document.createElement("img");
+          image.src = imageUrl;
+          image.alt = "";
+          button.appendChild(image);
+          button.addEventListener("click", (event) => {
+            event.stopPropagation();
+            window.location.assign("/pals");
+          });
+          dot.appendChild(button);
+        });
     };
     const observer = new MutationObserver(decorate);
     observer.observe(document.body, { childList: true, subtree: true });
     decorate();
     return () => {
       observer.disconnect();
-      for (const dot of marked) { dot.querySelector(".akipals-location-button")?.remove(); delete dot.dataset.akipalsLocation; }
+      for (const dot of marked) {
+        dot.querySelector(".akipals-location-button")?.remove();
+        delete dot.dataset.akipalsLocation;
+      }
       style.remove();
       URL.revokeObjectURL(imageUrl);
     };

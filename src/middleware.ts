@@ -78,6 +78,13 @@ export async function middleware(request: NextRequest) {
     pathname.split("/")[1] === "en" ? "en" : "es",
   );
   const response = await refreshSession(request);
+  if (
+    request.cookies.has("akipals_preview") &&
+    /^\/(en|es)\/map$/.test(pathname)
+  ) {
+    response.headers.set("Cache-Control", "private, no-store");
+    response.headers.set("CDN-Cache-Control", "no-store");
+  }
   if (shouldNoindex(pathname))
     response.headers.set("X-Robots-Tag", "noindex, nofollow");
   const secure = request.nextUrl.protocol === "https:";

@@ -1,3 +1,5 @@
+import { MapCompanion } from "@/components/pals/MapCompanion";
+import { mapPreviewPortrait } from "@/lib/pals/server";
 import { ResultPagination } from "@/components/ResultPagination";
 import { resultPage, resultSlice } from "@/lib/result-pagination";
 import { notFound } from "next/navigation";
@@ -42,6 +44,7 @@ export default async function MapPage({
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
   const m = msg(locale);
+  const companion = await mapPreviewPortrait();
 
   const selectedLocation = discoveryLocationFromQuery(query, locale);
   const { locality, center: searchCenter } = selectedLocation;
@@ -130,6 +133,7 @@ export default async function MapPage({
 
   return (
     <main className="shell discover-page map-page">
+      {companion && <MapCompanion portrait={companion} />}
       <ProductionMap
         fullScreen
         locale={locale}
