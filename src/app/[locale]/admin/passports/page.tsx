@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   WorkspaceEmpty,
@@ -41,6 +42,11 @@ export default async function AdminPassportsPage({
             : "Review existing campaigns. Creation stays hidden until needed."
         }
       />
+      <nav className="action-row">
+        <Link className="button" href={`/${locale}/admin/passports/awards`}>
+          {es ? "Otorgar sellos y logros" : "Grant stamps and achievements"}
+        </Link>
+      </nav>
       {(query.updated || query.error) && (
         <p className="notice">
           {query.updated

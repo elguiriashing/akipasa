@@ -40,7 +40,16 @@ export function nearestMajorCities(
     .sort((a, b) => a.distance - b.distance || a.key.localeCompare(b.key))
     .slice(0, count);
 }
-export function cityDiscoveryHref(city: DiscoveryCity, locale: Locale) {
+export function cityDiscoveryHref(
+  city: {
+    key: string;
+    latitude: number;
+    longitude: number;
+    es: string;
+    en: string;
+  },
+  locale: Locale,
+) {
   const params = new URLSearchParams({
     locality: city.key,
     locationName: city[locale],

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   useCallback,
   useEffect,
@@ -9,7 +10,14 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { majorCities, cityDiscoveryHref } from "@/lib/city-discovery";
+import { cityDiscoveryHref } from "@/lib/city-discovery";
+import { passportCities } from "@/lib/passport-cities";
+import { CityStamps } from "./CityStamps";
+import {
+  familyProgress,
+  cardFinish,
+  type PassportCollection,
+} from "@/lib/passport-collection";
 import type { Locale } from "@/lib/config";
 import { foilProperties, foilTarget } from "@/lib/passport-holo";
 import {
@@ -22,7 +30,9 @@ import {
 } from "@/lib/passport-motion";
 import styles from "./PassportBook.module.css";
 
-const cities = [...majorCities].sort((a, b) => a.es.localeCompare(b.es, "es"));
+const cities = [...passportCities].sort((a, b) =>
+  a.es.localeCompare(b.es, "es"),
+);
 const chapters = [
   "cover",
   "index",
@@ -43,6 +53,9 @@ export function PassportBook({
   routes,
   stamps,
   badges,
+  collection,
+  collectionError,
+  initialCity,
 }: {
   locale: Locale;
   initialView: string;
@@ -54,12 +67,39 @@ export function PassportBook({
   routes: ReactNode;
   stamps: ReactNode;
   badges: ReactNode;
+  collection?: PassportCollection;
+  collectionError?: boolean;
+  initialCity?: string;
 }) {
   const es = locale === "es";
+  const router = useRouter();
+  useEffect(() => {
+    if (!signedIn) return;
+    let refreshed = Date.now();
+    const refresh = () => {
+      if (
+        document.visibilityState === "visible" &&
+        Date.now() - refreshed > 10000
+      ) {
+        refreshed = Date.now();
+        router.refresh();
+      }
+    };
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, [router, signedIn]);
   const labels = es
-    ? ["Portada", "Índice", "Mi viaje", "Rutas", "Sellos", "Insignias"]
-    : ["Cover", "Index", "My journey", "Routes", "Stamps", "Badges"];
-  const [page, setPage] = useState(Math.max(0, chapters.indexOf(initialView)));
+    ? ["Portada", "Ciudades", "Mi viaje", "Rutas", "Fidelidad", "Logros"]
+    : ["Cover", "Cities", "My journey", "Routes", "Loyalty", "Achievements"];
+  const [page, setPage] = useState(
+    initialCity && cities.some((c) => c.key === initialCity)
+      ? chapters.length + cities.findIndex((c) => c.key === initialCity)
+      : Math.max(0, chapters.indexOf(initialView)),
+  );
   const [direction, setDirection] = useState(1);
   const [search, setSearch] = useState("");
   const [motion, setMotion] = useState(false);
@@ -75,12 +115,27 @@ export function PassportBook({
   const swipe = useRef<{ x: number; y: number } | null>(null);
   const total = chapters.length + cities.length;
   const city = page >= chapters.length ? cities[page - chapters.length] : null;
+  const cityProgress = familyProgress(
+    collection?.families.find(
+      (f) => f.city_key === city?.key && !f.category_key,
+    ),
+  );
+  const finish = cardFinish(cityProgress.tier);
   const title = city ? city[locale] : labels[page];
   const go = useCallback(
     (next: number) => {
       const bounded = Math.max(0, Math.min(total - 1, next));
       setDirection(bounded >= page ? 1 : -1);
       setPage(bounded);
+      const url = new URL(window.location.href);
+      if (bounded >= chapters.length) {
+        url.searchParams.set("city", cities[bounded - chapters.length].key);
+        url.searchParams.delete("view");
+      } else {
+        url.searchParams.set("view", chapters[bounded]);
+        url.searchParams.delete("city");
+      }
+      window.history.replaceState(null, "", url.toString());
       target.current = { x: 0, y: 0 };
     },
     [page, total],
@@ -307,7 +362,7 @@ export function PassportBook({
           onKeyDown={(event) => {
             if (
               (event.target as HTMLElement).closest(
-                "input,select,textarea,button,a",
+                "input,select,textarea,button,a,summary,[data-finish]",
               )
             )
               return;
@@ -319,7 +374,7 @@ export function PassportBook({
           onTouchStart={(event) => {
             if (
               (event.target as HTMLElement).closest(
-                "input,select,textarea,button,a",
+                "input,select,textarea,button,a,summary,[data-finish]",
               )
             )
               return;
@@ -481,7 +536,10 @@ export function PassportBook({
                 <div
                   ref={surface}
                   className={`${styles.cityArt} ${styles.holo}`}
-                  data-shine={shine && !reduced}
+                  data-finish={finish}
+                  data-shine={
+                    shine && !reduced && finish !== "plain" && !collectionError
+                  }
                   onPointerMove={(event) => {
                     if (motion || reduced || !shine) return;
                     const r = event.currentTarget.getBoundingClientRect();
@@ -546,38 +604,20 @@ export function PassportBook({
                   </div>
                 </div>
                 <div className={styles.journal}>
-                  <span className={styles.eyebrow}>
-                    {es ? "Tu próxima historia" : "Your next story"}
-                  </span>
-                  <h3>
-                    {es ? "Nos vemos en" : "See you in"}
-                    <br />
-                    {city[locale]}.
-                  </h3>
-                  <p>
-                    {es
-                      ? "Descubre sus locales, encuentra nuevos planes y haz check-in en los negocios participantes para ganar XP y sellos."
-                      : "Discover its venues, find new plans and check in at participating businesses to earn XP and stamps."}
-                  </p>
-                  <div className={styles.coordinates}>
-                    {Math.abs(city.latitude).toFixed(3)}°{" "}
-                    {city.latitude >= 0 ? "N" : "S"}
-                    <br />
-                    {Math.abs(city.longitude).toFixed(3)}°{" "}
-                    {city.longitude >= 0 ? "E" : "W"}
-                  </div>
+                  <CityStamps
+                    key={city.key}
+                    city={city.key}
+                    locale={locale}
+                    families={collection?.families || []}
+                    error={collectionError}
+                    signedIn={signedIn}
+                  />
                   <Link
                     className={styles.explore}
                     href={cityDiscoveryHref(city, locale)}
                   >
-                    {es ? "Explorar" : "Explore"} {city[locale]}{" "}
-                    <span aria-hidden="true">↗</span>
+                    {es ? "Explorar la ciudad" : "Explore the city"} ↗
                   </Link>
-                  <p className={styles.truth}>
-                    {es
-                      ? "Las páginas de ciudades son destinos para explorar. Tus visitas y logros verificados aparecen en Mi viaje e Insignias."
-                      : "City pages are destinations to explore. Your verified progress and achievements appear in My journey and Badges."}
-                  </p>
                   <details className={styles.credit}>
                     <summary>
                       {es ? "Crédito de la foto" : "Photo credit"}
@@ -678,7 +718,8 @@ export function PassportBook({
       <div className={styles.summary}>
         <span>{totalXp.toLocaleString(locale)} XP</span>
         <span>
-          {totalStamps.toLocaleString(locale)} {es ? "sellos" : "stamps"}
+          {totalStamps.toLocaleString(locale)}{" "}
+          {es ? "sellos de fidelidad" : "loyalty stamps"}
         </span>
         {!signedIn && (
           <Link

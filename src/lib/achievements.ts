@@ -90,6 +90,8 @@ export function achievementBadge(item: Achievement): BadgeDefinition {
 export type AchievementProgress = Achievement & {
   current_count: number;
   unlocked_at: string | null;
+  manual?: boolean;
+  archived?: boolean;
 };
 export function achievementTarget(item: Achievement) {
   return item.condition_type === "xp" ? item.minimum_xp : item.target_count;

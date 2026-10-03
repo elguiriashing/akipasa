@@ -952,3 +952,59 @@
 .chapter :global(.console-section-header) {
   background: #172a3d;
 }
+
+/* Earned finishes affect optical detail, never layout or input sensitivity. */
+.cityArt[data-finish="plain"] {
+  transform: none;
+}
+.cityArt[data-finish="satin"] .negative,
+.cityArt[data-finish="satin"] .echo,
+.cityArt[data-finish="satin"] .foil,
+.cityArt[data-finish="satin"] .microfoil {
+  display: none;
+}
+.cityArt[data-finish="holographic"] .echo {
+  opacity: 0.12;
+}
+.cityArt[data-finish="holographic"] .negative {
+  opacity: 0.12;
+}
+.spread {
+  align-items: start;
+  gap: clamp(20px, 3vw, 36px);
+}
+.cityArt {
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 4/5;
+  align-self: start;
+}
+.journal {
+  min-width: 0;
+}
+.page {
+  height: auto;
+}
+@media (max-width: 700px) {
+  .spread {
+    gap: 24px;
+  }
+  .cityArt {
+    max-width: 420px;
+    justify-self: center;
+  }
+}
+
+.journal {
+  --passport-ink: #e8edf6;
+  --passport-surface: #172b40;
+  color: #e8edf6;
+}
+
+.journal {
+  --stamp-bronze: #d6a174;
+  --stamp-silver: #c5d3e1;
+  --stamp-gold: #f0ce71;
+  --stamp-platinum: #a4dadf;
+  --stamp-holo: #d0bbff;
+}

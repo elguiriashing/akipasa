@@ -78,6 +78,11 @@ export default async function AdminLayout({
       icon: "gift",
     },
     {
+      href: `${base}/passports/awards`,
+      label: es ? "Otorgar sellos" : "Grant awards",
+      icon: "star",
+    },
+    {
       href: `${base}/achievements`,
       label: es ? "Logros" : "Achievements",
       icon: "star",

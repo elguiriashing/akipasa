@@ -20,13 +20,20 @@ export async function AchievementCelebration({
   if (error || !unlocks?.length) return null;
   const { data: items } = await supabase
     .from("achievements")
-    .select("key,title_es,title_en")
+    .select("key,title_es,title_en,family_key,tier_index,city_key")
     .eq("active", true)
     .in(
       "key",
       unlocks.map((item) => item.achievement_key),
     );
   if (!items?.length) return null;
+  const grouped = new Map<string, (typeof items)[number]>();
+  for (const item of items) {
+    const family = item.family_key || item.key;
+    const old = grouped.get(family);
+    if (!old || item.tier_index > old.tier_index) grouped.set(family, item);
+  }
+  const upgrades = [...grouped.values()];
   const es = locale === "es";
   return (
     <section className={styles.celebration} role="status">
@@ -39,16 +46,22 @@ export async function AchievementCelebration({
           : "A little adventure. A new milestone."}
       </p>
       <ul>
-        {items.slice(0, 6).map((item) => (
+        {upgrades.slice(0, 6).map((item) => (
           <li key={item.key}>{item[`title_${locale}`]}</li>
         ))}
       </ul>
-      {items.length > 6 && (
+      {upgrades.length > 6 && (
         <p>
-          +{items.length - 6} {es ? "logros más" : "more achievements"}
+          +{upgrades.length - 6} {es ? "logros más" : "more achievements"}
         </p>
       )}
-      <a href={`/${locale}/passports?view=badges`}>
+      <a
+        href={
+          upgrades[0]?.city_key
+            ? `/${locale}/passports?city=${upgrades[0].city_key}`
+            : `/${locale}/passports?view=badges`
+        }
+      >
         {es ? "Ver mi colección" : "See my collection"} →
       </a>
     </section>

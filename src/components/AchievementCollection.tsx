@@ -9,6 +9,7 @@ import {
   type AchievementProgress,
 } from "../lib/achievements";
 import type { Locale } from "../lib/config";
+import Link from "next/link";
 import styles from "./AchievementCollection.module.css";
 
 export function AchievementCollection({
@@ -36,9 +37,9 @@ export function AchievementCollection({
               Boolean(item.unlocked_at) === (state === "earned")) &&
             (group === "all" ||
               (group === "city"
-                ? Boolean(item.city_key)
+                ? Boolean(item.city_key) && !item.category_key
                 : group === "category"
-                  ? Boolean(item.category_key)
+                  ? Boolean(item.category_key) && !item.city_key
                   : !item.city_key && !item.category_key)) &&
             (!city || item.city_key === city) &&
             `${item.title_es} ${item.title_en} ${item.description_es} ${item.description_en}`
@@ -82,6 +83,9 @@ export function AchievementCollection({
           </p>
         </div>
       </header>
+      <Link href={`/${locale}/passports?view=index`}>
+        {es ? "Ver sellos por ciudad" : "See stamps by city"} →
+      </Link>
       <p className={styles.hint}>
         {es
           ? "Descubre lugares, prueba algo nuevo y celebra cada paso. Solo cuentan los check-ins válidos en locales participantes."
@@ -97,20 +101,31 @@ export function AchievementCollection({
           ["city", es ? "Ciudades" : "Cities"],
           ["category", es ? "Tus gustos" : "Your interests"],
           ["explore", es ? "Exploración" : "Exploration"],
-        ].map(([key, label]) => (
-          <button
-            type="button"
-            key={key}
-            aria-pressed={group === key}
-            onClick={() => {
-              setGroup(key);
-              setCity("");
-              setLimit(12);
-            }}
-          >
-            {label}
-          </button>
-        ))}
+        ]
+          .filter(
+            ([key]) =>
+              key !== "city" ||
+              items.some((item) => item.city_key && !item.category_key),
+          )
+          .filter(
+            ([key]) =>
+              key !== "category" ||
+              items.some((item) => item.category_key && !item.city_key),
+          )
+          .map(([key, label]) => (
+            <button
+              type="button"
+              key={key}
+              aria-pressed={group === key}
+              onClick={() => {
+                setGroup(key);
+                setCity("");
+                setLimit(12);
+              }}
+            >
+              {label}
+            </button>
+          ))}
       </div>
       <div className={styles.filters}>
         <input
@@ -166,9 +181,10 @@ export function AchievementCollection({
       <div className={styles.grid}>
         {visible.slice(0, limit).map((item) => {
           const target = achievementTarget(item);
-          const count = item.unlocked_at
-            ? target
-            : Math.min(target, Number(item.current_count));
+          const count =
+            item.unlocked_at && !item.manual
+              ? target
+              : Math.min(target, Number(item.current_count));
           return (
             <article
               key={item.key}
@@ -179,14 +195,23 @@ export function AchievementCollection({
                   <Icon name={item.icon} size={24} />
                 </span>
                 <small>
-                  {item.unlocked_at
+                  {item.manual
                     ? es
-                      ? "✓ CONSEGUIDO"
-                      : "✓ EARNED"
-                    : achievementCondition(item, locale)}
+                      ? "OTORGADO POR ADMIN"
+                      : "ADMIN AWARDED"
+                    : item.unlocked_at
+                      ? es
+                        ? "✓ CONSEGUIDO"
+                        : "✓ EARNED"
+                      : achievementCondition(item, locale)}
                 </small>
               </div>
               <h4>{item[`title_${locale}`]}</h4>
+              {item.archived && (
+                <small>
+                  {es ? "COLECCIÓN HISTÓRICA" : "LEGACY COLLECTION"}
+                </small>
+              )}
               <p>{item[`description_${locale}`]}</p>
               <div className={styles.progress}>
                 <span>

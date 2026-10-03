@@ -1,3 +1,4 @@
+import { myPassportCollection } from "@/lib/passport-repository";
 import type { CSSProperties } from "react";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
@@ -40,6 +41,11 @@ export default async function PassportsPage({
     ? query.view!
     : "progress";
   const { supabase, user } = await optionalUser();
+  const passportResult = user
+    ? await myPassportCollection()
+        .then((data) => ({ data, error: false }))
+        .catch(() => ({ data: undefined, error: true }))
+    : { data: undefined, error: false };
   const [
     { data: passports },
     { data: programs },
@@ -128,6 +134,9 @@ export default async function PassportsPage({
             : "cover"
       }
       signedIn={Boolean(user)}
+      collection={passportResult.data}
+      collectionError={passportResult.error}
+      initialCity={query.city}
       totalXp={totalXp}
       totalStamps={totalStamps}
       notices={
@@ -192,7 +201,7 @@ export default async function PassportsPage({
                 detail={es ? "Rutas activas" : "Active routes"}
               />
               <ConsoleMetric
-                label={es ? "Sellos" : "Stamps"}
+                label={es ? "Fidelidad" : "Loyalty"}
                 value={totalStamps}
                 detail={es ? "Acumulados" : "Collected"}
               />

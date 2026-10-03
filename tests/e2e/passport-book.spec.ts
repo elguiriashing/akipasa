@@ -1,13 +1,4 @@
 import { expect, test } from "@playwright/test";
-import { createRequire } from "node:module";
-
-// Sharp 0.35's ESM exports omit its bundled declarations in bundler resolution.
-const sharp = createRequire(`${process.cwd()}/package.json`)("sharp") as (
-  input: Buffer,
-) => {
-  stats: () => Promise<{ channels: Array<{ mean: number }> }>;
-};
-
 // Passport interactions model returning visitors; privacy tests exercise first load.
 test.beforeEach(async ({ page }, testInfo) => {
   if (!/accept all|reject optional|passport fits/.test(testInfo.title)) {
@@ -28,7 +19,7 @@ test("city pages reuse discovery photos, turn with keys, and expose real discove
   await expect(photo).toHaveAttribute("src", "/images/cities/malaga.webp");
   await expect(photo).toBeVisible();
   await expect(
-    page.getByRole("link", { name: "Explore Málaga" }),
+    page.getByRole("link", { name: "Explore the city ↗" }),
   ).toHaveAttribute("href", /locality=malaga/);
   await page
     .getByRole("heading", { name: "Málaga", exact: true, level: 2 })
@@ -149,7 +140,7 @@ test("horizontal touch gestures turn pages without changing vertical scroll", as
   await expect(
     page.getByRole("searchbox", { name: "Find a city" }),
   ).toBeVisible();
-  const index = page.getByRole("heading", { name: "Index", exact: true });
+  const index = page.getByRole("heading", { name: "Cities", exact: true });
   await index.dispatchEvent("touchstart", {
     touches: [{ identifier: 1, clientX: 200, clientY: 200 }],
   });
@@ -159,7 +150,7 @@ test("horizontal touch gestures turn pages without changing vertical scroll", as
   await expect(index).toBeVisible();
 });
 
-test("default tilt calibrates at load and rotates only the photo card", async ({
+test("default tilt calibrates while unearned city cards stay still", async ({
   page,
 }) => {
   await page.goto("/en/passports");
@@ -169,7 +160,7 @@ test("default tilt calibrates at load and rotates only the photo card", async ({
   await page.getByRole("button", { name: "Open passport" }).click();
   await page.getByRole("searchbox", { name: "Find a city" }).fill("malaga");
   await page.getByRole("button", { name: /^Málaga/ }).click();
-  const card = page.locator('[data-shine="true"]');
+  const card = page.locator("[data-finish]");
   const book = page.locator('[data-tilt="on"]');
   await page.evaluate(() =>
     window.dispatchEvent(
@@ -197,10 +188,10 @@ test("default tilt calibrates at load and rotates only the photo card", async ({
     .toBeGreaterThan(1);
   await expect
     .poll(() => card.evaluate((el) => getComputedStyle(el).transform))
-    .not.toBe("none");
+    .toBe("none");
   await expect(book).toHaveCSS("transform", "none");
   await expect(
-    page.getByRole("link", { name: "Explore Málaga" }),
+    page.getByRole("link", { name: "Explore the city ↗" }),
   ).toBeVisible();
 });
 
@@ -316,7 +307,7 @@ for (const viewport of [
     await page.getByRole("button", { name: /^Málaga/ }).click();
     expect(
       await page
-        .getByRole("link", { name: "Explore Málaga" })
+        .getByRole("link", { name: "Explore the city ↗" })
         .evaluate(
           (el) =>
             getComputedStyle(
@@ -350,116 +341,32 @@ for (const viewport of [
   });
 }
 
-test("spectral photo planes react to tilt and disappear with foil off", async ({
+test("unearned city cards stay plain and expose ten inline category stamps", async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto("/en/passports");
-  await page.getByRole("button", { name: "Open passport" }).click();
-  await page.getByRole("searchbox", { name: "Find a city" }).fill("malaga");
-  await page.getByRole("button", { name: /^Málaga/ }).click();
-  const negative = page.getByTestId("passport-negative");
-  const echo = page.getByTestId("passport-echo");
-  await expect(negative.locator("img")).toHaveAttribute(
+  await page.goto("/en/passports?city=fuengirola");
+  const card = page.locator("[data-finish]");
+  await expect(card).toHaveAttribute("data-finish", "plain");
+  await expect(card).toHaveAttribute("data-shine", "false");
+  await expect(page.getByRole("img", { name: /Fuengirola/ })).toHaveAttribute(
     "src",
-    "/images/cities/malaga.webp",
+    "/passport-placeholder.svg",
   );
-  await expect(echo.locator("img")).toHaveAttribute(
-    "src",
-    "/images/cities/malaga.webp",
-  );
-  await expect(page.getByRole("img", { name: /Málaga/ })).toHaveCount(1);
-  await page.locator('[data-shine="true"]').screenshot({
-    path: "test-results/passport-spectral-neutral.png",
-    animations: "disabled",
-  });
-  await page.evaluate(() => {
-    window.dispatchEvent(
-      new DeviceOrientationEvent("deviceorientation", { beta: 40, gamma: 0 }),
-    );
-    window.dispatchEvent(
-      new DeviceOrientationEvent("deviceorientation", { beta: 54, gamma: 22 }),
-    );
-  });
-  await expect
-    .poll(() =>
-      negative.evaluate((el) =>
-        Number.parseFloat(getComputedStyle(el).opacity),
-      ),
-    )
-    .toBeGreaterThan(0.2);
-  await expect
-    .poll(() =>
-      negative
-        .locator("img")
-        .evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).m41),
-    )
-    .toBeGreaterThan(4);
-  await expect
-    .poll(() =>
-      echo
-        .locator("img")
-        .evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).m41),
-    )
-    .toBeLessThan(-2);
-  await expect(page.locator("[data-tilt]")).toHaveCSS("transform", "none");
-  await expect(negative).toHaveCSS("mix-blend-mode", "normal");
-  await expect(negative.locator("img")).toHaveCSS("filter", /invert\(1\)/);
-  await page.locator('[data-shine="true"]').screenshot({
-    path: "test-results/passport-spectral-tilted.png",
-    animations: "disabled",
-  });
-  // Exercise rendered frames while the sensor changes: static screenshots alone
-  // missed the backdrop-blending flashes reported on moving phone cards.
-  const mask = await negative.evaluate((el) => getComputedStyle(el).maskImage);
-  let previousBrightness: number | undefined;
-  for (const [beta, gamma] of [
-    [53, 20],
-    [49, 15],
-    [44, 8],
-    [40, 0],
-    [36, -8],
-    [31, -15],
-    [27, -20],
-  ]) {
+  await expect(page.locator("button[data-tier]")).toHaveCount(10);
+  await expect(page.getByTestId("passport-negative")).toBeHidden();
+  await expect(page.getByTestId("passport-echo")).toBeHidden();
+  await page.locator("button[data-tier]").first().click();
+  await expect(
+    page.getByRole("button", { name: "Close details" }),
+  ).toBeVisible();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  expect(
     await page.evaluate(
-      async ({ beta, gamma }) => {
-        window.dispatchEvent(
-          new DeviceOrientationEvent("deviceorientation", { beta, gamma }),
-        );
-        for (let frame = 0; frame < 4; frame++)
-          await new Promise<void>((resolve) =>
-            requestAnimationFrame(() => resolve()),
-          );
-      },
-      { beta, gamma },
-    );
-    const card = page.locator('[data-shine="true"]');
-    expect(
-      await card.evaluate((el) =>
-        [...el.querySelectorAll("span, img")].every(
-          (layer) => getComputedStyle(layer).mixBlendMode === "normal",
-        ),
-      ),
-    ).toBe(true);
-    await expect(negative).toHaveCSS("mask-image", mask);
-    const opacity = await negative.evaluate((el) =>
-      Number(getComputedStyle(el).opacity),
-    );
-    expect(opacity).toBeGreaterThanOrEqual(0.1);
-    expect(opacity).toBeLessThanOrEqual(0.3);
-    const { channels } = await sharp(await card.screenshot()).stats();
-    const brightness =
-      channels.slice(0, 3).reduce((sum, channel) => sum + channel.mean, 0) / 3;
-    if (previousBrightness !== undefined)
-      expect(Math.abs(brightness - previousBrightness)).toBeLessThan(28);
-    previousBrightness = brightness;
-  }
-  await page.getByRole("button", { name: "Foil: ON" }).click();
-  await expect(negative).toBeHidden();
-  await expect(echo).toBeHidden();
-  await expect(page.getByRole("img", { name: /Málaga/ })).toHaveCSS(
-    "transform",
-    "none",
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await page.getByRole("button", { name: "Close details" }).click();
+  await expect(page.getByRole("button", { name: "Close details" })).toHaveCount(
+    0,
   );
 });
