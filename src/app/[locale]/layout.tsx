@@ -94,7 +94,7 @@ export default async function LocaleLayout({
           <div className="akibusiness-content">{children}</div>
           <SupportAgentLauncher
             locale={locale}
-            surface="business_portal"
+            surface="site_contact"
             label={locale === "es" ? "Soporte" : "Support"}
             className="global-support-trigger"
             signedIn={Boolean(user)}
