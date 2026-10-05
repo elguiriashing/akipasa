@@ -5,7 +5,9 @@ import {
   type Context,
   type EarnedAchievement,
 } from "@/lib/pals/engine";
-import { previewAccess, privateHeaders, readState } from "@/lib/pals/server";
+import { previewAccess, privateHeaders, readState, recordPalsAnalytics } from "@/lib/pals/server";
+import { legacyCatalogue } from "@/lib/pals/catalogue-legacy";
+import type { PalsAnalyticsEvent } from "@/lib/pals/analytics";
 import { payload } from "@/lib/pals/view";
 
 export const dynamic = "force-dynamic";
@@ -243,6 +245,81 @@ export async function POST(request: Request) {
         409,
       );
     }
+    const occurredAt = new Date(context.now).toISOString();
+    const catalogue = legacyCatalogue();
+    const collectionFor = (itemId: string | undefined) =>
+      itemId ? catalogue.items.find((item) => item.id === itemId)?.collectionId : undefined;
+    const analytics: PalsAnalyticsEvent[] = [];
+    if (parsed.action.type === "equip") {
+      const equipment = state.equipment.find((item) => item.id === parsed.action.itemId);
+      if (equipment)
+        analytics.push({
+          name: "item_equipped",
+          occurredAt,
+          itemId: equipment.appearance,
+          collectionId: collectionFor(equipment.appearance),
+        });
+    } else if (parsed.action.type === "unequip") {
+      const previousId = saved.state.equipped[parsed.action.slot];
+      const equipment = saved.state.equipment.find((item) => item.id === previousId);
+      if (equipment)
+        analytics.push({
+          name: "item_unequipped",
+          occurredAt,
+          itemId: equipment.appearance,
+          collectionId: collectionFor(equipment.appearance),
+        });
+    } else if (parsed.action.type === "buy") {
+      const item = catalogue.items.find((entry) => entry.id === parsed.action.sku);
+      analytics.push({
+        name: "shop_item_purchased",
+        occurredAt,
+        itemId: parsed.action.sku,
+        collectionId: item?.collectionId,
+        currency: "threads",
+        amount: item?.price?.currency === "threads" ? item.price.amount : undefined,
+      });
+      analytics.push({
+        name: "item_unlocked",
+        occurredAt,
+        itemId: parsed.action.sku,
+        collectionId: item?.collectionId,
+        context: { source: "threads-shop" },
+      });
+    } else if (parsed.action.type === "parcel" && state.report.design) {
+      analytics.push({
+        name: "item_unlocked",
+        occurredAt,
+        itemId: state.report.design,
+        collectionId: collectionFor(state.report.design),
+        context: { source: "daily-parcel" },
+      });
+    } else if (parsed.action.type === "claim") {
+      const newlyClaimed = state.claimed.filter((itemId) => !saved.state.claimed.includes(itemId));
+      analytics.push({
+        name: "reward_claimed",
+        occurredAt,
+        context: { rewardCount: newlyClaimed.length, source: "achievement-sync" },
+      });
+      for (const itemId of newlyClaimed)
+        analytics.push({
+          name: "item_unlocked",
+          occurredAt,
+          itemId,
+          collectionId: collectionFor(itemId),
+          context: { source: "reward-rule" },
+        });
+    } else if (parsed.action.type === "choice") {
+      const adventureId = saved.state.run?.adventure;
+      const earned = state.rewards.some((key) => !saved.state.rewards.includes(key) && key.endsWith(`:${adventureId}`));
+      if (adventureId && earned)
+        analytics.push({
+          name: "adventure_reward_earned",
+          occurredAt,
+          adventureId,
+        });
+    }
+    void recordPalsAnalytics(access.user.id, analytics);
     return json(payload(committed.state, committed.version));
   } catch {
     return json(
