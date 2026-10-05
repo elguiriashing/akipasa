@@ -89,8 +89,9 @@ export async function requestAccountEmailChange(formData: FormData) {
     redirect(`/${locale}/account/settings?error=email-same`);
 
   const next = `/${locale}/account/settings?email=confirmed`;
-  const emailRedirectTo =
-    `${config.siteUrl}/${locale}/auth/callback?next=${encodeURIComponent(next)}`;
+  const emailRedirectTo = `${config.siteUrl}/${locale}/auth/callback?next=${encodeURIComponent(
+    next,
+  )}`;
   const { error } = await supabase.auth.updateUser(
     { email: nextEmail },
     { emailRedirectTo },
