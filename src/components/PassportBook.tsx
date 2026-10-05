@@ -321,7 +321,7 @@ export function PassportBook({
   );
   return (
     <main
-      className={styles.atlas}
+      className={`${styles.atlas} passport-experience`}
       aria-label={es ? "Pasaporte interactivo" : "Interactive passport"}
     >
       <header className={styles.intro}>
@@ -362,6 +362,69 @@ export function PassportBook({
               <span>{label}</span>
             </button>
           ))}
+      <div className={styles.motionControls}>
+        <button
+          className={styles.motionButton}
+          onClick={enableMotion}
+          disabled={reduced || !shine}
+          aria-pressed={motion}
+          aria-label={
+            motion
+              ? es
+                ? "Desactivar inclinación"
+                : "Disable tilt"
+              : es
+                ? "Activar inclinación"
+                : "Enable tilt"
+          }
+          title={
+            motion
+              ? es
+                ? "Desactivar inclinación"
+                : "Disable tilt"
+              : es
+                ? "Activar inclinación"
+                : "Enable tilt"
+          }
+        >
+          <span aria-hidden="true">◌</span>
+        </button>
+        {motion && (
+          <button
+            className={styles.motionButton}
+            onClick={() => {
+              origin.current = latest.current;
+              target.current = { x: 0, y: 0 };
+            }}
+            aria-label={es ? "Centrar inclinación" : "Recenter tilt"}
+            title={es ? "Centrar inclinación" : "Recenter tilt"}
+          >
+            <span aria-hidden="true">⌁</span>
+          </button>
+        )}
+        <button
+          className={styles.motionButton}
+          onClick={() => {
+            setShine(!shine);
+            setMotion(false);
+          }}
+          aria-pressed={shine}
+          aria-label={es ? "Brillo holográfico" : "Holographic foil"}
+          title={es ? "Brillo holográfico" : "Holographic foil"}
+        >
+          <span aria-hidden="true">✦</span>
+        </button>
+        <p role="status">
+          {status ||
+            (reduced
+              ? es
+                ? "Movimiento reducido activado."
+                : "Reduced motion is enabled."
+              : es
+                ? "Desliza para pasar página. Toca la foto para mover la luz."
+                : "Swipe to turn pages. Touch the photo to move the light.")}
+        </p>
+      </div>
         </nav>
         <div
           className={styles.book}
@@ -722,69 +785,6 @@ export function PassportBook({
         <span className={styles.readout} aria-live="polite">
           {title} · {page + 1}/{total}
         </span>
-      </div>
-      <div className={styles.motionControls}>
-        <button
-          className={styles.motionButton}
-          onClick={enableMotion}
-          disabled={reduced || !shine}
-          aria-pressed={motion}
-          aria-label={
-            motion
-              ? es
-                ? "Desactivar inclinación"
-                : "Disable tilt"
-              : es
-                ? "Activar inclinación"
-                : "Enable tilt"
-          }
-          title={
-            motion
-              ? es
-                ? "Desactivar inclinación"
-                : "Disable tilt"
-              : es
-                ? "Activar inclinación"
-                : "Enable tilt"
-          }
-        >
-          <span aria-hidden="true">◌</span>
-        </button>
-        {motion && (
-          <button
-            className={styles.motionButton}
-            onClick={() => {
-              origin.current = latest.current;
-              target.current = { x: 0, y: 0 };
-            }}
-            aria-label={es ? "Centrar inclinación" : "Recenter tilt"}
-            title={es ? "Centrar inclinación" : "Recenter tilt"}
-          >
-            <span aria-hidden="true">⌁</span>
-          </button>
-        )}
-        <button
-          className={styles.motionButton}
-          onClick={() => {
-            setShine(!shine);
-            setMotion(false);
-          }}
-          aria-pressed={shine}
-          aria-label={es ? "Brillo holográfico" : "Holographic foil"}
-          title={es ? "Brillo holográfico" : "Holographic foil"}
-        >
-          <span aria-hidden="true">✦</span>
-        </button>
-        <p role="status">
-          {status ||
-            (reduced
-              ? es
-                ? "Movimiento reducido activado."
-                : "Reduced motion is enabled."
-              : es
-                ? "Desliza para pasar página. Toca la foto para mover la luz."
-                : "Swipe to turn pages. Touch the photo to move the light.")}
-        </p>
       </div>
       <div className={styles.summary}>
         <span>{totalXp.toLocaleString(locale)} XP</span>
