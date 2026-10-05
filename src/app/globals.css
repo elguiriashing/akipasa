@@ -13056,3 +13056,185 @@ body:has(#passport-privacy-controls) > .privacy-preferences {
     width: 100%;
   }
 }
+
+
+/* AkiBusiness: dedicated business surface, separate from the consumer app chrome. */
+.akibusiness-host {
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at 12% 8%, color-mix(in srgb, var(--primary) 14%, transparent), transparent 28rem),
+    radial-gradient(circle at 88% 0%, color-mix(in srgb, #0fb8a9 12%, transparent), transparent 30rem),
+    var(--surface-alt);
+}
+
+.akibusiness-topbar {
+  position: sticky;
+  z-index: 80;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 64px;
+  padding: 0.65rem clamp(0.85rem, 2.5vw, 2rem);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  backdrop-filter: blur(22px) saturate(135%);
+  -webkit-backdrop-filter: blur(22px) saturate(135%);
+}
+
+.akibusiness-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.akibusiness-brand-mark {
+  display: grid;
+  width: 2.35rem;
+  height: 2.35rem;
+  place-items: center;
+  border-radius: 0.9rem;
+  background: linear-gradient(145deg, var(--primary), var(--teal));
+  color: #14213d;
+  font-weight: 950;
+}
+
+.akibusiness-brand > span:last-child {
+  display: grid;
+  line-height: 1.05;
+}
+
+.akibusiness-brand strong {
+  font-size: 1rem;
+}
+
+.akibusiness-brand small {
+  margin-top: 0.16rem;
+  color: var(--muted);
+  font-size: 0.66rem;
+}
+
+.akibusiness-topbar nav {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.akibusiness-topbar nav a {
+  min-height: 2.55rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-decoration: none;
+  background: color-mix(in srgb, var(--surface-alt) 72%, transparent);
+}
+
+.akibusiness-topbar nav a:hover {
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--line));
+  background: color-mix(in srgb, var(--primary) 10%, var(--surface-alt));
+}
+
+.akibusiness-content {
+  min-height: calc(100dvh - 64px);
+  padding: 0.35rem 0 5rem;
+}
+
+.akibusiness-content .workspace-shell,
+.akibusiness-content .business-application-page {
+  margin-top: 0.75rem;
+}
+
+.akibusiness-content .workspace-shell {
+  width: min(100% - 1.5rem, 1420px);
+}
+
+.akibusiness-content .workspace-sidebar {
+  top: 4.7rem;
+}
+
+.auth-product-portals {
+  display: grid;
+  gap: 0.55rem;
+  align-self: end;
+  width: min(100%, 26rem);
+}
+
+.auth-product-portals > span {
+  margin-bottom: 0.15rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.auth-product-card {
+  display: grid;
+  gap: 0.18rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--line) 82%, transparent);
+  border-radius: 1rem;
+  color: var(--ink);
+  text-decoration: none;
+  background: color-mix(in srgb, var(--surface) 76%, transparent);
+  transition:
+    border-color 0.16s ease,
+    transform 0.16s ease,
+    background 0.16s ease;
+}
+
+.auth-product-card:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--primary) 44%, var(--line));
+  background: color-mix(in srgb, var(--primary) 9%, var(--surface));
+}
+
+.auth-product-card strong {
+  font-size: 0.95rem;
+}
+
+.auth-product-card small {
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.auth-product-card-secondary {
+  opacity: 0.9;
+}
+
+@media (max-width: 850px) {
+  .akibusiness-topbar {
+    min-height: 58px;
+    padding: 0.55rem 0.7rem;
+  }
+
+  .akibusiness-topbar nav a {
+    min-height: 2.4rem;
+    padding-inline: 0.7rem;
+  }
+
+  .akibusiness-topbar nav a:first-child {
+    display: none;
+  }
+
+  .akibusiness-content {
+    min-height: calc(100dvh - 58px);
+  }
+
+  .akibusiness-content .workspace-shell {
+    width: min(100% - 0.7rem, 46rem);
+  }
+
+  .auth-product-portals {
+    width: 100%;
+  }
+}

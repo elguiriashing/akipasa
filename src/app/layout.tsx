@@ -53,7 +53,9 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const requestHeaders = await headers();
-  const isAkiDuermo = requestHeaders.get("x-akipasa-product") === "akiduermo";
+  const product = requestHeaders.get("x-akipasa-product");
+  const isAkiDuermo = product === "akiduermo";
+  const isAkiBusiness = product === "akibusiness";
   const requestLocale = requestHeaders.get("x-akipasa-locale");
   const locale =
     requestLocale && isLocale(requestLocale) ? requestLocale : "es";
@@ -67,13 +69,21 @@ export default async function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               "@id": `${siteOrigin}/#website`,
-              name: isAkiDuermo ? "AkiDuermo" : "AkiPasa",
-              url: isAkiDuermo ? "https://akiduermo.akipasa.com" : siteOrigin,
+              name: isAkiDuermo
+                ? "AkiDuermo"
+                : isAkiBusiness
+                  ? "AkiBusiness"
+                  : "AkiPasa",
+              url: isAkiDuermo
+                ? "https://akiduermo.akipasa.com"
+                : isAkiBusiness
+                  ? "https://business.akipasa.com"
+                  : siteOrigin,
               inLanguage: ["es", "en"],
             }),
           }}
         />
-        {!isAkiDuermo && <PwaRegistration />}
+        {!isAkiDuermo && !isAkiBusiness && <PwaRegistration />}
         <ThemeManager />
         {children}
         <ConsentAnalytics />

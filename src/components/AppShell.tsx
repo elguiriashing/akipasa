@@ -79,15 +79,6 @@ export function AppShell({
       label: es ? "Membresía" : "Membership",
       icon: "membership",
     },
-    ...(!capabilities.manageOwnedVenues
-      ? [
-          {
-            href: `/${locale}/business/apply`,
-            label: es ? "Añade tu negocio" : "Add your business",
-            icon: "business" as const,
-          },
-        ]
-      : []),
   ];
 
   const workspaceNav: NavItem[] = [
@@ -103,8 +94,8 @@ export function AppShell({
     ...(capabilities.manageOwnedVenues
       ? [
           {
-            href: `/${locale}/business`,
-            label: es ? "Negocio" : "Business",
+            href: `${config.businessUrl}/${locale}/business`,
+            label: "AkiBusiness",
             icon: "business" as const,
           },
         ]
@@ -261,17 +252,6 @@ export function AppShell({
               {compact ? <Icon name="account" /> : es ? "Entrar" : "Sign in"}
             </Link>
           )}
-          <a
-            className="app-rail-crm"
-            href={config.crmUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            title={compact ? "CRM" : undefined}
-            aria-label={compact ? "CRM" : undefined}
-          >
-            <Icon name="business" />
-            {!compact && <span>CRM</span>}
-          </a>
           <div className="app-rail-tools">
             <ThemeToggle locale={locale} />
             <LanguageLink locale={other} compact={compact} />
@@ -411,10 +391,6 @@ export function AppShell({
                   <span>{item.label}</span>
                 </Link>
               ))}
-              <a href={config.crmUrl} target="_blank" rel="noopener noreferrer">
-                <Icon name="business" />
-                <span>CRM</span>
-              </a>
             </nav>
             <div className="app-sheet-tools">
               {!signedIn && (
