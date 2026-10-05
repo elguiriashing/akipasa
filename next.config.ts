@@ -61,9 +61,9 @@ const nextConfig: NextConfig = {
                 isDevelopment ? " 'unsafe-eval'" : ""
               }`,
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://akipasa.supabase.co https://tiles.openfreemap.org https://*.google-analytics.com https://*.analytics.google.com",
+              "img-src 'self' data: blob: https://akipasa.supabase.co https://tiles.openfreemap.org https://tile.openstreetmap.org https://*.google-analytics.com https://*.analytics.google.com",
               "font-src 'self' data:",
-              "connect-src 'self' https://akipasa.supabase.co wss://akipasa.supabase.co https://tiles.openfreemap.org https://*.google-analytics.com https://*.analytics.google.com",
+              "connect-src 'self' https://akipasa.supabase.co wss://akipasa.supabase.co https://tiles.openfreemap.org https://tile.openstreetmap.org https://*.google-analytics.com https://*.analytics.google.com",
               "manifest-src 'self'",
               "worker-src 'self' blob:",
               "upgrade-insecure-requests",

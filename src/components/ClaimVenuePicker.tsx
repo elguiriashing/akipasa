@@ -159,6 +159,31 @@ export function ClaimVenuePicker({
         baseStyleReady = true;
         window.clearTimeout(fallbackStyleTimer);
       });
+      map.on("error", (event) => {
+        if (disposed || baseStyleReady) return;
+        const message =
+          event.error instanceof Error ? event.error.message : String(event.error || "");
+        if (!/style|source|tile|glyph|sprite|network|fetch/i.test(message)) return;
+        window.clearTimeout(fallbackStyleTimer);
+        map.setStyle({
+          version: 8,
+          sources: {
+            "claim-osm": {
+              type: "raster",
+              tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+              tileSize: 256,
+              attribution: "© OpenStreetMap contributors",
+            },
+          },
+          layers: [
+            {
+              id: "claim-osm",
+              type: "raster",
+              source: "claim-osm",
+            },
+          ],
+        });
+      });
       mapRef.current = map;
       map.addControl(
         new maplibregl.NavigationControl({ showCompass: false }),
@@ -372,6 +397,8 @@ export function ClaimVenuePicker({
         <label className="claim-search-input">
           <Icon name="search" />
           <input
+            id="claim-venue-search"
+            name="claimVenueSearch"
             type="search"
             value={query}
             onChange={(event) => {
