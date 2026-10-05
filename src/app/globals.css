@@ -8197,7 +8197,7 @@ html {
     top: 0.75rem;
     z-index: 24;
     display: grid;
-    grid-template-columns: minmax(9.5rem, auto) minmax(0, 1fr);
+    grid-template-columns: max-content minmax(0, 1fr);
     align-items: center;
     width: 100%;
     height: auto;
@@ -8209,7 +8209,14 @@ html {
   }
 
   .consumer-workspace .workspace-brand {
-    padding: 0 0.5rem 0 0;
+    min-width: 0;
+    max-width: 16rem;
+    padding: 0 0.75rem 0 0;
+  }
+
+  .consumer-workspace .workspace-brand > a {
+    min-width: 0;
+    max-width: 100%;
   }
 
   .consumer-workspace .workspace-brand-copy small {
@@ -8242,7 +8249,10 @@ html {
   }
 
   .consumer-workspace .workspace-navigation {
+    position: relative;
+    z-index: 1;
     display: flex;
+    width: 100%;
     min-width: 0;
     gap: 0.2rem;
     padding: 0 0.35rem 0.4rem 0.55rem;
@@ -8255,13 +8265,7 @@ html {
     scroll-behavior: smooth;
     touch-action: pan-x;
     cursor: grab;
-    mask-image: linear-gradient(
-      to right,
-      transparent,
-      black 0.55rem,
-      black calc(100% - 0.55rem),
-      transparent
-    );
+    mask-image: none;
   }
 
   .consumer-workspace .workspace-navigation::-webkit-scrollbar {
