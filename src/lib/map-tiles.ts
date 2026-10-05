@@ -196,7 +196,7 @@ export class MapTileLoader {
           const tile = queue.shift()!;
           try {
             const response = await request(
-              `/api/map/tiles/${tileKey(tile)}?v=2&policy=relevance-1`,
+              `/api/map/tiles/${tileKey(tile)}?v=2&policy=relevance-2`,
               {
                 signal,
               },
