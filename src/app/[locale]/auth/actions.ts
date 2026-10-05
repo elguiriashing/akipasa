@@ -6,9 +6,10 @@ import { z } from "zod";
 import { config, isLocale } from "@/lib/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { passwordSchema, safeAuthDestination } from "@/lib/auth-security";
+import { publicRequestOrigin } from "@/lib/public-request-origin";
 
 function requestOrigin(headerStore: Awaited<ReturnType<typeof headers>>) {
-  return headerStore.get("origin") || "http://localhost:3000";
+  return publicRequestOrigin(new Headers(headerStore), config.siteUrl);
 }
 
 export async function requestMagicLink(formData: FormData) {
