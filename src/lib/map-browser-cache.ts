@@ -29,7 +29,7 @@ export class BrowserMapTileCache implements MapTileCache {
       };
       const timer = setTimeout(() => finish(null), 300);
       try {
-        const request = indexedDB.open("akipasa-map-tiles-v3-sanitized-1", 1);
+        const request = indexedDB.open("akipasa-map-tiles-v4-sanitized-2", 1);
         request.onupgradeneeded = () => {
           request.result.createObjectStore("tiles", {
             keyPath: "key",
