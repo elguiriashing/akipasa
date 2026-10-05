@@ -1300,12 +1300,7 @@
 }
 
 
-:global(body.passport-immersive .footer) {
-  display: none;
-}
-:global(body.passport-immersive .app-content) {
-  min-height: 100vh;
-}
+
 .motionButton {
   display: inline-grid;
   place-items: center;
@@ -1353,4 +1348,47 @@
   .summary {
     bottom: 16px;
   }
+}
+
+/* Controls belong to the section rail, never viewport coordinates. */
+.bookmarks button > span:not(.bookmarkNumber) { display: inline; font: inherit; color: inherit; margin: 0; }
+.bookmarks .motionControls {
+  position: static;
+  inset: auto;
+  display: flex;
+  flex-wrap: wrap;
+  width: auto;
+  margin: 14px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid #91b7d133;
+  justify-content: center;
+}
+.bookmarks .motionControls .motionButton {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+}
+.bookmarks .motionControls p { display: none; }
+@media (min-width: 1101px) {
+  .atlas { overflow: visible; }
+  .desk { display: grid; grid-template-columns: 184px minmax(0, 1fr); padding: 0; }
+  .bookmarks {
+    position: sticky;
+    inset: auto;
+    top: 0;
+    align-self: start;
+    width: 184px;
+    height: 100dvh;
+    min-height: 0;
+    padding: 20px;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+  .book { min-width: 0; }
+}
+@media (max-width: 1100px) {
+  .bookmarks .motionControls { grid-column: 1 / -1; margin: 0; padding-top: 6px; }
 }
