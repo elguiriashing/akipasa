@@ -30,3 +30,4 @@ jobs:
           git add -A
           git commit -m "Format repository"
           git push
+
