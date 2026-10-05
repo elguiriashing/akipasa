@@ -12515,7 +12515,7 @@ html[data-owner-focus="true"] .app-content {
   display: none;
 }
 .app-shell:has(.passport-experience) {
-  background: #0d263b;
+  background: var(--passport-canvas);
 }
 .app-shell:has(.passport-experience) > .app-rail {
   height: 100dvh;
@@ -12528,7 +12528,7 @@ html[data-owner-focus="true"] .app-content {
   display: none !important;
 }
 .app-shell--passport {
-  background: #0d263b;
+  background: var(--passport-canvas);
 }
 @media (min-width: 851px) {
   .app-shell--passport {
