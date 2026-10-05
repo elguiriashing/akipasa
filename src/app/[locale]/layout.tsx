@@ -99,6 +99,7 @@ export default async function LocaleLayout({
           <OwnerToolboxLauncher
             locale={locale}
             preferences={ownerPreferences}
+            userId={user!.id}
           />
         )}
         <SupportAgentLauncher
