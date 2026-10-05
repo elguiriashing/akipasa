@@ -250,9 +250,13 @@ export default async function BusinessPage({
           className={`notice ${query.created ? "notice-success" : "notice-error"}`}
         >
           {query.created
-            ? es
-              ? "✓ Guardado correctamente. Puede estar pendiente de revisión."
-              : "✓ Saved successfully. It may be awaiting review."
+            ? ["venue", "event"].includes(query.created)
+              ? es
+                ? "✓ Guardado correctamente. Pendiente de revisión."
+                : "✓ Saved successfully. Waiting for review."
+              : es
+                ? "✓ Guardado correctamente."
+                : "✓ Saved successfully."
             : es
               ? "✕ No se pudo guardar. Revisa los campos o permisos."
               : "✕ Could not save. Check the fields or permissions."}
