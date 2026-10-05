@@ -29,8 +29,9 @@ class TestPointerEvent extends MouseEvent {
 
 Object.defineProperty(window, "PointerEvent", { value: TestPointerEvent });
 
+const navigation = vi.hoisted(() => ({ pathname: "/en/admin/users" }));
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/en/admin/users",
+  usePathname: () => navigation.pathname,
   useSearchParams: () => new URLSearchParams(),
 }));
 
@@ -42,6 +43,7 @@ import { AppShell } from "../src/components/AppShell";
 import { WorkspaceShell } from "../src/components/WorkspaceShell";
 
 afterEach(() => {
+  navigation.pathname = "/en/admin/users";
   cleanup();
   window.localStorage.clear();
   delete document.documentElement.dataset.theme;
@@ -228,6 +230,29 @@ describe("progressive disclosure workspace shell", () => {
       screen.queryByRole("complementary", { name: "Account navigation" }),
     ).not.toBeInTheDocument();
   });
+});
+
+it("keeps Passport content and the global rail inside the viewport shell across navigation", () => {
+  navigation.pathname = "/en/passports";
+  const { container, rerender } = render(
+    <AppShell locale="en" signedIn={true}>
+      <main>Passport content</main>
+    </AppShell>,
+  );
+  expect(container.querySelector(".app-shell > .app-rail")).not.toBeNull();
+  expect(
+    container.querySelector(".app-shell--passport > .app-content > main"),
+  ).toHaveTextContent("Passport content");
+  navigation.pathname = "/en";
+  rerender(
+    <AppShell locale="en" signedIn={true}>
+      <main>Discovery content</main>
+    </AppShell>,
+  );
+  expect(
+    container.querySelector(".app-shell > .app-content > main"),
+  ).toHaveTextContent("Discovery content");
+  expect(container.querySelector(".app-shell--passport")).toBeNull();
 });
 
 it("uses one persistent rail state and a real light/dark icon control", () => {
