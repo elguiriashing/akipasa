@@ -18,7 +18,7 @@ export async function GET(request: Request) {
 
   const { west, east, south, north } = parsed.data;
   const { data, error } = await createSupabasePublicClient().rpc(
-    "claimable_venues_in_bounds",
+    "claimable_venue_cards_in_bounds",
     {
       p_west: west,
       p_east: east,
