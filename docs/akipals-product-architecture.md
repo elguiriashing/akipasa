@@ -90,7 +90,11 @@ free-form personal payloads in AkiPals analytics.
 
 ## Database foundation
 
-`20261005123000_akipals_product_foundations.sql` adds:
+`20261005123000_akipals_product_foundations.sql` adds the core tables, and
+`20261005131500_akipals_unlock_rule_constraints.sql` adds persisted unlock-rule
+references plus database enforcement for earned non-purchasable items.
+
+Core tables:
 
 - `pals_brands`
 - `pals_campaigns`
