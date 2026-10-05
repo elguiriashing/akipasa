@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
+import { config } from "@/lib/config";
 import { z } from "zod";
 
 const profileSchema = z.object({
@@ -70,6 +71,33 @@ export async function updateAccountProfile(formData: FormData) {
   if (detailsError) redirect(`/${locale}/account/profile?error=update`);
   revalidatePath(`/${locale}/account`, "layout");
   redirect(`/${locale}/account/profile?updated=1`);
+}
+
+const emailChangeSchema = z.object({
+  email: z.string().trim().email().max(254),
+});
+
+export async function requestAccountEmailChange(formData: FormData) {
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const parsed = emailChangeSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success)
+    redirect(`/${locale}/account/settings?error=email-validation`);
+
+  const { supabase, user } = await requireUser(locale);
+  const nextEmail = parsed.data.email.toLowerCase();
+  if (user.email?.toLowerCase() === nextEmail)
+    redirect(`/${locale}/account/settings?error=email-same`);
+
+  const next = `/${locale}/account/settings?email=confirmed`;
+  const emailRedirectTo =
+    `${config.siteUrl}/${locale}/auth/callback?next=${encodeURIComponent(next)}`;
+  const { error } = await supabase.auth.updateUser(
+    { email: nextEmail },
+    { emailRedirectTo },
+  );
+  if (error) redirect(`/${locale}/account/settings?error=email-update`);
+
+  redirect(`/${locale}/account/settings?email=pending`);
 }
 
 export async function requestAccountDeletion(formData: FormData) {
