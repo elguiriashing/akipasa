@@ -17,14 +17,12 @@ const profileSchema = z.object({
       .regex(/^[a-zA-Z0-9_]{3,30}$/),
   ]),
   bio: z.string().trim().max(2000),
-  avatarUrl: z.union([z.literal(""), z.string().url().startsWith("https://")]),
-  bannerUrl: z.union([z.literal(""), z.string().url().startsWith("https://")]),
   publicEmail: z.union([z.literal(""), z.string().email()]),
   phone: z.string().trim().max(40),
-  websiteUrl: z.union([z.literal(""), z.string().url().startsWith("https://")]),
-  instagramUrl: z.union([
+  websiteUrl: z.string().trim().max(300),
+  instagramHandle: z.union([
     z.literal(""),
-    z.string().url().startsWith("https://"),
+    z.string().trim().regex(/^[A-Za-z0-9._]{1,30}$/),
   ]),
   locality: z.string().trim().max(120),
   province: z.string().trim().max(120),
@@ -42,6 +40,23 @@ export async function updateAccountProfile(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const parsed = profileSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) redirect(`/${locale}/account/profile?error=validation`);
+  const websiteValue = parsed.data.websiteUrl.trim();
+  const normalizedWebsite = websiteValue
+    ? /^https?:\/\//i.test(websiteValue)
+      ? websiteValue
+      : `https://${websiteValue}`
+    : "";
+  if (normalizedWebsite) {
+    try {
+      new URL(normalizedWebsite);
+    } catch {
+      redirect(`/${locale}/account/profile?error=validation`);
+    }
+  }
+  const instagramUrl = parsed.data.instagramHandle
+    ? `https://www.instagram.com/${parsed.data.instagramHandle}`
+    : null;
+
   const { supabase, user } = await requireUser(locale);
   const { error } = await supabase.rpc("update_own_profile", {
     p_display_name: parsed.data.displayName,
@@ -53,12 +68,10 @@ export async function updateAccountProfile(formData: FormData) {
     .update({
       username: parsed.data.username || null,
       bio: parsed.data.bio || null,
-      avatar_url: parsed.data.avatarUrl || null,
-      banner_url: parsed.data.bannerUrl || null,
       public_email: parsed.data.publicEmail || null,
       phone: parsed.data.phone || null,
-      website_url: parsed.data.websiteUrl || null,
-      instagram_url: parsed.data.instagramUrl || null,
+      website_url: normalizedWebsite || null,
+      instagram_url: instagramUrl,
       locality: parsed.data.locality || null,
       province: parsed.data.province || null,
       birth_year: parsed.data.birthYear || null,
