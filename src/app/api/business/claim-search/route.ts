@@ -14,58 +14,22 @@ export async function GET(request: Request) {
     return Response.json({ rows: [] }, { status: 400 });
 
   const query = normalizeVenueSearch(parsed.data.q);
-  const supabase = createSupabasePublicClient();
-  const { data: matches, error } = await supabase.rpc("search_public_venues", {
-    p_query: query,
-    p_offset: 0,
-    p_limit: 24,
-  });
+  const { data, error } = await createSupabasePublicClient().rpc(
+    "search_claimable_venues",
+    {
+      p_query: query,
+      p_limit: 24,
+    },
+  );
+
   if (error)
     return Response.json(
       { error: "Venue search temporarily unavailable" },
       { status: 503 },
     );
 
-  const ids: string[] = (matches || []).map((row: { id: string }) => row.id);
-  if (!ids.length) return Response.json({ rows: [] });
-
-  const { data: venues, error: venueError } = await supabase
-    .from("venues")
-    .select("id,slug,name,address,latitude,longitude,locality,accessibility")
-    .in("id", ids)
-    .eq("status", "published")
-    .contains("accessibility", { claim_status: "unclaimed" });
-
-  if (venueError)
-    return Response.json(
-      { error: "Venue search temporarily unavailable" },
-      { status: 503 },
-    );
-
-  const byId = new Map((venues || []).map((venue) => [venue.id, venue]));
-  const rows = ids.flatMap((id) => {
-    const venue = byId.get(id);
-    if (!venue) return [];
-    if (
-      typeof venue.latitude !== "number" ||
-      typeof venue.longitude !== "number"
-    )
-      return [];
-    return [
-      {
-        id: venue.id,
-        slug: venue.slug,
-        name: venue.name,
-        address: venue.address,
-        locality: venue.locality,
-        latitude: venue.latitude,
-        longitude: venue.longitude,
-      },
-    ];
-  });
-
   return Response.json(
-    { rows },
+    { rows: data || [] },
     { headers: { "Cache-Control": "public, max-age=15, s-maxage=30" } },
   );
 }
