@@ -1,4 +1,6 @@
 import type { Entitlement } from "./entitlements";
+import { evaluateRewardRules } from "./rewards";
+import { legacyAchievementRewardRules, rewardFactsFromAchievements } from "./reward-catalogue";
 /** Server-authoritative, deterministic-with-context rules for the restricted AkiPals preview. */
 export type Stat = "wits" | "energy" | "charm";
 export type Slot = "head" | "body" | "back" | "held";
@@ -1502,37 +1504,46 @@ export function applyAction(
         fail(
           "Your verified achievements could not be loaded. No rewards have been changed.",
         );
-      const unlocked = ctx.achievements.filter(
-        (a) => Boolean(a.unlocked_at) && !a.archived,
+      const facts = rewardFactsFromAchievements(ctx.achievements);
+      const alreadyClaimedRules = new Set(s.claimedRewardRules ?? []);
+      const resolutions = evaluateRewardRules(
+        legacyAchievementRewardRules,
+        facts,
+        alreadyClaimedRules,
+        new Date(ctx.now),
       );
-      const available: string[] = [];
-      if (unlocked.length >= 1) available.push("city-cup");
-      if (unlocked.length >= 5) available.push("explorer-medal");
-      if (unlocked.length >= 10) available.push("master-crown");
-      for (const city of cityCollections)
-        if (
-          unlocked.some(
-            (a) =>
-              a.city_key
-                ?.normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .toLowerCase() === city.key,
-          )
-        )
-          available.push(`city-${city.key}`);
       let count = 0;
-      for (const id of available)
-        if (!s.claimed.includes(id)) {
-          addItem(s, id, ctx, 3, { obtainedVia: id.startsWith("city-") ? "city" : "achievement", sourceType: "achievement-sync", sourceId: id });
-          s.claimed.push(id);
+      for (const resolution of resolutions) {
+        for (const reward of resolution.rewards) {
+          if (reward.type !== "cosmetic" && reward.type !== "collection_item" && reward.type !== "effect")
+            continue;
+          const itemId =
+            reward.type === "cosmetic"
+              ? reward.itemId
+              : reward.type === "collection_item"
+                ? reward.itemId
+                : reward.effectItemId;
+          if (s.claimed.includes(itemId)) continue;
+          const rule = legacyAchievementRewardRules.find((entry) => entry.id === resolution.ruleId)!;
+          addItem(s, itemId, ctx, 3, {
+            obtainedVia: rule.sourceType === "city" ? "city" : "achievement",
+            sourceType: "reward-rule",
+            sourceId: rule.id,
+            metadata: { rewardRuleId: rule.id },
+          });
+          s.claimed.push(itemId);
           count += 1;
         }
+        s.claimedRewardRules ??= [];
+        if (!s.claimedRewardRules.includes(resolution.ruleId))
+          s.claimedRewardRules.push(resolution.ruleId);
+      }
       say(
         s,
         count ? "You earned these stories" : "Your keepsakes are up to date",
         count
-          ? `${count} guaranteed keepsake${count === 1 ? "" : "s"} from your verified AkiPasa achievements. Never sold in the shop.`
-          : "Unlock AkiPasa achievements through verified visits. This preview recognises six city collections and 1, 5 and 10 unlocked-achievement milestones.",
+          ? `${count} guaranteed keepsake${count === 1 ? "" : "s"} from verified AkiPasa reward rules. Never sold in the shop.`
+          : "Your verified achievement rewards are already synced.",
       );
       break;
     }
