@@ -1,8 +1,27 @@
-import { cityCollections, type EarnedAchievement } from "./engine";
 import type { RewardFacts, RewardRule } from "./rewards";
 
+export type AchievementRewardFact = {
+  key: string;
+  city_key: string | null;
+  unlocked_at: string | null;
+  archived?: boolean;
+};
+
+const rewardCities = [
+  ["fuengirola", "Fuengirola"],
+  ["malaga", "Málaga"],
+  ["marbella", "Marbella"],
+  ["granada", "Granada"],
+  ["sevilla", "Sevilla"],
+  ["madrid", "Madrid"],
+] as const;
+
+function normalizeKey(value: string) {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
 export function rewardFactsFromAchievements(
-  achievements: EarnedAchievement[],
+  achievements: AchievementRewardFact[],
 ): RewardFacts {
   const unlocked = achievements.filter(
     (achievement) => Boolean(achievement.unlocked_at) && !achievement.archived,
@@ -10,7 +29,9 @@ export function rewardFactsFromAchievements(
   return {
     achievementKeys: new Set(unlocked.map((achievement) => achievement.key)),
     achievementCities: new Set(
-      unlocked.flatMap((achievement) => (achievement.city_key ? [achievement.city_key] : [])),
+      unlocked.flatMap((achievement) =>
+        achievement.city_key ? [normalizeKey(achievement.city_key)] : [],
+      ),
     ),
     passportTiers: new Map(),
     venueVisits: [],
@@ -54,15 +75,15 @@ export const legacyAchievementRewardRules: RewardRule[] = [
     sourceId: "achievement-count-10",
     metadata: { legacyClaimKey: "master-crown" },
   },
-  ...cityCollections.map<RewardRule>((city) => ({
-    id: `achievement-city-${city.key}`,
-    title: `${city.name} keepsake`,
+  ...rewardCities.map<RewardRule>(([key, name]) => ({
+    id: `achievement-city-${key}`,
+    title: `${name} keepsake`,
     active: true,
     match: "all",
-    conditions: [{ type: "achievement_in_city", cityKey: city.key }],
-    rewards: [{ type: "cosmetic", itemId: `city-${city.key}` }],
+    conditions: [{ type: "achievement_in_city", cityKey: key }],
+    rewards: [{ type: "cosmetic", itemId: `city-${key}` }],
     sourceType: "city",
-    sourceId: city.key,
-    metadata: { legacyClaimKey: `city-${city.key}` },
+    sourceId: key,
+    metadata: { legacyClaimKey: `city-${key}` },
   })),
 ];
