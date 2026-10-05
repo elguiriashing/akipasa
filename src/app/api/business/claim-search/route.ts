@@ -33,7 +33,8 @@ export async function GET(request: Request) {
     .from("venues")
     .select("id,slug,name,address,latitude,longitude,locality,accessibility")
     .in("id", ids)
-    .eq("status", "published");
+    .eq("status", "published")
+    .contains("accessibility", { claim_status: "unclaimed" });
 
   if (venueError)
     return Response.json(
@@ -45,11 +46,6 @@ export async function GET(request: Request) {
   const rows = ids.flatMap((id) => {
     const venue = byId.get(id);
     if (!venue) return [];
-    const accessibility =
-      venue.accessibility && typeof venue.accessibility === "object"
-        ? (venue.accessibility as Record<string, unknown>)
-        : {};
-    if (accessibility.claim_status !== "unclaimed") return [];
     if (
       typeof venue.latitude !== "number" ||
       typeof venue.longitude !== "number"
