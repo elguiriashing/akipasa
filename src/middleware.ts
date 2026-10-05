@@ -5,14 +5,52 @@ import { stayHostRoute, stayHostMethodAllowed } from "@/lib/akiduermo-routing";
 import { shouldNoindex } from "@/lib/seo";
 
 export async function middleware(request: NextRequest) {
-  const isAkiDuermo = request.nextUrl.hostname === "akiduermo.akipasa.com";
+  const hostname = request.nextUrl.hostname;
+  const isAkiBusiness = hostname === "business.akipasa.com";
+  const isAkiDuermo = hostname === "akiduermo.akipasa.com";
   const isStayPath =
     request.nextUrl.pathname === "/akiduermo" ||
     request.nextUrl.pathname.startsWith("/akiduermo/");
   request.headers.set(
     "x-akipasa-product",
-    isAkiDuermo || isStayPath ? "akiduermo" : "akipasa",
+    isAkiBusiness
+      ? "akibusiness"
+      : isAkiDuermo || isStayPath
+        ? "akiduermo"
+        : "akipasa",
   );
+  if (isAkiBusiness) {
+    const pathname = request.nextUrl.pathname;
+    const target = request.nextUrl.clone();
+    const locale = pathname.split("/")[1] === "en" ? "en" : "es";
+    request.headers.set("x-akipasa-locale", locale);
+
+    if (pathname === "/") {
+      target.pathname = "/es/business";
+      return NextResponse.redirect(target, 308);
+    }
+    if (/^\/(es|en)$/.test(pathname)) {
+      target.pathname = `${pathname}/business`;
+      return NextResponse.redirect(target, 308);
+    }
+
+    const allowed =
+      /^\/(es|en)\/(business|auth)(?:\/|$)/.test(pathname) ||
+      pathname.startsWith("/api/") ||
+      pathname === "/robots.txt";
+
+    if (!allowed) {
+      target.hostname = "akipasa.com";
+      target.protocol = "https:";
+      target.port = "";
+      return NextResponse.redirect(target, 307);
+    }
+
+    const response = await refreshSession(request);
+    response.headers.set("X-Robots-Tag", "noindex, nofollow");
+    return response;
+  }
+
   if (isAkiDuermo || isStayPath) {
     if (
       isAkiDuermo &&
@@ -52,6 +90,15 @@ export async function middleware(request: NextRequest) {
     response.headers.set("X-Robots-Tag", "noindex, nofollow");
     return response;
   }
+  const mainBusinessPath = /^\/(es|en)\/business(?:\/|$)/.test(request.nextUrl.pathname);
+  if (mainBusinessPath && hostname !== "business.akipasa.com") {
+    const target = request.nextUrl.clone();
+    target.hostname = "business.akipasa.com";
+    target.protocol = "https:";
+    target.port = "";
+    return NextResponse.redirect(target, 307);
+  }
+
   // Resolve the canonical landing URL before session refresh and page rendering.
   // Combine www + root normalization into one hop and preserve query parameters.
   if (
