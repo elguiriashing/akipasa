@@ -54,7 +54,7 @@ export default async function BusinessApplicationPage({
   );
   const es = locale === "es";
   const stateLabel: Record<string, string> = {
-    submitted: es ? "Solicitud recibida" : "Application received",
+    submitted: es ? "Pendiente de revisión" : "Waiting for review",
     under_review: es ? "En revisión" : "Under review",
     awaiting_payment: es
       ? "Aprobado · elige un plan"
