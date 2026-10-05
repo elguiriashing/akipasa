@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { applyAction, initialState, type Context } from "../src/lib/pals/engine";
 import {
+  campaignAvailable,
   itemPurchasable,
   validateCatalogue,
   type Catalogue,
@@ -70,6 +71,41 @@ describe("AkiPals product catalogue", () => {
       expect(itemPurchasable(item)).toBe(false);
       expect(item.price).toBeNull();
     }
+  });
+
+  it("applies campaign date and geography restrictions generically", () => {
+    const campaign = {
+      id: "malaga-night",
+      title: "Málaga Night",
+      collectionIds: [],
+      unlockRuleIds: [],
+      activeFrom: "2026-10-01T00:00:00Z",
+      activeUntil: "2026-10-31T23:59:59Z",
+      regions: ["andalucia"],
+      cities: ["malaga"],
+      metadata: {},
+    };
+    expect(
+      campaignAvailable(campaign, {
+        now: new Date("2026-10-05T12:00:00Z"),
+        region: "andalucia",
+        city: "malaga",
+      }),
+    ).toBe(true);
+    expect(
+      campaignAvailable(campaign, {
+        now: new Date("2026-11-05T12:00:00Z"),
+        region: "andalucia",
+        city: "malaga",
+      }),
+    ).toBe(false);
+    expect(
+      campaignAvailable(campaign, {
+        now: new Date("2026-10-05T12:00:00Z"),
+        region: "andalucia",
+        city: "madrid",
+      }),
+    ).toBe(false);
   });
 
   it("supports sponsored collections without special-case product code", () => {
