@@ -1,7 +1,7 @@
 "use client";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Locale } from "@/lib/config";
 import { compactMarkerSchema, mapVenueDetailSchema } from "@/lib/map-snapshot";
 import { applyMapTheme, readMapTheme } from "@/lib/map-theme";
@@ -284,9 +284,9 @@ export function ClaimVenuePicker({
       disposed = true;
       cleanup();
     };
-  }, [es, styleUrl]);
+  }, [chooseVenue, es, styleUrl]);
 
-  function chooseVenue(venue: ClaimVenue) {
+  const chooseVenue = useCallback((venue: ClaimVenue) => {
     setSelected(venue);
     setQuery(venue.name);
     setRows([]);
@@ -315,7 +315,7 @@ export function ClaimVenuePicker({
         .setDOMContent(node)
         .addTo(map);
     });
-  }
+  }, [es]);
 
   function chooseSearchResult(venue: ClaimVenue) {
     chooseVenue(venue);
