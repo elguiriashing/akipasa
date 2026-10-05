@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import { config, isLocale } from "@/lib/config";
 import {
   requestMagicLink,
@@ -18,8 +19,13 @@ export default async function AuthPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
+  const requestHeaders = await headers();
+  const isBusinessHost =
+    requestHeaders.get("x-akipasa-product") === "akibusiness";
   const es = locale === "es";
-  const next = query.next || `/${locale}/account`;
+  const next =
+    query.next ||
+    (isBusinessHost ? `/${locale}/business` : `/${locale}/account`);
   const businessIntent = next.startsWith(`/${locale}/business/apply`);
   const mode = ["signup", "magic", "recover"].includes(query.mode ?? "")
     ? query.mode
@@ -34,7 +40,9 @@ export default async function AuthPage({
       <section className="auth-intro">
         <div className="auth-intro-copy">
           <div className="eyebrow">
-            {businessIntent
+            {isBusinessHost
+              ? "AkiBusiness"
+              : businessIntent
               ? es
                 ? "Paso 1 de 3 · Añade tu negocio"
                 : "Step 1 of 3 · Add your business"
@@ -43,7 +51,11 @@ export default async function AuthPage({
                 : "Account"}
           </div>
           <h1>
-            {businessIntent
+            {isBusinessHost
+              ? es
+                ? "Gestiona tu negocio"
+                : "Manage your business"
+              : businessIntent
               ? es
                 ? "Primero, crea tu cuenta gratuita"
                 : "First, create your free account"
@@ -52,7 +64,11 @@ export default async function AuthPage({
                 : "Your AkiPasa account"}
           </h1>
           <p className="lede">
-            {businessIntent
+            {isBusinessHost
+              ? es
+                ? "Tus locales, eventos, fidelidad, promociones y analítica en un portal dedicado."
+                : "Your venues, events, loyalty, promotions and analytics in one dedicated portal."
+              : businessIntent
               ? es
                 ? "Después volverás directamente a la solicitud de tu negocio. No pagarás nada hoy."
                 : "Afterwards, we will take you straight back to your business application. You will not pay anything today."
@@ -61,14 +77,38 @@ export default async function AuthPage({
                 : "Create an account with email, continue with Google, or use a secure link."}
           </p>
         </div>
-        <div className="auth-intro-note" aria-hidden="true">
-          <span>{es ? "Tu lugar para" : "Your place for"}</span>
-          <strong>
-            {es
-              ? "descubrir · conectar · volver"
-              : "discover · connect · return"}
-          </strong>
-        </div>
+        <aside className="auth-product-portals">
+          <span>{es ? "Elige tu espacio" : "Choose your workspace"}</span>
+          <a
+            className="auth-product-card"
+            href={`${config.businessUrl}/${locale}/auth?next=/${locale}/business`}
+          >
+            <strong>AkiBusiness</strong>
+            <small>
+              {es
+                ? "Gestiona tu ficha, eventos, fidelidad y promoción."
+                : "Manage your listing, events, loyalty and promotion."}
+            </small>
+          </a>
+          <a className="auth-product-card" href={config.crmUrl}>
+            <strong>AkiHQ</strong>
+            <small>
+              {es
+                ? "CRM, PoS, inventario y operaciones."
+                : "CRM, PoS, inventory and operations."}
+            </small>
+          </a>
+          {isBusinessHost && (
+            <a className="auth-product-card auth-product-card-secondary" href={config.siteUrl}>
+              <strong>AkiPasa</strong>
+              <small>
+                {es
+                  ? "Volver a la app de usuarios."
+                  : "Return to the consumer app."}
+              </small>
+            </a>
+          )}
+        </aside>
       </section>
       {businessIntent && (
         <aside
@@ -169,9 +209,13 @@ export default async function AuthPage({
                   ? es
                     ? "Restablece tu contraseña"
                     : "Reset your password"
-                  : es
-                    ? "Entra en AkiPasa"
-                    : "Sign in to AkiPasa"}
+                  : isBusinessHost
+                    ? es
+                      ? "Entra en AkiBusiness"
+                      : "Sign in to AkiBusiness"
+                    : es
+                      ? "Entra en AkiPasa"
+                      : "Sign in to AkiPasa"}
           </h2>
         </div>
         {config.googleAuthEnabled && mode !== "recover" && mode !== "magic" && (
