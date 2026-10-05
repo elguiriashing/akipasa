@@ -35,6 +35,7 @@ export function ClaimVenuePicker({
   const [loading, setLoading] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [mapMessage, setMapMessage] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(0);
 
   useEffect(() => {
     if (!initialVenueId) return;
@@ -128,7 +129,7 @@ export function ClaimVenuePicker({
           sources: {
             "claim-osm": {
               type: "raster",
-              tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+              tiles: ["/api/business/map-tile/{z}/{x}/{y}"],
               tileSize: 256,
               attribution: "© OpenStreetMap contributors",
             },
@@ -230,6 +231,7 @@ export function ClaimVenuePicker({
               rows?: Array<{ id: string; longitude: number; latitude: number }>;
             };
             const rows = payload.rows || [];
+            setVisibleCount(rows.length);
             const source = map.getSource(
               "claimable-venues",
             ) as import("maplibre-gl").GeoJSONSource;
@@ -246,6 +248,7 @@ export function ClaimVenuePicker({
             });
             setMapMessage(null);
           } catch {
+            setVisibleCount(0);
             setMapMessage(
               es
                 ? "No se pudieron cargar los locales de esta zona."
@@ -406,9 +409,13 @@ export function ClaimVenuePicker({
         <div className="claim-map-legend">
           <i />
           <span>
-            {es
-              ? "Locales disponibles para reclamar"
-              : "Venues available to claim"}
+            {visibleCount > 0
+              ? es
+                ? `${visibleCount} locales disponibles para reclamar`
+                : `${visibleCount} venues available to claim`
+              : es
+                ? "Locales disponibles para reclamar"
+                : "Venues available to claim"}
           </span>
         </div>
       </section>
