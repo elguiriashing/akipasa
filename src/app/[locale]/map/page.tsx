@@ -142,7 +142,11 @@ export default async function MapPage({
         center={searchCenter}
       />
 
-      <MapResultsDrawer locale={locale} locality={selectedLocation.name}>
+      <MapResultsDrawer
+        locale={locale}
+        locality={selectedLocation.name}
+        initialCenter={searchCenter}
+      >
         <section id="results" aria-labelledby="map-results-title">
           <div className="section-head">
             <h2 id="map-results-title">
