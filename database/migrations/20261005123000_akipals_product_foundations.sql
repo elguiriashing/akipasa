@@ -97,6 +97,7 @@ create table if not exists public.pals_reward_rules (
 create table if not exists public.pals_entitlements (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
+  entitlement_key text not null,
   item_id text not null references public.pals_items(id) on delete restrict,
   granted_at timestamptz not null default now(),
   obtained_via text not null,
@@ -107,7 +108,8 @@ create table if not exists public.pals_entitlements (
   status text not null default 'active' check (status in ('active','revoked','expired')),
   metadata jsonb not null default '{}'::jsonb,
   revoked_at timestamptz,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  unique (user_id, entitlement_key)
 );
 create index if not exists pals_entitlements_user_item_idx
   on public.pals_entitlements(user_id,item_id,status);
