@@ -91,6 +91,20 @@ export function itemAvailable(item: CosmeticItem, now = new Date()) {
     (!item.retireAt || Date.parse(item.retireAt) > time);
 }
 
+export function campaignAvailable(
+  campaign: Campaign,
+  context: { now?: Date; region?: string | null; city?: string | null } = {},
+) {
+  const time = (context.now ?? new Date()).getTime();
+  if (campaign.activeFrom && Date.parse(campaign.activeFrom) > time) return false;
+  if (campaign.activeUntil && Date.parse(campaign.activeUntil) <= time) return false;
+  if (campaign.regions?.length && (!context.region || !campaign.regions.includes(context.region)))
+    return false;
+  if (campaign.cities?.length && (!context.city || !campaign.cities.includes(context.city)))
+    return false;
+  return true;
+}
+
 export function itemPurchasable(item: CosmeticItem) {
   return Boolean(item.price) && !item.prestigious &&
     !["achievement","passport","city","adventure"].includes(item.source);
