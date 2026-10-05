@@ -82,6 +82,8 @@ Applied/repository migrations:
 - `20261003220529_akipals_command_rate_index.sql`
 - `20261005123000_akipals_product_foundations.sql` (additive catalogue,
   collection, campaign, entitlement, reward-rule and analytics foundation)
+- `20261005131500_akipals_unlock_rule_constraints.sql` (persisted unlock-rule
+  references and earned-item non-sale constraints)
 
 The three new tables have RLS enabled. Authenticated users may read only their
 own invitation and save, and cannot write state or execute `pals_commit`.
