@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { Icon } from "./Icons";
-import type { Locale } from "../lib/config";
+import { config, type Locale } from "../lib/config";
 import { roleCapabilities } from "../lib/roles";
 
 export type ConsoleKey = "account" | "business" | "staff" | "admin";
@@ -75,7 +75,11 @@ export function ConsoleSwitcher({
       {available.map((entry) => (
         <Link
           key={entry.key}
-          href={`/${locale}/${entry.path}`}
+          href={
+            entry.key === "business"
+              ? `${config.businessUrl}/${locale}/business`
+              : `/${locale}/${entry.path}`
+          }
           className={entry.key === active ? "active" : undefined}
           aria-current={entry.key === active ? "page" : undefined}
           onClick={onNavigate}
