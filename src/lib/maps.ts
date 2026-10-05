@@ -24,11 +24,10 @@ export function googleMapsDirectionsUrl({
     Math.abs(longitude) <= 180 &&
     // The repository uses 0,0 for missing coordinates.
     (latitude !== 0 || longitude !== 0);
+  const normalizedAddress = normalizeAddressLabel(address).trim();
   url.searchParams.set(
     "destination",
-    hasCoordinates
-      ? `${latitude},${longitude}`
-      : normalizeAddressLabel(address),
+    normalizedAddress || (hasCoordinates ? `${latitude},${longitude}` : ""),
   );
   return url.toString();
 }
