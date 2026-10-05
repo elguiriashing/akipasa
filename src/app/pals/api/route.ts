@@ -202,6 +202,7 @@ export async function POST(request: Request) {
         { error: "A lot of little changes at once. Please wait a minute." },
         429,
       );
+    const action = parsed.action;
     const context: Context = {
       now: Date.now(),
       id: () => crypto.randomUUID(),
@@ -257,7 +258,6 @@ export async function POST(request: Request) {
         ? catalogue.items.find((item) => item.id === itemId)?.collectionId
         : undefined;
     const analytics: PalsAnalyticsEvent[] = [];
-    const action = parsed.action;
     if (action.type === "equip") {
       const equipment = state.equipment.find((item) => item.id === action.itemId);
       if (equipment)
