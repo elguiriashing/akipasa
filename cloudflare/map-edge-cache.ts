@@ -29,13 +29,13 @@ export async function serveMapSnapshot(
   const key = new Request(
     "https://akipasa.com" +
       (tile ? `/api/map/tiles/${tileKey(tile)}` : "/api/map/snapshot") +
-      `?v=${schemaVersion}&policy=relevance-2`,
+      `?v=${schemaVersion}&policy=relevance-3`,
   );
   let result = await cache.match(key);
   const hit = Boolean(result);
   if (!result) {
     const object = env.MAP_SNAPSHOTS.get(
-      env.MAP_SNAPSHOTS.idFromName("spain-public-v2-relevance-2"),
+      env.MAP_SNAPSHOTS.idFromName("spain-public-v2-relevance-3"),
     );
     result = await object.fetch(key);
     if (result.ok) {
