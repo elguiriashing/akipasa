@@ -1,5 +1,5 @@
 import { notFound, redirect } from "next/navigation";
-import { isLocale } from "@/lib/config";
+import { config, isLocale } from "@/lib/config";
 import { loadFeatureFlags } from "@/lib/feature-flags";
 import { requireUser } from "@/lib/auth";
 import { requireBusinessAccess } from "@/lib/entitlements";
@@ -15,6 +15,7 @@ import {
 import { SpainAddressAutocomplete } from "@/components/SpainAddressAutocomplete";
 import { PromotionRequestFields } from "@/components/PromotionRequestFields";
 import { Icon } from "@/components/Icons";
+import { ClaimVenuePicker } from "@/components/ClaimVenuePicker";
 import {
   WorkspaceShell,
   type WorkspaceItem,
@@ -91,17 +92,9 @@ export default async function BusinessPage({
   const flags = await loadFeatureFlags(supabase);
   const es = locale === "es";
 
-  let claimableQuery = supabase
-    .from("venues")
-    .select("id,name")
-    .eq("status", "published")
-    .contains("accessibility", { claim_status: "unclaimed" });
-  if (query.venueId && /^[0-9a-f-]{36}$/i.test(query.venueId))
-    claimableQuery = claimableQuery.eq("id", query.venueId);
   const [
     { data: members },
     { data: categories },
-    { data: claimable },
     { data: claims },
     { data: programs },
     { data: redemptions },
@@ -111,7 +104,6 @@ export default async function BusinessPage({
       .from("venue_members")
       .select("role,venues(id,name,slug,status,verified)"),
     supabase.from("categories").select("id,name_es,name_en").order("name_es"),
-    claimableQuery.order("name"),
     supabase
       .from("venue_claims")
       .select("id,status,created_at,venues(name)")
@@ -940,42 +932,48 @@ export default async function BusinessPage({
           ))}
 
         {/* Claim Venue View */}
-        {view === "claims" && claimable && claimable.length > 0 && (
-          <details className="panel catalogue-edit-card" open>
-            <summary>
-              <strong>
-                {es ? "Reclamar un local existente" : "Claim an existing venue"}
-              </strong>
-            </summary>
+        {view === "claims" && (
+          <section className="akibusiness-claim-workspace">
+            <header className="akibusiness-section-hero">
+              <div>
+                <span>{es ? "Reclamar un local" : "Claim a venue"}</span>
+                <h2>
+                  {es
+                    ? "Encuentra tu negocio en el mapa"
+                    : "Find your business on the map"}
+                </h2>
+                <p>
+                  {es
+                    ? "Busca por nombre, ciudad o dirección, o navega por el mapa. Solo mostramos locales disponibles para reclamar."
+                    : "Search by name, city or address, or browse the map. We only show venues available to claim."}
+                </p>
+              </div>
+            </header>
 
-            <form action={submitVenueClaim} className="stack focused-form">
+            <form action={submitVenueClaim} className="akibusiness-claim-form">
               <input type="hidden" name="locale" value={locale} />
 
-              <label>
-                {es
-                  ? "Selecciona el local a reclamar"
-                  : "Select venue to claim"}
-                <select
-                  name="venueId"
-                  required
-                  defaultValue={
-                    claimable.some((venue) => venue.id === query.venueId)
-                      ? query.venueId
-                      : undefined
-                  }
-                >
-                  {claimable.map((v) => (
-                    <option key={v.id} value={v.id}>
-                      {v.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <ClaimVenuePicker
+                locale={locale}
+                styleUrl={config.mapStyleUrl}
+                initialVenueId={
+                  query.venueId && /^[0-9a-f-]{36}$/i.test(query.venueId)
+                    ? query.venueId
+                    : undefined
+                }
+              />
 
-              <label>
-                {es
-                  ? "Prueba de propiedad o administración del negocio"
-                  : "Evidence of ownership or business relationship"}
+              <label className="akibusiness-evidence-field">
+                <span>
+                  {es
+                    ? "Demuestra que gestionas este negocio"
+                    : "Show that you manage this business"}
+                </span>
+                <small>
+                  {es
+                    ? "Una web oficial, email corporativo, teléfono o cualquier dato que nos ayude a verificarlo."
+                    : "An official website, company email, phone number or anything else that helps us verify it."}
+                </small>
                 <textarea
                   name="evidence"
                   minLength={20}
@@ -983,19 +981,24 @@ export default async function BusinessPage({
                   rows={4}
                   placeholder={
                     es
-                      ? "Proporciona enlaces, teléfono o datos de contacto oficial..."
-                      : "Provide links, phone or official contact information..."
+                      ? "Por ejemplo: soy el propietario, este es nuestro sitio web y este es el teléfono del local..."
+                      : "For example: I am the owner, this is our website and this is the venue phone number..."
                   }
                 />
               </label>
 
-              <div className="form-actions-right">
+              <div className="akibusiness-claim-submit">
+                <p>
+                  {es
+                    ? "Revisaremos la solicitud antes de darte acceso de edición."
+                    : "We will review the claim before granting editing access."}
+                </p>
                 <button className="button primary" type="submit">
                   {es ? "Enviar reclamación" : "Submit claim"}
                 </button>
               </div>
             </form>
-          </details>
+          </section>
         )}
 
         {view === "claims" && claims && claims.length > 0 && (
