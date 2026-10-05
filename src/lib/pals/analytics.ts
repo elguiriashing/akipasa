@@ -36,12 +36,14 @@ const forbiddenKeys = new Set([
 ]);
 
 export function sanitizePalsAnalyticsEvent(event: PalsAnalyticsEvent) {
-  if (!palsAnalyticsEvents.includes(event.name)) throw new Error("Unknown AkiPals analytics event");
+  if (!palsAnalyticsEvents.includes(event.name))
+    throw new Error("Unknown AkiPals analytics event");
   const context = Object.fromEntries(
     Object.entries(event.context ?? {}).filter(
       ([key, value]) =>
         !forbiddenKeys.has(key.toLowerCase()) &&
-        (["string", "number", "boolean"].includes(typeof value) || value === null),
+        (["string", "number", "boolean"].includes(typeof value) ||
+          value === null),
     ),
   );
   return { ...event, context };

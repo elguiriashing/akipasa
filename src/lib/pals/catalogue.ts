@@ -1,11 +1,29 @@
 import type { Family, Rarity, Slot, Stat } from "./engine";
 
 export type CosmeticSource =
-  | "starter" | "shop" | "achievement" | "passport" | "city" | "adventure"
-  | "event" | "seasonal" | "premium" | "sponsored" | "promotional" | "purchase";
+  | "starter"
+  | "shop"
+  | "achievement"
+  | "passport"
+  | "city"
+  | "adventure"
+  | "event"
+  | "seasonal"
+  | "premium"
+  | "sponsored"
+  | "promotional"
+  | "purchase";
 
 export type Currency = "threads" | "scrap" | "real_money";
-export type EffectKind = "glow" | "particles" | "holographic" | "flames" | "snow" | "leaves" | "electricity" | "trail";
+export type EffectKind =
+  | "glow"
+  | "particles"
+  | "holographic"
+  | "flames"
+  | "snow"
+  | "leaves"
+  | "electricity"
+  | "trail";
 
 export type CosmeticRender =
   | { kind: "legacy-shape"; shape: string; colour: string; trim: string }
@@ -36,7 +54,12 @@ export type CosmeticItem = {
 };
 
 export type CollectionUnlockMethod =
-  | "mixed" | "shop" | "earned" | "campaign" | "premium" | "promotional";
+  | "mixed"
+  | "shop"
+  | "earned"
+  | "campaign"
+  | "premium"
+  | "promotional";
 
 export type CosmeticCollection = {
   id: string;
@@ -87,8 +110,10 @@ export type Catalogue = {
 
 export function itemAvailable(item: CosmeticItem, now = new Date()) {
   const time = now.getTime();
-  return (!item.releaseAt || Date.parse(item.releaseAt) <= time) &&
-    (!item.retireAt || Date.parse(item.retireAt) > time);
+  return (
+    (!item.releaseAt || Date.parse(item.releaseAt) <= time) &&
+    (!item.retireAt || Date.parse(item.retireAt) > time)
+  );
 }
 
 export function campaignAvailable(
@@ -96,18 +121,29 @@ export function campaignAvailable(
   context: { now?: Date; region?: string | null; city?: string | null } = {},
 ) {
   const time = (context.now ?? new Date()).getTime();
-  if (campaign.activeFrom && Date.parse(campaign.activeFrom) > time) return false;
-  if (campaign.activeUntil && Date.parse(campaign.activeUntil) <= time) return false;
-  if (campaign.regions?.length && (!context.region || !campaign.regions.includes(context.region)))
+  if (campaign.activeFrom && Date.parse(campaign.activeFrom) > time)
     return false;
-  if (campaign.cities?.length && (!context.city || !campaign.cities.includes(context.city)))
+  if (campaign.activeUntil && Date.parse(campaign.activeUntil) <= time)
+    return false;
+  if (
+    campaign.regions?.length &&
+    (!context.region || !campaign.regions.includes(context.region))
+  )
+    return false;
+  if (
+    campaign.cities?.length &&
+    (!context.city || !campaign.cities.includes(context.city))
+  )
     return false;
   return true;
 }
 
 export function itemPurchasable(item: CosmeticItem) {
-  return Boolean(item.price) && !item.prestigious &&
-    !["achievement","passport","city","adventure"].includes(item.source);
+  return (
+    Boolean(item.price) &&
+    !item.prestigious &&
+    !["achievement", "passport", "city", "adventure"].includes(item.source)
+  );
 }
 
 export function validateCatalogue(catalogue: Catalogue) {
@@ -121,7 +157,8 @@ export function validateCatalogue(catalogue: Catalogue) {
     brandIds.add(brand.id);
   }
   for (const campaign of catalogue.campaigns) {
-    if (campaignIds.has(campaign.id)) throw new Error(`Duplicate campaign: ${campaign.id}`);
+    if (campaignIds.has(campaign.id))
+      throw new Error(`Duplicate campaign: ${campaign.id}`);
     campaignIds.add(campaign.id);
   }
   for (const collection of catalogue.collections) {
@@ -130,7 +167,8 @@ export function validateCatalogue(catalogue: Catalogue) {
     collectionIds.add(collection.id);
   }
   for (const item of catalogue.items) {
-    if (itemIds.has(item.id)) throw new Error(`Duplicate cosmetic item: ${item.id}`);
+    if (itemIds.has(item.id))
+      throw new Error(`Duplicate cosmetic item: ${item.id}`);
     itemIds.add(item.id);
     if (item.prestigious && item.price)
       throw new Error(`Prestigious item cannot be sold: ${item.id}`);
@@ -138,20 +176,30 @@ export function validateCatalogue(catalogue: Catalogue) {
 
   for (const campaign of catalogue.campaigns) {
     if (campaign.brandId && !brandIds.has(campaign.brandId))
-      throw new Error(`Unknown brand ${campaign.brandId} for campaign ${campaign.id}`);
+      throw new Error(
+        `Unknown brand ${campaign.brandId} for campaign ${campaign.id}`,
+      );
     for (const collectionId of campaign.collectionIds)
       if (!collectionIds.has(collectionId))
-        throw new Error(`Unknown collection ${collectionId} for campaign ${campaign.id}`);
+        throw new Error(
+          `Unknown collection ${collectionId} for campaign ${campaign.id}`,
+        );
   }
 
   for (const collection of catalogue.collections) {
     if (collection.brandId && !brandIds.has(collection.brandId))
-      throw new Error(`Unknown brand ${collection.brandId} for collection ${collection.id}`);
+      throw new Error(
+        `Unknown brand ${collection.brandId} for collection ${collection.id}`,
+      );
     if (collection.campaignId && !campaignIds.has(collection.campaignId))
-      throw new Error(`Unknown campaign ${collection.campaignId} for collection ${collection.id}`);
+      throw new Error(
+        `Unknown campaign ${collection.campaignId} for collection ${collection.id}`,
+      );
     for (const itemId of collection.itemIds)
       if (!itemIds.has(itemId))
-        throw new Error(`Unknown item ${itemId} in collection ${collection.id}`);
+        throw new Error(
+          `Unknown item ${itemId} in collection ${collection.id}`,
+        );
   }
 
   for (const item of catalogue.items) {

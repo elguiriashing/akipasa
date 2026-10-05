@@ -3,7 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { designs, getDesign, MAX_INVENTORY, type Equipment } from "@/lib/pals/engine";
+import {
+  designs,
+  getDesign,
+  MAX_INVENTORY,
+  type Equipment,
+} from "@/lib/pals/engine";
 import { readState } from "@/lib/pals/server";
 import {
   ownerBackgroundPathSchema,
@@ -139,10 +144,16 @@ export async function deleteOwnerBackground(formData: FormData) {
   redirect(ownerDestination(locale, "background"));
 }
 
-
 const toolboxAppearanceSchema = z.object({
   locale: z.enum(["en", "es"]),
-  background: z.enum(["default", "aurora", "midnight", "synthwave", "paper", "none"]),
+  background: z.enum([
+    "default",
+    "aurora",
+    "midnight",
+    "synthwave",
+    "paper",
+    "none",
+  ]),
   accent: z.enum(["orange", "teal", "violet", "pink", "gold"]),
   motion: z.boolean(),
   glass: z.boolean(),
@@ -216,12 +227,20 @@ export async function ownerPalsGrant(input: unknown) {
       status: "active",
       metadata: { testGrant: true },
     });
-    state.report = { title: "Owner toolbox grant", text: `${getDesign(design.id).name} added for testing.`, design: design.id };
+    state.report = {
+      title: "Owner toolbox grant",
+      text: `${getDesign(design.id).name} added for testing.`,
+      design: design.id,
+    };
   } else {
     const amount = parsed.data.amount ?? 1;
-    if (kind === "threads" || kind === "scrap" || kind === "xp") state[kind] += amount;
+    if (kind === "threads" || kind === "scrap" || kind === "xp")
+      state[kind] += amount;
     else state.modules[kind] += amount;
-    state.report = { title: "Owner toolbox grant", text: `+${amount} ${kind} for testing.` };
+    state.report = {
+      title: "Owner toolbox grant",
+      text: `+${amount} ${kind} for testing.`,
+    };
   }
   state.updatedAt = Date.now();
   const { data, error } = await saved.db.rpc("pals_commit", {
@@ -230,7 +249,8 @@ export async function ownerPalsGrant(input: unknown) {
     p_expected_version: saved.version,
     p_state: state,
   });
-  if (error || !data) return { error: "AkiPals changed while granting. Retry." };
+  if (error || !data)
+    return { error: "AkiPals changed while granting. Retry." };
   revalidatePath("/pals");
   return {
     success: true,

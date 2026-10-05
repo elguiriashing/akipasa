@@ -1732,7 +1732,6 @@
   );
 }
 
-
 /* Mobile immersive Passport correction — 2026-10-05 */
 @media (max-width: 700px) {
   .atlas {
@@ -2005,7 +2004,6 @@
     max-width: min(420px, 100%);
   }
 }
-
 
 /* Passport mobile menu drawer — 2026-10-05 */
 .mobileMenuButton,

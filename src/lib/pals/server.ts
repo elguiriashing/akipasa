@@ -3,7 +3,10 @@ import { statePortrait } from "./art";
 import { optionalUser } from "@/lib/auth";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import { initialState, type State } from "./engine";
-import { sanitizePalsAnalyticsEvent, type PalsAnalyticsEvent } from "./analytics";
+import {
+  sanitizePalsAnalyticsEvent,
+  type PalsAnalyticsEvent,
+} from "./analytics";
 
 export const privateHeaders = {
   "Cache-Control": "private, no-store, max-age=0, must-revalidate",
@@ -80,7 +83,6 @@ export async function mapPreviewPortrait(): Promise<string | null> {
     return null;
   }
 }
-
 
 /** Best-effort product telemetry. Never blocks game saves or stores free-form personal/location data. */
 export async function recordPalsAnalytics(

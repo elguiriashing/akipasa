@@ -24,20 +24,23 @@ export function renderSnapshotFromState(
   if (!state.family) return null;
   const catalogue = legacyCatalogue();
   const itemById = new Map(catalogue.items.map((item) => [item.id, item]));
-  const layers = (Object.entries(state.equipped) as [Slot, string | null][])
-    .flatMap(([slot, equipmentId]) => {
-      if (!equipmentId) return [];
-      const equipment = state.equipment.find((entry) => entry.id === equipmentId);
-      if (!equipment) return [];
-      const item = itemById.get(equipment.appearance);
-      if (!item) return [];
-      return [{
+  const layers = (
+    Object.entries(state.equipped) as [Slot, string | null][]
+  ).flatMap(([slot, equipmentId]) => {
+    if (!equipmentId) return [];
+    const equipment = state.equipment.find((entry) => entry.id === equipmentId);
+    if (!equipment) return [];
+    const item = itemById.get(equipment.appearance);
+    if (!item) return [];
+    return [
+      {
         slot,
         itemId: equipment.design,
         appearanceId: equipment.appearance,
         collectionId: item.collectionId,
-      }];
-    });
+      },
+    ];
+  });
 
   return {
     version: 1,

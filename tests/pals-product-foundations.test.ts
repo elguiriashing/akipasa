@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { applyAction, initialState, type Context } from "../src/lib/pals/engine";
+import {
+  applyAction,
+  initialState,
+  type Context,
+} from "../src/lib/pals/engine";
 import {
   campaignAvailable,
   itemPurchasable,
@@ -111,39 +115,45 @@ describe("AkiPals product catalogue", () => {
   it("supports sponsored collections without special-case product code", () => {
     const sponsored: Catalogue = {
       brands: [{ id: "test-brand", name: "Test Brand", metadata: {} }],
-      campaigns: [{
-        id: "summer-test",
-        title: "Summer Test",
-        brandId: "test-brand",
-        collectionIds: ["summer-kit"],
-        unlockRuleIds: ["visit-three"],
-        analyticsKey: "summer-test",
-        metadata: {},
-      }],
-      collections: [{
-        id: "summer-kit",
-        title: "Summer Kit",
-        description: "Infrastructure-only sponsored test collection.",
-        brandId: "test-brand",
-        campaignId: "summer-test",
-        itemIds: ["summer-glow"],
-        unlockMethod: "campaign",
-        metadata: {},
-      }],
-      items: [{
-        id: "summer-glow",
-        name: "Summer glow",
-        collectionId: "summer-kit",
-        slot: "effect",
-        rarity: "epic",
-        render: { kind: "effect", effect: "glow" },
-        compatibleFamilies: "all",
-        source: "sponsored",
-        unlockRuleIds: ["visit-three"],
-        brandId: "test-brand",
-        campaignId: "summer-test",
-        metadata: {},
-      }],
+      campaigns: [
+        {
+          id: "summer-test",
+          title: "Summer Test",
+          brandId: "test-brand",
+          collectionIds: ["summer-kit"],
+          unlockRuleIds: ["visit-three"],
+          analyticsKey: "summer-test",
+          metadata: {},
+        },
+      ],
+      collections: [
+        {
+          id: "summer-kit",
+          title: "Summer Kit",
+          description: "Infrastructure-only sponsored test collection.",
+          brandId: "test-brand",
+          campaignId: "summer-test",
+          itemIds: ["summer-glow"],
+          unlockMethod: "campaign",
+          metadata: {},
+        },
+      ],
+      items: [
+        {
+          id: "summer-glow",
+          name: "Summer glow",
+          collectionId: "summer-kit",
+          slot: "effect",
+          rarity: "epic",
+          render: { kind: "effect", effect: "glow" },
+          compatibleFamilies: "all",
+          source: "sponsored",
+          unlockRuleIds: ["visit-three"],
+          brandId: "test-brand",
+          campaignId: "summer-test",
+          metadata: {},
+        },
+      ],
     };
     expect(validateCatalogue(sponsored)).toBe(true);
   });
@@ -164,10 +174,14 @@ describe("AkiPals entitlement provenance", () => {
 
   it("writes provenance for new starter and shop grants", () => {
     let state = adopted();
-    expect(state.entitlements?.some((entry) => entry.sourceType === "starter-pack")).toBe(true);
+    expect(
+      state.entitlements?.some((entry) => entry.sourceType === "starter-pack"),
+    ).toBe(true);
     state.threads = 1000;
     state = applyAction(state, { type: "buy", sku: "headphones" }, ctx);
-    const purchase = state.entitlements?.find((entry) => entry.itemId === "headphones");
+    const purchase = state.entitlements?.find(
+      (entry) => entry.itemId === "headphones",
+    );
     expect(purchase).toMatchObject({
       obtainedVia: "shop",
       sourceType: "threads-shop",
@@ -194,7 +208,9 @@ describe("AkiPals universal rewards", () => {
         title: "Passport test",
         active: true,
         match: "all",
-        conditions: [{ type: "passport_tier", cityKey: "malaga", minimumTier: 3 }],
+        conditions: [
+          { type: "passport_tier", cityKey: "malaga", minimumTier: 3 },
+        ],
         rewards: [{ type: "cosmetic", itemId: "test-passport-item" }],
         sourceType: "passport",
         sourceId: "malaga:3",
@@ -208,7 +224,11 @@ describe("AkiPals universal rewards", () => {
         conditions: [
           { type: "adventure_completed", adventureId: "gig" },
           { type: "event_participation", eventId: "event-1" },
-          { type: "campaign_requirement", campaignId: "campaign-1", requirementKey: "qualified" },
+          {
+            type: "campaign_requirement",
+            campaignId: "campaign-1",
+            requirementKey: "qualified",
+          },
         ],
         rewards: [{ type: "currency", currency: "threads", amount: 50 }],
         sourceType: "campaign",
@@ -222,7 +242,9 @@ describe("AkiPals universal rewards", () => {
       completedAdventures: new Set(["gig"]),
     };
     expect(evaluateRewardRules(rules, facts, new Set())).toHaveLength(2);
-    expect(evaluateRewardRules(rules, facts, new Set(["passport-malaga-3"]))).toHaveLength(1);
+    expect(
+      evaluateRewardRules(rules, facts, new Set(["passport-malaga-3"])),
+    ).toHaveLength(1);
   });
 
   it("expresses existing achievement keepsakes through the same rule engine", () => {
@@ -277,7 +299,9 @@ describe("AkiPals reusable rendering and analytics", () => {
         email: "nope@example.com",
       },
     };
-    expect(sanitizePalsAnalyticsEvent(event).context).toEqual({ screen: "shop" });
+    expect(sanitizePalsAnalyticsEvent(event).context).toEqual({
+      screen: "shop",
+    });
   });
 
   it("ships the database contracts for content, provenance and reporting", () => {
@@ -286,11 +310,21 @@ describe("AkiPals reusable rendering and analytics", () => {
       "utf8",
     );
     expect(migration).toContain("create table if not exists public.pals_items");
-    expect(migration).toContain("create table if not exists public.pals_collections");
-    expect(migration).toContain("create table if not exists public.pals_campaigns");
-    expect(migration).toContain("create table if not exists public.pals_entitlements");
-    expect(migration).toContain("create table if not exists public.pals_reward_rules");
-    expect(migration).toContain("create table if not exists public.pals_analytics_events");
+    expect(migration).toContain(
+      "create table if not exists public.pals_collections",
+    );
+    expect(migration).toContain(
+      "create table if not exists public.pals_campaigns",
+    );
+    expect(migration).toContain(
+      "create table if not exists public.pals_entitlements",
+    );
+    expect(migration).toContain(
+      "create table if not exists public.pals_reward_rules",
+    );
+    expect(migration).toContain(
+      "create table if not exists public.pals_analytics_events",
+    );
     expect(migration).toContain("not prestigious or price_amount is null");
     expect(migration).toContain("enable row level security");
   });

@@ -17,7 +17,10 @@ const rewardCities = [
 ] as const;
 
 function normalizeKey(value: string) {
-  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
 }
 
 export function rewardFactsFromAchievements(

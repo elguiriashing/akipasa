@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { previewAccess, privateHeaders, recordPalsAnalytics } from "@/lib/pals/server";
+import {
+  previewAccess,
+  privateHeaders,
+  recordPalsAnalytics,
+} from "@/lib/pals/server";
 
 export const dynamic = "force-dynamic";
 
