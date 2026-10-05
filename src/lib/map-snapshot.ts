@@ -22,7 +22,7 @@ export async function loadMapSnapshot(
   signal: AbortSignal,
   request: typeof fetch = fetch,
 ) {
-  const response = await request("/api/map/snapshot?v=2&policy=relevance-5", {
+  const response = await request("/api/map/snapshot?v=2&policy=relevance-6", {
     signal,
   });
   if (!response.ok) throw new Error("Map unavailable");
