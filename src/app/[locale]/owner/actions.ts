@@ -192,6 +192,30 @@ export async function ownerPalsGrant(input: unknown) {
     };
     state.equipment.push(item);
     if (!state.wardrobe.includes(design.id)) state.wardrobe.push(design.id);
+    state.entitlements ??= state.wardrobe
+      .filter((itemId) => itemId !== design.id)
+      .map((itemId, index) => ({
+        id: `legacy-owner:${index}:${itemId}`,
+        itemId,
+        grantedAt: new Date().toISOString(),
+        obtainedVia: "admin" as const,
+        sourceType: "legacy-save",
+        sourceId: null,
+        quantity: 1,
+        status: "active" as const,
+        metadata: { migratedFromWardrobe: true },
+      }));
+    state.entitlements.push({
+      id: crypto.randomUUID(),
+      itemId: design.id,
+      grantedAt: new Date().toISOString(),
+      obtainedVia: "admin",
+      sourceType: "owner-toolbox",
+      sourceId: "self-test",
+      quantity: 1,
+      status: "active",
+      metadata: { testGrant: true },
+    });
     state.report = { title: "Owner toolbox grant", text: `${getDesign(design.id).name} added for testing.`, design: design.id };
   } else {
     const amount = parsed.data.amount ?? 1;
