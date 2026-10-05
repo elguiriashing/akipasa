@@ -112,6 +112,7 @@ export function PassportBook({
   const [status, setStatus] = useState("");
   const [reduced, setReduced] = useState(false);
   const [shine, setShine] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const surface = useRef<HTMLDivElement>(null);
   const pageHeading = useRef<HTMLHeadingElement>(null);
   const firstPage = useRef(true);
@@ -130,6 +131,7 @@ export function PassportBook({
   const title = city ? city[locale] : labels[page];
   const go = useCallback(
     (next: number) => {
+      setMobileMenuOpen(false);
       const bounded = Math.max(0, Math.min(total - 1, next));
       setDirection(bounded >= page ? 1 : -1);
       setPage(bounded);
@@ -346,8 +348,28 @@ export function PassportBook({
       </header>
       <div className={styles.notices}>{notices}</div>
       <div className={styles.desk}>
+        <button
+          type="button"
+          className={styles.mobileMenuButton}
+          aria-label={es ? "Abrir menú del pasaporte" : "Open passport menu"}
+          aria-expanded={mobileMenuOpen}
+          aria-controls="passport-mobile-menu"
+          onClick={() => setMobileMenuOpen((open) => !open)}
+        >
+          <span aria-hidden="true">{mobileMenuOpen ? "×" : "☰"}</span>
+          <span>{title}</span>
+        </button>
+        {mobileMenuOpen && (
+          <button
+            type="button"
+            className={styles.mobileMenuBackdrop}
+            aria-label={es ? "Cerrar menú" : "Close menu"}
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
         <nav
-          className={styles.bookmarks}
+          id="passport-mobile-menu"
+          className={`${styles.bookmarks} ${mobileMenuOpen ? styles.bookmarksOpen : ""}`}
           aria-label={es ? "Capítulos del pasaporte" : "Passport chapters"}
         >
           {labels.map((label, i) => (
