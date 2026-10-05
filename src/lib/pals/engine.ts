@@ -541,6 +541,31 @@ export const designs: Design[] = [
     "earned",
   ),
 ];
+const signatureDrops: Array<[string,string,Slot,string,string,string,Stat,number,Rarity]> = [
+  ["brasa-band","Service rush band","head","band","#d85f3d","#ffd47a","energy",80,"rare"],
+  ["brasa-apron","After-service apron","body","apron","#713d35","#ffb25e","energy",125,"epic"],
+  ["moka-beret","Slow roast beret","head","beret","#6f4e3d","#e9c98c","wits",80,"rare"],
+  ["moka-coat","Sunday café coat","body","coat","#a9795d","#f4ddb2","charm",120,"epic"],
+  ["tapo-flowers","Terrace flower crown","head","flowers","#6f914b","#ffd27c","charm",85,"rare"],
+  ["tapo-apron","Last plate apron","body","apron","#9f5346","#ffe0a0","charm",120,"epic"],
+  ["lux-goggles","Laser hour goggles","head","goggles","#5c45a7","#7ff4e2","charm",105,"rare"],
+  ["lux-coat","Closing-time coat","body","coat","#3f356f","#d19cff","charm",155,"epic"],
+  ["musa-flowers","Gallery opening crown","head","flowers","#b96e73","#f7c86f","charm",90,"rare"],
+  ["musa-robe","Studio-day robe","body","robe","#c98762","#8c6a9d","wits",130,"epic"],
+  ["lupa-cap","Window-shopping cap","head","cap","#527d8b","#b9eef1","wits",75,"rare"],
+  ["lupa-vest","Market scout vest","body","vest","#477583","#ffd79a","wits",125,"epic"],
+  ["rayo-goggles","Finish-line goggles","head","goggles","#dc784b","#fff0a5","energy",95,"rare"],
+  ["rayo-vest","Sunset sprint vest","body","vest","#e66c43","#ffe17b","energy",135,"epic"],
+  ["nube-beret","Quiet-hours beret","head","beret","#83adbb","#fff1cf","charm",80,"rare"],
+  ["nube-coat","Sea-breeze wrap","body","coat","#8fbac5","#e8fff7","charm",125,"epic"],
+  ["chispa-cap","Sticker scout cap","head","cap","#db777b","#fff0a7","energy",75,"rare"],
+  ["chispa-vest","Tiny expedition vest","body","vest","#c66e72","#ffd0a6","wits",125,"epic"],
+  ["brote-band","Trail marker band","head","band","#5f8d63","#d9ef9c","energy",75,"rare"],
+  ["brote-robe","Campfire layer","body","robe","#53775d","#f2d38f","energy",130,"epic"],
+];
+for (const [id,name,slot,shape,colour,trim,stat,price,rarity] of signatureDrops)
+  designs.push(design(id,name,slot,shape,colour,trim,stat,price,rarity));
+
 export const cityCollections = [
   { key: "fuengirola", name: "Fuengirola", colour: "#47a0b0", trim: "#ffd19a" },
   { key: "malaga", name: "Málaga", colour: "#76569a", trim: "#91d6ac" },
@@ -880,6 +905,67 @@ export const adventures: Adventure[] = [
     ],
   },
 ];
+
+function chapter(
+  id: string,
+  name: string,
+  place: string,
+  description: string,
+  colour: string,
+  scenes: Array<[string,string,[string,string,string],[string,string,string]]>,
+): Adventure {
+  const stats: Stat[] = ["wits","energy","charm"];
+  return {
+    id,name,place,description,colour,
+    steps: scenes.map(([title,text,labels,results],scene) => ({
+      title,text,
+      options: labels.map((label,index) => ({
+        label,
+        stat: stats[(index + scene) % 3],
+        need: [3,6,9][index],
+        success: results[index],
+        fallback: "It is not perfect, but the moment keeps moving and somebody smiles anyway.",
+      })),
+    })),
+  };
+}
+adventures.push(
+  chapter("market","The last market hour","The old-town market","One hour left, three tiny problems, and a market refusing to wind down.","#d8a26e",[
+    ["The missing stall sign","A gust has sent the chalkboard somewhere unhelpful.",["Rebuild the prices from memory","Carry over a spare board","Turn the mystery into a tasting game"],["Every price lands in the right place.","The replacement arrives before the next customer.","People start guessing flavours and stay twice as long."]],
+    ["Too many oranges","A fruit seller has one crate more than the van can take.",["Plan the neatest stack","Shift the crate before closing","Find a nearby café that can use them"],["The boot closes with millimetres to spare.","Crate moved. Back survives. Mostly.","A café takes the lot and promises fresh juice tomorrow."]],
+    ["The shutters come down","One visitor still wants a proper local souvenir.",["Spot the handmade stall still open","Jog across before it closes","Convince the maker to wait two minutes"],["You find something genuinely local.","You arrive with seconds left.","The maker laughs and keeps the light on."]],
+  ]),
+  chapter("beach","Sunset rescue mission","The promenade","A windy beach, a runaway hat and the sort of sunset people stop walking for.","#e7b16f",[
+    ["The runaway hat","A straw hat is sprinting towards the water.",["Predict where the wind takes it","Race it to the shoreline","Recruit three passing strangers"],["You intercept it like this was planned.","Sand everywhere, hat secured.","A tiny human chain saves the day."]],
+    ["The tangled kite","A kite line has wrapped itself around a bench.",["Untangle it patiently","Hold the kite steady","Keep the disappointed kid entertained"],["Not one knot survives.","The kite stops fighting long enough to free it.","The kid forgets to be upset."]],
+    ["Best seat in town","Everybody wants the same sunset photo.",["Find a better angle","Climb to the upper promenade","Organise a thirty-second photo rotation"],["The side angle is somehow better.","The higher view earns the extra steps.","Everybody gets the shot without elbow warfare."]],
+  ]),
+  chapter("museum","After-hours mystery","A tiny local museum","A mislabeled postcard starts a harmless mystery through three rooms.","#b98eb5",[
+    ["Wrong decade","The postcard label and the clothes in the photo disagree.",["Compare the exhibition dates","Fetch the archive folder","Ask the retired guide nearby"],["The timeline clicks into place.","The archive contains the matching catalogue.","The guide remembers the exact summer."]],
+    ["A pencilled name","Someone wrote a surname on the back.",["Cross-reference the donor list","Search the next gallery","Ask visitors if the name rings a bell"],["One donor record matches perfectly.","A portrait upstairs carries the same surname.","A local family recognises it instantly."]],
+    ["The little reveal","The curator wants to update the display before tomorrow.",["Write a concise corrected caption","Help reset the case","Tell the story to the waiting group"],["Clear, accurate, and actually interesting.","The display is ready before closing.","The group applauds a postcard. Humans are adorable."]],
+  ]),
+  chapter("night","The tiny night shift","A late-night side street","Neon, takeaway boxes and three chances to make the street nicer than you found it.","#7164a9",[
+    ["The lost wristband","Someone cannot remember which venue their friends entered.",["Decode the stamp and wristband","Walk the block with them","Ask the door teams"],["The logo matches a venue two doors down.","You spot their friends waving first.","A doorman recognises the band immediately."]],
+    ["The taxi puzzle","Three groups are all trying to leave at once.",["Work out the clean pickup order","Help move everyone to the taxi point","Get the groups to share destinations"],["No blocked street, no missed ride.","Everyone reaches the pickup zone safely.","Two groups discover they are heading the same way."]],
+    ["Closing chorus","A busker is packing up to an empty corner.",["Suggest one perfect final song","Carry the little amp closer","Gather the last few people"],["The choice stops half the street.","The sound finally reaches the square.","A tiny crowd forms for one last chorus."]],
+  ]),
+  chapter("sport","The friendly final","The neighbourhood court","Nobody is keeping score properly, which may be the healthiest sporting event alive.","#e49b62",[
+    ["One player short","A team needs somebody for ten minutes.",["Work out balanced teams","Warm up and jump in","Recruit the spectator with trainers"],["The teams suddenly look fair.","You survive the warm-up and contribute.","The spectator turns out to be suspiciously good."]],
+    ["The disputed point","Nobody saw whether the ball clipped the line.",["Reconstruct the angle","Replay the rally for fun","Get both teams to call it together"],["Physics settles it.","Nobody objects to playing another point.","The teams agree and the argument evaporates."]],
+    ["Match point-ish","The sun is dropping and everyone wants a memorable finish.",["Design a silly final challenge","Give the last rally everything","Turn the crowd into commentators"],["The challenge becomes tomorrow's rematch.","A ridiculous rally ends it properly.","The commentary is objectively terrible and perfect."]],
+  ]),
+  chapter("wellness","The quiet hour","A little garden courtyard","No streaks, no guilt, just an hour where absolutely nothing needs optimizing.","#91c4b7",[
+    ["Phone keeps buzzing","Notifications have misunderstood the assignment.",["Set a proper focus mode","Walk the phone to the locker","Convince everyone to stack phones away"],["Silence, engineered beautifully.","Out of reach, out of mind.","The table becomes gloriously screen-free."]],
+    ["The noisy corner","A delivery van is idling beside the courtyard.",["Find the quieter garden nook","Move the cushions together","Ask politely for the engine to be switched off"],["Birdsong replaces diesel.","The new corner feels deliberately cosy.","The driver nods and the courtyard exhales."]],
+    ["Nothing on the agenda","There are twenty minutes left and no activity planned.",["Choose a tiny observation game","Take the slow lap","Start a conversation with no objective"],["Five overlooked details become the whole point.","The slow lap is exactly enough.","Nobody networks. Miraculous."]],
+  ]),
+  chapter("festival","The neighbourhood festival","The little plaza","Bunting, food, music and the organisational confidence of twelve WhatsApp groups.","#df7f78",[
+    ["Bunting rebellion","Half the decorations are sagging before lunch.",["Find the strongest anchor points","Climb the safe step ladder","Turn the uneven lines into a pattern"],["The whole square suddenly looks intentional.","Everything is tied down properly.","Asymmetry becomes the theme. Convenient."]],
+    ["Two acts, one socket","Both performers need the only working power point.",["Plan a clean changeover","Move the acoustic act outside","Negotiate a shared running order"],["Three minutes between sets. Beautiful.","The outdoor set attracts its own crowd.","Both acts get their moment without drama."]],
+    ["The final table","Volunteers still have boxes to clear.",["Sort recycling and leftovers","Carry the heavy boxes","Recruit the people still chatting"],["Almost nothing goes to waste.","The van is loaded in one trip.","The chatters become a cleanup crew."]],
+  ])
+);
 export type Equipment = {
   id: string;
   design: string;
