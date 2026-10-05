@@ -127,10 +127,37 @@ export function ClaimVenuePicker({
       const map = new maplibregl.Map({
         container: mapRoot.current,
         style: styleUrl,
-        center: [-4.4214, 36.7213],
-        zoom: 9.5,
+        center: [-4.624, 36.539],
+        zoom: 11,
         attributionControl: false,
         renderWorldCopies: false,
+      });
+
+      let baseStyleReady = false;
+      const fallbackStyleTimer = window.setTimeout(() => {
+        if (disposed || baseStyleReady) return;
+        map.setStyle({
+          version: 8,
+          sources: {
+            "claim-osm": {
+              type: "raster",
+              tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+              tileSize: 256,
+              attribution: "© OpenStreetMap contributors",
+            },
+          },
+          layers: [
+            {
+              id: "claim-osm",
+              type: "raster",
+              source: "claim-osm",
+            },
+          ],
+        });
+      }, 4500);
+      map.once("style.load", () => {
+        baseStyleReady = true;
+        window.clearTimeout(fallbackStyleTimer);
       });
       mapRef.current = map;
       map.addControl(
@@ -309,6 +336,7 @@ export function ClaimVenuePicker({
       });
 
       cleanup = () => {
+        window.clearTimeout(fallbackStyleTimer);
         observer.disconnect();
         popupRef.current?.remove();
         map.remove();
