@@ -88,6 +88,10 @@ export function ClaimVenuePicker({
     setSelected(venue);
     setQuery(venue.name);
     setRows([]);
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set("view", "claims");
+    currentUrl.searchParams.set("venueId", venue.id);
+    window.history.replaceState(window.history.state, "", currentUrl);
     const map = mapRef.current;
     if (!map) return;
     map.easeTo({
@@ -500,6 +504,9 @@ export function ClaimVenuePicker({
               setSelected(null);
               setQuery("");
               popupRef.current?.remove();
+              const currentUrl = new URL(window.location.href);
+              currentUrl.searchParams.delete("venueId");
+              window.history.replaceState(window.history.state, "", currentUrl);
             }}
           >
             {es ? "Cambiar local" : "Change venue"}
