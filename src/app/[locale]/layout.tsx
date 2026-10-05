@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { LocaleDocumentLanguage } from "@/components/LocaleDocumentLanguage";
 import { AppShell } from "@/components/AppShell";
 import { OwnerToolboxLauncher } from "@/components/owner/OwnerToolboxLauncher";
@@ -26,6 +27,9 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const requestHeaders = await headers();
+  const isBusinessHost =
+    requestHeaders.get("x-akipasa-product") === "akibusiness";
   const { supabase, user } = await optionalUser();
   const [profileResult, ownerResult] = user
     ? await Promise.all([
@@ -63,6 +67,41 @@ export default async function LocaleLayout({
         backgroundImageUrl,
       };
     }
+  }
+
+  if (isBusinessHost) {
+    return (
+      <>
+        <LocaleDocumentLanguage locale={locale} />
+        <div className="akibusiness-host">
+          <header className="akibusiness-topbar">
+            <Link className="akibusiness-brand" href={`/${locale}/business`}>
+              <span className="akibusiness-brand-mark">A</span>
+              <span>
+                <strong>AkiBusiness</strong>
+                <small>{locale === "es" ? "by AkiPasa" : "by AkiPasa"}</small>
+              </span>
+            </Link>
+            <nav aria-label={locale === "es" ? "Productos AkiPasa" : "AkiPasa products"}>
+              <a href={config.siteUrl}>
+                {locale === "es" ? "Abrir AkiPasa" : "Open AkiPasa"}
+              </a>
+              <a href={config.crmUrl}>
+                AkiHQ
+              </a>
+            </nav>
+          </header>
+          <div className="akibusiness-content">{children}</div>
+          <SupportAgentLauncher
+            locale={locale}
+            surface="business_portal"
+            label={locale === "es" ? "Soporte" : "Support"}
+            className="global-support-trigger"
+            signedIn={Boolean(user)}
+          />
+        </div>
+      </>
+    );
   }
 
   return (
