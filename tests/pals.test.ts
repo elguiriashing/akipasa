@@ -57,7 +57,7 @@ describe("AkiPals catalogue and art", () => {
       expect(palSvg(f.id, f.master, f.id)).toContain("<svg");
     }
   });
-  it("uses unique designs and never puts earned keepsakes in the paid/soft shop", () => {
+  it("ships the expanded preview catalogue and ten complete story chapters", () => {\n    expect(designs.length).toBeGreaterThanOrEqual(60);\n    expect(adventures).toHaveLength(10);\n    for (const adventure of adventures) {\n      expect(adventure.steps).toHaveLength(3);\n      for (const step of adventure.steps) expect(step.options).toHaveLength(3);\n    }\n  });\n  it("uses unique designs and never puts earned keepsakes in the paid/soft shop", () => {
     expect(new Set(designs.map((d) => d.id)).size).toBe(designs.length);
     for (const d of designs.filter((d) => d.source === "earned"))
       expect(d.price).toBe(0);
