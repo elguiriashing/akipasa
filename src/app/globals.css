@@ -13238,3 +13238,77 @@ body:has(#passport-privacy-controls) > .privacy-preferences {
     width: 100%;
   }
 }
+
+
+/* Unified AkiPasa product login family */
+.auth-product-theme {
+  --auth-brand: #ff6b1d;
+  --auth-brand-soft: rgba(255, 107, 29, 0.14);
+  --auth-brand-ink: #18213b;
+}
+
+.auth-product-theme.auth-theme-business {
+  --auth-brand: #ffd447;
+  --auth-brand-soft: rgba(255, 212, 71, 0.14);
+  --auth-brand-ink: #18213b;
+}
+
+.auth-product-theme .auth-focus-panel .button:not(.google-button) {
+  background: var(--auth-brand);
+  color: var(--auth-brand-ink);
+}
+
+.auth-product-theme .auth-modes a.active {
+  border-bottom-color: var(--auth-brand);
+}
+
+.auth-product-theme .auth-form-head > span,
+.auth-product-theme .auth-intro .eyebrow {
+  color: var(--auth-brand);
+}
+
+.auth-product-theme .auth-product-portals {
+  width: min(100%, 28rem);
+}
+
+.auth-product-theme .auth-product-card {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 64px;
+  padding: 0.8rem 0.95rem;
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+}
+
+.auth-product-theme .auth-product-card > span {
+  display: grid;
+  gap: 0.14rem;
+  min-width: 0;
+}
+
+.auth-product-theme .auth-product-card.active {
+  border-color: color-mix(in srgb, var(--auth-brand) 72%, var(--line));
+  background: color-mix(in srgb, var(--auth-brand) 11%, var(--surface));
+  box-shadow:
+    inset 3px 0 0 var(--auth-brand),
+    0 10px 28px color-mix(in srgb, var(--auth-brand) 8%, transparent);
+}
+
+.auth-product-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(255,255,255,.04);
+}
+
+.auth-product-dot-akipasa { background: #ff6b1d; }
+.auth-product-dot-business { background: #ffd447; }
+.auth-product-dot-hq { background: #8b68ff; }
+
+.auth-theme-business .auth-product-card:hover {
+  border-color: color-mix(in srgb, #ffd447 52%, var(--line));
+}
+
+.auth-theme-akipasa .auth-product-card:hover {
+  border-color: color-mix(in srgb, #ff6b1d 52%, var(--line));
+}
