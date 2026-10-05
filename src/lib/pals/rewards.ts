@@ -3,6 +3,7 @@ import type { Entitlement } from "./entitlements";
 export type RewardCondition =
   | { type: "achievement_unlocked"; achievementKey: string }
   | { type: "achievement_count"; minimumCount: number }
+  | { type: "achievement_in_city"; cityKey: string }
   | { type: "passport_tier"; cityKey: string; categoryKey?: string | null; minimumTier: number }
   | { type: "venue_visits"; cityKey?: string | null; categoryKey?: string | null; minimumVisits: number }
   | { type: "adventure_completed"; adventureId: string }
@@ -33,6 +34,7 @@ export type RewardRule = {
 
 export type RewardFacts = {
   achievementKeys: Set<string>;
+  achievementCities: Set<string>;
   passportTiers: Map<string, number>;
   venueVisits: Array<{ cityKey?: string | null; categoryKey?: string | null }>;
   completedAdventures: Set<string>;
@@ -56,6 +58,8 @@ export function conditionSatisfied(condition: RewardCondition, facts: RewardFact
       return facts.achievementKeys.has(condition.achievementKey);
     case "achievement_count":
       return facts.achievementKeys.size >= condition.minimumCount;
+    case "achievement_in_city":
+      return facts.achievementCities.has(condition.cityKey);
     case "passport_tier":
       return (facts.passportTiers.get(conditionKey(condition.cityKey, condition.categoryKey)) ?? 0) >= condition.minimumTier;
     case "venue_visits":
