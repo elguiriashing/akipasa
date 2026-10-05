@@ -101,6 +101,25 @@ export async function requestAccountEmailChange(formData: FormData) {
   redirect(`/${locale}/account/settings?email=pending`);
 }
 
+export async function requestAccountPasswordReset(formData: FormData) {
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const { supabase, user } = await requireUser(locale);
+  if (!user.email)
+    redirect(`/${locale}/account/settings?error=password-email`);
+
+  const redirectTo =
+    `${config.siteUrl}/${locale}/auth/callback?next=${encodeURIComponent(
+      `/${locale}/auth/recover`,
+    )}`;
+  const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
+    redirectTo,
+  });
+  if (error)
+    redirect(`/${locale}/account/settings?error=password-reset`);
+
+  redirect(`/${locale}/account/settings?password=sent`);
+}
+
 export async function requestAccountDeletion(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const confirmation = String(formData.get("confirmation") || "");
