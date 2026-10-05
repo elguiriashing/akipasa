@@ -277,8 +277,8 @@ export function ClaimVenuePicker({
             "claimable-venues",
           ) as import("maplibre-gl").GeoJSONSource;
           const zoom = await source.getClusterExpansionZoom(clusterId);
-          const coords = (feature.geometry as { coordinates: [number, number] })
-            .coordinates;
+          if (!feature || feature.geometry.type !== "Point") return;
+          const coords = feature.geometry.coordinates as [number, number];
           map.easeTo({ center: coords, zoom });
         });
 
@@ -290,9 +290,9 @@ export function ClaimVenuePicker({
             if (!response.ok) throw new Error("venue failed");
             const detail = mapVenueDetailSchema.parse(await response.json());
             if (detail.claimStatus !== "unclaimed") return;
-            const coords = (
-              event.features?.[0]?.geometry as { coordinates: [number, number] }
-            ).coordinates;
+            const geometry = event.features?.[0]?.geometry;
+            if (!geometry || geometry.type !== "Point") return;
+            const coords = geometry.coordinates as [number, number];
             const venue: ClaimVenue = {
               id: detail.id,
               slug: detail.slug,
