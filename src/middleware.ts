@@ -37,7 +37,8 @@ export async function middleware(request: NextRequest) {
     const allowed =
       /^\/(es|en)\/(business|auth)(?:\/|$)/.test(pathname) ||
       pathname.startsWith("/api/") ||
-      pathname === "/robots.txt";
+      pathname === "/robots.txt" ||
+      pathname === "/manifest.webmanifest";
 
     if (!allowed) {
       target.hostname = "akipasa.com";
