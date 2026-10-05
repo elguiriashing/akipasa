@@ -1,6 +1,7 @@
 import { previewHtml } from "@/components/pals/preview";
 import { previewAccess, privateHeaders } from "@/lib/pals/server";
 
+// Restricted preview release checkpoint: intentionally unlinked and non-indexable.
 export const dynamic = "force-dynamic";
 export async function GET() {
   try {
