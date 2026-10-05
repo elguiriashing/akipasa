@@ -8192,6 +8192,11 @@ html {
     gap: 1.15rem;
   }
 
+  .consumer-workspace > .workspace-sidebar,
+  .consumer-workspace > .workspace-content {
+    grid-column: 1 / -1;
+  }
+
   .consumer-workspace .workspace-sidebar {
     position: sticky;
     top: 0.75rem;
