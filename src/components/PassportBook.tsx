@@ -555,10 +555,15 @@ export function PassportBook({
               </div>
             ) : page === 1 ? (
               <div className={styles.index}>
-                <p>
+                <p className={styles.indexIntroDesktop}>
                   {es
                     ? "Elige un capítulo o salta directamente a una ciudad."
                     : "Choose a chapter or jump straight to a city."}
+                </p>
+                <p className={styles.indexIntroMobile}>
+                  {es
+                    ? "Busca una ciudad o usa el menú para cambiar de capítulo."
+                    : "Find a city or use the menu to change chapter."}
                 </p>
                 <div className={styles.chapterList}>
                   {labels.slice(2).map((label, i) => (
