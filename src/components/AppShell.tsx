@@ -178,7 +178,9 @@ export function AppShell({
 
   return (
     <div
-      className={`app-shell${section === "passports" ? "app-shell--passport" : ""}`}
+      className={
+        section === "passports" ? "app-shell app-shell--passport" : "app-shell"
+      }
     >
       {/* Desktop rail */}
       <aside
