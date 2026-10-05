@@ -16,6 +16,7 @@ import { CityStamps, CityCardStamps } from "./CityStamps";
 import {
   familyProgress,
   cardFinish,
+  tierName,
   type PassportCollection,
 } from "@/lib/passport-collection";
 import type { Locale } from "@/lib/config";
@@ -93,8 +94,8 @@ export function PassportBook({
     };
   }, [router, signedIn]);
   const labels = es
-    ? ["Portada", "Ciudades", "Mi viaje", "Rutas", "Fidelidad", "Logros"]
-    : ["Cover", "Cities", "My journey", "Routes", "Loyalty", "Achievements"];
+    ? ["Pasaporte", "Ciudades", "Mi viaje", "Rutas", "Fidelidad", "Logros"]
+    : ["Passport", "Cities", "My journey", "Routes", "Loyalty", "Achievements"];
   const [page, setPage] = useState(
     initialCity && cities.some((c) => c.key === initialCity)
       ? chapters.length + cities.findIndex((c) => c.key === initialCity)
@@ -324,13 +325,13 @@ export function PassportBook({
           <span className={styles.eyebrow}>AKIPASA / EXPLORER COLLECTION</span>
           <h1>
             {es
-              ? "Tu mundo, página a página."
-              : "Your world, one page at a time."}
+              ? "Tu próxima historia empieza aquí."
+              : "Your next story starts here."}
           </h1>
           <p>
             {es
-              ? "Abre tu pasaporte. Encuentra tu próxima historia."
-              : "Open your passport. Find your next story."}
+              ? "Una colección viva de los sitios, ciudades y momentos que descubres."
+              : "A living collection of the places, cities and moments you discover."}
           </p>
         </div>
         <span className={styles.edition}>
@@ -351,8 +352,10 @@ export function PassportBook({
               onClick={() => go(i)}
               aria-current={page === i ? "page" : undefined}
             >
-              <span>{String(i + 1).padStart(2, "0")}</span>
-              {label}
+              <span className={styles.bookmarkNumber}>
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span>{label}</span>
             </button>
           ))}
         </nav>
@@ -499,19 +502,50 @@ export function PassportBook({
                             .replace(/[\u0300-\u036f]/g, ""),
                         ),
                     )
-                    .map((c) => (
-                      <button
-                        key={c.key}
-                        onClick={() => go(chapters.length + cities.indexOf(c))}
-                      >
-                        <span>{c[locale]}</span>
-                        <small>
-                          {String(
-                            chapters.length + cities.indexOf(c) + 1,
-                          ).padStart(2, "0")}
-                        </small>
-                      </button>
-                    ))}
+                    .map((c) => {
+                      const progress = familyProgress(
+                        collection?.families.find(
+                          (family) =>
+                            family.city_key === c.key && !family.category_key,
+                        ),
+                      );
+                      return (
+                        <button
+                          key={c.key}
+                          onClick={() =>
+                            go(chapters.length + cities.indexOf(c))
+                          }
+                        >
+                          <Image
+                            src={c.photo.src}
+                            alt=""
+                            fill
+                            sizes="(max-width: 700px) 50vw, 210px"
+                            className={styles.cityThumb}
+                            unoptimized
+                          />
+                          <span className={styles.cityMeta}>
+                            <b>{c[locale]}</b>
+                            <small>
+                              {progress.count > 0
+                                ? `${progress.count} ${
+                                    es ? "descubiertos" : "discovered"
+                                  }`
+                                : es
+                                  ? "Por descubrir"
+                                  : "Ready to discover"}
+                            </small>
+                          </span>
+                          <em>
+                            {progress.tier
+                              ? tierName(progress.tier, locale)
+                              : es
+                                ? "Nuevo"
+                                : "New"}
+                          </em>
+                        </button>
+                      );
+                    })}
                 </div>
                 {search &&
                   !cities.some((c) =>
