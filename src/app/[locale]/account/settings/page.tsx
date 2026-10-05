@@ -2,7 +2,10 @@ import { notFound } from "next/navigation";
 import { WorkspacePageHeader } from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
-import { requestAccountEmailChange } from "../actions";
+import {
+  requestAccountEmailChange,
+  requestAccountPasswordReset,
+} from "../actions";
 import { signOut } from "../../auth/actions";
 
 export default async function AccountSettingsPage({
@@ -96,6 +99,35 @@ export default async function AccountSettingsPage({
             />
             <button className="button secondary" type="submit">
               {es ? "Enviar confirmación" : "Send confirmation"}
+            </button>
+          </form>
+        </article>
+
+        <article className="panel console-card">
+          <h2>{es ? "Contraseña" : "Password"}</h2>
+          <p>
+            {es
+              ? "Te enviaremos un enlace seguro a tu correo para elegir una nueva contraseña."
+              : "We will email you a secure link to choose a new password."}
+          </p>
+          {query.password === "sent" && (
+            <p className="notice notice-success" role="status">
+              {es
+                ? "Enlace enviado. Revisa tu correo para cambiar la contraseña."
+                : "Link sent. Check your email to change your password."}
+            </p>
+          )}
+          {query.error?.startsWith("password") && (
+            <p className="notice notice-error" role="alert">
+              {es
+                ? "No pudimos enviar el enlace de cambio de contraseña."
+                : "We could not send the password-change link."}
+            </p>
+          )}
+          <form action={requestAccountPasswordReset}>
+            <input type="hidden" name="locale" value={locale} />
+            <button className="button secondary" type="submit">
+              {es ? "Cambiar mi contraseña" : "Change my password"}
             </button>
           </form>
         </article>
