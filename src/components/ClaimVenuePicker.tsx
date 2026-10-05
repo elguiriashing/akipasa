@@ -4,8 +4,6 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Locale } from "@/lib/config";
 import { mapVenueDetailSchema } from "@/lib/map-snapshot";
-import { MapTileLoader } from "@/lib/map-tiles";
-import { applyMapTheme, readMapTheme } from "@/lib/map-theme";
 import { Icon } from "@/components/Icons";
 
 type ClaimVenue = {
@@ -37,7 +35,6 @@ export function ClaimVenuePicker({
   const [loading, setLoading] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [mapMessage, setMapMessage] = useState<string | null>(null);
-  const tileLoaderRef = useRef(new MapTileLoader());
 
   useEffect(() => {
     if (!initialVenueId) return;
@@ -126,63 +123,28 @@ export function ClaimVenuePicker({
       if (disposed || !mapRoot.current) return;
       const map = new maplibregl.Map({
         container: mapRoot.current,
-        style: styleUrl,
+        style: {
+          version: 8,
+          sources: {
+            "claim-osm": {
+              type: "raster",
+              tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+              tileSize: 256,
+              attribution: "© OpenStreetMap contributors",
+            },
+          },
+          layers: [
+            {
+              id: "claim-osm",
+              type: "raster",
+              source: "claim-osm",
+            },
+          ],
+        },
         center: [-4.624, 36.539],
         zoom: 11,
         attributionControl: false,
         renderWorldCopies: false,
-      });
-
-      let baseStyleReady = false;
-      const fallbackStyleTimer = window.setTimeout(() => {
-        if (disposed || baseStyleReady) return;
-        map.setStyle({
-          version: 8,
-          sources: {
-            "claim-osm": {
-              type: "raster",
-              tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
-              tileSize: 256,
-              attribution: "© OpenStreetMap contributors",
-            },
-          },
-          layers: [
-            {
-              id: "claim-osm",
-              type: "raster",
-              source: "claim-osm",
-            },
-          ],
-        });
-      }, 4500);
-      map.once("style.load", () => {
-        baseStyleReady = true;
-        window.clearTimeout(fallbackStyleTimer);
-      });
-      map.on("error", (event) => {
-        if (disposed || baseStyleReady) return;
-        const message =
-          event.error instanceof Error ? event.error.message : String(event.error || "");
-        if (!/style|source|tile|glyph|sprite|network|fetch/i.test(message)) return;
-        window.clearTimeout(fallbackStyleTimer);
-        map.setStyle({
-          version: 8,
-          sources: {
-            "claim-osm": {
-              type: "raster",
-              tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
-              tileSize: 256,
-              attribution: "© OpenStreetMap contributors",
-            },
-          },
-          layers: [
-            {
-              id: "claim-osm",
-              type: "raster",
-              source: "claim-osm",
-            },
-          ],
-        });
       });
       mapRef.current = map;
       map.addControl(
@@ -197,19 +159,7 @@ export function ClaimVenuePicker({
         "top-right",
       );
 
-      const syncTheme = () => {
-        try {
-          applyMapTheme(map, readMapTheme(document.documentElement));
-        } catch {}
-      };
-      const observer = new MutationObserver(syncTheme);
-      observer.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ["class", "data-theme"],
-      });
-
       map.on("load", () => {
-        syncTheme();
         setMapReady(true);
 
         map.addSource("claimable-venues", {
@@ -265,28 +215,27 @@ export function ClaimVenuePicker({
 
         async function refresh() {
           const bounds = map.getBounds();
-          const request = new AbortController();
+          const params = new URLSearchParams({
+            west: String(bounds.getWest()),
+            east: String(bounds.getEast()),
+            south: String(bounds.getSouth()),
+            north: String(bounds.getNorth()),
+          });
           try {
-            const result = await tileLoaderRef.current.load(
-              {
-                west: bounds.getWest(),
-                east: bounds.getEast(),
-                south: bounds.getSouth(),
-                north: bounds.getNorth(),
-              },
-              map.getZoom(),
-              request.signal,
-              fetch,
-            );
-            const markers = tileLoaderRef.current
-              .values()
-              .filter((marker) => marker[3] === 1 && marker[4] === 0);
+            const response = await fetch(`/api/business/claim-map?${params}`, {
+              cache: "no-store",
+            });
+            if (!response.ok) throw new Error("claim map failed");
+            const payload = (await response.json()) as {
+              rows?: Array<{ id: string; longitude: number; latitude: number }>;
+            };
+            const rows = payload.rows || [];
             const source = map.getSource(
               "claimable-venues",
             ) as import("maplibre-gl").GeoJSONSource;
             source.setData({
               type: "FeatureCollection",
-              features: markers.map(([id, longitude, latitude]) => ({
+              features: rows.map(({ id, longitude, latitude }) => ({
                 type: "Feature",
                 geometry: {
                   type: "Point",
@@ -295,13 +244,7 @@ export function ClaimVenuePicker({
                 properties: { id },
               })),
             });
-            setMapMessage(
-              result.failed && markers.length === 0
-                ? es
-                  ? "No se pudieron cargar los locales de esta zona."
-                  : "Could not load venues in this area."
-                : null,
-            );
+            setMapMessage(null);
           } catch {
             setMapMessage(
               es
@@ -361,8 +304,6 @@ export function ClaimVenuePicker({
       });
 
       cleanup = () => {
-        window.clearTimeout(fallbackStyleTimer);
-        observer.disconnect();
         popupRef.current?.remove();
         map.remove();
         mapRef.current = null;
