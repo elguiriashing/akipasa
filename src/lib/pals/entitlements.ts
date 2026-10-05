@@ -6,7 +6,7 @@ export type Entitlement = {
   id: string;
   itemId: string;
   grantedAt: string;
-  obtainedVia: CosmeticSource | "admin";
+  obtainedVia: CosmeticSource | "campaign" | "admin" | "refund";
   sourceType: string;
   sourceId?: string | null;
   expiresAt?: string | null;
