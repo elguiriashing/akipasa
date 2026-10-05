@@ -1298,3 +1298,59 @@
     padding: 0;
   }
 }
+
+
+:global(body.passport-immersive .footer) {
+  display: none;
+}
+:global(body.passport-immersive .app-content) {
+  min-height: 100vh;
+}
+.motionButton {
+  display: inline-grid;
+  place-items: center;
+}
+.motionButton > span {
+  font-size: 19px;
+  line-height: 1;
+}
+@media (min-width: 1101px) {
+  .bookmarks {
+    min-height: calc(100vh - 40px);
+    align-content: start;
+    border-right: 1px solid #91b7d11f;
+    border-radius: 0;
+  }
+  .motionControls {
+    top: 344px;
+    bottom: auto;
+    left: 26px;
+    width: 108px;
+    display: grid;
+    grid-template-columns: repeat(2, 44px);
+    gap: 8px;
+    margin: 0;
+  }
+  .motionControls button,
+  .motionControls .motionButton {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+    border-radius: 12px;
+    background: #122d43;
+    box-shadow: 0 8px 22px #0003;
+  }
+  .motionControls button[aria-pressed="true"] {
+    border-color: #f2a063;
+    background: #1b3a52;
+    color: #ffe0c1;
+  }
+  .motionControls p {
+    display: none;
+  }
+  .summary {
+    bottom: 16px;
+  }
+}
