@@ -10,6 +10,12 @@ let data=null,tab='home',filter='all',busy=false,selectedFamily='moka',modal=nul
 const main=$('#main'), dialog=$('#dialog');
 const design=id=>data.catalog.designs.find(d=>d.id===id);
 const family=()=>data.catalog.families.find(f=>f.id===(data.state.family||selectedFamily));
+const collectionOf=id=>data?.catalog?.v2?.items?.find(item=>item.id===id)?.collectionId;
+function track(name,payload={}){
+ try{
+  fetch('/pals/analytics',{method:'POST',credentials:'same-origin',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({name,...payload})}).catch(()=>{});
+ }catch{}
+}
 const eq=id=>data.state.equipment.find(i=>i.id===id);
 const equipped=item=>Object.values(data.state.equipped).includes(item.id);
 const availableNow=()=>Math.min(3,Math.max(0,Math.floor((Date.now()+data.offset)/86400000)-data.state.lastParcelDay));
@@ -59,7 +65,7 @@ function render(){
  main.innerHTML=({home,wardrobe,workshop,adventures,shop,keepsakes,cast,settings}[tab]||home)();
  window.scrollTo(x,y);if(modal)renderModal();if(busy)setBusy(true);
 }
-function openModal(value){modal=value;renderModal();if(!dialog.open)dialog.showModal()}
+function openModal(value){modal=value;if(value?.type==='item'){const item=eq(value.id);if(item)track('item_viewed',{itemId:item.appearance,collectionId:collectionOf(item.appearance)})}renderModal();if(!dialog.open)dialog.showModal()}
 function closeModal(){modal=null;dialog.close()}
 function renderModal(){
  if(!modal)return;
@@ -101,7 +107,7 @@ async function command(action,retry=null){
  }finally{setBusy(false)}
  return committed;
 }
-function go(target){if(!data||!data.state.family)return;if(target==='more'){openModal({type:'more'});return}if(!pages.some(([id])=>id===target))return;closeModal();tab=target;filter='all';render();window.scrollTo(0,0);$('#page-title')?.focus()}
+function go(target){if(!data||!data.state.family)return;if(target==='more'){openModal({type:'more'});return}if(!pages.some(([id])=>id===target))return;if(target==='shop')track('collection_viewed',{collectionId:'akipasa-originals'});if(target==='keepsakes')track('collection_viewed',{collectionId:'city-keepsakes'});closeModal();tab=target;filter='all';render();window.scrollTo(0,0);$('#page-title')?.focus()}
 document.addEventListener('click',async event=>{
  const target=event.target.closest('[data-act],[data-tab]');if(!target||target.disabled)return;
  if(target.dataset.tab){go(target.dataset.tab);return}
