@@ -177,7 +177,7 @@ export function AppShell({
   }, [sheetOpen]);
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell${section === "passports" ? " app-shell--passport" : ""}`}>
       {/* Desktop rail */}
       <aside
         className={["app-rail", compact ? "app-rail--compact" : ""]
