@@ -3,7 +3,7 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Locale } from "@/lib/config";
-import { compactMarkerSchema, mapVenueDetailSchema } from "@/lib/map-snapshot";
+import { compactMarkerSchema, mapVenueDetailSchema, type CompactMapMarker } from "@/lib/map-snapshot";
 import { applyMapTheme, readMapTheme } from "@/lib/map-theme";
 import { Icon } from "@/components/Icons";
 
@@ -226,9 +226,8 @@ export function ClaimVenuePicker({
               : Array.isArray(payload?.markers)
                 ? payload.markers
                 : [];
-            const markers = raw.reduce<
-              Array<ReturnType<typeof compactMarkerSchema.parse>>
-            >((items, value: unknown) => {
+            const markers = (raw as unknown[]).reduce<CompactMapMarker[]>(
+              (items, value) => {
               const parsed = compactMarkerSchema.safeParse(value);
               if (
                 parsed.success &&
@@ -237,8 +236,10 @@ export function ClaimVenuePicker({
               ) {
                 items.push(parsed.data);
               }
-              return items;
-            }, []);
+                return items;
+              },
+              [],
+            );
             const source = map.getSource(
               "claimable-venues",
             ) as import("maplibre-gl").GeoJSONSource;
