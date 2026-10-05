@@ -1,3 +1,4 @@
+import type { Entitlement } from "./entitlements";
 /** Server-authoritative, deterministic-with-context rules for the restricted AkiPals preview. */
 export type Stat = "wits" | "energy" | "charm";
 export type Slot = "head" | "body" | "back" | "held";
@@ -1002,6 +1003,10 @@ export type State = {
   modules: Record<Stat, number>;
   rewards: string[];
   claimed: string[];
+  /** Provenance-first ownership. Optional for schema-1 saves created before catalogue v2. */
+  entitlements?: Entitlement[];
+  /** Generic reward rules already resolved. Optional for legacy saves. */
+  claimedRewardRules?: string[];
   run: Run | null;
   mapEnabled: boolean;
   goal: string | null;
@@ -1099,6 +1104,8 @@ export function initialState(now: number): State {
     modules: { wits: 2, energy: 2, charm: 2 },
     rewards: [],
     claimed: [],
+    entitlements: [],
+    claimedRewardRules: [],
     run: null,
     mapEnabled: false,
     goal: null,
@@ -1109,14 +1116,63 @@ export function initialState(now: number): State {
     updatedAt: now,
   };
 }
+type GrantProvenance = {
+  obtainedVia: Entitlement["obtainedVia"];
+  sourceType: string;
+  sourceId?: string | null;
+  metadata?: Record<string, unknown>;
+};
+
+function ensureEntitlements(s: State, ctx: Context) {
+  if (s.entitlements) return;
+  const grantedAt = new Date(ctx.now).toISOString();
+  s.entitlements = s.wardrobe.map((itemId, index) => ({
+    id: `legacy:${index}:${itemId}`,
+    itemId,
+    grantedAt,
+    obtainedVia: "admin",
+    sourceType: "legacy-save",
+    sourceId: null,
+    quantity: 1,
+    status: "active",
+    metadata: { migratedFromWardrobe: true },
+  }));
+  s.claimedRewardRules ??= [];
+}
+
+function recordEntitlement(
+  s: State,
+  itemId: string,
+  ctx: Context,
+  provenance: GrantProvenance,
+) {
+  ensureEntitlements(s, ctx);
+  s.entitlements!.push({
+    id: ctx.id(),
+    itemId,
+    grantedAt: new Date(ctx.now).toISOString(),
+    obtainedVia: provenance.obtainedVia,
+    sourceType: provenance.sourceType,
+    sourceId: provenance.sourceId ?? null,
+    quantity: 1,
+    status: "active",
+    metadata: provenance.metadata ?? {},
+  });
+}
+
 function addItem(
   s: State,
   id: string,
   ctx: Context,
   socketCount = 1,
+  provenance: GrantProvenance = {
+    obtainedVia: "shop",
+    sourceType: "legacy-engine",
+  },
 ): Equipment | null {
   getDesign(id);
   if (!s.wardrobe.includes(id)) s.wardrobe.push(id);
+  recordEntitlement(s, id, ctx, provenance);
   if (s.equipment.length >= MAX_INVENTORY) {
     s.scrap += 16;
     return null;
@@ -1169,6 +1225,7 @@ export function applyAction(
 ): State {
   if (current.schema !== 1) fail("This save needs a newer version of AkiPals.");
   const s: State = structuredClone(current);
+  ensureEntitlements(s, ctx);
   const day = Math.floor(ctx.now / DAY);
   if (!s.family && action.type !== "adopt") fail("Adopt your Pal first.");
   switch (action.type) {
@@ -1187,7 +1244,7 @@ export function applyAction(
         "trail-pack",
         "coffee-cup",
       ]) {
-        const item = addItem(s, id, ctx)!;
+        const item = addItem(s, id, ctx, 1, { obtainedVia: "starter", sourceType: "starter-pack", sourceId: "default" })!;
         s.equipped[getDesign(id).slot] = item.id;
       }
       say(
@@ -1338,7 +1395,7 @@ export function applyAction(
           Math.min(pool.length - 1, Math.floor(Math.max(0, roll) * pool.length))
         ];
       const socketCount = ctx.random() < 0.15 ? 3 : ctx.random() < 0.4 ? 2 : 1;
-      const item = addItem(s, picked.id, ctx, socketCount);
+      const item = addItem(s, picked.id, ctx, socketCount, { obtainedVia: "promotional", sourceType: "daily-parcel", sourceId: String(day) });
       const fittedModule =
         STATS[Math.min(2, Math.floor(Math.max(0, ctx.random()) * 3))];
       s.modules[fittedModule] += 1;
@@ -1360,7 +1417,7 @@ export function applyAction(
       if (s.equipment.length >= MAX_INVENTORY)
         fail("Your inventory is full. Scrap or merge a spare piece first.");
       spend(s, "threads", d.price);
-      addItem(s, d.id, ctx);
+      addItem(s, d.id, ctx, 1, { obtainedVia: "shop", sourceType: "threads-shop", sourceId: d.id, metadata: { currency: "threads", amount: d.price } });
       say(
         s,
         "A new favourite",
@@ -1466,7 +1523,7 @@ export function applyAction(
       let count = 0;
       for (const id of available)
         if (!s.claimed.includes(id)) {
-          addItem(s, id, ctx, 3);
+          addItem(s, id, ctx, 3, { obtainedVia: id.startsWith("city-") ? "city" : "achievement", sourceType: "achievement-sync", sourceId: id });
           s.claimed.push(id);
           count += 1;
         }
