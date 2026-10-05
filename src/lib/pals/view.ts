@@ -9,6 +9,8 @@ import {
   type State,
 } from "./engine";
 import { itemSvg, palSvg, statePortrait } from "./art";
+import { legacyCatalogue } from "./catalogue-legacy";
+import { renderSnapshotFromState } from "./render-snapshot";
 
 export function payload(
   state: State,
@@ -25,6 +27,7 @@ export function payload(
       activeModules: activeModules(state),
       parcels: parcels(state, now),
       portrait: statePortrait(state),
+      renderSnapshot: renderSnapshotFromState(state),
     },
     ...(includeCatalogue
       ? {
@@ -37,6 +40,7 @@ export function payload(
             designs: designs.map((d) => ({ ...d, svg: itemSvg(d) })),
             adventures,
             cityCollections,
+            v2: legacyCatalogue(),
           },
         }
       : {}),
