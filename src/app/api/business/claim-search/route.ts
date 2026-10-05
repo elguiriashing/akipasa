@@ -26,7 +26,7 @@ export async function GET(request: Request) {
       { status: 503 },
     );
 
-  const ids = (matches || []).map((row: { id: string }) => row.id);
+  const ids: string[] = (matches || []).map((row: { id: string }) => row.id);
   if (!ids.length) return Response.json({ rows: [] });
 
   const { data: venues, error: venueError } = await supabase
