@@ -12560,3 +12560,34 @@ html[data-owner-focus="true"] .app-content {
 .app-content:has(.passport-experience) > .footer { display: none; }
 .app-shell:has(.passport-experience) { background: #0d263b; }
 .app-shell:has(.passport-experience) > .app-rail { height: 100dvh; top: 0; align-self: start; }
+
+/* Route-level Passport shell: keep document chrome outside the scrolling canvas. */
+.app-shell--passport .app-content .footer {
+  display: none !important;
+}
+.app-shell--passport {
+  background: #0d263b;
+}
+@media (min-width: 851px) {
+  .app-shell--passport {
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+    align-items: stretch;
+  }
+  .app-shell--passport > .app-rail {
+    position: relative;
+    top: 0;
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  .app-shell--passport > .app-content {
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior-y: contain;
+    padding-bottom: 0;
+  }
+}
