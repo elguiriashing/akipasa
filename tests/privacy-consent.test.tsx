@@ -15,12 +15,53 @@ import {
   readPrivacyChoices,
   writePrivacyChoices,
 } from "../src/lib/privacy-consent";
+const navigation = vi.hoisted(() => ({ pathname: "/en" }));
+vi.mock("next/navigation", () => ({
+  usePathname: () => navigation.pathname,
+}));
 afterEach(() => {
+  navigation.pathname = "/en";
   cleanup();
   for (const c of document.cookie.split("; "))
     document.cookie = c.split("=")[0] + "=; Max-Age=0; Path=/";
   document.getElementById("ak-consented-ga")?.remove();
   vi.unstubAllGlobals();
+});
+it("keeps one working privacy trigger in the Passport rail and restores it after leaving", async () => {
+  navigation.pathname = "/en/passports";
+  document.cookie = "ak_consent_version=2; Path=/";
+  const { rerender } = render(
+    <>
+      <nav aria-label="Passport chapters">
+        <div id="passport-privacy-controls" />
+      </nav>
+      <PersonalisationConsent locale="en" />
+    </>,
+  );
+  const trigger = await screen.findByRole("button", {
+    name: "Privacy choices",
+  });
+  expect(trigger.closest("#passport-privacy-controls")).not.toBeNull();
+  expect(
+    screen.getAllByRole("button", { name: "Privacy choices" }),
+  ).toHaveLength(1);
+  fireEvent.click(trigger);
+  expect(
+    await screen.findByRole("button", { name: "Save choices" }),
+  ).toBeVisible();
+
+  navigation.pathname = "/en";
+  rerender(<PersonalisationConsent locale="en" />);
+  await waitFor(() =>
+    expect(
+      screen
+        .getByRole("button", { name: "Privacy choices" })
+        .closest("#passport-privacy-controls"),
+    ).toBeNull(),
+  );
+  expect(
+    screen.getAllByRole("button", { name: "Privacy choices" }),
+  ).toHaveLength(1);
 });
 it("does not load Google analytics until measurement is explicitly selected", async () => {
   vi.stubGlobal("React", React);

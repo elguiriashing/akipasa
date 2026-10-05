@@ -12557,9 +12557,17 @@ html[data-owner-focus="true"] .app-content {
 }
 
 /* Passport fills its app surface; the ordinary site footer is outside this mode. */
-.app-content:has(.passport-experience) > .footer { display: none; }
-.app-shell:has(.passport-experience) { background: #0d263b; }
-.app-shell:has(.passport-experience) > .app-rail { height: 100dvh; top: 0; align-self: start; }
+.app-content:has(.passport-experience) > .footer {
+  display: none;
+}
+.app-shell:has(.passport-experience) {
+  background: #0d263b;
+}
+.app-shell:has(.passport-experience) > .app-rail {
+  height: 100dvh;
+  top: 0;
+  align-self: start;
+}
 
 /* Route-level Passport shell: keep document chrome outside the scrolling canvas. */
 .app-shell--passport .app-content .footer {
@@ -12590,4 +12598,12 @@ html[data-owner-focus="true"] .app-content {
     overscroll-behavior-y: contain;
     padding-bottom: 0;
   }
+}
+
+.privacy-preferences--passport {
+  padding: 0;
+}
+/* Remove the outside trigger immediately, including before its portal mounts. */
+body:has(#passport-privacy-controls) > .privacy-preferences {
+  display: none;
 }

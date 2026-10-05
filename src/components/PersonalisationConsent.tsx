@@ -1,5 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { usePathname } from "next/navigation";
 import type { Locale } from "@/lib/config";
 import {
   deniedChoices,
@@ -15,6 +17,8 @@ import {
 } from "../lib/passport-motion";
 
 export function PersonalisationConsent({ locale }: { locale: Locale }) {
+  const pathname = usePathname();
+  const [privacyHost, setPrivacyHost] = useState<HTMLElement | null>(null);
   const [visible, setVisible] = useState(false);
   const [choices, setChoices] = useState<PrivacyChoices>(deniedChoices);
   const [motionChoice, setMotionChoice] = useState(false);
@@ -22,6 +26,9 @@ export function PersonalisationConsent({ locale }: { locale: Locale }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(false);
   const es = locale === "es";
+  useEffect(() => {
+    setPrivacyHost(document.getElementById("passport-privacy-controls"));
+  }, [pathname]);
   useEffect(() => {
     setMotionChoice(readMotionPreference() === true);
     setChoices(readPrivacyChoices());
@@ -66,17 +73,26 @@ export function PersonalisationConsent({ locale }: { locale: Locale }) {
     setChoices(next);
     setVisible(false);
   }
+  const privacyControl = (
+    <div
+      className={
+        privacyHost
+          ? "privacy-preferences privacy-preferences--passport"
+          : "privacy-preferences"
+      }
+    >
+      <button
+        type="button"
+        className="button secondary"
+        onClick={() => setVisible(true)}
+      >
+        {es ? "Opciones de privacidad" : "Privacy choices"}
+      </button>
+    </div>
+  );
   return (
     <>
-      <div className="privacy-preferences">
-        <button
-          type="button"
-          className="button secondary"
-          onClick={() => setVisible(true)}
-        >
-          {es ? "Opciones de privacidad" : "Privacy choices"}
-        </button>
-      </div>
+      {privacyHost ? createPortal(privacyControl, privacyHost) : privacyControl}
       {visible && (
         <aside
           className="personalisation-consent"
