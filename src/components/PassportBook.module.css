@@ -935,14 +935,6 @@
   }
 }
 
-.page {
-  --ink: #eaf0f7;
-  --muted: #a8bdcf;
-  --surface: #172a3d;
-  --surface-alt: #122438;
-  --line: #344c60;
-  --primary-dark: #ffae77;
-}
 .notices:empty {
   display: none;
 }
@@ -996,17 +988,7 @@
 }
 
 .journal {
-  --passport-ink: #e8edf6;
-  --passport-surface: #172b40;
-  color: #e8edf6;
-}
-
-.journal {
-  --stamp-bronze: #d6a174;
-  --stamp-silver: #c5d3e1;
-  --stamp-gold: #f0ce71;
-  --stamp-platinum: #a4dadf;
-  --stamp-holo: #d0bbff;
+  color: var(--passport-ink);
 }
 
 .cityArt {
@@ -1643,4 +1625,109 @@
     margin-top: auto;
     padding-top: 24px;
   }
+}
+
+/* The environment follows brightness/theme; photographic objects retain their finish. */
+.atlas {
+  --atlas-panel: var(--passport-panel);
+  --atlas-line: var(--passport-line);
+  color: var(--passport-ink);
+  background: var(--passport-canvas);
+}
+.page {
+  color: var(--passport-ink);
+  background: var(--passport-page);
+  border-color: var(--passport-line);
+}
+.pageTitle,
+.journal h3 {
+  color: var(--passport-ink);
+}
+.eyebrow,
+.edition,
+.pageHeader,
+.pageFooter,
+.journal > p,
+.journal .truth,
+.credit,
+.index > p,
+.search,
+.readout,
+.summary,
+.bookmarks button .bookmarkNumber {
+  color: var(--passport-muted);
+}
+.pageHeader,
+.pageFooter,
+.bookmarks,
+.bookmarks .motionControls {
+  border-color: var(--passport-line);
+}
+.bookmarks {
+  background: var(--passport-rail);
+}
+.bookmarks button {
+  color: var(--passport-ink);
+}
+.bookmarks button[aria-current] {
+  color: #102439;
+}
+.bookmarks button[aria-current] .bookmarkNumber {
+  color: #31495b;
+}
+.credit a {
+  color: var(--passport-ink);
+}
+.coordinates,
+.chapterList b {
+  color: var(--primary-text, var(--passport-ink));
+}
+.chapterList button,
+.search input,
+.chapter :global(.panel),
+.chapter :global(.passport-card),
+.chapter :global(.stamp-card),
+.chapter :global(.console-section-header),
+.chapter :global(.notice),
+.chapter :global(.status-pill),
+.bookmarks .motionControls .motionButton,
+.bookmarks .privacyControls button {
+  color: var(--passport-ink);
+  background: var(--passport-panel);
+  border-color: var(--passport-line);
+}
+.search input::placeholder {
+  color: var(--passport-muted);
+  opacity: 1;
+}
+.chapter :global(.console-section-heading) {
+  color: var(--passport-ink);
+}
+.chapter :global(p) {
+  color: var(--passport-muted);
+}
+.bookmarks .motionControls button[aria-pressed="true"],
+.bookmarks .privacyControls button:hover {
+  color: var(--passport-ink);
+  background: var(--passport-selected);
+}
+.cover,
+.coverText h3,
+.cityArt,
+.artBottom h3,
+.cityIndex button {
+  color: #eaf0f7;
+}
+@media (max-width: 1100px) {
+  .book {
+    background: var(--passport-rail);
+  }
+}
+
+.search input {
+  border-color: color-mix(
+    in srgb,
+    var(--passport-ink) 55%,
+    var(--passport-surface)
+  );
 }

@@ -1753,7 +1753,7 @@ body.theme-dark .auth-page {
   opacity: 0.6;
 }
 
-[data-theme="dark"],
+html[data-theme="dark"],
 html.theme-dark {
   --primary: #f26b1d;
   --primary-text: #ff9a60;
@@ -1772,7 +1772,7 @@ html.theme-dark {
   --shadow-strong: 0 26px 56px rgba(20, 33, 61, 0.6);
 }
 
-[data-theme="light"],
+html[data-theme="light"],
 html.theme-light {
   --primary: #f26b1d;
   --primary-text: #b5470b;
@@ -8846,53 +8846,7 @@ html[data-owner-accent="gold"] {
   --teal: #f1c45e;
   --teal-dark: #a96f06;
 }
-html[data-owner-background="aurora"] body {
-  background:
-    radial-gradient(circle at 14% 12%, rgb(242 107 29 / 25%), transparent 34%),
-    radial-gradient(circle at 84% 8%, rgb(141 88 255 / 25%), transparent 39%),
-    radial-gradient(circle at 62% 78%, rgb(255 100 145 / 13%), transparent 38%),
-    linear-gradient(145deg, #111b32, #0c2327 48%, #11172d);
-  background-attachment: fixed;
-}
-html[data-owner-background="midnight"] body {
-  background:
-    radial-gradient(circle at 72% 10%, rgb(35 103 255 / 22%), transparent 37%),
-    radial-gradient(circle at 8% 82%, rgb(36 218 201 / 12%), transparent 36%),
-    linear-gradient(145deg, #030611, #071226 48%, #02040b);
-  background-attachment: fixed;
-}
-html[data-owner-background="synthwave"] body {
-  background:
-    linear-gradient(rgb(255 65 179 / 8%) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(78 229 255 / 8%) 1px, transparent 1px),
-    radial-gradient(circle at 50% 2%, rgb(255 60 178 / 30%), transparent 38%),
-    linear-gradient(160deg, #130727, #071b32 58%, #080f20);
-  background-size:
-    48px 48px,
-    48px 48px,
-    auto,
-    auto;
-  background-attachment: fixed;
-}
-html[data-owner-background="paper"] body {
-  background:
-    linear-gradient(rgb(14 117 124 / 8%) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(14 117 124 / 8%) 1px, transparent 1px), #faf7f2;
-  background-size: 24px 24px;
-  background-attachment: fixed;
-}
-html[data-owner-background="paper"] {
-  --ink: #14213d;
-  --muted: #58657b;
-  --line: rgb(20 33 61 / 15%);
-  --surface: #ffffff;
-  --surface-alt: #faf7f2;
-  --sand: #eee9e1;
-  color-scheme: light;
-}
-html[data-owner-background="none"] body {
-  background: var(--surface-alt);
-}
+/* Owner background palettes compose with brightness in appearance.css. */
 html[data-owner-custom-background="true"] body {
   background-image:
     linear-gradient(rgb(3 14 18 / 46%), rgb(3 14 18 / 58%)),
