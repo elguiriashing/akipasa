@@ -41,7 +41,7 @@ export function sanitizePalsAnalyticsEvent(event: PalsAnalyticsEvent) {
     Object.entries(event.context ?? {}).filter(
       ([key, value]) =>
         !forbiddenKeys.has(key.toLowerCase()) &&
-        ["string", "number", "boolean"].includes(typeof value) || value === null,
+        (["string", "number", "boolean"].includes(typeof value) || value === null),
     ),
   );
   return { ...event, context };
