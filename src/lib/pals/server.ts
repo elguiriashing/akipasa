@@ -3,6 +3,7 @@ import { statePortrait } from "./art";
 import { optionalUser } from "@/lib/auth";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import { initialState, type State } from "./engine";
+import { sanitizePalsAnalyticsEvent, type PalsAnalyticsEvent } from "./analytics";
 
 export const privateHeaders = {
   "Cache-Control": "private, no-store, max-age=0, must-revalidate",
@@ -77,5 +78,36 @@ export async function mapPreviewPortrait(): Promise<string | null> {
   } catch {
     // A preview service failure must not interrupt the existing public map.
     return null;
+  }
+}
+
+
+/** Best-effort product telemetry. Never blocks game saves or stores free-form personal/location data. */
+export async function recordPalsAnalytics(
+  userId: string,
+  events: PalsAnalyticsEvent[],
+) {
+  if (!events.length) return;
+  try {
+    const db = createSupabaseServiceClient();
+    const rows = events.map((event) => {
+      const clean = sanitizePalsAnalyticsEvent(event);
+      return {
+        user_id: userId,
+        event_name: clean.name,
+        item_id: clean.itemId ?? null,
+        collection_id: clean.collectionId ?? null,
+        campaign_id: clean.campaignId ?? null,
+        adventure_id: clean.adventureId ?? null,
+        reward_rule_id: clean.rewardRuleId ?? null,
+        currency: clean.currency ?? null,
+        amount: clean.amount ?? null,
+        context: clean.context ?? {},
+        occurred_at: clean.occurredAt,
+      };
+    });
+    await db.from("pals_analytics_events").insert(rows);
+  } catch {
+    // Analytics must never make the product less reliable.
   }
 }
