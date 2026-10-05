@@ -12555,3 +12555,8 @@ html[data-owner-focus="true"] .app-content {
   flex: 0 0 auto;
   margin-top: 0.2rem;
 }
+
+/* Passport fills its app surface; the ordinary site footer is outside this mode. */
+.app-content:has(.passport-experience) > .footer { display: none; }
+.app-shell:has(.passport-experience) { background: #0d263b; }
+.app-shell:has(.passport-experience) > .app-rail { height: 100dvh; top: 0; align-self: start; }
