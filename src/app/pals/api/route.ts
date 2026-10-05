@@ -207,7 +207,7 @@ export async function POST(request: Request) {
       id: () => crypto.randomUUID(),
       random: () => crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296,
     };
-    if (parsed.action.type === "claim") {
+    if (action.type === "claim") {
       const { data, error } = await access.supabase.rpc(
         "my_achievement_progress",
       );
@@ -257,10 +257,9 @@ export async function POST(request: Request) {
         ? catalogue.items.find((item) => item.id === itemId)?.collectionId
         : undefined;
     const analytics: PalsAnalyticsEvent[] = [];
-    if (parsed.action.type === "equip") {
-      const equipment = state.equipment.find(
-        (item) => item.id === parsed.action.itemId,
-      );
+    const action = parsed.action;
+    if (action.type === "equip") {
+      const equipment = state.equipment.find((item) => item.id === action.itemId);
       if (equipment)
         analytics.push({
           name: "item_equipped",
@@ -268,8 +267,8 @@ export async function POST(request: Request) {
           itemId: equipment.appearance,
           collectionId: collectionFor(equipment.appearance),
         });
-    } else if (parsed.action.type === "unequip") {
-      const previousId = saved.state.equipped[parsed.action.slot];
+    } else if (action.type === "unequip") {
+      const previousId = saved.state.equipped[action.slot];
       const equipment = saved.state.equipment.find(
         (item) => item.id === previousId,
       );
@@ -280,14 +279,14 @@ export async function POST(request: Request) {
           itemId: equipment.appearance,
           collectionId: collectionFor(equipment.appearance),
         });
-    } else if (parsed.action.type === "buy") {
+    } else if (action.type === "buy") {
       const item = catalogue.items.find(
-        (entry) => entry.id === parsed.action.sku,
+        (entry) => entry.id === action.sku,
       );
       analytics.push({
         name: "shop_item_purchased",
         occurredAt,
-        itemId: parsed.action.sku,
+        itemId: action.sku,
         collectionId: item?.collectionId,
         currency: "threads",
         amount:
@@ -296,11 +295,11 @@ export async function POST(request: Request) {
       analytics.push({
         name: "item_unlocked",
         occurredAt,
-        itemId: parsed.action.sku,
+        itemId: action.sku,
         collectionId: item?.collectionId,
         context: { source: "threads-shop" },
       });
-    } else if (parsed.action.type === "parcel" && state.report.design) {
+    } else if (action.type === "parcel" && state.report.design) {
       analytics.push({
         name: "item_unlocked",
         occurredAt,
@@ -308,7 +307,7 @@ export async function POST(request: Request) {
         collectionId: collectionFor(state.report.design),
         context: { source: "daily-parcel" },
       });
-    } else if (parsed.action.type === "claim") {
+    } else if (action.type === "claim") {
       const newlyClaimed = state.claimed.filter(
         (itemId) => !saved.state.claimed.includes(itemId),
       );
@@ -328,7 +327,7 @@ export async function POST(request: Request) {
           collectionId: collectionFor(itemId),
           context: { source: "reward-rule" },
         });
-    } else if (parsed.action.type === "choice") {
+    } else if (action.type === "choice") {
       const adventureId = saved.state.run?.adventure;
       const earned = state.rewards.some(
         (key) =>
