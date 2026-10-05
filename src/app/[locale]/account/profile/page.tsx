@@ -22,13 +22,13 @@ export default async function ProfilePage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
-  const { supabase } = await requireUser(locale);
+  const { supabase, user } = await requireUser(locale);
   const { data: profile } = await supabase
     .from("profiles")
     .select(
       "display_name,preferred_locale,username,bio,avatar_url,banner_url,public_email,phone,website_url,instagram_url,locality,province,birth_year,gender,profile_visibility,contact_visibility,attendance_visibility",
     )
-    .eq("id", (await requireUser(locale)).user.id)
+    .eq("id", user.id)
     .maybeSingle();
   const es = locale === "es";
   const instagramHandle = instagramHandleFromUrl(profile?.instagram_url);
