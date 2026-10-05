@@ -115,6 +115,54 @@ export function ClaimVenuePicker({
     });
   }, [es]);
 
+  const previewVenue = useCallback(
+    (venue: ClaimVenue) => {
+      const map = mapRef.current;
+      if (!map) return;
+      void import("maplibre-gl").then((maplibregl) => {
+        popupRef.current?.remove();
+
+        const card = document.createElement("article");
+        card.className = "claim-map-popup claim-map-popup-preview";
+
+        const eyebrow = document.createElement("span");
+        eyebrow.className = "claim-map-popup-eyebrow";
+        eyebrow.textContent = es ? "Local disponible" : "Available venue";
+
+        const title = document.createElement("strong");
+        title.textContent = venue.name;
+
+        const address = document.createElement("span");
+        address.className = "claim-map-popup-address";
+        address.textContent =
+          venue.address ||
+          venue.locality ||
+          (es ? "Sin dirección disponible" : "No address available");
+
+        const action = document.createElement("button");
+        action.type = "button";
+        action.className = "claim-map-popup-action";
+        action.textContent = es ? "Reclamar este local" : "Claim this venue";
+        action.addEventListener("click", () => {
+          chooseVenue(venue);
+        });
+
+        card.append(eyebrow, title, address, action);
+
+        popupRef.current = new maplibregl.Popup({
+          offset: 14,
+          closeButton: true,
+          className: "akibusiness-claim-popup",
+          maxWidth: "290px",
+        })
+          .setLngLat([venue.longitude, venue.latitude])
+          .setDOMContent(card)
+          .addTo(map);
+      });
+    },
+    [chooseVenue, es],
+  );
+
   useEffect(() => {
     if (!mapRoot.current || !styleUrl) return;
     let disposed = false;
@@ -309,7 +357,7 @@ export function ClaimVenuePicker({
               latitude: coords[1],
               longitude: coords[0],
             };
-            chooseVenue(venue);
+            previewVenue(venue);
           } catch {}
         });
 
@@ -333,7 +381,7 @@ export function ClaimVenuePicker({
       disposed = true;
       cleanup();
     };
-  }, [chooseVenue, es, styleUrl]);
+  }, [es, previewVenue, styleUrl]);
 
   function chooseSearchResult(venue: ClaimVenue) {
     chooseVenue(venue);
@@ -435,6 +483,29 @@ export function ClaimVenuePicker({
           </span>
         </div>
       </section>
+
+      {selected && (
+        <section className="claim-selected-confirmation" aria-live="polite">
+          <div className="claim-selected-confirmation-mark" aria-hidden="true">
+            ✓
+          </div>
+          <div>
+            <span>{es ? "Vas a reclamar este local" : "You are claiming this venue"}</span>
+            <strong>{selected.name}</strong>
+            <small>{selected.address || selected.locality || ""}</small>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setSelected(null);
+              setQuery("");
+              popupRef.current?.remove();
+            }}
+          >
+            {es ? "Cambiar local" : "Change venue"}
+          </button>
+        </section>
+      )}
     </div>
   );
 }
