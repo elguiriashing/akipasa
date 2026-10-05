@@ -4,6 +4,14 @@ import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { updateAccountProfile, uploadProfileMedia } from "../actions";
 
+function instagramHandleFromUrl(value: string | null | undefined) {
+  if (!value) return "";
+  return value
+    .replace(/^https?:\/\/(www\.)?instagram\.com\//i, "")
+    .replace(/^@/, "")
+    .split(/[/?#]/)[0];
+}
+
 export default async function ProfilePage({
   params,
   searchParams,
@@ -23,6 +31,7 @@ export default async function ProfilePage({
     .eq("id", user.id)
     .maybeSingle();
   const es = locale === "es";
+  const instagramHandle = instagramHandleFromUrl(profile?.instagram_url);
 
   return (
     <div className="account-profile-page">
@@ -31,222 +40,306 @@ export default async function ProfilePage({
         title={es ? "Perfil" : "Profile"}
         description={
           es
-            ? "La información que usas dentro de AkiPasa."
-            : "The information you use inside AkiPasa."
+            ? "Tu información pública y cómo apareces en AkiPasa."
+            : "Your public information and how you appear on AkiPasa."
         }
       />
+
       {query.updated && (
-        <p className="notice">
-          {es ? "Perfil actualizado." : "Profile updated."}
-        </p>
+        <p className="notice">{es ? "Perfil actualizado." : "Profile updated."}</p>
       )}
       {query.error && (
-        <p className="notice">
-          {es ? "No se pudo actualizar." : "Update failed."}
-        </p>
+        <p className="notice">{es ? "No se pudo actualizar." : "Update failed."}</p>
       )}
-      <section className="panel profile-media-manager">
-        <h2>{es ? "Fotos del perfil" : "Profile media"}</h2>
-        <p>
-          {es
-            ? "Sube JPG, PNG o WebP de hasta 10 MB. Se sincroniza con tu pagina de creador."
-            : "Upload a JPG, PNG or WebP up to 10 MB. It syncs with your creator page."}
-        </p>
-        <div className="two-col">
-          <form action={uploadProfileMedia} className="stack">
+
+      <section className="profile-media-simple" aria-labelledby="profile-photos-title">
+        <div className="profile-section-heading">
+          <div>
+            <span>{es ? "Tu imagen" : "Your look"}</span>
+            <h2 id="profile-photos-title">
+              {es ? "Fotos del perfil" : "Profile photos"}
+            </h2>
+          </div>
+          <p>
+            {es
+              ? "Elige una foto de perfil y una portada. Nada de enlaces raros ni tecnicismos."
+              : "Choose a profile photo and a cover. No weird links or technical fields."}
+          </p>
+        </div>
+
+        <div className="profile-upload-grid">
+          <form action={uploadProfileMedia} className="profile-upload-card">
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="kind" value="avatar" />
-            <label>
-              {es ? "Foto de perfil" : "Profile photo"}
+            <div>
+              <strong>{es ? "Foto de perfil" : "Profile photo"}</strong>
+              <small>
+                {profile?.avatar_url
+                  ? es
+                    ? "Foto configurada"
+                    : "Photo set"
+                  : es
+                    ? "Aún no tienes foto"
+                    : "No photo yet"}
+              </small>
+            </div>
+            <label className="profile-file-button">
               <input
+                className="profile-file-input"
                 name="file"
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
                 required
               />
+              <span>{es ? "Elegir foto" : "Choose photo"}</span>
             </label>
             <button className="button secondary" type="submit">
-              {es ? "Subir foto" : "Upload photo"}
+              {es ? "Guardar" : "Save"}
             </button>
           </form>
-          <form action={uploadProfileMedia} className="stack">
+
+          <form action={uploadProfileMedia} className="profile-upload-card">
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="kind" value="banner" />
-            <label>
-              {es ? "Imagen de portada" : "Profile banner"}
+            <div>
+              <strong>{es ? "Portada" : "Cover photo"}</strong>
+              <small>
+                {profile?.banner_url
+                  ? es
+                    ? "Portada configurada"
+                    : "Cover set"
+                  : es
+                    ? "Aún no tienes portada"
+                    : "No cover yet"}
+              </small>
+            </div>
+            <label className="profile-file-button">
               <input
+                className="profile-file-input"
                 name="file"
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
                 required
               />
+              <span>{es ? "Elegir portada" : "Choose cover"}</span>
             </label>
             <button className="button secondary" type="submit">
-              {es ? "Subir portada" : "Upload banner"}
+              {es ? "Guardar" : "Save"}
             </button>
           </form>
         </div>
       </section>
-      <form action={updateAccountProfile} className="panel stack focused-form">
+
+      <form action={updateAccountProfile} className="profile-simple-form">
         <input type="hidden" name="locale" value={locale} />
-        <label>
-          {es ? "Nombre visible" : "Display name"}
-          <input
-            name="displayName"
-            defaultValue={profile?.display_name || ""}
-            minLength={2}
-            maxLength={100}
-          />
-        </label>
-        <label>
-          {es ? "Usuario" : "Username"}
-          <input
-            name="username"
-            defaultValue={profile?.username || ""}
-            pattern="[A-Za-z0-9_]{3,30}"
-          />
-        </label>
-        <label>
-          {es ? "Biografia" : "Biography"}
-          <textarea
-            name="bio"
-            defaultValue={profile?.bio || ""}
-            maxLength={2000}
-          />
-        </label>
-        <div className="form-grid-two">
-          <label>
-            {es ? "Foto (URL HTTPS)" : "Photo (HTTPS URL)"}
-            <input
-              name="avatarUrl"
-              type="url"
-              defaultValue={profile?.avatar_url || ""}
+
+        <section className="profile-form-section">
+          <div className="profile-section-heading compact">
+            <div>
+              <span>{es ? "Lo básico" : "The basics"}</span>
+              <h2>{es ? "Así te verán" : "How people see you"}</h2>
+            </div>
+          </div>
+
+          <div className="profile-name-grid">
+            <label>
+              {es ? "Nombre visible" : "Display name"}
+              <input
+                name="displayName"
+                defaultValue={profile?.display_name || ""}
+                minLength={2}
+                maxLength={100}
+              />
+            </label>
+            <label>
+              {es ? "Usuario de AkiPasa" : "AkiPasa username"}
+              <div className="profile-prefixed-input">
+                <span>@</span>
+                <input
+                  name="username"
+                  defaultValue={profile?.username || ""}
+                  pattern="[A-Za-z0-9_]{3,30}"
+                  placeholder={es ? "tu_usuario" : "your_username"}
+                />
+              </div>
+            </label>
+          </div>
+
+          <label className="profile-bio-field">
+            <span>{es ? "Sobre ti" : "About you"}</span>
+            <textarea
+              name="bio"
+              defaultValue={profile?.bio || ""}
+              maxLength={300}
+              placeholder={
+                es
+                  ? "Cuéntale a la gente un poco sobre ti..."
+                  : "Tell people a little about yourself..."
+              }
             />
+            <small>{es ? "Máximo 300 caracteres." : "Up to 300 characters."}</small>
           </label>
-          <label>
-            {es ? "Banner (URL HTTPS)" : "Banner (HTTPS URL)"}
-            <input
-              name="bannerUrl"
-              type="url"
-              defaultValue={profile?.banner_url || ""}
-            />
-          </label>
-        </div>
-        <div className="form-grid-two">
-          <label>
-            {es ? "Email publico" : "Public email"}
-            <input
-              name="publicEmail"
-              type="email"
-              defaultValue={profile?.public_email || ""}
-            />
-          </label>
-          <label>
-            {es ? "Telefono" : "Phone"}
-            <input name="phone" defaultValue={profile?.phone || ""} />
-          </label>
-        </div>
-        <div className="form-grid-two">
-          <label>
-            Website
-            <input
-              name="websiteUrl"
-              type="url"
-              defaultValue={profile?.website_url || ""}
-            />
-          </label>
-          <label>
-            Instagram
-            <input
-              name="instagramUrl"
-              type="url"
-              defaultValue={profile?.instagram_url || ""}
-            />
-          </label>
-        </div>
-        <div className="form-grid-two">
-          <label>
-            {es ? "Zona" : "Area"}
-            <input name="locality" defaultValue={profile?.locality || ""} />
-          </label>
-          <label>
-            {es ? "Provincia" : "Province"}
-            <input name="province" defaultValue={profile?.province || ""} />
-          </label>
-        </div>
-        <div className="form-grid-two">
-          <label>
-            {es ? "Ano de nacimiento (opcional)" : "Birth year (optional)"}
-            <input
-              name="birthYear"
-              type="number"
-              min={1900}
-              max={new Date().getFullYear()}
-              defaultValue={profile?.birth_year || ""}
-            />
-          </label>
-          <label>
-            {es ? "Genero (opcional)" : "Gender (optional)"}
-            <input name="gender" defaultValue={profile?.gender || ""} />
-          </label>
-        </div>
-        <div className="form-grid-three">
-          <label>
-            {es ? "Perfil" : "Profile"}
-            <select
-              name="profileVisibility"
-              defaultValue={profile?.profile_visibility || "public"}
-            >
-              <option value="public">Public</option>
-              <option value="members">Members</option>
-              <option value="private">Private</option>
-            </select>
-          </label>
-          <label>
-            {es ? "Contacto" : "Contact"}
-            <select
-              name="contactVisibility"
-              defaultValue={profile?.contact_visibility || "private"}
-            >
-              <option value="public">Public</option>
-              <option value="members">Members</option>
-              <option value="private">Private</option>
-            </select>
-          </label>
-          <label>
-            {es ? "Eventos asistidos" : "Attended events"}
-            <select
-              name="attendanceVisibility"
-              defaultValue={profile?.attendance_visibility || "private"}
-            >
-              <option value="public">Public</option>
-              <option value="members">Members</option>
-              <option value="private">Private</option>
-            </select>
-          </label>
-        </div>
-        <label>
-          Email
-          <input value={user.email || ""} readOnly disabled />
-          <small>
+        </section>
+
+        <section className="profile-form-section">
+          <div className="profile-section-heading compact">
+            <div>
+              <span>{es ? "Contacto" : "Contact"}</span>
+              <h2>{es ? "Dónde encontrarte" : "Where to find you"}</h2>
+            </div>
+            <p>{es ? "Todo esto es opcional." : "Everything here is optional."}</p>
+          </div>
+
+          <div className="profile-form-grid">
+            <label>
+              {es ? "Email público" : "Public email"}
+              <input
+                name="publicEmail"
+                type="email"
+                defaultValue={profile?.public_email || ""}
+                placeholder="hola@ejemplo.com"
+              />
+            </label>
+            <label>
+              {es ? "Teléfono" : "Phone"}
+              <input name="phone" defaultValue={profile?.phone || ""} />
+            </label>
+            <label>
+              {es ? "Tu web" : "Your website"}
+              <div className="profile-link-field">
+                <input
+                  name="websiteUrl"
+                  defaultValue={profile?.website_url || ""}
+                  placeholder="tusitio.com"
+                  inputMode="url"
+                />
+                {profile?.website_url && (
+                  <a
+                    href={profile.website_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="profile-link-button"
+                  >
+                    {es ? "Abrir" : "Open"}
+                  </a>
+                )}
+              </div>
+            </label>
+            <label>
+              Instagram
+              <div className="profile-prefixed-input">
+                <span>@</span>
+                <input
+                  name="instagramHandle"
+                  defaultValue={instagramHandle}
+                  pattern="[A-Za-z0-9._]{1,30}"
+                  placeholder="tuusuario"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                />
+              </div>
+            </label>
+          </div>
+        </section>
+
+        <section className="profile-form-section">
+          <div className="profile-section-heading compact">
+            <div>
+              <span>{es ? "Ubicación" : "Location"}</span>
+              <h2>{es ? "Tu zona" : "Your area"}</h2>
+            </div>
+          </div>
+          <div className="profile-form-grid">
+            <label>
+              {es ? "Ciudad o zona" : "City or area"}
+              <input name="locality" defaultValue={profile?.locality || ""} />
+            </label>
+            <label>
+              {es ? "Provincia" : "Province"}
+              <input name="province" defaultValue={profile?.province || ""} />
+            </label>
+          </div>
+        </section>
+
+        <details className="profile-optional-section">
+          <summary>{es ? "Más sobre ti (opcional)" : "More about you (optional)"}</summary>
+          <div className="profile-form-grid">
+            <label>
+              {es ? "Año de nacimiento" : "Birth year"}
+              <input
+                name="birthYear"
+                type="number"
+                min={1900}
+                max={new Date().getFullYear()}
+                defaultValue={profile?.birth_year || ""}
+              />
+            </label>
+            <label>
+              {es ? "Género" : "Gender"}
+              <input name="gender" defaultValue={profile?.gender || ""} />
+            </label>
+          </div>
+        </details>
+
+        <details className="profile-optional-section">
+          <summary>{es ? "Privacidad del perfil" : "Profile privacy"}</summary>
+          <p className="profile-detail-help">
             {es
-              ? "El email se gestiona con tu método de acceso."
-              : "Email is managed by your sign-in method."}
-          </small>
-        </label>
-        <label>
-          {es ? "Idioma preferido" : "Preferred language"}
-          <select
-            name="preferredLocale"
-            defaultValue={profile?.preferred_locale || locale}
-          >
-            <option value="es">Español</option>
-            <option value="en">English</option>
-          </select>
-        </label>
-        <button className="button" type="submit">
-          {es ? "Guardar perfil" : "Save profile"}
-        </button>
+              ? "Controla quién puede ver tu perfil, tus datos de contacto y tus eventos."
+              : "Choose who can see your profile, contact details and attended events."}
+          </p>
+          <div className="profile-form-grid profile-privacy-grid">
+            <label>
+              {es ? "Perfil" : "Profile"}
+              <select
+                name="profileVisibility"
+                defaultValue={profile?.profile_visibility || "public"}
+              >
+                <option value="public">{es ? "Todo el mundo" : "Everyone"}</option>
+                <option value="members">{es ? "Usuarios de AkiPasa" : "AkiPasa users"}</option>
+                <option value="private">{es ? "Solo yo" : "Only me"}</option>
+              </select>
+            </label>
+            <label>
+              {es ? "Contacto" : "Contact"}
+              <select
+                name="contactVisibility"
+                defaultValue={profile?.contact_visibility || "private"}
+              >
+                <option value="public">{es ? "Todo el mundo" : "Everyone"}</option>
+                <option value="members">{es ? "Usuarios de AkiPasa" : "AkiPasa users"}</option>
+                <option value="private">{es ? "Solo yo" : "Only me"}</option>
+              </select>
+            </label>
+            <label>
+              {es ? "Eventos asistidos" : "Attended events"}
+              <select
+                name="attendanceVisibility"
+                defaultValue={profile?.attendance_visibility || "private"}
+              >
+                <option value="public">{es ? "Todo el mundo" : "Everyone"}</option>
+                <option value="members">{es ? "Usuarios de AkiPasa" : "AkiPasa users"}</option>
+                <option value="private">{es ? "Solo yo" : "Only me"}</option>
+              </select>
+            </label>
+          </div>
+        </details>
+
+        <div className="profile-save-row">
+          <label>
+            {es ? "Idioma" : "Language"}
+            <select
+              name="preferredLocale"
+              defaultValue={profile?.preferred_locale || locale}
+            >
+              <option value="es">Español</option>
+              <option value="en">English</option>
+            </select>
+          </label>
+          <button className="button profile-save-button" type="submit">
+            {es ? "Guardar cambios" : "Save changes"}
+          </button>
+        </div>
       </form>
     </div>
   );
