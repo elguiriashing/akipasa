@@ -93,6 +93,10 @@ export function PassportBook({
       document.removeEventListener("visibilitychange", refresh);
     };
   }, [router, signedIn]);
+  useEffect(() => {
+    document.body.classList.add("passport-immersive");
+    return () => document.body.classList.remove("passport-immersive");
+  }, []);
   const labels = es
     ? ["Pasaporte", "Ciudades", "Mi viaje", "Rutas", "Fidelidad", "Logros"]
     : ["Passport", "Cities", "My journey", "Routes", "Loyalty", "Achievements"];
@@ -721,36 +725,55 @@ export function PassportBook({
       </div>
       <div className={styles.motionControls}>
         <button
+          className={styles.motionButton}
           onClick={enableMotion}
           disabled={reduced || !shine}
           aria-pressed={motion}
+          aria-label={
+            motion
+              ? es
+                ? "Desactivar inclinación"
+                : "Disable tilt"
+              : es
+                ? "Activar inclinación"
+                : "Enable tilt"
+          }
+          title={
+            motion
+              ? es
+                ? "Desactivar inclinación"
+                : "Disable tilt"
+              : es
+                ? "Activar inclinación"
+                : "Enable tilt"
+          }
         >
-          {motion
-            ? es
-              ? "Desactivar inclinación"
-              : "Disable tilt"
-            : es
-              ? "Activar inclinación"
-              : "Enable tilt"}
+          <span aria-hidden="true">◌</span>
         </button>
         {motion && (
           <button
+            className={styles.motionButton}
             onClick={() => {
               origin.current = latest.current;
               target.current = { x: 0, y: 0 };
             }}
+            aria-label={es ? "Centrar inclinación" : "Recenter tilt"}
+            title={es ? "Centrar inclinación" : "Recenter tilt"}
           >
-            {es ? "Centrar" : "Recenter"}
+            <span aria-hidden="true">⌁</span>
           </button>
         )}
         <button
+          className={styles.motionButton}
           onClick={() => {
             setShine(!shine);
             setMotion(false);
           }}
           aria-pressed={shine}
+          aria-label={es ? "Brillo holográfico" : "Holographic foil"}
+          title={es ? "Brillo holográfico" : "Holographic foil"}
         >
-          {es ? "Brillo" : "Foil"}: {shine ? "ON" : "OFF"}
+          <span aria-hidden="true">✦</span>
         </button>
         <p role="status">
           {status ||
