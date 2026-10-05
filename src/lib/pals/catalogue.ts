@@ -97,15 +97,56 @@ export function itemPurchasable(item: CosmeticItem) {
 }
 
 export function validateCatalogue(catalogue: Catalogue) {
-  const ids = new Set<string>();
-  for (const item of catalogue.items) {
-    if (ids.has(item.id)) throw new Error(`Duplicate cosmetic item: ${item.id}`);
-    ids.add(item.id);
-    if (item.prestigious && item.price) throw new Error(`Prestigious item cannot be sold: ${item.id}`);
+  const itemIds = new Set<string>();
+  const collectionIds = new Set<string>();
+  const brandIds = new Set<string>();
+  const campaignIds = new Set<string>();
+
+  for (const brand of catalogue.brands) {
+    if (brandIds.has(brand.id)) throw new Error(`Duplicate brand: ${brand.id}`);
+    brandIds.add(brand.id);
   }
-  const collectionIds = new Set(catalogue.collections.map((c) => c.id));
-  for (const item of catalogue.items)
+  for (const campaign of catalogue.campaigns) {
+    if (campaignIds.has(campaign.id)) throw new Error(`Duplicate campaign: ${campaign.id}`);
+    campaignIds.add(campaign.id);
+  }
+  for (const collection of catalogue.collections) {
+    if (collectionIds.has(collection.id))
+      throw new Error(`Duplicate collection: ${collection.id}`);
+    collectionIds.add(collection.id);
+  }
+  for (const item of catalogue.items) {
+    if (itemIds.has(item.id)) throw new Error(`Duplicate cosmetic item: ${item.id}`);
+    itemIds.add(item.id);
+    if (item.prestigious && item.price)
+      throw new Error(`Prestigious item cannot be sold: ${item.id}`);
+  }
+
+  for (const campaign of catalogue.campaigns) {
+    if (campaign.brandId && !brandIds.has(campaign.brandId))
+      throw new Error(`Unknown brand ${campaign.brandId} for campaign ${campaign.id}`);
+    for (const collectionId of campaign.collectionIds)
+      if (!collectionIds.has(collectionId))
+        throw new Error(`Unknown collection ${collectionId} for campaign ${campaign.id}`);
+  }
+
+  for (const collection of catalogue.collections) {
+    if (collection.brandId && !brandIds.has(collection.brandId))
+      throw new Error(`Unknown brand ${collection.brandId} for collection ${collection.id}`);
+    if (collection.campaignId && !campaignIds.has(collection.campaignId))
+      throw new Error(`Unknown campaign ${collection.campaignId} for collection ${collection.id}`);
+    for (const itemId of collection.itemIds)
+      if (!itemIds.has(itemId))
+        throw new Error(`Unknown item ${itemId} in collection ${collection.id}`);
+  }
+
+  for (const item of catalogue.items) {
     if (!collectionIds.has(item.collectionId))
       throw new Error(`Unknown collection ${item.collectionId} for ${item.id}`);
+    if (item.brandId && !brandIds.has(item.brandId))
+      throw new Error(`Unknown brand ${item.brandId} for ${item.id}`);
+    if (item.campaignId && !campaignIds.has(item.campaignId))
+      throw new Error(`Unknown campaign ${item.campaignId} for ${item.id}`);
+  }
   return true;
 }
