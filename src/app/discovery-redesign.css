@@ -108,6 +108,26 @@
 .global-search-panel .address-autocomplete {
   min-width: 0;
 }
+.global-search-panel .location-input-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.global-search-panel .location-input-control > svg {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 0.85rem;
+  width: 1rem;
+  height: 1rem;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+.global-search-panel .location-input-control > input {
+  width: 100%;
+  padding-left: 2.55rem !important;
+}
 .global-search-panel .address-status {
   display: block;
   margin-top: 0.1rem;
