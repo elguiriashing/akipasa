@@ -96,7 +96,9 @@ export function MapResultsDrawer({
         <div className="map-drawer-content">
           <header>
             <div>
-              <h2 id="map-drawer-title">{es ? "Cerca de aquí" : "Nearby here"}</h2>
+              <h2 id="map-drawer-title">
+                {es ? "Cerca de aquí" : "Nearby here"}
+              </h2>
               <p>{locality}</p>
             </div>
             <button
