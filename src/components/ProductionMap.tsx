@@ -605,11 +605,24 @@ export function ProductionMap({
               }
             }
           };
+          const publishMapCenter = () => {
+            const current = map.getCenter();
+            window.dispatchEvent(
+              new CustomEvent("akipasa:map-center", {
+                detail: {
+                  latitude: current.lat,
+                  longitude: current.lng,
+                },
+              }),
+            );
+          };
           const scheduleLoad = () => {
+            publishMapCenter();
             clearTimeout(timer);
             timer = setTimeout(() => void loadVenues(), 180);
           };
           map.on("moveend", scheduleLoad);
+          publishMapCenter();
           void loadVenues();
           for (const layer of ["discovery-clusters", "discovery-unclustered"]) {
             map.on("mouseenter", layer, () => {
