@@ -12766,3 +12766,293 @@ body:has(#passport-privacy-controls) > .privacy-preferences {
     display: none !important;
   }
 }
+
+
+/* Account profile: consumer-first, simple and non-technical. */
+.account-profile-page {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.account-profile-page .profile-media-simple,
+.account-profile-page .profile-simple-form {
+  width: min(100%, 58rem);
+}
+
+.account-profile-page .profile-media-simple,
+.account-profile-page .profile-form-section,
+.account-profile-page .profile-optional-section,
+.account-profile-page .profile-save-row {
+  padding: 1.15rem;
+  border: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+  border-radius: 1.1rem;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+}
+
+.account-profile-page .profile-simple-form {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.account-profile-page .profile-section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.account-profile-page .profile-section-heading.compact {
+  margin-bottom: 0.8rem;
+}
+
+.account-profile-page .profile-section-heading span {
+  color: var(--primary-text, var(--primary));
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.account-profile-page .profile-section-heading h2 {
+  margin: 0.15rem 0 0;
+  font-size: clamp(1.1rem, 2vw, 1.45rem);
+}
+
+.account-profile-page .profile-section-heading p {
+  max-width: 30rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.account-profile-page .profile-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.account-profile-page .profile-upload-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 0.85rem;
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, var(--surface-alt) 72%, transparent);
+}
+
+.account-profile-page .profile-upload-card > div {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.account-profile-page .profile-upload-card small {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.account-profile-page .profile-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.account-profile-page .profile-file-button,
+.account-profile-page .profile-link-button {
+  display: inline-flex;
+  min-height: 2.7rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--primary) 35%, var(--line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.account-profile-page .profile-upload-card .button {
+  min-height: 2.7rem;
+  padding: 0.65rem 0.9rem;
+}
+
+.account-profile-page .profile-name-grid,
+.account-profile-page .profile-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.account-profile-page :where(.profile-name-grid, .profile-form-grid) label,
+.account-profile-page .profile-bio-field,
+.account-profile-page .profile-save-row label {
+  display: grid;
+  gap: 0.38rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 760;
+}
+
+.account-profile-page .profile-bio-field {
+  margin-top: 0.75rem;
+}
+
+.account-profile-page .profile-bio-field textarea {
+  min-height: 8.5rem;
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.account-profile-page .profile-bio-field small,
+.account-profile-page .profile-detail-help {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.account-profile-page .profile-prefixed-input,
+.account-profile-page .profile-link-field {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  border: 1px solid transparent;
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, var(--surface-alt) 68%, var(--surface));
+}
+
+.account-profile-page .profile-prefixed-input:focus-within,
+.account-profile-page .profile-link-field:focus-within {
+  border-color: color-mix(in srgb, var(--primary) 65%, var(--line));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 14%, transparent);
+}
+
+.account-profile-page .profile-prefixed-input > span {
+  flex: 0 0 auto;
+  padding-left: 0.9rem;
+  color: var(--muted);
+  font-weight: 850;
+}
+
+.account-profile-page .profile-prefixed-input input,
+.account-profile-page .profile-link-field input {
+  min-width: 0;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.account-profile-page .profile-link-field .profile-link-button {
+  flex: 0 0 auto;
+  min-height: 2.35rem;
+  margin-right: 0.35rem;
+  padding: 0.45rem 0.8rem;
+}
+
+.account-profile-page .profile-optional-section {
+  padding-block: 0.2rem;
+}
+
+.account-profile-page .profile-optional-section > summary {
+  min-height: 3.3rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--ink);
+  font-weight: 850;
+  list-style: none;
+}
+
+.account-profile-page .profile-optional-section > summary::-webkit-details-marker {
+  display: none;
+}
+
+.account-profile-page .profile-optional-section > summary::after {
+  content: "+";
+  margin-left: auto;
+  color: var(--primary-text, var(--primary));
+  font-size: 1.2rem;
+}
+
+.account-profile-page .profile-optional-section[open] > summary::after {
+  content: "−";
+}
+
+.account-profile-page .profile-optional-section[open] {
+  padding-bottom: 1rem;
+}
+
+.account-profile-page .profile-optional-section .profile-form-grid {
+  margin-top: 0.65rem;
+}
+
+.account-profile-page .profile-detail-help {
+  margin: 0 0 0.7rem;
+}
+
+.account-profile-page .profile-save-row {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.account-profile-page .profile-save-row label {
+  width: min(14rem, 100%);
+}
+
+.account-profile-page .profile-save-button {
+  min-width: 10rem;
+}
+
+@media (max-width: 850px) {
+  .account-profile-page .profile-media-simple,
+  .account-profile-page .profile-simple-form {
+    width: 100%;
+  }
+
+  .account-profile-page .profile-upload-grid,
+  .account-profile-page .profile-name-grid,
+  .account-profile-page .profile-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .account-profile-page .profile-upload-card {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .account-profile-page .profile-upload-card .button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .account-profile-page .profile-section-heading,
+  .account-profile-page .profile-save-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .account-profile-page .profile-save-row label,
+  .account-profile-page .profile-save-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .account-profile-page .profile-upload-card {
+    grid-template-columns: 1fr;
+  }
+
+  .account-profile-page .profile-file-button,
+  .account-profile-page .profile-upload-card .button {
+    width: 100%;
+  }
+}
