@@ -2181,3 +2181,54 @@
     margin-top: 12px;
   }
 }
+
+
+/* Compact mobile chapter shortcuts — 2026-10-05 */
+@media (max-width: 700px) {
+  .index > p {
+    margin-bottom: 10px;
+  }
+
+  .chapterList {
+    display: flex;
+    gap: 6px;
+    margin: 10px 0 16px;
+    overflow-x: auto;
+    padding: 0 0 2px;
+    scrollbar-width: none;
+  }
+
+  .chapterList::-webkit-scrollbar {
+    display: none;
+  }
+
+  .chapterList button {
+    flex: 1 0 auto;
+    min-width: max-content;
+    min-height: 38px;
+    padding: 8px 10px;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border-radius: 999px;
+    font-size: 10px;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .chapterList button span {
+    display: inline;
+  }
+
+  .chapterList b {
+    font-size: 8px;
+    line-height: 1;
+    opacity: 0.72;
+  }
+
+  .search {
+    margin-top: 14px;
+  }
+}
