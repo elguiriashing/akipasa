@@ -3,7 +3,8 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Locale } from "@/lib/config";
-import { compactMarkerSchema, mapVenueDetailSchema, type CompactMapMarker } from "@/lib/map-snapshot";
+import { mapVenueDetailSchema } from "@/lib/map-snapshot";
+import { MapTileLoader } from "@/lib/map-tiles";
 import { applyMapTheme, readMapTheme } from "@/lib/map-theme";
 import { Icon } from "@/components/Icons";
 
@@ -36,6 +37,7 @@ export function ClaimVenuePicker({
   const [loading, setLoading] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [mapMessage, setMapMessage] = useState<string | null>(null);
+  const tileLoaderRef = useRef(new MapTileLoader());
 
   useEffect(() => {
     if (!initialVenueId) return;
@@ -211,35 +213,22 @@ export function ClaimVenuePicker({
 
         async function refresh() {
           const bounds = map.getBounds();
-          const params = new URLSearchParams({
-            west: String(bounds.getWest()),
-            east: String(bounds.getEast()),
-            south: String(bounds.getSouth()),
-            north: String(bounds.getNorth()),
-          });
+          const request = new AbortController();
           try {
-            const response = await fetch(`/api/map/venues?${params}`);
-            if (!response.ok) throw new Error("map venues failed");
-            const payload = await response.json();
-            const raw = Array.isArray(payload)
-              ? payload
-              : Array.isArray(payload?.markers)
-                ? payload.markers
-                : [];
-            const markers = (raw as unknown[]).reduce<CompactMapMarker[]>(
-              (items, value) => {
-              const parsed = compactMarkerSchema.safeParse(value);
-              if (
-                parsed.success &&
-                parsed.data[3] === 1 &&
-                parsed.data[4] === 0
-              ) {
-                items.push(parsed.data);
-              }
-                return items;
+            const result = await tileLoaderRef.current.load(
+              {
+                west: bounds.getWest(),
+                east: bounds.getEast(),
+                south: bounds.getSouth(),
+                north: bounds.getNorth(),
               },
-              [],
+              map.getZoom(),
+              request.signal,
+              fetch,
             );
+            const markers = tileLoaderRef.current
+              .values()
+              .filter((marker) => marker[3] === 1 && marker[4] === 0);
             const source = map.getSource(
               "claimable-venues",
             ) as import("maplibre-gl").GeoJSONSource;
@@ -254,7 +243,13 @@ export function ClaimVenuePicker({
                 properties: { id },
               })),
             });
-            setMapMessage(null);
+            setMapMessage(
+              result.failed && markers.length === 0
+                ? es
+                  ? "No se pudieron cargar los locales de esta zona."
+                  : "Could not load venues in this area."
+                : null,
+            );
           } catch {
             setMapMessage(
               es

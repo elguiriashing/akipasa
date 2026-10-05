@@ -7,6 +7,7 @@ import { OwnerToolboxLauncher } from "@/components/owner/OwnerToolboxLauncher";
 import { SupportAgentLauncher } from "@/components/support/SupportAgentLauncher";
 import { optionalUser } from "@/lib/auth";
 import { config, isLocale } from "@/lib/config";
+import { signOut } from "@/app/[locale]/auth/actions";
 import {
   defaultOwnerPreferences,
   type OwnerPreferences,
@@ -89,6 +90,14 @@ export default async function LocaleLayout({
               <a href={config.crmUrl}>
                 AkiHQ
               </a>
+              {user && (
+                <form action={signOut} className="akibusiness-logout-form">
+                  <input type="hidden" name="locale" value={locale} />
+                  <button type="submit">
+                    {locale === "es" ? "Cerrar sesión" : "Log out"}
+                  </button>
+                </form>
+              )}
             </nav>
           </header>
           <div className="akibusiness-content">{children}</div>
