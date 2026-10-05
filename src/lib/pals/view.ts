@@ -11,6 +11,7 @@ import {
 import { itemSvg, palSvg, statePortrait } from "./art";
 import { legacyCatalogue } from "./catalogue-legacy";
 import { renderSnapshotFromState } from "./render-snapshot";
+import { legacyWardrobeEntitlements } from "./entitlements";
 
 export function payload(
   state: State,
@@ -28,6 +29,12 @@ export function payload(
       parcels: parcels(state, now),
       portrait: statePortrait(state),
       renderSnapshot: renderSnapshotFromState(state),
+      entitlements:
+        state.entitlements ??
+        legacyWardrobeEntitlements(
+          state.wardrobe,
+          new Date(state.updatedAt || now).toISOString(),
+        ),
     },
     ...(includeCatalogue
       ? {
