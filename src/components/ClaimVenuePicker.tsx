@@ -295,7 +295,7 @@ export function ClaimVenuePicker({
             });
             if (!response.ok) throw new Error("claim map failed");
             const payload = (await response.json()) as {
-              rows?: Array<{ id: string; longitude: number; latitude: number }>;
+              rows?: ClaimVenue[];
             };
             const rows = payload.rows || [];
             setVisibleCount(rows.length);
@@ -304,14 +304,22 @@ export function ClaimVenuePicker({
             ) as import("maplibre-gl").GeoJSONSource;
             source.setData({
               type: "FeatureCollection",
-              features: rows.map(({ id, longitude, latitude }) => ({
-                type: "Feature",
-                geometry: {
-                  type: "Point",
-                  coordinates: [longitude, latitude],
-                },
-                properties: { id },
-              })),
+              features: rows.map(
+                ({ id, slug, name, address, locality, longitude, latitude }) => ({
+                  type: "Feature",
+                  geometry: {
+                    type: "Point",
+                    coordinates: [longitude, latitude],
+                  },
+                  properties: {
+                    id,
+                    slug,
+                    name,
+                    address: address || "",
+                    locality: locality || "",
+                  },
+                }),
+              ),
             });
             setMapMessage(null);
           } catch {
@@ -342,27 +350,23 @@ export function ClaimVenuePicker({
           map.easeTo({ center: coords, zoom });
         });
 
-        map.on("click", "claimable-pins", async (event) => {
-          const id = String(event.features?.[0]?.properties?.id || "");
-          if (!id) return;
-          try {
-            const response = await fetch(`/api/map/venue/${id}`);
-            if (!response.ok) throw new Error("venue failed");
-            const detail = mapVenueDetailSchema.parse(await response.json());
-            if (detail.claimStatus !== "unclaimed") return;
-            const geometry = event.features?.[0]?.geometry;
-            if (!geometry || geometry.type !== "Point") return;
-            const coords = geometry.coordinates as [number, number];
-            const venue: ClaimVenue = {
-              id: detail.id,
-              slug: detail.slug,
-              name: detail.name,
-              address: detail.address,
-              latitude: coords[1],
-              longitude: coords[0],
-            };
-            previewVenue(venue);
-          } catch {}
+        map.on("click", "claimable-pins", (event) => {
+          const feature = event.features?.[0];
+          const geometry = feature?.geometry;
+          const properties = feature?.properties;
+          if (!feature || !properties || !geometry || geometry.type !== "Point") return;
+          const coords = geometry.coordinates as [number, number];
+          const venue: ClaimVenue = {
+            id: String(properties.id || ""),
+            slug: String(properties.slug || ""),
+            name: String(properties.name || ""),
+            address: properties.address ? String(properties.address) : null,
+            locality: properties.locality ? String(properties.locality) : null,
+            latitude: coords[1],
+            longitude: coords[0],
+          };
+          if (!venue.id || !venue.name) return;
+          previewVenue(venue);
         });
 
         map.on("mouseenter", "claimable-pins", () => {
