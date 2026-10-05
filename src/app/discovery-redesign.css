@@ -92,6 +92,25 @@
 }
 .global-search-panel .location-filter-field {
   grid-column: 1 / -1;
+  display: grid;
+  align-self: stretch;
+  gap: 0.55rem;
+}
+.global-search-panel .location-filter-field > .location-helper {
+  position: static !important;
+  inset: auto !important;
+  width: auto !important;
+  max-width: none !important;
+  height: auto !important;
+  margin: 0;
+  pointer-events: auto;
+}
+.global-search-panel .address-autocomplete {
+  min-width: 0;
+}
+.global-search-panel .address-status {
+  display: block;
+  margin-top: 0.1rem;
 }
 .global-search-panel .field {
   min-width: 0;
