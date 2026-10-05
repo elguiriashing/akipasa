@@ -2155,3 +2155,29 @@
     padding-right: 108px;
   }
 }
+
+
+.indexIntroMobile {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .indexIntroDesktop {
+    display: none;
+  }
+
+  .indexIntroMobile {
+    display: block;
+    margin: 0 0 12px;
+  }
+
+  /* These destinations already live in the Passport burger menu on phones.
+     Don't waste half a screen repeating the same four actions. */
+  .index .chapterList {
+    display: none;
+  }
+
+  .index .search {
+    margin-top: 12px;
+  }
+}
