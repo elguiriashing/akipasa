@@ -19,8 +19,10 @@ this restriction does not make committed source confidential.
 
 - Ten original character families, with interchangeable equipment and an
   official master-outfit gallery. Family changes are free in the preview.
-- Forty-one designs: thirty-two starter/shop designs, three achievement
-  trophies and six original city jackets. No licensed kits or club crests.
+- Sixty-one current legacy-compatible designs, including expanded family signature
+  drops, three achievement trophies and six original city jackets. The new
+  catalogue-v2 adapter exposes them as collection-aware cosmetic items. No
+  licensed kits or club crests.
 - Head/body/back/held equipment, levels 1–10, one to three sockets, +2 attribute
   modules and a six-active-module loadout cap. Appearance changes are separate
   from equipment stats. Scrapping and merging preserve collected appearances
@@ -29,13 +31,13 @@ this restriction does not make committed source confidential.
   Threads, 15 Scrap, a module and equipment. All parcel designs are equally
   likely. Socket probabilities are 51% one, 34% two and 15% three. Inventory
   overflow preserves the appearance and converts the equipment to 16 Scrap.
-- Three three-scene adventures with visible requirements, loadout snapshots,
+- Ten three-scene adventures with visible requirements, loadout snapshots,
   fallback results and bonus approaches. Rewards are once per story per UTC
   day, with free practice replays. Basic equipment can complete every story.
-- Verified achievement synchronization: one/five/ten unlocked-achievement
-  trophies and city-scoped achievements for Fuengirola, Málaga, Marbella,
-  Granada, Sevilla and Madrid. This is not yet the full per-category city
-  milestone ladder proposed in the concept.
+- Verified achievement synchronization now resolves through the universal
+  AkiPals reward-rule engine: one/five/ten unlocked-achievement trophies and
+  city-scoped rewards for Fuengirola, Málaga, Marbella, Granada, Sevilla and
+  Madrid. Passport/event/campaign rules use the same condition/reward model.
 - An opt-in own-account map companion, account saves, export snapshots,
   keyboard-accessible dialogs and reduced-motion support.
 
@@ -74,10 +76,12 @@ human acceptance after deployment.
 
 ## Database changes
 
-Applied migrations:
+Applied/repository migrations:
 
 - `20261003213755_akipals_restricted_preview.sql`
 - `20261003220529_akipals_command_rate_index.sql`
+- `20261005123000_akipals_product_foundations.sql` (additive catalogue,
+  collection, campaign, entitlement, reward-rule and analytics foundation)
 
 The three new tables have RLS enabled. Authenticated users may read only their
 own invitation and save, and cannot write state or execute `pals_commit`.
@@ -109,6 +113,7 @@ increment, duplicate-command replay and stale-version rejection; all test
 writes were rolled back. Repository-wide checks and the Cloudflare build are
 separate release gates, not implied by the isolated tests.
 
-The application is an English-language private preview. Additional chapters,
-full localisation, category-specific city milestones, licensed collaborations,
-real-money commerce and public social features are not enabled.
+The application is an English-language private preview. The product-foundation
+architecture is documented in `docs/akipals-product-architecture.md`. Full
+localisation, licensed collaborations, real-money commerce and public social
+features are not enabled.
