@@ -11,7 +11,7 @@ export async function GET(
   const { locale } = await params;
   const safeLocale = isLocale(locale) ? locale : "es";
   const url = new URL(request.url);
-  const publicOrigin = publicRequestOrigin(request.headers, publicOrigin);
+  const publicOrigin = publicRequestOrigin(request.headers, url.origin);
   const code = url.searchParams.get("code");
   const requested = url.searchParams.get("next");
   const next = requested?.startsWith(`/${safeLocale}/`)
