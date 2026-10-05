@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { config, isLocale } from "@/lib/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { publicRequestOrigin } from "@/lib/public-request-origin";
 
 export async function GET(
   request: Request,
@@ -10,6 +11,7 @@ export async function GET(
   const { locale } = await params;
   const safeLocale = isLocale(locale) ? locale : "es";
   const url = new URL(request.url);
+  const publicOrigin = publicRequestOrigin(request.headers, publicOrigin);
   const code = url.searchParams.get("code");
   const requested = url.searchParams.get("next");
   const next = requested?.startsWith(`/${safeLocale}/`)
@@ -37,15 +39,15 @@ export async function GET(
           );
           if (acceptanceError)
             return NextResponse.redirect(
-              new URL(`/${safeLocale}/auth?error=terms`, url.origin),
+              new URL(`/${safeLocale}/auth?error=terms`, publicOrigin),
             );
         }
         cookieStore.delete("akipasa_terms_ack");
       }
-      return NextResponse.redirect(new URL(next, url.origin));
+      return NextResponse.redirect(new URL(next, publicOrigin));
     }
   }
   return NextResponse.redirect(
-    new URL(`/${safeLocale}/auth?error=callback`, url.origin),
+    new URL(`/${safeLocale}/auth?error=callback`, publicOrigin),
   );
 }
