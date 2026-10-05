@@ -84,6 +84,37 @@ export function ClaimVenuePicker({
     };
   }, [query]);
 
+  const chooseVenue = useCallback((venue: ClaimVenue) => {
+    setSelected(venue);
+    setQuery(venue.name);
+    setRows([]);
+    const map = mapRef.current;
+    if (!map) return;
+    map.easeTo({
+      center: [venue.longitude, venue.latitude],
+      zoom: Math.max(map.getZoom(), 14),
+    });
+    void import("maplibre-gl").then((maplibregl) => {
+      popupRef.current?.remove();
+      const node = document.createElement("div");
+      node.className = "claim-map-popup";
+      const strong = document.createElement("strong");
+      strong.textContent = venue.name;
+      const small = document.createElement("span");
+      small.textContent =
+        venue.address || venue.locality || (es ? "Local seleccionado" : "Selected venue");
+      node.append(strong, small);
+      popupRef.current = new maplibregl.Popup({
+        offset: 14,
+        closeButton: false,
+        maxWidth: "260px",
+      })
+        .setLngLat([venue.longitude, venue.latitude])
+        .setDOMContent(node)
+        .addTo(map);
+    });
+  }, [es]);
+
   useEffect(() => {
     if (!mapRoot.current || !styleUrl) return;
     let disposed = false;
@@ -195,10 +226,19 @@ export function ClaimVenuePicker({
               : Array.isArray(payload?.markers)
                 ? payload.markers
                 : [];
-            const markers = raw
-              .map((value: unknown) => compactMarkerSchema.safeParse(value))
-              .flatMap((result) => (result.success ? [result.data] : []))
-              .filter((marker) => marker[3] === 1 && marker[4] === 0);
+            const markers = raw.reduce<
+              Array<ReturnType<typeof compactMarkerSchema.parse>>
+            >((items, value: unknown) => {
+              const parsed = compactMarkerSchema.safeParse(value);
+              if (
+                parsed.success &&
+                parsed.data[3] === 1 &&
+                parsed.data[4] === 0
+              ) {
+                items.push(parsed.data);
+              }
+              return items;
+            }, []);
             const source = map.getSource(
               "claimable-venues",
             ) as import("maplibre-gl").GeoJSONSource;
@@ -285,37 +325,6 @@ export function ClaimVenuePicker({
       cleanup();
     };
   }, [chooseVenue, es, styleUrl]);
-
-  const chooseVenue = useCallback((venue: ClaimVenue) => {
-    setSelected(venue);
-    setQuery(venue.name);
-    setRows([]);
-    const map = mapRef.current;
-    if (!map) return;
-    map.easeTo({
-      center: [venue.longitude, venue.latitude],
-      zoom: Math.max(map.getZoom(), 14),
-    });
-    void import("maplibre-gl").then((maplibregl) => {
-      popupRef.current?.remove();
-      const node = document.createElement("div");
-      node.className = "claim-map-popup";
-      const strong = document.createElement("strong");
-      strong.textContent = venue.name;
-      const small = document.createElement("span");
-      small.textContent =
-        venue.address || venue.locality || (es ? "Local seleccionado" : "Selected venue");
-      node.append(strong, small);
-      popupRef.current = new maplibregl.Popup({
-        offset: 14,
-        closeButton: false,
-        maxWidth: "260px",
-      })
-        .setLngLat([venue.longitude, venue.latitude])
-        .setDOMContent(node)
-        .addTo(map);
-    });
-  }, [es]);
 
   function chooseSearchResult(venue: ClaimVenue) {
     chooseVenue(venue);
