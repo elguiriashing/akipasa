@@ -148,6 +148,20 @@ export function ClaimVenuePicker({
         renderWorldCopies: false,
       });
       mapRef.current = map;
+
+      // This map lives inside a responsive split panel. During hydration the
+      // panel can briefly report a zero/old size, leaving MapLibre with a
+      // zero-sized canvas even though data loads successfully. Keep the map
+      // synced to the actual container dimensions.
+      const resizeMap = () => {
+        if (!disposed) map.resize();
+      };
+      const resizeObserver = new ResizeObserver(() => resizeMap());
+      resizeObserver.observe(mapRoot.current);
+      requestAnimationFrame(resizeMap);
+      window.setTimeout(resizeMap, 80);
+      window.setTimeout(resizeMap, 350);
+
       map.addControl(
         new maplibregl.NavigationControl({ showCompass: false }),
         "top-right",
@@ -161,6 +175,7 @@ export function ClaimVenuePicker({
       );
 
       map.on("load", () => {
+        resizeMap();
         setMapReady(true);
 
         map.addSource("claimable-venues", {
@@ -307,6 +322,7 @@ export function ClaimVenuePicker({
       });
 
       cleanup = () => {
+        resizeObserver.disconnect();
         popupRef.current?.remove();
         map.remove();
         mapRef.current = null;
