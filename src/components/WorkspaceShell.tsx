@@ -177,11 +177,25 @@ export function WorkspaceShell({
     const active = navigation?.querySelector<HTMLElement>(
       '[aria-current="page"]',
     );
-    if (typeof active?.scrollIntoView === "function") {
-      active.scrollIntoView({
+    if (!navigation || !active) return;
+
+    // Keep route changes from scrolling the page itself. scrollIntoView() can
+    // move ancestor scrollers as well as this horizontal nav, which made the
+    // desktop account bar appear to vanish on later items such as Profile.
+    const navRect = navigation.getBoundingClientRect();
+    const activeRect = active.getBoundingClientRect();
+    const leftOverflow = activeRect.left - navRect.left;
+    const rightOverflow = activeRect.right - navRect.right;
+
+    if (leftOverflow < 0) {
+      navigation.scrollTo({
+        left: Math.max(0, navigation.scrollLeft + leftOverflow - 12),
         behavior: "smooth",
-        block: "nearest",
-        inline: "nearest",
+      });
+    } else if (rightOverflow > 0) {
+      navigation.scrollTo({
+        left: navigation.scrollLeft + rightOverflow + 12,
+        behavior: "smooth",
       });
     }
   }, [pathname, searchParams]);
