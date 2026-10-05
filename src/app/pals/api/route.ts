@@ -319,7 +319,7 @@ export async function POST(request: Request) {
           adventureId,
         });
     }
-    void recordPalsAnalytics(access.user.id, analytics);
+    await recordPalsAnalytics(access.user.id, analytics);
     return json(payload(committed.state, committed.version));
   } catch {
     return json(
