@@ -197,6 +197,8 @@ export function ProductionMap({
   const stayType = stayFilters?.type;
   const stayQuery = stayFilters?.q;
   const container = useRef<HTMLDivElement>(null);
+  const initialCenterRef = useRef(center);
+  const initialPointsRef = useRef(points);
   const [venueStatus, setVenueStatus] = useState<"loading" | "ready" | "error">(
     "loading",
   );
@@ -217,13 +219,15 @@ export function ProductionMap({
       surface: "map",
       entityType: "feed",
       entityId: crypto.randomUUID(),
-      metadata: { result_count: points.length },
+      metadata: { result_count: initialPointsRef.current.length },
     });
     if (!container.current || !styleUrl) return;
     setMapUnavailable(false);
     let disposed = false;
-    let visiblePoints = points;
-    let pointIndex = new Map(points.map((point) => [point.id, point]));
+    const initialPoints = initialPointsRef.current;
+    const initialCenter = initialCenterRef.current;
+    let visiblePoints = initialPoints;
+    let pointIndex = new Map(initialPoints.map((point) => [point.id, point]));
     const details = new Map<string, MapVenueDetail>();
     let activePopup: import("maplibre-gl").Popup | undefined;
     let activePopupId: string | undefined;
@@ -239,7 +243,7 @@ export function ProductionMap({
         const map = new maplibregl.Map({
           container: container.current,
           style: styleUrl,
-          center: [center.longitude, center.latitude],
+          center: [initialCenter.longitude, initialCenter.latitude],
           zoom: 10.5,
           attributionControl: false,
           maxPitch: 48,
@@ -302,7 +306,7 @@ export function ProductionMap({
             type: "geojson",
             data: {
               type: "FeatureCollection",
-              features: points.map((point) => ({
+              features: initialPoints.map((point) => ({
                 type: "Feature",
                 geometry: {
                   type: "Point",
@@ -496,7 +500,7 @@ export function ProductionMap({
                 (!venueIdsRef.current || venueIdsRef.current.has(marker[0])),
             );
             visiblePoints = [
-              ...(verticalRef.current === "activities" ? points : []),
+              ...(verticalRef.current === "activities" ? initialPoints : []),
               ...markers.map((marker) => {
                 const [id, longitude, latitude] = marker;
                 return {
@@ -652,10 +656,7 @@ export function ProductionMap({
       cleanup();
     };
   }, [
-    center.latitude,
-    center.longitude,
     locale,
-    points,
     styleUrl,
     fullScreen,
     venueDestination,
