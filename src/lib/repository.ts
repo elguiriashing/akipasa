@@ -239,9 +239,6 @@ function eventFromRow(row: DbRecord, now = new Date()): Event | null {
               : undefined,
           }
         : undefined,
-    directionsAddress: row.directions_address
-      ? String(row.directions_address)
-      : undefined,
     sponsored:
       Boolean(row.sponsored) ||
       (Array.isArray(row.feature_slots) &&
