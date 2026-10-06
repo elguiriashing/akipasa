@@ -22,7 +22,14 @@ export type AllergenState =
   | "may_contain"
   | "not_in_recipe";
 
-export type CatalogueText = { es: string; en: string };
+export type CatalogueText = {
+  es: string;
+  en: string;
+  _translation?: {
+    sourceLocale: "es" | "en";
+    sourceHash: string;
+  };
+};
 export type CatalogueLayout =
   | "menu"
   | "cards"
