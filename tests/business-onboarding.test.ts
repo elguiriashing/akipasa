@@ -43,9 +43,11 @@ describe("business onboarding", () => {
     }
     expect(businessActions).toContain("translateLocalizedFields");
     expect(venueActions).toContain("translateLocalizedFields");
-    expect(translation).toContain("source_language");
-    expect(translation).toContain("target_language");
-    expect(translation).toContain("Preserve proper nouns");
+    expect(translation).toContain("AKIPASA_TRANSLATION_URL");
+    expect(translation).toContain("translate.argosopentech.com/translate");
+    expect(translation).toContain("source: sourceLocale");
+    expect(translation).toContain("target: targetLocale");
+    expect(translation).not.toContain("createAIProvider");
   });
 
   it("lets an owner unlink a venue without deleting its public catalogue", () => {
