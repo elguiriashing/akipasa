@@ -60,6 +60,13 @@ export default async function EventPage({
         address: event.location.label,
       }
     : resolvedVenue;
+  const directionsPlace = event.location
+    ? {
+        latitude: event.location.latitude,
+        longitude: event.location.longitude,
+        address: event.location.directionsAddress || "",
+      }
+    : resolvedVenue;
   const directionsPlace =
     event.source === "akipasa_selection" && event.location
       ? {
