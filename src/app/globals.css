@@ -15076,10 +15076,16 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
   font-size: .7rem;
 }
 
-.catalogue-studio-sidebar-head > button {
+.catalogue-sidebar-head-actions {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+}
+
+.catalogue-sidebar-head-actions > button {
   display: grid;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.1rem;
+  height: 2.1rem;
   place-items: center;
   border: 1px solid color-mix(in srgb, #ffd447 35%, var(--line));
   border-radius: .7rem;
@@ -15321,12 +15327,24 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
 
 .catalogue-item-studio-grid {
   display: grid;
-  grid-template-columns: minmax(9rem, .8fr) minmax(15rem, 1.5fr) repeat(4, minmax(8rem, .72fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: .65rem;
+  min-width: 0;
+}
+
+.catalogue-item-studio-grid > * {
+  min-width: 0;
+}
+
+.catalogue-item-studio-grid :is(input, select, textarea) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .catalogue-item-studio-name {
   min-width: 0;
+  grid-column: span 2;
 }
 
 .catalogue-item-toggle-row {
@@ -15939,5 +15957,57 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
 
   .allergen-editor-drawer .allergen-toggle-grid.compact {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+/* AkiBusiness containment guardrails. Product controls must shrink with the
+   workspace instead of punching through their card on mid-size desktops. */
+.catalogue-studio,
+.catalogue-studio-workspace,
+.catalogue-studio-sidebar,
+.catalogue-studio-editor,
+.catalogue-item-studio,
+.catalogue-item-studio-panel,
+.catalogue-studio-settings,
+.catalogue-studio-footer,
+.catalogue-studio-footer-actions,
+.catalogue-tree-section,
+.catalogue-tree-items {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.catalogue-studio :is(input, select, textarea, button) {
+  max-width: 100%;
+}
+
+.catalogue-studio select {
+  text-overflow: ellipsis;
+}
+
+.catalogue-studio-editor {
+  overflow-x: clip;
+}
+
+.catalogue-item-toggle-row,
+.catalogue-studio-footer-actions,
+.catalogue-studio-footer-actions form {
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 720px) {
+  .catalogue-item-studio-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .catalogue-item-studio-name {
+    grid-column: auto;
+  }
+
+  .catalogue-studio-header-actions,
+  .catalogue-sidebar-head-actions {
+    flex-wrap: wrap;
   }
 }
