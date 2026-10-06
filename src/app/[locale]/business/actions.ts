@@ -10,6 +10,7 @@ import { madridLocalDateTimeSchema } from "@/lib/time";
 import { createEventSlug, createVenueSlug } from "@/lib/business";
 import { reviewPendingCatalogueItem } from "@/lib/automatic-moderation";
 import { businessCategories } from "@/lib/business-packages";
+import { translateLocalizedFields } from "@/lib/localized-copy";
 
 const businessApplicationSchema = z.object({
   locale: z.enum(["es", "en"]),
@@ -75,8 +76,7 @@ const venueSchema = z.object({
   addressSelection: z.literal("selected"),
   addressProviderId: z.string().trim().min(1).max(160),
   name: z.string().trim().min(2).max(120),
-  descriptionEs: z.string().trim().min(20).max(2000),
-  descriptionEn: z.string().trim().max(2000),
+  description: z.string().trim().min(20).max(2000),
   address: z.string().trim().min(5).max(300),
   latitude: z.coerce.number().min(27).max(44.5),
   longitude: z.coerce.number().min(-19).max(5),
@@ -90,6 +90,18 @@ export async function createVenue(formData: FormData) {
   if (!parsed.success) redirect(`/${locale}/business?error=venue`);
   const { supabase, user } = await requireBusinessAccess(locale);
   const v = parsed.data;
+  let localizedDescription;
+  try {
+    localizedDescription = (
+      await translateLocalizedFields(
+        locale,
+        { description: v.description },
+        user.id,
+      )
+    ).description;
+  } catch {
+    redirect(`/${locale}/business?error=translation`);
+  }
   const { data: venueId, error } = await supabase.rpc(
     "create_owned_venue_in_spain",
     {
@@ -97,8 +109,8 @@ export async function createVenue(formData: FormData) {
       province_name: v.province,
       venue_name: v.name,
       venue_slug: createVenueSlug(v.name),
-      description_es: v.descriptionEs,
-      description_en: v.descriptionEn,
+      description_es: localizedDescription.es,
+      description_en: localizedDescription.en,
       venue_address: v.address,
       latitude: v.latitude,
       longitude: v.longitude,
