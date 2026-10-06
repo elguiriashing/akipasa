@@ -111,6 +111,8 @@ function sourceHash(value: string) {
 type CatalogueTranslationTarget = {
   pair: CatalogueText;
   maxLength: number;
+  sourceLocale: Locale;
+  targetLocale: Locale;
   source: string;
   hash: string;
 };
@@ -132,29 +134,48 @@ export async function translateVenueCatalogueDocument(
   const document = JSON.parse(
     JSON.stringify(input),
   ) as VenueCatalogueDocument;
-  const targetLocale: Locale = sourceLocale === "es" ? "en" : "es";
+  const requestedTargetLocale: Locale = sourceLocale === "es" ? "en" : "es";
   const pending: CatalogueTranslationTarget[] = [];
 
   const register = (pair: CatalogueText, maxLength: number) => {
-    const source = pair[sourceLocale].trim();
+    const requestedSource = pair[sourceLocale].trim();
+    const fallbackSource = pair[requestedTargetLocale].trim();
+    const actualSourceLocale: Locale = requestedSource
+      ? sourceLocale
+      : fallbackSource
+        ? requestedTargetLocale
+        : sourceLocale;
+    const actualTargetLocale: Locale =
+      actualSourceLocale === "es" ? "en" : "es";
+    const source = pair[actualSourceLocale].trim();
     const hash = sourceHash(source);
 
     if (!source) {
-      pair[sourceLocale] = "";
-      pair[targetLocale] = "";
-      pair._translation = { sourceLocale, sourceHash: hash };
+      pair.es = "";
+      pair.en = "";
+      pair._translation = {
+        sourceLocale: actualSourceLocale,
+        sourceHash: hash,
+      };
       return;
     }
 
     if (
-      pair._translation?.sourceLocale === sourceLocale &&
+      pair._translation?.sourceLocale === actualSourceLocale &&
       pair._translation.sourceHash === hash &&
-      pair[targetLocale].trim()
+      pair[actualTargetLocale].trim()
     ) {
       return;
     }
 
-    pending.push({ pair, maxLength, source, hash });
+    pending.push({
+      pair,
+      maxLength,
+      sourceLocale: actualSourceLocale,
+      targetLocale: actualTargetLocale,
+      source,
+      hash,
+    });
   };
 
   register(document.title, 160);
@@ -173,6 +194,10 @@ export async function translateVenueCatalogueDocument(
 
   const translateBatch = async (batch: CatalogueTranslationTarget[]) => {
     if (!batch.length) return;
+    const batchSourceLocale = batch[0].sourceLocale;
+    if (batch.some((target) => target.sourceLocale !== batchSourceLocale)) {
+      throw new Error("Mixed source locales in catalogue translation batch");
+    }
 
     const fields = Object.fromEntries(
       batch.map((target, index) => [`field_${index}`, target.source]),
@@ -180,23 +205,23 @@ export async function translateVenueCatalogueDocument(
 
     try {
       const translated = await translateLocalizedFields(
-        sourceLocale,
+        batchSourceLocale,
         fields,
         actorId,
       );
       batch.forEach((target, index) => {
         const result = translated[`field_${index}`];
-        const translatedValue = result?.[targetLocale];
+        const translatedValue = result?.[target.targetLocale];
         if (!translatedValue) {
           throw new Error(`Missing catalogue translation field_${index}`);
         }
-        target.pair[sourceLocale] = target.source;
-        target.pair[targetLocale] = clampTranslatedValue(
+        target.pair[target.sourceLocale] = target.source;
+        target.pair[target.targetLocale] = clampTranslatedValue(
           translatedValue,
           target.maxLength,
         );
         target.pair._translation = {
-          sourceLocale,
+          sourceLocale: target.sourceLocale,
           sourceHash: target.hash,
         };
       });
@@ -208,20 +233,27 @@ export async function translateVenueCatalogueDocument(
     }
   };
 
-  let batch: CatalogueTranslationTarget[] = [];
-  let batchCharacters = 0;
-  for (const target of pending) {
-    const wouldOverflow =
-      batch.length >= 24 || batchCharacters + target.source.length > 8500;
-    if (wouldOverflow) {
-      await translateBatch(batch);
-      batch = [];
-      batchCharacters = 0;
+  const translatePendingLocale = async (batchSourceLocale: Locale) => {
+    let batch: CatalogueTranslationTarget[] = [];
+    let batchCharacters = 0;
+    for (const target of pending.filter(
+      (item) => item.sourceLocale === batchSourceLocale,
+    )) {
+      const wouldOverflow =
+        batch.length >= 24 || batchCharacters + target.source.length > 8500;
+      if (wouldOverflow) {
+        await translateBatch(batch);
+        batch = [];
+        batchCharacters = 0;
+      }
+      batch.push(target);
+      batchCharacters += target.source.length;
     }
-    batch.push(target);
-    batchCharacters += target.source.length;
-  }
-  await translateBatch(batch);
+    await translateBatch(batch);
+  };
+
+  await translatePendingLocale("es");
+  await translatePendingLocale("en");
 
   return document;
 }
