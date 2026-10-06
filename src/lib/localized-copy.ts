@@ -14,11 +14,18 @@ type LibreTranslateResponse = {
   error?: string;
 };
 
-function translationEndpoint() {
-  return (
-    process.env.AKIPASA_TRANSLATION_URL?.trim() ||
-    "https://translate.argosopentech.com/translate"
-  );
+function translationEndpoints() {
+  const configured = process.env.AKIPASA_TRANSLATION_URL?.trim();
+  const publicMirrors = [
+    "https://translate.terraprint.co/translate",
+    "https://translate.foxhaven.cyou/translate",
+    "https://trans.zillyhuhn.com/translate",
+    "https://lt.psf.lt/translate",
+    "https://translate.argosopentech.com/translate",
+  ];
+  return configured
+    ? [configured, ...publicMirrors.filter((endpoint) => endpoint !== configured)]
+    : publicMirrors;
 }
 
 async function libreTranslateBatch(
@@ -37,34 +44,46 @@ async function libreTranslateBatch(
   const apiKey = process.env.AKIPASA_TRANSLATION_API_KEY?.trim();
   if (apiKey) payload.api_key = apiKey;
 
-  const response = await fetch(translationEndpoint(), {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-    signal: AbortSignal.timeout(15_000),
-  });
+  let lastError = "No translation endpoint responded";
 
-  const result = (await response.json().catch(() => ({}))) as LibreTranslateResponse;
-  if (!response.ok) {
-    throw new Error(
-      result.error || `LibreTranslate request failed (${response.status})`,
-    );
+  for (const endpoint of translationEndpoints()) {
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(10_000),
+      });
+
+      const result = (await response.json().catch(() => ({}))) as LibreTranslateResponse;
+      if (!response.ok) {
+        lastError =
+          result.error || `LibreTranslate request failed (${response.status})`;
+        continue;
+      }
+
+      const translated = Array.isArray(result.translatedText)
+        ? result.translatedText
+        : typeof result.translatedText === "string"
+          ? [result.translatedText]
+          : [];
+
+      if (
+        translated.length !== values.length ||
+        translated.some((value) => typeof value !== "string")
+      ) {
+        lastError = "LibreTranslate returned an unexpected response";
+        continue;
+      }
+
+      return translated.map((value) => value.trim());
+    } catch (error) {
+      lastError =
+        error instanceof Error ? error.message : "translation_request_failed";
+    }
   }
 
-  const translated = Array.isArray(result.translatedText)
-    ? result.translatedText
-    : typeof result.translatedText === "string"
-      ? [result.translatedText]
-      : [];
-
-  if (
-    translated.length !== values.length ||
-    translated.some((value) => typeof value !== "string")
-  ) {
-    throw new Error("LibreTranslate returned an unexpected response");
-  }
-
-  return translated.map((value) => value.trim());
+  throw new Error(lastError);
 }
 
 export async function translateLocalizedFields(
