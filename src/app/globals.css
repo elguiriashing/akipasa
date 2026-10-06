@@ -15772,3 +15772,172 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
     min-height: 22rem;
   }
 }
+
+
+/* Compact food-safety summary. Keep the 14-allergen matrix available without
+   forcing every catalogue item to become a full-page compliance worksheet. */
+.allergen-compact-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .85rem;
+  padding: .72rem .8rem;
+  border: 1px solid color-mix(in srgb, var(--line) 88%, transparent);
+  border-radius: .85rem;
+  background: color-mix(in srgb, var(--surface-alt) 70%, transparent);
+}
+
+.allergen-summary-copy {
+  display: grid;
+  min-width: 0;
+  gap: .38rem;
+}
+
+.allergen-summary-copy > small {
+  color: var(--muted);
+  font-size: .7rem;
+}
+
+.allergen-risk-chips {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: .35rem;
+}
+
+.allergen-risk-chips > span {
+  display: inline-flex;
+  align-items: center;
+  gap: .32rem;
+  max-width: 12rem;
+  min-height: 1.95rem;
+  padding: .3rem .5rem;
+  border: 1px solid rgb(225 83 83 / 36%);
+  border-radius: 999px;
+  background: rgb(225 83 83 / 9%);
+  color: var(--ink);
+  font-size: .69rem;
+}
+
+.allergen-risk-chips > span[data-state="may_contain"] {
+  border-color: rgb(245 158 11 / 38%);
+  background: rgb(245 158 11 / 9%);
+}
+
+.allergen-risk-chips i {
+  font-style: normal;
+}
+
+.allergen-risk-chips b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.allergen-summary-clear,
+.allergen-summary-pending {
+  min-height: 1.95rem;
+  padding: .32rem .52rem;
+  border-radius: 999px;
+  font-size: .7rem;
+  font-weight: 850;
+}
+
+.allergen-summary-clear {
+  border: 1px solid rgb(40 199 162 / 34%);
+  background: rgb(40 199 162 / 9%);
+  color: #5ee7c7;
+}
+
+.allergen-summary-pending {
+  border: 1px solid color-mix(in srgb, #ffd447 34%, var(--line));
+  background: color-mix(in srgb, #ffd447 7%, transparent);
+  color: #ffd447;
+}
+
+.allergen-edit-toggle {
+  flex: 0 0 auto;
+}
+
+.allergen-editor-drawer {
+  display: grid;
+  gap: .8rem;
+  padding-top: .15rem;
+  animation: catalogueDrawerIn .16s ease-out;
+}
+
+@keyframes catalogueDrawerIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.allergen-editor-drawer .allergen-toggle-grid.compact {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .42rem;
+}
+
+.allergen-editor-drawer .allergen-toggle {
+  min-height: 2.75rem;
+  padding: .45rem .52rem;
+}
+
+.allergen-editor-drawer .allergen-toggle strong {
+  font-size: .7rem;
+}
+
+.allergen-editor-drawer .allergen-toggle small {
+  font-size: .61rem;
+}
+
+.allergen-detail-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: .4rem;
+  padding: .68rem;
+  border: 1px solid var(--line);
+  border-radius: .8rem;
+  background: color-mix(in srgb, var(--surface-alt) 72%, transparent);
+}
+
+.allergen-detail-options legend {
+  padding: 0 .32rem;
+  font-size: .72rem;
+  font-weight: 850;
+}
+
+.allergen-detail-options .check-row {
+  min-height: 2.05rem;
+  padding: .32rem .48rem;
+  border: 1px solid color-mix(in srgb, var(--line) 76%, transparent);
+  border-radius: .6rem;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+}
+
+.catalogue-tree-section.expanded > .catalogue-tree-section-title {
+  background: color-mix(in srgb, var(--surface-alt) 68%, transparent);
+}
+
+.catalogue-tree-section.active > .catalogue-tree-section-title {
+  box-shadow: inset 3px 0 0 #ffd447;
+}
+
+@media (max-width: 900px) {
+  .allergen-compact-summary {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .allergen-edit-toggle {
+    width: 100%;
+  }
+
+  .allergen-editor-drawer .allergen-toggle-grid.compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
