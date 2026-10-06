@@ -91,6 +91,59 @@ export type VenueCatalogueDocument = {
   }>;
 };
 
+export function catalogueTextHash(value: string) {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(36);
+}
+
+function seedTextTranslationMetadata(
+  pair: CatalogueText,
+  preferredLocale: "es" | "en",
+) {
+  if (pair._translation?.esHash && pair._translation?.enHash) return;
+  const sourceLocale =
+    pair[preferredLocale].trim() || !pair[preferredLocale === "es" ? "en" : "es"].trim()
+      ? preferredLocale
+      : preferredLocale === "es"
+        ? "en"
+        : "es";
+  const source = pair[sourceLocale].trim();
+  pair._translation = {
+    sourceLocale,
+    sourceHash: catalogueTextHash(source),
+    esHash: catalogueTextHash(pair.es.trim()),
+    enHash: catalogueTextHash(pair.en.trim()),
+  };
+}
+
+export function seedCatalogueTranslationMetadata(
+  input: VenueCatalogueDocument,
+  preferredLocale: "es" | "en",
+): VenueCatalogueDocument {
+  const document = JSON.parse(JSON.stringify(input)) as VenueCatalogueDocument;
+  seedTextTranslationMetadata(document.title, preferredLocale);
+  seedTextTranslationMetadata(document.description, preferredLocale);
+
+  for (const section of document.sections) {
+    seedTextTranslationMetadata(section.title, preferredLocale);
+    for (const item of section.items) {
+      seedTextTranslationMetadata(item.name, preferredLocale);
+      seedTextTranslationMetadata(item.description, preferredLocale);
+      for (const variant of item.variants) {
+        seedTextTranslationMetadata(variant.label, preferredLocale);
+      }
+      seedTextTranslationMetadata(item.allergens.ingredients, preferredLocale);
+      seedTextTranslationMetadata(item.allergens.notes, preferredLocale);
+    }
+  }
+
+  return document;
+}
+
 export const defaultAllergenStates = Object.fromEntries(
   euAllergens.map(([key]) => [key, "unknown"]),
 ) as Record<AllergenKey, AllergenState>;
