@@ -194,9 +194,7 @@ export function EventCard({
       <div className="card-body">
         <h3>{translated(result.event.title, locale)}</h3>
         <p className="card-venue">
-          {result.event.location
-            ? translated(result.event.location.name, locale)
-            : result.venue.name}
+          {result.event.location?.label || result.venue.name}
         </p>
         <p className="card-distance">{`${result.distanceKm.toFixed(1)} km`}</p>
         {reason ? <p className="card-recommendation-reason">{reason}</p> : null}
@@ -208,10 +206,6 @@ export function EventCard({
             </span>
           ) : result.event.source === "akipasa_selection" ? (
             <span className="akipasa-selection-chip">
-              {locale === "es" ? "Selección AkiPasa" : "AkiPasa Selection"}
-            </span>
-          ) : result.event.source === "akipasa" ? (
-            <span className="akipasa-original-chip">
               {locale === "es" ? "Selección AkiPasa" : "AkiPasa Selection"}
             </span>
           ) : result.event.source === "verified_venue" ? (
