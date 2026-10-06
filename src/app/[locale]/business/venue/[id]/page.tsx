@@ -1617,13 +1617,19 @@ export default async function VenueWorkspace({
                       </span>
                     </label>
                     <label>
-                      {es ? "Depósito (€ céntimos)" : "Deposit (cents)"}
+                      {es ? "Depósito (€)" : "Deposit (€)"}
                       <input
-                        name="depositCents"
+                        name="depositEuros"
                         type="number"
                         min="0"
-                        defaultValue={bookingSettings?.deposit_cents || ""}
-                        placeholder="0"
+                        max="10000"
+                        step="0.01"
+                        defaultValue={
+                          bookingSettings?.deposit_cents
+                            ? (bookingSettings.deposit_cents / 100).toFixed(2)
+                            : ""
+                        }
+                        placeholder="0.00"
                       />
                     </label>
                   </div>
