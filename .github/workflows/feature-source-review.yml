@@ -1,7 +1,7 @@
 name: Feature source review
 on:
   push:
-    branches: [feat/official-events-venue-catalogues, fix/official-events-build]
+    branches: [feat/official-events-venue-catalogues]
 permissions:
   contents: read
 jobs:
