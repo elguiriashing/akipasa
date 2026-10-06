@@ -585,7 +585,7 @@ export default async function BusinessPage({
                   />
                 </label>
               </div>
-              <SpainAddressAutocomplete locale={locale} mode="address" />
+              <OfficialEventLocationPicker locale={locale} />
               <label>
                 {es ? "Descripción" : "Description"}
                 <textarea name="description" required minLength={20} maxLength={4000} rows={4} />
