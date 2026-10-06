@@ -13,6 +13,7 @@ type ToolSection = Exclude<VenueDashboardSection, "overview">;
 type Counts = {
   photos: number;
   events: number;
+  catalogueItems: number;
   programs: number;
   credentials: number;
   requests: number;
@@ -82,6 +83,19 @@ export function VenueDashboard({
         counts.events,
         ["event", "events"],
         ["evento", "eventos"],
+      ),
+    },
+    {
+      id: "catalogue",
+      label: es ? "Carta / catálogo" : "Menu / catalogue",
+      description: es
+        ? "Comida, productos y servicios"
+        : "Food, products and services",
+      icon: "inbox",
+      detail: countLabel(
+        counts.catalogueItems,
+        ["item", "items"],
+        ["elemento", "elementos"],
       ),
     },
     {
