@@ -979,3 +979,504 @@
     width: 100%;
   }
 }
+
+
+/* Human-first venue tools: show decisions and summaries before forms. */
+.dashboard .section :global(.workspace-inline-heading) {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+.dashboard .section :global(.workspace-inline-heading h2),
+.dashboard .section :global(.workspace-inline-heading h3) {
+  margin: 0.12rem 0 0;
+  font-size: 1.12rem;
+  letter-spacing: -0.03em;
+}
+.dashboard .section :global(.workspace-inline-heading p) {
+  margin: 0.22rem 0 0;
+}
+.dashboard .section :global(.summary-icon) {
+  display: grid;
+  flex: 0 0 auto;
+  width: 2.35rem;
+  height: 2.35rem;
+  place-items: center;
+  color: var(--workspace-accent);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--workspace-accent) 12%, var(--surface));
+}
+.dashboard .section :global(.summary-icon svg) {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.dashboard .section :global(details.workspace-action-card) {
+  margin: 0;
+  overflow: clip;
+  border: 1px solid var(--line);
+  border-radius: 0.95rem;
+  background: color-mix(in srgb, var(--surface) 48%, transparent);
+}
+.dashboard .section :global(details.workspace-action-card > summary) {
+  min-height: 4.4rem;
+  padding: 0.78rem 0.9rem;
+  background: transparent;
+}
+.dashboard .section :global(details.workspace-action-card[open] > summary) {
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--workspace-accent) 7%, transparent);
+}
+.dashboard .section :global(details.workspace-action-card > :not(summary)) {
+  margin: 0;
+}
+.dashboard .section :global(.workspace-action-summary) {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.72rem;
+  min-width: 0;
+}
+.dashboard .section :global(.workspace-action-summary > span:last-child) {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+.dashboard .section :global(.workspace-action-summary strong) {
+  color: var(--ink);
+  font-size: 0.88rem;
+}
+.dashboard .section :global(.workspace-action-summary small) {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dashboard .section :global(.compact-action-form) {
+  padding: 0.9rem;
+  margin: 0 !important;
+}
+.dashboard .section :global(.form-grid-two),
+.dashboard .section :global(.form-grid-three) {
+  display: grid;
+  gap: 0.7rem;
+}
+.dashboard .section :global(.form-grid-two) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.dashboard .section :global(.form-grid-three) {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Profile: read first, edit second. */
+.dashboard .section :global(.profile-hub),
+.dashboard .section :global(.profile-media-hub) {
+  display: grid;
+  gap: 0.9rem;
+}
+.dashboard .section :global(.profile-summary-grid) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+.dashboard .section :global(.profile-summary-card) {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 0.7rem;
+  min-width: 0;
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, var(--surface) 48%, transparent);
+}
+.dashboard .section :global(.profile-summary-card > div) {
+  display: grid;
+  gap: 0.12rem;
+  min-width: 0;
+}
+.dashboard .section :global(.profile-summary-card small) {
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.dashboard .section :global(.profile-summary-card strong) {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 0.88rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dashboard .section :global(.profile-summary-card div > span) {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.dashboard .section :global(.profile-editor-form) {
+  margin: 0 !important;
+  padding: 0.9rem;
+}
+.dashboard .section :global(.profile-editor-grid) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.dashboard .section :global(.form-card) {
+  display: grid;
+  align-content: start;
+  gap: 0.72rem;
+  min-width: 0;
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, var(--surface-alt) 48%, transparent);
+}
+.dashboard .section :global(.form-card-heading) {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.65rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--line);
+}
+.dashboard .section :global(.form-card-heading > div) {
+  display: grid;
+  gap: 0.08rem;
+}
+.dashboard .section :global(.form-card-heading strong) {
+  color: var(--ink);
+  font-size: 0.86rem;
+}
+.dashboard .section :global(.form-card-heading small) {
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+.dashboard .section :global(.form-save-bar) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding-top: 0.15rem;
+}
+.dashboard .section :global(.form-save-bar > span) {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+.dashboard .section :global(.photo-upload-grid) {
+  display: grid;
+  grid-template-columns: minmax(14rem, 1.1fr) minmax(12rem, 1fr) auto;
+  align-items: end;
+  gap: 0.7rem;
+  padding: 0.9rem;
+}
+.dashboard .section :global(.photo-upload-grid .button) {
+  align-self: end;
+}
+.dashboard .section :global(.media-row-list) {
+  display: grid;
+  gap: 0.45rem;
+}
+.dashboard .section :global(details.media-row) {
+  margin: 0;
+  border-radius: 0.8rem;
+  background: color-mix(in srgb, var(--surface) 40%, transparent);
+}
+.dashboard .section :global(details.media-row > summary > span) {
+  display: grid;
+  gap: 0.08rem;
+}
+.dashboard .section :global(details.media-row > summary small) {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+.dashboard .section :global(.media-edit-grid) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 6rem auto;
+  align-items: end;
+  gap: 0.65rem;
+  padding: 0.75rem 0;
+}
+
+/* Rewards: four clear jobs instead of a field wall. */
+.dashboard .section :global(.reward-hub) {
+  display: grid;
+  gap: 0.9rem;
+}
+.dashboard .section :global(.reward-action-grid) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+.dashboard .section :global(.reward-action-card[open]) {
+  grid-column: 1 / -1;
+}
+.dashboard .section :global(.compact-managed-list) {
+  display: grid;
+  gap: 0;
+  padding-top: 0.35rem;
+  border-top: 1px solid var(--line);
+}
+
+/* Bookings: status first, configuration on demand. */
+.dashboard .section :global(.booking-hub) {
+  display: grid;
+  gap: 0.9rem;
+}
+.dashboard .section :global(.booking-status-strip) {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(2, minmax(0, 0.75fr));
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, var(--surface) 45%, transparent);
+}
+.dashboard .section :global(.booking-status-strip article) {
+  display: grid;
+  gap: 0.12rem;
+  min-width: 0;
+  padding: 0.8rem 0.9rem;
+  border-right: 1px solid var(--line);
+}
+.dashboard .section :global(.booking-status-strip article:last-child) {
+  border-right: 0;
+}
+.dashboard .section :global(.booking-status-strip small) {
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.dashboard .section :global(.booking-status-strip strong) {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 0.9rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dashboard .section :global(.booking-action-grid) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+.dashboard .section :global(.booking-action-grid > details[open]) {
+  grid-column: 1 / -1;
+}
+.dashboard .section :global(.booking-mode-grid) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+.dashboard .section :global(.booking-mode-card) {
+  position: relative;
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.65rem !important;
+  min-height: 5rem !important;
+  padding: 0.7rem;
+  color: var(--ink) !important;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, var(--surface) 42%, transparent);
+  cursor: pointer;
+}
+.dashboard .section :global(.booking-mode-card input) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.dashboard .section :global(.booking-mode-card:has(input:checked)) {
+  border-color: color-mix(in srgb, var(--workspace-accent) 65%, var(--line));
+  background: color-mix(in srgb, var(--workspace-accent) 10%, var(--surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--workspace-accent) 24%, transparent);
+}
+.dashboard .section :global(.booking-mode-card > span:last-child) {
+  display: grid;
+  gap: 0.12rem;
+  min-width: 0;
+}
+.dashboard .section :global(.booking-mode-card strong) {
+  font-size: 0.82rem;
+}
+.dashboard .section :global(.booking-mode-card small) {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+.dashboard .section :global(.booking-options-row) {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(10rem, 0.65fr);
+  gap: 0.65rem;
+}
+.dashboard .section :global(.toggle-card) {
+  display: flex !important;
+  align-items: center;
+  gap: 0.65rem !important;
+  min-height: 4.4rem !important;
+  padding: 0.7rem;
+  color: var(--ink) !important;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, var(--surface) 42%, transparent);
+}
+.dashboard .section :global(.toggle-card > span) {
+  display: grid;
+  gap: 0.08rem;
+}
+.dashboard .section :global(.toggle-card strong) {
+  font-size: 0.82rem;
+}
+.dashboard .section :global(.toggle-card small) {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 500;
+}
+.dashboard .section :global(.booking-inbox) {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+}
+.dashboard .section :global(.booking-request-row) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto minmax(8rem, auto) auto;
+}
+
+/* Team: people cards first, invite form second. */
+.dashboard .section :global(.team-hub) {
+  display: grid;
+  gap: 0.9rem;
+}
+.dashboard .section :global(.team-member-grid) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+.dashboard .section :global(.team-member-card) {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, var(--surface) 44%, transparent);
+}
+.dashboard .section :global(.team-avatar) {
+  display: grid;
+  width: 2.3rem;
+  height: 2.3rem;
+  place-items: center;
+  color: #14213d;
+  border-radius: 50%;
+  background: var(--workspace-accent);
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+.dashboard .section :global(.team-member-card > span:nth-child(2)) {
+  display: grid;
+  gap: 0.08rem;
+  min-width: 0;
+}
+.dashboard .section :global(.team-member-card strong) {
+  overflow: hidden;
+  font-size: 0.82rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dashboard .section :global(.team-member-card small) {
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+.dashboard .section :global(.compact-action-form label > small) {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+@media (max-width: 880px) {
+  .dashboard .section :global(.profile-summary-grid) {
+    grid-template-columns: 1fr 1fr;
+  }
+  .dashboard .section :global(.profile-summary-card:first-child) {
+    grid-column: 1 / -1;
+  }
+  .dashboard .section :global(.form-grid-three),
+  .dashboard .section :global(.booking-mode-grid) {
+    grid-template-columns: 1fr 1fr;
+  }
+  .dashboard .section :global(.form-grid-three > :last-child),
+  .dashboard .section :global(.booking-mode-grid > :last-child) {
+    grid-column: 1 / -1;
+  }
+  .dashboard .section :global(.photo-upload-grid) {
+    grid-template-columns: 1fr 1fr;
+  }
+  .dashboard .section :global(.photo-upload-grid .button) {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard .section :global(.profile-summary-grid),
+  .dashboard .section :global(.profile-editor-grid),
+  .dashboard .section :global(.reward-action-grid),
+  .dashboard .section :global(.booking-action-grid),
+  .dashboard .section :global(.booking-mode-grid),
+  .dashboard .section :global(.booking-options-row),
+  .dashboard .section :global(.team-member-grid),
+  .dashboard .section :global(.form-grid-two),
+  .dashboard .section :global(.form-grid-three),
+  .dashboard .section :global(.photo-upload-grid),
+  .dashboard .section :global(.media-edit-grid) {
+    grid-template-columns: 1fr;
+  }
+  .dashboard .section :global(.profile-summary-card:first-child),
+  .dashboard .section :global(.form-grid-three > :last-child),
+  .dashboard .section :global(.booking-mode-grid > :last-child),
+  .dashboard .section :global(.photo-upload-grid .button) {
+    grid-column: auto;
+  }
+  .dashboard .section :global(.booking-status-strip) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .dashboard .section :global(.booking-status-strip article) {
+    padding-inline: 0.65rem;
+  }
+  .dashboard .section :global(.booking-request-row) {
+    grid-template-columns: 1fr;
+  }
+  .dashboard .section :global(.booking-request-row > select),
+  .dashboard .section :global(.booking-request-row > .button) {
+    width: 100%;
+  }
+  .dashboard .section :global(.form-save-bar),
+  .dashboard .section :global(.workspace-inline-heading) {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .dashboard .section :global(.form-save-bar .button) {
+    width: 100%;
+  }
+}
