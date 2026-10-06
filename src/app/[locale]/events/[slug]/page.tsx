@@ -133,8 +133,11 @@ export default async function EventPage({
           : "https://schema.org/EventScheduled",
     location: {
       "@type": "Place",
-      name: event.location ? translated(event.location.name, locale) : resolvedVenue.name,
-      address: event.location?.address || resolvedVenue.address,
+      name:
+        event.source === "akipasa_selection"
+          ? translated(event.title, locale)
+          : resolvedVenue.name,
+      address: event.location?.label || resolvedVenue.address,
     },
     offers: {
       "@type": "Offer",
@@ -208,7 +211,7 @@ export default async function EventPage({
               className="detail-venue-link"
               href={`/${locale}/venues/${resolvedVenue.slug}`}
             >
-              {event.source === "akipasa"
+              {event.source === "akipasa_selection"
                 ? locale === "es"
                   ? "Publicado por AkiPasa →"
                   : "Published by AkiPasa →"
