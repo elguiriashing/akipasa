@@ -70,8 +70,9 @@ async function libreTranslateBatch(
 export async function translateLocalizedFields(
   sourceLocale: Locale,
   fields: Record<string, string>,
-  _actorId: string,
+  actorId: string,
 ): Promise<Record<string, LocalizedPair>> {
+  void actorId;
   const entries: Array<[string, string]> = Object.entries(fields).map(
     ([key, value]) => [key, value.trim()],
   );
