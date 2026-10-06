@@ -33,7 +33,6 @@ export type MapPoint = {
   source:
     | "verified_venue"
     | "community"
-    | "akipasa"
     | "akipasa_selection"
     | "claimed"
     | "unclaimed"
@@ -372,7 +371,6 @@ export function ProductionMap({
           map.addImage("pin-verified", markerImage("#f26b1d", "event"), {
             pixelRatio: 2,
           });
-          map.addImage("pin-akipasa", officialMarkerImage(), { pixelRatio: 2 });
           map.addImage("pin-community", markerImage("#a43ee8", "event"), {
             pixelRatio: 2,
           });
