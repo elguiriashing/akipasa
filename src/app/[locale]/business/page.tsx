@@ -130,7 +130,22 @@ export default async function BusinessPage({
       .order("created_at", { ascending: false }),
   ]);
 
-  const managed = (members || []) as unknown as ManagedVenue[];
+  const memberManaged = (members || []) as unknown as ManagedVenue[];
+  const { data: editorialVenue } = platformStaff
+    ? await supabase
+        .from("venues")
+        .select("id,name,slug,status,verified")
+        .eq("slug", "akipasa-editorial")
+        .eq("status", "published")
+        .maybeSingle()
+    : { data: null };
+  const managed: ManagedVenue[] = [
+    ...memberManaged,
+    ...(editorialVenue &&
+    !memberManaged.some((item) => item.venues?.id === editorialVenue.id)
+      ? [{ role: "editor", venues: editorialVenue }]
+      : []),
+  ];
   const managedVenueIds = managed.flatMap((item) =>
     item.venues ? [item.venues.id] : [],
   );
