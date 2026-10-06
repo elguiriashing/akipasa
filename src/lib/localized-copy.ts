@@ -99,6 +99,66 @@ export async function translateLocalizedFields(
   return translated;
 }
 
+export async function translateSubmittedLocalizedFields(
+  sourceLocale: Locale,
+  fields: Record<string, string>,
+  actorId: string,
+  current: Record<string, LocalizedPair | null | undefined> = {},
+): Promise<Record<string, LocalizedPair>> {
+  const targetLocale: Locale = sourceLocale === "es" ? "en" : "es";
+  const keep: Record<string, LocalizedPair> = {};
+  const translateFromSource: Record<string, string> = {};
+  const translateFromFallback: Record<string, string> = {};
+
+  for (const [key, rawValue] of Object.entries(fields)) {
+    const value = rawValue.trim();
+    const existing = current[key];
+    if (!existing) {
+      translateFromSource[key] = value;
+      continue;
+    }
+
+    const existingSource = existing[sourceLocale]?.trim() || "";
+    const existingFallback = existing[targetLocale]?.trim() || "";
+    const displayedValue = existingSource || existingFallback;
+
+    if (value !== displayedValue) {
+      translateFromSource[key] = value;
+      continue;
+    }
+
+    if (existingSource) {
+      keep[key] = {
+        es: existing.es || "",
+        en: existing.en || "",
+      };
+      continue;
+    }
+
+    if (existingFallback) {
+      translateFromFallback[key] = existingFallback;
+      continue;
+    }
+
+    translateFromSource[key] = value;
+  }
+
+  const [fromSource, fromFallback] = await Promise.all([
+    Object.keys(translateFromSource).length
+      ? translateLocalizedFields(sourceLocale, translateFromSource, actorId)
+      : Promise.resolve({}),
+    Object.keys(translateFromFallback).length
+      ? translateLocalizedFields(targetLocale, translateFromFallback, actorId)
+      : Promise.resolve({}),
+  ]);
+
+  return {
+    ...keep,
+    ...fromSource,
+    ...fromFallback,
+  };
+}
+
 function sourceHash(value: string) {
   let hash = 2166136261;
   for (let index = 0; index < value.length; index += 1) {
