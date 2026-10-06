@@ -696,12 +696,14 @@ export default async function VenueWorkspace({
                             />
                           </label>
                           <label>
-                            {es ? "Precio en céntimos" : "Price in cents"}
+                            {es ? "Precio (€)" : "Price (€)"}
                             <input
-                              name="priceCents"
+                              name="priceEuros"
                               type="number"
                               min="0"
-                              defaultValue={event.price_cents}
+                              max="10000"
+                              step="0.01"
+                              defaultValue={(event.price_cents / 100).toFixed(2)}
                             />
                           </label>
                           <label>
