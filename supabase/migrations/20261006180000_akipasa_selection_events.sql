@@ -47,40 +47,10 @@ on conflict (id) do update set
   discovery_enabled=true,
   search_enabled=true;
 
-create or replace function public.sync_akipasa_editorial_membership()
-returns trigger
-language plpgsql
-security definer
-set search_path=''
-as $$
-declare
-  v_venue constant uuid := 'a1a1a1a1-2026-4000-8000-000000000001'::uuid;
-begin
-  if new.app_role in ('moderator'::public.app_role,'administrator'::public.app_role) then
-    insert into public.venue_members(venue_id,profile_id,role)
-    values(v_venue,new.id,'editor'::public.venue_member_role)
-    on conflict(venue_id,profile_id) do update set role='editor'::public.venue_member_role;
-  else
-    delete from public.venue_members
-    where venue_id=v_venue and profile_id=new.id;
-  end if;
-  return new;
-end;
-$$;
-
-drop trigger if exists profiles_sync_akipasa_editorial_membership on public.profiles;
-create trigger profiles_sync_akipasa_editorial_membership
-after insert or update of app_role on public.profiles
-for each row execute function public.sync_akipasa_editorial_membership();
-
-insert into public.venue_members(venue_id,profile_id,role)
-select
-  'a1a1a1a1-2026-4000-8000-000000000001'::uuid,
-  p.id,
-  'editor'::public.venue_member_role
-from public.profiles p
-where p.app_role in ('moderator','administrator')
-on conflict(venue_id,profile_id) do update set role=excluded.role;
+-- Staff access to this publisher is role-based in AkiBusiness rather than
+-- persisted in venue_members. venue_members changes reconcile paid business
+-- entitlements, so writing editorial staff there would create an entitlement
+-- trigger loop and incorrectly turn a platform role into a business package.
 
 create or replace function public.create_akipasa_selection_event(
   p_category uuid,
