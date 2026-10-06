@@ -139,5 +139,21 @@ export function parseCatalogueDocument(
     !candidate.description
   )
     return blankCatalogue(locale);
-  return candidate as VenueCatalogueDocument;
+
+  const document = candidate as VenueCatalogueDocument;
+  return {
+    ...document,
+    sections: document.sections.map((section) => ({
+      ...section,
+      items: section.items.map((item) => ({
+        ...item,
+        allergens: {
+          ...item.allergens,
+          reviewConfirmed:
+            Boolean(item.allergens.reviewConfirmed) ||
+            Boolean(item.allergens.reviewedAt),
+        },
+      })),
+    })),
+  };
 }

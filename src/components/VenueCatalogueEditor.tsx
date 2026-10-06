@@ -58,6 +58,26 @@ function localText(
   return value[locale] || value.es || value.en;
 }
 
+function kindLabel(kind: CatalogueItemKind, es: boolean) {
+  const found = kinds.find(([value]) => value === kind);
+  return found ? (es ? found[1] : found[2]) : kind;
+}
+
+function formatPrice(item: CatalogueItem, locale: "es" | "en") {
+  if (item.priceMode === "on_request" || item.priceCents === null) {
+    return locale === "es" ? "Consultar" : "Ask";
+  }
+  const amount = (item.priceCents / 100).toLocaleString(locale, {
+    style: "currency",
+    currency: "EUR",
+  });
+  return item.priceMode === "from"
+    ? locale === "es"
+      ? "Desde " + amount
+      : "From " + amount
+    : amount;
+}
+
 export function VenueCatalogueEditor({
   locale,
   venueId,
@@ -73,16 +93,45 @@ export function VenueCatalogueEditor({
 }) {
   const es = locale === "es";
   const [document, setDocument] = useState(initialDocument);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [selectedSectionId, setSelectedSectionId] = useState(
+    initialDocument.sections[0]?.id || "",
+  );
+  const [selectedItemId, setSelectedItemId] = useState(
+    initialDocument.sections[0]?.items[0]?.id || "",
+  );
+
   const itemCount = useMemo(
     () => document.sections.reduce((sum, section) => sum + section.items.length, 0),
     [document.sections],
   );
+
+  const selectedSection =
+    document.sections.find((section) => section.id === selectedSectionId) ||
+    document.sections[0] ||
+    null;
+
+  const selectedItem =
+    selectedSection?.items.find((item) => item.id === selectedItemId) ||
+    selectedSection?.items[0] ||
+    null;
 
   function setLocalized(
     value: { es: string; en: string },
     next: string,
   ) {
     return { ...value, [locale]: next };
+  }
+
+  function updateSectionTitle(sectionId: string, next: string) {
+    setDocument((current) => ({
+      ...current,
+      sections: current.sections.map((section) =>
+        section.id === sectionId
+          ? { ...section, title: setLocalized(section.title, next) }
+          : section,
+      ),
+    }));
   }
 
   function updateItem(sectionId: string, itemId: string, next: CatalogueItem) {
@@ -102,28 +151,67 @@ export function VenueCatalogueEditor({
   }
 
   function addSection() {
+    const id = crypto.randomUUID();
     setDocument((current) => ({
       ...current,
       sections: [
         ...current.sections,
         {
-          id: crypto.randomUUID(),
-          title: { es: es ? "Nueva sección" : "", en: es ? "" : "New section" },
+          id,
+          title: {
+            es: es ? "Nueva sección" : "",
+            en: es ? "" : "New section",
+          },
           items: [],
         },
       ],
     }));
+    setSelectedSectionId(id);
+    setSelectedItemId("");
+  }
+
+  function removeSection(sectionId: string) {
+    setDocument((current) => ({
+      ...current,
+      sections: current.sections.filter((section) => section.id !== sectionId),
+    }));
+    const remaining = document.sections.filter(
+      (section) => section.id !== sectionId,
+    );
+    const next = remaining[0];
+    setSelectedSectionId(next?.id || "");
+    setSelectedItemId(next?.items[0]?.id || "");
   }
 
   function addItem(sectionId: string) {
+    const item = blankCatalogueItem();
     setDocument((current) => ({
       ...current,
       sections: current.sections.map((section) =>
         section.id === sectionId
-          ? { ...section, items: [...section.items, blankCatalogueItem()] }
+          ? { ...section, items: [...section.items, item] }
           : section,
       ),
     }));
+    setSelectedSectionId(sectionId);
+    setSelectedItemId(item.id);
+  }
+
+  function removeItem(sectionId: string, itemId: string) {
+    setDocument((current) => ({
+      ...current,
+      sections: current.sections.map((section) =>
+        section.id === sectionId
+          ? {
+              ...section,
+              items: section.items.filter((item) => item.id !== itemId),
+            }
+          : section,
+      ),
+    }));
+    const section = document.sections.find((item) => item.id === sectionId);
+    const remaining = section?.items.filter((item) => item.id !== itemId) || [];
+    setSelectedItemId(remaining[0]?.id || "");
   }
 
   function moveSection(sectionId: string, delta: number) {
@@ -170,158 +258,385 @@ export function VenueCatalogueEditor({
     });
   }
 
+  const foodLike =
+    selectedItem &&
+    (selectedItem.kind === "food" ||
+      selectedItem.kind === "drink" ||
+      selectedItem.containsFood);
+
+  const reviewedAllergens = selectedItem
+    ? Object.values(selectedItem.allergens.states).filter(
+        (state) => state !== "unknown",
+      ).length
+    : 0;
+
   return (
-    <div className="venue-catalogue-editor">
-      <header className="catalogue-editor-intro">
+    <div className="catalogue-studio">
+      <header className="catalogue-studio-header">
         <div>
           <span className="eyebrow">
-            {es ? "Lo que vendes" : "What you offer"}
+            {es ? "Catálogo del local" : "Venue catalogue"}
           </span>
-          <h2>{es ? "Carta, productos y servicios" : "Menu, products & services"}</h2>
+          <h2>
+            {localText(document.title, locale) ||
+              (es ? "Carta, productos y servicios" : "Menu, products & services")}
+          </h2>
           <p>
-            {es
-              ? "Elige una presentación y organiza comida, bebidas, productos, alquileres o experiencias por secciones."
-              : "Choose a layout and organise food, drinks, products, rentals or experiences into sections."}
+            {itemCount} {es ? "elementos" : "items"} ·{" "}
+            {publishedRevision !== null
+              ? es
+                ? "Publicado"
+                : "Published"
+              : es
+                ? "Borrador"
+                : "Draft"}
           </p>
         </div>
-        <span className="status-pill">
-          {publishedRevision
-            ? es
-              ? "Publicado"
-              : "Published"
-            : es
-              ? "Borrador"
-              : "Draft"}
-        </span>
+        <div className="catalogue-studio-header-actions">
+          <button
+            type="button"
+            className="button secondary"
+            onClick={() => setSettingsOpen((open) => !open)}
+          >
+            {settingsOpen
+              ? es
+                ? "Cerrar ajustes"
+                : "Close settings"
+              : es
+                ? "Ajustes"
+                : "Settings"}
+          </button>
+          <span className="status-pill">
+            {publishedRevision !== null
+              ? es
+                ? "En vivo"
+                : "Live"
+              : es
+                ? "Sin publicar"
+                : "Unpublished"}
+          </span>
+        </div>
       </header>
 
-      <div className="catalogue-editor-settings">
-        <label>
-          {es ? "Diseño" : "Layout"}
-          <select
-            value={document.layout}
-            onChange={(event) =>
-              setDocument((current) => ({
-                ...current,
-                layout: event.target.value as CatalogueLayout,
-              }))
-            }
-          >
-            {layouts.map(([value, esLabel, enLabel]) => (
-              <option key={value} value={value}>
-                {es ? esLabel : enLabel}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          {es ? "Título público" : "Public title"}
-          <input
-            value={localText(document.title, locale)}
-            onChange={(event) =>
-              setDocument((current) => ({
-                ...current,
-                title: setLocalized(current.title, event.target.value),
-              }))
-            }
-            maxLength={160}
-          />
-        </label>
-        <label className="catalogue-editor-description">
-          {es ? "Descripción" : "Description"}
-          <textarea
-            value={localText(document.description, locale)}
-            onChange={(event) =>
-              setDocument((current) => ({
-                ...current,
-                description: setLocalized(current.description, event.target.value),
-              }))
-            }
-            maxLength={1200}
-          />
-        </label>
-      </div>
+      {settingsOpen && (
+        <section className="catalogue-studio-settings">
+          <label>
+            {es ? "Diseño público" : "Public layout"}
+            <select
+              value={document.layout}
+              onChange={(event) =>
+                setDocument((current) => ({
+                  ...current,
+                  layout: event.target.value as CatalogueLayout,
+                }))
+              }
+            >
+              {layouts.map(([value, esLabel, enLabel]) => (
+                <option key={value} value={value}>
+                  {es ? esLabel : enLabel}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            {es ? "Título" : "Title"}
+            <input
+              value={localText(document.title, locale)}
+              onChange={(event) =>
+                setDocument((current) => ({
+                  ...current,
+                  title: setLocalized(current.title, event.target.value),
+                }))
+              }
+              maxLength={160}
+            />
+          </label>
+          <label className="catalogue-studio-settings-wide">
+            {es ? "Descripción" : "Description"}
+            <textarea
+              rows={2}
+              value={localText(document.description, locale)}
+              onChange={(event) =>
+                setDocument((current) => ({
+                  ...current,
+                  description: setLocalized(
+                    current.description,
+                    event.target.value,
+                  ),
+                }))
+              }
+              maxLength={1200}
+            />
+          </label>
+        </section>
+      )}
 
-      <div className="catalogue-editor-sections">
-        {document.sections.map((section, sectionIndex) => (
-          <section className="catalogue-editor-section" key={section.id}>
-            <header>
-              <input
-                aria-label={es ? "Nombre de sección" : "Section name"}
-                value={localText(section.title, locale)}
-                onChange={(event) =>
-                  setDocument((current) => ({
-                    ...current,
-                    sections: current.sections.map((candidate) =>
-                      candidate.id === section.id
-                        ? {
-                            ...candidate,
-                            title: setLocalized(
-                              candidate.title,
-                              event.target.value,
-                            ),
-                          }
-                        : candidate,
-                    ),
-                  }))
-                }
-                placeholder={es ? "Ej. Hamburguesas" : "e.g. Burgers"}
-              />
-              <div className="catalogue-order-actions">
-                <button
-                  type="button"
-                  className="text-button"
-                  onClick={() => moveSection(section.id, -1)}
-                  disabled={sectionIndex === 0}
-                  aria-label={es ? "Subir sección" : "Move section up"}
-                >
-                  ↑
-                </button>
-                <button
-                  type="button"
-                  className="text-button"
-                  onClick={() => moveSection(section.id, 1)}
-                  disabled={sectionIndex === document.sections.length - 1}
-                  aria-label={es ? "Bajar sección" : "Move section down"}
-                >
-                  ↓
-                </button>
-                <button
-                  type="button"
-                  className="text-button"
-                  onClick={() =>
-                    setDocument((current) => ({
-                      ...current,
-                      sections: current.sections.filter(
-                        (candidate) => candidate.id !== section.id,
-                      ),
-                    }))
+      <div className="catalogue-studio-workspace">
+        <aside className="catalogue-studio-sidebar">
+          <div className="catalogue-studio-sidebar-head">
+            <div>
+              <strong>{es ? "Secciones" : "Sections"}</strong>
+              <span>
+                {document.sections.length} {es ? "secciones" : "sections"}
+              </span>
+            </div>
+            <button type="button" onClick={addSection} aria-label={es ? "Añadir sección" : "Add section"}>
+              +
+            </button>
+          </div>
+
+          <div className="catalogue-studio-tree">
+            {document.sections.map((section, sectionIndex) => {
+              const active = selectedSection?.id === section.id;
+              return (
+                <section
+                  className={
+                    active
+                      ? "catalogue-tree-section active"
+                      : "catalogue-tree-section"
                   }
+                  key={section.id}
                 >
-                  {es ? "Eliminar sección" : "Remove section"}
-                </button>
-              </div>
-            </header>
+                  <button
+                    type="button"
+                    className="catalogue-tree-section-title"
+                    onClick={() => {
+                      setSelectedSectionId(section.id);
+                      setSelectedItemId(section.items[0]?.id || "");
+                    }}
+                  >
+                    <span>
+                      <strong>
+                        {localText(section.title, locale) ||
+                          (es ? "Sin nombre" : "Untitled")}
+                      </strong>
+                      <small>
+                        {section.items.length} {es ? "elementos" : "items"}
+                      </small>
+                    </span>
+                    <b aria-hidden="true">{active ? "▾" : "›"}</b>
+                  </button>
 
-            <div className="catalogue-editor-items">
-              {section.items.map((item) => {
-                const foodLike = item.kind === "food" || item.kind === "drink" || item.containsFood;
-                return (
-                  <article className="catalogue-editor-item" key={item.id}>
-                    <div className="catalogue-item-main">
+                  {active && (
+                    <>
+                      <div className="catalogue-tree-section-actions">
+                        <button
+                          type="button"
+                          onClick={() => moveSection(section.id, -1)}
+                          disabled={sectionIndex === 0}
+                          title={es ? "Subir sección" : "Move section up"}
+                        >
+                          ↑
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => moveSection(section.id, 1)}
+                          disabled={sectionIndex === document.sections.length - 1}
+                          title={es ? "Bajar sección" : "Move section down"}
+                        >
+                          ↓
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => removeSection(section.id)}
+                        >
+                          {es ? "Eliminar" : "Delete"}
+                        </button>
+                      </div>
+
+                      <div className="catalogue-tree-items">
+                        {section.items.map((item, itemIndex) => {
+                          const itemActive = selectedItem?.id === item.id;
+                          return (
+                            <button
+                              key={item.id}
+                              type="button"
+                              className={
+                                itemActive
+                                  ? "catalogue-tree-item active"
+                                  : "catalogue-tree-item"
+                              }
+                              onClick={() => setSelectedItemId(item.id)}
+                            >
+                              <span className="catalogue-tree-item-index">
+                                {itemIndex + 1}
+                              </span>
+                              <span className="catalogue-tree-item-copy">
+                                <strong>
+                                  {localText(item.name, locale) ||
+                                    (es ? "Nuevo elemento" : "New item")}
+                                </strong>
+                                <small>
+                                  {kindLabel(item.kind, es)} ·{" "}
+                                  {formatPrice(item, locale)}
+                                </small>
+                              </span>
+                              <span
+                                className={
+                                  item.visible
+                                    ? "catalogue-tree-visibility on"
+                                    : "catalogue-tree-visibility"
+                                }
+                                title={
+                                  item.visible
+                                    ? es
+                                      ? "Visible"
+                                      : "Visible"
+                                    : es
+                                      ? "Oculto"
+                                      : "Hidden"
+                                }
+                              />
+                            </button>
+                          );
+                        })}
+                        <button
+                          type="button"
+                          className="catalogue-tree-add-item"
+                          onClick={() => addItem(section.id)}
+                        >
+                          + {es ? "Añadir elemento" : "Add item"}
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </section>
+              );
+            })}
+          </div>
+
+          {!document.sections.length && (
+            <div className="catalogue-studio-empty-sidebar">
+              <p>
+                {es
+                  ? "Empieza creando una sección, por ejemplo «Hamburguesas», «Bebidas» o «Alquileres»."
+                  : "Start with a section such as “Burgers”, “Drinks” or “Rentals”."}
+              </p>
+              <button className="button" type="button" onClick={addSection}>
+                + {es ? "Crear primera sección" : "Create first section"}
+              </button>
+            </div>
+          )}
+        </aside>
+
+        <main className="catalogue-studio-editor">
+          {!selectedSection ? (
+            <div className="catalogue-studio-empty-editor">
+              <span aria-hidden="true">☰</span>
+              <h3>{es ? "Tu catálogo está vacío" : "Your catalogue is empty"}</h3>
+              <p>
+                {es
+                  ? "Crea una sección y añade productos o servicios sin convertir la página en un pergamino infinito."
+                  : "Create a section and add products or services without turning the page into an endless scroll."}
+              </p>
+            </div>
+          ) : (
+            <>
+              <header className="catalogue-studio-section-bar">
+                <label>
+                  <span>{es ? "Sección" : "Section"}</span>
+                  <input
+                    value={localText(selectedSection.title, locale)}
+                    onChange={(event) =>
+                      updateSectionTitle(selectedSection.id, event.target.value)
+                    }
+                    placeholder={es ? "Ej. Hamburguesas" : "e.g. Burgers"}
+                  />
+                </label>
+                <button
+                  type="button"
+                  className="button secondary"
+                  onClick={() => addItem(selectedSection.id)}
+                >
+                  + {es ? "Nuevo elemento" : "New item"}
+                </button>
+              </header>
+
+              {!selectedItem ? (
+                <div className="catalogue-studio-empty-editor">
+                  <span aria-hidden="true">＋</span>
+                  <h3>
+                    {es ? "Añade el primer elemento" : "Add the first item"}
+                  </h3>
+                  <p>
+                    {es
+                      ? "Solo verás la configuración del elemento que estés editando."
+                      : "Only the item you are editing will show its configuration."}
+                  </p>
+                  <button
+                    type="button"
+                    className="button"
+                    onClick={() => addItem(selectedSection.id)}
+                  >
+                    + {es ? "Añadir elemento" : "Add item"}
+                  </button>
+                </div>
+              ) : (
+                <article className="catalogue-item-studio">
+                  <header className="catalogue-item-studio-head">
+                    <div>
+                      <span className="eyebrow">
+                        {kindLabel(selectedItem.kind, es)}
+                      </span>
+                      <h3>
+                        {localText(selectedItem.name, locale) ||
+                          (es ? "Nuevo elemento" : "New item")}
+                      </h3>
+                      <p>
+                        {formatPrice(selectedItem, locale)} ·{" "}
+                        {selectedItem.visible
+                          ? es
+                            ? "Visible"
+                            : "Visible"
+                          : es
+                            ? "Oculto"
+                            : "Hidden"}
+                      </p>
+                    </div>
+                    <div className="catalogue-item-studio-actions">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          moveItem(selectedSection.id, selectedItem.id, -1)
+                        }
+                      >
+                        ↑
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          moveItem(selectedSection.id, selectedItem.id, 1)
+                        }
+                      >
+                        ↓
+                      </button>
+                      <button
+                        type="button"
+                        className="danger"
+                        onClick={() =>
+                          removeItem(selectedSection.id, selectedItem.id)
+                        }
+                      >
+                        {es ? "Eliminar" : "Delete"}
+                      </button>
+                    </div>
+                  </header>
+
+                  <section className="catalogue-item-studio-panel">
+                    <div className="catalogue-item-studio-grid">
                       <label>
                         {es ? "Tipo" : "Type"}
                         <select
-                          value={item.kind}
+                          value={selectedItem.kind}
                           onChange={(event) => {
                             const kind = event.target.value as CatalogueItemKind;
-                            updateItem(section.id, item.id, {
-                              ...item,
+                            updateItem(selectedSection.id, selectedItem.id, {
+                              ...selectedItem,
                               kind,
                               containsFood:
                                 kind === "food" || kind === "drink"
                                   ? true
-                                  : item.containsFood,
+                                  : selectedItem.containsFood,
                             });
                           }}
                         >
@@ -332,34 +647,39 @@ export function VenueCatalogueEditor({
                           ))}
                         </select>
                       </label>
-                      <label className="catalogue-item-name">
+
+                      <label className="catalogue-item-studio-name">
                         {es ? "Nombre" : "Name"}
                         <input
-                          value={localText(item.name, locale)}
+                          value={localText(selectedItem.name, locale)}
                           onChange={(event) =>
-                            updateItem(section.id, item.id, {
-                              ...item,
-                              name: setLocalized(item.name, event.target.value),
+                            updateItem(selectedSection.id, selectedItem.id, {
+                              ...selectedItem,
+                              name: setLocalized(
+                                selectedItem.name,
+                                event.target.value,
+                              ),
                             })
                           }
                           placeholder="Wonder Burger"
                         />
                       </label>
+
                       <label>
                         {es ? "Precio €" : "Price €"}
                         <input
                           type="number"
                           min="0"
                           step="0.01"
-                          disabled={item.priceMode === "on_request"}
+                          disabled={selectedItem.priceMode === "on_request"}
                           value={
-                            item.priceCents === null
+                            selectedItem.priceCents === null
                               ? ""
-                              : (item.priceCents / 100).toFixed(2)
+                              : (selectedItem.priceCents / 100).toFixed(2)
                           }
                           onChange={(event) =>
-                            updateItem(section.id, item.id, {
-                              ...item,
+                            updateItem(selectedSection.id, selectedItem.id, {
+                              ...selectedItem,
                               priceCents: event.target.value
                                 ? Math.round(Number(event.target.value) * 100)
                                 : null,
@@ -367,18 +687,20 @@ export function VenueCatalogueEditor({
                           }
                         />
                       </label>
+
                       <label>
                         {es ? "Precio" : "Pricing"}
                         <select
-                          value={item.priceMode}
+                          value={selectedItem.priceMode}
                           onChange={(event) =>
-                            updateItem(section.id, item.id, {
-                              ...item,
-                              priceMode: event.target.value as CatalogueItem["priceMode"],
+                            updateItem(selectedSection.id, selectedItem.id, {
+                              ...selectedItem,
+                              priceMode: event.target
+                                .value as CatalogueItem["priceMode"],
                               priceCents:
                                 event.target.value === "on_request"
                                   ? null
-                                  : item.priceCents ?? 0,
+                                  : selectedItem.priceCents ?? 0,
                             })
                           }
                         >
@@ -389,37 +711,52 @@ export function VenueCatalogueEditor({
                           </option>
                         </select>
                       </label>
+
                       <label>
                         {es ? "Disponibilidad" : "Availability"}
                         <select
-                          value={item.availability}
+                          value={selectedItem.availability}
                           onChange={(event) =>
-                            updateItem(section.id, item.id, {
-                              ...item,
-                              availability: event.target.value as CatalogueItem["availability"],
+                            updateItem(selectedSection.id, selectedItem.id, {
+                              ...selectedItem,
+                              availability: event.target
+                                .value as CatalogueItem["availability"],
                             })
                           }
                         >
-                          <option value="available">{es ? "Disponible" : "Available"}</option>
-                          <option value="sold_out">{es ? "Agotado" : "Sold out"}</option>
-                          <option value="seasonal">{es ? "Temporada" : "Seasonal"}</option>
-                          <option value="on_request">{es ? "Bajo petición" : "On request"}</option>
+                          <option value="available">
+                            {es ? "Disponible" : "Available"}
+                          </option>
+                          <option value="sold_out">
+                            {es ? "Agotado" : "Sold out"}
+                          </option>
+                          <option value="seasonal">
+                            {es ? "Temporada" : "Seasonal"}
+                          </option>
+                          <option value="on_request">
+                            {es ? "Bajo petición" : "On request"}
+                          </option>
                         </select>
                       </label>
+
                       <label>
                         {es ? "Unidad" : "Unit"}
                         <select
-                          value={item.unit}
+                          value={selectedItem.unit}
                           onChange={(event) =>
-                            updateItem(section.id, item.id, {
-                              ...item,
+                            updateItem(selectedSection.id, selectedItem.id, {
+                              ...selectedItem,
                               unit: event.target.value as CatalogueItem["unit"],
                             })
                           }
                         >
                           <option value="each">{es ? "Unidad" : "Each"}</option>
-                          <option value="person">{es ? "Persona" : "Person"}</option>
-                          <option value="session">{es ? "Sesión" : "Session"}</option>
+                          <option value="person">
+                            {es ? "Persona" : "Person"}
+                          </option>
+                          <option value="session">
+                            {es ? "Sesión" : "Session"}
+                          </option>
                           <option value="hour">{es ? "Hora" : "Hour"}</option>
                           <option value="day">{es ? "Día" : "Day"}</option>
                           <option value="night">{es ? "Noche" : "Night"}</option>
@@ -428,15 +765,17 @@ export function VenueCatalogueEditor({
                         </select>
                       </label>
                     </div>
+
                     <label>
                       {es ? "Descripción" : "Description"}
                       <textarea
-                        value={localText(item.description, locale)}
+                        rows={3}
+                        value={localText(selectedItem.description, locale)}
                         onChange={(event) =>
-                          updateItem(section.id, item.id, {
-                            ...item,
+                          updateItem(selectedSection.id, selectedItem.id, {
+                            ...selectedItem,
                             description: setLocalized(
-                              item.description,
+                              selectedItem.description,
                               event.target.value,
                             ),
                           })
@@ -444,123 +783,119 @@ export function VenueCatalogueEditor({
                         maxLength={1200}
                       />
                     </label>
-                    <div className="catalogue-item-controls">
-                      <button
-                        type="button"
-                        className="text-button"
-                        onClick={() => moveItem(section.id, item.id, -1)}
-                      >
-                        ↑
-                      </button>
-                      <button
-                        type="button"
-                        className="text-button"
-                        onClick={() => moveItem(section.id, item.id, 1)}
-                      >
-                        ↓
-                      </button>
-                      <label className="check-row">
+
+                    <div className="catalogue-item-toggle-row">
+                      <label className="catalogue-switch">
                         <input
                           type="checkbox"
-                          checked={item.visible}
+                          checked={selectedItem.visible}
                           onChange={(event) =>
-                            updateItem(section.id, item.id, {
-                              ...item,
+                            updateItem(selectedSection.id, selectedItem.id, {
+                              ...selectedItem,
                               visible: event.target.checked,
                             })
                           }
                         />
-                        {es ? "Visible al público" : "Visible publicly"}
+                        <span />
+                        <b>{es ? "Visible al público" : "Visible publicly"}</b>
                       </label>
-                      {!["food", "drink"].includes(item.kind) && (
-                        <label className="check-row">
+
+                      {!["food", "drink"].includes(selectedItem.kind) && (
+                        <label className="catalogue-switch">
                           <input
                             type="checkbox"
-                            checked={item.containsFood}
+                            checked={selectedItem.containsFood}
                             onChange={(event) =>
-                              updateItem(section.id, item.id, {
-                                ...item,
+                              updateItem(selectedSection.id, selectedItem.id, {
+                                ...selectedItem,
                                 containsFood: event.target.checked,
                               })
                             }
                           />
-                          {es
-                            ? "Incluye comida/bebida"
-                            : "Contains food/drink"}
+                          <span />
+                          <b>
+                            {es
+                              ? "Incluye comida/bebida"
+                              : "Contains food/drink"}
+                          </b>
                         </label>
                       )}
-                      <button
-                        type="button"
-                        className="text-button"
-                        onClick={() =>
-                          setDocument((current) => ({
-                            ...current,
-                            sections: current.sections.map((candidate) =>
-                              candidate.id === section.id
-                                ? {
-                                    ...candidate,
-                                    items: candidate.items.filter(
-                                      (candidateItem) =>
-                                        candidateItem.id !== item.id,
-                                    ),
-                                  }
-                                : candidate,
-                            ),
-                          }))
-                        }
-                      >
-                        {es ? "Eliminar" : "Remove"}
-                      </button>
                     </div>
+                  </section>
 
-                    {foodLike && (
-                      <details className="catalogue-allergens" open>
-                        <summary>
-                          <strong>
-                            {es
-                              ? "Alérgenos UE · revisar antes de publicar"
-                              : "EU allergens · review before publishing"}
-                          </strong>
-                        </summary>
-                        <p className="fine-print">
-                          {es
-                            ? "Pulsa cada alérgeno para cambiar entre: sin revisar, contiene, puede contener y no está en la receta. «No está en la receta» no garantiza ausencia de contaminación cruzada."
-                            : "Tap each allergen to cycle: not reviewed, contains, may contain, and not in recipe. “Not in recipe” does not guarantee absence of cross-contact."}
-                        </p>
-                        <div className="allergen-toggle-grid">
-                          {euAllergens.map(([key, icon, esLabel, enLabel]) => {
-                            const state = item.allergens.states[key];
-                            return (
-                              <button
-                                key={key}
-                                type="button"
-                                className="allergen-toggle"
-                                data-state={state}
-                                onClick={() =>
-                                  cycleAllergen(section.id, item, key)
-                                }
-                              >
-                                <span aria-hidden="true">{icon}</span>
-                                <strong>{es ? esLabel : enLabel}</strong>
-                                <small>{stateLabel(state, es)}</small>
-                              </button>
-                            );
-                          })}
+                  {foodLike && (
+                    <section className="catalogue-item-studio-panel allergen-studio">
+                      <header className="allergen-studio-head">
+                        <div>
+                          <span className="eyebrow">
+                            {es ? "Seguridad alimentaria" : "Food safety"}
+                          </span>
+                          <h4>
+                            {es ? "Alérgenos UE" : "EU allergens"}
+                          </h4>
+                          <p>
+                            {reviewedAllergens}/14{" "}
+                            {es ? "revisados" : "reviewed"}
+                          </p>
                         </div>
+                        <span
+                          className={
+                            selectedItem.allergens.reviewConfirmed
+                              ? "allergen-review-badge confirmed"
+                              : "allergen-review-badge"
+                          }
+                        >
+                          {selectedItem.allergens.reviewConfirmed
+                            ? es
+                              ? "Revisión confirmada"
+                              : "Review confirmed"
+                            : es
+                              ? "Pendiente"
+                              : "Pending"}
+                        </span>
+                      </header>
+
+                      <div className="allergen-toggle-grid compact">
+                        {euAllergens.map(([key, icon, esLabel, enLabel]) => {
+                          const state = selectedItem.allergens.states[key];
+                          return (
+                            <button
+                              key={key}
+                              type="button"
+                              className="allergen-toggle"
+                              data-state={state}
+                              onClick={() =>
+                                cycleAllergen(
+                                  selectedSection.id,
+                                  selectedItem,
+                                  key,
+                                )
+                              }
+                            >
+                              <span aria-hidden="true">{icon}</span>
+                              <strong>{es ? esLabel : enLabel}</strong>
+                              <small>{stateLabel(state, es)}</small>
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      <div className="allergen-studio-tools">
                         <button
                           type="button"
                           className="button secondary"
                           onClick={() =>
-                            updateItem(section.id, item.id, {
-                              ...item,
+                            updateItem(selectedSection.id, selectedItem.id, {
+                              ...selectedItem,
                               allergens: {
-                                ...item.allergens,
+                                ...selectedItem.allergens,
                                 states: Object.fromEntries(
                                   euAllergens.map(([key]) => [
                                     key,
-                                    item.allergens.states[key] === "unknown"
+                                    selectedItem.allergens.states[key] ===
+                                    "unknown"
                                       ? "not_in_recipe"
-                                      : item.allergens.states[key],
+                                      : selectedItem.allergens.states[key],
                                   ]),
                                 ) as CatalogueItem["allergens"]["states"],
                                 reviewConfirmed: false,
@@ -569,98 +904,127 @@ export function VenueCatalogueEditor({
                           }
                         >
                           {es
-                            ? "Marcar los no revisados como «No en receta»"
-                            : "Mark unreviewed as “Not in recipe”"}
+                            ? "Completar vacíos como «No en receta»"
+                            : "Mark blanks as “Not in recipe”"}
                         </button>
-                        {["contains", "may_contain"].includes(
-                          item.allergens.states.gluten,
-                        ) && (
-                          <fieldset className="allergen-detail-options">
-                            <legend>{es ? "Cereales con gluten" : "Gluten cereals"}</legend>
-                            {[
-                              ["wheat", "Trigo", "Wheat"],
-                              ["rye", "Centeno", "Rye"],
-                              ["barley", "Cebada", "Barley"],
-                              ["oats", "Avena", "Oats"],
-                              ["spelt", "Espelta", "Spelt"],
-                              ["khorasan", "Khorasan", "Khorasan"],
-                            ].map(([key, esLabel, enLabel]) => (
-                              <label className="check-row" key={key}>
-                                <input
-                                  type="checkbox"
-                                  checked={item.allergens.cereals.includes(key)}
-                                  onChange={(event) =>
-                                    updateItem(section.id, item.id, {
-                                      ...item,
+                      </div>
+
+                      {["contains", "may_contain"].includes(
+                        selectedItem.allergens.states.gluten,
+                      ) && (
+                        <fieldset className="allergen-detail-options">
+                          <legend>
+                            {es ? "Cereales con gluten" : "Gluten cereals"}
+                          </legend>
+                          {[
+                            ["wheat", "Trigo", "Wheat"],
+                            ["rye", "Centeno", "Rye"],
+                            ["barley", "Cebada", "Barley"],
+                            ["oats", "Avena", "Oats"],
+                            ["spelt", "Espelta", "Spelt"],
+                            ["khorasan", "Khorasan", "Khorasan"],
+                          ].map(([key, esLabel, enLabel]) => (
+                            <label className="check-row" key={key}>
+                              <input
+                                type="checkbox"
+                                checked={selectedItem.allergens.cereals.includes(
+                                  key,
+                                )}
+                                onChange={(event) =>
+                                  updateItem(
+                                    selectedSection.id,
+                                    selectedItem.id,
+                                    {
+                                      ...selectedItem,
                                       allergens: {
-                                        ...item.allergens,
+                                        ...selectedItem.allergens,
                                         cereals: event.target.checked
-                                          ? [...item.allergens.cereals, key]
-                                          : item.allergens.cereals.filter(
+                                          ? [
+                                              ...selectedItem.allergens.cereals,
+                                              key,
+                                            ]
+                                          : selectedItem.allergens.cereals.filter(
                                               (value) => value !== key,
                                             ),
                                         reviewConfirmed: false,
                                       },
-                                    })
-                                  }
-                                />
-                                {es ? esLabel : enLabel}
-                              </label>
-                            ))}
-                          </fieldset>
-                        )}
-                        {["contains", "may_contain"].includes(
-                          item.allergens.states.nuts,
-                        ) && (
-                          <fieldset className="allergen-detail-options">
-                            <legend>{es ? "Frutos de cáscara" : "Tree nuts"}</legend>
-                            {[
-                              ["almond", "Almendra", "Almond"],
-                              ["hazelnut", "Avellana", "Hazelnut"],
-                              ["walnut", "Nuez", "Walnut"],
-                              ["cashew", "Anacardo", "Cashew"],
-                              ["pecan", "Pecana", "Pecan"],
-                              ["brazil", "Nuez de Brasil", "Brazil nut"],
-                              ["pistachio", "Pistacho", "Pistachio"],
-                              ["macadamia", "Macadamia", "Macadamia"],
-                            ].map(([key, esLabel, enLabel]) => (
-                              <label className="check-row" key={key}>
-                                <input
-                                  type="checkbox"
-                                  checked={item.allergens.nuts.includes(key)}
-                                  onChange={(event) =>
-                                    updateItem(section.id, item.id, {
-                                      ...item,
+                                    },
+                                  )
+                                }
+                              />
+                              {es ? esLabel : enLabel}
+                            </label>
+                          ))}
+                        </fieldset>
+                      )}
+
+                      {["contains", "may_contain"].includes(
+                        selectedItem.allergens.states.nuts,
+                      ) && (
+                        <fieldset className="allergen-detail-options">
+                          <legend>
+                            {es ? "Frutos de cáscara" : "Tree nuts"}
+                          </legend>
+                          {[
+                            ["almond", "Almendra", "Almond"],
+                            ["hazelnut", "Avellana", "Hazelnut"],
+                            ["walnut", "Nuez", "Walnut"],
+                            ["cashew", "Anacardo", "Cashew"],
+                            ["pecan", "Pecana", "Pecan"],
+                            ["brazil", "Nuez de Brasil", "Brazil nut"],
+                            ["pistachio", "Pistacho", "Pistachio"],
+                            ["macadamia", "Macadamia", "Macadamia"],
+                          ].map(([key, esLabel, enLabel]) => (
+                            <label className="check-row" key={key}>
+                              <input
+                                type="checkbox"
+                                checked={selectedItem.allergens.nuts.includes(
+                                  key,
+                                )}
+                                onChange={(event) =>
+                                  updateItem(
+                                    selectedSection.id,
+                                    selectedItem.id,
+                                    {
+                                      ...selectedItem,
                                       allergens: {
-                                        ...item.allergens,
+                                        ...selectedItem.allergens,
                                         nuts: event.target.checked
-                                          ? [...item.allergens.nuts, key]
-                                          : item.allergens.nuts.filter(
+                                          ? [...selectedItem.allergens.nuts, key]
+                                          : selectedItem.allergens.nuts.filter(
                                               (value) => value !== key,
                                             ),
                                         reviewConfirmed: false,
                                       },
-                                    })
-                                  }
-                                />
-                                {es ? esLabel : enLabel}
-                              </label>
-                            ))}
-                          </fieldset>
-                        )}
+                                    },
+                                  )
+                                }
+                              />
+                              {es ? esLabel : enLabel}
+                            </label>
+                          ))}
+                        </fieldset>
+                      )}
+
+                      <div className="allergen-studio-footer">
                         <label>
                           {es ? "Contaminación cruzada" : "Cross-contact"}
                           <select
-                            value={item.allergens.crossContact}
+                            value={selectedItem.allergens.crossContact}
                             onChange={(event) =>
-                              updateItem(section.id, item.id, {
-                                ...item,
-                                allergens: {
-                                  ...item.allergens,
-                                  crossContact: event.target.value as CatalogueItem["allergens"]["crossContact"],
-                                  reviewConfirmed: false,
+                              updateItem(
+                                selectedSection.id,
+                                selectedItem.id,
+                                {
+                                  ...selectedItem,
+                                  allergens: {
+                                    ...selectedItem.allergens,
+                                    crossContact: event.target
+                                      .value as CatalogueItem["allergens"]["crossContact"],
+                                    reviewConfirmed: false,
+                                  },
                                 },
-                              })
+                              )
                             }
                           >
                             <option value="unknown">
@@ -674,64 +1038,69 @@ export function VenueCatalogueEditor({
                             </option>
                           </select>
                         </label>
-                        <label className="check-row">
+
+                        <label className="catalogue-review-confirm">
                           <input
                             type="checkbox"
-                            checked={Boolean(item.allergens.reviewConfirmed)}
+                            checked={Boolean(
+                              selectedItem.allergens.reviewConfirmed,
+                            )}
                             onChange={(event) =>
-                              updateItem(section.id, item.id, {
-                                ...item,
-                                allergens: {
-                                  ...item.allergens,
-                                  reviewConfirmed: event.target.checked,
+                              updateItem(
+                                selectedSection.id,
+                                selectedItem.id,
+                                {
+                                  ...selectedItem,
+                                  allergens: {
+                                    ...selectedItem.allergens,
+                                    reviewConfirmed: event.target.checked,
+                                  },
                                 },
-                              })
+                              )
                             }
                           />
-                          {es
-                            ? "Confirmo que he revisado los 14 alérgenos para esta receta"
-                            : "I confirm I reviewed all 14 allergens for this recipe"}
+                          <span>
+                            <strong>
+                              {es
+                                ? "He revisado los 14 alérgenos"
+                                : "I reviewed all 14 allergens"}
+                            </strong>
+                            <small>
+                              {es
+                                ? "Solo tendrás que volver a confirmarlo si cambias la receta o los datos de alérgenos."
+                                : "You only need to reconfirm after changing recipe or allergen data."}
+                            </small>
+                          </span>
                         </label>
-                      </details>
-                    )}
-                  </article>
-                );
-              })}
-            </div>
-
-            <button
-              type="button"
-              className="button secondary"
-              onClick={() => addItem(section.id)}
-            >
-              {es ? "+ Añadir elemento" : "+ Add item"}
-            </button>
-            <small>
-              {es ? "Sección " + (sectionIndex + 1) : "Section " + (sectionIndex + 1)}
-            </small>
-          </section>
-        ))}
+                      </div>
+                    </section>
+                  )}
+                </article>
+              )}
+            </>
+          )}
+        </main>
       </div>
 
-      <button type="button" className="button secondary" onClick={addSection}>
-        {es ? "+ Añadir sección" : "+ Add section"}
-      </button>
-
-      <div className="catalogue-editor-footer">
-        <span>
-          {itemCount} {es ? "elementos" : "items"} ·{" "}
-          {es
-            ? "Los cambios no son públicos hasta publicar."
-            : "Changes stay private until published."}
-        </span>
+      <footer className="catalogue-studio-footer">
         <div>
+          <strong>
+            {itemCount} {es ? "elementos" : "items"}
+          </strong>
+          <span>
+            {es
+              ? "Los cambios no son públicos hasta publicar."
+              : "Changes stay private until published."}
+          </span>
+        </div>
+        <div className="catalogue-studio-footer-actions">
           {publishedRevision !== null && (
             <form action={unpublishVenueCatalogue}>
               <input type="hidden" name="locale" value={locale} />
               <input type="hidden" name="venueId" value={venueId} />
               <input type="hidden" name="expectedRevision" value={revision} />
               <button className="button secondary" type="submit">
-                {es ? "Ocultar del público" : "Unpublish"}
+                {es ? "Ocultar" : "Unpublish"}
               </button>
             </form>
           )}
@@ -739,16 +1108,30 @@ export function VenueCatalogueEditor({
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="venueId" value={venueId} />
             <input type="hidden" name="expectedRevision" value={revision} />
-            <input type="hidden" name="document" value={JSON.stringify(document)} />
-            <button className="button secondary" type="submit" name="publish" value="0">
+            <input
+              type="hidden"
+              name="document"
+              value={JSON.stringify(document)}
+            />
+            <button
+              className="button secondary"
+              type="submit"
+              name="publish"
+              value="0"
+            >
               {es ? "Guardar borrador" : "Save draft"}
             </button>
-            <button className="button" type="submit" name="publish" value="1">
-              {es ? "Publicar" : "Publish"}
+            <button
+              className="button"
+              type="submit"
+              name="publish"
+              value="1"
+            >
+              {es ? "Publicar cambios" : "Publish changes"}
             </button>
           </form>
         </div>
-      </div>
+      </footer>
     </div>
   );
 }
