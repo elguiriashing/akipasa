@@ -47,10 +47,41 @@ on conflict (id) do update set
   discovery_enabled=true,
   search_enabled=true;
 
--- Staff access to this publisher is role-based in AkiBusiness rather than
--- persisted in venue_members. venue_members changes reconcile paid business
--- entitlements, so writing editorial staff there would create an entitlement
--- trigger loop and incorrectly turn a platform role into a business package.
+-- Staff access to this publisher is role-based rather than persisted in
+-- venue_members. venue_members changes reconcile paid business entitlements,
+-- so editorial membership rows would incorrectly alter subscription state.
+create or replace function public.is_venue_member(
+  target_venue uuid,
+  allowed_roles public.venue_member_role[] default array[
+    'editor'::public.venue_member_role,
+    'manager'::public.venue_member_role,
+    'owner'::public.venue_member_role
+  ]
+)
+returns boolean
+language sql
+stable
+security definer
+set search_path='public'
+as $
+  select
+    exists (
+      select 1 from public.profiles
+      where id=auth.uid() and app_role='administrator'::public.app_role
+    )
+    or (
+      target_venue='a1a1a1a1-2026-4000-8000-000000000001'::uuid
+      and public.has_platform_role(
+        array['moderator','administrator']::public.app_role[]
+      )
+    )
+    or exists (
+      select 1 from public.venue_members
+      where venue_id=target_venue
+        and profile_id=auth.uid()
+        and role=any(allowed_roles)
+    );
+$;
 
 create or replace function public.create_akipasa_selection_event(
   p_category uuid,
