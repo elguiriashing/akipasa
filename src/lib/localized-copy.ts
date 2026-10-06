@@ -171,10 +171,16 @@ export async function translateSubmittedLocalizedFields(
     }
 
     if (existingSource) {
-      keep[key] = {
-        es: existing.es || "",
-        en: existing.en || "",
-      };
+      if (existingFallback && existingFallback === existingSource) {
+        // A previous translator outage may have copied the source into both
+        // locales. Retry it instead of treating that fallback as translated.
+        translateFromSource[key] = value;
+      } else {
+        keep[key] = {
+          es: existing.es || "",
+          en: existing.en || "",
+        };
+      }
       continue;
     }
 
@@ -332,12 +338,18 @@ export async function translateVenueCatalogueDocument(
           translatedValue,
           target.maxLength,
         );
-        target.pair._translation = {
-          sourceLocale: target.sourceLocale,
-          sourceHash: target.hash,
-          esHash: catalogueTextHash(target.pair.es.trim()),
-          enHash: catalogueTextHash(target.pair.en.trim()),
-        };
+        if (translatedValue.trim() !== target.source.trim()) {
+          target.pair._translation = {
+            sourceLocale: target.sourceLocale,
+            sourceHash: target.hash,
+            esHash: catalogueTextHash(target.pair.es.trim()),
+            enHash: catalogueTextHash(target.pair.en.trim()),
+          };
+        } else {
+          // Exact copies can be legitimate names, but they are also our
+          // outage fallback. Leaving them unmarked lets the next save retry.
+          delete target.pair._translation;
+        }
       });
     } catch (error) {
       if (batch.length === 1) throw error;
