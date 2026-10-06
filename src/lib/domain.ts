@@ -62,6 +62,7 @@ export type Event = {
   currency: "EUR";
   source: "verified_venue" | "community" | "akipasa_selection";
   location?: { latitude: number; longitude: number; label: string };
+  directionsAddress?: string;
   sponsored: boolean;
   bookingUrl?: string;
   minimumAge?: number;
