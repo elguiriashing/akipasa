@@ -14,6 +14,7 @@ import {
   submitVenueClaim,
 } from "./actions";
 import { SpainAddressAutocomplete } from "@/components/SpainAddressAutocomplete";
+import { OfficialEventLocationPicker } from "@/components/OfficialEventLocationPicker";
 import { PromotionRequestFields } from "@/components/PromotionRequestFields";
 import { Icon } from "@/components/Icons";
 import { ClaimVenuePicker } from "@/components/ClaimVenuePicker";
@@ -584,7 +585,7 @@ export default async function BusinessPage({
                   />
                 </label>
               </div>
-              <SpainAddressAutocomplete locale={locale} mode="address" />
+              <OfficialEventLocationPicker locale={locale} />
               <label>
                 {es ? "Descripción" : "Description"}
                 <textarea name="description" required minLength={20} maxLength={4000} rows={4} />

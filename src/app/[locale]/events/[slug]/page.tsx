@@ -60,6 +60,17 @@ export default async function EventPage({
         address: event.location.label,
       }
     : resolvedVenue;
+  const directionsPlace = event.location
+    ? {
+        address: event.location.directionsAddress || "",
+        latitude: event.location.directionsAddress
+          ? undefined
+          : event.location.latitude,
+        longitude: event.location.directionsAddress
+          ? undefined
+          : event.location.longitude,
+      }
+    : resolvedVenue;
   const m = msg(locale);
   const returnTo = `/${locale}/events/${event.slug}`;
   const { supabase, user } = await optionalUser();
@@ -137,7 +148,10 @@ export default async function EventPage({
         event.source === "akipasa_selection"
           ? translated(event.title, locale)
           : resolvedVenue.name,
-      address: event.location?.label || resolvedVenue.address,
+      address:
+        event.location?.directionsAddress ||
+        event.location?.label ||
+        resolvedVenue.address,
     },
     offers: {
       "@type": "Offer",
@@ -267,7 +281,7 @@ export default async function EventPage({
               <div className="actions detail-actions">
                 <TrackedLink
                   className="button"
-                  href={googleMapsDirectionsUrl(eventPlace)}
+                  href={googleMapsDirectionsUrl(directionsPlace)}
                   target="_blank"
                   rel="noreferrer"
                   action="directions_click"
