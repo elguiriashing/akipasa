@@ -200,6 +200,16 @@ export async function translateVenueCatalogueDocument(
   const register = (pair: CatalogueText, maxLength: number) => {
     const requestedSource = pair[sourceLocale].trim();
     const fallbackSource = pair[requestedTargetLocale].trim();
+    const requestedHash = sourceHash(requestedSource);
+
+    if (
+      requestedSource &&
+      pair[requestedTargetLocale].trim() &&
+      pair._translation?.[`${sourceLocale}Hash`] === requestedHash
+    ) {
+      return;
+    }
+
     const actualSourceLocale: Locale = requestedSource
       ? sourceLocale
       : fallbackSource
@@ -216,6 +226,8 @@ export async function translateVenueCatalogueDocument(
       pair._translation = {
         sourceLocale: actualSourceLocale,
         sourceHash: hash,
+        esHash: sourceHash(""),
+        enHash: sourceHash(""),
       };
       return;
     }
@@ -283,6 +295,8 @@ export async function translateVenueCatalogueDocument(
         target.pair._translation = {
           sourceLocale: target.sourceLocale,
           sourceHash: target.hash,
+          esHash: sourceHash(target.pair.es.trim()),
+          enHash: sourceHash(target.pair.en.trim()),
         };
       });
     } catch (error) {
