@@ -123,7 +123,7 @@ export async function updateEvent(formData: FormData) {
       eventId: z.string().uuid(),
       title: z.string().trim().min(3).max(160),
       description: z.string().trim().min(20).max(4000),
-      priceCents: z.coerce.number().int().min(0).max(1000000),
+      priceEuros: z.coerce.number().min(0).max(10000),
       bookingUrl: safeExternalUrlSchema,
       minimumAge: z.union([
         z.literal(""),
@@ -158,7 +158,7 @@ export async function updateEvent(formData: FormData) {
       title_en: localized.title.en,
       description_es: localized.description.es,
       description_en: localized.description.en,
-      price_cents: v.priceCents,
+      price_cents: Math.round(v.priceEuros * 100),
       booking_url: v.bookingUrl || null,
       minimum_age: v.minimumAge === "" ? null : v.minimumAge,
       accessibility_notes_es: localized.accessibilityNotes.es || null,
