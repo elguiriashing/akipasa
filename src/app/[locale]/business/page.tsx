@@ -605,8 +605,8 @@ export default async function BusinessPage({
               </label>
               <div className="form-grid-two">
                 <label>
-                  {es ? "Precio en céntimos" : "Price in cents"}
-                  <input name="priceCents" type="number" min="0" defaultValue="0" required />
+                  {es ? "Precio (€)" : "Price (€)"}
+                  <input name="priceEuros" type="number" min="0" defaultValue="0" step="0.01" required />
                 </label>
                 <label>
                   {es ? "Enlace oficial / reserva" : "Official / booking link"}
@@ -744,12 +744,13 @@ export default async function BusinessPage({
 
               <div className="form-grid-two">
                 <label>
-                  {es ? "Precio en céntimos" : "Price in cents"}
+                  {es ? "Precio (€)" : "Price (€)"}
                   <input
-                    name="priceCents"
+                    name="priceEuros"
                     type="number"
                     min="0"
                     defaultValue="0"
+                    step="0.01"
                     required
                   />
                 </label>
