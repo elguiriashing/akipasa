@@ -3,7 +3,9 @@ import Link from "next/link";
 import { OwnerReadiness } from "@/components/OwnerReadiness";
 import { Icon } from "@/components/Icons";
 import { VenueDashboard } from "@/components/VenueDashboard";
+import { VenueCatalogueEditor } from "@/components/VenueCatalogueEditor";
 import { getVenueDashboardSection } from "@/lib/venue-dashboard";
+import { parseCatalogueDocument } from "@/lib/venue-catalogue";
 import { notFound } from "next/navigation";
 import { VenueQrCode } from "@/components/VenueQrCode";
 import { requireBusinessAccess } from "@/lib/entitlements";
@@ -87,6 +89,7 @@ export default async function VenueWorkspace({
     { data: bookingSettings },
     { data: bookingSlots },
     { data: bookingRequests },
+    { data: catalogue },
     { data: audience },
     { data: ownerResults, error: ownerResultsError },
   ] = await Promise.all([
@@ -161,10 +164,23 @@ export default async function VenueWorkspace({
       )
       .eq("venue_id", id)
       .order("created_at", { ascending: false }),
+    supabase
+      .from("venue_catalogues")
+      .select("revision,draft_document,published_revision,published_at")
+      .eq("venue_id", id)
+      .maybeSingle(),
     supabase.rpc("venue_event_audience_summary", { p_venue: id }),
     supabase.rpc("venue_owner_results", { p_venue: id }),
   ]);
   if (!venue) notFound();
+  const catalogueDocument = parseCatalogueDocument(
+    catalogue?.draft_document,
+    locale,
+  );
+  const catalogueItemCount = catalogueDocument.sections.reduce(
+    (sum, section) => sum + section.items.length,
+    0,
+  );
   const isOwner = members?.some(
     (member) => member.profile_id === user.id && member.role === "owner",
   );
@@ -192,6 +208,7 @@ export default async function VenueWorkspace({
       counts={{
         photos: media?.length || 0,
         events: events?.length || 0,
+        catalogueItems: catalogueItemCount,
         programs: programs?.filter((program) => program.active).length || 0,
         credentials: credentials?.length || 0,
         requests:
@@ -852,6 +869,24 @@ export default async function VenueWorkspace({
               </div>
             </details>
           </>
+        ),
+        catalogue: (
+          <section className="panel">
+            <VenueCatalogueEditor
+              locale={locale}
+              venueId={id}
+              revision={catalogue?.revision || 0}
+              publishedRevision={catalogue?.published_revision ?? null}
+              initialDocument={catalogueDocument}
+            />
+            {query.error === "allergens" && (
+              <p className="notice notice-error" role="alert">
+                {es
+                  ? "Revisa los 14 alérgenos de cada comida/bebida visible antes de publicar."
+                  : "Review all 14 allergens for every visible food/drink item before publishing."}
+              </p>
+            )}
+          </section>
         ),
         rewards: (
           <>
