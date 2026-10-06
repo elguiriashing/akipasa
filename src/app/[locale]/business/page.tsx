@@ -14,6 +14,7 @@ import {
   submitVenueClaim,
 } from "./actions";
 import { SpainAddressAutocomplete } from "@/components/SpainAddressAutocomplete";
+import { OfficialEventLocationPicker } from "@/components/OfficialEventLocationPicker";
 import { PromotionRequestFields } from "@/components/PromotionRequestFields";
 import { Icon } from "@/components/Icons";
 import { ClaimVenuePicker } from "@/components/ClaimVenuePicker";
@@ -584,7 +585,7 @@ export default async function BusinessPage({
                   />
                 </label>
               </div>
-              <SpainAddressAutocomplete locale={locale} mode="address" />
+              <OfficialEventLocationPicker locale={locale} />
               <label>
                 {es ? "Descripción" : "Description"}
                 <textarea name="description" required minLength={20} maxLength={4000} rows={4} />
@@ -673,35 +674,6 @@ export default async function BusinessPage({
                   />
                 </label>
               </div>
-
-              {platformStaff && editorialVenue && (
-                <div className="official-event-location-panel">
-                  <div>
-                    <span className="eyebrow">
-                      {es ? "Selección AkiPasa" : "AkiPasa Selection"}
-                    </span>
-                    <h3>
-                      {es ? "Ubicación real del evento" : "Actual event location"}
-                    </h3>
-                    <p className="muted">
-                      {es
-                        ? "Si publicas desde el local AkiPasa, esta ubicación coloca la feria, romería o fiesta donde realmente ocurre."
-                        : "When publishing from the AkiPasa venue, this location places the fair, romería or town event where it actually happens."}
-                    </p>
-                  </div>
-                  <SpainAddressAutocomplete locale={locale} mode="address" />
-                  <label>
-                    {es ? "Nombre del lugar (opcional)" : "Place name (optional)"}
-                    <input
-                      name="officialLocationName"
-                      maxLength={160}
-                      placeholder={
-                        es ? "Ej. Recinto Ferial de Fuengirola" : "e.g. Fuengirola Fairground"
-                      }
-                    />
-                  </label>
-                </div>
-              )}
 
               <div className="form-grid-two">
                 <label>
