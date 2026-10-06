@@ -63,7 +63,7 @@ language sql
 stable
 security definer
 set search_path='public'
-as $
+as $member$
   select
     exists (
       select 1 from public.profiles
@@ -81,7 +81,7 @@ as $
         and profile_id=auth.uid()
         and role=any(allowed_roles)
     );
-$;
+$member$;
 
 create or replace function public.create_akipasa_selection_event(
   p_category uuid,
