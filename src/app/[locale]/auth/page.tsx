@@ -63,19 +63,6 @@ export default async function AuthPage({
                 ? "Tu cuenta AkiPasa"
                 : "Your AkiPasa account"}
           </h1>
-          <p className="lede">
-            {isBusinessHost
-              ? es
-                ? "Tus locales, eventos, fidelidad, promociones y analítica en un portal dedicado."
-                : "Your venues, events, loyalty, promotions and analytics in one dedicated portal."
-              : businessIntent
-              ? es
-                ? "Después volverás directamente a la solicitud de tu negocio. No pagarás nada hoy."
-                : "Afterwards, we will take you straight back to your business application. You will not pay anything today."
-              : es
-                ? "Crea una cuenta con email, entra con Google o usa un enlace seguro."
-                : "Create an account with email, continue with Google, or use a secure link."}
-          </p>
         </div>
         <aside className="auth-product-portals">
           <span>{es ? "Elige tu espacio" : "Choose your workspace"}</span>
@@ -86,11 +73,6 @@ export default async function AuthPage({
             <i className="auth-product-dot auth-product-dot-akipasa" aria-hidden="true" />
             <span>
               <strong>AkiPasa</strong>
-              <small>
-                {es
-                  ? "Explora, guarda, Passport, AkiPals y comunidad."
-                  : "Explore, save, Passport, AkiPals and community."}
-              </small>
             </span>
           </a>
           <a
@@ -100,22 +82,12 @@ export default async function AuthPage({
             <i className="auth-product-dot auth-product-dot-business" aria-hidden="true" />
             <span>
               <strong>AkiBusiness</strong>
-              <small>
-                {es
-                  ? "Gestiona tu ficha, eventos, fidelidad y promoción."
-                  : "Manage your listing, events, loyalty and promotion."}
-              </small>
             </span>
           </a>
           <a className="auth-product-card" href={config.crmUrl}>
             <i className="auth-product-dot auth-product-dot-hq" aria-hidden="true" />
             <span>
               <strong>AkiHQ</strong>
-              <small>
-                {es
-                  ? "CRM, PoS, inventario y operaciones."
-                  : "CRM, PoS, inventory and operations."}
-              </small>
             </span>
           </a>
         </aside>
