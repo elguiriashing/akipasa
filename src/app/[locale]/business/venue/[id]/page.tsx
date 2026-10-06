@@ -251,177 +251,325 @@ export default async function VenueWorkspace({
       sections={{
         profile: (
           <>
-            <section className="panel">
-              <h2>{es ? "Datos del local" : "Venue details"}</h2>
-              <form action={updateVenue} className="stack">
-                <input type="hidden" name="locale" value={locale} />
-                <input type="hidden" name="venueId" value={id} />
-                <div className="venue-form-columns">
-                  <div className="stack">
-                    <label>
-                      {es ? "Nombre" : "Name"}
-                      <input name="name" defaultValue={venue.name} required />
-                    </label>
-                    <label>
-                      {es ? "Descripción" : "Description"}
-                      <textarea
-                        name="description"
-                        defaultValue={
-                          es
-                            ? venue.description_es
-                            : venue.description_en || ""
-                        }
-                        required
-                        minLength={20}
-                      />
-                    </label>
+            <section className="panel profile-hub">
+              <div className="profile-summary-grid">
+                <article className="profile-summary-card">
+                  <span className="summary-icon">
+                    <Icon name="venue" />
+                  </span>
+                  <div>
+                    <small>{es ? "Identidad" : "Identity"}</small>
+                    <strong>{venue.name}</strong>
+                    <span>
+                      {(es
+                        ? venue.description_es
+                        : venue.description_en || venue.description_es
+                      ).slice(0, 90)}
+                    </span>
                   </div>
-                  <div className="stack">
-                    <SpainAddressAutocomplete
-                      locale={locale}
-                      mode="address"
-                      defaultValue={venue.address}
-                    />
-                    <div className="two-col">
+                </article>
+                <article className="profile-summary-card">
+                  <span className="summary-icon">
+                    <Icon name="map" />
+                  </span>
+                  <div>
+                    <small>{es ? "Ubicación" : "Location"}</small>
+                    <strong>{venue.address}</strong>
+                    <span>
+                      {es ? "Dirección pública del local" : "Public venue address"}
+                    </span>
+                  </div>
+                </article>
+                <article className="profile-summary-card">
+                  <span className="summary-icon">
+                    <Icon name="person" />
+                  </span>
+                  <div>
+                    <small>{es ? "Contacto" : "Contact"}</small>
+                    <strong>
+                      {venue.contact_phone ||
+                        venue.whatsapp_phone ||
+                        venue.website_url ||
+                        (es ? "Sin añadir" : "Not added")}
+                    </strong>
+                    <span>
+                      {venue.contact_phone || venue.whatsapp_phone || venue.website_url
+                        ? es
+                          ? "Los clientes pueden contactarte"
+                          : "Customers can reach you"
+                        : es
+                          ? "Añade una forma de contacto"
+                          : "Add a contact method"}
+                    </span>
+                  </div>
+                </article>
+              </div>
+
+              <details className="workspace-action-card">
+                <summary>
+                  <span className="workspace-action-summary">
+                    <span className="summary-icon">
+                      <Icon name="settings" />
+                    </span>
+                    <span>
+                      <strong>{es ? "Editar información" : "Edit venue information"}</strong>
+                      <small>
+                        {es
+                          ? "Nombre, descripción, dirección y contacto"
+                          : "Name, description, address and contact"}
+                      </small>
+                    </span>
+                  </span>
+                </summary>
+                <form action={updateVenue} className="stack profile-editor-form">
+                  <input type="hidden" name="locale" value={locale} />
+                  <input type="hidden" name="venueId" value={id} />
+                  <div className="profile-editor-grid">
+                    <section className="form-card">
+                      <div className="form-card-heading">
+                        <span className="summary-icon">
+                          <Icon name="venue" />
+                        </span>
+                        <div>
+                          <strong>{es ? "Lo esencial" : "The essentials"}</strong>
+                          <small>
+                            {es
+                              ? "Lo primero que verá un cliente"
+                              : "The first things a customer sees"}
+                          </small>
+                        </div>
+                      </div>
                       <label>
-                        {es ? "Teléfono público" : "Public phone"}
-                        <input
-                          name="contactPhone"
-                          type="tel"
-                          inputMode="tel"
-                          placeholder="+34600111222"
-                          pattern="\+[1-9][0-9]{7,14}"
-                          defaultValue={venue.contact_phone || ""}
-                        />
+                        {es ? "Nombre" : "Name"}
+                        <input name="name" defaultValue={venue.name} required />
                       </label>
                       <label>
-                        WhatsApp
-                        <input
-                          name="whatsappPhone"
-                          type="tel"
-                          inputMode="tel"
-                          placeholder="+34600111222"
-                          pattern="\+[1-9][0-9]{7,14}"
-                          defaultValue={venue.whatsapp_phone || ""}
+                        {es ? "Descripción" : "Description"}
+                        <textarea
+                          name="description"
+                          defaultValue={
+                            es
+                              ? venue.description_es
+                              : venue.description_en || venue.description_es
+                          }
+                          required
+                          minLength={20}
+                          rows={5}
                         />
                       </label>
-                    </div>
-                    <label>
-                      {es ? "Sitio web HTTPS" : "HTTPS website"}
-                      <input
-                        name="websiteUrl"
-                        type="url"
-                        placeholder="https://"
-                        defaultValue={venue.website_url || ""}
+                    </section>
+                    <section className="form-card">
+                      <div className="form-card-heading">
+                        <span className="summary-icon">
+                          <Icon name="map" />
+                        </span>
+                        <div>
+                          <strong>{es ? "Dónde y cómo contactarte" : "Location and contact"}</strong>
+                          <small>
+                            {es
+                              ? "Información práctica para llegar o llamar"
+                              : "Practical information for visits and contact"}
+                          </small>
+                        </div>
+                      </div>
+                      <SpainAddressAutocomplete
+                        locale={locale}
+                        mode="address"
+                        defaultValue={venue.address}
                       />
-                    </label>
-                    <label className="check-row">
-                      <input
-                        type="checkbox"
-                        name="accessible"
-                        defaultChecked={Boolean(
-                          (venue.accessibility as { step_free?: boolean })
-                            ?.step_free,
-                        )}
-                      />{" "}
-                      {es ? "Acceso sin escalones" : "Step-free access"}
-                    </label>
+                      <div className="two-col">
+                        <label>
+                          {es ? "Teléfono" : "Phone"}
+                          <input
+                            name="contactPhone"
+                            type="tel"
+                            inputMode="tel"
+                            placeholder="+34600111222"
+                            pattern="\+[1-9][0-9]{7,14}"
+                            defaultValue={venue.contact_phone || ""}
+                          />
+                        </label>
+                        <label>
+                          WhatsApp
+                          <input
+                            name="whatsappPhone"
+                            type="tel"
+                            inputMode="tel"
+                            placeholder="+34600111222"
+                            pattern="\+[1-9][0-9]{7,14}"
+                            defaultValue={venue.whatsapp_phone || ""}
+                          />
+                        </label>
+                      </div>
+                      <label>
+                        {es ? "Web o enlace principal" : "Website or main link"}
+                        <input
+                          name="websiteUrl"
+                          type="url"
+                          placeholder="https://"
+                          defaultValue={venue.website_url || ""}
+                        />
+                      </label>
+                      <label className="check-row">
+                        <input
+                          type="checkbox"
+                          name="accessible"
+                          defaultChecked={Boolean(
+                            (venue.accessibility as { step_free?: boolean })
+                              ?.step_free,
+                          )}
+                        />
+                        {es ? "Acceso sin escalones" : "Step-free access"}
+                      </label>
+                    </section>
                   </div>
-                </div>
-                <button className="button" type="submit">
-                  {es
-                    ? "Guardar y enviar a revisión"
-                    : "Save and submit for review"}
-                </button>
-              </form>
+                  <div className="form-save-bar">
+                    <span>
+                      {es
+                        ? "Guardar enviará los cambios a revisión."
+                        : "Saving sends the changes for review."}
+                    </span>
+                    <button className="button" type="submit">
+                      {es ? "Guardar cambios" : "Save changes"}
+                    </button>
+                  </div>
+                </form>
+              </details>
             </section>
-            <details className="panel">
-              <summary>
-                <strong>{es ? "Fotos del local" : "Venue photos"}</strong>
-              </summary>
-              <form
-                action={uploadVenueImage}
-                className="stack"
-                encType="multipart/form-data"
-              >
-                <input type="hidden" name="locale" value={locale} />
-                <input type="hidden" name="venueId" value={id} />
-                <label>
-                  {es
-                    ? "Imagen JPEG, PNG o WebP (máx. 10 MB)"
-                    : "JPEG, PNG or WebP image (max 10 MB)"}
+
+            <section className="panel profile-media-hub">
+              <div className="workspace-inline-heading">
+                <div>
+                  <span className="eyebrow">{es ? "Fotos" : "Photos"}</span>
+                  <h2>{es ? "Tu local, de un vistazo" : "Show people the venue"}</h2>
+                  <p>
+                    {media?.length
+                      ? es
+                        ? `${media.length} fotos añadidas`
+                        : `${media.length} photos added`
+                      : es
+                        ? "Todavía no has añadido fotos."
+                        : "No photos added yet."}
+                  </p>
+                </div>
+              </div>
+              <details className="workspace-action-card" open={!media?.length}>
+                <summary>
+                  <span className="workspace-action-summary">
+                    <span className="summary-icon">
+                      <Icon name="plus" />
+                    </span>
+                    <span>
+                      <strong>{es ? "Añadir foto" : "Add a photo"}</strong>
+                      <small>
+                        {es
+                          ? "JPEG, PNG o WebP · máximo 10 MB"
+                          : "JPEG, PNG or WebP · max 10 MB"}
+                      </small>
+                    </span>
+                  </span>
+                </summary>
+                <form
+                  action={uploadVenueImage}
+                  className="photo-upload-grid"
+                  encType="multipart/form-data"
+                >
+                  <input type="hidden" name="locale" value={locale} />
+                  <input type="hidden" name="venueId" value={id} />
                   <input
-                    type="file"
-                    name="image"
-                    accept="image/jpeg,image/png,image/webp"
-                    required
-                  />
-                </label>
-                <label>
-                  {es ? "Texto alternativo" : "Alternative text"}
-                  <input name="alt" required minLength={3} maxLength={300} />
-                </label>
-                <label>
-                  {es ? "Orden de aparición" : "Display order"}
-                  <input
+                    type="hidden"
                     name="sortOrder"
-                    type="number"
-                    min={0}
-                    max={10000}
-                    defaultValue={media?.length || 0}
-                    required
+                    value={media?.length || 0}
                   />
-                </label>
-                <button className="button" type="submit">
-                  {es ? "Subir imagen" : "Upload image"}
-                </button>
-              </form>
-              {media?.map((item) => (
-                <details className="panel" key={item.id}>
-                  <summary>{item.alt_es}</summary>
-                  <form action={updateVenueImageMetadata} className="stack">
-                    <input type="hidden" name="locale" value={locale} />
-                    <input type="hidden" name="venueId" value={id} />
-                    <input type="hidden" name="mediaId" value={item.id} />
-                    <label>
-                      {es ? "Texto alternativo" : "Alternative text"}
-                      <input
-                        name="alt"
-                        defaultValue={
-                          es ? item.alt_es : item.alt_en || ""
-                        }
-                        required
-                        minLength={3}
-                        maxLength={300}
-                      />
-                    </label>
-                    <label>
-                      {es ? "Orden de aparición" : "Display order"}
-                      <input
-                        name="sortOrder"
-                        type="number"
-                        min={0}
-                        max={10000}
-                        defaultValue={item.sort_order}
-                        required
-                      />
-                    </label>
-                    <span>{Math.round(item.size_bytes / 1024)} KB</span>
-                    <button className="button secondary" type="submit">
-                      {es ? "Guardar imagen" : "Save image"}
-                    </button>
-                  </form>
-                  <form action={removeVenueImage}>
-                    <input type="hidden" name="locale" value={locale} />
-                    <input type="hidden" name="venueId" value={id} />
-                    <input type="hidden" name="mediaId" value={item.id} />
-                    <button className="text-button" type="submit">
-                      {es ? "Eliminar" : "Remove"}
-                    </button>
-                  </form>
-                </details>
-              ))}
-            </details>
+                  <label className="photo-file-field">
+                    {es ? "Elige una imagen" : "Choose an image"}
+                    <input
+                      type="file"
+                      name="image"
+                      accept="image/jpeg,image/png,image/webp"
+                      required
+                    />
+                  </label>
+                  <label>
+                    {es ? "Describe brevemente la foto" : "Briefly describe the photo"}
+                    <input
+                      name="alt"
+                      required
+                      minLength={3}
+                      maxLength={300}
+                      placeholder={
+                        es
+                          ? "Ej. terraza principal"
+                          : "E.g. main terrace"
+                      }
+                    />
+                  </label>
+                  <button className="button" type="submit">
+                    {es ? "Subir foto" : "Upload photo"}
+                  </button>
+                </form>
+              </details>
+              {!!media?.length && (
+                <div className="media-row-list">
+                  {media.map((item, index) => (
+                    <details className="media-row" key={item.id}>
+                      <summary>
+                        <span>
+                          <strong>
+                            {locale === "en"
+                              ? item.alt_en || item.alt_es
+                              : item.alt_es}
+                          </strong>
+                          <small>
+                            {Math.round(item.size_bytes / 1024)} KB ·{" "}
+                            {es ? `foto ${index + 1}` : `photo ${index + 1}`}
+                          </small>
+                        </span>
+                      </summary>
+                      <form action={updateVenueImageMetadata} className="media-edit-grid">
+                        <input type="hidden" name="locale" value={locale} />
+                        <input type="hidden" name="venueId" value={id} />
+                        <input type="hidden" name="mediaId" value={item.id} />
+                        <label>
+                          {es ? "Descripción" : "Description"}
+                          <input
+                            name="alt"
+                            defaultValue={
+                              es ? item.alt_es : item.alt_en || item.alt_es
+                            }
+                            required
+                            minLength={3}
+                            maxLength={300}
+                          />
+                        </label>
+                        <label>
+                          {es ? "Orden" : "Order"}
+                          <input
+                            name="sortOrder"
+                            type="number"
+                            min={0}
+                            max={10000}
+                            defaultValue={item.sort_order}
+                            required
+                          />
+                        </label>
+                        <button className="button secondary" type="submit">
+                          {es ? "Guardar" : "Save"}
+                        </button>
+                      </form>
+                      <form action={removeVenueImage}>
+                        <input type="hidden" name="locale" value={locale} />
+                        <input type="hidden" name="venueId" value={id} />
+                        <input type="hidden" name="mediaId" value={item.id} />
+                        <button className="text-button" type="submit">
+                          {es ? "Eliminar foto" : "Remove photo"}
+                        </button>
+                      </form>
+                    </details>
+                  ))}
+                </div>
+              )}
+            </section>
           </>
         ),
         events: (
@@ -548,12 +696,14 @@ export default async function VenueWorkspace({
                             />
                           </label>
                           <label>
-                            {es ? "Precio en céntimos" : "Price in cents"}
+                            {es ? "Precio (€)" : "Price (€)"}
                             <input
-                              name="priceCents"
+                              name="priceEuros"
                               type="number"
                               min="0"
-                              defaultValue={event.price_cents}
+                              max="10000"
+                              step="0.01"
+                              defaultValue={(event.price_cents / 100).toFixed(2)}
                             />
                           </label>
                           <label>
@@ -939,16 +1089,26 @@ export default async function VenueWorkspace({
           </section>
         ),
         rewards: (
-          <>
-            <section className="panel loyalty-workbench">
-              <h2>{es ? "Sellos y recompensas" : "Stamps and rewards"}</h2>
-              <p>
-                {es
-                  ? "Un solo check-in suma en todas las tarjetas activas y en los pasaportes que el cliente haya iniciado."
-                  : "One check-in credits every active stamp card and each passport the customer has started."}
-              </p>
+          <section className="panel loyalty-workbench reward-hub">
+            <div className="workspace-inline-heading">
+              <div>
+                <span className="eyebrow">{es ? "Fidelidad" : "Loyalty"}</span>
+                <h2>{es ? "Premia a la gente que vuelve" : "Reward people who come back"}</h2>
+                <p>
+                  {es
+                    ? "Empieza por una tarjeta de sellos. Lo demás es opcional."
+                    : "Start with a stamp card. Everything else is optional."}
+                </p>
+              </div>
+              <span className="status-pill">
+                {(programs || []).filter((program: any) => program.active).length}{" "}
+                {es ? "activas" : "active"}
+              </span>
+            </div>
+
+            {!!programs?.length && (
               <div className="reward-card-list">
-                {(programs || []).map((program: any) => (
+                {programs.map((program: any) => (
                   <article className="stamp-card" key={program.id}>
                     <span className="status-pill">
                       {program.stamps_required} {es ? "sellos" : "stamps"}
@@ -966,63 +1126,116 @@ export default async function VenueWorkspace({
                   </article>
                 ))}
               </div>
-              <details>
+            )}
+
+            <div className="reward-action-grid">
+              <details className="workspace-action-card reward-action-card" name="reward-action">
                 <summary>
-                  {es ? "Crear tarjeta de sellos" : "Create stamp card"}
+                  <span className="workspace-action-summary">
+                    <span className="summary-icon">
+                      <Icon name="gift" />
+                    </span>
+                    <span>
+                      <strong>{es ? "Tarjeta de sellos" : "Stamp card"}</strong>
+                      <small>
+                        {es
+                          ? "Ej. 5 visitas = café gratis"
+                          : "E.g. 5 visits = a free coffee"}
+                      </small>
+                    </span>
+                  </span>
                 </summary>
-                <form action={createStampCard} className="stack">
+                <form action={createStampCard} className="stack compact-action-form">
                   <input type="hidden" name="locale" value={locale} />
                   <input type="hidden" name="venueId" value={id} />
-                  <div className="two-col">
+                  <div className="form-grid-three">
                     <label>
-                      {es ? "Título" : "Title"}
-                      <input name="title" required minLength={3} />
+                      {es ? "Nombre de la tarjeta" : "Card name"}
+                      <input
+                        name="title"
+                        required
+                        minLength={3}
+                        placeholder={es ? "Cliente habitual" : "Regular visitor"}
+                      />
                     </label>
                     <label>
-                      {es ? "Premio resumido" : "Reward summary"}
-                      <input name="reward" required minLength={3} />
+                      {es ? "Premio" : "Reward"}
+                      <input
+                        name="reward"
+                        required
+                        minLength={3}
+                        placeholder={es ? "Café gratis" : "Free coffee"}
+                      />
+                    </label>
+                    <label>
+                      {es ? "Visitas necesarias" : "Visits needed"}
+                      <input
+                        name="stampsRequired"
+                        type="number"
+                        min="2"
+                        max="50"
+                        defaultValue="5"
+                        required
+                      />
                     </label>
                   </div>
-                  <label>
-                    {es ? "Check-ins necesarios" : "Check-ins required"}
-                    <input
-                      name="stampsRequired"
-                      type="number"
-                      min="2"
-                      max="50"
-                      defaultValue="5"
-                      required
-                    />
-                  </label>
                   <button className="button" type="submit">
                     {es ? "Crear tarjeta" : "Create card"}
                   </button>
                 </form>
               </details>
-              <details>
-                <summary>{es ? "Crear recompensa" : "Create reward"}</summary>
-                <form action={createBusinessReward} className="stack">
+
+              <details className="workspace-action-card reward-action-card" name="reward-action">
+                <summary>
+                  <span className="workspace-action-summary">
+                    <span className="summary-icon">
+                      <Icon name="star" />
+                    </span>
+                    <span>
+                      <strong>{es ? "Recompensa" : "Reward"}</strong>
+                      <small>
+                        {es
+                          ? "Crea un premio reutilizable"
+                          : "Create a reusable prize"}
+                      </small>
+                    </span>
+                  </span>
+                </summary>
+                <form action={createBusinessReward} className="stack compact-action-form">
                   <input type="hidden" name="locale" value={locale} />
                   <input type="hidden" name="venueId" value={id} />
-                  <div className="two-col">
+                  <div className="form-grid-two">
                     <label>
                       {es ? "Nombre" : "Name"}
-                      <input name="title" required />
+                      <input
+                        name="title"
+                        required
+                        placeholder={es ? "Postre gratis" : "Free dessert"}
+                      />
+                    </label>
+                    <label>
+                      {es ? "Días para usarlo" : "Days to redeem"}
+                      <input
+                        name="claimWindowDays"
+                        type="number"
+                        min="1"
+                        max="365"
+                        defaultValue="30"
+                        required
+                      />
                     </label>
                   </div>
                   <label>
-                    {es ? "Descripción y condiciones" : "Description and terms"}
-                    <textarea name="description" required />
-                  </label>
-                  <label>
-                    {es ? "Dias para canjear" : "Days to redeem"}
-                    <input
-                      name="claimWindowDays"
-                      type="number"
-                      min="1"
-                      max="365"
-                      defaultValue="30"
+                    {es ? "Qué incluye" : "What it includes"}
+                    <textarea
+                      name="description"
                       required
+                      rows={3}
+                      placeholder={
+                        es
+                          ? "Explica el premio y cualquier condición importante."
+                          : "Explain the reward and any important conditions."
+                      }
                     />
                   </label>
                   <button className="button" type="submit">
@@ -1030,130 +1243,186 @@ export default async function VenueWorkspace({
                   </button>
                 </form>
               </details>
+
+              <details className="workspace-action-card reward-action-card" name="reward-action">
+                <summary>
+                  <span className="workspace-action-summary">
+                    <span className="summary-icon">
+                      <Icon name="megaphone" />
+                    </span>
+                    <span>
+                      <strong>{es ? "Oferta temporal" : "Limited-time offer"}</strong>
+                      <small>
+                        {es
+                          ? "Promoción con fecha de inicio y fin"
+                          : "A promotion with a start and end date"}
+                      </small>
+                    </span>
+                  </span>
+                </summary>
+                <form action={saveOffer} className="stack compact-action-form">
+                  <input type="hidden" name="locale" value={locale} />
+                  <input type="hidden" name="venueId" value={id} />
+                  <div className="form-grid-two">
+                    <label>
+                      {es ? "Título" : "Title"}
+                      <input
+                        name="title"
+                        required
+                        placeholder={es ? "2x1 los martes" : "2-for-1 Tuesdays"}
+                      />
+                    </label>
+                    <label>
+                      {es ? "Quién puede verla" : "Who can see it"}
+                      <select name="audience" defaultValue="public">
+                        <option value="public">
+                          {es ? "Todo el mundo" : "Everyone"}
+                        </option>
+                        <option value="premium">
+                          {es ? "Solo Premium" : "Premium only"}
+                        </option>
+                      </select>
+                    </label>
+                  </div>
+                  <label>
+                    {es ? "Condiciones" : "Terms"}
+                    <textarea
+                      name="terms"
+                      required
+                      minLength={10}
+                      rows={3}
+                      placeholder={
+                        es
+                          ? "Solo consumo en local. No acumulable."
+                          : "Dine-in only. Cannot be combined with other offers."
+                      }
+                    />
+                  </label>
+                  <div className="form-grid-two">
+                    <label>
+                      {es ? "Empieza" : "Starts"}
+                      <input type="datetime-local" name="startsAt" required />
+                    </label>
+                    <label>
+                      {es ? "Termina" : "Ends"}
+                      <input type="datetime-local" name="endsAt" required />
+                    </label>
+                  </div>
+                  <button className="button" type="submit">
+                    {es ? "Crear oferta" : "Create offer"}
+                  </button>
+                </form>
+              </details>
+
               {!!rewards?.length && (
-                <details>
+                <details className="workspace-action-card reward-action-card" name="reward-action">
                   <summary>
-                    {es ? "Asignar recompensa" : "Assign reward"}
+                    <span className="workspace-action-summary">
+                      <span className="summary-icon">
+                        <Icon name="plus" />
+                      </span>
+                      <span>
+                        <strong>{es ? "Asignar recompensa" : "Assign a reward"}</strong>
+                        <small>
+                          {es
+                            ? "Conecta un premio a sellos o Pasaporte"
+                            : "Connect a prize to stamps or Passport"}
+                        </small>
+                      </span>
+                    </span>
                   </summary>
-                  <form action={assignReward} className="stack">
+                  <form action={assignReward} className="stack compact-action-form">
                     <input type="hidden" name="locale" value={locale} />
                     <input type="hidden" name="venueId" value={id} />
-                    <label>
-                      {es ? "Recompensa" : "Reward"}
-                      <select name="rewardId" required>
-                        {rewards.map((reward: any) => (
-                          <option value={reward.id} key={reward.id}>
-                            {locale === "en"
-                              ? reward.title_en || reward.title_es
-                              : reward.title_es}
+                    <div className="form-grid-two">
+                      <label>
+                        {es ? "Recompensa" : "Reward"}
+                        <select name="rewardId" required>
+                          {rewards.map((reward: any) => (
+                            <option value={reward.id} key={reward.id}>
+                              {locale === "en"
+                                ? reward.title_en || reward.title_es
+                                : reward.title_es}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <label>
+                        {es ? "Dónde se consigue" : "Earned from"}
+                        <select name="targetType">
+                          <option value="stamp">
+                            {es ? "Tarjeta de sellos" : "Stamp card"}
                           </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label>
-                      {es ? "Tipo" : "Type"}
-                      <select name="targetType">
-                        <option value="stamp">
-                          {es ? "Tarjeta de sellos" : "Stamp card"}
-                        </option>
-                        <option value="passport">
-                          {es ? "Pasaporte" : "Passport"}
-                        </option>
-                      </select>
-                    </label>
-                    <label>
-                      {es ? "Tarjeta o pasaporte" : "Card or passport"}
-                      <select name="targetId" required>
-                        {(programs || []).map((program: any) => (
-                          <option value={program.id} key={program.id}>
-                            {es ? "Sellos" : "Stamps"}: {program.title_es}
+                          <option value="passport">
+                            {es ? "Pasaporte" : "Passport"}
                           </option>
-                        ))}
-                        {(passportOptions || []).map((passport: any) => (
-                          <option value={passport.id} key={passport.id}>
-                            {es ? "Pasaporte" : "Passport"}:{" "}
-                            {locale === "en"
-                              ? passport.title_en || passport.title_es
-                              : passport.title_es}
+                        </select>
+                      </label>
+                    </div>
+                    <div className="form-grid-two">
+                      <label>
+                        {es ? "Tarjeta o pasaporte" : "Card or passport"}
+                        <select name="targetId" required>
+                          {(programs || []).map((program: any) => (
+                            <option value={program.id} key={program.id}>
+                              {es ? "Sellos" : "Stamps"}: {program.title_es}
+                            </option>
+                          ))}
+                          {(passportOptions || []).map((passport: any) => (
+                            <option value={passport.id} key={passport.id}>
+                              {es ? "Pasaporte" : "Passport"}:{" "}
+                              {locale === "en"
+                                ? passport.title_en || passport.title_es
+                                : passport.title_es}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <label>
+                        {es ? "Disponible para" : "Available to"}
+                        <select name="accessTier">
+                          <option value="free">
+                            {es ? "Todo el mundo" : "Everyone"}
                           </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label>
-                      {es ? "Nivel" : "Tier"}
-                      <select name="accessTier">
-                        <option value="free">
-                          {es ? "Todos" : "Everyone"}
-                        </option>
-                        <option value="premium">Premium</option>
-                      </select>
-                    </label>
+                          <option value="premium">Premium</option>
+                        </select>
+                      </label>
+                    </div>
                     <button className="button secondary" type="submit">
                       {es ? "Asignar" : "Assign"}
                     </button>
                   </form>
                 </details>
               )}
-            </section>
-            <details className="panel">
-              <summary>
-                <strong>{es ? "Añadir oferta" : "Add offer"}</strong>
-              </summary>
-              <form action={saveOffer} className="stack">
-                <input type="hidden" name="locale" value={locale} />
-                <input type="hidden" name="venueId" value={id} />
-                <label>
-                  {es ? "Título" : "Title"}
-                  <input name="title" required />
-                </label>
-                <label>
-                  {es ? "Condiciones" : "Terms"}
-                  <textarea name="terms" required minLength={10} />
-                </label>
-                <label>
-                  {es ? "Quién puede verla" : "Who can see it"}
-                  <select name="audience" defaultValue="public">
-                    <option value="public">
-                      {es ? "Todo el mundo" : "Everyone"}
-                    </option>
-                    <option value="premium">
-                      {es ? "Solo miembros Premium" : "Premium members only"}
-                    </option>
-                  </select>
-                </label>
-                <div className="two-col">
-                  <label>
-                    {es ? "Inicio" : "Starts"}
-                    <input type="datetime-local" name="startsAt" required />
-                  </label>
-                  <label>
-                    {es ? "Fin" : "Ends"}
-                    <input type="datetime-local" name="endsAt" required />
-                  </label>
+            </div>
+
+            {!!offers?.length && (
+              <div className="compact-managed-list">
+                <div className="workspace-inline-heading">
+                  <div>
+                    <h3>{es ? "Ofertas creadas" : "Created offers"}</h3>
+                  </div>
                 </div>
-                <button className="button" type="submit">
-                  {es ? "Crear oferta" : "Create offer"}
-                </button>
-              </form>
-              {offers?.map((offer) => (
-                <div className="managed-row" key={offer.id}>
-                  <strong>
-                    {locale === "en"
-                      ? offer.title_en || offer.title_es
-                      : offer.title_es}
-                  </strong>
-                  <span>
-                    {offer.status} ·{" "}
-                    {offer.audience === "premium"
-                      ? "Premium"
-                      : es
-                        ? "Pública"
-                        : "Public"}
-                  </span>
-                </div>
-              ))}
-            </details>
-          </>
+                {offers.map((offer) => (
+                  <div className="managed-row" key={offer.id}>
+                    <strong>
+                      {locale === "en"
+                        ? offer.title_en || offer.title_es
+                        : offer.title_es}
+                    </strong>
+                    <span>
+                      {offer.status} ·{" "}
+                      {offer.audience === "premium"
+                        ? "Premium"
+                        : es
+                          ? "Pública"
+                          : "Public"}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
         ),
         checkin: (
           <div className="venue-tool-columns">
@@ -1234,61 +1503,148 @@ export default async function VenueWorkspace({
           </div>
         ),
         bookings: (
-          <>
-            <section className="panel booking-workbench">
-              <h2>{es ? "Reservas" : "Bookings"}</h2>
-              <p>
-                {es
-                  ? "Gestiona solicitudes y horarios disponibles."
-                  : "Manage requests and available times."}
-              </p>
-              <details open={!bookingSettings}>
+          <section className="panel booking-workbench booking-hub">
+            <div className="booking-status-strip">
+              <article>
+                <small>{es ? "Modo" : "Mode"}</small>
+                <strong>
+                  {bookingSettings?.mode === "request"
+                    ? es
+                      ? "Solicitudes AkiPasa"
+                      : "AkiPasa requests"
+                    : bookingSettings?.mode === "disabled"
+                      ? es
+                        ? "Desactivado"
+                        : "Off"
+                      : es
+                        ? "Enlace externo"
+                        : "External link"}
+                </strong>
+              </article>
+              <article>
+                <small>{es ? "Horarios" : "Availability"}</small>
+                <strong>{bookingSlots?.length || 0}</strong>
+              </article>
+              <article>
+                <small>{es ? "Pendientes" : "Pending"}</small>
+                <strong>
+                  {bookingRequests?.filter(
+                    (request: any) => request.status === "requested",
+                  ).length || 0}
+                </strong>
+              </article>
+            </div>
+
+            <div className="booking-action-grid">
+              <details className="workspace-action-card" name="booking-action">
                 <summary>
-                  {es ? "Configuración de reservas" : "Booking settings"}
+                  <span className="workspace-action-summary">
+                    <span className="summary-icon">
+                      <Icon name="settings" />
+                    </span>
+                    <span>
+                      <strong>{es ? "Cómo quieres recibir reservas" : "How bookings should work"}</strong>
+                      <small>
+                        {es
+                          ? "Elige una opción y guarda. Puedes cambiarla cuando quieras."
+                          : "Choose one option and save. You can change it any time."}
+                      </small>
+                    </span>
+                  </span>
                 </summary>
-                <form action={saveBookingSettings} className="stack">
+                <form action={saveBookingSettings} className="stack compact-action-form">
                   <input type="hidden" name="locale" value={locale} />
                   <input type="hidden" name="venueId" value={id} />
+
+                    <div className="booking-mode-grid">
+                      {[
+                        {
+                          value: "external",
+                          icon: "globe" as const,
+                          title: es ? "Enlace externo" : "External link",
+                          detail: es
+                            ? "Envía al cliente a tu sistema habitual."
+                            : "Send customers to your existing booking system.",
+                        },
+                        {
+                          value: "request",
+                          icon: "inbox" as const,
+                          title: es ? "Solicitudes AkiPasa" : "AkiPasa requests",
+                          detail: es
+                            ? "Recibe y confirma solicitudes aquí."
+                            : "Receive and confirm requests here.",
+                        },
+                        {
+                          value: "disabled",
+                          icon: "close" as const,
+                          title: es ? "Sin reservas" : "Bookings off",
+                          detail: es
+                            ? "Oculta las opciones de reserva."
+                            : "Hide booking options from customers.",
+                        },
+                      ].map((mode) => (
+                        <label className="booking-mode-card" key={mode.value}>
+                          <input
+                            type="radio"
+                            name="mode"
+                            value={mode.value}
+                            defaultChecked={
+                              (bookingSettings?.mode || "external") === mode.value
+                            }
+                          />
+                          <span className="summary-icon">
+                            <Icon name={mode.icon} />
+                          </span>
+                          <span>
+                            <strong>{mode.title}</strong>
+                            <small>{mode.detail}</small>
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  <div className="booking-options-row">
+                    <label className="toggle-card">
+                      <input
+                        type="checkbox"
+                        name="requiresDeposit"
+                        defaultChecked={bookingSettings?.requires_deposit || false}
+                      />
+                      <span>
+                        <strong>{es ? "Pedir depósito" : "Require a deposit"}</strong>
+                        <small>
+                          {es
+                            ? "Actívalo solo si lo necesitas."
+                            : "Turn this on only if you need it."}
+                        </small>
+                      </span>
+                    </label>
+                    <label>
+                      {es ? "Depósito (€)" : "Deposit (€)"}
+                      <input
+                        name="depositEuros"
+                        type="number"
+                        min="0"
+                        max="10000"
+                        step="0.01"
+                        defaultValue={
+                          bookingSettings?.deposit_cents
+                            ? (bookingSettings.deposit_cents / 100).toFixed(2)
+                            : ""
+                        }
+                        placeholder="0.00"
+                      />
+                    </label>
+                  </div>
                   <label>
-                    {es ? "Modo" : "Mode"}
-                    <select
-                      name="mode"
-                      defaultValue={bookingSettings?.mode || "external"}
-                    >
-                      <option value="external">
-                        {es ? "Enlace externo" : "External link"}
-                      </option>
-                      <option value="request">
-                        {es ? "Solicitudes AkiPasa" : "AkiPasa requests"}
-                      </option>
-                      <option value="disabled">
-                        {es ? "Desactivado" : "Disabled"}
-                      </option>
-                    </select>
-                  </label>
-                  <label className="check-row">
-                    <input
-                      type="checkbox"
-                      name="requiresDeposit"
-                      defaultChecked={
-                        bookingSettings?.requires_deposit || false
-                      }
-                    />{" "}
-                    {es ? "Requiere deposito" : "Requires deposit"}
-                  </label>
-                  <label>
-                    {es ? "Deposito en centimos" : "Deposit in cents"}
-                    <input
-                      name="depositCents"
-                      type="number"
-                      min="0"
-                      defaultValue={bookingSettings?.deposit_cents || ""}
-                    />
-                  </label>
-                  <label>
-                    {es ? "Instrucciones" : "Instructions"}
+                    {es ? "Instrucciones opcionales" : "Optional instructions"}
                     <textarea
                       name="instructions"
+                      rows={3}
+                      placeholder={
+                        es
+                          ? "Ej. te confirmaremos por WhatsApp."
+                          : "E.g. we will confirm by WhatsApp."
+                      }
                       defaultValue={
                         es
                           ? bookingSettings?.instructions_es || ""
@@ -1296,74 +1652,87 @@ export default async function VenueWorkspace({
                       }
                     />
                   </label>
-                  <button className="button secondary" type="submit">
-                    {es ? "Guardar reservas" : "Save booking settings"}
+                  <button className="button" type="submit">
+                    {es ? "Guardar configuración" : "Save booking setup"}
                   </button>
                 </form>
               </details>
-              <details>
+
+              <details className="workspace-action-card" name="booking-action">
                 <summary>
-                  {es ? "Anadir disponibilidad" : "Add availability"}
+                  <span className="workspace-action-summary">
+                    <span className="summary-icon">
+                      <Icon name="calendar" />
+                    </span>
+                    <span>
+                      <strong>{es ? "Añadir disponibilidad" : "Add availability"}</strong>
+                      <small>
+                        {es
+                          ? "Crea un horario que los clientes puedan solicitar."
+                          : "Create a time slot customers can request."}
+                      </small>
+                    </span>
+                  </span>
                 </summary>
-                <form action={createBookingSlot} className="stack">
+                <form action={createBookingSlot} className="stack compact-action-form">
                   <input type="hidden" name="locale" value={locale} />
                   <input type="hidden" name="venueId" value={id} />
-                  <div className="two-col">
+                  <div className="form-grid-three">
                     <label>
-                      {es ? "Inicio" : "Starts"}
+                      {es ? "Empieza" : "Starts"}
                       <input name="startsAt" type="datetime-local" required />
                     </label>
                     <label>
-                      {es ? "Fin" : "Ends"}
+                      {es ? "Termina" : "Ends"}
                       <input name="endsAt" type="datetime-local" required />
                     </label>
+                    <label>
+                      {es ? "Capacidad" : "Capacity"}
+                      <input
+                        name="capacity"
+                        type="number"
+                        min="1"
+                        defaultValue="1"
+                        required
+                      />
+                    </label>
                   </div>
-                  <label>
-                    {es ? "Capacidad" : "Capacity"}
-                    <input
-                      name="capacity"
-                      type="number"
-                      min="1"
-                      defaultValue="1"
-                      required
-                    />
-                  </label>
                   <button className="button" type="submit">
-                    {es ? "Crear horario" : "Create slot"}
+                    {es ? "Añadir horario" : "Add slot"}
                   </button>
                 </form>
               </details>
-              {!!bookingSlots?.length && (
-                <p className="muted">
-                  {bookingSlots.length}{" "}
-                  {es ? "horarios configurados" : "slots configured"}
-                </p>
-              )}
-              {!!bookingRequests?.length && (
+            </div>
+
+            {!!bookingRequests?.length && (
+              <div className="booking-inbox">
+                <div className="workspace-inline-heading">
+                  <div>
+                    <span className="eyebrow">{es ? "Bandeja" : "Inbox"}</span>
+                    <h3>{es ? "Solicitudes" : "Requests"}</h3>
+                  </div>
+                </div>
                 <div className="managed-list">
                   {bookingRequests.map((request: any) => (
                     <form
                       action={updateBookingRequest}
-                      className="managed-row"
+                      className="managed-row booking-request-row"
                       key={request.id}
                     >
                       <input type="hidden" name="locale" value={locale} />
                       <input type="hidden" name="venueId" value={id} />
-                      <input
-                        type="hidden"
-                        name="requestId"
-                        value={request.id}
-                      />
+                      <input type="hidden" name="requestId" value={request.id} />
                       <div>
                         <strong>
-                          {request.contact_name} · {request.party_size}
+                          {request.contact_name} · {request.party_size}{" "}
+                          {es ? "personas" : "people"}
                         </strong>
-                        <span>
-                          {request.contact_email} · {request.status}
-                        </span>
+                        <span>{request.contact_email}</span>
                       </div>
+                      <span className="status-pill">{request.status}</span>
                       <select
                         name="status"
+                        aria-label={es ? "Cambiar estado" : "Change status"}
                         defaultValue={
                           request.status === "requested"
                             ? "confirmed"
@@ -1381,53 +1750,117 @@ export default async function VenueWorkspace({
                         </option>
                       </select>
                       <button className="button secondary" type="submit">
-                        {es ? "Actualizar" : "Update"}
+                        {es ? "Guardar" : "Save"}
                       </button>
                     </form>
                   ))}
                 </div>
-              )}
-            </section>
-          </>
+              </div>
+            )}
+          </section>
         ),
         team: (
           <>
-            <section className="panel">
-              <h2>{es ? "Miembros del equipo" : "Team members"}</h2>
-              {members?.map((member) => (
-                <div className="managed-row" key={member.profile_id}>
-                  <strong>
-                    {(
-                      member.profiles as unknown as {
-                        display_name: string | null;
-                      } | null
-                    )?.display_name || member.profile_id.slice(0, 8)}
-                  </strong>
-                  <span>{member.role}</span>
+            <section className="panel team-hub">
+              <div className="workspace-inline-heading">
+                <div>
+                  <span className="eyebrow">{es ? "Equipo" : "Team"}</span>
+                  <h2>{es ? "Quién puede gestionar este local" : "Who can manage this venue"}</h2>
+                  <p>
+                    {es
+                      ? "Mantén la lista corta y da solo el acceso necesario."
+                      : "Keep the list small and give people only the access they need."}
+                  </p>
                 </div>
-              ))}
-              <details>
-                <summary>{es ? "Añadir miembro" : "Add team member"}</summary>
-                <form action={addTeamMember} className="stack">
+                <span className="status-pill">
+                  {members?.length || 0} {es ? "personas" : "people"}
+                </span>
+              </div>
+
+              <div className="team-member-grid">
+                {members?.map((member) => {
+                  const displayName = (
+                    member.profiles as unknown as {
+                      display_name: string | null;
+                    } | null
+                  )?.display_name;
+                  return (
+                    <article className="team-member-card" key={member.profile_id}>
+                      <span className="team-avatar">
+                        {(displayName || member.profile_id).slice(0, 1).toUpperCase()}
+                      </span>
+                      <span>
+                        <strong>
+                          {displayName ||
+                            (es ? "Miembro del equipo" : "Team member")}
+                        </strong>
+                        <small>
+                          {member.role === "owner"
+                            ? es
+                              ? "Propietario"
+                              : "Owner"
+                            : member.role === "manager"
+                              ? es
+                                ? "Gestor"
+                                : "Manager"
+                              : "Editor"}
+                        </small>
+                      </span>
+                      <span className="status-pill">{member.role}</span>
+                    </article>
+                  );
+                })}
+              </div>
+
+              <details className="workspace-action-card">
+                <summary>
+                  <span className="workspace-action-summary">
+                    <span className="summary-icon">
+                      <Icon name="plus" />
+                    </span>
+                    <span>
+                      <strong>{es ? "Añadir a alguien" : "Add someone"}</strong>
+                      <small>
+                        {es
+                          ? "Editor para contenido · Gestor para operaciones"
+                          : "Editor for content · Manager for operations"}
+                      </small>
+                    </span>
+                  </span>
+                </summary>
+                <form action={addTeamMember} className="stack compact-action-form">
                   <input type="hidden" name="locale" value={locale} />
                   <input type="hidden" name="venueId" value={id} />
-                  <label>
-                    {es ? "ID del perfil" : "Profile ID"}
-                    <input
-                      name="profileId"
-                      required
-                      pattern="[0-9a-fA-F-]{36}"
-                    />
-                  </label>
-                  <label>
-                    {es ? "Permiso" : "Permission"}
-                    <select name="role">
-                      <option value="editor">Editor</option>
-                      <option value="manager">Manager</option>
-                    </select>
-                  </label>
+                  <div className="form-grid-two">
+                    <label>
+                      {es ? "Email de la persona" : "Person's email"}
+                      <input
+                        name="email"
+                        type="email"
+                        required
+                        autoComplete="email"
+                        placeholder={es ? "nombre@ejemplo.com" : "name@example.com"}
+                      />
+                      <small>
+                        {es
+                          ? "Debe ser el email de una cuenta AkiPasa activa."
+                          : "Use the email on their active AkiPasa account."}
+                      </small>
+                    </label>
+                    <label>
+                      {es ? "Acceso" : "Access"}
+                      <select name="role">
+                        <option value="editor">
+                          {es ? "Editor · contenido" : "Editor · content"}
+                        </option>
+                        <option value="manager">
+                          {es ? "Gestor · operaciones" : "Manager · operations"}
+                        </option>
+                      </select>
+                    </label>
+                  </div>
                   <button className="button" type="submit">
-                    {es ? "Añadir al equipo" : "Add team member"}
+                    {es ? "Añadir al equipo" : "Add to team"}
                   </button>
                 </form>
               </details>

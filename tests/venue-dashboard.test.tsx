@@ -63,7 +63,7 @@ describe("compact venue dashboard", () => {
       "true",
     );
     expect(
-      screen.getByRole("button", { name: /Bookings.*3 pending/ }),
+      screen.getByRole("tab", { name: /Bookings.*3 pending/ }),
     ).toBeVisible();
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
     expect(
@@ -73,14 +73,14 @@ describe("compact venue dashboard", () => {
 
   it("keeps unsaved form values when moving between sections", () => {
     render(<VenueDashboard {...props} />);
-    fireEvent.click(screen.getByRole("button", { name: /Profile.*photos/ }));
+    fireEvent.click(screen.getByRole("tab", { name: /Profile.*photos/ }));
     fireEvent.change(screen.getByLabelText("Venue name"), {
       target: { value: "An unsaved edit" },
     });
-    fireEvent.click(screen.getByRole("tab", { name: "Bookings" }));
+    fireEvent.click(screen.getByRole("tab", { name: /Bookings/ }));
     expect(screen.getByText("Booking requests")).toBeVisible();
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole("tab", { name: "Profile" }));
+    fireEvent.click(screen.getByRole("tab", { name: /Profile/ }));
     expect(screen.getByLabelText("Venue name")).toHaveValue("An unsaved edit");
     expect(window.location.search).toBe("?section=profile");
   });
@@ -90,14 +90,14 @@ describe("compact venue dashboard", () => {
     fireEvent.keyDown(screen.getByRole("tab", { name: "Overview" }), {
       key: "End",
     });
-    expect(screen.getByRole("tab", { name: "Team" })).toHaveFocus();
-    fireEvent.keyDown(screen.getByRole("tab", { name: "Team" }), {
+    expect(screen.getByRole("tab", { name: /Team/ })).toHaveFocus();
+    fireEvent.keyDown(screen.getByRole("tab", { name: /Team/ }), {
       key: "ArrowRight",
     });
     expect(screen.getByRole("tab", { name: "Overview" })).toHaveFocus();
     window.history.replaceState({}, "", "?section=bookings");
     fireEvent(window, new PopStateEvent("popstate"));
-    expect(screen.getByRole("tab", { name: "Bookings" })).toHaveAttribute(
+    expect(screen.getByRole("tab", { name: /Bookings/ })).toHaveAttribute(
       "aria-selected",
       "true",
     );
@@ -107,7 +107,7 @@ describe("compact venue dashboard", () => {
   it("opens existing event anchor links in the Events section", () => {
     window.history.replaceState({}, "", "#event-example");
     render(<VenueDashboard {...props} />);
-    expect(screen.getByRole("tab", { name: "Events" })).toHaveAttribute(
+    expect(screen.getByRole("tab", { name: /Events/ })).toHaveAttribute(
       "aria-selected",
       "true",
     );
@@ -124,12 +124,12 @@ describe("compact venue dashboard", () => {
         feedback="success"
       />,
     );
-    expect(screen.getByRole("tab", { name: "Perfil" })).toHaveAttribute(
+    expect(screen.getByRole("tab", { name: /Perfil/ })).toHaveAttribute(
       "aria-selected",
       "true",
     );
     expect(screen.getByRole("status")).toHaveTextContent("Cambios guardados.");
-    fireEvent.click(screen.getByRole("tab", { name: "Reservas" }));
+    fireEvent.click(screen.getByRole("tab", { name: /Reservas/ }));
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
   });
 });

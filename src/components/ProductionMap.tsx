@@ -115,35 +115,6 @@ function markerImage(
   return context.getImageData(0, 0, canvas.width, canvas.height);
 }
 
-function officialMarkerImage(): ImageData {
-  const width = 36;
-  const height = 44;
-  const pixelRatio = 2;
-  const canvas = document.createElement("canvas");
-  canvas.width = width * pixelRatio;
-  canvas.height = height * pixelRatio;
-  const context = canvas.getContext("2d");
-  if (!context) throw new Error("Unable to create the official map marker image.");
-  context.scale(pixelRatio, pixelRatio);
-  context.beginPath();
-  context.moveTo(18, 42);
-  context.bezierCurveTo(15, 35, 5, 27, 5, 18);
-  context.arc(18, 18, 13, Math.PI, 0);
-  context.bezierCurveTo(31, 27, 21, 35, 18, 42);
-  context.closePath();
-  context.fillStyle = "#ff6b1d";
-  context.fill();
-  context.lineWidth = 2.5;
-  context.strokeStyle = "#faf7f2";
-  context.stroke();
-  context.fillStyle = "#faf7f2";
-  context.font = "900 16px sans-serif";
-  context.textAlign = "center";
-  context.textBaseline = "middle";
-  context.fillText("A", 18, 18);
-  return context.getImageData(0, 0, canvas.width, canvas.height);
-}
-
 function popupContent(point: MapPoint, locale: Locale) {
   const wrapper = document.createElement("article");
   wrapper.className = "map-popup-card";

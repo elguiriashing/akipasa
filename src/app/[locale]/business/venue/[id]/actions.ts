@@ -123,7 +123,7 @@ export async function updateEvent(formData: FormData) {
       eventId: z.string().uuid(),
       title: z.string().trim().min(3).max(160),
       description: z.string().trim().min(20).max(4000),
-      priceCents: z.coerce.number().int().min(0).max(1000000),
+      priceEuros: z.coerce.number().min(0).max(10000),
       bookingUrl: safeExternalUrlSchema,
       minimumAge: z.union([
         z.literal(""),
@@ -158,7 +158,7 @@ export async function updateEvent(formData: FormData) {
       title_en: localized.title.en,
       description_es: localized.description.es,
       description_en: localized.description.en,
-      price_cents: v.priceCents,
+      price_cents: Math.round(v.priceEuros * 100),
       booking_url: v.bookingUrl || null,
       minimum_age: v.minimumAge === "" ? null : v.minimumAge,
       accessibility_notes_es: localized.accessibilityNotes.es || null,
@@ -383,7 +383,7 @@ export async function saveOffer(formData: FormData) {
 export async function addTeamMember(formData: FormData) {
   const parsed = context
     .extend({
-      profileId: z.string().uuid(),
+      email: z.string().trim().email().max(254),
       role: z.enum(["editor", "manager"]),
     })
     .safeParse(Object.fromEntries(formData));
@@ -391,9 +391,9 @@ export async function addTeamMember(formData: FormData) {
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=member"));
   const { supabase } = await requireBusinessAccess(locale);
-  const { error } = await supabase.rpc("add_venue_member", {
+  const { error } = await supabase.rpc("add_venue_member_by_email", {
     p_venue: parsed.data.venueId,
-    p_profile: parsed.data.profileId,
+    p_email: parsed.data.email,
     p_role: parsed.data.role,
   });
   if (error) redirect(destination(locale, venueId, "error=member"));
@@ -743,9 +743,9 @@ export async function saveBookingSettings(formData: FormData) {
     .extend({
       mode: z.enum(["external", "request", "disabled"]),
       requiresDeposit: z.string().optional(),
-      depositCents: z.union([
+      depositEuros: z.union([
         z.literal(""),
-        z.coerce.number().int().min(0).max(1000000),
+        z.coerce.number().min(0).max(10000),
       ]),
       instructions: z.string().trim().max(1000),
     })
@@ -773,7 +773,9 @@ export async function saveBookingSettings(formData: FormData) {
     mode: parsed.data.mode,
     requires_deposit: parsed.data.requiresDeposit === "on",
     deposit_cents:
-      parsed.data.depositCents === "" ? null : parsed.data.depositCents,
+      parsed.data.depositEuros === ""
+        ? null
+        : Math.round(parsed.data.depositEuros * 100),
     instructions_es: localizedInstructions.es || null,
     instructions_en: localizedInstructions.en || null,
     active: parsed.data.mode !== "disabled",
