@@ -6,6 +6,7 @@ import { requireBusinessAccess } from "@/lib/entitlements";
 import {
   confirmRedemption,
   createEvent,
+  createOfficialEvent,
   createVenue,
   requestPromotion,
   reuseEvent,
@@ -20,7 +21,7 @@ import {
   WorkspaceShell,
   type WorkspaceItem,
 } from "@/components/WorkspaceShell";
-import { isAdministrator } from "@/lib/roles";
+import { canModerate } from "@/lib/roles";
 
 type ManagedVenue = {
   role: string;
@@ -40,6 +41,7 @@ type BusinessEvent = {
   title_es: string;
   title_en: string | null;
   status: string;
+  source: string;
   created_at: string;
   event_occurrences: Array<{
     id: string;
@@ -84,13 +86,14 @@ export default async function BusinessPage({
   if (
     !claimView &&
     profile?.app_role !== "organiser" &&
-    !isAdministrator(profile?.app_role || "")
+    !canModerate(profile?.app_role || "")
   ) {
     redirect(`/${locale}/business/apply`);
   }
 
   const flags = await loadFeatureFlags(supabase);
   const es = locale === "es";
+  const platformStaff = canModerate(profile?.app_role || "");
 
   const [
     { data: members },
@@ -127,9 +130,27 @@ export default async function BusinessPage({
       .order("created_at", { ascending: false }),
   ]);
 
-  const managed = (members || []) as unknown as ManagedVenue[];
+  const memberManaged = (members || []) as unknown as ManagedVenue[];
+  const { data: editorialVenue } = platformStaff
+    ? await supabase
+        .from("venues")
+        .select("id,name,slug,status,verified")
+        .eq("slug", "akipasa-editorial")
+        .eq("status", "published")
+        .maybeSingle()
+    : { data: null };
+  const managed: ManagedVenue[] = [
+    ...memberManaged,
+    ...(editorialVenue &&
+    !memberManaged.some((item) => item.venues?.id === editorialVenue.id)
+      ? [{ role: "editor", venues: editorialVenue }]
+      : []),
+  ];
   const managedVenueIds = managed.flatMap((item) =>
     item.venues ? [item.venues.id] : [],
+  );
+  const regularManaged = managed.filter(
+    (item) => item.venues?.slug !== "akipasa-editorial",
   );
   const [{ data: promotionEvents }, { data: managedEvents }] =
     managedVenueIds.length
@@ -143,7 +164,7 @@ export default async function BusinessPage({
           supabase
             .from("events")
             .select(
-              "id,venue_id,slug,title_es,title_en,status,created_at,event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status)",
+              "id,venue_id,slug,title_es,title_en,status,source,created_at,event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status)",
             )
             .in("venue_id", managedVenueIds)
             .order("created_at", { ascending: false }),
@@ -318,8 +339,10 @@ export default async function BusinessPage({
                                         : event.title_es}
                                     </h4>
                                     <p className="catalogue-card-sub">
-                                      {venueNames.get(event.venue_id) ||
-                                        (es ? "Local" : "Venue")}
+                                      {event.source === "akipasa_selection"
+                                        ? "Selección AkiPasa"
+                                        : venueNames.get(event.venue_id) ||
+                                          (es ? "Local" : "Venue")}
                                     </p>
                                   </div>
                                   <span
@@ -509,8 +532,94 @@ export default async function BusinessPage({
           </details>
         )}
 
+        {view === "events" && platformStaff && (
+          <details
+            id="create-official-event"
+            className="panel catalogue-edit-card dashboard-grid-full"
+            open
+          >
+            <summary>
+              <strong>
+                {es
+                  ? "+ Publicar Selección AkiPasa"
+                  : "+ Publish AkiPasa Selection"}
+              </strong>
+            </summary>
+            <div className="catalogue-section-header">
+              <div>
+                <span className="eyebrow">Selección AkiPasa</span>
+                <h2>
+                  {es
+                    ? "Ferias, romerías y planes de interés público"
+                    : "Fairs, festivals and public-interest plans"}
+                </h2>
+                <p className="catalogue-section-sub">
+                  {es
+                    ? "Se publica desde el perfil editorial de AkiPasa y aparece con marcador oficial. «Selección AkiPasa» significa seleccionado/publicado por AkiPasa, no necesariamente organizado por AkiPasa."
+                    : "Published from AkiPasa's editorial profile with an official marker. “AkiPasa Selection” means curated/published by AkiPasa, not necessarily organised by AkiPasa."}
+                </p>
+              </div>
+            </div>
+            <form action={createOfficialEvent} className="stack focused-form">
+              <input type="hidden" name="locale" value={locale} />
+              <div className="form-grid-two">
+                <label>
+                  {es ? "Categoría" : "Category"}
+                  <select name="categoryId" required>
+                    {categories?.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {locale === "es" ? category.name_es : category.name_en}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  {es ? "Título" : "Title"}
+                  <input
+                    name="title"
+                    required
+                    minLength={3}
+                    maxLength={160}
+                    placeholder={es ? "Ej. Feria de Fuengirola" : "e.g. Fuengirola Fair"}
+                  />
+                </label>
+              </div>
+              <SpainAddressAutocomplete locale={locale} mode="address" />
+              <label>
+                {es ? "Descripción" : "Description"}
+                <textarea name="description" required minLength={20} maxLength={4000} rows={4} />
+              </label>
+              <div className="form-grid-two">
+                <label>
+                  {es ? "Precio en céntimos" : "Price in cents"}
+                  <input name="priceCents" type="number" min="0" defaultValue="0" required />
+                </label>
+                <label>
+                  {es ? "Enlace oficial / reserva" : "Official / booking link"}
+                  <input name="bookingUrl" type="url" placeholder="https://" />
+                </label>
+              </div>
+              <div className="form-grid-two">
+                <label>
+                  {es ? "Inicio" : "Starts"}
+                  <input name="startsAt" type="datetime-local" required />
+                </label>
+                <label>
+                  {es ? "Fin" : "Ends"}
+                  <input name="endsAt" type="datetime-local" required />
+                </label>
+              </div>
+              <div className="form-actions-right">
+                <button className="button primary" type="submit">
+                  {es ? "Publicar Selección AkiPasa" : "Publish AkiPasa Selection"}
+                </button>
+              </div>
+            </form>
+          </details>
+        )}
+
         {/* Create Event Form */}
-        {(view === "venues" || view === "events") && managed.length > 0 && (
+        {(view === "venues" || view === "events") && regularManaged.length > 0 && (
           <details
             id="create-event"
             className="panel catalogue-edit-card dashboard-grid-full"
@@ -531,7 +640,7 @@ export default async function BusinessPage({
                 <label>
                   {es ? "Local emisor" : "Publishing venue"}
                   <select name="venueId" required>
-                    {managed.map(
+                    {regularManaged.map(
                       (m) =>
                         m.venues && (
                           <option key={m.venues.id} value={m.venues.id}>
@@ -564,6 +673,35 @@ export default async function BusinessPage({
                   />
                 </label>
               </div>
+
+              {platformStaff && officialVenue && (
+                <div className="official-event-location-panel">
+                  <div>
+                    <span className="eyebrow">
+                      {es ? "Selección AkiPasa" : "AkiPasa Selection"}
+                    </span>
+                    <h3>
+                      {es ? "Ubicación real del evento" : "Actual event location"}
+                    </h3>
+                    <p className="muted">
+                      {es
+                        ? "Si publicas desde el local AkiPasa, esta ubicación coloca la feria, romería o fiesta donde realmente ocurre."
+                        : "When publishing from the AkiPasa venue, this location places the fair, romería or town event where it actually happens."}
+                    </p>
+                  </div>
+                  <SpainAddressAutocomplete locale={locale} mode="address" />
+                  <label>
+                    {es ? "Nombre del lugar (opcional)" : "Place name (optional)"}
+                    <input
+                      name="officialLocationName"
+                      maxLength={160}
+                      placeholder={
+                        es ? "Ej. Recinto Ferial de Fuengirola" : "e.g. Fuengirola Fairground"
+                      }
+                    />
+                  </label>
+                </div>
+              )}
 
               <div className="form-grid-two">
                 <label>

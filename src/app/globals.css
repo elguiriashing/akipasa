@@ -14678,3 +14678,318 @@ html.theme-light .akibusiness-host .akibusiness-evidence-field > small,
 html.theme-light .akibusiness-host .akibusiness-claim-submit p {
   color: #58657b !important;
 }
+
+
+/* Selección AkiPasa + venue catalogue */
+.akipasa-selection-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.65rem;
+  padding: 0.22rem 0.55rem;
+  border: 1px solid color-mix(in srgb, #ffd447 55%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, #ffd447 16%, transparent);
+  color: #ffd447;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+}
+
+.map-legend-akipasa {
+  background: #ffd447 !important;
+  color: #14213d !important;
+  border-color: #faf7f2 !important;
+}
+
+.venue-catalogue-editor {
+  display: grid;
+  gap: 1rem;
+}
+
+.catalogue-editor-intro {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.catalogue-editor-intro h2 {
+  margin: 0.2rem 0 0.4rem;
+}
+
+.catalogue-editor-intro p {
+  max-width: 48rem;
+  margin: 0;
+  color: var(--muted);
+}
+
+.catalogue-editor-settings {
+  display: grid;
+  grid-template-columns: minmax(10rem, 0.55fr) minmax(14rem, 1fr);
+  gap: 0.75rem;
+}
+
+.catalogue-editor-description {
+  grid-column: 1 / -1;
+}
+
+.catalogue-editor-sections {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.catalogue-editor-section {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface-alt) 76%, transparent);
+}
+
+.catalogue-editor-section > header {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.catalogue-editor-section > header input {
+  flex: 1;
+  min-width: 0;
+  font-size: 1rem;
+  font-weight: 850;
+}
+
+.catalogue-editor-items {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.catalogue-editor-item {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--line) 82%, transparent);
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+}
+
+.catalogue-item-main {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.7fr) minmax(14rem, 1.5fr) minmax(8rem, 0.7fr) minmax(8rem, 0.7fr);
+  gap: 0.65rem;
+}
+
+.catalogue-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.catalogue-allergens {
+  padding: 0.75rem;
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, #ffd447 5%, var(--surface-alt));
+}
+
+.catalogue-allergens summary {
+  cursor: pointer;
+}
+
+.allergen-toggle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.allergen-toggle {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.1rem 0.45rem;
+  align-items: center;
+  min-height: 3.25rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--surface);
+  color: var(--ink);
+  text-align: left;
+}
+
+.allergen-toggle > span {
+  grid-row: 1 / 3;
+  font-size: 1.1rem;
+}
+
+.allergen-toggle strong {
+  font-size: 0.76rem;
+}
+
+.allergen-toggle small {
+  color: var(--muted);
+  font-size: 0.66rem;
+}
+
+.allergen-toggle[data-state="contains"] {
+  border-color: rgb(225 83 83 / 55%);
+  background: rgb(225 83 83 / 10%);
+}
+
+.allergen-toggle[data-state="may_contain"] {
+  border-color: rgb(245 158 11 / 55%);
+  background: rgb(245 158 11 / 10%);
+}
+
+.allergen-toggle[data-state="not_in_recipe"] {
+  border-color: rgb(25 184 156 / 45%);
+  background: rgb(25 184 156 / 9%);
+}
+
+.catalogue-editor-footer {
+  position: sticky;
+  z-index: 4;
+  bottom: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(18px);
+}
+
+.catalogue-editor-footer > div,
+.catalogue-editor-footer form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.public-venue-catalogue {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.4rem;
+}
+
+.public-venue-catalogue > header > p {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+}
+
+.public-catalogue-section {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.public-catalogue-section > h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.public-catalogue-items {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.public-venue-catalogue[data-layout="cards"] .public-catalogue-items,
+.public-venue-catalogue[data-layout="experiences"] .public-catalogue-items,
+.public-venue-catalogue[data-layout="rentals"] .public-catalogue-items {
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+
+.public-catalogue-item {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, var(--surface-alt) 72%, transparent);
+}
+
+.public-catalogue-item-head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.public-catalogue-item-head > div {
+  min-width: 0;
+}
+
+.public-catalogue-item-head strong {
+  display: block;
+  font-size: 0.92rem;
+}
+
+.public-catalogue-item-head p {
+  margin: 0.2rem 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.public-catalogue-item-head > span {
+  flex: 0 0 auto;
+  font-weight: 900;
+}
+
+.public-catalogue-allergens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  font-size: 0.7rem;
+}
+
+.public-catalogue-allergens > span:not(:first-child) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  padding: 0.3rem 0.45rem;
+  border-radius: 999px;
+  background: rgb(225 83 83 / 10%);
+  color: var(--ink);
+}
+
+.public-catalogue-allergens > span[data-state="may_contain"] {
+  background: rgb(245 158 11 / 12%);
+}
+
+.catalogue-allergen-disclaimer {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.67rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 850px) {
+  .catalogue-editor-settings,
+  .catalogue-item-main {
+    grid-template-columns: 1fr;
+  }
+
+  .catalogue-editor-description {
+    grid-column: auto;
+  }
+
+  .catalogue-editor-intro,
+  .catalogue-editor-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .catalogue-editor-footer > div,
+  .catalogue-editor-footer form {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .catalogue-editor-footer .button {
+    flex: 1;
+  }
+}

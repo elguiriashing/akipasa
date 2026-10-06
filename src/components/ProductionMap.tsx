@@ -33,6 +33,8 @@ export type MapPoint = {
   source:
     | "verified_venue"
     | "community"
+    | "akipasa"
+    | "akipasa_selection"
     | "claimed"
     | "unclaimed"
     | "accommodation";
@@ -60,7 +62,10 @@ function clusterImage(diameter: number, fill: string): ImageData {
   return context.getImageData(0, 0, canvas.width, canvas.height);
 }
 
-function markerImage(fill: string, kind: "event" | "venue"): ImageData {
+function markerImage(
+  fill: string,
+  kind: "event" | "venue" | "akipasa",
+): ImageData {
   const width = 36;
   const height = 44;
   const pixelRatio = 2;
@@ -84,7 +89,13 @@ function markerImage(fill: string, kind: "event" | "venue"): ImageData {
   context.strokeStyle = "#faf7f2";
   context.fillStyle = "#faf7f2";
   context.lineWidth = 2;
-  if (kind === "event") {
+  if (kind === "akipasa") {
+    context.fillStyle = "#14213d";
+    context.font = "900 16px Arial";
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.fillText("A", 18, 19);
+  } else if (kind === "event") {
     context.strokeRect(12, 13, 12, 11);
     context.beginPath();
     context.moveTo(12, 17);
@@ -104,6 +115,36 @@ function markerImage(fill: string, kind: "event" | "venue"): ImageData {
   }
   return context.getImageData(0, 0, canvas.width, canvas.height);
 }
+
+function officialMarkerImage(): ImageData {
+  const width = 36;
+  const height = 44;
+  const pixelRatio = 2;
+  const canvas = document.createElement("canvas");
+  canvas.width = width * pixelRatio;
+  canvas.height = height * pixelRatio;
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("Unable to create the official map marker image.");
+  context.scale(pixelRatio, pixelRatio);
+  context.beginPath();
+  context.moveTo(18, 42);
+  context.bezierCurveTo(15, 35, 5, 27, 5, 18);
+  context.arc(18, 18, 13, Math.PI, 0);
+  context.bezierCurveTo(31, 27, 21, 35, 18, 42);
+  context.closePath();
+  context.fillStyle = "#ff6b1d";
+  context.fill();
+  context.lineWidth = 2.5;
+  context.strokeStyle = "#faf7f2";
+  context.stroke();
+  context.fillStyle = "#faf7f2";
+  context.font = "900 16px sans-serif";
+  context.textAlign = "center";
+  context.textBaseline = "middle";
+  context.fillText("A", 18, 18);
+  return context.getImageData(0, 0, canvas.width, canvas.height);
+}
+
 function popupContent(point: MapPoint, locale: Locale) {
   const wrapper = document.createElement("article");
   wrapper.className = "map-popup-card";
@@ -331,9 +372,15 @@ export function ProductionMap({
           map.addImage("pin-verified", markerImage("#f26b1d", "event"), {
             pixelRatio: 2,
           });
+          map.addImage("pin-akipasa", officialMarkerImage(), { pixelRatio: 2 });
           map.addImage("pin-community", markerImage("#a43ee8", "event"), {
             pixelRatio: 2,
           });
+          map.addImage(
+            "pin-akipasa-selection",
+            markerImage("#ffd447", "akipasa"),
+            { pixelRatio: 2 },
+          );
           map.addImage("pin-claimed", markerImage("#2784e6", "venue"), {
             pixelRatio: 2,
           });
@@ -384,6 +431,8 @@ export function ProductionMap({
                 "pin-accommodation",
                 "community",
                 "pin-community",
+                "akipasa_selection",
+                "pin-akipasa-selection",
                 "claimed",
                 "pin-claimed",
                 "unclaimed",
@@ -757,6 +806,12 @@ export function ProductionMap({
                   <b>E</b>
                 </i>
                 {locale === "es" ? "Evento verificado" : "Verified event"}
+              </span>
+              <span>
+                <i className="map-legend-pin map-legend-akipasa">
+                  <b>A</b>
+                </i>
+                {locale === "es" ? "Selección AkiPasa" : "AkiPasa Selection"}
               </span>
               <span>
                 <i className="map-legend-pin map-legend-community">

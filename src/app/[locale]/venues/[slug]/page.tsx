@@ -14,6 +14,8 @@ import { AnalyticsView, TrackedLink } from "@/components/AnalyticsSignal";
 import { accommodationLabel } from "@/lib/accommodation";
 import { ShareButton } from "@/components/ShareButton";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
+import { PublicVenueCatalogue } from "@/components/PublicVenueCatalogue";
+import { parseCatalogueDocument } from "@/lib/venue-catalogue";
 
 const loadVenue = cache((slug: string) => repository.venueBySlug(slug));
 
@@ -47,6 +49,18 @@ export default async function VenuePage({
   const m = msg(locale);
   const returnTo = `/${locale}/venues/${venue.slug}`;
   const { supabase, user } = await optionalUser();
+  const { data: cataloguePayload } = await supabase.rpc("public_venue_catalogue", {
+    p_venue: venue.id,
+  });
+  const catalogueDocument =
+    cataloguePayload &&
+    typeof cataloguePayload === "object" &&
+    "document" in cataloguePayload
+      ? parseCatalogueDocument(
+          (cataloguePayload as { document?: unknown }).document,
+          locale,
+        )
+      : null;
   const { data: followed } = user
     ? await supabase
         .from("followed_venue_refs")
@@ -279,6 +293,12 @@ export default async function VenuePage({
                 </div>
               </section>
             ) : null}
+            {catalogueDocument && catalogueDocument.sections.length > 0 && (
+              <PublicVenueCatalogue
+                locale={locale}
+                document={catalogueDocument}
+              />
+            )}
             {events.length > 0 && (
               <h2>{locale === "es" ? "Eventos" : "Events"}</h2>
             )}

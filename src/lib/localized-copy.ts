@@ -37,12 +37,15 @@ export async function translateLocalizedFields(
   fields: Record<string, string>,
   actorId: string,
 ): Promise<Record<string, LocalizedPair>> {
-  const entries = Object.entries(fields).map(([key, value]) => [
-    key,
-    value.trim(),
-  ]);
-  const nonEmpty = Object.fromEntries(entries.filter(([, value]) => value));
-  const emptyKeys = entries.filter(([, value]) => !value).map(([key]) => key);
+  const entries: Array<[string, string]> = Object.entries(fields).map(
+    ([key, value]) => [key, value.trim()],
+  );
+  const nonEmpty: Record<string, string> = Object.fromEntries(
+    entries.filter(([, value]) => value.length > 0),
+  );
+  const emptyKeys = entries
+    .filter(([, value]) => value.length === 0)
+    .map(([key]) => key);
 
   if (Object.keys(nonEmpty).length === 0) {
     return Object.fromEntries(

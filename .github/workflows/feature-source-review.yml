@@ -1,0 +1,25 @@
+name: Feature source review
+on:
+  push:
+    branches: [feat/official-events-venue-catalogues]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Focused feature tests
+        run: npx vitest run --environment node tests/venue-catalogue.test.ts tests/roles.test.ts tests/venue-dashboard.test.tsx
+      - name: Production build
+        run: npm run build
+      - name: Cloudflare build
+        run: npm run build:cloudflare
