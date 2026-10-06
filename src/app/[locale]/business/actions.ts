@@ -319,7 +319,7 @@ export async function createOfficialEvent(formData: FormData) {
     p_title_en: localized.title.en,
     p_description_es: localized.description.es,
     p_description_en: localized.description.en,
-    p_price_cents: valuMath.round(e.priceEuros * 100),
+    p_price_cents: Math.round(value.priceEuros * 100),
     p_booking_url: value.bookingUrl,
     p_starts_at: value.startsAt.toISOString(),
     p_ends_at: value.endsAt.toISOString(),
