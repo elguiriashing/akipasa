@@ -234,6 +234,9 @@ function eventFromRow(row: DbRecord, now = new Date()): Event | null {
         ? {
             ...parseDatabasePoint(row.location as DbPoint),
             label: String(row.location_label),
+            directionsAddress: row.directions_address
+              ? String(row.directions_address)
+              : undefined,
           }
         : undefined,
     sponsored:
@@ -264,7 +267,7 @@ function eventFromRow(row: DbRecord, now = new Date()): Event | null {
 const venueFields =
   "id,slug,name,description_es,description_en,address,location,verified,accessibility,contact_phone,whatsapp_phone,website_url,discovery_vertical,discovery_enabled,recommendation_weight,chain_name,cities(slug)";
 const eventFields =
-  "id,venue_id,slug,title_es,title_en,description_es,description_en,price_cents,currency,source,sponsored,booking_url,minimum_age,accessibility_notes_es,accessibility_notes_en,location,location_label,categories(slug),event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status,booking_url),feature_slots(starts_at,ends_at)";
+  "id,venue_id,slug,title_es,title_en,description_es,description_en,price_cents,currency,source,sponsored,booking_url,minimum_age,accessibility_notes_es,accessibility_notes_en,location,location_label,directions_address,categories(slug),event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status,booking_url),feature_slots(starts_at,ends_at)";
 
 export class SupabaseDiscoveryRepository implements DiscoveryRepository {
   async discover(query: DiscoveryQuery) {
