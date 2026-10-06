@@ -44,7 +44,9 @@ describe("business onboarding", () => {
     expect(businessActions).toContain("translateLocalizedFields");
     expect(venueActions).toContain("translateLocalizedFields");
     expect(translation).toContain("AKIPASA_TRANSLATION_URL");
-    expect(translation).toContain("translate.argosopentech.com/translate");
+    expect(translation).toContain("translationEndpoints");
+    expect(translation).toContain("translate.terraprint.co/translate");
+    expect(translation).toContain("trans.zillyhuhn.com/translate");
     expect(translation).toContain("source: sourceLocale");
     expect(translation).toContain("target: targetLocale");
     expect(translation).not.toContain("createAIProvider");
