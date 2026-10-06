@@ -245,26 +245,18 @@ export default async function VenueWorkspace({
                       <input name="name" defaultValue={venue.name} required />
                     </label>
                     <label>
-                      {es ? "Descripción" : "Spanish description"}
+                      {es ? "Descripción" : "Description"}
                       <textarea
-                        name="descriptionEs"
-                        defaultValue={venue.description_es}
+                        name="description"
+                        defaultValue={
+                          es
+                            ? venue.description_es
+                            : venue.description_en || venue.description_es
+                        }
                         required
                         minLength={20}
                       />
                     </label>
-                    <details>
-                      <summary>
-                        {es ? "Traducción al inglés" : "English translation"}
-                      </summary>
-                      <label>
-                        {es ? "Descripción en inglés" : "English description"}
-                        <textarea
-                          name="descriptionEn"
-                          defaultValue={venue.description_en || ""}
-                        />
-                      </label>
-                    </details>
                   </div>
                   <div className="stack">
                     <SpainAddressAutocomplete
@@ -348,16 +340,8 @@ export default async function VenueWorkspace({
                   />
                 </label>
                 <label>
-                  {es
-                    ? "Texto alternativo en español"
-                    : "Spanish alternative text"}
-                  <input name="altEs" required minLength={3} maxLength={300} />
-                </label>
-                <label>
-                  {es
-                    ? "Texto alternativo en inglés"
-                    : "English alternative text"}
-                  <input name="altEn" maxLength={300} />
+                  {es ? "Texto alternativo" : "Alternative text"}
+                  <input name="alt" required minLength={3} maxLength={300} />
                 </label>
                 <label>
                   {es ? "Orden de aparición" : "Display order"}
@@ -382,24 +366,14 @@ export default async function VenueWorkspace({
                     <input type="hidden" name="venueId" value={id} />
                     <input type="hidden" name="mediaId" value={item.id} />
                     <label>
-                      {es
-                        ? "Texto alternativo en español"
-                        : "Spanish alternative text"}
+                      {es ? "Texto alternativo" : "Alternative text"}
                       <input
-                        name="altEs"
-                        defaultValue={item.alt_es}
+                        name="alt"
+                        defaultValue={
+                          es ? item.alt_es : item.alt_en || item.alt_es
+                        }
                         required
                         minLength={3}
-                        maxLength={300}
-                      />
-                    </label>
-                    <label>
-                      {es
-                        ? "Texto alternativo en inglés"
-                        : "English alternative text"}
-                      <input
-                        name="altEn"
-                        defaultValue={item.alt_en || ""}
                         maxLength={300}
                       />
                     </label>
