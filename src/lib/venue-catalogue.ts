@@ -28,6 +28,8 @@ export type CatalogueText = {
   _translation?: {
     sourceLocale: "es" | "en";
     sourceHash: string;
+    esHash?: string;
+    enHash?: string;
   };
 };
 export type CatalogueLayout =
