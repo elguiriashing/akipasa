@@ -1501,61 +1501,142 @@ export default async function VenueWorkspace({
           </div>
         ),
         bookings: (
-          <>
-            <section className="panel booking-workbench">
-              <h2>{es ? "Reservas" : "Bookings"}</h2>
-              <p>
-                {es
-                  ? "Gestiona solicitudes y horarios disponibles."
-                  : "Manage requests and available times."}
-              </p>
-              <details open={!bookingSettings}>
+          <section className="panel booking-workbench booking-hub">
+            <div className="booking-status-strip">
+              <article>
+                <small>{es ? "Modo" : "Mode"}</small>
+                <strong>
+                  {bookingSettings?.mode === "request"
+                    ? es
+                      ? "Solicitudes AkiPasa"
+                      : "AkiPasa requests"
+                    : bookingSettings?.mode === "disabled"
+                      ? es
+                        ? "Desactivado"
+                        : "Off"
+                      : es
+                        ? "Enlace externo"
+                        : "External link"}
+                </strong>
+              </article>
+              <article>
+                <small>{es ? "Horarios" : "Availability"}</small>
+                <strong>{bookingSlots?.length || 0}</strong>
+              </article>
+              <article>
+                <small>{es ? "Pendientes" : "Pending"}</small>
+                <strong>
+                  {bookingRequests?.filter(
+                    (request: any) => request.status === "requested",
+                  ).length || 0}
+                </strong>
+              </article>
+            </div>
+
+            <div className="booking-action-grid">
+              <details className="workspace-action-card" name="booking-action">
                 <summary>
-                  {es ? "Configuración de reservas" : "Booking settings"}
+                  <span className="workspace-action-summary">
+                    <span className="summary-icon">
+                      <Icon name="settings" />
+                    </span>
+                    <span>
+                      <strong>{es ? "Cómo quieres recibir reservas" : "How bookings should work"}</strong>
+                      <small>
+                        {es
+                          ? "Elige una opción y guarda. Puedes cambiarla cuando quieras."
+                          : "Choose one option and save. You can change it any time."}
+                      </small>
+                    </span>
+                  </span>
                 </summary>
-                <form action={saveBookingSettings} className="stack">
+                <form action={saveBookingSettings} className="stack compact-action-form">
                   <input type="hidden" name="locale" value={locale} />
                   <input type="hidden" name="venueId" value={id} />
+
+                    <div className="booking-mode-grid">
+                      {[
+                        {
+                          value: "external",
+                          icon: "globe" as const,
+                          title: es ? "Enlace externo" : "External link",
+                          detail: es
+                            ? "Envía al cliente a tu sistema habitual."
+                            : "Send customers to your existing booking system.",
+                        },
+                        {
+                          value: "request",
+                          icon: "inbox" as const,
+                          title: es ? "Solicitudes AkiPasa" : "AkiPasa requests",
+                          detail: es
+                            ? "Recibe y confirma solicitudes aquí."
+                            : "Receive and confirm requests here.",
+                        },
+                        {
+                          value: "disabled",
+                          icon: "close" as const,
+                          title: es ? "Sin reservas" : "Bookings off",
+                          detail: es
+                            ? "Oculta las opciones de reserva."
+                            : "Hide booking options from customers.",
+                        },
+                      ].map((mode) => (
+                        <label className="booking-mode-card" key={mode.value}>
+                          <input
+                            type="radio"
+                            name="mode"
+                            value={mode.value}
+                            defaultChecked={
+                              (bookingSettings?.mode || "external") === mode.value
+                            }
+                          />
+                          <span className="summary-icon">
+                            <Icon name={mode.icon} />
+                          </span>
+                          <span>
+                            <strong>{mode.title}</strong>
+                            <small>{mode.detail}</small>
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  <div className="booking-options-row">
+                    <label className="toggle-card">
+                      <input
+                        type="checkbox"
+                        name="requiresDeposit"
+                        defaultChecked={bookingSettings?.requires_deposit || false}
+                      />
+                      <span>
+                        <strong>{es ? "Pedir depósito" : "Require a deposit"}</strong>
+                        <small>
+                          {es
+                            ? "Actívalo solo si lo necesitas."
+                            : "Turn this on only if you need it."}
+                        </small>
+                      </span>
+                    </label>
+                    <label>
+                      {es ? "Depósito (€ céntimos)" : "Deposit (cents)"}
+                      <input
+                        name="depositCents"
+                        type="number"
+                        min="0"
+                        defaultValue={bookingSettings?.deposit_cents || ""}
+                        placeholder="0"
+                      />
+                    </label>
+                  </div>
                   <label>
-                    {es ? "Modo" : "Mode"}
-                    <select
-                      name="mode"
-                      defaultValue={bookingSettings?.mode || "external"}
-                    >
-                      <option value="external">
-                        {es ? "Enlace externo" : "External link"}
-                      </option>
-                      <option value="request">
-                        {es ? "Solicitudes AkiPasa" : "AkiPasa requests"}
-                      </option>
-                      <option value="disabled">
-                        {es ? "Desactivado" : "Disabled"}
-                      </option>
-                    </select>
-                  </label>
-                  <label className="check-row">
-                    <input
-                      type="checkbox"
-                      name="requiresDeposit"
-                      defaultChecked={
-                        bookingSettings?.requires_deposit || false
-                      }
-                    />{" "}
-                    {es ? "Requiere deposito" : "Requires deposit"}
-                  </label>
-                  <label>
-                    {es ? "Deposito en centimos" : "Deposit in cents"}
-                    <input
-                      name="depositCents"
-                      type="number"
-                      min="0"
-                      defaultValue={bookingSettings?.deposit_cents || ""}
-                    />
-                  </label>
-                  <label>
-                    {es ? "Instrucciones" : "Instructions"}
+                    {es ? "Instrucciones opcionales" : "Optional instructions"}
                     <textarea
                       name="instructions"
+                      rows={3}
+                      placeholder={
+                        es
+                          ? "Ej. te confirmaremos por WhatsApp."
+                          : "E.g. we will confirm by WhatsApp."
+                      }
                       defaultValue={
                         es
                           ? bookingSettings?.instructions_es || ""
@@ -1563,74 +1644,87 @@ export default async function VenueWorkspace({
                       }
                     />
                   </label>
-                  <button className="button secondary" type="submit">
-                    {es ? "Guardar reservas" : "Save booking settings"}
+                  <button className="button" type="submit">
+                    {es ? "Guardar configuración" : "Save booking setup"}
                   </button>
                 </form>
               </details>
-              <details>
+
+              <details className="workspace-action-card" name="booking-action">
                 <summary>
-                  {es ? "Anadir disponibilidad" : "Add availability"}
+                  <span className="workspace-action-summary">
+                    <span className="summary-icon">
+                      <Icon name="calendar" />
+                    </span>
+                    <span>
+                      <strong>{es ? "Añadir disponibilidad" : "Add availability"}</strong>
+                      <small>
+                        {es
+                          ? "Crea un horario que los clientes puedan solicitar."
+                          : "Create a time slot customers can request."}
+                      </small>
+                    </span>
+                  </span>
                 </summary>
-                <form action={createBookingSlot} className="stack">
+                <form action={createBookingSlot} className="stack compact-action-form">
                   <input type="hidden" name="locale" value={locale} />
                   <input type="hidden" name="venueId" value={id} />
-                  <div className="two-col">
+                  <div className="form-grid-three">
                     <label>
-                      {es ? "Inicio" : "Starts"}
+                      {es ? "Empieza" : "Starts"}
                       <input name="startsAt" type="datetime-local" required />
                     </label>
                     <label>
-                      {es ? "Fin" : "Ends"}
+                      {es ? "Termina" : "Ends"}
                       <input name="endsAt" type="datetime-local" required />
                     </label>
+                    <label>
+                      {es ? "Capacidad" : "Capacity"}
+                      <input
+                        name="capacity"
+                        type="number"
+                        min="1"
+                        defaultValue="1"
+                        required
+                      />
+                    </label>
                   </div>
-                  <label>
-                    {es ? "Capacidad" : "Capacity"}
-                    <input
-                      name="capacity"
-                      type="number"
-                      min="1"
-                      defaultValue="1"
-                      required
-                    />
-                  </label>
                   <button className="button" type="submit">
-                    {es ? "Crear horario" : "Create slot"}
+                    {es ? "Añadir horario" : "Add slot"}
                   </button>
                 </form>
               </details>
-              {!!bookingSlots?.length && (
-                <p className="muted">
-                  {bookingSlots.length}{" "}
-                  {es ? "horarios configurados" : "slots configured"}
-                </p>
-              )}
-              {!!bookingRequests?.length && (
+            </div>
+
+            {!!bookingRequests?.length && (
+              <div className="booking-inbox">
+                <div className="workspace-inline-heading">
+                  <div>
+                    <span className="eyebrow">{es ? "Bandeja" : "Inbox"}</span>
+                    <h3>{es ? "Solicitudes" : "Requests"}</h3>
+                  </div>
+                </div>
                 <div className="managed-list">
                   {bookingRequests.map((request: any) => (
                     <form
                       action={updateBookingRequest}
-                      className="managed-row"
+                      className="managed-row booking-request-row"
                       key={request.id}
                     >
                       <input type="hidden" name="locale" value={locale} />
                       <input type="hidden" name="venueId" value={id} />
-                      <input
-                        type="hidden"
-                        name="requestId"
-                        value={request.id}
-                      />
+                      <input type="hidden" name="requestId" value={request.id} />
                       <div>
                         <strong>
-                          {request.contact_name} · {request.party_size}
+                          {request.contact_name} · {request.party_size}{" "}
+                          {es ? "personas" : "people"}
                         </strong>
-                        <span>
-                          {request.contact_email} · {request.status}
-                        </span>
+                        <span>{request.contact_email}</span>
                       </div>
+                      <span className="status-pill">{request.status}</span>
                       <select
                         name="status"
+                        aria-label={es ? "Cambiar estado" : "Change status"}
                         defaultValue={
                           request.status === "requested"
                             ? "confirmed"
@@ -1648,14 +1742,14 @@ export default async function VenueWorkspace({
                         </option>
                       </select>
                       <button className="button secondary" type="submit">
-                        {es ? "Actualizar" : "Update"}
+                        {es ? "Guardar" : "Save"}
                       </button>
                     </form>
                   ))}
                 </div>
-              )}
-            </section>
-          </>
+              </div>
+            )}
+          </section>
         ),
         team: (
           <>
