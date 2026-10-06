@@ -1753,42 +1753,105 @@ export default async function VenueWorkspace({
         ),
         team: (
           <>
-            <section className="panel">
-              <h2>{es ? "Miembros del equipo" : "Team members"}</h2>
-              {members?.map((member) => (
-                <div className="managed-row" key={member.profile_id}>
-                  <strong>
-                    {(
-                      member.profiles as unknown as {
-                        display_name: string | null;
-                      } | null
-                    )?.display_name || member.profile_id.slice(0, 8)}
-                  </strong>
-                  <span>{member.role}</span>
+            <section className="panel team-hub">
+              <div className="workspace-inline-heading">
+                <div>
+                  <span className="eyebrow">{es ? "Equipo" : "Team"}</span>
+                  <h2>{es ? "Quién puede gestionar este local" : "Who can manage this venue"}</h2>
+                  <p>
+                    {es
+                      ? "Mantén la lista corta y da solo el acceso necesario."
+                      : "Keep the list small and give people only the access they need."}
+                  </p>
                 </div>
-              ))}
-              <details>
-                <summary>{es ? "Añadir miembro" : "Add team member"}</summary>
-                <form action={addTeamMember} className="stack">
+                <span className="status-pill">
+                  {members?.length || 0} {es ? "personas" : "people"}
+                </span>
+              </div>
+
+              <div className="team-member-grid">
+                {members?.map((member) => {
+                  const displayName = (
+                    member.profiles as unknown as {
+                      display_name: string | null;
+                    } | null
+                  )?.display_name;
+                  return (
+                    <article className="team-member-card" key={member.profile_id}>
+                      <span className="team-avatar">
+                        {(displayName || member.profile_id).slice(0, 1).toUpperCase()}
+                      </span>
+                      <span>
+                        <strong>
+                          {displayName ||
+                            (es ? "Miembro del equipo" : "Team member")}
+                        </strong>
+                        <small>
+                          {member.role === "owner"
+                            ? es
+                              ? "Propietario"
+                              : "Owner"
+                            : member.role === "manager"
+                              ? es
+                                ? "Gestor"
+                                : "Manager"
+                              : "Editor"}
+                        </small>
+                      </span>
+                      <span className="status-pill">{member.role}</span>
+                    </article>
+                  );
+                })}
+              </div>
+
+              <details className="workspace-action-card">
+                <summary>
+                  <span className="workspace-action-summary">
+                    <span className="summary-icon">
+                      <Icon name="plus" />
+                    </span>
+                    <span>
+                      <strong>{es ? "Añadir a alguien" : "Add someone"}</strong>
+                      <small>
+                        {es
+                          ? "Editor para contenido · Gestor para operaciones"
+                          : "Editor for content · Manager for operations"}
+                      </small>
+                    </span>
+                  </span>
+                </summary>
+                <form action={addTeamMember} className="stack compact-action-form">
                   <input type="hidden" name="locale" value={locale} />
                   <input type="hidden" name="venueId" value={id} />
-                  <label>
-                    {es ? "ID del perfil" : "Profile ID"}
-                    <input
-                      name="profileId"
-                      required
-                      pattern="[0-9a-fA-F-]{36}"
-                    />
-                  </label>
-                  <label>
-                    {es ? "Permiso" : "Permission"}
-                    <select name="role">
-                      <option value="editor">Editor</option>
-                      <option value="manager">Manager</option>
-                    </select>
-                  </label>
+                  <div className="form-grid-two">
+                    <label>
+                      {es ? "ID de cuenta AkiPasa" : "AkiPasa account ID"}
+                      <input
+                        name="profileId"
+                        required
+                        pattern="[0-9a-fA-F-]{36}"
+                        placeholder="00000000-0000-0000-0000-000000000000"
+                      />
+                      <small>
+                        {es
+                          ? "La persona puede copiarlo desde su cuenta. Más adelante esto será una invitación por email."
+                          : "They can copy this from their account. This will become an email invite flow later."}
+                      </small>
+                    </label>
+                    <label>
+                      {es ? "Acceso" : "Access"}
+                      <select name="role">
+                        <option value="editor">
+                          {es ? "Editor · contenido" : "Editor · content"}
+                        </option>
+                        <option value="manager">
+                          {es ? "Gestor · operaciones" : "Manager · operations"}
+                        </option>
+                      </select>
+                    </label>
+                  </div>
                   <button className="button" type="submit">
-                    {es ? "Añadir al equipo" : "Add team member"}
+                    {es ? "Añadir al equipo" : "Add to team"}
                   </button>
                 </form>
               </details>
