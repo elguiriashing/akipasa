@@ -3,6 +3,7 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { LocaleDocumentLanguage } from "@/components/LocaleDocumentLanguage";
 import { LanguageLink } from "@/components/LanguageLink";
+import { ThemeToggle } from "@/components/ThemeModeControls";
 import { AppShell } from "@/components/AppShell";
 import { OwnerToolboxLauncher } from "@/components/owner/OwnerToolboxLauncher";
 import { SupportAgentLauncher } from "@/components/support/SupportAgentLauncher";
@@ -89,6 +90,7 @@ export default async function LocaleLayout({
                 {locale === "es" ? "Abrir AkiPasa" : "Open AkiPasa"}
               </a>
               <LanguageLink locale={locale === "es" ? "en" : "es"} compact />
+              <ThemeToggle locale={locale} />
               <a href={config.crmUrl}>
                 AkiHQ
               </a>

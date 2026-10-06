@@ -14181,3 +14181,274 @@ body:has(#passport-privacy-controls) > .privacy-preferences {
     width: 100%;
   }
 }
+
+
+/* AkiBusiness readability + light/dark integration.
+   This product previously kept a dark shell even when the global theme was light,
+   producing dark-on-dark text across most of the workspace. */
+.akibusiness-host,
+.akibusiness-host .business-workspace {
+  color: var(--ink);
+}
+
+.akibusiness-host .akibusiness-brand,
+.akibusiness-host .akibusiness-brand strong {
+  color: var(--ink);
+  opacity: 1;
+}
+
+.akibusiness-host .akibusiness-brand small {
+  color: var(--muted);
+  opacity: 1;
+}
+
+.akibusiness-host .akibusiness-topbar .theme-toggle {
+  flex: 0 0 auto;
+  margin: 0;
+  color: var(--ink);
+  border-color: var(--line);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+}
+
+.akibusiness-host .business-workspace
+  :is(h1, h2, h3, h4, h5, strong, b, label, legend, summary) {
+  color: var(--ink);
+}
+
+.akibusiness-host .business-workspace
+  :is(p, small, time, .muted, .catalogue-card-sub, .workspace-stat span) {
+  color: var(--muted);
+}
+
+.akibusiness-host .business-workspace .workspace-page-heading h1 {
+  color: #f7f8fb;
+}
+
+.akibusiness-host .business-workspace :where(input, select, textarea) {
+  color: #f7f8fb !important;
+}
+
+.akibusiness-host .business-workspace :where(input, textarea)::placeholder {
+  color: #9eabc1 !important;
+  opacity: 1;
+}
+
+/* Proper AkiBusiness light mode, rather than a light palette painted on a dark page. */
+html[data-theme="light"] .akibusiness-host,
+html.theme-light .akibusiness-host {
+  --akibusiness-panel: rgba(255, 255, 255, 0.92);
+  --akibusiness-panel-2: rgba(248, 246, 241, 0.94);
+  background:
+    radial-gradient(circle at 8% 0%, rgba(255, 212, 71, 0.18), transparent 28rem),
+    radial-gradient(circle at 88% 5%, rgba(71, 135, 255, 0.09), transparent 30rem),
+    linear-gradient(145deg, #fbfaf7 0%, #f3f5f8 55%, #faf7f2 100%);
+}
+
+html[data-theme="light"] .akibusiness-host .akibusiness-topbar,
+html.theme-light .akibusiness-host .akibusiness-topbar {
+  border-bottom-color: rgba(20, 33, 61, 0.12);
+  background: rgba(255, 253, 249, 0.94);
+}
+
+html[data-theme="light"] .akibusiness-host .akibusiness-brand,
+html[data-theme="light"] .akibusiness-host .akibusiness-brand strong,
+html.theme-light .akibusiness-host .akibusiness-brand,
+html.theme-light .akibusiness-host .akibusiness-brand strong {
+  color: #14213d;
+}
+
+html[data-theme="light"] .akibusiness-host .akibusiness-brand small,
+html.theme-light .akibusiness-host .akibusiness-brand small {
+  color: #58657b;
+}
+
+html[data-theme="light"] .akibusiness-host .akibusiness-topbar nav a,
+html[data-theme="light"] .akibusiness-host .akibusiness-logout-form button,
+html[data-theme="light"] .akibusiness-host .akibusiness-topbar .language,
+html[data-theme="light"] .akibusiness-host .akibusiness-topbar .theme-toggle,
+html.theme-light .akibusiness-host .akibusiness-topbar nav a,
+html.theme-light .akibusiness-host .akibusiness-logout-form button,
+html.theme-light .akibusiness-host .akibusiness-topbar .language,
+html.theme-light .akibusiness-host .akibusiness-topbar .theme-toggle {
+  color: #14213d;
+  border-color: rgba(20, 33, 61, 0.14);
+  background: rgba(20, 33, 61, 0.045);
+}
+
+html[data-theme="light"] .akibusiness-host .business-workspace,
+html.theme-light .akibusiness-host .business-workspace {
+  --consumer-line: rgba(20, 33, 61, 0.12);
+  --consumer-soft: rgba(20, 33, 61, 0.045);
+}
+
+html[data-theme="light"] .akibusiness-host .business-workspace .workspace-page-heading,
+html.theme-light .akibusiness-host .business-workspace .workspace-page-heading {
+  border-color: rgba(214, 166, 0, 0.24);
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.98), rgba(245, 247, 250, 0.96)),
+    var(--surface);
+  box-shadow: 0 18px 42px rgba(20, 33, 61, 0.09);
+}
+
+html[data-theme="light"] .akibusiness-host .business-workspace .workspace-page-heading h1,
+html.theme-light .akibusiness-host .business-workspace .workspace-page-heading h1 {
+  color: #14213d;
+}
+
+html[data-theme="light"] .akibusiness-host .business-workspace .workspace-page-heading p,
+html.theme-light .akibusiness-host .business-workspace .workspace-page-heading p {
+  color: #58657b;
+}
+
+html[data-theme="light"] .akibusiness-host .business-workspace
+  :is(h1, h2, h3, h4, h5, strong, b, label, legend, summary),
+html.theme-light .akibusiness-host .business-workspace
+  :is(h1, h2, h3, h4, h5, strong, b, label, legend, summary) {
+  color: #14213d;
+}
+
+html[data-theme="light"] .akibusiness-host .business-workspace
+  :is(p, small, time, .muted, .catalogue-card-sub, .workspace-stat span, .managed-row span),
+html.theme-light .akibusiness-host .business-workspace
+  :is(p, small, time, .muted, .catalogue-card-sub, .workspace-stat span, .managed-row span) {
+  color: #58657b;
+}
+
+html[data-theme="light"] .akibusiness-host .business-workspace :where(input, select, textarea),
+html.theme-light .akibusiness-host .business-workspace :where(input, select, textarea) {
+  color: #14213d !important;
+  border-color: rgba(20, 33, 61, 0.16) !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+}
+
+html[data-theme="light"] .akibusiness-host .business-workspace :where(input, textarea)::placeholder,
+html.theme-light .akibusiness-host .business-workspace :where(input, textarea)::placeholder {
+  color: #718096 !important;
+}
+
+html[data-theme="light"] .akibusiness-host .business-workspace .button.secondary,
+html.theme-light .akibusiness-host .business-workspace .button.secondary {
+  color: #14213d;
+  border-color: rgba(214, 166, 0, 0.28);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+html[data-theme="light"] .akibusiness-host .business-workspace .workspace-mobile-trigger,
+html.theme-light .akibusiness-host .business-workspace .workspace-mobile-trigger {
+  color: #14213d;
+  border-color: rgba(20, 33, 61, 0.12);
+  background: rgba(255, 255, 255, 0.96);
+}
+
+html[data-theme="light"] .akibusiness-host .business-workspace .workspace-mobile-trigger small,
+html.theme-light .akibusiness-host .business-workspace .workspace-mobile-trigger small {
+  color: #58657b;
+}
+
+html[data-theme="light"] .akibusiness-host .business-workspace .workspace-drawer,
+html.theme-light .akibusiness-host .business-workspace .workspace-drawer {
+  color: #14213d;
+  background: #fffdf9;
+}
+
+html[data-theme="light"] .akibusiness-host .business-workspace .workspace-navigation a,
+html.theme-light .akibusiness-host .business-workspace .workspace-navigation a {
+  color: #42516a;
+}
+
+html[data-theme="light"] .akibusiness-host .business-workspace .workspace-navigation a:hover,
+html.theme-light .akibusiness-host .business-workspace .workspace-navigation a:hover {
+  color: #14213d;
+  background: rgba(20, 33, 61, 0.05);
+}
+
+html[data-theme="light"] .akibusiness-host .claim-venue-picker,
+html.theme-light .akibusiness-host .claim-venue-picker {
+  border-color: rgba(214, 166, 0, 0.22);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+html[data-theme="light"] .akibusiness-host .claim-search-panel,
+html.theme-light .akibusiness-host .claim-search-panel {
+  border-color: rgba(20, 33, 61, 0.1);
+  background: rgba(255, 253, 249, 0.97);
+}
+
+html[data-theme="light"] .akibusiness-host .claim-search-heading > button,
+html.theme-light .akibusiness-host .claim-search-heading > button {
+  color: #14213d;
+  border-color: rgba(214, 166, 0, 0.28);
+}
+
+html[data-theme="light"] .akibusiness-host .claim-search-input > svg,
+html.theme-light .akibusiness-host .claim-search-input > svg {
+  color: #65738a;
+}
+
+html[data-theme="light"] .akibusiness-host .claim-search-results,
+html.theme-light .akibusiness-host .claim-search-results {
+  border-color: rgba(214, 166, 0, 0.24);
+  background: #ffffff;
+  box-shadow: 0 22px 48px rgba(20, 33, 61, 0.14);
+}
+
+html[data-theme="light"] .akibusiness-host .claim-search-results > button,
+html.theme-light .akibusiness-host .claim-search-results > button {
+  color: #14213d;
+  border-bottom-color: rgba(20, 33, 61, 0.08);
+}
+
+html[data-theme="light"] .akibusiness-host .claim-search-results small,
+html[data-theme="light"] .akibusiness-host .claim-search-results > p,
+html[data-theme="light"] .akibusiness-host .claim-selected-venue small,
+html.theme-light .akibusiness-host .claim-search-results small,
+html.theme-light .akibusiness-host .claim-search-results > p,
+html.theme-light .akibusiness-host .claim-selected-venue small {
+  color: #65738a;
+}
+
+html[data-theme="light"] .akibusiness-host .akibusiness-evidence-field,
+html.theme-light .akibusiness-host .akibusiness-evidence-field {
+  border-color: rgba(20, 33, 61, 0.1);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+html[data-theme="light"] .akibusiness-host .akibusiness-evidence-field > span,
+html.theme-light .akibusiness-host .akibusiness-evidence-field > span {
+  color: #14213d;
+}
+
+html[data-theme="light"] .akibusiness-host .akibusiness-evidence-field > small,
+html[data-theme="light"] .akibusiness-host .akibusiness-claim-submit p,
+html.theme-light .akibusiness-host .akibusiness-evidence-field > small,
+html.theme-light .akibusiness-host .akibusiness-claim-submit p {
+  color: #65738a;
+}
+
+@media (max-width: 850px) {
+  .akibusiness-host .akibusiness-topbar nav {
+    gap: 0.35rem;
+  }
+
+  .akibusiness-host .akibusiness-topbar .language,
+  .akibusiness-host .akibusiness-topbar .theme-toggle {
+    width: 2.55rem;
+    min-width: 2.55rem;
+    height: 2.55rem;
+    min-height: 2.55rem;
+  }
+
+  .akibusiness-host .akibusiness-brand {
+    min-width: 0;
+  }
+
+  .akibusiness-host .akibusiness-brand > span:last-child {
+    min-width: 0;
+  }
+
+  .akibusiness-host .akibusiness-brand strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
