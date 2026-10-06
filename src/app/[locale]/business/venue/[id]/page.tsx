@@ -251,7 +251,7 @@ export default async function VenueWorkspace({
                         defaultValue={
                           es
                             ? venue.description_es
-                            : venue.description_en || venue.description_es
+                            : venue.description_en || ""
                         }
                         required
                         minLength={20}
@@ -370,7 +370,7 @@ export default async function VenueWorkspace({
                       <input
                         name="alt"
                         defaultValue={
-                          es ? item.alt_es : item.alt_en || item.alt_es
+                          es ? item.alt_es : item.alt_en || ""
                         }
                         required
                         minLength={3}
@@ -463,7 +463,7 @@ export default async function VenueWorkspace({
                               defaultValue={
                                 es
                                   ? event.title_es
-                                  : event.title_en || event.title_es
+                                  : event.title_en || ""
                               }
                               required
                             />
@@ -475,7 +475,7 @@ export default async function VenueWorkspace({
                               defaultValue={
                                 es
                                   ? event.description_es
-                                  : event.description_en || event.description_es
+                                  : event.description_en || ""
                               }
                               required
                             />
@@ -519,9 +519,7 @@ export default async function VenueWorkspace({
                               defaultValue={
                                 es
                                   ? event.accessibility_notes_es || ""
-                                  : event.accessibility_notes_en ||
-                                    event.accessibility_notes_es ||
-                                    ""
+                                  : event.accessibility_notes_en || ""
                               }
                             />
                           </label>
@@ -1209,9 +1207,7 @@ export default async function VenueWorkspace({
                       defaultValue={
                         es
                           ? bookingSettings?.instructions_es || ""
-                          : bookingSettings?.instructions_en ||
-                            bookingSettings?.instructions_es ||
-                            ""
+                          : bookingSettings?.instructions_en || ""
                       }
                     />
                   </label>
