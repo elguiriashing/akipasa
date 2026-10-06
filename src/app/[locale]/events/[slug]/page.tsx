@@ -52,6 +52,14 @@ export default async function EventPage({
         new Date(item.endsAt) > new Date() && item.status !== "cancelled",
     ) || event.occurrences[0];
   const bookingUrl = occurrence.bookingUrl || event.bookingUrl;
+  const eventPlace = event.location
+    ? {
+        ...resolvedVenue,
+        latitude: event.location.latitude,
+        longitude: event.location.longitude,
+        address: event.location.label,
+      }
+    : resolvedVenue;
   const m = msg(locale);
   const returnTo = `/${locale}/events/${event.slug}`;
   const { supabase, user } = await optionalUser();
@@ -170,7 +178,11 @@ export default async function EventPage({
           ) : null}
           <div className="detail-intro">
             <div className="eyebrow">
-              {event.source === "verified_venue" ? (
+              {event.source === "akipasa_selection" ? (
+                <span className="akipasa-selection-chip">
+                  {locale === "es" ? "Selección AkiPasa" : "AkiPasa Selection"}
+                </span>
+              ) : event.source === "verified_venue" ? (
                 <VerifiedBadge locale={locale} />
               ) : (
                 m.community
@@ -212,7 +224,7 @@ export default async function EventPage({
                 </div>
                 <div>
                   <dt>{m.location}</dt>
-                  <dd>{resolvedVenue.address}</dd>
+                  <dd>{eventPlace.address}</dd>
                 </div>
                 <div>
                   <dt>{locale === "es" ? "Asistencia" : "Attendance"}</dt>
@@ -248,7 +260,7 @@ export default async function EventPage({
               <div className="actions detail-actions">
                 <TrackedLink
                   className="button"
-                  href={googleMapsDirectionsUrl(resolvedVenue)}
+                  href={googleMapsDirectionsUrl(eventPlace)}
                   target="_blank"
                   rel="noreferrer"
                   action="directions_click"
