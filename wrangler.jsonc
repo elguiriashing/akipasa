@@ -29,6 +29,7 @@
     "NEXT_PUBLIC_MAP_STYLE_URL": "https://tiles.openfreemap.org/styles/liberty",
     "NEXT_PUBLIC_GOOGLE_AUTH_ENABLED": "true",
     "NEXT_PUBLIC_BUSINESS_URL": "https://business.akipasa.com",
+    "AKIPASA_TRANSLATION_MODEL": "gpt-6-luna",
     "NEXT_PUBLIC_SUPABASE_URL": "https://akipasa.supabase.co",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_Mm4CJvGyIaLOWbU3g1sxIQ_Wv2jrKt1",
     "STRIPE_PREMIUM_MONTHLY_PRICE_ID": "price_1U7vvqGfzDhsgsQZ1QwqXMjR",

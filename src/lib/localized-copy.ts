@@ -1,7 +1,6 @@
 import "server-only";
 
 import { createAIProvider, privacySafeIdentifier } from "@/lib/ai-team/provider";
-import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import type { Locale } from "@/lib/config";
 import {
   catalogueTextHash,
@@ -11,23 +10,8 @@ import {
 
 type LocalizedPair = { es: string; en: string };
 
-async function translationModel() {
-  const configured = process.env.AKIPASA_TRANSLATION_MODEL?.trim();
-  if (configured) return configured;
-
-  const service = createSupabaseServiceClient();
-  const { data } = await service
-    .from("ai_agents")
-    .select("model")
-    .eq("enabled", true)
-    .eq("provider", "openai")
-    .limit(1)
-    .maybeSingle();
-
-  if (!data?.model) {
-    throw new Error("No translation model is configured");
-  }
-  return String(data.model);
+function translationModel() {
+  return process.env.AKIPASA_TRANSLATION_MODEL?.trim() || "gpt-6-luna";
 }
 
 function cleanJson(value: string) {
@@ -61,7 +45,7 @@ export async function translateLocalizedFields(
   const targetLocale: Locale = sourceLocale === "es" ? "en" : "es";
   const provider = createAIProvider("openai");
   const result = await provider.run({
-    model: await translationModel(),
+    model: translationModel(),
     instructions:
       "You translate user-authored venue content for AkiPasa between Spanish and English. Translate faithfully and naturally. Preserve proper nouns, venue and brand names, URLs, phone numbers, emojis, formatting, prices and factual meaning. For menu/catalogue content, translate descriptive dish, product and service names naturally, but keep genuine brand or proper names unchanged. Never invent ingredients, allergens, claims, opening times or marketing copy. Return ONLY a JSON object with exactly the same keys as the input and string values containing the translations.",
     messages: [
