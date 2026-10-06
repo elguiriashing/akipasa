@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { requireUser } from "./auth";
 import type { Locale } from "./config";
-import { isAdministrator } from "./roles";
+import { canModerate } from "./roles";
 
 export async function requireBusinessAccess(
   locale: Locale,
@@ -14,7 +14,7 @@ export async function requireBusinessAccess(
     .eq("id", context.user.id)
     .maybeSingle();
 
-  if (isAdministrator(profile?.app_role || "")) return context;
+  if (canModerate(profile?.app_role || "")) return context;
 
   const { data: active, error } = await context.supabase.rpc(
     "has_active_entitlement",
