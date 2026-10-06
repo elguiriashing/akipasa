@@ -16011,3 +16011,68 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
     flex-wrap: wrap;
   }
 }
+
+
+/* Final AkiBusiness responsive sweep: keep every workspace page inside its
+   viewport, including top-level Events/Claims and per-venue subpages. */
+.akibusiness-host .workspace-shell,
+.akibusiness-host .workspace-content,
+.akibusiness-host .workspace-grid-body,
+.akibusiness-host .dashboard-grid,
+.akibusiness-host .panel,
+.akibusiness-host details,
+.akibusiness-host form,
+.akibusiness-host fieldset,
+.akibusiness-host .catalogue-edit-card,
+.akibusiness-host .catalogue-grid,
+.akibusiness-host .managed-list,
+.akibusiness-host .workspace-section-heading,
+.akibusiness-host .focused-form {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.akibusiness-host .workspace-content,
+.akibusiness-host .workspace-grid-body {
+  overflow-x: clip;
+}
+
+.akibusiness-host :is(input, select, textarea) {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.akibusiness-host :is(.form-grid-two, .two-col) > * {
+  min-width: 0;
+}
+
+.akibusiness-host .form-grid-two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.akibusiness-host :is(.form-actions, .form-actions-right, .inline-actions) {
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.akibusiness-host :is(.button, button) {
+  max-width: 100%;
+}
+
+@media (max-width: 900px) {
+  .akibusiness-host .form-grid-two {
+    grid-template-columns: 1fr;
+  }
+
+  .akibusiness-host .workspace-page-heading {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 620px) {
+  .akibusiness-host :is(.form-actions, .form-actions-right, .inline-actions) > * {
+    width: 100%;
+  }
+}
