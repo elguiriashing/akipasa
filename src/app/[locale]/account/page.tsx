@@ -4,7 +4,6 @@ import { AccountWorkspacePortals } from "@/components/AccountWorkspacePortals";
 import { Icon, type IconName } from "@/components/Icons";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
-import { roleLabel } from "@/lib/roles";
 
 export default async function AccountOverview({
   params,
@@ -85,7 +84,7 @@ export default async function AccountOverview({
           <span>{es ? "Tu espacio" : "Your space"}</span>
           <h2>{es ? `Hola, ${firstName}` : `Hi, ${firstName}`}</h2>
           <p>
-            {premium ? "Premium" : roleLabel(role, locale)} · {totalXp} XP
+            {premium ? "Premium" : es ? "Gratis" : "Free"} · {totalXp} XP
           </p>
         </div>
         <Link
