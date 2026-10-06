@@ -18,6 +18,5 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm ci --prefix automation
-      - run: npm run lint && npm run typecheck && npx vitest run --environment node tests/business-onboarding.test.ts tests/venue-catalogue.test.ts tests/business-release.test.ts && npm run build
+      - run: npm run check
       - run: npm run build:cloudflare
-      - run: npm run format:check
