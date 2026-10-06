@@ -743,9 +743,9 @@ export async function saveBookingSettings(formData: FormData) {
     .extend({
       mode: z.enum(["external", "request", "disabled"]),
       requiresDeposit: z.string().optional(),
-      depositCents: z.union([
+      depositEuros: z.union([
         z.literal(""),
-        z.coerce.number().int().min(0).max(1000000),
+        z.coerce.number().min(0).max(10000),
       ]),
       instructions: z.string().trim().max(1000),
     })
@@ -773,7 +773,9 @@ export async function saveBookingSettings(formData: FormData) {
     mode: parsed.data.mode,
     requires_deposit: parsed.data.requiresDeposit === "on",
     deposit_cents:
-      parsed.data.depositCents === "" ? null : parsed.data.depositCents,
+      parsed.data.depositEuros === ""
+        ? null
+        : Math.round(parsed.data.depositEuros * 100),
     instructions_es: localizedInstructions.es || null,
     instructions_en: localizedInstructions.en || null,
     active: parsed.data.mode !== "disabled",
