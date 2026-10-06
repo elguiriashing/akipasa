@@ -103,6 +103,9 @@ export function VenueCatalogueEditor({
   const [allergenEditorItemId, setAllergenEditorItemId] = useState<
     string | null
   >(null);
+  const [expandedSectionIds, setExpandedSectionIds] = useState<Set<string>>(
+    () => new Set(initialDocument.sections.map((section) => section.id)),
+  );
 
   const itemCount = useMemo(
     () => document.sections.reduce((sum, section) => sum + section.items.length, 0),
@@ -171,6 +174,7 @@ export function VenueCatalogueEditor({
     }));
     setSelectedSectionId(id);
     setSelectedItemId("");
+    setExpandedSectionIds((current) => new Set(current).add(id));
   }
 
   function removeSection(sectionId: string) {
@@ -184,6 +188,20 @@ export function VenueCatalogueEditor({
     const next = remaining[0];
     setSelectedSectionId(next?.id || "");
     setSelectedItemId(next?.items[0]?.id || "");
+    setExpandedSectionIds((current) => {
+      const nextIds = new Set(current);
+      nextIds.delete(sectionId);
+      return nextIds;
+    });
+  }
+
+  function toggleSectionExpanded(sectionId: string) {
+    setExpandedSectionIds((current) => {
+      const next = new Set(current);
+      if (next.has(sectionId)) next.delete(sectionId);
+      else next.add(sectionId);
+      return next;
+    });
   }
 
   function addItem(sectionId: string) {
@@ -400,22 +418,22 @@ export function VenueCatalogueEditor({
           <div className="catalogue-studio-tree">
             {document.sections.map((section, sectionIndex) => {
               const active = selectedSection?.id === section.id;
+              const expanded = expandedSectionIds.has(section.id);
               return (
                 <section
-                  className={
-                    active
-                      ? "catalogue-tree-section active"
-                      : "catalogue-tree-section"
-                  }
+                  className={[
+                    "catalogue-tree-section",
+                    active ? "active" : "",
+                    expanded ? "expanded" : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                   key={section.id}
                 >
                   <button
                     type="button"
                     className="catalogue-tree-section-title"
-                    onClick={() => {
-                      setSelectedSectionId(section.id);
-                      setSelectedItemId(section.items[0]?.id || "");
-                    }}
+                    onClick={() => toggleSectionExpanded(section.id)}
                   >
                     <span>
                       <strong>
@@ -426,10 +444,10 @@ export function VenueCatalogueEditor({
                         {section.items.length} {es ? "elementos" : "items"}
                       </small>
                     </span>
-                    <b aria-hidden="true">{active ? "▾" : "›"}</b>
+                    <b aria-hidden="true">{expanded ? "▾" : "›"}</b>
                   </button>
 
-                  {active && (
+                  {expanded && (
                     <>
                       <div className="catalogue-tree-section-actions">
                         <button
@@ -468,7 +486,10 @@ export function VenueCatalogueEditor({
                                   ? "catalogue-tree-item active"
                                   : "catalogue-tree-item"
                               }
-                              onClick={() => setSelectedItemId(item.id)}
+                              onClick={() => {
+                                setSelectedSectionId(section.id);
+                                setSelectedItemId(item.id);
+                              }}
                             >
                               <span className="catalogue-tree-item-index">
                                 {itemIndex + 1}
