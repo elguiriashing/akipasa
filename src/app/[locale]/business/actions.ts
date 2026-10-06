@@ -127,6 +127,36 @@ export async function createVenue(formData: FormData) {
   redirect(`/${locale}/business?created=venue`);
 }
 
+const managedVenueDeletionSchema = z.object({
+  locale: z.enum(["es", "en"]),
+  venueId: z.string().uuid(),
+  confirmation: z.literal("DELETE"),
+  reason: z.string().trim().min(10).max(2000),
+});
+
+export async function deleteManagedVenue(formData: FormData) {
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const parsed = managedVenueDeletionSchema.safeParse(
+    Object.fromEntries(formData),
+  );
+  if (!parsed.success)
+    redirect(`/${locale}/business?view=venues&error=venue-delete`);
+
+  const { supabase } = await requireBusinessAccess(
+    locale,
+    `/${locale}/business?view=venues`,
+  );
+  const { error } = await supabase.rpc("delete_owned_venue", {
+    p_venue: parsed.data.venueId,
+    p_confirmation: parsed.data.confirmation,
+    p_reason: parsed.data.reason,
+  });
+  if (error)
+    redirect(`/${locale}/business?view=venues&error=venue-delete`);
+
+  redirect(`/${locale}/business?view=venues&updated=venue-deleted`);
+}
+
 const claimSchema = z.object({
   locale: z.string(),
   venueId: z.string().uuid(),
