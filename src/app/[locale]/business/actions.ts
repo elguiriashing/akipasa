@@ -276,7 +276,10 @@ export async function createOfficialEvent(formData: FormData) {
       user.id,
     );
   } catch {
-    redirect(`/${locale}/business?view=events&error=translation`);
+    localized = {
+      title: { es: value.title, en: value.title },
+      description: { es: value.description, en: value.description },
+    };
   }
 
   const { error } = await supabase.rpc("create_akipasa_selection_event_v2", {
