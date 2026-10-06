@@ -785,6 +785,7 @@
 }
 .section[data-section="events"] :global(.event-heading strong) {
   font-size: 1rem;
+  letter-spacing: -0.01em;
 }
 .section[data-section="events"] :global(.event-workflow) {
   display: flex;
