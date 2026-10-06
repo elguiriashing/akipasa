@@ -682,3 +682,300 @@
     min-height: 42px;
   }
 }
+
+
+/* AkiBusiness workspace rework: each tool behaves like a small focused app. */
+.section {
+  --workspace-accent: var(--primary);
+  position: relative;
+}
+.section[data-section="events"] { --workspace-accent: #ff7a1a; }
+.section[data-section="catalogue"] { --workspace-accent: #ffd34d; }
+.section[data-section="rewards"] { --workspace-accent: #f4b942; }
+.section[data-section="checkin"] { --workspace-accent: #31c48d; }
+.section[data-section="bookings"] { --workspace-accent: #8b7cf6; }
+.section[data-section="team"] { --workspace-accent: #4bb7e8; }
+.section[data-section="profile"] { --workspace-accent: #ff8a3d; }
+
+.section:not([data-section="overview"]) {
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 1.2rem;
+  background:
+    radial-gradient(circle at 100% 0, color-mix(in srgb, var(--workspace-accent) 10%, transparent), transparent 34%),
+    color-mix(in srgb, var(--surface) 82%, transparent);
+}
+.section:not([data-section="overview"]) .sectionHeading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: -0.1rem 0 1rem;
+  padding: 0 0.15rem 0.9rem;
+  border-bottom: 1px solid var(--line);
+}
+.section:not([data-section="overview"]) .sectionHeading h2 {
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+}
+.section:not([data-section="overview"]) .sectionHeading h2::before {
+  content: "";
+  display: inline-block;
+  width: 0.48rem;
+  height: 0.95rem;
+  margin-right: 0.55rem;
+  border-radius: 999px;
+  background: var(--workspace-accent);
+  vertical-align: -0.06rem;
+}
+
+.dashboard .section:not([data-section="overview"]) :global(.panel) {
+  border-color: color-mix(in srgb, var(--workspace-accent) 16%, var(--line));
+  background: color-mix(in srgb, var(--surface-alt) 72%, transparent);
+}
+.dashboard .section:not([data-section="overview"]) :is(input, select, textarea) {
+  background: color-mix(in srgb, var(--surface) 68%, transparent);
+}
+.dashboard .section:not([data-section="overview"]) :is(input, select, textarea):focus {
+  border-color: color-mix(in srgb, var(--workspace-accent) 72%, var(--line));
+  outline: 2px solid color-mix(in srgb, var(--workspace-accent) 18%, transparent);
+  outline-offset: 1px;
+}
+.dashboard .section:not([data-section="overview"]) :global(.button) {
+  background: var(--workspace-accent);
+  color: #111827;
+}
+.dashboard .section:not([data-section="overview"]) summary::after {
+  border-color: var(--workspace-accent);
+}
+
+/* Profile behaves like a settings app, not one endless form. */
+.section[data-section="profile"] :global(.venue-form-columns) {
+  grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
+}
+.section[data-section="profile"] :global(.venue-form-columns > .stack) {
+  padding: 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, var(--surface) 50%, transparent);
+}
+.section[data-section="profile"] textarea[name="description"] {
+  min-height: 9rem;
+}
+.section[data-section="profile"] details:global(.panel) {
+  margin-top: 0.9rem;
+}
+
+/* Events gets a proper management workbench with a visible publishing state. */
+.section[data-section="events"] > div > :global(.event-create-action) {
+  margin-bottom: 1rem;
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--workspace-accent) 18%, transparent);
+}
+.section[data-section="events"] details[data-event-card] {
+  overflow: clip;
+  margin-bottom: 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--workspace-accent) 18%, var(--line));
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface-alt) 76%, transparent);
+}
+.section[data-section="events"] details[data-event-card] > summary {
+  min-height: 64px;
+  padding: 0.8rem 1rem;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--workspace-accent) 9%, transparent), transparent 38%);
+}
+.section[data-section="events"] :global(.event-heading strong) {
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+.section[data-section="events"] :global(.event-workflow) {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin: 0 0 0.8rem !important;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+}
+.section[data-section="events"] :global(.event-workflow form) {
+  margin-left: auto;
+}
+.section[data-section="events"] :global(.event-workflow .button) {
+  min-height: 38px;
+  padding: 0.48rem 0.8rem;
+}
+.section[data-section="events"] :global(.event-workflow-note) {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.section[data-section="events"] :global(.status-pill[data-status="published"]) {
+  background: color-mix(in srgb, #31c48d 18%, var(--surface));
+  color: #31c48d;
+}
+.section[data-section="events"] :global(.status-pill[data-status="pending"]) {
+  background: color-mix(in srgb, #f4b942 18%, var(--surface));
+  color: #f4b942;
+}
+.section[data-section="events"] :global(.status-pill[data-status="draft"]),
+.section[data-section="events"] :global(.status-pill[data-status="archived"]) {
+  background: color-mix(in srgb, var(--muted) 14%, var(--surface));
+}
+.section[data-section="events"] :global(.event-editor) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+}
+.section[data-section="events"] :global(.event-editor > details) {
+  overflow: hidden;
+  border-radius: 0.8rem;
+  background: color-mix(in srgb, var(--surface) 42%, transparent);
+}
+.section[data-section="events"] :global(.event-editor > details[open]) {
+  grid-column: 1 / -1;
+}
+.section[data-section="events"] :global(.event-editor > details[open] > summary) {
+  background: color-mix(in srgb, var(--workspace-accent) 8%, transparent);
+}
+.section[data-section="events"] :global(.event-editor > details[open] form.stack) {
+  max-width: 52rem;
+}
+.section[data-section="events"] :global(.event-editor > details[open] form.stack > label:has(textarea)) textarea {
+  min-height: 7rem;
+}
+
+/* Catalogue stays roomy so the menu editor can breathe. */
+.section[data-section="catalogue"] {
+  padding-bottom: 1.2rem;
+}
+.section[data-section="catalogue"] > :global(.panel) {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+/* Loyalty becomes a card deck with controls underneath. */
+.section[data-section="rewards"] :global(.reward-card-list) {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.section[data-section="rewards"] :global(.stamp-card) {
+  min-height: 8.5rem;
+  padding: 1rem;
+  border-color: color-mix(in srgb, var(--workspace-accent) 26%, var(--line));
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--workspace-accent) 12%, transparent), transparent 58%),
+    color-mix(in srgb, var(--surface) 54%, transparent);
+}
+.section[data-section="rewards"] :global(.loyalty-workbench > details) {
+  background: color-mix(in srgb, var(--surface) 38%, transparent);
+}
+
+/* Check-in is deliberately operational: QR on the left, redemption on the right. */
+.section[data-section="checkin"] :global(.venue-tool-columns) {
+  grid-template-columns: minmax(18rem, 0.9fr) minmax(20rem, 1.1fr);
+}
+.section[data-section="checkin"] :global(.check-in-qr) {
+  width: min(220px, 80vw);
+  height: auto;
+  padding: 0.65rem;
+  background: #fff;
+}
+
+/* Bookings reads like an inbox rather than a settings dump. */
+.section[data-section="bookings"] :global(.booking-workbench) > details {
+  background: color-mix(in srgb, var(--surface) 42%, transparent);
+}
+.section[data-section="bookings"] :global(.managed-list) {
+  margin-top: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  overflow: hidden;
+}
+.section[data-section="bookings"] :global(.managed-row) {
+  padding-inline: 0.8rem;
+}
+.section[data-section="bookings"] :global(.managed-row:last-child) {
+  border-bottom: 0;
+}
+
+/* Team is a clean people/permissions console. */
+.section[data-section="team"] :global(.managed-row) {
+  padding: 0.85rem;
+  margin-bottom: 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--surface) 44%, transparent);
+}
+.section[data-section="team"] :global(.danger-zone) {
+  margin-top: 1rem;
+  background: color-mix(in srgb, #9f2d2d 6%, var(--surface));
+}
+
+@media (min-width: 980px) {
+  .dashboard {
+    display: grid;
+    grid-template-columns: 12.5rem minmax(0, 1fr);
+    column-gap: 1.1rem;
+    align-items: start;
+    width: min(100% - 2rem, 82rem);
+  }
+  .back,
+  .header {
+    grid-column: 1 / -1;
+  }
+  .feedback {
+    grid-column: 2;
+  }
+  .tabs {
+    grid-column: 1;
+    grid-row: 3 / span 2;
+    position: sticky;
+    top: 0.75rem;
+    flex-direction: column;
+    align-self: start;
+    overflow: visible;
+    padding: 0.45rem;
+    border-radius: 1rem;
+  }
+  .tabs button {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 0.65rem 0.75rem;
+  }
+  .section {
+    grid-column: 2;
+    grid-row: 3;
+    padding-top: 0;
+  }
+  .section:not([data-section="overview"]) {
+    min-height: 34rem;
+  }
+  .section[data-section="overview"] {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .section:not([data-section="overview"]) {
+    padding: 0.75rem;
+    border-radius: 0.95rem;
+  }
+  .section:not([data-section="overview"]) .sectionHeading {
+    display: block;
+  }
+  .section[data-section="events"] :global(.event-editor),
+  .section[data-section="checkin"] :global(.venue-tool-columns),
+  .section[data-section="profile"] :global(.venue-form-columns) {
+    grid-template-columns: 1fr;
+  }
+  .section[data-section="rewards"] :global(.reward-card-list) {
+    grid-template-columns: 1fr;
+  }
+  .section[data-section="events"] :global(.event-workflow form) {
+    width: 100%;
+    margin-left: 0;
+  }
+  .section[data-section="events"] :global(.event-workflow .button) {
+    width: 100%;
+  }
+}

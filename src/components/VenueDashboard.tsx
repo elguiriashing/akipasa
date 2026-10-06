@@ -306,6 +306,7 @@ export function VenueDashboard({
       )}
       <section
         className={styles.section}
+        data-section="overview"
         id="venue-panel-overview"
         role="tabpanel"
         aria-labelledby="venue-tab-overview"
@@ -344,6 +345,7 @@ export function VenueDashboard({
         <section
           key={tool.id}
           className={styles.section}
+          data-section={tool.id}
           id={`venue-panel-${tool.id}`}
           role="tabpanel"
           aria-labelledby={`venue-tab-${tool.id}`}

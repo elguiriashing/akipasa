@@ -22,6 +22,7 @@ import {
   deleteEvent,
   deleteVenue,
   duplicateEvent,
+  publishEvent,
   redeemRewardClaim,
   removeVenueImage,
   saveBookingSettings,
@@ -462,6 +463,55 @@ export default async function VenueWorkspace({
                         </small>
                       </span>
                     </summary>
+                    <div className="event-workflow">
+                      <span
+                        className="status-pill"
+                        data-status={event.status}
+                      >
+                        {event.status === "published"
+                          ? es
+                            ? "Publicado"
+                            : "Published"
+                          : event.status === "pending"
+                            ? es
+                              ? "En revisión"
+                              : "In review"
+                            : event.status === "archived"
+                              ? es
+                                ? "Archivado"
+                                : "Archived"
+                              : es
+                                ? "Borrador"
+                                : "Draft"}
+                      </span>
+                      {event.status !== "published" &&
+                      event.status !== "pending" ? (
+                        <form action={publishEvent}>
+                          <input type="hidden" name="locale" value={locale} />
+                          <input type="hidden" name="venueId" value={id} />
+                          <input
+                            type="hidden"
+                            name="eventId"
+                            value={event.id}
+                          />
+                          <button className="button" type="submit">
+                            {es ? "Publicar evento" : "Publish event"}
+                          </button>
+                        </form>
+                      ) : event.status === "pending" ? (
+                        <span className="event-workflow-note">
+                          {es
+                            ? "Listo. Está pasando por la revisión de publicación."
+                            : "Ready. It is going through the publishing review."}
+                        </span>
+                      ) : (
+                        <span className="event-workflow-note">
+                          {es
+                            ? "Este evento está visible para el público."
+                            : "This event is live for the public."}
+                        </span>
+                      )}
+                    </div>
                     <div className="event-editor">
                       <details>
                         <summary>{es ? "Editar" : "Edit"}</summary>

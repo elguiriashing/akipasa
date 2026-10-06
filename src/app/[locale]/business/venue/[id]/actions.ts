@@ -176,6 +176,45 @@ export async function updateEvent(formData: FormData) {
   redirect(destination(locale, venueId, "updated=event"));
 }
 
+export async function publishEvent(formData: FormData) {
+  const parsed = context
+    .extend({
+      eventId: z.string().uuid(),
+    })
+    .safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  if (!parsed.success) redirect(destination(locale, venueId, "error=publish-event"));
+
+  const { supabase, user } = await requireBusinessAccess(locale);
+  const { data: event, error: eventError } = await supabase
+    .from("events")
+    .select("id,status")
+    .eq("id", parsed.data.eventId)
+    .eq("venue_id", parsed.data.venueId)
+    .maybeSingle();
+
+  if (eventError || !event)
+    redirect(destination(locale, venueId, "error=publish-event"));
+
+  if (event.status !== "published") {
+    const { error } = await supabase
+      .from("events")
+      .update({ status: "pending" })
+      .eq("id", parsed.data.eventId)
+      .eq("venue_id", parsed.data.venueId);
+    if (error) redirect(destination(locale, venueId, "error=publish-event"));
+
+    await reviewPendingCatalogueItem({
+      targetType: "event",
+      targetId: parsed.data.eventId,
+      requesterId: user.id,
+    });
+  }
+
+  redirect(destination(locale, venueId, "updated=publish-event"));
+}
+
 export async function updateOccurrenceStatus(formData: FormData) {
   const parsed = context
     .extend({
