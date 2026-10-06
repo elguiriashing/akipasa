@@ -9,6 +9,7 @@ import { madridLocalDateTimeSchema } from "@/lib/time";
 import { reviewPendingCatalogueItem } from "@/lib/automatic-moderation";
 import {
   translateLocalizedFields,
+  translateSubmittedLocalizedFields,
   translateVenueCatalogueDocument,
 } from "@/lib/localized-copy";
 import type { VenueCatalogueDocument } from "@/lib/venue-catalogue";
@@ -55,26 +56,23 @@ export async function updateVenue(formData: FormData) {
     .maybeSingle();
   if (!currentVenue) redirect(destination(locale, venueId, "error=venue"));
 
-  const currentSource =
-    locale === "es"
-      ? currentVenue.description_es || ""
-      : currentVenue.description_en || currentVenue.description_es || "";
-  let localizedDescription = {
-    es: currentVenue.description_es || "",
-    en: currentVenue.description_en || currentVenue.description_es || "",
-  };
-  if (parsed.data.description !== currentSource) {
-    try {
-      localizedDescription = (
-        await translateLocalizedFields(
-          locale,
-          { description: parsed.data.description },
-          user.id,
-        )
-      ).description;
-    } catch {
-      redirect(destination(locale, venueId, "error=translation"));
-    }
+  let localizedDescription;
+  try {
+    localizedDescription = (
+      await translateSubmittedLocalizedFields(
+        locale,
+        { description: parsed.data.description },
+        user.id,
+        {
+          description: {
+            es: currentVenue.description_es || "",
+            en: currentVenue.description_en || "",
+          },
+        },
+      )
+    ).description;
+  } catch {
+    redirect(destination(locale, venueId, "error=translation"));
   }
   if (parsed.data.addressSelection === "selected") {
     if (
