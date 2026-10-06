@@ -15,6 +15,39 @@ describe("business onboarding", () => {
     expect(slug).toMatch(/^noche-de-jazz-tapas-[a-f0-9]{6}$/);
   });
 
+
+  it("keeps business editing locale-first and translates the saved copy server-side", () => {
+    const businessPage = readFileSync(
+      "src/app/[locale]/business/page.tsx",
+      "utf8",
+    );
+    const venuePage = readFileSync(
+      "src/app/[locale]/business/venue/[id]/page.tsx",
+      "utf8",
+    );
+    const businessActions = readFileSync(
+      "src/app/[locale]/business/actions.ts",
+      "utf8",
+    );
+    const venueActions = readFileSync(
+      "src/app/[locale]/business/venue/[id]/actions.ts",
+      "utf8",
+    );
+    const translation = readFileSync("src/lib/localized-copy.ts", "utf8");
+
+    for (const source of [businessPage, venuePage]) {
+      expect(source).not.toContain('name="descriptionEs"');
+      expect(source).not.toContain('name="descriptionEn"');
+      expect(source).not.toContain('name="titleEs"');
+      expect(source).not.toContain('name="titleEn"');
+    }
+    expect(businessActions).toContain("translateLocalizedFields");
+    expect(venueActions).toContain("translateLocalizedFields");
+    expect(translation).toContain("source_language");
+    expect(translation).toContain("target_language");
+    expect(translation).toContain("Preserve proper nouns");
+  });
+
   it("lets an owner unlink a venue without deleting its public catalogue", () => {
     const migration = readFileSync(
       "database/migrations/0073_unclaim_owned_venue.sql",
