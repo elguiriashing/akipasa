@@ -66,6 +66,12 @@ export type Event = {
   bookingUrl?: string;
   minimumAge?: number;
   accessibilityNotes?: Translation;
+  location?: {
+    latitude: number;
+    longitude: number;
+    name: Translation;
+    address: string;
+  };
   occurrences: Occurrence[];
 };
 export type TimeWindow = "now" | "tonight" | "tomorrow" | "weekend" | "all";
