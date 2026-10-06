@@ -496,22 +496,23 @@ export async function updateVenueImageMetadata(formData: FormData) {
     .maybeSingle();
   if (!currentMedia) redirect(destination(locale, venueId, "error=media"));
 
-  const currentSource =
-    locale === "es"
-      ? currentMedia.alt_es || ""
-      : currentMedia.alt_en || currentMedia.alt_es || "";
-  let localizedAlt = {
-    es: currentMedia.alt_es || "",
-    en: currentMedia.alt_en || currentMedia.alt_es || "",
-  };
-  if (parsed.data.alt !== currentSource) {
-    try {
-      localizedAlt = (
-        await translateLocalizedFields(locale, { alt: parsed.data.alt }, user.id)
-      ).alt;
-    } catch {
-      redirect(destination(locale, venueId, "error=translation"));
-    }
+  let localizedAlt;
+  try {
+    localizedAlt = (
+      await translateSubmittedLocalizedFields(
+        locale,
+        { alt: parsed.data.alt },
+        user.id,
+        {
+          alt: {
+            es: currentMedia.alt_es || "",
+            en: currentMedia.alt_en || "",
+          },
+        },
+      )
+    ).alt;
+  } catch {
+    redirect(destination(locale, venueId, "error=translation"));
   }
   const { error } = await supabase
     .from("venue_media")
