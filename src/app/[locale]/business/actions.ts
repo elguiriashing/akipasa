@@ -204,8 +204,9 @@ export async function createEvent(formData: FormData) {
   }
 
   const eventSlug = createEventSlug(e.title);
+  const locationLabel = e.officialLocationName || e.address;
   const { data: eventId, error } = official
-    ? await supabase.rpc("create_akipasa_official_event", {
+    ? await supabase.rpc("create_akipasa_selection_event", {
         p_category: e.categoryId,
         p_slug: eventSlug,
         p_title_es: localized.title.es,
@@ -216,9 +217,7 @@ export async function createEvent(formData: FormData) {
         p_booking_url: e.bookingUrl,
         p_starts_at: e.startsAt.toISOString(),
         p_ends_at: e.endsAt.toISOString(),
-        p_location_name_es: e.officialLocationName || e.address,
-        p_location_name_en: e.officialLocationName || e.address,
-        p_location_address: e.address,
+        p_location_label: locationLabel,
         p_latitude: e.latitude,
         p_longitude: e.longitude,
       })
