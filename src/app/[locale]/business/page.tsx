@@ -483,18 +483,13 @@ export default async function BusinessPage({
 
               <div className="form-grid-two">
                 <label>
-                  {es ? "Descripción en español" : "Spanish description"}
+                  {es ? "Descripción" : "Description"}
                   <textarea
-                    name="descriptionEs"
+                    name="description"
                     required
                     minLength={20}
                     rows={3}
                   />
-                </label>
-
-                <label>
-                  {es ? "Descripción en inglés" : "English description"}
-                  <textarea name="descriptionEn" rows={3} />
                 </label>
               </div>
 
