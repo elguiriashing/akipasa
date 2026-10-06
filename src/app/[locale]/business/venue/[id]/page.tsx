@@ -251,177 +251,325 @@ export default async function VenueWorkspace({
       sections={{
         profile: (
           <>
-            <section className="panel">
-              <h2>{es ? "Datos del local" : "Venue details"}</h2>
-              <form action={updateVenue} className="stack">
-                <input type="hidden" name="locale" value={locale} />
-                <input type="hidden" name="venueId" value={id} />
-                <div className="venue-form-columns">
-                  <div className="stack">
-                    <label>
-                      {es ? "Nombre" : "Name"}
-                      <input name="name" defaultValue={venue.name} required />
-                    </label>
-                    <label>
-                      {es ? "Descripción" : "Description"}
-                      <textarea
-                        name="description"
-                        defaultValue={
-                          es
-                            ? venue.description_es
-                            : venue.description_en || ""
-                        }
-                        required
-                        minLength={20}
-                      />
-                    </label>
+            <section className="panel profile-hub">
+              <div className="profile-summary-grid">
+                <article className="profile-summary-card">
+                  <span className="summary-icon">
+                    <Icon name="venue" />
+                  </span>
+                  <div>
+                    <small>{es ? "Identidad" : "Identity"}</small>
+                    <strong>{venue.name}</strong>
+                    <span>
+                      {(es
+                        ? venue.description_es
+                        : venue.description_en || venue.description_es
+                      ).slice(0, 90)}
+                    </span>
                   </div>
-                  <div className="stack">
-                    <SpainAddressAutocomplete
-                      locale={locale}
-                      mode="address"
-                      defaultValue={venue.address}
-                    />
-                    <div className="two-col">
+                </article>
+                <article className="profile-summary-card">
+                  <span className="summary-icon">
+                    <Icon name="map" />
+                  </span>
+                  <div>
+                    <small>{es ? "Ubicación" : "Location"}</small>
+                    <strong>{venue.address}</strong>
+                    <span>
+                      {es ? "Dirección pública del local" : "Public venue address"}
+                    </span>
+                  </div>
+                </article>
+                <article className="profile-summary-card">
+                  <span className="summary-icon">
+                    <Icon name="person" />
+                  </span>
+                  <div>
+                    <small>{es ? "Contacto" : "Contact"}</small>
+                    <strong>
+                      {venue.contact_phone ||
+                        venue.whatsapp_phone ||
+                        venue.website_url ||
+                        (es ? "Sin añadir" : "Not added")}
+                    </strong>
+                    <span>
+                      {venue.contact_phone || venue.whatsapp_phone || venue.website_url
+                        ? es
+                          ? "Los clientes pueden contactarte"
+                          : "Customers can reach you"
+                        : es
+                          ? "Añade una forma de contacto"
+                          : "Add a contact method"}
+                    </span>
+                  </div>
+                </article>
+              </div>
+
+              <details className="workspace-action-card">
+                <summary>
+                  <span className="workspace-action-summary">
+                    <span className="summary-icon">
+                      <Icon name="settings" />
+                    </span>
+                    <span>
+                      <strong>{es ? "Editar información" : "Edit venue information"}</strong>
+                      <small>
+                        {es
+                          ? "Nombre, descripción, dirección y contacto"
+                          : "Name, description, address and contact"}
+                      </small>
+                    </span>
+                  </span>
+                </summary>
+                <form action={updateVenue} className="stack profile-editor-form">
+                  <input type="hidden" name="locale" value={locale} />
+                  <input type="hidden" name="venueId" value={id} />
+                  <div className="profile-editor-grid">
+                    <section className="form-card">
+                      <div className="form-card-heading">
+                        <span className="summary-icon">
+                          <Icon name="venue" />
+                        </span>
+                        <div>
+                          <strong>{es ? "Lo esencial" : "The essentials"}</strong>
+                          <small>
+                            {es
+                              ? "Lo primero que verá un cliente"
+                              : "The first things a customer sees"}
+                          </small>
+                        </div>
+                      </div>
                       <label>
-                        {es ? "Teléfono público" : "Public phone"}
-                        <input
-                          name="contactPhone"
-                          type="tel"
-                          inputMode="tel"
-                          placeholder="+34600111222"
-                          pattern="\+[1-9][0-9]{7,14}"
-                          defaultValue={venue.contact_phone || ""}
-                        />
+                        {es ? "Nombre" : "Name"}
+                        <input name="name" defaultValue={venue.name} required />
                       </label>
                       <label>
-                        WhatsApp
-                        <input
-                          name="whatsappPhone"
-                          type="tel"
-                          inputMode="tel"
-                          placeholder="+34600111222"
-                          pattern="\+[1-9][0-9]{7,14}"
-                          defaultValue={venue.whatsapp_phone || ""}
+                        {es ? "Descripción" : "Description"}
+                        <textarea
+                          name="description"
+                          defaultValue={
+                            es
+                              ? venue.description_es
+                              : venue.description_en || venue.description_es
+                          }
+                          required
+                          minLength={20}
+                          rows={5}
                         />
                       </label>
-                    </div>
-                    <label>
-                      {es ? "Sitio web HTTPS" : "HTTPS website"}
-                      <input
-                        name="websiteUrl"
-                        type="url"
-                        placeholder="https://"
-                        defaultValue={venue.website_url || ""}
+                    </section>
+                    <section className="form-card">
+                      <div className="form-card-heading">
+                        <span className="summary-icon">
+                          <Icon name="map" />
+                        </span>
+                        <div>
+                          <strong>{es ? "Dónde y cómo contactarte" : "Location and contact"}</strong>
+                          <small>
+                            {es
+                              ? "Información práctica para llegar o llamar"
+                              : "Practical information for visits and contact"}
+                          </small>
+                        </div>
+                      </div>
+                      <SpainAddressAutocomplete
+                        locale={locale}
+                        mode="address"
+                        defaultValue={venue.address}
                       />
-                    </label>
-                    <label className="check-row">
-                      <input
-                        type="checkbox"
-                        name="accessible"
-                        defaultChecked={Boolean(
-                          (venue.accessibility as { step_free?: boolean })
-                            ?.step_free,
-                        )}
-                      />{" "}
-                      {es ? "Acceso sin escalones" : "Step-free access"}
-                    </label>
+                      <div className="two-col">
+                        <label>
+                          {es ? "Teléfono" : "Phone"}
+                          <input
+                            name="contactPhone"
+                            type="tel"
+                            inputMode="tel"
+                            placeholder="+34600111222"
+                            pattern="\+[1-9][0-9]{7,14}"
+                            defaultValue={venue.contact_phone || ""}
+                          />
+                        </label>
+                        <label>
+                          WhatsApp
+                          <input
+                            name="whatsappPhone"
+                            type="tel"
+                            inputMode="tel"
+                            placeholder="+34600111222"
+                            pattern="\+[1-9][0-9]{7,14}"
+                            defaultValue={venue.whatsapp_phone || ""}
+                          />
+                        </label>
+                      </div>
+                      <label>
+                        {es ? "Web o enlace principal" : "Website or main link"}
+                        <input
+                          name="websiteUrl"
+                          type="url"
+                          placeholder="https://"
+                          defaultValue={venue.website_url || ""}
+                        />
+                      </label>
+                      <label className="check-row">
+                        <input
+                          type="checkbox"
+                          name="accessible"
+                          defaultChecked={Boolean(
+                            (venue.accessibility as { step_free?: boolean })
+                              ?.step_free,
+                          )}
+                        />
+                        {es ? "Acceso sin escalones" : "Step-free access"}
+                      </label>
+                    </section>
                   </div>
-                </div>
-                <button className="button" type="submit">
-                  {es
-                    ? "Guardar y enviar a revisión"
-                    : "Save and submit for review"}
-                </button>
-              </form>
+                  <div className="form-save-bar">
+                    <span>
+                      {es
+                        ? "Guardar enviará los cambios a revisión."
+                        : "Saving sends the changes for review."}
+                    </span>
+                    <button className="button" type="submit">
+                      {es ? "Guardar cambios" : "Save changes"}
+                    </button>
+                  </div>
+                </form>
+              </details>
             </section>
-            <details className="panel">
-              <summary>
-                <strong>{es ? "Fotos del local" : "Venue photos"}</strong>
-              </summary>
-              <form
-                action={uploadVenueImage}
-                className="stack"
-                encType="multipart/form-data"
-              >
-                <input type="hidden" name="locale" value={locale} />
-                <input type="hidden" name="venueId" value={id} />
-                <label>
-                  {es
-                    ? "Imagen JPEG, PNG o WebP (máx. 10 MB)"
-                    : "JPEG, PNG or WebP image (max 10 MB)"}
+
+            <section className="panel profile-media-hub">
+              <div className="workspace-inline-heading">
+                <div>
+                  <span className="eyebrow">{es ? "Fotos" : "Photos"}</span>
+                  <h2>{es ? "Tu local, de un vistazo" : "Show people the venue"}</h2>
+                  <p>
+                    {media?.length
+                      ? es
+                        ? `${media.length} fotos añadidas`
+                        : `${media.length} photos added`
+                      : es
+                        ? "Todavía no has añadido fotos."
+                        : "No photos added yet."}
+                  </p>
+                </div>
+              </div>
+              <details className="workspace-action-card" open={!media?.length}>
+                <summary>
+                  <span className="workspace-action-summary">
+                    <span className="summary-icon">
+                      <Icon name="plus" />
+                    </span>
+                    <span>
+                      <strong>{es ? "Añadir foto" : "Add a photo"}</strong>
+                      <small>
+                        {es
+                          ? "JPEG, PNG o WebP · máximo 10 MB"
+                          : "JPEG, PNG or WebP · max 10 MB"}
+                      </small>
+                    </span>
+                  </span>
+                </summary>
+                <form
+                  action={uploadVenueImage}
+                  className="photo-upload-grid"
+                  encType="multipart/form-data"
+                >
+                  <input type="hidden" name="locale" value={locale} />
+                  <input type="hidden" name="venueId" value={id} />
                   <input
-                    type="file"
-                    name="image"
-                    accept="image/jpeg,image/png,image/webp"
-                    required
-                  />
-                </label>
-                <label>
-                  {es ? "Texto alternativo" : "Alternative text"}
-                  <input name="alt" required minLength={3} maxLength={300} />
-                </label>
-                <label>
-                  {es ? "Orden de aparición" : "Display order"}
-                  <input
+                    type="hidden"
                     name="sortOrder"
-                    type="number"
-                    min={0}
-                    max={10000}
-                    defaultValue={media?.length || 0}
-                    required
+                    value={media?.length || 0}
                   />
-                </label>
-                <button className="button" type="submit">
-                  {es ? "Subir imagen" : "Upload image"}
-                </button>
-              </form>
-              {media?.map((item) => (
-                <details className="panel" key={item.id}>
-                  <summary>{item.alt_es}</summary>
-                  <form action={updateVenueImageMetadata} className="stack">
-                    <input type="hidden" name="locale" value={locale} />
-                    <input type="hidden" name="venueId" value={id} />
-                    <input type="hidden" name="mediaId" value={item.id} />
-                    <label>
-                      {es ? "Texto alternativo" : "Alternative text"}
-                      <input
-                        name="alt"
-                        defaultValue={
-                          es ? item.alt_es : item.alt_en || ""
-                        }
-                        required
-                        minLength={3}
-                        maxLength={300}
-                      />
-                    </label>
-                    <label>
-                      {es ? "Orden de aparición" : "Display order"}
-                      <input
-                        name="sortOrder"
-                        type="number"
-                        min={0}
-                        max={10000}
-                        defaultValue={item.sort_order}
-                        required
-                      />
-                    </label>
-                    <span>{Math.round(item.size_bytes / 1024)} KB</span>
-                    <button className="button secondary" type="submit">
-                      {es ? "Guardar imagen" : "Save image"}
-                    </button>
-                  </form>
-                  <form action={removeVenueImage}>
-                    <input type="hidden" name="locale" value={locale} />
-                    <input type="hidden" name="venueId" value={id} />
-                    <input type="hidden" name="mediaId" value={item.id} />
-                    <button className="text-button" type="submit">
-                      {es ? "Eliminar" : "Remove"}
-                    </button>
-                  </form>
-                </details>
-              ))}
-            </details>
+                  <label className="photo-file-field">
+                    {es ? "Elige una imagen" : "Choose an image"}
+                    <input
+                      type="file"
+                      name="image"
+                      accept="image/jpeg,image/png,image/webp"
+                      required
+                    />
+                  </label>
+                  <label>
+                    {es ? "Describe brevemente la foto" : "Briefly describe the photo"}
+                    <input
+                      name="alt"
+                      required
+                      minLength={3}
+                      maxLength={300}
+                      placeholder={
+                        es
+                          ? "Ej. terraza principal"
+                          : "E.g. main terrace"
+                      }
+                    />
+                  </label>
+                  <button className="button" type="submit">
+                    {es ? "Subir foto" : "Upload photo"}
+                  </button>
+                </form>
+              </details>
+              {!!media?.length && (
+                <div className="media-row-list">
+                  {media.map((item, index) => (
+                    <details className="media-row" key={item.id}>
+                      <summary>
+                        <span>
+                          <strong>
+                            {locale === "en"
+                              ? item.alt_en || item.alt_es
+                              : item.alt_es}
+                          </strong>
+                          <small>
+                            {Math.round(item.size_bytes / 1024)} KB ·{" "}
+                            {es ? `foto ${index + 1}` : `photo ${index + 1}`}
+                          </small>
+                        </span>
+                      </summary>
+                      <form action={updateVenueImageMetadata} className="media-edit-grid">
+                        <input type="hidden" name="locale" value={locale} />
+                        <input type="hidden" name="venueId" value={id} />
+                        <input type="hidden" name="mediaId" value={item.id} />
+                        <label>
+                          {es ? "Descripción" : "Description"}
+                          <input
+                            name="alt"
+                            defaultValue={
+                              es ? item.alt_es : item.alt_en || item.alt_es
+                            }
+                            required
+                            minLength={3}
+                            maxLength={300}
+                          />
+                        </label>
+                        <label>
+                          {es ? "Orden" : "Order"}
+                          <input
+                            name="sortOrder"
+                            type="number"
+                            min={0}
+                            max={10000}
+                            defaultValue={item.sort_order}
+                            required
+                          />
+                        </label>
+                        <button className="button secondary" type="submit">
+                          {es ? "Guardar" : "Save"}
+                        </button>
+                      </form>
+                      <form action={removeVenueImage}>
+                        <input type="hidden" name="locale" value={locale} />
+                        <input type="hidden" name="venueId" value={id} />
+                        <input type="hidden" name="mediaId" value={item.id} />
+                        <button className="text-button" type="submit">
+                          {es ? "Eliminar foto" : "Remove photo"}
+                        </button>
+                      </form>
+                    </details>
+                  ))}
+                </div>
+              )}
+            </section>
           </>
         ),
         events: (
