@@ -226,11 +226,24 @@ export async function translateSubmittedLocalizedFields(
   const [fromSource, fromFallback] = await Promise.all([
     Object.keys(translateFromSource).length
       ? translateLocalizedFields(sourceLocale, translateFromSource, actorId)
-      : Promise.resolve({}),
+      : Promise.resolve({} as Record<string, LocalizedPair>),
     Object.keys(translateFromFallback).length
       ? translateLocalizedFields(targetLocale, translateFromFallback, actorId)
-      : Promise.resolve({}),
+      : Promise.resolve({} as Record<string, LocalizedPair>),
   ]);
+
+  for (const [key, pair] of Object.entries(fromSource)) {
+    const existingTarget = current[key]?.[targetLocale]?.trim();
+    if (
+      pair[sourceLocale].trim() === pair[targetLocale].trim() &&
+      existingTarget &&
+      existingTarget !== pair[sourceLocale].trim()
+    ) {
+      // If every translator is temporarily down, do not destroy a previously
+      // valid translated copy just because the source language was edited.
+      pair[targetLocale] = existingTarget;
+    }
+  }
 
   return {
     ...keep,
