@@ -33,6 +33,7 @@ export type MapPoint = {
   source:
     | "verified_venue"
     | "community"
+    | "akipasa_selection"
     | "claimed"
     | "unclaimed"
     | "accommodation";
@@ -60,7 +61,10 @@ function clusterImage(diameter: number, fill: string): ImageData {
   return context.getImageData(0, 0, canvas.width, canvas.height);
 }
 
-function markerImage(fill: string, kind: "event" | "venue"): ImageData {
+function markerImage(
+  fill: string,
+  kind: "event" | "venue" | "akipasa",
+): ImageData {
   const width = 36;
   const height = 44;
   const pixelRatio = 2;
@@ -84,7 +88,13 @@ function markerImage(fill: string, kind: "event" | "venue"): ImageData {
   context.strokeStyle = "#faf7f2";
   context.fillStyle = "#faf7f2";
   context.lineWidth = 2;
-  if (kind === "event") {
+  if (kind === "akipasa") {
+    context.fillStyle = "#14213d";
+    context.font = "900 16px Arial";
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.fillText("A", 18, 19);
+  } else if (kind === "event") {
     context.strokeRect(12, 13, 12, 11);
     context.beginPath();
     context.moveTo(12, 17);
@@ -334,6 +344,11 @@ export function ProductionMap({
           map.addImage("pin-community", markerImage("#a43ee8", "event"), {
             pixelRatio: 2,
           });
+          map.addImage(
+            "pin-akipasa-selection",
+            markerImage("#ffd447", "akipasa"),
+            { pixelRatio: 2 },
+          );
           map.addImage("pin-claimed", markerImage("#2784e6", "venue"), {
             pixelRatio: 2,
           });
@@ -384,6 +399,8 @@ export function ProductionMap({
                 "pin-accommodation",
                 "community",
                 "pin-community",
+                "akipasa_selection",
+                "pin-akipasa-selection",
                 "claimed",
                 "pin-claimed",
                 "unclaimed",
@@ -757,6 +774,12 @@ export function ProductionMap({
                   <b>E</b>
                 </i>
                 {locale === "es" ? "Evento verificado" : "Verified event"}
+              </span>
+              <span>
+                <i className="map-legend-pin map-legend-akipasa">
+                  <b>A</b>
+                </i>
+                {locale === "es" ? "Selección AkiPasa" : "AkiPasa Selection"}
               </span>
               <span>
                 <i className="map-legend-pin map-legend-community">
