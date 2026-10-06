@@ -800,3 +800,67 @@ export async function updateBookingRequest(formData: FormData) {
     ),
   );
 }
+
+
+const catalogueSaveSchema = context.extend({
+  expectedRevision: z.coerce.number().int().min(0),
+  document: z.string().min(2).max(400000),
+  publish: z.enum(["0", "1"]).default("0"),
+});
+
+export async function saveVenueCatalogue(formData: FormData) {
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  const parsed = catalogueSaveSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success)
+    redirect(destination(locale, venueId, "section=catalogue&error=catalogue"));
+
+  let document: unknown;
+  try {
+    document = JSON.parse(parsed.data.document);
+  } catch {
+    redirect(destination(locale, venueId, "section=catalogue&error=catalogue"));
+  }
+
+  const { supabase } = await requireBusinessAccess(locale);
+  const { error } = await supabase.rpc("save_venue_catalogue", {
+    p_venue: parsed.data.venueId,
+    p_expected_revision: parsed.data.expectedRevision,
+    p_document: document,
+    p_publish: parsed.data.publish === "1",
+  });
+  if (error) {
+    const code =
+      error.message?.includes("ALLERGEN_REVIEW_REQUIRED")
+        ? "allergens"
+        : "catalogue";
+    redirect(destination(locale, venueId, `section=catalogue&error=${code}`));
+  }
+  revalidatePath(`/${locale}/venues`, "layout");
+  redirect(
+    destination(
+      locale,
+      venueId,
+      `section=catalogue&updated=${parsed.data.publish === "1" ? "catalogue-published" : "catalogue"}`,
+    ),
+  );
+}
+
+export async function unpublishVenueCatalogue(formData: FormData) {
+  const parsed = context
+    .extend({ expectedRevision: z.coerce.number().int().min(0) })
+    .safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  if (!parsed.success)
+    redirect(destination(locale, venueId, "section=catalogue&error=catalogue"));
+  const { supabase } = await requireBusinessAccess(locale);
+  const { error } = await supabase.rpc("unpublish_venue_catalogue", {
+    p_venue: parsed.data.venueId,
+    p_expected_revision: parsed.data.expectedRevision,
+  });
+  if (error)
+    redirect(destination(locale, venueId, "section=catalogue&error=catalogue"));
+  revalidatePath(`/${locale}/venues`, "layout");
+  redirect(destination(locale, venueId, "section=catalogue&updated=catalogue"));
+}
