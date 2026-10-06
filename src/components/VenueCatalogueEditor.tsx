@@ -304,6 +304,9 @@ export function VenueCatalogueEditor({
     0,
     riskAllergens.length - visibleRiskAllergens.length,
   );
+  const allSectionsExpanded =
+    document.sections.length > 0 &&
+    document.sections.every((section) => expandedSectionIds.has(section.id));
 
   return (
     <div className="catalogue-studio">
@@ -418,26 +421,43 @@ export function VenueCatalogueEditor({
             <div className="catalogue-sidebar-head-actions">
               <button
                 type="button"
+                className="catalogue-sidebar-toggle-all"
                 onClick={() =>
                   setExpandedSectionIds(
-                    new Set(document.sections.map((section) => section.id)),
+                    allSectionsExpanded
+                      ? new Set()
+                      : new Set(
+                          document.sections.map((section) => section.id),
+                        ),
                   )
                 }
-                aria-label={es ? "Expandir todas" : "Expand all"}
-                title={es ? "Expandir todas" : "Expand all"}
+                disabled={document.sections.length === 0}
+                aria-label={
+                  allSectionsExpanded
+                    ? es
+                      ? "Contraer todas las secciones"
+                      : "Collapse all sections"
+                    : es
+                      ? "Expandir todas las secciones"
+                      : "Expand all sections"
+                }
+                title={
+                  allSectionsExpanded
+                    ? es
+                      ? "Contraer todo"
+                      : "Collapse all"
+                    : es
+                      ? "Expandir todo"
+                      : "Expand all"
+                }
               >
-                ▾
+                <span aria-hidden="true">
+                  {allSectionsExpanded ? "▴" : "▾"}
+                </span>
               </button>
               <button
                 type="button"
-                onClick={() => setExpandedSectionIds(new Set())}
-                aria-label={es ? "Contraer todas" : "Collapse all"}
-                title={es ? "Contraer todas" : "Collapse all"}
-              >
-                ▸
-              </button>
-              <button
-                type="button"
+                className="catalogue-sidebar-add-section"
                 onClick={addSection}
                 aria-label={es ? "Añadir sección" : "Add section"}
                 title={es ? "Añadir sección" : "Add section"}
