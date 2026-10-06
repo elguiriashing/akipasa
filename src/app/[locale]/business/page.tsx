@@ -556,17 +556,12 @@ export default async function BusinessPage({
 
               <div className="form-grid-two">
                 <label>
-                  {es ? "Título en español" : "Spanish title"}
+                  {es ? "Título" : "Title"}
                   <input
-                    name="titleEs"
+                    name="title"
                     required
-                    placeholder="Ej. Noche de Jazz"
+                    placeholder={es ? "Ej. Noche de Jazz" : "e.g. Jazz Night"}
                   />
-                </label>
-
-                <label>
-                  {es ? "Título en inglés" : "English title"}
-                  <input name="titleEn" placeholder="e.g. Jazz Night" />
                 </label>
               </div>
 
@@ -585,18 +580,13 @@ export default async function BusinessPage({
 
               <div className="form-grid-two">
                 <label>
-                  {es ? "Descripción en español" : "Spanish description"}
+                  {es ? "Descripción" : "Description"}
                   <textarea
-                    name="descriptionEs"
+                    name="description"
                     required
                     minLength={20}
                     rows={3}
                   />
-                </label>
-
-                <label>
-                  {es ? "Descripción en inglés" : "English description"}
-                  <textarea name="descriptionEn" rows={3} />
                 </label>
               </div>
 
@@ -678,39 +668,29 @@ export default async function BusinessPage({
 
               <div className="form-grid-two">
                 <label>
-                  {es ? "Nombre del programa (ES)" : "Programme name (ES)"}
+                  {es ? "Nombre del programa" : "Programme name"}
                   <input
-                    name="titleEs"
+                    name="title"
                     required
                     minLength={3}
-                    placeholder="Ej. Tarjeta VIP"
+                    placeholder={es ? "Ej. Tarjeta VIP" : "e.g. VIP Card"}
                   />
-                </label>
-
-                <label>
-                  {es ? "Nombre en inglés (EN)" : "English name (EN)"}
-                  <input name="titleEn" placeholder="e.g. VIP Card" />
                 </label>
               </div>
 
               <div className="form-grid-two">
                 <label>
-                  {es ? "Recompensa (ES)" : "Reward (ES)"}
+                  {es ? "Recompensa" : "Reward"}
                   <textarea
-                    name="rewardEs"
+                    name="reward"
                     required
                     minLength={3}
                     rows={2}
-                    placeholder="Ej. Bebida gratis en tu 8ª visita"
-                  />
-                </label>
-
-                <label>
-                  {es ? "Recompensa en inglés (EN)" : "English reward (EN)"}
-                  <textarea
-                    name="rewardEn"
-                    rows={2}
-                    placeholder="e.g. Free drink on 8th visit"
+                    placeholder={
+                      es
+                        ? "Ej. Bebida gratis en tu 8ª visita"
+                        : "e.g. Free drink on 8th visit"
+                    }
                   />
                 </label>
               </div>
