@@ -254,10 +254,8 @@ const officialEventSchema = z.object({
   bookingUrl: safeExternalUrlSchema,
   startsAt: madridLocalDateTimeSchema,
   endsAt: madridLocalDateTimeSchema,
-  address: z.string().trim().min(3).max(300),
-  addressSelection: z.literal("selected"),
-  locality: z.string().trim().min(2).max(120),
-  province: z.string().trim().min(2).max(120),
+  locationLabel: z.string().trim().min(2).max(160),
+  directionsAddress: z.string().trim().max(300).optional().default(""),
   latitude: z.coerce.number().min(27).max(44.5),
   longitude: z.coerce.number().min(-19).max(5),
 });
@@ -281,10 +279,7 @@ export async function createOfficialEvent(formData: FormData) {
     redirect(`/${locale}/business?view=events&error=translation`);
   }
 
-  const locationLabel = [value.address, value.locality, value.province]
-    .filter(Boolean)
-    .join(" · ");
-  const { error } = await supabase.rpc("create_akipasa_selection_event", {
+  const { error } = await supabase.rpc("create_akipasa_selection_event_v2", {
     p_category: value.categoryId,
     p_slug: createEventSlug(value.title),
     p_title_es: localized.title.es,
@@ -295,7 +290,8 @@ export async function createOfficialEvent(formData: FormData) {
     p_booking_url: value.bookingUrl,
     p_starts_at: value.startsAt.toISOString(),
     p_ends_at: value.endsAt.toISOString(),
-    p_location_label: locationLabel,
+    p_location_label: value.locationLabel,
+    p_directions_address: value.directionsAddress || null,
     p_latitude: value.latitude,
     p_longitude: value.longitude,
   });
