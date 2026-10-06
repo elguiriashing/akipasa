@@ -1833,17 +1833,18 @@ export default async function VenueWorkspace({
                   <input type="hidden" name="venueId" value={id} />
                   <div className="form-grid-two">
                     <label>
-                      {es ? "ID de cuenta AkiPasa" : "AkiPasa account ID"}
+                      {es ? "Email de la persona" : "Person's email"}
                       <input
-                        name="profileId"
+                        name="email"
+                        type="email"
                         required
-                        pattern="[0-9a-fA-F-]{36}"
-                        placeholder="00000000-0000-0000-0000-000000000000"
+                        autoComplete="email"
+                        placeholder={es ? "nombre@ejemplo.com" : "name@example.com"}
                       />
                       <small>
                         {es
-                          ? "La persona puede copiarlo desde su cuenta. Más adelante esto será una invitación por email."
-                          : "They can copy this from their account. This will become an email invite flow later."}
+                          ? "Debe ser el email de una cuenta AkiPasa activa."
+                          : "Use the email on their active AkiPasa account."}
                       </small>
                     </label>
                     <label>
