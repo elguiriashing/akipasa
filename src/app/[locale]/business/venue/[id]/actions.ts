@@ -7,6 +7,7 @@ import { requireBusinessAccess } from "@/lib/entitlements";
 import { safeExternalUrlSchema } from "@/lib/auth-security";
 import { madridLocalDateTimeSchema } from "@/lib/time";
 import { reviewPendingCatalogueItem } from "@/lib/automatic-moderation";
+import { translateLocalizedFields } from "@/lib/localized-copy";
 
 const context = z.object({
   locale: z.enum(["es", "en"]),
@@ -20,8 +21,7 @@ export async function updateVenue(formData: FormData) {
   const parsed = context
     .extend({
       name: z.string().trim().min(2).max(120),
-      descriptionEs: z.string().trim().min(20).max(2000),
-      descriptionEn: z.string().trim().max(2000),
+      description: z.string().trim().min(20).max(2000),
       address: z.string().trim().min(5).max(300),
       addressSelection: z.enum(["selected", "unchanged"]),
       locality: z.string().trim().max(120),
@@ -44,6 +44,18 @@ export async function updateVenue(formData: FormData) {
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=venue"));
   const { supabase, user } = await requireBusinessAccess(locale);
+  let localizedDescription;
+  try {
+    localizedDescription = (
+      await translateLocalizedFields(
+        locale,
+        { description: parsed.data.description },
+        user.id,
+      )
+    ).description;
+  } catch {
+    redirect(destination(locale, venueId, "error=translation"));
+  }
   if (parsed.data.addressSelection === "selected") {
     if (
       !parsed.data.locality ||
@@ -70,8 +82,8 @@ export async function updateVenue(formData: FormData) {
     .from("venues")
     .update({
       name: parsed.data.name,
-      description_es: parsed.data.descriptionEs,
-      description_en: parsed.data.descriptionEn || null,
+      description_es: localizedDescription.es,
+      description_en: localizedDescription.en,
       accessibility: { step_free: parsed.data.accessible === "on" },
       contact_phone: parsed.data.contactPhone || null,
       whatsapp_phone: parsed.data.whatsappPhone || null,
@@ -317,8 +329,7 @@ export async function addTeamMember(formData: FormData) {
 export async function uploadVenueImage(formData: FormData) {
   const parsed = context
     .extend({
-      altEs: z.string().trim().min(3).max(300),
-      altEn: z.string().trim().max(300),
+      alt: z.string().trim().min(3).max(300),
       sortOrder: z.coerce.number().int().min(0).max(10000),
     })
     .safeParse(Object.fromEntries(formData));
@@ -334,6 +345,14 @@ export async function uploadVenueImage(formData: FormData) {
   )
     redirect(destination(locale, venueId, "error=media"));
   const { supabase, user } = await requireBusinessAccess(locale);
+  let localizedAlt;
+  try {
+    localizedAlt = (
+      await translateLocalizedFields(locale, { alt: parsed.data.alt }, user.id)
+    ).alt;
+  } catch {
+    redirect(destination(locale, venueId, "error=translation"));
+  }
   const extension = file.type.split("/")[1].replace("jpeg", "jpg");
   const path = `${parsed.data.venueId}/${crypto.randomUUID()}.${extension}`;
   const { error: uploadError } = await supabase.storage
@@ -343,8 +362,8 @@ export async function uploadVenueImage(formData: FormData) {
   const { error } = await supabase.from("venue_media").insert({
     venue_id: parsed.data.venueId,
     storage_path: path,
-    alt_es: parsed.data.altEs,
-    alt_en: parsed.data.altEn || null,
+    alt_es: localizedAlt.es,
+    alt_en: localizedAlt.en,
     sort_order: parsed.data.sortOrder,
     mime_type: file.type,
     size_bytes: file.size,
@@ -361,20 +380,27 @@ export async function updateVenueImageMetadata(formData: FormData) {
   const parsed = context
     .extend({
       mediaId: z.string().uuid(),
-      altEs: z.string().trim().min(3).max(300),
-      altEn: z.string().trim().max(300),
+      alt: z.string().trim().min(3).max(300),
       sortOrder: z.coerce.number().int().min(0).max(10000),
     })
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=media"));
-  const { supabase } = await requireBusinessAccess(locale);
+  const { supabase, user } = await requireBusinessAccess(locale);
+  let localizedAlt;
+  try {
+    localizedAlt = (
+      await translateLocalizedFields(locale, { alt: parsed.data.alt }, user.id)
+    ).alt;
+  } catch {
+    redirect(destination(locale, venueId, "error=translation"));
+  }
   const { error } = await supabase
     .from("venue_media")
     .update({
-      alt_es: parsed.data.altEs,
-      alt_en: parsed.data.altEn || null,
+      alt_es: localizedAlt.es,
+      alt_en: localizedAlt.en,
       sort_order: parsed.data.sortOrder,
     })
     .eq("id", parsed.data.mediaId)
