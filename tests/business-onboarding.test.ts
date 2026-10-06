@@ -49,6 +49,9 @@ describe("business onboarding", () => {
     expect(translation).toContain("trans.zillyhuhn.com/translate");
     expect(translation).toContain("source: sourceLocale");
     expect(translation).toContain("target: targetLocale");
+    expect(translation).toContain("application/x-www-form-urlencoded");
+    expect(translation).toContain("q: value");
+    expect(translation).not.toContain("q: values");
     expect(translation).not.toContain("createAIProvider");
   });
 

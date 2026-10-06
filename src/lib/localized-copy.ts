@@ -28,6 +28,69 @@ function translationEndpoints() {
     : publicMirrors;
 }
 
+async function translateOneAtEndpoint(
+  endpoint: string,
+  sourceLocale: Locale,
+  targetLocale: Locale,
+  value: string,
+): Promise<string> {
+  const body = new URLSearchParams({
+    q: value,
+    source: sourceLocale,
+    target: targetLocale,
+    format: "text",
+  });
+  const apiKey = process.env.AKIPASA_TRANSLATION_API_KEY?.trim();
+  if (apiKey) body.set("api_key", apiKey);
+
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+    signal: AbortSignal.timeout(10_000),
+  });
+
+  const result = (await response.json().catch(() => ({}))) as LibreTranslateResponse;
+  if (!response.ok) {
+    throw new Error(
+      result.error || `LibreTranslate request failed (${response.status})`,
+    );
+  }
+
+  const translated = Array.isArray(result.translatedText)
+    ? result.translatedText[0]
+    : result.translatedText;
+
+  if (typeof translated !== "string" || !translated.trim()) {
+    throw new Error("LibreTranslate returned an unexpected response");
+  }
+
+  return translated.trim();
+}
+
+async function translateValuesAtEndpoint(
+  endpoint: string,
+  sourceLocale: Locale,
+  targetLocale: Locale,
+  values: string[],
+): Promise<string[]> {
+  const translated: string[] = [];
+  const concurrency = 4;
+
+  for (let index = 0; index < values.length; index += concurrency) {
+    const chunk = values.slice(index, index + concurrency);
+    translated.push(
+      ...(await Promise.all(
+        chunk.map((value) =>
+          translateOneAtEndpoint(endpoint, sourceLocale, targetLocale, value),
+        ),
+      )),
+    );
+  }
+
+  return translated;
+}
+
 async function libreTranslateBatch(
   sourceLocale: Locale,
   targetLocale: Locale,
@@ -35,48 +98,16 @@ async function libreTranslateBatch(
 ): Promise<string[]> {
   if (!values.length) return [];
 
-  const payload: Record<string, unknown> = {
-    q: values,
-    source: sourceLocale,
-    target: targetLocale,
-    format: "text",
-  };
-  const apiKey = process.env.AKIPASA_TRANSLATION_API_KEY?.trim();
-  if (apiKey) payload.api_key = apiKey;
-
   let lastError = "No translation endpoint responded";
 
   for (const endpoint of translationEndpoints()) {
     try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-        signal: AbortSignal.timeout(10_000),
-      });
-
-      const result = (await response.json().catch(() => ({}))) as LibreTranslateResponse;
-      if (!response.ok) {
-        lastError =
-          result.error || `LibreTranslate request failed (${response.status})`;
-        continue;
-      }
-
-      const translated = Array.isArray(result.translatedText)
-        ? result.translatedText
-        : typeof result.translatedText === "string"
-          ? [result.translatedText]
-          : [];
-
-      if (
-        translated.length !== values.length ||
-        translated.some((value) => typeof value !== "string")
-      ) {
-        lastError = "LibreTranslate returned an unexpected response";
-        continue;
-      }
-
-      return translated.map((value) => value.trim());
+      return await translateValuesAtEndpoint(
+        endpoint,
+        sourceLocale,
+        targetLocale,
+        values,
+      );
     } catch (error) {
       lastError =
         error instanceof Error ? error.message : "translation_request_failed";
@@ -195,11 +226,24 @@ export async function translateSubmittedLocalizedFields(
   const [fromSource, fromFallback] = await Promise.all([
     Object.keys(translateFromSource).length
       ? translateLocalizedFields(sourceLocale, translateFromSource, actorId)
-      : Promise.resolve({}),
+      : Promise.resolve({} as Record<string, LocalizedPair>),
     Object.keys(translateFromFallback).length
       ? translateLocalizedFields(targetLocale, translateFromFallback, actorId)
-      : Promise.resolve({}),
+      : Promise.resolve({} as Record<string, LocalizedPair>),
   ]);
+
+  for (const [key, pair] of Object.entries(fromSource)) {
+    const existingTarget = current[key]?.[targetLocale]?.trim();
+    if (
+      pair[sourceLocale].trim() === pair[targetLocale].trim() &&
+      existingTarget &&
+      existingTarget !== pair[sourceLocale].trim()
+    ) {
+      // If every translator is temporarily down, do not destroy a previously
+      // valid translated copy just because the source language was edited.
+      pair[targetLocale] = existingTarget;
+    }
+  }
 
   return {
     ...keep,
