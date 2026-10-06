@@ -1,7 +1,7 @@
 name: Feature source review
 on:
   push:
-    branches: [feat/official-events-venue-catalogues]
+    branches: [feat/official-events-venue-catalogues, fix/allergen-ui-official-event-translation]
 permissions:
   contents: read
 jobs:
