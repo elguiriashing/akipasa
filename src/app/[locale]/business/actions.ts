@@ -155,10 +155,8 @@ const eventSchema = z.object({
   locale: z.string(),
   venueId: z.string().uuid(),
   categoryId: z.string().uuid(),
-  titleEs: z.string().trim().min(3).max(160),
-  titleEn: z.string().trim().max(160),
-  descriptionEs: z.string().trim().min(20).max(4000),
-  descriptionEn: z.string().trim().max(4000),
+  title: z.string().trim().min(3).max(160),
+  description: z.string().trim().min(20).max(4000),
   priceCents: z.coerce.number().int().min(0).max(1000000),
   bookingUrl: safeExternalUrlSchema,
   startsAt: madridLocalDateTimeSchema,
@@ -172,16 +170,26 @@ export async function createEvent(formData: FormData) {
   if (!parsed.success) redirect(`/${locale}/business?error=event`);
   const { supabase, user } = await requireBusinessAccess(locale);
   const e = parsed.data;
+  let localized;
+  try {
+    localized = await translateLocalizedFields(
+      locale,
+      { title: e.title, description: e.description },
+      user.id,
+    );
+  } catch {
+    redirect(`/${locale}/business?view=events&error=translation`);
+  }
   const { data: eventId, error } = await supabase.rpc(
     "create_event_with_occurrence",
     {
       target_venue: e.venueId,
       category: e.categoryId,
-      event_slug: createEventSlug(e.titleEs),
-      title_es: e.titleEs,
-      title_en: e.titleEn,
-      description_es: e.descriptionEs,
-      description_en: e.descriptionEn,
+      event_slug: createEventSlug(e.title),
+      title_es: localized.title.es,
+      title_en: localized.title.en,
+      description_es: localized.description.es,
+      description_en: localized.description.en,
       price_cents: e.priceCents,
       booking_url: e.bookingUrl,
       starts_at: e.startsAt.toISOString(),
@@ -222,10 +230,8 @@ export async function reuseEvent(formData: FormData) {
 const loyaltySchema = z.object({
   locale: z.enum(["es", "en"]),
   venueId: z.string().uuid(),
-  titleEs: z.string().trim().min(3).max(160),
-  titleEn: z.string().trim().max(160),
-  rewardEs: z.string().trim().min(3).max(500),
-  rewardEn: z.string().trim().max(500),
+  title: z.string().trim().min(3).max(160),
+  reward: z.string().trim().min(3).max(500),
   stampsRequired: z.coerce.number().int().min(2).max(50),
 });
 
@@ -233,14 +239,24 @@ export async function saveLoyaltyProgram(formData: FormData) {
   const parsed = loyaltySchema.safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   if (!parsed.success) redirect(`/${locale}/business?error=loyalty`);
-  const { supabase } = await requireBusinessAccess(locale);
+  const { supabase, user } = await requireBusinessAccess(locale);
   const value = parsed.data;
+  let localized;
+  try {
+    localized = await translateLocalizedFields(
+      locale,
+      { title: value.title, reward: value.reward },
+      user.id,
+    );
+  } catch {
+    redirect(`/${locale}/business?view=loyalty&error=translation`);
+  }
   const { error } = await supabase.from("loyalty_programs").insert({
     venue_id: value.venueId,
-    title_es: value.titleEs,
-    title_en: value.titleEn || null,
-    reward_es: value.rewardEs,
-    reward_en: value.rewardEn || null,
+    title_es: localized.title.es,
+    title_en: localized.title.en,
+    reward_es: localized.reward.es,
+    reward_en: localized.reward.en,
     stamps_required: value.stampsRequired,
     active: true,
   });
