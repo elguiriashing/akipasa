@@ -497,7 +497,7 @@ export default async function BusinessPage({
               </div>
 
               <div className="form-grid-two">
-                <OfficialEventLocationPicker locale={locale} />
+                <SpainAddressAutocomplete locale={locale} mode="address" />
               </div>
               <p className="fine-print">
                 {es
