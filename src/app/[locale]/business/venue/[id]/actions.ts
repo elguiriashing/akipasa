@@ -121,18 +121,15 @@ export async function updateEvent(formData: FormData) {
   const parsed = context
     .extend({
       eventId: z.string().uuid(),
-      titleEs: z.string().trim().min(3).max(160),
-      titleEn: z.string().trim().max(160),
-      descriptionEs: z.string().trim().min(20).max(4000),
-      descriptionEn: z.string().trim().max(4000),
+      title: z.string().trim().min(3).max(160),
+      description: z.string().trim().min(20).max(4000),
       priceCents: z.coerce.number().int().min(0).max(1000000),
       bookingUrl: safeExternalUrlSchema,
       minimumAge: z.union([
         z.literal(""),
         z.coerce.number().int().min(0).max(99),
       ]),
-      accessibilityNotesEs: z.string().trim().max(1000),
-      accessibilityNotesEn: z.string().trim().max(1000),
+      accessibilityNotes: z.string().trim().max(1000),
     })
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
@@ -140,18 +137,32 @@ export async function updateEvent(formData: FormData) {
   if (!parsed.success) redirect(destination(locale, venueId, "error=event"));
   const { supabase, user } = await requireBusinessAccess(locale);
   const v = parsed.data;
+  let localized;
+  try {
+    localized = await translateLocalizedFields(
+      locale,
+      {
+        title: v.title,
+        description: v.description,
+        accessibilityNotes: v.accessibilityNotes,
+      },
+      user.id,
+    );
+  } catch {
+    redirect(destination(locale, venueId, "error=translation"));
+  }
   const { error } = await supabase
     .from("events")
     .update({
-      title_es: v.titleEs,
-      title_en: v.titleEn || null,
-      description_es: v.descriptionEs,
-      description_en: v.descriptionEn || null,
+      title_es: localized.title.es,
+      title_en: localized.title.en,
+      description_es: localized.description.es,
+      description_en: localized.description.en,
       price_cents: v.priceCents,
       booking_url: v.bookingUrl || null,
       minimum_age: v.minimumAge === "" ? null : v.minimumAge,
-      accessibility_notes_es: v.accessibilityNotesEs || null,
-      accessibility_notes_en: v.accessibilityNotesEn || null,
+      accessibility_notes_es: localized.accessibilityNotes.es || null,
+      accessibility_notes_en: localized.accessibilityNotes.en || null,
       status: "pending",
     })
     .eq("id", v.eventId)
@@ -291,10 +302,8 @@ export async function duplicateEvent(formData: FormData) {
 export async function saveOffer(formData: FormData) {
   const parsed = context
     .extend({
-      titleEs: z.string().trim().min(3).max(160),
-      titleEn: z.string().trim().max(160),
-      termsEs: z.string().trim().min(10).max(2000),
-      termsEn: z.string().trim().max(2000),
+      title: z.string().trim().min(3).max(160),
+      terms: z.string().trim().min(10).max(2000),
       audience: z.enum(["public", "premium"]),
       startsAt: madridLocalDateTimeSchema,
       endsAt: madridLocalDateTimeSchema,
@@ -304,15 +313,25 @@ export async function saveOffer(formData: FormData) {
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success || parsed.data.endsAt <= parsed.data.startsAt)
     redirect(destination(locale, venueId, "error=offer"));
-  const { supabase } = await requireBusinessAccess(locale);
+  const { supabase, user } = await requireBusinessAccess(locale);
   const v = parsed.data;
+  let localized;
+  try {
+    localized = await translateLocalizedFields(
+      locale,
+      { title: v.title, terms: v.terms },
+      user.id,
+    );
+  } catch {
+    redirect(destination(locale, venueId, "error=translation"));
+  }
   const { error } = await supabase.from("offers").insert({
     id: crypto.randomUUID(),
     venue_id: v.venueId,
-    title_es: v.titleEs,
-    title_en: v.titleEn || null,
-    terms_es: v.termsEs,
-    terms_en: v.termsEn || null,
+    title_es: localized.title.es,
+    title_en: localized.title.en,
+    terms_es: localized.terms.es,
+    terms_en: localized.terms.en,
     audience: v.audience,
     starts_at: v.startsAt.toISOString(),
     ends_at: v.endsAt.toISOString(),
@@ -533,23 +552,31 @@ export async function deleteVenue(formData: FormData) {
 export async function createStampCard(formData: FormData) {
   const parsed = context
     .extend({
-      titleEs: z.string().trim().min(3).max(160),
-      titleEn: z.string().trim().max(160),
-      rewardEs: z.string().trim().min(3).max(500),
-      rewardEn: z.string().trim().max(500),
+      title: z.string().trim().min(3).max(160),
+      reward: z.string().trim().min(3).max(500),
       stampsRequired: z.coerce.number().int().min(2).max(50),
     })
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=stamp"));
-  const { supabase } = await requireBusinessAccess(locale);
+  const { supabase, user } = await requireBusinessAccess(locale);
+  let localized;
+  try {
+    localized = await translateLocalizedFields(
+      locale,
+      { title: parsed.data.title, reward: parsed.data.reward },
+      user.id,
+    );
+  } catch {
+    redirect(destination(locale, venueId, "error=translation"));
+  }
   const { error } = await supabase.from("loyalty_programs").insert({
     venue_id: parsed.data.venueId,
-    title_es: parsed.data.titleEs,
-    title_en: parsed.data.titleEn || null,
-    reward_es: parsed.data.rewardEs,
-    reward_en: parsed.data.rewardEn || null,
+    title_es: localized.title.es,
+    title_en: localized.title.en,
+    reward_es: localized.reward.es,
+    reward_en: localized.reward.en,
     stamps_required: parsed.data.stampsRequired,
     active: true,
   });
@@ -561,23 +588,31 @@ export async function createStampCard(formData: FormData) {
 export async function createBusinessReward(formData: FormData) {
   const parsed = context
     .extend({
-      titleEs: z.string().trim().min(3).max(160),
-      titleEn: z.string().trim().max(160),
-      descriptionEs: z.string().trim().min(3).max(1000),
-      descriptionEn: z.string().trim().max(1000),
+      title: z.string().trim().min(3).max(160),
+      description: z.string().trim().min(3).max(1000),
       claimWindowDays: z.coerce.number().int().min(1).max(365),
     })
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=reward"));
-  const { supabase } = await requireBusinessAccess(locale);
+  const { supabase, user } = await requireBusinessAccess(locale);
+  let localized;
+  try {
+    localized = await translateLocalizedFields(
+      locale,
+      { title: parsed.data.title, description: parsed.data.description },
+      user.id,
+    );
+  } catch {
+    redirect(destination(locale, venueId, "error=translation"));
+  }
   const { error } = await supabase.from("business_rewards").insert({
     venue_id: parsed.data.venueId,
-    title_es: parsed.data.titleEs,
-    title_en: parsed.data.titleEn || null,
-    description_es: parsed.data.descriptionEs,
-    description_en: parsed.data.descriptionEn || null,
+    title_es: localized.title.es,
+    title_en: localized.title.en,
+    description_es: localized.description.es,
+    description_en: localized.description.en,
     claim_window_days: parsed.data.claimWindowDays,
     active: true,
   });
@@ -673,22 +708,35 @@ export async function saveBookingSettings(formData: FormData) {
         z.literal(""),
         z.coerce.number().int().min(0).max(1000000),
       ]),
-      instructionsEs: z.string().trim().max(1000),
-      instructionsEn: z.string().trim().max(1000),
+      instructions: z.string().trim().max(1000),
     })
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=booking"));
-  const { supabase } = await requireBusinessAccess(locale);
+  const { supabase, user } = await requireBusinessAccess(locale);
+  let localizedInstructions = { es: "", en: "" };
+  if (parsed.data.instructions) {
+    try {
+      localizedInstructions = (
+        await translateLocalizedFields(
+          locale,
+          { instructions: parsed.data.instructions },
+          user.id,
+        )
+      ).instructions;
+    } catch {
+      redirect(destination(locale, venueId, "error=translation"));
+    }
+  }
   const { error } = await supabase.from("venue_booking_settings").upsert({
     venue_id: parsed.data.venueId,
     mode: parsed.data.mode,
     requires_deposit: parsed.data.requiresDeposit === "on",
     deposit_cents:
       parsed.data.depositCents === "" ? null : parsed.data.depositCents,
-    instructions_es: parsed.data.instructionsEs || null,
-    instructions_en: parsed.data.instructionsEn || null,
+    instructions_es: localizedInstructions.es || null,
+    instructions_en: localizedInstructions.en || null,
     active: parsed.data.mode !== "disabled",
   });
   redirect(
