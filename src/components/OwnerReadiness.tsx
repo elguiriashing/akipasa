@@ -1,5 +1,8 @@
 import Link from "next/link";
 import type { Locale } from "@/lib/config";
+import { Icon } from "@/components/Icons";
+import styles from "./OwnerReadiness.module.css";
+
 export function OwnerReadiness({
   locale,
   venueId,
@@ -22,96 +25,129 @@ export function OwnerReadiness({
     {
       done: profileComplete,
       section: "profile",
-      label: es
-        ? "Completa descripción y contacto"
-        : "Complete description and contact details",
+      icon: "venue" as const,
+      label: es ? "Perfil listo" : "Complete your profile",
+      detail: es
+        ? "Descripción y contacto"
+        : "Description and contact details",
     },
     {
       done: photos > 0,
       section: "profile",
-      label: es ? "Añade una foto de tu local" : "Add a photo of your venue",
+      icon: "inbox" as const,
+      label: es ? "Añade una foto" : "Add a venue photo",
+      detail: es ? "Que te reconozcan al instante" : "Help people recognise you",
     },
     {
       done: upcomingEvents > 0,
       section: "events",
-      label: es ? "Publica tu próximo evento" : "Publish your next event",
+      icon: "calendar" as const,
+      label: es ? "Próximo evento" : "Publish your next event",
+      detail: es ? "Aparece en descubrimiento" : "Appear in event discovery",
     },
     {
       done: loyaltyReady,
       section: "rewards",
-      label: es
-        ? "Configura una tarjeta y su recompensa (opcional)"
-        : "Set up a stamp card and its reward (optional)",
+      icon: "gift" as const,
+      label: es ? "Activa fidelidad" : "Turn on loyalty",
+      detail: es ? "Opcional, pero útil" : "Optional, but useful",
     },
   ];
+  const completed = tasks.filter((task) => task.done).length;
+  const progress = Math.round((completed / tasks.length) * 100);
   const metrics = [
-    ["listing_views", es ? "Visitas a la ficha" : "Listing views"],
-    ["event_views", es ? "Visitas a eventos" : "Event views"],
-    ["directions", es ? "Clics en cómo llegar" : "Directions clicks"],
-    [
-      "website_clicks",
-      es ? "Clics a web o reserva" : "Website / booking clicks",
-    ],
-    ["contact_clicks", es ? "Clics de contacto" : "Contact clicks"],
-    ["accepted_checkins", es ? "Check-ins aceptados" : "Accepted check-ins"],
-    ["rewards_redeemed", es ? "Premios canjeados" : "Rewards redeemed"],
+    ["listing_views", es ? "Ficha" : "Listing", "venue" as const],
+    ["event_views", es ? "Eventos" : "Events", "calendar" as const],
+    ["directions", es ? "Cómo llegar" : "Directions", "map" as const],
+    ["website_clicks", es ? "Web / reserva" : "Website / booking", "globe" as const],
+    ["contact_clicks", es ? "Contacto" : "Contact", "person" as const],
+    ["accepted_checkins", "Check-ins", "passport" as const],
+    ["rewards_redeemed", es ? "Canjes" : "Redemptions", "gift" as const],
   ] as const;
+
   return (
-    <div className="stack">
-      <article className="panel">
-        <h2>
-          {es
-            ? "Prepara tu local para recibir visitas"
-            : "Get your venue ready for visitors"}
-        </h2>
-        <ul>
-          {tasks.map((t) => (
-            <li key={t.section + t.label}>
-              {t.done ? "✓ " : ""}
-              <Link
-                href={`/${locale}/business/venue/${venueId}?section=${t.section}`}
-              >
-                {t.label}
-              </Link>
-            </li>
+    <div className={styles.overview}>
+      <section className={styles.readiness}>
+        <div className={styles.readinessHeader}>
+          <div>
+            <span className={styles.eyebrow}>
+              {es ? "Puesta a punto" : "Venue setup"}
+            </span>
+            <h2>
+              {completed === tasks.length
+                ? es
+                  ? "Tu local está listo"
+                  : "Your venue is ready"
+                : es
+                  ? "Deja el local listo en pocos pasos"
+                  : "Get the venue ready in a few quick steps"}
+            </h2>
+          </div>
+          <strong>{progress}%</strong>
+        </div>
+        <div className={styles.progress} aria-label={`${progress}%`}>
+          <span style={{ width: `${progress}%` }} />
+        </div>
+        <div className={styles.taskGrid}>
+          {tasks.map((task) => (
+            <Link
+              className={styles.task}
+              data-done={task.done}
+              href={`/${locale}/business/venue/${venueId}?section=${task.section}`}
+              key={task.section + task.label}
+            >
+              <span className={styles.taskIcon}>
+                {task.done ? "✓" : <Icon name={task.icon} />}
+              </span>
+              <span>
+                <strong>{task.label}</strong>
+                <small>{task.detail}</small>
+              </span>
+              <Icon name="arrow-right" />
+            </Link>
           ))}
-        </ul>
+        </div>
         {!upcomingEvents && (
-          <p>
+          <p className={styles.hint}>
             {es
-              ? "No tienes fechas futuras publicadas. Añade una fecha real para aparecer en el descubrimiento de eventos."
-              : "You have no upcoming published dates. Add a real date to appear in event discovery."}
+              ? "Consejo: una fecha futura publicada hace que el local aparezca también en el descubrimiento de eventos."
+              : "Tip: a published future date also puts the venue into event discovery."}
           </p>
         )}
-      </article>
-      <article className="panel">
-        <h2>
-          {es
-            ? "Resultados de los últimos 30 días"
-            : "Results over the last 30 days"}
-        </h2>
+      </section>
+
+      <section className={styles.results}>
+        <div className={styles.resultsHeader}>
+          <div>
+            <span className={styles.eyebrow}>
+              {es ? "Últimos 30 días" : "Last 30 days"}
+            </span>
+            <h2>{es ? "Lo que está pasando" : "What is happening"}</h2>
+          </div>
+        </div>
         {results ? (
-          <dl>
-            {metrics.map(([key, label]) => (
-              <div key={key}>
-                <dt>{label}</dt>
-                <dd>{Number(results[key] || 0).toLocaleString(locale)}</dd>
-              </div>
+          <div className={styles.metricGrid}>
+            {metrics.map(([key, label, icon]) => (
+              <article className={styles.metric} key={key}>
+                <span><Icon name={icon} /></span>
+                <strong>{Number(results[key] || 0).toLocaleString(locale)}</strong>
+                <small>{label}</small>
+              </article>
             ))}
-          </dl>
+          </div>
         ) : (
-          <p role="status">
+          <p role="status" className={styles.hint}>
             {es
-              ? "Los resultados no están disponibles ahora. Inténtalo más tarde."
-              : "Results are currently unavailable. Try again later."}
+              ? "Los resultados no están disponibles ahora."
+              : "Results are currently unavailable."}
           </p>
         )}
-        <p className="muted">
+        <p className={styles.footnote}>
           {es
-            ? "Las visitas y clics reflejan interacciones registradas con permiso; no son clientes únicos ni ventas confirmadas. Los check-ins y canjes se cuentan por separado. No incluye impresiones de Google."
-            : "Views and clicks reflect interactions recorded with permission; they are not unique customers or confirmed sales. Check-ins and redemptions are counted separately. Google impressions are not included."}
+            ? "Interacciones registradas con permiso. No son clientes únicos ni ventas confirmadas."
+            : "Permission-aware interactions. These are not unique customers or confirmed sales."}
         </p>
-      </article>
+      </section>
     </div>
   );
 }
