@@ -410,9 +410,36 @@ export function VenueCatalogueEditor({
                 {document.sections.length} {es ? "secciones" : "sections"}
               </span>
             </div>
-            <button type="button" onClick={addSection} aria-label={es ? "Añadir sección" : "Add section"}>
-              +
-            </button>
+            <div className="catalogue-sidebar-head-actions">
+              <button
+                type="button"
+                onClick={() =>
+                  setExpandedSectionIds(
+                    new Set(document.sections.map((section) => section.id)),
+                  )
+                }
+                aria-label={es ? "Expandir todas" : "Expand all"}
+                title={es ? "Expandir todas" : "Expand all"}
+              >
+                ▾
+              </button>
+              <button
+                type="button"
+                onClick={() => setExpandedSectionIds(new Set())}
+                aria-label={es ? "Contraer todas" : "Collapse all"}
+                title={es ? "Contraer todas" : "Collapse all"}
+              >
+                ▸
+              </button>
+              <button
+                type="button"
+                onClick={addSection}
+                aria-label={es ? "Añadir sección" : "Add section"}
+                title={es ? "Añadir sección" : "Add section"}
+              >
+                +
+              </button>
+            </div>
           </div>
 
           <div className="catalogue-studio-tree">
