@@ -41,6 +41,7 @@ type BusinessEvent = {
   title_es: string;
   title_en: string | null;
   status: string;
+  source: string;
   created_at: string;
   event_occurrences: Array<{
     id: string;
@@ -133,6 +134,9 @@ export default async function BusinessPage({
   const managedVenueIds = managed.flatMap((item) =>
     item.venues ? [item.venues.id] : [],
   );
+  const regularManaged = managed.filter(
+    (item) => item.venues?.slug !== "akipasa-editorial",
+  );
   const [{ data: promotionEvents }, { data: managedEvents }] =
     managedVenueIds.length
       ? await Promise.all([
@@ -145,7 +149,7 @@ export default async function BusinessPage({
           supabase
             .from("events")
             .select(
-              "id,venue_id,slug,title_es,title_en,status,created_at,event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status)",
+              "id,venue_id,slug,title_es,title_en,status,source,created_at,event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status)",
             )
             .in("venue_id", managedVenueIds)
             .order("created_at", { ascending: false }),
@@ -320,8 +324,10 @@ export default async function BusinessPage({
                                         : event.title_es}
                                     </h4>
                                     <p className="catalogue-card-sub">
-                                      {venueNames.get(event.venue_id) ||
-                                        (es ? "Local" : "Venue")}
+                                      {event.source === "akipasa_selection"
+                                        ? "Selección AkiPasa"
+                                        : venueNames.get(event.venue_id) ||
+                                          (es ? "Local" : "Venue")}
                                     </p>
                                   </div>
                                   <span
@@ -598,7 +604,7 @@ export default async function BusinessPage({
         )}
 
         {/* Create Event Form */}
-        {(view === "venues" || view === "events") && managed.length > 0 && (
+        {(view === "venues" || view === "events") && regularManaged.length > 0 && (
           <details
             id="create-event"
             className="panel catalogue-edit-card dashboard-grid-full"
@@ -619,7 +625,7 @@ export default async function BusinessPage({
                 <label>
                   {es ? "Local emisor" : "Publishing venue"}
                   <select name="venueId" required>
-                    {managed.map(
+                    {regularManaged.map(
                       (m) =>
                         m.venues && (
                           <option key={m.venues.id} value={m.venues.id}>
