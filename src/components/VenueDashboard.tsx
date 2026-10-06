@@ -13,7 +13,7 @@ type ToolSection = Exclude<VenueDashboardSection, "overview">;
 type Counts = {
   photos: number;
   events: number;
-  catalogueItems: number;
+  catalogueItems?: number;
   programs: number;
   credentials: number;
   requests: number;
@@ -40,7 +40,7 @@ export function VenueDashboard({
   initialSection: VenueDashboardSection;
   feedback?: "success" | "error";
   counts: Counts;
-  sections: Record<ToolSection, ReactNode>;
+  sections: Partial<Record<ToolSection, ReactNode>>;
   overview?: ReactNode;
 }) {
   const es = locale === "es";
@@ -93,7 +93,7 @@ export function VenueDashboard({
         : "Food, products and services",
       icon: "inbox",
       detail: countLabel(
-        counts.catalogueItems,
+        counts.catalogueItems || 0,
         ["item", "items"],
         ["elemento", "elementos"],
       ),
