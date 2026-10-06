@@ -2,6 +2,7 @@ export const venueDashboardSections = [
   "overview",
   "profile",
   "events",
+  "catalogue",
   "rewards",
   "checkin",
   "bookings",
@@ -25,6 +26,7 @@ export function getVenueDashboardSection(
     )
   )
     return "events";
+  if (/^catalogue/.test(result)) return "catalogue";
   if (/^(offer|stamp|reward|assignment)$/.test(result)) return "rewards";
   if (/^(credential|redemption)$/.test(result)) return "checkin";
   if (/^booking(?:-request|-slot)?$/.test(result)) return "bookings";
