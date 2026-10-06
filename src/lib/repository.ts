@@ -234,6 +234,9 @@ function eventFromRow(row: DbRecord, now = new Date()): Event | null {
         ? {
             ...parseDatabasePoint(row.location as DbPoint),
             label: String(row.location_label),
+            directionsAddress: row.directions_address
+              ? String(row.directions_address)
+              : undefined,
           }
         : undefined,
     directionsAddress: row.directions_address
