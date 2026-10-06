@@ -257,18 +257,6 @@ function eventFromRow(row: DbRecord, now = new Date()): Event | null {
             : undefined,
         }
       : undefined,
-    location: row.location_override
-      ? {
-          ...parseDatabasePoint(row.location_override as DbPoint),
-          name: {
-            es: String(row.location_name_es || row.location_address || ""),
-            en: row.location_name_en
-              ? String(row.location_name_en)
-              : String(row.location_name_es || row.location_address || ""),
-          },
-          address: String(row.location_address || ""),
-        }
-      : undefined,
     occurrences,
   };
 }
