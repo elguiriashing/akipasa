@@ -202,6 +202,10 @@ export function EventCard({
             <span className="pill-price featured-chip">
               {locale === "es" ? "Destacado" : "Featured"}
             </span>
+          ) : result.event.source === "akipasa_selection" ? (
+            <span className="akipasa-selection-chip">
+              {locale === "es" ? "Selección AkiPasa" : "AkiPasa Selection"}
+            </span>
           ) : result.event.source === "verified_venue" ? (
             <VerifiedBadge locale={locale} size="sm" />
           ) : (
