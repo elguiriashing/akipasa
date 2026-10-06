@@ -924,25 +924,27 @@ export function VenueCatalogueEditor({
                         <div className="allergen-summary-copy">
                           <div className="allergen-risk-chips">
                             {riskAllergens.length ? (
-                              visibleRiskAllergens.map(
-                                ([key, icon, esLabel, enLabel]) => (
-                                  <span
-                                    key={key}
-                                    data-state={
-                                      selectedItem.allergens.states[key]
-                                    }
-                                  >
-                                    <i aria-hidden="true">{icon}</i>
-                                    <b>{es ? esLabel : enLabel}</b>
+                              <>
+                                {visibleRiskAllergens.map(
+                                  ([key, icon, esLabel, enLabel]) => (
+                                    <span
+                                      key={key}
+                                      data-state={
+                                        selectedItem.allergens.states[key]
+                                      }
+                                    >
+                                      <i aria-hidden="true">{icon}</i>
+                                      <b>{es ? esLabel : enLabel}</b>
+                                    </span>
+                                  ),
+                                )}
+                                {hiddenRiskAllergenCount > 0 && (
+                                  <span className="allergen-summary-more">
+                                    +{hiddenRiskAllergenCount}{" "}
+                                    {es ? "más" : "more"}
                                   </span>
-                                ),
-                              )
-                              {hiddenRiskAllergenCount > 0 && (
-                                <span className="allergen-summary-more">
-                                  +{hiddenRiskAllergenCount}{" "}
-                                  {es ? "más" : "more"}
-                                </span>
-                              )}
+                                )}
+                              </>
                             ) : reviewedAllergens === 14 ? (
                               <span className="allergen-summary-clear">
                                 ✓{" "}
