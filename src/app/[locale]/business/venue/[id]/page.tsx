@@ -457,35 +457,27 @@ export default async function VenueWorkspace({
                             value={event.id}
                           />
                           <label>
-                            {es ? "Título" : "Spanish title"}
+                            {es ? "Título" : "Title"}
                             <input
-                              name="titleEs"
-                              defaultValue={event.title_es}
+                              name="title"
+                              defaultValue={
+                                es
+                                  ? event.title_es
+                                  : event.title_en || event.title_es
+                              }
                               required
                             />
                           </label>
                           <label>
-                            {es ? "Título en inglés" : "English title"}
-                            <input
-                              name="titleEn"
-                              defaultValue={event.title_en || ""}
-                            />
-                          </label>
-                          <label>
-                            {es ? "Descripción" : "Spanish description"}
+                            {es ? "Descripción" : "Description"}
                             <textarea
-                              name="descriptionEs"
-                              defaultValue={event.description_es}
+                              name="description"
+                              defaultValue={
+                                es
+                                  ? event.description_es
+                                  : event.description_en || event.description_es
+                              }
                               required
-                            />
-                          </label>
-                          <label>
-                            {es
-                              ? "Descripción en inglés"
-                              : "English description"}
-                            <textarea
-                              name="descriptionEn"
-                              defaultValue={event.description_en || ""}
                             />
                           </label>
                           <label>
@@ -520,21 +512,17 @@ export default async function VenueWorkspace({
                           <label>
                             {es
                               ? "Información de accesibilidad"
-                              : "Spanish accessibility information"}
+                              : "Accessibility information"}
                             <textarea
-                              name="accessibilityNotesEs"
+                              name="accessibilityNotes"
                               maxLength={1000}
-                              defaultValue={event.accessibility_notes_es || ""}
-                            />
-                          </label>
-                          <label>
-                            {es
-                              ? "Accesibilidad en inglés"
-                              : "English accessibility information"}
-                            <textarea
-                              name="accessibilityNotesEn"
-                              maxLength={1000}
-                              defaultValue={event.accessibility_notes_en || ""}
+                              defaultValue={
+                                es
+                                  ? event.accessibility_notes_es || ""
+                                  : event.accessibility_notes_en ||
+                                    event.accessibility_notes_es ||
+                                    ""
+                              }
                             />
                           </label>
                           <button className="button" type="submit">
@@ -904,22 +892,12 @@ export default async function VenueWorkspace({
                   <input type="hidden" name="venueId" value={id} />
                   <div className="two-col">
                     <label>
-                      {es ? "Titulo" : "Title"}
-                      <input name="titleEs" required minLength={3} />
+                      {es ? "Título" : "Title"}
+                      <input name="title" required minLength={3} />
                     </label>
-                    <label>
-                      {es ? "Titulo ingles" : "English title"}
-                      <input name="titleEn" />
-                    </label>
-                  </div>
-                  <div className="two-col">
                     <label>
                       {es ? "Premio resumido" : "Reward summary"}
-                      <input name="rewardEs" required minLength={3} />
-                    </label>
-                    <label>
-                      {es ? "Premio ingles" : "English reward"}
-                      <input name="rewardEn" />
+                      <input name="reward" required minLength={3} />
                     </label>
                   </div>
                   <label>
@@ -946,20 +924,12 @@ export default async function VenueWorkspace({
                   <div className="two-col">
                     <label>
                       {es ? "Nombre" : "Name"}
-                      <input name="titleEs" required />
-                    </label>
-                    <label>
-                      {es ? "Nombre ingles" : "English name"}
-                      <input name="titleEn" />
+                      <input name="title" required />
                     </label>
                   </div>
                   <label>
-                    {es ? "Descripcion y condiciones" : "Description and terms"}
-                    <textarea name="descriptionEs" required />
-                  </label>
-                  <label>
-                    {es ? "Descripcion inglesa" : "English description"}
-                    <textarea name="descriptionEn" />
+                    {es ? "Descripción y condiciones" : "Description and terms"}
+                    <textarea name="description" required />
                   </label>
                   <label>
                     {es ? "Dias para canjear" : "Days to redeem"}
@@ -1050,20 +1020,12 @@ export default async function VenueWorkspace({
                 <input type="hidden" name="locale" value={locale} />
                 <input type="hidden" name="venueId" value={id} />
                 <label>
-                  {es ? "Título" : "Spanish title"}
-                  <input name="titleEs" required />
+                  {es ? "Título" : "Title"}
+                  <input name="title" required />
                 </label>
                 <label>
-                  {es ? "Título en inglés" : "English title"}
-                  <input name="titleEn" />
-                </label>
-                <label>
-                  {es ? "Condiciones" : "Spanish terms"}
-                  <textarea name="termsEs" required minLength={10} />
-                </label>
-                <label>
-                  {es ? "Condiciones en inglés" : "English terms"}
-                  <textarea name="termsEn" />
+                  {es ? "Condiciones" : "Terms"}
+                  <textarea name="terms" required minLength={10} />
                 </label>
                 <label>
                   {es ? "Quién puede verla" : "Who can see it"}
@@ -1243,15 +1205,14 @@ export default async function VenueWorkspace({
                   <label>
                     {es ? "Instrucciones" : "Instructions"}
                     <textarea
-                      name="instructionsEs"
-                      defaultValue={bookingSettings?.instructions_es || ""}
-                    />
-                  </label>
-                  <label>
-                    {es ? "Instrucciones inglesas" : "English instructions"}
-                    <textarea
-                      name="instructionsEn"
-                      defaultValue={bookingSettings?.instructions_en || ""}
+                      name="instructions"
+                      defaultValue={
+                        es
+                          ? bookingSettings?.instructions_es || ""
+                          : bookingSettings?.instructions_en ||
+                            bookingSettings?.instructions_es ||
+                            ""
+                      }
                     />
                   </label>
                   <button className="button secondary" type="submit">
