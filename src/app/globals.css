@@ -12456,6 +12456,94 @@ html[data-owner-focus="true"] .app-content {
   }
 }
 
+.business-workspace .managed-row .business-venue-row-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.business-workspace .managed-row .venue-delete-menu {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.business-workspace .managed-row .venue-delete-menu > summary {
+  display: inline-flex;
+  width: auto;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+  cursor: pointer;
+  color: #ff8e82;
+  border-color: color-mix(in srgb, #d26e60 48%, var(--line));
+  background: color-mix(in srgb, #9f2d2d 10%, var(--surface));
+}
+
+.business-workspace .managed-row .venue-delete-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.business-workspace .managed-row .venue-delete-menu > summary::after {
+  content: none;
+}
+
+.business-workspace .managed-row .venue-delete-menu[open] {
+  flex: 1 0 100%;
+  width: 100%;
+}
+
+.business-workspace .managed-row .venue-delete-popover {
+  width: min(100%, 34rem);
+  margin: 0.7rem 0 0 auto;
+  padding: 0.9rem;
+  border: 1px solid color-mix(in srgb, #d26e60 45%, var(--line));
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, #9f2d2d 8%, var(--surface-alt));
+}
+
+.business-workspace .managed-row .venue-delete-popover label {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.business-workspace .managed-row .venue-delete-popover textarea {
+  min-height: 5.5rem;
+  resize: vertical;
+}
+
+.business-workspace .managed-row .venue-delete-popover .button.danger {
+  border-color: #b73b35;
+  background: #9f2d2d;
+  color: #fff;
+}
+
+@media (max-width: 700px) {
+  .business-workspace .managed-row .business-venue-row-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .business-workspace .managed-row .business-venue-row-actions > * {
+    flex: 1 1 10rem;
+  }
+
+  .business-workspace .managed-row .venue-delete-menu > summary {
+    width: 100%;
+  }
+
+  .business-workspace .managed-row .venue-delete-popover {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+
 .map-vertical-tabs {
   display: flex;
   gap: 8px;
