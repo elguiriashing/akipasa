@@ -7,13 +7,19 @@ permissions:
 jobs:
   source:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Package tracked source for offline review
-        run: git archive --format=tar HEAD | gzip > /tmp/akipasa-source.tar.gz
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm ci --prefix automation
+      - name: Package locked dependencies for offline verification
+        run: tar -czf /tmp/akipasa-test-dependencies.tar.gz node_modules automation/node_modules
       - uses: actions/upload-artifact@v4
         with:
-          name: feature-source
-          path: /tmp/akipasa-source.tar.gz
+          name: feature-test-dependencies
+          path: /tmp/akipasa-test-dependencies.tar.gz
           retention-days: 1
