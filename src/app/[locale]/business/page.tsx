@@ -674,7 +674,7 @@ export default async function BusinessPage({
                 </label>
               </div>
 
-              {platformStaff && officialVenue && (
+              {platformStaff && editorialVenue && (
                 <div className="official-event-location-panel">
                   <div>
                     <span className="eyebrow">

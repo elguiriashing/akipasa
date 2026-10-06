@@ -119,9 +119,7 @@ export default async function MapPage({
     latitude: result.event.location?.latitude ?? result.venue.latitude,
     longitude: result.event.location?.longitude ?? result.venue.longitude,
     title: translated(result.event.title, locale),
-    venue: result.event.location
-      ? translated(result.event.location.name, locale)
-      : result.venue.name,
+    venue: result.event.location?.label || result.venue.name,
     href: `/${locale}/events/${result.event.slug}`,
     category: result.event.category,
     startsAt: result.occurrence.startsAt,
