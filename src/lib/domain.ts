@@ -65,8 +65,7 @@ export type Event = {
     latitude: number;
     longitude: number;
     label: string;
-    directionsAddress?: string;
-  };
+    };
   directionsAddress?: string;
   sponsored: boolean;
   bookingUrl?: string;
