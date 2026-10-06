@@ -139,9 +139,19 @@ export async function updateEvent(formData: FormData) {
   if (!parsed.success) redirect(destination(locale, venueId, "error=event"));
   const { supabase, user } = await requireBusinessAccess(locale);
   const v = parsed.data;
+  const { data: currentEvent } = await supabase
+    .from("events")
+    .select(
+      "title_es,title_en,description_es,description_en,accessibility_notes_es,accessibility_notes_en",
+    )
+    .eq("id", v.eventId)
+    .eq("venue_id", v.venueId)
+    .maybeSingle();
+  if (!currentEvent) redirect(destination(locale, venueId, "error=event"));
+
   let localized;
   try {
-    localized = await translateLocalizedFields(
+    localized = await translateSubmittedLocalizedFields(
       locale,
       {
         title: v.title,
@@ -149,6 +159,20 @@ export async function updateEvent(formData: FormData) {
         accessibilityNotes: v.accessibilityNotes,
       },
       user.id,
+      {
+        title: {
+          es: currentEvent.title_es || "",
+          en: currentEvent.title_en || "",
+        },
+        description: {
+          es: currentEvent.description_es || "",
+          en: currentEvent.description_en || "",
+        },
+        accessibilityNotes: {
+          es: currentEvent.accessibility_notes_es || "",
+          en: currentEvent.accessibility_notes_en || "",
+        },
+      },
     );
   } catch {
     redirect(destination(locale, venueId, "error=translation"));
