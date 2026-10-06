@@ -14452,3 +14452,101 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
     white-space: nowrap;
   }
 }
+
+
+/* AkiBusiness auth: explicit light-mode palette. The older dark-auth overrides
+   above intentionally win in dark mode, but must be reversed when light mode is active. */
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business {
+  --auth-ink: #14213d;
+  --ink: #14213d;
+  --muted: #58657b;
+  --line: rgba(20, 33, 61, 0.14);
+  --surface: #ffffff;
+}
+
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .auth-intro h1,
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .auth-form-head h2,
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .auth-modes a.active,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .auth-intro h1,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .auth-form-head h2,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .auth-modes a.active {
+  color: #14213d;
+}
+
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .auth-modes a,
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .auth-divider,
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .auth-divider span,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .auth-modes a,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .auth-divider,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .auth-divider span {
+  color: #58657b;
+}
+
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .stack label:not(.consent-row),
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .auth-label-line,
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .auth-label-line a,
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .auth-secondary a,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .stack label:not(.consent-row),
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .auth-label-line,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .auth-label-line a,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .auth-secondary a {
+  color: #14213d;
+}
+
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .consent-row,
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .consent-row span,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .consent-row,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .consent-row span {
+  color: #26344d;
+}
+
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .consent-row a,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .consent-row a {
+  color: #9a6b00;
+  text-decoration-color: rgba(154, 107, 0, 0.35);
+}
+
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business input:not([type="checkbox"]),
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business input:not([type="checkbox"]) {
+  color: #14213d;
+  border-bottom-color: rgba(20, 33, 61, 0.26);
+  background: rgba(255, 255, 255, 0.88);
+}
+
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business input:not([type="checkbox"])::placeholder,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business input:not([type="checkbox"])::placeholder {
+  color: #718096;
+  opacity: 1;
+}
+
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .google-button,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .google-button {
+  color: #14213d;
+  border-color: rgba(20, 33, 61, 0.18);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .auth-product-card,
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .auth-product-card strong,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .auth-product-card,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .auth-product-card strong {
+  color: #14213d;
+}
+
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .auth-product-card,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .auth-product-card {
+  border-color: rgba(20, 33, 61, 0.12);
+  background: rgba(255, 255, 255, 0.76);
+}
+
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .auth-product-card.active,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .auth-product-card.active {
+  border-color: rgba(188, 145, 0, 0.46);
+  background: rgba(255, 212, 71, 0.14);
+}
+
+html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-business .auth-secondary,
+html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .auth-secondary {
+  border-top-color: rgba(20, 33, 61, 0.12);
+}
