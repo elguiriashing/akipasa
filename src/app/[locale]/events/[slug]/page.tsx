@@ -62,19 +62,15 @@ export default async function EventPage({
     : resolvedVenue;
   const directionsPlace = event.location
     ? {
-        latitude: event.location.latitude,
-        longitude: event.location.longitude,
         address: event.location.directionsAddress || "",
+        latitude: event.location.directionsAddress
+          ? undefined
+          : event.location.latitude,
+        longitude: event.location.directionsAddress
+          ? undefined
+          : event.location.longitude,
       }
     : resolvedVenue;
-  const directionsPlace =
-    event.source === "akipasa_selection" && event.location
-      ? {
-          address: event.directionsAddress || "",
-          latitude: event.directionsAddress ? undefined : event.location.latitude,
-          longitude: event.directionsAddress ? undefined : event.location.longitude,
-        }
-      : eventPlace;
   const m = msg(locale);
   const returnTo = `/${locale}/events/${event.slug}`;
   const { supabase, user } = await optionalUser();
@@ -152,7 +148,10 @@ export default async function EventPage({
         event.source === "akipasa_selection"
           ? translated(event.title, locale)
           : resolvedVenue.name,
-      address: event.directionsAddress || event.location?.label || resolvedVenue.address,
+      address:
+        event.location?.directionsAddress ||
+        event.location?.label ||
+        resolvedVenue.address,
     },
     offers: {
       "@type": "Offer",
