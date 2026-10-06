@@ -44,17 +44,33 @@ export async function updateVenue(formData: FormData) {
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=venue"));
   const { supabase, user } = await requireBusinessAccess(locale);
-  let localizedDescription;
-  try {
-    localizedDescription = (
-      await translateLocalizedFields(
-        locale,
-        { description: parsed.data.description },
-        user.id,
-      )
-    ).description;
-  } catch {
-    redirect(destination(locale, venueId, "error=translation"));
+  const { data: currentVenue } = await supabase
+    .from("venues")
+    .select("description_es,description_en")
+    .eq("id", parsed.data.venueId)
+    .maybeSingle();
+  if (!currentVenue) redirect(destination(locale, venueId, "error=venue"));
+
+  const currentSource =
+    locale === "es"
+      ? currentVenue.description_es || ""
+      : currentVenue.description_en || currentVenue.description_es || "";
+  let localizedDescription = {
+    es: currentVenue.description_es || "",
+    en: currentVenue.description_en || currentVenue.description_es || "",
+  };
+  if (parsed.data.description !== currentSource) {
+    try {
+      localizedDescription = (
+        await translateLocalizedFields(
+          locale,
+          { description: parsed.data.description },
+          user.id,
+        )
+      ).description;
+    } catch {
+      redirect(destination(locale, venueId, "error=translation"));
+    }
   }
   if (parsed.data.addressSelection === "selected") {
     if (
@@ -388,13 +404,30 @@ export async function updateVenueImageMetadata(formData: FormData) {
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=media"));
   const { supabase, user } = await requireBusinessAccess(locale);
-  let localizedAlt;
-  try {
-    localizedAlt = (
-      await translateLocalizedFields(locale, { alt: parsed.data.alt }, user.id)
-    ).alt;
-  } catch {
-    redirect(destination(locale, venueId, "error=translation"));
+  const { data: currentMedia } = await supabase
+    .from("venue_media")
+    .select("alt_es,alt_en")
+    .eq("id", parsed.data.mediaId)
+    .eq("venue_id", parsed.data.venueId)
+    .maybeSingle();
+  if (!currentMedia) redirect(destination(locale, venueId, "error=media"));
+
+  const currentSource =
+    locale === "es"
+      ? currentMedia.alt_es || ""
+      : currentMedia.alt_en || currentMedia.alt_es || "";
+  let localizedAlt = {
+    es: currentMedia.alt_es || "",
+    en: currentMedia.alt_en || currentMedia.alt_es || "",
+  };
+  if (parsed.data.alt !== currentSource) {
+    try {
+      localizedAlt = (
+        await translateLocalizedFields(locale, { alt: parsed.data.alt }, user.id)
+      ).alt;
+    } catch {
+      redirect(destination(locale, venueId, "error=translation"));
+    }
   }
   const { error } = await supabase
     .from("venue_media")
