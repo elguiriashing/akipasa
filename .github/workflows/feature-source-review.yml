@@ -5,9 +5,9 @@ on:
 permissions:
   contents: read
 jobs:
-  source:
+  verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -15,11 +15,11 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm ci --prefix automation
-      - name: Package locked dependencies for offline verification
-        run: tar -czf /tmp/akipasa-test-dependencies.tar.gz node_modules automation/node_modules
-      - uses: actions/upload-artifact@v4
-        with:
-          name: feature-test-dependencies
-          path: /tmp/akipasa-test-dependencies.tar.gz
-          retention-days: 1
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Focused feature tests
+        run: npx vitest run --environment node tests/venue-catalogue.test.ts tests/roles.test.ts tests/venue-dashboard.test.tsx
+      - name: Production build
+        run: npm run build
+      - name: Cloudflare build
+        run: npm run build:cloudflare
