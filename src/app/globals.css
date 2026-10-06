@@ -15076,10 +15076,16 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
   font-size: .7rem;
 }
 
-.catalogue-studio-sidebar-head > button {
+.catalogue-sidebar-head-actions {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+}
+
+.catalogue-sidebar-head-actions > button {
   display: grid;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.1rem;
+  height: 2.1rem;
   place-items: center;
   border: 1px solid color-mix(in srgb, #ffd447 35%, var(--line));
   border-radius: .7rem;
@@ -15321,12 +15327,24 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
 
 .catalogue-item-studio-grid {
   display: grid;
-  grid-template-columns: minmax(9rem, .8fr) minmax(15rem, 1.5fr) repeat(4, minmax(8rem, .72fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: .65rem;
+  min-width: 0;
+}
+
+.catalogue-item-studio-grid > * {
+  min-width: 0;
+}
+
+.catalogue-item-studio-grid :is(input, select, textarea) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .catalogue-item-studio-name {
   min-width: 0;
+  grid-column: span 2;
 }
 
 .catalogue-item-toggle-row {
@@ -15770,5 +15788,291 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
 
   .official-event-map-wrap {
     min-height: 22rem;
+  }
+}
+
+
+/* Compact food-safety summary. Keep the 14-allergen matrix available without
+   forcing every catalogue item to become a full-page compliance worksheet. */
+.allergen-compact-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .85rem;
+  padding: .72rem .8rem;
+  border: 1px solid color-mix(in srgb, var(--line) 88%, transparent);
+  border-radius: .85rem;
+  background: color-mix(in srgb, var(--surface-alt) 70%, transparent);
+}
+
+.allergen-summary-copy {
+  display: grid;
+  min-width: 0;
+  gap: .38rem;
+}
+
+.allergen-summary-copy > small {
+  color: var(--muted);
+  font-size: .7rem;
+}
+
+.allergen-risk-chips {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: .35rem;
+}
+
+.allergen-risk-chips > span {
+  display: inline-flex;
+  align-items: center;
+  gap: .32rem;
+  max-width: 12rem;
+  min-height: 1.95rem;
+  padding: .3rem .5rem;
+  border: 1px solid rgb(225 83 83 / 36%);
+  border-radius: 999px;
+  background: rgb(225 83 83 / 9%);
+  color: var(--ink);
+  font-size: .69rem;
+}
+
+.allergen-risk-chips > span[data-state="may_contain"] {
+  border-color: rgb(245 158 11 / 38%);
+  background: rgb(245 158 11 / 9%);
+}
+
+.allergen-risk-chips i {
+  font-style: normal;
+}
+
+.allergen-risk-chips b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.allergen-summary-clear,
+.allergen-summary-pending {
+  min-height: 1.95rem;
+  padding: .32rem .52rem;
+  border-radius: 999px;
+  font-size: .7rem;
+  font-weight: 850;
+}
+
+.allergen-summary-clear {
+  border: 1px solid rgb(40 199 162 / 34%);
+  background: rgb(40 199 162 / 9%);
+  color: #5ee7c7;
+}
+
+.allergen-summary-pending {
+  border: 1px solid color-mix(in srgb, #ffd447 34%, var(--line));
+  background: color-mix(in srgb, #ffd447 7%, transparent);
+  color: #ffd447;
+}
+
+.allergen-edit-toggle {
+  flex: 0 0 auto;
+}
+
+.allergen-editor-drawer {
+  display: grid;
+  gap: .8rem;
+  padding-top: .15rem;
+  animation: catalogueDrawerIn .16s ease-out;
+}
+
+@keyframes catalogueDrawerIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.allergen-editor-drawer .allergen-toggle-grid.compact {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .42rem;
+}
+
+.allergen-editor-drawer .allergen-toggle {
+  min-height: 2.75rem;
+  padding: .45rem .52rem;
+}
+
+.allergen-editor-drawer .allergen-toggle strong {
+  font-size: .7rem;
+}
+
+.allergen-editor-drawer .allergen-toggle small {
+  font-size: .61rem;
+}
+
+.allergen-detail-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: .4rem;
+  padding: .68rem;
+  border: 1px solid var(--line);
+  border-radius: .8rem;
+  background: color-mix(in srgb, var(--surface-alt) 72%, transparent);
+}
+
+.allergen-detail-options legend {
+  padding: 0 .32rem;
+  font-size: .72rem;
+  font-weight: 850;
+}
+
+.allergen-detail-options .check-row {
+  min-height: 2.05rem;
+  padding: .32rem .48rem;
+  border: 1px solid color-mix(in srgb, var(--line) 76%, transparent);
+  border-radius: .6rem;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+}
+
+.catalogue-tree-section.expanded > .catalogue-tree-section-title {
+  background: color-mix(in srgb, var(--surface-alt) 68%, transparent);
+}
+
+.catalogue-tree-section.active > .catalogue-tree-section-title {
+  box-shadow: inset 3px 0 0 #ffd447;
+}
+
+@media (max-width: 900px) {
+  .allergen-compact-summary {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .allergen-edit-toggle {
+    width: 100%;
+  }
+
+  .allergen-editor-drawer .allergen-toggle-grid.compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+/* AkiBusiness containment guardrails. Product controls must shrink with the
+   workspace instead of punching through their card on mid-size desktops. */
+.catalogue-studio,
+.catalogue-studio-workspace,
+.catalogue-studio-sidebar,
+.catalogue-studio-editor,
+.catalogue-item-studio,
+.catalogue-item-studio-panel,
+.catalogue-studio-settings,
+.catalogue-studio-footer,
+.catalogue-studio-footer-actions,
+.catalogue-tree-section,
+.catalogue-tree-items {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.catalogue-studio :is(input, select, textarea, button) {
+  max-width: 100%;
+}
+
+.catalogue-studio select {
+  text-overflow: ellipsis;
+}
+
+.catalogue-studio-editor {
+  overflow-x: clip;
+}
+
+.catalogue-item-toggle-row,
+.catalogue-studio-footer-actions,
+.catalogue-studio-footer-actions form {
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 720px) {
+  .catalogue-item-studio-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .catalogue-item-studio-name {
+    grid-column: auto;
+  }
+
+  .catalogue-studio-header-actions,
+  .catalogue-sidebar-head-actions {
+    flex-wrap: wrap;
+  }
+}
+
+
+/* Final AkiBusiness responsive sweep: keep every workspace page inside its
+   viewport, including top-level Events/Claims and per-venue subpages. */
+.akibusiness-host .workspace-shell,
+.akibusiness-host .workspace-content,
+.akibusiness-host .workspace-grid-body,
+.akibusiness-host .dashboard-grid,
+.akibusiness-host .panel,
+.akibusiness-host details,
+.akibusiness-host form,
+.akibusiness-host fieldset,
+.akibusiness-host .catalogue-edit-card,
+.akibusiness-host .catalogue-grid,
+.akibusiness-host .managed-list,
+.akibusiness-host .workspace-section-heading,
+.akibusiness-host .focused-form {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.akibusiness-host .workspace-content,
+.akibusiness-host .workspace-grid-body {
+  overflow-x: clip;
+}
+
+.akibusiness-host :is(input, select, textarea) {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.akibusiness-host :is(.form-grid-two, .two-col) > * {
+  min-width: 0;
+}
+
+.akibusiness-host .form-grid-two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.akibusiness-host :is(.form-actions, .form-actions-right, .inline-actions) {
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.akibusiness-host :is(.button, button) {
+  max-width: 100%;
+}
+
+@media (max-width: 900px) {
+  .akibusiness-host .form-grid-two {
+    grid-template-columns: 1fr;
+  }
+
+  .akibusiness-host .workspace-page-heading {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 620px) {
+  .akibusiness-host :is(.form-actions, .form-actions-right, .inline-actions) > * {
+    width: 100%;
   }
 }

@@ -1,7 +1,10 @@
 .dashboard {
   width: min(100% - 2rem, 72rem);
+  min-width: 0;
+  max-width: 100%;
   margin: 0 auto;
   padding: 1rem 0 2rem;
+  overflow-x: clip;
   color: var(--ink);
 }
 .dashboard svg {
@@ -212,6 +215,35 @@
 }
 
 /* Keep the existing server forms, with sizes scoped to this dashboard. */
+
+.dashboard .section,
+.dashboard .section :global(.panel),
+.dashboard .section :global(.stack),
+.dashboard .section form,
+.dashboard .section fieldset,
+.dashboard .section details,
+.dashboard .section > div {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.dashboard .section :is(input, select, textarea) {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.dashboard .section :global(.two-col) > *,
+.dashboard .section :global(.venue-form-columns) > *,
+.dashboard .section :global(.venue-tool-columns) > *,
+.dashboard .section :global(.event-editor) > * {
+  min-width: 0;
+}
+
+.dashboard .section :global(.inline-form) > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .dashboard .section :global(.panel) {
   min-width: 0;
   margin: 0 0 0.8rem;
@@ -500,6 +532,26 @@
   }
   .dashboard .section :global(.event-editor > details[open]) {
     grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard .section :global(.two-col),
+  .dashboard .section :global(.venue-form-columns),
+  .dashboard .section :global(.venue-tool-columns),
+  .dashboard .section :global(.event-editor) {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dashboard .section :global(.inline-form) {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dashboard .section :global(.inline-form) > *,
+  .dashboard .section :global(.inline-form) input:not([type="hidden"]),
+  .dashboard .section :global(.managed-row) > select {
+    width: 100%;
   }
 }
 
