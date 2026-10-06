@@ -14550,3 +14550,131 @@ html[data-theme="light"] .akibusiness-host .auth-product-theme.auth-theme-busine
 html.theme-light .akibusiness-host .auth-product-theme.auth-theme-business .auth-secondary {
   border-top-color: rgba(20, 33, 61, 0.12);
 }
+
+
+/* Claim flow theme contrast: keep map popups, selected venue confirmation and
+   verification fields readable in both themes regardless of generic map/form rules. */
+html[data-theme="dark"] .akibusiness-host .akibusiness-claim-popup .maplibregl-popup-content,
+html.theme-dark .akibusiness-host .akibusiness-claim-popup .maplibregl-popup-content {
+  background: #172847 !important;
+  color: #f8f7f2 !important;
+}
+
+html[data-theme="dark"] .akibusiness-host .akibusiness-claim-popup .maplibregl-popup-tip,
+html.theme-dark .akibusiness-host .akibusiness-claim-popup .maplibregl-popup-tip {
+  border-top-color: #172847 !important;
+  border-bottom-color: #172847 !important;
+}
+
+html[data-theme="dark"] .akibusiness-host .claim-map-popup-preview > strong,
+html.theme-dark .akibusiness-host .claim-map-popup-preview > strong {
+  color: #f8f7f2 !important;
+}
+
+html[data-theme="dark"] .akibusiness-host .claim-map-popup-address,
+html.theme-dark .akibusiness-host .claim-map-popup-address {
+  color: #b7c1d3 !important;
+}
+
+html[data-theme="dark"] .akibusiness-host .claim-selected-confirmation strong,
+html.theme-dark .akibusiness-host .claim-selected-confirmation strong {
+  color: #f8f7f2 !important;
+}
+
+html[data-theme="dark"] .akibusiness-host .claim-selected-confirmation small,
+html.theme-dark .akibusiness-host .claim-selected-confirmation small {
+  color: #aeb8cb !important;
+}
+
+html[data-theme="dark"] .akibusiness-host .claim-selected-confirmation > button,
+html.theme-dark .akibusiness-host .claim-selected-confirmation > button {
+  color: #f8f7f2 !important;
+}
+
+html[data-theme="dark"] .akibusiness-host .akibusiness-evidence-field > span,
+html.theme-dark .akibusiness-host .akibusiness-evidence-field > span {
+  color: #f8f7f2 !important;
+}
+
+html[data-theme="dark"] .akibusiness-host .akibusiness-evidence-field > small,
+html[data-theme="dark"] .akibusiness-host .akibusiness-claim-submit p,
+html.theme-dark .akibusiness-host .akibusiness-evidence-field > small,
+html.theme-dark .akibusiness-host .akibusiness-claim-submit p {
+  color: #aeb8cb !important;
+}
+
+html[data-theme="light"] .akibusiness-host .akibusiness-claim-popup .maplibregl-popup-content,
+html.theme-light .akibusiness-host .akibusiness-claim-popup .maplibregl-popup-content {
+  border-color: rgba(188, 145, 0, 0.32);
+  background: #ffffff !important;
+  color: #14213d !important;
+  box-shadow: 0 18px 40px rgba(20, 33, 61, 0.16);
+}
+
+html[data-theme="light"] .akibusiness-host .akibusiness-claim-popup .maplibregl-popup-tip,
+html.theme-light .akibusiness-host .akibusiness-claim-popup .maplibregl-popup-tip {
+  border-top-color: #ffffff !important;
+  border-bottom-color: #ffffff !important;
+}
+
+html[data-theme="light"] .akibusiness-host .akibusiness-claim-popup .maplibregl-popup-close-button,
+html.theme-light .akibusiness-host .akibusiness-claim-popup .maplibregl-popup-close-button {
+  color: #14213d !important;
+}
+
+html[data-theme="light"] .akibusiness-host .claim-map-popup-preview > strong,
+html.theme-light .akibusiness-host .claim-map-popup-preview > strong {
+  color: #14213d !important;
+}
+
+html[data-theme="light"] .akibusiness-host .claim-map-popup-eyebrow,
+html.theme-light .akibusiness-host .claim-map-popup-eyebrow {
+  color: #9a6b00 !important;
+}
+
+html[data-theme="light"] .akibusiness-host .claim-map-popup-address,
+html.theme-light .akibusiness-host .claim-map-popup-address {
+  color: #58657b !important;
+}
+
+html[data-theme="light"] .akibusiness-host .claim-selected-confirmation,
+html.theme-light .akibusiness-host .claim-selected-confirmation {
+  border-color: rgba(188, 145, 0, 0.3);
+  background:
+    linear-gradient(100deg, rgba(255, 212, 71, 0.13), rgba(255, 212, 71, 0.04)),
+    rgba(255, 255, 255, 0.96);
+}
+
+html[data-theme="light"] .akibusiness-host .claim-selected-confirmation span,
+html.theme-light .akibusiness-host .claim-selected-confirmation span {
+  color: #8a6200 !important;
+}
+
+html[data-theme="light"] .akibusiness-host .claim-selected-confirmation strong,
+html.theme-light .akibusiness-host .claim-selected-confirmation strong {
+  color: #14213d !important;
+}
+
+html[data-theme="light"] .akibusiness-host .claim-selected-confirmation small,
+html.theme-light .akibusiness-host .claim-selected-confirmation small {
+  color: #58657b !important;
+}
+
+html[data-theme="light"] .akibusiness-host .claim-selected-confirmation > button,
+html.theme-light .akibusiness-host .claim-selected-confirmation > button {
+  color: #14213d !important;
+  border-color: rgba(20, 33, 61, 0.14);
+  background: rgba(20, 33, 61, 0.025);
+}
+
+html[data-theme="light"] .akibusiness-host .akibusiness-evidence-field > span,
+html.theme-light .akibusiness-host .akibusiness-evidence-field > span {
+  color: #14213d !important;
+}
+
+html[data-theme="light"] .akibusiness-host .akibusiness-evidence-field > small,
+html[data-theme="light"] .akibusiness-host .akibusiness-claim-submit p,
+html.theme-light .akibusiness-host .akibusiness-evidence-field > small,
+html.theme-light .akibusiness-host .akibusiness-claim-submit p {
+  color: #58657b !important;
+}
