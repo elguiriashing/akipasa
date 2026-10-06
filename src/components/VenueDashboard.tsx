@@ -343,6 +343,21 @@ export function VenueDashboard({
             <h2>{tool.label}</h2>
             <p>{tool.description}</p>
           </div>
+          {["profile", "events", "catalogue", "rewards", "bookings"].includes(
+            tool.id,
+          ) && (
+            <div className={styles.translationAssist}>
+              <Icon name="globe" />
+              <span>
+                <strong>
+                  {es ? "Escribe en español." : "Write in English."}
+                </strong>{" "}
+                {es
+                  ? "Al guardar, AkiPasa crea automáticamente la versión en inglés para los usuarios EN."
+                  : "When you save, AkiPasa automatically creates the Spanish version for ES users."}
+              </span>
+            </div>
+          )}
           {sections[tool.id]}
         </section>
       ))}

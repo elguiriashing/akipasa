@@ -7,7 +7,12 @@ import { requireBusinessAccess } from "@/lib/entitlements";
 import { safeExternalUrlSchema } from "@/lib/auth-security";
 import { madridLocalDateTimeSchema } from "@/lib/time";
 import { reviewPendingCatalogueItem } from "@/lib/automatic-moderation";
-import { translateLocalizedFields } from "@/lib/localized-copy";
+import {
+  translateLocalizedFields,
+  translateSubmittedLocalizedFields,
+  translateVenueCatalogueDocument,
+} from "@/lib/localized-copy";
+import type { VenueCatalogueDocument } from "@/lib/venue-catalogue";
 
 const context = z.object({
   locale: z.enum(["es", "en"]),
@@ -51,26 +56,23 @@ export async function updateVenue(formData: FormData) {
     .maybeSingle();
   if (!currentVenue) redirect(destination(locale, venueId, "error=venue"));
 
-  const currentSource =
-    locale === "es"
-      ? currentVenue.description_es || ""
-      : currentVenue.description_en || currentVenue.description_es || "";
-  let localizedDescription = {
-    es: currentVenue.description_es || "",
-    en: currentVenue.description_en || currentVenue.description_es || "",
-  };
-  if (parsed.data.description !== currentSource) {
-    try {
-      localizedDescription = (
-        await translateLocalizedFields(
-          locale,
-          { description: parsed.data.description },
-          user.id,
-        )
-      ).description;
-    } catch {
-      redirect(destination(locale, venueId, "error=translation"));
-    }
+  let localizedDescription;
+  try {
+    localizedDescription = (
+      await translateSubmittedLocalizedFields(
+        locale,
+        { description: parsed.data.description },
+        user.id,
+        {
+          description: {
+            es: currentVenue.description_es || "",
+            en: currentVenue.description_en || "",
+          },
+        },
+      )
+    ).description;
+  } catch {
+    redirect(destination(locale, venueId, "error=translation"));
   }
   if (parsed.data.addressSelection === "selected") {
     if (
@@ -137,9 +139,19 @@ export async function updateEvent(formData: FormData) {
   if (!parsed.success) redirect(destination(locale, venueId, "error=event"));
   const { supabase, user } = await requireBusinessAccess(locale);
   const v = parsed.data;
+  const { data: currentEvent } = await supabase
+    .from("events")
+    .select(
+      "title_es,title_en,description_es,description_en,accessibility_notes_es,accessibility_notes_en",
+    )
+    .eq("id", v.eventId)
+    .eq("venue_id", v.venueId)
+    .maybeSingle();
+  if (!currentEvent) redirect(destination(locale, venueId, "error=event"));
+
   let localized;
   try {
-    localized = await translateLocalizedFields(
+    localized = await translateSubmittedLocalizedFields(
       locale,
       {
         title: v.title,
@@ -147,6 +159,20 @@ export async function updateEvent(formData: FormData) {
         accessibilityNotes: v.accessibilityNotes,
       },
       user.id,
+      {
+        title: {
+          es: currentEvent.title_es || "",
+          en: currentEvent.title_en || "",
+        },
+        description: {
+          es: currentEvent.description_es || "",
+          en: currentEvent.description_en || "",
+        },
+        accessibilityNotes: {
+          es: currentEvent.accessibility_notes_es || "",
+          en: currentEvent.accessibility_notes_en || "",
+        },
+      },
     );
   } catch {
     redirect(destination(locale, venueId, "error=translation"));
@@ -470,22 +496,23 @@ export async function updateVenueImageMetadata(formData: FormData) {
     .maybeSingle();
   if (!currentMedia) redirect(destination(locale, venueId, "error=media"));
 
-  const currentSource =
-    locale === "es"
-      ? currentMedia.alt_es || ""
-      : currentMedia.alt_en || currentMedia.alt_es || "";
-  let localizedAlt = {
-    es: currentMedia.alt_es || "",
-    en: currentMedia.alt_en || currentMedia.alt_es || "",
-  };
-  if (parsed.data.alt !== currentSource) {
-    try {
-      localizedAlt = (
-        await translateLocalizedFields(locale, { alt: parsed.data.alt }, user.id)
-      ).alt;
-    } catch {
-      redirect(destination(locale, venueId, "error=translation"));
-    }
+  let localizedAlt;
+  try {
+    localizedAlt = (
+      await translateSubmittedLocalizedFields(
+        locale,
+        { alt: parsed.data.alt },
+        user.id,
+        {
+          alt: {
+            es: currentMedia.alt_es || "",
+            en: currentMedia.alt_en || "",
+          },
+        },
+      )
+    ).alt;
+  } catch {
+    redirect(destination(locale, venueId, "error=translation"));
   }
   const { error } = await supabase
     .from("venue_media")
@@ -863,7 +890,20 @@ export async function saveVenueCatalogue(formData: FormData) {
     redirect(destination(locale, venueId, "section=catalogue&error=catalogue"));
   }
 
-  const { supabase } = await requireBusinessAccess(locale);
+  const { supabase, user } = await requireBusinessAccess(locale);
+
+  try {
+    document = await translateVenueCatalogueDocument(
+      locale,
+      document as VenueCatalogueDocument,
+      user.id,
+    );
+  } catch {
+    redirect(
+      destination(locale, venueId, "section=catalogue&error=translation"),
+    );
+  }
+
   const { error } = await supabase.rpc("save_venue_catalogue", {
     p_venue: parsed.data.venueId,
     p_expected_revision: parsed.data.expectedRevision,

@@ -5,7 +5,10 @@ import { Icon } from "@/components/Icons";
 import { VenueDashboard } from "@/components/VenueDashboard";
 import { VenueCatalogueEditor } from "@/components/VenueCatalogueEditor";
 import { getVenueDashboardSection } from "@/lib/venue-dashboard";
-import { parseCatalogueDocument } from "@/lib/venue-catalogue";
+import {
+  parseCatalogueDocument,
+  seedCatalogueTranslationMetadata,
+} from "@/lib/venue-catalogue";
 import { notFound } from "next/navigation";
 import { VenueQrCode } from "@/components/VenueQrCode";
 import { requireBusinessAccess } from "@/lib/entitlements";
@@ -174,8 +177,8 @@ export default async function VenueWorkspace({
     supabase.rpc("venue_owner_results", { p_venue: id }),
   ]);
   if (!venue) notFound();
-  const catalogueDocument = parseCatalogueDocument(
-    catalogue?.draft_document,
+  const catalogueDocument = seedCatalogueTranslationMetadata(
+    parseCatalogueDocument(catalogue?.draft_document, locale),
     locale,
   );
   const catalogueItemCount = catalogueDocument.sections.reduce(

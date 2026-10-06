@@ -16188,3 +16188,28 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
     width: 100%;
   }
 }
+
+
+.business-translation-assist {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin: 0 0 0.9rem;
+  padding: 0.72rem 0.82rem;
+  color: var(--muted);
+  border: 1px solid color-mix(in srgb, var(--primary) 22%, var(--line));
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, var(--primary-soft) 42%, transparent);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+.business-translation-assist svg {
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.08rem;
+  color: var(--primary-text, var(--primary));
+}
+.business-translation-assist strong {
+  color: var(--ink);
+}

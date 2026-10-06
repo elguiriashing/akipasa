@@ -237,6 +237,12 @@ export function ProductionMap({
     let disposed = false;
     const initialPoints = initialPointsRef.current;
     const initialCenter = initialCenterRef.current;
+    const officialPoints = initialPoints.filter(
+      (point) => point.source === "akipasa_selection",
+    );
+    const clusterableActivityPoints = initialPoints.filter(
+      (point) => point.source !== "akipasa_selection",
+    );
     let visiblePoints = initialPoints;
     let pointIndex = new Map(initialPoints.map((point) => [point.id, point]));
     const details = new Map<string, MapVenueDetail>();
@@ -317,7 +323,7 @@ export function ProductionMap({
             type: "geojson",
             data: {
               type: "FeatureCollection",
-              features: initialPoints.map((point) => ({
+              features: clusterableActivityPoints.map((point) => ({
                 type: "Feature",
                 geometry: {
                   type: "Point",
@@ -329,6 +335,20 @@ export function ProductionMap({
             cluster: true,
             clusterMaxZoom: 14,
             clusterRadius: 52,
+          });
+          map.addSource("official-akipasa-events", {
+            type: "geojson",
+            data: {
+              type: "FeatureCollection",
+              features: officialPoints.map((point) => ({
+                type: "Feature",
+                geometry: {
+                  type: "Point",
+                  coordinates: [point.longitude, point.latitude],
+                },
+                properties: { id: point.id, source: point.source },
+              })),
+            },
           });
           map.addImage("cluster-small", clusterImage(38, "#f59e0b"), {
             pixelRatio: 2,
@@ -414,6 +434,19 @@ export function ProductionMap({
             },
           });
 
+          map.addLayer({
+            id: "official-akipasa-events",
+            type: "symbol",
+            source: "official-akipasa-events",
+            layout: {
+              "icon-image": "pin-akipasa-selection",
+              "icon-anchor": "bottom",
+              "icon-allow-overlap": true,
+              "icon-ignore-placement": true,
+              "symbol-sort-key": 1000,
+            },
+          });
+
           map.on("click", "discovery-clusters", async (event) => {
             const feature = map.queryRenderedFeatures(event.point, {
               layers: ["discovery-clusters"],
@@ -432,10 +465,7 @@ export function ProductionMap({
             ).coordinates;
             map.easeTo({ center: coordinates, zoom });
           });
-          map.on("click", "discovery-unclustered", async (event) => {
-            const feature = event.features?.[0];
-            const point = pointIndex.get(String(feature?.properties?.id));
-            if (!point) return;
+          const openPointPopup = async (point: MapPoint) => {
             popupRequest?.abort();
             const controller = new AbortController();
             popupRequest = controller;
@@ -506,6 +536,21 @@ export function ProductionMap({
               entityType: point.kind === "venue" ? "venue" : "event",
               entityId: point.id,
             });
+          };
+
+          const openPointFromFeature = async (
+            feature?: import("maplibre-gl").MapGeoJSONFeature,
+          ) => {
+            const point = pointIndex.get(String(feature?.properties?.id));
+            if (!point) return;
+            await openPointPopup(point);
+          };
+
+          map.on("click", "discovery-unclustered", async (event) => {
+            await openPointFromFeature(event.features?.[0]);
+          });
+          map.on("click", "official-akipasa-events", async (event) => {
+            await openPointFromFeature(event.features?.[0]);
           });
           let stayMarkers: CompactMapMarker[] = [];
           const renderVenues = () => {
@@ -545,20 +590,41 @@ export function ProductionMap({
             if (activePopupId && !pointIndex.has(activePopupId))
               activePopup?.remove();
             setLoadedVenues(markers.length);
+            const showActivityPoints =
+              verticalRef.current === "activities";
             (
               map.getSource(
                 "discovery-points",
               ) as import("maplibre-gl").GeoJSONSource
             ).setData({
               type: "FeatureCollection",
-              features: visiblePoints.map((point) => ({
-                type: "Feature",
-                geometry: {
-                  type: "Point",
-                  coordinates: [point.longitude, point.latitude],
-                },
-                properties: { id: point.id, source: point.source },
-              })),
+              features: visiblePoints
+                .filter((point) => point.source !== "akipasa_selection")
+                .map((point) => ({
+                  type: "Feature",
+                  geometry: {
+                    type: "Point",
+                    coordinates: [point.longitude, point.latitude],
+                  },
+                  properties: { id: point.id, source: point.source },
+                })),
+            });
+            (
+              map.getSource(
+                "official-akipasa-events",
+              ) as import("maplibre-gl").GeoJSONSource
+            ).setData({
+              type: "FeatureCollection",
+              features: showActivityPoints
+                ? officialPoints.map((point) => ({
+                    type: "Feature",
+                    geometry: {
+                      type: "Point",
+                      coordinates: [point.longitude, point.latitude],
+                    },
+                    properties: { id: point.id, source: point.source },
+                  }))
+                : [],
             });
           };
           renderVenuesRef.current = renderVenues;
@@ -646,7 +712,11 @@ export function ProductionMap({
           map.on("moveend", scheduleLoad);
           publishMapCenter();
           void loadVenues();
-          for (const layer of ["discovery-clusters", "discovery-unclustered"]) {
+          for (const layer of [
+            "discovery-clusters",
+            "discovery-unclustered",
+            "official-akipasa-events",
+          ]) {
             map.on("mouseenter", layer, () => {
               map.getCanvas().style.cursor = "pointer";
             });

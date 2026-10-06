@@ -1480,3 +1480,28 @@
     width: 100%;
   }
 }
+
+
+.translationAssist {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin: -0.25rem 0 0.85rem;
+  padding: 0.7rem 0.8rem;
+  color: var(--muted);
+  border: 1px solid color-mix(in srgb, var(--workspace-accent) 24%, var(--line));
+  border-radius: 0.8rem;
+  background: color-mix(in srgb, var(--workspace-accent) 7%, transparent);
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+.translationAssist svg {
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.08rem;
+  color: var(--workspace-accent);
+}
+.translationAssist strong {
+  color: var(--ink);
+}

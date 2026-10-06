@@ -37,6 +37,21 @@ type ManagedVenue = {
   } | null;
 };
 
+function AutoTranslationNote({ locale }: { locale: "es" | "en" }) {
+  const es = locale === "es";
+  return (
+    <div className="business-translation-assist">
+      <Icon name="globe" />
+      <span>
+        <strong>{es ? "Escribe en español." : "Write in English."}</strong>{" "}
+        {es
+          ? "AkiPasa creará automáticamente la versión en inglés al guardar."
+          : "AkiPasa will automatically create the Spanish version when you save."}
+      </span>
+    </div>
+  );
+}
+
 type BusinessEvent = {
   id: string;
   venue_id: string;
@@ -494,6 +509,7 @@ export default async function BusinessPage({
               </strong>
             </summary>
 
+            <AutoTranslationNote locale={locale} />
             <form action={createVenue} className="stack focused-form">
               <input type="hidden" name="locale" value={locale} />
 
@@ -574,6 +590,7 @@ export default async function BusinessPage({
                 </p>
               </div>
             </div>
+            <AutoTranslationNote locale={locale} />
             <form action={createOfficialEvent} className="stack focused-form">
               <input type="hidden" name="locale" value={locale} />
               <div className="form-grid-two">
@@ -647,6 +664,7 @@ export default async function BusinessPage({
               </strong>
             </summary>
 
+            <AutoTranslationNote locale={locale} />
             <form action={createEvent} className="stack focused-form">
               <input type="hidden" name="locale" value={locale} />
 
@@ -788,6 +806,7 @@ export default async function BusinessPage({
               </strong>
             </summary>
 
+            <AutoTranslationNote locale={locale} />
             <form action={saveLoyaltyProgram} className="stack focused-form">
               <input type="hidden" name="locale" value={locale} />
 
