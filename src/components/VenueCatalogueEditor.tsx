@@ -126,6 +126,32 @@ export function VenueCatalogueEditor({
     }));
   }
 
+  function moveSection(sectionId: string, delta: number) {
+    setDocument((current) => {
+      const sections = [...current.sections];
+      const from = sections.findIndex((section) => section.id === sectionId);
+      const to = from + delta;
+      if (from < 0 || to < 0 || to >= sections.length) return current;
+      [sections[from], sections[to]] = [sections[to], sections[from]];
+      return { ...current, sections };
+    });
+  }
+
+  function moveItem(sectionId: string, itemId: string, delta: number) {
+    setDocument((current) => ({
+      ...current,
+      sections: current.sections.map((section) => {
+        if (section.id !== sectionId) return section;
+        const items = [...section.items];
+        const from = items.findIndex((item) => item.id === itemId);
+        const to = from + delta;
+        if (from < 0 || to < 0 || to >= items.length) return section;
+        [items[from], items[to]] = [items[to], items[from]];
+        return { ...section, items };
+      }),
+    }));
+  }
+
   function cycleAllergen(
     sectionId: string,
     item: CatalogueItem,
@@ -241,20 +267,40 @@ export function VenueCatalogueEditor({
                 }
                 placeholder={es ? "Ej. Hamburguesas" : "e.g. Burgers"}
               />
-              <button
-                type="button"
-                className="text-button"
-                onClick={() =>
-                  setDocument((current) => ({
-                    ...current,
-                    sections: current.sections.filter(
-                      (candidate) => candidate.id !== section.id,
-                    ),
-                  }))
-                }
-              >
-                {es ? "Eliminar sección" : "Remove section"}
-              </button>
+              <div className="catalogue-order-actions">
+                <button
+                  type="button"
+                  className="text-button"
+                  onClick={() => moveSection(section.id, -1)}
+                  disabled={sectionIndex === 0}
+                  aria-label={es ? "Subir sección" : "Move section up"}
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  className="text-button"
+                  onClick={() => moveSection(section.id, 1)}
+                  disabled={sectionIndex === document.sections.length - 1}
+                  aria-label={es ? "Bajar sección" : "Move section down"}
+                >
+                  ↓
+                </button>
+                <button
+                  type="button"
+                  className="text-button"
+                  onClick={() =>
+                    setDocument((current) => ({
+                      ...current,
+                      sections: current.sections.filter(
+                        (candidate) => candidate.id !== section.id,
+                      ),
+                    }))
+                  }
+                >
+                  {es ? "Eliminar sección" : "Remove section"}
+                </button>
+              </div>
             </header>
 
             <div className="catalogue-editor-items">
@@ -343,6 +389,44 @@ export function VenueCatalogueEditor({
                           </option>
                         </select>
                       </label>
+                      <label>
+                        {es ? "Disponibilidad" : "Availability"}
+                        <select
+                          value={item.availability}
+                          onChange={(event) =>
+                            updateItem(section.id, item.id, {
+                              ...item,
+                              availability: event.target.value as CatalogueItem["availability"],
+                            })
+                          }
+                        >
+                          <option value="available">{es ? "Disponible" : "Available"}</option>
+                          <option value="sold_out">{es ? "Agotado" : "Sold out"}</option>
+                          <option value="seasonal">{es ? "Temporada" : "Seasonal"}</option>
+                          <option value="on_request">{es ? "Bajo petición" : "On request"}</option>
+                        </select>
+                      </label>
+                      <label>
+                        {es ? "Unidad" : "Unit"}
+                        <select
+                          value={item.unit}
+                          onChange={(event) =>
+                            updateItem(section.id, item.id, {
+                              ...item,
+                              unit: event.target.value as CatalogueItem["unit"],
+                            })
+                          }
+                        >
+                          <option value="each">{es ? "Unidad" : "Each"}</option>
+                          <option value="person">{es ? "Persona" : "Person"}</option>
+                          <option value="session">{es ? "Sesión" : "Session"}</option>
+                          <option value="hour">{es ? "Hora" : "Hour"}</option>
+                          <option value="day">{es ? "Día" : "Day"}</option>
+                          <option value="night">{es ? "Noche" : "Night"}</option>
+                          <option value="month">{es ? "Mes" : "Month"}</option>
+                          <option value="kg">kg</option>
+                        </select>
+                      </label>
                     </div>
                     <label>
                       {es ? "Descripción" : "Description"}
@@ -361,6 +445,20 @@ export function VenueCatalogueEditor({
                       />
                     </label>
                     <div className="catalogue-item-controls">
+                      <button
+                        type="button"
+                        className="text-button"
+                        onClick={() => moveItem(section.id, item.id, -1)}
+                      >
+                        ↑
+                      </button>
+                      <button
+                        type="button"
+                        className="text-button"
+                        onClick={() => moveItem(section.id, item.id, 1)}
+                      >
+                        ↓
+                      </button>
                       <label className="check-row">
                         <input
                           type="checkbox"
@@ -449,6 +547,107 @@ export function VenueCatalogueEditor({
                             );
                           })}
                         </div>
+                        <button
+                          type="button"
+                          className="button secondary"
+                          onClick={() =>
+                            updateItem(section.id, item.id, {
+                              ...item,
+                              allergens: {
+                                ...item.allergens,
+                                states: Object.fromEntries(
+                                  euAllergens.map(([key]) => [
+                                    key,
+                                    item.allergens.states[key] === "unknown"
+                                      ? "not_in_recipe"
+                                      : item.allergens.states[key],
+                                  ]),
+                                ) as CatalogueItem["allergens"]["states"],
+                                reviewConfirmed: false,
+                              },
+                            })
+                          }
+                        >
+                          {es
+                            ? "Marcar los no revisados como «No en receta»"
+                            : "Mark unreviewed as “Not in recipe”"}
+                        </button>
+                        {["contains", "may_contain"].includes(
+                          item.allergens.states.gluten,
+                        ) && (
+                          <fieldset className="allergen-detail-options">
+                            <legend>{es ? "Cereales con gluten" : "Gluten cereals"}</legend>
+                            {[
+                              ["wheat", "Trigo", "Wheat"],
+                              ["rye", "Centeno", "Rye"],
+                              ["barley", "Cebada", "Barley"],
+                              ["oats", "Avena", "Oats"],
+                              ["spelt", "Espelta", "Spelt"],
+                              ["khorasan", "Khorasan", "Khorasan"],
+                            ].map(([key, esLabel, enLabel]) => (
+                              <label className="check-row" key={key}>
+                                <input
+                                  type="checkbox"
+                                  checked={item.allergens.cereals.includes(key)}
+                                  onChange={(event) =>
+                                    updateItem(section.id, item.id, {
+                                      ...item,
+                                      allergens: {
+                                        ...item.allergens,
+                                        cereals: event.target.checked
+                                          ? [...item.allergens.cereals, key]
+                                          : item.allergens.cereals.filter(
+                                              (value) => value !== key,
+                                            ),
+                                        reviewConfirmed: false,
+                                      },
+                                    })
+                                  }
+                                />
+                                {es ? esLabel : enLabel}
+                              </label>
+                            ))}
+                          </fieldset>
+                        )}
+                        {["contains", "may_contain"].includes(
+                          item.allergens.states.nuts,
+                        ) && (
+                          <fieldset className="allergen-detail-options">
+                            <legend>{es ? "Frutos de cáscara" : "Tree nuts"}</legend>
+                            {[
+                              ["almond", "Almendra", "Almond"],
+                              ["hazelnut", "Avellana", "Hazelnut"],
+                              ["walnut", "Nuez", "Walnut"],
+                              ["cashew", "Anacardo", "Cashew"],
+                              ["pecan", "Pecana", "Pecan"],
+                              ["brazil", "Nuez de Brasil", "Brazil nut"],
+                              ["pistachio", "Pistacho", "Pistachio"],
+                              ["macadamia", "Macadamia", "Macadamia"],
+                            ].map(([key, esLabel, enLabel]) => (
+                              <label className="check-row" key={key}>
+                                <input
+                                  type="checkbox"
+                                  checked={item.allergens.nuts.includes(key)}
+                                  onChange={(event) =>
+                                    updateItem(section.id, item.id, {
+                                      ...item,
+                                      allergens: {
+                                        ...item.allergens,
+                                        nuts: event.target.checked
+                                          ? [...item.allergens.nuts, key]
+                                          : item.allergens.nuts.filter(
+                                              (value) => value !== key,
+                                            ),
+                                        reviewConfirmed: false,
+                                      },
+                                    })
+                                  }
+                                />
+                                {es ? esLabel : enLabel}
+                              </label>
+                            ))}
+                          </fieldset>
+                        )}
                         <label>
                           {es ? "Contaminación cruzada" : "Cross-contact"}
                           <select
