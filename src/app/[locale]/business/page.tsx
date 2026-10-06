@@ -19,6 +19,7 @@ import { OfficialEventLocationPicker } from "@/components/OfficialEventLocationP
 import { PromotionRequestFields } from "@/components/PromotionRequestFields";
 import { Icon } from "@/components/Icons";
 import { ClaimVenuePicker } from "@/components/ClaimVenuePicker";
+import { VenueDeleteControl } from "@/components/VenueDeleteControl";
 import {
   WorkspaceShell,
   type WorkspaceItem,
@@ -460,68 +461,12 @@ export default async function BusinessPage({
                           </a>
                           {m.role === "owner" &&
                             m.venues.slug !== "akipasa-editorial" && (
-                              <details className="venue-delete-menu">
-                                <summary className="button secondary small-btn">
-                                  {es ? "Eliminar" : "Delete"}
-                                </summary>
-                                <form
-                                  action={deleteManagedVenue}
-                                  className="venue-delete-popover stack"
-                                >
-                                  <input
-                                    type="hidden"
-                                    name="locale"
-                                    value={locale}
-                                  />
-                                  <input
-                                    type="hidden"
-                                    name="venueId"
-                                    value={m.venues.id}
-                                  />
-                                  <strong>
-                                    {es
-                                      ? `Eliminar ${m.venues.name}`
-                                      : `Delete ${m.venues.name}`}
-                                  </strong>
-                                  <p className="fine-print">
-                                    {es
-                                      ? "Esto elimina el local y su contenido de AkiPasa. Para evitar clics accidentales, explica por qué y confirma escribiendo DELETE."
-                                      : "This removes the venue and its content from AkiPasa. To prevent accidental clicks, give a reason and confirm by typing DELETE."}
-                                  </p>
-                                  <label>
-                                    {es ? "Motivo" : "Reason"}
-                                    <textarea
-                                      name="reason"
-                                      minLength={10}
-                                      maxLength={2000}
-                                      required
-                                      rows={3}
-                                      placeholder={
-                                        es
-                                          ? "Ej. ficha de prueba / local duplicado / ya no existe"
-                                          : "E.g. test listing / duplicate venue / no longer exists"
-                                      }
-                                    />
-                                  </label>
-                                  <label>
-                                    {es ? "Escribe DELETE" : "Type DELETE"}
-                                    <input
-                                      name="confirmation"
-                                      required
-                                      pattern="DELETE"
-                                      autoComplete="off"
-                                    />
-                                  </label>
-                                  <button
-                                    className="button danger"
-                                    type="submit"
-                                  >
-                                    {es
-                                      ? "Eliminar local definitivamente"
-                                      : "Delete venue permanently"}
-                                  </button>
-                                </form>
-                              </details>
+                              <VenueDeleteControl
+                                locale={locale}
+                                venueId={m.venues.id}
+                                venueName={m.venues.name}
+                                action={deleteManagedVenue}
+                              />
                             )}
                         </div>
                       </div>
