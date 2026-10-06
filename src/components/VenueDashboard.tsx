@@ -322,24 +322,6 @@ export function VenueDashboard({
           </p>
         </div>
         {overview}
-        <div className={styles.tools}>
-          {tools.map((tool) => (
-            <button
-              type="button"
-              className={styles.tool}
-              key={tool.id}
-              onClick={() => selectSection(tool.id)}
-            >
-              <span className={styles.toolTop}>
-                <Icon name={tool.icon} />
-                <Icon name="arrow-right" />
-              </span>
-              <strong>{tool.label}</strong>
-              <span className={styles.toolDescription}>{tool.description}</span>
-              <span className={styles.toolDetail}>{tool.detail}</span>
-            </button>
-          ))}
-        </div>
       </section>
       {tools.map((tool) => (
         <section
