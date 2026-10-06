@@ -299,6 +299,11 @@ export function VenueCatalogueEditor({
         ),
       )
     : [];
+  const visibleRiskAllergens = riskAllergens.slice(0, 5);
+  const hiddenRiskAllergenCount = Math.max(
+    0,
+    riskAllergens.length - visibleRiskAllergens.length,
+  );
 
   return (
     <div className="catalogue-studio">
@@ -919,7 +924,7 @@ export function VenueCatalogueEditor({
                         <div className="allergen-summary-copy">
                           <div className="allergen-risk-chips">
                             {riskAllergens.length ? (
-                              riskAllergens.map(
+                              visibleRiskAllergens.map(
                                 ([key, icon, esLabel, enLabel]) => (
                                   <span
                                     key={key}
@@ -932,6 +937,12 @@ export function VenueCatalogueEditor({
                                   </span>
                                 ),
                               )
+                              {hiddenRiskAllergenCount > 0 && (
+                                <span className="allergen-summary-more">
+                                  +{hiddenRiskAllergenCount}{" "}
+                                  {es ? "más" : "more"}
+                                </span>
+                              )}
                             ) : reviewedAllergens === 14 ? (
                               <span className="allergen-summary-clear">
                                 ✓{" "}
