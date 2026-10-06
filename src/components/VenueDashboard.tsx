@@ -267,6 +267,11 @@ export function VenueDashboard({
             }}
             type="button"
             role="tab"
+            aria-label={
+              "detail" in item
+                ? `${item.label} · ${item.detail}`
+                : item.label
+            }
             aria-selected={active === item.id}
             aria-controls={`venue-panel-${item.id}`}
             tabIndex={active === item.id ? 0 : -1}
