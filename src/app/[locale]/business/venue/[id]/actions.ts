@@ -383,7 +383,7 @@ export async function saveOffer(formData: FormData) {
 export async function addTeamMember(formData: FormData) {
   const parsed = context
     .extend({
-      profileId: z.string().uuid(),
+      email: z.string().trim().email().max(254),
       role: z.enum(["editor", "manager"]),
     })
     .safeParse(Object.fromEntries(formData));
@@ -391,9 +391,9 @@ export async function addTeamMember(formData: FormData) {
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=member"));
   const { supabase } = await requireBusinessAccess(locale);
-  const { error } = await supabase.rpc("add_venue_member", {
+  const { error } = await supabase.rpc("add_venue_member_by_email", {
     p_venue: parsed.data.venueId,
-    p_profile: parsed.data.profileId,
+    p_email: parsed.data.email,
     p_role: parsed.data.role,
   });
   if (error) redirect(destination(locale, venueId, "error=member"));
