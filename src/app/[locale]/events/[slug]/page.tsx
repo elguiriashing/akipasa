@@ -133,8 +133,8 @@ export default async function EventPage({
           : "https://schema.org/EventScheduled",
     location: {
       "@type": "Place",
-      name: resolvedVenue.name,
-      address: resolvedVenue.address,
+      name: event.location ? translated(event.location.name, locale) : resolvedVenue.name,
+      address: event.location?.address || resolvedVenue.address,
     },
     offers: {
       "@type": "Offer",
@@ -208,7 +208,11 @@ export default async function EventPage({
               className="detail-venue-link"
               href={`/${locale}/venues/${resolvedVenue.slug}`}
             >
-              {resolvedVenue.name} →
+              {event.source === "akipasa"
+                ? locale === "es"
+                  ? "Publicado por AkiPasa →"
+                  : "Published by AkiPasa →"
+                : `${resolvedVenue.name} →`}
             </Link>
             <div className="detail-overview">
               <dl className="detail-facts">
