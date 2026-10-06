@@ -3,9 +3,10 @@ import "server-only";
 import { createAIProvider, privacySafeIdentifier } from "@/lib/ai-team/provider";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import type { Locale } from "@/lib/config";
-import type {
-  CatalogueText,
-  VenueCatalogueDocument,
+import {
+  catalogueTextHash,
+  type CatalogueText,
+  type VenueCatalogueDocument,
 } from "@/lib/venue-catalogue";
 
 type LocalizedPair = { es: string; en: string };
@@ -159,15 +160,6 @@ export async function translateSubmittedLocalizedFields(
   };
 }
 
-function sourceHash(value: string) {
-  let hash = 2166136261;
-  for (let index = 0; index < value.length; index += 1) {
-    hash ^= value.charCodeAt(index);
-    hash = Math.imul(hash, 16777619);
-  }
-  return (hash >>> 0).toString(36);
-}
-
 type CatalogueTranslationTarget = {
   pair: CatalogueText;
   maxLength: number;
@@ -200,27 +192,13 @@ export async function translateVenueCatalogueDocument(
   const register = (pair: CatalogueText, maxLength: number) => {
     const requestedSource = pair[sourceLocale].trim();
     const fallbackSource = pair[requestedTargetLocale].trim();
-    const requestedHash = sourceHash(requestedSource);
+    const requestedHash = catalogueTextHash(requestedSource);
 
     if (
       requestedSource &&
       pair[requestedTargetLocale].trim() &&
       pair._translation?.[`${sourceLocale}Hash`] === requestedHash
     ) {
-      return;
-    }
-
-    if (
-      requestedSource &&
-      pair[requestedTargetLocale].trim() &&
-      !pair._translation
-    ) {
-      pair._translation = {
-        sourceLocale,
-        sourceHash: requestedHash,
-        esHash: sourceHash(pair.es.trim()),
-        enHash: sourceHash(pair.en.trim()),
-      };
       return;
     }
 
@@ -232,7 +210,7 @@ export async function translateVenueCatalogueDocument(
     const actualTargetLocale: Locale =
       actualSourceLocale === "es" ? "en" : "es";
     const source = pair[actualSourceLocale].trim();
-    const hash = sourceHash(source);
+    const hash = catalogueTextHash(source);
 
     if (!source) {
       pair.es = "";
@@ -240,8 +218,8 @@ export async function translateVenueCatalogueDocument(
       pair._translation = {
         sourceLocale: actualSourceLocale,
         sourceHash: hash,
-        esHash: sourceHash(""),
-        enHash: sourceHash(""),
+        esHash: catalogueTextHash(""),
+        enHash: catalogueTextHash(""),
       };
       return;
     }
@@ -254,8 +232,8 @@ export async function translateVenueCatalogueDocument(
       pair._translation = {
         sourceLocale: actualSourceLocale,
         sourceHash: hash,
-        esHash: sourceHash(pair.es.trim()),
-        enHash: sourceHash(pair.en.trim()),
+        esHash: catalogueTextHash(pair.es.trim()),
+        enHash: catalogueTextHash(pair.en.trim()),
       };
       return;
     }
@@ -315,8 +293,8 @@ export async function translateVenueCatalogueDocument(
         target.pair._translation = {
           sourceLocale: target.sourceLocale,
           sourceHash: target.hash,
-          esHash: sourceHash(target.pair.es.trim()),
-          enHash: sourceHash(target.pair.en.trim()),
+          esHash: catalogueTextHash(target.pair.es.trim()),
+          enHash: catalogueTextHash(target.pair.en.trim()),
         };
       });
     } catch (error) {
