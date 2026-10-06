@@ -116,10 +116,12 @@ export default async function MapPage({
   ]);
   const eventPoints = nationwideEvents.map((result) => ({
     id: result.event.id,
-    latitude: result.venue.latitude,
-    longitude: result.venue.longitude,
+    latitude: result.event.location?.latitude ?? result.venue.latitude,
+    longitude: result.event.location?.longitude ?? result.venue.longitude,
     title: translated(result.event.title, locale),
-    venue: result.venue.name,
+    venue: result.event.location
+      ? translated(result.event.location.name, locale)
+      : result.venue.name,
     href: `/${locale}/events/${result.event.slug}`,
     category: result.event.category,
     startsAt: result.occurrence.startsAt,
