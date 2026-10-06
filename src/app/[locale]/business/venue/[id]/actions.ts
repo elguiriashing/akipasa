@@ -7,7 +7,11 @@ import { requireBusinessAccess } from "@/lib/entitlements";
 import { safeExternalUrlSchema } from "@/lib/auth-security";
 import { madridLocalDateTimeSchema } from "@/lib/time";
 import { reviewPendingCatalogueItem } from "@/lib/automatic-moderation";
-import { translateLocalizedFields } from "@/lib/localized-copy";
+import {
+  translateLocalizedFields,
+  translateVenueCatalogueDocument,
+} from "@/lib/localized-copy";
+import type { VenueCatalogueDocument } from "@/lib/venue-catalogue";
 
 const context = z.object({
   locale: z.enum(["es", "en"]),
@@ -863,7 +867,20 @@ export async function saveVenueCatalogue(formData: FormData) {
     redirect(destination(locale, venueId, "section=catalogue&error=catalogue"));
   }
 
-  const { supabase } = await requireBusinessAccess(locale);
+  const { supabase, user } = await requireBusinessAccess(locale);
+
+  try {
+    document = await translateVenueCatalogueDocument(
+      locale,
+      document as VenueCatalogueDocument,
+      user.id,
+    );
+  } catch {
+    redirect(
+      destination(locale, venueId, "section=catalogue&error=translation"),
+    );
+  }
+
   const { error } = await supabase.rpc("save_venue_catalogue", {
     p_venue: parsed.data.venueId,
     p_expected_revision: parsed.data.expectedRevision,
