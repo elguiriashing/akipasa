@@ -61,11 +61,13 @@ export class FixtureRepository implements DiscoveryRepository {
     const time = query.time || "all";
     const results = fixtureEvents(this.now).flatMap((event) => {
       const venue = venues.find((v) => v.id === event.venueId)!;
+      const eventLatitude = event.location?.latitude ?? venue.latitude;
+      const eventLongitude = event.location?.longitude ?? venue.longitude;
       const distance = distanceKm(
         center.latitude,
         center.longitude,
-        venue.latitude,
-        venue.longitude,
+        eventLatitude,
+        eventLongitude,
       );
       if (
         distance > radius ||
@@ -253,6 +255,18 @@ function eventFromRow(row: DbRecord, now = new Date()): Event | null {
           en: row.accessibility_notes_en
             ? String(row.accessibility_notes_en)
             : undefined,
+        }
+      : undefined,
+    location: row.location_override
+      ? {
+          ...parseDatabasePoint(row.location_override as DbPoint),
+          name: {
+            es: String(row.location_name_es || row.location_address || ""),
+            en: row.location_name_en
+              ? String(row.location_name_en)
+              : String(row.location_name_es || row.location_address || ""),
+          },
+          address: String(row.location_address || ""),
         }
       : undefined,
     occurrences,
