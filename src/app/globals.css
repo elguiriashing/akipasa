@@ -13314,6 +13314,87 @@ body:has(#passport-privacy-controls) > .privacy-preferences {
 }
 
 
+
+/* Mobile login portals: keep the actual sign-in action first, then the product switcher. */
+@media (max-width: 799px) {
+  .auth-product-theme {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .auth-product-theme .auth-intro {
+    display: contents;
+  }
+
+  .auth-product-theme .auth-intro-copy {
+    order: 1;
+    padding: 0.25rem 0 1.1rem;
+  }
+
+  .auth-product-theme .auth-journey {
+    order: 2;
+  }
+
+  .auth-product-theme .auth-focus-panel {
+    order: 3;
+  }
+
+  .auth-product-theme .auth-product-portals {
+    order: 4;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
+    width: 100%;
+    margin-top: 1.4rem;
+  }
+
+  .auth-product-theme .auth-product-portals > span {
+    display: none;
+  }
+
+  .auth-product-theme .auth-product-card {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.42rem;
+    min-height: 48px;
+    padding: 0.58rem 0.55rem;
+    border-radius: 0.85rem;
+  }
+
+  .auth-product-theme .auth-product-card strong {
+    overflow: hidden;
+    font-size: 0.76rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .auth-product-theme .auth-product-card small {
+    display: none;
+  }
+
+  .auth-product-theme .auth-product-card.active {
+    box-shadow:
+      inset 0 -3px 0 var(--auth-brand),
+      0 8px 20px color-mix(in srgb, var(--auth-brand) 7%, transparent);
+  }
+}
+
+/* AkiBusiness lives on a permanently dark shell, so auth contrast must not depend
+   on the consumer theme toggle. */
+.akibusiness-host .auth-product-theme.auth-theme-business {
+  --auth-ink: #f7f8fb;
+  --muted: #b8c2d4;
+  --line: rgba(255, 255, 255, 0.14);
+  --surface: #1a2a4c;
+}
+
+.akibusiness-host .auth-product-theme.auth-theme-business input:not([type="checkbox"]) {
+  color: #f7f8fb;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.akibusiness-host .auth-product-theme.auth-theme-business .google-button {
+  color: #f7f8fb;
+}
+
 /* AkiBusiness 2026 product UI: a dedicated venue-management experience. */
 .akibusiness-host {
   --akibusiness-accent: #ffd447;
