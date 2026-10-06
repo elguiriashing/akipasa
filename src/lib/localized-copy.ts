@@ -1,6 +1,5 @@
 import "server-only";
 
-import { createAIProvider, privacySafeIdentifier } from "@/lib/ai-team/provider";
 import type { Locale } from "@/lib/config";
 import {
   catalogueTextHash,
@@ -10,15 +9,62 @@ import {
 
 type LocalizedPair = { es: string; en: string };
 
-function translationModel() {
-  return process.env.AKIPASA_TRANSLATION_MODEL?.trim() || "gpt-6-luna";
+type LibreTranslateResponse = {
+  translatedText?: string | string[];
+  error?: string;
+};
+
+function translationEndpoint() {
+  return (
+    process.env.AKIPASA_TRANSLATION_URL?.trim() ||
+    "https://translate.argosopentech.com/translate"
+  );
 }
 
-function cleanJson(value: string) {
-  return value
-    .trim()
-    .replace(/^\`\`\`(?:json)?\s*/i, "")
-    .replace(/\s*\`\`\`$/, "");
+async function libreTranslateBatch(
+  sourceLocale: Locale,
+  targetLocale: Locale,
+  values: string[],
+): Promise<string[]> {
+  if (!values.length) return [];
+
+  const payload: Record<string, unknown> = {
+    q: values,
+    source: sourceLocale,
+    target: targetLocale,
+    format: "text",
+  };
+  const apiKey = process.env.AKIPASA_TRANSLATION_API_KEY?.trim();
+  if (apiKey) payload.api_key = apiKey;
+
+  const response = await fetch(translationEndpoint(), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(15_000),
+  });
+
+  const result = (await response.json().catch(() => ({}))) as LibreTranslateResponse;
+  if (!response.ok) {
+    throw new Error(
+      result.error || `LibreTranslate request failed (${response.status})`,
+    );
+  }
+
+  const translated = Array.isArray(result.translatedText)
+    ? result.translatedText
+    : typeof result.translatedText === "string"
+      ? [result.translatedText]
+      : [];
+
+  if (
+    translated.length !== values.length ||
+    translated.some((value) => typeof value !== "string")
+  ) {
+    throw new Error("LibreTranslate returned an unexpected response");
+  }
+
+  return translated.map((value) => value.trim());
 }
 
 export async function translateLocalizedFields(
@@ -26,59 +72,52 @@ export async function translateLocalizedFields(
   fields: Record<string, string>,
   actorId: string,
 ): Promise<Record<string, LocalizedPair>> {
+  void actorId;
   const entries: Array<[string, string]> = Object.entries(fields).map(
     ([key, value]) => [key, value.trim()],
   );
-  const nonEmpty: Record<string, string> = Object.fromEntries(
-    entries.filter(([, value]) => value.length > 0),
-  );
+  const nonEmptyEntries = entries.filter(([, value]) => value.length > 0);
   const emptyKeys = entries
     .filter(([, value]) => value.length === 0)
     .map(([key]) => key);
 
-  if (Object.keys(nonEmpty).length === 0) {
+  if (nonEmptyEntries.length === 0) {
     return Object.fromEntries(
       entries.map(([key]) => [key, { es: "", en: "" }]),
     );
   }
 
   const targetLocale: Locale = sourceLocale === "es" ? "en" : "es";
-  const provider = createAIProvider("openai");
-  const result = await provider.run({
-    model: translationModel(),
-    instructions:
-      "You translate user-authored venue content for AkiPasa between Spanish and English. Translate faithfully and naturally. Preserve proper nouns, venue and brand names, URLs, phone numbers, emojis, formatting, prices and factual meaning. For menu/catalogue content, translate descriptive dish, product and service names naturally, but keep genuine brand or proper names unchanged. Never invent ingredients, allergens, claims, opening times or marketing copy. Return ONLY a JSON object with exactly the same keys as the input and string values containing the translations.",
-    messages: [
-      {
-        role: "user",
-        content: JSON.stringify({
-          source_language: sourceLocale,
-          target_language: targetLocale,
-          fields: nonEmpty,
-        }),
-      },
-    ],
-    tools: [],
-    enableWebSearch: false,
-    maxOutputTokens: 4000,
-    maxProviderRounds: 1,
-    safetyIdentifier: await privacySafeIdentifier(actorId),
-    executeTool: async () => ({ ok: false }),
-  });
+  let translatedValues: string[];
 
-  const parsed = JSON.parse(cleanJson(result.text)) as Record<string, unknown>;
+  try {
+    translatedValues = await libreTranslateBatch(
+      sourceLocale,
+      targetLocale,
+      nonEmptyEntries.map(([, value]) => value),
+    );
+  } catch (error) {
+    console.error("AkiPasa translation unavailable; preserving source copy", {
+      sourceLocale,
+      targetLocale,
+      fieldCount: nonEmptyEntries.length,
+      error: error instanceof Error ? error.message : "unknown_error",
+    });
+
+    // Translation should improve the experience, never block a business owner
+    // from saving. If the open-source service is unavailable, keep the source
+    // text in both locales so the listing remains usable and editable.
+    translatedValues = nonEmptyEntries.map(([, value]) => value);
+  }
+
   const translated: Record<string, LocalizedPair> = {};
-
-  for (const [key, source] of Object.entries(nonEmpty)) {
-    const target = parsed[key];
-    if (typeof target !== "string" || !target.trim()) {
-      throw new Error(`Missing translation for ${key}`);
-    }
+  nonEmptyEntries.forEach(([key, source], index) => {
+    const target = translatedValues[index]?.trim() || source;
     translated[key] =
       sourceLocale === "es"
-        ? { es: source, en: target.trim() }
-        : { es: target.trim(), en: source };
-  }
+        ? { es: source, en: target }
+        : { es: target, en: source };
+  });
 
   for (const key of emptyKeys) translated[key] = { es: "", en: "" };
   return translated;
