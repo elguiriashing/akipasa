@@ -388,7 +388,7 @@ export function BusinessEventEditPanel({
               const selected = selectedFor(slot.key);
               const explicit = Boolean(slots[slot.key]);
               return (
-                <article className="event-five-slot" key={slot.key}>
+                <article className="event-five-slot" data-media-slot={slot.key} key={slot.key}>
                   <div className="event-five-preview">
                     {selected ? (
                       <img src={selected.url} alt={selected.alt} />
