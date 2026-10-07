@@ -30,11 +30,11 @@ export function BusinessEventComposer({
   const [priceMode, setPriceMode] = useState<"show" | "hide">("hide");
   const [price, setPrice] = useState("0");
   const [slots, setSlots] = useState({
-    cover: "",
+    banner: "",
     explore: "",
-    gallery1: "",
-    gallery2: "",
-    gallery3: "",
+    profile: "",
+    background: "",
+    map: "",
   });
 
   const venueMedia = useMemo(
@@ -45,11 +45,11 @@ export function BusinessEventComposer({
   function selectVenue(next: string) {
     setVenueId(next);
     setSlots({
-      cover: "",
+      banner: "",
       explore: "",
-      gallery1: "",
-      gallery2: "",
-      gallery3: "",
+      profile: "",
+      background: "",
+      map: "",
     });
   }
 
@@ -79,11 +79,11 @@ export function BusinessEventComposer({
         <input type="hidden" name="venueId" value={venueId} />
         <input type="hidden" name="categoryId" value={categoryId} />
         <input type="hidden" name="priceDisplayMode" value={priceMode} />
-        <input type="hidden" name="coverMediaId" value={slots.cover} />
+        <input type="hidden" name="bannerMediaId" value={slots.banner} />
         <input type="hidden" name="exploreMediaId" value={slots.explore} />
-        <input type="hidden" name="galleryMediaId1" value={slots.gallery1} />
-        <input type="hidden" name="galleryMediaId2" value={slots.gallery2} />
-        <input type="hidden" name="galleryMediaId3" value={slots.gallery3} />
+        <input type="hidden" name="profileMediaId" value={slots.profile} />
+        <input type="hidden" name="backgroundMediaId" value={slots.background} />
+        <input type="hidden" name="mapMediaId" value={slots.map} />
 
         <section className="event-studio-card">
           <div className="event-studio-card-head">
@@ -153,11 +153,11 @@ export function BusinessEventComposer({
           {venueMedia.length ? (
             <div className="event-five-slots event-five-slots-create">
               {[
-                ["cover", es ? "Portada del evento" : "Event cover"],
-                ["explore", es ? "Tarjeta Explorar" : "Explore card"],
-                ["gallery1", es ? "Galería 1" : "Gallery 1"],
-                ["gallery2", es ? "Galería 2" : "Gallery 2"],
-                ["gallery3", es ? "Galería 3" : "Gallery 3"],
+                ["banner", es ? "1 · Banner del evento" : "1 · Event banner"],
+                ["explore", es ? "2 · Tarjeta Explorar" : "2 · Explore card"],
+                ["profile", es ? "3 · Imagen de perfil" : "3 · Event profile"],
+                ["background", es ? "4 · Fondo de la ficha" : "4 · Event background"],
+                ["map", es ? "5 · Vertical para mapa" : "5 · Map vertical"],
               ].map(([key, label]) => {
                 const slotKey = key as keyof typeof slots;
                 const selectedId = slots[slotKey];
@@ -165,7 +165,7 @@ export function BusinessEventComposer({
                   venueMedia.find((item) => item.id === selectedId) ||
                   venueMedia[0];
                 return (
-                  <article className="event-five-slot" key={key}>
+                  <article className="event-five-slot" data-media-slot={key} key={key}>
                     <div className="event-five-preview">
                       {selected ? (
                         <img src={selected.url} alt={selected.alt} />

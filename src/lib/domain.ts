@@ -97,7 +97,7 @@ export type Event = {
   bookingUrl?: string;
   minimumAge?: number;
   accessibilityNotes?: Translation;
-  coverImage?: {
+  bannerImage?: {
     id: string;
     url: string;
     alt: Translation;
@@ -107,11 +107,21 @@ export type Event = {
     url: string;
     alt: Translation;
   };
-  gallery?: Array<{
+  profileImage?: {
     id: string;
     url: string;
     alt: Translation;
-  }>;
+  };
+  backgroundImage?: {
+    id: string;
+    url: string;
+    alt: Translation;
+  };
+  mapImage?: {
+    id: string;
+    url: string;
+    alt: Translation;
+  };
   occurrences: Occurrence[];
 };
 export type TimeWindow = "now" | "tonight" | "tomorrow" | "weekend" | "all";

@@ -189,11 +189,11 @@ const eventSchema = z.object({
   description: z.string().trim().min(20).max(4000),
   priceEuros: z.coerce.number().min(0).max(10000),
   priceDisplayMode: z.enum(["show", "hide"]).default("show"),
-  coverMediaId: z.union([z.string().uuid(), z.literal("")]).default(""),
+  bannerMediaId: z.union([z.string().uuid(), z.literal("")]).default(""),
   exploreMediaId: z.union([z.string().uuid(), z.literal("")]).default(""),
-  galleryMediaId1: z.union([z.string().uuid(), z.literal("")]).default(""),
-  galleryMediaId2: z.union([z.string().uuid(), z.literal("")]).default(""),
-  galleryMediaId3: z.union([z.string().uuid(), z.literal("")]).default(""),
+  profileMediaId: z.union([z.string().uuid(), z.literal("")]).default(""),
+  backgroundMediaId: z.union([z.string().uuid(), z.literal("")]).default(""),
+  mapMediaId: z.union([z.string().uuid(), z.literal("")]).default(""),
   bookingUrl: safeExternalUrlSchema,
   startsAt: madridLocalDateTimeSchema,
   endsAt: madridLocalDateTimeSchema,
@@ -246,11 +246,11 @@ export async function createEvent(formData: FormData) {
   if (error) redirect(`/${locale}/business?view=events&error=event`);
   if (typeof eventId === "string") {
     const requestedSlots = [
-      ["event_cover", e.coverMediaId],
+      ["event_banner", e.bannerMediaId],
       ["event_explore", e.exploreMediaId],
-      ["event_gallery_1", e.galleryMediaId1],
-      ["event_gallery_2", e.galleryMediaId2],
-      ["event_gallery_3", e.galleryMediaId3],
+      ["event_profile", e.profileMediaId],
+      ["event_background", e.backgroundMediaId],
+      ["event_map_vertical", e.mapMediaId],
     ] as const;
     const selectedMediaIds = requestedSlots.flatMap(([, mediaId]) =>
       mediaId ? [mediaId] : [],

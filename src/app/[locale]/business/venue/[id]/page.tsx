@@ -187,11 +187,11 @@ export default async function VenueWorkspace({
       "venue_menu",
       "venue_events",
       "venue_explore",
-      "event_cover",
+      "event_banner",
       "event_explore",
-      "event_gallery_1",
-      "event_gallery_2",
-      "event_gallery_3",
+      "event_profile",
+      "event_background",
+      "event_map_vertical",
       "event_bin",
     ]);
   const mediaPaths = (media || []).map((item) => item.storage_path);
@@ -240,33 +240,33 @@ export default async function VenueWorkspace({
   const eventPlacementMap = new Map<
     string,
     {
-      coverMediaId: string;
+      bannerMediaId: string;
       exploreMediaId: string;
-      galleryMediaId1: string;
-      galleryMediaId2: string;
-      galleryMediaId3: string;
+      profileMediaId: string;
+      backgroundMediaId: string;
+      mapMediaId: string;
       binMediaIds: string[];
     }
   >();
   for (const placement of eventMediaPlacements) {
     const current = eventPlacementMap.get(placement.target_key) || {
-      coverMediaId: "",
+      bannerMediaId: "",
       exploreMediaId: "",
-      galleryMediaId1: "",
-      galleryMediaId2: "",
-      galleryMediaId3: "",
+      profileMediaId: "",
+      backgroundMediaId: "",
+      mapMediaId: "",
       binMediaIds: [],
     };
-    if (placement.placement === "event_cover") {
-      current.coverMediaId = placement.media_id;
+    if (placement.placement === "event_banner") {
+      current.bannerMediaId = placement.media_id;
     } else if (placement.placement === "event_explore") {
       current.exploreMediaId = placement.media_id;
-    } else if (placement.placement === "event_gallery_1") {
-      current.galleryMediaId1 = placement.media_id;
-    } else if (placement.placement === "event_gallery_2") {
-      current.galleryMediaId2 = placement.media_id;
-    } else if (placement.placement === "event_gallery_3") {
-      current.galleryMediaId3 = placement.media_id;
+    } else if (placement.placement === "event_profile") {
+      current.profileMediaId = placement.media_id;
+    } else if (placement.placement === "event_background") {
+      current.backgroundMediaId = placement.media_id;
+    } else if (placement.placement === "event_map_vertical") {
+      current.mapMediaId = placement.media_id;
     } else if (placement.placement === "event_bin") {
       current.binMediaIds.push(placement.media_id);
     }
@@ -676,17 +676,21 @@ export default async function VenueWorkspace({
                           url: item.url,
                           alt: item.alt,
                         }))}
-                        coverMediaId={
-                          eventPlacementMap.get(event.id)?.coverMediaId || ""
+                        bannerMediaId={
+                          eventPlacementMap.get(event.id)?.bannerMediaId || ""
                         }
                         exploreMediaId={
                           eventPlacementMap.get(event.id)?.exploreMediaId || ""
                         }
-                        galleryMediaIds={[
-                          eventPlacementMap.get(event.id)?.galleryMediaId1 || "",
-                          eventPlacementMap.get(event.id)?.galleryMediaId2 || "",
-                          eventPlacementMap.get(event.id)?.galleryMediaId3 || "",
-                        ]}
+                        profileMediaId={
+                          eventPlacementMap.get(event.id)?.profileMediaId || ""
+                        }
+                        backgroundMediaId={
+                          eventPlacementMap.get(event.id)?.backgroundMediaId || ""
+                        }
+                        mapMediaId={
+                          eventPlacementMap.get(event.id)?.mapMediaId || ""
+                        }
                         eventBinMediaIds={
                           eventPlacementMap.get(event.id)?.binMediaIds || []
                         }

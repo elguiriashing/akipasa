@@ -101,109 +101,7 @@ export class FixtureRepository implements DiscoveryRepository {
     return rankDiscoveryResults(results, this.now);
   }
   async eventBySlug(slug: string) {
-    const supabase = createSupabasePublicClient();
-    const { data, error } = await supabase
-      .from("events")
-      .select(eventFields)
-      .eq("slug", slug)
-      .eq("status", "published")
-      .maybeSingle();
-    if (error) throw new Error(`Public event query failed: ${error.message}`);
-    const event = data ? eventFromRow(data as unknown as DbRecord) : null;
-    if (!event) return null;
-
-    const [{ data: placements }, venue] = await Promise.all([
-      supabase
-        .from("venue_media_placements")
-        .select(
-          "media_id,placement,sort_order,venue_media(id,storage_path,alt_es,alt_en)",
-        )
-        .eq("venue_id", event.venueId)
-        .eq("target_key", event.id)
-        .in("placement", [
-          "event_cover",
-          "event_explore",
-          "event_gallery_1",
-          "event_gallery_2",
-          "event_gallery_3",
-          "event_bin",
-        ])
-        .order("sort_order"),
-      this.venueById(event.venueId),
-    ]);
-
-    const placementMedia = (placements || []).flatMap((placement) => {
-      const media = one(placement.venue_media as unknown);
-      return media
-        ? [
-            {
-              placement: String(placement.placement),
-              sortOrder: Number(placement.sort_order || 0),
-              media,
-            },
-          ]
-        : [];
-    });
-    const paths = Array.from(
-      new Set(placementMedia.map((item) => String(item.media.storage_path))),
-    );
-    const { data: signedRows } = paths.length
-      ? await supabase.storage.from("event-media").createSignedUrls(paths, 3600)
-      : { data: [] };
-    const signed = new Map(
-      (signedRows || []).flatMap((item) =>
-        item.path && item.signedUrl ? [[item.path, item.signedUrl] as const] : [],
-      ),
-    );
-
-    const mapPlaced = (placement: string) => {
-      const row = placementMedia.find((item) => item.placement === placement);
-      if (!row) return undefined;
-      const url = signed.get(String(row.media.storage_path));
-      if (!url) return undefined;
-      return {
-        id: String(row.media.id),
-        url,
-        alt: {
-          es: String(row.media.alt_es || event.title.es),
-          ...(row.media.alt_en ? { en: String(row.media.alt_en) } : {}),
-        },
-      };
-    };
-    const eventBinRows = placementMedia
-      .filter((item) => item.placement === "event_bin")
-      .sort((a, b) => a.sortOrder - b.sortOrder);
-    const eventBinFallback = eventBinRows[0]
-      ? (() => {
-          const row = eventBinRows[0];
-          const url = signed.get(String(row.media.storage_path));
-          return url
-            ? {
-                id: String(row.media.id),
-                url,
-                alt: {
-                  es: String(row.media.alt_es || event.title.es),
-                  ...(row.media.alt_en
-                    ? { en: String(row.media.alt_en) }
-                    : {}),
-                },
-              }
-            : undefined;
-        })()
-      : undefined;
-    const fallback =
-      eventBinFallback || venue?.eventsImage || venue?.media?.[0];
-
-    event.coverImage = mapPlaced("event_cover") || fallback;
-    event.exploreImage = mapPlaced("event_explore") || fallback;
-    event.gallery = [
-      mapPlaced("event_gallery_1") || fallback,
-      mapPlaced("event_gallery_2") || fallback,
-      mapPlaced("event_gallery_3") || fallback,
-    ].filter(
-      (item): item is NonNullable<typeof item> => Boolean(item),
-    );
-    return event;
+    return fixtureEvents(this.now).find((event) => event.slug === slug) || null;
   }
 
   async venueBySlug(slug: string) {
@@ -419,11 +317,11 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
               .from("venue_media_placements")
               .select("target_key,placement,sort_order,media_id,venue_media(id,storage_path,alt_es,alt_en)")
               .in("placement", [
-                "event_cover",
+                "event_banner",
                 "event_explore",
-                "event_gallery_1",
-                "event_gallery_2",
-                "event_gallery_3",
+                "event_profile",
+                "event_background",
+                "event_map_vertical",
                 "event_bin",
               ])
               .in("target_key", eventIds)
@@ -469,11 +367,11 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
     const eventVisualRows = new Map<
       string,
       {
-        cover?: DbRecord;
+        banner?: DbRecord;
         explore?: DbRecord;
-        gallery1?: DbRecord;
-        gallery2?: DbRecord;
-        gallery3?: DbRecord;
+        profile?: DbRecord;
+        background?: DbRecord;
+        mapVertical?: DbRecord;
         bin?: DbRecord[];
       }
     >();
@@ -483,11 +381,11 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       const current = eventVisualRows.get(String(placement.target_key)) || {
         bin: [],
       };
-      if (placement.placement === "event_cover") current.cover = media;
+      if (placement.placement === "event_banner") current.banner = media;
       if (placement.placement === "event_explore") current.explore = media;
-      if (placement.placement === "event_gallery_1") current.gallery1 = media;
-      if (placement.placement === "event_gallery_2") current.gallery2 = media;
-      if (placement.placement === "event_gallery_3") current.gallery3 = media;
+      if (placement.placement === "event_profile") current.profile = media;
+      if (placement.placement === "event_background") current.background = media;
+      if (placement.placement === "event_map_vertical") current.mapVertical = media;
       if (placement.placement === "event_bin") current.bin?.push(media);
       eventVisualRows.set(String(placement.target_key), current);
     }
@@ -503,11 +401,11 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
 
     for (const visual of eventVisualRows.values()) {
       for (const media of [
-        visual.cover,
+        visual.banner,
         visual.explore,
-        visual.gallery1,
-        visual.gallery2,
-        visual.gallery3,
+        visual.profile,
+        visual.background,
+        visual.mapVertical,
         ...(visual.bin || []),
       ]) {
         if (media?.storage_path) mediaPaths.add(String(media.storage_path));
@@ -559,6 +457,10 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
 
       if (Array.isArray(venueRow.venue_media)) {
         const mappedMedia = [...venueRow.venue_media]
+          .filter(
+            (item: Record<string, unknown>) =>
+              !String(item.storage_path || "").includes("/events/"),
+          )
           .sort(
             (a: Record<string, unknown>, b: Record<string, unknown>) =>
               Number(a.sort_order || 0) - Number(b.sort_order || 0),
@@ -619,17 +521,16 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
         : undefined;
       const eventFallback =
         eventBinFallback || venue.eventsImage || primaryVenueMedia;
-      event.coverImage =
-        mapVisual(eventVisual?.cover, event.title.es) || eventFallback;
+      event.bannerImage =
+        mapVisual(eventVisual?.banner, event.title.es) || eventFallback;
       event.exploreImage =
         mapVisual(eventVisual?.explore, event.title.es) || eventFallback;
-      event.gallery = [
-        mapVisual(eventVisual?.gallery1, event.title.es) || eventFallback,
-        mapVisual(eventVisual?.gallery2, event.title.es) || eventFallback,
-        mapVisual(eventVisual?.gallery3, event.title.es) || eventFallback,
-      ].filter(
-        (item): item is NonNullable<typeof item> => Boolean(item),
-      );
+      event.profileImage =
+        mapVisual(eventVisual?.profile, event.title.es) || eventFallback;
+      event.backgroundImage =
+        mapVisual(eventVisual?.background, event.title.es) || eventFallback;
+      event.mapImage =
+        mapVisual(eventVisual?.mapVertical, event.title.es) || eventFallback;
 
       if (event.exploreImage) {
         venue.media = [
@@ -702,21 +603,39 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
     const event = data ? eventFromRow(data as unknown as DbRecord) : null;
     if (!event) return null;
 
-    const { data: placements } = await supabase
-      .from("venue_media_placements")
-      .select("media_id,placement,sort_order,venue_media(id,storage_path,alt_es,alt_en)")
-      .eq("venue_id", event.venueId)
-      .eq("target_key", event.id)
-      .in("placement", ["event_cover", "event_gallery"])
-      .order("sort_order");
+    const [{ data: placements }, venue] = await Promise.all([
+      supabase
+        .from("venue_media_placements")
+        .select(
+          "media_id,placement,sort_order,venue_media(id,storage_path,alt_es,alt_en)",
+        )
+        .eq("venue_id", event.venueId)
+        .eq("target_key", event.id)
+        .in("placement", [
+          "event_banner",
+          "event_explore",
+          "event_profile",
+          "event_background",
+          "event_map_vertical",
+          "event_bin",
+        ])
+        .order("sort_order"),
+      this.venueById(event.venueId),
+    ]);
 
     const placementMedia = (placements || []).flatMap((placement) => {
       const media = one(placement.venue_media as unknown);
       return media
-        ? [{ placement: placement.placement, sortOrder: placement.sort_order, media }]
+        ? [{
+            placement: String(placement.placement),
+            sortOrder: Number(placement.sort_order || 0),
+            media,
+          }]
         : [];
     });
-    const paths = placementMedia.map((item) => String(item.media.storage_path));
+    const paths = Array.from(
+      new Set(placementMedia.map((item) => String(item.media.storage_path))),
+    );
     const { data: signedRows } = paths.length
       ? await supabase.storage.from("event-media").createSignedUrls(paths, 3600)
       : { data: [] };
@@ -725,30 +644,50 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
         item.path && item.signedUrl ? [[item.path, item.signedUrl] as const] : [],
       ),
     );
-    const mapped = placementMedia.flatMap((item) => {
-      const url = signed.get(String(item.media.storage_path));
-      return url
-        ? [{
-            placement: item.placement,
-            sortOrder: item.sortOrder,
-            value: {
-              id: String(item.media.id),
-              url,
-              alt: {
-                es: String(item.media.alt_es || event.title.es),
-                ...(item.media.alt_en
-                  ? { en: String(item.media.alt_en) }
-                  : {}),
-              },
-            },
-          }]
-        : [];
-    });
-    event.coverImage = mapped.find((item) => item.placement === "event_cover")?.value;
-    event.gallery = mapped
-      .filter((item) => item.placement === "event_gallery")
-      .sort((a, b) => a.sortOrder - b.sortOrder)
-      .map((item) => item.value);
+
+    const mapPlaced = (placement: string) => {
+      const row = placementMedia.find((item) => item.placement === placement);
+      if (!row) return undefined;
+      const url = signed.get(String(row.media.storage_path));
+      if (!url) return undefined;
+      return {
+        id: String(row.media.id),
+        url,
+        alt: {
+          es: String(row.media.alt_es || event.title.es),
+          ...(row.media.alt_en ? { en: String(row.media.alt_en) } : {}),
+        },
+      };
+    };
+    const eventBinRows = placementMedia
+      .filter((item) => item.placement === "event_bin")
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+    const eventBinFallback = eventBinRows[0]
+      ? (() => {
+          const row = eventBinRows[0];
+          const url = signed.get(String(row.media.storage_path));
+          return url
+            ? {
+                id: String(row.media.id),
+                url,
+                alt: {
+                  es: String(row.media.alt_es || event.title.es),
+                  ...(row.media.alt_en
+                    ? { en: String(row.media.alt_en) }
+                    : {}),
+                },
+              }
+            : undefined;
+        })()
+      : undefined;
+    const fallback =
+      eventBinFallback || venue?.eventsImage || venue?.media?.[0];
+
+    event.bannerImage = mapPlaced("event_banner") || fallback;
+    event.exploreImage = mapPlaced("event_explore") || fallback;
+    event.profileImage = mapPlaced("event_profile") || fallback;
+    event.backgroundImage = mapPlaced("event_background") || fallback;
+    event.mapImage = mapPlaced("event_map_vertical") || fallback;
     return event;
   }
 
@@ -781,6 +720,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
           .from("venue_media")
           .select("id,storage_path,alt_es,alt_en")
           .eq("venue_id", venue.id)
+          .not("storage_path", "like", "%/events/%")
           .order("sort_order")
           .limit(60),
       ]);
@@ -872,6 +812,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       .from("venue_media")
       .select("id,storage_path,alt_es,alt_en")
       .eq("venue_id", venue.id)
+      .not("storage_path", "like", "%/events/%")
       .order("sort_order")
       .limit(60);
     const signedMedia = await Promise.all(

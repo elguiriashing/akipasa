@@ -17536,3 +17536,89 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
     font-size: .66rem;
   }
 }
+
+
+/* Event identity/profile image: larger logo, thinner white treatment. */
+.event-title-identity {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+}
+
+.event-title-identity h1 {
+  margin: 0;
+}
+
+.event-profile-image {
+  width: 5rem;
+  height: 5rem;
+  flex: 0 0 auto;
+  padding: .08rem;
+  border: 1px solid rgb(255 255 255 / 68%);
+  border-radius: 1rem;
+  background: rgb(255 255 255 / 94%);
+  object-fit: contain;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 14%);
+}
+
+/* Small profile/logo shown over Explore and map cards. */
+.card-media > img.card-venue-logo {
+  width: 3.25rem;
+  height: 3.25rem;
+  max-width: 3.25rem;
+  max-height: 3.25rem;
+  padding: .08rem;
+  border-width: 1px;
+  border-radius: .72rem;
+}
+
+.media-studio-live-status {
+  min-height: 1rem;
+  color: var(--muted);
+  font-size: .72rem;
+  font-weight: 700;
+}
+
+.media-studio button:disabled {
+  opacity: .55;
+  cursor: wait;
+}
+
+@media (max-width: 520px) {
+  .event-profile-image {
+    width: 4.25rem;
+    height: 4.25rem;
+    border-radius: .85rem;
+  }
+
+  .card-media > img.card-venue-logo {
+    width: 3rem;
+    height: 3rem;
+    max-width: 3rem;
+    max-height: 3rem;
+  }
+}
+
+
+/* Event media previews mirror the surface they control. */
+.event-five-slot[data-media-slot="banner"] .event-five-preview {
+  aspect-ratio: 16 / 7;
+}
+
+.event-five-slot[data-media-slot="explore"] .event-five-preview,
+.event-five-slot[data-media-slot="background"] .event-five-preview {
+  aspect-ratio: 16 / 9;
+}
+
+.event-five-slot[data-media-slot="profile"] .event-five-preview {
+  width: min(100%, 8rem);
+  aspect-ratio: 1;
+  justify-self: center;
+  border-radius: 1rem;
+}
+
+.event-five-slot[data-media-slot="map"] .event-five-preview {
+  width: min(100%, 7rem);
+  aspect-ratio: 3 / 4;
+  justify-self: center;
+}

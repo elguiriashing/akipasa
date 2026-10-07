@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import { localizedMetadata, languageUrls, serializeJsonLd } from "@/lib/seo";
 import Link from "next/link";
-import Image from "next/image";
 import { isLocale } from "@/lib/config";
 import { translated } from "@/lib/domain";
 import { msg } from "@/lib/messages";
@@ -287,23 +286,8 @@ export default async function VenuePage({
             <p className="detail-copy">
               {translated(venue.description, locale)}
             </p>
-            {venue.media?.length && venue.media.length > 1 ? (
-              <section className="venue-section mt-8">
-                <h2>{locale === "es" ? "Imágenes" : "Images"}</h2>
-                <div className="media-gallery-grid">
-                  {venue.media.slice(1).map((item) => (
-                    <Image
-                      key={item.id}
-                      src={item.url}
-                      alt={translated(item.alt, locale)}
-                      width={720}
-                      height={480}
-                      sizes="180px"
-                    />
-                  ))}
-                </div>
-              </section>
-            ) : null}
+            {/* Raw media-library items are internal. Public images render only
+                through explicit placements such as cover/profile/menu. */}
             {catalogueDocument && catalogueDocument.sections.length > 0 && (
               <PublicVenueCatalogue
                 locale={locale}

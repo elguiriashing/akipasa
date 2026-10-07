@@ -82,6 +82,7 @@ export function EventCard({
       .map((word) => word.slice(0, 1).toUpperCase() + word.slice(1))
       .join(" ");
   const primaryImage =
+    (surface === "map" ? result.event.mapImage : result.event.exploreImage) ||
     result.event.exploreImage ||
     result.venue.exploreImage ||
     result.venue.eventsImage ||
@@ -90,6 +91,7 @@ export function EventCard({
     Boolean(primaryImage) &&
     Boolean(result.venue.logoImage) &&
     primaryImage?.id === result.venue.logoImage?.id;
+  const profileImage = result.event.profileImage || result.venue.logoImage;
   const priceLabel =
     result.event.priceDisplayMode === "hide"
       ? null
@@ -224,10 +226,10 @@ export function EventCard({
           </div>
         )}
         <div className="card-media-scrim" aria-hidden />
-        {result.venue.logoImage ? (
+        {profileImage ? (
           <img
             className="card-venue-logo"
-            src={result.venue.logoImage.url}
+            src={profileImage.url}
             alt=""
             aria-hidden="true"
           />
