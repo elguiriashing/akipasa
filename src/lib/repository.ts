@@ -572,6 +572,22 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       (item): item is NonNullable<(typeof signedMedia)[number]> =>
         item !== null,
     );
+    const { data: coverPlacement } = await supabase
+      .from("venue_media_placements")
+      .select("media_id")
+      .eq("venue_id", venue.id)
+      .eq("placement", "venue_cover")
+      .eq("target_key", "")
+      .maybeSingle();
+    if (coverPlacement?.media_id && venue.media?.length) {
+      const cover = venue.media.find((item) => item.id === coverPlacement.media_id);
+      if (cover) {
+        venue.media = [
+          cover,
+          ...venue.media.filter((item) => item.id !== cover.id),
+        ];
+      }
+    }
     return venue;
   }
 
@@ -613,6 +629,22 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       (item): item is NonNullable<(typeof signedMedia)[number]> =>
         item !== null,
     );
+    const { data: coverPlacement } = await supabase
+      .from("venue_media_placements")
+      .select("media_id")
+      .eq("venue_id", venue.id)
+      .eq("placement", "venue_cover")
+      .eq("target_key", "")
+      .maybeSingle();
+    if (coverPlacement?.media_id && venue.media?.length) {
+      const cover = venue.media.find((item) => item.id === coverPlacement.media_id);
+      if (cover) {
+        venue.media = [
+          cover,
+          ...venue.media.filter((item) => item.id !== cover.id),
+        ];
+      }
+    }
     return venue;
   }
 
