@@ -126,6 +126,8 @@ export async function updateEvent(formData: FormData) {
       title: z.string().trim().min(3).max(160),
       description: z.string().trim().min(20).max(4000),
       priceEuros: z.coerce.number().min(0).max(10000),
+      priceDisplayMode: z.enum(["show", "hide"]).default("show"),
+      coverMediaId: z.union([z.string().uuid(), z.literal("")]).default(""),
       bookingUrl: safeExternalUrlSchema,
       minimumAge: z.union([
         z.literal(""),
@@ -185,6 +187,7 @@ export async function updateEvent(formData: FormData) {
       description_es: localized.description.es,
       description_en: localized.description.en,
       price_cents: Math.round(v.priceEuros * 100),
+      price_display_mode: v.priceDisplayMode,
       booking_url: v.bookingUrl || null,
       minimum_age: v.minimumAge === "" ? null : v.minimumAge,
       accessibility_notes_es: localized.accessibilityNotes.es || null,
@@ -194,6 +197,56 @@ export async function updateEvent(formData: FormData) {
     .eq("id", v.eventId)
     .eq("venue_id", v.venueId);
   if (error) redirect(destination(locale, venueId, "error=event"));
+
+  const galleryMediaIds = formData
+    .getAll("galleryMediaId")
+    .map(String)
+    .filter((value) => /^[0-9a-f-]{36}$/i.test(value))
+    .slice(0, 8);
+  const selectedMediaIds = [
+    ...(v.coverMediaId ? [v.coverMediaId] : []),
+    ...galleryMediaIds,
+  ];
+  const { data: allowedRows } = selectedMediaIds.length
+    ? await supabase
+        .from("venue_media")
+        .select("id")
+        .eq("venue_id", v.venueId)
+        .in("id", selectedMediaIds)
+    : { data: [] };
+  const allowed = new Set((allowedRows || []).map((item) => item.id));
+
+  await supabase
+    .from("venue_media_placements")
+    .delete()
+    .eq("venue_id", v.venueId)
+    .eq("target_key", v.eventId)
+    .in("placement", ["event_cover", "event_gallery"]);
+
+  if (v.coverMediaId && allowed.has(v.coverMediaId)) {
+    await supabase.from("venue_media_placements").insert({
+      venue_id: v.venueId,
+      media_id: v.coverMediaId,
+      placement: "event_cover",
+      target_key: v.eventId,
+      sort_order: 0,
+      created_by: user.id,
+    });
+  }
+  const galleryRows = galleryMediaIds
+    .filter((id) => allowed.has(id))
+    .map((id, index) => ({
+      venue_id: v.venueId,
+      media_id: id,
+      placement: "event_gallery",
+      target_key: v.eventId,
+      sort_order: index,
+      created_by: user.id,
+    }));
+  if (galleryRows.length) {
+    await supabase.from("venue_media_placements").insert(galleryRows);
+  }
+
   await reviewPendingCatalogueItem({
     targetType: "event",
     targetId: v.eventId,
