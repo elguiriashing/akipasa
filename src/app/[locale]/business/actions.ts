@@ -293,7 +293,7 @@ const officialEventSchema = z.object({
 export async function createOfficialEvent(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const parsed = officialEventSchema.safeParse(Object.fromEntries(formData));
-  if (!parsed.success)
+  if (!parsed.success || parsed.data.endsAt <= parsed.data.startsAt)
     redirect(`/${locale}/business?view=events&error=official-event`);
 
   const { supabase, user } = await requireBusinessAccess(locale);
