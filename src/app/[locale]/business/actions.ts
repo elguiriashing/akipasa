@@ -261,17 +261,14 @@ export async function createEvent(formData: FormData) {
       const allowed = new Set((ownedMedia || []).map((item) => item.id));
 
       if (e.coverMediaId && allowed.has(e.coverMediaId)) {
-        await supabase.from("venue_media_placements").upsert(
-          {
-            venue_id: e.venueId,
-            media_id: e.coverMediaId,
-            placement: "event_cover",
-            target_key: eventId,
-            sort_order: 0,
-            created_by: user.id,
-          },
-          { onConflict: "venue_id,placement,target_key" },
-        );
+        await supabase.from("venue_media_placements").insert({
+          venue_id: e.venueId,
+          media_id: e.coverMediaId,
+          placement: "event_cover",
+          target_key: eventId,
+          sort_order: 0,
+          created_by: user.id,
+        });
       }
 
       const galleryRows = galleryMediaIds
