@@ -381,7 +381,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
     const { data, error } = await supabase
       .from("events")
       .select(
-        `${eventFields},venues(${venueFields},venue_media(id,storage_path,alt_es,alt_en))`,
+        `${eventFields},venues(${venueFields},venue_media(id,storage_path,alt_es,alt_en,sort_order))`,
       )
       .eq("status", "published");
     if (error) throw new Error(`Public event query failed: ${error.message}`);
@@ -558,7 +558,11 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       if (!venue.discoveryEnabled) return [];
 
       if (Array.isArray(venueRow.venue_media)) {
-        const mappedMedia = venueRow.venue_media
+        const mappedMedia = [...venueRow.venue_media]
+          .sort(
+            (a: Record<string, unknown>, b: Record<string, unknown>) =>
+              Number(a.sort_order || 0) - Number(b.sort_order || 0),
+          )
           .map((item: Record<string, unknown>) => {
             const storagePath = String(item.storage_path);
             const url = signedUrlMap.get(storagePath);
