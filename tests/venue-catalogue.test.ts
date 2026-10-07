@@ -4,6 +4,7 @@ import {
   blankCatalogueItem,
   catalogueTextHash,
   euAllergens,
+  normalizeCatalogueFoodTranslations,
   seedCatalogueTranslationMetadata,
 } from "../src/lib/venue-catalogue";
 
@@ -74,6 +75,49 @@ describe("venue catalogue foundations", () => {
     expect(seeded.title._translation?.sourceLocale).toBe("es");
     expect(seeded.title._translation?.sourceHash).toBe(
       catalogueTextHash("Carta de Juan"),
+    );
+  });
+
+  it("uses hospitality meaning for food catalogue nuts", () => {
+    const doc = blankCatalogue("en");
+    const item = blankCatalogueItem();
+    item.kind = "food";
+    item.name = { en: "Almond", es: "almendra" };
+    doc.sections = [
+      {
+        id: "00000000-0000-4000-8000-000000000001",
+        title: { en: "Nuts", es: "Tuercas" },
+        items: [item],
+      },
+    ];
+
+    const normalized = normalizeCatalogueFoodTranslations(doc);
+
+    expect(normalized.sections[0].title.es).toBe("Frutos secos");
+    expect(normalized.sections[0].title._translation?.sourceLocale).toBe("en");
+  });
+
+  it("repairs literal can-of-coke translations in drink copy", () => {
+    const doc = blankCatalogue("en");
+    const item = blankCatalogueItem();
+    item.kind = "drink";
+    item.name = { en: "Coca Cola", es: "Coca Cola" };
+    item.description = {
+      en: "A cold can of coke",
+      es: "Un frío puede de cola",
+    };
+    doc.sections = [
+      {
+        id: "00000000-0000-4000-8000-000000000002",
+        title: { en: "Drinks", es: "Bebidas" },
+        items: [item],
+      },
+    ];
+
+    const normalized = normalizeCatalogueFoodTranslations(doc);
+
+    expect(normalized.sections[0].items[0].description.es).toBe(
+      "Una lata fría de Coca-Cola",
     );
   });
 
