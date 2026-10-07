@@ -544,7 +544,10 @@ export async function uploadVenueImage(formData: FormData) {
   const { error: uploadError } = await supabase.storage
     .from("event-media")
     .upload(path, file, { contentType: file.type, upsert: false });
-  if (uploadError) redirect(destination(locale, venueId, "error=media"));
+  if (uploadError) {
+    if (inline) return { ok: false as const, error: "media" };
+    redirect(destination(locale, venueId, "error=media"));
+  }
   const { error } = await supabase.from("venue_media").insert({
     venue_id: parsed.data.venueId,
     storage_path: path,
@@ -572,7 +575,10 @@ export async function updateVenueImageMetadata(formData: FormData) {
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
-  if (!parsed.success) redirect(destination(locale, venueId, "error=media"));
+  if (!parsed.success) {
+    if (inline) return { ok: false as const, error: "media" };
+    redirect(destination(locale, venueId, "error=media"));
+  }
   const { supabase, user } = await requireBusinessAccess(locale);
   const { data: currentMedia } = await supabase
     .from("venue_media")
@@ -1115,6 +1121,7 @@ const eventMediaContext = context.extend({
 });
 
 export async function addVenueMediaToEventBin(formData: FormData) {
+  const inline = formData.get("inline") === "1";
   const parsed = eventMediaContext
     .extend({ mediaId: z.string().uuid() })
     .safeParse(Object.fromEntries(formData));
@@ -1137,7 +1144,10 @@ export async function addVenueMediaToEventBin(formData: FormData) {
       .eq("venue_id", parsed.data.venueId)
       .maybeSingle(),
   ]);
-  if (!event || !media) redirect(destination(locale, venueId, "error=media"));
+  if (!event || !media) {
+    if (inline) return { ok: false as const, error: "media" };
+    redirect(destination(locale, venueId, "error=media"));
+  }
 
   const { data: existing } = await supabase
     .from("venue_media_placements")
@@ -1162,12 +1172,17 @@ export async function addVenueMediaToEventBin(formData: FormData) {
       sort_order: count || 0,
       created_by: user.id,
     });
-    if (error) redirect(destination(locale, venueId, "error=media"));
+    if (error) {
+      if (inline) return { ok: false as const, error: "media" };
+      redirect(destination(locale, venueId, "error=media"));
+    }
   }
+  if (inline) return { ok: true as const, mediaId: parsed.data.mediaId };
   redirect(destination(locale, venueId, "section=events&updated=event-media"));
 }
 
 export async function removeMediaFromEventBin(formData: FormData) {
+  const inline = formData.get("inline") === "1";
   const parsed = eventMediaContext
     .extend({ mediaId: z.string().uuid() })
     .safeParse(Object.fromEntries(formData));
@@ -1190,11 +1205,16 @@ export async function removeMediaFromEventBin(formData: FormData) {
       "event_gallery_2",
       "event_gallery_3",
     ]);
-  if (error) redirect(destination(locale, venueId, "error=media"));
+  if (error) {
+    if (inline) return { ok: false as const, error: "media" };
+    redirect(destination(locale, venueId, "error=media"));
+  }
+  if (inline) return { ok: true as const, mediaId: parsed.data.mediaId };
   redirect(destination(locale, venueId, "section=events&updated=event-media"));
 }
 
 export async function uploadEventImage(formData: FormData) {
+  const inline = formData.get("inline") === "1";
   const parsed = eventMediaContext
     .extend({
       alt: z.string().trim().min(3).max(300),
@@ -1211,6 +1231,7 @@ export async function uploadEventImage(formData: FormData) {
     file.size < 1 ||
     file.size > 10 * 1024 * 1024
   ) {
+    if (inline) return { ok: false as const, error: "media" };
     redirect(destination(locale, venueId, "error=media"));
   }
 
@@ -1221,7 +1242,10 @@ export async function uploadEventImage(formData: FormData) {
     .eq("id", parsed.data.eventId)
     .eq("venue_id", parsed.data.venueId)
     .maybeSingle();
-  if (!event) redirect(destination(locale, venueId, "error=media"));
+  if (!event) {
+    if (inline) return { ok: false as const, error: "media" };
+    redirect(destination(locale, venueId, "error=media"));
+  }
 
   const localizedAlt = (
     await translateLocalizedFields(locale, { alt: parsed.data.alt }, user.id)
@@ -1248,6 +1272,7 @@ export async function uploadEventImage(formData: FormData) {
   });
   if (mediaError) {
     await supabase.storage.from("event-media").remove([storagePath]);
+    if (inline) return { ok: false as const, error: "media" };
     redirect(destination(locale, venueId, "error=media"));
   }
 
@@ -1259,6 +1284,23 @@ export async function uploadEventImage(formData: FormData) {
     sort_order: parsed.data.sortOrder,
     created_by: user.id,
   });
-  if (binError) redirect(destination(locale, venueId, "error=media"));
+  if (binError) {
+    if (inline) return { ok: false as const, error: "media" };
+    redirect(destination(locale, venueId, "error=media"));
+  }
+
+  if (inline) {
+    const { data: signed } = await supabase.storage
+      .from("event-media")
+      .createSignedUrl(storagePath, 3600);
+    return {
+      ok: true as const,
+      media: {
+        id: mediaId,
+        url: signed?.signedUrl || "",
+        alt: localizedAlt[locale] || localizedAlt.es || localizedAlt.en || parsed.data.alt,
+      },
+    };
+  }
   redirect(destination(locale, venueId, "section=events&updated=event-media"));
 }
