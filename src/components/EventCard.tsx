@@ -211,6 +211,14 @@ export function EventCard({
           </div>
         )}
         <div className="card-media-scrim" aria-hidden />
+        {result.venue.logoImage ? (
+          <img
+            className="card-venue-logo"
+            src={result.venue.logoImage.url}
+            alt=""
+            aria-hidden="true"
+          />
+        ) : null}
         <div className="card-media-badges">
           <span className="pill card-pill-date">{date}</span>
           {priceLabel ? (
