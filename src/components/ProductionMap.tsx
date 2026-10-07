@@ -650,7 +650,11 @@ export function ProductionMap({
             ).setData({
               type: "FeatureCollection",
               features: visiblePoints
-                .filter((point) => point.source !== "akipasa_selection")
+                .filter(
+                  (point) =>
+                    point.kind === "venue" &&
+                    point.source !== "akipasa_selection",
+                )
                 .map((point) => ({
                   type: "Feature",
                   geometry: {
