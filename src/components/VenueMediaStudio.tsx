@@ -13,98 +13,188 @@ export type VenueMediaStudioItem = {
   url: string;
   alt: string;
   sizeBytes: number;
-  isLogo: boolean;
-  isCover: boolean;
 };
+
+export type VenueMediaPlacement =
+  | "venue_profile"
+  | "venue_cover"
+  | "venue_menu"
+  | "venue_events"
+  | "venue_explore";
+
+const slots: Array<{
+  key: VenueMediaPlacement;
+  icon: string;
+  en: string;
+  es: string;
+  enHelp: string;
+  esHelp: string;
+}> = [
+  {
+    key: "venue_profile",
+    icon: "⌂",
+    en: "Profile",
+    es: "Perfil",
+    enHelp: "Logo/avatar beside the venue identity.",
+    esHelp: "Logo/avatar junto a la identidad del local.",
+  },
+  {
+    key: "venue_cover",
+    icon: "▣",
+    en: "Cover",
+    es: "Portada",
+    enHelp: "Large hero image on the venue page.",
+    esHelp: "Imagen grande de la ficha del local.",
+  },
+  {
+    key: "venue_menu",
+    icon: "☰",
+    en: "Menu",
+    es: "Carta",
+    enHelp: "Default visual for the menu/catalogue.",
+    esHelp: "Imagen por defecto para carta/catálogo.",
+  },
+  {
+    key: "venue_events",
+    icon: "◫",
+    en: "Events",
+    es: "Eventos",
+    enHelp: "Fallback visual for venue events.",
+    esHelp: "Imagen de respaldo para eventos del local.",
+  },
+  {
+    key: "venue_explore",
+    icon: "◎",
+    en: "Explore",
+    es: "Explorar",
+    enHelp: "Default image used in discovery cards.",
+    esHelp: "Imagen por defecto en tarjetas de descubrimiento.",
+  },
+];
 
 export function VenueMediaStudio({
   locale,
   venueId,
   media,
+  placements,
 }: {
   locale: "es" | "en";
   venueId: string;
   media: VenueMediaStudioItem[];
+  placements: Partial<Record<VenueMediaPlacement, string>>;
 }) {
   const es = locale === "es";
-  const logo = media.find((item) => item.isLogo);
-  const cover = media.find((item) => item.isCover);
+  const fallback = media[0] || null;
+
+  function selectedFor(slot: VenueMediaPlacement) {
+    const explicit = placements[slot]
+      ? media.find((item) => item.id === placements[slot])
+      : null;
+    return explicit || fallback;
+  }
 
   return (
-    <section className="media-studio">
+    <section className="media-studio media-studio-five">
       <header className="media-studio-header">
         <div>
-          <span className="eyebrow">{es ? "Biblioteca multimedia" : "Media library"}</span>
-          <h2>{es ? "Sube una vez. Úsalo donde quieras." : "Upload once. Use it everywhere."}</h2>
+          <span className="eyebrow">
+            {es ? "Imágenes del local" : "Venue images"}
+          </span>
+          <h2>
+            {es
+              ? "Cinco sitios. Cinco fotos. Cero numeritos absurdos."
+              : "Five places. Five images. Zero mystery photo numbers."}
+          </h2>
           <p>
             {es
-              ? "Nada de recordar si la foto 0 era el logo y la 1 la portada. Aquí se ve exactamente dónde va cada imagen."
-              : "No more remembering whether photo 0 was the logo and photo 1 the cover. Every placement is visual."}
+              ? "Elige qué imagen representa cada zona. Si dejas una vacía, AkiPasa usa automáticamente la primera imagen de tu biblioteca."
+              : "Choose the image for each surface. If a slot is empty, AkiPasa automatically uses the first image in your library."}
           </p>
         </div>
       </header>
 
-      <div className="media-placement-board">
-        <article className="media-placement-card media-placement-logo">
-          <div className="media-placement-preview square">
-            {logo ? <img src={logo.url} alt={logo.alt} /> : <span>＋</span>}
-          </div>
-          <div>
-            <strong>{es ? "Logo / avatar" : "Logo / avatar"}</strong>
-            <small>{es ? "Explorar, cabecera y perfil." : "Explore, headers and profile."}</small>
-          </div>
-          {logo && (
-            <form action={clearVenueMediaPlacement}>
-              <input type="hidden" name="locale" value={locale} />
-              <input type="hidden" name="venueId" value={venueId} />
-              <input type="hidden" name="placement" value="venue_logo" />
-              <button type="submit" className="text-button">
-                {es ? "Quitar" : "Remove"}
-              </button>
-            </form>
-          )}
-        </article>
+      <div className="media-five-slots">
+        {slots.map((slot) => {
+          const selected = selectedFor(slot.key);
+          const explicit = Boolean(placements[slot.key]);
+          return (
+            <article className="media-five-slot" key={slot.key}>
+              <div className="media-five-preview">
+                {selected ? (
+                  <img src={selected.url} alt={selected.alt} />
+                ) : (
+                  <span>{slot.icon}</span>
+                )}
+                {!explicit && selected ? (
+                  <small className="media-fallback-chip">
+                    {es ? "Automático" : "Auto"}
+                  </small>
+                ) : null}
+              </div>
+              <div className="media-five-copy">
+                <strong>
+                  <span aria-hidden="true">{slot.icon}</span>{" "}
+                  {es ? slot.es : slot.en}
+                </strong>
+                <small>{es ? slot.esHelp : slot.enHelp}</small>
+              </div>
+              <div className="media-five-picker">
+                {media.map((item) => (
+                  <form action={setVenueMediaPlacement} key={item.id}>
+                    <input type="hidden" name="locale" value={locale} />
+                    <input type="hidden" name="venueId" value={venueId} />
+                    <input type="hidden" name="mediaId" value={item.id} />
+                    <input type="hidden" name="placement" value={slot.key} />
+                    <button
+                      type="submit"
+                      className={
+                        placements[slot.key] === item.id
+                          ? "media-mini-tile selected"
+                          : "media-mini-tile"
+                      }
+                      aria-label={
+                        es
+                          ? `Usar ${item.alt} para ${slot.es}`
+                          : `Use ${item.alt} for ${slot.en}`
+                      }
+                    >
+                      <img src={item.url} alt="" />
+                    </button>
+                  </form>
+                ))}
+                {explicit ? (
+                  <form action={clearVenueMediaPlacement}>
+                    <input type="hidden" name="locale" value={locale} />
+                    <input type="hidden" name="venueId" value={venueId} />
+                    <input type="hidden" name="placement" value={slot.key} />
+                    <button className="media-auto-button" type="submit">
+                      {es ? "Automático" : "Auto"}
+                    </button>
+                  </form>
+                ) : null}
+              </div>
+            </article>
+          );
+        })}
+      </div>
 
-        <article className="media-placement-card media-placement-cover">
-          <div className="media-placement-preview landscape">
-            {cover ? <img src={cover.url} alt={cover.alt} /> : <span>＋</span>}
-          </div>
-          <div>
-            <strong>{es ? "Portada del local" : "Venue cover"}</strong>
-            <small>{es ? "Imagen grande de la ficha." : "Large image on the venue page."}</small>
-          </div>
-          {cover && (
-            <form action={clearVenueMediaPlacement}>
-              <input type="hidden" name="locale" value={locale} />
-              <input type="hidden" name="venueId" value={venueId} />
-              <input type="hidden" name="placement" value="venue_cover" />
-              <button type="submit" className="text-button">
-                {es ? "Quitar" : "Remove"}
-              </button>
-            </form>
-          )}
-        </article>
-
-        <article className="media-placement-card media-placement-gallery">
-          <div className="media-placement-stack">
-            {media.slice(0, 3).map((item) => (
-              <img key={item.id} src={item.url} alt="" />
-            ))}
-            {!media.length && <span>▧</span>}
-          </div>
-          <div>
-            <strong>{es ? "Galería" : "Gallery"}</strong>
-            <small>
-              {es
-                ? "Todas tus imágenes siguen disponibles para eventos y carta."
-                : "All media stays available for events and menu items."}
-            </small>
-          </div>
-        </article>
+      <div className="media-bin-heading">
+        <div>
+          <span className="eyebrow">
+            {es ? "Biblioteca multimedia" : "Media bin"}
+          </span>
+          <h3>{es ? "Todas tus imágenes" : "All your media"}</h3>
+          <p>
+            {es
+              ? "Sube imágenes aquí y luego colócalas arriba, en eventos o en elementos de la carta."
+              : "Upload media here, then place it above, in events, or on menu items."}
+          </p>
+        </div>
+        <span>{media.length}</span>
       </div>
 
       <details className="media-upload-drawer" open={!media.length}>
-        <summary>＋ {es ? "Añadir a la biblioteca" : "Add to library"}</summary>
+        <summary>＋ {es ? "Añadir a la biblioteca" : "Add to media bin"}</summary>
         <form
           action={uploadVenueImage}
           className="media-upload-form"
@@ -135,64 +225,52 @@ export function VenueMediaStudio({
 
       {media.length ? (
         <div className="media-library-grid">
-          {media.map((item) => (
-            <article className="media-library-item" key={item.id}>
-              <div className="media-library-thumb">
-                <img src={item.url} alt={item.alt} />
-                {(item.isLogo || item.isCover) && (
-                  <div className="media-library-badges">
-                    {item.isLogo && <span>Logo</span>}
-                    {item.isCover && <span>{es ? "Portada" : "Cover"}</span>}
-                  </div>
-                )}
-              </div>
-              <div className="media-library-copy">
-                <strong>{item.alt}</strong>
-                <small>{Math.round(item.sizeBytes / 1024)} KB</small>
-              </div>
-              <div className="media-library-actions">
-                <form action={setVenueMediaPlacement}>
-                  <input type="hidden" name="locale" value={locale} />
-                  <input type="hidden" name="venueId" value={venueId} />
-                  <input type="hidden" name="mediaId" value={item.id} />
-                  <input type="hidden" name="placement" value="venue_logo" />
-                  <button type="submit" aria-pressed={item.isLogo}>
-                    {es ? "Logo" : "Logo"}
-                  </button>
-                </form>
-                <form action={setVenueMediaPlacement}>
-                  <input type="hidden" name="locale" value={locale} />
-                  <input type="hidden" name="venueId" value={venueId} />
-                  <input type="hidden" name="mediaId" value={item.id} />
-                  <input type="hidden" name="placement" value="venue_cover" />
-                  <button type="submit" aria-pressed={item.isCover}>
-                    {es ? "Portada" : "Cover"}
-                  </button>
-                </form>
-                <form action={removeVenueImage}>
-                  <input type="hidden" name="locale" value={locale} />
-                  <input type="hidden" name="venueId" value={venueId} />
-                  <input type="hidden" name="mediaId" value={item.id} />
-                  <button type="submit" className="danger">
-                    {es ? "Eliminar" : "Delete"}
-                  </button>
-                </form>
-              </div>
-            </article>
-          ))}
+          {media.map((item, index) => {
+            const usedBy = slots.filter(
+              (slot) => placements[slot.key] === item.id,
+            );
+            return (
+              <article className="media-library-item" key={item.id}>
+                <div className="media-library-thumb">
+                  <img src={item.url} alt={item.alt} />
+                  {index === 0 ? (
+                    <span className="media-primary-chip">
+                      {es ? "Principal" : "Primary"}
+                    </span>
+                  ) : null}
+                </div>
+                <div className="media-library-copy">
+                  <strong>{item.alt}</strong>
+                  <small>
+                    {Math.round(item.sizeBytes / 1024)} KB
+                    {usedBy.length
+                      ? " · " +
+                        usedBy
+                          .map((slot) => (es ? slot.es : slot.en))
+                          .join(", ")
+                      : ""}
+                  </small>
+                </div>
+                <div className="media-library-actions media-library-actions-simple">
+                  <form action={removeVenueImage}>
+                    <input type="hidden" name="locale" value={locale} />
+                    <input type="hidden" name="venueId" value={venueId} />
+                    <input type="hidden" name="mediaId" value={item.id} />
+                    <button type="submit" className="danger">
+                      {es ? "Eliminar" : "Delete"}
+                    </button>
+                  </form>
+                </div>
+              </article>
+            );
+          })}
         </div>
-      ) : null}
-
-      <div className="media-placement-explainer">
-        <strong>{es ? "Dónde puedes reutilizar estas imágenes" : "Where these images can be reused"}</strong>
-        <div>
-          <span>⌂ {es ? "Perfil" : "Profile"}</span>
-          <span>▣ {es ? "Portada" : "Cover"}</span>
-          <span>☰ {es ? "Carta" : "Menu"}</span>
-          <span>◫ {es ? "Eventos" : "Events"}</span>
-          <span>◎ {es ? "Explorar" : "Explore"}</span>
+      ) : (
+        <div className="event-media-empty">
+          <span>▧</span>
+          <strong>{es ? "Todavía no hay imágenes" : "No media yet"}</strong>
         </div>
-      </div>
+      )}
     </section>
   );
 }
