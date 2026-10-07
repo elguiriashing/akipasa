@@ -94,6 +94,15 @@ describe("venue catalogue foundations", () => {
         "item_description",
       ),
     ).toBe("Una lata fría de Coca-Cola");
+    expect(
+      polishCatalogueTranslation(
+        "en",
+        "es",
+        "this is a nut",
+        "Esto es una tuerca",
+        "item_description",
+      ),
+    ).toBe("Esto es un fruto seco");
   });
 
   it("keeps authored menu item names instead of translating brand identity", () => {
@@ -111,6 +120,20 @@ describe("venue catalogue foundations", () => {
         "item_name",
       ),
     ).toBe("Wonder Burger");
+    expect(
+      catalogueTextForDisplay(
+        {
+          en: "almond",
+          es: "almendra incorrecta",
+          _translation: {
+            sourceLocale: "en",
+            sourceHash: catalogueTextHash("almond"),
+          },
+        },
+        "es",
+        "item_name",
+      ),
+    ).toBe("Almendra");
   });
 
   it("uses the populated language as provenance for legacy one-language copy", () => {
