@@ -652,8 +652,10 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       if (
         distance > radius ||
         (query.category && event.category !== query.category) ||
-        (query.price === "free" && event.priceCents > 0) ||
-        (query.price === "paid" && event.priceCents === 0) ||
+        (query.price === "free" &&
+          (event.priceDisplayMode === "hide" || event.priceCents > 0)) ||
+        (query.price === "paid" &&
+          (event.priceDisplayMode === "hide" || event.priceCents === 0)) ||
         (query.minPriceCents !== undefined &&
           event.priceCents < query.minPriceCents) ||
         (query.maxPriceCents !== undefined &&
