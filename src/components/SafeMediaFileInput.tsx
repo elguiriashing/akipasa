@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
 
 const MAX_INPUT_BYTES = 10 * 1024 * 1024;
 const MAX_PDF_PAGES = 20;
@@ -116,6 +116,7 @@ async function renderPdfAsSafeJpeg(file: File) {
     pageContext.fillStyle = "#ffffff";
     pageContext.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
     await item.page.render({
+      canvas: pageCanvas,
       canvasContext: pageContext,
       viewport,
     }).promise;
@@ -156,7 +157,7 @@ export function SafeMediaFileInput({
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
 
-  async function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const input = event.currentTarget;
     const file = input.files?.[0];
     setStatus("");
@@ -169,7 +170,8 @@ export function SafeMediaFileInput({
       return;
     }
 
-    if (file.type !== "application/pdf") return;
+    const isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name);
+    if (!isPdf) return;
 
     setSubmitDisabled(input, true);
     setStatus(
