@@ -25,6 +25,11 @@ export type Venue = {
     url: string;
     alt: Translation;
   }>;
+  logoImage?: {
+    id: string;
+    url: string;
+    alt: Translation;
+  };
   offers?: Array<{
     id: string;
     title: Translation;
