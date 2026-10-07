@@ -427,7 +427,7 @@ export default async function BusinessPage({
                               <div className="catalogue-card-actions form-actions">
                                 <a
                                   className="button secondary small-btn"
-                                  href={`/${locale}/business/venue/${event.venue_id}#event-${event.id}`}
+                                  href={`/${locale}/business/venue/${event.venue_id}?section=events#event-${event.id}`}
                                 >
                                   {es ? "Gestionar" : "Manage"}
                                 </a>
