@@ -307,6 +307,7 @@ const officialEventSchema = z.object({
   title: z.string().trim().min(3).max(160),
   description: z.string().trim().min(20).max(4000),
   priceEuros: z.coerce.number().min(0).max(10000),
+  priceDisplayMode: z.enum(["show", "hide"]).default("show"),
   bookingUrl: safeExternalUrlSchema,
   startsAt: madridLocalDateTimeSchema,
   endsAt: madridLocalDateTimeSchema,
@@ -338,7 +339,7 @@ export async function createOfficialEvent(formData: FormData) {
     };
   }
 
-  const { error } = await supabase.rpc("create_akipasa_selection_event_v2", {
+  const { data: eventId, error } = await supabase.rpc("create_akipasa_selection_event_v2", {
     p_category: value.categoryId,
     p_slug: createEventSlug(value.title),
     p_title_es: localized.title.es,
@@ -356,6 +357,14 @@ export async function createOfficialEvent(formData: FormData) {
   });
   if (error)
     redirect(`/${locale}/business?view=events&error=official-event`);
+
+  if (typeof eventId === "string") {
+    await supabase
+      .from("events")
+      .update({ price_display_mode: value.priceDisplayMode })
+      .eq("id", eventId);
+  }
+
   redirect(`/${locale}/business?view=events&created=official-event`);
 }
 
