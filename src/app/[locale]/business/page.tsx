@@ -303,7 +303,7 @@ export default async function BusinessPage({
                     : "Manage active events, review the history, and reuse any listing as a new draft."}
                 </p>
               </div>
-              <a className="button button-strong" href={`${base}#create-event`}>
+              <a className="button button-strong" href={`${base}?view=events#create-event`}>
                 {es ? "Crear evento" : "Create event"}
               </a>
             </div>
