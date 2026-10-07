@@ -1,4 +1,5 @@
 name: Temporary event studio validation
+# validates latest branch head
 
 on:
   push:
