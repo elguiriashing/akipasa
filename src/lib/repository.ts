@@ -101,8 +101,111 @@ export class FixtureRepository implements DiscoveryRepository {
     return rankDiscoveryResults(results, this.now);
   }
   async eventBySlug(slug: string) {
-    return fixtureEvents(this.now).find((e) => e.slug === slug) || null;
+    const supabase = createSupabasePublicClient();
+    const { data, error } = await supabase
+      .from("events")
+      .select(eventFields)
+      .eq("slug", slug)
+      .eq("status", "published")
+      .maybeSingle();
+    if (error) throw new Error(`Public event query failed: ${error.message}`);
+    const event = data ? eventFromRow(data as unknown as DbRecord) : null;
+    if (!event) return null;
+
+    const [{ data: placements }, venue] = await Promise.all([
+      supabase
+        .from("venue_media_placements")
+        .select(
+          "media_id,placement,sort_order,venue_media(id,storage_path,alt_es,alt_en)",
+        )
+        .eq("venue_id", event.venueId)
+        .eq("target_key", event.id)
+        .in("placement", [
+          "event_cover",
+          "event_explore",
+          "event_gallery_1",
+          "event_gallery_2",
+          "event_gallery_3",
+          "event_bin",
+        ])
+        .order("sort_order"),
+      this.venueById(event.venueId),
+    ]);
+
+    const placementMedia = (placements || []).flatMap((placement) => {
+      const media = one(placement.venue_media as unknown);
+      return media
+        ? [
+            {
+              placement: String(placement.placement),
+              sortOrder: Number(placement.sort_order || 0),
+              media,
+            },
+          ]
+        : [];
+    });
+    const paths = Array.from(
+      new Set(placementMedia.map((item) => String(item.media.storage_path))),
+    );
+    const { data: signedRows } = paths.length
+      ? await supabase.storage.from("event-media").createSignedUrls(paths, 3600)
+      : { data: [] };
+    const signed = new Map(
+      (signedRows || []).flatMap((item) =>
+        item.path && item.signedUrl ? [[item.path, item.signedUrl] as const] : [],
+      ),
+    );
+
+    const mapPlaced = (placement: string) => {
+      const row = placementMedia.find((item) => item.placement === placement);
+      if (!row) return undefined;
+      const url = signed.get(String(row.media.storage_path));
+      if (!url) return undefined;
+      return {
+        id: String(row.media.id),
+        url,
+        alt: {
+          es: String(row.media.alt_es || event.title.es),
+          ...(row.media.alt_en ? { en: String(row.media.alt_en) } : {}),
+        },
+      };
+    };
+    const eventBinRows = placementMedia
+      .filter((item) => item.placement === "event_bin")
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+    const eventBinFallback = eventBinRows[0]
+      ? (() => {
+          const row = eventBinRows[0];
+          const url = signed.get(String(row.media.storage_path));
+          return url
+            ? {
+                id: String(row.media.id),
+                url,
+                alt: {
+                  es: String(row.media.alt_es || event.title.es),
+                  ...(row.media.alt_en
+                    ? { en: String(row.media.alt_en) }
+                    : {}),
+                },
+              }
+            : undefined;
+        })()
+      : undefined;
+    const fallback =
+      eventBinFallback || venue?.eventsImage || venue?.media?.[0];
+
+    event.coverImage = mapPlaced("event_cover") || fallback;
+    event.exploreImage = mapPlaced("event_explore") || fallback;
+    event.gallery = [
+      mapPlaced("event_gallery_1") || fallback,
+      mapPlaced("event_gallery_2") || fallback,
+      mapPlaced("event_gallery_3") || fallback,
+    ].filter(
+      (item): item is NonNullable<typeof item> => Boolean(item),
+    );
+    return event;
   }
+
   async venueBySlug(slug: string) {
     return venues.find((v) => v.slug === slug) || null;
   }
@@ -278,7 +381,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
     const { data, error } = await supabase
       .from("events")
       .select(
-        `${eventFields},venues(${venueFields},venue_media(id,storage_path,alt_es,alt_en))`,
+        `${eventFields},venues(${venueFields},venue_media(id,storage_path,alt_es,alt_en,sort_order))`,
       )
       .eq("status", "published");
     if (error) throw new Error(`Public event query failed: ${error.message}`);
@@ -309,14 +412,22 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
           .map((row) => String(row.id)),
       ),
     );
-    const [{ data: eventCoverPlacements }, { data: venueVisualPlacements }] =
+    const [{ data: eventVisualPlacements }, { data: venueVisualPlacements }] =
       await Promise.all([
         eventIds.length
           ? supabase
               .from("venue_media_placements")
-              .select("target_key,media_id,venue_media(id,storage_path,alt_es,alt_en)")
-              .eq("placement", "event_cover")
+              .select("target_key,placement,sort_order,media_id,venue_media(id,storage_path,alt_es,alt_en)")
+              .in("placement", [
+                "event_cover",
+                "event_explore",
+                "event_gallery_1",
+                "event_gallery_2",
+                "event_gallery_3",
+                "event_bin",
+              ])
               .in("target_key", eventIds)
+              .order("sort_order")
           : Promise.resolve({ data: [] }),
         venueIds.length
           ? supabase
@@ -324,28 +435,62 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
               .select("venue_id,placement,media_id,venue_media(id,storage_path,alt_es,alt_en)")
               .in("venue_id", venueIds)
               .eq("target_key", "")
-              .in("placement", ["venue_cover", "venue_logo"])
+              .in("placement", [
+                "venue_profile",
+                "venue_cover",
+                "venue_menu",
+                "venue_events",
+                "venue_explore",
+              ])
           : Promise.resolve({ data: [] }),
       ]);
     const venueVisualRows = new Map<
       string,
-      { cover?: DbRecord; logo?: DbRecord }
+      {
+        profile?: DbRecord;
+        cover?: DbRecord;
+        menu?: DbRecord;
+        events?: DbRecord;
+        explore?: DbRecord;
+      }
     >();
     for (const placement of venueVisualPlacements || []) {
       const media = one(placement.venue_media as unknown);
       if (!media) continue;
       const current = venueVisualRows.get(String(placement.venue_id)) || {};
+      if (placement.placement === "venue_profile") current.profile = media;
       if (placement.placement === "venue_cover") current.cover = media;
-      if (placement.placement === "venue_logo") current.logo = media;
+      if (placement.placement === "venue_menu") current.menu = media;
+      if (placement.placement === "venue_events") current.events = media;
+      if (placement.placement === "venue_explore") current.explore = media;
       venueVisualRows.set(String(placement.venue_id), current);
     }
 
-    const eventCoverRows = new Map(
-      (eventCoverPlacements || []).flatMap((placement) => {
-        const media = one(placement.venue_media as unknown);
-        return media ? [[String(placement.target_key), media] as const] : [];
-      }),
-    );
+    const eventVisualRows = new Map<
+      string,
+      {
+        cover?: DbRecord;
+        explore?: DbRecord;
+        gallery1?: DbRecord;
+        gallery2?: DbRecord;
+        gallery3?: DbRecord;
+        bin?: DbRecord[];
+      }
+    >();
+    for (const placement of eventVisualPlacements || []) {
+      const media = one(placement.venue_media as unknown);
+      if (!media) continue;
+      const current = eventVisualRows.get(String(placement.target_key)) || {
+        bin: [],
+      };
+      if (placement.placement === "event_cover") current.cover = media;
+      if (placement.placement === "event_explore") current.explore = media;
+      if (placement.placement === "event_gallery_1") current.gallery1 = media;
+      if (placement.placement === "event_gallery_2") current.gallery2 = media;
+      if (placement.placement === "event_gallery_3") current.gallery3 = media;
+      if (placement.placement === "event_bin") current.bin?.push(media);
+      eventVisualRows.set(String(placement.target_key), current);
+    }
     const mediaPaths = new Set<string>();
     rows.forEach((row) => {
       const venueRow = one(row.venues);
@@ -356,14 +501,28 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       }
     });
 
-    for (const media of eventCoverRows.values()) {
-      if (media.storage_path) mediaPaths.add(String(media.storage_path));
+    for (const visual of eventVisualRows.values()) {
+      for (const media of [
+        visual.cover,
+        visual.explore,
+        visual.gallery1,
+        visual.gallery2,
+        visual.gallery3,
+        ...(visual.bin || []),
+      ]) {
+        if (media?.storage_path) mediaPaths.add(String(media.storage_path));
+      }
     }
     for (const visual of venueVisualRows.values()) {
-      if (visual.cover?.storage_path)
-        mediaPaths.add(String(visual.cover.storage_path));
-      if (visual.logo?.storage_path)
-        mediaPaths.add(String(visual.logo.storage_path));
+      for (const media of [
+        visual.profile,
+        visual.cover,
+        visual.menu,
+        visual.events,
+        visual.explore,
+      ]) {
+        if (media?.storage_path) mediaPaths.add(String(media.storage_path));
+      }
     }
 
     // Fetch signed URLs in bulk
@@ -399,7 +558,11 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       if (!venue.discoveryEnabled) return [];
 
       if (Array.isArray(venueRow.venue_media)) {
-        const mappedMedia = venueRow.venue_media
+        const mappedMedia = [...venueRow.venue_media]
+          .sort(
+            (a: Record<string, unknown>, b: Record<string, unknown>) =>
+              Number(a.sort_order || 0) - Number(b.sort_order || 0),
+          )
           .map((item: Record<string, unknown>) => {
             const storagePath = String(item.storage_path);
             const url = signedUrlMap.get(storagePath);
@@ -420,62 +583,68 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
           venue.media = mappedMedia as typeof venue.media;
       }
 
-      const venueVisual = venueVisualRows.get(venue.id);
-      if (venueVisual?.cover?.storage_path) {
-        const coverUrl = signedUrlMap.get(String(venueVisual.cover.storage_path));
-        if (coverUrl) {
-          const cover = {
-            id: String(venueVisual.cover.id),
-            url: coverUrl,
-            alt: {
-              es: String(venueVisual.cover.alt_es || venue.name),
-              ...(venueVisual.cover.alt_en
-                ? { en: String(venueVisual.cover.alt_en) }
-                : {}),
-            },
-          };
-          venue.media = [
-            cover,
-            ...(venue.media || []).filter((item) => item.id !== cover.id),
-          ];
-        }
-      }
-      if (venueVisual?.logo?.storage_path) {
-        const logoUrl = signedUrlMap.get(String(venueVisual.logo.storage_path));
-        if (logoUrl) {
-          venue.logoImage = {
-            id: String(venueVisual.logo.id),
-            url: logoUrl,
-            alt: {
-              es: String(venueVisual.logo.alt_es || venue.name),
-              ...(venueVisual.logo.alt_en
-                ? { en: String(venueVisual.logo.alt_en) }
-                : {}),
-            },
-          };
-        }
-      }
+      const mapVisual = (
+        media: DbRecord | undefined,
+        fallbackAlt: string,
+      ) => {
+        if (!media?.storage_path) return undefined;
+        const url = signedUrlMap.get(String(media.storage_path));
+        if (!url) return undefined;
+        return {
+          id: String(media.id),
+          url,
+          alt: {
+            es: String(media.alt_es || fallbackAlt),
+            ...(media.alt_en ? { en: String(media.alt_en) } : {}),
+          },
+        };
+      };
 
-      const eventCoverRow = eventCoverRows.get(event.id);
-      if (eventCoverRow?.storage_path) {
-        const coverUrl = signedUrlMap.get(String(eventCoverRow.storage_path));
-        if (coverUrl) {
-          const cover = {
-            id: String(eventCoverRow.id),
-            url: coverUrl,
-            alt: {
-              es: String(eventCoverRow.alt_es || event.title.es),
-              ...(eventCoverRow.alt_en
-                ? { en: String(eventCoverRow.alt_en) }
-                : {}),
-            },
-          };
-          event.coverImage = cover;
-          venue.media = [
-            cover,
-            ...(venue.media || []).filter((item) => item.id !== cover.id),
-          ];
-        }
+      const primaryVenueMedia = venue.media?.[0];
+      const venueVisual = venueVisualRows.get(venue.id);
+      venue.logoImage =
+        mapVisual(venueVisual?.profile, venue.name) || primaryVenueMedia;
+      venue.coverImage =
+        mapVisual(venueVisual?.cover, venue.name) || primaryVenueMedia;
+      venue.menuImage =
+        mapVisual(venueVisual?.menu, venue.name) || primaryVenueMedia;
+      venue.eventsImage =
+        mapVisual(venueVisual?.events, venue.name) || primaryVenueMedia;
+      venue.exploreImage =
+        mapVisual(venueVisual?.explore, venue.name) || primaryVenueMedia;
+
+      const eventVisual = eventVisualRows.get(event.id);
+      const eventBinFallback = eventVisual?.bin?.[0]
+        ? mapVisual(eventVisual.bin[0], event.title.es)
+        : undefined;
+      const eventFallback =
+        eventBinFallback || venue.eventsImage || primaryVenueMedia;
+      event.coverImage =
+        mapVisual(eventVisual?.cover, event.title.es) || eventFallback;
+      event.exploreImage =
+        mapVisual(eventVisual?.explore, event.title.es) || eventFallback;
+      event.gallery = [
+        mapVisual(eventVisual?.gallery1, event.title.es) || eventFallback,
+        mapVisual(eventVisual?.gallery2, event.title.es) || eventFallback,
+        mapVisual(eventVisual?.gallery3, event.title.es) || eventFallback,
+      ].filter(
+        (item): item is NonNullable<typeof item> => Boolean(item),
+      );
+
+      if (event.exploreImage) {
+        venue.media = [
+          event.exploreImage,
+          ...(venue.media || []).filter(
+            (item) => item.id !== event.exploreImage?.id,
+          ),
+        ];
+      } else if (venue.exploreImage) {
+        venue.media = [
+          venue.exploreImage,
+          ...(venue.media || []).filter(
+            (item) => item.id !== venue.exploreImage?.id,
+          ),
+        ];
       }
 
       const distance = distanceKm(
@@ -487,8 +656,10 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       if (
         distance > radius ||
         (query.category && event.category !== query.category) ||
-        (query.price === "free" && event.priceCents > 0) ||
-        (query.price === "paid" && event.priceCents === 0) ||
+        (query.price === "free" &&
+          (event.priceDisplayMode === "hide" || event.priceCents > 0)) ||
+        (query.price === "paid" &&
+          (event.priceDisplayMode === "hide" || event.priceCents === 0)) ||
         (query.minPriceCents !== undefined &&
           event.priceCents < query.minPriceCents) ||
         (query.maxPriceCents !== undefined &&
@@ -651,25 +822,35 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       .select("media_id,placement")
       .eq("venue_id", venue.id)
       .eq("target_key", "")
-      .in("placement", ["venue_cover", "venue_logo"]);
+      .in("placement", [
+        "venue_profile",
+        "venue_cover",
+        "venue_menu",
+        "venue_events",
+        "venue_explore",
+      ]);
     if (venue.media?.length) {
-      const coverMediaId = visualPlacements?.find(
-        (item) => item.placement === "venue_cover",
-      )?.media_id;
-      const logoMediaId = visualPlacements?.find(
-        (item) => item.placement === "venue_logo",
-      )?.media_id;
-      if (coverMediaId) {
-        const cover = venue.media.find((item) => item.id === coverMediaId);
-        if (cover) {
-          venue.media = [
-            cover,
-            ...venue.media.filter((item) => item.id !== cover.id),
-          ];
-        }
-      }
-      if (logoMediaId) {
-        venue.logoImage = venue.media.find((item) => item.id === logoMediaId);
+      const primary = venue.media[0];
+      const mediaFor = (placement: string) => {
+        const mediaId = visualPlacements?.find(
+          (item) => item.placement === placement,
+        )?.media_id;
+        return (
+          (mediaId
+            ? venue.media?.find((item) => item.id === mediaId)
+            : undefined) || primary
+        );
+      };
+      venue.logoImage = mediaFor("venue_profile");
+      venue.coverImage = mediaFor("venue_cover");
+      venue.menuImage = mediaFor("venue_menu");
+      venue.eventsImage = mediaFor("venue_events");
+      venue.exploreImage = mediaFor("venue_explore");
+      if (venue.coverImage) {
+        venue.media = [
+          venue.coverImage,
+          ...venue.media.filter((item) => item.id !== venue.coverImage?.id),
+        ];
       }
     }
     return venue;
@@ -718,25 +899,35 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       .select("media_id,placement")
       .eq("venue_id", venue.id)
       .eq("target_key", "")
-      .in("placement", ["venue_cover", "venue_logo"]);
+      .in("placement", [
+        "venue_profile",
+        "venue_cover",
+        "venue_menu",
+        "venue_events",
+        "venue_explore",
+      ]);
     if (venue.media?.length) {
-      const coverMediaId = visualPlacements?.find(
-        (item) => item.placement === "venue_cover",
-      )?.media_id;
-      const logoMediaId = visualPlacements?.find(
-        (item) => item.placement === "venue_logo",
-      )?.media_id;
-      if (coverMediaId) {
-        const cover = venue.media.find((item) => item.id === coverMediaId);
-        if (cover) {
-          venue.media = [
-            cover,
-            ...venue.media.filter((item) => item.id !== cover.id),
-          ];
-        }
-      }
-      if (logoMediaId) {
-        venue.logoImage = venue.media.find((item) => item.id === logoMediaId);
+      const primary = venue.media[0];
+      const mediaFor = (placement: string) => {
+        const mediaId = visualPlacements?.find(
+          (item) => item.placement === placement,
+        )?.media_id;
+        return (
+          (mediaId
+            ? venue.media?.find((item) => item.id === mediaId)
+            : undefined) || primary
+        );
+      };
+      venue.logoImage = mediaFor("venue_profile");
+      venue.coverImage = mediaFor("venue_cover");
+      venue.menuImage = mediaFor("venue_menu");
+      venue.eventsImage = mediaFor("venue_events");
+      venue.exploreImage = mediaFor("venue_explore");
+      if (venue.coverImage) {
+        venue.media = [
+          venue.coverImage,
+          ...venue.media.filter((item) => item.id !== venue.coverImage?.id),
+        ];
       }
     }
     return venue;

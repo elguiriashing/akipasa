@@ -26,10 +26,12 @@ export function PublicVenueCatalogue({
   locale,
   document,
   media = [],
+  heroMedia,
 }: {
   locale: "es" | "en";
   document: VenueCatalogueDocument;
   media?: Array<{ id: string; url: string; alt: string }>;
+  heroMedia?: { id: string; url: string; alt: string };
 }) {
   const es = locale === "es";
   const sections = useMemo(
@@ -58,6 +60,13 @@ export function PublicVenueCatalogue({
       data-layout={document.layout}
     >
       <header className="public-catalogue-heading">
+        {heroMedia ? (
+          <img
+            className="public-catalogue-hero-media"
+            src={heroMedia.url}
+            alt={heroMedia.alt}
+          />
+        ) : null}
         <span className="eyebrow">
           {es ? "Carta y catálogo" : "Menu & catalogue"}
         </span>

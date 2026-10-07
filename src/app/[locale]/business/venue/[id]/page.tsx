@@ -181,7 +181,19 @@ export default async function VenueWorkspace({
     .from("venue_media_placements")
     .select("media_id,placement,target_key")
     .eq("venue_id", id)
-    .in("placement", ["venue_logo", "venue_cover"]);
+    .in("placement", [
+      "venue_profile",
+      "venue_cover",
+      "venue_menu",
+      "venue_events",
+      "venue_explore",
+      "event_cover",
+      "event_explore",
+      "event_gallery_1",
+      "event_gallery_2",
+      "event_gallery_3",
+      "event_bin",
+    ]);
   const mediaPaths = (media || []).map((item) => item.storage_path);
   const { data: signedMediaRows } = mediaPaths.length
     ? await supabase.storage.from("event-media").createSignedUrls(mediaPaths, 3600)
@@ -191,49 +203,72 @@ export default async function VenueWorkspace({
       item.path && item.signedUrl ? [[item.path, item.signedUrl] as const] : [],
     ),
   );
-  const logoMediaId = mediaPlacements?.find(
-    (item) => item.placement === "venue_logo" && item.target_key === "",
-  )?.media_id;
-  const coverMediaId = mediaPlacements?.find(
-    (item) => item.placement === "venue_cover" && item.target_key === "",
-  )?.media_id;
-  const mediaStudioItems = (media || []).flatMap((item) => {
+  const venueMediaSlots = Object.fromEntries(
+    (mediaPlacements || [])
+      .filter((item) => item.target_key === "" && item.placement.startsWith("venue_"))
+      .map((item) => [item.placement, item.media_id]),
+  ) as Partial<
+    Record<
+      | "venue_profile"
+      | "venue_cover"
+      | "venue_menu"
+      | "venue_events"
+      | "venue_explore",
+      string
+    >
+  >;
+  const allMediaItems = (media || []).flatMap((item) => {
     const url = signedMediaMap.get(item.storage_path);
     return url
       ? [{
           id: item.id,
           url,
-          alt: (es ? item.alt_es : item.alt_en || item.alt_es) || (es ? "Imagen del local" : "Venue image"),
+          alt:
+            (es ? item.alt_es : item.alt_en || item.alt_es) ||
+            (es ? "Imagen del local" : "Venue image"),
           sizeBytes: item.size_bytes,
-          isLogo: item.id === logoMediaId,
-          isCover: item.id === coverMediaId,
+          eventSpecific: item.storage_path.includes("/events/"),
         }]
       : [];
   });
+  const mediaStudioItems = allMediaItems.filter((item) => !item.eventSpecific);
 
   const eventIds = (events || []).map((event) => event.id);
-  const { data: eventMediaPlacements } = eventIds.length
-    ? await supabase
-        .from("venue_media_placements")
-        .select("target_key,media_id,placement,sort_order")
-        .eq("venue_id", id)
-        .in("target_key", eventIds)
-        .in("placement", ["event_cover", "event_gallery"])
-        .order("sort_order")
-    : { data: [] };
+  const eventMediaPlacements = (mediaPlacements || []).filter((item) =>
+    eventIds.includes(item.target_key),
+  );
   const eventPlacementMap = new Map<
     string,
-    { coverMediaId: string; galleryMediaIds: string[] }
+    {
+      coverMediaId: string;
+      exploreMediaId: string;
+      galleryMediaId1: string;
+      galleryMediaId2: string;
+      galleryMediaId3: string;
+      binMediaIds: string[];
+    }
   >();
-  for (const placement of eventMediaPlacements || []) {
+  for (const placement of eventMediaPlacements) {
     const current = eventPlacementMap.get(placement.target_key) || {
       coverMediaId: "",
-      galleryMediaIds: [],
+      exploreMediaId: "",
+      galleryMediaId1: "",
+      galleryMediaId2: "",
+      galleryMediaId3: "",
+      binMediaIds: [],
     };
     if (placement.placement === "event_cover") {
       current.coverMediaId = placement.media_id;
-    } else if (placement.placement === "event_gallery") {
-      current.galleryMediaIds.push(placement.media_id);
+    } else if (placement.placement === "event_explore") {
+      current.exploreMediaId = placement.media_id;
+    } else if (placement.placement === "event_gallery_1") {
+      current.galleryMediaId1 = placement.media_id;
+    } else if (placement.placement === "event_gallery_2") {
+      current.galleryMediaId2 = placement.media_id;
+    } else if (placement.placement === "event_gallery_3") {
+      current.galleryMediaId3 = placement.media_id;
+    } else if (placement.placement === "event_bin") {
+      current.binMediaIds.push(placement.media_id);
     }
     eventPlacementMap.set(placement.target_key, current);
   }
@@ -506,6 +541,7 @@ export default async function VenueWorkspace({
                 locale={locale}
                 venueId={id}
                 media={mediaStudioItems}
+                placements={venueMediaSlots}
               />
             </section>
           </>
@@ -624,7 +660,16 @@ export default async function VenueWorkspace({
                                 ""
                               : event.accessibility_notes_es || "",
                         }}
-                        media={mediaStudioItems.map((item) => ({
+                        media={[
+                          ...mediaStudioItems,
+                          ...allMediaItems.filter(
+                            (item) =>
+                              item.eventSpecific &&
+                              (eventPlacementMap.get(event.id)?.binMediaIds || []).includes(
+                                item.id,
+                              ),
+                          ),
+                        ].map((item) => ({
                           id: item.id,
                           url: item.url,
                           alt: item.alt,
@@ -632,8 +677,16 @@ export default async function VenueWorkspace({
                         coverMediaId={
                           eventPlacementMap.get(event.id)?.coverMediaId || ""
                         }
-                        galleryMediaIds={
-                          eventPlacementMap.get(event.id)?.galleryMediaIds || []
+                        exploreMediaId={
+                          eventPlacementMap.get(event.id)?.exploreMediaId || ""
+                        }
+                        galleryMediaIds={[
+                          eventPlacementMap.get(event.id)?.galleryMediaId1 || "",
+                          eventPlacementMap.get(event.id)?.galleryMediaId2 || "",
+                          eventPlacementMap.get(event.id)?.galleryMediaId3 || "",
+                        ]}
+                        eventBinMediaIds={
+                          eventPlacementMap.get(event.id)?.binMediaIds || []
                         }
                       />
                       {event.event_occurrences?.length ? (

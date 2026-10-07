@@ -196,7 +196,9 @@ export default async function BusinessPage({
       item.path && item.signedUrl ? [[item.path, item.signedUrl] as const] : [],
     ),
   );
-  const eventComposerMedia = (eventComposerMediaRows || []).flatMap((item) => {
+  const eventComposerMedia = (eventComposerMediaRows || [])
+    .filter((item) => !item.storage_path.includes("/events/"))
+    .flatMap((item) => {
     const url = composerSignedMap.get(item.storage_path);
     return url
       ? [
@@ -427,7 +429,7 @@ export default async function BusinessPage({
                               <div className="catalogue-card-actions form-actions">
                                 <a
                                   className="button secondary small-btn"
-                                  href={`/${locale}/business/venue/${event.venue_id}#event-${event.id}`}
+                                  href={`/${locale}/business/venue/${event.venue_id}?section=events#event-${event.id}`}
                                 >
                                   {es ? "Gestionar" : "Manage"}
                                 </a>

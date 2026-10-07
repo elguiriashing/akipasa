@@ -128,6 +128,10 @@ export async function updateEvent(formData: FormData) {
       priceEuros: z.coerce.number().min(0).max(10000),
       priceDisplayMode: z.enum(["show", "hide"]).default("show"),
       coverMediaId: z.union([z.string().uuid(), z.literal("")]).default(""),
+      exploreMediaId: z.union([z.string().uuid(), z.literal("")]).default(""),
+      galleryMediaId1: z.union([z.string().uuid(), z.literal("")]).default(""),
+      galleryMediaId2: z.union([z.string().uuid(), z.literal("")]).default(""),
+      galleryMediaId3: z.union([z.string().uuid(), z.literal("")]).default(""),
       bookingUrl: safeExternalUrlSchema,
       minimumAge: z.union([
         z.literal(""),
@@ -198,15 +202,16 @@ export async function updateEvent(formData: FormData) {
     .eq("venue_id", v.venueId);
   if (error) redirect(destination(locale, venueId, "error=event"));
 
-  const galleryMediaIds = formData
-    .getAll("galleryMediaId")
-    .map(String)
-    .filter((value) => /^[0-9a-f-]{36}$/i.test(value))
-    .slice(0, 8);
-  const selectedMediaIds = [
-    ...(v.coverMediaId ? [v.coverMediaId] : []),
-    ...galleryMediaIds,
-  ];
+  const requestedSlots = [
+    ["event_cover", v.coverMediaId],
+    ["event_explore", v.exploreMediaId],
+    ["event_gallery_1", v.galleryMediaId1],
+    ["event_gallery_2", v.galleryMediaId2],
+    ["event_gallery_3", v.galleryMediaId3],
+  ] as const;
+  const selectedMediaIds = requestedSlots.flatMap(([, mediaId]) =>
+    mediaId ? [mediaId] : [],
+  );
   const { data: allowedRows } = selectedMediaIds.length
     ? await supabase
         .from("venue_media")
@@ -221,30 +226,28 @@ export async function updateEvent(formData: FormData) {
     .delete()
     .eq("venue_id", v.venueId)
     .eq("target_key", v.eventId)
-    .in("placement", ["event_cover", "event_gallery"]);
+    .in("placement", [
+      "event_cover",
+      "event_explore",
+      "event_gallery_1",
+      "event_gallery_2",
+      "event_gallery_3",
+    ]);
 
-  if (v.coverMediaId && allowed.has(v.coverMediaId)) {
-    await supabase.from("venue_media_placements").insert({
-      venue_id: v.venueId,
-      media_id: v.coverMediaId,
-      placement: "event_cover",
-      target_key: v.eventId,
-      sort_order: 0,
-      created_by: user.id,
-    });
-  }
-  const galleryRows = galleryMediaIds
-    .filter((id) => allowed.has(id))
-    .map((id, index) => ({
-      venue_id: v.venueId,
-      media_id: id,
-      placement: "event_gallery",
-      target_key: v.eventId,
-      sort_order: index,
-      created_by: user.id,
-    }));
-  if (galleryRows.length) {
-    await supabase.from("venue_media_placements").insert(galleryRows);
+  const slotRows = requestedSlots.flatMap(([placement, mediaId], index) =>
+    mediaId && allowed.has(mediaId)
+      ? [{
+          venue_id: v.venueId,
+          media_id: mediaId,
+          placement,
+          target_key: v.eventId,
+          sort_order: index,
+          created_by: user.id,
+        }]
+      : [],
+  );
+  if (slotRows.length) {
+    await supabase.from("venue_media_placements").insert(slotRows);
   }
 
   await reviewPendingCatalogueItem({
@@ -1002,7 +1005,13 @@ export async function unpublishVenueCatalogue(formData: FormData) {
 
 const venueMediaPlacementSchema = context.extend({
   mediaId: z.string().uuid(),
-  placement: z.enum(["venue_logo", "venue_cover"]),
+  placement: z.enum([
+    "venue_profile",
+    "venue_cover",
+    "venue_menu",
+    "venue_events",
+    "venue_explore",
+  ]),
 });
 
 export async function setVenueMediaPlacement(formData: FormData) {
@@ -1042,7 +1051,13 @@ export async function setVenueMediaPlacement(formData: FormData) {
 }
 
 const clearVenueMediaPlacementSchema = context.extend({
-  placement: z.enum(["venue_logo", "venue_cover"]),
+  placement: z.enum([
+    "venue_profile",
+    "venue_cover",
+    "venue_menu",
+    "venue_events",
+    "venue_explore",
+  ]),
 });
 
 export async function clearVenueMediaPlacement(formData: FormData) {
@@ -1062,4 +1077,158 @@ export async function clearVenueMediaPlacement(formData: FormData) {
   if (error) redirect(destination(locale, venueId, "error=media"));
   revalidatePath(`/${locale}/venues`, "layout");
   redirect(destination(locale, venueId, "section=profile&updated=media-placement"));
+}
+
+
+const eventMediaContext = context.extend({
+  eventId: z.string().uuid(),
+});
+
+export async function addVenueMediaToEventBin(formData: FormData) {
+  const parsed = eventMediaContext
+    .extend({ mediaId: z.string().uuid() })
+    .safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  if (!parsed.success) redirect(destination(locale, venueId, "error=media"));
+
+  const { supabase, user } = await requireBusinessAccess(locale);
+  const [{ data: event }, { data: media }] = await Promise.all([
+    supabase
+      .from("events")
+      .select("id")
+      .eq("id", parsed.data.eventId)
+      .eq("venue_id", parsed.data.venueId)
+      .maybeSingle(),
+    supabase
+      .from("venue_media")
+      .select("id")
+      .eq("id", parsed.data.mediaId)
+      .eq("venue_id", parsed.data.venueId)
+      .maybeSingle(),
+  ]);
+  if (!event || !media) redirect(destination(locale, venueId, "error=media"));
+
+  const { data: existing } = await supabase
+    .from("venue_media_placements")
+    .select("id")
+    .eq("venue_id", parsed.data.venueId)
+    .eq("target_key", parsed.data.eventId)
+    .eq("placement", "event_bin")
+    .eq("media_id", parsed.data.mediaId)
+    .maybeSingle();
+  if (!existing) {
+    const { count } = await supabase
+      .from("venue_media_placements")
+      .select("id", { count: "exact", head: true })
+      .eq("venue_id", parsed.data.venueId)
+      .eq("target_key", parsed.data.eventId)
+      .eq("placement", "event_bin");
+    const { error } = await supabase.from("venue_media_placements").insert({
+      venue_id: parsed.data.venueId,
+      media_id: parsed.data.mediaId,
+      placement: "event_bin",
+      target_key: parsed.data.eventId,
+      sort_order: count || 0,
+      created_by: user.id,
+    });
+    if (error) redirect(destination(locale, venueId, "error=media"));
+  }
+  redirect(destination(locale, venueId, "section=events&updated=event-media"));
+}
+
+export async function removeMediaFromEventBin(formData: FormData) {
+  const parsed = eventMediaContext
+    .extend({ mediaId: z.string().uuid() })
+    .safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  if (!parsed.success) redirect(destination(locale, venueId, "error=media"));
+
+  const { supabase } = await requireBusinessAccess(locale);
+  const { error } = await supabase
+    .from("venue_media_placements")
+    .delete()
+    .eq("venue_id", parsed.data.venueId)
+    .eq("target_key", parsed.data.eventId)
+    .eq("media_id", parsed.data.mediaId)
+    .in("placement", [
+      "event_bin",
+      "event_cover",
+      "event_explore",
+      "event_gallery_1",
+      "event_gallery_2",
+      "event_gallery_3",
+    ]);
+  if (error) redirect(destination(locale, venueId, "error=media"));
+  redirect(destination(locale, venueId, "section=events&updated=event-media"));
+}
+
+export async function uploadEventImage(formData: FormData) {
+  const parsed = eventMediaContext
+    .extend({
+      alt: z.string().trim().min(3).max(300),
+      sortOrder: z.coerce.number().int().min(0).max(10000).default(0),
+    })
+    .safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  const file = formData.get("image");
+  if (
+    !parsed.success ||
+    !(file instanceof File) ||
+    !["image/jpeg", "image/png", "image/webp"].includes(file.type) ||
+    file.size < 1 ||
+    file.size > 10 * 1024 * 1024
+  ) {
+    redirect(destination(locale, venueId, "error=media"));
+  }
+
+  const { supabase, user } = await requireBusinessAccess(locale);
+  const { data: event } = await supabase
+    .from("events")
+    .select("id")
+    .eq("id", parsed.data.eventId)
+    .eq("venue_id", parsed.data.venueId)
+    .maybeSingle();
+  if (!event) redirect(destination(locale, venueId, "error=media"));
+
+  const localizedAlt = (
+    await translateLocalizedFields(locale, { alt: parsed.data.alt }, user.id)
+  ).alt;
+  const extension = file.type.split("/")[1].replace("jpeg", "jpg");
+  const storagePath =
+    `${parsed.data.venueId}/events/${parsed.data.eventId}/${crypto.randomUUID()}.${extension}`;
+  const { error: uploadError } = await supabase.storage
+    .from("event-media")
+    .upload(storagePath, file, { contentType: file.type, upsert: false });
+  if (uploadError) redirect(destination(locale, venueId, "error=media"));
+
+  const mediaId = crypto.randomUUID();
+  const { error: mediaError } = await supabase.from("venue_media").insert({
+    id: mediaId,
+    venue_id: parsed.data.venueId,
+    storage_path: storagePath,
+    alt_es: localizedAlt.es,
+    alt_en: localizedAlt.en,
+    sort_order: parsed.data.sortOrder,
+    mime_type: file.type,
+    size_bytes: file.size,
+    created_by: user.id,
+  });
+  if (mediaError) {
+    await supabase.storage.from("event-media").remove([storagePath]);
+    redirect(destination(locale, venueId, "error=media"));
+  }
+
+  const { error: binError } = await supabase.from("venue_media_placements").insert({
+    venue_id: parsed.data.venueId,
+    media_id: mediaId,
+    placement: "event_bin",
+    target_key: parsed.data.eventId,
+    sort_order: parsed.data.sortOrder,
+    created_by: user.id,
+  });
+  if (binError) redirect(destination(locale, venueId, "error=media"));
+  redirect(destination(locale, venueId, "section=events&updated=event-media"));
 }
