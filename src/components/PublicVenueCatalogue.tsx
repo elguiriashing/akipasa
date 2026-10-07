@@ -25,9 +25,11 @@ function itemPrice(item: CatalogueItem, locale: "es" | "en") {
 export function PublicVenueCatalogue({
   locale,
   document,
+  media = [],
 }: {
   locale: "es" | "en";
   document: VenueCatalogueDocument;
+  media?: Array<{ id: string; url: string; alt: string }>;
 }) {
   const es = locale === "es";
   const sections = useMemo(
@@ -113,8 +115,25 @@ export function PublicVenueCatalogue({
                 item.containsFood;
               const hasDetails = allergenEntries.length > 0 || foodSafety;
 
+              const itemMedia = item.mediaId
+                ? media.find((candidate) => candidate.id === item.mediaId)
+                : undefined;
               return (
-                <article className="public-catalogue-item" key={item.id}>
+                <article
+                  className={
+                    itemMedia
+                      ? "public-catalogue-item has-media"
+                      : "public-catalogue-item"
+                  }
+                  key={item.id}
+                >
+                  {itemMedia && (
+                    <img
+                      className="public-catalogue-item-media"
+                      src={itemMedia.url}
+                      alt={itemMedia.alt}
+                    />
+                  )}
                   <div className="public-catalogue-item-head">
                     <div>
                       <strong>{catalogueTextForDisplay(item.name, locale, "item_name")}</strong>
