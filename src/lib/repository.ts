@@ -181,13 +181,16 @@ export class FixtureRepository implements DiscoveryRepository {
                 url,
                 alt: {
                   es: String(row.media.alt_es || event.title.es),
-                  ...(row.media.alt_en ? { en: String(row.media.alt_en) } : {}),
+                  ...(row.media.alt_en
+                    ? { en: String(row.media.alt_en) }
+                    : {}),
                 },
               }
             : undefined;
         })()
       : undefined;
-    const fallback = eventBinFallback || venue?.eventsImage || venue?.media?.[0];
+    const fallback =
+      eventBinFallback || venue?.eventsImage || venue?.media?.[0];
 
     event.bannerImage = mapPlaced("event_banner") || fallback;
     event.exploreImage = mapPlaced("event_explore") || fallback;
