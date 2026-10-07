@@ -17179,3 +17179,35 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
   object-fit: contain;
   box-shadow: 0 6px 18px rgb(0 0 0 / 22%);
 }
+
+
+.venue-title-row {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.venue-title-row h1,
+.venue-title-row .lede {
+  margin-left: 0;
+}
+
+.venue-profile-logo {
+  width: 4rem;
+  height: 4rem;
+  flex: 0 0 auto;
+  padding: .25rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: rgb(255 255 255 / 94%);
+  object-fit: contain;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 16%);
+}
+
+@media (max-width: 520px) {
+  .venue-profile-logo {
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: .8rem;
+  }
+}
