@@ -165,7 +165,7 @@ export function BusinessEventComposer({
                   venueMedia.find((item) => item.id === selectedId) ||
                   venueMedia[0];
                 return (
-                  <article className="event-five-slot" key={key}>
+                  <article className="event-five-slot" data-media-slot={key} key={key}>
                     <div className="event-five-preview">
                       {selected ? (
                         <img src={selected.url} alt={selected.alt} />
