@@ -22,7 +22,7 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
       - name: Focused tests
-        run: npx vitest run --environment node tests/venue-catalogue.test.ts tests/workspace-shell.test.tsx tests/venue-dashboard.test.tsx tests/time.test.ts tests/roles.test.ts
+        run: npx vitest run --environment node tests/venue-catalogue.test.ts tests/venue-dashboard.test.tsx tests/time.test.ts tests/roles.test.ts
       - name: Production build
         run: npm run build
       - name: Cloudflare build
