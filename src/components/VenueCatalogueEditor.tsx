@@ -85,12 +85,14 @@ export function VenueCatalogueEditor({
   revision,
   publishedRevision,
   initialDocument,
+  mediaOptions = [],
 }: {
   locale: "es" | "en";
   venueId: string;
   revision: number;
   publishedRevision: number | null;
   initialDocument: VenueCatalogueDocument;
+  mediaOptions?: Array<{ id: string; url: string; alt: string }>;
 }) {
   const es = locale === "es";
   const [document, setDocument] = useState(initialDocument);
@@ -868,6 +870,53 @@ export function VenueCatalogueEditor({
                         maxLength={1200}
                       />
                     </label>
+
+                    {mediaOptions.length > 0 && (
+                      <section className="catalogue-item-media-picker">
+                        <div>
+                          <strong>{es ? "Imagen del elemento" : "Item image"}</strong>
+                          <small>
+                            {es
+                              ? "Reutiliza una imagen de tu biblioteca."
+                              : "Reuse an image from your media library."}
+                          </small>
+                        </div>
+                        <div className="catalogue-item-media-grid">
+                          <button
+                            type="button"
+                            className={!selectedItem.mediaId ? "selected" : ""}
+                            onClick={() =>
+                              updateItem(selectedSection.id, selectedItem.id, {
+                                ...selectedItem,
+                                mediaId: null,
+                              })
+                            }
+                          >
+                            <span className="catalogue-item-media-empty">×</span>
+                            <small>{es ? "Sin imagen" : "No image"}</small>
+                          </button>
+                          {mediaOptions.map((media) => (
+                            <button
+                              type="button"
+                              key={media.id}
+                              className={
+                                selectedItem.mediaId === media.id ? "selected" : ""
+                              }
+                              aria-pressed={selectedItem.mediaId === media.id}
+                              onClick={() =>
+                                updateItem(selectedSection.id, selectedItem.id, {
+                                  ...selectedItem,
+                                  mediaId: media.id,
+                                })
+                              }
+                            >
+                              <img src={media.url} alt={media.alt} />
+                              <small>{media.alt}</small>
+                            </button>
+                          ))}
+                        </div>
+                      </section>
+                    )}
 
                     <div className="catalogue-item-toggle-row">
                       <label className="catalogue-switch">
