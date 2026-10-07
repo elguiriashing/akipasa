@@ -81,7 +81,11 @@ export function EventCard({
       .split("-")
       .map((word) => word.slice(0, 1).toUpperCase() + word.slice(1))
       .join(" ");
-  const primaryImage = result.venue.media?.[0];
+  const primaryImage =
+    result.event.exploreImage ||
+    result.venue.exploreImage ||
+    result.venue.eventsImage ||
+    result.venue.media?.[0];
   const priceLabel =
     result.event.priceDisplayMode === "hide"
       ? null
