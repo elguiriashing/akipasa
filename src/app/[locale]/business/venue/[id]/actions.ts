@@ -1109,18 +1109,25 @@ export async function addVenueMediaToEventBin(formData: FormData) {
   ]);
   if (!event || !media) redirect(destination(locale, venueId, "error=media"));
 
-  const { error } = await supabase.from("venue_media_placements").upsert(
-    {
+  const { data: existing } = await supabase
+    .from("venue_media_placements")
+    .select("id")
+    .eq("venue_id", parsed.data.venueId)
+    .eq("target_key", parsed.data.eventId)
+    .eq("placement", "event_bin")
+    .eq("media_id", parsed.data.mediaId)
+    .maybeSingle();
+  if (!existing) {
+    const { error } = await supabase.from("venue_media_placements").insert({
       venue_id: parsed.data.venueId,
       media_id: parsed.data.mediaId,
       placement: "event_bin",
       target_key: parsed.data.eventId,
       sort_order: 0,
       created_by: user.id,
-    },
-    { onConflict: "venue_id,target_key,media_id" },
-  );
-  if (error) redirect(destination(locale, venueId, "error=media"));
+    });
+    if (error) redirect(destination(locale, venueId, "error=media"));
+  }
   redirect(destination(locale, venueId, "section=events&updated=event-media"));
 }
 
@@ -1138,8 +1145,15 @@ export async function removeMediaFromEventBin(formData: FormData) {
     .delete()
     .eq("venue_id", parsed.data.venueId)
     .eq("target_key", parsed.data.eventId)
-    .eq("placement", "event_bin")
-    .eq("media_id", parsed.data.mediaId);
+    .eq("media_id", parsed.data.mediaId)
+    .in("placement", [
+      "event_bin",
+      "event_cover",
+      "event_explore",
+      "event_gallery_1",
+      "event_gallery_2",
+      "event_gallery_3",
+    ]);
   if (error) redirect(destination(locale, venueId, "error=media"));
   redirect(destination(locale, venueId, "section=events&updated=event-media"));
 }
