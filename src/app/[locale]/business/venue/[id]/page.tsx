@@ -217,7 +217,7 @@ export default async function VenueWorkspace({
       string
     >
   >;
-  const mediaStudioItems = (media || []).flatMap((item) => {
+  const allMediaItems = (media || []).flatMap((item) => {
     const url = signedMediaMap.get(item.storage_path);
     return url
       ? [{
@@ -227,9 +227,11 @@ export default async function VenueWorkspace({
             (es ? item.alt_es : item.alt_en || item.alt_es) ||
             (es ? "Imagen del local" : "Venue image"),
           sizeBytes: item.size_bytes,
+          eventSpecific: item.storage_path.includes("/events/"),
         }]
       : [];
   });
+  const mediaStudioItems = allMediaItems.filter((item) => !item.eventSpecific);
 
   const eventIds = (events || []).map((event) => event.id);
   const eventMediaPlacements = (mediaPlacements || []).filter((item) =>
@@ -658,7 +660,16 @@ export default async function VenueWorkspace({
                                 ""
                               : event.accessibility_notes_es || "",
                         }}
-                        media={mediaStudioItems.map((item) => ({
+                        media={[
+                          ...mediaStudioItems,
+                          ...allMediaItems.filter(
+                            (item) =>
+                              item.eventSpecific &&
+                              (eventPlacementMap.get(event.id)?.binMediaIds || []).includes(
+                                item.id,
+                              ),
+                          ),
+                        ].map((item) => ({
                           id: item.id,
                           url: item.url,
                           alt: item.alt,
