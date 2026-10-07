@@ -14,7 +14,7 @@ type LibreTranslateResponse = {
   error?: string;
 };
 
-function translationEndpoints() {
+function libreTranslationEndpoints() {
   const configured = process.env.AKIPASA_TRANSLATION_URL?.trim();
   const publicMirrors = [
     "https://translate.terraprint.co/translate",
@@ -23,9 +23,7 @@ function translationEndpoints() {
     "https://lt.psf.lt/translate",
     "https://translate.argosopentech.com/translate",
   ];
-  return configured
-    ? [configured, ...publicMirrors.filter((endpoint) => endpoint !== configured)]
-    : publicMirrors;
+  return { configured, publicMirrors };
 }
 
 async function translateOneAtEndpoint(
@@ -47,7 +45,7 @@ async function translateOneAtEndpoint(
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body,
-    signal: AbortSignal.timeout(10_000),
+    signal: AbortSignal.timeout(5_000),
   });
 
   const result = (await response.json().catch(() => ({}))) as LibreTranslateResponse;
@@ -91,6 +89,63 @@ async function translateValuesAtEndpoint(
   return translated;
 }
 
+type ApertiumResponse = {
+  responseStatus?: number;
+  responseData?: { translatedText?: string };
+  responseDetails?: string | null;
+};
+
+async function translateOneWithApertium(
+  sourceLocale: Locale,
+  targetLocale: Locale,
+  value: string,
+): Promise<string> {
+  const languageCode = (locale: Locale) => (locale === "en" ? "eng" : "spa");
+  const body = new URLSearchParams({
+    q: value,
+    langpair: `${languageCode(sourceLocale)}|${languageCode(targetLocale)}`,
+    markUnknown: "no",
+    format: "txt",
+  });
+  const response = await fetch("https://apertium.org/apy/translate", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+    signal: AbortSignal.timeout(8_000),
+  });
+  const result = (await response.json().catch(() => ({}))) as ApertiumResponse;
+  const translated = result.responseData?.translatedText;
+  if (
+    !response.ok ||
+    result.responseStatus !== 200 ||
+    typeof translated !== "string" ||
+    !translated.trim()
+  ) {
+    throw new Error(result.responseDetails || "Apertium translation failed");
+  }
+  return translated.trim();
+}
+
+async function apertiumTranslateBatch(
+  sourceLocale: Locale,
+  targetLocale: Locale,
+  values: string[],
+): Promise<string[]> {
+  const translated: string[] = [];
+  const concurrency = 4;
+  for (let index = 0; index < values.length; index += concurrency) {
+    const chunk = values.slice(index, index + concurrency);
+    translated.push(
+      ...(await Promise.all(
+        chunk.map((value) =>
+          translateOneWithApertium(sourceLocale, targetLocale, value),
+        ),
+      )),
+    );
+  }
+  return translated;
+}
+
 async function libreTranslateBatch(
   sourceLocale: Locale,
   targetLocale: Locale,
@@ -98,9 +153,35 @@ async function libreTranslateBatch(
 ): Promise<string[]> {
   if (!values.length) return [];
 
+  const { configured, publicMirrors } = libreTranslationEndpoints();
   let lastError = "No translation endpoint responded";
 
-  for (const endpoint of translationEndpoints()) {
+  if (configured) {
+    try {
+      return await translateValuesAtEndpoint(
+        configured,
+        sourceLocale,
+        targetLocale,
+        values,
+      );
+    } catch (error) {
+      lastError =
+        error instanceof Error ? error.message : "translation_request_failed";
+    }
+  }
+
+  // Apertium is a long-running open-source machine translation project with a
+  // public APY endpoint and a native English/Spanish pair. Prefer it over
+  // anonymous LibreTranslate mirrors when AkiPasa has no configured endpoint.
+  try {
+    return await apertiumTranslateBatch(sourceLocale, targetLocale, values);
+  } catch (error) {
+    lastError =
+      error instanceof Error ? error.message : "translation_request_failed";
+  }
+
+  for (const endpoint of publicMirrors) {
+    if (endpoint === configured) continue;
     try {
       return await translateValuesAtEndpoint(
         endpoint,
