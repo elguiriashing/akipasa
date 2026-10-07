@@ -661,16 +661,44 @@ export default async function BusinessPage({
                 {es ? "Descripción" : "Description"}
                 <textarea name="description" required minLength={20} maxLength={4000} rows={4} />
               </label>
-              <div className="form-grid-two">
-                <label>
+              <fieldset className="official-event-price-fieldset">
+                <legend>{es ? "Precio de entrada" : "Entry price"}</legend>
+                <div className="event-price-mode">
+                  <label className="event-price-option">
+                    <input
+                      type="radio"
+                      name="priceDisplayMode"
+                      value="hide"
+                      defaultChecked
+                    />
+                    <span>◌</span>
+                    <strong>{es ? "No mostrar precio" : "Hide price"}</strong>
+                    <small>
+                      {es
+                        ? "Para planes sin entrada: desayunos, mercados, bares…"
+                        : "For events with no entry fee: breakfasts, markets, bars…"}
+                    </small>
+                  </label>
+                  <label className="event-price-option">
+                    <input
+                      type="radio"
+                      name="priceDisplayMode"
+                      value="show"
+                    />
+                    <span>€</span>
+                    <strong>{es ? "Mostrar precio" : "Show price"}</strong>
+                    <small>{es ? "0 € aparecerá como Gratis." : "€0 displays as Free."}</small>
+                  </label>
+                </div>
+                <label className="event-price-input">
                   {es ? "Precio (€)" : "Price (€)"}
                   <input name="priceEuros" type="number" min="0" defaultValue="0" step="0.01" required />
                 </label>
-                <label>
-                  {es ? "Enlace oficial / reserva" : "Official / booking link"}
-                  <input name="bookingUrl" type="url" placeholder="https://" />
-                </label>
-              </div>
+              </fieldset>
+              <label>
+                {es ? "Enlace oficial / reserva" : "Official / booking link"}
+                <input name="bookingUrl" type="url" placeholder="https://" />
+              </label>
               <div className="form-grid-two">
                 <label>
                   {es ? "Inicio" : "Starts"}
