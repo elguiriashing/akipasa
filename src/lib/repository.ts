@@ -611,7 +611,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
           .select("id,storage_path,alt_es,alt_en")
           .eq("venue_id", venue.id)
           .order("sort_order")
-          .limit(12),
+          .limit(60),
       ]);
     venue.offers = (offers || []).map((item) => ({
       id: item.id,
@@ -692,7 +692,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       .select("id,storage_path,alt_es,alt_en")
       .eq("venue_id", venue.id)
       .order("sort_order")
-      .limit(12);
+      .limit(60);
     const signedMedia = await Promise.all(
       (media || []).map(async (item) => {
         const { data: signed } = await supabase.storage
