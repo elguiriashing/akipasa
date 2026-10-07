@@ -301,13 +301,45 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
     // Process rows to extract media paths
     const rows = data as unknown as DbRecord[];
     const eventIds = rows.map((row) => String(row.id));
-    const { data: eventCoverPlacements } = eventIds.length
-      ? await supabase
-          .from("venue_media_placements")
-          .select("target_key,media_id,venue_media(id,storage_path,alt_es,alt_en)")
-          .eq("placement", "event_cover")
-          .in("target_key", eventIds)
-      : { data: [] };
+    const venueIds = Array.from(
+      new Set(
+        rows
+          .map((row) => one(row.venues))
+          .filter((row): row is DbRecord => Boolean(row))
+          .map((row) => String(row.id)),
+      ),
+    );
+    const [{ data: eventCoverPlacements }, { data: venueVisualPlacements }] =
+      await Promise.all([
+        eventIds.length
+          ? supabase
+              .from("venue_media_placements")
+              .select("target_key,media_id,venue_media(id,storage_path,alt_es,alt_en)")
+              .eq("placement", "event_cover")
+              .in("target_key", eventIds)
+          : Promise.resolve({ data: [] }),
+        venueIds.length
+          ? supabase
+              .from("venue_media_placements")
+              .select("venue_id,placement,media_id,venue_media(id,storage_path,alt_es,alt_en)")
+              .in("venue_id", venueIds)
+              .eq("target_key", "")
+              .in("placement", ["venue_cover", "venue_logo"])
+          : Promise.resolve({ data: [] }),
+      ]);
+    const venueVisualRows = new Map<
+      string,
+      { cover?: DbRecord; logo?: DbRecord }
+    >();
+    for (const placement of venueVisualPlacements || []) {
+      const media = one(placement.venue_media as unknown);
+      if (!media) continue;
+      const current = venueVisualRows.get(String(placement.venue_id)) || {};
+      if (placement.placement === "venue_cover") current.cover = media;
+      if (placement.placement === "venue_logo") current.logo = media;
+      venueVisualRows.set(String(placement.venue_id), current);
+    }
+
     const eventCoverRows = new Map(
       (eventCoverPlacements || []).flatMap((placement) => {
         const media = one(placement.venue_media as unknown);
@@ -326,6 +358,12 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
 
     for (const media of eventCoverRows.values()) {
       if (media.storage_path) mediaPaths.add(String(media.storage_path));
+    }
+    for (const visual of venueVisualRows.values()) {
+      if (visual.cover?.storage_path)
+        mediaPaths.add(String(visual.cover.storage_path));
+      if (visual.logo?.storage_path)
+        mediaPaths.add(String(visual.logo.storage_path));
     }
 
     // Fetch signed URLs in bulk
@@ -380,6 +418,42 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
           );
         if (mappedMedia.length > 0)
           venue.media = mappedMedia as typeof venue.media;
+      }
+
+      const venueVisual = venueVisualRows.get(venue.id);
+      if (venueVisual?.cover?.storage_path) {
+        const coverUrl = signedUrlMap.get(String(venueVisual.cover.storage_path));
+        if (coverUrl) {
+          const cover = {
+            id: String(venueVisual.cover.id),
+            url: coverUrl,
+            alt: {
+              es: String(venueVisual.cover.alt_es || venue.name),
+              ...(venueVisual.cover.alt_en
+                ? { en: String(venueVisual.cover.alt_en) }
+                : {}),
+            },
+          };
+          venue.media = [
+            cover,
+            ...(venue.media || []).filter((item) => item.id !== cover.id),
+          ];
+        }
+      }
+      if (venueVisual?.logo?.storage_path) {
+        const logoUrl = signedUrlMap.get(String(venueVisual.logo.storage_path));
+        if (logoUrl) {
+          venue.logoImage = {
+            id: String(venueVisual.logo.id),
+            url: logoUrl,
+            alt: {
+              es: String(venueVisual.logo.alt_es || venue.name),
+              ...(venueVisual.logo.alt_en
+                ? { en: String(venueVisual.logo.alt_en) }
+                : {}),
+            },
+          };
+        }
       }
 
       const eventCoverRow = eventCoverRows.get(event.id);
@@ -572,20 +646,30 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       (item): item is NonNullable<(typeof signedMedia)[number]> =>
         item !== null,
     );
-    const { data: coverPlacement } = await supabase
+    const { data: visualPlacements } = await supabase
       .from("venue_media_placements")
-      .select("media_id")
+      .select("media_id,placement")
       .eq("venue_id", venue.id)
-      .eq("placement", "venue_cover")
       .eq("target_key", "")
-      .maybeSingle();
-    if (coverPlacement?.media_id && venue.media?.length) {
-      const cover = venue.media.find((item) => item.id === coverPlacement.media_id);
-      if (cover) {
-        venue.media = [
-          cover,
-          ...venue.media.filter((item) => item.id !== cover.id),
-        ];
+      .in("placement", ["venue_cover", "venue_logo"]);
+    if (venue.media?.length) {
+      const coverMediaId = visualPlacements?.find(
+        (item) => item.placement === "venue_cover",
+      )?.media_id;
+      const logoMediaId = visualPlacements?.find(
+        (item) => item.placement === "venue_logo",
+      )?.media_id;
+      if (coverMediaId) {
+        const cover = venue.media.find((item) => item.id === coverMediaId);
+        if (cover) {
+          venue.media = [
+            cover,
+            ...venue.media.filter((item) => item.id !== cover.id),
+          ];
+        }
+      }
+      if (logoMediaId) {
+        venue.logoImage = venue.media.find((item) => item.id === logoMediaId);
       }
     }
     return venue;
@@ -629,20 +713,30 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       (item): item is NonNullable<(typeof signedMedia)[number]> =>
         item !== null,
     );
-    const { data: coverPlacement } = await supabase
+    const { data: visualPlacements } = await supabase
       .from("venue_media_placements")
-      .select("media_id")
+      .select("media_id,placement")
       .eq("venue_id", venue.id)
-      .eq("placement", "venue_cover")
       .eq("target_key", "")
-      .maybeSingle();
-    if (coverPlacement?.media_id && venue.media?.length) {
-      const cover = venue.media.find((item) => item.id === coverPlacement.media_id);
-      if (cover) {
-        venue.media = [
-          cover,
-          ...venue.media.filter((item) => item.id !== cover.id),
-        ];
+      .in("placement", ["venue_cover", "venue_logo"]);
+    if (venue.media?.length) {
+      const coverMediaId = visualPlacements?.find(
+        (item) => item.placement === "venue_cover",
+      )?.media_id;
+      const logoMediaId = visualPlacements?.find(
+        (item) => item.placement === "venue_logo",
+      )?.media_id;
+      if (coverMediaId) {
+        const cover = venue.media.find((item) => item.id === coverMediaId);
+        if (cover) {
+          venue.media = [
+            cover,
+            ...venue.media.filter((item) => item.id !== cover.id),
+          ];
+        }
+      }
+      if (logoMediaId) {
+        venue.logoImage = venue.media.find((item) => item.id === logoMediaId);
       }
     }
     return venue;
