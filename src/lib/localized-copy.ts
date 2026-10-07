@@ -425,8 +425,24 @@ export async function translateVenueCatalogueDocument(
       return;
     }
 
-    // Product/dish names are identity, not prose. Auto-translating them gave
-    // us gems such as "Wonder Burger" -> "Maravilla Burger".
+    const deterministic = deterministicCatalogueTranslation(
+      actualSourceLocale,
+      actualTargetLocale,
+      source,
+      context,
+    );
+    if (deterministic) {
+      pair[actualSourceLocale] = source;
+      pair[actualTargetLocale] = clampTranslatedValue(
+        deterministic,
+        maxLength,
+      );
+      markTranslated(pair, actualSourceLocale, source);
+      return;
+    }
+
+    // Product/dish names are identity, not prose. Translate known generic menu
+    // terms above, but preserve unknown names such as "Wonder Burger".
     if (preserveSource) {
       pair[actualSourceLocale] = source;
       pair[actualTargetLocale] = source;
@@ -440,22 +456,6 @@ export async function translateVenueCatalogueDocument(
       pair._translation.sourceHash === hash &&
       pair[actualTargetLocale].trim()
     ) {
-      markTranslated(pair, actualSourceLocale, source);
-      return;
-    }
-
-    const deterministic = deterministicCatalogueTranslation(
-      actualSourceLocale,
-      actualTargetLocale,
-      source,
-      context,
-    );
-    if (deterministic) {
-      pair[actualSourceLocale] = source;
-      pair[actualTargetLocale] = clampTranslatedValue(
-        deterministic,
-        maxLength,
-      );
       markTranslated(pair, actualSourceLocale, source);
       return;
     }
