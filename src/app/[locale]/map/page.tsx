@@ -128,6 +128,8 @@ export default async function MapPage({
         ? m.free
         : `${(result.event.priceCents / 100).toFixed(0)}\u20ac`,
     source: result.event.source,
+    kind: "event" as const,
+    venueId: result.event.venueId,
   }));
   const mapPoints = eventPoints;
 

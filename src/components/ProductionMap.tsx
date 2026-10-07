@@ -38,6 +38,7 @@ export type MapPoint = {
     | "unclaimed"
     | "accommodation";
   kind?: "event" | "venue";
+  venueId?: string;
 };
 
 function clusterImage(diameter: number, fill: string): ImageData {
@@ -240,8 +241,17 @@ export function ProductionMap({
     const officialPoints = initialPoints.filter(
       (point) => point.source === "akipasa_selection",
     );
+    const priorityEventPoints = initialPoints.filter(
+      (point) => point.source !== "akipasa_selection" && point.kind === "event",
+    );
+    const eventVenueIds = new Set(
+      priorityEventPoints.flatMap((point) =>
+        point.venueId ? [point.venueId] : [],
+      ),
+    );
     const clusterableActivityPoints = initialPoints.filter(
-      (point) => point.source !== "akipasa_selection",
+      (point) =>
+        point.source !== "akipasa_selection" && point.kind !== "event",
     );
     let visiblePoints = initialPoints;
     let pointIndex = new Map(initialPoints.map((point) => [point.id, point]));
@@ -335,6 +345,20 @@ export function ProductionMap({
             cluster: true,
             clusterMaxZoom: 14,
             clusterRadius: 52,
+          });
+          map.addSource("venue-event-pins", {
+            type: "geojson",
+            data: {
+              type: "FeatureCollection",
+              features: priorityEventPoints.map((point) => ({
+                type: "Feature",
+                geometry: {
+                  type: "Point",
+                  coordinates: [point.longitude, point.latitude],
+                },
+                properties: { id: point.id, source: point.source },
+              })),
+            },
           });
           map.addSource("official-akipasa-events", {
             type: "geojson",
@@ -431,6 +455,25 @@ export function ProductionMap({
               "icon-anchor": "bottom",
               "icon-allow-overlap": true,
               "icon-ignore-placement": true,
+            },
+          });
+
+          map.addLayer({
+            id: "venue-event-pins",
+            type: "symbol",
+            source: "venue-event-pins",
+            layout: {
+              "icon-image": [
+                "match",
+                ["get", "source"],
+                "community",
+                "pin-community",
+                "pin-verified",
+              ],
+              "icon-anchor": "bottom",
+              "icon-allow-overlap": true,
+              "icon-ignore-placement": true,
+              "symbol-sort-key": 900,
             },
           });
 
@@ -549,6 +592,9 @@ export function ProductionMap({
           map.on("click", "discovery-unclustered", async (event) => {
             await openPointFromFeature(event.features?.[0]);
           });
+          map.on("click", "venue-event-pins", async (event) => {
+            await openPointFromFeature(event.features?.[0]);
+          });
           map.on("click", "official-akipasa-events", async (event) => {
             await openPointFromFeature(event.features?.[0]);
           });
@@ -560,7 +606,12 @@ export function ProductionMap({
             ).filter(
               (marker) =>
                 markerIsVisible(marker, verticalRef.current) &&
-                (!venueIdsRef.current || venueIdsRef.current.has(marker[0])),
+                (!venueIdsRef.current || venueIdsRef.current.has(marker[0])) &&
+                !(
+                  verticalRef.current === "activities" &&
+                  stayType === undefined &&
+                  eventVenueIds.has(marker[0])
+                ),
             );
             visiblePoints = [
               ...(verticalRef.current === "activities" ? initialPoints : []),
@@ -599,7 +650,11 @@ export function ProductionMap({
             ).setData({
               type: "FeatureCollection",
               features: visiblePoints
-                .filter((point) => point.source !== "akipasa_selection")
+                .filter(
+                  (point) =>
+                    point.kind === "venue" &&
+                    point.source !== "akipasa_selection",
+                )
                 .map((point) => ({
                   type: "Feature",
                   geometry: {
@@ -608,6 +663,23 @@ export function ProductionMap({
                   },
                   properties: { id: point.id, source: point.source },
                 })),
+            });
+            (
+              map.getSource(
+                "venue-event-pins",
+              ) as import("maplibre-gl").GeoJSONSource
+            ).setData({
+              type: "FeatureCollection",
+              features: showActivityPoints
+                ? priorityEventPoints.map((point) => ({
+                    type: "Feature",
+                    geometry: {
+                      type: "Point",
+                      coordinates: [point.longitude, point.latitude],
+                    },
+                    properties: { id: point.id, source: point.source },
+                  }))
+                : [],
             });
             (
               map.getSource(
@@ -715,6 +787,7 @@ export function ProductionMap({
           for (const layer of [
             "discovery-clusters",
             "discovery-unclustered",
+            "venue-event-pins",
             "official-akipasa-events",
           ]) {
             map.on("mouseenter", layer, () => {
