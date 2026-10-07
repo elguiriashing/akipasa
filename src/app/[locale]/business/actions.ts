@@ -190,6 +190,10 @@ const eventSchema = z.object({
   priceEuros: z.coerce.number().min(0).max(10000),
   priceDisplayMode: z.enum(["show", "hide"]).default("show"),
   coverMediaId: z.union([z.string().uuid(), z.literal("")]).default(""),
+  exploreMediaId: z.union([z.string().uuid(), z.literal("")]).default(""),
+  galleryMediaId1: z.union([z.string().uuid(), z.literal("")]).default(""),
+  galleryMediaId2: z.union([z.string().uuid(), z.literal("")]).default(""),
+  galleryMediaId3: z.union([z.string().uuid(), z.literal("")]).default(""),
   bookingUrl: safeExternalUrlSchema,
   startsAt: madridLocalDateTimeSchema,
   endsAt: madridLocalDateTimeSchema,
@@ -241,16 +245,16 @@ export async function createEvent(formData: FormData) {
   );
   if (error) redirect(`/${locale}/business?view=events&error=event`);
   if (typeof eventId === "string") {
-    const galleryMediaIds = formData
-      .getAll("galleryMediaId")
-      .map(String)
-      .filter((value) => /^[0-9a-f-]{36}$/i.test(value))
-      .slice(0, 8);
-
-    const selectedMediaIds = [
-      ...(e.coverMediaId ? [e.coverMediaId] : []),
-      ...galleryMediaIds,
-    ];
+    const requestedSlots = [
+      ["event_cover", e.coverMediaId],
+      ["event_explore", e.exploreMediaId],
+      ["event_gallery_1", e.galleryMediaId1],
+      ["event_gallery_2", e.galleryMediaId2],
+      ["event_gallery_3", e.galleryMediaId3],
+    ] as const;
+    const selectedMediaIds = requestedSlots.flatMap(([, mediaId]) =>
+      mediaId ? [mediaId] : [],
+    );
 
     if (selectedMediaIds.length) {
       const { data: ownedMedia } = await supabase
@@ -260,29 +264,21 @@ export async function createEvent(formData: FormData) {
         .in("id", selectedMediaIds);
       const allowed = new Set((ownedMedia || []).map((item) => item.id));
 
-      if (e.coverMediaId && allowed.has(e.coverMediaId)) {
-        await supabase.from("venue_media_placements").insert({
-          venue_id: e.venueId,
-          media_id: e.coverMediaId,
-          placement: "event_cover",
-          target_key: eventId,
-          sort_order: 0,
-          created_by: user.id,
-        });
-      }
-
-      const galleryRows = galleryMediaIds
-        .filter((id) => allowed.has(id))
-        .map((id, index) => ({
-          venue_id: e.venueId,
-          media_id: id,
-          placement: "event_gallery",
-          target_key: eventId,
-          sort_order: index,
-          created_by: user.id,
-        }));
-      if (galleryRows.length) {
-        await supabase.from("venue_media_placements").insert(galleryRows);
+      const placementRows = requestedSlots.flatMap(
+        ([placement, mediaId], index) =>
+          mediaId && allowed.has(mediaId)
+            ? [{
+                venue_id: e.venueId,
+                media_id: mediaId,
+                placement,
+                target_key: eventId,
+                sort_order: index,
+                created_by: user.id,
+              }]
+            : [],
+      );
+      if (placementRows.length) {
+        await supabase.from("venue_media_placements").insert(placementRows);
       }
     }
 
