@@ -25,7 +25,6 @@ export function ConsentAnalytics() {
          location.hostname === "www.akipasa.com");
       w[`ga-disable-${measurementId}`] = !analytics;
       w[`ga-disable-${adsId}`] = !adsAllowed;
-      if (!analytics && !adsAllowed && !loaded) return;
 
       w.dataLayer = w.dataLayer || [];
       w.gtag =
@@ -36,12 +35,15 @@ export function ConsentAnalytics() {
         };
 
       // Consent must be set before configuring either destination.
-      w.gtag("consent", "default", {
-        analytics_storage: analytics ? "granted" : "denied",
-        ad_storage: adsAllowed ? "granted" : "denied",
-        ad_user_data: adsAllowed ? "granted" : "denied",
-        ad_personalization: adsAllowed ? "granted" : "denied",
-      });
+      if (!loaded) {
+        w.gtag("consent", "default", {
+          analytics_storage: "denied",
+          ad_storage: "denied",
+          ad_user_data: "denied",
+          ad_personalization: "denied",
+          wait_for_update: 500,
+        });
+      }
       w.gtag("consent", "update", {
         analytics_storage: analytics ? "granted" : "denied",
         ad_storage: adsAllowed ? "granted" : "denied",
@@ -49,7 +51,7 @@ export function ConsentAnalytics() {
         ad_personalization: adsAllowed ? "granted" : "denied",
       });
 
-      if (!loaded && (analytics || adsAllowed)) {
+      if (!loaded) {
         loaded = true;
         w.gtag("js", new Date());
         const script = document.createElement("script");
@@ -65,7 +67,7 @@ export function ConsentAnalytics() {
           allow_ad_personalization_signals: false,
         });
       }
-      if (adsAllowed && !adsConfigured) {
+      if (!adsConfigured && (location.hostname === "akipasa.com" || location.hostname === "www.akipasa.com")) {
         adsConfigured = true;
         w.gtag("config", adsId);
       }
