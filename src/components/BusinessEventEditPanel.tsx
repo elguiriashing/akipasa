@@ -111,6 +111,7 @@ export function BusinessEventEditPanel({
   const [activeTab, setActiveTab] = useState<EditorTab>("details");
   const [pickerSlot, setPickerSlot] = useState<EventSlotKey | null>(null);
   const [pickerPage, setPickerPage] = useState(0);
+  const [libraryPage, setLibraryPage] = useState(0);
   const [priceMode, setPriceMode] = useState<"show" | "hide">(
     event.priceDisplayMode,
   );
@@ -151,6 +152,12 @@ export function BusinessEventEditPanel({
   const pickerItems = selectableMedia.slice(
     safePickerPage * PAGE_SIZE,
     safePickerPage * PAGE_SIZE + PAGE_SIZE,
+  );
+  const libraryPageCount = Math.max(1, Math.ceil(eventBin.length / PAGE_SIZE));
+  const safeLibraryPage = Math.min(libraryPage, libraryPageCount - 1);
+  const libraryItems = eventBin.slice(
+    safeLibraryPage * PAGE_SIZE,
+    safeLibraryPage * PAGE_SIZE + PAGE_SIZE,
   );
 
   function selectedFor(key: EventSlotKey) {
@@ -578,28 +585,51 @@ export function BusinessEventEditPanel({
             </p>
 
             {eventBin.length ? (
-              <div className="event-editor-library-grid">
-                {eventBin.map((item, index) => (
-                  <article className="event-editor-library-item" key={item.id}>
-                    <div className="event-editor-library-thumb">
-                      <img src={item.url} alt={item.alt} />
-                      {index === 0 ? (
-                        <span className="media-primary-chip">{es ? "Principal" : "Primary"}</span>
-                      ) : null}
-                    </div>
-                    <div>
-                      <strong>{item.alt}</strong>
-                      <button
-                        type="button"
-                        disabled={mediaState === "working"}
-                        onClick={() => removeFromEvent(item.id)}
-                      >
-                        {es ? "Quitar" : "Remove"}
-                      </button>
-                    </div>
-                  </article>
-                ))}
-              </div>
+              <>
+                <div className="event-editor-library-grid">
+                  {libraryItems.map((item, index) => (
+                    <article className="event-editor-library-item" key={item.id}>
+                      <div className="event-editor-library-thumb">
+                        <img src={item.url} alt={item.alt} />
+                        {safeLibraryPage === 0 && index === 0 ? (
+                          <span className="media-primary-chip">{es ? "Principal" : "Primary"}</span>
+                        ) : null}
+                      </div>
+                      <div>
+                        <strong>{item.alt}</strong>
+                        <button
+                          type="button"
+                          disabled={mediaState === "working"}
+                          onClick={() => removeFromEvent(item.id)}
+                        >
+                          {es ? "Quitar" : "Remove"}
+                        </button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+                <div className="event-library-pagination">
+                  <button
+                    type="button"
+                    disabled={safeLibraryPage <= 0}
+                    onClick={() => setLibraryPage((page) => Math.max(0, page - 1))}
+                  >
+                    ←
+                  </button>
+                  <span>{safeLibraryPage + 1} / {libraryPageCount}</span>
+                  <button
+                    type="button"
+                    disabled={safeLibraryPage >= libraryPageCount - 1}
+                    onClick={() =>
+                      setLibraryPage((page) =>
+                        Math.min(libraryPageCount - 1, page + 1),
+                      )
+                    }
+                  >
+                    →
+                  </button>
+                </div>
+              </>
             ) : (
               <div className="event-media-empty">
                 <span>▧</span>
