@@ -3,6 +3,7 @@ import "server-only";
 import type { Locale } from "@/lib/config";
 import {
   catalogueTextHash,
+  normalizeCatalogueFoodTranslations,
   type CatalogueText,
   type VenueCatalogueDocument,
 } from "@/lib/venue-catalogue";
@@ -507,5 +508,5 @@ export async function translateVenueCatalogueDocument(
   await translatePendingLocale("es");
   await translatePendingLocale("en");
 
-  return document;
+  return normalizeCatalogueFoodTranslations(document);
 }
