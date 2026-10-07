@@ -550,6 +550,10 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
 
       if (Array.isArray(venueRow.venue_media)) {
         const mappedMedia = [...venueRow.venue_media]
+          .filter(
+            (item: Record<string, unknown>) =>
+              !String(item.storage_path || "").includes("/events/"),
+          )
           .sort(
             (a: Record<string, unknown>, b: Record<string, unknown>) =>
               Number(a.sort_order || 0) - Number(b.sort_order || 0),
@@ -771,6 +775,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
           .from("venue_media")
           .select("id,storage_path,alt_es,alt_en")
           .eq("venue_id", venue.id)
+          .not("storage_path", "like", "%/events/%")
           .order("sort_order")
           .limit(60),
       ]);
@@ -862,6 +867,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       .from("venue_media")
       .select("id,storage_path,alt_es,alt_en")
       .eq("venue_id", venue.id)
+      .not("storage_path", "like", "%/events/%")
       .order("sort_order")
       .limit(60);
     const signedMedia = await Promise.all(
