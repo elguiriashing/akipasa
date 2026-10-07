@@ -43,7 +43,12 @@ export function MapResultsDrawer({
       query.has("eventPage") ||
       query.has("venuePage")
     ) {
-      if (dialog.current && !dialog.current.open) dialog.current.showModal();
+      if (dialog.current && !dialog.current.open) {
+        dialog.current.showModal();
+        requestAnimationFrame(() =>
+          window.dispatchEvent(new Event("akipasa:map-resize")),
+        );
+      }
     }
   }, [query]);
 
@@ -59,7 +64,12 @@ export function MapResultsDrawer({
       Math.abs(currentLongitude - center.longitude) < 0.000001;
 
     if (alreadyCentered) {
-      if (dialog.current && !dialog.current.open) dialog.current.showModal();
+      if (dialog.current && !dialog.current.open) {
+        dialog.current.showModal();
+        requestAnimationFrame(() =>
+          window.dispatchEvent(new Event("akipasa:map-resize")),
+        );
+      }
       return;
     }
 
@@ -90,7 +100,12 @@ export function MapResultsDrawer({
         className="map-results-drawer"
         aria-labelledby="map-drawer-title"
         onClick={(event) => {
-          if (event.target === event.currentTarget) dialog.current?.close();
+          if (event.target === event.currentTarget) {
+            dialog.current?.close();
+            requestAnimationFrame(() =>
+              window.dispatchEvent(new Event("akipasa:map-resize")),
+            );
+          }
         }}
       >
         <div className="map-drawer-content">
@@ -105,7 +120,12 @@ export function MapResultsDrawer({
               type="button"
               className="app-icon-button"
               aria-label={es ? "Cerrar lista" : "Close list"}
-              onClick={() => dialog.current?.close()}
+              onClick={() => {
+                dialog.current?.close();
+                requestAnimationFrame(() =>
+                  window.dispatchEvent(new Event("akipasa:map-resize")),
+                );
+              }}
             >
               ×
             </button>

@@ -280,6 +280,12 @@ export function ProductionMap({
           },
           renderWorldCopies: false,
         });
+        const resizeMap = () => {
+          requestAnimationFrame(() => {
+            if (!disposed) map.resize();
+          });
+        };
+        window.addEventListener("akipasa:map-resize", resizeMap);
         let mapStyleReady = false;
         const syncMapTheme = () => {
           if (!disposed && mapStyleReady) {
@@ -800,6 +806,7 @@ export function ProductionMap({
         });
         cleanup = () => {
           themeObserver.disconnect();
+          window.removeEventListener("akipasa:map-resize", resizeMap);
           map.off("style.load", onMapStyleLoad);
           map.remove();
         };
