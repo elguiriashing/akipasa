@@ -2,8 +2,12 @@ import "server-only";
 
 import type { Locale } from "@/lib/config";
 import {
+  CATALOGUE_TRANSLATION_VERSION,
   catalogueTextHash,
+  deterministicCatalogueTranslation,
+  polishCatalogueTranslation,
   type CatalogueText,
+  type CatalogueTranslationContext,
   type VenueCatalogueDocument,
 } from "@/lib/venue-catalogue";
 
@@ -170,16 +174,9 @@ async function libreTranslateBatch(
     }
   }
 
-  // Apertium is a long-running open-source machine translation project with a
-  // public APY endpoint and a native English/Spanish pair. Prefer it over
-  // anonymous LibreTranslate mirrors when AkiPasa has no configured endpoint.
-  try {
-    return await apertiumTranslateBatch(sourceLocale, targetLocale, values);
-  } catch (error) {
-    lastError =
-      error instanceof Error ? error.message : "translation_request_failed";
-  }
-
+  // LibreTranslate/Argos handles conversational menu copy better than
+  // Apertium's word-by-word fallbacks ("nuts" -> hardware nuts, "can" -> verb).
+  // Keep Apertium as the last open-source fallback rather than the first choice.
   for (const endpoint of publicMirrors) {
     if (endpoint === configured) continue;
     try {
@@ -193,6 +190,13 @@ async function libreTranslateBatch(
       lastError =
         error instanceof Error ? error.message : "translation_request_failed";
     }
+  }
+
+  try {
+    return await apertiumTranslateBatch(sourceLocale, targetLocale, values);
+  } catch (error) {
+    lastError =
+      error instanceof Error ? error.message : "translation_request_failed";
   }
 
   throw new Error(lastError);
@@ -336,6 +340,7 @@ export async function translateSubmittedLocalizedFields(
 type CatalogueTranslationTarget = {
   pair: CatalogueText;
   maxLength: number;
+  context: CatalogueTranslationContext;
   sourceLocale: Locale;
   targetLocale: Locale;
   source: string;
@@ -362,24 +367,52 @@ export async function translateVenueCatalogueDocument(
   const requestedTargetLocale: Locale = sourceLocale === "es" ? "en" : "es";
   const pending: CatalogueTranslationTarget[] = [];
 
-  const register = (pair: CatalogueText, maxLength: number) => {
+  const markTranslated = (
+    pair: CatalogueText,
+    actualSourceLocale: Locale,
+    source: string,
+  ) => {
+    pair._translation = {
+      version: CATALOGUE_TRANSLATION_VERSION,
+      sourceLocale: actualSourceLocale,
+      sourceHash: catalogueTextHash(source),
+      esHash: catalogueTextHash(pair.es.trim()),
+      enHash: catalogueTextHash(pair.en.trim()),
+    };
+  };
+
+  const register = (
+    pair: CatalogueText,
+    maxLength: number,
+    context: CatalogueTranslationContext,
+    preserveSource = false,
+  ) => {
     const requestedSource = pair[sourceLocale].trim();
     const fallbackSource = pair[requestedTargetLocale].trim();
     const requestedHash = catalogueTextHash(requestedSource);
 
     if (
+      !preserveSource &&
       requestedSource &&
       pair[requestedTargetLocale].trim() &&
+      pair._translation?.version === CATALOGUE_TRANSLATION_VERSION &&
       pair._translation?.[`${sourceLocale}Hash`] === requestedHash
     ) {
       return;
     }
 
-    const actualSourceLocale: Locale = requestedSource
-      ? sourceLocale
-      : fallbackSource
-        ? requestedTargetLocale
-        : sourceLocale;
+    // Old generated catalogues already know which language was genuinely
+    // authored. Keep that provenance while upgrading translation quality,
+    // even if the owner happens to save from the opposite locale.
+    const provenanceLocale = pair._translation?.sourceLocale;
+    const actualSourceLocale: Locale =
+      provenanceLocale && pair[provenanceLocale].trim()
+        ? provenanceLocale
+        : requestedSource
+          ? sourceLocale
+          : fallbackSource
+            ? requestedTargetLocale
+            : sourceLocale;
     const actualTargetLocale: Locale =
       actualSourceLocale === "es" ? "en" : "es";
     const source = pair[actualSourceLocale].trim();
@@ -388,32 +421,49 @@ export async function translateVenueCatalogueDocument(
     if (!source) {
       pair.es = "";
       pair.en = "";
-      pair._translation = {
-        sourceLocale: actualSourceLocale,
-        sourceHash: hash,
-        esHash: catalogueTextHash(""),
-        enHash: catalogueTextHash(""),
-      };
+      markTranslated(pair, actualSourceLocale, "");
+      return;
+    }
+
+    // Product/dish names are identity, not prose. Auto-translating them gave
+    // us gems such as "Wonder Burger" -> "Maravilla Burger".
+    if (preserveSource) {
+      pair[actualSourceLocale] = source;
+      pair[actualTargetLocale] = source;
+      markTranslated(pair, actualSourceLocale, source);
       return;
     }
 
     if (
-      pair._translation?.sourceLocale === actualSourceLocale &&
+      pair._translation?.version === CATALOGUE_TRANSLATION_VERSION &&
+      pair._translation.sourceLocale === actualSourceLocale &&
       pair._translation.sourceHash === hash &&
       pair[actualTargetLocale].trim()
     ) {
-      pair._translation = {
-        sourceLocale: actualSourceLocale,
-        sourceHash: hash,
-        esHash: catalogueTextHash(pair.es.trim()),
-        enHash: catalogueTextHash(pair.en.trim()),
-      };
+      markTranslated(pair, actualSourceLocale, source);
+      return;
+    }
+
+    const deterministic = deterministicCatalogueTranslation(
+      actualSourceLocale,
+      actualTargetLocale,
+      source,
+      context,
+    );
+    if (deterministic) {
+      pair[actualSourceLocale] = source;
+      pair[actualTargetLocale] = clampTranslatedValue(
+        deterministic,
+        maxLength,
+      );
+      markTranslated(pair, actualSourceLocale, source);
       return;
     }
 
     pending.push({
       pair,
       maxLength,
+      context,
       sourceLocale: actualSourceLocale,
       targetLocale: actualTargetLocale,
       source,
@@ -421,17 +471,19 @@ export async function translateVenueCatalogueDocument(
     });
   };
 
-  register(document.title, 160);
-  register(document.description, 1200);
+  register(document.title, 160, "general");
+  register(document.description, 1200, "general");
 
   for (const section of document.sections) {
-    register(section.title, 160);
+    register(section.title, 160, "section_title");
     for (const item of section.items) {
-      register(item.name, 160);
-      register(item.description, 1200);
-      for (const variant of item.variants) register(variant.label, 100);
-      register(item.allergens.ingredients, 1200);
-      register(item.allergens.notes, 600);
+      register(item.name, 160, "item_name", true);
+      register(item.description, 1200, "item_description");
+      for (const variant of item.variants) {
+        register(variant.label, 100, "variant_label");
+      }
+      register(item.allergens.ingredients, 1200, "ingredients");
+      register(item.allergens.notes, 600, "notes");
     }
   }
 
@@ -458,22 +510,27 @@ export async function translateVenueCatalogueDocument(
         if (!translatedValue) {
           throw new Error(`Missing catalogue translation field_${index}`);
         }
+
+        const polished = polishCatalogueTranslation(
+          target.sourceLocale,
+          target.targetLocale,
+          target.source,
+          translatedValue,
+          target.context,
+        );
+
         target.pair[target.sourceLocale] = target.source;
         target.pair[target.targetLocale] = clampTranslatedValue(
-          translatedValue,
+          polished,
           target.maxLength,
         );
-        if (translatedValue.trim() !== target.source.trim()) {
-          target.pair._translation = {
-            sourceLocale: target.sourceLocale,
-            sourceHash: target.hash,
-            esHash: catalogueTextHash(target.pair.es.trim()),
-            enHash: catalogueTextHash(target.pair.en.trim()),
-          };
-        } else {
-          // Exact copies can be legitimate names, but they are also our
-          // outage fallback. Leaving them unmarked lets the next save retry.
-          delete target.pair._translation;
+
+        if (target.pair[target.targetLocale].trim()) {
+          markTranslated(
+            target.pair,
+            target.sourceLocale,
+            target.source,
+          );
         }
       });
     } catch (error) {
