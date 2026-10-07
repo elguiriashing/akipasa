@@ -170,16 +170,10 @@ async function libreTranslateBatch(
     }
   }
 
-  // Apertium is a long-running open-source machine translation project with a
-  // public APY endpoint and a native English/Spanish pair. Prefer it over
-  // anonymous LibreTranslate mirrors when AkiPasa has no configured endpoint.
-  try {
-    return await apertiumTranslateBatch(sourceLocale, targetLocale, values);
-  } catch (error) {
-    lastError =
-      error instanceof Error ? error.message : "translation_request_failed";
-  }
-
+  // Prefer the neural LibreTranslate/Argos mirrors for natural copy.
+  // Apertium is reliable but its rule-based EN/ES output is too literal for
+  // hospitality copy ("can" -> "puede", "nuts" -> "tuercas"), so keep it as
+  // the final availability fallback rather than the default translator.
   for (const endpoint of publicMirrors) {
     if (endpoint === configured) continue;
     try {
@@ -193,6 +187,13 @@ async function libreTranslateBatch(
       lastError =
         error instanceof Error ? error.message : "translation_request_failed";
     }
+  }
+
+  try {
+    return await apertiumTranslateBatch(sourceLocale, targetLocale, values);
+  } catch (error) {
+    lastError =
+      error instanceof Error ? error.message : "translation_request_failed";
   }
 
   throw new Error(lastError);
