@@ -2302,3 +2302,48 @@ body:has(.subscription-app) > .privacy-preferences {
     overflow: hidden;
   }
 }
+
+
+/* Event cards: media must meet the card edge, not sit inside a padded frame. */
+.discover-page .card:not(.venue-card) {
+  padding: 0;
+}
+
+.discover-page .card:not(.venue-card) > .card-media {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 1.15rem 1.15rem 0 0;
+  overflow: hidden;
+}
+
+.discover-page .card:not(.venue-card) > .card-body {
+  padding: 0.78rem;
+}
+
+.map-drawer-content .card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.map-drawer-content .card > .card-media {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 12px 0 0 12px;
+  overflow: hidden;
+}
+
+.map-drawer-content .card > .card-body {
+  padding: 10px;
+}
+
+/* No decorative inner frame on the actual bitmap. */
+.discover-page .card-media > .card-media-image,
+.map-drawer-content .card-media > .card-media-image {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  transform: none !important;
+}
