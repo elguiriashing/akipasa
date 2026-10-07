@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import { localizedMetadata, languageUrls, serializeJsonLd } from "@/lib/seo";
 import Link from "next/link";
-import Image from "next/image";
 import { isLocale } from "@/lib/config";
 import { translated } from "@/lib/domain";
 import { msg } from "@/lib/messages";
