@@ -130,11 +130,11 @@ export async function updateEvent(formData: FormData) {
       description: z.string().trim().min(20).max(4000),
       priceEuros: z.coerce.number().min(0).max(10000),
       priceDisplayMode: z.enum(["show", "hide"]).default("show"),
-      coverMediaId: z.union([z.string().uuid(), z.literal("")]).default(""),
+      bannerMediaId: z.union([z.string().uuid(), z.literal("")]).default(""),
       exploreMediaId: z.union([z.string().uuid(), z.literal("")]).default(""),
-      galleryMediaId1: z.union([z.string().uuid(), z.literal("")]).default(""),
-      galleryMediaId2: z.union([z.string().uuid(), z.literal("")]).default(""),
-      galleryMediaId3: z.union([z.string().uuid(), z.literal("")]).default(""),
+      profileMediaId: z.union([z.string().uuid(), z.literal("")]).default(""),
+      backgroundMediaId: z.union([z.string().uuid(), z.literal("")]).default(""),
+      mapMediaId: z.union([z.string().uuid(), z.literal("")]).default(""),
       bookingUrl: safeExternalUrlSchema,
       minimumAge: z.union([
         z.literal(""),
@@ -223,11 +223,11 @@ export async function updateEvent(formData: FormData) {
   }
 
   const requestedSlots = [
-    ["event_cover", v.coverMediaId],
+    ["event_banner", v.bannerMediaId],
     ["event_explore", v.exploreMediaId],
-    ["event_gallery_1", v.galleryMediaId1],
-    ["event_gallery_2", v.galleryMediaId2],
-    ["event_gallery_3", v.galleryMediaId3],
+    ["event_profile", v.profileMediaId],
+    ["event_background", v.backgroundMediaId],
+    ["event_map_vertical", v.mapMediaId],
   ] as const;
   const selectedMediaIds = requestedSlots.flatMap(([, mediaId]) =>
     mediaId ? [mediaId] : [],
@@ -247,11 +247,11 @@ export async function updateEvent(formData: FormData) {
     .eq("venue_id", v.venueId)
     .eq("target_key", v.eventId)
     .in("placement", [
-      "event_cover",
+      "event_banner",
       "event_explore",
-      "event_gallery_1",
-      "event_gallery_2",
-      "event_gallery_3",
+      "event_profile",
+      "event_background",
+      "event_map_vertical",
     ]);
 
   const slotRows = requestedSlots.flatMap(([placement, mediaId], index) =>
@@ -1206,11 +1206,11 @@ export async function removeMediaFromEventBin(formData: FormData) {
     .eq("media_id", parsed.data.mediaId)
     .in("placement", [
       "event_bin",
-      "event_cover",
+      "event_banner",
       "event_explore",
-      "event_gallery_1",
-      "event_gallery_2",
-      "event_gallery_3",
+      "event_profile",
+      "event_background",
+      "event_map_vertical",
     ]);
   if (error) {
     if (inline) return { ok: false as const, error: "media" };
