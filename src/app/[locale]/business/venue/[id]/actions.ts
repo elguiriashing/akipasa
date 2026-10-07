@@ -1118,12 +1118,18 @@ export async function addVenueMediaToEventBin(formData: FormData) {
     .eq("media_id", parsed.data.mediaId)
     .maybeSingle();
   if (!existing) {
+    const { count } = await supabase
+      .from("venue_media_placements")
+      .select("id", { count: "exact", head: true })
+      .eq("venue_id", parsed.data.venueId)
+      .eq("target_key", parsed.data.eventId)
+      .eq("placement", "event_bin");
     const { error } = await supabase.from("venue_media_placements").insert({
       venue_id: parsed.data.venueId,
       media_id: parsed.data.mediaId,
       placement: "event_bin",
       target_key: parsed.data.eventId,
-      sort_order: 0,
+      sort_order: count || 0,
       created_by: user.id,
     });
     if (error) redirect(destination(locale, venueId, "error=media"));
