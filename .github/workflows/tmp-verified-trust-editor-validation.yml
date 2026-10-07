@@ -1,4 +1,5 @@
 name: Temporary verified trust editor validation
+# rerun after inline action typing fixes
 
 on:
   push:
