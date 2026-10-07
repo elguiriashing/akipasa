@@ -17,11 +17,11 @@ import {
 type MediaOption = { id: string; url: string; alt: string };
 
 type EventSlotKey =
-  | "cover"
+  | "banner"
   | "explore"
-  | "gallery1"
-  | "gallery2"
-  | "gallery3";
+  | "profile"
+  | "background"
+  | "map";
 
 const eventSlots: Array<{
   key: EventSlotKey;
@@ -31,39 +31,39 @@ const eventSlots: Array<{
   esHelp: string;
 }> = [
   {
-    key: "cover",
-    en: "Event cover",
-    es: "Portada del evento",
-    enHelp: "Large image on the event page.",
-    esHelp: "Imagen grande de la ficha del evento.",
+    key: "banner",
+    en: "1 · Event banner",
+    es: "1 · Banner del evento",
+    enHelp: "Wide hero image at the top of the event page.",
+    esHelp: "Imagen panorámica en la cabecera de la ficha del evento.",
   },
   {
     key: "explore",
-    en: "Explore card",
-    es: "Tarjeta Explorar",
-    enHelp: "Image shown in discovery and map cards.",
-    esHelp: "Imagen que aparece en descubrimiento y tarjetas del mapa.",
+    en: "2 · Explore card",
+    es: "2 · Tarjeta Explorar",
+    enHelp: "Landscape image used on Discover cards.",
+    esHelp: "Imagen horizontal usada en las tarjetas de Descubrir.",
   },
   {
-    key: "gallery1",
-    en: "Gallery 1",
-    es: "Galería 1",
-    enHelp: "First supporting event image.",
-    esHelp: "Primera imagen de apoyo del evento.",
+    key: "profile",
+    en: "3 · Event profile image",
+    es: "3 · Imagen de perfil",
+    enHelp: "Small event identity image beside its title and on cards.",
+    esHelp: "Imagen pequeña de identidad junto al título y en tarjetas.",
   },
   {
-    key: "gallery2",
-    en: "Gallery 2",
-    es: "Galería 2",
-    enHelp: "Second supporting event image.",
-    esHelp: "Segunda imagen de apoyo del evento.",
+    key: "background",
+    en: "4 · Event page background",
+    es: "4 · Fondo de la ficha",
+    enHelp: "Blurred/full-page event background, independent of the banner.",
+    esHelp: "Fondo de página independiente del banner del evento.",
   },
   {
-    key: "gallery3",
-    en: "Gallery 3",
-    es: "Galería 3",
-    enHelp: "Third supporting event image.",
-    esHelp: "Tercera imagen de apoyo del evento.",
+    key: "map",
+    en: "5 · Map vertical",
+    es: "5 · Vertical para mapa",
+    enHelp: "Portrait artwork used specifically in map/list cards.",
+    esHelp: "Imagen vertical usada específicamente en tarjetas del mapa/lista.",
   },
 ];
 
@@ -74,9 +74,11 @@ export function BusinessEventEditPanel({
   event,
   media,
   venueMediaIds = [],
-  coverMediaId = "",
+  bannerMediaId = "",
   exploreMediaId = "",
-  galleryMediaIds = [],
+  profileMediaId = "",
+  backgroundMediaId = "",
+  mapMediaId = "",
   eventBinMediaIds = [],
 }: {
   locale: "es" | "en";
@@ -94,9 +96,11 @@ export function BusinessEventEditPanel({
   };
   media: MediaOption[];
   venueMediaIds?: string[];
-  coverMediaId?: string;
+  bannerMediaId?: string;
   exploreMediaId?: string;
-  galleryMediaIds?: string[];
+  profileMediaId?: string;
+  backgroundMediaId?: string;
+  mapMediaId?: string;
   eventBinMediaIds?: string[];
 }) {
   const es = locale === "es";
@@ -104,11 +108,11 @@ export function BusinessEventEditPanel({
     event.priceDisplayMode,
   );
   const [slots, setSlots] = useState<Record<EventSlotKey, string>>({
-    cover: coverMediaId,
+    banner: bannerMediaId,
     explore: exploreMediaId,
-    gallery1: galleryMediaIds[0] || "",
-    gallery2: galleryMediaIds[1] || "",
-    gallery3: galleryMediaIds[2] || "",
+    profile: profileMediaId,
+    background: backgroundMediaId,
+    map: mapMediaId,
   });
   const [allMedia, setAllMedia] = useState<MediaOption[]>(media);
   const [binIds, setBinIds] = useState<string[]>(eventBinMediaIds);
@@ -245,7 +249,7 @@ export function BusinessEventEditPanel({
         <input type="hidden" name="venueId" value={venueId} />
         <input type="hidden" name="eventId" value={event.id} />
         <input type="hidden" name="priceDisplayMode" value={priceMode} />
-        <input type="hidden" name="coverMediaId" value={slots.cover} />
+        <input type="hidden" name="bannerMediaId" value={slots.cover} />
         <input type="hidden" name="exploreMediaId" value={slots.explore} />
         <input type="hidden" name="galleryMediaId1" value={slots.gallery1} />
         <input type="hidden" name="galleryMediaId2" value={slots.gallery2} />
@@ -369,12 +373,12 @@ export function BusinessEventEditPanel({
             <span>03</span>
             <div>
               <strong>
-                {es ? "Cinco imágenes del evento" : "Five event images"}
+                {es ? "Cinco superficies del evento" : "Five event surfaces"}
               </strong>
               <small>
                 {es
-                  ? "Cambia imágenes sin salir del editor. Las ranuras vacías usan automáticamente la primera imagen del bin."
-                  : "Change media without leaving the editor. Empty slots automatically use the first image in the bin."}
+                  ? "Cada imagen tiene un destino concreto. Las ranuras vacías usan automáticamente la primera imagen del bin."
+                  : "Each image has one defined job. Empty slots automatically use the first image in the bin."}
               </small>
             </div>
           </header>
