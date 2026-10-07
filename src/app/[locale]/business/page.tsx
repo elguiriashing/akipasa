@@ -25,6 +25,7 @@ import {
   type WorkspaceItem,
 } from "@/components/WorkspaceShell";
 import { canModerate } from "@/lib/roles";
+import { GuardedActionForm } from "@/components/GuardedActionForm";
 
 type ManagedVenue = {
   role: string;
@@ -591,7 +592,7 @@ export default async function BusinessPage({
               </div>
             </div>
             <AutoTranslationNote locale={locale} />
-            <form action={createOfficialEvent} className="stack focused-form">
+            <GuardedActionForm action={createOfficialEvent} className="stack focused-form">
               <input type="hidden" name="locale" value={locale} />
               <div className="form-grid-two">
                 <label>
@@ -645,7 +646,7 @@ export default async function BusinessPage({
                   {es ? "Publicar Selección AkiPasa" : "Publish AkiPasa Selection"}
                 </button>
               </div>
-            </form>
+            </GuardedActionForm>
           </details>
         )}
 
@@ -665,7 +666,7 @@ export default async function BusinessPage({
             </summary>
 
             <AutoTranslationNote locale={locale} />
-            <form action={createEvent} className="stack focused-form">
+            <GuardedActionForm action={createEvent} className="stack focused-form">
               <input type="hidden" name="locale" value={locale} />
 
               <div className="form-grid-two">
@@ -791,7 +792,7 @@ export default async function BusinessPage({
                   {es ? "Crear evento" : "Create event"}
                 </button>
               </div>
-            </form>
+            </GuardedActionForm>
           </details>
         )}
 
