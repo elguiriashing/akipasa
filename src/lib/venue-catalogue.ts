@@ -148,6 +148,23 @@ const enToEsCataloguePhrases = new Map<string, string>([
   ["peanuts", "Cacahuetes"],
   ["almond", "Almendra"],
   ["almonds", "Almendras"],
+  ["peanut", "Cacahuete"],
+  ["cheeseburger", "Hamburguesa con queso"],
+  ["chicken burger", "Hamburguesa de pollo"],
+  ["beef burger", "Hamburguesa de ternera"],
+  ["veggie burger", "Hamburguesa vegetal"],
+  ["vegan burger", "Hamburguesa vegana"],
+  ["fries", "Patatas fritas"],
+  ["french fries", "Patatas fritas"],
+  ["water", "Agua"],
+  ["sparkling water", "Agua con gas"],
+  ["still water", "Agua sin gas"],
+  ["coffee", "Café"],
+  ["tea", "Té"],
+  ["orange juice", "Zumo de naranja"],
+  ["apple juice", "Zumo de manzana"],
+  ["lemonade", "Limonada"],
+  ["cola", "Refresco de cola"],
   ["dry fruits and nuts", "Frutas deshidratadas y frutos secos"],
   ["dry fruit and nuts", "Fruta deshidratada y frutos secos"],
   ["dried fruits and nuts", "Frutas deshidratadas y frutos secos"],
@@ -163,6 +180,8 @@ const enToEsCataloguePhrases = new Map<string, string>([
   ["a can of coca cola", "Una lata de Coca-Cola"],
   ["cold can of coca cola", "Lata fría de Coca-Cola"],
   ["a cold can of coca cola", "Una lata fría de Coca-Cola"],
+  ["this is a nut", "Esto es un fruto seco"],
+  ["contains nuts", "Contiene frutos secos"],
 ]);
 
 const esToEnCataloguePhrases = new Map<string, string>([
@@ -188,6 +207,22 @@ const esToEnCataloguePhrases = new Map<string, string>([
   ["cacahuetes", "Peanuts"],
   ["almendra", "Almond"],
   ["almendras", "Almonds"],
+  ["cacahuete", "Peanut"],
+  ["hamburguesa con queso", "Cheeseburger"],
+  ["hamburguesa de pollo", "Chicken burger"],
+  ["hamburguesa de ternera", "Beef burger"],
+  ["hamburguesa vegetal", "Veggie burger"],
+  ["hamburguesa vegana", "Vegan burger"],
+  ["patatas fritas", "Fries"],
+  ["agua", "Water"],
+  ["agua con gas", "Sparkling water"],
+  ["agua sin gas", "Still water"],
+  ["café", "Coffee"],
+  ["té", "Tea"],
+  ["zumo de naranja", "Orange juice"],
+  ["zumo de manzana", "Apple juice"],
+  ["limonada", "Lemonade"],
+  ["refresco de cola", "Cola"],
   ["frutas deshidratadas y frutos secos", "Dried fruit and nuts"],
   ["fruta deshidratada y frutos secos", "Dried fruit and nuts"],
   ["lata de coca-cola", "Can of Coca-Cola"],
@@ -202,7 +237,7 @@ export function deterministicCatalogueTranslation(
   value: string,
   context: CatalogueTranslationContext = "general",
 ) {
-  if (sourceLocale === targetLocale || context === "item_name") return null;
+  if (sourceLocale === targetLocale) return null;
   const key = normalizedCataloguePhrase(value);
   return sourceLocale === "en" && targetLocale === "es"
     ? enToEsCataloguePhrases.get(key) || null
@@ -232,8 +267,11 @@ export function polishCatalogueTranslation(
 
     if (/\bnuts?\b/.test(sourceKey)) {
       result = result
+        .replace(/\buna tuerca\b/gi, "un fruto seco")
         .replace(/\btuercas\b/gi, "frutos secos")
-        .replace(/\bnueces\b/gi, "frutos secos");
+        .replace(/\btuerca\b/gi, "fruto seco")
+        .replace(/\bnueces\b/gi, "frutos secos")
+        .replace(/\bnuez\b/gi, "fruto seco");
     }
     if (/\b(?:dry|dried) fruits?\b/.test(sourceKey)) {
       result = result.replace(
@@ -274,7 +312,17 @@ export function catalogueTextForDisplay(
   // Menu item names behave like product names. Translating them turned
   // "Wonder Burger" into "Maravilla Burger", which is technically language
   // conversion and practically vandalism.
-  if (context === "item_name") return source;
+  if (context === "item_name") {
+    if (sourceLocale === locale) return source;
+    return (
+      deterministicCatalogueTranslation(
+        sourceLocale,
+        locale,
+        source,
+        context,
+      ) || source
+    );
+  }
 
   if (sourceLocale === locale) return source;
   return polishCatalogueTranslation(
