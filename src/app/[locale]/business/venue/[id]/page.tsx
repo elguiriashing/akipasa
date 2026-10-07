@@ -5,6 +5,7 @@ import { Icon } from "@/components/Icons";
 import { VenueDashboard } from "@/components/VenueDashboard";
 import { VenueCatalogueEditor } from "@/components/VenueCatalogueEditor";
 import { VenueMediaStudio } from "@/components/VenueMediaStudio";
+import { BusinessEventEditPanel } from "@/components/BusinessEventEditPanel";
 import { getVenueDashboardSection } from "@/lib/venue-dashboard";
 import {
   parseCatalogueDocument,
@@ -105,7 +106,7 @@ export default async function VenueWorkspace({
     supabase
       .from("events")
       .select(
-        "id,slug,title_es,title_en,description_es,description_en,price_cents,booking_url,minimum_age,accessibility_notes_es,accessibility_notes_en,status,event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status,booking_url)",
+        "id,slug,title_es,title_en,description_es,description_en,price_cents,price_display_mode,booking_url,minimum_age,accessibility_notes_es,accessibility_notes_en,status,event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status,booking_url)",
       )
       .eq("venue_id", id)
       .order("created_at", { ascending: false }),
@@ -209,6 +210,33 @@ export default async function VenueWorkspace({
         }]
       : [];
   });
+
+  const eventIds = (events || []).map((event) => event.id);
+  const { data: eventMediaPlacements } = eventIds.length
+    ? await supabase
+        .from("venue_media_placements")
+        .select("target_key,media_id,placement,sort_order")
+        .eq("venue_id", id)
+        .in("target_key", eventIds)
+        .in("placement", ["event_cover", "event_gallery"])
+        .order("sort_order")
+    : { data: [] };
+  const eventPlacementMap = new Map<
+    string,
+    { coverMediaId: string; galleryMediaIds: string[] }
+  >();
+  for (const placement of eventMediaPlacements || []) {
+    const current = eventPlacementMap.get(placement.target_key) || {
+      coverMediaId: "",
+      galleryMediaIds: [],
+    };
+    if (placement.placement === "event_cover") {
+      current.coverMediaId = placement.media_id;
+    } else if (placement.placement === "event_gallery") {
+      current.galleryMediaIds.push(placement.media_id);
+    }
+    eventPlacementMap.set(placement.target_key, current);
+  }
 
   const catalogueDocument = seedCatalogueTranslationMetadata(
     parseCatalogueDocument(catalogue?.draft_document, locale),
@@ -571,90 +599,43 @@ export default async function VenueWorkspace({
                       )}
                     </div>
                     <div className="event-editor">
-                      <details>
-                        <summary>{es ? "Editar" : "Edit"}</summary>
-                        <form action={updateEvent} className="stack">
-                          <input type="hidden" name="locale" value={locale} />
-                          <input type="hidden" name="venueId" value={id} />
-                          <input
-                            type="hidden"
-                            name="eventId"
-                            value={event.id}
-                          />
-                          <label>
-                            {es ? "Título" : "Title"}
-                            <input
-                              name="title"
-                              defaultValue={
-                                es
-                                  ? event.title_es
-                                  : event.title_en || ""
-                              }
-                              required
-                            />
-                          </label>
-                          <label>
-                            {es ? "Descripción" : "Description"}
-                            <textarea
-                              name="description"
-                              defaultValue={
-                                es
-                                  ? event.description_es
-                                  : event.description_en || ""
-                              }
-                              required
-                            />
-                          </label>
-                          <label>
-                            {es ? "Precio (€)" : "Price (€)"}
-                            <input
-                              name="priceEuros"
-                              type="number"
-                              min="0"
-                              max="10000"
-                              step="0.01"
-                              defaultValue={(event.price_cents / 100).toFixed(2)}
-                            />
-                          </label>
-                          <label>
-                            {es ? "Enlace de reserva" : "Booking link"}
-                            <input
-                              name="bookingUrl"
-                              type="url"
-                              defaultValue={event.booking_url || ""}
-                            />
-                          </label>
-                          <label>
-                            {es
-                              ? "Edad mínima (opcional)"
-                              : "Minimum age (optional)"}
-                            <input
-                              name="minimumAge"
-                              type="number"
-                              min="0"
-                              max="99"
-                              defaultValue={event.minimum_age ?? ""}
-                            />
-                          </label>
-                          <label>
-                            {es
-                              ? "Información de accesibilidad"
-                              : "Accessibility information"}
-                            <textarea
-                              name="accessibilityNotes"
-                              maxLength={1000}
-                              defaultValue={
-                                es
-                                  ? event.accessibility_notes_es || ""
-                                  : event.accessibility_notes_en || ""
-                              }
-                            />
-                          </label>
-                          <button className="button" type="submit">
-                            {es ? "Guardar evento" : "Save event"}
-                          </button>
-                        </form>
-                      </details>
+                      <BusinessEventEditPanel
+                        locale={locale}
+                        venueId={id}
+                        event={{
+                          id: event.id,
+                          title:
+                            locale === "en"
+                              ? event.title_en || event.title_es
+                              : event.title_es,
+                          description:
+                            locale === "en"
+                              ? event.description_en || event.description_es
+                              : event.description_es,
+                          priceCents: event.price_cents,
+                          priceDisplayMode:
+                            event.price_display_mode === "hide" ? "hide" : "show",
+                          bookingUrl: event.booking_url || "",
+                          minimumAge: event.minimum_age,
+                          accessibilityNotes:
+                            locale === "en"
+                              ? event.accessibility_notes_en ||
+                                event.accessibility_notes_es ||
+                                ""
+                              : event.accessibility_notes_es || "",
+                        }}
+                        media={mediaStudioItems.map((item) => ({
+                          id: item.id,
+                          url: item.url,
+                          alt: item.alt,
+                        }))}
+                        coverMediaId={
+                          eventPlacementMap.get(event.id)?.coverMediaId || ""
+                        }
+                        galleryMediaIds={
+                          eventPlacementMap.get(event.id)?.galleryMediaIds || []
+                        }
+                      />
                       {event.event_occurrences?.length ? (
                         <details>
                           <summary>
