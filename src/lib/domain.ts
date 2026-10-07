@@ -30,6 +30,26 @@ export type Venue = {
     url: string;
     alt: Translation;
   };
+  coverImage?: {
+    id: string;
+    url: string;
+    alt: Translation;
+  };
+  menuImage?: {
+    id: string;
+    url: string;
+    alt: Translation;
+  };
+  eventsImage?: {
+    id: string;
+    url: string;
+    alt: Translation;
+  };
+  exploreImage?: {
+    id: string;
+    url: string;
+    alt: Translation;
+  };
   offers?: Array<{
     id: string;
     title: Translation;
@@ -78,6 +98,11 @@ export type Event = {
   minimumAge?: number;
   accessibilityNotes?: Translation;
   coverImage?: {
+    id: string;
+    url: string;
+    alt: Translation;
+  };
+  exploreImage?: {
     id: string;
     url: string;
     alt: Translation;
