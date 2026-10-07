@@ -86,6 +86,10 @@ export function EventCard({
     result.venue.exploreImage ||
     result.venue.eventsImage ||
     result.venue.media?.[0];
+  const primaryImageIsLogo =
+    Boolean(primaryImage) &&
+    Boolean(result.venue.logoImage) &&
+    primaryImage?.id === result.venue.logoImage?.id;
   const priceLabel =
     result.event.priceDisplayMode === "hide"
       ? null
