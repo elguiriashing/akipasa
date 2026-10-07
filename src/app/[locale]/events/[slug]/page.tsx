@@ -166,14 +166,19 @@ export default async function EventPage({
           },
         }),
   };
-  const bgImage = event.coverImage?.url || resolvedVenue.media?.[0]?.url;
+  const bannerImage =
+    event.bannerImage?.url || resolvedVenue.eventsImage?.url || resolvedVenue.media?.[0]?.url;
+  const backgroundImage =
+    event.backgroundImage?.url || bannerImage;
+  const profileImage =
+    event.profileImage || resolvedVenue.logoImage;
 
   return (
     <>
-      {bgImage && (
+      {backgroundImage && (
         <div
           className="liquid-glass-bg"
-          style={{ backgroundImage: `url(${bgImage})` }}
+          style={{ backgroundImage: `url(${backgroundImage})` }}
         />
       )}
       <main className="shell detail-layout app-detail-page compact-event-page">
@@ -192,10 +197,10 @@ export default async function EventPage({
           ← {m.discover}
         </Link>
         <article className="detail-card detail-card-primary">
-          {bgImage ? (
+          {bannerImage ? (
             <div
               className="detail-cover"
-              style={{ backgroundImage: `url(${bgImage})` }}
+              style={{ backgroundImage: `url(${bannerImage})` }}
               aria-hidden
             />
           ) : null}
@@ -211,7 +216,16 @@ export default async function EventPage({
                 m.community
               )}
             </div>
-            <h1>{translated(event.title, locale)}</h1>
+            <div className="event-title-identity">
+              {profileImage ? (
+                <img
+                  className="event-profile-image"
+                  src={profileImage.url}
+                  alt={translated(profileImage.alt, locale)}
+                />
+              ) : null}
+              <h1>{translated(event.title, locale)}</h1>
+            </div>
             {occurrence.status !== "scheduled" && (
               <p className="notice" role="status">
                 {locale === "es"
