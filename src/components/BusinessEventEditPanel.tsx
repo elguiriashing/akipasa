@@ -122,6 +122,7 @@ export function BusinessEventEditPanel({
   const [mediaState, setMediaState] = useState<
     "idle" | "working" | "saved" | "error"
   >("idle");
+  const [uploadProgress, setUploadProgress] = useState<{ done: number; total: number } | null>(null);
   const uploadFormRef = useRef<HTMLFormElement>(null);
 
   const eventBin = useMemo(
@@ -161,27 +162,63 @@ export function BusinessEventEditPanel({
     eventSubmit.preventDefault();
     const form = eventSubmit.currentTarget;
     if (!form.reportValidity()) return;
+
+    const source = new FormData(form);
+    const files = source
+      .getAll("image")
+      .filter((value): value is File => value instanceof File && value.size > 0);
+    if (!files.length) return;
+
+    const sharedAlt = String(source.get("alt") || "").trim();
     setMediaState("working");
-    const formData = new FormData(form);
-    formData.set("inline", "1");
-    formData.set("sortOrder", String(binIds.length));
-    const result = await uploadEventImage(formData);
-    if (result?.ok && result.media?.url) {
-      setAllMedia((current) => [
-        ...current.filter((item) => item.id !== result.media!.id),
-        result.media!,
-      ]);
-      setBinIds((current) =>
-        current.includes(result.media!.id)
-          ? current
-          : [...current, result.media!.id],
+    setUploadProgress({ done: 0, total: files.length });
+
+    const uploaded: MediaOption[] = [];
+    for (let index = 0; index < files.length; index += 1) {
+      const file = files[index];
+      const fallbackAlt =
+        file.name
+          .replace(/\.[^.]+$/, "")
+          .replace(/[-_]+/g, " ")
+          .trim() || (es ? "Imagen del evento" : "Event image");
+      const formData = new FormData();
+      formData.set("inline", "1");
+      formData.set("locale", locale);
+      formData.set("venueId", venueId);
+      formData.set("eventId", event.id);
+      formData.set("sortOrder", String(binIds.length + index));
+      formData.set("image", file);
+      formData.set(
+        "alt",
+        files.length === 1 && sharedAlt
+          ? sharedAlt
+          : sharedAlt
+            ? `${sharedAlt} ${index + 1}`
+            : fallbackAlt,
       );
-      form.reset();
-      setMediaState("saved");
-      window.setTimeout(() => setMediaState("idle"), 1800);
-      return;
+
+      const result = await uploadEventImage(formData);
+      if (!result?.ok || !result.media?.url) {
+        setMediaState("error");
+        setUploadProgress(null);
+        return;
+      }
+      uploaded.push(result.media);
+      setUploadProgress({ done: index + 1, total: files.length });
     }
-    setMediaState("error");
+
+    setAllMedia((current) => {
+      const ids = new Set(uploaded.map((item) => item.id));
+      return [...current.filter((item) => !ids.has(item.id)), ...uploaded];
+    });
+    setBinIds((current) => [
+      ...current,
+      ...uploaded.map((item) => item.id).filter((id) => !current.includes(id)),
+    ]);
+    form.reset();
+    setUploadProgress(null);
+    setMediaState("saved");
+    window.setTimeout(() => setMediaState("idle"), 1800);
   }
 
   async function addToEvent(mediaId: string) {
@@ -272,7 +309,7 @@ export function BusinessEventEditPanel({
             <input name="title" defaultValue={event.title} required />
           </label>
           <label className="event-studio-big-field">
-            {es ? "Descripción" : "Description"}
+            {es ? "Descripción común (opcional)" : "Shared description (optional)"}
             <textarea
               name="description"
               defaultValue={event.description}
@@ -541,17 +578,26 @@ export function BusinessEventEditPanel({
           <input type="hidden" name="venueId" value={venueId} />
           <input type="hidden" name="eventId" value={event.id} />
           <label>
-            {es ? "Subir imagen / PDF" : "Upload image / PDF"}
-            <SafeMediaFileInput locale={locale} name="image" required />
+            {es ? "Subir imágenes / PDF" : "Upload images / PDFs"}
+            <SafeMediaFileInput
+              locale={locale}
+              name="image"
+              required
+              multiple
+              maxFiles={20}
+            />
           </label>
           <label>
             {es ? "Descripción" : "Description"}
             <input
               name="alt"
-              required
               minLength={3}
               maxLength={300}
-              placeholder={es ? "Ej. escenario principal" : "e.g. main stage"}
+              placeholder={
+                es
+                  ? "Déjalo vacío para usar los nombres de archivo"
+                  : "Leave blank to use filenames"
+              }
             />
           </label>
           <button
@@ -560,12 +606,16 @@ export function BusinessEventEditPanel({
             disabled={mediaState === "working"}
           >
             {mediaState === "working"
-              ? es
-                ? "Subiendo…"
-                : "Uploading…"
+              ? uploadProgress
+                ? es
+                  ? `Subiendo ${uploadProgress.done}/${uploadProgress.total}…`
+                  : `Uploading ${uploadProgress.done}/${uploadProgress.total}…`
+                : es
+                  ? "Subiendo…"
+                  : "Uploading…"
               : es
-                ? "Subir al evento"
-                : "Upload to event"}
+                ? "Subir archivos"
+                : "Upload files"}
           </button>
         </form>
 
