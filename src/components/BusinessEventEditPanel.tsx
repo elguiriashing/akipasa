@@ -23,6 +23,10 @@ type EventSlotKey =
   | "background"
   | "map";
 
+type EditorTab = "details" | "pricing" | "media" | "accessibility" | "library";
+
+const PAGE_SIZE = 9;
+
 const eventSlots: Array<{
   key: EventSlotKey;
   en: string;
@@ -55,7 +59,7 @@ const eventSlots: Array<{
     key: "background",
     en: "4 · Event page background",
     es: "4 · Fondo de la ficha",
-    enHelp: "Blurred/full-page event background, independent of the banner.",
+    enHelp: "Full-page event background, independent of the banner.",
     esHelp: "Fondo de página independiente del banner del evento.",
   },
   {
@@ -104,6 +108,9 @@ export function BusinessEventEditPanel({
   eventBinMediaIds?: string[];
 }) {
   const es = locale === "es";
+  const [activeTab, setActiveTab] = useState<EditorTab>("details");
+  const [pickerSlot, setPickerSlot] = useState<EventSlotKey | null>(null);
+  const [pickerPage, setPickerPage] = useState(0);
   const [priceMode, setPriceMode] = useState<"show" | "hide">(
     event.priceDisplayMode,
   );
@@ -122,7 +129,10 @@ export function BusinessEventEditPanel({
   const [mediaState, setMediaState] = useState<
     "idle" | "working" | "saved" | "error"
   >("idle");
-  const [uploadProgress, setUploadProgress] = useState<{ done: number; total: number } | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<{
+    done: number;
+    total: number;
+  } | null>(null);
   const uploadFormRef = useRef<HTMLFormElement>(null);
 
   const eventBin = useMemo(
@@ -133,13 +143,40 @@ export function BusinessEventEditPanel({
     () => allMedia.filter((item) => venueMediaIds.includes(item.id)),
     [allMedia, venueMediaIds],
   );
+  const selectableMedia = eventBin.length ? eventBin : venueLibrary;
   const eventFallback = eventBin[0] || venueLibrary[0] || allMedia[0] || null;
+
+  const pageCount = Math.max(1, Math.ceil(selectableMedia.length / PAGE_SIZE));
+  const safePickerPage = Math.min(pickerPage, pageCount - 1);
+  const pickerItems = selectableMedia.slice(
+    safePickerPage * PAGE_SIZE,
+    safePickerPage * PAGE_SIZE + PAGE_SIZE,
+  );
 
   function selectedFor(key: EventSlotKey) {
     const explicit = slots[key]
       ? allMedia.find((item) => item.id === slots[key])
       : null;
     return explicit || eventFallback;
+  }
+
+  function openPicker(slot: EventSlotKey) {
+    setPickerSlot(slot);
+    setPickerPage(0);
+  }
+
+  function chooseMedia(mediaId: string) {
+    if (!pickerSlot) return;
+    setSlots((current) => ({ ...current, [pickerSlot]: mediaId }));
+    setSaveState("idle");
+    setPickerSlot(null);
+  }
+
+  function useAutomatic() {
+    if (!pickerSlot) return;
+    setSlots((current) => ({ ...current, [pickerSlot]: "" }));
+    setSaveState("idle");
+    setPickerSlot(null);
   }
 
   async function saveEvent(eventSubmit: FormEvent<HTMLFormElement>) {
@@ -266,10 +303,18 @@ export function BusinessEventEditPanel({
     }
   }
 
+  const tabs: Array<{ key: EditorTab; en: string; es: string; icon: string }> = [
+    { key: "details", en: "Details", es: "Datos", icon: "✎" },
+    { key: "pricing", en: "Pricing", es: "Precio", icon: "€" },
+    { key: "media", en: "Media", es: "Imágenes", icon: "▣" },
+    { key: "accessibility", en: "Access", es: "Acceso", icon: "♿" },
+    { key: "library", en: "Library", es: "Biblioteca", icon: "⊞" },
+  ];
+
   return (
-    <details className="event-edit-studio" open>
+    <details className="event-edit-studio event-editor-app" open>
       <summary>
-        <span>{es ? "Editar ficha y multimedia" : "Edit listing & media"}</span>
+        <span>{es ? "Editor del evento" : "Event editor"}</span>
         <small className="event-editor-live-state">
           {verifiedVenue
             ? es
@@ -281,428 +326,384 @@ export function BusinessEventEditPanel({
         </small>
       </summary>
 
-      <form onSubmit={saveEvent} className="event-edit-studio-form">
-        <input type="hidden" name="locale" value={locale} />
-        <input type="hidden" name="venueId" value={venueId} />
-        <input type="hidden" name="eventId" value={event.id} />
-        <input type="hidden" name="priceDisplayMode" value={priceMode} />
-        <input type="hidden" name="bannerMediaId" value={slots.banner} />
-        <input type="hidden" name="exploreMediaId" value={slots.explore} />
-        <input type="hidden" name="profileMediaId" value={slots.profile} />
-        <input type="hidden" name="backgroundMediaId" value={slots.background} />
-        <input type="hidden" name="mapMediaId" value={slots.map} />
-
-        <section className="event-edit-section">
-          <header>
-            <span>01</span>
-            <div>
-              <strong>{es ? "Lo esencial" : "Essentials"}</strong>
-              <small>
-                {es
-                  ? "Nombre, descripción y reserva."
-                  : "Name, description and booking."}
-              </small>
-            </div>
-          </header>
-          <label className="event-studio-big-field">
-            {es ? "Título" : "Title"}
-            <input name="title" defaultValue={event.title} required />
-          </label>
-          <label className="event-studio-big-field">
-            {es ? "Descripción común (opcional)" : "Shared description (optional)"}
-            <textarea
-              name="description"
-              defaultValue={event.description}
-              required
-              minLength={20}
-              rows={4}
-            />
-          </label>
-          <div className="event-studio-grid">
-            <label>
-              {es ? "Enlace de reserva" : "Booking link"}
-              <input
-                name="bookingUrl"
-                type="url"
-                defaultValue={event.bookingUrl}
-              />
-            </label>
-            <label>
-              {es ? "Edad mínima" : "Minimum age"}
-              <input
-                name="minimumAge"
-                type="number"
-                min="0"
-                max="99"
-                defaultValue={event.minimumAge ?? ""}
-              />
-            </label>
-          </div>
-        </section>
-
-        <section className="event-edit-section">
-          <header>
-            <span>02</span>
-            <div>
-              <strong>{es ? "Precio de entrada" : "Entry price"}</strong>
-              <small>
-                {es
-                  ? "Ocúltalo cuando no exista una entrada real."
-                  : "Hide it when there is no actual entry fee."}
-              </small>
-            </div>
-          </header>
-          <div className="event-price-mode">
+      <div className="event-editor-shell">
+        <nav className="event-editor-tabs" aria-label={es ? "Secciones del editor" : "Editor sections"}>
+          {tabs.map((tab) => (
             <button
+              key={tab.key}
               type="button"
-              className={
-                priceMode === "hide"
-                  ? "event-price-option selected"
-                  : "event-price-option"
-              }
-              onClick={() => setPriceMode("hide")}
+              className={activeTab === tab.key ? "active" : ""}
+              aria-pressed={activeTab === tab.key}
+              onClick={() => setActiveTab(tab.key)}
             >
-              <span>◌</span>
-              <strong>{es ? "No mostrar precio" : "Hide price"}</strong>
-              <small>
-                {es ? "No aparecerá “Gratis”." : "“Free” will not be shown."}
-              </small>
+              <span>{tab.icon}</span>
+              <strong>{es ? tab.es : tab.en}</strong>
             </button>
-            <button
-              type="button"
-              className={
-                priceMode === "show"
-                  ? "event-price-option selected"
-                  : "event-price-option"
-              }
-              onClick={() => setPriceMode("show")}
+          ))}
+        </nav>
+
+        <div className="event-editor-main">
+          <form onSubmit={saveEvent} className="event-edit-studio-form event-editor-form">
+            <input type="hidden" name="locale" value={locale} />
+            <input type="hidden" name="venueId" value={venueId} />
+            <input type="hidden" name="eventId" value={event.id} />
+            <input type="hidden" name="priceDisplayMode" value={priceMode} />
+            <input type="hidden" name="bannerMediaId" value={slots.banner} />
+            <input type="hidden" name="exploreMediaId" value={slots.explore} />
+            <input type="hidden" name="profileMediaId" value={slots.profile} />
+            <input type="hidden" name="backgroundMediaId" value={slots.background} />
+            <input type="hidden" name="mapMediaId" value={slots.map} />
+
+            <section className="event-editor-page" hidden={activeTab !== "details"}>
+              <header className="event-editor-page-head">
+                <div>
+                  <span className="eyebrow">{es ? "Información principal" : "Main information"}</span>
+                  <h3>{es ? "Datos del evento" : "Event details"}</h3>
+                </div>
+                <small>{es ? "Nombre, descripción, reserva y edad." : "Name, description, booking and age."}</small>
+              </header>
+              <div className="event-editor-fields">
+                <label className="event-studio-big-field event-editor-title-field">
+                  {es ? "Título" : "Title"}
+                  <input name="title" defaultValue={event.title} required />
+                </label>
+                <label className="event-studio-big-field event-editor-description-field">
+                  {es ? "Descripción" : "Description"}
+                  <textarea
+                    name="description"
+                    defaultValue={event.description}
+                    required
+                    minLength={20}
+                    rows={7}
+                  />
+                </label>
+                <label>
+                  {es ? "Enlace de reserva" : "Booking link"}
+                  <input name="bookingUrl" type="url" defaultValue={event.bookingUrl} />
+                </label>
+                <label>
+                  {es ? "Edad mínima" : "Minimum age"}
+                  <input
+                    name="minimumAge"
+                    type="number"
+                    min="0"
+                    max="99"
+                    defaultValue={event.minimumAge ?? ""}
+                  />
+                </label>
+              </div>
+            </section>
+
+            <section className="event-editor-page" hidden={activeTab !== "pricing"}>
+              <header className="event-editor-page-head">
+                <div>
+                  <span className="eyebrow">{es ? "Entrada" : "Entry"}</span>
+                  <h3>{es ? "Precio del evento" : "Event pricing"}</h3>
+                </div>
+                <small>{es ? "Ocúltalo si no existe una entrada real." : "Hide it when there is no actual entry fee."}</small>
+              </header>
+              <div className="event-price-mode event-editor-price-mode">
+                <button
+                  type="button"
+                  className={priceMode === "hide" ? "event-price-option selected" : "event-price-option"}
+                  onClick={() => setPriceMode("hide")}
+                >
+                  <span>◌</span>
+                  <strong>{es ? "No mostrar precio" : "Hide price"}</strong>
+                  <small>{es ? "No aparecerá “Gratis”." : "“Free” will not be shown."}</small>
+                </button>
+                <button
+                  type="button"
+                  className={priceMode === "show" ? "event-price-option selected" : "event-price-option"}
+                  onClick={() => setPriceMode("show")}
+                >
+                  <span>€</span>
+                  <strong>{es ? "Mostrar precio" : "Show price"}</strong>
+                  <small>{es ? "0 € se verá como Gratis." : "€0 displays as Free."}</small>
+                </button>
+              </div>
+              {priceMode === "show" ? (
+                <label className="event-price-input event-editor-price-input">
+                  {es ? "Precio (€)" : "Price (€)"}
+                  <input
+                    name="priceEuros"
+                    type="number"
+                    min="0"
+                    max="10000"
+                    step="0.01"
+                    defaultValue={(event.priceCents / 100).toFixed(2)}
+                  />
+                </label>
+              ) : (
+                <input type="hidden" name="priceEuros" value={event.priceCents / 100} />
+              )}
+            </section>
+
+            <section className="event-editor-page" hidden={activeTab !== "media"}>
+              <header className="event-editor-page-head">
+                <div>
+                  <span className="eyebrow">{es ? "Superficies" : "Surfaces"}</span>
+                  <h3>{es ? "Cinco imágenes del evento" : "Five event images"}</h3>
+                </div>
+                <small>{es ? "Cada imagen tiene un destino concreto." : "Each image has one defined job."}</small>
+              </header>
+              <div className="event-surface-grid">
+                {eventSlots.map((slot) => {
+                  const selected = selectedFor(slot.key);
+                  const explicit = Boolean(slots[slot.key]);
+                  return (
+                    <article className="event-surface-card" data-media-slot={slot.key} key={slot.key}>
+                      <div className="event-surface-preview">
+                        {selected ? <img src={selected.url} alt={selected.alt} /> : <span>＋</span>}
+                        {!explicit && selected ? (
+                          <small className="media-fallback-chip">{es ? "Automático" : "Auto"}</small>
+                        ) : null}
+                      </div>
+                      <div className="event-surface-copy">
+                        <strong>{es ? slot.es : slot.en}</strong>
+                        <small>{es ? slot.esHelp : slot.enHelp}</small>
+                      </div>
+                      <div className="event-surface-actions">
+                        <button type="button" className="button" onClick={() => openPicker(slot.key)}>
+                          {es ? "Elegir imagen" : "Choose image"}
+                        </button>
+                        {explicit ? (
+                          <button
+                            type="button"
+                            className="button subtle"
+                            onClick={() => {
+                              setSlots((current) => ({ ...current, [slot.key]: "" }));
+                              setSaveState("idle");
+                            }}
+                          >
+                            {es ? "Automático" : "Auto"}
+                          </button>
+                        ) : null}
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </section>
+
+            <section className="event-editor-page" hidden={activeTab !== "accessibility"}>
+              <header className="event-editor-page-head">
+                <div>
+                  <span className="eyebrow">{es ? "Accesibilidad" : "Accessibility"}</span>
+                  <h3>{es ? "Información de acceso" : "Access information"}</h3>
+                </div>
+                <small>{es ? "Solo si hay algo específico que explicar." : "Only when something specific needs explaining."}</small>
+              </header>
+              <label className="event-studio-big-field">
+                {es ? "Información de accesibilidad" : "Accessibility information"}
+                <textarea
+                  name="accessibilityNotes"
+                  maxLength={1000}
+                  defaultValue={event.accessibilityNotes}
+                  rows={10}
+                />
+              </label>
+            </section>
+
+            <div className="event-edit-savebar event-editor-savebar" hidden={activeTab === "library"}>
+              <span aria-live="polite">
+                {saveState === "saving"
+                  ? es ? "Guardando…" : "Saving…"
+                  : saveState === "saved"
+                    ? verifiedVenue
+                      ? es ? "Guardado y publicado." : "Saved and published."
+                      : es ? "Guardado." : "Saved."
+                    : saveState === "error"
+                      ? es ? "No se pudo guardar. Revisa los campos." : "Could not save. Check the fields."
+                      : verifiedVenue
+                        ? es ? "Los cambios se publican directamente." : "Changes publish directly."
+                        : es ? "Los cambios pueden pasar por revisión." : "Changes may go through review."}
+              </span>
+              <button className="button" type="submit" disabled={saveState === "saving"}>
+                {saveState === "saving"
+                  ? es ? "Guardando…" : "Saving…"
+                  : es ? "Guardar cambios" : "Save changes"}
+              </button>
+            </div>
+          </form>
+
+          <section className="event-editor-page event-editor-library-page" hidden={activeTab !== "library"}>
+            <header className="event-editor-page-head">
+              <div>
+                <span className="eyebrow">{es ? "Biblioteca" : "Library"}</span>
+                <h3>{es ? "Multimedia del evento" : "Event media"}</h3>
+              </div>
+              <small>{eventBin.length} {es ? "archivos" : "files"}</small>
+            </header>
+
+            <form
+              ref={uploadFormRef}
+              onSubmit={uploadMedia}
+              className="media-upload-form event-editor-upload-form"
+              encType="multipart/form-data"
             >
-              <span>€</span>
-              <strong>{es ? "Mostrar precio" : "Show price"}</strong>
-              <small>
-                {es ? "0 € se verá como Gratis." : "€0 displays as Free."}
-              </small>
-            </button>
-          </div>
-          {priceMode === "show" ? (
-            <label className="event-price-input">
-              {es ? "Precio (€)" : "Price (€)"}
-              <input
-                name="priceEuros"
-                type="number"
-                min="0"
-                max="10000"
-                step="0.01"
-                defaultValue={(event.priceCents / 100).toFixed(2)}
-              />
-            </label>
-          ) : (
-            <input
-              type="hidden"
-              name="priceEuros"
-              value={event.priceCents / 100}
-            />
-          )}
-        </section>
-
-        <section className="event-edit-section event-five-slot-editor">
-          <header>
-            <span>03</span>
-            <div>
-              <strong>
-                {es ? "Cinco superficies del evento" : "Five event surfaces"}
-              </strong>
-              <small>
-                {es
-                  ? "Cada imagen tiene un destino concreto. Las ranuras vacías usan automáticamente la primera imagen del bin."
-                  : "Each image has one defined job. Empty slots automatically use the first image in the bin."}
-              </small>
-            </div>
-          </header>
-
-          <div className="event-five-slots">
-            {eventSlots.map((slot) => {
-              const selected = selectedFor(slot.key);
-              const explicit = Boolean(slots[slot.key]);
-              return (
-                <article className="event-five-slot" data-media-slot={slot.key} key={slot.key}>
-                  <div className="event-five-preview">
-                    {selected ? (
-                      <img src={selected.url} alt={selected.alt} />
-                    ) : (
-                      <span>＋</span>
-                    )}
-                    {!explicit && selected ? (
-                      <small className="media-fallback-chip">
-                        {es ? "Automático" : "Auto"}
-                      </small>
-                    ) : null}
-                  </div>
-                  <div>
-                    <strong>{es ? slot.es : slot.en}</strong>
-                    <small>{es ? slot.esHelp : slot.enHelp}</small>
-                  </div>
-                  <div className="media-five-picker">
-                    {(eventBin.length ? eventBin : venueLibrary).map((item) => (
-                      <button
-                        key={item.id}
-                        type="button"
-                        className={
-                          slots[slot.key] === item.id
-                            ? "media-mini-tile selected"
-                            : "media-mini-tile"
-                        }
-                        onClick={() => {
-                          setSlots((current) => ({
-                            ...current,
-                            [slot.key]: item.id,
-                          }));
-                          setSaveState("idle");
-                        }}
-                      >
-                        <img src={item.url} alt="" />
-                      </button>
-                    ))}
-                    {explicit ? (
-                      <button
-                        type="button"
-                        className="media-auto-button"
-                        onClick={() => {
-                          setSlots((current) => ({
-                            ...current,
-                            [slot.key]: "",
-                          }));
-                          setSaveState("idle");
-                        }}
-                      >
-                        {es ? "Auto" : "Auto"}
-                      </button>
-                    ) : null}
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </section>
-
-        <section className="event-edit-section">
-          <header>
-            <span>04</span>
-            <div>
-              <strong>{es ? "Accesibilidad" : "Accessibility"}</strong>
-              <small>
-                {es
-                  ? "Solo si necesitas añadir algo específico."
-                  : "Only if something specific needs explaining."}
-              </small>
-            </div>
-          </header>
-          <label>
-            {es ? "Información de accesibilidad" : "Accessibility information"}
-            <textarea
-              name="accessibilityNotes"
-              maxLength={1000}
-              defaultValue={event.accessibilityNotes}
-              rows={3}
-            />
-          </label>
-        </section>
-
-        <div className="event-edit-savebar">
-          <span aria-live="polite">
-            {saveState === "saving"
-              ? es
-                ? "Guardando…"
-                : "Saving…"
-              : saveState === "saved"
-                ? verifiedVenue
-                  ? es
-                    ? "Guardado y publicado."
-                    : "Saved and published."
-                  : es
-                    ? "Guardado."
-                    : "Saved."
-                : saveState === "error"
-                  ? es
-                    ? "No se pudo guardar. Revisa los campos."
-                    : "Could not save. Check the fields."
-                  : verifiedVenue
+              <input type="hidden" name="locale" value={locale} />
+              <input type="hidden" name="venueId" value={venueId} />
+              <input type="hidden" name="eventId" value={event.id} />
+              <label>
+                {es ? "Subir imágenes / PDF" : "Upload images / PDFs"}
+                <SafeMediaFileInput locale={locale} name="image" required multiple maxFiles={20} />
+              </label>
+              <label>
+                {es ? "Descripción común (opcional)" : "Shared description (optional)"}
+                <input
+                  name="alt"
+                  minLength={3}
+                  maxLength={300}
+                  placeholder={es ? "Vacío = nombres de archivo" : "Blank = filenames"}
+                />
+              </label>
+              <button className="button" type="submit" disabled={mediaState === "working"}>
+                {mediaState === "working"
+                  ? uploadProgress
                     ? es
-                      ? "Los cambios del local verificado se publican directamente."
-                      : "Verified venue changes publish directly."
-                    : es
-                      ? "Los cambios pueden pasar por revisión."
-                      : "Changes may go through review."}
-          </span>
-          <button
-            className="button"
-            type="submit"
-            disabled={saveState === "saving"}
-          >
-            {saveState === "saving"
-              ? es
-                ? "Guardando…"
-                : "Saving…"
-              : es
-                ? "Guardar cambios"
-                : "Save changes"}
-          </button>
-        </div>
-      </form>
+                      ? `Subiendo ${uploadProgress.done}/${uploadProgress.total}…`
+                      : `Uploading ${uploadProgress.done}/${uploadProgress.total}…`
+                    : es ? "Subiendo…" : "Uploading…"
+                  : es ? "Subir archivos" : "Upload files"}
+              </button>
+            </form>
 
-      <section className="event-media-bin-editor">
-        <div className="media-bin-heading">
-          <div>
-            <span className="eyebrow">
-              {es ? "Bin multimedia del evento" : "Event media bin"}
-            </span>
-            <h3>
-              {es ? "Imágenes para este evento" : "Media for this event"}
-            </h3>
-            <p>
-              {es
-                ? "Sube, añade y quita imágenes sin recargar la página. El editor permanece exactamente donde lo dejaste."
-                : "Upload, add and remove images without reloading the page. The editor stays exactly where you left it."}
+            <p className="event-media-live-status" aria-live="polite">
+              {mediaState === "saved"
+                ? es ? "Multimedia actualizada." : "Media updated."
+                : mediaState === "error"
+                  ? es ? "No se pudo actualizar la multimedia." : "Could not update media."
+                  : ""}
             </p>
-          </div>
-          <span>{eventBin.length}</span>
-        </div>
 
-        <form
-          ref={uploadFormRef}
-          onSubmit={uploadMedia}
-          className="media-upload-form"
-          encType="multipart/form-data"
-        >
-          <input type="hidden" name="locale" value={locale} />
-          <input type="hidden" name="venueId" value={venueId} />
-          <input type="hidden" name="eventId" value={event.id} />
-          <label>
-            {es ? "Subir imágenes / PDF" : "Upload images / PDFs"}
-            <SafeMediaFileInput
-              locale={locale}
-              name="image"
-              required
-              multiple
-              maxFiles={20}
-            />
-          </label>
-          <label>
-            {es ? "Descripción" : "Description"}
-            <input
-              name="alt"
-              minLength={3}
-              maxLength={300}
-              placeholder={
-                es
-                  ? "Déjalo vacío para usar los nombres de archivo"
-                  : "Leave blank to use filenames"
-              }
-            />
-          </label>
-          <button
-            className="button"
-            type="submit"
-            disabled={mediaState === "working"}
-          >
-            {mediaState === "working"
-              ? uploadProgress
-                ? es
-                  ? `Subiendo ${uploadProgress.done}/${uploadProgress.total}…`
-                  : `Uploading ${uploadProgress.done}/${uploadProgress.total}…`
-                : es
-                  ? "Subiendo…"
-                  : "Uploading…"
-              : es
-                ? "Subir archivos"
-                : "Upload files"}
-          </button>
-        </form>
-
-        <p className="event-media-live-status" aria-live="polite">
-          {mediaState === "saved"
-            ? es
-              ? "Multimedia actualizada."
-              : "Media updated."
-            : mediaState === "error"
-              ? es
-                ? "No se pudo actualizar la multimedia."
-                : "Could not update media."
-              : ""}
-        </p>
-
-        {eventBin.length ? (
-          <div className="media-library-grid event-bin-grid">
-            {eventBin.map((item, index) => (
-              <article className="media-library-item" key={item.id}>
-                <div className="media-library-thumb">
-                  <img src={item.url} alt={item.alt} />
-                  {index === 0 ? (
-                    <span className="media-primary-chip">
-                      {es ? "Principal" : "Primary"}
-                    </span>
-                  ) : null}
-                </div>
-                <div className="media-library-copy">
-                  <strong>{item.alt}</strong>
-                </div>
-                <div className="media-library-actions media-library-actions-simple">
-                  <button
-                    type="button"
-                    disabled={mediaState === "working"}
-                    onClick={() => removeFromEvent(item.id)}
-                  >
-                    {es ? "Quitar del evento" : "Remove from event"}
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
-        ) : (
-          <div className="event-media-empty">
-            <span>▧</span>
-            <strong>
-              {es
-                ? "Este evento aún usa las imágenes del local"
-                : "This event is still using venue media"}
-            </strong>
-          </div>
-        )}
-
-        {venueLibrary.filter((item) => !binIds.includes(item.id)).length ? (
-          <details className="event-library-import">
-            <summary>
-              ＋{" "}
-              {es
-                ? "Traer desde la biblioteca del local"
-                : "Add from venue library"}
-            </summary>
-            <div className="media-library-grid">
-              {venueLibrary
-                .filter((item) => !binIds.includes(item.id))
-                .map((item) => (
-                  <article className="media-library-item" key={item.id}>
-                    <div className="media-library-thumb">
+            {eventBin.length ? (
+              <div className="event-editor-library-grid">
+                {eventBin.map((item, index) => (
+                  <article className="event-editor-library-item" key={item.id}>
+                    <div className="event-editor-library-thumb">
                       <img src={item.url} alt={item.alt} />
+                      {index === 0 ? (
+                        <span className="media-primary-chip">{es ? "Principal" : "Primary"}</span>
+                      ) : null}
                     </div>
-                    <div className="media-library-copy">
+                    <div>
                       <strong>{item.alt}</strong>
-                    </div>
-                    <div className="media-library-actions media-library-actions-simple">
                       <button
                         type="button"
                         disabled={mediaState === "working"}
-                        onClick={() => addToEvent(item.id)}
+                        onClick={() => removeFromEvent(item.id)}
                       >
-                        {es ? "Añadir al evento" : "Add to event"}
+                        {es ? "Quitar" : "Remove"}
                       </button>
                     </div>
                   </article>
                 ))}
+              </div>
+            ) : (
+              <div className="event-media-empty">
+                <span>▧</span>
+                <strong>{es ? "Este evento aún usa las imágenes del local" : "This event is still using venue media"}</strong>
+              </div>
+            )}
+
+            {venueLibrary.filter((item) => !binIds.includes(item.id)).length ? (
+              <details className="event-library-import">
+                <summary>＋ {es ? "Traer desde la biblioteca del local" : "Add from venue library"}</summary>
+                <div className="event-editor-library-grid">
+                  {venueLibrary
+                    .filter((item) => !binIds.includes(item.id))
+                    .map((item) => (
+                      <article className="event-editor-library-item" key={item.id}>
+                        <div className="event-editor-library-thumb">
+                          <img src={item.url} alt={item.alt} />
+                        </div>
+                        <div>
+                          <strong>{item.alt}</strong>
+                          <button
+                            type="button"
+                            disabled={mediaState === "working"}
+                            onClick={() => addToEvent(item.id)}
+                          >
+                            {es ? "Añadir" : "Add"}
+                          </button>
+                        </div>
+                      </article>
+                    ))}
+                </div>
+              </details>
+            ) : null}
+          </section>
+        </div>
+      </div>
+
+      {pickerSlot ? (
+        <div className="event-media-modal-backdrop" role="presentation" onMouseDown={() => setPickerSlot(null)}>
+          <section
+            className="event-media-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label={es ? "Elegir imagen" : "Choose image"}
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <header>
+              <div>
+                <span className="eyebrow">{es ? "Biblioteca multimedia" : "Media library"}</span>
+                <h3>
+                  {es
+                    ? eventSlots.find((slot) => slot.key === pickerSlot)?.es
+                    : eventSlots.find((slot) => slot.key === pickerSlot)?.en}
+                </h3>
+              </div>
+              <button type="button" className="event-media-modal-close" onClick={() => setPickerSlot(null)}>×</button>
+            </header>
+
+            <div className="event-media-modal-grid">
+              {pickerItems.map((item) => (
+                <button
+                  type="button"
+                  className={slots[pickerSlot] === item.id ? "selected" : ""}
+                  key={item.id}
+                  onClick={() => chooseMedia(item.id)}
+                >
+                  <img src={item.url} alt={item.alt} />
+                  <span>{item.alt}</span>
+                </button>
+              ))}
             </div>
-          </details>
-        ) : null}
-      </section>
+
+            {!selectableMedia.length ? (
+              <div className="event-media-empty">
+                <span>▧</span>
+                <strong>{es ? "No hay imágenes disponibles" : "No media available"}</strong>
+              </div>
+            ) : null}
+
+            <footer>
+              <button type="button" className="button subtle" onClick={useAutomatic}>
+                {es ? "Usar automático" : "Use automatic"}
+              </button>
+              <div className="event-media-pagination">
+                <button
+                  type="button"
+                  disabled={safePickerPage <= 0}
+                  onClick={() => setPickerPage((page) => Math.max(0, page - 1))}
+                >
+                  ←
+                </button>
+                <span>{safePickerPage + 1} / {pageCount}</span>
+                <button
+                  type="button"
+                  disabled={safePickerPage >= pageCount - 1}
+                  onClick={() => setPickerPage((page) => Math.min(pageCount - 1, page + 1))}
+                >
+                  →
+                </button>
+              </div>
+            </footer>
+          </section>
+        </div>
+      ) : null}
     </details>
   );
 }
