@@ -90,7 +90,7 @@ export default async function VenuePage({
       premium: true,
     })),
   ];
-  const bgImage = venue.media?.[0]?.url;
+  const bgImage = venue.coverImage?.url || venue.media?.[0]?.url;
 
   return (
     <>
@@ -313,6 +313,15 @@ export default async function VenuePage({
                   url: item.url,
                   alt: translated(item.alt, locale),
                 }))}
+                heroMedia={
+                  venue.menuImage
+                    ? {
+                        id: venue.menuImage.id,
+                        url: venue.menuImage.url,
+                        alt: translated(venue.menuImage.alt, locale),
+                      }
+                    : undefined
+                }
               />
             )}
             {events.length > 0 && (
