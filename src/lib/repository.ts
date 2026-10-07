@@ -72,8 +72,10 @@ export class FixtureRepository implements DiscoveryRepository {
       if (
         distance > radius ||
         (query.category && event.category !== query.category) ||
-        (query.price === "free" && event.priceCents > 0) ||
-        (query.price === "paid" && event.priceCents === 0) ||
+        (query.price === "free" &&
+          (event.priceDisplayMode === "hide" || event.priceCents > 0)) ||
+        (query.price === "paid" &&
+          (event.priceDisplayMode === "hide" || event.priceCents === 0)) ||
         (query.minPriceCents !== undefined &&
           event.priceCents < query.minPriceCents) ||
         (query.maxPriceCents !== undefined &&
@@ -222,6 +224,7 @@ function eventFromRow(row: DbRecord, now = new Date()): Event | null {
     venueId: String(row.venue_id),
     category: String(category.slug),
     priceCents: Number(row.price_cents || 0),
+    priceDisplayMode: row.price_display_mode === "hide" ? "hide" : "show",
     currency: "EUR",
     source:
       row.source === "community"
@@ -267,7 +270,7 @@ function eventFromRow(row: DbRecord, now = new Date()): Event | null {
 const venueFields =
   "id,slug,name,description_es,description_en,address,location,verified,accessibility,contact_phone,whatsapp_phone,website_url,discovery_vertical,discovery_enabled,recommendation_weight,chain_name,cities(slug)";
 const eventFields =
-  "id,venue_id,slug,title_es,title_en,description_es,description_en,price_cents,currency,source,sponsored,booking_url,minimum_age,accessibility_notes_es,accessibility_notes_en,location,location_label,directions_address,categories(slug),event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status,booking_url),feature_slots(starts_at,ends_at)";
+  "id,venue_id,slug,title_es,title_en,description_es,description_en,price_cents,price_display_mode,currency,source,sponsored,booking_url,minimum_age,accessibility_notes_es,accessibility_notes_en,location,location_label,directions_address,categories(slug),event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status,booking_url),feature_slots(starts_at,ends_at)";
 
 export class SupabaseDiscoveryRepository implements DiscoveryRepository {
   async discover(query: DiscoveryQuery) {
@@ -297,6 +300,20 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
 
     // Process rows to extract media paths
     const rows = data as unknown as DbRecord[];
+    const eventIds = rows.map((row) => String(row.id));
+    const { data: eventCoverPlacements } = eventIds.length
+      ? await supabase
+          .from("venue_media_placements")
+          .select("target_key,media_id,venue_media(id,storage_path,alt_es,alt_en)")
+          .eq("placement", "event_cover")
+          .in("target_key", eventIds)
+      : { data: [] };
+    const eventCoverRows = new Map(
+      (eventCoverPlacements || []).flatMap((placement) => {
+        const media = one(placement.venue_media as unknown);
+        return media ? [[String(placement.target_key), media] as const] : [];
+      }),
+    );
     const mediaPaths = new Set<string>();
     rows.forEach((row) => {
       const venueRow = one(row.venues);
@@ -306,6 +323,10 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
         });
       }
     });
+
+    for (const media of eventCoverRows.values()) {
+      if (media.storage_path) mediaPaths.add(String(media.storage_path));
+    }
 
     // Fetch signed URLs in bulk
     const pathList = Array.from(mediaPaths);
@@ -361,6 +382,28 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
           venue.media = mappedMedia as typeof venue.media;
       }
 
+      const eventCoverRow = eventCoverRows.get(event.id);
+      if (eventCoverRow?.storage_path) {
+        const coverUrl = signedUrlMap.get(String(eventCoverRow.storage_path));
+        if (coverUrl) {
+          const cover = {
+            id: String(eventCoverRow.id),
+            url: coverUrl,
+            alt: {
+              es: String(eventCoverRow.alt_es || event.title.es),
+              ...(eventCoverRow.alt_en
+                ? { en: String(eventCoverRow.alt_en) }
+                : {}),
+            },
+          };
+          event.coverImage = cover;
+          venue.media = [
+            cover,
+            ...(venue.media || []).filter((item) => item.id !== cover.id),
+          ];
+        }
+      }
+
       const distance = distanceKm(
         center.latitude,
         center.longitude,
@@ -411,7 +454,57 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       .eq("status", "published")
       .maybeSingle();
     if (error) throw new Error(`Public event query failed: ${error.message}`);
-    return data ? eventFromRow(data as unknown as DbRecord) : null;
+    const event = data ? eventFromRow(data as unknown as DbRecord) : null;
+    if (!event) return null;
+
+    const { data: placements } = await supabase
+      .from("venue_media_placements")
+      .select("media_id,placement,sort_order,venue_media(id,storage_path,alt_es,alt_en)")
+      .eq("venue_id", event.venueId)
+      .eq("target_key", event.id)
+      .in("placement", ["event_cover", "event_gallery"])
+      .order("sort_order");
+
+    const placementMedia = (placements || []).flatMap((placement) => {
+      const media = one(placement.venue_media as unknown);
+      return media
+        ? [{ placement: placement.placement, sortOrder: placement.sort_order, media }]
+        : [];
+    });
+    const paths = placementMedia.map((item) => String(item.media.storage_path));
+    const { data: signedRows } = paths.length
+      ? await supabase.storage.from("event-media").createSignedUrls(paths, 3600)
+      : { data: [] };
+    const signed = new Map(
+      (signedRows || []).flatMap((item) =>
+        item.path && item.signedUrl ? [[item.path, item.signedUrl] as const] : [],
+      ),
+    );
+    const mapped = placementMedia.flatMap((item) => {
+      const url = signed.get(String(item.media.storage_path));
+      return url
+        ? [{
+            placement: item.placement,
+            sortOrder: item.sortOrder,
+            value: {
+              id: String(item.media.id),
+              url,
+              alt: {
+                es: String(item.media.alt_es || event.title.es),
+                ...(item.media.alt_en
+                  ? { en: String(item.media.alt_en) }
+                  : {}),
+              },
+            },
+          }]
+        : [];
+    });
+    event.coverImage = mapped.find((item) => item.placement === "event_cover")?.value;
+    event.gallery = mapped
+      .filter((item) => item.placement === "event_gallery")
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map((item) => item.value);
+    return event;
   }
 
   async venueBySlug(slug: string) {
