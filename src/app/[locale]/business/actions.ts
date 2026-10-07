@@ -188,6 +188,8 @@ const eventSchema = z.object({
   title: z.string().trim().min(3).max(160),
   description: z.string().trim().min(20).max(4000),
   priceEuros: z.coerce.number().min(0).max(10000),
+  priceDisplayMode: z.enum(["show", "hide"]).default("show"),
+  coverMediaId: z.union([z.string().uuid(), z.literal("")]).default(""),
   bookingUrl: safeExternalUrlSchema,
   startsAt: madridLocalDateTimeSchema,
   endsAt: madridLocalDateTimeSchema,
@@ -239,6 +241,57 @@ export async function createEvent(formData: FormData) {
   );
   if (error) redirect(`/${locale}/business?view=events&error=event`);
   if (typeof eventId === "string") {
+    const galleryMediaIds = formData
+      .getAll("galleryMediaId")
+      .map(String)
+      .filter((value) => /^[0-9a-f-]{36}$/i.test(value))
+      .slice(0, 8);
+
+    const selectedMediaIds = [
+      ...(e.coverMediaId ? [e.coverMediaId] : []),
+      ...galleryMediaIds,
+    ];
+
+    if (selectedMediaIds.length) {
+      const { data: ownedMedia } = await supabase
+        .from("venue_media")
+        .select("id")
+        .eq("venue_id", e.venueId)
+        .in("id", selectedMediaIds);
+      const allowed = new Set((ownedMedia || []).map((item) => item.id));
+
+      if (e.coverMediaId && allowed.has(e.coverMediaId)) {
+        await supabase.from("venue_media_placements").insert({
+          venue_id: e.venueId,
+          media_id: e.coverMediaId,
+          placement: "event_cover",
+          target_key: eventId,
+          sort_order: 0,
+          created_by: user.id,
+        });
+      }
+
+      const galleryRows = galleryMediaIds
+        .filter((id) => allowed.has(id))
+        .map((id, index) => ({
+          venue_id: e.venueId,
+          media_id: id,
+          placement: "event_gallery",
+          target_key: eventId,
+          sort_order: index,
+          created_by: user.id,
+        }));
+      if (galleryRows.length) {
+        await supabase.from("venue_media_placements").insert(galleryRows);
+      }
+    }
+
+    await supabase
+      .from("events")
+      .update({ price_display_mode: e.priceDisplayMode })
+      .eq("id", eventId)
+      .eq("venue_id", e.venueId);
+
     await reviewPendingCatalogueItem({
       targetType: "event",
       targetId: eventId,
@@ -254,6 +307,7 @@ const officialEventSchema = z.object({
   title: z.string().trim().min(3).max(160),
   description: z.string().trim().min(20).max(4000),
   priceEuros: z.coerce.number().min(0).max(10000),
+  priceDisplayMode: z.enum(["show", "hide"]).default("show"),
   bookingUrl: safeExternalUrlSchema,
   startsAt: madridLocalDateTimeSchema,
   endsAt: madridLocalDateTimeSchema,
@@ -285,7 +339,7 @@ export async function createOfficialEvent(formData: FormData) {
     };
   }
 
-  const { error } = await supabase.rpc("create_akipasa_selection_event_v2", {
+  const { data: eventId, error } = await supabase.rpc("create_akipasa_selection_event_v2", {
     p_category: value.categoryId,
     p_slug: createEventSlug(value.title),
     p_title_es: localized.title.es,
@@ -303,6 +357,14 @@ export async function createOfficialEvent(formData: FormData) {
   });
   if (error)
     redirect(`/${locale}/business?view=events&error=official-event`);
+
+  if (typeof eventId === "string") {
+    await supabase
+      .from("events")
+      .update({ price_display_mode: value.priceDisplayMode })
+      .eq("id", eventId);
+  }
+
   redirect(`/${locale}/business?view=events&created=official-event`);
 }
 

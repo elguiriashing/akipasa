@@ -26,6 +26,7 @@ import {
 } from "@/components/WorkspaceShell";
 import { canModerate } from "@/lib/roles";
 import { GuardedActionForm } from "@/components/GuardedActionForm";
+import { BusinessEventComposer } from "@/components/BusinessEventComposer";
 
 type ManagedVenue = {
   role: string;
@@ -171,6 +172,45 @@ export default async function BusinessPage({
   const regularManaged = managed.filter(
     (item) => item.venues?.slug !== "akipasa-editorial",
   );
+  const regularVenueIds = regularManaged.flatMap((item) =>
+    item.venues ? [item.venues.id] : [],
+  );
+  const { data: eventComposerMediaRows } =
+    view === "events" && regularVenueIds.length
+      ? await supabase
+          .from("venue_media")
+          .select("id,venue_id,storage_path,alt_es,alt_en")
+          .in("venue_id", regularVenueIds)
+          .order("sort_order")
+      : { data: [] };
+  const composerMediaPaths = (eventComposerMediaRows || []).map(
+    (item) => item.storage_path,
+  );
+  const { data: composerSignedRows } = composerMediaPaths.length
+    ? await supabase.storage
+        .from("event-media")
+        .createSignedUrls(composerMediaPaths, 3600)
+    : { data: [] };
+  const composerSignedMap = new Map(
+    (composerSignedRows || []).flatMap((item) =>
+      item.path && item.signedUrl ? [[item.path, item.signedUrl] as const] : [],
+    ),
+  );
+  const eventComposerMedia = (eventComposerMediaRows || []).flatMap((item) => {
+    const url = composerSignedMap.get(item.storage_path);
+    return url
+      ? [
+          {
+            id: item.id,
+            venueId: item.venue_id,
+            url,
+            alt:
+              (locale === "es" ? item.alt_es : item.alt_en || item.alt_es) ||
+              (es ? "Imagen del local" : "Venue image"),
+          },
+        ]
+      : [];
+  });
   const [{ data: promotionEvents }, { data: managedEvents }] =
     managedVenueIds.length
       ? await Promise.all([
@@ -621,16 +661,44 @@ export default async function BusinessPage({
                 {es ? "Descripción" : "Description"}
                 <textarea name="description" required minLength={20} maxLength={4000} rows={4} />
               </label>
-              <div className="form-grid-two">
-                <label>
+              <fieldset className="official-event-price-fieldset">
+                <legend>{es ? "Precio de entrada" : "Entry price"}</legend>
+                <div className="event-price-mode">
+                  <label className="event-price-option">
+                    <input
+                      type="radio"
+                      name="priceDisplayMode"
+                      value="hide"
+                      defaultChecked
+                    />
+                    <span>◌</span>
+                    <strong>{es ? "No mostrar precio" : "Hide price"}</strong>
+                    <small>
+                      {es
+                        ? "Para planes sin entrada: desayunos, mercados, bares…"
+                        : "For events with no entry fee: breakfasts, markets, bars…"}
+                    </small>
+                  </label>
+                  <label className="event-price-option">
+                    <input
+                      type="radio"
+                      name="priceDisplayMode"
+                      value="show"
+                    />
+                    <span>€</span>
+                    <strong>{es ? "Mostrar precio" : "Show price"}</strong>
+                    <small>{es ? "0 € aparecerá como Gratis." : "€0 displays as Free."}</small>
+                  </label>
+                </div>
+                <label className="event-price-input">
                   {es ? "Precio (€)" : "Price (€)"}
                   <input name="priceEuros" type="number" min="0" defaultValue="0" step="0.01" required />
                 </label>
-                <label>
-                  {es ? "Enlace oficial / reserva" : "Official / booking link"}
-                  <input name="bookingUrl" type="url" placeholder="https://" />
-                </label>
-              </div>
+              </fieldset>
+              <label>
+                {es ? "Enlace oficial / reserva" : "Official / booking link"}
+                <input name="bookingUrl" type="url" placeholder="https://" />
+              </label>
               <div className="form-grid-two">
                 <label>
                   {es ? "Inicio" : "Starts"}
@@ -652,119 +720,19 @@ export default async function BusinessPage({
 
         {/* Create Event Form */}
         {view === "events" && regularManaged.length > 0 && (
-          <details
-            id="create-event"
-            className="panel catalogue-edit-card dashboard-grid-full"
-            open={view === "events" && !businessEvents.length}
-          >
-            <summary>
-              <strong>
-                {es
-                  ? "+ Crear evento o actividad"
-                  : "+ Create event or activity"}
-              </strong>
-            </summary>
-
-            <AutoTranslationNote locale={locale} />
-            <GuardedActionForm action={createEvent} className="stack focused-form">
-              <input type="hidden" name="locale" value={locale} />
-
-              <div className="form-grid-two">
-                <label>
-                  {es ? "Local emisor" : "Publishing venue"}
-                  <select name="venueId" required>
-                    {regularManaged.map(
-                      (m) =>
-                        m.venues && (
-                          <option key={m.venues.id} value={m.venues.id}>
-                            {m.venues.name}
-                          </option>
-                        ),
-                    )}
-                  </select>
-                </label>
-
-                <label>
-                  {es ? "Categoría" : "Category"}
-                  <select name="categoryId" required>
-                    {categories?.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {locale === "es" ? c.name_es : c.name_en}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-
-              <div className="form-grid-two">
-                <label>
-                  {es ? "Título" : "Title"}
-                  <input
-                    name="title"
-                    required
-                    placeholder={es ? "Ej. Noche de Jazz" : "e.g. Jazz Night"}
-                  />
-                </label>
-              </div>
-
-              <div className="form-grid-two">
-                <label>
-                  {es ? "Enlace de reserva (HTTPS)" : "HTTPS booking link"}
-                  <input name="bookingUrl" type="url" placeholder="https://" />
-                </label>
-
-                <p className="muted">
-                  {es
-                    ? "AkiPasa creará automáticamente la dirección web del evento."
-                    : "AkiPasa will create the event web address automatically."}
-                </p>
-              </div>
-
-              <div className="form-grid-two">
-                <label>
-                  {es ? "Descripción" : "Description"}
-                  <textarea
-                    name="description"
-                    required
-                    minLength={20}
-                    rows={3}
-                  />
-                </label>
-              </div>
-
-              <div className="form-grid-two">
-                <label>
-                  {es ? "Precio (€)" : "Price (€)"}
-                  <input
-                    name="priceEuros"
-                    type="number"
-                    min="0"
-                    defaultValue="0"
-                    step="0.01"
-                    required
-                  />
-                </label>
-              </div>
-
-              <div className="form-grid-two">
-                <label>
-                  {es ? "Inicio" : "Starts"}
-                  <input name="startsAt" type="datetime-local" required />
-                </label>
-
-                <label>
-                  {es ? "Fin" : "Ends"}
-                  <input name="endsAt" type="datetime-local" required />
-                </label>
-              </div>
-
-              <div className="form-actions-right">
-                <button className="button primary" type="submit">
-                  {es ? "Crear evento" : "Create event"}
-                </button>
-              </div>
-            </GuardedActionForm>
-          </details>
+          <BusinessEventComposer
+            locale={locale}
+            venues={regularManaged.flatMap((item) =>
+              item.venues ? [{ id: item.venues.id, name: item.venues.name }] : [],
+            )}
+            categories={(categories || []).map((category) => ({
+              id: category.id,
+              label:
+                (locale === "es" ? category.name_es : category.name_en) ||
+                category.name_es,
+            }))}
+            media={eventComposerMedia}
+          />
         )}
 
         {/* Loyalty & Stamps View */}

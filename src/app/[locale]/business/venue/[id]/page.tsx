@@ -4,7 +4,8 @@ import { OwnerReadiness } from "@/components/OwnerReadiness";
 import { Icon } from "@/components/Icons";
 import { VenueDashboard } from "@/components/VenueDashboard";
 import { VenueCatalogueEditor } from "@/components/VenueCatalogueEditor";
-import { SafeMediaFileInput } from "@/components/SafeMediaFileInput";
+import { VenueMediaStudio } from "@/components/VenueMediaStudio";
+import { BusinessEventEditPanel } from "@/components/BusinessEventEditPanel";
 import { getVenueDashboardSection } from "@/lib/venue-dashboard";
 import {
   parseCatalogueDocument,
@@ -28,7 +29,6 @@ import {
   duplicateEvent,
   publishEvent,
   redeemRewardClaim,
-  removeVenueImage,
   saveBookingSettings,
   saveOffer,
   setRecurrence,
@@ -36,9 +36,7 @@ import {
   updateBookingRequest,
   updateOccurrence,
   updateVenue,
-  updateVenueImageMetadata,
   unclaimVenue,
-  uploadVenueImage,
 } from "./actions";
 
 function toMadridLocalInput(value: string) {
@@ -108,7 +106,7 @@ export default async function VenueWorkspace({
     supabase
       .from("events")
       .select(
-        "id,slug,title_es,title_en,description_es,description_en,price_cents,booking_url,minimum_age,accessibility_notes_es,accessibility_notes_en,status,event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status,booking_url)",
+        "id,slug,title_es,title_en,description_es,description_en,price_cents,price_display_mode,booking_url,minimum_age,accessibility_notes_es,accessibility_notes_en,status,event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status,booking_url)",
       )
       .eq("venue_id", id)
       .order("created_at", { ascending: false }),
@@ -178,6 +176,68 @@ export default async function VenueWorkspace({
     supabase.rpc("venue_owner_results", { p_venue: id }),
   ]);
   if (!venue) notFound();
+
+  const { data: mediaPlacements } = await supabase
+    .from("venue_media_placements")
+    .select("media_id,placement,target_key")
+    .eq("venue_id", id)
+    .in("placement", ["venue_logo", "venue_cover"]);
+  const mediaPaths = (media || []).map((item) => item.storage_path);
+  const { data: signedMediaRows } = mediaPaths.length
+    ? await supabase.storage.from("event-media").createSignedUrls(mediaPaths, 3600)
+    : { data: [] };
+  const signedMediaMap = new Map(
+    (signedMediaRows || []).flatMap((item) =>
+      item.path && item.signedUrl ? [[item.path, item.signedUrl] as const] : [],
+    ),
+  );
+  const logoMediaId = mediaPlacements?.find(
+    (item) => item.placement === "venue_logo" && item.target_key === "",
+  )?.media_id;
+  const coverMediaId = mediaPlacements?.find(
+    (item) => item.placement === "venue_cover" && item.target_key === "",
+  )?.media_id;
+  const mediaStudioItems = (media || []).flatMap((item) => {
+    const url = signedMediaMap.get(item.storage_path);
+    return url
+      ? [{
+          id: item.id,
+          url,
+          alt: (es ? item.alt_es : item.alt_en || item.alt_es) || (es ? "Imagen del local" : "Venue image"),
+          sizeBytes: item.size_bytes,
+          isLogo: item.id === logoMediaId,
+          isCover: item.id === coverMediaId,
+        }]
+      : [];
+  });
+
+  const eventIds = (events || []).map((event) => event.id);
+  const { data: eventMediaPlacements } = eventIds.length
+    ? await supabase
+        .from("venue_media_placements")
+        .select("target_key,media_id,placement,sort_order")
+        .eq("venue_id", id)
+        .in("target_key", eventIds)
+        .in("placement", ["event_cover", "event_gallery"])
+        .order("sort_order")
+    : { data: [] };
+  const eventPlacementMap = new Map<
+    string,
+    { coverMediaId: string; galleryMediaIds: string[] }
+  >();
+  for (const placement of eventMediaPlacements || []) {
+    const current = eventPlacementMap.get(placement.target_key) || {
+      coverMediaId: "",
+      galleryMediaIds: [],
+    };
+    if (placement.placement === "event_cover") {
+      current.coverMediaId = placement.media_id;
+    } else if (placement.placement === "event_gallery") {
+      current.galleryMediaIds.push(placement.media_id);
+    }
+    eventPlacementMap.set(placement.target_key, current);
+  }
+
   const catalogueDocument = seedCatalogueTranslationMetadata(
     parseCatalogueDocument(catalogue?.draft_document, locale),
     locale,
@@ -442,136 +502,11 @@ export default async function VenueWorkspace({
             </section>
 
             <section className="panel profile-media-hub">
-              <div className="workspace-inline-heading">
-                <div>
-                  <span className="eyebrow">{es ? "Fotos" : "Photos"}</span>
-                  <h2>{es ? "Tu local, de un vistazo" : "Show people the venue"}</h2>
-                  <p>
-                    {media?.length
-                      ? es
-                        ? `${media.length} fotos añadidas`
-                        : `${media.length} photos added`
-                      : es
-                        ? "Todavía no has añadido fotos."
-                        : "No photos added yet."}
-                  </p>
-                </div>
-              </div>
-              <details className="workspace-action-card" open={!media?.length}>
-                <summary>
-                  <span className="workspace-action-summary">
-                    <span className="summary-icon">
-                      <Icon name="plus" />
-                    </span>
-                    <span>
-                      <strong>{es ? "Añadir foto" : "Add a photo"}</strong>
-                      <small>
-                        {es
-                          ? "JPEG, PNG, WebP o PDF · máximo 10 MB"
-                          : "JPEG, PNG, WebP or PDF · max 10 MB"}
-                      </small>
-                    </span>
-                  </span>
-                </summary>
-                <form
-                  action={uploadVenueImage}
-                  className="photo-upload-grid"
-                  encType="multipart/form-data"
-                >
-                  <input type="hidden" name="locale" value={locale} />
-                  <input type="hidden" name="venueId" value={id} />
-                  <input
-                    type="hidden"
-                    name="sortOrder"
-                    value={media?.length || 0}
-                  />
-                  <label className="photo-file-field">
-                    {es ? "Elige una imagen o PDF" : "Choose an image or PDF"}
-                    <SafeMediaFileInput
-                      locale={locale}
-                      name="image"
-                      required
-                    />
-                  </label>
-                  <label>
-                    {es ? "Describe brevemente la foto" : "Briefly describe the photo"}
-                    <input
-                      name="alt"
-                      required
-                      minLength={3}
-                      maxLength={300}
-                      placeholder={
-                        es
-                          ? "Ej. terraza principal"
-                          : "E.g. main terrace"
-                      }
-                    />
-                  </label>
-                  <button className="button" type="submit">
-                    {es ? "Subir foto" : "Upload photo"}
-                  </button>
-                </form>
-              </details>
-              {!!media?.length && (
-                <div className="media-row-list">
-                  {media.map((item, index) => (
-                    <details className="media-row" key={item.id}>
-                      <summary>
-                        <span>
-                          <strong>
-                            {locale === "en"
-                              ? item.alt_en || item.alt_es
-                              : item.alt_es}
-                          </strong>
-                          <small>
-                            {Math.round(item.size_bytes / 1024)} KB ·{" "}
-                            {es ? `foto ${index + 1}` : `photo ${index + 1}`}
-                          </small>
-                        </span>
-                      </summary>
-                      <form action={updateVenueImageMetadata} className="media-edit-grid">
-                        <input type="hidden" name="locale" value={locale} />
-                        <input type="hidden" name="venueId" value={id} />
-                        <input type="hidden" name="mediaId" value={item.id} />
-                        <label>
-                          {es ? "Descripción" : "Description"}
-                          <input
-                            name="alt"
-                            defaultValue={
-                              es ? item.alt_es : item.alt_en || item.alt_es
-                            }
-                            required
-                            minLength={3}
-                            maxLength={300}
-                          />
-                        </label>
-                        <label>
-                          {es ? "Orden" : "Order"}
-                          <input
-                            name="sortOrder"
-                            type="number"
-                            min={0}
-                            max={10000}
-                            defaultValue={item.sort_order}
-                            required
-                          />
-                        </label>
-                        <button className="button secondary" type="submit">
-                          {es ? "Guardar" : "Save"}
-                        </button>
-                      </form>
-                      <form action={removeVenueImage}>
-                        <input type="hidden" name="locale" value={locale} />
-                        <input type="hidden" name="venueId" value={id} />
-                        <input type="hidden" name="mediaId" value={item.id} />
-                        <button className="text-button" type="submit">
-                          {es ? "Eliminar foto" : "Remove photo"}
-                        </button>
-                      </form>
-                    </details>
-                  ))}
-                </div>
-              )}
+              <VenueMediaStudio
+                locale={locale}
+                venueId={id}
+                media={mediaStudioItems}
+              />
             </section>
           </>
         ),
@@ -664,90 +599,43 @@ export default async function VenueWorkspace({
                       )}
                     </div>
                     <div className="event-editor">
-                      <details>
-                        <summary>{es ? "Editar" : "Edit"}</summary>
-                        <form action={updateEvent} className="stack">
-                          <input type="hidden" name="locale" value={locale} />
-                          <input type="hidden" name="venueId" value={id} />
-                          <input
-                            type="hidden"
-                            name="eventId"
-                            value={event.id}
-                          />
-                          <label>
-                            {es ? "Título" : "Title"}
-                            <input
-                              name="title"
-                              defaultValue={
-                                es
-                                  ? event.title_es
-                                  : event.title_en || ""
-                              }
-                              required
-                            />
-                          </label>
-                          <label>
-                            {es ? "Descripción" : "Description"}
-                            <textarea
-                              name="description"
-                              defaultValue={
-                                es
-                                  ? event.description_es
-                                  : event.description_en || ""
-                              }
-                              required
-                            />
-                          </label>
-                          <label>
-                            {es ? "Precio (€)" : "Price (€)"}
-                            <input
-                              name="priceEuros"
-                              type="number"
-                              min="0"
-                              max="10000"
-                              step="0.01"
-                              defaultValue={(event.price_cents / 100).toFixed(2)}
-                            />
-                          </label>
-                          <label>
-                            {es ? "Enlace de reserva" : "Booking link"}
-                            <input
-                              name="bookingUrl"
-                              type="url"
-                              defaultValue={event.booking_url || ""}
-                            />
-                          </label>
-                          <label>
-                            {es
-                              ? "Edad mínima (opcional)"
-                              : "Minimum age (optional)"}
-                            <input
-                              name="minimumAge"
-                              type="number"
-                              min="0"
-                              max="99"
-                              defaultValue={event.minimum_age ?? ""}
-                            />
-                          </label>
-                          <label>
-                            {es
-                              ? "Información de accesibilidad"
-                              : "Accessibility information"}
-                            <textarea
-                              name="accessibilityNotes"
-                              maxLength={1000}
-                              defaultValue={
-                                es
-                                  ? event.accessibility_notes_es || ""
-                                  : event.accessibility_notes_en || ""
-                              }
-                            />
-                          </label>
-                          <button className="button" type="submit">
-                            {es ? "Guardar evento" : "Save event"}
-                          </button>
-                        </form>
-                      </details>
+                      <BusinessEventEditPanel
+                        locale={locale}
+                        venueId={id}
+                        event={{
+                          id: event.id,
+                          title:
+                            locale === "en"
+                              ? event.title_en || event.title_es
+                              : event.title_es,
+                          description:
+                            locale === "en"
+                              ? event.description_en || event.description_es
+                              : event.description_es,
+                          priceCents: event.price_cents,
+                          priceDisplayMode:
+                            event.price_display_mode === "hide" ? "hide" : "show",
+                          bookingUrl: event.booking_url || "",
+                          minimumAge: event.minimum_age,
+                          accessibilityNotes:
+                            locale === "en"
+                              ? event.accessibility_notes_en ||
+                                event.accessibility_notes_es ||
+                                ""
+                              : event.accessibility_notes_es || "",
+                        }}
+                        media={mediaStudioItems.map((item) => ({
+                          id: item.id,
+                          url: item.url,
+                          alt: item.alt,
+                        }))}
+                        coverMediaId={
+                          eventPlacementMap.get(event.id)?.coverMediaId || ""
+                        }
+                        galleryMediaIds={
+                          eventPlacementMap.get(event.id)?.galleryMediaIds || []
+                        }
+                      />
                       {event.event_occurrences?.length ? (
                         <details>
                           <summary>
@@ -1081,6 +969,11 @@ export default async function VenueWorkspace({
               revision={catalogue?.revision || 0}
               publishedRevision={catalogue?.published_revision ?? null}
               initialDocument={catalogueDocument}
+              mediaOptions={mediaStudioItems.map((item) => ({
+                id: item.id,
+                url: item.url,
+                alt: item.alt,
+              }))}
             />
             {query.error === "allergens" && (
               <p className="notice notice-error" role="alert">

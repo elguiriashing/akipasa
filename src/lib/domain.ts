@@ -25,6 +25,11 @@ export type Venue = {
     url: string;
     alt: Translation;
   }>;
+  logoImage?: {
+    id: string;
+    url: string;
+    alt: Translation;
+  };
   offers?: Array<{
     id: string;
     title: Translation;
@@ -59,6 +64,7 @@ export type Event = {
   venueId: string;
   category: string;
   priceCents: number;
+  priceDisplayMode?: "show" | "hide";
   currency: "EUR";
   source: "verified_venue" | "community" | "akipasa_selection";
   location?: {
@@ -71,6 +77,16 @@ export type Event = {
   bookingUrl?: string;
   minimumAge?: number;
   accessibilityNotes?: Translation;
+  coverImage?: {
+    id: string;
+    url: string;
+    alt: Translation;
+  };
+  gallery?: Array<{
+    id: string;
+    url: string;
+    alt: Translation;
+  }>;
   occurrences: Occurrence[];
 };
 export type TimeWindow = "now" | "tonight" | "tomorrow" | "weekend" | "all";

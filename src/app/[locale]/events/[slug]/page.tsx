@@ -122,11 +122,13 @@ export default async function EventPage({
       { onConflict: "profile_id,event_key" },
     );
   }
-  const date = new Intl.DateTimeFormat(locale, {
+  const dateFormatter = new Intl.DateTimeFormat(locale, {
     dateStyle: "full",
     timeStyle: "short",
     timeZone: "Europe/Madrid",
-  }).format(new Date(occurrence.startsAt));
+  });
+  const date = dateFormatter.format(new Date(occurrence.startsAt));
+  const endDate = dateFormatter.format(new Date(occurrence.endsAt));
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Event",
@@ -153,14 +155,18 @@ export default async function EventPage({
         event.location?.label ||
         resolvedVenue.address,
     },
-    offers: {
-      "@type": "Offer",
-      price: event.priceCents / 100,
-      priceCurrency: event.currency,
-      url: bookingUrl,
-    },
+    ...(event.priceDisplayMode === "hide"
+      ? {}
+      : {
+          offers: {
+            "@type": "Offer",
+            price: event.priceCents / 100,
+            priceCurrency: event.currency,
+            url: bookingUrl,
+          },
+        }),
   };
-  const bgImage = resolvedVenue.media?.[0]?.url;
+  const bgImage = event.coverImage?.url || resolvedVenue.media?.[0]?.url;
 
   return (
     <>
@@ -235,14 +241,21 @@ export default async function EventPage({
               <dl className="detail-facts">
                 <div>
                   <dt>{m.time}</dt>
-                  <dd>{date}</dd>
-                </div>
-                <div>
-                  <dt>{m.price}</dt>
                   <dd>
-                    {event.priceCents ? `${event.priceCents / 100} €` : m.free}
+                    <span>{date}</span>
+                    <small className="event-end-time">
+                      {locale === "es" ? "Hasta" : "Until"} {endDate}
+                    </small>
                   </dd>
                 </div>
+                {event.priceDisplayMode !== "hide" && (
+                  <div>
+                    <dt>{m.price}</dt>
+                    <dd>
+                      {event.priceCents ? `${event.priceCents / 100} €` : m.free}
+                    </dd>
+                  </div>
+                )}
                 <div>
                   <dt>{m.location}</dt>
                   <dd>{eventPlace.address}</dd>
@@ -543,6 +556,20 @@ export default async function EventPage({
                 </details>
               </div>
             </div>
+            {event.gallery?.length ? (
+              <section className="event-media-gallery">
+                <h2>{locale === "es" ? "Galería" : "Gallery"}</h2>
+                <div className="event-media-gallery-grid">
+                  {event.gallery.map((item) => (
+                    <img
+                      key={item.id}
+                      src={item.url}
+                      alt={translated(item.alt, locale)}
+                    />
+                  ))}
+                </div>
+              </section>
+            ) : null}
             <details className="event-description" open>
               <summary>
                 {locale === "es" ? "Sobre este evento" : "About this event"}

@@ -147,8 +147,19 @@ export default async function VenuePage({
                 m.community
               )}
             </div>
-            <h1>{venue.name}</h1>
-            <p className="lede">{venue.address}</p>
+            <div className="venue-title-row">
+              {venue.logoImage ? (
+                <img
+                  className="venue-profile-logo"
+                  src={venue.logoImage.url}
+                  alt={translated(venue.logoImage.alt, locale)}
+                />
+              ) : null}
+              <div>
+                <h1>{venue.name}</h1>
+                <p className="lede">{venue.address}</p>
+              </div>
+            </div>
             <div className="detail-overview">
               {venue.accessible && (
                 <p className="detail-access">
@@ -297,6 +308,11 @@ export default async function VenuePage({
               <PublicVenueCatalogue
                 locale={locale}
                 document={catalogueDocument}
+                media={(venue.media || []).map((item) => ({
+                  id: item.id,
+                  url: item.url,
+                  alt: translated(item.alt, locale),
+                }))}
               />
             )}
             {events.length > 0 && (
