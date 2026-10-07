@@ -2,8 +2,11 @@ import { describe, expect, it } from "vitest";
 import {
   blankCatalogue,
   blankCatalogueItem,
+  catalogueTextForDisplay,
   catalogueTextHash,
+  deterministicCatalogueTranslation,
   euAllergens,
+  polishCatalogueTranslation,
   seedCatalogueTranslationMetadata,
 } from "../src/lib/venue-catalogue";
 
@@ -63,6 +66,74 @@ describe("venue catalogue foundations", () => {
     const seeded = seedCatalogueTranslationMetadata(doc, "en");
 
     expect(seeded.sections[0].title._translation).toBeUndefined();
+  });
+
+  it("uses menu meaning rather than literal hardware translations", () => {
+    expect(
+      deterministicCatalogueTranslation(
+        "en",
+        "es",
+        "Nuts",
+        "section_title",
+      ),
+    ).toBe("Frutos secos");
+    expect(
+      deterministicCatalogueTranslation(
+        "en",
+        "es",
+        "Dry Fruits and Nuts",
+        "section_title",
+      ),
+    ).toBe("Frutas deshidratadas y frutos secos");
+    expect(
+      polishCatalogueTranslation(
+        "en",
+        "es",
+        "a cold can of coke",
+        "Un frío puede de coque",
+        "item_description",
+      ),
+    ).toBe("Una lata fría de Coca-Cola");
+    expect(
+      polishCatalogueTranslation(
+        "en",
+        "es",
+        "this is a nut",
+        "Esto es una tuerca",
+        "item_description",
+      ),
+    ).toBe("Esto es un fruto seco");
+  });
+
+  it("keeps authored menu item names instead of translating brand identity", () => {
+    expect(
+      catalogueTextForDisplay(
+        {
+          en: "Wonder Burger",
+          es: "Maravilla Burger",
+          _translation: {
+            sourceLocale: "en",
+            sourceHash: catalogueTextHash("Wonder Burger"),
+          },
+        },
+        "es",
+        "item_name",
+      ),
+    ).toBe("Wonder Burger");
+    expect(
+      catalogueTextForDisplay(
+        {
+          en: "almond",
+          es: "almendra incorrecta",
+          _translation: {
+            sourceLocale: "en",
+            sourceHash: catalogueTextHash("almond"),
+          },
+        },
+        "es",
+        "item_name",
+      ),
+    ).toBe("Almendra");
   });
 
   it("uses the populated language as provenance for legacy one-language copy", () => {

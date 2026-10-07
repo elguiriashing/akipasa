@@ -303,7 +303,7 @@ export default async function BusinessPage({
                     : "Manage active events, review the history, and reuse any listing as a new draft."}
                 </p>
               </div>
-              <a className="button button-strong" href={`${base}#create-event`}>
+              <a className="button button-strong" href={`${base}?view=events#create-event`}>
                 {es ? "Crear evento" : "Create event"}
               </a>
             </div>
@@ -651,7 +651,7 @@ export default async function BusinessPage({
         )}
 
         {/* Create Event Form */}
-        {(view === "venues" || view === "events") && regularManaged.length > 0 && (
+        {view === "events" && regularManaged.length > 0 && (
           <details
             id="create-event"
             className="panel catalogue-edit-card dashboard-grid-full"
@@ -706,35 +706,6 @@ export default async function BusinessPage({
                   />
                 </label>
               </div>
-
-              {platformStaff && editorialVenue && (
-                <div className="official-event-location-panel">
-                  <div>
-                    <span className="eyebrow">
-                      {es ? "Selección AkiPasa" : "AkiPasa Selection"}
-                    </span>
-                    <h3>
-                      {es ? "Ubicación real del evento" : "Actual event location"}
-                    </h3>
-                    <p className="muted">
-                      {es
-                        ? "Si publicas desde el local AkiPasa, esta ubicación coloca la feria, romería o fiesta donde realmente ocurre."
-                        : "When publishing from the AkiPasa venue, this location places the fair, romería or town event where it actually happens."}
-                    </p>
-                  </div>
-                  <SpainAddressAutocomplete locale={locale} mode="address" />
-                  <label>
-                    {es ? "Nombre del lugar (opcional)" : "Place name (optional)"}
-                    <input
-                      name="officialLocationName"
-                      maxLength={160}
-                      placeholder={
-                        es ? "Ej. Recinto Ferial de Fuengirola" : "e.g. Fuengirola Fairground"
-                      }
-                    />
-                  </label>
-                </div>
-              )}
 
               <div className="form-grid-two">
                 <label>

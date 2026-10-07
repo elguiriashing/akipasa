@@ -41,6 +41,12 @@ describe("business onboarding", () => {
       expect(source).not.toContain('name="titleEs"');
       expect(source).not.toContain('name="titleEn"');
     }
+    expect(businessPage).toContain(
+      '{view === "events" && regularManaged.length > 0 && (',
+    );
+    expect(businessPage).not.toContain(
+      '(view === "venues" || view === "events")',
+    );
     expect(businessActions).toContain("translateLocalizedFields");
     expect(venueActions).toContain("translateLocalizedFields");
     expect(translation).toContain("AKIPASA_TRANSLATION_URL");

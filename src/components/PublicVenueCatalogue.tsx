@@ -2,17 +2,11 @@
 
 import { useMemo, useState } from "react";
 import {
+  catalogueTextForDisplay,
   euAllergens,
   type CatalogueItem,
   type VenueCatalogueDocument,
 } from "@/lib/venue-catalogue";
-
-function text(
-  value: { es: string; en: string },
-  locale: "es" | "en",
-) {
-  return value[locale] || value.es || value.en;
-}
 
 function itemPrice(item: CatalogueItem, locale: "es" | "en") {
   const es = locale === "es";
@@ -65,9 +59,9 @@ export function PublicVenueCatalogue({
         <span className="eyebrow">
           {es ? "Carta y catálogo" : "Menu & catalogue"}
         </span>
-        <h2>{text(document.title, locale)}</h2>
-        {text(document.description, locale) && (
-          <p>{text(document.description, locale)}</p>
+        <h2>{catalogueTextForDisplay(document.title, locale, "general")}</h2>
+        {catalogueTextForDisplay(document.description, locale, "general") && (
+          <p>{catalogueTextForDisplay(document.description, locale, "general")}</p>
         )}
       </header>
 
@@ -84,7 +78,7 @@ export function PublicVenueCatalogue({
               key={section.id}
               onClick={() => setActiveSectionId(section.id)}
             >
-              <span>{text(section.title, locale)}</span>
+              <span>{catalogueTextForDisplay(section.title, locale, "section_title")}</span>
               <small>{section.items.length}</small>
             </button>
           ))}
@@ -93,7 +87,7 @@ export function PublicVenueCatalogue({
         <section className="public-catalogue-section">
           <header className="public-catalogue-section-head">
             <div>
-              <h3>{text(activeSection.title, locale)}</h3>
+              <h3>{catalogueTextForDisplay(activeSection.title, locale, "section_title")}</h3>
               <span>
                 {activeSection.items.length}{" "}
                 {activeSection.items.length === 1
@@ -123,9 +117,9 @@ export function PublicVenueCatalogue({
                 <article className="public-catalogue-item" key={item.id}>
                   <div className="public-catalogue-item-head">
                     <div>
-                      <strong>{text(item.name, locale)}</strong>
-                      {text(item.description, locale) && (
-                        <p>{text(item.description, locale)}</p>
+                      <strong>{catalogueTextForDisplay(item.name, locale, "item_name")}</strong>
+                      {catalogueTextForDisplay(item.description, locale, "item_description") && (
+                        <p>{catalogueTextForDisplay(item.description, locale, "item_description")}</p>
                       )}
                     </div>
                     <span className="public-catalogue-price">

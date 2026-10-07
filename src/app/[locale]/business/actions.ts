@@ -191,11 +191,6 @@ const eventSchema = z.object({
   bookingUrl: safeExternalUrlSchema,
   startsAt: madridLocalDateTimeSchema,
   endsAt: madridLocalDateTimeSchema,
-  officialLocationName: z.string().trim().max(160).optional().default(""),
-  address: z.string().trim().max(300).optional().default(""),
-  addressSelection: z.string().optional().default(""),
-  latitude: z.union([z.literal(""), z.coerce.number().min(27).max(44.5)]).optional().default(""),
-  longitude: z.union([z.literal(""), z.coerce.number().min(-19).max(5)]).optional().default(""),
 });
 export async function createEvent(formData: FormData) {
   const parsed = eventSchema.safeParse(Object.fromEntries(formData));
@@ -216,64 +211,41 @@ export async function createEvent(formData: FormData) {
   } catch {
     redirect(`/${locale}/business?view=events&error=translation`);
   }
-  const [{ data: venue }, { data: staff }] = await Promise.all([
-    supabase.from("venues").select("slug").eq("id", e.venueId).maybeSingle(),
-    supabase.rpc("has_platform_role", {
-      allowed_roles: ["moderator", "administrator"],
-    }),
-  ]);
-  const official = venue?.slug === "akipasa-editorial";
-  if (
-    official &&
-    (!staff ||
-      e.addressSelection !== "selected" ||
-      !e.address ||
-      e.latitude === "" ||
-      e.longitude === "")
-  ) {
-    redirect(`/${locale}/business?view=events&error=official_location`);
+  const { data: venue } = await supabase
+    .from("venues")
+    .select("slug")
+    .eq("id", e.venueId)
+    .maybeSingle();
+  if (!venue || venue.slug === "akipasa-editorial") {
+    redirect(`/${locale}/business?view=events&error=event`);
   }
 
   const eventSlug = createEventSlug(e.title);
-  const locationLabel = e.officialLocationName || e.address;
-  const { data: eventId, error } = official
-    ? await supabase.rpc("create_akipasa_selection_event", {
-        p_category: e.categoryId,
-        p_slug: eventSlug,
-        p_title_es: localized.title.es,
-        p_title_en: localized.title.en,
-        p_description_es: localized.description.es,
-        p_description_en: localized.description.en,
-        p_price_cents: Math.round(e.priceEuros * 100),
-        p_booking_url: e.bookingUrl,
-        p_starts_at: e.startsAt.toISOString(),
-        p_ends_at: e.endsAt.toISOString(),
-        p_location_label: locationLabel,
-        p_latitude: e.latitude,
-        p_longitude: e.longitude,
-      })
-    : await supabase.rpc("create_event_with_occurrence", {
-        target_venue: e.venueId,
-        category: e.categoryId,
-        event_slug: eventSlug,
-        title_es: localized.title.es,
-        title_en: localized.title.en,
-        description_es: localized.description.es,
-        description_en: localized.description.en,
-        price_cents: Math.round(e.priceEuros * 100),
-        booking_url: e.bookingUrl,
-        starts_at: e.startsAt.toISOString(),
-        ends_at: e.endsAt.toISOString(),
-      });
-  if (error) redirect(`/${locale}/business?error=event`);
-  if (!official && typeof eventId === "string") {
+  const { data: eventId, error } = await supabase.rpc(
+    "create_event_with_occurrence",
+    {
+      target_venue: e.venueId,
+      category: e.categoryId,
+      event_slug: eventSlug,
+      title_es: localized.title.es,
+      title_en: localized.title.en,
+      description_es: localized.description.es,
+      description_en: localized.description.en,
+      price_cents: Math.round(e.priceEuros * 100),
+      booking_url: e.bookingUrl,
+      starts_at: e.startsAt.toISOString(),
+      ends_at: e.endsAt.toISOString(),
+    },
+  );
+  if (error) redirect(`/${locale}/business?view=events&error=event`);
+  if (typeof eventId === "string") {
     await reviewPendingCatalogueItem({
       targetType: "event",
       targetId: eventId,
       requesterId: user.id,
     });
   }
-  redirect(`/${locale}/business?created=event`);
+  redirect(`/${locale}/business?view=events&created=event`);
 }
 
 const officialEventSchema = z.object({

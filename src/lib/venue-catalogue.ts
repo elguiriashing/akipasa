@@ -22,10 +22,22 @@ export type AllergenState =
   | "may_contain"
   | "not_in_recipe";
 
+export const CATALOGUE_TRANSLATION_VERSION = 2;
+
+export type CatalogueTranslationContext =
+  | "general"
+  | "section_title"
+  | "item_name"
+  | "item_description"
+  | "variant_label"
+  | "ingredients"
+  | "notes";
+
 export type CatalogueText = {
   es: string;
   en: string;
   _translation?: {
+    version?: number;
     sourceLocale: "es" | "en";
     sourceHash: string;
     esHash?: string;
@@ -100,6 +112,228 @@ export function catalogueTextHash(value: string) {
   return (hash >>> 0).toString(36);
 }
 
+function normalizedCataloguePhrase(value: string) {
+  return value
+    .trim()
+    .toLocaleLowerCase("en")
+    .replace(/[.!?]+$/g, "")
+    .replace(/\s+/g, " ");
+}
+
+const enToEsCataloguePhrases = new Map<string, string>([
+  ["menu & services", "Carta y servicios"],
+  ["menu and services", "Carta y servicios"],
+  ["burgers", "Hamburguesas"],
+  ["burger", "Hamburguesa"],
+  ["drinks", "Bebidas"],
+  ["beverages", "Bebidas"],
+  ["soft drinks", "Refrescos"],
+  ["cocktails", "Cócteles"],
+  ["wines", "Vinos"],
+  ["wine", "Vino"],
+  ["beers", "Cervezas"],
+  ["beer", "Cerveza"],
+  ["desserts", "Postres"],
+  ["dessert", "Postre"],
+  ["starters", "Entrantes"],
+  ["appetizers", "Entrantes"],
+  ["sides", "Guarniciones"],
+  ["salads", "Ensaladas"],
+  ["breakfast", "Desayunos"],
+  ["breakfasts", "Desayunos"],
+  ["shakes", "Batidos"],
+  ["milkshakes", "Batidos"],
+  ["nuts", "Frutos secos"],
+  ["tree nuts", "Frutos de cáscara"],
+  ["peanuts", "Cacahuetes"],
+  ["almond", "Almendra"],
+  ["almonds", "Almendras"],
+  ["peanut", "Cacahuete"],
+  ["cheeseburger", "Hamburguesa con queso"],
+  ["chicken burger", "Hamburguesa de pollo"],
+  ["beef burger", "Hamburguesa de ternera"],
+  ["veggie burger", "Hamburguesa vegetal"],
+  ["vegan burger", "Hamburguesa vegana"],
+  ["fries", "Patatas fritas"],
+  ["french fries", "Patatas fritas"],
+  ["water", "Agua"],
+  ["sparkling water", "Agua con gas"],
+  ["still water", "Agua sin gas"],
+  ["coffee", "Café"],
+  ["tea", "Té"],
+  ["orange juice", "Zumo de naranja"],
+  ["apple juice", "Zumo de manzana"],
+  ["lemonade", "Limonada"],
+  ["cola", "Refresco de cola"],
+  ["dry fruits and nuts", "Frutas deshidratadas y frutos secos"],
+  ["dry fruit and nuts", "Fruta deshidratada y frutos secos"],
+  ["dried fruits and nuts", "Frutas deshidratadas y frutos secos"],
+  ["dried fruit and nuts", "Fruta deshidratada y frutos secos"],
+  ["coke", "Coca-Cola"],
+  ["coca cola", "Coca-Cola"],
+  ["coca-cola", "Coca-Cola"],
+  ["can of coke", "Lata de Coca-Cola"],
+  ["a can of coke", "Una lata de Coca-Cola"],
+  ["cold can of coke", "Lata fría de Coca-Cola"],
+  ["a cold can of coke", "Una lata fría de Coca-Cola"],
+  ["can of coca cola", "Lata de Coca-Cola"],
+  ["a can of coca cola", "Una lata de Coca-Cola"],
+  ["cold can of coca cola", "Lata fría de Coca-Cola"],
+  ["a cold can of coca cola", "Una lata fría de Coca-Cola"],
+  ["this is a nut", "Esto es un fruto seco"],
+  ["contains nuts", "Contiene frutos secos"],
+]);
+
+const esToEnCataloguePhrases = new Map<string, string>([
+  ["carta y servicios", "Menu & services"],
+  ["hamburguesas", "Burgers"],
+  ["hamburguesa", "Burger"],
+  ["bebidas", "Drinks"],
+  ["refrescos", "Soft drinks"],
+  ["cócteles", "Cocktails"],
+  ["vinos", "Wines"],
+  ["vino", "Wine"],
+  ["cervezas", "Beers"],
+  ["cerveza", "Beer"],
+  ["postres", "Desserts"],
+  ["postre", "Dessert"],
+  ["entrantes", "Starters"],
+  ["guarniciones", "Sides"],
+  ["ensaladas", "Salads"],
+  ["desayunos", "Breakfast"],
+  ["batidos", "Shakes"],
+  ["frutos secos", "Nuts"],
+  ["frutos de cáscara", "Tree nuts"],
+  ["cacahuetes", "Peanuts"],
+  ["almendra", "Almond"],
+  ["almendras", "Almonds"],
+  ["cacahuete", "Peanut"],
+  ["hamburguesa con queso", "Cheeseburger"],
+  ["hamburguesa de pollo", "Chicken burger"],
+  ["hamburguesa de ternera", "Beef burger"],
+  ["hamburguesa vegetal", "Veggie burger"],
+  ["hamburguesa vegana", "Vegan burger"],
+  ["patatas fritas", "Fries"],
+  ["agua", "Water"],
+  ["agua con gas", "Sparkling water"],
+  ["agua sin gas", "Still water"],
+  ["café", "Coffee"],
+  ["té", "Tea"],
+  ["zumo de naranja", "Orange juice"],
+  ["zumo de manzana", "Apple juice"],
+  ["limonada", "Lemonade"],
+  ["refresco de cola", "Cola"],
+  ["frutas deshidratadas y frutos secos", "Dried fruit and nuts"],
+  ["fruta deshidratada y frutos secos", "Dried fruit and nuts"],
+  ["lata de coca-cola", "Can of Coca-Cola"],
+  ["una lata de coca-cola", "A can of Coca-Cola"],
+  ["lata fría de coca-cola", "Cold can of Coca-Cola"],
+  ["una lata fría de coca-cola", "A cold can of Coca-Cola"],
+]);
+
+export function deterministicCatalogueTranslation(
+  sourceLocale: "es" | "en",
+  targetLocale: "es" | "en",
+  value: string,
+  context: CatalogueTranslationContext = "general",
+) {
+  if (sourceLocale === targetLocale) return null;
+  const key = normalizedCataloguePhrase(value);
+  return sourceLocale === "en" && targetLocale === "es"
+    ? enToEsCataloguePhrases.get(key) || null
+    : sourceLocale === "es" && targetLocale === "en"
+      ? esToEnCataloguePhrases.get(key) || null
+      : null;
+}
+
+export function polishCatalogueTranslation(
+  sourceLocale: "es" | "en",
+  targetLocale: "es" | "en",
+  source: string,
+  translated: string,
+  context: CatalogueTranslationContext = "general",
+) {
+  const deterministic = deterministicCatalogueTranslation(
+    sourceLocale,
+    targetLocale,
+    source,
+    context,
+  );
+  if (deterministic) return deterministic;
+
+  let result = translated.trim();
+  if (sourceLocale === "en" && targetLocale === "es") {
+    const sourceKey = normalizedCataloguePhrase(source);
+
+    if (/\bnuts?\b/.test(sourceKey)) {
+      result = result
+        .replace(/\buna tuerca\b/gi, "un fruto seco")
+        .replace(/\btuercas\b/gi, "frutos secos")
+        .replace(/\btuerca\b/gi, "fruto seco")
+        .replace(/\bnueces\b/gi, "frutos secos")
+        .replace(/\bnuez\b/gi, "fruto seco");
+    }
+    if (/\b(?:dry|dried) fruits?\b/.test(sourceKey)) {
+      result = result.replace(
+        /\bfrutas? secas?\b/gi,
+        (match) =>
+          match.toLocaleLowerCase("es").startsWith("fruta ")
+            ? "fruta deshidratada"
+            : "frutas deshidratadas",
+      );
+    }
+    if (/\b(?:coke|coca[ -]?cola)\b/.test(sourceKey)) {
+      result = result
+        .replace(/\bcoque\b/gi, "Coca-Cola")
+        .replace(/\bcoca cola\b/gi, "Coca-Cola");
+      if (/\bcan of (?:coke|coca[ -]?cola)\b/.test(sourceKey)) {
+        result = result
+          .replace(/\bpuede de Coca-Cola\b/gi, "lata de Coca-Cola")
+          .replace(/\bpuede de cola\b/gi, "lata de Coca-Cola");
+      }
+    }
+  }
+
+  return result;
+}
+
+export function catalogueTextForDisplay(
+  value: CatalogueText,
+  locale: "es" | "en",
+  context: CatalogueTranslationContext = "general",
+) {
+  const raw = value[locale].trim() || value.es.trim() || value.en.trim();
+  const sourceLocale = value._translation?.sourceLocale;
+  if (!sourceLocale) return raw;
+
+  const source = value[sourceLocale].trim();
+  if (!source) return raw;
+
+  // Menu item names behave like product names. Translating them turned
+  // "Wonder Burger" into "Maravilla Burger", which is technically language
+  // conversion and practically vandalism.
+  if (context === "item_name") {
+    if (sourceLocale === locale) return source;
+    return (
+      deterministicCatalogueTranslation(
+        sourceLocale,
+        locale,
+        source,
+        context,
+      ) || source
+    );
+  }
+
+  if (sourceLocale === locale) return source;
+  return polishCatalogueTranslation(
+    sourceLocale,
+    locale,
+    source,
+    raw,
+    context,
+  );
+}
+
 function seedTextTranslationMetadata(
   pair: CatalogueText,
   preferredLocale: "es" | "en",
@@ -111,6 +345,7 @@ function seedTextTranslationMetadata(
   // translator outage. Do not certify them as translated or catalogue saves
   // will never retry them. Proper nouns may be retried, which is harmless.
   if (esValue && esValue === enValue) {
+    if (pair._translation?.version === CATALOGUE_TRANSLATION_VERSION) return;
     delete pair._translation;
     return;
   }
