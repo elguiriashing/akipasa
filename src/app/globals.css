@@ -17598,3 +17598,27 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
     max-height: 3rem;
   }
 }
+
+
+/* Event media previews mirror the surface they control. */
+.event-five-slot[data-media-slot="banner"] .event-five-preview {
+  aspect-ratio: 16 / 7;
+}
+
+.event-five-slot[data-media-slot="explore"] .event-five-preview,
+.event-five-slot[data-media-slot="background"] .event-five-preview {
+  aspect-ratio: 16 / 9;
+}
+
+.event-five-slot[data-media-slot="profile"] .event-five-preview {
+  width: min(100%, 8rem);
+  aspect-ratio: 1;
+  justify-self: center;
+  border-radius: 1rem;
+}
+
+.event-five-slot[data-media-slot="map"] .event-five-preview {
+  width: min(100%, 7rem);
+  aspect-ratio: 3 / 4;
+  justify-self: center;
+}
