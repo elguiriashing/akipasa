@@ -638,6 +638,7 @@ export default async function VenueWorkspace({
                       <BusinessEventEditPanel
                         locale={locale}
                         venueId={id}
+                        verifiedVenue={venue.verified === true}
                         event={{
                           id: event.id,
                           title:
@@ -660,6 +661,7 @@ export default async function VenueWorkspace({
                                 ""
                               : event.accessibility_notes_es || "",
                         }}
+                        venueMediaIds={mediaStudioItems.map((item) => item.id)}
                         media={[
                           ...mediaStudioItems,
                           ...allMediaItems.filter(
