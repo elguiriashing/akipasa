@@ -1,5 +1,5 @@
 name: Temporary event media semantics validation
-# final slot wiring validation
+# final slot wiring validation after resolver fix
 
 on:
   push:
