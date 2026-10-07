@@ -988,6 +988,11 @@ export default async function VenueWorkspace({
               revision={catalogue?.revision || 0}
               publishedRevision={catalogue?.published_revision ?? null}
               initialDocument={catalogueDocument}
+              mediaOptions={mediaStudioItems.map((item) => ({
+                id: item.id,
+                url: item.url,
+                alt: item.alt,
+              }))}
             />
             {query.error === "allergens" && (
               <p className="notice notice-error" role="alert">
