@@ -309,14 +309,22 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
           .map((row) => String(row.id)),
       ),
     );
-    const [{ data: eventCoverPlacements }, { data: venueVisualPlacements }] =
+    const [{ data: eventVisualPlacements }, { data: venueVisualPlacements }] =
       await Promise.all([
         eventIds.length
           ? supabase
               .from("venue_media_placements")
-              .select("target_key,media_id,venue_media(id,storage_path,alt_es,alt_en)")
-              .eq("placement", "event_cover")
+              .select("target_key,placement,sort_order,media_id,venue_media(id,storage_path,alt_es,alt_en)")
+              .in("placement", [
+                "event_cover",
+                "event_explore",
+                "event_gallery_1",
+                "event_gallery_2",
+                "event_gallery_3",
+                "event_bin",
+              ])
               .in("target_key", eventIds)
+              .order("sort_order")
           : Promise.resolve({ data: [] }),
         venueIds.length
           ? supabase
@@ -324,28 +332,62 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
               .select("venue_id,placement,media_id,venue_media(id,storage_path,alt_es,alt_en)")
               .in("venue_id", venueIds)
               .eq("target_key", "")
-              .in("placement", ["venue_cover", "venue_logo"])
+              .in("placement", [
+                "venue_profile",
+                "venue_cover",
+                "venue_menu",
+                "venue_events",
+                "venue_explore",
+              ])
           : Promise.resolve({ data: [] }),
       ]);
     const venueVisualRows = new Map<
       string,
-      { cover?: DbRecord; logo?: DbRecord }
+      {
+        profile?: DbRecord;
+        cover?: DbRecord;
+        menu?: DbRecord;
+        events?: DbRecord;
+        explore?: DbRecord;
+      }
     >();
     for (const placement of venueVisualPlacements || []) {
       const media = one(placement.venue_media as unknown);
       if (!media) continue;
       const current = venueVisualRows.get(String(placement.venue_id)) || {};
+      if (placement.placement === "venue_profile") current.profile = media;
       if (placement.placement === "venue_cover") current.cover = media;
-      if (placement.placement === "venue_logo") current.logo = media;
+      if (placement.placement === "venue_menu") current.menu = media;
+      if (placement.placement === "venue_events") current.events = media;
+      if (placement.placement === "venue_explore") current.explore = media;
       venueVisualRows.set(String(placement.venue_id), current);
     }
 
-    const eventCoverRows = new Map(
-      (eventCoverPlacements || []).flatMap((placement) => {
-        const media = one(placement.venue_media as unknown);
-        return media ? [[String(placement.target_key), media] as const] : [];
-      }),
-    );
+    const eventVisualRows = new Map<
+      string,
+      {
+        cover?: DbRecord;
+        explore?: DbRecord;
+        gallery1?: DbRecord;
+        gallery2?: DbRecord;
+        gallery3?: DbRecord;
+        bin?: DbRecord[];
+      }
+    >();
+    for (const placement of eventVisualPlacements || []) {
+      const media = one(placement.venue_media as unknown);
+      if (!media) continue;
+      const current = eventVisualRows.get(String(placement.target_key)) || {
+        bin: [],
+      };
+      if (placement.placement === "event_cover") current.cover = media;
+      if (placement.placement === "event_explore") current.explore = media;
+      if (placement.placement === "event_gallery_1") current.gallery1 = media;
+      if (placement.placement === "event_gallery_2") current.gallery2 = media;
+      if (placement.placement === "event_gallery_3") current.gallery3 = media;
+      if (placement.placement === "event_bin") current.bin?.push(media);
+      eventVisualRows.set(String(placement.target_key), current);
+    }
     const mediaPaths = new Set<string>();
     rows.forEach((row) => {
       const venueRow = one(row.venues);
@@ -356,14 +398,28 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       }
     });
 
-    for (const media of eventCoverRows.values()) {
-      if (media.storage_path) mediaPaths.add(String(media.storage_path));
+    for (const visual of eventVisualRows.values()) {
+      for (const media of [
+        visual.cover,
+        visual.explore,
+        visual.gallery1,
+        visual.gallery2,
+        visual.gallery3,
+        ...(visual.bin || []),
+      ]) {
+        if (media?.storage_path) mediaPaths.add(String(media.storage_path));
+      }
     }
     for (const visual of venueVisualRows.values()) {
-      if (visual.cover?.storage_path)
-        mediaPaths.add(String(visual.cover.storage_path));
-      if (visual.logo?.storage_path)
-        mediaPaths.add(String(visual.logo.storage_path));
+      for (const media of [
+        visual.profile,
+        visual.cover,
+        visual.menu,
+        visual.events,
+        visual.explore,
+      ]) {
+        if (media?.storage_path) mediaPaths.add(String(media.storage_path));
+      }
     }
 
     // Fetch signed URLs in bulk
