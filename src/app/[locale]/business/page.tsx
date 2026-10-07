@@ -651,7 +651,7 @@ export default async function BusinessPage({
         )}
 
         {/* Create Event Form */}
-        {(view === "venues" || view === "events") && regularManaged.length > 0 && (
+        {view === "events" && regularManaged.length > 0 && (
           <details
             id="create-event"
             className="panel catalogue-edit-card dashboard-grid-full"
