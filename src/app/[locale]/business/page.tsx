@@ -196,7 +196,9 @@ export default async function BusinessPage({
       item.path && item.signedUrl ? [[item.path, item.signedUrl] as const] : [],
     ),
   );
-  const eventComposerMedia = (eventComposerMediaRows || []).flatMap((item) => {
+  const eventComposerMedia = (eventComposerMediaRows || [])
+    .filter((item) => !item.storage_path.includes("/events/"))
+    .flatMap((item) => {
     const url = composerSignedMap.get(item.storage_path);
     return url
       ? [
