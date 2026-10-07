@@ -89,6 +89,7 @@ export function VenueMediaStudio({
   const [slotState, setSlotState] =
     useState<Partial<Record<VenueMediaPlacement, string>>>(placements);
   const [busy, setBusy] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<{ done: number; total: number } | null>(null);
   const [status, setStatus] = useState<"idle" | "saved" | "error">("idle");
   const uploadFormRef = useRef<HTMLFormElement>(null);
   const fallback = items[0] || null;
@@ -145,19 +146,56 @@ export function VenueMediaStudio({
     event.preventDefault();
     const form = event.currentTarget;
     if (!form.reportValidity()) return;
+
+    const source = new FormData(form);
+    const files = source
+      .getAll("image")
+      .filter((value): value is File => value instanceof File && value.size > 0);
+    if (!files.length) return;
+
+    const sharedAlt = String(source.get("alt") || "").trim();
     setBusy(true);
-    const fd = new FormData(form);
-    fd.set("inline", "1");
-    fd.set("sortOrder", String(items.length));
-    const result = await uploadVenueImage(fd);
-    if (result?.ok && result.media?.url) {
-      setItems((current) => [...current, result.media!]);
-      form.reset();
-      setStatus("saved");
-    } else {
-      setStatus("error");
+    setUploadProgress({ done: 0, total: files.length });
+
+    const uploaded: VenueMediaStudioItem[] = [];
+    for (let index = 0; index < files.length; index += 1) {
+      const file = files[index];
+      const fallbackAlt =
+        file.name
+          .replace(/\.[^.]+$/, "")
+          .replace(/[-_]+/g, " ")
+          .trim() || (es ? "Imagen del local" : "Venue image");
+      const fd = new FormData();
+      fd.set("inline", "1");
+      fd.set("locale", locale);
+      fd.set("venueId", venueId);
+      fd.set("sortOrder", String(items.length + index));
+      fd.set("image", file);
+      fd.set(
+        "alt",
+        files.length === 1 && sharedAlt
+          ? sharedAlt
+          : sharedAlt
+            ? `${sharedAlt} ${index + 1}`
+            : fallbackAlt,
+      );
+
+      const result = await uploadVenueImage(fd);
+      if (!result?.ok || !result.media?.url) {
+        setStatus("error");
+        setBusy(false);
+        setUploadProgress(null);
+        return;
+      }
+      uploaded.push(result.media);
+      setUploadProgress({ done: index + 1, total: files.length });
     }
+
+    setItems((current) => [...current, ...uploaded]);
+    form.reset();
+    setStatus("saved");
     setBusy(false);
+    setUploadProgress(null);
     window.setTimeout(() => setStatus("idle"), 1800);
   }
 
@@ -321,21 +359,40 @@ export function VenueMediaStudio({
           <input type="hidden" name="locale" value={locale} />
           <input type="hidden" name="venueId" value={venueId} />
           <label>
-            {es ? "Imagen o PDF" : "Image or PDF"}
-            <SafeMediaFileInput locale={locale} name="image" required />
+            {es ? "Imágenes o PDF" : "Images or PDFs"}
+            <SafeMediaFileInput
+              locale={locale}
+              name="image"
+              required
+              multiple
+              maxFiles={20}
+            />
           </label>
           <label>
-            {es ? "Qué aparece en la imagen" : "What is in the image"}
+            {es ? "Descripción común (opcional)" : "Shared description (optional)"}
             <input
               name="alt"
-              required
               minLength={3}
               maxLength={300}
-              placeholder={es ? "Ej. terraza principal" : "e.g. main terrace"}
+              placeholder={
+                es
+                  ? "Déjalo vacío para usar los nombres de archivo"
+                  : "Leave blank to use filenames"
+              }
             />
           </label>
           <button className="button" type="submit" disabled={busy}>
-            {busy ? (es ? "Subiendo…" : "Uploading…") : es ? "Subir" : "Upload"}
+            {busy
+              ? uploadProgress
+                ? es
+                  ? `Subiendo ${uploadProgress.done}/${uploadProgress.total}…`
+                  : `Uploading ${uploadProgress.done}/${uploadProgress.total}…`
+                : es
+                  ? "Subiendo…"
+                  : "Uploading…"
+              : es
+                ? "Subir archivos"
+                : "Upload files"}
           </button>
         </form>
       </details>
