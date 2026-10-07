@@ -122,6 +122,7 @@ export async function updateVenue(formData: FormData) {
 }
 
 export async function updateEvent(formData: FormData) {
+  const inline = formData.get("inline") === "1";
   const parsed = context
     .extend({
       eventId: z.string().uuid(),
@@ -144,7 +145,10 @@ export async function updateEvent(formData: FormData) {
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
-  if (!parsed.success) redirect(destination(locale, venueId, "error=event"));
+  if (!parsed.success) {
+    if (inline) return { ok: false as const, error: "event" };
+    redirect(destination(locale, venueId, "error=event"));
+  }
   const { supabase, user } = await requireBusinessAccess(locale);
   const v = parsed.data;
   const [{ data: currentEvent }, { data: trustedVenue }] = await Promise.all([
@@ -162,8 +166,10 @@ export async function updateEvent(formData: FormData) {
       .eq("id", v.venueId)
       .maybeSingle(),
   ]);
-  if (!currentEvent || !trustedVenue)
+  if (!currentEvent || !trustedVenue) {
+    if (inline) return { ok: false as const, error: "event" };
     redirect(destination(locale, venueId, "error=event"));
+  }
 
   let localized;
   try {
@@ -191,6 +197,7 @@ export async function updateEvent(formData: FormData) {
       },
     );
   } catch {
+    if (inline) return { ok: false as const, error: "translation" };
     redirect(destination(locale, venueId, "error=translation"));
   }
   const { error } = await supabase
@@ -210,7 +217,10 @@ export async function updateEvent(formData: FormData) {
     })
     .eq("id", v.eventId)
     .eq("venue_id", v.venueId);
-  if (error) redirect(destination(locale, venueId, "error=event"));
+  if (error) {
+    if (inline) return { ok: false as const, error: "event" };
+    redirect(destination(locale, venueId, "error=event"));
+  }
 
   const requestedSlots = [
     ["event_cover", v.coverMediaId],
@@ -1100,7 +1110,10 @@ export async function clearVenueMediaPlacement(formData: FormData) {
   const parsed = clearVenueMediaPlacementSchema.safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
-  if (!parsed.success) redirect(destination(locale, venueId, "error=media"));
+  if (!parsed.success) {
+    if (inline) return { ok: false as const, error: "media" };
+    redirect(destination(locale, venueId, "error=media"));
+  }
 
   const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase
@@ -1127,7 +1140,10 @@ export async function addVenueMediaToEventBin(formData: FormData) {
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
-  if (!parsed.success) redirect(destination(locale, venueId, "error=media"));
+  if (!parsed.success) {
+    if (inline) return { ok: false as const, error: "media" };
+    redirect(destination(locale, venueId, "error=media"));
+  }
 
   const { supabase, user } = await requireBusinessAccess(locale);
   const [{ data: event }, { data: media }] = await Promise.all([
@@ -1256,7 +1272,10 @@ export async function uploadEventImage(formData: FormData) {
   const { error: uploadError } = await supabase.storage
     .from("event-media")
     .upload(storagePath, file, { contentType: file.type, upsert: false });
-  if (uploadError) redirect(destination(locale, venueId, "error=media"));
+  if (uploadError) {
+    if (inline) return { ok: false as const, error: "media" };
+    redirect(destination(locale, venueId, "error=media"));
+  }
 
   const mediaId = crypto.randomUUID();
   const { error: mediaError } = await supabase.from("venue_media").insert({
