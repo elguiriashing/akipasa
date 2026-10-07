@@ -1,0 +1,29 @@
+name: Temporary verified trust editor validation
+
+on:
+  push:
+    branches:
+      - fix/verified-venue-trust-and-event-editor
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Focused tests
+        run: npx vitest run --environment node tests/moderation.test.ts tests/business-onboarding.test.ts tests/venue-dashboard.test.tsx tests/discovery.test.ts
+      - name: Production build
+        run: npm run build
+      - name: Cloudflare build
+        run: npm run build:cloudflare
