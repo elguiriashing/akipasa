@@ -17163,3 +17163,19 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
     height: 3.5rem;
   }
 }
+
+
+.card-venue-logo {
+  position: absolute;
+  left: .65rem;
+  bottom: .65rem;
+  z-index: 3;
+  width: 2.6rem;
+  height: 2.6rem;
+  padding: .18rem;
+  border: 2px solid rgb(255 255 255 / 78%);
+  border-radius: .8rem;
+  background: rgb(255 255 255 / 92%);
+  object-fit: contain;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 22%);
+}
