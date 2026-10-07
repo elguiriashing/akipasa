@@ -100,6 +100,97 @@ export function catalogueTextHash(value: string) {
   return (hash >>> 0).toString(36);
 }
 
+
+function normalizeComparableCatalogueText(value: string) {
+  return value
+    .trim()
+    .toLocaleLowerCase("en")
+    .replace(/[’']/g, "'")
+    .replace(/\s+/g, " ");
+}
+
+function setEnglishSourceSpanishTarget(pair: CatalogueText, spanish: string) {
+  const english = pair.en.trim();
+  pair.es = spanish;
+  pair._translation = {
+    sourceLocale: "en",
+    sourceHash: catalogueTextHash(english),
+    esHash: catalogueTextHash(pair.es.trim()),
+    enHash: catalogueTextHash(english),
+  };
+}
+
+function normalizeFoodPair(pair: CatalogueText) {
+  const english = normalizeComparableCatalogueText(pair.en);
+  if (!english) return;
+
+  const exactSpanish: Record<string, string> = {
+    nuts: "Frutos secos",
+    "tree nuts": "Frutos de cáscara",
+    "dry fruits and nuts": "Frutas deshidratadas y frutos secos",
+    "dried fruits and nuts": "Frutas deshidratadas y frutos secos",
+    drinks: "Bebidas",
+    beverages: "Bebidas",
+    burgers: "Hamburguesas",
+    burger: "Hamburguesa",
+    almond: "Almendra",
+    almonds: "Almendras",
+    peanut: "Cacahuete",
+    peanuts: "Cacahuetes",
+  };
+
+  const exact = exactSpanish[english];
+  if (exact) {
+    setEnglishSourceSpanishTarget(pair, exact);
+    return;
+  }
+
+  const cokeCan = english.match(
+    /^(?:a\s+)?(?:(cold|chilled)\s+)?can\s+of\s+(?:coke|coca[- ]?cola)([.!?]*)$/,
+  );
+  if (cokeCan) {
+    const cold = cokeCan[1] ? " fría" : "";
+    const punctuation = cokeCan[2] || "";
+    setEnglishSourceSpanishTarget(
+      pair,
+      `Una lata${cold} de Coca-Cola${punctuation}`,
+    );
+  }
+}
+
+export function normalizeCatalogueFoodTranslations(
+  input: VenueCatalogueDocument,
+): VenueCatalogueDocument {
+  const document = JSON.parse(JSON.stringify(input)) as VenueCatalogueDocument;
+
+  for (const section of document.sections) {
+    const foodSection = section.items.some(
+      (item) =>
+        item.kind === "food" ||
+        item.kind === "drink" ||
+        Boolean(item.containsFood),
+    );
+
+    if (foodSection) normalizeFoodPair(section.title);
+
+    for (const item of section.items) {
+      const foodItem =
+        item.kind === "food" ||
+        item.kind === "drink" ||
+        Boolean(item.containsFood);
+      if (!foodItem) continue;
+
+      normalizeFoodPair(item.name);
+      normalizeFoodPair(item.description);
+      for (const variant of item.variants) normalizeFoodPair(variant.label);
+      normalizeFoodPair(item.allergens.ingredients);
+      normalizeFoodPair(item.allergens.notes);
+    }
+  }
+
+  return document;
+}
+
 function seedTextTranslationMetadata(
   pair: CatalogueText,
   preferredLocale: "es" | "en",
@@ -214,9 +305,10 @@ export function parseCatalogueDocument(
     return blankCatalogue(locale);
 
   const document = candidate as VenueCatalogueDocument;
+  const normalized = normalizeCatalogueFoodTranslations(document);
   return {
-    ...document,
-    sections: document.sections.map((section) => ({
+    ...normalized,
+    sections: normalized.sections.map((section) => ({
       ...section,
       items: section.items.map((item) => ({
         ...item,
