@@ -51,7 +51,7 @@ export async function updateVenue(formData: FormData) {
   const { supabase, user } = await requireBusinessAccess(locale);
   const { data: currentVenue } = await supabase
     .from("venues")
-    .select("description_es,description_en")
+    .select("description_es,description_en,verified")
     .eq("id", parsed.data.venueId)
     .maybeSingle();
   if (!currentVenue) redirect(destination(locale, venueId, "error=venue"));
@@ -106,15 +106,17 @@ export async function updateVenue(formData: FormData) {
       contact_phone: parsed.data.contactPhone || null,
       whatsapp_phone: parsed.data.whatsappPhone || null,
       website_url: parsed.data.websiteUrl || null,
-      status: "pending",
+      status: currentVenue.verified ? "published" : "pending",
     })
     .eq("id", parsed.data.venueId);
   if (error) redirect(destination(locale, venueId, "error=venue"));
-  await reviewPendingCatalogueItem({
-    targetType: "venue",
-    targetId: parsed.data.venueId,
-    requesterId: user.id,
-  });
+  if (!currentVenue.verified) {
+    await reviewPendingCatalogueItem({
+      targetType: "venue",
+      targetId: parsed.data.venueId,
+      requesterId: user.id,
+    });
+  }
   revalidatePath(destination(locale, venueId, ""));
   redirect(destination(locale, venueId, "updated=venue"));
 }
@@ -145,15 +147,23 @@ export async function updateEvent(formData: FormData) {
   if (!parsed.success) redirect(destination(locale, venueId, "error=event"));
   const { supabase, user } = await requireBusinessAccess(locale);
   const v = parsed.data;
-  const { data: currentEvent } = await supabase
-    .from("events")
-    .select(
-      "title_es,title_en,description_es,description_en,accessibility_notes_es,accessibility_notes_en",
-    )
-    .eq("id", v.eventId)
-    .eq("venue_id", v.venueId)
-    .maybeSingle();
-  if (!currentEvent) redirect(destination(locale, venueId, "error=event"));
+  const [{ data: currentEvent }, { data: trustedVenue }] = await Promise.all([
+    supabase
+      .from("events")
+      .select(
+        "title_es,title_en,description_es,description_en,accessibility_notes_es,accessibility_notes_en",
+      )
+      .eq("id", v.eventId)
+      .eq("venue_id", v.venueId)
+      .maybeSingle(),
+    supabase
+      .from("venues")
+      .select("verified")
+      .eq("id", v.venueId)
+      .maybeSingle(),
+  ]);
+  if (!currentEvent || !trustedVenue)
+    redirect(destination(locale, venueId, "error=event"));
 
   let localized;
   try {
@@ -196,7 +206,7 @@ export async function updateEvent(formData: FormData) {
       minimum_age: v.minimumAge === "" ? null : v.minimumAge,
       accessibility_notes_es: localized.accessibilityNotes.es || null,
       accessibility_notes_en: localized.accessibilityNotes.en || null,
-      status: "pending",
+      status: trustedVenue.verified ? "published" : "pending",
     })
     .eq("id", v.eventId)
     .eq("venue_id", v.venueId);
@@ -250,12 +260,21 @@ export async function updateEvent(formData: FormData) {
     await supabase.from("venue_media_placements").insert(slotRows);
   }
 
-  await reviewPendingCatalogueItem({
-    targetType: "event",
-    targetId: v.eventId,
-    requesterId: user.id,
-  });
-  redirect(destination(locale, venueId, "updated=event"));
+  if (!trustedVenue.verified) {
+    await reviewPendingCatalogueItem({
+      targetType: "event",
+      targetId: v.eventId,
+      requesterId: user.id,
+    });
+  }
+  if (formData.get("inline") === "1") {
+    revalidatePath(`/${locale}/events`, "layout");
+    return {
+      ok: true as const,
+      status: trustedVenue.verified ? "published" : "pending",
+    };
+  }
+  redirect(destination(locale, venueId, "section=events&updated=event"));
 }
 
 export async function publishEvent(formData: FormData) {
@@ -269,29 +288,40 @@ export async function publishEvent(formData: FormData) {
   if (!parsed.success) redirect(destination(locale, venueId, "error=publish-event"));
 
   const { supabase, user } = await requireBusinessAccess(locale);
-  const { data: event, error: eventError } = await supabase
-    .from("events")
-    .select("id,status")
-    .eq("id", parsed.data.eventId)
-    .eq("venue_id", parsed.data.venueId)
-    .maybeSingle();
+  const [{ data: event, error: eventError }, { data: trustedVenue }] =
+    await Promise.all([
+      supabase
+        .from("events")
+        .select("id,status")
+        .eq("id", parsed.data.eventId)
+        .eq("venue_id", parsed.data.venueId)
+        .maybeSingle(),
+      supabase
+        .from("venues")
+        .select("verified")
+        .eq("id", parsed.data.venueId)
+        .maybeSingle(),
+    ]);
 
-  if (eventError || !event)
+  if (eventError || !event || !trustedVenue)
     redirect(destination(locale, venueId, "error=publish-event"));
 
   if (event.status !== "published") {
+    const nextStatus = trustedVenue.verified ? "published" : "pending";
     const { error } = await supabase
       .from("events")
-      .update({ status: "pending" })
+      .update({ status: nextStatus })
       .eq("id", parsed.data.eventId)
       .eq("venue_id", parsed.data.venueId);
     if (error) redirect(destination(locale, venueId, "error=publish-event"));
 
-    await reviewPendingCatalogueItem({
-      targetType: "event",
-      targetId: parsed.data.eventId,
-      requesterId: user.id,
-    });
+    if (!trustedVenue.verified) {
+      await reviewPendingCatalogueItem({
+        targetType: "event",
+        targetId: parsed.data.eventId,
+        requesterId: user.id,
+      });
+    }
   }
 
   redirect(destination(locale, venueId, "updated=publish-event"));
