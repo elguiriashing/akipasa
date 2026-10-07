@@ -122,11 +122,13 @@ export default async function EventPage({
       { onConflict: "profile_id,event_key" },
     );
   }
-  const date = new Intl.DateTimeFormat(locale, {
+  const dateFormatter = new Intl.DateTimeFormat(locale, {
     dateStyle: "full",
     timeStyle: "short",
     timeZone: "Europe/Madrid",
-  }).format(new Date(occurrence.startsAt));
+  });
+  const date = dateFormatter.format(new Date(occurrence.startsAt));
+  const endDate = dateFormatter.format(new Date(occurrence.endsAt));
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Event",
@@ -239,7 +241,12 @@ export default async function EventPage({
               <dl className="detail-facts">
                 <div>
                   <dt>{m.time}</dt>
-                  <dd>{date}</dd>
+                  <dd>
+                    <span>{date}</span>
+                    <small className="event-end-time">
+                      {locale === "es" ? "Hasta" : "Until"} {endDate}
+                    </small>
+                  </dd>
                 </div>
                 {event.priceDisplayMode !== "hide" && (
                   <div>
