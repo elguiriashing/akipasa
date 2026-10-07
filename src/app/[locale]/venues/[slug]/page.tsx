@@ -297,6 +297,11 @@ export default async function VenuePage({
               <PublicVenueCatalogue
                 locale={locale}
                 document={catalogueDocument}
+                media={(venue.media || []).map((item) => ({
+                  id: item.id,
+                  url: item.url,
+                  alt: translated(item.alt, locale),
+                }))}
               />
             )}
             {events.length > 0 && (
