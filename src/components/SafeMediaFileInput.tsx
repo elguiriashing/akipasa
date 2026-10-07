@@ -147,10 +147,14 @@ export function SafeMediaFileInput({
   locale,
   name,
   required = false,
+  multiple = false,
+  maxFiles = 20,
 }: {
   locale: "es" | "en";
   name: string;
   required?: boolean;
+  multiple?: boolean;
+  maxFiles?: number;
 }) {
   const es = locale === "es";
   const [status, setStatus] = useState("");
@@ -158,36 +162,65 @@ export function SafeMediaFileInput({
 
   async function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const input = event.currentTarget;
-    const file = input.files?.[0];
+    const files = Array.from(input.files || []);
     setStatus("");
     setError("");
-    if (!file) return;
+    if (!files.length) return;
 
-    if (file.size > MAX_INPUT_BYTES) {
+    if (files.length > maxFiles) {
       input.value = "";
-      setError(es ? "El archivo supera 10 MB." : "The file is larger than 10 MB.");
+      setError(
+        es
+          ? `Puedes subir un máximo de ${maxFiles} archivos de una vez.`
+          : `You can upload up to ${maxFiles} files at once.`,
+      );
       return;
     }
 
-    const isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name);
-    if (!isPdf) return;
+    const oversized = files.find((file) => file.size > MAX_INPUT_BYTES);
+    if (oversized) {
+      input.value = "";
+      setError(
+        es
+          ? `${oversized.name} supera 10 MB.`
+          : `${oversized.name} is larger than 10 MB.`,
+      );
+      return;
+    }
+
+    const pdfs = files.filter(
+      (file) => file.type === "application/pdf" || /\.pdf$/i.test(file.name),
+    );
+    if (!pdfs.length) {
+      if (multiple && files.length > 1) {
+        setStatus(
+          es
+            ? `${files.length} archivos listos para subir.`
+            : `${files.length} files ready to upload.`,
+        );
+      }
+      return;
+    }
 
     setSubmitDisabled(input, true);
     setStatus(
       es
-        ? "Convirtiendo el PDF a una imagen segura…"
-        : "Converting the PDF to a safe image…",
+        ? `Convirtiendo ${pdfs.length} PDF${pdfs.length === 1 ? "" : "s"} a imágenes seguras…`
+        : `Converting ${pdfs.length} PDF${pdfs.length === 1 ? "" : "s"} to safe images…`,
     );
 
     try {
-      const safeFile = await renderPdfAsSafeJpeg(file);
       const transfer = new DataTransfer();
-      transfer.items.add(safeFile);
+      for (const file of files) {
+        const isPdf =
+          file.type === "application/pdf" || /\.pdf$/i.test(file.name);
+        transfer.items.add(isPdf ? await renderPdfAsSafeJpeg(file) : file);
+      }
       input.files = transfer.files;
       setStatus(
         es
-          ? "PDF convertido. Solo se subirá la imagen resultante; enlaces y contenido interactivo no se conservan."
-          : "PDF converted. Only the rendered image will be uploaded; links and interactive content are discarded.",
+          ? `${transfer.files.length} archivo${transfer.files.length === 1 ? "" : "s"} listo${transfer.files.length === 1 ? "" : "s"}. Los PDF se han convertido a imágenes seguras.`
+          : `${transfer.files.length} file${transfer.files.length === 1 ? "" : "s"} ready. PDFs were converted to safe images.`,
       );
     } catch (conversionError) {
       input.value = "";
@@ -196,11 +229,11 @@ export function SafeMediaFileInput({
         conversionError instanceof Error &&
           conversionError.message === "pdf_page_limit"
           ? es
-            ? `El PDF debe tener entre 1 y ${MAX_PDF_PAGES} páginas.`
-            : `PDFs must contain between 1 and ${MAX_PDF_PAGES} pages.`
+            ? `Cada PDF debe tener entre 1 y ${MAX_PDF_PAGES} páginas.`
+            : `Each PDF must contain between 1 and ${MAX_PDF_PAGES} pages.`
           : es
-            ? "No se pudo convertir el PDF. Prueba con otro PDF o una imagen."
-            : "The PDF could not be converted. Try another PDF or an image.",
+            ? "No se pudo convertir uno de los PDF. Prueba con otro PDF o imágenes."
+            : "One of the PDFs could not be converted. Try another PDF or images.",
       );
     } finally {
       setSubmitDisabled(input, false);
@@ -214,6 +247,7 @@ export function SafeMediaFileInput({
         name={name}
         accept="image/jpeg,image/png,image/webp,application/pdf,.pdf"
         required={required}
+        multiple={multiple}
         onChange={handleChange}
       />
       {status && <small className="safe-media-status">{status}</small>}
