@@ -66,6 +66,7 @@ export type CatalogueItem = {
   description: CatalogueText;
   kind: CatalogueItemKind;
   visible: boolean;
+  mediaId?: string | null;
   containsFood: boolean;
   availability: "available" | "sold_out" | "seasonal" | "on_request";
   priceMode: "fixed" | "from" | "on_request";
@@ -415,6 +416,7 @@ export function blankCatalogueItem(): CatalogueItem {
     description: { es: "", en: "" },
     kind: "product",
     visible: true,
+    mediaId: null,
     containsFood: false,
     availability: "available",
     priceMode: "fixed",
