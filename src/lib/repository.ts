@@ -816,25 +816,35 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       .select("media_id,placement")
       .eq("venue_id", venue.id)
       .eq("target_key", "")
-      .in("placement", ["venue_cover", "venue_logo"]);
+      .in("placement", [
+        "venue_profile",
+        "venue_cover",
+        "venue_menu",
+        "venue_events",
+        "venue_explore",
+      ]);
     if (venue.media?.length) {
-      const coverMediaId = visualPlacements?.find(
-        (item) => item.placement === "venue_cover",
-      )?.media_id;
-      const logoMediaId = visualPlacements?.find(
-        (item) => item.placement === "venue_logo",
-      )?.media_id;
-      if (coverMediaId) {
-        const cover = venue.media.find((item) => item.id === coverMediaId);
-        if (cover) {
-          venue.media = [
-            cover,
-            ...venue.media.filter((item) => item.id !== cover.id),
-          ];
-        }
-      }
-      if (logoMediaId) {
-        venue.logoImage = venue.media.find((item) => item.id === logoMediaId);
+      const primary = venue.media[0];
+      const mediaFor = (placement: string) => {
+        const mediaId = visualPlacements?.find(
+          (item) => item.placement === placement,
+        )?.media_id;
+        return (
+          (mediaId
+            ? venue.media?.find((item) => item.id === mediaId)
+            : undefined) || primary
+        );
+      };
+      venue.logoImage = mediaFor("venue_profile");
+      venue.coverImage = mediaFor("venue_cover");
+      venue.menuImage = mediaFor("venue_menu");
+      venue.eventsImage = mediaFor("venue_events");
+      venue.exploreImage = mediaFor("venue_explore");
+      if (venue.coverImage) {
+        venue.media = [
+          venue.coverImage,
+          ...venue.media.filter((item) => item.id !== venue.coverImage?.id),
+        ];
       }
     }
     return venue;
@@ -883,25 +893,35 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       .select("media_id,placement")
       .eq("venue_id", venue.id)
       .eq("target_key", "")
-      .in("placement", ["venue_cover", "venue_logo"]);
+      .in("placement", [
+        "venue_profile",
+        "venue_cover",
+        "venue_menu",
+        "venue_events",
+        "venue_explore",
+      ]);
     if (venue.media?.length) {
-      const coverMediaId = visualPlacements?.find(
-        (item) => item.placement === "venue_cover",
-      )?.media_id;
-      const logoMediaId = visualPlacements?.find(
-        (item) => item.placement === "venue_logo",
-      )?.media_id;
-      if (coverMediaId) {
-        const cover = venue.media.find((item) => item.id === coverMediaId);
-        if (cover) {
-          venue.media = [
-            cover,
-            ...venue.media.filter((item) => item.id !== cover.id),
-          ];
-        }
-      }
-      if (logoMediaId) {
-        venue.logoImage = venue.media.find((item) => item.id === logoMediaId);
+      const primary = venue.media[0];
+      const mediaFor = (placement: string) => {
+        const mediaId = visualPlacements?.find(
+          (item) => item.placement === placement,
+        )?.media_id;
+        return (
+          (mediaId
+            ? venue.media?.find((item) => item.id === mediaId)
+            : undefined) || primary
+        );
+      };
+      venue.logoImage = mediaFor("venue_profile");
+      venue.coverImage = mediaFor("venue_cover");
+      venue.menuImage = mediaFor("venue_menu");
+      venue.eventsImage = mediaFor("venue_events");
+      venue.exploreImage = mediaFor("venue_explore");
+      if (venue.coverImage) {
+        venue.media = [
+          venue.coverImage,
+          ...venue.media.filter((item) => item.id !== venue.coverImage?.id),
+        ];
       }
     }
     return venue;
