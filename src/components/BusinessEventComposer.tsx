@@ -29,8 +29,13 @@ export function BusinessEventComposer({
   const [categoryId, setCategoryId] = useState(categories[0]?.id || "");
   const [priceMode, setPriceMode] = useState<"show" | "hide">("hide");
   const [price, setPrice] = useState("0");
-  const [coverMediaId, setCoverMediaId] = useState("");
-  const [galleryIds, setGalleryIds] = useState<string[]>([]);
+  const [slots, setSlots] = useState({
+    cover: "",
+    explore: "",
+    gallery1: "",
+    gallery2: "",
+    gallery3: "",
+  });
 
   const venueMedia = useMemo(
     () => media.filter((item) => item.venueId === venueId),
@@ -39,16 +44,13 @@ export function BusinessEventComposer({
 
   function selectVenue(next: string) {
     setVenueId(next);
-    setCoverMediaId("");
-    setGalleryIds([]);
-  }
-
-  function toggleGallery(id: string) {
-    setGalleryIds((current) =>
-      current.includes(id)
-        ? current.filter((item) => item !== id)
-        : [...current, id].slice(0, 8),
-    );
+    setSlots({
+      cover: "",
+      explore: "",
+      gallery1: "",
+      gallery2: "",
+      gallery3: "",
+    });
   }
 
   return (
@@ -77,10 +79,11 @@ export function BusinessEventComposer({
         <input type="hidden" name="venueId" value={venueId} />
         <input type="hidden" name="categoryId" value={categoryId} />
         <input type="hidden" name="priceDisplayMode" value={priceMode} />
-        <input type="hidden" name="coverMediaId" value={coverMediaId} />
-        {galleryIds.map((id) => (
-          <input key={id} type="hidden" name="galleryMediaId" value={id} />
-        ))}
+        <input type="hidden" name="coverMediaId" value={slots.cover} />
+        <input type="hidden" name="exploreMediaId" value={slots.explore} />
+        <input type="hidden" name="galleryMediaId1" value={slots.gallery1} />
+        <input type="hidden" name="galleryMediaId2" value={slots.gallery2} />
+        <input type="hidden" name="galleryMediaId3" value={slots.gallery3} />
 
         <section className="event-studio-card">
           <div className="event-studio-card-head">
@@ -148,65 +151,92 @@ export function BusinessEventComposer({
           </div>
 
           {venueMedia.length ? (
-            <>
-              <div className="event-media-slot">
-                <div>
-                  <strong>{es ? "Portada del evento" : "Event cover"}</strong>
-                  <small>{es ? "Se usa en Explorar y en la ficha." : "Used in Explore and on the event page."}</small>
-                </div>
-                <button
-                  type="button"
-                  className={!coverMediaId ? "event-media-none selected" : "event-media-none"}
-                  onClick={() => setCoverMediaId("")}
-                >
-                  {es ? "Usar portada del local" : "Use venue cover"}
-                </button>
-              </div>
-              <div className="event-media-picker">
-                {venueMedia.map((item) => (
-                  <button
-                    type="button"
-                    key={item.id}
-                    className={coverMediaId === item.id ? "event-media-tile selected" : "event-media-tile"}
-                    aria-pressed={coverMediaId === item.id}
-                    onClick={() => setCoverMediaId(item.id)}
-                  >
-                    <img src={item.url} alt={item.alt} />
-                    <span>{coverMediaId === item.id ? "✓" : ""}</span>
-                  </button>
-                ))}
-              </div>
-
-              <div className="event-media-slot">
-                <div>
-                  <strong>{es ? "Galería del evento" : "Event gallery"}</strong>
-                  <small>{es ? "Elige hasta 8 imágenes." : "Choose up to 8 images."}</small>
-                </div>
-                <span className="event-media-count">{galleryIds.length}/8</span>
-              </div>
-              <div className="event-media-picker compact">
-                {venueMedia.map((item) => (
-                  <button
-                    type="button"
-                    key={item.id}
-                    className={galleryIds.includes(item.id) ? "event-media-tile selected" : "event-media-tile"}
-                    aria-pressed={galleryIds.includes(item.id)}
-                    onClick={() => toggleGallery(item.id)}
-                  >
-                    <img src={item.url} alt={item.alt} />
-                    <span>{galleryIds.includes(item.id) ? "✓" : ""}</span>
-                  </button>
-                ))}
-              </div>
-            </>
+            <div className="event-five-slots event-five-slots-create">
+              {[
+                ["cover", es ? "Portada del evento" : "Event cover"],
+                ["explore", es ? "Tarjeta Explorar" : "Explore card"],
+                ["gallery1", es ? "Galería 1" : "Gallery 1"],
+                ["gallery2", es ? "Galería 2" : "Gallery 2"],
+                ["gallery3", es ? "Galería 3" : "Gallery 3"],
+              ].map(([key, label]) => {
+                const slotKey = key as keyof typeof slots;
+                const selectedId = slots[slotKey];
+                const selected =
+                  venueMedia.find((item) => item.id === selectedId) ||
+                  venueMedia[0];
+                return (
+                  <article className="event-five-slot" key={key}>
+                    <div className="event-five-preview">
+                      {selected ? (
+                        <img src={selected.url} alt={selected.alt} />
+                      ) : (
+                        <span>＋</span>
+                      )}
+                      {!selectedId && selected ? (
+                        <small className="media-fallback-chip">
+                          {es ? "Automático" : "Auto"}
+                        </small>
+                      ) : null}
+                    </div>
+                    <div>
+                      <strong>{label}</strong>
+                      <small>
+                        {es
+                          ? "Si no eliges una, usamos la primera imagen del local."
+                          : "If you leave it empty, the venue's first image is used."}
+                      </small>
+                    </div>
+                    <div className="media-five-picker">
+                      {venueMedia.map((item) => (
+                        <button
+                          type="button"
+                          key={item.id}
+                          className={
+                            selectedId === item.id
+                              ? "media-mini-tile selected"
+                              : "media-mini-tile"
+                          }
+                          onClick={() =>
+                            setSlots((current) => ({
+                              ...current,
+                              [slotKey]: item.id,
+                            }))
+                          }
+                        >
+                          <img src={item.url} alt="" />
+                        </button>
+                      ))}
+                      {selectedId ? (
+                        <button
+                          type="button"
+                          className="media-auto-button"
+                          onClick={() =>
+                            setSlots((current) => ({
+                              ...current,
+                              [slotKey]: "",
+                            }))
+                          }
+                        >
+                          {es ? "Auto" : "Auto"}
+                        </button>
+                      ) : null}
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
           ) : (
             <div className="event-media-empty">
               <span>▧</span>
-              <strong>{es ? "Aún no hay imágenes en este local" : "No media for this venue yet"}</strong>
+              <strong>
+                {es
+                  ? "Aún no hay imágenes en este local"
+                  : "No media for this venue yet"}
+              </strong>
               <p>
                 {es
-                  ? "Añádelas desde Gestionar local → Perfil → Biblioteca multimedia. Después podrás reutilizarlas aquí."
-                  : "Add them in Manage venue → Profile → Media library, then reuse them here."}
+                  ? "Puedes crear el evento igualmente. AkiPasa usará la imagen principal del local cuando exista."
+                  : "You can still create the event. AkiPasa will use the venue's primary image when available."}
               </p>
             </div>
           )}
