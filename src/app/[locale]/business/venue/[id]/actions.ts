@@ -554,10 +554,7 @@ export async function uploadVenueImage(formData: FormData) {
   const { error: uploadError } = await supabase.storage
     .from("event-media")
     .upload(path, file, { contentType: file.type, upsert: false });
-  if (uploadError) {
-    if (inline) return { ok: false as const, error: "media" };
-    redirect(destination(locale, venueId, "error=media"));
-  }
+  if (uploadError) redirect(destination(locale, venueId, "error=media"));
   const { error } = await supabase.from("venue_media").insert({
     venue_id: parsed.data.venueId,
     storage_path: path,
@@ -585,10 +582,7 @@ export async function updateVenueImageMetadata(formData: FormData) {
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
-  if (!parsed.success) {
-    if (inline) return { ok: false as const, error: "media" };
-    redirect(destination(locale, venueId, "error=media"));
-  }
+  if (!parsed.success) redirect(destination(locale, venueId, "error=media"));
   const { supabase, user } = await requireBusinessAccess(locale);
   const { data: currentMedia } = await supabase
     .from("venue_media")
@@ -1110,10 +1104,7 @@ export async function clearVenueMediaPlacement(formData: FormData) {
   const parsed = clearVenueMediaPlacementSchema.safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
-  if (!parsed.success) {
-    if (inline) return { ok: false as const, error: "media" };
-    redirect(destination(locale, venueId, "error=media"));
-  }
+  if (!parsed.success) redirect(destination(locale, venueId, "error=media"));
 
   const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase
