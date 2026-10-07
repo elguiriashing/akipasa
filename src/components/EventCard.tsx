@@ -205,6 +205,11 @@ export function EventCard({
         {primaryImage ? (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
+            className={
+              primaryImageIsLogo
+                ? "card-media-image is-logo"
+                : "card-media-image"
+            }
             src={primaryImage.url}
             alt={translated(primaryImage.alt, locale)}
             loading="lazy"
