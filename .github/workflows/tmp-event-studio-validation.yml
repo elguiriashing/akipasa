@@ -1,5 +1,5 @@
 name: Temporary event studio validation
-# validates latest branch head
+# validates latest branch head after media wiring
 
 on:
   push:
