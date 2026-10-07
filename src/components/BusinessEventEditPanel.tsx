@@ -249,11 +249,11 @@ export function BusinessEventEditPanel({
         <input type="hidden" name="venueId" value={venueId} />
         <input type="hidden" name="eventId" value={event.id} />
         <input type="hidden" name="priceDisplayMode" value={priceMode} />
-        <input type="hidden" name="bannerMediaId" value={slots.cover} />
+        <input type="hidden" name="bannerMediaId" value={slots.banner} />
         <input type="hidden" name="exploreMediaId" value={slots.explore} />
-        <input type="hidden" name="galleryMediaId1" value={slots.gallery1} />
-        <input type="hidden" name="galleryMediaId2" value={slots.gallery2} />
-        <input type="hidden" name="galleryMediaId3" value={slots.gallery3} />
+        <input type="hidden" name="profileMediaId" value={slots.profile} />
+        <input type="hidden" name="backgroundMediaId" value={slots.background} />
+        <input type="hidden" name="mapMediaId" value={slots.map} />
 
         <section className="event-edit-section">
           <header>
