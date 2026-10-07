@@ -17211,3 +17211,33 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
     border-radius: .8rem;
   }
 }
+
+
+.official-event-price-fieldset {
+  display: grid;
+  gap: .65rem;
+  margin: 0;
+  padding: .8rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+}
+
+.official-event-price-fieldset legend {
+  padding: 0 .25rem;
+  font-weight: 900;
+}
+
+.official-event-price-fieldset .event-price-option {
+  position: relative;
+}
+
+.official-event-price-fieldset .event-price-option > input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.official-event-price-fieldset .event-price-option:has(input:checked) {
+  border-color: color-mix(in srgb, var(--accent) 65%, var(--line));
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
