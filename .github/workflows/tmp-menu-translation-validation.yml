@@ -1,0 +1,29 @@
+name: Temporary menu translation validation
+
+on:
+  push:
+    branches:
+      - fix/business-page-separation-and-menu-translation
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Catalogue tests
+        run: npx vitest run --environment node tests/venue-catalogue.test.ts
+      - name: Production build
+        run: npm run build
+      - name: Cloudflare build
+        run: npm run build:cloudflare
