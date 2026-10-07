@@ -4,6 +4,7 @@ import { OwnerReadiness } from "@/components/OwnerReadiness";
 import { Icon } from "@/components/Icons";
 import { VenueDashboard } from "@/components/VenueDashboard";
 import { VenueCatalogueEditor } from "@/components/VenueCatalogueEditor";
+import { SafeMediaFileInput } from "@/components/SafeMediaFileInput";
 import { getVenueDashboardSection } from "@/lib/venue-dashboard";
 import {
   parseCatalogueDocument,
@@ -466,8 +467,8 @@ export default async function VenueWorkspace({
                       <strong>{es ? "Añadir foto" : "Add a photo"}</strong>
                       <small>
                         {es
-                          ? "JPEG, PNG o WebP · máximo 10 MB"
-                          : "JPEG, PNG or WebP · max 10 MB"}
+                          ? "JPEG, PNG, WebP o PDF · máximo 10 MB"
+                          : "JPEG, PNG, WebP or PDF · max 10 MB"}
                       </small>
                     </span>
                   </span>
@@ -485,11 +486,10 @@ export default async function VenueWorkspace({
                     value={media?.length || 0}
                   />
                   <label className="photo-file-field">
-                    {es ? "Elige una imagen" : "Choose an image"}
-                    <input
-                      type="file"
+                    {es ? "Elige una imagen o PDF" : "Choose an image or PDF"}
+                    <SafeMediaFileInput
+                      locale={locale}
                       name="image"
-                      accept="image/jpeg,image/png,image/webp"
                       required
                     />
                   </label>

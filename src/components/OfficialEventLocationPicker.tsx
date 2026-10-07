@@ -165,7 +165,10 @@ export function OfficialEventLocationPicker({
   const selected = latitude !== null && longitude !== null;
 
   return (
-    <section className="official-event-location-picker">
+    <section
+      className="official-event-location-picker"
+      data-required-ready={selected ? "true" : "false"}
+    >
       <div className="official-event-location-copy">
         <span className="eyebrow">
           {es ? "Ubicación del evento" : "Event location"}

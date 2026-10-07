@@ -50,6 +50,21 @@ describe("venue catalogue foundations", () => {
     expect(doc.title._translation).toBeUndefined();
   });
 
+  it("does not certify identical bilingual fallback copy as translated", () => {
+    const doc = blankCatalogue("en");
+    doc.sections = [
+      {
+        id: "00000000-0000-4000-8000-000000000001",
+        title: { es: "Nuts", en: "Nuts" },
+        items: [],
+      },
+    ];
+
+    const seeded = seedCatalogueTranslationMetadata(doc, "en");
+
+    expect(seeded.sections[0].title._translation).toBeUndefined();
+  });
+
   it("uses the populated language as provenance for legacy one-language copy", () => {
     const doc = blankCatalogue("en");
     doc.title = { es: "Carta de Juan", en: "" };

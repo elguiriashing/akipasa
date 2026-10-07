@@ -9,6 +9,7 @@ import {
   type CatalogueItem,
   type CatalogueItemKind,
   type CatalogueLayout,
+  type CatalogueText,
   type VenueCatalogueDocument,
 } from "@/lib/venue-catalogue";
 import {
@@ -122,11 +123,10 @@ export function VenueCatalogueEditor({
     selectedSection?.items[0] ||
     null;
 
-  function setLocalized(
-    value: { es: string; en: string },
-    next: string,
-  ) {
-    return { ...value, [locale]: next };
+  function setLocalized(value: CatalogueText, next: string) {
+    const { _translation: _staleTranslation, ...copy } = value;
+    void _staleTranslation;
+    return { ...copy, [locale]: next };
   }
 
   function updateSectionTitle(sectionId: string, next: string) {

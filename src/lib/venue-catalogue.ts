@@ -104,6 +104,17 @@ function seedTextTranslationMetadata(
   pair: CatalogueText,
   preferredLocale: "es" | "en",
 ) {
+  const esValue = pair.es.trim();
+  const enValue = pair.en.trim();
+
+  // Exact bilingual copies are commonly the non-blocking fallback from a
+  // translator outage. Do not certify them as translated or catalogue saves
+  // will never retry them. Proper nouns may be retried, which is harmless.
+  if (esValue && esValue === enValue) {
+    delete pair._translation;
+    return;
+  }
+
   if (pair._translation?.esHash && pair._translation?.enHash) return;
   const sourceLocale =
     pair[preferredLocale].trim() || !pair[preferredLocale === "es" ? "en" : "es"].trim()

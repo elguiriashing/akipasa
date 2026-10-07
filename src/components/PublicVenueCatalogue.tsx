@@ -1,5 +1,9 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import {
   euAllergens,
+  type CatalogueItem,
   type VenueCatalogueDocument,
 } from "@/lib/venue-catalogue";
 
@@ -10,6 +14,20 @@ function text(
   return value[locale] || value.es || value.en;
 }
 
+function itemPrice(item: CatalogueItem, locale: "es" | "en") {
+  const es = locale === "es";
+  if (item.priceMode === "on_request" || item.priceCents === null) {
+    return es ? "Consultar" : "Ask";
+  }
+  return (
+    (item.priceMode === "from" ? (es ? "Desde " : "From ") : "") +
+    (item.priceCents / 100).toLocaleString(locale, {
+      style: "currency",
+      currency: "EUR",
+    })
+  );
+}
+
 export function PublicVenueCatalogue({
   locale,
   document,
@@ -18,14 +36,32 @@ export function PublicVenueCatalogue({
   document: VenueCatalogueDocument;
 }) {
   const es = locale === "es";
-  if (!document.sections.length) return null;
+  const sections = useMemo(
+    () =>
+      document.sections
+        .map((section) => ({
+          ...section,
+          items: section.items.filter((item) => item.visible !== false),
+        }))
+        .filter((section) => section.items.length > 0),
+    [document.sections],
+  );
+  const [activeSectionId, setActiveSectionId] = useState(
+    sections[0]?.id || "",
+  );
+  const activeSection =
+    sections.find((section) => section.id === activeSectionId) ||
+    sections[0] ||
+    null;
+
+  if (!activeSection) return null;
 
   return (
     <section
       className="venue-section public-venue-catalogue"
       data-layout={document.layout}
     >
-      <header>
+      <header className="public-catalogue-heading">
         <span className="eyebrow">
           {es ? "Carta y catálogo" : "Menu & catalogue"}
         </span>
@@ -35,29 +71,54 @@ export function PublicVenueCatalogue({
         )}
       </header>
 
-      {document.sections.map((section) => (
-        <section className="public-catalogue-section" key={section.id}>
-          <h3>{text(section.title, locale)}</h3>
+      <div className="public-catalogue-app">
+        <nav
+          className="public-catalogue-tabs"
+          aria-label={es ? "Secciones de la carta" : "Menu sections"}
+        >
+          {sections.map((section) => (
+            <button
+              type="button"
+              className="public-catalogue-tab"
+              aria-selected={section.id === activeSection.id}
+              key={section.id}
+              onClick={() => setActiveSectionId(section.id)}
+            >
+              <span>{text(section.title, locale)}</span>
+              <small>{section.items.length}</small>
+            </button>
+          ))}
+        </nav>
+
+        <section className="public-catalogue-section">
+          <header className="public-catalogue-section-head">
+            <div>
+              <h3>{text(activeSection.title, locale)}</h3>
+              <span>
+                {activeSection.items.length}{" "}
+                {activeSection.items.length === 1
+                  ? es
+                    ? "opción"
+                    : "item"
+                  : es
+                    ? "opciones"
+                    : "items"}
+              </span>
+            </div>
+          </header>
+
           <div className="public-catalogue-items">
-            {section.items.map((item) => {
+            {activeSection.items.map((item) => {
               const allergenEntries = euAllergens.filter(([key]) => {
                 const state = item.allergens?.states?.[key];
                 return state === "contains" || state === "may_contain";
               });
-              const price =
-                item.priceMode === "on_request" || item.priceCents === null
-                  ? es
-                    ? "Consultar"
-                    : "Ask"
-                  : (item.priceMode === "from"
-                      ? es
-                        ? "Desde "
-                        : "From "
-                      : "") +
-                    (item.priceCents / 100).toLocaleString(locale, {
-                      style: "currency",
-                      currency: "EUR",
-                    });
+              const foodSafety =
+                item.kind === "food" ||
+                item.kind === "drink" ||
+                item.containsFood;
+              const hasDetails = allergenEntries.length > 0 || foodSafety;
+
               return (
                 <article className="public-catalogue-item" key={item.id}>
                   <div className="public-catalogue-item-head">
@@ -67,10 +128,13 @@ export function PublicVenueCatalogue({
                         <p>{text(item.description, locale)}</p>
                       )}
                     </div>
-                    <span>{price}</span>
+                    <span className="public-catalogue-price">
+                      {itemPrice(item, locale)}
+                    </span>
                   </div>
+
                   {item.availability !== "available" && (
-                    <small className="status-pill">
+                    <small className="status-pill public-catalogue-availability">
                       {
                         {
                           sold_out: es ? "Agotado" : "Sold out",
@@ -81,50 +145,64 @@ export function PublicVenueCatalogue({
                       }
                     </small>
                   )}
-                  {allergenEntries.length > 0 && (
-                    <div className="public-catalogue-allergens">
-                      <span>
-                        {es ? "Información de alérgenos:" : "Allergen information:"}
-                      </span>
-                      {allergenEntries.map(([key, icon, esLabel, enLabel]) => (
-                        <span
-                          key={key}
-                          data-state={item.allergens.states[key]}
-                          title={
-                            item.allergens.states[key] === "contains"
-                              ? es
-                                ? "Contiene"
-                                : "Contains"
-                              : es
-                                ? "Puede contener"
-                                : "May contain"
-                          }
-                        >
-                          <i aria-hidden="true">{icon}</i>
-                          {es ? esLabel : enLabel}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                  {(item.kind === "food" ||
-                    item.kind === "drink" ||
-                    item.containsFood) && (
-                    <p className="catalogue-allergen-disclaimer">
-                      {item.allergens.crossContact === "possible"
-                        ? es
-                          ? "Puede existir contaminación cruzada."
-                          : "Cross-contact may occur."
-                        : es
-                          ? "Consulta con el local si tienes una alergia grave."
-                          : "Ask the venue if you have a severe allergy."}
-                    </p>
+
+                  {hasDetails && (
+                    <details className="public-catalogue-item-details">
+                      <summary>
+                        {allergenEntries.length > 0
+                          ? es
+                            ? "Alérgenos e información"
+                            : "Allergens & info"
+                          : es
+                            ? "Información"
+                            : "Info"}
+                        <span aria-hidden="true">+</span>
+                      </summary>
+
+                      {allergenEntries.length > 0 && (
+                        <div className="public-catalogue-allergens">
+                          {allergenEntries.map(
+                            ([key, icon, esLabel, enLabel]) => (
+                              <span
+                                key={key}
+                                data-state={item.allergens.states[key]}
+                                title={
+                                  item.allergens.states[key] === "contains"
+                                    ? es
+                                      ? "Contiene"
+                                      : "Contains"
+                                    : es
+                                      ? "Puede contener"
+                                      : "May contain"
+                                }
+                              >
+                                <i aria-hidden="true">{icon}</i>
+                                {es ? esLabel : enLabel}
+                              </span>
+                            ),
+                          )}
+                        </div>
+                      )}
+
+                      {foodSafety && (
+                        <p className="catalogue-allergen-disclaimer">
+                          {item.allergens.crossContact === "possible"
+                            ? es
+                              ? "Puede existir contaminación cruzada."
+                              : "Cross-contact may occur."
+                            : es
+                              ? "Consulta con el local si tienes una alergia grave."
+                              : "Ask the venue if you have a severe allergy."}
+                        </p>
+                      )}
+                    </details>
                   )}
                 </article>
               );
             })}
           </div>
         </section>
-      ))}
+      </div>
     </section>
   );
 }
