@@ -1,6 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import {
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
 import { SafeMediaFileInput } from "@/components/SafeMediaFileInput";
 import {
   addVenueMediaToEventBin,
@@ -65,8 +70,10 @@ const eventSlots: Array<{
 export function BusinessEventEditPanel({
   locale,
   venueId,
+  verifiedVenue = false,
   event,
   media,
+  venueMediaIds = [],
   coverMediaId = "",
   exploreMediaId = "",
   galleryMediaIds = [],
@@ -74,6 +81,7 @@ export function BusinessEventEditPanel({
 }: {
   locale: "es" | "en";
   venueId: string;
+  verifiedVenue?: boolean;
   event: {
     id: string;
     title: string;
@@ -85,6 +93,7 @@ export function BusinessEventEditPanel({
     accessibilityNotes: string;
   };
   media: MediaOption[];
+  venueMediaIds?: string[];
   coverMediaId?: string;
   exploreMediaId?: string;
   galleryMediaIds?: string[];
@@ -101,25 +110,137 @@ export function BusinessEventEditPanel({
     gallery2: galleryMediaIds[1] || "",
     gallery3: galleryMediaIds[2] || "",
   });
+  const [allMedia, setAllMedia] = useState<MediaOption[]>(media);
+  const [binIds, setBinIds] = useState<string[]>(eventBinMediaIds);
+  const [saveState, setSaveState] = useState<
+    "idle" | "saving" | "saved" | "error"
+  >("idle");
+  const [mediaState, setMediaState] = useState<
+    "idle" | "working" | "saved" | "error"
+  >("idle");
+  const uploadFormRef = useRef<HTMLFormElement>(null);
 
   const eventBin = useMemo(
-    () => media.filter((item) => eventBinMediaIds.includes(item.id)),
-    [eventBinMediaIds, media],
+    () => allMedia.filter((item) => binIds.includes(item.id)),
+    [allMedia, binIds],
   );
-  const eventFallback = eventBin[0] || media[0] || null;
+  const venueLibrary = useMemo(
+    () => allMedia.filter((item) => venueMediaIds.includes(item.id)),
+    [allMedia, venueMediaIds],
+  );
+  const eventFallback = eventBin[0] || venueLibrary[0] || allMedia[0] || null;
 
   function selectedFor(key: EventSlotKey) {
     const explicit = slots[key]
-      ? media.find((item) => item.id === slots[key])
+      ? allMedia.find((item) => item.id === slots[key])
       : null;
     return explicit || eventFallback;
   }
 
-  return (
-    <details className="event-edit-studio">
-      <summary>{es ? "Editar ficha y multimedia" : "Edit listing & media"}</summary>
+  async function saveEvent(eventSubmit: FormEvent<HTMLFormElement>) {
+    eventSubmit.preventDefault();
+    const form = eventSubmit.currentTarget;
+    if (!form.reportValidity()) return;
+    setSaveState("saving");
+    const formData = new FormData(form);
+    formData.set("inline", "1");
+    const result = await updateEvent(formData);
+    if (result?.ok) {
+      setSaveState("saved");
+      window.setTimeout(() => setSaveState("idle"), 2200);
+    } else {
+      setSaveState("error");
+    }
+  }
 
-      <form action={updateEvent} className="event-edit-studio-form">
+  async function uploadMedia(eventSubmit: FormEvent<HTMLFormElement>) {
+    eventSubmit.preventDefault();
+    const form = eventSubmit.currentTarget;
+    if (!form.reportValidity()) return;
+    setMediaState("working");
+    const formData = new FormData(form);
+    formData.set("inline", "1");
+    formData.set("sortOrder", String(binIds.length));
+    const result = await uploadEventImage(formData);
+    if (result?.ok && result.media?.url) {
+      setAllMedia((current) => [
+        ...current.filter((item) => item.id !== result.media!.id),
+        result.media!,
+      ]);
+      setBinIds((current) =>
+        current.includes(result.media!.id)
+          ? current
+          : [...current, result.media!.id],
+      );
+      form.reset();
+      setMediaState("saved");
+      window.setTimeout(() => setMediaState("idle"), 1800);
+      return;
+    }
+    setMediaState("error");
+  }
+
+  async function addToEvent(mediaId: string) {
+    setMediaState("working");
+    const formData = new FormData();
+    formData.set("inline", "1");
+    formData.set("locale", locale);
+    formData.set("venueId", venueId);
+    formData.set("eventId", event.id);
+    formData.set("mediaId", mediaId);
+    const result = await addVenueMediaToEventBin(formData);
+    if (result?.ok) {
+      setBinIds((current) =>
+        current.includes(mediaId) ? current : [...current, mediaId],
+      );
+      setMediaState("saved");
+      window.setTimeout(() => setMediaState("idle"), 1600);
+    } else {
+      setMediaState("error");
+    }
+  }
+
+  async function removeFromEvent(mediaId: string) {
+    setMediaState("working");
+    const formData = new FormData();
+    formData.set("inline", "1");
+    formData.set("locale", locale);
+    formData.set("venueId", venueId);
+    formData.set("eventId", event.id);
+    formData.set("mediaId", mediaId);
+    const result = await removeMediaFromEventBin(formData);
+    if (result?.ok) {
+      setBinIds((current) => current.filter((id) => id !== mediaId));
+      setSlots((current) => {
+        const next = { ...current };
+        (Object.keys(next) as EventSlotKey[]).forEach((key) => {
+          if (next[key] === mediaId) next[key] = "";
+        });
+        return next;
+      });
+      setMediaState("saved");
+      window.setTimeout(() => setMediaState("idle"), 1600);
+    } else {
+      setMediaState("error");
+    }
+  }
+
+  return (
+    <details className="event-edit-studio" open>
+      <summary>
+        <span>{es ? "Editar ficha y multimedia" : "Edit listing & media"}</span>
+        <small className="event-editor-live-state">
+          {verifiedVenue
+            ? es
+              ? "Local verificado · cambios directos"
+              : "Verified venue · changes publish directly"
+            : es
+              ? "Los cambios pueden requerir revisión"
+              : "Changes may require review"}
+        </small>
+      </summary>
+
+      <form onSubmit={saveEvent} className="event-edit-studio-form">
         <input type="hidden" name="locale" value={locale} />
         <input type="hidden" name="venueId" value={venueId} />
         <input type="hidden" name="eventId" value={event.id} />
@@ -136,7 +257,9 @@ export function BusinessEventEditPanel({
             <div>
               <strong>{es ? "Lo esencial" : "Essentials"}</strong>
               <small>
-                {es ? "Nombre, descripción y reserva." : "Name, description and booking."}
+                {es
+                  ? "Nombre, descripción y reserva."
+                  : "Name, description and booking."}
               </small>
             </div>
           </header>
@@ -157,7 +280,11 @@ export function BusinessEventEditPanel({
           <div className="event-studio-grid">
             <label>
               {es ? "Enlace de reserva" : "Booking link"}
-              <input name="bookingUrl" type="url" defaultValue={event.bookingUrl} />
+              <input
+                name="bookingUrl"
+                type="url"
+                defaultValue={event.bookingUrl}
+              />
             </label>
             <label>
               {es ? "Edad mínima" : "Minimum age"}
@@ -196,7 +323,9 @@ export function BusinessEventEditPanel({
             >
               <span>◌</span>
               <strong>{es ? "No mostrar precio" : "Hide price"}</strong>
-              <small>{es ? "No aparecerá “Gratis”." : "“Free” will not be shown."}</small>
+              <small>
+                {es ? "No aparecerá “Gratis”." : "“Free” will not be shown."}
+              </small>
             </button>
             <button
               type="button"
@@ -209,7 +338,9 @@ export function BusinessEventEditPanel({
             >
               <span>€</span>
               <strong>{es ? "Mostrar precio" : "Show price"}</strong>
-              <small>{es ? "0 € se verá como Gratis." : "€0 displays as Free."}</small>
+              <small>
+                {es ? "0 € se verá como Gratis." : "€0 displays as Free."}
+              </small>
             </button>
           </div>
           {priceMode === "show" ? (
@@ -225,7 +356,11 @@ export function BusinessEventEditPanel({
               />
             </label>
           ) : (
-            <input type="hidden" name="priceEuros" value={event.priceCents / 100} />
+            <input
+              type="hidden"
+              name="priceEuros"
+              value={event.priceCents / 100}
+            />
           )}
         </section>
 
@@ -233,11 +368,13 @@ export function BusinessEventEditPanel({
           <header>
             <span>03</span>
             <div>
-              <strong>{es ? "Cinco imágenes del evento" : "Five event images"}</strong>
+              <strong>
+                {es ? "Cinco imágenes del evento" : "Five event images"}
+              </strong>
               <small>
                 {es
-                  ? "Cada zona puede tener una imagen distinta. Las vacías usan automáticamente la primera imagen del bin del evento."
-                  : "Each surface can have a different image. Empty slots automatically use the first image in the event bin."}
+                  ? "Cambia imágenes sin salir del editor. Las ranuras vacías usan automáticamente la primera imagen del bin."
+                  : "Change media without leaving the editor. Empty slots automatically use the first image in the bin."}
               </small>
             </div>
           </header>
@@ -265,7 +402,7 @@ export function BusinessEventEditPanel({
                     <small>{es ? slot.esHelp : slot.enHelp}</small>
                   </div>
                   <div className="media-five-picker">
-                    {(eventBin.length ? eventBin : media).map((item) => (
+                    {(eventBin.length ? eventBin : venueLibrary).map((item) => (
                       <button
                         key={item.id}
                         type="button"
@@ -274,12 +411,13 @@ export function BusinessEventEditPanel({
                             ? "media-mini-tile selected"
                             : "media-mini-tile"
                         }
-                        onClick={() =>
+                        onClick={() => {
                           setSlots((current) => ({
                             ...current,
                             [slot.key]: item.id,
-                          }))
-                        }
+                          }));
+                          setSaveState("idle");
+                        }}
                       >
                         <img src={item.url} alt="" />
                       </button>
@@ -288,12 +426,13 @@ export function BusinessEventEditPanel({
                       <button
                         type="button"
                         className="media-auto-button"
-                        onClick={() =>
+                        onClick={() => {
                           setSlots((current) => ({
                             ...current,
                             [slot.key]: "",
-                          }))
-                        }
+                          }));
+                          setSaveState("idle");
+                        }}
                       >
                         {es ? "Auto" : "Auto"}
                       </button>
@@ -329,11 +468,43 @@ export function BusinessEventEditPanel({
         </section>
 
         <div className="event-edit-savebar">
-          <span>
-            {es ? "Los cambios se enviarán a revisión." : "Changes will be sent for review."}
+          <span aria-live="polite">
+            {saveState === "saving"
+              ? es
+                ? "Guardando…"
+                : "Saving…"
+              : saveState === "saved"
+                ? verifiedVenue
+                  ? es
+                    ? "Guardado y publicado."
+                    : "Saved and published."
+                  : es
+                    ? "Guardado."
+                    : "Saved."
+                : saveState === "error"
+                  ? es
+                    ? "No se pudo guardar. Revisa los campos."
+                    : "Could not save. Check the fields."
+                  : verifiedVenue
+                    ? es
+                      ? "Los cambios del local verificado se publican directamente."
+                      : "Verified venue changes publish directly."
+                    : es
+                      ? "Los cambios pueden pasar por revisión."
+                      : "Changes may go through review."}
           </span>
-          <button className="button" type="submit">
-            {es ? "Guardar cambios" : "Save changes"}
+          <button
+            className="button"
+            type="submit"
+            disabled={saveState === "saving"}
+          >
+            {saveState === "saving"
+              ? es
+                ? "Guardando…"
+                : "Saving…"
+              : es
+                ? "Guardar cambios"
+                : "Save changes"}
           </button>
         </div>
       </form>
@@ -344,25 +515,27 @@ export function BusinessEventEditPanel({
             <span className="eyebrow">
               {es ? "Bin multimedia del evento" : "Event media bin"}
             </span>
-            <h3>{es ? "Imágenes solo para este evento" : "Media for this event"}</h3>
+            <h3>
+              {es ? "Imágenes para este evento" : "Media for this event"}
+            </h3>
             <p>
               {es
-                ? "Sube imágenes específicas o trae imágenes de la biblioteca del local. No borra ni duplica la biblioteca general."
-                : "Upload event-specific images or pull in media from the venue library. The main library stays intact."}
+                ? "Sube, añade y quita imágenes sin recargar la página. El editor permanece exactamente donde lo dejaste."
+                : "Upload, add and remove images without reloading the page. The editor stays exactly where you left it."}
             </p>
           </div>
           <span>{eventBin.length}</span>
         </div>
 
         <form
-          action={uploadEventImage}
+          ref={uploadFormRef}
+          onSubmit={uploadMedia}
           className="media-upload-form"
           encType="multipart/form-data"
         >
           <input type="hidden" name="locale" value={locale} />
           <input type="hidden" name="venueId" value={venueId} />
           <input type="hidden" name="eventId" value={event.id} />
-          <input type="hidden" name="sortOrder" value={eventBin.length} />
           <label>
             {es ? "Subir imagen / PDF" : "Upload image / PDF"}
             <SafeMediaFileInput locale={locale} name="image" required />
@@ -377,10 +550,32 @@ export function BusinessEventEditPanel({
               placeholder={es ? "Ej. escenario principal" : "e.g. main stage"}
             />
           </label>
-          <button className="button" type="submit">
-            {es ? "Subir al evento" : "Upload to event"}
+          <button
+            className="button"
+            type="submit"
+            disabled={mediaState === "working"}
+          >
+            {mediaState === "working"
+              ? es
+                ? "Subiendo…"
+                : "Uploading…"
+              : es
+                ? "Subir al evento"
+                : "Upload to event"}
           </button>
         </form>
+
+        <p className="event-media-live-status" aria-live="polite">
+          {mediaState === "saved"
+            ? es
+              ? "Multimedia actualizada."
+              : "Media updated."
+            : mediaState === "error"
+              ? es
+                ? "No se pudo actualizar la multimedia."
+                : "Could not update media."
+              : ""}
+        </p>
 
         {eventBin.length ? (
           <div className="media-library-grid event-bin-grid">
@@ -398,15 +593,13 @@ export function BusinessEventEditPanel({
                   <strong>{item.alt}</strong>
                 </div>
                 <div className="media-library-actions media-library-actions-simple">
-                  <form action={removeMediaFromEventBin}>
-                    <input type="hidden" name="locale" value={locale} />
-                    <input type="hidden" name="venueId" value={venueId} />
-                    <input type="hidden" name="eventId" value={event.id} />
-                    <input type="hidden" name="mediaId" value={item.id} />
-                    <button type="submit">
-                      {es ? "Quitar del evento" : "Remove from event"}
-                    </button>
-                  </form>
+                  <button
+                    type="button"
+                    disabled={mediaState === "working"}
+                    onClick={() => removeFromEvent(item.id)}
+                  >
+                    {es ? "Quitar del evento" : "Remove from event"}
+                  </button>
                 </div>
               </article>
             ))}
@@ -422,14 +615,17 @@ export function BusinessEventEditPanel({
           </div>
         )}
 
-        {media.filter((item) => !eventBinMediaIds.includes(item.id)).length ? (
+        {venueLibrary.filter((item) => !binIds.includes(item.id)).length ? (
           <details className="event-library-import">
             <summary>
-              ＋ {es ? "Traer desde la biblioteca del local" : "Add from venue library"}
+              ＋{" "}
+              {es
+                ? "Traer desde la biblioteca del local"
+                : "Add from venue library"}
             </summary>
             <div className="media-library-grid">
-              {media
-                .filter((item) => !eventBinMediaIds.includes(item.id))
+              {venueLibrary
+                .filter((item) => !binIds.includes(item.id))
                 .map((item) => (
                   <article className="media-library-item" key={item.id}>
                     <div className="media-library-thumb">
@@ -439,15 +635,13 @@ export function BusinessEventEditPanel({
                       <strong>{item.alt}</strong>
                     </div>
                     <div className="media-library-actions media-library-actions-simple">
-                      <form action={addVenueMediaToEventBin}>
-                        <input type="hidden" name="locale" value={locale} />
-                        <input type="hidden" name="venueId" value={venueId} />
-                        <input type="hidden" name="eventId" value={event.id} />
-                        <input type="hidden" name="mediaId" value={item.id} />
-                        <button type="submit">
-                          {es ? "Añadir al evento" : "Add to event"}
-                        </button>
-                      </form>
+                      <button
+                        type="button"
+                        disabled={mediaState === "working"}
+                        onClick={() => addToEvent(item.id)}
+                      >
+                        {es ? "Añadir al evento" : "Add to event"}
+                      </button>
                     </div>
                   </article>
                 ))}
