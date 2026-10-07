@@ -18240,3 +18240,61 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
     overflow: visible;
   }
 }
+
+
+.event-editor-library-page {
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 1rem;
+}
+
+.event-editor-library-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.event-editor-library-item {
+  min-height: 0;
+}
+
+.event-editor-library-thumb {
+  aspect-ratio: 4 / 3;
+}
+
+.event-library-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  margin-top: .75rem;
+}
+
+.event-library-pagination button {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--line);
+  border-radius: .65rem;
+  background: var(--surface-alt);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.event-library-pagination button:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.event-library-pagination span {
+  min-width: 4rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: .72rem;
+  font-weight: 800;
+}
+
+@media (max-width: 760px) {
+  .event-editor-library-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
