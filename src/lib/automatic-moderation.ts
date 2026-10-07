@@ -65,7 +65,7 @@ async function targetSnapshot(
   const { data, error } = await service
     .from("events")
     .select(
-      "id,title_es,title_en,description_es,description_en,price_cents,currency,booking_url,status,venues(name,address),event_occurrences(starts_at,ends_at,status)",
+      "id,title_es,title_en,description_es,description_en,price_cents,currency,booking_url,status,venues(name,address),event_occurrences!event_occurrences_event_id_fkey(starts_at,ends_at,status)",
     )
     .eq("id", targetId)
     .eq("status", "pending")

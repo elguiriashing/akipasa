@@ -219,7 +219,7 @@ export async function createEvent(formData: FormData) {
   }
   const { data: venue } = await supabase
     .from("venues")
-    .select("slug")
+    .select("slug,verified")
     .eq("id", e.venueId)
     .maybeSingle();
   if (!venue || venue.slug === "akipasa-editorial") {
@@ -284,15 +284,20 @@ export async function createEvent(formData: FormData) {
 
     await supabase
       .from("events")
-      .update({ price_display_mode: e.priceDisplayMode })
+      .update({
+        price_display_mode: e.priceDisplayMode,
+        ...(venue.verified ? { status: "published" } : {}),
+      })
       .eq("id", eventId)
       .eq("venue_id", e.venueId);
 
-    await reviewPendingCatalogueItem({
-      targetType: "event",
-      targetId: eventId,
-      requesterId: user.id,
-    });
+    if (!venue.verified) {
+      await reviewPendingCatalogueItem({
+        targetType: "event",
+        targetId: eventId,
+        requesterId: user.id,
+      });
+    }
   }
   redirect(`/${locale}/business?view=events&created=event`);
 }
