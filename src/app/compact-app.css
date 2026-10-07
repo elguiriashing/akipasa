@@ -2209,3 +2209,52 @@ body:has(.subscription-app) > .privacy-preferences {
     border-radius: 22px;
   }
 }
+
+
+/* Event artwork can be either photography or a logo/avatar. Treat those
+   differently so logos do not become bizarre cropped postage stamps. */
+.card-media-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-media-image.is-logo {
+  padding: clamp(10px, 7%, 22px);
+  object-fit: contain;
+  background:
+    radial-gradient(circle at 50% 45%, rgb(255 255 255 / 6%), transparent 58%),
+    #090c14;
+  box-sizing: border-box;
+}
+
+.map-drawer-content .card {
+  grid-template-columns: 92px minmax(0, 1fr);
+  min-height: 104px;
+}
+
+.map-drawer-content .card-media {
+  min-width: 0;
+  margin: 0;
+  border-radius: 11px 0 0 11px;
+}
+
+.map-drawer-content .card-media-image.is-logo {
+  padding: 10px;
+}
+
+.map-results-drawer:not([open]) {
+  display: none !important;
+}
+
+/* MapLibre's canvas sometimes keeps the width it had while the native results
+   dialog was open. Keep the viewport container unambiguously full-width; the
+   JS resize hook handles the canvas backing store. */
+.map-page .production-map-wrap,
+.map-page .production-map,
+.map-page .maplibregl-map,
+.map-page .maplibregl-canvas-container {
+  width: 100% !important;
+  max-width: none !important;
+}
