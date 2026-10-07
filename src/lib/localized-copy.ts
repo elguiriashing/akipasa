@@ -18,7 +18,7 @@ type LibreTranslateResponse = {
   error?: string;
 };
 
-function libreTranslationEndpoints() {
+function translationEndpoints() {
   const configured = process.env.AKIPASA_TRANSLATION_URL?.trim();
   const publicMirrors = [
     "https://translate.terraprint.co/translate",
@@ -157,7 +157,7 @@ async function libreTranslateBatch(
 ): Promise<string[]> {
   if (!values.length) return [];
 
-  const { configured, publicMirrors } = libreTranslationEndpoints();
+  const { configured, publicMirrors } = translationEndpoints();
   let lastError = "No translation endpoint responded";
 
   if (configured) {
