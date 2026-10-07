@@ -4,7 +4,7 @@ import { OwnerReadiness } from "@/components/OwnerReadiness";
 import { Icon } from "@/components/Icons";
 import { VenueDashboard } from "@/components/VenueDashboard";
 import { VenueCatalogueEditor } from "@/components/VenueCatalogueEditor";
-import { SafeMediaFileInput } from "@/components/SafeMediaFileInput";
+import { VenueMediaStudio } from "@/components/VenueMediaStudio";
 import { getVenueDashboardSection } from "@/lib/venue-dashboard";
 import {
   parseCatalogueDocument,
@@ -28,7 +28,6 @@ import {
   duplicateEvent,
   publishEvent,
   redeemRewardClaim,
-  removeVenueImage,
   saveBookingSettings,
   saveOffer,
   setRecurrence,
@@ -36,9 +35,7 @@ import {
   updateBookingRequest,
   updateOccurrence,
   updateVenue,
-  updateVenueImageMetadata,
   unclaimVenue,
-  uploadVenueImage,
 } from "./actions";
 
 function toMadridLocalInput(value: string) {
@@ -178,6 +175,41 @@ export default async function VenueWorkspace({
     supabase.rpc("venue_owner_results", { p_venue: id }),
   ]);
   if (!venue) notFound();
+
+  const { data: mediaPlacements } = await supabase
+    .from("venue_media_placements")
+    .select("media_id,placement,target_key")
+    .eq("venue_id", id)
+    .in("placement", ["venue_logo", "venue_cover"]);
+  const mediaPaths = (media || []).map((item) => item.storage_path);
+  const { data: signedMediaRows } = mediaPaths.length
+    ? await supabase.storage.from("event-media").createSignedUrls(mediaPaths, 3600)
+    : { data: [] };
+  const signedMediaMap = new Map(
+    (signedMediaRows || []).flatMap((item) =>
+      item.path && item.signedUrl ? [[item.path, item.signedUrl] as const] : [],
+    ),
+  );
+  const logoMediaId = mediaPlacements?.find(
+    (item) => item.placement === "venue_logo" && item.target_key === "",
+  )?.media_id;
+  const coverMediaId = mediaPlacements?.find(
+    (item) => item.placement === "venue_cover" && item.target_key === "",
+  )?.media_id;
+  const mediaStudioItems = (media || []).flatMap((item) => {
+    const url = signedMediaMap.get(item.storage_path);
+    return url
+      ? [{
+          id: item.id,
+          url,
+          alt: (es ? item.alt_es : item.alt_en || item.alt_es) || (es ? "Imagen del local" : "Venue image"),
+          sizeBytes: item.size_bytes,
+          isLogo: item.id === logoMediaId,
+          isCover: item.id === coverMediaId,
+        }]
+      : [];
+  });
+
   const catalogueDocument = seedCatalogueTranslationMetadata(
     parseCatalogueDocument(catalogue?.draft_document, locale),
     locale,
@@ -442,136 +474,11 @@ export default async function VenueWorkspace({
             </section>
 
             <section className="panel profile-media-hub">
-              <div className="workspace-inline-heading">
-                <div>
-                  <span className="eyebrow">{es ? "Fotos" : "Photos"}</span>
-                  <h2>{es ? "Tu local, de un vistazo" : "Show people the venue"}</h2>
-                  <p>
-                    {media?.length
-                      ? es
-                        ? `${media.length} fotos añadidas`
-                        : `${media.length} photos added`
-                      : es
-                        ? "Todavía no has añadido fotos."
-                        : "No photos added yet."}
-                  </p>
-                </div>
-              </div>
-              <details className="workspace-action-card" open={!media?.length}>
-                <summary>
-                  <span className="workspace-action-summary">
-                    <span className="summary-icon">
-                      <Icon name="plus" />
-                    </span>
-                    <span>
-                      <strong>{es ? "Añadir foto" : "Add a photo"}</strong>
-                      <small>
-                        {es
-                          ? "JPEG, PNG, WebP o PDF · máximo 10 MB"
-                          : "JPEG, PNG, WebP or PDF · max 10 MB"}
-                      </small>
-                    </span>
-                  </span>
-                </summary>
-                <form
-                  action={uploadVenueImage}
-                  className="photo-upload-grid"
-                  encType="multipart/form-data"
-                >
-                  <input type="hidden" name="locale" value={locale} />
-                  <input type="hidden" name="venueId" value={id} />
-                  <input
-                    type="hidden"
-                    name="sortOrder"
-                    value={media?.length || 0}
-                  />
-                  <label className="photo-file-field">
-                    {es ? "Elige una imagen o PDF" : "Choose an image or PDF"}
-                    <SafeMediaFileInput
-                      locale={locale}
-                      name="image"
-                      required
-                    />
-                  </label>
-                  <label>
-                    {es ? "Describe brevemente la foto" : "Briefly describe the photo"}
-                    <input
-                      name="alt"
-                      required
-                      minLength={3}
-                      maxLength={300}
-                      placeholder={
-                        es
-                          ? "Ej. terraza principal"
-                          : "E.g. main terrace"
-                      }
-                    />
-                  </label>
-                  <button className="button" type="submit">
-                    {es ? "Subir foto" : "Upload photo"}
-                  </button>
-                </form>
-              </details>
-              {!!media?.length && (
-                <div className="media-row-list">
-                  {media.map((item, index) => (
-                    <details className="media-row" key={item.id}>
-                      <summary>
-                        <span>
-                          <strong>
-                            {locale === "en"
-                              ? item.alt_en || item.alt_es
-                              : item.alt_es}
-                          </strong>
-                          <small>
-                            {Math.round(item.size_bytes / 1024)} KB ·{" "}
-                            {es ? `foto ${index + 1}` : `photo ${index + 1}`}
-                          </small>
-                        </span>
-                      </summary>
-                      <form action={updateVenueImageMetadata} className="media-edit-grid">
-                        <input type="hidden" name="locale" value={locale} />
-                        <input type="hidden" name="venueId" value={id} />
-                        <input type="hidden" name="mediaId" value={item.id} />
-                        <label>
-                          {es ? "Descripción" : "Description"}
-                          <input
-                            name="alt"
-                            defaultValue={
-                              es ? item.alt_es : item.alt_en || item.alt_es
-                            }
-                            required
-                            minLength={3}
-                            maxLength={300}
-                          />
-                        </label>
-                        <label>
-                          {es ? "Orden" : "Order"}
-                          <input
-                            name="sortOrder"
-                            type="number"
-                            min={0}
-                            max={10000}
-                            defaultValue={item.sort_order}
-                            required
-                          />
-                        </label>
-                        <button className="button secondary" type="submit">
-                          {es ? "Guardar" : "Save"}
-                        </button>
-                      </form>
-                      <form action={removeVenueImage}>
-                        <input type="hidden" name="locale" value={locale} />
-                        <input type="hidden" name="venueId" value={id} />
-                        <input type="hidden" name="mediaId" value={item.id} />
-                        <button className="text-button" type="submit">
-                          {es ? "Eliminar foto" : "Remove photo"}
-                        </button>
-                      </form>
-                    </details>
-                  ))}
-                </div>
-              )}
+              <VenueMediaStudio
+                locale={locale}
+                venueId={id}
+                media={mediaStudioItems}
+              />
             </section>
           </>
         ),
