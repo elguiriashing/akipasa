@@ -945,3 +945,68 @@ export async function unpublishVenueCatalogue(formData: FormData) {
   revalidatePath(`/${locale}/venues`, "layout");
   redirect(destination(locale, venueId, "section=catalogue&updated=catalogue"));
 }
+
+
+const venueMediaPlacementSchema = context.extend({
+  mediaId: z.string().uuid(),
+  placement: z.enum(["venue_logo", "venue_cover"]),
+});
+
+export async function setVenueMediaPlacement(formData: FormData) {
+  const parsed = venueMediaPlacementSchema.safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  if (!parsed.success) redirect(destination(locale, venueId, "error=media"));
+
+  const { supabase, user } = await requireBusinessAccess(locale);
+  const { data: media } = await supabase
+    .from("venue_media")
+    .select("id")
+    .eq("id", parsed.data.mediaId)
+    .eq("venue_id", parsed.data.venueId)
+    .maybeSingle();
+  if (!media) redirect(destination(locale, venueId, "error=media"));
+
+  await supabase
+    .from("venue_media_placements")
+    .delete()
+    .eq("venue_id", parsed.data.venueId)
+    .eq("placement", parsed.data.placement)
+    .eq("target_key", "");
+
+  const { error } = await supabase.from("venue_media_placements").insert({
+    venue_id: parsed.data.venueId,
+    media_id: parsed.data.mediaId,
+    placement: parsed.data.placement,
+    target_key: "",
+    sort_order: 0,
+    created_by: user.id,
+  });
+
+  if (error) redirect(destination(locale, venueId, "error=media"));
+  revalidatePath(`/${locale}/venues`, "layout");
+  redirect(destination(locale, venueId, "section=profile&updated=media-placement"));
+}
+
+const clearVenueMediaPlacementSchema = context.extend({
+  placement: z.enum(["venue_logo", "venue_cover"]),
+});
+
+export async function clearVenueMediaPlacement(formData: FormData) {
+  const parsed = clearVenueMediaPlacementSchema.safeParse(Object.fromEntries(formData));
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  if (!parsed.success) redirect(destination(locale, venueId, "error=media"));
+
+  const { supabase } = await requireBusinessAccess(locale);
+  const { error } = await supabase
+    .from("venue_media_placements")
+    .delete()
+    .eq("venue_id", parsed.data.venueId)
+    .eq("placement", parsed.data.placement)
+    .eq("target_key", "");
+
+  if (error) redirect(destination(locale, venueId, "error=media"));
+  revalidatePath(`/${locale}/venues`, "layout");
+  redirect(destination(locale, venueId, "section=profile&updated=media-placement"));
+}
