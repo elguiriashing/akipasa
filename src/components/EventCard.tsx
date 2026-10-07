@@ -43,14 +43,37 @@ export function EventCard({
   const impressionTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
   );
-  const date = new Intl.DateTimeFormat(locale, {
+  const dateFormatter = new Intl.DateTimeFormat(locale, {
     timeZone: "Europe/Madrid",
     weekday: "short",
     day: "numeric",
     month: "short",
     hour: "2-digit",
     minute: "2-digit",
-  }).format(new Date(result.occurrence.startsAt));
+  });
+  const timeFormatter = new Intl.DateTimeFormat(locale, {
+    timeZone: "Europe/Madrid",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const startDate = new Date(result.occurrence.startsAt);
+  const endDate = new Date(result.occurrence.endsAt);
+  const sameMadridDay =
+    new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Europe/Madrid",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(startDate) ===
+    new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Europe/Madrid",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(endDate);
+  const date = sameMadridDay
+    ? `${dateFormatter.format(startDate)} → ${timeFormatter.format(endDate)}`
+    : `${dateFormatter.format(startDate)} → ${dateFormatter.format(endDate)}`;
   const category = result.event.category as EventCategory;
   const categoryLabel =
     m[category] ||
@@ -60,9 +83,11 @@ export function EventCard({
       .join(" ");
   const primaryImage = result.venue.media?.[0];
   const priceLabel =
-    result.event.priceCents === 0
-      ? m.free
-      : `${(result.event.priceCents / 100).toFixed(0)}€`;
+    result.event.priceDisplayMode === "hide"
+      ? null
+      : result.event.priceCents === 0
+        ? m.free
+        : `${(result.event.priceCents / 100).toFixed(0)}€`;
 
   useEffect(() => {
     const element = cardRef.current;
@@ -188,7 +213,9 @@ export function EventCard({
         <div className="card-media-scrim" aria-hidden />
         <div className="card-media-badges">
           <span className="pill card-pill-date">{date}</span>
-          <span className="pill-pill card-pill-price">{priceLabel}</span>
+          {priceLabel ? (
+            <span className="pill-pill card-pill-price">{priceLabel}</span>
+          ) : null}
         </div>
       </div>
       <div className="card-body">
