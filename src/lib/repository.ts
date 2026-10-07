@@ -476,62 +476,68 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
           venue.media = mappedMedia as typeof venue.media;
       }
 
-      const venueVisual = venueVisualRows.get(venue.id);
-      if (venueVisual?.cover?.storage_path) {
-        const coverUrl = signedUrlMap.get(String(venueVisual.cover.storage_path));
-        if (coverUrl) {
-          const cover = {
-            id: String(venueVisual.cover.id),
-            url: coverUrl,
-            alt: {
-              es: String(venueVisual.cover.alt_es || venue.name),
-              ...(venueVisual.cover.alt_en
-                ? { en: String(venueVisual.cover.alt_en) }
-                : {}),
-            },
-          };
-          venue.media = [
-            cover,
-            ...(venue.media || []).filter((item) => item.id !== cover.id),
-          ];
-        }
-      }
-      if (venueVisual?.logo?.storage_path) {
-        const logoUrl = signedUrlMap.get(String(venueVisual.logo.storage_path));
-        if (logoUrl) {
-          venue.logoImage = {
-            id: String(venueVisual.logo.id),
-            url: logoUrl,
-            alt: {
-              es: String(venueVisual.logo.alt_es || venue.name),
-              ...(venueVisual.logo.alt_en
-                ? { en: String(venueVisual.logo.alt_en) }
-                : {}),
-            },
-          };
-        }
-      }
+      const mapVisual = (
+        media: DbRecord | undefined,
+        fallbackAlt: string,
+      ) => {
+        if (!media?.storage_path) return undefined;
+        const url = signedUrlMap.get(String(media.storage_path));
+        if (!url) return undefined;
+        return {
+          id: String(media.id),
+          url,
+          alt: {
+            es: String(media.alt_es || fallbackAlt),
+            ...(media.alt_en ? { en: String(media.alt_en) } : {}),
+          },
+        };
+      };
 
-      const eventCoverRow = eventCoverRows.get(event.id);
-      if (eventCoverRow?.storage_path) {
-        const coverUrl = signedUrlMap.get(String(eventCoverRow.storage_path));
-        if (coverUrl) {
-          const cover = {
-            id: String(eventCoverRow.id),
-            url: coverUrl,
-            alt: {
-              es: String(eventCoverRow.alt_es || event.title.es),
-              ...(eventCoverRow.alt_en
-                ? { en: String(eventCoverRow.alt_en) }
-                : {}),
-            },
-          };
-          event.coverImage = cover;
-          venue.media = [
-            cover,
-            ...(venue.media || []).filter((item) => item.id !== cover.id),
-          ];
-        }
+      const primaryVenueMedia = venue.media?.[0];
+      const venueVisual = venueVisualRows.get(venue.id);
+      venue.logoImage =
+        mapVisual(venueVisual?.profile, venue.name) || primaryVenueMedia;
+      venue.coverImage =
+        mapVisual(venueVisual?.cover, venue.name) || primaryVenueMedia;
+      venue.menuImage =
+        mapVisual(venueVisual?.menu, venue.name) || primaryVenueMedia;
+      venue.eventsImage =
+        mapVisual(venueVisual?.events, venue.name) || primaryVenueMedia;
+      venue.exploreImage =
+        mapVisual(venueVisual?.explore, venue.name) || primaryVenueMedia;
+
+      const eventVisual = eventVisualRows.get(event.id);
+      const eventBinFallback = eventVisual?.bin?.[0]
+        ? mapVisual(eventVisual.bin[0], event.title.es)
+        : undefined;
+      const eventFallback =
+        eventBinFallback || venue.eventsImage || primaryVenueMedia;
+      event.coverImage =
+        mapVisual(eventVisual?.cover, event.title.es) || eventFallback;
+      event.exploreImage =
+        mapVisual(eventVisual?.explore, event.title.es) || eventFallback;
+      event.gallery = [
+        mapVisual(eventVisual?.gallery1, event.title.es) || eventFallback,
+        mapVisual(eventVisual?.gallery2, event.title.es) || eventFallback,
+        mapVisual(eventVisual?.gallery3, event.title.es) || eventFallback,
+      ].filter(
+        (item): item is NonNullable<typeof item> => Boolean(item),
+      );
+
+      if (event.exploreImage) {
+        venue.media = [
+          event.exploreImage,
+          ...(venue.media || []).filter(
+            (item) => item.id !== event.exploreImage?.id,
+          ),
+        ];
+      } else if (venue.exploreImage) {
+        venue.media = [
+          venue.exploreImage,
+          ...(venue.media || []).filter(
+            (item) => item.id !== venue.exploreImage?.id,
+          ),
+        ];
       }
 
       const distance = distanceKm(
