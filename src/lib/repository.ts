@@ -101,8 +101,111 @@ export class FixtureRepository implements DiscoveryRepository {
     return rankDiscoveryResults(results, this.now);
   }
   async eventBySlug(slug: string) {
-    return fixtureEvents(this.now).find((e) => e.slug === slug) || null;
+    const supabase = createSupabasePublicClient();
+    const { data, error } = await supabase
+      .from("events")
+      .select(eventFields)
+      .eq("slug", slug)
+      .eq("status", "published")
+      .maybeSingle();
+    if (error) throw new Error(`Public event query failed: ${error.message}`);
+    const event = data ? eventFromRow(data as unknown as DbRecord) : null;
+    if (!event) return null;
+
+    const [{ data: placements }, venue] = await Promise.all([
+      supabase
+        .from("venue_media_placements")
+        .select(
+          "media_id,placement,sort_order,venue_media(id,storage_path,alt_es,alt_en)",
+        )
+        .eq("venue_id", event.venueId)
+        .eq("target_key", event.id)
+        .in("placement", [
+          "event_cover",
+          "event_explore",
+          "event_gallery_1",
+          "event_gallery_2",
+          "event_gallery_3",
+          "event_bin",
+        ])
+        .order("sort_order"),
+      this.venueById(event.venueId),
+    ]);
+
+    const placementMedia = (placements || []).flatMap((placement) => {
+      const media = one(placement.venue_media as unknown);
+      return media
+        ? [
+            {
+              placement: String(placement.placement),
+              sortOrder: Number(placement.sort_order || 0),
+              media,
+            },
+          ]
+        : [];
+    });
+    const paths = Array.from(
+      new Set(placementMedia.map((item) => String(item.media.storage_path))),
+    );
+    const { data: signedRows } = paths.length
+      ? await supabase.storage.from("event-media").createSignedUrls(paths, 3600)
+      : { data: [] };
+    const signed = new Map(
+      (signedRows || []).flatMap((item) =>
+        item.path && item.signedUrl ? [[item.path, item.signedUrl] as const] : [],
+      ),
+    );
+
+    const mapPlaced = (placement: string) => {
+      const row = placementMedia.find((item) => item.placement === placement);
+      if (!row) return undefined;
+      const url = signed.get(String(row.media.storage_path));
+      if (!url) return undefined;
+      return {
+        id: String(row.media.id),
+        url,
+        alt: {
+          es: String(row.media.alt_es || event.title.es),
+          ...(row.media.alt_en ? { en: String(row.media.alt_en) } : {}),
+        },
+      };
+    };
+    const eventBinRows = placementMedia
+      .filter((item) => item.placement === "event_bin")
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+    const eventBinFallback = eventBinRows[0]
+      ? (() => {
+          const row = eventBinRows[0];
+          const url = signed.get(String(row.media.storage_path));
+          return url
+            ? {
+                id: String(row.media.id),
+                url,
+                alt: {
+                  es: String(row.media.alt_es || event.title.es),
+                  ...(row.media.alt_en
+                    ? { en: String(row.media.alt_en) }
+                    : {}),
+                },
+              }
+            : undefined;
+        })()
+      : undefined;
+    const fallback =
+      eventBinFallback || venue?.eventsImage || venue?.media?.[0];
+
+    event.coverImage = mapPlaced("event_cover") || fallback;
+    event.exploreImage = mapPlaced("event_explore") || fallback;
+    event.gallery = [
+      mapPlaced("event_gallery_1") || fallback,
+      mapPlaced("event_gallery_2") || fallback,
+      mapPlaced("event_gallery_3") || fallback,
+    ].filter(
+      (item): item is NonNullable<typeof item> => Boolean(item),
+    );
+    return event;
   }
+
   async venueBySlug(slug: string) {
     return venues.find((v) => v.slug === slug) || null;
   }
