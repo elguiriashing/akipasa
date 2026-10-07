@@ -117,7 +117,6 @@ async function renderPdfAsSafeJpeg(file: File) {
     pageContext.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
     await item.page.render({
       canvas: pageCanvas,
-      canvasContext: pageContext,
       viewport,
     }).promise;
 
