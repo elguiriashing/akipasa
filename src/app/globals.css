@@ -17497,3 +17497,42 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Persistent event editor feedback */
+.event-edit-studio > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+}
+
+.event-editor-live-state {
+  color: var(--muted);
+  font-size: .7rem;
+  font-weight: 700;
+}
+
+.event-media-live-status {
+  min-height: 1.1rem;
+  margin: -.2rem 0 0;
+  color: var(--muted);
+  font-size: .72rem;
+}
+
+.event-edit-savebar button:disabled,
+.event-media-bin-editor button:disabled {
+  opacity: .55;
+  cursor: wait;
+}
+
+@media (max-width: 700px) {
+  .event-edit-studio > summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .event-editor-live-state {
+    font-size: .66rem;
+  }
+}
