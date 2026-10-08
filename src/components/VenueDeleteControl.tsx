@@ -58,7 +58,9 @@ export function VenueDeleteControl({
               : "The venue, its events and its content will disappear from AkiPasa. If you only want to stop managing it, use Unlink in Team instead."}
           </p>
           <label className={styles.field}>
-            <span>{es ? "¿Por qué lo eliminas?" : "Why are you deleting it?"}</span>
+            <span>
+              {es ? "¿Por qué lo eliminas?" : "Why are you deleting it?"}
+            </span>
             <textarea
               name="reason"
               value={reason}

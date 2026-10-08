@@ -61,7 +61,6 @@ export default async function RootLayout({
     requestLocale && isLocale(requestLocale) ? requestLocale : "es";
   return (
     <html lang={locale}>
-
       <body>
         <script
           type="application/ld+json"

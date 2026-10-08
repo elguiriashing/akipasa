@@ -10,8 +10,7 @@ export async function GET(request: Request) {
   const parsed = querySchema.safeParse(
     Object.fromEntries(new URL(request.url).searchParams),
   );
-  if (!parsed.success)
-    return Response.json({ rows: [] }, { status: 400 });
+  if (!parsed.success) return Response.json({ rows: [] }, { status: 400 });
 
   const query = normalizeVenueSearch(parsed.data.q);
   const { data, error } = await createSupabasePublicClient().rpc(

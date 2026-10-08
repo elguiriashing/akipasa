@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  useMemo,
-  useRef,
-  useState,
-  type FormEvent,
-} from "react";
+import { useMemo, useRef, useState, type FormEvent } from "react";
 import { SafeMediaFileInput } from "@/components/SafeMediaFileInput";
 import {
   addVenueMediaToEventBin,
@@ -16,12 +11,7 @@ import {
 
 type MediaOption = { id: string; url: string; alt: string };
 
-type EventSlotKey =
-  | "banner"
-  | "explore"
-  | "profile"
-  | "background"
-  | "map";
+type EventSlotKey = "banner" | "explore" | "profile" | "background" | "map";
 
 type EditorTab = "details" | "pricing" | "media" | "accessibility" | "library";
 
@@ -210,7 +200,9 @@ export function BusinessEventEditPanel({
     const source = new FormData(form);
     const files = source
       .getAll("image")
-      .filter((value): value is File => value instanceof File && value.size > 0);
+      .filter(
+        (value): value is File => value instanceof File && value.size > 0,
+      );
     if (!files.length) return;
 
     const sharedAlt = String(source.get("alt") || "").trim();
@@ -310,13 +302,14 @@ export function BusinessEventEditPanel({
     }
   }
 
-  const tabs: Array<{ key: EditorTab; en: string; es: string; icon: string }> = [
-    { key: "details", en: "Details", es: "Datos", icon: "✎" },
-    { key: "pricing", en: "Pricing", es: "Precio", icon: "€" },
-    { key: "media", en: "Media", es: "Imágenes", icon: "▣" },
-    { key: "accessibility", en: "Access", es: "Acceso", icon: "♿" },
-    { key: "library", en: "Library", es: "Biblioteca", icon: "⊞" },
-  ];
+  const tabs: Array<{ key: EditorTab; en: string; es: string; icon: string }> =
+    [
+      { key: "details", en: "Details", es: "Datos", icon: "✎" },
+      { key: "pricing", en: "Pricing", es: "Precio", icon: "€" },
+      { key: "media", en: "Media", es: "Imágenes", icon: "▣" },
+      { key: "accessibility", en: "Access", es: "Acceso", icon: "♿" },
+      { key: "library", en: "Library", es: "Biblioteca", icon: "⊞" },
+    ];
 
   return (
     <details className="event-edit-studio event-editor-app" open>
@@ -334,7 +327,10 @@ export function BusinessEventEditPanel({
       </summary>
 
       <div className="event-editor-shell">
-        <nav className="event-editor-tabs" aria-label={es ? "Secciones del editor" : "Editor sections"}>
+        <nav
+          className="event-editor-tabs"
+          aria-label={es ? "Secciones del editor" : "Editor sections"}
+        >
           {tabs.map((tab) => (
             <button
               key={tab.key}
@@ -350,7 +346,10 @@ export function BusinessEventEditPanel({
         </nav>
 
         <div className="event-editor-main">
-          <form onSubmit={saveEvent} className="event-edit-studio-form event-editor-form">
+          <form
+            onSubmit={saveEvent}
+            className="event-edit-studio-form event-editor-form"
+          >
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="venueId" value={venueId} />
             <input type="hidden" name="eventId" value={event.id} />
@@ -358,16 +357,29 @@ export function BusinessEventEditPanel({
             <input type="hidden" name="bannerMediaId" value={slots.banner} />
             <input type="hidden" name="exploreMediaId" value={slots.explore} />
             <input type="hidden" name="profileMediaId" value={slots.profile} />
-            <input type="hidden" name="backgroundMediaId" value={slots.background} />
+            <input
+              type="hidden"
+              name="backgroundMediaId"
+              value={slots.background}
+            />
             <input type="hidden" name="mapMediaId" value={slots.map} />
 
-            <section className="event-editor-page" hidden={activeTab !== "details"}>
+            <section
+              className="event-editor-page"
+              hidden={activeTab !== "details"}
+            >
               <header className="event-editor-page-head">
                 <div>
-                  <span className="eyebrow">{es ? "Información principal" : "Main information"}</span>
+                  <span className="eyebrow">
+                    {es ? "Información principal" : "Main information"}
+                  </span>
                   <h3>{es ? "Datos del evento" : "Event details"}</h3>
                 </div>
-                <small>{es ? "Nombre, descripción, reserva y edad." : "Name, description, booking and age."}</small>
+                <small>
+                  {es
+                    ? "Nombre, descripción, reserva y edad."
+                    : "Name, description, booking and age."}
+                </small>
               </header>
               <div className="event-editor-fields">
                 <label className="event-studio-big-field event-editor-title-field">
@@ -386,7 +398,11 @@ export function BusinessEventEditPanel({
                 </label>
                 <label>
                   {es ? "Enlace de reserva" : "Booking link"}
-                  <input name="bookingUrl" type="url" defaultValue={event.bookingUrl} />
+                  <input
+                    name="bookingUrl"
+                    type="url"
+                    defaultValue={event.bookingUrl}
+                  />
                 </label>
                 <label>
                   {es ? "Edad mínima" : "Minimum age"}
@@ -401,32 +417,53 @@ export function BusinessEventEditPanel({
               </div>
             </section>
 
-            <section className="event-editor-page" hidden={activeTab !== "pricing"}>
+            <section
+              className="event-editor-page"
+              hidden={activeTab !== "pricing"}
+            >
               <header className="event-editor-page-head">
                 <div>
                   <span className="eyebrow">{es ? "Entrada" : "Entry"}</span>
                   <h3>{es ? "Precio del evento" : "Event pricing"}</h3>
                 </div>
-                <small>{es ? "Ocúltalo si no existe una entrada real." : "Hide it when there is no actual entry fee."}</small>
+                <small>
+                  {es
+                    ? "Ocúltalo si no existe una entrada real."
+                    : "Hide it when there is no actual entry fee."}
+                </small>
               </header>
               <div className="event-price-mode event-editor-price-mode">
                 <button
                   type="button"
-                  className={priceMode === "hide" ? "event-price-option selected" : "event-price-option"}
+                  className={
+                    priceMode === "hide"
+                      ? "event-price-option selected"
+                      : "event-price-option"
+                  }
                   onClick={() => setPriceMode("hide")}
                 >
                   <span>◌</span>
                   <strong>{es ? "No mostrar precio" : "Hide price"}</strong>
-                  <small>{es ? "No aparecerá “Gratis”." : "“Free” will not be shown."}</small>
+                  <small>
+                    {es
+                      ? "No aparecerá “Gratis”."
+                      : "“Free” will not be shown."}
+                  </small>
                 </button>
                 <button
                   type="button"
-                  className={priceMode === "show" ? "event-price-option selected" : "event-price-option"}
+                  className={
+                    priceMode === "show"
+                      ? "event-price-option selected"
+                      : "event-price-option"
+                  }
                   onClick={() => setPriceMode("show")}
                 >
                   <span>€</span>
                   <strong>{es ? "Mostrar precio" : "Show price"}</strong>
-                  <small>{es ? "0 € se verá como Gratis." : "€0 displays as Free."}</small>
+                  <small>
+                    {es ? "0 € se verá como Gratis." : "€0 displays as Free."}
+                  </small>
                 </button>
               </div>
               {priceMode === "show" ? (
@@ -442,28 +479,53 @@ export function BusinessEventEditPanel({
                   />
                 </label>
               ) : (
-                <input type="hidden" name="priceEuros" value={event.priceCents / 100} />
+                <input
+                  type="hidden"
+                  name="priceEuros"
+                  value={event.priceCents / 100}
+                />
               )}
             </section>
 
-            <section className="event-editor-page" hidden={activeTab !== "media"}>
+            <section
+              className="event-editor-page"
+              hidden={activeTab !== "media"}
+            >
               <header className="event-editor-page-head">
                 <div>
-                  <span className="eyebrow">{es ? "Superficies" : "Surfaces"}</span>
-                  <h3>{es ? "Cinco imágenes del evento" : "Five event images"}</h3>
+                  <span className="eyebrow">
+                    {es ? "Superficies" : "Surfaces"}
+                  </span>
+                  <h3>
+                    {es ? "Cinco imágenes del evento" : "Five event images"}
+                  </h3>
                 </div>
-                <small>{es ? "Cada imagen tiene un destino concreto." : "Each image has one defined job."}</small>
+                <small>
+                  {es
+                    ? "Cada imagen tiene un destino concreto."
+                    : "Each image has one defined job."}
+                </small>
               </header>
               <div className="event-surface-grid">
                 {eventSlots.map((slot) => {
                   const selected = selectedFor(slot.key);
                   const explicit = Boolean(slots[slot.key]);
                   return (
-                    <article className="event-surface-card" data-media-slot={slot.key} key={slot.key}>
+                    <article
+                      className="event-surface-card"
+                      data-media-slot={slot.key}
+                      key={slot.key}
+                    >
                       <div className="event-surface-preview">
-                        {selected ? <img src={selected.url} alt={selected.alt} /> : <span>＋</span>}
+                        {selected ? (
+                          <img src={selected.url} alt={selected.alt} />
+                        ) : (
+                          <span>＋</span>
+                        )}
                         {!explicit && selected ? (
-                          <small className="media-fallback-chip">{es ? "Automático" : "Auto"}</small>
+                          <small className="media-fallback-chip">
+                            {es ? "Automático" : "Auto"}
+                          </small>
                         ) : null}
                       </div>
                       <div className="event-surface-copy">
@@ -471,7 +533,11 @@ export function BusinessEventEditPanel({
                         <small>{es ? slot.esHelp : slot.enHelp}</small>
                       </div>
                       <div className="event-surface-actions">
-                        <button type="button" className="button" onClick={() => openPicker(slot.key)}>
+                        <button
+                          type="button"
+                          className="button"
+                          onClick={() => openPicker(slot.key)}
+                        >
                           {es ? "Elegir imagen" : "Choose image"}
                         </button>
                         {explicit ? (
@@ -479,7 +545,10 @@ export function BusinessEventEditPanel({
                             type="button"
                             className="button subtle"
                             onClick={() => {
-                              setSlots((current) => ({ ...current, [slot.key]: "" }));
+                              setSlots((current) => ({
+                                ...current,
+                                [slot.key]: "",
+                              }));
                               setSaveState("idle");
                             }}
                           >
@@ -493,16 +562,27 @@ export function BusinessEventEditPanel({
               </div>
             </section>
 
-            <section className="event-editor-page" hidden={activeTab !== "accessibility"}>
+            <section
+              className="event-editor-page"
+              hidden={activeTab !== "accessibility"}
+            >
               <header className="event-editor-page-head">
                 <div>
-                  <span className="eyebrow">{es ? "Accesibilidad" : "Accessibility"}</span>
+                  <span className="eyebrow">
+                    {es ? "Accesibilidad" : "Accessibility"}
+                  </span>
                   <h3>{es ? "Información de acceso" : "Access information"}</h3>
                 </div>
-                <small>{es ? "Solo si hay algo específico que explicar." : "Only when something specific needs explaining."}</small>
+                <small>
+                  {es
+                    ? "Solo si hay algo específico que explicar."
+                    : "Only when something specific needs explaining."}
+                </small>
               </header>
               <label className="event-studio-big-field">
-                {es ? "Información de accesibilidad" : "Accessibility information"}
+                {es
+                  ? "Información de accesibilidad"
+                  : "Accessibility information"}
                 <textarea
                   name="accessibilityNotes"
                   maxLength={1000}
@@ -512,35 +592,63 @@ export function BusinessEventEditPanel({
               </label>
             </section>
 
-            <div className="event-edit-savebar event-editor-savebar" hidden={activeTab === "library"}>
+            <div
+              className="event-edit-savebar event-editor-savebar"
+              hidden={activeTab === "library"}
+            >
               <span aria-live="polite">
                 {saveState === "saving"
-                  ? es ? "Guardando…" : "Saving…"
+                  ? es
+                    ? "Guardando…"
+                    : "Saving…"
                   : saveState === "saved"
                     ? verifiedVenue
-                      ? es ? "Guardado y publicado." : "Saved and published."
-                      : es ? "Guardado." : "Saved."
+                      ? es
+                        ? "Guardado y publicado."
+                        : "Saved and published."
+                      : es
+                        ? "Guardado."
+                        : "Saved."
                     : saveState === "error"
-                      ? es ? "No se pudo guardar. Revisa los campos." : "Could not save. Check the fields."
+                      ? es
+                        ? "No se pudo guardar. Revisa los campos."
+                        : "Could not save. Check the fields."
                       : verifiedVenue
-                        ? es ? "Los cambios se publican directamente." : "Changes publish directly."
-                        : es ? "Los cambios pueden pasar por revisión." : "Changes may go through review."}
+                        ? es
+                          ? "Los cambios se publican directamente."
+                          : "Changes publish directly."
+                        : es
+                          ? "Los cambios pueden pasar por revisión."
+                          : "Changes may go through review."}
               </span>
-              <button className="button" type="submit" disabled={saveState === "saving"}>
+              <button
+                className="button"
+                type="submit"
+                disabled={saveState === "saving"}
+              >
                 {saveState === "saving"
-                  ? es ? "Guardando…" : "Saving…"
-                  : es ? "Guardar cambios" : "Save changes"}
+                  ? es
+                    ? "Guardando…"
+                    : "Saving…"
+                  : es
+                    ? "Guardar cambios"
+                    : "Save changes"}
               </button>
             </div>
           </form>
 
-          <section className="event-editor-page event-editor-library-page" hidden={activeTab !== "library"}>
+          <section
+            className="event-editor-page event-editor-library-page"
+            hidden={activeTab !== "library"}
+          >
             <header className="event-editor-page-head">
               <div>
                 <span className="eyebrow">{es ? "Biblioteca" : "Library"}</span>
                 <h3>{es ? "Multimedia del evento" : "Event media"}</h3>
               </div>
-              <small>{eventBin.length} {es ? "archivos" : "files"}</small>
+              <small>
+                {eventBin.length} {es ? "archivos" : "files"}
+              </small>
             </header>
 
             <form
@@ -554,33 +662,55 @@ export function BusinessEventEditPanel({
               <input type="hidden" name="eventId" value={event.id} />
               <label>
                 {es ? "Subir imágenes / PDF" : "Upload images / PDFs"}
-                <SafeMediaFileInput locale={locale} name="image" required multiple maxFiles={20} />
+                <SafeMediaFileInput
+                  locale={locale}
+                  name="image"
+                  required
+                  multiple
+                  maxFiles={20}
+                />
               </label>
               <label>
-                {es ? "Descripción común (opcional)" : "Shared description (optional)"}
+                {es
+                  ? "Descripción común (opcional)"
+                  : "Shared description (optional)"}
                 <input
                   name="alt"
                   minLength={3}
                   maxLength={300}
-                  placeholder={es ? "Vacío = nombres de archivo" : "Blank = filenames"}
+                  placeholder={
+                    es ? "Vacío = nombres de archivo" : "Blank = filenames"
+                  }
                 />
               </label>
-              <button className="button" type="submit" disabled={mediaState === "working"}>
+              <button
+                className="button"
+                type="submit"
+                disabled={mediaState === "working"}
+              >
                 {mediaState === "working"
                   ? uploadProgress
                     ? es
                       ? `Subiendo ${uploadProgress.done}/${uploadProgress.total}…`
                       : `Uploading ${uploadProgress.done}/${uploadProgress.total}…`
-                    : es ? "Subiendo…" : "Uploading…"
-                  : es ? "Subir archivos" : "Upload files"}
+                    : es
+                      ? "Subiendo…"
+                      : "Uploading…"
+                  : es
+                    ? "Subir archivos"
+                    : "Upload files"}
               </button>
             </form>
 
             <p className="event-media-live-status" aria-live="polite">
               {mediaState === "saved"
-                ? es ? "Multimedia actualizada." : "Media updated."
+                ? es
+                  ? "Multimedia actualizada."
+                  : "Media updated."
                 : mediaState === "error"
-                  ? es ? "No se pudo actualizar la multimedia." : "Could not update media."
+                  ? es
+                    ? "No se pudo actualizar la multimedia."
+                    : "Could not update media."
                   : ""}
             </p>
 
@@ -588,11 +718,16 @@ export function BusinessEventEditPanel({
               <>
                 <div className="event-editor-library-grid">
                   {libraryItems.map((item, index) => (
-                    <article className="event-editor-library-item" key={item.id}>
+                    <article
+                      className="event-editor-library-item"
+                      key={item.id}
+                    >
                       <div className="event-editor-library-thumb">
                         <img src={item.url} alt={item.alt} />
                         {safeLibraryPage === 0 && index === 0 ? (
-                          <span className="media-primary-chip">{es ? "Principal" : "Primary"}</span>
+                          <span className="media-primary-chip">
+                            {es ? "Principal" : "Primary"}
+                          </span>
                         ) : null}
                       </div>
                       <div>
@@ -612,11 +747,15 @@ export function BusinessEventEditPanel({
                   <button
                     type="button"
                     disabled={safeLibraryPage <= 0}
-                    onClick={() => setLibraryPage((page) => Math.max(0, page - 1))}
+                    onClick={() =>
+                      setLibraryPage((page) => Math.max(0, page - 1))
+                    }
                   >
                     ←
                   </button>
-                  <span>{safeLibraryPage + 1} / {libraryPageCount}</span>
+                  <span>
+                    {safeLibraryPage + 1} / {libraryPageCount}
+                  </span>
                   <button
                     type="button"
                     disabled={safeLibraryPage >= libraryPageCount - 1}
@@ -633,18 +772,30 @@ export function BusinessEventEditPanel({
             ) : (
               <div className="event-media-empty">
                 <span>▧</span>
-                <strong>{es ? "Este evento aún usa las imágenes del local" : "This event is still using venue media"}</strong>
+                <strong>
+                  {es
+                    ? "Este evento aún usa las imágenes del local"
+                    : "This event is still using venue media"}
+                </strong>
               </div>
             )}
 
             {venueLibrary.filter((item) => !binIds.includes(item.id)).length ? (
               <details className="event-library-import">
-                <summary>＋ {es ? "Traer desde la biblioteca del local" : "Add from venue library"}</summary>
+                <summary>
+                  ＋{" "}
+                  {es
+                    ? "Traer desde la biblioteca del local"
+                    : "Add from venue library"}
+                </summary>
                 <div className="event-editor-library-grid">
                   {venueLibrary
                     .filter((item) => !binIds.includes(item.id))
                     .map((item) => (
-                      <article className="event-editor-library-item" key={item.id}>
+                      <article
+                        className="event-editor-library-item"
+                        key={item.id}
+                      >
                         <div className="event-editor-library-thumb">
                           <img src={item.url} alt={item.alt} />
                         </div>
@@ -668,7 +819,11 @@ export function BusinessEventEditPanel({
       </div>
 
       {pickerSlot ? (
-        <div className="event-media-modal-backdrop" role="presentation" onMouseDown={() => setPickerSlot(null)}>
+        <div
+          className="event-media-modal-backdrop"
+          role="presentation"
+          onMouseDown={() => setPickerSlot(null)}
+        >
           <section
             className="event-media-modal"
             role="dialog"
@@ -678,14 +833,22 @@ export function BusinessEventEditPanel({
           >
             <header>
               <div>
-                <span className="eyebrow">{es ? "Biblioteca multimedia" : "Media library"}</span>
+                <span className="eyebrow">
+                  {es ? "Biblioteca multimedia" : "Media library"}
+                </span>
                 <h3>
                   {es
                     ? eventSlots.find((slot) => slot.key === pickerSlot)?.es
                     : eventSlots.find((slot) => slot.key === pickerSlot)?.en}
                 </h3>
               </div>
-              <button type="button" className="event-media-modal-close" onClick={() => setPickerSlot(null)}>×</button>
+              <button
+                type="button"
+                className="event-media-modal-close"
+                onClick={() => setPickerSlot(null)}
+              >
+                ×
+              </button>
             </header>
 
             <div className="event-media-modal-grid">
@@ -705,12 +868,18 @@ export function BusinessEventEditPanel({
             {!selectableMedia.length ? (
               <div className="event-media-empty">
                 <span>▧</span>
-                <strong>{es ? "No hay imágenes disponibles" : "No media available"}</strong>
+                <strong>
+                  {es ? "No hay imágenes disponibles" : "No media available"}
+                </strong>
               </div>
             ) : null}
 
             <footer>
-              <button type="button" className="button subtle" onClick={useAutomatic}>
+              <button
+                type="button"
+                className="button subtle"
+                onClick={useAutomatic}
+              >
                 {es ? "Usar automático" : "Use automatic"}
               </button>
               <div className="event-media-pagination">
@@ -721,11 +890,15 @@ export function BusinessEventEditPanel({
                 >
                   ←
                 </button>
-                <span>{safePickerPage + 1} / {pageCount}</span>
+                <span>
+                  {safePickerPage + 1} / {pageCount}
+                </span>
                 <button
                   type="button"
                   disabled={safePickerPage >= pageCount - 1}
-                  onClick={() => setPickerPage((page) => Math.min(pageCount - 1, page + 1))}
+                  onClick={() =>
+                    setPickerPage((page) => Math.min(pageCount - 1, page + 1))
+                  }
                 >
                   →
                 </button>

@@ -34,15 +34,12 @@ export function MapResultsDrawer({
       }
     };
     window.addEventListener("akipasa:map-center", receiveCenter);
-    return () => window.removeEventListener("akipasa:map-center", receiveCenter);
+    return () =>
+      window.removeEventListener("akipasa:map-center", receiveCenter);
   }, []);
 
   useEffect(() => {
-    if (
-      query.has("list") ||
-      query.has("eventPage") ||
-      query.has("venuePage")
-    ) {
+    if (query.has("list") || query.has("eventPage") || query.has("venuePage")) {
       if (dialog.current && !dialog.current.open) {
         dialog.current.showModal();
         requestAnimationFrame(() =>

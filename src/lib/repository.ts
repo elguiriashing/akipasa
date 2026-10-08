@@ -315,7 +315,9 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
         eventIds.length
           ? supabase
               .from("venue_media_placements")
-              .select("target_key,placement,sort_order,media_id,venue_media(id,storage_path,alt_es,alt_en)")
+              .select(
+                "target_key,placement,sort_order,media_id,venue_media(id,storage_path,alt_es,alt_en)",
+              )
               .in("placement", [
                 "event_banner",
                 "event_explore",
@@ -330,7 +332,9 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
         venueIds.length
           ? supabase
               .from("venue_media_placements")
-              .select("venue_id,placement,media_id,venue_media(id,storage_path,alt_es,alt_en)")
+              .select(
+                "venue_id,placement,media_id,venue_media(id,storage_path,alt_es,alt_en)",
+              )
               .in("venue_id", venueIds)
               .eq("target_key", "")
               .in("placement", [
@@ -384,8 +388,10 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       if (placement.placement === "event_banner") current.banner = media;
       if (placement.placement === "event_explore") current.explore = media;
       if (placement.placement === "event_profile") current.profile = media;
-      if (placement.placement === "event_background") current.background = media;
-      if (placement.placement === "event_map_vertical") current.mapVertical = media;
+      if (placement.placement === "event_background")
+        current.background = media;
+      if (placement.placement === "event_map_vertical")
+        current.mapVertical = media;
       if (placement.placement === "event_bin") current.bin?.push(media);
       eventVisualRows.set(String(placement.target_key), current);
     }
@@ -485,10 +491,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
           venue.media = mappedMedia as typeof venue.media;
       }
 
-      const mapVisual = (
-        media: DbRecord | undefined,
-        fallbackAlt: string,
-      ) => {
+      const mapVisual = (media: DbRecord | undefined, fallbackAlt: string) => {
         if (!media?.storage_path) return undefined;
         const url = signedUrlMap.get(String(media.storage_path));
         if (!url) return undefined;
@@ -626,11 +629,13 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
     const placementMedia = (placements || []).flatMap((placement) => {
       const media = one(placement.venue_media as unknown);
       return media
-        ? [{
-            placement: String(placement.placement),
-            sortOrder: Number(placement.sort_order || 0),
-            media,
-          }]
+        ? [
+            {
+              placement: String(placement.placement),
+              sortOrder: Number(placement.sort_order || 0),
+              media,
+            },
+          ]
         : [];
     });
     const paths = Array.from(
@@ -641,7 +646,9 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       : { data: [] };
     const signed = new Map(
       (signedRows || []).flatMap((item) =>
-        item.path && item.signedUrl ? [[item.path, item.signedUrl] as const] : [],
+        item.path && item.signedUrl
+          ? [[item.path, item.signedUrl] as const]
+          : [],
       ),
     );
 
@@ -672,9 +679,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
                 url,
                 alt: {
                   es: String(row.media.alt_es || event.title.es),
-                  ...(row.media.alt_en
-                    ? { en: String(row.media.alt_en) }
-                    : {}),
+                  ...(row.media.alt_en ? { en: String(row.media.alt_en) } : {}),
                 },
               }
             : undefined;

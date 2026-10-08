@@ -167,11 +167,11 @@ export default async function EventPage({
         }),
   };
   const bannerImage =
-    event.bannerImage?.url || resolvedVenue.eventsImage?.url || resolvedVenue.media?.[0]?.url;
-  const backgroundImage =
-    event.backgroundImage?.url || bannerImage;
-  const profileImage =
-    event.profileImage || resolvedVenue.logoImage;
+    event.bannerImage?.url ||
+    resolvedVenue.eventsImage?.url ||
+    resolvedVenue.media?.[0]?.url;
+  const backgroundImage = event.backgroundImage?.url || bannerImage;
+  const profileImage = event.profileImage || resolvedVenue.logoImage;
 
   return (
     <>
@@ -266,7 +266,9 @@ export default async function EventPage({
                   <div>
                     <dt>{m.price}</dt>
                     <dd>
-                      {event.priceCents ? `${event.priceCents / 100} €` : m.free}
+                      {event.priceCents
+                        ? `${event.priceCents / 100} €`
+                        : m.free}
                     </dd>
                   </div>
                 )}

@@ -7,8 +7,7 @@ type ServerFormAction = (formData: FormData) => void | Promise<void>;
 
 function isFormReady(form: HTMLFormElement) {
   return (
-    form.checkValidity() &&
-    !form.querySelector('[data-required-ready="false"]')
+    form.checkValidity() && !form.querySelector('[data-required-ready="false"]')
   );
 }
 
@@ -16,9 +15,9 @@ function syncFormState(form: HTMLFormElement) {
   const ready = isFormReady(form);
   form.dataset.formReady = ready ? "true" : "false";
   form
-    .querySelectorAll<HTMLButtonElement | HTMLInputElement>(
-      'button[type="submit"], input[type="submit"]',
-    )
+    .querySelectorAll<
+      HTMLButtonElement | HTMLInputElement
+    >('button[type="submit"], input[type="submit"]')
     .forEach((control) => {
       control.disabled = !ready;
       control.setAttribute("aria-disabled", ready ? "false" : "true");

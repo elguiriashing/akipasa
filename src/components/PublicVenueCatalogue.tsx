@@ -44,9 +44,7 @@ export function PublicVenueCatalogue({
         .filter((section) => section.items.length > 0),
     [document.sections],
   );
-  const [activeSectionId, setActiveSectionId] = useState(
-    sections[0]?.id || "",
-  );
+  const [activeSectionId, setActiveSectionId] = useState(sections[0]?.id || "");
   const activeSection =
     sections.find((section) => section.id === activeSectionId) ||
     sections[0] ||
@@ -72,7 +70,9 @@ export function PublicVenueCatalogue({
         </span>
         <h2>{catalogueTextForDisplay(document.title, locale, "general")}</h2>
         {catalogueTextForDisplay(document.description, locale, "general") && (
-          <p>{catalogueTextForDisplay(document.description, locale, "general")}</p>
+          <p>
+            {catalogueTextForDisplay(document.description, locale, "general")}
+          </p>
         )}
       </header>
 
@@ -89,7 +89,13 @@ export function PublicVenueCatalogue({
               key={section.id}
               onClick={() => setActiveSectionId(section.id)}
             >
-              <span>{catalogueTextForDisplay(section.title, locale, "section_title")}</span>
+              <span>
+                {catalogueTextForDisplay(
+                  section.title,
+                  locale,
+                  "section_title",
+                )}
+              </span>
               <small>{section.items.length}</small>
             </button>
           ))}
@@ -98,7 +104,13 @@ export function PublicVenueCatalogue({
         <section className="public-catalogue-section">
           <header className="public-catalogue-section-head">
             <div>
-              <h3>{catalogueTextForDisplay(activeSection.title, locale, "section_title")}</h3>
+              <h3>
+                {catalogueTextForDisplay(
+                  activeSection.title,
+                  locale,
+                  "section_title",
+                )}
+              </h3>
               <span>
                 {activeSection.items.length}{" "}
                 {activeSection.items.length === 1
@@ -145,9 +157,25 @@ export function PublicVenueCatalogue({
                   )}
                   <div className="public-catalogue-item-head">
                     <div>
-                      <strong>{catalogueTextForDisplay(item.name, locale, "item_name")}</strong>
-                      {catalogueTextForDisplay(item.description, locale, "item_description") && (
-                        <p>{catalogueTextForDisplay(item.description, locale, "item_description")}</p>
+                      <strong>
+                        {catalogueTextForDisplay(
+                          item.name,
+                          locale,
+                          "item_name",
+                        )}
+                      </strong>
+                      {catalogueTextForDisplay(
+                        item.description,
+                        locale,
+                        "item_description",
+                      ) && (
+                        <p>
+                          {catalogueTextForDisplay(
+                            item.description,
+                            locale,
+                            "item_description",
+                          )}
+                        </p>
                       )}
                     </div>
                     <span className="public-catalogue-price">

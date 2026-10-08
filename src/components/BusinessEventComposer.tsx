@@ -58,7 +58,9 @@ export function BusinessEventComposer({
       <header className="event-studio-hero">
         <div>
           <span className="eyebrow">{es ? "Nuevo evento" : "New event"}</span>
-          <h2>{es ? "Crea la ficha visualmente" : "Build the event visually"}</h2>
+          <h2>
+            {es ? "Crea la ficha visualmente" : "Build the event visually"}
+          </h2>
           <p>
             {es
               ? "Elige las opciones como si estuvieras montando una ficha, no rellenando una declaración de la renta."
@@ -82,7 +84,11 @@ export function BusinessEventComposer({
         <input type="hidden" name="bannerMediaId" value={slots.banner} />
         <input type="hidden" name="exploreMediaId" value={slots.explore} />
         <input type="hidden" name="profileMediaId" value={slots.profile} />
-        <input type="hidden" name="backgroundMediaId" value={slots.background} />
+        <input
+          type="hidden"
+          name="backgroundMediaId"
+          value={slots.background}
+        />
         <input type="hidden" name="mapMediaId" value={slots.map} />
 
         <section className="event-studio-card">
@@ -90,7 +96,11 @@ export function BusinessEventComposer({
             <span className="event-studio-step">1</span>
             <div>
               <h3>{es ? "Qué y dónde" : "What and where"}</h3>
-              <p>{es ? "Local, categoría y nombre." : "Venue, category and name."}</p>
+              <p>
+                {es
+                  ? "Local, categoría y nombre."
+                  : "Venue, category and name."}
+              </p>
             </div>
           </div>
 
@@ -99,7 +109,11 @@ export function BusinessEventComposer({
               <button
                 key={venue.id}
                 type="button"
-                className={venueId === venue.id ? "event-choice selected" : "event-choice"}
+                className={
+                  venueId === venue.id
+                    ? "event-choice selected"
+                    : "event-choice"
+                }
                 aria-pressed={venueId === venue.id}
                 onClick={() => selectVenue(venue.id)}
               >
@@ -110,14 +124,22 @@ export function BusinessEventComposer({
             ))}
           </div>
 
-          <div className="event-category-strip" role="radiogroup" aria-label={es ? "Categoría" : "Category"}>
+          <div
+            className="event-category-strip"
+            role="radiogroup"
+            aria-label={es ? "Categoría" : "Category"}
+          >
             {categories.map((category) => (
               <button
                 key={category.id}
                 type="button"
                 role="radio"
                 aria-checked={categoryId === category.id}
-                className={categoryId === category.id ? "event-category-pill selected" : "event-category-pill"}
+                className={
+                  categoryId === category.id
+                    ? "event-category-pill selected"
+                    : "event-category-pill"
+                }
                 onClick={() => setCategoryId(category.id)}
               >
                 {category.label}
@@ -132,7 +154,9 @@ export function BusinessEventComposer({
               required
               minLength={3}
               maxLength={160}
-              placeholder={es ? "Ej. Desayuno de los domingos" : "e.g. Sunday Breakfast"}
+              placeholder={
+                es ? "Ej. Desayuno de los domingos" : "e.g. Sunday Breakfast"
+              }
             />
           </label>
         </section>
@@ -156,7 +180,10 @@ export function BusinessEventComposer({
                 ["banner", es ? "1 · Banner del evento" : "1 · Event banner"],
                 ["explore", es ? "2 · Tarjeta Explorar" : "2 · Explore card"],
                 ["profile", es ? "3 · Imagen de perfil" : "3 · Event profile"],
-                ["background", es ? "4 · Fondo de la ficha" : "4 · Event background"],
+                [
+                  "background",
+                  es ? "4 · Fondo de la ficha" : "4 · Event background",
+                ],
                 ["map", es ? "5 · Vertical para mapa" : "5 · Map vertical"],
               ].map(([key, label]) => {
                 const slotKey = key as keyof typeof slots;
@@ -165,7 +192,11 @@ export function BusinessEventComposer({
                   venueMedia.find((item) => item.id === selectedId) ||
                   venueMedia[0];
                 return (
-                  <article className="event-five-slot" data-media-slot={key} key={key}>
+                  <article
+                    className="event-five-slot"
+                    data-media-slot={key}
+                    key={key}
+                  >
                     <div className="event-five-preview">
                       {selected ? (
                         <img src={selected.url} alt={selected.alt} />
@@ -247,7 +278,11 @@ export function BusinessEventComposer({
             <span className="event-studio-step">3</span>
             <div>
               <h3>{es ? "Detalles prácticos" : "Practical details"}</h3>
-              <p>{es ? "Cuándo, precio y descripción." : "When, price and description."}</p>
+              <p>
+                {es
+                  ? "Cuándo, precio y descripción."
+                  : "When, price and description."}
+              </p>
             </div>
           </div>
 
@@ -259,7 +294,11 @@ export function BusinessEventComposer({
           <div className="event-price-mode">
             <button
               type="button"
-              className={priceMode === "hide" ? "event-price-option selected" : "event-price-option"}
+              className={
+                priceMode === "hide"
+                  ? "event-price-option selected"
+                  : "event-price-option"
+              }
               onClick={() => setPriceMode("hide")}
             >
               <span>◌</span>
@@ -272,12 +311,20 @@ export function BusinessEventComposer({
             </button>
             <button
               type="button"
-              className={priceMode === "show" ? "event-price-option selected" : "event-price-option"}
+              className={
+                priceMode === "show"
+                  ? "event-price-option selected"
+                  : "event-price-option"
+              }
               onClick={() => setPriceMode("show")}
             >
               <span>€</span>
               <strong>{es ? "Mostrar precio" : "Show a price"}</strong>
-              <small>{es ? "0 € se mostrará como Gratis." : "€0 will display as Free."}</small>
+              <small>
+                {es
+                  ? "0 € se mostrará como Gratis."
+                  : "€0 will display as Free."}
+              </small>
             </button>
           </div>
 
@@ -316,7 +363,9 @@ export function BusinessEventComposer({
 
         <div className="event-studio-save">
           <div>
-            <strong>{es ? "Listo cuando tú lo estés" : "Ready when you are"}</strong>
+            <strong>
+              {es ? "Listo cuando tú lo estés" : "Ready when you are"}
+            </strong>
             <span>
               {es
                 ? "El botón se activará cuando estén completos los campos obligatorios."

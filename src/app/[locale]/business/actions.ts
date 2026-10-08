@@ -151,8 +151,7 @@ export async function deleteManagedVenue(formData: FormData) {
     p_confirmation: parsed.data.confirmation,
     p_reason: parsed.data.reason,
   });
-  if (error)
-    redirect(`/${locale}/business?view=venues&error=venue-delete`);
+  if (error) redirect(`/${locale}/business?view=venues&error=venue-delete`);
 
   redirect(`/${locale}/business?view=venues&updated=venue-deleted`);
 }
@@ -267,14 +266,16 @@ export async function createEvent(formData: FormData) {
       const placementRows = requestedSlots.flatMap(
         ([placement, mediaId], index) =>
           mediaId && allowed.has(mediaId)
-            ? [{
-                venue_id: e.venueId,
-                media_id: mediaId,
-                placement,
-                target_key: eventId,
-                sort_order: index,
-                created_by: user.id,
-              }]
+            ? [
+                {
+                  venue_id: e.venueId,
+                  media_id: mediaId,
+                  placement,
+                  target_key: eventId,
+                  sort_order: index,
+                  created_by: user.id,
+                },
+              ]
             : [],
       );
       if (placementRows.length) {
@@ -340,24 +341,26 @@ export async function createOfficialEvent(formData: FormData) {
     };
   }
 
-  const { data: eventId, error } = await supabase.rpc("create_akipasa_selection_event_v2", {
-    p_category: value.categoryId,
-    p_slug: createEventSlug(value.title),
-    p_title_es: localized.title.es,
-    p_title_en: localized.title.en,
-    p_description_es: localized.description.es,
-    p_description_en: localized.description.en,
-    p_price_cents: Math.round(value.priceEuros * 100),
-    p_booking_url: value.bookingUrl,
-    p_starts_at: value.startsAt.toISOString(),
-    p_ends_at: value.endsAt.toISOString(),
-    p_location_label: value.locationLabel,
-    p_directions_address: value.directionsAddress || null,
-    p_latitude: value.latitude,
-    p_longitude: value.longitude,
-  });
-  if (error)
-    redirect(`/${locale}/business?view=events&error=official-event`);
+  const { data: eventId, error } = await supabase.rpc(
+    "create_akipasa_selection_event_v2",
+    {
+      p_category: value.categoryId,
+      p_slug: createEventSlug(value.title),
+      p_title_es: localized.title.es,
+      p_title_en: localized.title.en,
+      p_description_es: localized.description.es,
+      p_description_en: localized.description.en,
+      p_price_cents: Math.round(value.priceEuros * 100),
+      p_booking_url: value.bookingUrl,
+      p_starts_at: value.startsAt.toISOString(),
+      p_ends_at: value.endsAt.toISOString(),
+      p_location_label: value.locationLabel,
+      p_directions_address: value.directionsAddress || null,
+      p_latitude: value.latitude,
+      p_longitude: value.longitude,
+    },
+  );
+  if (error) redirect(`/${locale}/business?view=events&error=official-event`);
 
   if (typeof eventId === "string") {
     await supabase

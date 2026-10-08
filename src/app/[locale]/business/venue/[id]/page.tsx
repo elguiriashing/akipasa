@@ -196,7 +196,9 @@ export default async function VenueWorkspace({
     ]);
   const mediaPaths = (media || []).map((item) => item.storage_path);
   const { data: signedMediaRows } = mediaPaths.length
-    ? await supabase.storage.from("event-media").createSignedUrls(mediaPaths, 3600)
+    ? await supabase.storage
+        .from("event-media")
+        .createSignedUrls(mediaPaths, 3600)
     : { data: [] };
   const signedMediaMap = new Map(
     (signedMediaRows || []).flatMap((item) =>
@@ -205,7 +207,9 @@ export default async function VenueWorkspace({
   );
   const venueMediaSlots = Object.fromEntries(
     (mediaPlacements || [])
-      .filter((item) => item.target_key === "" && item.placement.startsWith("venue_"))
+      .filter(
+        (item) => item.target_key === "" && item.placement.startsWith("venue_"),
+      )
       .map((item) => [item.placement, item.media_id]),
   ) as Partial<
     Record<
@@ -220,15 +224,17 @@ export default async function VenueWorkspace({
   const allMediaItems = (media || []).flatMap((item) => {
     const url = signedMediaMap.get(item.storage_path);
     return url
-      ? [{
-          id: item.id,
-          url,
-          alt:
-            (es ? item.alt_es : item.alt_en || item.alt_es) ||
-            (es ? "Imagen del local" : "Venue image"),
-          sizeBytes: item.size_bytes,
-          eventSpecific: item.storage_path.includes("/events/"),
-        }]
+      ? [
+          {
+            id: item.id,
+            url,
+            alt:
+              (es ? item.alt_es : item.alt_en || item.alt_es) ||
+              (es ? "Imagen del local" : "Venue image"),
+            sizeBytes: item.size_bytes,
+            eventSpecific: item.storage_path.includes("/events/"),
+          },
+        ]
       : [];
   });
   const mediaStudioItems = allMediaItems.filter((item) => !item.eventSpecific);
@@ -375,7 +381,9 @@ export default async function VenueWorkspace({
                     <small>{es ? "Ubicación" : "Location"}</small>
                     <strong>{venue.address}</strong>
                     <span>
-                      {es ? "Dirección pública del local" : "Public venue address"}
+                      {es
+                        ? "Dirección pública del local"
+                        : "Public venue address"}
                     </span>
                   </div>
                 </article>
@@ -392,7 +400,9 @@ export default async function VenueWorkspace({
                         (es ? "Sin añadir" : "Not added")}
                     </strong>
                     <span>
-                      {venue.contact_phone || venue.whatsapp_phone || venue.website_url
+                      {venue.contact_phone ||
+                      venue.whatsapp_phone ||
+                      venue.website_url
                         ? es
                           ? "Los clientes pueden contactarte"
                           : "Customers can reach you"
@@ -411,7 +421,9 @@ export default async function VenueWorkspace({
                       <Icon name="settings" />
                     </span>
                     <span>
-                      <strong>{es ? "Editar información" : "Edit venue information"}</strong>
+                      <strong>
+                        {es ? "Editar información" : "Edit venue information"}
+                      </strong>
                       <small>
                         {es
                           ? "Nombre, descripción, dirección y contacto"
@@ -420,7 +432,10 @@ export default async function VenueWorkspace({
                     </span>
                   </span>
                 </summary>
-                <form action={updateVenue} className="stack profile-editor-form">
+                <form
+                  action={updateVenue}
+                  className="stack profile-editor-form"
+                >
                   <input type="hidden" name="locale" value={locale} />
                   <input type="hidden" name="venueId" value={id} />
                   <div className="profile-editor-grid">
@@ -430,7 +445,9 @@ export default async function VenueWorkspace({
                           <Icon name="venue" />
                         </span>
                         <div>
-                          <strong>{es ? "Lo esencial" : "The essentials"}</strong>
+                          <strong>
+                            {es ? "Lo esencial" : "The essentials"}
+                          </strong>
                           <small>
                             {es
                               ? "Lo primero que verá un cliente"
@@ -463,7 +480,11 @@ export default async function VenueWorkspace({
                           <Icon name="map" />
                         </span>
                         <div>
-                          <strong>{es ? "Dónde y cómo contactarte" : "Location and contact"}</strong>
+                          <strong>
+                            {es
+                              ? "Dónde y cómo contactarte"
+                              : "Location and contact"}
+                          </strong>
                           <small>
                             {es
                               ? "Información práctica para llegar o llamar"
@@ -586,10 +607,7 @@ export default async function VenueWorkspace({
                       </span>
                     </summary>
                     <div className="event-workflow">
-                      <span
-                        className="status-pill"
-                        data-status={event.status}
-                      >
+                      <span className="status-pill" data-status={event.status}>
                         {event.status === "published"
                           ? es
                             ? "Publicado"
@@ -651,7 +669,9 @@ export default async function VenueWorkspace({
                               : event.description_es,
                           priceCents: event.price_cents,
                           priceDisplayMode:
-                            event.price_display_mode === "hide" ? "hide" : "show",
+                            event.price_display_mode === "hide"
+                              ? "hide"
+                              : "show",
                           bookingUrl: event.booking_url || "",
                           minimumAge: event.minimum_age,
                           accessibilityNotes:
@@ -667,9 +687,10 @@ export default async function VenueWorkspace({
                           ...allMediaItems.filter(
                             (item) =>
                               item.eventSpecific &&
-                              (eventPlacementMap.get(event.id)?.binMediaIds || []).includes(
-                                item.id,
-                              ),
+                              (
+                                eventPlacementMap.get(event.id)?.binMediaIds ||
+                                []
+                              ).includes(item.id),
                           ),
                         ].map((item) => ({
                           id: item.id,
@@ -686,7 +707,8 @@ export default async function VenueWorkspace({
                           eventPlacementMap.get(event.id)?.profileMediaId || ""
                         }
                         backgroundMediaId={
-                          eventPlacementMap.get(event.id)?.backgroundMediaId || ""
+                          eventPlacementMap.get(event.id)?.backgroundMediaId ||
+                          ""
                         }
                         mapMediaId={
                           eventPlacementMap.get(event.id)?.mapMediaId || ""
@@ -1048,7 +1070,11 @@ export default async function VenueWorkspace({
             <div className="workspace-inline-heading">
               <div>
                 <span className="eyebrow">{es ? "Fidelidad" : "Loyalty"}</span>
-                <h2>{es ? "Premia a la gente que vuelve" : "Reward people who come back"}</h2>
+                <h2>
+                  {es
+                    ? "Premia a la gente que vuelve"
+                    : "Reward people who come back"}
+                </h2>
                 <p>
                   {es
                     ? "Empieza por una tarjeta de sellos. Lo demás es opcional."
@@ -1056,7 +1082,10 @@ export default async function VenueWorkspace({
                 </p>
               </div>
               <span className="status-pill">
-                {(programs || []).filter((program: any) => program.active).length}{" "}
+                {
+                  (programs || []).filter((program: any) => program.active)
+                    .length
+                }{" "}
                 {es ? "activas" : "active"}
               </span>
             </div>
@@ -1084,7 +1113,10 @@ export default async function VenueWorkspace({
             )}
 
             <div className="reward-action-grid">
-              <details className="workspace-action-card reward-action-card" name="reward-action">
+              <details
+                className="workspace-action-card reward-action-card"
+                name="reward-action"
+              >
                 <summary>
                   <span className="workspace-action-summary">
                     <span className="summary-icon">
@@ -1100,7 +1132,10 @@ export default async function VenueWorkspace({
                     </span>
                   </span>
                 </summary>
-                <form action={createStampCard} className="stack compact-action-form">
+                <form
+                  action={createStampCard}
+                  className="stack compact-action-form"
+                >
                   <input type="hidden" name="locale" value={locale} />
                   <input type="hidden" name="venueId" value={id} />
                   <div className="form-grid-three">
@@ -1110,7 +1145,9 @@ export default async function VenueWorkspace({
                         name="title"
                         required
                         minLength={3}
-                        placeholder={es ? "Cliente habitual" : "Regular visitor"}
+                        placeholder={
+                          es ? "Cliente habitual" : "Regular visitor"
+                        }
                       />
                     </label>
                     <label>
@@ -1140,7 +1177,10 @@ export default async function VenueWorkspace({
                 </form>
               </details>
 
-              <details className="workspace-action-card reward-action-card" name="reward-action">
+              <details
+                className="workspace-action-card reward-action-card"
+                name="reward-action"
+              >
                 <summary>
                   <span className="workspace-action-summary">
                     <span className="summary-icon">
@@ -1156,7 +1196,10 @@ export default async function VenueWorkspace({
                     </span>
                   </span>
                 </summary>
-                <form action={createBusinessReward} className="stack compact-action-form">
+                <form
+                  action={createBusinessReward}
+                  className="stack compact-action-form"
+                >
                   <input type="hidden" name="locale" value={locale} />
                   <input type="hidden" name="venueId" value={id} />
                   <div className="form-grid-two">
@@ -1199,14 +1242,19 @@ export default async function VenueWorkspace({
                 </form>
               </details>
 
-              <details className="workspace-action-card reward-action-card" name="reward-action">
+              <details
+                className="workspace-action-card reward-action-card"
+                name="reward-action"
+              >
                 <summary>
                   <span className="workspace-action-summary">
                     <span className="summary-icon">
                       <Icon name="megaphone" />
                     </span>
                     <span>
-                      <strong>{es ? "Oferta temporal" : "Limited-time offer"}</strong>
+                      <strong>
+                        {es ? "Oferta temporal" : "Limited-time offer"}
+                      </strong>
                       <small>
                         {es
                           ? "Promoción con fecha de inicio y fin"
@@ -1270,14 +1318,19 @@ export default async function VenueWorkspace({
               </details>
 
               {!!rewards?.length && (
-                <details className="workspace-action-card reward-action-card" name="reward-action">
+                <details
+                  className="workspace-action-card reward-action-card"
+                  name="reward-action"
+                >
                   <summary>
                     <span className="workspace-action-summary">
                       <span className="summary-icon">
                         <Icon name="plus" />
                       </span>
                       <span>
-                        <strong>{es ? "Asignar recompensa" : "Assign a reward"}</strong>
+                        <strong>
+                          {es ? "Asignar recompensa" : "Assign a reward"}
+                        </strong>
                         <small>
                           {es
                             ? "Conecta un premio a sellos o Pasaporte"
@@ -1286,7 +1339,10 @@ export default async function VenueWorkspace({
                       </span>
                     </span>
                   </summary>
-                  <form action={assignReward} className="stack compact-action-form">
+                  <form
+                    action={assignReward}
+                    className="stack compact-action-form"
+                  >
                     <input type="hidden" name="locale" value={locale} />
                     <input type="hidden" name="venueId" value={id} />
                     <div className="form-grid-two">
@@ -1498,7 +1554,11 @@ export default async function VenueWorkspace({
                       <Icon name="settings" />
                     </span>
                     <span>
-                      <strong>{es ? "Cómo quieres recibir reservas" : "How bookings should work"}</strong>
+                      <strong>
+                        {es
+                          ? "Cómo quieres recibir reservas"
+                          : "How bookings should work"}
+                      </strong>
                       <small>
                         {es
                           ? "Elige una opción y guarda. Puedes cambiarla cuando quieras."
@@ -1507,65 +1567,72 @@ export default async function VenueWorkspace({
                     </span>
                   </span>
                 </summary>
-                <form action={saveBookingSettings} className="stack compact-action-form">
+                <form
+                  action={saveBookingSettings}
+                  className="stack compact-action-form"
+                >
                   <input type="hidden" name="locale" value={locale} />
                   <input type="hidden" name="venueId" value={id} />
 
-                    <div className="booking-mode-grid">
-                      {[
-                        {
-                          value: "external",
-                          icon: "globe" as const,
-                          title: es ? "Enlace externo" : "External link",
-                          detail: es
-                            ? "Envía al cliente a tu sistema habitual."
-                            : "Send customers to your existing booking system.",
-                        },
-                        {
-                          value: "request",
-                          icon: "inbox" as const,
-                          title: es ? "Solicitudes AkiPasa" : "AkiPasa requests",
-                          detail: es
-                            ? "Recibe y confirma solicitudes aquí."
-                            : "Receive and confirm requests here.",
-                        },
-                        {
-                          value: "disabled",
-                          icon: "close" as const,
-                          title: es ? "Sin reservas" : "Bookings off",
-                          detail: es
-                            ? "Oculta las opciones de reserva."
-                            : "Hide booking options from customers.",
-                        },
-                      ].map((mode) => (
-                        <label className="booking-mode-card" key={mode.value}>
-                          <input
-                            type="radio"
-                            name="mode"
-                            value={mode.value}
-                            defaultChecked={
-                              (bookingSettings?.mode || "external") === mode.value
-                            }
-                          />
-                          <span className="summary-icon">
-                            <Icon name={mode.icon} />
-                          </span>
-                          <span>
-                            <strong>{mode.title}</strong>
-                            <small>{mode.detail}</small>
-                          </span>
-                        </label>
-                      ))}
-                    </div>
+                  <div className="booking-mode-grid">
+                    {[
+                      {
+                        value: "external",
+                        icon: "globe" as const,
+                        title: es ? "Enlace externo" : "External link",
+                        detail: es
+                          ? "Envía al cliente a tu sistema habitual."
+                          : "Send customers to your existing booking system.",
+                      },
+                      {
+                        value: "request",
+                        icon: "inbox" as const,
+                        title: es ? "Solicitudes AkiPasa" : "AkiPasa requests",
+                        detail: es
+                          ? "Recibe y confirma solicitudes aquí."
+                          : "Receive and confirm requests here.",
+                      },
+                      {
+                        value: "disabled",
+                        icon: "close" as const,
+                        title: es ? "Sin reservas" : "Bookings off",
+                        detail: es
+                          ? "Oculta las opciones de reserva."
+                          : "Hide booking options from customers.",
+                      },
+                    ].map((mode) => (
+                      <label className="booking-mode-card" key={mode.value}>
+                        <input
+                          type="radio"
+                          name="mode"
+                          value={mode.value}
+                          defaultChecked={
+                            (bookingSettings?.mode || "external") === mode.value
+                          }
+                        />
+                        <span className="summary-icon">
+                          <Icon name={mode.icon} />
+                        </span>
+                        <span>
+                          <strong>{mode.title}</strong>
+                          <small>{mode.detail}</small>
+                        </span>
+                      </label>
+                    ))}
+                  </div>
                   <div className="booking-options-row">
                     <label className="toggle-card">
                       <input
                         type="checkbox"
                         name="requiresDeposit"
-                        defaultChecked={bookingSettings?.requires_deposit || false}
+                        defaultChecked={
+                          bookingSettings?.requires_deposit || false
+                        }
                       />
                       <span>
-                        <strong>{es ? "Pedir depósito" : "Require a deposit"}</strong>
+                        <strong>
+                          {es ? "Pedir depósito" : "Require a deposit"}
+                        </strong>
                         <small>
                           {es
                             ? "Actívalo solo si lo necesitas."
@@ -1620,7 +1687,9 @@ export default async function VenueWorkspace({
                       <Icon name="calendar" />
                     </span>
                     <span>
-                      <strong>{es ? "Añadir disponibilidad" : "Add availability"}</strong>
+                      <strong>
+                        {es ? "Añadir disponibilidad" : "Add availability"}
+                      </strong>
                       <small>
                         {es
                           ? "Crea un horario que los clientes puedan solicitar."
@@ -1629,7 +1698,10 @@ export default async function VenueWorkspace({
                     </span>
                   </span>
                 </summary>
-                <form action={createBookingSlot} className="stack compact-action-form">
+                <form
+                  action={createBookingSlot}
+                  className="stack compact-action-form"
+                >
                   <input type="hidden" name="locale" value={locale} />
                   <input type="hidden" name="venueId" value={id} />
                   <div className="form-grid-three">
@@ -1676,7 +1748,11 @@ export default async function VenueWorkspace({
                     >
                       <input type="hidden" name="locale" value={locale} />
                       <input type="hidden" name="venueId" value={id} />
-                      <input type="hidden" name="requestId" value={request.id} />
+                      <input
+                        type="hidden"
+                        name="requestId"
+                        value={request.id}
+                      />
                       <div>
                         <strong>
                           {request.contact_name} · {request.party_size}{" "}
@@ -1720,7 +1796,11 @@ export default async function VenueWorkspace({
               <div className="workspace-inline-heading">
                 <div>
                   <span className="eyebrow">{es ? "Equipo" : "Team"}</span>
-                  <h2>{es ? "Quién puede gestionar este local" : "Who can manage this venue"}</h2>
+                  <h2>
+                    {es
+                      ? "Quién puede gestionar este local"
+                      : "Who can manage this venue"}
+                  </h2>
                   <p>
                     {es
                       ? "Mantén la lista corta y da solo el acceso necesario."
@@ -1740,9 +1820,14 @@ export default async function VenueWorkspace({
                     } | null
                   )?.display_name;
                   return (
-                    <article className="team-member-card" key={member.profile_id}>
+                    <article
+                      className="team-member-card"
+                      key={member.profile_id}
+                    >
                       <span className="team-avatar">
-                        {(displayName || member.profile_id).slice(0, 1).toUpperCase()}
+                        {(displayName || member.profile_id)
+                          .slice(0, 1)
+                          .toUpperCase()}
                       </span>
                       <span>
                         <strong>
@@ -1783,7 +1868,10 @@ export default async function VenueWorkspace({
                     </span>
                   </span>
                 </summary>
-                <form action={addTeamMember} className="stack compact-action-form">
+                <form
+                  action={addTeamMember}
+                  className="stack compact-action-form"
+                >
                   <input type="hidden" name="locale" value={locale} />
                   <input type="hidden" name="venueId" value={id} />
                   <div className="form-grid-two">
@@ -1794,7 +1882,9 @@ export default async function VenueWorkspace({
                         type="email"
                         required
                         autoComplete="email"
-                        placeholder={es ? "nombre@ejemplo.com" : "name@example.com"}
+                        placeholder={
+                          es ? "nombre@ejemplo.com" : "name@example.com"
+                        }
                       />
                       <small>
                         {es

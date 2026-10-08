@@ -683,26 +683,43 @@
   }
 }
 
-
 /* AkiBusiness workspace rework: each tool behaves like a small focused app. */
 .section {
   --workspace-accent: var(--primary);
   position: relative;
 }
-.section[data-section="events"] { --workspace-accent: #ff7a1a; }
-.section[data-section="catalogue"] { --workspace-accent: #ffd34d; }
-.section[data-section="rewards"] { --workspace-accent: #f4b942; }
-.section[data-section="checkin"] { --workspace-accent: #31c48d; }
-.section[data-section="bookings"] { --workspace-accent: #8b7cf6; }
-.section[data-section="team"] { --workspace-accent: #4bb7e8; }
-.section[data-section="profile"] { --workspace-accent: #ff8a3d; }
+.section[data-section="events"] {
+  --workspace-accent: #ff7a1a;
+}
+.section[data-section="catalogue"] {
+  --workspace-accent: #ffd34d;
+}
+.section[data-section="rewards"] {
+  --workspace-accent: #f4b942;
+}
+.section[data-section="checkin"] {
+  --workspace-accent: #31c48d;
+}
+.section[data-section="bookings"] {
+  --workspace-accent: #8b7cf6;
+}
+.section[data-section="team"] {
+  --workspace-accent: #4bb7e8;
+}
+.section[data-section="profile"] {
+  --workspace-accent: #ff8a3d;
+}
 
 .section:not([data-section="overview"]) {
   padding: 1rem;
   border: 1px solid var(--line);
   border-radius: 1.2rem;
   background:
-    radial-gradient(circle at 100% 0, color-mix(in srgb, var(--workspace-accent) 10%, transparent), transparent 34%),
+    radial-gradient(
+      circle at 100% 0,
+      color-mix(in srgb, var(--workspace-accent) 10%, transparent),
+      transparent 34%
+    ),
     color-mix(in srgb, var(--surface) 82%, transparent);
 }
 .section:not([data-section="overview"]) .sectionHeading {
@@ -732,12 +749,17 @@
   border-color: color-mix(in srgb, var(--workspace-accent) 16%, var(--line));
   background: color-mix(in srgb, var(--surface-alt) 72%, transparent);
 }
-.dashboard .section:not([data-section="overview"]) :is(input, select, textarea) {
+.dashboard
+  .section:not([data-section="overview"])
+  :is(input, select, textarea) {
   background: color-mix(in srgb, var(--surface) 68%, transparent);
 }
-.dashboard .section:not([data-section="overview"]) :is(input, select, textarea):focus {
+.dashboard
+  .section:not([data-section="overview"])
+  :is(input, select, textarea):focus {
   border-color: color-mix(in srgb, var(--workspace-accent) 72%, var(--line));
-  outline: 2px solid color-mix(in srgb, var(--workspace-accent) 18%, transparent);
+  outline: 2px solid
+    color-mix(in srgb, var(--workspace-accent) 18%, transparent);
   outline-offset: 1px;
 }
 .dashboard .section:not([data-section="overview"]) :global(.button) {
@@ -768,7 +790,8 @@
 /* Events gets a proper management workbench with a visible publishing state. */
 .section[data-section="events"] > div > :global(.event-create-action) {
   margin-bottom: 1rem;
-  box-shadow: 0 10px 28px color-mix(in srgb, var(--workspace-accent) 18%, transparent);
+  box-shadow: 0 10px 28px
+    color-mix(in srgb, var(--workspace-accent) 18%, transparent);
 }
 .section[data-section="events"] details[data-event-card] {
   overflow: clip;
@@ -780,8 +803,11 @@
 .section[data-section="events"] details[data-event-card] > summary {
   min-height: 64px;
   padding: 0.8rem 1rem;
-  background:
-    linear-gradient(90deg, color-mix(in srgb, var(--workspace-accent) 9%, transparent), transparent 38%);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--workspace-accent) 9%, transparent),
+    transparent 38%
+  );
 }
 .section[data-section="events"] :global(.event-heading strong) {
   font-size: 1rem;
@@ -833,13 +859,17 @@
 .section[data-section="events"] :global(.event-editor > details[open]) {
   grid-column: 1 / -1;
 }
-.section[data-section="events"] :global(.event-editor > details[open] > summary) {
+.section[data-section="events"]
+  :global(.event-editor > details[open] > summary) {
   background: color-mix(in srgb, var(--workspace-accent) 8%, transparent);
 }
-.section[data-section="events"] :global(.event-editor > details[open] form.stack) {
+.section[data-section="events"]
+  :global(.event-editor > details[open] form.stack) {
   max-width: 52rem;
 }
-.section[data-section="events"] :global(.event-editor > details[open] form.stack > label:has(textarea)) textarea {
+.section[data-section="events"]
+  :global(.event-editor > details[open] form.stack > label:has(textarea))
+  textarea {
   min-height: 7rem;
 }
 
@@ -862,7 +892,11 @@
   padding: 1rem;
   border-color: color-mix(in srgb, var(--workspace-accent) 26%, var(--line));
   background:
-    linear-gradient(145deg, color-mix(in srgb, var(--workspace-accent) 12%, transparent), transparent 58%),
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--workspace-accent) 12%, transparent),
+      transparent 58%
+    ),
     color-mix(in srgb, var(--surface) 54%, transparent);
 }
 .section[data-section="rewards"] :global(.loyalty-workbench > details) {
@@ -979,7 +1013,6 @@
     width: 100%;
   }
 }
-
 
 /* Human-first venue tools: show decisions and summaries before forms. */
 .dashboard .section :global(.workspace-inline-heading) {
@@ -1304,7 +1337,8 @@
 .dashboard .section :global(.booking-mode-card:has(input:checked)) {
   border-color: color-mix(in srgb, var(--workspace-accent) 65%, var(--line));
   background: color-mix(in srgb, var(--workspace-accent) 10%, var(--surface));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--workspace-accent) 24%, transparent);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--workspace-accent) 24%, transparent);
 }
 .dashboard .section :global(.booking-mode-card > span:last-child) {
   display: grid;
@@ -1480,7 +1514,6 @@
     width: 100%;
   }
 }
-
 
 .translationAssist {
   display: flex;

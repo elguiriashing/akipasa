@@ -259,7 +259,9 @@ export async function POST(request: Request) {
         : undefined;
     const analytics: PalsAnalyticsEvent[] = [];
     if (action.type === "equip") {
-      const equipment = state.equipment.find((item) => item.id === action.itemId);
+      const equipment = state.equipment.find(
+        (item) => item.id === action.itemId,
+      );
       if (equipment)
         analytics.push({
           name: "item_equipped",
@@ -280,9 +282,7 @@ export async function POST(request: Request) {
           collectionId: collectionFor(equipment.appearance),
         });
     } else if (action.type === "buy") {
-      const item = catalogue.items.find(
-        (entry) => entry.id === action.sku,
-      );
+      const item = catalogue.items.find((entry) => entry.id === action.sku);
       analytics.push({
         name: "shop_item_purchased",
         occurredAt,

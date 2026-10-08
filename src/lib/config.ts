@@ -7,7 +7,8 @@ export const config = {
   domain: "akipasa.com",
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://akipasa.com",
   crmUrl: process.env.NEXT_PUBLIC_CRM_URL || "https://crm.akipasa.com",
-  businessUrl: process.env.NEXT_PUBLIC_BUSINESS_URL || "https://business.akipasa.com",
+  businessUrl:
+    process.env.NEXT_PUBLIC_BUSINESS_URL || "https://business.akipasa.com",
   tagline: { es: "Sal. Explora. Disfruta.", en: "Go out. Explore. Enjoy." },
   dataProvider: process.env.NEXT_PUBLIC_DATA_PROVIDER || "fixtures",
   mapStyleUrl:

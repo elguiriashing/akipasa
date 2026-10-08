@@ -199,20 +199,20 @@ export default async function BusinessPage({
   const eventComposerMedia = (eventComposerMediaRows || [])
     .filter((item) => !item.storage_path.includes("/events/"))
     .flatMap((item) => {
-    const url = composerSignedMap.get(item.storage_path);
-    return url
-      ? [
-          {
-            id: item.id,
-            venueId: item.venue_id,
-            url,
-            alt:
-              (locale === "es" ? item.alt_es : item.alt_en || item.alt_es) ||
-              (es ? "Imagen del local" : "Venue image"),
-          },
-        ]
-      : [];
-  });
+      const url = composerSignedMap.get(item.storage_path);
+      return url
+        ? [
+            {
+              id: item.id,
+              venueId: item.venue_id,
+              url,
+              alt:
+                (locale === "es" ? item.alt_es : item.alt_en || item.alt_es) ||
+                (es ? "Imagen del local" : "Venue image"),
+            },
+          ]
+        : [];
+    });
   const [{ data: promotionEvents }, { data: managedEvents }] =
     managedVenueIds.length
       ? await Promise.all([
@@ -345,7 +345,10 @@ export default async function BusinessPage({
                     : "Manage active events, review the history, and reuse any listing as a new draft."}
                 </p>
               </div>
-              <a className="button button-strong" href={`${base}?view=events#create-event`}>
+              <a
+                className="button button-strong"
+                href={`${base}?view=events#create-event`}
+              >
                 {es ? "Crear evento" : "Create event"}
               </a>
             </div>
@@ -634,7 +637,10 @@ export default async function BusinessPage({
               </div>
             </div>
             <AutoTranslationNote locale={locale} />
-            <GuardedActionForm action={createOfficialEvent} className="stack focused-form">
+            <GuardedActionForm
+              action={createOfficialEvent}
+              className="stack focused-form"
+            >
               <input type="hidden" name="locale" value={locale} />
               <div className="form-grid-two">
                 <label>
@@ -654,14 +660,22 @@ export default async function BusinessPage({
                     required
                     minLength={3}
                     maxLength={160}
-                    placeholder={es ? "Ej. Feria de Fuengirola" : "e.g. Fuengirola Fair"}
+                    placeholder={
+                      es ? "Ej. Feria de Fuengirola" : "e.g. Fuengirola Fair"
+                    }
                   />
                 </label>
               </div>
               <OfficialEventLocationPicker locale={locale} />
               <label>
                 {es ? "Descripción" : "Description"}
-                <textarea name="description" required minLength={20} maxLength={4000} rows={4} />
+                <textarea
+                  name="description"
+                  required
+                  minLength={20}
+                  maxLength={4000}
+                  rows={4}
+                />
               </label>
               <fieldset className="official-event-price-fieldset">
                 <legend>{es ? "Precio de entrada" : "Entry price"}</legend>
@@ -682,19 +696,26 @@ export default async function BusinessPage({
                     </small>
                   </label>
                   <label className="event-price-option">
-                    <input
-                      type="radio"
-                      name="priceDisplayMode"
-                      value="show"
-                    />
+                    <input type="radio" name="priceDisplayMode" value="show" />
                     <span>€</span>
                     <strong>{es ? "Mostrar precio" : "Show price"}</strong>
-                    <small>{es ? "0 € aparecerá como Gratis." : "€0 displays as Free."}</small>
+                    <small>
+                      {es
+                        ? "0 € aparecerá como Gratis."
+                        : "€0 displays as Free."}
+                    </small>
                   </label>
                 </div>
                 <label className="event-price-input">
                   {es ? "Precio (€)" : "Price (€)"}
-                  <input name="priceEuros" type="number" min="0" defaultValue="0" step="0.01" required />
+                  <input
+                    name="priceEuros"
+                    type="number"
+                    min="0"
+                    defaultValue="0"
+                    step="0.01"
+                    required
+                  />
                 </label>
               </fieldset>
               <label>
@@ -713,7 +734,9 @@ export default async function BusinessPage({
               </div>
               <div className="form-actions-right">
                 <button className="button primary" type="submit">
-                  {es ? "Publicar Selección AkiPasa" : "Publish AkiPasa Selection"}
+                  {es
+                    ? "Publicar Selección AkiPasa"
+                    : "Publish AkiPasa Selection"}
                 </button>
               </div>
             </GuardedActionForm>
@@ -725,7 +748,9 @@ export default async function BusinessPage({
           <BusinessEventComposer
             locale={locale}
             venues={regularManaged.flatMap((item) =>
-              item.venues ? [{ id: item.venues.id, name: item.venues.name }] : [],
+              item.venues
+                ? [{ id: item.venues.id, name: item.venues.name }]
+                : [],
             )}
             categories={(categories || []).map((category) => ({
               id: category.id,

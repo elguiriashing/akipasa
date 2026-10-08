@@ -18,17 +18,21 @@ export function PremiumAdsConversion({ sessionId }: { sessionId: string }) {
           { cache: "no-store" },
         );
         if (!response.ok) return;
-        const result = await response.json() as {
+        const result = (await response.json()) as {
           ready?: boolean;
           transactionId?: string;
           value?: number;
           currency?: string;
         };
         if (
-          cancelled || sent || !result.ready ||
-          !result.transactionId || result.currency !== "EUR" ||
+          cancelled ||
+          sent ||
+          !result.ready ||
+          !result.transactionId ||
+          result.currency !== "EUR" ||
           typeof result.value !== "number"
-        ) return;
+        )
+          return;
         const key = `ak_ads_subscribe_${result.transactionId}`;
         if (window.localStorage.getItem(key) === "sent") return;
         const w = window as Window & { gtag?: (...args: unknown[]) => void };

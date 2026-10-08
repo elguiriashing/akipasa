@@ -36,19 +36,21 @@ export default async function AuthPage({
     return `/${locale}/auth?${search.toString()}`;
   };
   return (
-    <main className={`auth-page auth-product-theme ${isBusinessHost ? "auth-theme-business" : "auth-theme-akipasa"}`}>
+    <main
+      className={`auth-page auth-product-theme ${isBusinessHost ? "auth-theme-business" : "auth-theme-akipasa"}`}
+    >
       <section className="auth-intro">
         <div className="auth-intro-copy">
           <div className="eyebrow">
             {isBusinessHost
               ? "AkiBusiness"
               : businessIntent
-              ? es
-                ? "Paso 1 de 3 · Añade tu negocio"
-                : "Step 1 of 3 · Add your business"
-              : es
-                ? "Cuenta"
-                : "Account"}
+                ? es
+                  ? "Paso 1 de 3 · Añade tu negocio"
+                  : "Step 1 of 3 · Add your business"
+                : es
+                  ? "Cuenta"
+                  : "Account"}
           </div>
           <h1>
             {isBusinessHost
@@ -56,12 +58,12 @@ export default async function AuthPage({
                 ? "Gestiona tu negocio"
                 : "Manage your business"
               : businessIntent
-              ? es
-                ? "Primero, crea tu cuenta gratuita"
-                : "First, create your free account"
-              : es
-                ? "Tu cuenta AkiPasa"
-                : "Your AkiPasa account"}
+                ? es
+                  ? "Primero, crea tu cuenta gratuita"
+                  : "First, create your free account"
+                : es
+                  ? "Tu cuenta AkiPasa"
+                  : "Your AkiPasa account"}
           </h1>
         </div>
         <aside className="auth-product-portals">
@@ -70,7 +72,10 @@ export default async function AuthPage({
             className={`auth-product-card ${!isBusinessHost ? "active" : ""}`}
             href={`${config.siteUrl}/${locale}/auth`}
           >
-            <i className="auth-product-dot auth-product-dot-akipasa" aria-hidden="true" />
+            <i
+              className="auth-product-dot auth-product-dot-akipasa"
+              aria-hidden="true"
+            />
             <span>
               <strong>AkiPasa</strong>
             </span>
@@ -79,13 +84,19 @@ export default async function AuthPage({
             className={`auth-product-card ${isBusinessHost ? "active" : ""}`}
             href={`${config.businessUrl}/${locale}/auth?next=/${locale}/business`}
           >
-            <i className="auth-product-dot auth-product-dot-business" aria-hidden="true" />
+            <i
+              className="auth-product-dot auth-product-dot-business"
+              aria-hidden="true"
+            />
             <span>
               <strong>AkiBusiness</strong>
             </span>
           </a>
           <a className="auth-product-card" href={config.crmUrl}>
-            <i className="auth-product-dot auth-product-dot-hq" aria-hidden="true" />
+            <i
+              className="auth-product-dot auth-product-dot-hq"
+              aria-hidden="true"
+            />
             <span>
               <strong>AkiHQ</strong>
             </span>

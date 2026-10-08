@@ -89,7 +89,10 @@ export function VenueMediaStudio({
   const [slotState, setSlotState] =
     useState<Partial<Record<VenueMediaPlacement, string>>>(placements);
   const [busy, setBusy] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<{ done: number; total: number } | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<{
+    done: number;
+    total: number;
+  } | null>(null);
   const [status, setStatus] = useState<"idle" | "saved" | "error">("idle");
   const uploadFormRef = useRef<HTMLFormElement>(null);
   const fallback = items[0] || null;
@@ -150,7 +153,9 @@ export function VenueMediaStudio({
     const source = new FormData(form);
     const files = source
       .getAll("image")
-      .filter((value): value is File => value instanceof File && value.size > 0);
+      .filter(
+        (value): value is File => value instanceof File && value.size > 0,
+      );
     if (!files.length) return;
 
     const sharedAlt = String(source.get("alt") || "").trim();
@@ -349,7 +354,9 @@ export function VenueMediaStudio({
       </div>
 
       <details className="media-upload-drawer" open={!items.length}>
-        <summary>＋ {es ? "Añadir a la biblioteca" : "Add to media bin"}</summary>
+        <summary>
+          ＋ {es ? "Añadir a la biblioteca" : "Add to media bin"}
+        </summary>
         <form
           ref={uploadFormRef}
           onSubmit={uploadMedia}
@@ -369,7 +376,9 @@ export function VenueMediaStudio({
             />
           </label>
           <label>
-            {es ? "Descripción común (opcional)" : "Shared description (optional)"}
+            {es
+              ? "Descripción común (opcional)"
+              : "Shared description (optional)"}
             <input
               name="alt"
               minLength={3}

@@ -84,40 +84,45 @@ export function ClaimVenuePicker({
     };
   }, [query]);
 
-  const chooseVenue = useCallback((venue: ClaimVenue) => {
-    setSelected(venue);
-    setQuery(venue.name);
-    setRows([]);
-    const currentUrl = new URL(window.location.href);
-    currentUrl.searchParams.set("view", "claims");
-    currentUrl.searchParams.set("venueId", venue.id);
-    window.history.replaceState(window.history.state, "", currentUrl);
-    const map = mapRef.current;
-    if (!map) return;
-    map.easeTo({
-      center: [venue.longitude, venue.latitude],
-      zoom: Math.max(map.getZoom(), 14),
-    });
-    void import("maplibre-gl").then((maplibregl) => {
-      popupRef.current?.remove();
-      const node = document.createElement("div");
-      node.className = "claim-map-popup";
-      const strong = document.createElement("strong");
-      strong.textContent = venue.name;
-      const small = document.createElement("span");
-      small.textContent =
-        venue.address || venue.locality || (es ? "Local seleccionado" : "Selected venue");
-      node.append(strong, small);
-      popupRef.current = new maplibregl.Popup({
-        offset: 14,
-        closeButton: false,
-        maxWidth: "260px",
-      })
-        .setLngLat([venue.longitude, venue.latitude])
-        .setDOMContent(node)
-        .addTo(map);
-    });
-  }, [es]);
+  const chooseVenue = useCallback(
+    (venue: ClaimVenue) => {
+      setSelected(venue);
+      setQuery(venue.name);
+      setRows([]);
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.set("view", "claims");
+      currentUrl.searchParams.set("venueId", venue.id);
+      window.history.replaceState(window.history.state, "", currentUrl);
+      const map = mapRef.current;
+      if (!map) return;
+      map.easeTo({
+        center: [venue.longitude, venue.latitude],
+        zoom: Math.max(map.getZoom(), 14),
+      });
+      void import("maplibre-gl").then((maplibregl) => {
+        popupRef.current?.remove();
+        const node = document.createElement("div");
+        node.className = "claim-map-popup";
+        const strong = document.createElement("strong");
+        strong.textContent = venue.name;
+        const small = document.createElement("span");
+        small.textContent =
+          venue.address ||
+          venue.locality ||
+          (es ? "Local seleccionado" : "Selected venue");
+        node.append(strong, small);
+        popupRef.current = new maplibregl.Popup({
+          offset: 14,
+          closeButton: false,
+          maxWidth: "260px",
+        })
+          .setLngLat([venue.longitude, venue.latitude])
+          .setDOMContent(node)
+          .addTo(map);
+      });
+    },
+    [es],
+  );
 
   const previewVenue = useCallback(
     (venue: ClaimVenue) => {
@@ -305,7 +310,15 @@ export function ClaimVenuePicker({
             source.setData({
               type: "FeatureCollection",
               features: rows.map(
-                ({ id, slug, name, address, locality, longitude, latitude }) => ({
+                ({
+                  id,
+                  slug,
+                  name,
+                  address,
+                  locality,
+                  longitude,
+                  latitude,
+                }) => ({
                   type: "Feature",
                   geometry: {
                     type: "Point",
@@ -354,7 +367,8 @@ export function ClaimVenuePicker({
           const feature = event.features?.[0];
           const geometry = feature?.geometry;
           const properties = feature?.properties;
-          if (!feature || !properties || !geometry || geometry.type !== "Point") return;
+          if (!feature || !properties || !geometry || geometry.type !== "Point")
+            return;
           const coords = geometry.coordinates as [number, number];
           const venue: ClaimVenue = {
             id: String(properties.id || ""),
@@ -422,9 +436,7 @@ export function ClaimVenuePicker({
               setSelected(null);
             }}
             placeholder={
-              es
-                ? "Nombre, ciudad o dirección..."
-                : "Name, city or address..."
+              es ? "Nombre, ciudad o dirección..." : "Name, city or address..."
             }
             autoComplete="off"
           />
@@ -442,7 +454,9 @@ export function ClaimVenuePicker({
                   <span>
                     <strong>{venue.name}</strong>
                     <small>
-                      {[venue.address, venue.locality].filter(Boolean).join(" · ")}
+                      {[venue.address, venue.locality]
+                        .filter(Boolean)
+                        .join(" · ")}
                     </small>
                   </span>
                   <Icon name="arrow-right" />
@@ -498,7 +512,9 @@ export function ClaimVenuePicker({
             ✓
           </div>
           <div>
-            <span>{es ? "Vas a reclamar este local" : "You are claiming this venue"}</span>
+            <span>
+              {es ? "Vas a reclamar este local" : "You are claiming this venue"}
+            </span>
             <strong>{selected.name}</strong>
             <small>{selected.address || selected.locality || ""}</small>
           </div>

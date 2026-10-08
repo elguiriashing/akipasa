@@ -20,9 +20,10 @@ export function ConsentAnalytics() {
       const analytics = choices.analytics;
       const marketing = choices.marketing;
       // The consumer advertising campaign must not tag AkiBusiness or AkiDuermo.
-      const adsAllowed = marketing &&
+      const adsAllowed =
+        marketing &&
         (location.hostname === "akipasa.com" ||
-         location.hostname === "www.akipasa.com");
+          location.hostname === "www.akipasa.com");
       w[`ga-disable-${measurementId}`] = !analytics;
       w[`ga-disable-${adsId}`] = !adsAllowed;
 
