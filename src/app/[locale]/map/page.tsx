@@ -112,7 +112,12 @@ export default async function MapPage({
       center: searchCenter,
       radiusKm: radius,
       page: resultPage(query.venuePage),
-    }),
+    })
+      .then((page) => ({ ...page, unavailable: false }))
+      .catch((error: unknown) => {
+        console.error("Map nearby venues unavailable", error);
+        return { rows: [], total: 0, page: 1, unavailable: true };
+      }),
   ]);
   const eventPoints = nationwideEvents.map((result) => ({
     id: result.event.id,
@@ -184,6 +189,14 @@ export default async function MapPage({
           page={eventPage.page}
           total={eventPage.total}
         />
+
+        {venuePage.unavailable ? (
+          <p className="notice" role="status">
+            {locale === "es"
+              ? "Los locales cercanos no se pueden cargar ahora mismo. El mapa sigue disponible."
+              : "Nearby venues are temporarily unavailable. The map is still available."}
+          </p>
+        ) : null}
 
         {venuePage.total ? (
           <section id="venue-results" aria-labelledby="map-venues-title">
