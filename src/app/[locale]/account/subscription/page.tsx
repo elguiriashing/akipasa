@@ -1,4 +1,5 @@
 import { SubscriptionRefresh } from "@/components/SubscriptionRefresh";
+import { PremiumAdsConversion } from "@/components/PremiumAdsConversion";
 import { notFound } from "next/navigation";
 import { MembershipPicker } from "@/components/MembershipPicker";
 import { requireUser } from "@/lib/auth";
@@ -87,6 +88,9 @@ export default async function SubscriptionPage({
       <header className="subscription-heading">
         <h1>{es ? "Planes y facturación" : "Plans and billing"}</h1>
       </header>
+      {query.checkout === "success" && query.session_id && (
+        <PremiumAdsConversion sessionId={query.session_id} />
+      )}
       {query.checkout === "success" &&
         !subscriptions?.some(
           (item) => item.status === "active" || item.status === "trialing",
