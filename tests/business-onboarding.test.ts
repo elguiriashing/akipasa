@@ -15,7 +15,6 @@ describe("business onboarding", () => {
     expect(slug).toMatch(/^noche-de-jazz-tapas-[a-f0-9]{6}$/);
   });
 
-
   it("keeps business editing locale-first and translates the saved copy server-side", () => {
     const businessPage = readFileSync(
       "src/app/[locale]/business/page.tsx",

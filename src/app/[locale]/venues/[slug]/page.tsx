@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- Venue media uses native images with existing layout controls. */
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { localizedMetadata, languageUrls, serializeJsonLd } from "@/lib/seo";
@@ -48,9 +49,12 @@ export default async function VenuePage({
   const m = msg(locale);
   const returnTo = `/${locale}/venues/${venue.slug}`;
   const { supabase, user } = await optionalUser();
-  const { data: cataloguePayload } = await supabase.rpc("public_venue_catalogue", {
-    p_venue: venue.id,
-  });
+  const { data: cataloguePayload } = await supabase.rpc(
+    "public_venue_catalogue",
+    {
+      p_venue: venue.id,
+    },
+  );
   const catalogueDocument =
     cataloguePayload &&
     typeof cataloguePayload === "object" &&

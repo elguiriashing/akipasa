@@ -27,16 +27,16 @@ export function OwnerReadiness({
       section: "profile",
       icon: "venue" as const,
       label: es ? "Perfil listo" : "Complete your profile",
-      detail: es
-        ? "Descripción y contacto"
-        : "Description and contact details",
+      detail: es ? "Descripción y contacto" : "Description and contact details",
     },
     {
       done: photos > 0,
       section: "profile",
       icon: "inbox" as const,
       label: es ? "Añade una foto" : "Add a venue photo",
-      detail: es ? "Que te reconozcan al instante" : "Help people recognise you",
+      detail: es
+        ? "Que te reconozcan al instante"
+        : "Help people recognise you",
     },
     {
       done: upcomingEvents > 0,
@@ -59,7 +59,11 @@ export function OwnerReadiness({
     ["listing_views", es ? "Ficha" : "Listing", "venue" as const],
     ["event_views", es ? "Eventos" : "Events", "calendar" as const],
     ["directions", es ? "Cómo llegar" : "Directions", "map" as const],
-    ["website_clicks", es ? "Web / reserva" : "Website / booking", "globe" as const],
+    [
+      "website_clicks",
+      es ? "Web / reserva" : "Website / booking",
+      "globe" as const,
+    ],
     ["contact_clicks", es ? "Contacto" : "Contact", "person" as const],
     ["accepted_checkins", "Check-ins", "passport" as const],
     ["rewards_redeemed", es ? "Canjes" : "Redemptions", "gift" as const],
@@ -129,8 +133,12 @@ export function OwnerReadiness({
           <div className={styles.metricGrid}>
             {metrics.map(([key, label, icon]) => (
               <article className={styles.metric} key={key}>
-                <span><Icon name={icon} /></span>
-                <strong>{Number(results[key] || 0).toLocaleString(locale)}</strong>
+                <span>
+                  <Icon name={icon} />
+                </span>
+                <strong>
+                  {Number(results[key] || 0).toLocaleString(locale)}
+                </strong>
                 <small>{label}</small>
               </article>
             ))}

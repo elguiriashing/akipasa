@@ -2156,7 +2156,6 @@
   }
 }
 
-
 .indexIntroMobile {
   display: none;
 }
@@ -2181,7 +2180,6 @@
     margin-top: 12px;
   }
 }
-
 
 /* Compact mobile chapter shortcuts — 2026-10-05 */
 @media (max-width: 700px) {

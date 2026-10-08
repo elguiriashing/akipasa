@@ -22,7 +22,10 @@ const profileSchema = z.object({
   websiteUrl: z.string().trim().max(300),
   instagramHandle: z.union([
     z.literal(""),
-    z.string().trim().regex(/^[A-Za-z0-9._]{1,30}$/),
+    z
+      .string()
+      .trim()
+      .regex(/^[A-Za-z0-9._]{1,30}$/),
   ]),
   locality: z.string().trim().max(120),
   province: z.string().trim().max(120),
@@ -117,18 +120,15 @@ export async function requestAccountEmailChange(formData: FormData) {
 export async function requestAccountPasswordReset(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const { supabase, user } = await requireUser(locale);
-  if (!user.email)
-    redirect(`/${locale}/account/settings?error=password-email`);
+  if (!user.email) redirect(`/${locale}/account/settings?error=password-email`);
 
-  const redirectTo =
-    `${config.siteUrl}/${locale}/auth/callback?next=${encodeURIComponent(
-      `/${locale}/auth/recover`,
-    )}`;
+  const redirectTo = `${config.siteUrl}/${locale}/auth/callback?next=${encodeURIComponent(
+    `/${locale}/auth/recover`,
+  )}`;
   const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
     redirectTo,
   });
-  if (error)
-    redirect(`/${locale}/account/settings?error=password-reset`);
+  if (error) redirect(`/${locale}/account/settings?error=password-reset`);
 
   redirect(`/${locale}/account/settings?password=sent`);
 }

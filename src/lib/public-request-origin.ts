@@ -18,7 +18,10 @@ function allowedHost(host: string) {
   );
 }
 
-export function publicRequestOrigin(headers: Headers, fallback = "https://akipasa.com") {
+export function publicRequestOrigin(
+  headers: Headers,
+  fallback = "https://akipasa.com",
+) {
   const forwardedHost = firstHeaderValue(headers.get("x-forwarded-host"));
   const host = forwardedHost || firstHeaderValue(headers.get("host"));
 

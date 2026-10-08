@@ -71,7 +71,15 @@ export type CatalogueItem = {
   availability: "available" | "sold_out" | "seasonal" | "on_request";
   priceMode: "fixed" | "from" | "on_request";
   priceCents: number | null;
-  unit: "each" | "person" | "session" | "hour" | "day" | "night" | "month" | "kg";
+  unit:
+    | "each"
+    | "person"
+    | "session"
+    | "hour"
+    | "day"
+    | "night"
+    | "month"
+    | "kg";
   durationMinutes?: number | null;
   capacity?: number | null;
   variants: Array<{
@@ -238,6 +246,7 @@ export function deterministicCatalogueTranslation(
   value: string,
   context: CatalogueTranslationContext = "general",
 ) {
+  void context;
   if (sourceLocale === targetLocale) return null;
   const key = normalizedCataloguePhrase(value);
   return sourceLocale === "en" && targetLocale === "es"
@@ -275,12 +284,10 @@ export function polishCatalogueTranslation(
         .replace(/\bnuez\b/gi, "fruto seco");
     }
     if (/\b(?:dry|dried) fruits?\b/.test(sourceKey)) {
-      result = result.replace(
-        /\bfrutas? secas?\b/gi,
-        (match) =>
-          match.toLocaleLowerCase("es").startsWith("fruta ")
-            ? "fruta deshidratada"
-            : "frutas deshidratadas",
+      result = result.replace(/\bfrutas? secas?\b/gi, (match) =>
+        match.toLocaleLowerCase("es").startsWith("fruta ")
+          ? "fruta deshidratada"
+          : "frutas deshidratadas",
       );
     }
     if (/\b(?:coke|coca[ -]?cola)\b/.test(sourceKey)) {
@@ -326,13 +333,7 @@ export function catalogueTextForDisplay(
   }
 
   if (sourceLocale === locale) return source;
-  return polishCatalogueTranslation(
-    sourceLocale,
-    locale,
-    source,
-    raw,
-    context,
-  );
+  return polishCatalogueTranslation(sourceLocale, locale, source, raw, context);
 }
 
 function seedTextTranslationMetadata(
@@ -353,7 +354,8 @@ function seedTextTranslationMetadata(
 
   if (pair._translation?.esHash && pair._translation?.enHash) return;
   const sourceLocale =
-    pair[preferredLocale].trim() || !pair[preferredLocale === "es" ? "en" : "es"].trim()
+    pair[preferredLocale].trim() ||
+    !pair[preferredLocale === "es" ? "en" : "es"].trim()
       ? preferredLocale
       : preferredLocale === "es"
         ? "en"

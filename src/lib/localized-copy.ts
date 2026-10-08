@@ -52,7 +52,9 @@ async function translateOneAtEndpoint(
     signal: AbortSignal.timeout(5_000),
   });
 
-  const result = (await response.json().catch(() => ({}))) as LibreTranslateResponse;
+  const result = (await response
+    .json()
+    .catch(() => ({}))) as LibreTranslateResponse;
   if (!response.ok) {
     throw new Error(
       result.error || `LibreTranslate request failed (${response.status})`,
@@ -352,8 +354,9 @@ function clampTranslatedValue(value: string, maxLength: number) {
   if (clean.length <= maxLength) return clean;
   const clipped = clean.slice(0, maxLength);
   const lastSpace = clipped.lastIndexOf(" ");
-  return (lastSpace > maxLength * 0.7 ? clipped.slice(0, lastSpace) : clipped)
-    .trimEnd();
+  return (
+    lastSpace > maxLength * 0.7 ? clipped.slice(0, lastSpace) : clipped
+  ).trimEnd();
 }
 
 export async function translateVenueCatalogueDocument(
@@ -361,9 +364,7 @@ export async function translateVenueCatalogueDocument(
   input: VenueCatalogueDocument,
   actorId: string,
 ): Promise<VenueCatalogueDocument> {
-  const document = JSON.parse(
-    JSON.stringify(input),
-  ) as VenueCatalogueDocument;
+  const document = JSON.parse(JSON.stringify(input)) as VenueCatalogueDocument;
   const requestedTargetLocale: Locale = sourceLocale === "es" ? "en" : "es";
   const pending: CatalogueTranslationTarget[] = [];
 
@@ -433,10 +434,7 @@ export async function translateVenueCatalogueDocument(
     );
     if (deterministic) {
       pair[actualSourceLocale] = source;
-      pair[actualTargetLocale] = clampTranslatedValue(
-        deterministic,
-        maxLength,
-      );
+      pair[actualTargetLocale] = clampTranslatedValue(deterministic, maxLength);
       markTranslated(pair, actualSourceLocale, source);
       return;
     }
@@ -526,11 +524,7 @@ export async function translateVenueCatalogueDocument(
         );
 
         if (target.pair[target.targetLocale].trim()) {
-          markTranslated(
-            target.pair,
-            target.sourceLocale,
-            target.source,
-          );
+          markTranslated(target.pair, target.sourceLocale, target.source);
         }
       });
     } catch (error) {

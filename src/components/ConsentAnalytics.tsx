@@ -12,18 +12,18 @@ export function ConsentAnalytics() {
   useEffect(() => {
     const w = window as unknown as GoogleWindow;
     // Share one gtag.js loader for GA4 and Ads, respecting the visitor's choices.
-    const adsBootstrapped = Boolean(document.getElementById("ak-google-ads-loader"));
-    let loaded = adsBootstrapped || Boolean(document.getElementById("ak-consented-ga"));
+    let loaded = Boolean(document.getElementById("ak-consented-ga"));
     let analyticsConfigured = false;
-    let adsConfigured = adsBootstrapped;
+    let adsConfigured = false;
     function update() {
       const choices = readPrivacyChoices();
       const analytics = choices.analytics;
       const marketing = choices.marketing;
       // The consumer advertising campaign must not tag AkiBusiness or AkiDuermo.
-      const adsAllowed = marketing &&
+      const adsAllowed =
+        marketing &&
         (location.hostname === "akipasa.com" ||
-         location.hostname === "www.akipasa.com");
+          location.hostname === "www.akipasa.com");
       w[`ga-disable-${measurementId}`] = !analytics;
       w[`ga-disable-${adsId}`] = !adsAllowed;
 
@@ -31,8 +31,7 @@ export function ConsentAnalytics() {
       w.gtag =
         w.gtag ||
         function (...args: unknown[]) {
-          // eslint-disable-next-line prefer-rest-params
-          w.dataLayer!.push(arguments);
+          w.dataLayer!.push(args);
         };
 
       // Consent must be set before configuring either destination.
@@ -52,7 +51,7 @@ export function ConsentAnalytics() {
         ad_personalization: adsAllowed ? "granted" : "denied",
       });
 
-      if (!loaded) {
+      if (!loaded && (analytics || adsAllowed)) {
         loaded = true;
         w.gtag("js", new Date());
         const script = document.createElement("script");
@@ -68,7 +67,7 @@ export function ConsentAnalytics() {
           allow_ad_personalization_signals: false,
         });
       }
-      if (!adsConfigured && (location.hostname === "akipasa.com" || location.hostname === "www.akipasa.com")) {
+      if (!adsConfigured && adsAllowed) {
         adsConfigured = true;
         w.gtag("config", adsId);
       }

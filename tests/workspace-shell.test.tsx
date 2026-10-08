@@ -268,7 +268,7 @@ it("uses one persistent rail state and a real light/dark icon control", () => {
     name: "Primary navigation",
   });
   expect(rail).not.toHaveClass("app-rail--compact");
-  expect(screen.getByRole("link", { name: "CRM" })).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "Passports" })).toBeInTheDocument();
 
   const themeToggle = screen.getByRole("button", {
     name: "Switch to light mode",
@@ -318,7 +318,7 @@ it("puts every authorized workspace in the main mobile menu", () => {
   ).toHaveAttribute("href", "/en/account");
   expect(
     within(workspaces).getByRole("link", { name: "Business" }),
-  ).toHaveAttribute("href", "/en/business");
+  ).toHaveAttribute("href", "https://business.akipasa.com/en/business");
   expect(
     within(workspaces).getByRole("link", { name: "Staff" }),
   ).toHaveAttribute("href", "/en/staff");
@@ -338,10 +338,9 @@ it("keeps authorized workspaces in the persistent desktop navigation", () => {
     name: "Primary navigation",
   });
   expect(within(rail).getByText("Your workspaces")).toBeInTheDocument();
-  expect(within(rail).getByRole("link", { name: "Business" })).toHaveAttribute(
-    "href",
-    "/en/business",
-  );
+  expect(
+    within(rail).getByRole("link", { name: "AkiBusiness" }),
+  ).toHaveAttribute("href", "https://business.akipasa.com/en/business");
   expect(within(rail).getByRole("link", { name: "Staff" })).toHaveAttribute(
     "href",
     "/en/staff",
@@ -364,13 +363,15 @@ it("keeps the business application reachable before sign in", () => {
   const rail = screen.getByRole("complementary", {
     name: "Primary navigation",
   });
-  expect(
-    within(rail).getByRole("link", { name: "Add your business" }),
-  ).toHaveAttribute("href", "/en/business/apply");
+  expect(within(rail).getByRole("link", { name: "Sign in" })).toHaveAttribute(
+    "href",
+    "/en/auth",
+  );
 
   fireEvent.click(screen.getByRole("button", { name: "More options" }));
   const dialog = screen.getByRole("dialog", { name: "More options" });
-  expect(
-    within(dialog).getByRole("link", { name: "Add your business" }),
-  ).toHaveAttribute("href", "/en/business/apply");
+  expect(within(dialog).getByRole("link", { name: "Sign in" })).toHaveAttribute(
+    "href",
+    "/en/auth",
+  );
 });

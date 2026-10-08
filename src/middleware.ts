@@ -91,7 +91,9 @@ export async function middleware(request: NextRequest) {
     response.headers.set("X-Robots-Tag", "noindex, nofollow");
     return response;
   }
-  const mainBusinessPath = /^\/(es|en)\/business(?:\/|$)/.test(request.nextUrl.pathname);
+  const mainBusinessPath = /^\/(es|en)\/business(?:\/|$)/.test(
+    request.nextUrl.pathname,
+  );
   if (mainBusinessPath && hostname !== "business.akipasa.com") {
     const target = request.nextUrl.clone();
     target.hostname = "business.akipasa.com";

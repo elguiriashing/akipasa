@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- Venue media uses native images with existing layout controls. */
 "use client";
 
 import Link from "next/link";
@@ -209,7 +210,6 @@ export function EventCard({
     >
       <div className="card-media">
         {primaryImage ? (
-          /* eslint-disable-next-line @next/next/no-img-element */
           <img
             className={
               primaryImageIsLogo

@@ -46,13 +46,20 @@ export default async function ProfilePage({
       />
 
       {query.updated && (
-        <p className="notice">{es ? "Perfil actualizado." : "Profile updated."}</p>
+        <p className="notice">
+          {es ? "Perfil actualizado." : "Profile updated."}
+        </p>
       )}
       {query.error && (
-        <p className="notice">{es ? "No se pudo actualizar." : "Update failed."}</p>
+        <p className="notice">
+          {es ? "No se pudo actualizar." : "Update failed."}
+        </p>
       )}
 
-      <section className="profile-media-simple" aria-labelledby="profile-photos-title">
+      <section
+        className="profile-media-simple"
+        aria-labelledby="profile-photos-title"
+      >
         <div className="profile-section-heading">
           <div>
             <span>{es ? "Tu imagen" : "Your look"}</span>
@@ -177,7 +184,9 @@ export default async function ProfilePage({
                   : "Tell people a little about yourself..."
               }
             />
-            <small>{es ? "Máximo 300 caracteres." : "Up to 300 characters."}</small>
+            <small>
+              {es ? "Máximo 300 caracteres." : "Up to 300 characters."}
+            </small>
           </label>
         </section>
 
@@ -187,7 +196,9 @@ export default async function ProfilePage({
               <span>{es ? "Contacto" : "Contact"}</span>
               <h2>{es ? "Dónde encontrarte" : "Where to find you"}</h2>
             </div>
-            <p>{es ? "Todo esto es opcional." : "Everything here is optional."}</p>
+            <p>
+              {es ? "Todo esto es opcional." : "Everything here is optional."}
+            </p>
           </div>
 
           <div className="profile-form-grid">
@@ -262,7 +273,9 @@ export default async function ProfilePage({
         </section>
 
         <details className="profile-optional-section">
-          <summary>{es ? "Más sobre ti (opcional)" : "More about you (optional)"}</summary>
+          <summary>
+            {es ? "Más sobre ti (opcional)" : "More about you (optional)"}
+          </summary>
           <div className="profile-form-grid">
             <label>
               {es ? "Año de nacimiento" : "Birth year"}
@@ -295,8 +308,12 @@ export default async function ProfilePage({
                 name="profileVisibility"
                 defaultValue={profile?.profile_visibility || "public"}
               >
-                <option value="public">{es ? "Todo el mundo" : "Everyone"}</option>
-                <option value="members">{es ? "Usuarios de AkiPasa" : "AkiPasa users"}</option>
+                <option value="public">
+                  {es ? "Todo el mundo" : "Everyone"}
+                </option>
+                <option value="members">
+                  {es ? "Usuarios de AkiPasa" : "AkiPasa users"}
+                </option>
                 <option value="private">{es ? "Solo yo" : "Only me"}</option>
               </select>
             </label>
@@ -306,8 +323,12 @@ export default async function ProfilePage({
                 name="contactVisibility"
                 defaultValue={profile?.contact_visibility || "private"}
               >
-                <option value="public">{es ? "Todo el mundo" : "Everyone"}</option>
-                <option value="members">{es ? "Usuarios de AkiPasa" : "AkiPasa users"}</option>
+                <option value="public">
+                  {es ? "Todo el mundo" : "Everyone"}
+                </option>
+                <option value="members">
+                  {es ? "Usuarios de AkiPasa" : "AkiPasa users"}
+                </option>
                 <option value="private">{es ? "Solo yo" : "Only me"}</option>
               </select>
             </label>
@@ -317,8 +338,12 @@ export default async function ProfilePage({
                 name="attendanceVisibility"
                 defaultValue={profile?.attendance_visibility || "private"}
               >
-                <option value="public">{es ? "Todo el mundo" : "Everyone"}</option>
-                <option value="members">{es ? "Usuarios de AkiPasa" : "AkiPasa users"}</option>
+                <option value="public">
+                  {es ? "Todo el mundo" : "Everyone"}
+                </option>
+                <option value="members">
+                  {es ? "Usuarios de AkiPasa" : "AkiPasa users"}
+                </option>
                 <option value="private">{es ? "Solo yo" : "Only me"}</option>
               </select>
             </label>

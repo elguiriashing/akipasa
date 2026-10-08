@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- Venue media uses native images with existing layout controls. */
 "use client";
 
 import { useMemo, useState } from "react";
@@ -52,10 +53,7 @@ function stateLabel(state: AllergenState, es: boolean) {
   }[state];
 }
 
-function localText(
-  value: { es: string; en: string },
-  locale: "es" | "en",
-) {
+function localText(value: { es: string; en: string }, locale: "es" | "en") {
   return value[locale] || value.es || value.en;
 }
 
@@ -111,7 +109,8 @@ export function VenueCatalogueEditor({
   );
 
   const itemCount = useMemo(
-    () => document.sections.reduce((sum, section) => sum + section.items.length, 0),
+    () =>
+      document.sections.reduce((sum, section) => sum + section.items.length, 0),
     [document.sections],
   );
 
@@ -319,7 +318,9 @@ export function VenueCatalogueEditor({
           </span>
           <h2>
             {localText(document.title, locale) ||
-              (es ? "Carta, productos y servicios" : "Menu, products & services")}
+              (es
+                ? "Carta, productos y servicios"
+                : "Menu, products & services")}
           </h2>
           <p>
             {itemCount} {es ? "elementos" : "items"} ·{" "}
@@ -428,9 +429,7 @@ export function VenueCatalogueEditor({
                   setExpandedSectionIds(
                     allSectionsExpanded
                       ? new Set()
-                      : new Set(
-                          document.sections.map((section) => section.id),
-                        ),
+                      : new Set(document.sections.map((section) => section.id)),
                   )
                 }
                 disabled={document.sections.length === 0}
@@ -515,7 +514,9 @@ export function VenueCatalogueEditor({
                         <button
                           type="button"
                           onClick={() => moveSection(section.id, 1)}
-                          disabled={sectionIndex === document.sections.length - 1}
+                          disabled={
+                            sectionIndex === document.sections.length - 1
+                          }
                           title={es ? "Bajar sección" : "Move section down"}
                         >
                           ↓
@@ -610,7 +611,9 @@ export function VenueCatalogueEditor({
           {!selectedSection ? (
             <div className="catalogue-studio-empty-editor">
               <span aria-hidden="true">☰</span>
-              <h3>{es ? "Tu catálogo está vacío" : "Your catalogue is empty"}</h3>
+              <h3>
+                {es ? "Tu catálogo está vacío" : "Your catalogue is empty"}
+              </h3>
               <p>
                 {es
                   ? "Crea una sección y añade productos o servicios sin convertir la página en un pergamino infinito."
@@ -716,7 +719,8 @@ export function VenueCatalogueEditor({
                         <select
                           value={selectedItem.kind}
                           onChange={(event) => {
-                            const kind = event.target.value as CatalogueItemKind;
+                            const kind = event.target
+                              .value as CatalogueItemKind;
                             updateItem(selectedSection.id, selectedItem.id, {
                               ...selectedItem,
                               kind,
@@ -787,7 +791,7 @@ export function VenueCatalogueEditor({
                               priceCents:
                                 event.target.value === "on_request"
                                   ? null
-                                  : selectedItem.priceCents ?? 0,
+                                  : (selectedItem.priceCents ?? 0),
                             })
                           }
                         >
@@ -846,7 +850,9 @@ export function VenueCatalogueEditor({
                           </option>
                           <option value="hour">{es ? "Hora" : "Hour"}</option>
                           <option value="day">{es ? "Día" : "Day"}</option>
-                          <option value="night">{es ? "Noche" : "Night"}</option>
+                          <option value="night">
+                            {es ? "Noche" : "Night"}
+                          </option>
                           <option value="month">{es ? "Mes" : "Month"}</option>
                           <option value="kg">kg</option>
                         </select>
@@ -874,7 +880,9 @@ export function VenueCatalogueEditor({
                     {mediaOptions.length > 0 && (
                       <section className="catalogue-item-media-picker">
                         <div>
-                          <strong>{es ? "Imagen del elemento" : "Item image"}</strong>
+                          <strong>
+                            {es ? "Imagen del elemento" : "Item image"}
+                          </strong>
                           <small>
                             {es
                               ? "Reutiliza una imagen de tu biblioteca."
@@ -892,7 +900,9 @@ export function VenueCatalogueEditor({
                               })
                             }
                           >
-                            <span className="catalogue-item-media-empty">×</span>
+                            <span className="catalogue-item-media-empty">
+                              ×
+                            </span>
                             <small>{es ? "Sin imagen" : "No image"}</small>
                           </button>
                           {mediaOptions.map((media) => (
@@ -900,14 +910,20 @@ export function VenueCatalogueEditor({
                               type="button"
                               key={media.id}
                               className={
-                                selectedItem.mediaId === media.id ? "selected" : ""
+                                selectedItem.mediaId === media.id
+                                  ? "selected"
+                                  : ""
                               }
                               aria-pressed={selectedItem.mediaId === media.id}
                               onClick={() =>
-                                updateItem(selectedSection.id, selectedItem.id, {
-                                  ...selectedItem,
-                                  mediaId: media.id,
-                                })
+                                updateItem(
+                                  selectedSection.id,
+                                  selectedItem.id,
+                                  {
+                                    ...selectedItem,
+                                    mediaId: media.id,
+                                  },
+                                )
                               }
                             >
                               <img src={media.url} alt={media.alt} />
@@ -964,9 +980,7 @@ export function VenueCatalogueEditor({
                           <span className="eyebrow">
                             {es ? "Seguridad alimentaria" : "Food safety"}
                           </span>
-                          <h4>
-                            {es ? "Alérgenos UE" : "EU allergens"}
-                          </h4>
+                          <h4>{es ? "Alérgenos UE" : "EU allergens"}</h4>
                           <p>
                             {reviewedAllergens}/14{" "}
                             {es ? "revisados" : "reviewed"}
@@ -1063,163 +1077,39 @@ export function VenueCatalogueEditor({
 
                       {allergenEditorOpen && (
                         <div className="allergen-editor-drawer">
-                        <div className="allergen-toggle-grid compact">
-                          {euAllergens.map(([key, icon, esLabel, enLabel]) => {
-                            const state = selectedItem.allergens.states[key];
-                            return (
-                              <button
-                                key={key}
-                                type="button"
-                                className="allergen-toggle"
-                                data-state={state}
-                                onClick={() =>
-                                  cycleAllergen(
-                                    selectedSection.id,
-                                    selectedItem,
-                                    key,
-                                  )
-                                }
-                              >
-                                <span aria-hidden="true">{icon}</span>
-                                <strong>{es ? esLabel : enLabel}</strong>
-                                <small>{stateLabel(state, es)}</small>
-                              </button>
-                            );
-                          })}
-                        </div>
-  
-                        <div className="allergen-studio-tools">
-                          <button
-                            type="button"
-                            className="button secondary"
-                            onClick={() =>
-                              updateItem(selectedSection.id, selectedItem.id, {
-                                ...selectedItem,
-                                allergens: {
-                                  ...selectedItem.allergens,
-                                  states: Object.fromEntries(
-                                    euAllergens.map(([key]) => [
-                                      key,
-                                      selectedItem.allergens.states[key] ===
-                                      "unknown"
-                                        ? "not_in_recipe"
-                                        : selectedItem.allergens.states[key],
-                                    ]),
-                                  ) as CatalogueItem["allergens"]["states"],
-                                  reviewConfirmed: false,
-                                },
-                              })
-                            }
-                          >
-                            {es
-                              ? "Completar vacíos como «No en receta»"
-                              : "Mark blanks as “Not in recipe”"}
-                          </button>
-                        </div>
-  
-                        {["contains", "may_contain"].includes(
-                          selectedItem.allergens.states.gluten,
-                        ) && (
-                          <fieldset className="allergen-detail-options">
-                            <legend>
-                              {es ? "Cereales con gluten" : "Gluten cereals"}
-                            </legend>
-                            {[
-                              ["wheat", "Trigo", "Wheat"],
-                              ["rye", "Centeno", "Rye"],
-                              ["barley", "Cebada", "Barley"],
-                              ["oats", "Avena", "Oats"],
-                              ["spelt", "Espelta", "Spelt"],
-                              ["khorasan", "Khorasan", "Khorasan"],
-                            ].map(([key, esLabel, enLabel]) => (
-                              <label className="check-row" key={key}>
-                                <input
-                                  type="checkbox"
-                                  checked={selectedItem.allergens.cereals.includes(
-                                    key,
-                                  )}
-                                  onChange={(event) =>
-                                    updateItem(
-                                      selectedSection.id,
-                                      selectedItem.id,
-                                      {
-                                        ...selectedItem,
-                                        allergens: {
-                                          ...selectedItem.allergens,
-                                          cereals: event.target.checked
-                                            ? [
-                                                ...selectedItem.allergens.cereals,
-                                                key,
-                                              ]
-                                            : selectedItem.allergens.cereals.filter(
-                                                (value) => value !== key,
-                                              ),
-                                          reviewConfirmed: false,
-                                        },
-                                      },
-                                    )
-                                  }
-                                />
-                                {es ? esLabel : enLabel}
-                              </label>
-                            ))}
-                          </fieldset>
-                        )}
-  
-                        {["contains", "may_contain"].includes(
-                          selectedItem.allergens.states.nuts,
-                        ) && (
-                          <fieldset className="allergen-detail-options">
-                            <legend>
-                              {es ? "Frutos de cáscara" : "Tree nuts"}
-                            </legend>
-                            {[
-                              ["almond", "Almendra", "Almond"],
-                              ["hazelnut", "Avellana", "Hazelnut"],
-                              ["walnut", "Nuez", "Walnut"],
-                              ["cashew", "Anacardo", "Cashew"],
-                              ["pecan", "Pecana", "Pecan"],
-                              ["brazil", "Nuez de Brasil", "Brazil nut"],
-                              ["pistachio", "Pistacho", "Pistachio"],
-                              ["macadamia", "Macadamia", "Macadamia"],
-                            ].map(([key, esLabel, enLabel]) => (
-                              <label className="check-row" key={key}>
-                                <input
-                                  type="checkbox"
-                                  checked={selectedItem.allergens.nuts.includes(
-                                    key,
-                                  )}
-                                  onChange={(event) =>
-                                    updateItem(
-                                      selectedSection.id,
-                                      selectedItem.id,
-                                      {
-                                        ...selectedItem,
-                                        allergens: {
-                                          ...selectedItem.allergens,
-                                          nuts: event.target.checked
-                                            ? [...selectedItem.allergens.nuts, key]
-                                            : selectedItem.allergens.nuts.filter(
-                                                (value) => value !== key,
-                                              ),
-                                          reviewConfirmed: false,
-                                        },
-                                      },
-                                    )
-                                  }
-                                />
-                                {es ? esLabel : enLabel}
-                              </label>
-                            ))}
-                          </fieldset>
-                        )}
-  
-                        <div className="allergen-studio-footer">
-                          <label>
-                            {es ? "Contaminación cruzada" : "Cross-contact"}
-                            <select
-                              value={selectedItem.allergens.crossContact}
-                              onChange={(event) =>
+                          <div className="allergen-toggle-grid compact">
+                            {euAllergens.map(
+                              ([key, icon, esLabel, enLabel]) => {
+                                const state =
+                                  selectedItem.allergens.states[key];
+                                return (
+                                  <button
+                                    key={key}
+                                    type="button"
+                                    className="allergen-toggle"
+                                    data-state={state}
+                                    onClick={() =>
+                                      cycleAllergen(
+                                        selectedSection.id,
+                                        selectedItem,
+                                        key,
+                                      )
+                                    }
+                                  >
+                                    <span aria-hidden="true">{icon}</span>
+                                    <strong>{es ? esLabel : enLabel}</strong>
+                                    <small>{stateLabel(state, es)}</small>
+                                  </button>
+                                );
+                              },
+                            )}
+                          </div>
+
+                          <div className="allergen-studio-tools">
+                            <button
+                              type="button"
+                              className="button secondary"
+                              onClick={() =>
                                 updateItem(
                                   selectedSection.id,
                                   selectedItem.id,
@@ -1227,60 +1117,198 @@ export function VenueCatalogueEditor({
                                     ...selectedItem,
                                     allergens: {
                                       ...selectedItem.allergens,
-                                      crossContact: event.target
-                                        .value as CatalogueItem["allergens"]["crossContact"],
+                                      states: Object.fromEntries(
+                                        euAllergens.map(([key]) => [
+                                          key,
+                                          selectedItem.allergens.states[key] ===
+                                          "unknown"
+                                            ? "not_in_recipe"
+                                            : selectedItem.allergens.states[
+                                                key
+                                              ],
+                                        ]),
+                                      ) as CatalogueItem["allergens"]["states"],
                                       reviewConfirmed: false,
                                     },
                                   },
                                 )
                               }
                             >
-                              <option value="unknown">
-                                {es ? "No evaluada" : "Not assessed"}
-                              </option>
-                              <option value="possible">
-                                {es ? "Posible" : "Possible"}
-                              </option>
-                              <option value="assessed">
-                                {es ? "Evaluada" : "Assessed"}
-                              </option>
-                            </select>
-                          </label>
-  
-                          <label className="catalogue-review-confirm">
-                            <input
-                              type="checkbox"
-                              checked={Boolean(
-                                selectedItem.allergens.reviewConfirmed,
-                              )}
-                              onChange={(event) =>
-                                updateItem(
-                                  selectedSection.id,
-                                  selectedItem.id,
-                                  {
-                                    ...selectedItem,
-                                    allergens: {
-                                      ...selectedItem.allergens,
-                                      reviewConfirmed: event.target.checked,
+                              {es
+                                ? "Completar vacíos como «No en receta»"
+                                : "Mark blanks as “Not in recipe”"}
+                            </button>
+                          </div>
+
+                          {["contains", "may_contain"].includes(
+                            selectedItem.allergens.states.gluten,
+                          ) && (
+                            <fieldset className="allergen-detail-options">
+                              <legend>
+                                {es ? "Cereales con gluten" : "Gluten cereals"}
+                              </legend>
+                              {[
+                                ["wheat", "Trigo", "Wheat"],
+                                ["rye", "Centeno", "Rye"],
+                                ["barley", "Cebada", "Barley"],
+                                ["oats", "Avena", "Oats"],
+                                ["spelt", "Espelta", "Spelt"],
+                                ["khorasan", "Khorasan", "Khorasan"],
+                              ].map(([key, esLabel, enLabel]) => (
+                                <label className="check-row" key={key}>
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedItem.allergens.cereals.includes(
+                                      key,
+                                    )}
+                                    onChange={(event) =>
+                                      updateItem(
+                                        selectedSection.id,
+                                        selectedItem.id,
+                                        {
+                                          ...selectedItem,
+                                          allergens: {
+                                            ...selectedItem.allergens,
+                                            cereals: event.target.checked
+                                              ? [
+                                                  ...selectedItem.allergens
+                                                    .cereals,
+                                                  key,
+                                                ]
+                                              : selectedItem.allergens.cereals.filter(
+                                                  (value) => value !== key,
+                                                ),
+                                            reviewConfirmed: false,
+                                          },
+                                        },
+                                      )
+                                    }
+                                  />
+                                  {es ? esLabel : enLabel}
+                                </label>
+                              ))}
+                            </fieldset>
+                          )}
+
+                          {["contains", "may_contain"].includes(
+                            selectedItem.allergens.states.nuts,
+                          ) && (
+                            <fieldset className="allergen-detail-options">
+                              <legend>
+                                {es ? "Frutos de cáscara" : "Tree nuts"}
+                              </legend>
+                              {[
+                                ["almond", "Almendra", "Almond"],
+                                ["hazelnut", "Avellana", "Hazelnut"],
+                                ["walnut", "Nuez", "Walnut"],
+                                ["cashew", "Anacardo", "Cashew"],
+                                ["pecan", "Pecana", "Pecan"],
+                                ["brazil", "Nuez de Brasil", "Brazil nut"],
+                                ["pistachio", "Pistacho", "Pistachio"],
+                                ["macadamia", "Macadamia", "Macadamia"],
+                              ].map(([key, esLabel, enLabel]) => (
+                                <label className="check-row" key={key}>
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedItem.allergens.nuts.includes(
+                                      key,
+                                    )}
+                                    onChange={(event) =>
+                                      updateItem(
+                                        selectedSection.id,
+                                        selectedItem.id,
+                                        {
+                                          ...selectedItem,
+                                          allergens: {
+                                            ...selectedItem.allergens,
+                                            nuts: event.target.checked
+                                              ? [
+                                                  ...selectedItem.allergens
+                                                    .nuts,
+                                                  key,
+                                                ]
+                                              : selectedItem.allergens.nuts.filter(
+                                                  (value) => value !== key,
+                                                ),
+                                            reviewConfirmed: false,
+                                          },
+                                        },
+                                      )
+                                    }
+                                  />
+                                  {es ? esLabel : enLabel}
+                                </label>
+                              ))}
+                            </fieldset>
+                          )}
+
+                          <div className="allergen-studio-footer">
+                            <label>
+                              {es ? "Contaminación cruzada" : "Cross-contact"}
+                              <select
+                                value={selectedItem.allergens.crossContact}
+                                onChange={(event) =>
+                                  updateItem(
+                                    selectedSection.id,
+                                    selectedItem.id,
+                                    {
+                                      ...selectedItem,
+                                      allergens: {
+                                        ...selectedItem.allergens,
+                                        crossContact: event.target
+                                          .value as CatalogueItem["allergens"]["crossContact"],
+                                        reviewConfirmed: false,
+                                      },
                                     },
-                                  },
-                                )
-                              }
-                            />
-                            <span>
-                              <strong>
-                                {es
-                                  ? "He revisado los 14 alérgenos"
-                                  : "I reviewed all 14 allergens"}
-                              </strong>
-                              <small>
-                                {es
-                                  ? "Solo tendrás que volver a confirmarlo si cambias la receta o los datos de alérgenos."
-                                  : "You only need to reconfirm after changing recipe or allergen data."}
-                              </small>
-                            </span>
-                          </label>
-                        </div>
+                                  )
+                                }
+                              >
+                                <option value="unknown">
+                                  {es ? "No evaluada" : "Not assessed"}
+                                </option>
+                                <option value="possible">
+                                  {es ? "Posible" : "Possible"}
+                                </option>
+                                <option value="assessed">
+                                  {es ? "Evaluada" : "Assessed"}
+                                </option>
+                              </select>
+                            </label>
+
+                            <label className="catalogue-review-confirm">
+                              <input
+                                type="checkbox"
+                                checked={Boolean(
+                                  selectedItem.allergens.reviewConfirmed,
+                                )}
+                                onChange={(event) =>
+                                  updateItem(
+                                    selectedSection.id,
+                                    selectedItem.id,
+                                    {
+                                      ...selectedItem,
+                                      allergens: {
+                                        ...selectedItem.allergens,
+                                        reviewConfirmed: event.target.checked,
+                                      },
+                                    },
+                                  )
+                                }
+                              />
+                              <span>
+                                <strong>
+                                  {es
+                                    ? "He revisado los 14 alérgenos"
+                                    : "I reviewed all 14 allergens"}
+                                </strong>
+                                <small>
+                                  {es
+                                    ? "Solo tendrás que volver a confirmarlo si cambias la receta o los datos de alérgenos."
+                                    : "You only need to reconfirm after changing recipe or allergen data."}
+                                </small>
+                              </span>
+                            </label>
+                          </div>
                         </div>
                       )}
                     </section>
@@ -1331,12 +1359,7 @@ export function VenueCatalogueEditor({
             >
               {es ? "Guardar borrador" : "Save draft"}
             </button>
-            <button
-              className="button"
-              type="submit"
-              name="publish"
-              value="1"
-            >
+            <button className="button" type="submit" name="publish" value="1">
               {es ? "Publicar cambios" : "Publish changes"}
             </button>
           </form>

@@ -85,15 +85,17 @@ export default async function LocaleLayout({
                 <small>{locale === "es" ? "by AkiPasa" : "by AkiPasa"}</small>
               </span>
             </Link>
-            <nav aria-label={locale === "es" ? "Productos AkiPasa" : "AkiPasa products"}>
+            <nav
+              aria-label={
+                locale === "es" ? "Productos AkiPasa" : "AkiPasa products"
+              }
+            >
               <a href={config.siteUrl}>
                 {locale === "es" ? "Abrir AkiPasa" : "Open AkiPasa"}
               </a>
               <LanguageLink locale={locale === "es" ? "en" : "es"} compact />
               <ThemeToggle locale={locale} />
-              <a href={config.crmUrl}>
-                AkiHQ
-              </a>
+              <a href={config.crmUrl}>AkiHQ</a>
               {user && (
                 <form action={signOut} className="akibusiness-logout-form">
                   <input type="hidden" name="locale" value={locale} />

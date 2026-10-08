@@ -173,7 +173,9 @@ export function OfficialEventLocationPicker({
         <span className="eyebrow">
           {es ? "Ubicación del evento" : "Event location"}
         </span>
-        <h3>{es ? "Coloca el pin donde ocurre" : "Drop the pin where it happens"}</h3>
+        <h3>
+          {es ? "Coloca el pin donde ocurre" : "Drop the pin where it happens"}
+        </h3>
         <p>
           {es
             ? "Busca una zona para acercarte y luego haz clic o toca el mapa. Puedes arrastrar el pin para afinar la posición."
@@ -191,7 +193,9 @@ export function OfficialEventLocationPicker({
               id={searchId}
               type="search"
               value={search}
-              placeholder={es ? "Fuengirola, Mijas, Málaga…" : "Fuengirola, Mijas, Málaga…"}
+              placeholder={
+                es ? "Fuengirola, Mijas, Málaga…" : "Fuengirola, Mijas, Málaga…"
+              }
               onChange={(event) => setSearch(event.target.value)}
               autoComplete="off"
             />
@@ -288,7 +292,9 @@ export function OfficialEventLocationPicker({
             </div>
           )}
           <div className="official-event-map-hint">
-            {es ? "Toca el mapa para colocar el pin" : "Tap the map to place the pin"}
+            {es
+              ? "Toca el mapa para colocar el pin"
+              : "Tap the map to place the pin"}
           </div>
         </div>
       </div>

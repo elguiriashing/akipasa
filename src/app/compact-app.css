@@ -2210,7 +2210,6 @@ body:has(.subscription-app) > .privacy-preferences {
   }
 }
 
-
 /* Event artwork can be either photography or a logo/avatar. Treat those
    differently so logos do not become bizarre cropped postage stamps. */
 .card-media-image {
@@ -2259,7 +2258,6 @@ body:has(.subscription-app) > .privacy-preferences {
   max-width: none !important;
 }
 
-
 /* Event/discovery artwork should fill its media frame cleanly. Remove the
    inset outline treatment that made uploaded images look double-bordered. */
 .discover-page .card-media,
@@ -2302,7 +2300,6 @@ body:has(.subscription-app) > .privacy-preferences {
     overflow: hidden;
   }
 }
-
 
 /* Event cards: media must meet the card edge, not sit inside a padded frame. */
 .discover-page .card:not(.venue-card) {

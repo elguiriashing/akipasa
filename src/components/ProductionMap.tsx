@@ -250,8 +250,7 @@ export function ProductionMap({
       ),
     );
     const clusterableActivityPoints = initialPoints.filter(
-      (point) =>
-        point.source !== "akipasa_selection" && point.kind !== "event",
+      (point) => point.source !== "akipasa_selection" && point.kind !== "event",
     );
     let visiblePoints = initialPoints;
     let pointIndex = new Map(initialPoints.map((point) => [point.id, point]));
@@ -647,8 +646,7 @@ export function ProductionMap({
             if (activePopupId && !pointIndex.has(activePopupId))
               activePopup?.remove();
             setLoadedVenues(markers.length);
-            const showActivityPoints =
-              verticalRef.current === "activities";
+            const showActivityPoints = verticalRef.current === "activities";
             (
               map.getSource(
                 "discovery-points",
@@ -823,14 +821,7 @@ export function ProductionMap({
       popupRequest?.abort();
       cleanup();
     };
-  }, [
-    locale,
-    styleUrl,
-    fullScreen,
-    venueDestination,
-    stayType,
-    stayQuery,
-  ]);
+  }, [locale, styleUrl, fullScreen, venueDestination, stayType, stayQuery]);
 
   return (
     <section className="map-panel" aria-labelledby="production-map-title">

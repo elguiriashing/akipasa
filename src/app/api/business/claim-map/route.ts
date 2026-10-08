@@ -12,7 +12,11 @@ export async function GET(request: Request) {
   const parsed = querySchema.safeParse(
     Object.fromEntries(new URL(request.url).searchParams),
   );
-  if (!parsed.success || parsed.data.west >= parsed.data.east || parsed.data.south >= parsed.data.north) {
+  if (
+    !parsed.success ||
+    parsed.data.west >= parsed.data.east ||
+    parsed.data.south >= parsed.data.north
+  ) {
     return Response.json({ rows: [] }, { status: 400 });
   }
 

@@ -27,6 +27,24 @@ afterEach(() => {
   document.getElementById("ak-consented-ga")?.remove();
   vi.unstubAllGlobals();
 });
+it("does not request Google tags while optional consent is denied", async () => {
+  vi.stubGlobal("React", React);
+  render(<ConsentAnalytics />);
+  await waitFor(() =>
+    expect(
+      (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag,
+    ).toBeDefined(),
+  );
+  expect(document.getElementById("ak-consented-ga")).toBeNull();
+  expect(document.getElementById("ak-google-ads-loader")).toBeNull();
+  writePrivacyChoices({
+    analytics: false,
+    personalisation: false,
+    marketing: false,
+  });
+  expect(document.getElementById("ak-consented-ga")).toBeNull();
+});
+
 it("keeps one working privacy trigger in the Passport rail and restores it after leaving", async () => {
   navigation.pathname = "/en/passports";
   document.cookie = "ak_consent_version=2; Path=/";

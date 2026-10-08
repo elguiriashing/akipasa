@@ -70,12 +70,7 @@ describe("venue catalogue foundations", () => {
 
   it("uses menu meaning rather than literal hardware translations", () => {
     expect(
-      deterministicCatalogueTranslation(
-        "en",
-        "es",
-        "Nuts",
-        "section_title",
-      ),
+      deterministicCatalogueTranslation("en", "es", "Nuts", "section_title"),
     ).toBe("Frutos secos");
     expect(
       deterministicCatalogueTranslation(
