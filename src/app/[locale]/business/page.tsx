@@ -5,7 +5,6 @@ import { requireUser } from "@/lib/auth";
 import { requireBusinessAccess } from "@/lib/entitlements";
 import {
   confirmRedemption,
-  createEvent,
   createOfficialEvent,
   createVenue,
   deleteManagedVenue,
