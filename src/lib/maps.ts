@@ -27,7 +27,7 @@ export function googleMapsDirectionsUrl({
   const normalizedAddress = normalizeAddressLabel(address).trim();
   url.searchParams.set(
     "destination",
-    normalizedAddress || (hasCoordinates ? `${latitude},${longitude}` : ""),
+    hasCoordinates ? `${latitude},${longitude}` : normalizedAddress,
   );
   return url.toString();
 }
