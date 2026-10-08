@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- Venue media uses native images with existing layout controls. */
 import { eventStayHref } from "@/lib/trip-links";
 import { notFound } from "next/navigation";
 import { cache } from "react";
