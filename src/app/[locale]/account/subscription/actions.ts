@@ -135,7 +135,7 @@ export async function startSubscriptionCheckout(formData: FormData) {
     redirect(`/${locale}/account/subscription?upgrade=pending`);
   }
 
-  const successUrl = `${config.siteUrl}/${locale}/account/subscription?checkout=success`;
+  const successUrl = `${config.siteUrl}/${locale}/account/subscription?checkout=success&session_id={CHECKOUT_SESSION_ID}`;
   const cancelUrl = `${config.siteUrl}/${locale}/account/subscription?checkout=cancelled`;
   const parameters = new URLSearchParams({
     mode: "subscription",
