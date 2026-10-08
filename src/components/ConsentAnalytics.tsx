@@ -31,8 +31,7 @@ export function ConsentAnalytics() {
       w.gtag =
         w.gtag ||
         function (...args: unknown[]) {
-          // eslint-disable-next-line prefer-rest-params
-          w.dataLayer!.push(arguments);
+          w.dataLayer!.push(args);
         };
 
       // Consent must be set before configuring either destination.
