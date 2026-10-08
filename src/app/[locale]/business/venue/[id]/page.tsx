@@ -32,7 +32,6 @@ import {
   saveBookingSettings,
   saveOffer,
   setRecurrence,
-  updateEvent,
   updateBookingRequest,
   updateOccurrence,
   updateVenue,
