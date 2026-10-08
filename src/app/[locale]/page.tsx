@@ -131,7 +131,12 @@ export default async function DiscoverPage({
     page: resultPage(query.venuePage),
     center: searchCenter,
     radiusKm: radius,
-  });
+  })
+    .then((page) => ({ ...page, unavailable: false }))
+    .catch((error: unknown) => {
+      console.error("Discover nearby venues unavailable", error);
+      return { rows: [], total: 0, page: 1, unavailable: true };
+    });
 
   const resultText =
     results.length === 1
@@ -284,6 +289,14 @@ export default async function DiscoverPage({
             total={venuePage.total}
           />
         </section>
+      ) : null}
+
+      {venuePage.unavailable ? (
+        <p className="notice" role="status">
+          {locale === "es"
+            ? "Los locales cercanos no se pueden cargar ahora mismo. Prueba de nuevo en un momento."
+            : "Nearby venues are temporarily unavailable. Please try again shortly."}
+        </p>
       ) : null}
 
       <p className="owner-nudge">
