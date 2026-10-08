@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- Venue media uses native images with existing layout controls. */
 "use client";
 
 import Link from "next/link";
