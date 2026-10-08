@@ -246,6 +246,7 @@ export function deterministicCatalogueTranslation(
   value: string,
   context: CatalogueTranslationContext = "general",
 ) {
+  void context;
   if (sourceLocale === targetLocale) return null;
   const key = normalizedCataloguePhrase(value);
   return sourceLocale === "en" && targetLocale === "es"
