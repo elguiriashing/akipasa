@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- Venue media uses native images with existing layout controls. */
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { localizedMetadata, languageUrls, serializeJsonLd } from "@/lib/seo";
