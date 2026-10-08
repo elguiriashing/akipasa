@@ -129,7 +129,6 @@ export default async function DiscoverPage({
   );
   const venuePage = await nearbyVenuePage({
     page: resultPage(query.venuePage),
-    unclaimedOnly: true,
     center: searchCenter,
     radiusKm: radius,
   });
