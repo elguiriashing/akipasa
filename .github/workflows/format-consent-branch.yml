@@ -26,6 +26,7 @@ jobs:
           if git diff --quiet; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git restore -- .github/workflows/format-consent-branch.yml
           git add -u
           git commit -m "style: apply repository Prettier formatting"
           git push origin HEAD:fix/consent-gated-google-tags-20261008
