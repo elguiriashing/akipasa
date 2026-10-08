@@ -15181,10 +15181,9 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
 
 .catalogue-item-main {
   display: grid;
-  grid-template-columns: minmax(8rem, 0.7fr) minmax(14rem, 1.5fr) minmax(
-      8rem,
-      0.7fr
-    ) minmax(8rem, 0.7fr);
+  grid-template-columns:
+    minmax(8rem, 0.7fr) minmax(14rem, 1.5fr) minmax(8rem, 0.7fr)
+    minmax(8rem, 0.7fr);
   gap: 0.65rem;
 }
 
