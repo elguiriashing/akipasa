@@ -12,9 +12,10 @@ export function ConsentAnalytics() {
   useEffect(() => {
     const w = window as unknown as GoogleWindow;
     // Share one gtag.js loader for GA4 and Ads, respecting the visitor's choices.
-    let loaded = Boolean(document.getElementById("ak-consented-ga"));
+    const adsBootstrapped = Boolean(document.getElementById("ak-google-ads-loader"));
+    let loaded = adsBootstrapped || Boolean(document.getElementById("ak-consented-ga"));
     let analyticsConfigured = false;
-    let adsConfigured = false;
+    let adsConfigured = adsBootstrapped;
     function update() {
       const choices = readPrivacyChoices();
       const analytics = choices.analytics;
