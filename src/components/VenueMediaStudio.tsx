@@ -95,6 +95,7 @@ export function VenueMediaStudio({
     total: number;
   } | null>(null);
   const [status, setStatus] = useState<"idle" | "saved" | "error">("idle");
+  const [uploadError, setUploadError] = useState("");
   const uploadFormRef = useRef<HTMLFormElement>(null);
   const fallback = items[0] || null;
 
@@ -161,6 +162,7 @@ export function VenueMediaStudio({
 
     const sharedAlt = String(source.get("alt") || "").trim();
     setBusy(true);
+    setUploadError("");
     setUploadProgress({ done: 0, total: files.length });
 
     const uploaded: VenueMediaStudioItem[] = [];
@@ -186,8 +188,30 @@ export function VenueMediaStudio({
             : fallbackAlt,
       );
 
-      const result = await uploadVenueImage(fd);
+      let result;
+      try {
+        result = await uploadVenueImage(fd);
+      } catch {
+        setUploadError(es ? `Falló la subida de ${file.name}. Comprueba la conexión.` : `Upload failed for ${file.name}. Check your connection.`);
+        setItems((current) => [...current, ...uploaded]);
+        setStatus("error");
+        setBusy(false);
+        setUploadProgress(null);
+        return;
+      }
       if (!result?.ok || !result.media?.url) {
+        const reason = result?.error;
+        const explanation = reason === "invalid-file"
+          ? (es ? "Archivo inválido o demasiado grande." : "Invalid or oversized file.")
+          : reason === "storage"
+            ? (es ? "El almacenamiento rechazó el archivo." : "Storage rejected the file.")
+            : reason === "database"
+              ? (es ? "No se pudo guardar el archivo en la biblioteca." : "Could not save the file to the media library.")
+              : reason === "translation"
+                ? (es ? "Falló la traducción de la descripción." : "Description translation failed.")
+                : (es ? "No se pudo completar la subida." : "Upload could not be completed.");
+        setUploadError(`${file.name}: ${explanation}`);
+        setItems((current) => [...current, ...uploaded]);
         setStatus("error");
         setBusy(false);
         setUploadProgress(null);
@@ -354,6 +378,7 @@ export function VenueMediaStudio({
         <span>{items.length}</span>
       </div>
 
+      {uploadError ? <p role="alert" className="safe-media-status error">{uploadError}</p> : null}
       <details className="media-upload-drawer" open={!items.length}>
         <summary>
           ＋ {es ? "Añadir a la biblioteca" : "Add to media bin"}
