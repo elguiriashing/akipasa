@@ -61,6 +61,25 @@ export default async function RootLayout({
     requestLocale && isLocale(requestLocale) ? requestLocale : "es";
   return (
     <html lang={locale}>
+      {!isAkiDuermo && !isAkiBusiness && (
+        <head>
+          <script
+            id="ak-google-ads-bootstrap"
+            dangerouslySetInnerHTML={{
+              __html: `window.dataLayer=window.dataLayer||[];
+window.gtag=window.gtag||function(){dataLayer.push(arguments);};
+gtag('consent','default',{ad_storage:'denied',analytics_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',wait_for_update:500});
+gtag('js',new Date());
+gtag('config','AW-18500420718');`,
+            }}
+          />
+          <script
+            id="ak-google-ads-loader"
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=AW-18500420718"
+          />
+        </head>
+      )}
       <body>
         <script
           type="application/ld+json"
