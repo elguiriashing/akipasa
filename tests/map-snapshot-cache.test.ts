@@ -128,7 +128,7 @@ it("edge hits and conditional requests avoid the origin and canonicalize cache k
   expect(second.headers.get("X-Map-Cache")).toBe("HIT");
   expect(origin).toHaveBeenCalledTimes(1);
   expect(cache.put.mock.calls[0][0].url).toBe(
-    "https://akipasa.com/api/map/snapshot?v=1&policy=relevance-1",
+    "https://akipasa.com/api/map/snapshot?v=1&policy=relevance-6",
   );
 });
 
