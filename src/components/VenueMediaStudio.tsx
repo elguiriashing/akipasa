@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- Venue media uses native images with existing layout controls. */
 "use client";
 
 import { useMemo, useRef, useState, type FormEvent } from "react";
