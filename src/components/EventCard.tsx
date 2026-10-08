@@ -210,7 +210,6 @@ export function EventCard({
     >
       <div className="card-media">
         {primaryImage ? (
-          /* eslint-disable-next-line @next/next/no-img-element */
           <img
             className={
               primaryImageIsLogo
