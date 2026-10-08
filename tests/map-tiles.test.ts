@@ -321,7 +321,7 @@ it("persists validated tiles in IndexedDB, bounds storage, and discards expired/
       });
     const records = await new Promise<Array<{ bytes: number }>>(
       (resolve, reject) => {
-        const request = indexedDB.open("akipasa-map-tiles-v2-relevance-1", 1);
+        const request = indexedDB.open("akipasa-map-tiles-v4-sanitized-2", 1);
         request.onsuccess = () => {
           const get = request.result
             .transaction("tiles")
