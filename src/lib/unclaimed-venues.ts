@@ -94,6 +94,15 @@ export async function nearbyVenuePage({
       p_unclaimed: unclaimedOnly,
     },
   );
-  if (error) throw new Error(`Public venue query failed: ${error.message}`);
+  if (error) {
+    // Nearby businesses are optional homepage content. A slow database query
+    // must not turn the entire discovery page into a server error.
+    console.error("Public nearby venue query failed", {
+      code: error.code,
+      message: error.message,
+      details: error.details,
+    });
+    return { rows: [], total: 0, page };
+  }
   return data;
 }
