@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- Venue media uses native images with existing layout controls. */
 "use client";
 
 import { useMemo, useState } from "react";
@@ -85,7 +86,7 @@ export function PublicVenueCatalogue({
             <button
               type="button"
               className="public-catalogue-tab"
-              aria-selected={section.id === activeSection.id}
+              aria-pressed={section.id === activeSection.id}
               key={section.id}
               onClick={() => setActiveSectionId(section.id)}
             >
