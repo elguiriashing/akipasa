@@ -19,12 +19,12 @@ jobs:
       - run: npm ci
       - name: Format SQL harness and workflow
         run: |
-          npx prettier --write scripts/test-booking-engine-sql.mjs .github/workflows/booking-engine-sql.yml
+          npx prettier --write scripts/test-booking-engine-sql.mjs
       - name: Commit formatter output
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts/test-booking-engine-sql.mjs .github/workflows/booking-engine-sql.yml
+          git add scripts/test-booking-engine-sql.mjs
           if ! git diff --cached --quiet; then
             git commit -m "style(bookings): format SQL smoke suite"
             git push origin HEAD:feature/booking-engine-resources-schedules
