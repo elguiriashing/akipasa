@@ -1,5 +1,6 @@
 export const accountExportTables = [
   ["profiles", "id"],
+  ["booking_requests", "profile_id"],
   ["saved_events", "profile_id"],
   ["saved_event_refs", "profile_id"],
   ["followed_venues", "profile_id"],

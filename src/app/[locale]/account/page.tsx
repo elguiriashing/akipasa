@@ -45,6 +45,14 @@ export default async function AccountOverview({
     detail: string;
   }> = [
     {
+      href: `/${locale}/account/bookings`,
+      icon: "calendar",
+      label: es ? "Mis reservas" : "My bookings",
+      detail: es
+        ? "Próximas, activas e historial"
+        : "Upcoming, active and past",
+    },
+    {
       href: `/${locale}/account/saved`,
       icon: "saved",
       label: es ? "Planes guardados" : "Saved plans",

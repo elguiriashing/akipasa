@@ -43,5 +43,6 @@
     "cpu_ms": 1000,
     "subrequests": 100,
   },
+  "triggers": { "crons": ["*/5 * * * *"] },
   "observability": { "enabled": true },
 }

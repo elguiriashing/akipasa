@@ -1,3 +1,4 @@
+import { bookingEmailConfigured } from "@/lib/booking-mail-delivery";
 import { BookingManager } from "@/components/BookingManager";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
@@ -37,6 +38,7 @@ import {
   saveOffer,
   setRecurrence,
   updateBookingRequest,
+  retryBookingEmails,
   updateOccurrence,
   updateVenue,
   unclaimVenue,
@@ -93,6 +95,8 @@ export default async function VenueWorkspace({
     { data: rewards },
     { data: passportOptions },
     { data: bookingSettings },
+    { data: bookingNotificationSettings },
+    { data: bookingEmailStatuses },
     { data: bookingSlots },
     { data: bookingResources },
     { data: bookingOfferings },
@@ -156,10 +160,19 @@ export default async function VenueWorkspace({
     supabase
       .from("venue_booking_settings")
       .select(
-        "mode,requires_deposit,deposit_cents,instructions_es,instructions_en,active",
+        "mode,requires_deposit,deposit_cents,instructions_es,instructions_en,active,external_url,booking_template",
       )
       .eq("venue_id", id)
       .maybeSingle(),
+    supabase
+      .from("booking_notification_settings")
+      .select("notification_email")
+      .eq("venue_id", id)
+      .maybeSingle(),
+    supabase
+      .from("booking_confirmation_emails")
+      .select("booking_id,audience,status,last_error")
+      .eq("venue_id", id),
     supabase
       .from("venue_availability_slots")
       .select("id,starts_at,ends_at,capacity,active,resource_id,offering_id")
@@ -178,7 +191,7 @@ export default async function VenueWorkspace({
     supabase
       .from("booking_requests")
       .select(
-        "id,party_size,contact_name,contact_email,contact_phone,notes,status,created_at,venue_availability_slots(starts_at,ends_at)",
+        "id,slot_id,party_size,contact_name,contact_email,contact_phone,notes,status,created_at,venue_availability_slots(starts_at,ends_at)",
       )
       .eq("venue_id", id)
       .order("created_at", { ascending: false }),
@@ -1532,7 +1545,15 @@ export default async function VenueWorkspace({
           <BookingManager
             locale={locale}
             venueId={id}
-            settings={bookingSettings}
+            settings={{
+              ...bookingSettings,
+              notification_email:
+                bookingNotificationSettings?.notification_email,
+            }}
+            initialTab={query.bookingTab}
+            notifications={bookingEmailStatuses || []}
+            emailConfigured={bookingEmailConfigured()}
+            retryEmails={retryBookingEmails}
             slots={bookingSlots || []}
             resources={bookingResources || []}
             offerings={bookingOfferings || []}

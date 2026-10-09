@@ -59,6 +59,12 @@ export async function GET() {
     data: recommendationItems.data || [],
     failed: Boolean(recommendationItems.error),
   });
+  const bookingEmails = await supabase.rpc("my_booking_email_export");
+  derivedEntries.push({
+    table: "booking_confirmation_emails",
+    data: bookingEmails.data || [],
+    failed: Boolean(bookingEmails.error),
+  });
   const failedTables = [...entries, ...derivedEntries]
     .filter((entry) => entry.failed)
     .map((entry) => entry.table);

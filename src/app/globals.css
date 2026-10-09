@@ -18706,3 +18706,475 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
     flex: 1 1 4.5rem;
   }
 }
+
+/* Responsive customer booking app */
+.booking-wizard {
+  padding: clamp(1rem, 3vw, 2rem);
+  max-width: 960px;
+  margin-inline: auto;
+}
+.booking-wizard-header h2 {
+  font-size: clamp(1.4rem, 3vw, 2.1rem);
+  margin: 0.25rem 0 1.3rem;
+}
+.booking-wizard-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.booking-wizard-steps button {
+  border: 0;
+  border-bottom: 3px solid rgba(150, 150, 180, 0.25);
+  background: transparent;
+  color: inherit;
+  opacity: 0.65;
+  padding: 0.6rem 0.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.83rem;
+}
+.booking-wizard-steps button.active {
+  border-color: #9284ff;
+  opacity: 1;
+  font-weight: 700;
+}
+.booking-wizard-steps button:disabled {
+  cursor: default;
+}
+.booking-wizard-steps span {
+  display: grid;
+  place-items: center;
+  background: rgba(150, 150, 180, 0.2);
+  border-radius: 50%;
+  height: 1.5rem;
+  width: 1.5rem;
+  flex-shrink: 0;
+}
+.booking-wizard-body {
+  min-height: 280px;
+}
+.booking-wizard-body h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1rem;
+  margin: 1.1rem 0;
+}
+.booking-date-grid,
+.booking-time-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 135px), 1fr));
+  gap: 0.6rem;
+}
+.booking-date-grid button,
+.booking-time-grid button {
+  border: 1px solid rgba(150, 150, 180, 0.35);
+  border-radius: 0.75rem;
+  padding: 1rem 0.55rem;
+  background: rgba(150, 150, 180, 0.055);
+  color: inherit;
+  text-align: center;
+  cursor: pointer;
+  display: grid;
+  gap: 0.25rem;
+  min-height: 72px;
+}
+.booking-date-grid button.active,
+.booking-time-grid button.active {
+  border: 2px solid #9786ff;
+  background: rgba(151, 134, 255, 0.19);
+}
+.booking-date-grid small,
+.booking-time-grid small {
+  opacity: 0.8;
+  font-size: 0.75rem;
+}
+.booking-guest-counter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 4vw, 3rem);
+  margin: 2rem auto;
+}
+.booking-guest-counter button {
+  border: 1px solid rgba(150, 150, 180, 0.5);
+  background: transparent;
+  color: inherit;
+  border-radius: 50%;
+  height: 60px;
+  width: 60px;
+  font-size: 2rem;
+  cursor: pointer;
+}
+.booking-guest-counter button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.booking-guest-counter strong {
+  font-size: 3rem;
+  min-width: 2ch;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.booking-wizard-hint {
+  text-align: center;
+  opacity: 0.75;
+}
+.booking-contact-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.booking-contact-form label {
+  display: grid;
+  gap: 0.3rem;
+}
+.booking-contact-form details {
+  grid-column: 1/-1;
+}
+.booking-contact-form details textarea {
+  width: 100%;
+  margin-top: 0.6rem;
+}
+.booking-wizard-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid rgba(150, 150, 180, 0.2);
+  padding-top: 1.2rem;
+  margin-top: 1.4rem;
+}
+.booking-wizard-summary {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+}
+.booking-wizard-summary span {
+  opacity: 0.75;
+}
+.booking-wizard-navigation {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+.booking-wizard-navigation .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+@media (max-width: 600px) {
+  .booking-wizard-steps button {
+    font-size: 0.7rem;
+    gap: 0.2rem;
+    flex-direction: column;
+  }
+  .booking-contact-form {
+    grid-template-columns: 1fr;
+  }
+  .booking-wizard-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .booking-wizard-navigation {
+    display: flex;
+  }
+  .booking-wizard-navigation .button {
+    flex: 1;
+  }
+  .booking-date-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .booking-time-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Booking manager: active choice is visible, not five identical purple buttons. */
+.booking-manager-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin: 1.25rem 0;
+}
+.booking-manager-tabs .button {
+  min-width: 0;
+  border-radius: 0.65rem;
+  padding: 0.8rem 0.45rem;
+}
+.booking-manager-tabs .button.secondary {
+  background: transparent !important;
+  color: inherit !important;
+  border: 1px solid rgba(162, 170, 216, 0.32) !important;
+}
+.booking-manager-tabs .button:not(.secondary) {
+  box-shadow: inset 0 -3px 0 rgba(23, 23, 51, 0.3);
+}
+.booking-template-card.selected {
+  outline: 2px solid #9884ff;
+  outline-offset: 0;
+}
+.booking-template-card {
+  min-height: 64px;
+}
+.booking-mode-card input:checked + span {
+  color: #a897ff;
+}
+@media (max-width: 600px) {
+  .booking-manager-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .booking-manager-tabs .button {
+    font-size: 0.85rem;
+  }
+}
+/* AkiPasa Account: bookings are visual cards, not a table of editable fields. */
+.my-bookings-app {
+  display: grid;
+  gap: 1rem;
+}
+.my-bookings-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+.my-bookings-tabs button {
+  background: rgba(150, 150, 180, 0.08);
+  color: inherit;
+  border: 1px solid rgba(150, 150, 180, 0.25);
+  border-radius: 0.8rem;
+  padding: 0.85rem 0.45rem;
+  cursor: pointer;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.my-bookings-tabs button.selected {
+  border-color: #9381fb;
+  background: rgba(147, 129, 251, 0.18);
+}
+.my-bookings-tabs button span {
+  background: rgba(150, 150, 180, 0.17);
+  padding: 0.15rem 0.45rem;
+  border-radius: 2rem;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.75rem;
+}
+.my-bookings-list {
+  display: grid;
+  gap: 0.85rem;
+}
+.my-booking-card {
+  display: grid;
+  grid-template-columns: minmax(115px, 165px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1rem !important;
+}
+.my-booking-calendar {
+  border-radius: 0.8rem;
+  background: rgba(147, 129, 251, 0.13);
+  min-height: 104px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  color: inherit;
+  text-align: center;
+  padding: 0.75rem;
+}
+.my-booking-calendar span {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.my-booking-info {
+  min-width: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+.my-booking-info h3 {
+  font-size: 1.15rem;
+  overflow-wrap: anywhere;
+  margin: 0;
+}
+.my-booking-meta {
+  display: flex;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  opacity: 0.8;
+  font-size: 0.85rem;
+}
+.my-booking-meta span,
+.my-booking-actions .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.my-booking-actions {
+  display: grid;
+  gap: 0.65rem;
+  justify-items: end;
+}
+.my-booking-status {
+  padding: 0.4rem 0.75rem;
+  border-radius: 2rem;
+  font-weight: 700;
+  font-size: 0.75rem;
+  background: rgba(139, 149, 177, 0.18);
+}
+.my-booking-status.status-confirmed {
+  background: rgba(50, 186, 157, 0.16);
+  color: #70e3c6;
+}
+.my-booking-status.status-requested {
+  background: rgba(238, 172, 72, 0.15);
+  color: #ffd28d;
+}
+.my-bookings-empty {
+  padding: clamp(2rem, 6vw, 4rem) !important;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+.my-bookings-empty p {
+  max-width: 400px;
+}
+.my-bookings-empty .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+@media (max-width: 680px) {
+  .my-booking-card {
+    grid-template-columns: 80px minmax(0, 1fr);
+    gap: 0.8rem;
+  }
+  .my-booking-calendar {
+    min-height: 88px;
+  }
+  .my-booking-actions {
+    grid-column: 1/-1;
+    grid-template-columns: 1fr auto;
+    justify-items: start;
+    align-items: center;
+  }
+  .my-bookings-tabs button {
+    font-size: 0.8rem;
+    gap: 0.25rem;
+  }
+}
+
+.booking-hub {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 210px);
+  min-height: 400px;
+  overflow: hidden;
+}
+.booking-hub > .workspace-inline-heading,
+.booking-hub > .booking-status-strip,
+.booking-hub > .booking-manager-tabs {
+  flex-shrink: 0;
+}
+.booking-manager-body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.25rem;
+}
+.booking-request-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.65rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--line, rgba(150, 150, 180, 0.2));
+}
+.booking-request-card small,
+.booking-request-card time {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.booking-request-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  grid-column: 1/-1;
+}
+.booking-mail-status {
+  grid-column: 1/-1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.booking-history-pager {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+.my-bookings-tabs a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  color: inherit;
+  text-decoration: none;
+  padding: 0.85rem 0.45rem;
+  border: 1px solid var(--line, rgba(150, 150, 180, 0.25));
+  border-radius: 0.8rem;
+  font-weight: 700;
+}
+.my-bookings-tabs a.selected {
+  background: rgba(147, 129, 251, 0.18);
+  border-color: #9381fb;
+}
+.my-bookings-tabs a span {
+  border-radius: 2rem;
+  padding: 0.15rem 0.4rem;
+  background: rgba(150, 150, 180, 0.17);
+  font-size: 0.75rem;
+}
+.booking-date-grid,
+.booking-time-grid {
+  max-height: 260px;
+  overflow-y: auto;
+}
+.booking-time-grid button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.booking-cancel {
+  max-width: 260px;
+  font-size: 0.8rem;
+}
+[data-theme="light"] .my-booking-status.status-confirmed {
+  color: #17624b;
+}
+[data-theme="light"] .my-booking-status.status-requested {
+  color: #754705;
+}
+@media (max-width: 600px) {
+  .booking-hub {
+    max-height: calc(100dvh - 160px);
+    min-height: 350px;
+  }
+  .booking-request-card {
+    grid-template-columns: 1fr;
+  }
+  .my-bookings-tabs a {
+    font-size: 0.8rem;
+  }
+  .booking-wizard {
+    padding: 1rem;
+  }
+}
