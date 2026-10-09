@@ -30,7 +30,9 @@ export function ClaimVenuePicker({
   const mapRef = useRef<import("maplibre-gl").Map | null>(null);
   const popupRef = useRef<import("maplibre-gl").Popup | null>(null);
   const [query, setQuery] = useState("");
-  const [vertical, setVertical] = useState<"activities" | "accommodation">("activities");
+  const [vertical, setVertical] = useState<"activities" | "accommodation">(
+    "activities",
+  );
   const [rows, setRows] = useState<ClaimVenue[]>([]);
   const [selected, setSelected] = useState<ClaimVenue | null>(null);
   const [loading, setLoading] = useState(false);
@@ -415,12 +417,30 @@ export function ClaimVenuePicker({
     <div className="claim-venue-picker">
       <input type="hidden" name="venueId" value={selected?.id || ""} required />
       <section className="claim-search-panel">
-        <div role="group" aria-label={es ? "Tipo de negocio" : "Business type"} className="claim-vertical-switch">
+        <div
+          role="group"
+          aria-label={es ? "Tipo de negocio" : "Business type"}
+          className="claim-vertical-switch"
+        >
           {(["activities", "accommodation"] as const).map((value) => (
-            <button key={value} type="button" aria-pressed={vertical === value}
+            <button
+              key={value}
+              type="button"
+              aria-pressed={vertical === value}
               className={vertical === value ? "button" : "button secondary"}
-              onClick={() => { setVertical(value); setSelected(null); setRows([]); }}>
-              {value === "activities" ? (es ? "Locales y eventos" : "Venues & events") : (es ? "Alojamientos" : "Accommodation")}
+              onClick={() => {
+                setVertical(value);
+                setSelected(null);
+                setRows([]);
+              }}
+            >
+              {value === "activities"
+                ? es
+                  ? "Locales y eventos"
+                  : "Venues & events"
+                : es
+                  ? "Alojamientos"
+                  : "Accommodation"}
             </button>
           ))}
         </div>

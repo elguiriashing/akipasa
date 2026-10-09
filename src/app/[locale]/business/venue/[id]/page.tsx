@@ -355,43 +355,65 @@ export default async function VenueWorkspace({
       }}
       overview={
         <>
-        {venue.discovery_vertical === "accommodation" && (
-          <section className="panel stack" aria-label={es ? "Gestión de AkiDuermo" : "AkiDuermo property management"}>
-            <span className="eyebrow">AkiDuermo · {es ? "Alojamiento" : "Accommodation"}</span>
-            <h2>{es ? "Tu alojamiento en AkiDuermo" : "Your AkiDuermo property"}</h2>
-            <p>{es ? "Gestiona aquí la información del alojamiento, las fotos y los eventos. El calendario de habitaciones, las tarifas por noche y las reservas hoteleras todavía no están activos." : "Manage your property details, photos and events here. Room-night inventory, nightly rates and accommodation bookings are not available yet."}</p>
-            {venue.status === "published" && <a className="button secondary" href={`https://akiduermo.akipasa.com/stays/${encodeURIComponent(venue.slug)}`} target="_blank" rel="noopener noreferrer">{es ? "Ver ficha en AkiDuermo ↗" : "Preview on AkiDuermo ↗"}</a>}
-          </section>
-        )}
-        <OwnerReadiness
-          locale={locale}
-          venueId={id}
-          profileComplete={Boolean(
-            venue.description_es &&
-              (venue.contact_phone ||
-                venue.website_url ||
-                venue.whatsapp_phone),
+          {venue.discovery_vertical === "accommodation" && (
+            <section
+              className="panel stack"
+              aria-label={
+                es ? "Gestión de AkiDuermo" : "AkiDuermo property management"
+              }
+            >
+              <span className="eyebrow">
+                AkiDuermo · {es ? "Alojamiento" : "Accommodation"}
+              </span>
+              <h2>
+                {es ? "Tu alojamiento en AkiDuermo" : "Your AkiDuermo property"}
+              </h2>
+              <p>
+                {es
+                  ? "Gestiona aquí la información del alojamiento, las fotos y los eventos. El calendario de habitaciones, las tarifas por noche y las reservas hoteleras todavía no están activos."
+                  : "Manage your property details, photos and events here. Room-night inventory, nightly rates and accommodation bookings are not available yet."}
+              </p>
+              {venue.status === "published" && (
+                <a
+                  className="button secondary"
+                  href={`https://akiduermo.akipasa.com/stays/${encodeURIComponent(venue.slug)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {es ? "Ver ficha en AkiDuermo ↗" : "Preview on AkiDuermo ↗"}
+                </a>
+              )}
+            </section>
           )}
-          photos={media?.length || 0}
-          upcomingEvents={
-            (events || []).filter(
-              (event) =>
-                event.status === "published" &&
-                (event.event_occurrences || []).some(
-                  (occurrence: { status: string; ends_at: string }) =>
-                    occurrence.status === "scheduled" &&
-                    new Date(occurrence.ends_at).getTime() > Date.now(),
-                ),
-            ).length
-          }
-          loyaltyReady={Boolean(
-            programs?.some(
-              (program) =>
-                program.active && program.loyalty_program_rewards?.length,
-            ),
-          )}
-          results={ownerResultsError ? null : ownerResults}
-        />
+          <OwnerReadiness
+            locale={locale}
+            venueId={id}
+            profileComplete={Boolean(
+              venue.description_es &&
+                (venue.contact_phone ||
+                  venue.website_url ||
+                  venue.whatsapp_phone),
+            )}
+            photos={media?.length || 0}
+            upcomingEvents={
+              (events || []).filter(
+                (event) =>
+                  event.status === "published" &&
+                  (event.event_occurrences || []).some(
+                    (occurrence: { status: string; ends_at: string }) =>
+                      occurrence.status === "scheduled" &&
+                      new Date(occurrence.ends_at).getTime() > Date.now(),
+                  ),
+              ).length
+            }
+            loyaltyReady={Boolean(
+              programs?.some(
+                (program) =>
+                  program.active && program.loyalty_program_rewards?.length,
+              ),
+            )}
+            results={ownerResultsError ? null : ownerResults}
+          />
         </>
       }
       sections={{

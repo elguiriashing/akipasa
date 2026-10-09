@@ -47,7 +47,9 @@ export default async function VenuePage({
   if (!venue) notFound();
   // Accommodation is presented exclusively through the AkiDuermo stay experience.
   if (venue.discoveryVertical === "accommodation") {
-    redirect(`https://akiduermo.akipasa.com/stays/${encodeURIComponent(venue.slug)}?lang=${locale}`);
+    redirect(
+      `https://akiduermo.akipasa.com/stays/${encodeURIComponent(venue.slug)}?lang=${locale}`,
+    );
   }
   const events = await repository.eventsForVenue(venue.id);
   const now = Date.now();

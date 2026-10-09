@@ -15,7 +15,9 @@ export async function GET(request: Request) {
 
   const query = normalizeVenueSearch(parsed.data.q);
   const { data, error } = await createSupabasePublicClient().rpc(
-    parsed.data.vertical === "accommodation" ? "search_claimable_accommodations" : "search_claimable_venues",
+    parsed.data.vertical === "accommodation"
+      ? "search_claimable_accommodations"
+      : "search_claimable_venues",
     {
       p_query: query,
       p_limit: 24,
