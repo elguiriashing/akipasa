@@ -17,6 +17,7 @@ const sql = postgres(connection, { max: 1, onnotice: () => {} });
 const venue = "00000000-0000-4000-8000-000000000001";
 const resource = "00000000-0000-4000-8000-000000000002";
 const anotherVenue = "00000000-0000-4000-8000-000000000003";
+const offering = "00000000-0000-4000-8000-000000000004";
 try {
   await sql
     .unsafe(
@@ -46,6 +47,7 @@ try {
     .simple();
 
   for (const filename of [
+    "supabase/migrations/20261009113000_booking_offerings.sql",
     "supabase/migrations/20261009115000_booking_resources.sql",
     "supabase/migrations/20261009120000_recurring_booking_slots.sql",
   ])
@@ -55,6 +57,7 @@ try {
   await sql`insert into public.venue_booking_settings(venue_id,mode) values (${venue},'request')`;
   await sql`insert into public.booking_resources(id,venue_id,name,kind,capacity) values (${resource},${venue},'Buggy 1','vehicle',2)`;
 
+  await sql`insert into public.booking_offerings(id,venue_id,name,kind,duration_minutes,capacity) values (${offering},${venue},'Buggy tour','experience',60,2)`;
   const schedule = () => sql`select public.create_recurring_booking_slots(
     ${venue}::uuid,
     (current_date + 14)::date,
@@ -63,7 +66,8 @@ try {
     '09:30'::time,
     60,
     2,
-    ${resource}::uuid
+    ${resource}::uuid,
+    ${offering}::uuid
   ) as count`;
   const first = await schedule();
   assert.equal(first[0].count, 7, "Seven days should generate seven slots");
@@ -74,6 +78,19 @@ try {
     await sql`select starts_at,ends_at from public.venue_availability_slots where resource_id=${resource} order by starts_at`;
   assert.equal(rows.length, 7);
   assert.equal(+rows[0].ends_at - +rows[0].starts_at, 60 * 60000);
+
+  await assert.rejects(
+    () => sql`insert into public.venue_availability_slots(venue_id,offering_id,starts_at,ends_at,capacity)
+      values (${venue},${offering},${new Date(+rows[0].starts_at + 29 * 86400000)},${new Date(+rows[0].ends_at + 29 * 86400000)},3)`,
+    (error) => /offering capacity/i.test(error.message),
+    "An offering must enforce its configured capacity",
+  );
+  await assert.rejects(
+    () => sql`insert into public.venue_availability_slots(venue_id,offering_id,starts_at,ends_at,capacity)
+      values (${anotherVenue},${offering},${new Date(+rows[0].starts_at + 33 * 86400000)},${new Date(+rows[0].ends_at + 33 * 86400000)},1)`,
+    (error) => error.code === "23503" || /offering unavailable/i.test(error.message),
+    "An offering cannot be assigned to another venue",
+  );
 
   const overlapStart = new Date(+rows[0].starts_at + 15 * 60000);
   const overlapEnd = new Date(+rows[0].starts_at + 75 * 60000);
