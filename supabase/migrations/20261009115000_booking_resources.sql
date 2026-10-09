@@ -16,6 +16,8 @@ create index if not exists booking_resources_venue_idx
   on public.booking_resources(venue_id,active);
 
 alter table public.booking_resources enable row level security;
+revoke all on public.booking_resources from anon,authenticated;
+grant select,insert,update,delete on public.booking_resources to authenticated;
 create policy booking_resources_manage on public.booking_resources
   for all to authenticated
   using (public.is_venue_member(venue_id,array['owner','manager']::public.venue_member_role[]))
