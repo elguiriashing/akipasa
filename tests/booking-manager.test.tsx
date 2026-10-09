@@ -33,11 +33,11 @@ const props = {
     },
   ],
   requests: [],
-  save: vi.fn(async (_formData: FormData) => {}),
-  createSlot: vi.fn(async (_formData: FormData) => {}),
-  createRecurringSlots: vi.fn(async (_formData: FormData) => {}),
-  createResource: vi.fn(async (_formData: FormData) => {}),
-  updateRequest: vi.fn(async (_formData: FormData) => {}),
+  save: vi.fn(async () => {}),
+  createSlot: vi.fn(async () => {}),
+  createRecurringSlots: vi.fn(async () => {}),
+  createResource: vi.fn(async () => {}),
+  updateRequest: vi.fn(async () => {}),
 };
 
 describe("AkiBusiness advanced booking manager", () => {
