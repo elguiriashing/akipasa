@@ -42,9 +42,14 @@ const js = await build({
           path: "next/link",
           namespace: "test",
         }));
-        b.onLoad({ filter: /.*/, namespace: "test" }, () => ({
-          contents:
-            'import React from "react";export default function Link({children,...props}){return React.createElement("a",props,children)}',
+        b.onResolve({ filter: /^next\/navigation$/ }, () => ({
+          path: "next/navigation",
+          namespace: "test",
+        }));
+        b.onLoad({ filter: /.*/, namespace: "test" }, (args) => ({
+          contents: args.path.endsWith("navigation")
+            ? 'export function useRouter(){return {push(url){history.pushState(history.state,"",url)}}}'
+            : 'import React from "react";export default function Link({children,...props}){return React.createElement("a",props,children)}',
           loader: "jsx",
           resolveDir: process.cwd(),
         }));
