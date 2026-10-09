@@ -27,8 +27,8 @@ jobs:
           node-version: '22'
       - run: npm ci
       - name: Format contract files
-        run: npx prettier --write AGENTS.md docs/AKIPASA_MASTER.md docs/CHANGE_IMPACT_REGISTER.md scripts/generate-system-inventory.mjs scripts/check-change-contract.mjs .github/workflows/master-system-contract.yml .github/workflows/format-master-contract.yml
-      - name: Commit formatting only if changed
+        run: npx prettier --write AGENTS.md docs/AKIPASA_MASTER.md docs/CHANGE_IMPACT_REGISTER.md docs/SOURCE_ROUTE_BASELINE.md scripts/generate-system-inventory.mjs scripts/check-change-contract.mjs
+      - name: Print expected formatted workflow\n        run: |\n          npx prettier .github/workflows/master-system-contract.yml\n          npx prettier .github/workflows/format-master-contract.yml\n      - name: Commit formatting only if changed
         run: |
           if ! git diff --quiet; then
             git config user.name "github-actions[bot]"
