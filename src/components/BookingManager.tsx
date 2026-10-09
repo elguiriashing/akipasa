@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
+import { Icon, type IconName } from "./Icons";
 
 type Mode = "external" | "request" | "disabled";
 type Settings = {
@@ -13,24 +14,29 @@ type Settings = {
   instructions_en?: string | null;
 } | null;
 
-const templates = [
-  ["dining", "🍽️", "Tables & dining", "Mesas y restaurantes"],
-  ["experience", "🚙", "Tours & experiences", "Tours y experiencias"],
-  ["resource", "🎾", "Facilities & rentals", "Instalaciones y alquiler"],
-  ["appointment", "✂️", "Appointments", "Citas y servicios"],
-  ["ticket", "🎟️", "Events & tickets", "Eventos y entradas"],
-  ["class", "🧘", "Classes & activities", "Clases y actividades"],
-  ["stay", "🛏️", "Overnight stays", "Alojamientos"],
-] as const;
+const templates: ReadonlyArray<readonly [string, IconName, string, string]> = [
+  ["dining", "venue", "Tables & dining", "Mesas y restaurantes"],
+  ["experience", "discover", "Tours & experiences", "Tours y experiencias"],
+  ["resource", "calendar", "Facilities & rentals", "Instalaciones y alquiler"],
+  ["appointment", "calendar", "Appointments", "Citas y servicios"],
+  ["ticket", "membership", "Events & tickets", "Eventos y entradas"],
+  ["class", "users", "Classes & activities", "Clases y actividades"],
+  ["stay", "home", "Overnight stays", "Alojamientos"],
+];
 
 export function BookingManager({
   locale,
   venueId,
   settings,
   slots,
+  resources,
+  offerings,
   requests,
   save,
   createSlot,
+  createRecurringSlots,
+  createResource,
+  createOffering,
   updateRequest,
 }: {
   locale: "es" | "en";
@@ -40,6 +46,23 @@ export function BookingManager({
     id: string;
     starts_at: string;
     ends_at: string;
+    capacity: number;
+    active: boolean;
+    resource_id?: string | null;
+    offering_id?: string | null;
+  }>;
+  resources: Array<{
+    id: string;
+    name: string;
+    kind: string;
+    capacity: number;
+    active: boolean;
+  }>;
+  offerings: Array<{
+    id: string;
+    name: string;
+    kind: string;
+    duration_minutes: number;
     capacity: number;
     active: boolean;
   }>;
@@ -53,6 +76,9 @@ export function BookingManager({
   }>;
   save: (formData: FormData) => Promise<void>;
   createSlot: (formData: FormData) => Promise<void>;
+  createRecurringSlots: (formData: FormData) => Promise<void>;
+  createResource: (formData: FormData) => Promise<void>;
+  createOffering: (formData: FormData) => Promise<void>;
   updateRequest: (formData: FormData) => Promise<void>;
 }) {
   const es = locale === "es";
@@ -61,9 +87,9 @@ export function BookingManager({
       ? (settings.mode as Mode)
       : "external",
   );
-  const [section, setSection] = useState<"setup" | "calendar" | "inbox">(
-    "setup",
-  );
+  const [section, setSection] = useState<
+    "setup" | "offerings" | "resources" | "calendar" | "inbox"
+  >("setup");
   const [template, setTemplate] = useState(
     settings?.booking_template || "experience",
   );
@@ -115,6 +141,8 @@ export function BookingManager({
         {(
           [
             ["setup", es ? "Configuración" : "Setup"],
+            ["offerings", es ? "Servicios" : "Offerings"],
+            ["resources", es ? "Recursos" : "Resources"],
             ["calendar", es ? "Disponibilidad" : "Availability"],
             ["inbox", es ? "Solicitudes" : "Requests"],
           ] as const
@@ -143,7 +171,7 @@ export function BookingManager({
               [
                 [
                   "external",
-                  "🔗",
+                  "globe",
                   es ? "Enlace externo" : "External link",
                   es
                     ? "Usa tu proveedor de reservas."
@@ -151,13 +179,13 @@ export function BookingManager({
                 ],
                 [
                   "request",
-                  "📅",
+                  "calendar",
                   es ? "Reservas AkiPasa" : "Via AkiPasa",
                   es ? "Gestiona reservas aquí." : "Manage bookings here.",
                 ],
                 [
                   "disabled",
-                  "🚫",
+                  "close",
                   es ? "Sin reservas" : "Bookings off",
                   es
                     ? "Oculta el botón al público."
@@ -173,7 +201,9 @@ export function BookingManager({
                   checked={mode === value}
                   onChange={() => setMode(value)}
                 />
-                <span aria-hidden="true">{icon}</span>
+                <span aria-hidden="true">
+                  <Icon name={icon as IconName} />
+                </span>
                 <span>
                   <strong>{title}</strong>
                   <small>{description}</small>
@@ -215,7 +245,9 @@ export function BookingManager({
                         : "booking-template-card"
                     }
                   >
-                    <span aria-hidden="true">{icon}</span>
+                    <span aria-hidden="true">
+                      <Icon name={icon} />
+                    </span>
                     <strong>{es ? spanish : en}</strong>
                   </button>
                 ))}
@@ -262,6 +294,158 @@ export function BookingManager({
           </button>
         </form>
       )}
+      {section === "offerings" && (
+        <div className="stack booking-manager-form">
+          <h3>{es ? "Servicios reservables" : "Bookable offerings"}</h3>
+          <p>
+            {es
+              ? "Crea actividades, citas, clases o experiencias independientes. Cada servicio tendrá su propio cupo y horarios."
+              : "Create separate services, appointments, classes or experiences. Each offering has its own capacity and slots."}
+          </p>
+          {offerings.length > 0 && (
+            <div className="managed-list">
+              {offerings.map((offering) => (
+                <div className="managed-row" key={offering.id}>
+                  <span>
+                    <strong>{offering.name}</strong> · {offering.kind}
+                  </span>
+                  <span>
+                    {offering.duration_minutes} min · {offering.capacity}{" "}
+                    {es ? "plazas" : "places"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+          <form action={createOffering} className="stack compact-action-form">
+            <input type="hidden" name="locale" value={locale} />
+            <input type="hidden" name="venueId" value={venueId} />
+            <div className="form-grid-three">
+              <label>
+                {es ? "Nombre del servicio" : "Offering name"}
+                <input
+                  type="text"
+                  name="name"
+                  maxLength={120}
+                  required
+                  placeholder={es ? "Ej. Ruta en buggy" : "E.g. Buggy tour"}
+                />
+              </label>
+              <label>
+                {es ? "Tipo" : "Type"}
+                <select name="kind" defaultValue={template}>
+                  {templates.map(([key, , en, spanish]) => (
+                    <option key={key} value={key}>
+                      {es ? spanish : en}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                {es ? "Duración (min)" : "Duration (min)"}
+                <input
+                  name="duration"
+                  type="number"
+                  min="15"
+                  max="1440"
+                  defaultValue={60}
+                  required
+                />
+              </label>
+              <label>
+                {es ? "Capacidad máxima" : "Maximum capacity"}
+                <input
+                  name="capacity"
+                  type="number"
+                  min="1"
+                  max="10000"
+                  defaultValue={1}
+                  required
+                />
+              </label>
+            </div>
+            <button className="button" type="submit">
+              {es ? "Crear servicio" : "Create offering"}
+            </button>
+          </form>
+        </div>
+      )}
+      {section === "resources" && (
+        <div className="stack booking-manager-form">
+          <h3>{es ? "Recursos reservables" : "Bookable resources"}</h3>
+          <p>
+            {es
+              ? "Crea mesas, personal, vehículos, pistas o equipos con aforo propio. Los horarios asignados al mismo recurso no pueden solaparse."
+              : "Create tables, staff, vehicles, courts, or equipment with individual capacities. Slots for the same resource cannot overlap."}
+          </p>
+          {resources.length > 0 && (
+            <div className="managed-list">
+              {resources.map((resource) => (
+                <div className="managed-row" key={resource.id}>
+                  <span>
+                    <strong>{resource.name}</strong> · {resource.kind}
+                  </span>
+                  <span>
+                    {resource.capacity} {es ? "plazas" : "places"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+          <form action={createResource} className="stack compact-action-form">
+            <input type="hidden" name="locale" value={locale} />
+            <input type="hidden" name="venueId" value={venueId} />
+            <div className="form-grid-three">
+              <label>
+                {es ? "Nombre del recurso" : "Resource name"}
+                <input
+                  name="name"
+                  type="text"
+                  maxLength={100}
+                  placeholder={
+                    es ? "Ej. Mesa 1, Buggy 2" : "E.g. Table 1, Buggy 2"
+                  }
+                  required
+                />
+              </label>
+              <label>
+                {es ? "Tipo" : "Type"}
+                <select name="kind" defaultValue="other">
+                  {(
+                    [
+                      "table",
+                      "staff",
+                      "vehicle",
+                      "equipment",
+                      "court",
+                      "room",
+                      "other",
+                    ] as const
+                  ).map((kind) => (
+                    <option value={kind} key={kind}>
+                      {kind}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                {es ? "Capacidad" : "Capacity"}
+                <input
+                  name="capacity"
+                  type="number"
+                  min="1"
+                  max="10000"
+                  defaultValue="1"
+                  required
+                />
+              </label>
+            </div>
+            <button className="button" type="submit">
+              {es ? "Añadir recurso" : "Add resource"}
+            </button>
+          </form>
+        </div>
+      )}
       {section === "calendar" && (
         <div className="stack booking-manager-form">
           {mode !== "request" ? (
@@ -287,6 +471,10 @@ export function BookingManager({
                         })}
                       </span>
                       <strong>
+                        {slot.resource_id
+                          ? resources.find((r) => r.id === slot.resource_id)
+                              ?.name + " · "
+                          : ""}
                         {slot.capacity} {es ? "plazas" : "places"}
                       </strong>
                     </div>
@@ -326,8 +514,146 @@ export function BookingManager({
                       />
                     </label>
                   </div>
+                  <label>
+                    {es ? "Servicio opcional" : "Optional offering"}
+                    <select name="offeringId" defaultValue="">
+                      <option value="">
+                        {es ? "Reserva general" : "General booking"}
+                      </option>
+                      {offerings
+                        .filter((o) => o.active)
+                        .map((offering) => (
+                          <option key={offering.id} value={offering.id}>
+                            {offering.name} · {offering.capacity}
+                          </option>
+                        ))}
+                    </select>
+                  </label>
+                  <label>
+                    {es ? "Recurso opcional" : "Optional resource"}
+                    <select name="resourceId" defaultValue="">
+                      <option value="">
+                        {es ? "Aforo general" : "General capacity"}
+                      </option>
+                      {resources
+                        .filter((r) => r.active)
+                        .map((resource) => (
+                          <option key={resource.id} value={resource.id}>
+                            {resource.name} · {resource.capacity}
+                          </option>
+                        ))}
+                    </select>
+                  </label>
                   <button className="button" type="submit">
                     {es ? "Añadir horario" : "Add slot"}
+                  </button>
+                </form>
+              </details>
+              <details className="workspace-action-card">
+                <summary>
+                  {es
+                    ? "Programar horarios recurrentes"
+                    : "Schedule recurring availability"}
+                </summary>
+                <form
+                  action={createRecurringSlots}
+                  className="stack compact-action-form"
+                >
+                  <input type="hidden" name="locale" value={locale} />
+                  <input type="hidden" name="venueId" value={venueId} />
+                  <div className="form-grid-three">
+                    <label>
+                      {es ? "Desde" : "From"}
+                      <input type="date" name="startDate" required />
+                    </label>
+                    <label>
+                      {es ? "Hasta (máx. 90 días)" : "Until (max 90 days)"}
+                      <input type="date" name="endDate" required />
+                    </label>
+                    <label>
+                      {es ? "Hora de inicio" : "Start time"}
+                      <input type="time" name="startTime" required />
+                    </label>
+                    <label>
+                      {es ? "Duración en minutos" : "Duration in minutes"}
+                      <input
+                        type="number"
+                        name="duration"
+                        min="15"
+                        max="1440"
+                        defaultValue="60"
+                        required
+                      />
+                    </label>
+                    <label>
+                      {es ? "Plazas por horario" : "Places per slot"}
+                      <input
+                        type="number"
+                        name="capacity"
+                        min="1"
+                        max="10000"
+                        defaultValue="1"
+                        required
+                      />
+                    </label>
+                  </div>
+                  <label>
+                    {es ? "Servicio opcional" : "Optional offering"}
+                    <select name="offeringId" defaultValue="">
+                      <option value="">
+                        {es ? "Reserva general" : "General booking"}
+                      </option>
+                      {offerings
+                        .filter((o) => o.active)
+                        .map((offering) => (
+                          <option key={offering.id} value={offering.id}>
+                            {offering.name} · {offering.capacity}
+                          </option>
+                        ))}
+                    </select>
+                  </label>
+                  <label>
+                    {es ? "Recurso opcional" : "Optional resource"}
+                    <select name="resourceId" defaultValue="">
+                      <option value="">
+                        {es ? "Aforo general" : "General capacity"}
+                      </option>
+                      {resources
+                        .filter((r) => r.active)
+                        .map((resource) => (
+                          <option key={resource.id} value={resource.id}>
+                            {resource.name} · {resource.capacity}
+                          </option>
+                        ))}
+                    </select>
+                  </label>
+                  <fieldset>
+                    <legend>
+                      {es ? "Días de la semana" : "Days of the week"}
+                    </legend>
+                    <div className="booking-weekday-options">
+                      {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
+                        (day, i) => (
+                          <label key={day}>
+                            <input
+                              type="checkbox"
+                              name="weekdays"
+                              value={i + 1}
+                              defaultChecked={i < 5}
+                            />
+                            {day}
+                          </label>
+                        ),
+                      )}
+                    </div>
+                  </fieldset>
+                  <p>
+                    {es
+                      ? "Los horarios existentes no se duplicarán. Los horarios nuevos conservarán la capacidad elegida."
+                      : "Existing dates won't be duplicated. New slots use your selected capacity."}
+                  </p>
+                  <button type="submit" className="button">
+                    {es ? "Crear programación" : "Create schedule"}
                   </button>
                 </form>
               </details>

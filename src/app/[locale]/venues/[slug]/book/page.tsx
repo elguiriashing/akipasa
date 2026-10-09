@@ -23,7 +23,7 @@ export default async function VenueBookingPage({
   const { data: venue } = await supabase
     .from("venues")
     .select(
-      "id,name,slug,venue_booking_settings(mode,active,external_url,instructions_es,instructions_en,requires_deposit,deposit_cents),venue_availability_slots(id,starts_at,ends_at,capacity,active)",
+      "id,name,slug,venue_booking_settings(mode,active,external_url,instructions_es,instructions_en,requires_deposit,deposit_cents),venue_availability_slots(id,starts_at,ends_at,capacity,active,offering_id)",
     )
     .eq("slug", slug)
     .eq("status", "published")
@@ -41,6 +41,17 @@ export default async function VenueBookingPage({
   const slots = ((venue.venue_availability_slots || []) as any[])
     .filter((s) => s.active && new Date(s.starts_at).getTime() > Date.now())
     .sort((a, b) => a.starts_at.localeCompare(b.starts_at));
+  const { data: offeringRows } = await supabase
+    .from("booking_offerings")
+    .select("id,name,active")
+    .eq("venue_id", venue.id)
+    .eq("active", true);
+  const offeringNames = new Map(
+    (offeringRows || []).map((offering) => [offering.id, offering.name]),
+  );
+  const visibleSlots = slots.filter(
+    (slot) => !slot.offering_id || offeringNames.has(slot.offering_id),
+  );
   const { data: profile } = await supabase
     .from("profiles")
     .select("display_name,public_email,phone")
@@ -72,7 +83,7 @@ export default async function VenueBookingPage({
         </p>
       )}
       <section className="panel booking-card">
-        {slots.length ? (
+        {visibleSlots.length ? (
           <>
             <h2>{es ? "Solicitar reserva" : "Request a booking"}</h2>
             <p>
@@ -96,13 +107,16 @@ export default async function VenueBookingPage({
               <label>
                 {es ? "Fecha y horario" : "Date and time"}
                 <select name="slotId" required>
-                  {slots.map((slot) => (
+                  {visibleSlots.map((slot) => (
                     <option key={slot.id} value={slot.id}>
                       {new Date(slot.starts_at).toLocaleString(locale, {
                         timeZone: "Europe/Madrid",
                         dateStyle: "medium",
                         timeStyle: "short",
                       })}{" "}
+                      {slot.offering_id
+                        ? `${offeringNames.get(slot.offering_id)} · `
+                        : ""}
                       · {slot.capacity}{" "}
                       {es ? "plazas máximas" : "maximum places"}
                     </option>

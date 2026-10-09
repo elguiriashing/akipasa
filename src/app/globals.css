@@ -18679,3 +18679,30 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
     align-items: flex-start;
   }
 }
+
+.booking-weekday-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+.booking-weekday-options label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid rgba(150, 150, 180, 0.3);
+  border-radius: 0.5rem;
+  padding: 0.45rem 0.65rem;
+  cursor: pointer;
+}
+.booking-manager-form fieldset {
+  min-width: 0;
+}
+.booking-manager-form fieldset legend {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+@media (max-width: 600px) {
+  .booking-weekday-options label {
+    flex: 1 1 4.5rem;
+  }
+}
