@@ -46,9 +46,34 @@ export function VenueDashboard({
   const es = locale === "es";
   const [active, setActive] = useState(initialSection);
   const [showFeedback, setShowFeedback] = useState(Boolean(feedback));
+  const dashboard = useRef<HTMLElement>(null);
   const tabs = useRef<
     Partial<Record<VenueDashboardSection, HTMLButtonElement | null>>
   >({});
+
+  useEffect(() => {
+    const root = dashboard.current;
+    const header = root
+      ?.closest(".akibusiness-host")
+      ?.querySelector(".akibusiness-topbar");
+    if (!root || !header) return;
+    const measure = () =>
+      root.style.setProperty(
+        "--business-header-height",
+        `${header.getBoundingClientRect().height}px`,
+      );
+    measure();
+    const observer =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(measure)
+        : null;
+    observer?.observe(header);
+    window.addEventListener("resize", measure);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
   function countLabel(
     value: number,
     en: [string, string],
@@ -215,7 +240,7 @@ export function VenueDashboard({
   }
 
   return (
-    <main className={styles.dashboard}>
+    <main ref={dashboard} className={styles.dashboard}>
       <Link className={styles.back} href={`/${locale}/business`}>
         <Icon name="arrow-right" />
         {es ? "Mis locales" : "My venues"}

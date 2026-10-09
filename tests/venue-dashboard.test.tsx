@@ -55,6 +55,43 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe("compact venue dashboard", () => {
+  it("tracks a wrapped business header and cleans up its resize observer", () => {
+    const observe = vi.fn();
+    const disconnect = vi.fn();
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        observe = observe;
+        disconnect = disconnect;
+      },
+    );
+    try {
+      const { container, unmount } = render(
+        <div className="akibusiness-host">
+          <header className="akibusiness-topbar">Business header</header>
+          <VenueDashboard {...props} />
+        </div>,
+      );
+      const header = container.querySelector(".akibusiness-topbar")!;
+      const main = container.querySelector("main")!;
+      const bounds = vi.spyOn(header, "getBoundingClientRect");
+      bounds.mockReturnValue({ height: 64 } as DOMRect);
+      fireEvent(window, new Event("resize"));
+      expect(main.style.getPropertyValue("--business-header-height")).toBe(
+        "64px",
+      );
+      bounds.mockReturnValue({ height: 120 } as DOMRect);
+      fireEvent(window, new Event("resize"));
+      expect(main.style.getPropertyValue("--business-header-height")).toBe(
+        "120px",
+      );
+      expect(observe).toHaveBeenCalledWith(header);
+      unmount();
+      expect(disconnect).toHaveBeenCalledOnce();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
   it("opens with an overview and keeps editing and removal tools out of the way", () => {
     render(<VenueDashboard {...props} />);
     expect(screen.getAllByRole("tabpanel")).toHaveLength(1);

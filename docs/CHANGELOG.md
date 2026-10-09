@@ -12,6 +12,8 @@ Entries are newest first and must not contain credentials or personal data.
   preserve all existing booking, service, resource and calendar controls.
 - Expand EN/ES light/dark tablet acceptance to nine viewport shapes with
   populated inbox search, paging and filter interactions.
+- Keep sticky venue tools below the measured product header, including when
+  its controls wrap in tablet split-screen.
 
 ## 2026-09-14 - Compact venue management dashboard
 

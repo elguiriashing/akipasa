@@ -153,7 +153,7 @@
   display: grid;
   gap: 0.8rem;
   min-width: 0;
-  scroll-margin-top: 7rem;
+  scroll-margin-top: calc(var(--business-header-height, 64px) + 5rem);
 }
 .booking-inbox-heading,
 .booking-inbox-pager {

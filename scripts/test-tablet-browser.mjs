@@ -19,7 +19,7 @@ const query=new URLSearchParams(location.search), search=query.get("bookingSearc
 const allRequests=Array.from({length:65},(_,i)=>({id:"00000000-0000-4000-8000-"+String(i).padStart(12,"0"),contact_name:"Test Guest "+i,contact_email:"guest"+i+"@example.invalid",party_size:2,status:i%2?"confirmed":"requested",created_at:"2026-10-09T12:00:00Z",venue_availability_slots:{starts_at:"2026-11-01T10:00:00Z",ends_at:"2026-11-01T11:00:00Z",offering_id:"breakfast"}}));
 const filtered=allRequests.filter(r=>(!search||r.contact_name.includes(search))&&(status==="all"||r.status===status));
 const booking=<BookingManager locale={locale} venueId="00000000-0000-4000-8000-000000000001" settings={{mode:"request",booking_template:"experience"}} slots={[{id:"slot",starts_at:"2026-11-01T10:00:00Z",ends_at:"2026-11-01T11:00:00Z",capacity:50,active:true}]} resources={[]} offerings={[{id:"breakfast",name:"Breakfast for two and a very long accessible service description",kind:"dining",duration_minutes:90,capacity:2,active:true}]} requests={filtered.slice((currentPage-1)*20,currentPage*20)} inbox={{search,status,sort,page:currentPage,total:filtered.length,pending:33}} emailConfigured={true} save={action} createSlot={action} createRecurringSlots={action} createResource={action} createOffering={action} updateRequest={action}/>;
-createRoot(document.getElementById("root")).render(<div className="akibusiness-host"><div className="business-workspace" style={{padding:16}}>
+createRoot(document.getElementById("root")).render(<div className="akibusiness-host"><header className="akibusiness-topbar"><a className="akibusiness-brand" href="#home"><span className="akibusiness-brand-mark">A</span><span><strong>AkiBusiness</strong><small>by AkiPasa</small></span></a><nav aria-label="Products"><a href="#language">EN</a><a href="#theme">Theme</a><a href="#hq">AkiHQ</a><a href="#logout">{es?"Cerrar sesión":"Log out"}</a></nav></header><div className="business-workspace" style={{padding:16}}>
 <div className="managed-row"><div><strong>Beasty Bites · AkiDuermo HQ long property name</strong><span>owner · published</span></div><div className="business-venue-row-actions"><a className="button secondary business-venue-action" href="#managed">{es?"Gestionar local":"Manage venue"}</a><VenueDeleteControl locale={locale} venueId="test" venueName="AkiDuermo HQ" action={action}/></div></div>
 <VenueDashboard locale={locale} name="AkiDuermo HQ" status="published" verified={true} publicHref="#public" initialSection={query.get("section")||"overview"} counts={{photos:0,events:0,programs:0,credentials:0,requests:33,members:1}} sections={{profile:<form><label>{es?"Nombre":"Name"}<input defaultValue="Test"/></label></form>,bookings:booking,events:<p>Events</p>,photos:<p>Photos</p>,catalogue:<p>Catalogue</p>,rewards:<p>Rewards</p>,checkin:<p>Checkin</p>,team:<p>Team</p>}}/>
 </div></div>);`;
@@ -226,6 +226,15 @@ try {
                 await page
                   .locator(".booking-inbox-toolbar")
                   .scrollIntoViewIfNeeded();
+                const header = await page
+                  .locator(".akibusiness-topbar")
+                  .boundingBox();
+                const navigation = await page
+                  .getByRole("tablist")
+                  .boundingBox();
+                expect(navigation.y).toBeGreaterThanOrEqual(
+                  header.y + header.height,
+                );
                 await page.screenshot({
                   path: resolve(dir, `inbox-${locale}-${theme}-${width}.png`),
                 });

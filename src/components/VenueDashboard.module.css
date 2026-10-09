@@ -606,7 +606,7 @@
 }
 .tabs {
   position: sticky;
-  top: 0.5rem;
+  top: calc(var(--business-header-height, 0px) + 0.5rem);
   z-index: 4;
   padding: 0.25rem;
   border-radius: 0.8rem;
@@ -651,7 +651,7 @@
     padding-inline: 0.65rem;
   }
   .tabs {
-    top: 0.25rem;
+    top: calc(var(--business-header-height, 0px) + 0.25rem);
     justify-content: flex-start;
     gap: 0.15rem;
     scroll-snap-type: x proximity;
@@ -963,7 +963,7 @@
     grid-column: 1;
     grid-row: 3 / span 2;
     position: sticky;
-    top: 0.75rem;
+    top: calc(var(--business-header-height, 0px) + 0.75rem);
     flex-direction: column;
     align-self: start;
     overflow: visible;
