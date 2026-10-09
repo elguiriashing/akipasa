@@ -173,6 +173,12 @@ export function VenueMediaStudio({
           .replace(/\.[^.]+$/, "")
           .replace(/[-_]+/g, " ")
           .trim() || (es ? "Imagen del local" : "Venue image");
+      const safeAlt =
+        fallbackAlt.length >= 3
+          ? fallbackAlt
+          : es
+            ? `Imagen del local ${index + 1}`
+            : `Venue image ${index + 1}`;
       const fd = new FormData();
       fd.set("inline", "1");
       fd.set("locale", locale);
@@ -185,7 +191,7 @@ export function VenueMediaStudio({
           ? sharedAlt
           : sharedAlt
             ? `${sharedAlt} ${index + 1}`
-            : fallbackAlt,
+            : safeAlt,
       );
 
       let result;
