@@ -27,6 +27,7 @@
 ## Existing work on PR #82
 
 **Portal separation / UI**
+
 - `src/app/[locale]/business/page.tsx`: managed-property membership select includes `discovery_vertical`, shows AkiPasa vs AkiDuermo labels and appropriate management action.
 - `src/components/VenueDashboard.tsx`: `product="accommodation"` selects Overview, Profile, Bookings and Team, hides venue-specific tools.
 - `src/app/[locale]/business/venue/[id]/page.tsx`: chooses dedicated accommodation workbench instead of the old `BookingManager`; legacy venue engine stays intact.
@@ -34,12 +35,23 @@
 - `src/app/tablet-responsive.css`: narrow-window split-screen rules; tests in `tests/akiduermo-manager.test.tsx`.
 
 **Database candidate**
+
 - `supabase/migrations/20261009220000_accommodation_inventory_foundation.sql`: room types, units, nightly-rate ranges, reservations, maintenance blocks; date-range exclusions and unit lock triggers; owner/manager RLS for inventory; no customer write access to reservations.
 - `tests/accommodation-inventory-contract.test.ts`: static SQL text checks only. **NOT a substitute for running migration and concurrency/RLS SQL tests.**
 - `package.json` default test script modified to include tests.
 - No known applied production accommodation migration. No verified live booking flow.
 
+**2026-10-09 continuation**
+
+- `src/components/AccommodationBookingWorkspace.tsx`: now renders persisted room types, physical units, nightly rates, maintenance blocks and reservation rows. Owner actions can create/update/archive room types and units, add/delete rates and add/delete maintenance blocks. Public booking remains explicitly disabled.
+- `src/app/[locale]/business/venue/[id]/actions.ts`: added Zod-validated accommodation owner actions, with `is_venue_member` and `venues.discovery_vertical='accommodation'` checks before every write.
+- `src/app/[locale]/business/venue/[id]/page.tsx`: accommodation dashboard now loads inventory/reservation/block data and wires the new actions only for accommodation properties.
+- `tests/akiduermo-manager.test.tsx`: updated to cover persisted inventory/rate/reservation display and no public checkout action.
+- Verified locally: `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm test`, `npm run test:db-safety`, `npm run automation:check`, `npm run build`, `npm run build:cloudflare`.
+- Still **NOT SAFE TO MERGE/DEPLOY AS LIVE OVERNIGHT BOOKINGS**: the SQL migration has not been executed against disposable PostgreSQL with RLS/concurrency tests, and the customer availability/quote/atomic booking path is still missing.
+
 **Related previously merged foundations**
+
 - PR #74 resource-backed timed-slot booking.
 - PR #75 customer booking wizard, business inbox, mail queue, account booking history.
 - PR #78 accommodation claiming and AkiDuermo HQ test property.
@@ -48,7 +60,7 @@
 ## CRITICAL blockers to production
 
 1. **Run/review the candidate SQL migration in an isolated PostgreSQL environment.** Check compatibility with current migrations; verify btree_gist, `venues.discovery_vertical` and `is_venue_member` signatures. Confirm that adding blocks and reservations concurrently cannot bypass the exclusion checks. Check that security-invoker trigger RLS cannot cause unsafe read behavior or silently miss conflicts. Test cancellation/rebooking, status changes, overlapping units, inclusive start/exclusive checkout and DST.
-2. **Complete owner-managed inventory:** real create/edit/archive room types, physical units, rates and maintenance blocks; use typed Zod validation and proper owner/manager access; no cross-property writes. Build actual forms and usable state, not static placeholders.
+2. **Complete owner-managed inventory:** create/edit/archive room types and physical units plus add/delete rates and maintenance blocks are implemented in the owner UI. Remaining work: run against real PostgreSQL/RLS, add edit flows for existing rate/block rows if needed, and validate empty/error/loading behavior in authenticated browser sessions.
 3. **Implement secure availability and quote calculations:** check-in/check-out night ranges, max guests, minimum stays, unit/rate coverage over all nights, inactive units, block/hold overlap, total in EUR with taxes/fees and policy snapshots. Never trust client-submitted totals.
 4. **Implement an atomic booking transaction/RPC:** concurrency-safe last-room booking, idempotency key, quote revalidation, explicit pending/confirmed state machine, audit trail, permissions, safe cancellation. Only enable public booking when it passes real SQL integration.
 5. **Build customer AkiDuermo booking UI:** range calendar, verified availability, guest selectors, room choice, totals and policies, confirmation/cancellation with status visibility, mobile/tablet/split-screen responsive. Preserve accommodation listing identity and avoid leaking full private inventory.
@@ -59,7 +71,7 @@
 
 ## Known uncertainties and issues to inspect immediately
 
-- The preceding assistant used the GitHub connector only. It did **not** run Node/Playwright/PostgreSQL/Cloudflare builds; earlier claims of implementation mean *committed*, not verified or deployed.
+- The preceding assistant used the GitHub connector only. It did **not** run Node/Playwright/PostgreSQL/Cloudflare builds; earlier claims of implementation mean _committed_, not verified or deployed.
 - PR #82 may be behind a rapidly changing master. Preserve improvements to booking service edits, filters, tablet UI, mail and SSR.
 - The SQL migration was authored without execution; review every constraint and RLS privilege, including the `accommodation_guard_occupancy` trigger, before deploying.
 - The management tabs are currently placeholders with functional navigation, not room/rate CRUD.

@@ -988,6 +988,19 @@ function bookingDestination(
   );
 }
 
+function accommodationDestination(
+  locale: string,
+  venueId: string,
+  tab: string,
+  result: string,
+) {
+  return destination(
+    locale,
+    venueId,
+    `section=bookings&accommodationTab=${tab}&${result}`,
+  );
+}
+
 async function requireBookingManager(
   supabase: Awaited<ReturnType<typeof requireBusinessAccess>>["supabase"],
   locale: "es" | "en",
@@ -999,6 +1012,274 @@ async function requireBookingManager(
   });
   if (error || !data)
     redirect(bookingDestination(locale, venueId, "error=booking-permission"));
+}
+
+async function requireAccommodationManager(
+  supabase: Awaited<ReturnType<typeof requireBusinessAccess>>["supabase"],
+  locale: "es" | "en",
+  venueId: string,
+) {
+  const { data, error } = await supabase.rpc("is_venue_member", {
+    target_venue: venueId,
+    allowed_roles: ["owner", "manager"],
+  });
+  if (error || !data)
+    redirect(
+      accommodationDestination(locale, venueId, "rooms", "error=permission"),
+    );
+  const { data: venue } = await supabase
+    .from("venues")
+    .select("discovery_vertical")
+    .eq("id", venueId)
+    .maybeSingle();
+  if (venue?.discovery_vertical !== "accommodation")
+    redirect(
+      accommodationDestination(locale, venueId, "rooms", "error=property"),
+    );
+}
+
+export async function createAccommodationRoomType(formData: FormData) {
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  const parsed = context
+    .extend({
+      name: z.string().trim().min(2).max(120),
+      maxGuests: z.coerce.number().int().min(1).max(30),
+    })
+    .safeParse(Object.fromEntries(formData));
+  if (!parsed.success)
+    redirect(accommodationDestination(locale, venueId, "rooms", "error=room"));
+  const { supabase } = await requireBusinessAccess(locale);
+  await requireAccommodationManager(supabase, locale, parsed.data.venueId);
+  const { error } = await supabase.from("accommodation_room_types").insert({
+    venue_id: parsed.data.venueId,
+    name: parsed.data.name,
+    max_guests: parsed.data.maxGuests,
+  });
+  redirect(
+    accommodationDestination(
+      locale,
+      venueId,
+      "rooms",
+      error ? "error=room" : "updated=room",
+    ),
+  );
+}
+
+export async function updateAccommodationRoomType(formData: FormData) {
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  const parsed = context
+    .extend({
+      roomTypeId: z.string().uuid(),
+      name: z.string().trim().min(2).max(120),
+      maxGuests: z.coerce.number().int().min(1).max(30),
+      active: z.enum(["on"]).optional(),
+    })
+    .safeParse(Object.fromEntries(formData));
+  if (!parsed.success)
+    redirect(accommodationDestination(locale, venueId, "rooms", "error=room"));
+  const { supabase } = await requireBusinessAccess(locale);
+  await requireAccommodationManager(supabase, locale, parsed.data.venueId);
+  const { error } = await supabase
+    .from("accommodation_room_types")
+    .update({
+      name: parsed.data.name,
+      max_guests: parsed.data.maxGuests,
+      active: parsed.data.active === "on",
+    })
+    .eq("id", parsed.data.roomTypeId)
+    .eq("venue_id", parsed.data.venueId);
+  redirect(
+    accommodationDestination(
+      locale,
+      venueId,
+      "rooms",
+      error ? "error=room" : "updated=room",
+    ),
+  );
+}
+
+export async function createAccommodationUnit(formData: FormData) {
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  const parsed = context
+    .extend({
+      roomTypeId: z.string().uuid(),
+      name: z.string().trim().min(1).max(120),
+    })
+    .safeParse(Object.fromEntries(formData));
+  if (!parsed.success)
+    redirect(accommodationDestination(locale, venueId, "rooms", "error=unit"));
+  const { supabase } = await requireBusinessAccess(locale);
+  await requireAccommodationManager(supabase, locale, parsed.data.venueId);
+  const { error } = await supabase.from("accommodation_units").insert({
+    venue_id: parsed.data.venueId,
+    room_type_id: parsed.data.roomTypeId,
+    name: parsed.data.name,
+  });
+  redirect(
+    accommodationDestination(
+      locale,
+      venueId,
+      "rooms",
+      error ? "error=unit" : "updated=unit",
+    ),
+  );
+}
+
+export async function updateAccommodationUnit(formData: FormData) {
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  const parsed = context
+    .extend({
+      unitId: z.string().uuid(),
+      roomTypeId: z.string().uuid(),
+      name: z.string().trim().min(1).max(120),
+      active: z.enum(["on"]).optional(),
+    })
+    .safeParse(Object.fromEntries(formData));
+  if (!parsed.success)
+    redirect(accommodationDestination(locale, venueId, "rooms", "error=unit"));
+  const { supabase } = await requireBusinessAccess(locale);
+  await requireAccommodationManager(supabase, locale, parsed.data.venueId);
+  const { error } = await supabase
+    .from("accommodation_units")
+    .update({
+      room_type_id: parsed.data.roomTypeId,
+      name: parsed.data.name,
+      active: parsed.data.active === "on",
+    })
+    .eq("id", parsed.data.unitId)
+    .eq("venue_id", parsed.data.venueId);
+  redirect(
+    accommodationDestination(
+      locale,
+      venueId,
+      "rooms",
+      error ? "error=unit" : "updated=unit",
+    ),
+  );
+}
+
+export async function createAccommodationRate(formData: FormData) {
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  const parsed = context
+    .extend({
+      roomTypeId: z.string().uuid(),
+      startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      nightlyPriceEuros: z.coerce.number().min(0).max(100000),
+      minimumNights: z.coerce.number().int().min(1).max(365),
+    })
+    .safeParse(Object.fromEntries(formData));
+  if (!parsed.success || parsed.data.endDate <= parsed.data.startDate)
+    redirect(accommodationDestination(locale, venueId, "rates", "error=rate"));
+  const { supabase } = await requireBusinessAccess(locale);
+  await requireAccommodationManager(supabase, locale, parsed.data.venueId);
+  const { error } = await supabase.from("accommodation_nightly_rates").insert({
+    venue_id: parsed.data.venueId,
+    room_type_id: parsed.data.roomTypeId,
+    start_date: parsed.data.startDate,
+    end_date_exclusive: parsed.data.endDate,
+    nightly_price_cents: Math.round(parsed.data.nightlyPriceEuros * 100),
+    minimum_nights: parsed.data.minimumNights,
+  });
+  redirect(
+    accommodationDestination(
+      locale,
+      venueId,
+      "rates",
+      error ? "error=rate" : "updated=rate",
+    ),
+  );
+}
+
+export async function deleteAccommodationRate(formData: FormData) {
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  const parsed = context
+    .extend({ rateId: z.string().uuid() })
+    .safeParse(Object.fromEntries(formData));
+  if (!parsed.success)
+    redirect(accommodationDestination(locale, venueId, "rates", "error=rate"));
+  const { supabase } = await requireBusinessAccess(locale);
+  await requireAccommodationManager(supabase, locale, parsed.data.venueId);
+  const { error } = await supabase
+    .from("accommodation_nightly_rates")
+    .delete()
+    .eq("id", parsed.data.rateId)
+    .eq("venue_id", parsed.data.venueId);
+  redirect(
+    accommodationDestination(
+      locale,
+      venueId,
+      "rates",
+      error ? "error=rate" : "updated=rate",
+    ),
+  );
+}
+
+export async function createAccommodationBlock(formData: FormData) {
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  const parsed = context
+    .extend({
+      unitId: z.string().uuid(),
+      startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      reason: z.string().trim().min(2).max(120).default("maintenance"),
+    })
+    .safeParse(Object.fromEntries(formData));
+  if (!parsed.success || parsed.data.endDate <= parsed.data.startDate)
+    redirect(
+      accommodationDestination(locale, venueId, "calendar", "error=block"),
+    );
+  const { supabase } = await requireBusinessAccess(locale);
+  await requireAccommodationManager(supabase, locale, parsed.data.venueId);
+  const { error } = await supabase.from("accommodation_unit_blocks").insert({
+    venue_id: parsed.data.venueId,
+    unit_id: parsed.data.unitId,
+    start_date: parsed.data.startDate,
+    end_date_exclusive: parsed.data.endDate,
+    reason: parsed.data.reason,
+  });
+  redirect(
+    accommodationDestination(
+      locale,
+      venueId,
+      "calendar",
+      error ? "error=block" : "updated=block",
+    ),
+  );
+}
+
+export async function deleteAccommodationBlock(formData: FormData) {
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  const parsed = context
+    .extend({ blockId: z.string().uuid() })
+    .safeParse(Object.fromEntries(formData));
+  if (!parsed.success)
+    redirect(
+      accommodationDestination(locale, venueId, "calendar", "error=block"),
+    );
+  const { supabase } = await requireBusinessAccess(locale);
+  await requireAccommodationManager(supabase, locale, parsed.data.venueId);
+  const { error } = await supabase
+    .from("accommodation_unit_blocks")
+    .delete()
+    .eq("id", parsed.data.blockId)
+    .eq("venue_id", parsed.data.venueId);
+  redirect(
+    accommodationDestination(
+      locale,
+      venueId,
+      "calendar",
+      error ? "error=block" : "updated=block",
+    ),
+  );
 }
 
 export async function retryBookingEmails(formData: FormData) {

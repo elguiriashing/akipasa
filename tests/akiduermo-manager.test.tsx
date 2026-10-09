@@ -8,34 +8,148 @@ import { VenueDashboard } from "../src/components/VenueDashboard";
 
 afterEach(cleanup);
 
-const counts = { photos: 0, events: 0, programs: 0, credentials: 0, requests: 0, members: 1 };
+const counts = {
+  photos: 0,
+  events: 0,
+  programs: 0,
+  credentials: 0,
+  requests: 0,
+  members: 1,
+};
 
 describe("AkiDuermo business tools", () => {
   it("shows distinct accommodation management sections without offering fake hotel reservations", () => {
-    render(<AccommodationBookingWorkspace locale="en" venueId="example" />);
-    expect(screen.getByRole("navigation", { name: "Accommodation sections" })).toBeInTheDocument();
+    render(
+      <AccommodationBookingWorkspace
+        locale="en"
+        venueId="example"
+        roomTypes={[
+          {
+            id: "room-1",
+            name: "Sea view double",
+            max_guests: 2,
+            active: true,
+          },
+        ]}
+        units={[
+          { id: "unit-1", name: "101", room_type_id: "room-1", active: true },
+        ]}
+        blocks={[
+          {
+            id: "block-1",
+            unit_id: "unit-1",
+            start_date: "2026-12-01",
+            end_date_exclusive: "2026-12-03",
+            reason: "maintenance",
+          },
+        ]}
+      />,
+    );
+    expect(
+      screen.getByRole("navigation", { name: "Accommodation sections" }),
+    ).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /Rooms & units/ }));
-    expect(screen.getByRole("region", { name: "Rooms & units" })).toHaveTextContent("unique inventory");
+    expect(
+      screen.getByRole("region", { name: "Rooms & units" }),
+    ).toHaveTextContent("Sea view double");
+    expect(screen.getByDisplayValue("101")).toBeVisible();
     fireEvent.click(screen.getByRole("button", { name: /Calendar/ }));
-    expect(screen.getByRole("region", { name: "Calendar" })).toHaveTextContent("room nights");
+    expect(screen.getByRole("region", { name: "Calendar" })).toHaveTextContent(
+      "room nights",
+    );
+    expect(screen.getByRole("region", { name: "Calendar" })).toHaveTextContent(
+      "maintenance",
+    );
     expect(screen.getByText(/Overnight booking is disabled/)).toBeVisible();
-    expect(screen.queryByRole("button", { name: /Confirm booking|Book now/ })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /Confirm booking|Book now/ }),
+    ).not.toBeInTheDocument();
   });
 
   it("offers Spanish copy with accessible tab actions", () => {
     render(<AccommodationBookingWorkspace locale="es" venueId="example" />);
     fireEvent.click(screen.getByRole("button", { name: /Tarifas/ }));
-    expect(screen.getByRole("region", { name: "Tarifas" })).toHaveTextContent("precios por noche");
+    expect(screen.getByRole("region", { name: "Tarifas" })).toHaveTextContent(
+      "precios por noche",
+    );
+  });
+
+  it("renders persisted rate and reservation data without exposing public checkout actions", () => {
+    render(
+      <AccommodationBookingWorkspace
+        locale="en"
+        venueId="example"
+        roomTypes={[
+          { id: "room-1", name: "Apartment", max_guests: 4, active: true },
+        ]}
+        units={[
+          { id: "unit-1", name: "Apt 1", room_type_id: "room-1", active: true },
+        ]}
+        rates={[
+          {
+            id: "rate-1",
+            room_type_id: "room-1",
+            start_date: "2026-12-01",
+            end_date_exclusive: "2026-12-31",
+            nightly_price_cents: 12500,
+            minimum_nights: 2,
+          },
+        ]}
+        reservations={[
+          {
+            id: "res-1",
+            unit_id: "unit-1",
+            check_in: "2026-12-10",
+            check_out: "2026-12-12",
+            guests: 2,
+            status: "confirmed",
+            contact_name: "Ada Lovelace",
+            contact_email: "ada@example.com",
+            quoted_total_cents: 25000,
+          },
+        ]}
+      />,
+    );
+    expect(screen.getByText("Ada Lovelace")).toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: /Rates/ }));
+    expect(
+      screen.getByRole("region", { name: "Rates & rules" }),
+    ).toHaveTextContent("€125.00");
+    expect(
+      screen.queryByRole("button", { name: /Book now/ }),
+    ).not.toBeInTheDocument();
   });
 
   it("keeps accommodation-specific tools and excludes venue-only editors", () => {
-    render(<VenueDashboard locale="en" name="Test accommodation" product="accommodation" status="published"
-      verified={true} initialSection="events" counts={counts}
-      sections={{ profile: <p>Property profile</p>, bookings: <p>Stay tools</p>, team: <p>Staff</p> }} />);
-    expect(screen.getByRole("tab", { name: "Overview" })).toHaveAttribute("aria-selected", "true");
-    expect(screen.queryByRole("tab", { name: /^Events/ })).not.toBeInTheDocument();
-    expect(screen.queryByRole("tab", { name: /^Rewards/ })).not.toBeInTheDocument();
-    expect(screen.queryByRole("tab", { name: /^Check-in/ })).not.toBeInTheDocument();
+    render(
+      <VenueDashboard
+        locale="en"
+        name="Test accommodation"
+        product="accommodation"
+        status="published"
+        verified={true}
+        initialSection="events"
+        counts={counts}
+        sections={{
+          profile: <p>Property profile</p>,
+          bookings: <p>Stay tools</p>,
+          team: <p>Staff</p>,
+        }}
+      />,
+    );
+    expect(screen.getByRole("tab", { name: "Overview" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    expect(
+      screen.queryByRole("tab", { name: /^Events/ }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("tab", { name: /^Rewards/ }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("tab", { name: /^Check-in/ }),
+    ).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("tab", { name: /Bookings/ }));
     expect(screen.getByText("Stay tools")).toBeVisible();
   });

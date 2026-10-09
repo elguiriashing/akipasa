@@ -491,7 +491,9 @@ export default async function BusinessPage({
         {view === "venues" && (
           <div className="panel catalogue-edit-card">
             <div className="catalogue-section-header">
-              <h2>{es ? "Mis negocios y alojamientos" : "My businesses and stays"}</h2>
+              <h2>
+                {es ? "Mis negocios y alojamientos" : "My businesses and stays"}
+              </h2>
               <p className="catalogue-section-sub">
                 {es
                   ? "Elige qué negocio o alojamiento quieres gestionar. Las herramientas se adaptan a cada tipo."
@@ -507,7 +509,11 @@ export default async function BusinessPage({
                       <div className="managed-row" key={m.venues.id}>
                         <div>
                           <strong>{m.venues.name}</strong>
-                          <span className="business-product-type">{m.venues.discovery_vertical === "accommodation" ? "AkiDuermo" : "AkiPasa"}</span>
+                          <span className="business-product-type">
+                            {m.venues.discovery_vertical === "accommodation"
+                              ? "AkiDuermo"
+                              : "AkiPasa"}
+                          </span>
                           <span>
                             {m.role} · <small>{m.venues.status}</small>
                           </span>
@@ -517,8 +523,20 @@ export default async function BusinessPage({
                             className="button secondary business-venue-action"
                             href={`/${locale}/business/venue/${m.venues.id}`}
                           >
-                            <Icon name={m.venues.discovery_vertical === "accommodation" ? "home" : "venue"} />
-                            {m.venues.discovery_vertical === "accommodation" ? (es ? "Gestionar alojamiento" : "Manage stay") : (es ? "Gestionar local" : "Manage venue")}
+                            <Icon
+                              name={
+                                m.venues.discovery_vertical === "accommodation"
+                                  ? "home"
+                                  : "venue"
+                              }
+                            />
+                            {m.venues.discovery_vertical === "accommodation"
+                              ? es
+                                ? "Gestionar alojamiento"
+                                : "Manage stay"
+                              : es
+                                ? "Gestionar local"
+                                : "Manage venue"}
                             <Icon name="arrow-right" />
                           </a>
                           {m.role === "owner" &&

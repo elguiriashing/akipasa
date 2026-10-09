@@ -6,6 +6,7 @@ Owner: AkiSuite. Last updated: 2026-10-09.
 ## Primary requirement
 
 One AkiBusiness booking workbench supports seven deliberately different booking templates without pretending they have identical inventory:
+
 1. Dining: tables, service periods, cover capacities, party-size constraints.
 2. Experiences: departure sessions, guides, group capacity.
 3. Resources: courts, equipment, vehicles, concurrent allocation.
@@ -29,6 +30,7 @@ Public booking modes stay **External**, **Via AkiPasa**, **Disabled**. External 
 Dashboard cards: Upcoming check-ins; Current guests; Check-outs; Pending requests; occupancy over chosen date window. No fabricated occupancy if inventory not configured.
 
 Tabbed workbench (responsive and persistent URL state):
+
 - **Reservations**: searchable/paginated list, upcoming/in-house/past/cancelled status filters, guest name or confirmation query, sort and date range. List/grid adapts to width, keeps actions accessible in split-screen. Click opens details drawer with audit events.
 - **Calendar**: property/room-type/unit occupancy timeline; horizontal day scroll within a bounded region, mobile agenda fallback, per-day availability, maintenance blocks, range selection. No global page horizontal overflow.
 - **Rooms & units**: list room types, individually managed units, capacities, beds, amenities, accessible characteristics, photos and active/inactive. Unit IDs are stable. Inventory per physical unit, avoid counting both type and unit capacity.
@@ -40,6 +42,7 @@ Customer booking: select check-in and check-out on one range calendar, choose ro
 ## Hotel inventory cannot reuse timed slots unchanged
 
 Schema proposal (names subject to existing migration review):
+
 - accommodation_room_types (id, accommodation_id, name, occupancy, beds, amenities, active)
 - accommodation_units (id, accommodation_id, type_id, unit_name, active)
 - accommodation_rate_rules (id, accommodation_id, type_id, valid_from, valid_to, price_cents, min_nights, max_nights, weekend/season rules)

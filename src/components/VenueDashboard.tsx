@@ -48,7 +48,8 @@ export function VenueDashboard({
   const es = locale === "es";
   const stay = product === "accommodation";
   const [active, setActive] = useState(
-    product === "accommodation" && !["overview", "profile", "bookings", "team"].includes(initialSection)
+    product === "accommodation" &&
+      !["overview", "profile", "bookings", "team"].includes(initialSection)
       ? "overview"
       : initialSection,
   );
@@ -160,8 +161,12 @@ export function VenueDashboard({
       id: "bookings",
       label: es ? "Reservas" : "Bookings",
       description: stay
-        ? (es ? "Gestión de alojamiento y disponibilidad" : "Stay reservations and availability")
-        : (es ? "Solicitudes y disponibilidad" : "Requests and availability"),
+        ? es
+          ? "Gestión de alojamiento y disponibilidad"
+          : "Stay reservations and availability"
+        : es
+          ? "Solicitudes y disponibilidad"
+          : "Requests and availability",
       icon: "inbox",
       detail: countLabel(
         counts.requests,
@@ -218,7 +223,11 @@ export function VenueDashboard({
         ? document.getElementById(eventId)
         : null;
       const requested = event ? "events" : getVenueDashboardSection(query);
-      setActive(stay && !["overview", "profile", "bookings", "team"].includes(requested) ? "overview" : requested);
+      setActive(
+        stay && !["overview", "profile", "bookings", "team"].includes(requested)
+          ? "overview"
+          : requested,
+      );
       if (event instanceof HTMLDetailsElement) {
         event.open = true;
         requestAnimationFrame(() => event.scrollIntoView({ block: "start" }));
@@ -232,7 +241,7 @@ export function VenueDashboard({
       window.removeEventListener("popstate", restoreLocation);
       window.removeEventListener("hashchange", restoreLocation);
     };
-  }, []);
+  }, [stay]);
 
   function selectSection(section: VenueDashboardSection) {
     setActive(section);
@@ -244,17 +253,25 @@ export function VenueDashboard({
     url.hash = "";
     window.history.pushState(window.history.state, "", url);
     tabs.current[section]?.focus({ preventScroll: true });
-    tabs.current[section]?.scrollIntoView({
-      block: "nearest",
-      inline: "nearest",
-    });
+    if (typeof tabs.current[section]?.scrollIntoView === "function") {
+      tabs.current[section]?.scrollIntoView({
+        block: "nearest",
+        inline: "nearest",
+      });
+    }
   }
 
   return (
     <main ref={dashboard} className={styles.dashboard}>
       <Link className={styles.back} href={`/${locale}/business`}>
         <Icon name="arrow-right" />
-        {stay ? (es ? "Mis negocios y alojamientos" : "My businesses and stays") : (es ? "Mis locales" : "My venues")}
+        {stay
+          ? es
+            ? "Mis negocios y alojamientos"
+            : "My businesses and stays"
+          : es
+            ? "Mis locales"
+            : "My venues"}
       </Link>
       <header className={styles.header}>
         <div className={styles.venueMark}>
@@ -262,7 +279,7 @@ export function VenueDashboard({
         </div>
         <div className={styles.identity}>
           <span className={styles.eyebrow}>
-            {stay ? "AkiDuermo" : (es ? "Gestionar local" : "Manage venue")}
+            {stay ? "AkiDuermo" : es ? "Gestionar local" : "Manage venue"}
           </span>
           <h1>{name}</h1>
           <div className={styles.status}>
@@ -292,7 +309,15 @@ export function VenueDashboard({
       <div
         className={styles.tabs}
         role="tablist"
-        aria-label={stay ? (es ? "Herramientas del alojamiento" : "Accommodation tools") : (es ? "Herramientas del local" : "Venue tools")}
+        aria-label={
+          stay
+            ? es
+              ? "Herramientas del alojamiento"
+              : "Accommodation tools"
+            : es
+              ? "Herramientas del local"
+              : "Venue tools"
+        }
       >
         {navigation.map((item, index) => (
           <button
@@ -353,7 +378,15 @@ export function VenueDashboard({
         tabIndex={0}
       >
         <div className={styles.sectionHeading}>
-          <h2>{stay ? (es ? "Tu alojamiento, bajo control" : "Your property, at a glance") : (es ? "Todo tu local, a mano" : "Your venue, at a glance")}</h2>
+          <h2>
+            {stay
+              ? es
+                ? "Tu alojamiento, bajo control"
+                : "Your property, at a glance"
+              : es
+                ? "Todo tu local, a mano"
+                : "Your venue, at a glance"}
+          </h2>
           <p>
             {es
               ? "Elige qué quieres gestionar."
