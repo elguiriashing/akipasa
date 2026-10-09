@@ -167,3 +167,10 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 - `docs/ARCHITECTURE.md`, `docs/DECISIONS.md`: deeper architecture/ADRs.
 - `docs/deployment-source.md`, `docs/RUNBOOK.md`: source and release/rollback.
 - `docs/AI_HANDOFF.md`, `docs/PROJECT_STATUS.md`, `docs/TODO.md`, `docs/ACCEPTANCE.md`, `docs/CHANGELOG.md`: check freshness and reconcile, never blindly trust.
+
+
+### Event-first venue pages and linked event menus (2026-10-09, pending verification)
+- Venue detail prioritizes upcoming (non-cancelled, unfinished) events above public catalogue, with responsive artwork/date cards; old event paragraph links removed.
+- Business event editor optionally selects venue catalogue section IDs, submitted in `catalogueSectionIds`, validated against the venue's own catalogue and stored in `events.catalogue_section_ids` (migration `0102_event_catalogue_sections.sql`).
+- Public event detail reads the current published venue catalogue and renders selected matching sections, never copied prices/allergens. No selection gives no menu. Menu deletion/unpublish removes it from event display.
+- Cross-surface release prerequisites: migration before Workers deploy, full check/e2e, EN/ES mobile/desktop, role ownership, published/unpublished catalogue, bookings and media regression. Never claim deployed before verification.
