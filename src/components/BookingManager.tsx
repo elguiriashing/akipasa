@@ -93,6 +93,12 @@ export function BookingManager({
   const [template, setTemplate] = useState(
     settings?.booking_template || "experience",
   );
+  React.useEffect(() => {
+    const tab = new URLSearchParams(window.location.search).get("bookingTab");
+    if (tab === "setup" || tab === "offerings" || tab === "resources" || tab === "calendar" || tab === "inbox") {
+      setSection(tab);
+    }
+  }, []);
   const pending = requests.filter((r) => r.status === "requested").length;
   return (
     <section
