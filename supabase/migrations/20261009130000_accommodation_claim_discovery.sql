@@ -9,7 +9,7 @@ where v.status='published' and v.discovery_vertical='accommodation'
  and v.discovery_enabled=true and v.map_location_suspect=false and v.location is not null
  and v.accessibility @> '{"claim_status":"unclaimed"}'::jsonb
  and (v.name ilike '%'||trim(p_query)||'%' or v.address ilike '%'||trim(p_query)||'%' or c.name_es ilike '%'||trim(p_query)||'%')
-order by similarity(v.name,p_query) desc,v.name
+order by (lower(v.name)=lower(trim(p_query))) desc,v.name
 limit greatest(1,least(coalesce(p_limit,24),50));
 $$;
 create or replace function public.claimable_accommodation_cards_in_bounds(p_west double precision,p_east double precision,p_south double precision,p_north double precision,p_limit integer default 1500)
