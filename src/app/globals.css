@@ -18737,3 +18737,36 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
 .booking-wizard-navigation{display:flex;gap:.6rem;align-items:center}
 .booking-wizard-navigation .button{display:inline-flex;align-items:center;justify-content:center;gap:.5rem}
 @media(max-width:600px){.booking-wizard-steps button{font-size:.7rem;gap:.2rem;flex-direction:column}.booking-contact-form{grid-template-columns:1fr}.booking-wizard-footer{flex-direction:column;align-items:stretch}.booking-wizard-navigation{display:flex}.booking-wizard-navigation .button{flex:1}.booking-date-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.booking-time-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* Booking manager: active choice is visible, not five identical purple buttons. */
+.booking-manager-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem;margin:1.25rem 0}
+.booking-manager-tabs .button{min-width:0;border-radius:.65rem;padding:.8rem .45rem}
+.booking-manager-tabs .button.secondary{background:transparent!important;color:inherit!important;border:1px solid rgba(162,170,216,.32)!important}
+.booking-manager-tabs .button:not(.secondary){box-shadow:inset 0 -3px 0 rgba(23,23,51,.3)}
+.booking-template-card.selected{outline:2px solid #9884ff;outline-offset:0}
+.booking-template-card{min-height:64px}
+.booking-mode-card input:checked+span{color:#a897ff}
+@media(max-width:600px){.booking-manager-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.booking-manager-tabs .button{font-size:.85rem}}
+/* AkiPasa Account: bookings are visual cards, not a table of editable fields. */
+.my-bookings-app{display:grid;gap:1rem}
+.my-bookings-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}
+.my-bookings-tabs button{background:rgba(150,150,180,.08);color:inherit;border:1px solid rgba(150,150,180,.25);border-radius:.8rem;padding:.85rem .45rem;cursor:pointer;font-weight:700;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.my-bookings-tabs button.selected{border-color:#9381fb;background:rgba(147,129,251,.18)}
+.my-bookings-tabs button span{background:rgba(150,150,180,.17);padding:.15rem .45rem;border-radius:2rem;font-variant-numeric:tabular-nums;font-size:.75rem}
+.my-bookings-list{display:grid;gap:.85rem}
+.my-booking-card{display:grid;grid-template-columns:minmax(115px,165px) minmax(0,1fr) auto;align-items:center;gap:1.2rem;padding:1rem!important}
+.my-booking-calendar{border-radius:.8rem;background:rgba(147,129,251,.13);min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.65rem;color:inherit;text-align:center;padding:.75rem}
+.my-booking-calendar span{font-size:.85rem;font-weight:600}
+.my-booking-info{min-width:0;display:grid;gap:.4rem}
+.my-booking-info h3{font-size:1.15rem;overflow-wrap:anywhere;margin:0}
+.my-booking-meta{display:flex;gap:.9rem;flex-wrap:wrap;opacity:.8;font-size:.85rem}
+.my-booking-meta span,.my-booking-actions .button{display:inline-flex;align-items:center;gap:.45rem}
+.my-booking-actions{display:grid;gap:.65rem;justify-items:end}
+.my-booking-status{padding:.4rem .75rem;border-radius:2rem;font-weight:700;font-size:.75rem;background:rgba(139,149,177,.18)}
+.my-booking-status.status-confirmed{background:rgba(50,186,157,.16);color:#70e3c6}
+.my-booking-status.status-requested{background:rgba(238,172,72,.15);color:#ffd28d}
+.my-bookings-empty{padding:clamp(2rem,6vw,4rem)!important;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.8rem}
+.my-bookings-empty p{max-width:400px}
+.my-bookings-empty .button{display:inline-flex;align-items:center;gap:.5rem}
+@media(max-width:680px){.my-booking-card{grid-template-columns:80px minmax(0,1fr);gap:.8rem}.my-booking-calendar{min-height:88px}.my-booking-actions{grid-column:1/-1;grid-template-columns:1fr auto;justify-items:start;align-items:center}.my-bookings-tabs button{font-size:.8rem;gap:.25rem}}
