@@ -21,6 +21,7 @@ export function stayHostRoute(pathname: string) {
       path: pathname.slice("/akiduermo".length),
     };
   if (
+    pathname === "/manifest.webmanifest" ||
     pathname === "/api/stays" ||
     pathname === "/api/v1/personalisation/consent" ||
     pathname.startsWith("/api/map/") ||
