@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { sendBookingConfirmationEmail } from "@/lib/booking-confirmation-email";
 import { requireBusinessAccess } from "@/lib/entitlements";
 import { safeExternalUrlSchema } from "@/lib/auth-security";
 import { madridLocalDateTimeSchema } from "@/lib/time";
@@ -927,6 +928,7 @@ export async function saveBookingSettings(formData: FormData) {
         .union([z.literal(""), z.coerce.number().min(0).max(10000)])
         .default(""),
       instructions: z.string().trim().max(1000).default(""),
+      notificationEmail: z.union([z.literal(""), z.string().email().max(254)]).default(""),
       template: z
         .enum([
           "dining",
@@ -981,6 +983,7 @@ export async function saveBookingSettings(formData: FormData) {
     mode: v.mode,
     external_url: externalUrl,
     booking_template: v.mode === "request" ? v.template : null,
+    notification_email: v.mode === "request" ? v.notificationEmail || null : null,
     requires_deposit: v.mode === "request" && v.requiresDeposit === "on",
     deposit_cents:
       v.mode === "request" && v.depositEuros !== ""
@@ -1146,33 +1149,77 @@ export async function createRecurringBookingSlots(formData: FormData) {
   );
 }
 
+async function deliverQueuedBookingConfirmations(
+  supabase: Awaited<ReturnType<typeof requireBusinessAccess>>["supabase"],
+  venueId: string,
+  bookingId: string,
+  locale: "es" | "en",
+) {
+  const { data: booking } = await supabase
+    .from("booking_requests")
+    .select("id,contact_name,contact_email,party_size,venues(name),venue_availability_slots(starts_at)")
+    .eq("id", bookingId).eq("venue_id", venueId).maybeSingle();
+  if (!booking) return;
+  const { data: rows } = await supabase.from("booking_confirmation_emails")
+    .select("audience,recipient,status,attempts")
+    .eq("booking_id", bookingId).eq("venue_id", venueId);
+  const venue = booking.venues as unknown as {name:string} | null;
+  const slot = booking.venue_availability_slots as unknown as {starts_at:string} | null;
+  for (const row of rows || []) {
+    if (row.status !== "pending" && row.status !== "failed") continue;
+    const { data: claimed } = await supabase.from("booking_confirmation_emails")
+      .update({
+        status:"sending",
+        attempts:(row.attempts || 0)+1,
+        attempted_at:new Date().toISOString(),
+        last_error:null,
+      })
+      .eq("booking_id", bookingId).eq("venue_id",venueId)
+      .eq("audience",row.audience).eq("status",row.status)
+      .select("audience,recipient").maybeSingle();
+    if (!claimed) continue;
+    const outcome = await sendBookingConfirmationEmail({
+      recipient:claimed.recipient,
+      audience:claimed.audience as "customer" | "venue",
+      bookingId,
+      venueName:venue?.name || "AkiPasa",
+      customerName:booking.contact_name,
+      customerEmail:booking.contact_email,
+      guestCount:booking.party_size,
+      bookingStart:slot?.starts_at || null,
+      locale,
+    });
+    await supabase.from("booking_confirmation_emails")
+      .update({
+        status:outcome.ok?"sent":"failed",
+        ...(outcome.ok?{sent_at:new Date().toISOString(),provider_message_id:outcome.messageId||null}:{last_error:"delivery_unavailable"}),
+      })
+      .eq("booking_id", bookingId).eq("venue_id",venueId)
+      .eq("audience",claimed.audience).eq("status","sending");
+  }
+}
+
 export async function updateBookingRequest(formData: FormData) {
-  const parsed = context
-    .extend({
-      requestId: z.string().uuid(),
-      status: z.enum(["confirmed", "declined", "completed"]),
-    })
-    .safeParse(Object.fromEntries(formData));
+  const parsed = context.extend({
+    requestId: z.string().uuid(),
+    status: z.enum(["confirmed", "declined", "completed"]),
+  }).safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
-  if (!parsed.success)
-    redirect(bookingDestination(locale, venueId, "error=booking-request"));
+  if (!parsed.success) redirect(bookingDestination(locale, venueId, "error=booking-request"));
   const { supabase } = await requireBusinessAccess(locale);
-  const { error } = await supabase
-    .from("booking_requests")
-    .update({
-      status: parsed.data.status,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", parsed.data.requestId)
-    .eq("venue_id", parsed.data.venueId);
-  redirect(
-    bookingDestination(
-      locale,
-      venueId,
-      error ? "error=booking-request" : "updated=booking-request",
-    ),
-  );
+  if (parsed.data.status === "confirmed") {
+    const { error } = await supabase.rpc("approve_booking_and_queue_emails", {
+      p_venue:parsed.data.venueId,p_booking:parsed.data.requestId,
+    });
+    if (error) redirect(bookingDestination(locale, venueId, "error=booking-request"));
+    await deliverQueuedBookingConfirmations(supabase,parsed.data.venueId,parsed.data.requestId,locale);
+    redirect(bookingDestination(locale, venueId, "updated=booking-request"));
+  }
+  const { error } = await supabase.from("booking_requests")
+    .update({status:parsed.data.status,updated_at:new Date().toISOString()})
+    .eq("id",parsed.data.requestId).eq("venue_id",parsed.data.venueId);
+  redirect(bookingDestination(locale, venueId, error?"error=booking-request":"updated=booking-request"));
 }
 
 const catalogueSaveSchema = context.extend({
