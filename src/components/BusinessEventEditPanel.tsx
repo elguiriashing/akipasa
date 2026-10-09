@@ -14,7 +14,7 @@ type MediaOption = { id: string; url: string; alt: string };
 
 type EventSlotKey = "banner" | "explore" | "profile" | "background" | "map";
 
-type EditorTab = "details" | "pricing" | "media" | "accessibility" | "library";
+type EditorTab = "details" | "pricing" | "menus" | "media" | "accessibility" | "library";
 
 const PAGE_SIZE = 9;
 
@@ -75,6 +75,8 @@ export function BusinessEventEditPanel({
   backgroundMediaId = "",
   mapMediaId = "",
   eventBinMediaIds = [],
+  catalogueSections = [],
+  selectedCatalogueSectionIds = [],
 }: {
   locale: "es" | "en";
   venueId: string;
@@ -97,9 +99,12 @@ export function BusinessEventEditPanel({
   backgroundMediaId?: string;
   mapMediaId?: string;
   eventBinMediaIds?: string[];
+  catalogueSections?: Array<{ id: string; title: string; itemCount: number }>;
+  selectedCatalogueSectionIds?: string[];
 }) {
   const es = locale === "es";
   const [activeTab, setActiveTab] = useState<EditorTab>("details");
+  const [selectedMenus, setSelectedMenus] = useState<string[]>(selectedCatalogueSectionIds);
   const [pickerSlot, setPickerSlot] = useState<EventSlotKey | null>(null);
   const [pickerPage, setPickerPage] = useState(0);
   const [libraryPage, setLibraryPage] = useState(0);
@@ -307,6 +312,7 @@ export function BusinessEventEditPanel({
     [
       { key: "details", en: "Details", es: "Datos", icon: "✎" },
       { key: "pricing", en: "Pricing", es: "Precio", icon: "€" },
+      { key: "menus", en: "Menus", es: "Cartas", icon: "☰" },
       { key: "media", en: "Media", es: "Imágenes", icon: "▣" },
       { key: "accessibility", en: "Access", es: "Acceso", icon: "♿" },
       { key: "library", en: "Library", es: "Biblioteca", icon: "⊞" },
@@ -364,6 +370,7 @@ export function BusinessEventEditPanel({
               value={slots.background}
             />
             <input type="hidden" name="mapMediaId" value={slots.map} />
+            <input type="hidden" name="catalogueSectionIds" value={JSON.stringify(selectedMenus)} />
 
             <section
               className="event-editor-page"
@@ -416,6 +423,30 @@ export function BusinessEventEditPanel({
                   />
                 </label>
               </div>
+            </section>
+
+            <section className="event-editor-page" hidden={activeTab !== "menus"}>
+              <header className="event-editor-page-head">
+                <div><span className="eyebrow">{es ? "Opcional" : "Optional"}</span>
+                  <h3>{es ? "Carta del evento" : "Event menu"}</h3></div>
+                <small>{es ? "Selecciona las secciones de la carta del local que mostrarás en este evento. Los precios y alérgenos se mantienen sincronizados." : "Choose venue menu sections to show with this event. Prices and allergens stay in sync."}</small>
+              </header>
+              {catalogueSections.length ? (
+                <div className="event-menu-choices">
+                  {catalogueSections.map((section) => {
+                    const selected = selectedMenus.includes(section.id);
+                    return <button type="button" key={section.id}
+                      aria-pressed={selected}
+                      className={selected ? "event-menu-choice selected" : "event-menu-choice"}
+                      onClick={() => { setSelectedMenus((current) => selected ? current.filter((id) => id !== section.id) : [...current, section.id]); setSaveState("idle"); }}>
+                      <span aria-hidden="true">{selected ? "✓" : "+"}</span>
+                      <strong>{section.title}</strong>
+                      <small>{section.itemCount} {es ? "artículos" : "items"}</small>
+                    </button>;
+                  })}
+                </div>
+              ) : <p className="muted">{es ? "Publica primero una carta con artículos para poder vincularla." : "Publish a venue menu with items first to attach it to an event."}</p>}
+              {selectedMenus.length > 0 && <button type="button" className="button secondary" onClick={() => setSelectedMenus([])}>{es ? "Quitar carta del evento" : "Remove event menu"}</button>}
             </section>
 
             <section
