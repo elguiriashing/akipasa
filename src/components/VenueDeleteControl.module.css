@@ -23,6 +23,8 @@
 }
 .dialog {
   width: min(calc(100% - 2rem), 31rem);
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
   padding: 0;
   color: var(--ink);
   border: 0;
@@ -59,6 +61,7 @@
 }
 .heading h2 {
   margin: 0;
+  overflow-wrap: anywhere;
   font-size: 1.35rem;
   letter-spacing: -0.03em;
 }

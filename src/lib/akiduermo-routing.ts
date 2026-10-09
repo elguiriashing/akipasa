@@ -22,6 +22,8 @@ export function stayHostRoute(pathname: string) {
     };
   if (
     pathname === "/manifest.webmanifest" ||
+    pathname === "/sw.js" ||
+    pathname === "/offline.html" ||
     pathname === "/api/stays" ||
     pathname === "/api/v1/personalisation/consent" ||
     pathname.startsWith("/api/map/") ||

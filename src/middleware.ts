@@ -5,7 +5,9 @@ import { stayHostRoute, stayHostMethodAllowed } from "@/lib/akiduermo-routing";
 import { shouldNoindex } from "@/lib/seo";
 
 export async function middleware(request: NextRequest) {
-  const hostname = request.nextUrl.hostname;
+  const hostname = (
+    request.headers.get("host")?.split(":")[0] || request.nextUrl.hostname
+  ).toLowerCase();
   const isAkiBusiness = hostname === "business.akipasa.com";
   const isAkiDuermo = hostname === "akiduermo.akipasa.com";
   const isStayPath =
@@ -38,7 +40,9 @@ export async function middleware(request: NextRequest) {
       /^\/(es|en)\/(business|auth)(?:\/|$)/.test(pathname) ||
       pathname.startsWith("/api/") ||
       pathname === "/robots.txt" ||
-      pathname === "/manifest.webmanifest";
+      pathname === "/manifest.webmanifest" ||
+      pathname === "/sw.js" ||
+      pathname === "/offline.html";
 
     if (!allowed) {
       target.hostname = "akipasa.com";
