@@ -341,9 +341,7 @@ export function VenueDashboard({
             <h2>{tool.label}</h2>
             <p>{tool.description}</p>
           </div>
-          {["profile", "events", "catalogue", "rewards", "bookings"].includes(
-            tool.id,
-          ) && (
+          {["profile", "events", "catalogue", "rewards"].includes(tool.id) && (
             <div className={styles.translationAssist}>
               <Icon name="globe" />
               <span>

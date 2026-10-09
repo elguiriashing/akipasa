@@ -3,37 +3,34 @@ import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { WorkspacePageHeader } from "@/components/WorkspaceShell";
 import { MyBookings, type MyBooking } from "@/components/MyBookings";
-
+import { BookingLiveRefresh } from "@/components/BookingLiveRefresh";
+import { cancelMyBooking } from "./actions";
 export default async function MyBookingsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<Record<string, string | undefined>>;
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const { supabase, user } = await requireUser(locale);
-  const { data, error } = await supabase
-    .from("booking_requests")
-    .select(
-      "id,party_size,status,created_at,venues(name,slug),venue_availability_slots(starts_at,ends_at)",
-    )
-    .eq("profile_id", user.id)
-    .order("created_at", { ascending: false })
-    .limit(100);
+  const query = await searchParams;
+  const tab =
+    query.tab === "active" || query.tab === "past" ? query.tab : "upcoming";
+  const page = Math.max(
+    0,
+    Math.min(10000, Number.parseInt(query.page || "0", 10) || 0),
+  );
+  const { supabase } = await requireUser(locale, `/${locale}/account/bookings`);
+  const { data, error } = await supabase.rpc("my_booking_history", {
+    p_tab: tab,
+    p_page: page,
+  });
+  const result = data as {
+    bookings: MyBooking[];
+    counts: Record<"upcoming" | "active" | "past", number>;
+  } | null;
   const es = locale === "es";
-  const bookings: MyBooking[] = (data || []).map((item) => ({
-    id: item.id,
-    party_size: item.party_size,
-    status: item.status,
-    created_at: item.created_at,
-    venue:
-      (item.venues as unknown as { name: string; slug: string } | null) || null,
-    slot:
-      (item.venue_availability_slots as unknown as {
-        starts_at: string;
-        ends_at: string;
-      } | null) || null,
-  }));
   return (
     <>
       <WorkspacePageHeader
@@ -41,18 +38,46 @@ export default async function MyBookingsPage({
         title={es ? "Mis reservas" : "My bookings"}
         description={
           es
-            ? "Todo organizado: próximas, en curso e historial."
-            : "Everything in one place: upcoming, active and past."
+            ? "Próximas, en curso e historial. Todo en un sitio."
+            : "Upcoming, active and past. Everything in one place."
         }
       />
-      {error ? (
-        <div className="panel" role="alert">
+      <BookingLiveRefresh />
+      {query.requested &&
+        result?.bookings.some((b) => b.id === query.requested) && (
+          <p className="notice" role="status">
+            {es
+              ? "Solicitud enviada. El local debe aprobarla. Podrás seguir su estado aquí."
+              : "Request sent. The venue still needs to approve it. Track its status here."}
+          </p>
+        )}
+      {query.cancelled && (
+        <p className="notice" role="status">
+          {es ? "Reserva cancelada." : "Booking cancelled."}
+        </p>
+      )}
+      {query.error && (
+        <p className="notice" role="alert">
           {es
-            ? "No hemos podido cargar tus reservas. Inténtalo más tarde."
-            : "Couldn't load your bookings. Please try again later."}
-        </div>
+            ? "No se puede cancelar esta reserva. Contacta con el local."
+            : "This booking could not be cancelled. Please contact the venue."}
+        </p>
+      )}
+      {error || !result ? (
+        <p className="panel" role="alert">
+          {es
+            ? "No se han podido cargar las reservas. Vuelve a intentarlo."
+            : "Bookings could not be loaded. Please try again."}
+        </p>
       ) : (
-        <MyBookings locale={locale} bookings={bookings} />
+        <MyBookings
+          locale={locale}
+          bookings={result.bookings}
+          counts={result.counts}
+          currentTab={tab}
+          pageNumber={page}
+          cancel={cancelMyBooking}
+        />
       )}
     </>
   );

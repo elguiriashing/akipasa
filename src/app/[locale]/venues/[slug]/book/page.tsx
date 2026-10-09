@@ -24,7 +24,7 @@ export default async function VenueBookingPage({
   const { data: venue } = await supabase
     .from("venues")
     .select(
-      "id,name,slug,venue_booking_settings(mode,active,external_url,instructions_es,instructions_en,requires_deposit,deposit_cents),venue_availability_slots(id,starts_at,ends_at,capacity,active,offering_id)",
+      "id,name,slug,venue_booking_settings(mode,active,external_url,instructions_es,instructions_en,requires_deposit,deposit_cents)",
     )
     .eq("slug", slug)
     .eq("status", "published")
@@ -39,19 +39,24 @@ export default async function VenueBookingPage({
     notFound();
   }
   if (settings.mode !== "request") notFound();
-  const slots = ((venue.venue_availability_slots || []) as any[])
-    .filter((s) => s.active && new Date(s.starts_at).getTime() > Date.now())
-    .sort((a, b) => a.starts_at.localeCompare(b.starts_at));
-  const { data: offeringRows } = await supabase
-    .from("booking_offerings")
-    .select("id,name,active")
-    .eq("venue_id", venue.id)
-    .eq("active", true);
-  const offeringNames = new Map(
-    (offeringRows || []).map((offering) => [offering.id, offering.name]),
+  const { data: availability, error: availabilityError } = await supabase.rpc(
+    "booking_available_slots",
+    { p_venue: venue.id },
   );
-  const visibleSlots = slots.filter(
-    (slot) => !slot.offering_id || offeringNames.has(slot.offering_id),
+  const visibleSlots = (availability || []) as Array<{
+    id: string;
+    starts_at: string;
+    ends_at: string;
+    capacity: number;
+    remaining: number;
+    offering_id: string | null;
+    offering_name: string | null;
+    resource_name: string | null;
+  }>;
+  const offeringNames = new Map(
+    visibleSlots
+      .filter((s) => s.offering_id)
+      .map((s) => [s.offering_id!, s.offering_name || ""]),
   );
   const { data: profile } = await supabase
     .from("profiles")
@@ -69,13 +74,6 @@ export default async function VenueBookingPage({
             : "Choose when you want to visit."}
         </p>
       </section>
-      {query.requested && (
-        <p className="notice">
-          {es
-            ? "Solicitud enviada. El local te confirmará directamente."
-            : "Request sent. The venue will confirm your booking."}
-        </p>
-      )}
       {query.error && (
         <p className="notice">
           {es
@@ -83,20 +81,49 @@ export default async function VenueBookingPage({
             : "Could not complete your booking. Please try another slot."}
         </p>
       )}
-      <BookingWizard
-        locale={locale}
-        slug={slug}
-        venueId={venue.id}
-        venueName={venue.name}
-        slots={visibleSlots}
-        offerings={Object.fromEntries(offeringNames)}
-        profile={{
-          name: profile?.display_name || "",
-          email: profile?.public_email || user.email || "",
-          phone: profile?.phone || "",
-        }}
-        submit={requestVenueBooking}
-      />
+      {availabilityError && (
+        <p className="notice" role="alert">
+          {es
+            ? "No se ha podido cargar la disponibilidad. Vuelve a intentarlo."
+            : "Availability could not be loaded. Please try again."}
+        </p>
+      )}
+      {(es
+        ? settings.instructions_es
+        : settings.instructions_en || settings.instructions_es) && (
+        <p className="notice">
+          {es
+            ? settings.instructions_es
+            : settings.instructions_en || settings.instructions_es}
+        </p>
+      )}
+      {settings.requires_deposit && (
+        <p className="notice">
+          {es
+            ? "Depósito acordado con el local"
+            : "Deposit arranged with the venue"}
+          : €{((settings.deposit_cents || 0) / 100).toFixed(2)}.{" "}
+          {es
+            ? "No se cobra al enviar esta solicitud."
+            : "No payment is taken when sending this request."}
+        </p>
+      )}
+      {!availabilityError && (
+        <BookingWizard
+          locale={locale}
+          slug={slug}
+          venueId={venue.id}
+          venueName={venue.name}
+          slots={visibleSlots}
+          offerings={Object.fromEntries(offeringNames)}
+          profile={{
+            name: profile?.display_name || "",
+            email: profile?.public_email || user.email || "",
+            phone: profile?.phone || "",
+          }}
+          submit={requestVenueBooking}
+        />
+      )}
       <Link className="back-link" href={`/${locale}/venues/${slug}`}>
         {es ? "Volver al local" : "Back to venue"}
       </Link>

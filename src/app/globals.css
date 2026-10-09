@@ -19073,3 +19073,108 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
     gap: 0.25rem;
   }
 }
+
+.booking-hub {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 210px);
+  min-height: 400px;
+  overflow: hidden;
+}
+.booking-hub > .workspace-inline-heading,
+.booking-hub > .booking-status-strip,
+.booking-hub > .booking-manager-tabs {
+  flex-shrink: 0;
+}
+.booking-manager-body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.25rem;
+}
+.booking-request-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.65rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--line, rgba(150, 150, 180, 0.2));
+}
+.booking-request-card small,
+.booking-request-card time {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.booking-request-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  grid-column: 1/-1;
+}
+.booking-mail-status {
+  grid-column: 1/-1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.booking-history-pager {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+.my-bookings-tabs a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  color: inherit;
+  text-decoration: none;
+  padding: 0.85rem 0.45rem;
+  border: 1px solid var(--line, rgba(150, 150, 180, 0.25));
+  border-radius: 0.8rem;
+  font-weight: 700;
+}
+.my-bookings-tabs a.selected {
+  background: rgba(147, 129, 251, 0.18);
+  border-color: #9381fb;
+}
+.my-bookings-tabs a span {
+  border-radius: 2rem;
+  padding: 0.15rem 0.4rem;
+  background: rgba(150, 150, 180, 0.17);
+  font-size: 0.75rem;
+}
+.booking-date-grid,
+.booking-time-grid {
+  max-height: 260px;
+  overflow-y: auto;
+}
+.booking-time-grid button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.booking-cancel {
+  max-width: 260px;
+  font-size: 0.8rem;
+}
+[data-theme="light"] .my-booking-status.status-confirmed {
+  color: #17624b;
+}
+[data-theme="light"] .my-booking-status.status-requested {
+  color: #754705;
+}
+@media (max-width: 600px) {
+  .booking-hub {
+    max-height: calc(100dvh - 160px);
+    min-height: 350px;
+  }
+  .booking-request-card {
+    grid-template-columns: 1fr;
+  }
+  .my-bookings-tabs a {
+    font-size: 0.8rem;
+  }
+  .booking-wizard {
+    padding: 1rem;
+  }
+}

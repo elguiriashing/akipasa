@@ -2,12 +2,18 @@
 
 import React, { useMemo, useState } from "react";
 import { Icon } from "./Icons";
+import {
+  bookingGuestLimit,
+  type BookingSubmissionResult,
+} from "../lib/booking-ui";
 
 type Slot = {
   id: string;
   starts_at: string;
   ends_at: string;
   capacity: number;
+  remaining?: number;
+  resource_name?: string | null;
   offering_id?: string | null;
 };
 type Props = {
@@ -18,7 +24,7 @@ type Props = {
   slots: Slot[];
   offerings: Record<string, string>;
   profile: { name: string; email: string; phone: string };
-  submit: (data: FormData) => Promise<void>;
+  submit: (data: FormData) => Promise<BookingSubmissionResult | void>;
 };
 
 export function BookingWizard({
@@ -32,7 +38,15 @@ export function BookingWizard({
   submit,
 }: Props) {
   const es = locale === "es";
-  const [slotId, setSlotId] = useState(slots[0]?.id || "");
+  const [slotId, setSlotId] = useState(
+    slots.find((s) => bookingGuestLimit(s) > 0)?.id || "",
+  );
+  const [requestKey, setRequestKey] = useState("");
+  const [error, setError] = useState("");
+  const [remainingOverride, setRemainingOverride] = useState<
+    Record<string, number>
+  >({});
+  React.useEffect(() => setRequestKey(crypto.randomUUID()), []);
   const [guests, setGuests] = useState(1);
   const [step, setStep] = useState(0);
   const [contactName, setContactName] = useState(profile.name);
@@ -41,7 +55,10 @@ export function BookingWizard({
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
   const current = slots.find((s) => s.id === slotId) || slots[0];
-  const maxGuests = Math.max(1, Math.min(current?.capacity || 1, 100));
+  const maxGuests = Math.min(
+    bookingGuestLimit(current),
+    remainingOverride[slotId] ?? 100,
+  );
   const selectedGuests = Math.min(guests, maxGuests);
   const dates = useMemo(() => {
     const result = new Map<string, Slot[]>();
@@ -57,7 +74,7 @@ export function BookingWizard({
     return [...result.entries()];
   }, [slots]);
   const [selectedDay, setSelectedDay] = useState(() => {
-    const slot = slots[0];
+    const slot = slots.find((s) => bookingGuestLimit(s) > 0) || slots[0];
     return slot
       ? new Intl.DateTimeFormat("en-CA", {
           timeZone: "Europe/Madrid",
@@ -83,10 +100,12 @@ export function BookingWizard({
     });
   const canContinue =
     step === 0
-      ? !!current
+      ? !!current && maxGuests > 0
       : step === 1
         ? selectedGuests >= 1
-        : !!contactName.trim() &&
+        : contactName.trim().length >= 2 &&
+          !!requestKey &&
+          maxGuests > 0 &&
           /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail);
   const tabs = es
     ? ["Fecha y hora", "Personas", "Tus datos"]
@@ -109,6 +128,11 @@ export function BookingWizard({
       className="panel booking-wizard"
       aria-label={es ? "Reserva online" : "Online booking"}
     >
+      {error && (
+        <p role="alert" className="notice">
+          {error}
+        </p>
+      )}
       <div className="booking-wizard-header">
         <span className="eyebrow">
           AkiPasa · {es ? "Reservas" : "Bookings"}
@@ -146,7 +170,11 @@ export function BookingWizard({
                 key={day}
                 onClick={() => {
                   setSelectedDay(day);
-                  setSlotId(value[0].id);
+                  setSlotId(
+                    (value.find((s) => bookingGuestLimit(s) > 0) || value[0])
+                      .id,
+                  );
+                  setError("");
                   setGuests(1);
                 }}
                 aria-pressed={day === selectedDay}
@@ -167,14 +195,29 @@ export function BookingWizard({
               <button
                 type="button"
                 key={slot.id}
+                disabled={
+                  Math.min(
+                    bookingGuestLimit(slot),
+                    remainingOverride[slot.id] ?? 100,
+                  ) === 0
+                }
                 aria-pressed={slot.id === slotId}
                 className={slot.id === slotId ? "active" : ""}
                 onClick={() => {
                   setSlotId(slot.id);
+                  setError("");
                   setGuests(1);
                 }}
               >
                 <strong>{timeText(slot.starts_at)}</strong>
+                {slot.resource_name && <small>{slot.resource_name}</small>}
+                <small>
+                  {Math.min(
+                    bookingGuestLimit(slot),
+                    remainingOverride[slot.id] ?? 100,
+                  )}{" "}
+                  {es ? "plazas libres" : "places left"}
+                </small>
                 <small>
                   {slot.offering_id
                     ? offerings[slot.offering_id] ||
@@ -204,7 +247,7 @@ export function BookingWizard({
               type="button"
               aria-label={es ? "Quitar persona" : "Remove guest"}
               disabled={selectedGuests <= 1}
-              onClick={() => setGuests((n) => Math.max(1, n - 1))}
+              onClick={() => setGuests(Math.max(1, selectedGuests - 1))}
             >
               −
             </button>
@@ -213,7 +256,7 @@ export function BookingWizard({
               type="button"
               aria-label={es ? "Añadir persona" : "Add guest"}
               disabled={selectedGuests >= maxGuests}
-              onClick={() => setGuests((n) => Math.min(maxGuests, n + 1))}
+              onClick={() => setGuests(Math.min(maxGuests, selectedGuests + 1))}
             >
               +
             </button>
@@ -238,7 +281,17 @@ export function BookingWizard({
             action={async (formData) => {
               setBusy(true);
               try {
-                await submit(formData);
+                const result = await submit(formData);
+                if (result?.error) {
+                  setError(result.error);
+                  if (result.remaining !== undefined) {
+                    setRemainingOverride((prev) => ({
+                      ...prev,
+                      [slotId]: result.remaining!,
+                    }));
+                    setStep(0);
+                  }
+                }
               } finally {
                 setBusy(false);
               }
@@ -249,6 +302,7 @@ export function BookingWizard({
             <input type="hidden" name="slug" value={slug} />
             <input type="hidden" name="venueId" value={venueId} />
             <input type="hidden" name="slotId" value={slotId} />
+            <input type="hidden" name="requestKey" value={requestKey} />
             <input type="hidden" name="partySize" value={selectedGuests} />
             <label>
               {es ? "Nombre" : "Name"}
@@ -276,6 +330,7 @@ export function BookingWizard({
             <label>
               {es ? "Teléfono (opcional)" : "Phone (optional)"}
               <input
+                maxLength={40}
                 name="contactPhone"
                 type="tel"
                 autoComplete="tel"

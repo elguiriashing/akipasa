@@ -9,7 +9,8 @@ export type MyBooking = {
   party_size: number;
   status: string;
   created_at: string;
-  venue: { name: string; slug: string } | null;
+  venue: { name: string; slug: string; address?: string } | null;
+  offeringName?: string | null;
   slot: { starts_at: string; ends_at: string } | null;
 };
 
@@ -18,12 +19,20 @@ type Filter = "upcoming" | "active" | "past";
 export function MyBookings({
   locale,
   bookings,
+  currentTab,
+  counts,
+  pageNumber = 0,
+  cancel,
 }: {
   locale: "es" | "en";
   bookings: MyBooking[];
+  currentTab?: Filter;
+  counts?: Record<Filter, number>;
+  pageNumber?: number;
+  cancel?: (form: FormData) => Promise<void>;
 }) {
   const es = locale === "es";
-  const [filter, setFilter] = useState<Filter>("upcoming");
+  const [filter, setFilter] = useState<Filter>(currentTab || "upcoming");
   const now = Date.now();
   const sections = useMemo(() => {
     const result: Record<Filter, MyBooking[]> = {
@@ -68,6 +77,8 @@ export function MyBookings({
     active: es ? "En curso" : "Active",
     past: es ? "Historial" : "Past",
   };
+  const visibleFilter = currentTab || filter;
+  const visibleBookings = currentTab ? bookings : sections[filter];
   const statuses: Record<string, string> = {
     requested: es ? "Pendiente de aprobación" : "Pending approval",
     confirmed: es ? "Confirmada" : "Confirmed",
@@ -82,19 +93,30 @@ export function MyBookings({
         role="group"
         aria-label={es ? "Filtrar reservas" : "Filter bookings"}
       >
-        {(["upcoming", "active", "past"] as const).map((key) => (
-          <button
-            key={key}
-            type="button"
-            aria-pressed={filter === key}
-            className={filter === key ? "selected" : ""}
-            onClick={() => setFilter(key)}
-          >
-            {labels[key]} <span>{sections[key].length}</span>
-          </button>
-        ))}
+        {(["upcoming", "active", "past"] as const).map((key) =>
+          currentTab ? (
+            <Link
+              key={key}
+              href={`/${locale}/account/bookings?tab=${key}`}
+              aria-current={visibleFilter === key ? "page" : undefined}
+              className={visibleFilter === key ? "selected" : ""}
+            >
+              {labels[key]} <span>{counts?.[key] || 0}</span>
+            </Link>
+          ) : (
+            <button
+              key={key}
+              type="button"
+              aria-pressed={filter === key}
+              className={filter === key ? "selected" : ""}
+              onClick={() => setFilter(key)}
+            >
+              {labels[key]} <span>{sections[key].length}</span>
+            </button>
+          ),
+        )}
       </div>
-      {sections[filter].length === 0 ? (
+      {visibleBookings.length === 0 ? (
         <div className="panel my-bookings-empty">
           <Icon name="calendar" size={34} />
           <h2>{es ? "Nada por aquí todavía" : "Nothing here yet"}</h2>
@@ -110,7 +132,7 @@ export function MyBookings({
         </div>
       ) : (
         <div className="my-bookings-list">
-          {sections[filter].map((booking) => {
+          {visibleBookings.map((booking) => {
             const start = booking.slot?.starts_at;
             const venue = booking.venue;
             const date = start
@@ -140,6 +162,8 @@ export function MyBookings({
                     {es ? "Reserva AkiPasa" : "AkiPasa booking"}
                   </span>
                   <h3>{venue?.name || (es ? "Local" : "Venue")}</h3>
+                  {booking.offeringName && <span>{booking.offeringName}</span>}
+                  {venue?.address && <small>{venue.address}</small>}
                   <div className="my-booking-meta">
                     <span>
                       <Icon name="calendar" size={15} />{" "}
@@ -157,6 +181,31 @@ export function MyBookings({
                   >
                     {statuses[booking.status] || booking.status}
                   </span>
+                  {cancel &&
+                    visibleFilter === "upcoming" &&
+                    ["requested", "confirmed"].includes(booking.status) && (
+                      <details className="booking-cancel">
+                        <summary>
+                          {es ? "Cancelar reserva" : "Cancel booking"}
+                        </summary>
+                        <p>
+                          {es
+                            ? "Se liberarán tus plazas. Consulta con el local cualquier depósito."
+                            : "Your places will be released. Contact the venue about any deposit."}
+                        </p>
+                        <form action={cancel}>
+                          <input type="hidden" name="locale" value={locale} />
+                          <input
+                            type="hidden"
+                            name="bookingId"
+                            value={booking.id}
+                          />
+                          <button className="button secondary" type="submit">
+                            {es ? "Sí, cancelar" : "Yes, cancel"}
+                          </button>
+                        </form>
+                      </details>
+                    )}
                   {venue?.slug && (
                     <Link
                       className="button secondary"
@@ -171,6 +220,29 @@ export function MyBookings({
             );
           })}
         </div>
+      )}
+      {currentTab && (
+        <nav
+          className="booking-history-pager"
+          aria-label={es ? "Páginas de reservas" : "Booking pages"}
+        >
+          {pageNumber > 0 && (
+            <Link
+              className="button secondary"
+              href={`/${locale}/account/bookings?tab=${currentTab}&page=${pageNumber - 1}`}
+            >
+              {es ? "Anterior" : "Previous"}
+            </Link>
+          )}
+          {(counts?.[currentTab] || 0) > (pageNumber + 1) * 20 && (
+            <Link
+              className="button secondary"
+              href={`/${locale}/account/bookings?tab=${currentTab}&page=${pageNumber + 1}`}
+            >
+              {es ? "Siguiente" : "Next"}
+            </Link>
+          )}
+        </nav>
       )}
     </div>
   );
