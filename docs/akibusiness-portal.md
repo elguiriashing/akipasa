@@ -65,29 +65,3 @@ Before merging/deploying, verify:
 5. Consumer navigation no longer embeds business application or CRM shortcuts.
 6. OAuth/magic-link callbacks return to the business host.
 7. AkiHQ continues to open independently at `crm.akipasa.com`.
-
-
-## Bookings workspace (October 2026 rollout)
-
-AkiBusiness venue Reservations uses a responsive manager with Setup,
-Availability, and Requests sections. The public venue detail has a localized
-Book now/Reservar action when booking settings are active.
-
-- External: Set one HTTP(S) booking URL. Public booking actions open that
-  external URL. Deposit and availability fields are hidden in this mode.
-- Via AkiPasa (`request`): Requests use existing `venue_availability_slots`,
-  `booking_requests`, and atomic `request_booking` RPC. Owners select one
-  of seven **presentation presets**: dining, experience, resource,
-  appointment, ticket, class, and stay. Template-specific pricing, resource
-  assignment, recurrence, and allocation engines are **not** implemented yet.
-- Disabled: Public booking action is hidden, while historical requests remain
-  accessible in AkiBusiness.
-
-Apply Supabase migration `20261009033000_booking_manager_settings.sql` before
-deploying the application; the `external_url` and `booking_template` columns
-are required. The migration preserves existing booking slots and requests.
-AkiPasa confirms an existing reservation only when the venue manager accepts it.
-
-Before release, run `npm run check`, `npm run build:cloudflare`, verify EN/ES
-and 360 px layouts, validate external URL rejection, and test the native form
-against a migrated staging database. See issue #72 for remaining requirements.
