@@ -175,8 +175,10 @@ try {
         await page.goto(url("manager"));
         await themeSet();
         const services = page.getByRole("button", {
-          name: locale === "es" ? "Servicios" : "Services",
-          exact: true,
+          name:
+            locale === "es"
+              ? /^Servicios(?:\s+\d+)?$/
+              : /^Services(?:\s+\d+)?$/,
         });
         await services.click();
         await page

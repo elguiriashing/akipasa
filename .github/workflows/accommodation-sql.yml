@@ -12,16 +12,6 @@ permissions:
 jobs:
   postgres-acceptance:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: accommodation_test
-        ports: ["5432:5432"]
-        options: >-
-          --health-cmd "pg_isready -U postgres -d accommodation_test"
-          --health-interval 5s --health-timeout 5s --health-retries 12
     env:
       TEST_ACCOMMODATION_DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/accommodation_test
     steps:
@@ -31,4 +21,9 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci
+      - name: Start isolated PostgreSQL
+        run: |
+          sudo systemctl start postgresql
+          sudo -u postgres psql -v ON_ERROR_STOP=1 -c "alter user postgres password 'postgres'"
+          sudo -u postgres createdb accommodation_test
       - run: node scripts/test-accommodation-sql.mjs
