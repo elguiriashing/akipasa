@@ -1,4 +1,4 @@
-const CACHE = "akihq-v1";
+const CACHE = "akihq-v2";
 const ASSETS = [
   "./",
   "./index.html",
