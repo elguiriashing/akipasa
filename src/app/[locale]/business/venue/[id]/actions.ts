@@ -988,12 +988,32 @@ export async function saveBookingSettings(formData: FormData) {
   );
 }
 
+export async function createBookingResource(formData: FormData) {
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  const parsed = context.extend({
+    name: z.string().trim().min(2).max(100),
+    kind: z.enum(["table", "staff", "vehicle", "equipment", "court", "room", "other"]),
+    capacity: z.coerce.number().int().min(1).max(10000),
+  }).safeParse(Object.fromEntries(formData));
+  if (!parsed.success) redirect(destination(locale, venueId, "error=booking-resource"));
+  const { supabase } = await requireBusinessAccess(locale);
+  const { error } = await supabase.from("booking_resources").insert({
+    venue_id: parsed.data.venueId,
+    name: parsed.data.name,
+    kind: parsed.data.kind,
+    capacity: parsed.data.capacity,
+  });
+  redirect(destination(locale, venueId, error ? "error=booking-resource" : "updated=booking-resource"));
+}
+
 export async function createBookingSlot(formData: FormData) {
   const parsed = context
     .extend({
       startsAt: madridLocalDateTimeSchema,
       endsAt: madridLocalDateTimeSchema,
       capacity: z.coerce.number().int().min(1).max(10000),
+      resourceId: z.union([z.string().uuid(),z.literal("")]).default(""),
     })
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
@@ -1006,6 +1026,7 @@ export async function createBookingSlot(formData: FormData) {
     starts_at: parsed.data.startsAt.toISOString(),
     ends_at: parsed.data.endsAt.toISOString(),
     capacity: parsed.data.capacity,
+    resource_id: parsed.data.resourceId || null,
   });
   redirect(
     destination(
@@ -1025,6 +1046,7 @@ export async function createRecurringBookingSlots(formData: FormData) {
     startTime: z.string().regex(/^([01]\\d|2[0-3]):[0-5]\\d$/),
     duration: z.coerce.number().int().min(15).max(1440),
     capacity: z.coerce.number().int().min(1).max(10000),
+    resourceId: z.union([z.string().uuid(),z.literal("")]).default(""),
   }).safeParse(Object.fromEntries(formData));
   const weekdays = formData.getAll("weekdays").map(Number);
   if (!parsed.success || !weekdays.length || weekdays.some(day => !Number.isInteger(day) || day < 1 || day > 7)) {
@@ -1039,6 +1061,7 @@ export async function createRecurringBookingSlots(formData: FormData) {
     p_start_time: parsed.data.startTime,
     p_duration_minutes: parsed.data.duration,
     p_capacity: parsed.data.capacity,
+    p_resource: parsed.data.resourceId || null,
   });
   redirect(destination(locale, venueId, error ? "error=booking-recurrence" : "updated=booking-recurrence"));
 }
