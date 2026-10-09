@@ -72,4 +72,4 @@ begin
 end;
 $$;
 revoke all on function public.create_recurring_booking_slots(uuid,date,date,integer[],time,integer,integer,uuid) from public,anon;
-grant execute on function public.create_recurring_booking_slots(uuid,date,date,integer[],time,integer,integer) to authenticated;
+grant execute on function public.create_recurring_booking_slots(uuid,date,date,integer[],time,integer,integer,uuid) to authenticated;
