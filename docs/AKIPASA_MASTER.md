@@ -97,6 +97,16 @@ Each item must be validated against source route discovery before claiming exhau
 - No payment entitlement, ticket fulfilment, automatic staff assignment or hotel room-night pricing is implied by this model.
 - Acceptance required: additive migrations applied in order, disposable Postgres suite, EN/ES responsive UI, direct customer reservation, cross-tenant and duplicate-capacity checks. **Not deployed to production.**
 
+
+### Consumer booking UX and confirmations (draft, October 2026)
+
+- The public venue booking form is becoming a three-step responsive wizard: date/time, party size controlled by buttons, and minimal customer contact. Slot capacity is enforced in UI and again transactionally through the existing request_booking RPC.
+- Consumer Account receives /[locale]/account/bookings (Upcoming, Active, Past) backed by booking_requests profile_id=auth.uid(), never another user's PII; statuses are shown separately from dates.
+- AkiBusiness Reservations defaults to the inbox and uses Bookings, Calendar, Services, Settings; service types are chosen when creating offerings, not as cosmetic global selectors. Successful saves preserve the venue dashboard section and active subview.
+- Approval transitions requested→confirmed through a permission-gated SQL RPC and creates unique customer and venue notification rows atomically. Venue delivery requires an explicit configured recipient. Sending uses the Resend API with per-booking recipient idempotency; missing secrets/provider failures must remain visible as failed/pending status, never falsely claim delivered.
+- Confirm sender domain is verified: root akipasa.com was pending at the time of work, auth.akipasa.com was verified. Use the latter until root verification and secret configuration are confirmed. Do not assume Cloudflare Email Routing can send transactional outbound messages.
+- Requires migration 20261009160000_booking_notification_email.sql before application deploy and testing. Production deployment, authenticated browser scenarios, live email delivery and RLS/role checks are NOT YET VERIFIED.
+
 ### AkiHQ / management / operations
 
 - AkiHQ Pro plan, POS/till/table service, staff devices/roles, order movement/splitting, inventory and printers are **planned/partially built** until code and live evidence prove otherwise. Never represent an untested action as live.
