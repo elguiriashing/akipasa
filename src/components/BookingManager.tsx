@@ -36,7 +36,7 @@ export function BookingManager({
   updateRequest: (formData: FormData) => Promise<void>;
 }) {
   const es = locale === "es";
-  const [mode, setMode] = useState<Mode>(settings?.mode === "request" || settings?.mode === "disabled" ? settings.mode : "external");
+  const [mode, setMode] = useState<Mode>(settings?.mode === "request" || settings?.mode === "disabled" ? (settings.mode as Mode) : "external");
   const [section, setSection] = useState<"setup" | "calendar" | "inbox">("setup");
   const [template, setTemplate] = useState(settings?.booking_template || "experience");
   const pending = requests.filter((r) => r.status === "requested").length;
