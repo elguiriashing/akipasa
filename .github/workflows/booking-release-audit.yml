@@ -1,0 +1,28 @@
+name: Booking release audit
+on:
+  push:
+    branches: [feature/booking-ux-confirmations]
+    paths: [.github/workflows/booking-release-audit.yml]
+permissions:
+  contents: read
+jobs:
+  review-source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Prepare source and formatting tools for isolated review
+        run: |
+          git archive HEAD > /tmp/booking-source.tar
+          tar -czf /tmp/booking-formatter.tar.gz node_modules/prettier node_modules/prettier-plugin-tailwindcss
+      - uses: actions/upload-artifact@v4
+        with:
+          name: booking-release-review
+          path: |
+            /tmp/booking-source.tar
+            /tmp/booking-formatter.tar.gz
+          retention-days: 1
