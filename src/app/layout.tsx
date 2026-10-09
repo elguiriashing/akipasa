@@ -53,17 +53,22 @@ const sharedMetadata: Metadata = {
 export async function generateMetadata(): Promise<Metadata> {
   const host = (await headers()).get("host")?.split(":")[0]?.toLowerCase();
   const brand =
-    host === "business.akipasa.com"
-      ? "business"
-      : host === "akiduermo.akipasa.com"
-        ? "duermo"
-        : "akipasa";
+    host === "hq.akipasa.com"
+      ? "akihq"
+      : host === "business.akipasa.com"
+        ? "business"
+        : host === "akiduermo.akipasa.com"
+          ? "duermo"
+          : "akipasa";
   const name =
-    brand === "business"
-      ? "AkiBusiness"
-      : brand === "duermo"
-        ? "AkiDuermo"
-        : config.productName;
+    brand === "akihq"
+      ? "AkiHQ"
+      : brand === "business"
+        ? "AkiBusiness"
+        : brand === "duermo"
+          ? "AkiDuermo"
+          : config.productName;
+  const iconPath = brand === "akihq" ? "/pwa/akihq.svg" : `/pwa/${brand}-192.png`;
   return {
     ...sharedMetadata,
     applicationName: name,
@@ -73,10 +78,14 @@ export async function generateMetadata(): Promise<Metadata> {
         : { default: name, template: `%s · ${name}` },
     icons: {
       icon: [
-        { url: `/pwa/${brand}-192.png`, type: "image/png", sizes: "192x192" },
+        {
+          url: iconPath,
+          type: brand === "akihq" ? "image/svg+xml" : "image/png",
+          ...(brand === "akihq" ? {} : { sizes: "192x192" }),
+        },
       ],
-      apple: `/pwa/${brand}-192.png`,
-      shortcut: `/pwa/${brand}-192.png`,
+      apple: iconPath,
+      shortcut: iconPath,
     },
   };
 }
