@@ -88,23 +88,43 @@ export default async function EventPage({
       supabase.rpc("event_public_engagement", { p_event: event.id }),
     ]);
   // Show only this venue's published catalogue content; event stores IDs, not a copy.
-  const [{ data: eventMenuLink }, { data: publishedCatalogue }] = await Promise.all([
-    supabase.from("events").select("catalogue_section_ids")
-      .eq("id", event.id).eq("venue_id", resolvedVenue.id).eq("status", "published").maybeSingle(),
-    supabase.rpc("public_venue_catalogue", { p_venue: resolvedVenue.id }),
-  ]);
+  const [{ data: eventMenuLink }, { data: publishedCatalogue }] =
+    await Promise.all([
+      supabase
+        .from("events")
+        .select("catalogue_section_ids")
+        .eq("id", event.id)
+        .eq("venue_id", resolvedVenue.id)
+        .eq("status", "published")
+        .maybeSingle(),
+      supabase.rpc("public_venue_catalogue", { p_venue: resolvedVenue.id }),
+    ]);
   const linkedIds = Array.isArray(eventMenuLink?.catalogue_section_ids)
-    ? eventMenuLink.catalogue_section_ids.filter((id: unknown): id is string => typeof id === "string")
+    ? eventMenuLink.catalogue_section_ids.filter(
+        (id: unknown): id is string => typeof id === "string",
+      )
     : [];
-  const completeMenu = publishedCatalogue && typeof publishedCatalogue === "object" && "document" in publishedCatalogue
-    ? parseCatalogueDocument((publishedCatalogue as { document?: unknown }).document, locale)
-    : null;
-  const eventMenu = completeMenu && linkedIds.length
-    ? { ...completeMenu, sections: linkedIds.flatMap((id: string) => {
-        const section = completeMenu.sections.find((item) => item.id === id);
-        return section ? [section] : [];
-      }) }
-    : null;
+  const completeMenu =
+    publishedCatalogue &&
+    typeof publishedCatalogue === "object" &&
+    "document" in publishedCatalogue
+      ? parseCatalogueDocument(
+          (publishedCatalogue as { document?: unknown }).document,
+          locale,
+        )
+      : null;
+  const eventMenu =
+    completeMenu && linkedIds.length
+      ? {
+          ...completeMenu,
+          sections: linkedIds.flatMap((id: string) => {
+            const section = completeMenu.sections.find(
+              (item) => item.id === id,
+            );
+            return section ? [section] : [];
+          }),
+        }
+      : null;
   const goingCount =
     publicEngagement &&
     typeof publicEngagement === "object" &&
@@ -595,11 +615,18 @@ export default async function EventPage({
             </div>
             {eventMenu && eventMenu.sections.length > 0 && (
               <details className="event-description event-menu-linked">
-                <summary>{locale === "es" ? "Carta del evento" : "Event menu"}</summary>
-                <PublicVenueCatalogue locale={locale} document={eventMenu}
+                <summary>
+                  {locale === "es" ? "Carta del evento" : "Event menu"}
+                </summary>
+                <PublicVenueCatalogue
+                  locale={locale}
+                  document={eventMenu}
                   media={(resolvedVenue.media || []).map((item) => ({
-                    id: item.id, url: item.url, alt: translated(item.alt, locale),
-                  }))} />
+                    id: item.id,
+                    url: item.url,
+                    alt: translated(item.alt, locale),
+                  }))}
+                />
               </details>
             )}
             <details className="event-description" open>

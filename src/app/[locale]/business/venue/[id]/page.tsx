@@ -711,13 +711,25 @@ export default async function VenueWorkspace({
                               : event.accessibility_notes_es || "",
                         }}
                         catalogueSections={catalogueDocument.sections
-                          .filter((section) => section.items.some((item) => item.visible !== false))
+                          .filter((section) =>
+                            section.items.some(
+                              (item) => item.visible !== false,
+                            ),
+                          )
                           .map((section) => ({
                             id: section.id,
-                            title: catalogueTextForDisplay(section.title, locale, "section_title"),
-                            itemCount: section.items.filter((item) => item.visible !== false).length,
+                            title: catalogueTextForDisplay(
+                              section.title,
+                              locale,
+                              "section_title",
+                            ),
+                            itemCount: section.items.filter(
+                              (item) => item.visible !== false,
+                            ).length,
                           }))}
-                        selectedCatalogueSectionIds={event.catalogue_section_ids || []}
+                        selectedCatalogueSectionIds={
+                          event.catalogue_section_ids || []
+                        }
                         venueMediaIds={mediaStudioItems.map((item) => item.id)}
                         media={[
                           ...mediaStudioItems,

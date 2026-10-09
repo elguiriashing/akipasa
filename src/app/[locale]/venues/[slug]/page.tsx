@@ -51,11 +51,28 @@ export default async function VenuePage({
     .map((event) => ({
       event,
       occurrence: event.occurrences
-        .filter((item) => item.status !== "cancelled" && new Date(item.endsAt).getTime() > now)
-        .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime())[0],
+        .filter(
+          (item) =>
+            item.status !== "cancelled" &&
+            new Date(item.endsAt).getTime() > now,
+        )
+        .sort(
+          (a, b) =>
+            new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime(),
+        )[0],
     }))
-    .filter((item): item is typeof item & { occurrence: NonNullable<typeof item.occurrence> } => Boolean(item.occurrence))
-    .sort((a, b) => new Date(a.occurrence.startsAt).getTime() - new Date(b.occurrence.startsAt).getTime());
+    .filter(
+      (
+        item,
+      ): item is typeof item & {
+        occurrence: NonNullable<typeof item.occurrence>;
+      } => Boolean(item.occurrence),
+    )
+    .sort(
+      (a, b) =>
+        new Date(a.occurrence.startsAt).getTime() -
+        new Date(b.occurrence.startsAt).getTime(),
+    );
   const m = msg(locale);
   const returnTo = `/${locale}/venues/${venue.slug}`;
   const { supabase, user } = await optionalUser();
@@ -339,32 +356,85 @@ export default async function VenuePage({
               {translated(venue.description, locale)}
             </p>
             {upcomingEvents.length > 0 && (
-              <section className="venue-section" aria-label={locale === "es" ? "Próximos eventos" : "Upcoming events"}>
+              <section
+                className="venue-section"
+                aria-label={
+                  locale === "es" ? "Próximos eventos" : "Upcoming events"
+                }
+              >
                 <div className="venue-events-heading">
                   <div>
-                    <span className="eyebrow">{locale === "es" ? "Descubre qué pasa" : "What's happening"}</span>
-                    <h2>{locale === "es" ? "Próximos eventos" : "Upcoming events"}</h2>
+                    <span className="eyebrow">
+                      {locale === "es"
+                        ? "Descubre qué pasa"
+                        : "What's happening"}
+                    </span>
+                    <h2>
+                      {locale === "es" ? "Próximos eventos" : "Upcoming events"}
+                    </h2>
                   </div>
-                  <span className="status-pill">{upcomingEvents.length} {locale === "es" ? "eventos" : "events"}</span>
+                  <span className="status-pill">
+                    {upcomingEvents.length}{" "}
+                    {locale === "es" ? "eventos" : "events"}
+                  </span>
                 </div>
                 <div className="venue-event-grid">
                   {upcomingEvents.map(({ event, occurrence }) => {
-                    const artwork = event.exploreImage || event.bannerImage || event.profileImage || venue.eventsImage;
+                    const artwork =
+                      event.exploreImage ||
+                      event.bannerImage ||
+                      event.profileImage ||
+                      venue.eventsImage;
                     const startsAt = new Date(occurrence.startsAt);
                     return (
-                      <Link className="venue-event-feature" href={`/${locale}/events/${event.slug}`} key={event.id}>
+                      <Link
+                        className="venue-event-feature"
+                        href={`/${locale}/events/${event.slug}`}
+                        key={event.id}
+                      >
                         <div className="venue-event-feature-art">
-                          {artwork ? <img src={artwork.url} alt={translated(artwork.alt, locale)} loading="lazy" /> : <span aria-hidden="true">✦</span>}
+                          {artwork ? (
+                            <img
+                              src={artwork.url}
+                              alt={translated(artwork.alt, locale)}
+                              loading="lazy"
+                            />
+                          ) : (
+                            <span aria-hidden="true">✦</span>
+                          )}
                           <span className="venue-event-feature-date">
-                            <strong>{new Intl.DateTimeFormat(locale === "es" ? "es-ES" : "en-GB", { day: "numeric", timeZone: "Europe/Madrid" }).format(startsAt)}</strong>
-                            <small>{new Intl.DateTimeFormat(locale === "es" ? "es-ES" : "en-GB", { month: "short", timeZone: "Europe/Madrid" }).format(startsAt)}</small>
+                            <strong>
+                              {new Intl.DateTimeFormat(
+                                locale === "es" ? "es-ES" : "en-GB",
+                                { day: "numeric", timeZone: "Europe/Madrid" },
+                              ).format(startsAt)}
+                            </strong>
+                            <small>
+                              {new Intl.DateTimeFormat(
+                                locale === "es" ? "es-ES" : "en-GB",
+                                { month: "short", timeZone: "Europe/Madrid" },
+                              ).format(startsAt)}
+                            </small>
                           </span>
                         </div>
                         <div className="venue-event-feature-body">
-                          <span className="eyebrow">{new Intl.DateTimeFormat(locale === "es" ? "es-ES" : "en-GB", { weekday: "short", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Madrid" }).format(startsAt)}</span>
+                          <span className="eyebrow">
+                            {new Intl.DateTimeFormat(
+                              locale === "es" ? "es-ES" : "en-GB",
+                              {
+                                weekday: "short",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                timeZone: "Europe/Madrid",
+                              },
+                            ).format(startsAt)}
+                          </span>
                           <h3>{translated(event.title, locale)}</h3>
                           <p>{translated(event.description, locale)}</p>
-                          <span className="venue-event-feature-action">{locale === "es" ? "Ver evento" : "View event"} <span aria-hidden="true">→</span></span>
+                          <span className="venue-event-feature-action">
+                            {locale === "es" ? "Ver evento" : "View event"}{" "}
+                            <span aria-hidden="true">→</span>
+                          </span>
                         </div>
                       </Link>
                     );

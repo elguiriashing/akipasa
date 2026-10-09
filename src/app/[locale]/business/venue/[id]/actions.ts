@@ -179,8 +179,11 @@ export async function updateEvent(formData: FormData) {
   let selectedCatalogueSections: string[];
   try {
     const selected = JSON.parse(v.catalogueSectionIds) as unknown;
-    if (!Array.isArray(selected) || selected.length > 50 ||
-        !selected.every((id) => typeof id === "string" && id.length <= 120)) {
+    if (
+      !Array.isArray(selected) ||
+      selected.length > 50 ||
+      !selected.every((id) => typeof id === "string" && id.length <= 120)
+    ) {
       throw new Error("Invalid catalogue section IDs");
     }
     selectedCatalogueSections = [...new Set(selected as string[])];
@@ -195,13 +198,19 @@ export async function updateEvent(formData: FormData) {
     .maybeSingle();
   const availableSections = new Set(
     (venueCatalogue?.draft_document &&
-      typeof venueCatalogue.draft_document === "object" &&
-      "sections" in venueCatalogue.draft_document &&
-      Array.isArray(venueCatalogue.draft_document.sections)
-      ? venueCatalogue.draft_document.sections : []
+    typeof venueCatalogue.draft_document === "object" &&
+    "sections" in venueCatalogue.draft_document &&
+    Array.isArray(venueCatalogue.draft_document.sections)
+      ? venueCatalogue.draft_document.sections
+      : []
     ).flatMap((section: unknown) =>
-      section && typeof section === "object" && "id" in section &&
-      typeof section.id === "string" ? [section.id] : []),
+      section &&
+      typeof section === "object" &&
+      "id" in section &&
+      typeof section.id === "string"
+        ? [section.id]
+        : [],
+    ),
   );
   if (selectedCatalogueSections.some((id) => !availableSections.has(id))) {
     if (inline) return { ok: false as const, error: "event" };
