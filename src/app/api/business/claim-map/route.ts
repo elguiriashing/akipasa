@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createSupabasePublicClient } from "@/lib/supabase/public";
 
 const querySchema = z.object({
+  vertical: z.enum(["activities", "accommodation"]).default("activities"),
   west: z.coerce.number().finite().min(-180).max(180),
   east: z.coerce.number().finite().min(-180).max(180),
   south: z.coerce.number().finite().min(-85).max(85),
@@ -22,7 +23,7 @@ export async function GET(request: Request) {
 
   const { west, east, south, north } = parsed.data;
   const { data, error } = await createSupabasePublicClient().rpc(
-    "claimable_venue_cards_in_bounds",
+    parsed.data.vertical === "accommodation" ? "claimable_accommodation_cards_in_bounds" : "claimable_venue_cards_in_bounds",
     {
       p_west: west,
       p_east: east,
@@ -41,6 +42,6 @@ export async function GET(request: Request) {
 
   return Response.json(
     { rows: data || [] },
-    { headers: { "Cache-Control": "public, max-age=15, s-maxage=30" } },
+    { headers: { "Cache-Control": "private, no-store" } },
   );
 }
