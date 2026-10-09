@@ -31,6 +31,13 @@ try {
       mode text not null,
       active boolean not null default true
     );
+    create table public.booking_requests(
+      id uuid primary key default gen_random_uuid(),
+      venue_id uuid not null references public.venues(id),
+      contact_email text not null,
+      status text not null default 'requested',
+      updated_at timestamptz not null default now()
+    );
     create table public.venue_availability_slots(
       id uuid primary key default gen_random_uuid(),
       venue_id uuid not null references public.venues(id),
@@ -50,6 +57,7 @@ try {
     "supabase/migrations/20261009113000_booking_offerings.sql",
     "supabase/migrations/20261009115000_booking_resources.sql",
     "supabase/migrations/20261009120000_recurring_booking_slots.sql",
+    "supabase/migrations/20261009160000_booking_notification_email.sql",
   ])
     await sql.unsafe(readFileSync(filename, "utf8")).simple();
 
@@ -135,6 +143,25 @@ try {
   await assert.rejects(schedule, (error) =>
     /enable native bookings first/i.test(error.message),
   );
+
+  const bookingId = "00000000-0000-4000-8000-000000000009";
+  await sql`insert into public.booking_requests(id,venue_id,contact_email) values(${bookingId},${venue},'customer@example.com')`;
+  await sql`update public.venue_booking_settings set notification_email='venue@example.com' where venue_id=${venue}`;
+  const approved = await sql`select public.approve_booking_and_queue_emails(${venue}::uuid,${bookingId}::uuid) as ok`;
+  assert.equal(approved[0].ok, true, "first approval should change status");
+  const queue = await sql`select audience,recipient from public.booking_confirmation_emails where booking_id=${bookingId} order by audience`;
+  assert.deepEqual(queue.map(x=>x.audience),["customer","venue"],"both recipients must be queued");
+  assert.equal(queue[0].recipient,"customer@example.com");
+  const repeat = await sql`select public.approve_booking_and_queue_emails(${venue}::uuid,${bookingId}::uuid) as ok`;
+  assert.equal(repeat[0].ok,false,"repeated approval must not transition or queue duplicate messages");
+  const count = await sql`select count(*)::int as n from public.booking_confirmation_emails where booking_id=${bookingId}`;
+  assert.equal(count[0].n,2,"one email record per audience");
+  await sql.unsafe("set akipasa.member = 'off'");
+  await assert.rejects(
+    () => sql`select public.approve_booking_and_queue_emails(${venue}::uuid,${bookingId}::uuid)`,
+    err => /venue manager required/i.test(err.message),
+  );
+  await sql.unsafe("set akipasa.member = 'on'");
 
   console.log(
     "PASS: recurrence, idempotent retry, overlaps, capacity, tenant isolation, authorization, DST, disabled mode",
