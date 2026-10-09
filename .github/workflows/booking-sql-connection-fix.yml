@@ -1,0 +1,32 @@
+name: Fix isolated booking SQL test connection
+on:
+  push:
+    branches: [feature/booking-ux-confirmations]
+    paths: [.github/workflows/booking-sql-connection-fix.yml]
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/booking-ux-confirmations
+      - name: Use single migration connection, preserving concurrent request pool
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/test-booking-engine-sql.mjs')
+          s=p.read_text()
+          start=s.index('  const migrationSql = postgres(')
+          end=s.index('  check("all additive release migrations',start)
+          part=s[start:end]
+          assert 'await sql\n' in part
+          part=part.replace('await sql\n','await migrationSql\n')
+          p.write_text(s[:start]+part+s[end:])
+          PY
+          git add scripts/test-booking-engine-sql.mjs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "test(bookings): actually execute migrations on the dedicated single connection"
+          git push origin HEAD:feature/booking-ux-confirmations
