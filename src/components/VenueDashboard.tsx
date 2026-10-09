@@ -31,6 +31,7 @@ export function VenueDashboard({
   counts,
   sections,
   overview,
+  product = "venue",
 }: {
   locale: "en" | "es";
   name: string;
@@ -42,9 +43,16 @@ export function VenueDashboard({
   counts: Counts;
   sections: Partial<Record<ToolSection, ReactNode>>;
   overview?: ReactNode;
+  product?: "venue" | "accommodation";
 }) {
   const es = locale === "es";
-  const [active, setActive] = useState(initialSection);
+  const stay = product === "accommodation";
+  const [active, setActive] = useState(
+    product === "accommodation" &&
+      !["overview", "profile", "bookings", "team"].includes(initialSection)
+      ? "overview"
+      : initialSection,
+  );
   const [showFeedback, setShowFeedback] = useState(Boolean(feedback));
   const dashboard = useRef<HTMLElement>(null);
   const tabs = useRef<
@@ -152,9 +160,13 @@ export function VenueDashboard({
     {
       id: "bookings",
       label: es ? "Reservas" : "Bookings",
-      description: es
-        ? "Solicitudes y disponibilidad"
-        : "Requests and availability",
+      description: stay
+        ? es
+          ? "Gestión de alojamiento y disponibilidad"
+          : "Stay reservations and availability"
+        : es
+          ? "Solicitudes y disponibilidad"
+          : "Requests and availability",
       icon: "inbox",
       detail: countLabel(
         counts.requests,
@@ -174,13 +186,16 @@ export function VenueDashboard({
       ),
     },
   ];
+  const availableTools = stay
+    ? tools.filter((tool) => ["profile", "bookings", "team"].includes(tool.id))
+    : tools;
   const navigation = [
     {
       id: "overview" as const,
       label: es ? "Resumen" : "Overview",
       icon: "home" as const,
     },
-    ...tools,
+    ...availableTools,
   ];
   const statusLabels: Record<string, string> = es
     ? {
@@ -207,7 +222,12 @@ export function VenueDashboard({
       const event = eventId.startsWith("event-")
         ? document.getElementById(eventId)
         : null;
-      setActive(event ? "events" : getVenueDashboardSection(query));
+      const requested = event ? "events" : getVenueDashboardSection(query);
+      setActive(
+        stay && !["overview", "profile", "bookings", "team"].includes(requested)
+          ? "overview"
+          : requested,
+      );
       if (event instanceof HTMLDetailsElement) {
         event.open = true;
         requestAnimationFrame(() => event.scrollIntoView({ block: "start" }));
@@ -221,7 +241,7 @@ export function VenueDashboard({
       window.removeEventListener("popstate", restoreLocation);
       window.removeEventListener("hashchange", restoreLocation);
     };
-  }, []);
+  }, [stay]);
 
   function selectSection(section: VenueDashboardSection) {
     setActive(section);
@@ -233,17 +253,25 @@ export function VenueDashboard({
     url.hash = "";
     window.history.pushState(window.history.state, "", url);
     tabs.current[section]?.focus({ preventScroll: true });
-    tabs.current[section]?.scrollIntoView({
-      block: "nearest",
-      inline: "nearest",
-    });
+    if (typeof tabs.current[section]?.scrollIntoView === "function") {
+      tabs.current[section]?.scrollIntoView({
+        block: "nearest",
+        inline: "nearest",
+      });
+    }
   }
 
   return (
     <main ref={dashboard} className={styles.dashboard}>
       <Link className={styles.back} href={`/${locale}/business`}>
         <Icon name="arrow-right" />
-        {es ? "Mis locales" : "My venues"}
+        {stay
+          ? es
+            ? "Mis negocios y alojamientos"
+            : "My businesses and stays"
+          : es
+            ? "Mis locales"
+            : "My venues"}
       </Link>
       <header className={styles.header}>
         <div className={styles.venueMark}>
@@ -251,7 +279,7 @@ export function VenueDashboard({
         </div>
         <div className={styles.identity}>
           <span className={styles.eyebrow}>
-            {es ? "Gestionar local" : "Manage venue"}
+            {stay ? "AkiDuermo" : es ? "Gestionar local" : "Manage venue"}
           </span>
           <h1>{name}</h1>
           <div className={styles.status}>
@@ -281,7 +309,15 @@ export function VenueDashboard({
       <div
         className={styles.tabs}
         role="tablist"
-        aria-label={es ? "Herramientas del local" : "Venue tools"}
+        aria-label={
+          stay
+            ? es
+              ? "Herramientas del alojamiento"
+              : "Accommodation tools"
+            : es
+              ? "Herramientas del local"
+              : "Venue tools"
+        }
       >
         {navigation.map((item, index) => (
           <button
@@ -342,7 +378,15 @@ export function VenueDashboard({
         tabIndex={0}
       >
         <div className={styles.sectionHeading}>
-          <h2>{es ? "Todo tu local, a mano" : "Your venue, at a glance"}</h2>
+          <h2>
+            {stay
+              ? es
+                ? "Tu alojamiento, bajo control"
+                : "Your property, at a glance"
+              : es
+                ? "Todo tu local, a mano"
+                : "Your venue, at a glance"}
+          </h2>
           <p>
             {es
               ? "Elige qué quieres gestionar."
@@ -351,7 +395,7 @@ export function VenueDashboard({
         </div>
         {overview}
       </section>
-      {tools.map((tool) => (
+      {availableTools.map((tool) => (
         <section
           key={tool.id}
           className={styles.section}

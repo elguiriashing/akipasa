@@ -9,6 +9,8 @@ export type StayDetail = Stay & {
   descriptionEs: string;
   descriptionEn: string;
   photos: { url: string; altEs: string; altEn: string }[];
+  bookingMode?: "disabled" | "external" | "request";
+  bookingUrl?: string;
 };
 export const loadStayDetail = cache(
   async (slug: string): Promise<StayDetail | null> => {
@@ -25,6 +27,10 @@ export const loadStayDetail = cache(
       .maybeSingle();
     if (error) throw new Error("Accommodation is temporarily unavailable");
     if (!data) return null;
+    const { data: booking } = await client.rpc(
+      "accommodation_public_settings",
+      { p_venue: data.id },
+    );
     const { data: media } = await client
       .from("venue_media")
       .select("storage_path,alt_es,alt_en")
@@ -61,6 +67,8 @@ export const loadStayDetail = cache(
       descriptionEs: data.description_es || "",
       descriptionEn: data.description_en || "",
       photos,
+      bookingMode: booking?.mode || "disabled",
+      bookingUrl: safePropertyWebsite(booking?.external_url) || undefined,
     };
   },
 );

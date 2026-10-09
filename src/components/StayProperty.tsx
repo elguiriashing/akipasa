@@ -10,6 +10,7 @@ import { stayOrigin } from "@/lib/akiduermo-routing";
 import { googleMapsDirectionsUrl } from "@/lib/maps";
 import { Icon } from "./Icons";
 import { ThemeToggle } from "./ThemeModeControls";
+import { StayBookingPanel } from "./StayBookingPanel";
 import base from "./AkiDuermo.module.css";
 import styles from "./StayProperty.module.css";
 
@@ -268,23 +269,39 @@ export function StayProperty({
             </section>
             <section id="rooms">
               <h2>{text("Find your room", "Encuentra tu habitación")}</h2>
-              <div className={styles.notice}>
-                <Icon name="calendar" size={28} />
-                <div>
-                  <strong>
-                    {text(
-                      "Rooms and rates are coming later",
-                      "Habitaciones y precios próximamente",
-                    )}
-                  </strong>
-                  <p>
-                    {text(
-                      "This property has not connected its room inventory or live availability to AkiDuermo. Save it for later, or visit its website if one is listed.",
-                      "Este alojamiento aún no ha conectado sus habitaciones ni su disponibilidad en tiempo real a AkiDuermo. Guárdalo para más adelante o visita su web si está disponible.",
-                    )}
-                  </p>
+              {stay.bookingMode === "request" ? (
+                <StayBookingPanel venueId={stay.id} locale={locale} />
+              ) : stay.bookingMode === "external" && stay.bookingUrl ? (
+                <a
+                  className="button"
+                  href={stay.bookingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {text(
+                    "Book on the property website",
+                    "Reservar en la web del alojamiento",
+                  )}
+                </a>
+              ) : (
+                <div className={styles.notice}>
+                  <Icon name="calendar" size={28} />
+                  <div>
+                    <strong>
+                      {text(
+                        "Rooms and rates are coming later",
+                        "Habitaciones y precios próximamente",
+                      )}
+                    </strong>
+                    <p>
+                      {text(
+                        "This property has not connected its room inventory or live availability to AkiDuermo. Save it for later, or visit its website if one is listed.",
+                        "Este alojamiento aún no ha conectado sus habitaciones ni su disponibilidad en tiempo real a AkiDuermo. Guárdalo para más adelante o visita su web si está disponible.",
+                      )}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </section>
             <section id="location">
               <h2>
@@ -396,127 +413,130 @@ export function StayProperty({
               </a>
             </section>
           </div>
-          <aside id="plan" className={styles.booking}>
-            <span className={base.kicker}>
-              {text("ONE MORE NIGHT?", "¿UNA NOCHE MÁS?")}
-            </span>
-            <h2>{text("Plan your stay", "Planifica tu estancia")}</h2>
-            <p>
-              {text(
-                "Choose your dates for planning. Live prices and booking will arrive later.",
-                "Elige fechas para planificar tu viaje. Los precios y las reservas llegarán más adelante.",
-              )}
-            </p>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const values = new FormData(e.currentTarget);
-                const arrival = String(values.get("checkIn") || "");
-                const departure = String(values.get("checkOut") || "");
-                if (!arrival || departure <= arrival) return;
-                setCheckIn(arrival);
-                setCheckOut(departure);
-                setPlan(true);
-              }}
-              onChange={() => setPlan(false)}
-            >
-              <div className={styles.dates}>
-                <label>
-                  {text("Check in", "Entrada")}
-                  <input
-                    aria-label={text("Check in", "Entrada")}
-                    name="checkIn"
-                    type="date"
-                    required
-                    min={new Date().toISOString().slice(0, 10)}
-                    value={checkIn}
-                    onChange={(e) => {
-                      setCheckIn(e.target.value);
-                      if (checkOut <= e.target.value) setCheckOut("");
-                    }}
-                  />
-                </label>
-                <label>
-                  {text("Check out", "Salida")}
-                  <input
-                    aria-label={text("Check out", "Salida")}
-                    name="checkOut"
-                    type="date"
-                    required
-                    min={
-                      checkIn
-                        ? new Date(new Date(checkIn).getTime() + 86400000)
-                            .toISOString()
-                            .slice(0, 10)
-                        : new Date().toISOString().slice(0, 10)
-                    }
-                    value={checkOut}
-                    onChange={(e) => setCheckOut(e.target.value)}
-                  />
-                </label>
-              </div>
-              <label>
-                {text("Guests", "Huéspedes")}
-                <select
-                  value={guests}
-                  onChange={(e) => setGuests(e.target.value)}
-                >
-                  {Array.from({ length: 8 }, (_, i) => i + 1).map((n) => (
-                    <option key={n} value={n}>
-                      {n}{" "}
-                      {n === 1
-                        ? text("guest", "huésped")
-                        : text("guests", "huéspedes")}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <button className={base.searchButton} type="submit">
-                <Icon name="calendar" size={18} />
-                {text("Preview my trip", "Ver mi estancia")}
-              </button>
-            </form>
-            {plan && (
-              <p className={styles.planResult} role="status">
-                {checkIn} → {checkOut} · {guests} {text("guests", "huéspedes")}.{" "}
+          {stay.bookingMode !== "request" && (
+            <aside id="plan" className={styles.booking}>
+              <span className={base.kicker}>
+                {text("ONE MORE NIGHT?", "¿UNA NOCHE MÁS?")}
+              </span>
+              <h2>{text("Plan your stay", "Planifica tu estancia")}</h2>
+              <p>
                 {text(
-                  "Planning only: availability has not been checked and no reservation has been made.",
-                  "Solo planificación: no se ha comprobado la disponibilidad ni realizado ninguna reserva.",
+                  "Choose your dates for planning. Live prices and booking will arrive later.",
+                  "Elige fechas para planificar tu viaje. Los precios y las reservas llegarán más adelante.",
                 )}
               </p>
-            )}
-            <div className={styles.bookingStatus}>
-              <Icon name="lock" size={18} />
-              {text(
-                "Bookings & payments are not open yet",
-                "Las reservas y los pagos aún no están disponibles",
-              )}
-            </div>
-            {stay.website && (
-              <a
-                className={base.mapButton}
-                href={stay.website}
-                target="_blank"
-                rel="noopener noreferrer nofollow"
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const values = new FormData(e.currentTarget);
+                  const arrival = String(values.get("checkIn") || "");
+                  const departure = String(values.get("checkOut") || "");
+                  if (!arrival || departure <= arrival) return;
+                  setCheckIn(arrival);
+                  setCheckOut(departure);
+                  setPlan(true);
+                }}
+                onChange={() => setPlan(false)}
               >
+                <div className={styles.dates}>
+                  <label>
+                    {text("Check in", "Entrada")}
+                    <input
+                      aria-label={text("Check in", "Entrada")}
+                      name="checkIn"
+                      type="date"
+                      required
+                      min={new Date().toISOString().slice(0, 10)}
+                      value={checkIn}
+                      onChange={(e) => {
+                        setCheckIn(e.target.value);
+                        if (checkOut <= e.target.value) setCheckOut("");
+                      }}
+                    />
+                  </label>
+                  <label>
+                    {text("Check out", "Salida")}
+                    <input
+                      aria-label={text("Check out", "Salida")}
+                      name="checkOut"
+                      type="date"
+                      required
+                      min={
+                        checkIn
+                          ? new Date(new Date(checkIn).getTime() + 86400000)
+                              .toISOString()
+                              .slice(0, 10)
+                          : new Date().toISOString().slice(0, 10)
+                      }
+                      value={checkOut}
+                      onChange={(e) => setCheckOut(e.target.value)}
+                    />
+                  </label>
+                </div>
+                <label>
+                  {text("Guests", "Huéspedes")}
+                  <select
+                    value={guests}
+                    onChange={(e) => setGuests(e.target.value)}
+                  >
+                    {Array.from({ length: 8 }, (_, i) => i + 1).map((n) => (
+                      <option key={n} value={n}>
+                        {n}{" "}
+                        {n === 1
+                          ? text("guest", "huésped")
+                          : text("guests", "huéspedes")}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <button className={base.searchButton} type="submit">
+                  <Icon name="calendar" size={18} />
+                  {text("Preview my trip", "Ver mi estancia")}
+                </button>
+              </form>
+              {plan && (
+                <p className={styles.planResult} role="status">
+                  {checkIn} → {checkOut} · {guests}{" "}
+                  {text("guests", "huéspedes")}.{" "}
+                  {text(
+                    "Planning only: availability has not been checked and no reservation has been made.",
+                    "Solo planificación: no se ha comprobado la disponibilidad ni realizado ninguna reserva.",
+                  )}
+                </p>
+              )}
+              <div className={styles.bookingStatus}>
+                <Icon name="lock" size={18} />
                 {text(
-                  "Visit property website",
-                  "Visitar la web del alojamiento",
+                  "Bookings & payments are not open yet",
+                  "Las reservas y los pagos aún no están disponibles",
                 )}
-                <Icon name="arrow-right" size={18} />
-              </a>
-            )}
-            <button
-              className={styles.saveLink}
-              onClick={toggleSaved}
-              aria-pressed={saved}
-            >
-              <Icon name={saved ? "heart-fill" : "heart"} size={18} />
-              {saved
-                ? text("Remove from saved", "Quitar de guardados")
-                : text("Save for later", "Guardar para después")}
-            </button>
-          </aside>
+              </div>
+              {stay.website && (
+                <a
+                  className={base.mapButton}
+                  href={stay.website}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                >
+                  {text(
+                    "Visit property website",
+                    "Visitar la web del alojamiento",
+                  )}
+                  <Icon name="arrow-right" size={18} />
+                </a>
+              )}
+              <button
+                className={styles.saveLink}
+                onClick={toggleSaved}
+                aria-pressed={saved}
+              >
+                <Icon name={saved ? "heart-fill" : "heart"} size={18} />
+                {saved
+                  ? text("Remove from saved", "Quitar de guardados")
+                  : text("Save for later", "Guardar para después")}
+              </button>
+            </aside>
+          )}
         </div>
         <footer className={styles.footer}>
           AkiDuermo ·{" "}
@@ -535,10 +555,15 @@ export function StayProperty({
         <span>
           <strong>{text("Your next escape", "Tu próxima escapada")}</strong>
           <small>
-            {text("Bookings coming later", "Reservas próximamente")}
+            {stay.bookingMode === "request"
+              ? text("Availability by night", "Disponibilidad por noche")
+              : text("Bookings coming later", "Reservas próximamente")}
           </small>
         </span>
-        <a href="#plan" className={base.searchButton}>
+        <a
+          href={stay.bookingMode === "request" ? "#rooms" : "#plan"}
+          className={base.searchButton}
+        >
           {text("Plan your stay", "Planificar estancia")}
           <Icon name="arrow-right" size={18} />
         </a>

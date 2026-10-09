@@ -31,6 +31,19 @@ export async function dispatchBookingConfirmations(
   venueId?: string,
   bookingId?: string,
 ) {
+  return dispatchConfirmations(env, false, venueId, bookingId);
+}
+export async function dispatchAccommodationConfirmations(
+  env = bookingMailEnvironment(),
+) {
+  return dispatchConfirmations(env, true);
+}
+async function dispatchConfirmations(
+  env: BookingMailEnv,
+  accommodation: boolean,
+  venueId?: string,
+  bookingId?: string,
+) {
   // Missing configuration must not claim messages or consume retry attempts.
   if (!bookingEmailConfigured(env))
     return { sent: 0, failed: 0, configured: false };
@@ -41,10 +54,17 @@ export async function dispatchBookingConfirmations(
       auth: { persistSession: false, autoRefreshToken: false },
     },
   );
-  const { data, error } = await db.rpc("claim_booking_confirmation_emails", {
-    p_venue: venueId || null,
-    p_booking: bookingId || null,
-  });
+  const { data, error } = await db.rpc(
+    accommodation
+      ? "claim_accommodation_confirmation_emails"
+      : "claim_booking_confirmation_emails",
+    accommodation
+      ? {}
+      : {
+          p_venue: venueId || null,
+          p_booking: bookingId || null,
+        },
+  );
   if (error) {
     console.error("booking_email_queue_unavailable", error.code);
     return { sent: 0, failed: 0, configured: true };
@@ -54,11 +74,15 @@ export async function dispatchBookingConfirmations(
   for (const row of data || []) {
     // Cancellation may have happened after the lease was issued.
     const { data: current } = await db
-      .from("booking_requests")
+      .from(accommodation ? "accommodation_reservations" : "booking_requests")
       .select("status")
       .eq("id", row.booking_id)
       .maybeSingle();
-    if (current?.status !== "confirmed") continue;
+    if (
+      current?.status !== "confirmed" &&
+      !(accommodation && current?.status === "checked_in")
+    )
+      continue;
     const outcome = await sendBookingConfirmationEmail(
       {
         ...(row.payload as BookingConfirmation),
@@ -68,7 +92,9 @@ export async function dispatchBookingConfirmations(
       { apiKey: env.RESEND_API_KEY, from: env.BOOKING_EMAIL_FROM },
     );
     const { error: ackError } = await db.rpc(
-      "finish_booking_confirmation_email",
+      accommodation
+        ? "finish_accommodation_confirmation_email"
+        : "finish_booking_confirmation_email",
       {
         p_booking: row.booking_id,
         p_audience: row.audience,

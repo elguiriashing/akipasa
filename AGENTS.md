@@ -39,3 +39,7 @@ UI regression. Keep the reconciliation documented in `docs/deployment-source.md`
 Do not replace the current discovery, membership or business screens with older
 branch copies. `main` is the CRM source, not the public site. Before accepting a
 deployment, verify the CityDiscovery homepage and the new route on the live host.
+
+## Current AkiDuermo booking work handoff
+
+If continuing AkiDuermo accommodation booking or AkiBusiness unified property-management changes, **read `docs/WORK_HANDOFF_AKIDUERMO_BOOKINGS.md` first**. It identifies active PR #82, implemented files, remaining production blockers, required tests and the exact live-release objective. This handoff is not evidence of successful CI or deployment.

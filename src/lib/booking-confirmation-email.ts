@@ -11,6 +11,9 @@ export type BookingConfirmation = {
   bookingEnd?: string | null;
   offeringName?: string | null;
   locale: "en" | "es";
+  product?: "accommodation";
+  totalCents?: number;
+  policy?: string;
 };
 export const bookingEmailFrom = "AkiPasa <contact@akipasa.com>";
 const escapeHtml = (value: string) =>
@@ -27,15 +30,18 @@ export function renderBookingConfirmation(
   audience: "customer" | "venue",
 ) {
   const es = data.locale === "es";
-  const when = data.bookingStart
-    ? new Date(data.bookingStart).toLocaleString(es ? "es-ES" : "en-GB", {
-        timeZone: "Europe/Madrid",
-        dateStyle: "full",
-        timeStyle: "short",
-      })
-    : es
-      ? "Consulta con el local"
-      : "Contact the venue";
+  const stay = data.product === "accommodation";
+  const when = stay
+    ? `${data.bookingStart} - ${data.bookingEnd}`
+    : data.bookingStart
+      ? new Date(data.bookingStart).toLocaleString(es ? "es-ES" : "en-GB", {
+          timeZone: "Europe/Madrid",
+          dateStyle: "full",
+          timeStyle: "short",
+        })
+      : es
+        ? "Consulta con el local"
+        : "Contact the venue";
   const title = es ? "Reserva confirmada" : "Booking confirmed";
   const intro =
     audience === "venue"
@@ -50,7 +56,25 @@ export function renderBookingConfirmation(
     ...(data.offeringName
       ? [[es ? "Servicio" : "Service", data.offeringName]]
       : []),
-    [es ? "Fecha y hora" : "Date & time", when],
+    [
+      stay
+        ? es
+          ? "Entrada / salida"
+          : "Check in / out"
+        : es
+          ? "Fecha y hora"
+          : "Date & time",
+      when,
+    ],
+    ...(stay && data.totalCents !== undefined
+      ? [
+          [
+            es ? "Total (EUR)" : "Total (EUR)",
+            (data.totalCents / 100).toFixed(2),
+          ],
+          [es ? "Condiciones" : "Terms", data.policy || ""],
+        ]
+      : []),
     ...(data.address ? [[es ? "Dirección" : "Address", data.address]] : []),
     [es ? "Personas" : "Guests", String(data.guestCount)],
     ...(audience === "venue"
@@ -64,7 +88,7 @@ export function renderBookingConfirmation(
   const href =
     audience === "customer"
       ? `https://akipasa.com/${data.locale}/account/bookings`
-      : `https://business.akipasa.com/${data.locale}/business/venue/${encodeURIComponent(data.venueId)}?section=bookings&bookingTab=inbox`;
+      : `https://business.akipasa.com/${data.locale}/business/venue/${encodeURIComponent(data.venueId)}?section=bookings&${stay ? "accommodationTab=reservations" : "bookingTab=inbox"}`;
   const cta =
     audience === "customer"
       ? es
@@ -116,7 +140,7 @@ export async function sendBookingConfirmationEmail(
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "Idempotency-Key": `akipasa-booking-${data.bookingId}-${data.audience}`,
+        "Idempotency-Key": `${data.product === "accommodation" ? "akiduermo" : "akipasa"}-booking-${data.bookingId}-${data.audience}`,
       },
       body: JSON.stringify({ from, to: [data.recipient], ...body }),
       signal: AbortSignal.timeout(8000),

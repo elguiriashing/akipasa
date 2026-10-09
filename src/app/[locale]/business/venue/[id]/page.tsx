@@ -1,3 +1,4 @@
+import { AccommodationBookingWorkspace } from "@/components/AccommodationBookingWorkspace";
 import { bookingEmailConfigured } from "@/lib/booking-mail-delivery";
 import {
   loadBookingInbox,
@@ -26,6 +27,12 @@ import { config, isLocale } from "@/lib/config";
 import {
   addOccurrence,
   addTeamMember,
+  createAccommodationBlock,
+  saveAccommodationSettings,
+  changeAccommodationStatus,
+  createAccommodationRate,
+  createAccommodationRoomType,
+  createAccommodationUnit,
   assignReward,
   createBookingSlot,
   createBookingResource,
@@ -35,6 +42,8 @@ import {
   createCheckInCredential,
   createStampCard,
   deleteEvent,
+  deleteAccommodationBlock,
+  deleteAccommodationRate,
   deleteVenue,
   duplicateEvent,
   publishEvent,
@@ -44,6 +53,8 @@ import {
   setRecurrence,
   updateBookingRequest,
   updateBookingOffering,
+  updateAccommodationRoomType,
+  updateAccommodationUnit,
   retryBookingEmails,
   updateOccurrence,
   updateVenue,
@@ -205,6 +216,54 @@ export default async function VenueWorkspace({
     supabase.rpc("venue_owner_results", { p_venue: id }),
   ]);
   if (!venue) notFound();
+  const isAccommodation = venue.discovery_vertical === "accommodation";
+  const { data: accommodationSettings } = isAccommodation
+    ? await supabase
+        .from("accommodation_booking_settings")
+        .select("mode,policy,external_url,notification_email")
+        .eq("venue_id", id)
+        .maybeSingle()
+    : { data: null };
+  const [
+    { data: accommodationRoomTypes },
+    { data: accommodationUnits },
+    { data: accommodationRates },
+    { data: accommodationReservations },
+    { data: accommodationBlocks },
+  ] = isAccommodation
+    ? await Promise.all([
+        supabase
+          .from("accommodation_room_types")
+          .select("id,name,max_guests,active")
+          .eq("venue_id", id)
+          .order("name"),
+        supabase
+          .from("accommodation_units")
+          .select("id,name,room_type_id,active")
+          .eq("venue_id", id)
+          .order("name"),
+        supabase
+          .from("accommodation_nightly_rates")
+          .select(
+            "id,room_type_id,start_date,end_date_exclusive,nightly_price_cents,minimum_nights",
+          )
+          .eq("venue_id", id)
+          .order("start_date"),
+        supabase
+          .from("accommodation_reservations")
+          .select(
+            "id,unit_id,check_in,check_out,guests,status,contact_name,contact_email,quoted_total_cents",
+          )
+          .eq("venue_id", id)
+          .order("check_in", { ascending: false })
+          .limit(50),
+        supabase
+          .from("accommodation_unit_blocks")
+          .select("id,unit_id,start_date,end_date_exclusive,reason")
+          .eq("venue_id", id)
+          .order("start_date"),
+      ])
+    : [{ data: [] }, { data: [] }, { data: [] }, { data: [] }, { data: [] }];
 
   const { data: mediaPlacements } = await supabase
     .from("venue_media_placements")
@@ -331,6 +390,9 @@ export default async function VenueWorkspace({
       key={`${query.section || "overview"}:${query.updated || ""}:${query.error || ""}`}
       locale={locale}
       name={venue.name}
+      product={
+        venue.discovery_vertical === "accommodation" ? "accommodation" : "venue"
+      }
       status={venue.status}
       verified={venue.verified}
       publicHref={
@@ -368,8 +430,8 @@ export default async function VenueWorkspace({
               </h2>
               <p>
                 {es
-                  ? "Gestiona aquí la información del alojamiento, las fotos y los eventos. El calendario de habitaciones, las tarifas por noche y las reservas hoteleras todavía no están activos."
-                  : "Manage your property details, photos and events here. Room-night inventory, nightly rates and accommodation bookings are not available yet."}
+                  ? "Gestiona tu ficha, fotografías y equipo desde AkiBusiness. Tu sección de reservas AkiDuermo tiene herramientas específicas para noches; todavía no acepta reservas hoteleras hasta activar un inventario verificado."
+                  : "Manage your listing, photos and team in AkiBusiness. Your dedicated AkiDuermo booking area is designed for overnight stays and remains non-bookable until verified inventory is available."}
               </p>
               {venue.status === "published" && (
                 <a
@@ -1594,39 +1656,64 @@ export default async function VenueWorkspace({
             </section>
           </div>
         ),
-        bookings: (
-          <BookingManager
-            locale={locale}
-            venueId={id}
-            settings={{
-              ...bookingSettings,
-              notification_email:
-                bookingNotificationSettings?.notification_email,
-            }}
-            initialTab={query.bookingTab}
-            notifications={bookingInbox.notifications}
-            inbox={{
-              ...bookingInbox.filters,
-              total: bookingInbox.total,
-              pending: pendingBookingCount || 0,
-              error: bookingInbox.error,
-              notificationError: bookingInbox.notificationError,
-            }}
-            emailConfigured={bookingEmailConfigured()}
-            retryEmails={retryBookingEmails}
-            slots={bookingSlots || []}
-            resources={bookingResources || []}
-            offerings={bookingOfferings || []}
-            requests={bookingInbox.requests}
-            save={saveBookingSettings}
-            createSlot={createBookingSlot}
-            createRecurringSlots={createRecurringBookingSlots}
-            createResource={createBookingResource}
-            createOffering={createBookingOffering}
-            updateOffering={updateBookingOffering}
-            updateRequest={updateBookingRequest}
-          />
-        ),
+        bookings:
+          venue.discovery_vertical === "accommodation" ? (
+            <AccommodationBookingWorkspace
+              locale={locale}
+              venueId={id}
+              initialTab={query.accommodationTab}
+              roomTypes={accommodationRoomTypes || []}
+              units={accommodationUnits || []}
+              rates={accommodationRates || []}
+              reservations={accommodationReservations || []}
+              blocks={accommodationBlocks || []}
+              settings={accommodationSettings || undefined}
+              actions={{
+                createRoomType: createAccommodationRoomType,
+                updateRoomType: updateAccommodationRoomType,
+                createUnit: createAccommodationUnit,
+                updateUnit: updateAccommodationUnit,
+                createRate: createAccommodationRate,
+                deleteRate: deleteAccommodationRate,
+                createBlock: createAccommodationBlock,
+                deleteBlock: deleteAccommodationBlock,
+                saveSettings: saveAccommodationSettings,
+                changeStatus: changeAccommodationStatus,
+              }}
+            />
+          ) : (
+            <BookingManager
+              locale={locale}
+              venueId={id}
+              settings={{
+                ...bookingSettings,
+                notification_email:
+                  bookingNotificationSettings?.notification_email,
+              }}
+              initialTab={query.bookingTab}
+              notifications={bookingInbox.notifications}
+              inbox={{
+                ...bookingInbox.filters,
+                total: bookingInbox.total,
+                pending: pendingBookingCount || 0,
+                error: bookingInbox.error,
+                notificationError: bookingInbox.notificationError,
+              }}
+              emailConfigured={bookingEmailConfigured()}
+              retryEmails={retryBookingEmails}
+              slots={bookingSlots || []}
+              resources={bookingResources || []}
+              offerings={bookingOfferings || []}
+              requests={bookingInbox.requests}
+              save={saveBookingSettings}
+              createSlot={createBookingSlot}
+              createRecurringSlots={createRecurringBookingSlots}
+              createResource={createBookingResource}
+              createOffering={createBookingOffering}
+              updateOffering={updateBookingOffering}
+              updateRequest={updateBookingRequest}
+            />
+          ),
         team: (
           <>
             <section className="panel team-hub">
