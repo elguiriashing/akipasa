@@ -1,8 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { Icon, type IconName } from "./Icons";
 import { bookingTab } from "../lib/booking-ui";
+import {
+  BOOKING_INBOX_PAGE_SIZE,
+  bookingInboxHref,
+  bookingInboxStatuses,
+  type BookingInboxFilters,
+} from "../lib/business-booking-inbox";
 
 type Mode = "external" | "request" | "disabled";
 type Settings = {
@@ -44,7 +51,14 @@ export function BookingManager({
   notifications = [],
   emailConfigured = false,
   retryEmails,
+  inbox,
 }: {
+  inbox?: BookingInboxFilters & {
+    total: number;
+    pending: number;
+    error?: boolean;
+    notificationError?: boolean;
+  };
   initialTab?: string;
   notifications?: Array<{
     booking_id: string;
@@ -85,10 +99,17 @@ export function BookingManager({
     id: string;
     contact_name: string;
     contact_email: string;
+    contact_phone?: string | null;
+    notes?: string | null;
     party_size: number;
     status: string;
     created_at: string;
     slot_id?: string | null;
+    venue_availability_slots?: {
+      starts_at: string;
+      ends_at: string;
+      offering_id?: string | null;
+    } | null;
   }>;
   save: (formData: FormData) => Promise<void>;
   createSlot: (formData: FormData) => Promise<void>;
@@ -145,7 +166,18 @@ export function BookingManager({
     review: es ? "Requiere revisión" : "Needs review",
     cancelled: es ? "Cancelado" : "Cancelled",
   };
-  const pending = requests.filter((r) => r.status === "requested").length;
+  const pending =
+    inbox?.pending ?? requests.filter((r) => r.status === "requested").length;
+  const inboxFilters = inbox || {
+    search: "",
+    status: "all" as const,
+    sort: "newest" as const,
+    page: 1,
+  };
+  const total = inbox?.total ?? requests.length;
+  const pages = Math.max(1, Math.ceil(total / BOOKING_INBOX_PAGE_SIZE));
+  const inboxHref = (page: number) =>
+    bookingInboxHref(locale, venueId, { ...inboxFilters, page });
   return (
     <section
       className="panel booking-workbench booking-hub"
@@ -525,7 +557,7 @@ export function BookingManager({
                       ] as const
                     ).map((kind) => (
                       <option value={kind} key={kind}>
-                        {kind}
+                        {resourceText[kind] || kind}
                       </option>
                     ))}
                   </select>
@@ -779,8 +811,118 @@ export function BookingManager({
           </div>
         )}
         {section === "inbox" && (
-          <div className="booking-inbox">
-            <h3>{es ? "Solicitudes de reserva" : "Booking requests"}</h3>
+          <div className="booking-inbox" id="booking-inbox">
+            <div className="booking-inbox-heading">
+              <h3>{es ? "Solicitudes de reserva" : "Booking requests"}</h3>
+              <span>
+                {total} {es ? "reservas" : "bookings"}
+              </span>
+            </div>
+            <form
+              method="get"
+              action={`/${locale}/business/venue/${venueId}#booking-inbox`}
+              className="booking-inbox-toolbar"
+              key={`${inboxFilters.search}-${inboxFilters.status}-${inboxFilters.sort}`}
+              role="search"
+              aria-label={es ? "Buscar reservas" : "Search bookings"}
+            >
+              <input type="hidden" name="section" value="bookings" />
+              <input type="hidden" name="bookingTab" value="inbox" />
+              <label className="booking-inbox-search">
+                {es ? "Buscar reservas" : "Search bookings"}
+                <input
+                  type="search"
+                  name="bookingSearch"
+                  maxLength={80}
+                  defaultValue={inboxFilters.search}
+                  placeholder={
+                    es
+                      ? "Nombre, email, teléfono o referencia"
+                      : "Name, email, phone or reference"
+                  }
+                />
+              </label>
+              <label>
+                {es ? "Estado" : "Status"}
+                <select name="bookingStatus" defaultValue={inboxFilters.status}>
+                  {bookingInboxStatuses.map((status) => (
+                    <option key={status} value={status}>
+                      {status === "all"
+                        ? es
+                          ? "Todas"
+                          : "All statuses"
+                        : statusText[status]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                {es ? "Orden" : "Sort"}
+                <select name="bookingSort" defaultValue={inboxFilters.sort}>
+                  <option value="newest">
+                    {es ? "Más recientes" : "Newest requests"}
+                  </option>
+                  <option value="oldest">
+                    {es ? "Más antiguas" : "Oldest requests"}
+                  </option>
+                </select>
+              </label>
+              <button type="submit" className="button">
+                {es ? "Buscar" : "Search"}
+              </button>
+              {(inboxFilters.search ||
+                inboxFilters.status !== "all" ||
+                inboxFilters.sort !== "newest") && (
+                <Link
+                  className="button secondary"
+                  href={bookingInboxHref(locale, venueId, {
+                    search: "",
+                    status: "all",
+                    sort: "newest",
+                    page: 1,
+                  })}
+                >
+                  {es ? "Limpiar" : "Reset"}
+                </Link>
+              )}
+            </form>
+            <nav
+              className="booking-inbox-pager"
+              aria-label={es ? "Páginas de reservas" : "Booking pages"}
+            >
+              <span role="status">
+                {total
+                  ? `${(inboxFilters.page - 1) * BOOKING_INBOX_PAGE_SIZE + 1}–${Math.min(inboxFilters.page * BOOKING_INBOX_PAGE_SIZE, total)} / ${total}`
+                  : "0"}
+              </span>
+              <span>
+                {es ? "Página" : "Page"} {inboxFilters.page} / {pages}
+              </span>
+              {inboxFilters.page > 1 ? (
+                <Link
+                  className="button secondary"
+                  href={inboxHref(inboxFilters.page - 1)}
+                >
+                  {es ? "Anterior" : "Previous"}
+                </Link>
+              ) : (
+                <button type="button" className="button secondary" disabled>
+                  {es ? "Anterior" : "Previous"}
+                </button>
+              )}
+              {inboxFilters.page < pages ? (
+                <Link
+                  className="button secondary"
+                  href={inboxHref(inboxFilters.page + 1)}
+                >
+                  {es ? "Siguiente" : "Next"}
+                </Link>
+              ) : (
+                <button type="button" className="button secondary" disabled>
+                  {es ? "Siguiente" : "Next"}
+                </button>
+              )}
+            </nav>
             {!emailConfigured && (
               <p className="notice" role="status">
                 {es
@@ -788,14 +930,40 @@ export function BookingManager({
                   : "Bookings work normally. Confirmation emails stay queued until RESEND_API_KEY is configured in Cloudflare."}
               </p>
             )}
-            {!requests.length && (
-              <p>
-                {es ? "Todavía no hay reservas." : "No booking requests yet."}
+            {inbox?.error ? (
+              <p role="alert">
+                {es
+                  ? "No se pudieron cargar las reservas. Inténtalo de nuevo."
+                  : "Bookings could not be loaded. Please try again."}{" "}
+                <Link href={inboxHref(inboxFilters.page)}>
+                  {es ? "Reintentar" : "Retry"}
+                </Link>
+              </p>
+            ) : (
+              !requests.length && (
+                <p>
+                  {inboxFilters.search || inboxFilters.status !== "all"
+                    ? es
+                      ? "No hay reservas que coincidan. Prueba otros filtros."
+                      : "No matching bookings. Try different filters."
+                    : es
+                      ? "Todavía no hay reservas."
+                      : "No booking requests yet."}
+                </p>
+              )
+            )}
+            {inbox?.notificationError && (
+              <p role="alert">
+                {es
+                  ? "No se pudo cargar el estado de los emails."
+                  : "Email delivery status could not be loaded."}
               </p>
             )}
             <div className="managed-list">
               {requests.map((request) => {
-                const slot = slots.find((s) => s.id === request.slot_id);
+                const slot =
+                  request.venue_availability_slots ||
+                  slots.find((s) => s.id === request.slot_id);
                 const service = offerings.find(
                   (o) => o.id === slot?.offering_id,
                 );
@@ -824,12 +992,58 @@ export function BookingManager({
                     <span className="status-pill">
                       {statusText[request.status] || request.status}
                     </span>
+                    <details className="booking-request-details">
+                      <summary>
+                        {es ? "Detalles y referencia" : "Details & reference"}
+                      </summary>
+                      <small>
+                        {es ? "Referencia" : "Reference"}: {request.id}
+                      </small>
+                      {request.contact_phone && (
+                        <small>
+                          {es ? "Teléfono" : "Phone"}: {request.contact_phone}
+                        </small>
+                      )}
+                      {request.notes && (
+                        <small>
+                          {es ? "Notas" : "Notes"}: {request.notes}
+                        </small>
+                      )}
+                      <small>
+                        {es ? "Recibida" : "Received"}:{" "}
+                        {new Date(request.created_at).toLocaleString(locale, {
+                          timeZone: "Europe/Madrid",
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        })}
+                      </small>
+                    </details>
                     <form
                       action={updateRequest}
                       className="booking-request-controls"
                     >
                       <input type="hidden" name="locale" value={locale} />
                       <input type="hidden" name="venueId" value={venueId} />
+                      <input
+                        type="hidden"
+                        name="bookingSearch"
+                        value={inboxFilters.search}
+                      />
+                      <input
+                        type="hidden"
+                        name="bookingStatus"
+                        value={inboxFilters.status}
+                      />
+                      <input
+                        type="hidden"
+                        name="bookingSort"
+                        value={inboxFilters.sort}
+                      />
+                      <input
+                        type="hidden"
+                        name="bookingPage"
+                        value={inboxFilters.page}
+                      />
                       <input
                         type="hidden"
                         name="requestId"
@@ -907,6 +1121,26 @@ export function BookingManager({
                           <input type="hidden" name="venueId" value={venueId} />
                           <input
                             type="hidden"
+                            name="bookingSearch"
+                            value={inboxFilters.search}
+                          />
+                          <input
+                            type="hidden"
+                            name="bookingStatus"
+                            value={inboxFilters.status}
+                          />
+                          <input
+                            type="hidden"
+                            name="bookingSort"
+                            value={inboxFilters.sort}
+                          />
+                          <input
+                            type="hidden"
+                            name="bookingPage"
+                            value={inboxFilters.page}
+                          />
+                          <input
+                            type="hidden"
                             name="requestId"
                             value={request.id}
                           />
@@ -919,6 +1153,36 @@ export function BookingManager({
                 );
               })}
             </div>
+            {pages > 1 && (
+              <nav
+                className="booking-inbox-pager"
+                aria-label={
+                  es
+                    ? "Continuar por las reservas"
+                    : "Continue browsing bookings"
+                }
+              >
+                <span>
+                  {es ? "Página" : "Page"} {inboxFilters.page} / {pages}
+                </span>
+                {inboxFilters.page > 1 && (
+                  <Link
+                    className="button secondary"
+                    href={inboxHref(inboxFilters.page - 1)}
+                  >
+                    {es ? "Página anterior" : "Previous page"}
+                  </Link>
+                )}
+                {inboxFilters.page < pages && (
+                  <Link
+                    className="button"
+                    href={inboxHref(inboxFilters.page + 1)}
+                  >
+                    {es ? "Página siguiente" : "Next page"}
+                  </Link>
+                )}
+              </nav>
+            )}
           </div>
         )}
       </div>
