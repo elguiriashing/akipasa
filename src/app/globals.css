@@ -18614,3 +18614,16 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+
+/* AkiBusiness booking manager: scoped layouts, no dependency on screen size. */
+.booking-manager-tabs { display:flex; flex-wrap:wrap; gap:.5rem; margin:1rem 0; }
+.booking-manager-tabs .button { flex:1 1 9rem; text-align:center; }
+.booking-manager-form { padding:1rem; border:1px solid var(--border-color,rgba(150,150,180,.2)); border-radius:1rem; }
+.booking-template-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,12rem),1fr)); gap:.75rem; }
+.booking-template-card { background:transparent; color:inherit; cursor:pointer; border:1px solid rgba(150,150,180,.3); border-radius:.8rem; display:flex; align-items:center; gap:.65rem; text-align:left; padding:1rem; min-height:4rem; }
+.booking-template-card:hover,.booking-template-card:focus-visible { border-color:#9182f4; }
+.booking-template-card.selected { border:2px solid #9182f4; background:rgba(145,130,244,.12); }
+.booking-template-card span { font-size:1.5rem; }
+.booking-manager-form .booking-mode-grid { margin-bottom:1rem; }
+@media(max-width:600px) { .booking-manager-tabs .button {flex:1 1 auto; font-size:.85rem;} .booking-manager-form {padding:.75rem;} .booking-template-grid {grid-template-columns:repeat(2,minmax(0,1fr));} .booking-template-card {flex-direction:column;align-items:flex-start;} }
