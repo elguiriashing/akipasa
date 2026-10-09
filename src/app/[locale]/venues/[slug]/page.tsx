@@ -93,6 +93,20 @@ export default async function VenuePage({
       premium: true,
     })),
   ];
+  const { data: bookingSettings } = await supabase
+    .from("venue_booking_settings")
+    .select("mode,active,external_url")
+    .eq("venue_id", venue.id)
+    .maybeSingle();
+  const externalBookingUrl =
+    bookingSettings?.mode === "external" &&
+    bookingSettings.active &&
+    typeof bookingSettings.external_url === "string" &&
+    /^https?:\/\/[^\s/]+/i.test(bookingSettings.external_url)
+      ? bookingSettings.external_url
+      : null;
+  const nativeBooking =
+    bookingSettings?.mode === "request" && bookingSettings.active;
   const bgImage = venue.coverImage?.url || venue.media?.[0]?.url;
 
   return (
@@ -184,6 +198,30 @@ export default async function VenuePage({
                 >
                   {m.directions}
                 </TrackedLink>
+                {externalBookingUrl && (
+                  <TrackedLink
+                    className="button secondary"
+                    href={externalBookingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    action="booking_click"
+                    venueId={venue.id}
+                    locale={locale}
+                  >
+                    {locale === "es" ? "Reservar" : "Book now"}
+                  </TrackedLink>
+                )}
+                {nativeBooking && (
+                  <TrackedLink
+                    className="button secondary"
+                    href={`/${locale}/venues/${encodeURIComponent(venue.slug)}/book`}
+                    action="booking_click"
+                    venueId={venue.id}
+                    locale={locale}
+                  >
+                    {locale === "es" ? "Reservar" : "Book now"}
+                  </TrackedLink>
+                )}
                 {venue.phone && (
                   <TrackedLink
                     className="button secondary"
