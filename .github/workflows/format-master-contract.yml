@@ -17,7 +17,7 @@ jobs:
           node-version: "22"
       - run: npm ci
       - name: Format documentation and scripts
-        run: npx prettier --write AGENTS.md docs/AKIPASA_MASTER.md docs/CHANGE_IMPACT_REGISTER.md docs/SOURCE_ROUTE_BASELINE.md scripts/generate-system-inventory.mjs scripts/check-change-contract.mjs
+        run: npx prettier --write AGENTS.md docs/AKIPASA_MASTER.md docs/CHANGE_IMPACT_REGISTER.md docs/SOURCE_ROUTE_BASELINE.md scripts/generate-system-inventory.mjs scripts/check-change-contract.mjs src/app/compact-app.css 'src/app/[locale]/venues/[slug]/page.tsx' 'src/app/[locale]/events/[slug]/page.tsx' 'src/app/[locale]/business/venue/[id]/page.tsx' 'src/app/[locale]/business/venue/[id]/actions.ts' src/components/BusinessEventEditPanel.tsx
       - name: Commit formatted files
         run: |
           if ! git diff --quiet; then
