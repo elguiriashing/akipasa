@@ -58,20 +58,38 @@ describe("AkiBusiness advanced booking manager", () => {
     expect(screen.getByLabelText("Until (max 90 days)")).toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: "Mon" })).toBeChecked();
     expect(screen.getByRole("checkbox", { name: "Sun" })).not.toBeChecked();
-    expect(screen.getByRole("button", { name: "Create schedule" })).toBeVisible();
-    expect(screen.getAllByRole("option", { name: "Buggy 1 · 2" })).toHaveLength(1);
+    expect(
+      screen.getByRole("button", { name: "Create schedule" }),
+    ).toBeVisible();
+    expect(screen.getAllByRole("option", { name: "Buggy 1 · 2" })).toHaveLength(
+      1,
+    );
   });
 
   it("keeps external mode link-only, without resource or deposit settings", () => {
-    render(<BookingManager {...props} settings={{ mode: "external", external_url: "https://example.com/book" }} />);
-    expect(screen.getByLabelText("Booking URL")).toHaveValue("https://example.com/book");
+    render(
+      <BookingManager
+        {...props}
+        settings={{
+          mode: "external",
+          external_url: "https://example.com/book",
+        }}
+      />,
+    );
+    expect(screen.getByLabelText("Booking URL")).toHaveValue(
+      "https://example.com/book",
+    );
     expect(screen.queryByText("Deposit (€)")).not.toBeInTheDocument();
     expect(screen.queryByText("Booking template")).not.toBeInTheDocument();
   });
 
   it("uses the shared SVG icon system for template selectors", () => {
     const { container } = render(<BookingManager {...props} />);
-    expect(container.querySelectorAll(".booking-template-card svg")).toHaveLength(7);
-    expect(screen.getByRole("button", { name: "Events & tickets" })).toBeInTheDocument();
+    expect(
+      container.querySelectorAll(".booking-template-card svg"),
+    ).toHaveLength(7);
+    expect(
+      screen.getByRole("button", { name: "Events & tickets" }),
+    ).toBeInTheDocument();
   });
 });
