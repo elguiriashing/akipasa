@@ -26,5 +26,7 @@ jobs:
           git add src/app src/components/BookingManager.tsx tests/booking-manager.test.tsx scripts/test-booking-engine-sql.mjs docs/AKIPASA_MASTER.md docs/CHANGE_IMPACT_REGISTER.md
           if ! git diff --cached --quiet; then
             git commit -m "style(bookings): format offering layer"
+            git fetch origin feature/booking-engine-resources-schedules
+            git rebase origin/feature/booking-engine-resources-schedules
             git push origin HEAD:feature/booking-engine-resources-schedules
           fi
