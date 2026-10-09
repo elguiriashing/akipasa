@@ -8,6 +8,7 @@ Entries are newest first and must not contain credentials or personal data.
 - Add 20-row server paging, guest/contact/reference search, status filters,
   received-date sorting and independent pending totals in AkiBusiness.
 - Keep filters and page after booking actions; show read failures explicitly.
+- Preserve formatted phone numbers and guest-name punctuation with Zod input validation and escaped query literals.
 - Remove the clipped nested Services scroll area, compact status badges and
   preserve all existing booking, service, resource and calendar controls.
 - Expand EN/ES light/dark tablet acceptance to nine viewport shapes with

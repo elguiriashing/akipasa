@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { z } from "zod";
 
 export const BOOKING_INBOX_PAGE_SIZE = 20;
 export const bookingInboxStatuses = [
@@ -16,26 +17,27 @@ export type BookingInboxFilters = {
   page: number;
 };
 
+const inboxSchema = z.object({
+  bookingSearch: z.preprocess(
+    (value) => (typeof value === "string" ? value.trim().slice(0, 80) : ""),
+    z.string(),
+  ),
+  bookingStatus: z.enum(bookingInboxStatuses).catch("all"),
+  bookingSort: z.enum(["newest", "oldest"]).catch("newest"),
+  bookingPage: z.coerce.number().int().positive().finite().catch(1),
+});
+
 export function parseBookingInbox(
   query: Record<string, unknown>,
 ): BookingInboxFilters {
-  // PostgREST's OR expression is a grammar, not a parameterized search string.
-  // Keep literal names/emails/phones while excluding operators and wildcards.
-  const search =
-    typeof query.bookingSearch === "string"
-      ? query.bookingSearch
-          .replace(/[^\p{L}\p{N}\s@.+'_-]/gu, "")
-          .trim()
-          .slice(0, 80)
-      : "";
-  const page = Number(query.bookingPage);
+  const parsed = inboxSchema.parse(query);
   return {
-    search,
-    status: bookingInboxStatuses.includes(query.bookingStatus as never)
-      ? (query.bookingStatus as BookingInboxFilters["status"])
-      : "all",
-    sort: query.bookingSort === "oldest" ? "oldest" : "newest",
-    page: Number.isSafeInteger(page) && page > 0 ? Math.min(page, 50000) : 1,
+    search: parsed.bookingSearch,
+    status: parsed.bookingStatus,
+    sort: parsed.bookingSort,
+    page: Number.isSafeInteger(parsed.bookingPage)
+      ? Math.min(parsed.bookingPage, 50000)
+      : 1,
   };
 }
 
@@ -76,9 +78,10 @@ export function bookingInboxQuery(
     ) {
       query = query.eq("id", filters.search);
     } else {
-      // Escape SQL LIKE underscores, then escape that backslash in the quoted
-      // PostgREST value. Apostrophes are literal inside these double quotes.
-      const literal = `"%${filters.search.replaceAll("_", "\\_").replaceAll("\\", "\\\\")}%"`;
+      // Escape LIKE literals before quoting the PostgREST grammar value.
+      // Parentheses, commas and quotes remain searchable, never operators.
+      const pattern = filters.search.replace(/[\\%_]/g, "\\$&");
+      const literal = `"%${pattern.replaceAll("\\", "\\\\").replaceAll('"', '\\"')}%"`;
       query = query.or(
         `contact_name.ilike.${literal},contact_email.ilike.${literal},contact_phone.ilike.${literal}`,
       );

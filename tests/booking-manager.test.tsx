@@ -240,7 +240,7 @@ describe("bounded booking inbox", () => {
     fireEvent.click(screen.getByText("Details & reference"));
     expect(screen.getByText(/Accessible table/)).toBeInTheDocument();
   });
-  it("bounds invalid inputs and removes PostgREST grammar/wildcards", () => {
+  it("bounds invalid inputs without deleting valid contact punctuation", () => {
     expect(
       parseBookingInbox({ bookingSearch: "O'Neill_guest@example.com" }).search,
     ).toBe("O'Neill_guest@example.com");
@@ -254,9 +254,12 @@ describe("bounded booking inbox", () => {
       page: 1,
       status: "all",
       sort: "newest",
-      search: "Álex@example.comstatus.eq.confirmed",
+      search: 'Álex@example.com%,status.eq.confirmed()"\\',
     });
     expect(parseBookingInbox({ bookingPage: "9999999" }).page).toBe(50000);
+    expect(parseBookingInbox({ bookingSearch: "(612) 345-678" }).search).toBe(
+      "(612) 345-678",
+    );
     expect(
       bookingInboxHref("es", venueId, { ...parsed, search: "a+b@example.com" }),
     ).toContain("a%2Bb%40example.com");
@@ -305,6 +308,15 @@ describe("bounded booking inbox", () => {
     );
     expect(calls[1].searchParams.get("venue_id")).toBe(`eq.${venueId}`);
     expect(calls[1].searchParams.get("booking_id")).toContain(requests[0].id);
+    await loadBookingInbox(client, venueId, {
+      search: '(612) 345-678, O\'Connor "VIP"',
+      status: "all",
+      sort: "newest",
+      page: 1,
+    });
+    expect(calls[2].searchParams.get("or")).toContain(
+      'contact_phone.ilike."%(612) 345-678, O\'Connor \\"VIP\\"%"',
+    );
   });
   it("clamps pages after a filter/action and uses exact reference lookup", async () => {
     const calls: URL[] = [];
