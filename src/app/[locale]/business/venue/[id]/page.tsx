@@ -11,6 +11,7 @@ import { BusinessEventEditPanel } from "@/components/BusinessEventEditPanel";
 import { getVenueDashboardSection } from "@/lib/venue-dashboard";
 import {
   parseCatalogueDocument,
+  catalogueTextForDisplay,
   seedCatalogueTranslationMetadata,
 } from "@/lib/venue-catalogue";
 import { notFound } from "next/navigation";
@@ -115,7 +116,7 @@ export default async function VenueWorkspace({
     supabase
       .from("events")
       .select(
-        "id,slug,title_es,title_en,description_es,description_en,price_cents,price_display_mode,booking_url,minimum_age,accessibility_notes_es,accessibility_notes_en,status,event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status,booking_url)",
+        "id,slug,title_es,title_en,description_es,description_en,price_cents,price_display_mode,catalogue_section_ids,booking_url,minimum_age,accessibility_notes_es,accessibility_notes_en,status,event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status,booking_url)",
       )
       .eq("venue_id", id)
       .order("created_at", { ascending: false }),
@@ -709,6 +710,14 @@ export default async function VenueWorkspace({
                                 ""
                               : event.accessibility_notes_es || "",
                         }}
+                        catalogueSections={catalogueDocument.sections
+                          .filter((section) => section.items.some((item) => item.visible !== false))
+                          .map((section) => ({
+                            id: section.id,
+                            title: catalogueTextForDisplay(section.title, locale, "section_title"),
+                            itemCount: section.items.filter((item) => item.visible !== false).length,
+                          }))}
+                        selectedCatalogueSectionIds={event.catalogue_section_ids || []}
                         venueMediaIds={mediaStudioItems.map((item) => item.id)}
                         media={[
                           ...mediaStudioItems,
