@@ -3,6 +3,7 @@ import { createSupabasePublicClient } from "@/lib/supabase/public";
 import { normalizeVenueSearch } from "@/lib/venue-search";
 
 const querySchema = z.object({
+  vertical: z.enum(["activities", "accommodation"]).default("activities"),
   q: z.string().trim().min(2).max(160),
 });
 
@@ -14,7 +15,7 @@ export async function GET(request: Request) {
 
   const query = normalizeVenueSearch(parsed.data.q);
   const { data, error } = await createSupabasePublicClient().rpc(
-    "search_claimable_venues",
+    parsed.data.vertical === "accommodation" ? "search_claimable_accommodations" : "search_claimable_venues",
     {
       p_query: query,
       p_limit: 24,
@@ -29,6 +30,6 @@ export async function GET(request: Request) {
 
   return Response.json(
     { rows: data || [] },
-    { headers: { "Cache-Control": "public, max-age=15, s-maxage=30" } },
+    { headers: { "Cache-Control": "private, no-store" } },
   );
 }
