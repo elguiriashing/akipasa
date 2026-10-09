@@ -33,3 +33,26 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - Verification: GitHub connector confirmed writes; no local source checkout or runnable CI environment. **Not run**: Node scripts, full source scan, unit/e2e tests or Actions build. Must inspect GitHub Actions result before claiming checks pass.
 - No application runtime code, external services, paid campaign, secrets, database or deployment modified.
 - Follow-up: make this workflow a required branch protection check; add richer AST-based interactive inventory and route-to-test mapping; run smoke/browser tests in a checked-out environment.
+
+## 2026-10-09 | Advanced booking resources and recurrence (candidate PR)
+
+- User-visible goal: resource pools, non-overlapping capacity, native
+  recurring availability, SVG icons replacing emoji template visuals.
+- Existing locations:
+  `src/components/BookingManager.tsx`,
+  `src/app/[locale]/business/venue/[id]/page.tsx`, and `actions.ts`.
+- New DB migrations:
+  `20261009115000_booking_resources.sql` and
+  `20261009120000_recurring_booking_slots.sql`.
+- Dependencies: venue slot RLS, owner/manager roles, `request_booking` RPC,
+  public venue/event booking forms, time zone, native booking-mode settings.
+- Integrity: resources belong to their venue; named resource capacity cannot
+  be exceeded; only one active overlapping slot per resource; old records
+  retain nullable resource assignment. The recurring RPC is permission-gated
+  and bounded to 90 days.
+- Regression coverage: new `tests/booking-manager.test.tsx` UI cases; SQL
+  validation, full repository CI and live smoke status pending.
+- Release state: NOT DEPLOYED. Existing schema and production booking data
+  have not been changed by this feature branch.
+- Remaining architecture: specialized stay inventory, dining/table joins,
+  ticket tiers, payments and staff calendars need additional design/tests.
