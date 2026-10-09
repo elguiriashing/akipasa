@@ -461,6 +461,15 @@ export function BookingManager({
                     </label>
                   </div>
                   <label>
+                    {es ? "Servicio opcional" : "Optional offering"}
+                    <select name="offeringId" defaultValue="">
+                      <option value="">{es ? "Reserva general" : "General booking"}</option>
+                      {offerings.filter(o => o.active).map(offering => (
+                        <option key={offering.id} value={offering.id}>{offering.name} · {offering.capacity}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
                     {es ? "Recurso opcional" : "Optional resource"}
                     <select name="resourceId" defaultValue="">
                       <option value="">
@@ -528,6 +537,15 @@ export function BookingManager({
                       />
                     </label>
                   </div>
+                  <label>
+                    {es ? "Servicio opcional" : "Optional offering"}
+                    <select name="offeringId" defaultValue="">
+                      <option value="">{es ? "Reserva general" : "General booking"}</option>
+                      {offerings.filter(o => o.active).map(offering => (
+                        <option key={offering.id} value={offering.id}>{offering.name} · {offering.capacity}</option>
+                      ))}
+                    </select>
+                  </label>
                   <label>
                     {es ? "Recurso opcional" : "Optional resource"}
                     <select name="resourceId" defaultValue="">
