@@ -20,6 +20,8 @@ jobs:
       - name: Format SQL harness and workflow
         run: |
           npx prettier --write scripts/test-booking-engine-sql.mjs
+      - name: Print normalized integration workflow
+        run: npx prettier .github/workflows/booking-engine-sql.yml
       - name: Commit formatter output
         run: |
           git config user.name "github-actions[bot]"
