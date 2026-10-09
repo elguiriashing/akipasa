@@ -908,6 +908,15 @@ export async function redeemRewardClaim(formData: FormData) {
   );
 }
 
+function bookingDestination(locale: string, venueId: string, result: string) {
+  const tab = result.includes("booking-request") ? "inbox"
+    : result.includes("booking-resource") ? "resources"
+    : result.includes("booking-offering") ? "offerings"
+    : result.includes("booking-slot") || result.includes("booking-recurrence") ? "calendar"
+    : "setup";
+  return destination(locale, venueId, `section=bookings&bookingTab=${tab}&${result}`);
+}
+
 export async function saveBookingSettings(formData: FormData) {
   const parsed = context
     .extend({
@@ -933,7 +942,7 @@ export async function saveBookingSettings(formData: FormData) {
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
-  if (!parsed.success) redirect(destination(locale, venueId, "error=booking"));
+  if (!parsed.success) redirect(bookingDestination(locale, venueId, "error=booking"));
   const v = parsed.data;
   // External providers must use an absolute HTTP(S) URL; never allow javascript: links.
   let externalUrl: string | null = null;
@@ -949,7 +958,7 @@ export async function saveBookingSettings(formData: FormData) {
         throw new Error("Invalid booking URL");
       externalUrl = url.toString();
     } catch {
-      redirect(destination(locale, venueId, "error=booking-url"));
+      redirect(bookingDestination(locale, venueId, "error=booking-url"));
     }
   }
   const { supabase, user } = await requireBusinessAccess(locale);
@@ -964,7 +973,7 @@ export async function saveBookingSettings(formData: FormData) {
         )
       ).instructions;
     } catch {
-      redirect(destination(locale, venueId, "error=translation"));
+      redirect(bookingDestination(locale, venueId, "error=translation"));
     }
   }
   const { error } = await supabase.from("venue_booking_settings").upsert({
@@ -984,7 +993,7 @@ export async function saveBookingSettings(formData: FormData) {
     active: v.mode !== "disabled",
   });
   redirect(
-    destination(locale, venueId, error ? "error=booking" : "updated=booking"),
+    bookingDestination(locale, venueId, error ? "error=booking" : "updated=booking"),
   );
 }
 
@@ -1008,7 +1017,7 @@ export async function createBookingOffering(formData: FormData) {
     })
     .safeParse(Object.fromEntries(formData));
   if (!parsed.success)
-    redirect(destination(locale, venueId, "error=booking-offering"));
+    redirect(bookingDestination(locale, venueId, "error=booking-offering"));
   const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase.from("booking_offerings").insert({
     venue_id: parsed.data.venueId,
@@ -1018,7 +1027,7 @@ export async function createBookingOffering(formData: FormData) {
     capacity: parsed.data.capacity,
   });
   redirect(
-    destination(
+    bookingDestination(
       locale,
       venueId,
       error ? "error=booking-offering" : "updated=booking-offering",
@@ -1045,7 +1054,7 @@ export async function createBookingResource(formData: FormData) {
     })
     .safeParse(Object.fromEntries(formData));
   if (!parsed.success)
-    redirect(destination(locale, venueId, "error=booking-resource"));
+    redirect(bookingDestination(locale, venueId, "error=booking-resource"));
   const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase.from("booking_resources").insert({
     venue_id: parsed.data.venueId,
@@ -1054,7 +1063,7 @@ export async function createBookingResource(formData: FormData) {
     capacity: parsed.data.capacity,
   });
   redirect(
-    destination(
+    bookingDestination(
       locale,
       venueId,
       error ? "error=booking-resource" : "updated=booking-resource",
@@ -1075,7 +1084,7 @@ export async function createBookingSlot(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success || parsed.data.endsAt <= parsed.data.startsAt)
-    redirect(destination(locale, venueId, "error=booking-slot"));
+    redirect(bookingDestination(locale, venueId, "error=booking-slot"));
   const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase.from("venue_availability_slots").insert({
     venue_id: parsed.data.venueId,
@@ -1086,7 +1095,7 @@ export async function createBookingSlot(formData: FormData) {
     offering_id: parsed.data.offeringId || null,
   });
   redirect(
-    destination(
+    bookingDestination(
       locale,
       venueId,
       error ? "error=booking-slot" : "updated=booking-slot",
@@ -1114,7 +1123,7 @@ export async function createRecurringBookingSlots(formData: FormData) {
     !weekdays.length ||
     weekdays.some((day) => !Number.isInteger(day) || day < 1 || day > 7)
   ) {
-    redirect(destination(locale, venueId, "error=booking-recurrence"));
+    redirect(bookingDestination(locale, venueId, "error=booking-recurrence"));
   }
   const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase.rpc("create_recurring_booking_slots", {
@@ -1129,7 +1138,7 @@ export async function createRecurringBookingSlots(formData: FormData) {
     p_offering: parsed.data.offeringId || null,
   });
   redirect(
-    destination(
+    bookingDestination(
       locale,
       venueId,
       error ? "error=booking-recurrence" : "updated=booking-recurrence",
@@ -1147,7 +1156,7 @@ export async function updateBookingRequest(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success)
-    redirect(destination(locale, venueId, "error=booking-request"));
+    redirect(bookingDestination(locale, venueId, "error=booking-request"));
   const { supabase } = await requireBusinessAccess(locale);
   const { error } = await supabase
     .from("booking_requests")
@@ -1158,7 +1167,7 @@ export async function updateBookingRequest(formData: FormData) {
     .eq("id", parsed.data.requestId)
     .eq("venue_id", parsed.data.venueId);
   redirect(
-    destination(
+    bookingDestination(
       locale,
       venueId,
       error ? "error=booking-request" : "updated=booking-request",
