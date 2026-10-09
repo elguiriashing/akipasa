@@ -105,6 +105,7 @@ export function AccommodationBookingWorkspace({
   );
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
+  const [modeDraft, setModeDraft] = useState(settings.mode);
   useEffect(() => {
     try {
       const saved = JSON.parse(
@@ -138,6 +139,19 @@ export function AccommodationBookingWorkspace({
   const base = `/${locale}/business/venue/${venueId}`;
   const title = sections.find((section) => section.id === active)!;
   const activeRoomTypes = roomTypes.filter((room) => room.active);
+  const activeUnits = units.filter((unit) => unit.active);
+  const pendingReservations = reservations.filter(
+    (reservation) => reservation.status === "requested",
+  ).length;
+  const occupiedUnits = new Set(
+    reservations
+      .filter((reservation) =>
+        ["requested", "confirmed", "checked_in"].includes(reservation.status),
+      )
+      .map((reservation) => reservation.unit_id),
+  ).size;
+  const inventoryReady =
+    activeRoomTypes.length > 0 && activeUnits.length > 0 && rates.length > 0;
   const roomName = (id: string) =>
     roomTypes.find((room) => room.id === id)?.name || (es ? "Tipo" : "Type");
   const unitName = (id: string) =>
@@ -176,15 +190,53 @@ export function AccommodationBookingWorkspace({
         es ? "Gestión de reservas AkiDuermo" : "AkiDuermo booking management"
       }
     >
-      <div className="workspace-inline-heading">
+      <div className="workspace-inline-heading accommodation-app-heading">
         <div>
           <span className="eyebrow">AkiDuermo</span>
-          <h2>{es ? "Gestión de alojamientos" : "Accommodation management"}</h2>
-          <p>
-            {es
-              ? "Un espacio específico para estancias por noche."
-              : "A dedicated workspace for overnight stays."}
-          </p>
+          <h2>{es ? "Gestión del alojamiento" : "Property workspace"}</h2>
+        </div>
+        <Link className="button secondary" href={`${base}?section=profile`}>
+          <Icon name="venue" />
+          {es ? "Editar ficha" : "Edit listing"}
+        </Link>
+      </div>
+      <div
+        className="accommodation-command-strip"
+        aria-label={es ? "Resumen del alojamiento" : "Property summary"}
+      >
+        <div>
+          <span>{es ? "Tipos" : "Types"}</span>
+          <strong>{activeRoomTypes.length}</strong>
+        </div>
+        <div>
+          <span>{es ? "Unidades" : "Units"}</span>
+          <strong>{activeUnits.length}</strong>
+        </div>
+        <div>
+          <span>{es ? "Ocupadas" : "Occupied"}</span>
+          <strong>{occupiedUnits}</strong>
+        </div>
+        <div>
+          <span>{es ? "Pendientes" : "Pending"}</span>
+          <strong>{pendingReservations}</strong>
+        </div>
+        <div
+          className={`accommodation-live-state ${settings.mode === "request" ? "is-live" : ""}`}
+        >
+          <span>{es ? "Reservas" : "Bookings"}</span>
+          <strong>
+            {settings.mode === "request"
+              ? es
+                ? "Activas"
+                : "Live"
+              : settings.mode === "external"
+                ? es
+                  ? "Externas"
+                  : "External"
+                : es
+                  ? "Pausadas"
+                  : "Paused"}
+          </strong>
         </div>
       </div>
       <nav
@@ -214,63 +266,146 @@ export function AccommodationBookingWorkspace({
         role="region"
         aria-label={es ? title.es : title.en}
       >
-        <h3>{es ? title.es : title.en}</h3>
-        <p>{copy[active][es ? 1 : 0]}</p>
+        <div className="accommodation-section-heading">
+          <div>
+            <h3>{es ? title.es : title.en}</h3>
+            <p>{copy[active][es ? 1 : 0]}</p>
+          </div>
+        </div>
         {settings.mode === "disabled" && (
-          <p className="notice" role="status">
-            {es
-              ? "Las reservas por noche siguen desactivadas hasta completar y verificar el inventario y el control de solapamientos."
-              : "Overnight booking is disabled until inventory and overlap protection are completed and verified."}
-          </p>
+          <div className="notice accommodation-readiness" role="status">
+            <Icon name={inventoryReady ? "shield" : "settings"} />
+            <div>
+              <strong>
+                {inventoryReady
+                  ? es
+                    ? "Inventario listo"
+                    : "Inventory ready"
+                  : es
+                    ? "Completa la configuración"
+                    : "Finish setup"}
+              </strong>
+              <span>
+                {es
+                  ? inventoryReady
+                    ? "La protección contra solapamientos está verificada. Activa las solicitudes cuando quieras probar la reserva pública."
+                    : "Añade al menos un tipo, una unidad física y una tarifa antes de activar solicitudes."
+                  : inventoryReady
+                    ? "Overlap protection is verified. Enable requests whenever you are ready to test public booking."
+                    : "Add at least one type, physical unit and rate before enabling requests."}
+              </span>
+            </div>
+          </div>
         )}
         {active === "settings" && actions?.saveSettings && (
-          <form action={actions.saveSettings} className="stack">
+          <form
+            action={actions.saveSettings}
+            className="stack accommodation-settings-app"
+          >
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="venueId" value={venueId} />
-            <label>
-              {es ? "Modo de reserva" : "Booking mode"}
-              <select name="mode" defaultValue={settings.mode}>
-                <option value="disabled">
-                  {es ? "Desactivado" : "Disabled"}
-                </option>
-                <option value="external">
-                  {es ? "Web externa" : "External website"}
-                </option>
-                <option value="request">
-                  {es ? "Solicitudes AkiDuermo" : "AkiDuermo requests"}
-                </option>
-              </select>
-            </label>
-            <label>
-              {es ? "Web de reservas" : "Booking website"}
-              <input
-                name="externalUrl"
-                type="url"
-                defaultValue={settings.external_url || ""}
-              />
-            </label>
-            <label>
-              {es ? "Correo de notificaciones" : "Notification email"}
-              <input
-                name="notificationEmail"
-                type="email"
-                defaultValue={settings.notification_email || ""}
-              />
-            </label>
-            <label>
-              {es ? "Condiciones y cancelación" : "Terms and cancellation"}
-              <textarea
-                name="policy"
-                maxLength={4000}
-                defaultValue={settings.policy}
-              />
-            </label>
-            <p>
-              {es
-                ? "Los precios deben incluir todos los impuestos. Pago en el alojamiento; no se cobra en línea."
-                : "Rates must include all taxes. Payment at the property; no online charge."}
-            </p>
-            <button className="button">{es ? "Guardar" : "Save"}</button>
+            <fieldset className="accommodation-mode-picker">
+              <legend>
+                {es
+                  ? "¿Cómo quieres recibir reservas?"
+                  : "How should guests book?"}
+              </legend>
+              {[
+                {
+                  value: "disabled",
+                  icon: "close",
+                  en: "Paused",
+                  es: "Pausadas",
+                },
+                {
+                  value: "external",
+                  icon: "arrow-right",
+                  en: "External site",
+                  es: "Web externa",
+                },
+                {
+                  value: "request",
+                  icon: "calendar",
+                  en: "AkiDuermo",
+                  es: "AkiDuermo",
+                },
+              ].map((option) => (
+                <label
+                  key={option.value}
+                  className={modeDraft === option.value ? "selected" : ""}
+                >
+                  <input
+                    type="radio"
+                    name="mode"
+                    value={option.value}
+                    checked={modeDraft === option.value}
+                    disabled={
+                      option.value === "request" &&
+                      !inventoryReady &&
+                      settings.mode !== "request"
+                    }
+                    onChange={() => setModeDraft(option.value)}
+                  />
+                  <Icon name={option.icon as IconName} />
+                  <strong>{es ? option.es : option.en}</strong>
+                </label>
+              ))}
+            </fieldset>
+            <div className="accommodation-settings-grid">
+              {modeDraft === "external" && (
+                <label>
+                  {es ? "Web de reservas" : "Booking website"}
+                  <input
+                    name="externalUrl"
+                    type="url"
+                    required
+                    defaultValue={settings.external_url || ""}
+                    placeholder="https://"
+                  />
+                </label>
+              )}
+              {modeDraft !== "external" && (
+                <input type="hidden" name="externalUrl" value="" />
+              )}
+              <label>
+                {es ? "Correo de avisos" : "Notification email"}
+                <input
+                  name="notificationEmail"
+                  type="email"
+                  defaultValue={settings.notification_email || ""}
+                  placeholder="reservas@hotel.com"
+                />
+              </label>
+              {modeDraft === "request" && (
+                <label className="accommodation-policy-field">
+                  {es ? "Condiciones y cancelación" : "Terms and cancellation"}
+                  <textarea
+                    name="policy"
+                    maxLength={4000}
+                    required
+                    defaultValue={settings.policy}
+                    placeholder={
+                      es
+                        ? "Pago en el alojamiento · Cancelación..."
+                        : "Pay at property · Cancellation..."
+                    }
+                  />
+                </label>
+              )}
+              {modeDraft !== "request" && (
+                <input type="hidden" name="policy" value={settings.policy} />
+              )}
+            </div>
+            <div className="accommodation-save-bar">
+              <small>
+                {es
+                  ? "Sin cobros online · Precios con impuestos incluidos"
+                  : "No online charge · Rates include taxes"}
+              </small>
+              <button className="button">
+                {es ? "Guardar ajustes" : "Save settings"}
+              </button>
+            </div>
           </form>
         )}
         {active === "rooms" && (
@@ -278,83 +413,109 @@ export function AccommodationBookingWorkspace({
             <section className="stack">
               <h4>{es ? "Tipos de habitación" : "Room types"}</h4>
               {actions && (
-                <form
-                  action={actions.createRoomType}
-                  className="compact-action-form booking-manager-form"
-                >
-                  <input type="hidden" name="locale" value={locale} />
-                  <input type="hidden" name="venueId" value={venueId} />
-                  <label>
-                    {es ? "Nombre" : "Name"}
-                    <input
-                      name="name"
-                      required
-                      maxLength={120}
-                      placeholder={es ? "Doble vista mar" : "Double sea view"}
-                    />
-                  </label>
-                  <label>
-                    {es ? "Huéspedes máximos" : "Max guests"}
-                    <input
-                      name="maxGuests"
-                      type="number"
-                      min="1"
-                      max="30"
-                      defaultValue="2"
-                      required
-                    />
-                  </label>
-                  <button className="button" type="submit">
-                    {es ? "Crear tipo" : "Create type"}
-                  </button>
-                </form>
-              )}
-              <div className="booking-list">
-                {roomTypes.map((room) => (
+                <details className="accommodation-create-panel">
+                  <summary className="button">
+                    + {es ? "Nuevo tipo" : "New type"}
+                  </summary>
                   <form
-                    key={room.id}
-                    action={actions?.updateRoomType}
-                    className="booking-list-card booking-edit-card"
+                    action={actions.createRoomType}
+                    className="compact-action-form booking-manager-form"
                   >
                     <input type="hidden" name="locale" value={locale} />
                     <input type="hidden" name="venueId" value={venueId} />
-                    <input type="hidden" name="roomTypeId" value={room.id} />
                     <label>
                       {es ? "Nombre" : "Name"}
                       <input
                         name="name"
-                        defaultValue={room.name}
                         required
                         maxLength={120}
+                        placeholder={es ? "Doble vista mar" : "Double sea view"}
                       />
                     </label>
                     <label>
-                      {es ? "Huéspedes" : "Guests"}
+                      {es ? "Huéspedes máximos" : "Max guests"}
                       <input
                         name="maxGuests"
                         type="number"
                         min="1"
                         max="30"
-                        defaultValue={room.max_guests}
+                        defaultValue="2"
                         required
                       />
                     </label>
-                    <label className="toggle-card">
-                      <input
-                        name="active"
-                        type="checkbox"
-                        defaultChecked={room.active}
-                      />
-                      <span>{es ? "Activo" : "Active"}</span>
-                    </label>
-                    <button
-                      className="button secondary"
-                      type="submit"
-                      disabled={!actions}
-                    >
-                      {es ? "Guardar" : "Save"}
+                    <button className="button" type="submit">
+                      {es ? "Crear tipo" : "Create type"}
                     </button>
                   </form>
+                </details>
+              )}
+              <div className="booking-list accommodation-card-grid">
+                {roomTypes.map((room) => (
+                  <details
+                    key={room.id}
+                    className="booking-list-card accommodation-manage-card"
+                  >
+                    <summary>
+                      <div>
+                        <strong>{room.name}</strong>
+                        <small>
+                          {room.max_guests} {es ? "huéspedes" : "guests"}
+                        </small>
+                      </div>
+                      <span className="badge">
+                        {room.active
+                          ? es
+                            ? "Activo"
+                            : "Active"
+                          : es
+                            ? "Archivado"
+                            : "Archived"}
+                      </span>
+                    </summary>
+                    <form
+                      action={actions?.updateRoomType}
+                      className="booking-edit-card accommodation-inline-editor"
+                    >
+                      <input type="hidden" name="locale" value={locale} />
+                      <input type="hidden" name="venueId" value={venueId} />
+                      <input type="hidden" name="roomTypeId" value={room.id} />
+                      <label>
+                        {es ? "Nombre" : "Name"}
+                        <input
+                          name="name"
+                          defaultValue={room.name}
+                          required
+                          maxLength={120}
+                        />
+                      </label>
+                      <label>
+                        {es ? "Huéspedes" : "Guests"}
+                        <input
+                          name="maxGuests"
+                          type="number"
+                          min="1"
+                          max="30"
+                          defaultValue={room.max_guests}
+                          required
+                        />
+                      </label>
+                      <label className="toggle-card">
+                        <input
+                          name="active"
+                          type="checkbox"
+                          defaultChecked={room.active}
+                        />
+                        <span>{es ? "Activo" : "Active"}</span>
+                      </label>
+                      <button
+                        className="button secondary"
+                        type="submit"
+                        disabled={!actions}
+                      >
+                        {es ? "Guardar" : "Save"}
+                      </button>
+                    </form>
+                  </details>
                 ))}
                 {!roomTypes.length && (
                   <p>{es ? "Aún no hay tipos." : "No room types yet."}</p>
@@ -364,8 +525,125 @@ export function AccommodationBookingWorkspace({
             <section className="stack">
               <h4>{es ? "Unidades físicas" : "Physical units"}</h4>
               {actions && activeRoomTypes.length > 0 && (
+                <details className="accommodation-create-panel">
+                  <summary className="button">
+                    + {es ? "Nueva unidad" : "New unit"}
+                  </summary>
+                  <form
+                    action={actions.createUnit}
+                    className="compact-action-form booking-manager-form"
+                  >
+                    <input type="hidden" name="locale" value={locale} />
+                    <input type="hidden" name="venueId" value={venueId} />
+                    <label>
+                      {es ? "Tipo" : "Type"}
+                      <select name="roomTypeId">
+                        {activeRoomTypes.map((room) => (
+                          <option key={room.id} value={room.id}>
+                            {room.name}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      {es ? "Nombre de unidad" : "Unit name"}
+                      <input
+                        name="name"
+                        required
+                        maxLength={120}
+                        placeholder="101"
+                      />
+                    </label>
+                    <button className="button" type="submit">
+                      {es ? "Crear unidad" : "Create unit"}
+                    </button>
+                  </form>
+                </details>
+              )}
+              <div className="booking-list accommodation-card-grid">
+                {units.map((unit) => (
+                  <details
+                    key={unit.id}
+                    className="booking-list-card accommodation-manage-card"
+                  >
+                    <summary>
+                      <div>
+                        <strong>{unit.name}</strong>
+                        <small>{roomName(unit.room_type_id)}</small>
+                      </div>
+                      <span className="badge">
+                        {unit.active
+                          ? es
+                            ? "Activo"
+                            : "Active"
+                          : es
+                            ? "Archivado"
+                            : "Archived"}
+                      </span>
+                    </summary>
+                    <form
+                      action={actions?.updateUnit}
+                      className="booking-edit-card accommodation-inline-editor"
+                    >
+                      <input type="hidden" name="locale" value={locale} />
+                      <input type="hidden" name="venueId" value={venueId} />
+                      <input type="hidden" name="unitId" value={unit.id} />
+                      <label>
+                        {es ? "Tipo" : "Type"}
+                        <select
+                          name="roomTypeId"
+                          defaultValue={unit.room_type_id}
+                        >
+                          {roomTypes.map((room) => (
+                            <option key={room.id} value={room.id}>
+                              {room.name}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <label>
+                        {es ? "Nombre" : "Name"}
+                        <input
+                          name="name"
+                          defaultValue={unit.name}
+                          required
+                          maxLength={120}
+                        />
+                      </label>
+                      <label className="toggle-card">
+                        <input
+                          name="active"
+                          type="checkbox"
+                          defaultChecked={unit.active}
+                        />
+                        <span>{es ? "Activo" : "Active"}</span>
+                      </label>
+                      <button
+                        className="button secondary"
+                        type="submit"
+                        disabled={!actions}
+                      >
+                        {es ? "Guardar" : "Save"}
+                      </button>
+                    </form>
+                  </details>
+                ))}
+                {!units.length && (
+                  <p>{es ? "Aún no hay unidades." : "No units yet."}</p>
+                )}
+              </div>
+            </section>
+          </div>
+        )}
+        {active === "rates" && (
+          <div className="stack">
+            {actions && activeRoomTypes.length > 0 && (
+              <details className="accommodation-create-panel">
+                <summary className="button">
+                  + {es ? "Nueva tarifa" : "New rate"}
+                </summary>
                 <form
-                  action={actions.createUnit}
+                  action={actions.createRate}
                   className="compact-action-form booking-manager-form"
                 >
                   <input type="hidden" name="locale" value={locale} />
@@ -381,130 +659,42 @@ export function AccommodationBookingWorkspace({
                     </select>
                   </label>
                   <label>
-                    {es ? "Nombre de unidad" : "Unit name"}
+                    {es ? "Desde" : "From"}
+                    <input name="startDate" type="date" required />
+                  </label>
+                  <label>
+                    {es ? "Hasta" : "Until"}
+                    <input name="endDate" type="date" required />
+                  </label>
+                  <label>
+                    {es ? "Precio/noche (€)" : "Nightly price (€)"}
                     <input
-                      name="name"
+                      name="nightlyPriceEuros"
+                      type="number"
+                      min="0"
+                      max="100000"
+                      step="0.01"
                       required
-                      maxLength={120}
-                      placeholder="101"
+                    />
+                  </label>
+                  <label>
+                    {es ? "Noches mínimas" : "Minimum nights"}
+                    <input
+                      name="minimumNights"
+                      type="number"
+                      min="1"
+                      max="365"
+                      defaultValue="1"
+                      required
                     />
                   </label>
                   <button className="button" type="submit">
-                    {es ? "Crear unidad" : "Create unit"}
+                    {es ? "Añadir tarifa" : "Add rate"}
                   </button>
                 </form>
-              )}
-              <div className="booking-list">
-                {units.map((unit) => (
-                  <form
-                    key={unit.id}
-                    action={actions?.updateUnit}
-                    className="booking-list-card booking-edit-card"
-                  >
-                    <input type="hidden" name="locale" value={locale} />
-                    <input type="hidden" name="venueId" value={venueId} />
-                    <input type="hidden" name="unitId" value={unit.id} />
-                    <label>
-                      {es ? "Tipo" : "Type"}
-                      <select
-                        name="roomTypeId"
-                        defaultValue={unit.room_type_id}
-                      >
-                        {roomTypes.map((room) => (
-                          <option key={room.id} value={room.id}>
-                            {room.name}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label>
-                      {es ? "Nombre" : "Name"}
-                      <input
-                        name="name"
-                        defaultValue={unit.name}
-                        required
-                        maxLength={120}
-                      />
-                    </label>
-                    <label className="toggle-card">
-                      <input
-                        name="active"
-                        type="checkbox"
-                        defaultChecked={unit.active}
-                      />
-                      <span>{es ? "Activo" : "Active"}</span>
-                    </label>
-                    <button
-                      className="button secondary"
-                      type="submit"
-                      disabled={!actions}
-                    >
-                      {es ? "Guardar" : "Save"}
-                    </button>
-                  </form>
-                ))}
-                {!units.length && (
-                  <p>{es ? "Aún no hay unidades." : "No units yet."}</p>
-                )}
-              </div>
-            </section>
-          </div>
-        )}
-        {active === "rates" && (
-          <div className="stack">
-            {actions && activeRoomTypes.length > 0 && (
-              <form
-                action={actions.createRate}
-                className="compact-action-form booking-manager-form"
-              >
-                <input type="hidden" name="locale" value={locale} />
-                <input type="hidden" name="venueId" value={venueId} />
-                <label>
-                  {es ? "Tipo" : "Type"}
-                  <select name="roomTypeId">
-                    {activeRoomTypes.map((room) => (
-                      <option key={room.id} value={room.id}>
-                        {room.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  {es ? "Desde" : "From"}
-                  <input name="startDate" type="date" required />
-                </label>
-                <label>
-                  {es ? "Hasta" : "Until"}
-                  <input name="endDate" type="date" required />
-                </label>
-                <label>
-                  {es ? "Precio/noche (€)" : "Nightly price (€)"}
-                  <input
-                    name="nightlyPriceEuros"
-                    type="number"
-                    min="0"
-                    max="100000"
-                    step="0.01"
-                    required
-                  />
-                </label>
-                <label>
-                  {es ? "Noches mínimas" : "Minimum nights"}
-                  <input
-                    name="minimumNights"
-                    type="number"
-                    min="1"
-                    max="365"
-                    defaultValue="1"
-                    required
-                  />
-                </label>
-                <button className="button" type="submit">
-                  {es ? "Añadir tarifa" : "Add rate"}
-                </button>
-              </form>
+              </details>
             )}
-            <div className="booking-list">
+            <div className="booking-list accommodation-card-grid">
               {rates.map((rate) => (
                 <article key={rate.id} className="booking-list-card">
                   <strong>{roomName(rate.room_type_id)}</strong>
@@ -536,45 +726,50 @@ export function AccommodationBookingWorkspace({
         {active === "calendar" && (
           <div className="stack">
             {actions && units.length > 0 && (
-              <form
-                action={actions.createBlock}
-                className="compact-action-form booking-manager-form"
-              >
-                <input type="hidden" name="locale" value={locale} />
-                <input type="hidden" name="venueId" value={venueId} />
-                <label>
-                  {es ? "Unidad" : "Unit"}
-                  <select name="unitId">
-                    {units.map((unit) => (
-                      <option key={unit.id} value={unit.id}>
-                        {unit.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  {es ? "Desde" : "From"}
-                  <input name="startDate" type="date" required />
-                </label>
-                <label>
-                  {es ? "Hasta" : "Until"}
-                  <input name="endDate" type="date" required />
-                </label>
-                <label>
-                  {es ? "Motivo" : "Reason"}
-                  <input
-                    name="reason"
-                    maxLength={120}
-                    defaultValue="maintenance"
-                    required
-                  />
-                </label>
-                <button className="button" type="submit">
-                  {es ? "Bloquear noches" : "Block nights"}
-                </button>
-              </form>
+              <details className="accommodation-create-panel">
+                <summary className="button">
+                  + {es ? "Bloquear noches" : "Block nights"}
+                </summary>
+                <form
+                  action={actions.createBlock}
+                  className="compact-action-form booking-manager-form"
+                >
+                  <input type="hidden" name="locale" value={locale} />
+                  <input type="hidden" name="venueId" value={venueId} />
+                  <label>
+                    {es ? "Unidad" : "Unit"}
+                    <select name="unitId">
+                      {units.map((unit) => (
+                        <option key={unit.id} value={unit.id}>
+                          {unit.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    {es ? "Desde" : "From"}
+                    <input name="startDate" type="date" required />
+                  </label>
+                  <label>
+                    {es ? "Hasta" : "Until"}
+                    <input name="endDate" type="date" required />
+                  </label>
+                  <label>
+                    {es ? "Motivo" : "Reason"}
+                    <input
+                      name="reason"
+                      maxLength={120}
+                      defaultValue="maintenance"
+                      required
+                    />
+                  </label>
+                  <button className="button" type="submit">
+                    {es ? "Bloquear noches" : "Block nights"}
+                  </button>
+                </form>
+              </details>
             )}
-            <div className="booking-list">
+            <div className="booking-list accommodation-card-grid">
               {blocks.map((block) => (
                 <article key={block.id} className="booking-list-card">
                   <strong>{unitName(block.unit_id)}</strong>
@@ -705,9 +900,6 @@ export function AccommodationBookingWorkspace({
           </div>
         )}
       </div>
-      <Link className="button secondary" href={`${base}?section=profile`}>
-        {es ? "Editar ficha y fotografías" : "Edit property details and photos"}
-      </Link>
     </section>
   );
 }

@@ -13,15 +13,18 @@ const entry = `import React from "react";import{createRoot}from"react-dom/client
 import{VenueDeleteControl}from"./src/components/VenueDeleteControl";
 import{VenueDashboard}from"./src/components/VenueDashboard";
 import{BookingManager}from"./src/components/BookingManager";
+import{AccommodationBookingWorkspace}from"./src/components/AccommodationBookingWorkspace";
 const locale=new URLSearchParams(location.search).get("locale")||(location.pathname.startsWith("/es/")?"es":"en"),es=locale==="es";
 const action=async()=>{window.submitted=true};
 const query=new URLSearchParams(location.search), search=query.get("bookingSearch")||"", status=query.get("bookingStatus")||"all", sort=query.get("bookingSort")||"newest", currentPage=Number(query.get("bookingPage")||1);
 const allRequests=Array.from({length:65},(_,i)=>({id:"00000000-0000-4000-8000-"+String(i).padStart(12,"0"),contact_name:"Test Guest "+i,contact_email:"guest"+i+"@example.invalid",party_size:2,status:i%2?"confirmed":"requested",created_at:"2026-10-09T12:00:00Z",venue_availability_slots:{starts_at:"2026-11-01T10:00:00Z",ends_at:"2026-11-01T11:00:00Z",offering_id:"breakfast"}}));
 const filtered=allRequests.filter(r=>(!search||r.contact_name.includes(search))&&(status==="all"||r.status===status));
 const booking=<BookingManager locale={locale} venueId="00000000-0000-4000-8000-000000000001" settings={{mode:"request",booking_template:"experience"}} slots={[{id:"slot",starts_at:"2026-11-01T10:00:00Z",ends_at:"2026-11-01T11:00:00Z",capacity:50,active:true}]} resources={[]} offerings={[{id:"breakfast",name:"Breakfast for two and a very long accessible service description",kind:"dining",duration_minutes:90,capacity:2,active:true}]} requests={filtered.slice((currentPage-1)*20,currentPage*20)} inbox={{search,status,sort,page:currentPage,total:filtered.length,pending:33}} emailConfigured={true} save={action} createSlot={action} createRecurringSlots={action} createResource={action} createOffering={action} updateRequest={action}/>;
+const accommodation=<AccommodationBookingWorkspace locale={locale} venueId="00000000-0000-4000-8000-000000000001" initialTab={query.get("accommodationTab")||"rooms"} roomTypes={[{id:"double",name:"Double Sea View",max_guests:2,active:true},{id:"family",name:"Family Apartment with a deliberately long inventory name",max_guests:5,active:true}]} units={[{id:"101",name:"101",room_type_id:"double",active:true},{id:"102",name:"102",room_type_id:"double",active:true},{id:"family-a",name:"Family apartment A",room_type_id:"family",active:true}]} rates={[{id:"rate",room_type_id:"double",start_date:"2026-10-10",end_date_exclusive:"2027-10-10",nightly_price_cents:12000,minimum_nights:2}]} blocks={[{id:"block",unit_id:"102",start_date:"2026-11-01",end_date_exclusive:"2026-11-04",reason:"maintenance"}]} reservations={[]} settings={{mode:"disabled",policy:"Pay at property. Free cancellation before arrival.",external_url:null,notification_email:"owner@example.com"}} actions={{createRoomType:action,updateRoomType:action,createUnit:action,updateUnit:action,createRate:action,deleteRate:action,createBlock:action,deleteBlock:action,saveSettings:action,changeStatus:action}}/>;
+const workspace=query.get("workspace")==="stay"?accommodation:<VenueDashboard locale={locale} name="AkiDuermo HQ" status="published" verified={true} publicHref="#public" initialSection={query.get("section")||"overview"} counts={{photos:0,events:0,programs:0,credentials:0,requests:33,members:1}} sections={{profile:<form><label>{es?"Nombre":"Name"}<input defaultValue="Test"/></label></form>,bookings:booking,events:<p>Events</p>,photos:<p>Photos</p>,catalogue:<p>Catalogue</p>,rewards:<p>Rewards</p>,checkin:<p>Checkin</p>,team:<p>Team</p>}}/>;
 createRoot(document.getElementById("root")).render(<div className="akibusiness-host"><header className="akibusiness-topbar"><a className="akibusiness-brand" href="#home"><span className="akibusiness-brand-mark">A</span><span><strong>AkiBusiness</strong><small>by AkiPasa</small></span></a><nav aria-label="Products"><a href="#language">EN</a><a href="#theme">Theme</a><a href="#hq">AkiHQ</a><a href="#logout">{es?"Cerrar sesión":"Log out"}</a></nav></header><div className="business-workspace" style={{padding:16}}>
 <div className="managed-row"><div><strong>Beasty Bites · AkiDuermo HQ long property name</strong><span>owner · published</span></div><div className="business-venue-row-actions"><a className="button secondary business-venue-action" href="#managed">{es?"Gestionar local":"Manage venue"}</a><VenueDeleteControl locale={locale} venueId="test" venueName="AkiDuermo HQ" action={action}/></div></div>
-<VenueDashboard locale={locale} name="AkiDuermo HQ" status="published" verified={true} publicHref="#public" initialSection={query.get("section")||"overview"} counts={{photos:0,events:0,programs:0,credentials:0,requests:33,members:1}} sections={{profile:<form><label>{es?"Nombre":"Name"}<input defaultValue="Test"/></label></form>,bookings:booking,events:<p>Events</p>,photos:<p>Photos</p>,catalogue:<p>Catalogue</p>,rewards:<p>Rewards</p>,checkin:<p>Checkin</p>,team:<p>Team</p>}}/>
+{workspace}
 </div></div>);`;
 const js = await build({
   stdin: { contents: entry, resolveDir: process.cwd(), loader: "tsx" },
@@ -290,6 +293,84 @@ try {
           fullPage: true,
         });
         results.push({ locale, theme, width, height, status: "pass" });
+        await page.close();
+      }
+  for (const locale of ["en", "es"])
+    for (const theme of ["dark", "light"])
+      for (const [width, height, device] of [
+        [390, 844, "mobile"],
+        [1280, 800, "desktop"],
+      ]) {
+        const page = await browser.newPage({
+          viewport: { width, height },
+          colorScheme: theme,
+        });
+        const errors = [];
+        page.on("pageerror", (error) => errors.push(error.message));
+        await page.goto(
+          `http://127.0.0.1:3198/?workspace=stay&locale=${locale}`,
+        );
+        await page.locator("html").evaluate((element, value) => {
+          element.dataset.theme = value;
+          element.classList.add(`theme-${value}`);
+        }, theme);
+        await expect(
+          page.getByRole("heading", {
+            name:
+              locale === "es"
+                ? "Gestión del alojamiento"
+                : "Property workspace",
+          }),
+        ).toBeVisible();
+        await expect(
+          page.locator(".accommodation-command-strip"),
+        ).toBeVisible();
+        for (const tab of await page
+          .locator(".accommodation-management-tabs button")
+          .all()) {
+          await tab.click();
+          expect(
+            await page.evaluate(() => document.documentElement.scrollWidth),
+          ).toBeLessThanOrEqual(width + 1);
+          const panel = await page
+            .locator(".accommodation-section-content")
+            .boundingBox();
+          expect(panel.x).toBeGreaterThanOrEqual(0);
+          expect(panel.x + panel.width).toBeLessThanOrEqual(width + 1);
+        }
+        await page
+          .getByRole("button", {
+            name: locale === "es" ? /Habitaciones/ : /Rooms & units/,
+          })
+          .click();
+        await page
+          .locator(".accommodation-create-panel summary")
+          .last()
+          .click();
+        await expect(
+          page.locator(".accommodation-create-panel").last(),
+        ).toHaveAttribute("open", "");
+        await page
+          .locator(".accommodation-manage-card summary")
+          .first()
+          .click();
+        await expect(
+          page.locator(".accommodation-inline-editor").first(),
+        ).toBeVisible();
+        expect(errors).toEqual([]);
+        await page.screenshot({
+          path: resolve(dir, `accommodation-${device}-${locale}-${theme}.png`),
+          fullPage: true,
+        });
+        results.push({
+          locale,
+          theme,
+          width,
+          height,
+          device,
+          workspace: "accommodation",
+          status: "pass",
+        });
         await page.close();
       }
   writeFileSync(resolve(dir, "results.json"), JSON.stringify(results, null, 2));

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-10 - Compact AkiDuermo property workspace
+
+Reworked the AkiBusiness accommodation manager into a responsive one-panel WebApp with operational summary cards, compact navigation, collapsible inventory editors and visual booking-mode controls. Existing room, unit, rate, block, reservation and settings actions are preserved, while setup guidance now reports actual inventory readiness instead of implying that overlap protection remains unverified.
+
 This is an engineering milestone log, not a semantic-version release log.
 Entries are newest first and must not contain credentials or personal data.
 

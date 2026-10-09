@@ -34,6 +34,16 @@ describe("AkiDuermo business tools", () => {
         units={[
           { id: "unit-1", name: "101", room_type_id: "room-1", active: true },
         ]}
+        rates={[
+          {
+            id: "rate-1",
+            room_type_id: "room-1",
+            start_date: "2026-12-01",
+            end_date_exclusive: "2026-12-31",
+            nightly_price_cents: 12000,
+            minimum_nights: 1,
+          },
+        ]}
         blocks={[
           {
             id: "block-1",
@@ -52,6 +62,7 @@ describe("AkiDuermo business tools", () => {
     expect(
       screen.getByRole("region", { name: "Rooms & units" }),
     ).toHaveTextContent("Sea view double");
+    fireEvent.click(screen.getByText("101"));
     expect(screen.getByDisplayValue("101")).toBeVisible();
     fireEvent.click(screen.getByRole("button", { name: /Calendar/ }));
     expect(screen.getByRole("region", { name: "Calendar" })).toHaveTextContent(
@@ -60,7 +71,7 @@ describe("AkiDuermo business tools", () => {
     expect(screen.getByRole("region", { name: "Calendar" })).toHaveTextContent(
       "maintenance",
     );
-    expect(screen.getByText(/Overnight booking is disabled/)).toBeVisible();
+    expect(screen.getByText(/Overlap protection is verified/)).toBeVisible();
     expect(
       screen.queryByRole("button", { name: /Confirm booking|Book now/ }),
     ).not.toBeInTheDocument();
@@ -161,8 +172,11 @@ describe("AkiDuermo business tools", () => {
     );
     expect(screen.getByText("Alex Guest")).toBeVisible();
     expect(screen.getByRole("button", { name: "Confirm" })).toBeVisible();
+    expect(screen.getByLabelText("Property summary")).toHaveTextContent(
+      "Pending1",
+    );
     fireEvent.click(screen.getByRole("button", { name: /Settings/ }));
-    expect(screen.getByDisplayValue("AkiDuermo requests")).toBeVisible();
+    expect(screen.getByRole("radio", { name: "AkiDuermo" })).toBeChecked();
     expect(screen.getByDisplayValue("owner@example.com")).toBeVisible();
   });
 
