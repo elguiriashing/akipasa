@@ -86,12 +86,18 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(target, 307);
     }
     if (route.kind === "reject") return new NextResponse(null, { status: 404 });
+    const sessionResponse = await refreshSession(request);
     const response =
       route.kind === "rewrite"
         ? NextResponse.rewrite(target, {
             request: { headers: request.headers },
           })
         : NextResponse.next({ request: { headers: request.headers } });
+    sessionResponse.cookies
+      .getAll()
+      .forEach(({ name, value, ...options }) =>
+        response.cookies.set(name, value, options),
+      );
     response.headers.set("X-Robots-Tag", "noindex, nofollow");
     return response;
   }

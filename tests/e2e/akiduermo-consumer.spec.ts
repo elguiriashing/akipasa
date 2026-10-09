@@ -16,6 +16,11 @@ for (const locale of ["en", "es"] as const) {
         );
         // Exercise the same Next server through the stay virtual host, without real credentials.
         await page.route(/http:\/\/127\.0\.0\.1:\d+\//, async (route) => {
+          const path = new URL(route.request().url()).pathname;
+          if (path === "/api/stays")
+            return route.fulfill({ json: { rows: [], total: 0 } });
+          if (path === "/api/map/stays")
+            return route.fulfill({ json: { ids: [], total: 0 } });
           const response = await route.fetch({
             headers: {
               ...route.request().headers(),
@@ -52,6 +57,7 @@ for (const locale of ["en", "es"] as const) {
         await page.screenshot({
           path: `test-results/duermo-${locale}-${theme}-${viewport.width}.png`,
         });
+        await page.unrouteAll({ behavior: "ignoreErrors" });
       });
     }
   }
