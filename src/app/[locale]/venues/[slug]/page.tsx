@@ -46,6 +46,16 @@ export default async function VenuePage({
   const venue = await loadVenue(slug);
   if (!venue) notFound();
   const events = await repository.eventsForVenue(venue.id);
+  const now = Date.now();
+  const upcomingEvents = events
+    .map((event) => ({
+      event,
+      occurrence: event.occurrences
+        .filter((item) => item.status !== "cancelled" && new Date(item.endsAt).getTime() > now)
+        .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime())[0],
+    }))
+    .filter((item): item is typeof item & { occurrence: NonNullable<typeof item.occurrence> } => Boolean(item.occurrence))
+    .sort((a, b) => new Date(a.occurrence.startsAt).getTime() - new Date(b.occurrence.startsAt).getTime());
   const m = msg(locale);
   const returnTo = `/${locale}/venues/${venue.slug}`;
   const { supabase, user } = await optionalUser();
@@ -328,6 +338,40 @@ export default async function VenuePage({
             <p className="detail-copy">
               {translated(venue.description, locale)}
             </p>
+            {upcomingEvents.length > 0 && (
+              <section className="venue-section" aria-label={locale === "es" ? "Próximos eventos" : "Upcoming events"}>
+                <div className="venue-events-heading">
+                  <div>
+                    <span className="eyebrow">{locale === "es" ? "Descubre qué pasa" : "What's happening"}</span>
+                    <h2>{locale === "es" ? "Próximos eventos" : "Upcoming events"}</h2>
+                  </div>
+                  <span className="status-pill">{upcomingEvents.length} {locale === "es" ? "eventos" : "events"}</span>
+                </div>
+                <div className="venue-event-grid">
+                  {upcomingEvents.map(({ event, occurrence }) => {
+                    const artwork = event.exploreImage || event.bannerImage || event.profileImage || venue.eventsImage;
+                    const startsAt = new Date(occurrence.startsAt);
+                    return (
+                      <Link className="venue-event-feature" href={`/${locale}/events/${event.slug}`} key={event.id}>
+                        <div className="venue-event-feature-art">
+                          {artwork ? <img src={artwork.url} alt={translated(artwork.alt, locale)} loading="lazy" /> : <span aria-hidden="true">✦</span>}
+                          <span className="venue-event-feature-date">
+                            <strong>{new Intl.DateTimeFormat(locale === "es" ? "es-ES" : "en-GB", { day: "numeric", timeZone: "Europe/Madrid" }).format(startsAt)}</strong>
+                            <small>{new Intl.DateTimeFormat(locale === "es" ? "es-ES" : "en-GB", { month: "short", timeZone: "Europe/Madrid" }).format(startsAt)}</small>
+                          </span>
+                        </div>
+                        <div className="venue-event-feature-body">
+                          <span className="eyebrow">{new Intl.DateTimeFormat(locale === "es" ? "es-ES" : "en-GB", { weekday: "short", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Madrid" }).format(startsAt)}</span>
+                          <h3>{translated(event.title, locale)}</h3>
+                          <p>{translated(event.description, locale)}</p>
+                          <span className="venue-event-feature-action">{locale === "es" ? "Ver evento" : "View event"} <span aria-hidden="true">→</span></span>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
             {/* Raw media-library items are internal. Public images render only
                 through explicit placements such as cover/profile/menu. */}
             {catalogueDocument && catalogueDocument.sections.length > 0 && (
@@ -350,19 +394,6 @@ export default async function VenuePage({
                 }
               />
             )}
-            {events.length > 0 && (
-              <h2>{locale === "es" ? "Eventos" : "Events"}</h2>
-            )}
-            {events.map((event) => (
-              <p className="detail-event-row" key={event.id}>
-                <Link
-                  className="detail-event-link"
-                  href={`/${locale}/events/${event.slug}`}
-                >
-                  {translated(event.title, locale)} →
-                </Link>
-              </p>
-            ))}
             {visibleOffers.length ? (
               <section className="venue-section">
                 <h2>{locale === "es" ? "Ofertas" : "Offers"}</h2>
