@@ -232,7 +232,9 @@ export function BookingManager({
                         : "booking-template-card"
                     }
                   >
-                    <span aria-hidden="true">{icon}</span>
+                    <span aria-hidden="true">
+                      <Icon name={icon} />
+                    </span>
                     <strong>{es ? spanish : en}</strong>
                   </button>
                 ))}
