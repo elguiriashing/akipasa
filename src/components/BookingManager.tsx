@@ -97,7 +97,13 @@ export function BookingManager({
   );
   React.useEffect(() => {
     const tab = new URLSearchParams(window.location.search).get("bookingTab");
-    if (tab === "setup" || tab === "offerings" || tab === "resources" || tab === "calendar" || tab === "inbox") {
+    if (
+      tab === "setup" ||
+      tab === "offerings" ||
+      tab === "resources" ||
+      tab === "calendar" ||
+      tab === "inbox"
+    ) {
       setSection(tab === "resources" ? "offerings" : tab);
       if (tab === "resources") setShowResources(true);
     }
@@ -258,16 +264,20 @@ export function BookingManager({
                 />
               </label>
               <label>
-                {es ? "Email para confirmaciones del local" : "Venue confirmation email"}
+                {es
+                  ? "Email para confirmaciones del local"
+                  : "Venue confirmation email"}
                 <input
                   type="email"
                   name="notificationEmail"
                   placeholder="reservas@ejemplo.com"
                   defaultValue={settings?.notification_email || ""}
                 />
-                <small>{es
-                  ? "Enviaremos una confirmación al cliente y otra a esta dirección al aprobar una reserva."
-                  : "When you approve a booking, the guest receives a confirmation and this address receives a copy."}</small>
+                <small>
+                  {es
+                    ? "Enviaremos una confirmación al cliente y otra a esta dirección al aprobar una reserva."
+                    : "When you approve a booking, the guest receives a confirmation and this address receives a copy."}
+                </small>
               </label>
               <label>
                 {es ? "Instrucciones de reserva" : "Booking instructions"}
@@ -311,32 +321,32 @@ export function BookingManager({
               ))}
             </div>
           )}
-              <h3>{es ? "¿Qué vas a ofrecer?" : "What are you offering?"}</h3>
-              <p>
-                {es
-                  ? "Selecciona un tipo. Se usará al crear el servicio, con su propio horario y plazas."
-                  : "Choose a type for the service you are creating. Its capacity and schedule are separate."}
-              </p>
-              <div className="booking-template-grid">
-                {templates.map(([key, icon, en, spanish]) => (
-                  <button
-                    key={key}
-                    type="button"
-                    aria-pressed={template === key}
-                    onClick={() => setTemplate(key)}
-                    className={
-                      template === key
-                        ? "booking-template-card selected"
-                        : "booking-template-card"
-                    }
-                  >
-                    <span aria-hidden="true">
-                      <Icon name={icon} />
-                    </span>
-                    <strong>{es ? spanish : en}</strong>
-                  </button>
-                ))}
-              </div>
+          <h3>{es ? "¿Qué vas a ofrecer?" : "What are you offering?"}</h3>
+          <p>
+            {es
+              ? "Selecciona un tipo. Se usará al crear el servicio, con su propio horario y plazas."
+              : "Choose a type for the service you are creating. Its capacity and schedule are separate."}
+          </p>
+          <div className="booking-template-grid">
+            {templates.map(([key, icon, en, spanish]) => (
+              <button
+                key={key}
+                type="button"
+                aria-pressed={template === key}
+                onClick={() => setTemplate(key)}
+                className={
+                  template === key
+                    ? "booking-template-card selected"
+                    : "booking-template-card"
+                }
+              >
+                <span aria-hidden="true">
+                  <Icon name={icon} />
+                </span>
+                <strong>{es ? spanish : en}</strong>
+              </button>
+            ))}
+          </div>
 
           <form action={createOffering} className="stack compact-action-form">
             <input type="hidden" name="locale" value={locale} />
@@ -380,11 +390,19 @@ export function BookingManager({
               {es ? "Crear servicio" : "Create offering"}
             </button>
           </form>
-          <button type="button" className="button secondary" onClick={() => setShowResources(!showResources)}>
+          <button
+            type="button"
+            className="button secondary"
+            onClick={() => setShowResources(!showResources)}
+          >
             <Icon name="venue" size={17} />
             {showResources
-              ? (es ? "Ocultar mesas, equipos y personal" : "Hide tables, equipment and staff")
-              : (es ? "Gestionar mesas, equipos y personal" : "Manage tables, equipment and staff")}
+              ? es
+                ? "Ocultar mesas, equipos y personal"
+                : "Hide tables, equipment and staff"
+              : es
+                ? "Gestionar mesas, equipos y personal"
+                : "Manage tables, equipment and staff"}
           </button>
         </div>
       )}

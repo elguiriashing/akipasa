@@ -97,7 +97,6 @@ Each item must be validated against source route discovery before claiming exhau
 - No payment entitlement, ticket fulfilment, automatic staff assignment or hotel room-night pricing is implied by this model.
 - Acceptance required: additive migrations applied in order, disposable Postgres suite, EN/ES responsive UI, direct customer reservation, cross-tenant and duplicate-capacity checks. **Not deployed to production.**
 
-
 ### Consumer booking UX and confirmations (draft, October 2026)
 
 - The public venue booking form is becoming a three-step responsive wizard: date/time, party size controlled by buttons, and minimal customer contact. Slot capacity is enforced in UI and again transactionally through the existing request_booking RPC.

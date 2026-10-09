@@ -74,4 +74,3 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - Integrations: Resend transactional API requires RESEND_API_KEY and verified BOOKING_EMAIL_FROM. Root domain was pending verification when inspected; auth subdomain was verified.
 - Rollout: Database migration ahead of application release; never send actual customer emails in tests. Verify EN/ES, mobile/desktop, light/dark, party max, permission boundaries, retry/idempotency, email formatting, saved tabs, status transitions.
 - Status: draft branch, CI and staging/live acceptance NOT YET VERIFIED; production remains unchanged by this branch.
-

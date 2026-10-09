@@ -90,7 +90,11 @@ export default async function VenueBookingPage({
         venueName={venue.name}
         slots={visibleSlots}
         offerings={Object.fromEntries(offeringNames)}
-        profile={{ name: profile?.display_name || "", email: profile?.public_email || user.email || "", phone: profile?.phone || "" }}
+        profile={{
+          name: profile?.display_name || "",
+          email: profile?.public_email || user.email || "",
+          phone: profile?.phone || "",
+        }}
         submit={requestVenueBooking}
       />
       <Link className="back-link" href={`/${locale}/venues/${slug}`}>

@@ -31,7 +31,11 @@ export default async function AccountLayout({
       label: es ? "Siguiendo" : "Following",
       icon: "venue",
     },
-    { href: `${base}/bookings`, label: es ? "Mis reservas" : "My bookings", icon: "calendar" },
+    {
+      href: `${base}/bookings`,
+      label: es ? "Mis reservas" : "My bookings",
+      icon: "calendar",
+    },
     {
       href: `${base}/activity`,
       label: es ? "Actividad" : "Activity",
