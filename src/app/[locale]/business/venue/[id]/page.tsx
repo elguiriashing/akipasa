@@ -1,3 +1,4 @@
+import { AccommodationBookingWorkspace } from "@/components/AccommodationBookingWorkspace";
 import { bookingEmailConfigured } from "@/lib/booking-mail-delivery";
 import {
   loadBookingInbox,
@@ -331,6 +332,7 @@ export default async function VenueWorkspace({
       key={`${query.section || "overview"}:${query.updated || ""}:${query.error || ""}`}
       locale={locale}
       name={venue.name}
+      product={venue.discovery_vertical === "accommodation" ? "accommodation" : "venue"}
       status={venue.status}
       verified={venue.verified}
       publicHref={
@@ -368,8 +370,8 @@ export default async function VenueWorkspace({
               </h2>
               <p>
                 {es
-                  ? "Gestiona aquí la información del alojamiento, las fotos y los eventos. El calendario de habitaciones, las tarifas por noche y las reservas hoteleras todavía no están activos."
-                  : "Manage your property details, photos and events here. Room-night inventory, nightly rates and accommodation bookings are not available yet."}
+                  ? "Gestiona tu ficha, fotografías y equipo desde AkiBusiness. Tu sección de reservas AkiDuermo tiene herramientas específicas para noches; todavía no acepta reservas hoteleras hasta activar un inventario verificado."
+                  : "Manage your listing, photos and team in AkiBusiness. Your dedicated AkiDuermo booking area is designed for overnight stays and remains non-bookable until verified inventory is available."}
               </p>
               {venue.status === "published" && (
                 <a
@@ -1594,7 +1596,9 @@ export default async function VenueWorkspace({
             </section>
           </div>
         ),
-        bookings: (
+        bookings: venue.discovery_vertical === "accommodation" ? (
+          <AccommodationBookingWorkspace locale={locale} venueId={id} />
+        ) : (
           <BookingManager
             locale={locale}
             venueId={id}
