@@ -1,0 +1,29 @@
+name: Apply booking dashboard layout acceptance fixes
+on:
+  push:
+    branches: [feature/booking-ux-confirmations]
+    paths: [.github/workflows/booking-layout-acceptance.yml]
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/booking-ux-confirmations
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Keep dashboard scoped styles in browser acceptance
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('src/components/VenueDashboard.module.css');s=p.read_text();old='.dashboard .section :global(.booking-hub) {\n  display: grid;\n  gap: 0.9rem;\n}';assert old in s;s=s.replace(old,'.dashboard .section :global(.booking-hub) {\n  display: flex;\n  flex-direction: column;\n  gap: 0.9rem;\n}');p.write_text(s)
+          p=Path('scripts/test-booking-browser.mjs');s=p.read_text()
+          old='import{MyBookings}from"./src/components/MyBookings";';assert old in s;s=s.replace(old,old+'\nimport dashboardStyles from "./src/components/VenueDashboard.module.css";')
+          old='mode==="manager"?<BookingManager';assert old in s;s=s.replace(old,'mode==="manager"?<div className="akibusiness-host"><div className={dashboardStyles.dashboard}><section className={dashboardStyles.section}><BookingManager')
+          old='updateRequest={action} initialTab={tab}/>:':assertion=None
+          PY
