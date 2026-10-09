@@ -1,5 +1,10 @@
 # Repository guidance
 
+## REQUIRED: AkiPasa master system contract
+
+Before inspecting or modifying ANY AkiPasa application code, read **all** of `docs/AKIPASA_MASTER.md` and the relevant sections of `docs/CHANGE_IMPACT_REGISTER.md`. Before touching a feature, trace its cross-portal, locale, role, database, API, storage, analytics, deployment and test dependencies. Update the master contract and append a verified change-impact entry in the same pull request. Do not merge a behavior change without regression evidence; missing checks must be explicitly reported, never assumed to pass. The master contract is a living index, not a substitute for reading the current code. Follow the stricter deployment approval requirements below.
+
+
 ## Layout
 
 - `src/app`: localized routes and server endpoints.
