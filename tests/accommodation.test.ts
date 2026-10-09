@@ -83,7 +83,11 @@ it("localizes search, property categories and verification copy", () => {
   );
 });
 
-import { stayHref, stayHostRoute } from "../src/lib/akiduermo-routing";
+import {
+  stayHref,
+  stayHostRoute,
+  safeStayDestination,
+} from "../src/lib/akiduermo-routing";
 it("routes map and explore stays to dedicated subpages", () => {
   expect(stayHref("hotel-malaga", "es")).toBe(
     "https://akiduermo.akipasa.com/stays/hotel-malaga?lang=es",
@@ -101,6 +105,13 @@ it("routes map and explore stays to dedicated subpages", () => {
 it("isolates AkiDuermo from primary application and mutation endpoints", () => {
   for (const path of ["/en", "/es/login", "/en/account", "/auth/callback"])
     expect(stayHostRoute(path).kind).toBe("primary");
+  for (const path of ["/map", "/saved", "/account", "/bookings", "/settings"])
+    expect(stayHostRoute(path)).toEqual({
+      kind: "rewrite",
+      path: `/akiduermo${path}`,
+    });
+  expect(stayHostRoute("/es/auth").kind).toBe("public");
+  expect(stayHostRoute("/en/auth/callback").kind).toBe("public");
   expect(stayHostRoute("/api/bookings").kind).toBe("reject");
   expect(stayHostRoute("/api/stays").kind).toBe("public");
   expect(stayHostRoute("/api/map/venues").kind).toBe("public");
@@ -133,7 +144,7 @@ it("allows privacy choices on the stay host without enabling unrelated APIs", ()
 });
 
 import { stayHostMethodAllowed } from "../src/lib/akiduermo-routing";
-it("permits only consent POST on the read-only stay host", () => {
+it("permits authenticated stay actions while rejecting unrelated mutations", () => {
   expect(stayHostMethodAllowed("/api/v1/personalisation/consent", "POST")).toBe(
     true,
   );
@@ -145,4 +156,21 @@ it("permits only consent POST on the read-only stay host", () => {
     stayHostMethodAllowed("/api/v1/personalisation/consent", "DELETE"),
   ).toBe(false);
   expect(stayHostMethodAllowed("/api/stays", "GET")).toBe(true);
+  for (const path of ["/en/auth", "/en/auth/recover", "/settings", "/bookings"])
+    expect(stayHostMethodAllowed(path, "POST")).toBe(true);
+  expect(stayHostMethodAllowed("/map", "POST")).toBe(false);
+});
+it("returns only to AkiDuermo member or stay routes after login", () => {
+  expect(safeStayDestination("/stays/casa?lang=es&checkIn=2026-11-01")).toBe(
+    "/stays/casa?lang=es&checkIn=2026-11-01",
+  );
+  expect(safeStayDestination("/bookings?tab=past")).toBe("/bookings?tab=past");
+  for (const target of [
+    "https://evil.example",
+    "//evil.example",
+    "/en/business",
+    "/api/admin",
+    "/stays/a/../../admin",
+  ])
+    expect(safeStayDestination(target)).toBe("/account");
 });

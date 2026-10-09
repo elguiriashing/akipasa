@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { hasSupabaseAuthCookie } from "../src/lib/supabase/auth-cookie";
+import { publicRequestOrigin } from "../src/lib/public-request-origin";
 import {
   passwordSchema,
   safeAuthDestination,
@@ -47,6 +48,15 @@ describe("authentication security", () => {
     expect(hasSupabaseAuthCookie([{ name: "theme" }])).toBe(false);
     expect(hasSupabaseAuthCookie([{ name: "sb-project-unrelated" }])).toBe(
       false,
+    );
+  });
+
+  it("keeps AkiDuermo OAuth and email callbacks on the stay origin", () => {
+    expect(
+      publicRequestOrigin(new Headers({ host: "akiduermo.akipasa.com" })),
+    ).toBe("https://akiduermo.akipasa.com");
+    expect(publicRequestOrigin(new Headers({ host: "attacker.example" }))).toBe(
+      "https://akipasa.com",
     );
   });
 });

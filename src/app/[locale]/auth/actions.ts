@@ -7,9 +7,19 @@ import { config, isLocale } from "@/lib/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { passwordSchema, safeAuthDestination } from "@/lib/auth-security";
 import { publicRequestOrigin } from "@/lib/public-request-origin";
+import { safeStayDestination, stayOrigin } from "@/lib/akiduermo-routing";
 
 function requestOrigin(headerStore: Awaited<ReturnType<typeof headers>>) {
   return publicRequestOrigin(new Headers(headerStore), config.siteUrl);
+}
+function authDestination(
+  locale: "es" | "en",
+  requested: string | undefined,
+  origin: string,
+) {
+  return origin === stayOrigin
+    ? safeStayDestination(requested)
+    : safeAuthDestination(locale, requested);
 }
 
 export async function requestMagicLink(formData: FormData) {
@@ -23,9 +33,9 @@ export async function requestMagicLink(formData: FormData) {
   if (!parsed.success || !isLocale(parsed.data.locale))
     redirect("/es/auth?error=invalid");
   const locale = parsed.data.locale;
-  const next = safeAuthDestination(locale, parsed.data.next);
   const headerStore = await headers();
   const origin = requestOrigin(headerStore);
+  const next = authDestination(locale, parsed.data.next, origin);
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.signInWithOtp({
     email: parsed.data.email,
@@ -75,8 +85,8 @@ export async function signUpWithPassword(formData: FormData) {
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   if (!parsed.success) redirect(`/${locale}/auth?error=password-policy`);
-  const next = safeAuthDestination(parsed.data.locale, parsed.data.next);
   const origin = requestOrigin(await headers());
+  const next = authDestination(locale, parsed.data.next, origin);
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
@@ -105,7 +115,11 @@ export async function signInWithPassword(formData: FormData) {
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   if (!parsed.success) redirect(`/${locale}/auth?error=signin`);
-  const next = safeAuthDestination(parsed.data.locale, parsed.data.next);
+  const next = authDestination(
+    locale,
+    parsed.data.next,
+    requestOrigin(await headers()),
+  );
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.signInWithPassword({
     email: parsed.data.email,
@@ -119,8 +133,12 @@ export async function signInWithGoogle(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   if (formData.get("acceptTerms") !== "accepted")
     redirect(`/${locale}/auth?error=terms`);
-  const next = safeAuthDestination(locale, String(formData.get("next") || ""));
   const origin = requestOrigin(await headers());
+  const next = authDestination(
+    locale,
+    String(formData.get("next") || ""),
+    origin,
+  );
   const cookieStore = await cookies();
   cookieStore.set("akipasa_terms_ack", config.currentTermsVersion, {
     httpOnly: true,

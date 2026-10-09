@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { config, isLocale } from "@/lib/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { publicRequestOrigin } from "@/lib/public-request-origin";
+import { safeStayDestination, stayOrigin } from "@/lib/akiduermo-routing";
 
 export async function GET(
   request: Request,
@@ -14,9 +15,12 @@ export async function GET(
   const publicOrigin = publicRequestOrigin(request.headers, url.origin);
   const code = url.searchParams.get("code");
   const requested = url.searchParams.get("next");
-  const next = requested?.startsWith(`/${safeLocale}/`)
-    ? requested
-    : `/${safeLocale}/account`;
+  const next =
+    publicOrigin === stayOrigin
+      ? safeStayDestination(requested ?? undefined)
+      : requested?.startsWith(`/${safeLocale}/`) && !requested.startsWith("//")
+        ? requested
+        : `/${safeLocale}/account`;
   if (code) {
     const supabase = await createSupabaseServerClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);

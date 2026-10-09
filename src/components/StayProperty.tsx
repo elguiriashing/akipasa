@@ -120,6 +120,9 @@ export function StayProperty({
           >
             {es ? "EN" : "ES"}
           </button>
+          <Link href={`/bookings?lang=${locale}`}>
+            {text("My bookings", "Mis reservas")}
+          </Link>
         </div>
       </header>
       <main className={styles.page}>
@@ -551,6 +554,31 @@ export function StayProperty({
           </div>
         </footer>
       </main>
+      <nav
+        className={base.bottomNav}
+        aria-label={text("AkiDuermo navigation", "Navegación de AkiDuermo")}
+      >
+        <Link href={`/?lang=${locale}`}>
+          <Icon name="discover" size={20} />
+          {text("Explore", "Descubrir")}
+        </Link>
+        <Link href={`/map?lang=${locale}`}>
+          <Icon name="map" size={20} />
+          {text("Map", "Mapa")}
+        </Link>
+        <Link href={`/saved?lang=${locale}`}>
+          <Icon name="saved" size={20} />
+          {text("Saved", "Guardados")}
+        </Link>
+        <Link href={`/bookings?lang=${locale}`}>
+          <Icon name="bed" size={20} />
+          {text("Bookings", "Reservas")}
+        </Link>
+        <Link href={`/account?lang=${locale}`}>
+          <Icon name="account" size={20} />
+          {text("Account", "Cuenta")}
+        </Link>
+      </nav>
       <div className={styles.mobileBar}>
         <span>
           <strong>{text("Your next escape", "Tu próxima escapada")}</strong>

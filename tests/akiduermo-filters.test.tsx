@@ -28,7 +28,7 @@ afterEach(() => {
   localStorage.clear();
   vi.unstubAllGlobals();
 });
-it("keeps the active view and shared filter when switching Saved, Map and Explore", async () => {
+it("shows saved stays on their own route with local filters and dedicated navigation", async () => {
   vi.stubGlobal("React", React);
   const hotel = {
     id: "00000000-0000-4000-8000-000000000001",
@@ -59,17 +59,14 @@ it("keeps the active view and shared filter when switching Saved, Map and Explor
         : Response.json({ rows: [hotel, apartment], total: 2 }),
     ),
   );
-  render(<AkiDuermo initialLocale="en" />);
+  render(<AkiDuermo initialLocale="en" initialView="saved" />);
   await waitFor(() =>
-    expect(
-      screen.getByRole("button", { name: "Saved (2)" }),
-    ).toBeInTheDocument(),
+    expect(screen.getByRole("link", { name: "Saved (2)" })).toBeInTheDocument(),
   );
-  fireEvent.click(screen.getByRole("button", { name: "Saved (2)" }));
   fireEvent.click(screen.getByRole("button", { name: "Hotels" }));
-  expect(screen.getByRole("button", { name: "Saved (2)" })).toHaveAttribute(
-    "aria-pressed",
-    "true",
+  expect(screen.getByRole("link", { name: "Saved (2)" })).toHaveAttribute(
+    "aria-current",
+    "page",
   );
   expect(
     screen.getByRole("heading", { name: "Test hotel" }),
@@ -77,16 +74,16 @@ it("keeps the active view and shared filter when switching Saved, Map and Explor
   expect(
     screen.queryByRole("heading", { name: "Test apartment" }),
   ).not.toBeInTheDocument();
-  fireEvent.click(screen.getByRole("button", { name: "Map" }));
-  await waitFor(() =>
-    expect(screen.getByTestId("stay-map")).toHaveTextContent("hotel"),
+  expect(screen.getByRole("link", { name: "Map" })).toHaveAttribute(
+    "href",
+    "/map?lang=en",
   );
   fireEvent.click(screen.getByRole("button", { name: "Apartments" }));
-  expect(screen.getByRole("button", { name: "Map" })).toHaveAttribute(
-    "aria-pressed",
-    "true",
-  );
-  fireEvent.click(screen.getByRole("button", { name: "Saved (2)" }));
+  expect(
+    screen
+      .getByRole("navigation", { name: "AkiDuermo navigation" })
+      .querySelector('a[href="/bookings?lang=en"]'),
+  ).toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Apartments" })).toHaveAttribute(
     "aria-pressed",
     "true",
@@ -94,9 +91,8 @@ it("keeps the active view and shared filter when switching Saved, Map and Explor
   expect(
     screen.getByRole("heading", { name: "Test apartment" }),
   ).toBeInTheDocument();
-  fireEvent.click(screen.getByRole("button", { name: "Explore" }));
-  expect(screen.getByRole("button", { name: "Apartments" })).toHaveAttribute(
-    "aria-pressed",
-    "true",
+  expect(screen.getByRole("link", { name: "Explore" })).toHaveAttribute(
+    "href",
+    "/?lang=en",
   );
 });

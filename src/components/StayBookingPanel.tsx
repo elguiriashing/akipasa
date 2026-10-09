@@ -66,7 +66,7 @@ export function StayBookingPanel({
         <p role="alert">
           {error === "sign_in" ? (
             <a
-              href={`https://akipasa.com/${locale}/login?redirectTo=${encodeURIComponent(`https://akiduermo.akipasa.com${typeof window === "undefined" ? "/" : window.location.pathname}`)}`}
+              href={`/${locale}/auth?next=${encodeURIComponent(typeof window === "undefined" ? "/account" : `${window.location.pathname}${window.location.search}`)}`}
             >
               {text(
                 "Sign in to request a stay",

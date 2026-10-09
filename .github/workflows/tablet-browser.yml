@@ -8,7 +8,7 @@ permissions:
 jobs:
   tablet-ui:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     env:
       PW_TEST_SCREENSHOT_NO_FONTS_READY: "1"
       NEXT_PUBLIC_DATA_PROVIDER: fixtures
@@ -24,6 +24,7 @@ jobs:
       - run: npx playwright install --with-deps chromium chrome
       - run: npm run build
       - run: npx playwright test tests/e2e/tablet-suite.spec.ts --workers=1
+      - run: npx playwright test tests/e2e/akiduermo-consumer.spec.ts --workers=1
       - run: node scripts/test-tablet-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
