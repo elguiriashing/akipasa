@@ -182,3 +182,11 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 - All claims still use the existing `venue_claims` and member grant process, with no automatic ownership on claim submission.
 - `AkiDuermo HQ` demo property is a manually seeded, non-discoverable, non-bookable published accommodation with a verified owner association. Never use test listing to infer real inventory, prices, licensing or service availability.
 - Room-night inventory, property amenities and hotel-specific booking/editor tools are future work, not completed by this change.
+
+### Tablet, multi-window and PWA identity (2026-10-09 candidate)
+
+- Each public hostname must expose its own manifest name, stable app ID, correct start URL and branded icon. AkiBusiness is **not** an AkiPasa installation, even though all three share the worker and original global metadata.
+- Treat viewport width, not hardware type, as the layout signal: split-screen on a landscape tablet can be narrower than a phone landscape window. Test roughly 390, 600, 768, 820, 1024 and 1280 CSS pixels in both orientations and browser/PWA modes.
+- AkiBusiness venue rows must keep name/role/status and both Manage/Delete actions available, wrapped without clipping, plus safe delete confirmation at narrow widths. Preserve the two-language account and business login flows.
+- Files: src/app/manifest.ts, src/app/pwa-icon.svg/route.ts, src/lib/akiduermo-routing.ts, src/app/tablet-responsive.css, src/app/layout.tsx. This is a **candidate partial fix**, not certification that every AkiPasa, AkiBusiness, or AkiDuermo page has been visually audited.
+- Still require chromium/Android installation checks (including SVG icon support and installed-name refresh), auth and workspace browser screenshots, scrolling/no-overflow matrix, light/dark EN/ES and Cloudflare build evidence. Not deployed.
