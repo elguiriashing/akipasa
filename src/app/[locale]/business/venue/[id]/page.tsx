@@ -156,7 +156,7 @@ export default async function VenueWorkspace({
     supabase
       .from("venue_booking_settings")
       .select(
-        "mode,requires_deposit,deposit_cents,instructions_es,instructions_en,active",
+        "mode,requires_deposit,deposit_cents,instructions_es,instructions_en,active,external_url,booking_template,notification_email",
       )
       .eq("venue_id", id)
       .maybeSingle(),
