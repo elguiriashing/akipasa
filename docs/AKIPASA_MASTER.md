@@ -206,3 +206,9 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 - Only visible booking email statuses are fetched. Joined historical slot dates remain available independently of the Calendar array; compact status pills, expandable reference/contact/notes, and existing approval/cancellation/mail actions remain intact.
 - Booking manager uses document scrolling rather than a capped nested scrolling box, preserving Services/Resources/Calendar/Settings form boundaries at short split-window heights. Test tablet portrait/landscape including 960×1536 and 1536×960, EN/ES and both themes. Component fixtures do not establish authenticated live acceptance.
 - VenueDashboard observes the actual AkiBusiness header height and offsets its sticky horizontal/vertical venue navigation accordingly, including wrapped split-screen headers; observer/listener clean up on unmount. Without a business header, the normal standalone offsets remain. Booking search anchors account for that header height.
+
+### Booking service editing and persistent inbox filters (2026-10-09)
+
+- AkiBusiness Services must support editing existing `booking_offerings`, not only creating them. Managers can update name, type, duration, capacity and active state through the same booking manager, using owner/manager authorization and existing RLS; no schema migration is required.
+- Booking inbox filters remain URL-backed for share/reload persistence, but the search form submits through the client router so applying search/status/sort does not trigger a full document reload. Booking action redirects still preserve validated filters.
+- Booking request cards use a responsive grid on tablet/desktop to use horizontal space; narrow screens collapse to one card per row. Keep approval/decline/complete/cancel/retry controls visible inside each card.

@@ -3,7 +3,20 @@
 import React from "react";
 import "@testing-library/jest-dom/vitest";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from "@testing-library/react";
+
+const routerPush = vi.fn();
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: routerPush }),
+}));
+
 import { BookingManager } from "../src/components/BookingManager";
 import { createClient } from "@supabase/supabase-js";
 import {
@@ -14,6 +27,7 @@ import {
 
 afterEach(() => {
   cleanup();
+  routerPush.mockReset();
   window.history.replaceState({}, "", "/");
 });
 
@@ -57,6 +71,7 @@ const props = {
   createRecurringSlots: vi.fn(async () => {}),
   createResource: vi.fn(async () => {}),
   createOffering: vi.fn(async () => {}),
+  updateOffering: vi.fn(async () => {}),
   updateRequest: vi.fn(async () => {}),
 };
 
@@ -83,6 +98,25 @@ describe("AkiBusiness advanced booking manager", () => {
     expect(
       screen.getByRole("button", { name: "Create offering" }),
     ).toBeVisible();
+  });
+
+  it("allows businesses to edit existing offerings", () => {
+    render(<BookingManager {...props} />);
+    fireEvent.click(screen.getByRole("button", { name: "Services" }));
+    fireEvent.click(screen.getByRole("button", { name: "Edit" }));
+    const editForm = screen
+      .getByRole("button", { name: "Save offering" })
+      .closest("form");
+    expect(editForm).not.toBeNull();
+    const edit = within(editForm as HTMLFormElement);
+    expect(screen.getByDisplayValue("Buggy tour")).toBeVisible();
+    expect(edit.getByLabelText("Duration (min)")).toHaveValue(60);
+    expect(edit.getByLabelText("Maximum capacity")).toHaveValue(2);
+    expect(edit.getByLabelText("Type")).toHaveValue("experience");
+    expect(
+      edit.getByLabelText("Active and visible for new slots"),
+    ).toBeChecked();
+    expect(screen.getByRole("button", { name: "Save offering" })).toBeVisible();
   });
 
   it("allows venue owners to choose recurring days and attach a resource", () => {
@@ -162,6 +196,7 @@ describe("bounded booking inbox", () => {
       expect(container.querySelectorAll(".booking-request-card")).toHaveLength(
         20,
       );
+      expect(container.querySelector(".booking-inbox-grid")).toBeVisible();
       expect(screen.getByText("21–40 / 420")).toBeVisible();
       const next = screen.getByRole("link", {
         name: locale === "es" ? "Siguiente" : "Next",
@@ -180,6 +215,39 @@ describe("bounded booking inbox", () => {
       expect(screen.getByText("280")).toBeVisible();
     },
   );
+  it("applies inbox filters through the app router instead of a full document reload", () => {
+    render(
+      <BookingManager
+        {...props}
+        requests={requests.slice(0, 1)}
+        inbox={{
+          search: "",
+          status: "all",
+          sort: "newest",
+          page: 1,
+          total: 1,
+          pending: 1,
+        }}
+      />,
+    );
+    const searchForm = screen.getByRole("search");
+    const search = within(searchForm).getByLabelText("Search bookings");
+    fireEvent.change(search, { target: { value: "O'Neill (612)" } });
+    fireEvent.change(within(searchForm).getByLabelText("Status"), {
+      target: { value: "requested" },
+    });
+    fireEvent.change(within(searchForm).getByLabelText("Sort"), {
+      target: { value: "oldest" },
+    });
+    fireEvent.submit(searchForm);
+    expect(routerPush).toHaveBeenCalledWith(
+      expect.stringContaining("bookingSearch=O%27Neill+%28612%29"),
+      { scroll: false },
+    );
+    expect(routerPush.mock.calls[0][0]).toContain("bookingStatus=requested");
+    expect(routerPush.mock.calls[0][0]).toContain("bookingSort=oldest");
+    expect(routerPush.mock.calls[0][0]).toContain("bookingPage=1");
+  });
   it("distinguishes failed reads from empty filtered results", () => {
     const { rerender } = render(
       <BookingManager

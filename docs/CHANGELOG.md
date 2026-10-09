@@ -3,6 +3,15 @@
 This is an engineering milestone log, not a semantic-version release log.
 Entries are newest first and must not contain credentials or personal data.
 
+## 2026-10-09 - Booking service editing and inbox polish
+
+- Add edit controls for existing AkiBusiness bookable services, including
+  name, category, duration, capacity and active state.
+- Apply booking inbox search, status and sort through the app router so filters
+  stay persistent without a full document reload.
+- Render booking requests as a responsive card grid on wider tablet/desktop
+  layouts while preserving the existing paging and action controls.
+
 ## 2026-10-09 - Tablet booking inbox and scrolling
 
 - Add 20-row server paging, guest/contact/reference search, status filters,
