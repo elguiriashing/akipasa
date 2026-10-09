@@ -32,11 +32,13 @@ const props = {
       active: true,
     },
   ],
+  offerings: [{ id: "00000000-0000-4000-8000-000000000004", name: "Buggy tour", kind: "experience", duration_minutes: 60, capacity: 2, active: true }],
   requests: [],
   save: vi.fn(async () => {}),
   createSlot: vi.fn(async () => {}),
   createRecurringSlots: vi.fn(async () => {}),
   createResource: vi.fn(async () => {}),
+  createOffering: vi.fn(async () => {}),
   updateRequest: vi.fn(async () => {}),
 };
 
@@ -48,6 +50,14 @@ describe("AkiBusiness advanced booking manager", () => {
     expect(screen.getByText(/Buggy 1/)).toBeVisible();
     expect(screen.getByLabelText("Resource name")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Add resource" })).toBeVisible();
+  });
+
+  it("allows businesses to create offerings", () => {
+    render(<BookingManager {...props} />);
+    fireEvent.click(screen.getByRole("button", { name: "Offerings" }));
+    expect(screen.getByText("Bookable offerings")).toBeVisible();
+    expect(screen.getByText(/Buggy tour/)).toBeVisible();
+    expect(screen.getByRole("button", { name: "Create offering" })).toBeVisible();
   });
 
   it("allows venue owners to choose recurring days and attach a resource", () => {
