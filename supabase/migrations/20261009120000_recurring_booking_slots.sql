@@ -8,7 +8,8 @@ create or replace function public.create_recurring_booking_slots(
   p_start_time time without time zone,
   p_duration_minutes integer,
   p_capacity integer,
-  p_resource uuid default null
+  p_resource uuid default null,
+  p_offering uuid default null
 ) returns integer
 language plpgsql
 security invoker
@@ -55,8 +56,8 @@ begin
 
   -- Atomic insert. Duplicate identical slot times are skipped for safe retry.
   insert into public.venue_availability_slots
-      (venue_id,starts_at,ends_at,capacity,resource_id)
-  select p_venue, at_start, at_start + make_interval(mins => p_duration_minutes),p_capacity,p_resource
+      (venue_id,starts_at,ends_at,capacity,resource_id,offering_id)
+  select p_venue, at_start, at_start + make_interval(mins => p_duration_minutes),p_capacity,p_resource,p_offering
   from (
     select ((p_start_date + g.day_offset + p_start_time) at time zone 'Europe/Madrid') at_start
     from generate_series(0,p_end_date-p_start_date) g(day_offset)
@@ -66,10 +67,11 @@ begin
     select 1 from public.venue_availability_slots existing
     where existing.venue_id = p_venue and existing.starts_at = proposed.at_start
       and existing.resource_id is not distinct from p_resource
+      and existing.offering_id is not distinct from p_offering
   );
   get diagnostics v_count = row_count;
   return v_count;
 end;
 $$;
-revoke all on function public.create_recurring_booking_slots(uuid,date,date,integer[],time,integer,integer,uuid) from public,anon;
-grant execute on function public.create_recurring_booking_slots(uuid,date,date,integer[],time,integer,integer,uuid) to authenticated;
+revoke all on function public.create_recurring_booking_slots(uuid,date,date,integer[],time,integer,integer,uuid,uuid) from public,anon;
+grant execute on function public.create_recurring_booking_slots(uuid,date,date,integer[],time,integer,integer,uuid,uuid) to authenticated;
