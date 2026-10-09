@@ -182,3 +182,19 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 - All claims still use the existing `venue_claims` and member grant process, with no automatic ownership on claim submission.
 - `AkiDuermo HQ` demo property is a manually seeded, non-discoverable, non-bookable published accommodation with a verified owner association. Never use test listing to infer real inventory, prices, licensing or service availability.
 - Room-night inventory, property amenities and hotel-specific booking/editor tools are future work, not completed by this change.
+
+### Tablet, multi-window and PWA identity (2026-10-09 candidate)
+
+- Each public hostname must expose its own manifest name, stable app ID, correct start URL and branded icon. AkiBusiness is **not** an AkiPasa installation, even though all three share the worker and original global metadata.
+- Treat viewport width, not hardware type, as the layout signal: split-screen on a landscape tablet can be narrower than a phone landscape window. Test roughly 390, 600, 768, 820, 1024 and 1280 CSS pixels in both orientations and browser/PWA modes.
+- AkiBusiness venue rows must keep name/role/status and both Manage/Delete actions available, wrapped without clipping, plus safe delete confirmation at narrow widths. Preserve the two-language account and business login flows.
+- Files: src/app/manifest.ts, src/app/pwa-icon.svg/route.ts, src/lib/akiduermo-routing.ts, src/app/tablet-responsive.css, src/app/layout.tsx. This is a **candidate partial fix**, not certification that every AkiPasa, AkiBusiness, or AkiDuermo page has been visually audited.
+- Still require chromium/Android installation checks (including SVG icon support and installed-name refresh), auth and workspace browser screenshots, scrolling/no-overflow matrix, light/dark EN/ES and Cloudflare build evidence. Not deployed.
+
+### Tablet acceptance continuation (PR #79)
+
+- Raster PWA icons in `public/pwa/` include independent orange/yellow/green identities at 192/512px plus maskable safe-area variants; regenerate with `node scripts/generate-pwa-icons.mjs`. Root metadata resolves hostname-specific application names and favicon/touch icons. Keep AkiPasa ID `/es`, matching its former implicit start-URL identity.
+- The shared service worker registers separately on all three origins; allow its `/sw.js` and `/offline.html` routes on business/stay hosts. Never cache the manifest, authenticated responses or API data. Existing install labels may need Android Chrome refresh/reinstall after release.
+- `scripts/test-tablet-browser.mjs` exercises real VenueDashboard, BookingManager and VenueDeleteControl with disposable actions across 28 EN/ES, light/dark, portrait/landscape/short split-screen combinations. It checks visible venue action bounds, all dashboard tabs and delete confirmation/cancel without deleting records. This is component acceptance, not production authenticated acceptance.
+- `tests/e2e/tablet-suite.spec.ts` covers public route widths, business virtual-host auth modes and host-specific manifests. Physical Android WebAPK installation, rotation/keyboard behavior and authenticated full editor content require device/staging acceptance before production.
+- Detailed candidate coverage and production hold: `docs/TABLET_ACCEPTANCE.md`. Browser route matrices use existing consent-version cookies with optional choices disabled, fixture discovery and no real auth mutations; backend availability and physical Android installation remain separate gates.
