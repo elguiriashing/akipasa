@@ -58,7 +58,14 @@ export function BookingManager({
     capacity: number;
     active: boolean;
   }>;
-  offerings: Array<{ id: string; name: string; kind: string; duration_minutes: number; capacity: number; active: boolean }>;
+  offerings: Array<{
+    id: string;
+    name: string;
+    kind: string;
+    duration_minutes: number;
+    capacity: number;
+    active: boolean;
+  }>;
   requests: Array<{
     id: string;
     contact_name: string;
@@ -290,29 +297,76 @@ export function BookingManager({
       {section === "offerings" && (
         <div className="stack booking-manager-form">
           <h3>{es ? "Servicios reservables" : "Bookable offerings"}</h3>
-          <p>{es ? "Crea actividades, citas, clases o experiencias independientes. Cada servicio tendrá su propio cupo y horarios." : "Create separate services, appointments, classes or experiences. Each offering has its own capacity and slots."}</p>
-          {offerings.length > 0 && <div className="managed-list">{offerings.map(offering => (
-            <div className="managed-row" key={offering.id}>
-              <span><strong>{offering.name}</strong> · {offering.kind}</span>
-              <span>{offering.duration_minutes} min · {offering.capacity} {es ? "plazas" : "places"}</span>
+          <p>
+            {es
+              ? "Crea actividades, citas, clases o experiencias independientes. Cada servicio tendrá su propio cupo y horarios."
+              : "Create separate services, appointments, classes or experiences. Each offering has its own capacity and slots."}
+          </p>
+          {offerings.length > 0 && (
+            <div className="managed-list">
+              {offerings.map((offering) => (
+                <div className="managed-row" key={offering.id}>
+                  <span>
+                    <strong>{offering.name}</strong> · {offering.kind}
+                  </span>
+                  <span>
+                    {offering.duration_minutes} min · {offering.capacity}{" "}
+                    {es ? "plazas" : "places"}
+                  </span>
+                </div>
+              ))}
             </div>
-          ))}</div>}
+          )}
           <form action={createOffering} className="stack compact-action-form">
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="venueId" value={venueId} />
             <div className="form-grid-three">
-              <label>{es ? "Nombre del servicio" : "Offering name"}
-                <input type="text" name="name" maxLength={120} required placeholder={es ? "Ej. Ruta en buggy" : "E.g. Buggy tour"} /></label>
-              <label>{es ? "Tipo" : "Type"}
+              <label>
+                {es ? "Nombre del servicio" : "Offering name"}
+                <input
+                  type="text"
+                  name="name"
+                  maxLength={120}
+                  required
+                  placeholder={es ? "Ej. Ruta en buggy" : "E.g. Buggy tour"}
+                />
+              </label>
+              <label>
+                {es ? "Tipo" : "Type"}
                 <select name="kind" defaultValue={template}>
-                  {templates.map(([key,,en,spanish]) => <option key={key} value={key}>{es ? spanish : en}</option>)}
-                </select></label>
-              <label>{es ? "Duración (min)" : "Duration (min)"}
-                <input name="duration" type="number" min="15" max="1440" defaultValue={60} required /></label>
-              <label>{es ? "Capacidad máxima" : "Maximum capacity"}
-                <input name="capacity" type="number" min="1" max="10000" defaultValue={1} required /></label>
+                  {templates.map(([key, , en, spanish]) => (
+                    <option key={key} value={key}>
+                      {es ? spanish : en}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                {es ? "Duración (min)" : "Duration (min)"}
+                <input
+                  name="duration"
+                  type="number"
+                  min="15"
+                  max="1440"
+                  defaultValue={60}
+                  required
+                />
+              </label>
+              <label>
+                {es ? "Capacidad máxima" : "Maximum capacity"}
+                <input
+                  name="capacity"
+                  type="number"
+                  min="1"
+                  max="10000"
+                  defaultValue={1}
+                  required
+                />
+              </label>
             </div>
-            <button className="button" type="submit">{es ? "Crear servicio" : "Create offering"}</button>
+            <button className="button" type="submit">
+              {es ? "Crear servicio" : "Create offering"}
+            </button>
           </form>
         </div>
       )}
@@ -463,10 +517,16 @@ export function BookingManager({
                   <label>
                     {es ? "Servicio opcional" : "Optional offering"}
                     <select name="offeringId" defaultValue="">
-                      <option value="">{es ? "Reserva general" : "General booking"}</option>
-                      {offerings.filter(o => o.active).map(offering => (
-                        <option key={offering.id} value={offering.id}>{offering.name} · {offering.capacity}</option>
-                      ))}
+                      <option value="">
+                        {es ? "Reserva general" : "General booking"}
+                      </option>
+                      {offerings
+                        .filter((o) => o.active)
+                        .map((offering) => (
+                          <option key={offering.id} value={offering.id}>
+                            {offering.name} · {offering.capacity}
+                          </option>
+                        ))}
                     </select>
                   </label>
                   <label>
@@ -540,10 +600,16 @@ export function BookingManager({
                   <label>
                     {es ? "Servicio opcional" : "Optional offering"}
                     <select name="offeringId" defaultValue="">
-                      <option value="">{es ? "Reserva general" : "General booking"}</option>
-                      {offerings.filter(o => o.active).map(offering => (
-                        <option key={offering.id} value={offering.id}>{offering.name} · {offering.capacity}</option>
-                      ))}
+                      <option value="">
+                        {es ? "Reserva general" : "General booking"}
+                      </option>
+                      {offerings
+                        .filter((o) => o.active)
+                        .map((offering) => (
+                          <option key={offering.id} value={offering.id}>
+                            {offering.name} · {offering.capacity}
+                          </option>
+                        ))}
                     </select>
                   </label>
                   <label>

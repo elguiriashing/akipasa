@@ -88,7 +88,8 @@ try {
   await assert.rejects(
     () => sql`insert into public.venue_availability_slots(venue_id,offering_id,starts_at,ends_at,capacity)
       values (${anotherVenue},${offering},${new Date(+rows[0].starts_at + 33 * 86400000)},${new Date(+rows[0].ends_at + 33 * 86400000)},1)`,
-    (error) => error.code === "23503" || /offering unavailable/i.test(error.message),
+    (error) =>
+      error.code === "23503" || /offering unavailable/i.test(error.message),
     "An offering cannot be assigned to another venue",
   );
 

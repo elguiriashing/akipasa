@@ -46,8 +46,12 @@ export default async function VenueBookingPage({
     .select("id,name,active")
     .eq("venue_id", venue.id)
     .eq("active", true);
-  const offeringNames = new Map((offeringRows || []).map((offering) => [offering.id, offering.name]));
-  const visibleSlots = slots.filter((slot) => !slot.offering_id || offeringNames.has(slot.offering_id));
+  const offeringNames = new Map(
+    (offeringRows || []).map((offering) => [offering.id, offering.name]),
+  );
+  const visibleSlots = slots.filter(
+    (slot) => !slot.offering_id || offeringNames.has(slot.offering_id),
+  );
   const { data: profile } = await supabase
     .from("profiles")
     .select("display_name,public_email,phone")
@@ -110,7 +114,9 @@ export default async function VenueBookingPage({
                         dateStyle: "medium",
                         timeStyle: "short",
                       })}{" "}
-                      {slot.offering_id ? `${offeringNames.get(slot.offering_id)} · ` : ''}
+                      {slot.offering_id
+                        ? `${offeringNames.get(slot.offering_id)} · `
+                        : ""}
                       · {slot.capacity}{" "}
                       {es ? "plazas máximas" : "maximum places"}
                     </option>
