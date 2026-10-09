@@ -39,7 +39,7 @@ const slots=[
 const wizardProps={
  locale:"en" as const,slug:"beasty-bites",venueId:"00000000-0000-4000-8000-000000000000",
  venueName:"Beasty Bites",slots,offerings:{"00000000-0000-4000-8000-000000000003":"Breakfast"},
- profile:{name:"Test User",email:"person@example.com",phone:""},submit:vi.fn(async (_form:FormData)=>{}),
+ profile:{name:"Test User",email:"person@example.com",phone:""},submit:vi.fn(async ()=>{}),
 };
 describe("Customer booking wizard",()=>{
   it("uses steps and guest buttons limited by the selected slot",()=>{
