@@ -54,7 +54,8 @@ const props = {
 describe("AkiBusiness advanced booking manager", () => {
   it("shows resources with inventory capacity and a create form", () => {
     render(<BookingManager {...props} />);
-    fireEvent.click(screen.getByRole("button", { name: "Resources" }));
+    fireEvent.click(screen.getByRole("button", { name: "Services" }));
+    fireEvent.click(screen.getByRole("button", { name: /Manage tables, equipment and staff/ }));
     expect(screen.getByText("Bookable resources")).toBeVisible();
     expect(screen.getByText(/Buggy 1/)).toBeVisible();
     expect(screen.getByLabelText("Resource name")).toBeInTheDocument();
@@ -63,7 +64,7 @@ describe("AkiBusiness advanced booking manager", () => {
 
   it("allows businesses to create offerings", () => {
     render(<BookingManager {...props} />);
-    fireEvent.click(screen.getByRole("button", { name: "Offerings" }));
+    fireEvent.click(screen.getByRole("button", { name: "Services" }));
     expect(screen.getByText("Bookable offerings")).toBeVisible();
     expect(screen.getByText(/Buggy tour/)).toBeVisible();
     expect(
@@ -73,7 +74,7 @@ describe("AkiBusiness advanced booking manager", () => {
 
   it("allows venue owners to choose recurring days and attach a resource", () => {
     render(<BookingManager {...props} />);
-    fireEvent.click(screen.getByRole("button", { name: "Availability" }));
+    fireEvent.click(screen.getByRole("button", { name: "Calendar" }));
     fireEvent.click(screen.getByText("Schedule recurring availability"));
     expect(screen.getByLabelText("From")).toBeInTheDocument();
     expect(screen.getByLabelText("Until (max 90 days)")).toBeInTheDocument();
@@ -97,6 +98,7 @@ describe("AkiBusiness advanced booking manager", () => {
         }}
       />,
     );
+    fireEvent.click(screen.getByRole("button", { name: "Settings" }));
     expect(screen.getByLabelText("Booking URL")).toHaveValue(
       "https://example.com/book",
     );
@@ -106,6 +108,7 @@ describe("AkiBusiness advanced booking manager", () => {
 
   it("uses the shared SVG icon system for template selectors", () => {
     const { container } = render(<BookingManager {...props} />);
+    fireEvent.click(screen.getByRole("button", { name: "Services" }));
     expect(
       container.querySelectorAll(".booking-template-card svg"),
     ).toHaveLength(7);
