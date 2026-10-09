@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { Icon } from "@/components/Icons";
+import { Icon } from "./Icons";
 
 type Slot = {
   id: string;
