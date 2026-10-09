@@ -35,6 +35,7 @@ type ManagedVenue = {
     slug: string;
     status: string;
     verified: boolean;
+    discovery_vertical: string | null;
   } | null;
 };
 
@@ -124,7 +125,7 @@ export default async function BusinessPage({
   ] = await Promise.all([
     supabase
       .from("venue_members")
-      .select("role,venues(id,name,slug,status,verified)"),
+      .select("role,venues(id,name,slug,status,verified,discovery_vertical)"),
     supabase.from("categories").select("id,name_es,name_en").order("name_es"),
     supabase
       .from("venue_claims")
@@ -153,7 +154,7 @@ export default async function BusinessPage({
   const { data: editorialVenue } = platformStaff
     ? await supabase
         .from("venues")
-        .select("id,name,slug,status,verified")
+        .select("id,name,slug,status,verified,discovery_vertical")
         .eq("slug", "akipasa-editorial")
         .eq("status", "published")
         .maybeSingle()
@@ -490,11 +491,11 @@ export default async function BusinessPage({
         {view === "venues" && (
           <div className="panel catalogue-edit-card">
             <div className="catalogue-section-header">
-              <h2>{es ? "Locales gestionados" : "Managed venues"}</h2>
+              <h2>{es ? "Mis negocios y alojamientos" : "My businesses and stays"}</h2>
               <p className="catalogue-section-sub">
                 {es
-                  ? "Locales donde tienes permisos de edición u organización."
-                  : "Venues where you have management or organisation privileges."}
+                  ? "Elige qué negocio o alojamiento quieres gestionar. Las herramientas se adaptan a cada tipo."
+                  : "Choose a business or accommodation to manage. Each opens its own set of tools."}
               </p>
             </div>
 
@@ -506,6 +507,7 @@ export default async function BusinessPage({
                       <div className="managed-row" key={m.venues.id}>
                         <div>
                           <strong>{m.venues.name}</strong>
+                          <span className="business-product-type">{m.venues.discovery_vertical === "accommodation" ? "AkiDuermo" : "AkiPasa"}</span>
                           <span>
                             {m.role} · <small>{m.venues.status}</small>
                           </span>
@@ -515,8 +517,8 @@ export default async function BusinessPage({
                             className="button secondary business-venue-action"
                             href={`/${locale}/business/venue/${m.venues.id}`}
                           >
-                            <Icon name="venue" />
-                            {es ? "Gestionar local" : "Manage venue"}
+                            <Icon name={m.venues.discovery_vertical === "accommodation" ? "home" : "venue"} />
+                            {m.venues.discovery_vertical === "accommodation" ? (es ? "Gestionar alojamiento" : "Manage stay") : (es ? "Gestionar local" : "Manage venue")}
                             <Icon name="arrow-right" />
                           </a>
                           {m.role === "owner" &&
