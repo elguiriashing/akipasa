@@ -55,7 +55,11 @@ describe("AkiBusiness advanced booking manager", () => {
   it("shows resources with inventory capacity and a create form", () => {
     render(<BookingManager {...props} />);
     fireEvent.click(screen.getByRole("button", { name: "Services" }));
-    fireEvent.click(screen.getByRole("button", { name: /Manage tables, equipment and staff/ }));
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /Manage tables, equipment and staff/,
+      }),
+    );
     expect(screen.getByText("Bookable resources")).toBeVisible();
     expect(screen.getByText(/Buggy 1/)).toBeVisible();
     expect(screen.getByLabelText("Resource name")).toBeInTheDocument();
