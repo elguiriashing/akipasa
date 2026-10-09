@@ -119,6 +119,8 @@ Each item must be validated against source route discovery before claiming exhau
 ### AkiDuermo / accommodations
 
 - `akiduermo.akipasa.com`: mobile-first accommodation discovery, listing filters, locale, map redirect and eventual booking pages. Approx. 21k accommodation records is a dated conversation estimate, not a verified current count. Review availability/booking claims against implemented backend.
+- Candidate PR #82 adds explicit disabled/external/request settings, property-owned room/unit/rate/block inventory, aggregate public availability, authenticated expiring quotes, atomic idempotent room assignment, owner/customer status transitions, audit/outbox, account history/export and bilingual customer/manager UI. Migration `20261009220000_accommodation_inventory_foundation.sql` must run before application rollout. No online payment, OTA sync or automatic confirmation is implied.
+- Release gate: run `scripts/test-accommodation-sql.mjs` on disposable PostgreSQL 16, the full repository and browser suites, Cloudflare packaging, then authenticated EN/ES owner/customer production smoke. A passing static SQL test or merged PR alone is not evidence of live booking.
 
 ### Marketing, attribution and integrations
 

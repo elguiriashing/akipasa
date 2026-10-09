@@ -9,6 +9,7 @@ export { MapSnapshot } from "./cloudflare/map-snapshot";
 
 import {
   dispatchBookingConfirmations,
+  dispatchAccommodationConfirmations,
   type BookingMailEnv,
 } from "./src/lib/booking-mail-delivery";
 
@@ -19,6 +20,7 @@ const worker = {
     ctx: { waitUntil(work: Promise<unknown>): void },
   ) {
     ctx.waitUntil(dispatchBookingConfirmations(env));
+    ctx.waitUntil(dispatchAccommodationConfirmations(env));
   },
   async fetch(
     request: Request,

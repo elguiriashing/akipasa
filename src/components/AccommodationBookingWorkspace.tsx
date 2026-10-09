@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Icon, type IconName } from "./Icons";
 
-type Section = "reservations" | "calendar" | "rooms" | "rates";
+type Section = "reservations" | "calendar" | "rooms" | "rates" | "settings";
 const sections: { id: Section; icon: IconName; en: string; es: string }[] = [
   { id: "reservations", icon: "inbox", en: "Reservations", es: "Reservas" },
   { id: "calendar", icon: "calendar", en: "Calendar", es: "Calendario" },
   { id: "rooms", icon: "home", en: "Rooms & units", es: "Habitaciones" },
   { id: "rates", icon: "venue", en: "Rates & rules", es: "Tarifas" },
+  { id: "settings", icon: "venue", en: "Settings", es: "Ajustes" },
 ];
 
 export type AccommodationRoomType = {
@@ -59,6 +60,8 @@ type AccommodationActions = {
   deleteRate: (formData: FormData) => Promise<void>;
   createBlock: (formData: FormData) => Promise<void>;
   deleteBlock: (formData: FormData) => Promise<void>;
+  saveSettings?: (formData: FormData) => Promise<void>;
+  changeStatus?: (formData: FormData) => Promise<void>;
 };
 
 /**
@@ -76,6 +79,7 @@ export function AccommodationBookingWorkspace({
   reservations = [],
   blocks = [],
   actions,
+  settings = { mode: "disabled", policy: "", external_url: null },
 }: {
   locale: "es" | "en";
   venueId: string;
@@ -86,6 +90,12 @@ export function AccommodationBookingWorkspace({
   reservations?: AccommodationReservation[];
   blocks?: AccommodationBlock[];
   actions?: AccommodationActions;
+  settings?: {
+    mode: string;
+    policy: string;
+    external_url: string | null;
+    notification_email?: string | null;
+  };
 }) {
   const es = locale === "es";
   const [active, setActive] = useState<Section>(
@@ -93,6 +103,38 @@ export function AccommodationBookingWorkspace({
       ? (initialTab as Section)
       : "reservations",
   );
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem(`akiduermo-inbox-${venueId}`) || "{}",
+      );
+      const params = new URLSearchParams(location.search);
+      setSearch(
+        params.get("staySearch") ??
+          (typeof saved.search === "string" ? saved.search : ""),
+      );
+      setStatus(
+        params.get("stayStatus") ??
+          (typeof saved.status === "string" ? saved.status : ""),
+      );
+    } catch {}
+  }, [venueId]);
+  function filter(nextSearch: string, nextStatus: string) {
+    setSearch(nextSearch);
+    setStatus(nextStatus);
+    const url = new URL(location.href);
+    url.searchParams.set("staySearch", nextSearch);
+    url.searchParams.set("stayStatus", nextStatus);
+    history.replaceState(history.state, "", url);
+    try {
+      localStorage.setItem(
+        `akiduermo-inbox-${venueId}`,
+        JSON.stringify({ search: nextSearch, status: nextStatus }),
+      );
+    } catch {}
+  }
   const base = `/${locale}/business/venue/${venueId}`;
   const title = sections.find((section) => section.id === active)!;
   const activeRoomTypes = roomTypes.filter((room) => room.active);
@@ -106,6 +148,10 @@ export function AccommodationBookingWorkspace({
       currency: "EUR",
     }).format(cents / 100);
   const copy: Record<Section, [string, string]> = {
+    settings: [
+      "Booking mode and property terms.",
+      "Modo de reserva y condiciones del alojamiento.",
+    ],
     reservations: [
       "Confirmed guest records will appear here after the stay engine is enabled.",
       "Los datos de huéspedes confirmados aparecerán aquí cuando se active el motor de alojamientos.",
@@ -151,7 +197,12 @@ export function AccommodationBookingWorkspace({
             type="button"
             className={active === section.id ? "button" : "button secondary"}
             aria-current={active === section.id ? "page" : undefined}
-            onClick={() => setActive(section.id)}
+            onClick={() => {
+              setActive(section.id);
+              const url = new URL(window.location.href);
+              url.searchParams.set("accommodationTab", section.id);
+              window.history.replaceState(window.history.state, "", url);
+            }}
           >
             <Icon name={section.icon} />
             {es ? section.es : section.en}
@@ -165,11 +216,63 @@ export function AccommodationBookingWorkspace({
       >
         <h3>{es ? title.es : title.en}</h3>
         <p>{copy[active][es ? 1 : 0]}</p>
-        <p className="notice" role="status">
-          {es
-            ? "Las reservas por noche siguen desactivadas hasta completar y verificar el inventario y el control de solapamientos."
-            : "Overnight booking is disabled until inventory and overlap protection are completed and verified."}
-        </p>
+        {settings.mode === "disabled" && (
+          <p className="notice" role="status">
+            {es
+              ? "Las reservas por noche siguen desactivadas hasta completar y verificar el inventario y el control de solapamientos."
+              : "Overnight booking is disabled until inventory and overlap protection are completed and verified."}
+          </p>
+        )}
+        {active === "settings" && actions?.saveSettings && (
+          <form action={actions.saveSettings} className="stack">
+            <input type="hidden" name="locale" value={locale} />
+            <input type="hidden" name="venueId" value={venueId} />
+            <label>
+              {es ? "Modo de reserva" : "Booking mode"}
+              <select name="mode" defaultValue={settings.mode}>
+                <option value="disabled">
+                  {es ? "Desactivado" : "Disabled"}
+                </option>
+                <option value="external">
+                  {es ? "Web externa" : "External website"}
+                </option>
+                <option value="request">
+                  {es ? "Solicitudes AkiDuermo" : "AkiDuermo requests"}
+                </option>
+              </select>
+            </label>
+            <label>
+              {es ? "Web de reservas" : "Booking website"}
+              <input
+                name="externalUrl"
+                type="url"
+                defaultValue={settings.external_url || ""}
+              />
+            </label>
+            <label>
+              {es ? "Correo de notificaciones" : "Notification email"}
+              <input
+                name="notificationEmail"
+                type="email"
+                defaultValue={settings.notification_email || ""}
+              />
+            </label>
+            <label>
+              {es ? "Condiciones y cancelación" : "Terms and cancellation"}
+              <textarea
+                name="policy"
+                maxLength={4000}
+                defaultValue={settings.policy}
+              />
+            </label>
+            <p>
+              {es
+                ? "Los precios deben incluir todos los impuestos. Pago en el alojamiento; no se cobra en línea."
+                : "Rates must include all taxes. Payment at the property; no online charge."}
+            </p>
+            <button className="button">{es ? "Guardar" : "Save"}</button>
+          </form>
+        )}
         {active === "rooms" && (
           <div className="booking-manager-body">
             <section className="stack">
@@ -496,28 +599,109 @@ export function AccommodationBookingWorkspace({
           </div>
         )}
         {active === "reservations" && (
-          <div className="booking-list">
-            {reservations.map((reservation) => (
-              <article key={reservation.id} className="booking-list-card">
-                <strong>{reservation.contact_name}</strong>
-                <span>
-                  {reservation.check_in} - {reservation.check_out}
-                </span>
-                <small>
-                  {unitName(reservation.unit_id)} · {reservation.guests}{" "}
-                  {es ? "huéspedes" : "guests"} ·{" "}
-                  {money(reservation.quoted_total_cents)}
-                </small>
-                <span className="badge">{reservation.status}</span>
-              </article>
-            ))}
-            {!reservations.length && (
-              <p>
-                {es
-                  ? "Aún no hay reservas de alojamiento."
-                  : "No stay reservations yet."}
-              </p>
-            )}
+          <div className="stack">
+            <div className="booking-manager-form">
+              <label>
+                {es ? "Buscar" : "Search"}
+                <input
+                  type="search"
+                  value={search}
+                  onChange={(e) => filter(e.target.value, status)}
+                />
+              </label>
+              <label>
+                {es ? "Estado" : "Status"}
+                <select
+                  value={status}
+                  onChange={(e) => filter(search, e.target.value)}
+                >
+                  <option value="">{es ? "Todos" : "All"}</option>
+                  {[
+                    "requested",
+                    "confirmed",
+                    "checked_in",
+                    "completed",
+                    "cancelled",
+                    "declined",
+                  ].map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div className="booking-list">
+              {reservations
+                .filter(
+                  (r) =>
+                    (!status || r.status === status) &&
+                    `${r.contact_name} ${r.contact_email} ${r.id}`
+                      .toLowerCase()
+                      .includes(search.toLowerCase()),
+                )
+                .map((reservation) => (
+                  <article key={reservation.id} className="booking-list-card">
+                    <strong>{reservation.contact_name}</strong>
+                    <span>
+                      {reservation.check_in} - {reservation.check_out}
+                    </span>
+                    <small>
+                      {unitName(reservation.unit_id)} · {reservation.guests}{" "}
+                      {es ? "huéspedes" : "guests"} ·{" "}
+                      {money(reservation.quoted_total_cents)}
+                    </small>
+                    <span className="badge">{reservation.status}</span>
+                    {actions?.changeStatus && (
+                      <form action={actions.changeStatus} className="stack">
+                        <input type="hidden" name="locale" value={locale} />
+                        <input type="hidden" name="venueId" value={venueId} />
+                        <input
+                          type="hidden"
+                          name="reservationId"
+                          value={reservation.id}
+                        />
+                        <div className="button-row">
+                          {(reservation.status === "requested"
+                            ? ["confirmed", "declined", "cancelled"]
+                            : reservation.status === "confirmed"
+                              ? ["checked_in", "cancelled"]
+                              : reservation.status === "checked_in"
+                                ? ["completed"]
+                                : []
+                          ).map((next) => (
+                            <button
+                              className="button secondary"
+                              key={next}
+                              name="status"
+                              value={next}
+                            >
+                              {
+                                (
+                                  {
+                                    confirmed: es ? "Confirmar" : "Confirm",
+                                    declined: es ? "Rechazar" : "Decline",
+                                    cancelled: es ? "Cancelar" : "Cancel",
+                                    checked_in: es ? "Entrada" : "Check in",
+                                    completed: es ? "Salida" : "Check out",
+                                  } as Record<string, string>
+                                )[next]
+                              }
+                            </button>
+                          ))}
+                        </div>
+                      </form>
+                    )}
+                  </article>
+                ))}
+              {!reservations.length && (
+                <p>
+                  {es
+                    ? "Aún no hay reservas de alojamiento."
+                    : "No stay reservations yet."}
+                </p>
+              )}
+            </div>
           </div>
         )}
       </div>

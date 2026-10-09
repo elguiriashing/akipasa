@@ -120,6 +120,52 @@ describe("AkiDuermo business tools", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("shows real booking settings and manager reservation transitions", () => {
+    const action = async () => {};
+    render(
+      <AccommodationBookingWorkspace
+        locale="en"
+        venueId="00000000-0000-4000-8000-000000000001"
+        settings={{
+          mode: "request",
+          policy: "Pay at the property. Free cancellation before arrival.",
+          external_url: null,
+          notification_email: "owner@example.com",
+        }}
+        reservations={[
+          {
+            id: "00000000-0000-4000-8000-000000000002",
+            unit_id: "unit-1",
+            check_in: "2027-03-27",
+            check_out: "2027-03-29",
+            guests: 2,
+            status: "requested",
+            contact_name: "Alex Guest",
+            contact_email: "alex@example.com",
+            quoted_total_cents: 27000,
+          },
+        ]}
+        actions={{
+          createRoomType: action,
+          updateRoomType: action,
+          createUnit: action,
+          updateUnit: action,
+          createRate: action,
+          deleteRate: action,
+          createBlock: action,
+          deleteBlock: action,
+          saveSettings: action,
+          changeStatus: action,
+        }}
+      />,
+    );
+    expect(screen.getByText("Alex Guest")).toBeVisible();
+    expect(screen.getByRole("button", { name: "Confirm" })).toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: /Settings/ }));
+    expect(screen.getByDisplayValue("AkiDuermo requests")).toBeVisible();
+    expect(screen.getByDisplayValue("owner@example.com")).toBeVisible();
+  });
+
   it("keeps accommodation-specific tools and excludes venue-only editors", () => {
     render(
       <VenueDashboard

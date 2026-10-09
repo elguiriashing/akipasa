@@ -837,3 +837,14 @@ files, and only a fresh validated OpenNext artifact is safe to promote.
   source through the configured connected build.
 - Run live profile, catalogue, onboarding, billing webhook, and 360 px
   acceptance.
+
+## 2026-10-09 23:45 +02:00
+
+### Summary
+
+Completed the AkiDuermo room-night request candidate: explicit booking modes, real aggregate availability and quotes, atomic physical-room assignment, customer requests/cancellation/history, AkiBusiness reservation transitions, durable bilingual confirmations, export coverage and disposable PostgreSQL acceptance/rollback automation. No payment capture or automatic property confirmation was added.
+
+### Outstanding follow-up work
+
+- Require the PostgreSQL CI job, full check/browser suites and Cloudflare package to pass on the exact PR head.
+- Apply the additive migration before the Worker release, then verify signed-in customer and property-owner flows on both live hosts before enabling a property.

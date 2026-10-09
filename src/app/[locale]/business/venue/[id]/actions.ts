@@ -1038,6 +1038,99 @@ async function requireAccommodationManager(
     );
 }
 
+export async function saveAccommodationSettings(formData: FormData) {
+  const parsed = z
+    .object({
+      venueId: z.string().uuid(),
+      locale: z.enum(["en", "es"]),
+      mode: z.enum(["disabled", "external", "request"]),
+      policy: z.string().trim().max(4000),
+      externalUrl: z.string().trim().max(2000),
+      notificationEmail: z.union([
+        z.literal(""),
+        z.string().trim().email().max(254),
+      ]),
+    })
+    .safeParse(Object.fromEntries(formData));
+  if (!parsed.success) throw new Error("Invalid accommodation settings");
+  const p = parsed.data;
+  const { supabase } = await requireBusinessAccess(p.locale);
+  await requireAccommodationManager(supabase, p.locale, p.venueId);
+  if (p.mode === "request" && p.policy.length < 10)
+    redirect(
+      accommodationDestination(p.locale, p.venueId, "settings", "error=policy"),
+    );
+  if (p.mode === "external" && !/^https:\/\/[^\s]+$/.test(p.externalUrl))
+    redirect(
+      accommodationDestination(p.locale, p.venueId, "settings", "error=url"),
+    );
+  const { error } = await supabase
+    .from("accommodation_booking_settings")
+    .upsert({
+      venue_id: p.venueId,
+      mode: p.mode,
+      policy: p.policy,
+      external_url: p.externalUrl || null,
+      notification_email: p.notificationEmail || null,
+    });
+  redirect(
+    accommodationDestination(
+      p.locale,
+      p.venueId,
+      "settings",
+      error ? "error=settings" : "success=settings",
+    ),
+  );
+}
+
+export async function changeAccommodationStatus(formData: FormData) {
+  const parsed = z
+    .object({
+      venueId: z.string().uuid(),
+      locale: z.enum(["en", "es"]),
+      reservationId: z.string().uuid(),
+      status: z.enum([
+        "confirmed",
+        "declined",
+        "cancelled",
+        "checked_in",
+        "completed",
+      ]),
+    })
+    .safeParse(Object.fromEntries(formData));
+  if (!parsed.success) throw new Error("Invalid reservation");
+  const p = parsed.data;
+  const { supabase } = await requireBusinessAccess(p.locale);
+  await requireAccommodationManager(supabase, p.locale, p.venueId);
+  const { data: owned } = await supabase
+    .from("accommodation_reservations")
+    .select("id")
+    .eq("id", p.reservationId)
+    .eq("venue_id", p.venueId)
+    .maybeSingle();
+  if (!owned)
+    redirect(
+      accommodationDestination(
+        p.locale,
+        p.venueId,
+        "reservations",
+        "error=reservation",
+      ),
+    );
+  const { error } = await supabase.rpc("accommodation_change_status", {
+    p_reservation: p.reservationId,
+    p_status: p.status,
+  });
+  redirect(
+    accommodationDestination(
+      p.locale,
+      p.venueId,
+      "reservations",
+      error ? "error=reservation" : "success=reservation",
+    ),
+  );
+}
+
 export async function createAccommodationRoomType(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");

@@ -28,6 +28,8 @@ import {
   addOccurrence,
   addTeamMember,
   createAccommodationBlock,
+  saveAccommodationSettings,
+  changeAccommodationStatus,
   createAccommodationRate,
   createAccommodationRoomType,
   createAccommodationUnit,
@@ -215,6 +217,13 @@ export default async function VenueWorkspace({
   ]);
   if (!venue) notFound();
   const isAccommodation = venue.discovery_vertical === "accommodation";
+  const { data: accommodationSettings } = isAccommodation
+    ? await supabase
+        .from("accommodation_booking_settings")
+        .select("mode,policy,external_url,notification_email")
+        .eq("venue_id", id)
+        .maybeSingle()
+    : { data: null };
   const [
     { data: accommodationRoomTypes },
     { data: accommodationUnits },
@@ -1658,6 +1667,7 @@ export default async function VenueWorkspace({
               rates={accommodationRates || []}
               reservations={accommodationReservations || []}
               blocks={accommodationBlocks || []}
+              settings={accommodationSettings || undefined}
               actions={{
                 createRoomType: createAccommodationRoomType,
                 updateRoomType: updateAccommodationRoomType,
@@ -1667,6 +1677,8 @@ export default async function VenueWorkspace({
                 deleteRate: deleteAccommodationRate,
                 createBlock: createAccommodationBlock,
                 deleteBlock: deleteAccommodationBlock,
+                saveSettings: saveAccommodationSettings,
+                changeStatus: changeAccommodationStatus,
               }}
             />
           ) : (

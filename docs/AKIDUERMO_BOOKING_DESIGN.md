@@ -83,4 +83,13 @@ No payment capture/deposit processing, channel manager/OTA sync, travel platform
 
 The candidate migration `supabase/migrations/20261009220000_accommodation_inventory_foundation.sql` introduces property-owned room types, physical units, nightly rate ranges, reservation records and maintenance blocks. Active reservation date ranges exclude one another per unit. Blocks and reservations use a common per-unit lock to serialize overlap checks. Guest reservation writes remain denied; this **does not enable public or private booking**. It needs an explicit server-validated quote and booking RPC, capacity/active-state checks, audit/outbox, cancellation permissions, retention/export and authenticated UI.
 
-The accompanying `tests/accommodation-inventory-contract.test.ts` checks static SQL invariants only. It **does not** run the migration against PostgreSQL, validate RLS or prove concurrent transactions. Add disposable DB acceptance tests and a tested rollback before migration deployment. Staging data must remain non-public.
+The accompanying static contract test remains a fast guard. `scripts/test-accommodation-sql.mjs` now exercises the candidate migration and rollback against a disposable PostgreSQL 16 database with real roles/RLS, two-way block/reservation races, repeatable-read snapshots, last-unit booking concurrency, quote expiry/revalidation, idempotency, status authorization and outbox leasing. CI provisions its own isolated PostgreSQL service. Production migration and authenticated live acceptance are still separate gates.
+
+## Implementation update: complete request-booking candidate (2026-10-09)
+
+- Properties explicitly select Disabled, External HTTPS, or AkiDuermo request mode. Importing or claiming never enables booking.
+- Public availability exposes only aggregate room-type inventory. Authenticated quotes cover every civil night, snapshot rates/policy for 15 minutes and are revalidated inside the booking transaction.
+- `accommodation_request_booking` locks an available physical unit, enforces an idempotency key and prevents concurrent last-room double booking. No payment is collected; displayed totals include taxes and state pay-at-property.
+- Owners/managers can confirm, decline, cancel, check in and complete valid transitions. Customers can view their own stays and cancel future requested/confirmed stays. Audit and durable confirmation outbox rows are private and tenant-scoped.
+- The existing Resend dispatcher supports accommodation confirmations with separate provider idempotency keys. GDPR export includes stay reservations and quotes; profile deletion cascades them.
+- Public and management UI is bilingual and responsive, but physical-device/PWA and authenticated production smoke checks remain mandatory after migration/release.

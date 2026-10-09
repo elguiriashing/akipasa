@@ -10,6 +10,10 @@ import {
   sendBookingConfirmationEmail,
 } from "../src/lib/booking-confirmation-email";
 import { dispatchBookingConfirmations } from "../src/lib/booking-mail-delivery";
+import {
+  stayMutationSchema,
+  staySearchSchema,
+} from "../src/lib/accommodation-booking";
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -121,6 +125,68 @@ describe("booking release boundaries", () => {
     );
     expect(JSON.parse(fetcher.mock.calls[0][1].body).from).toBe(
       bookingEmailFrom,
+    );
+  });
+  it("validates stay ranges, guests and idempotent request inputs", () => {
+    expect(
+      staySearchSchema.safeParse({
+        venue: booking.venueId,
+        checkIn: "2027-03-27",
+        checkOut: "2027-03-29",
+        guests: "2",
+      }).success,
+    ).toBe(true);
+    expect(
+      staySearchSchema.safeParse({
+        venue: booking.venueId,
+        checkIn: "2027-03-29",
+        checkOut: "2027-03-29",
+        guests: 2,
+      }).success,
+    ).toBe(false);
+    expect(
+      stayMutationSchema.safeParse({
+        action: "request",
+        quote: booking.bookingId,
+        key: booking.venueId,
+        name: "Alex Guest",
+        email: "alex@example.com",
+        locale: "en",
+      }).success,
+    ).toBe(true);
+    expect(
+      stayMutationSchema.safeParse({
+        action: "request",
+        quote: booking.bookingId,
+        key: "reused-client-string",
+        name: "A",
+        email: "not-an-email",
+        locale: "fr",
+      }).success,
+    ).toBe(false);
+  });
+  it("renders accommodation dates, totals, policies and distinct provider keys", async () => {
+    const stay = {
+      ...booking,
+      bookingStart: "2027-03-27",
+      bookingEnd: "2027-03-29",
+      offeringName: "Sea view double",
+      product: "accommodation" as const,
+      totalCents: 27000,
+      policy: "Pay at the property.",
+    };
+    const rendered = renderBookingConfirmation(stay, "customer");
+    expect(rendered.text).toContain("2027-03-27 - 2027-03-29");
+    expect(rendered.text).toContain("270.00");
+    expect(rendered.text).toContain("Pay at the property.");
+    const fetcher = vi.fn().mockResolvedValue(Response.json({ id: "stay-1" }));
+    vi.stubGlobal("fetch", fetcher);
+    await sendBookingConfirmationEmail(
+      { ...stay, recipient: "guest@example.com", audience: "customer" },
+      { apiKey: "test-only-not-a-secret" },
+    );
+    expect(fetcher.mock.calls[0][1].headers["Idempotency-Key"]).toContain(
+      "akiduermo-booking-",
     );
   });
 });

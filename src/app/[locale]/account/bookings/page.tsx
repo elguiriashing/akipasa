@@ -4,7 +4,7 @@ import { isLocale } from "@/lib/config";
 import { WorkspacePageHeader } from "@/components/WorkspaceShell";
 import { MyBookings, type MyBooking } from "@/components/MyBookings";
 import { BookingLiveRefresh } from "@/components/BookingLiveRefresh";
-import { cancelMyBooking } from "./actions";
+import { cancelMyBooking, cancelMyStay } from "./actions";
 export default async function MyBookingsPage({
   params,
   searchParams,
@@ -21,7 +21,18 @@ export default async function MyBookingsPage({
     0,
     Math.min(10000, Number.parseInt(query.page || "0", 10) || 0),
   );
-  const { supabase } = await requireUser(locale, `/${locale}/account/bookings`);
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/account/bookings`,
+  );
+  const { data: stays, error: stayError } = await supabase
+    .from("accommodation_reservations")
+    .select(
+      "id,check_in,check_out,status,guests,quoted_total_cents,quote_snapshot",
+    )
+    .eq("profile_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(100);
   const { data, error } = await supabase.rpc("my_booking_history", {
     p_tab: tab,
     p_page: page,
@@ -43,6 +54,44 @@ export default async function MyBookingsPage({
         }
       />
       <BookingLiveRefresh />
+      <section className="stack" aria-label="AkiDuermo">
+        <h2>AkiDuermo</h2>
+        {stayError ? (
+          <p role="alert">
+            {es
+              ? "No se han podido cargar las estancias."
+              : "Stays could not be loaded."}
+          </p>
+        ) : (
+          <div className="booking-list">
+            {(stays || []).map((stay) => (
+              <article className="booking-list-card" key={stay.id}>
+                <strong>{stay.quote_snapshot?.room_name || "AkiDuermo"}</strong>
+                <span>
+                  {stay.check_in} - {stay.check_out}
+                </span>
+                <span>
+                  {stay.status} ·{" "}
+                  {new Intl.NumberFormat(es ? "es-ES" : "en-GB", {
+                    style: "currency",
+                    currency: "EUR",
+                  }).format(stay.quoted_total_cents / 100)}
+                </span>
+                <small>{stay.id}</small>
+                {["requested", "confirmed"].includes(stay.status) && (
+                  <form action={cancelMyStay}>
+                    <input type="hidden" name="locale" value={locale} />
+                    <input type="hidden" name="bookingId" value={stay.id} />
+                    <button className="button secondary">
+                      {es ? "Cancelar estancia" : "Cancel stay"}
+                    </button>
+                  </form>
+                )}
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
       {query.requested &&
         result?.bookings.some((b) => b.id === query.requested) && (
           <p className="notice" role="status">
