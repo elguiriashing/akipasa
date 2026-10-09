@@ -11,7 +11,6 @@ import { googleMapsDirectionsUrl } from "@/lib/maps";
 import { optionalUser } from "@/lib/auth";
 import { toggleFollowedVenue } from "../../engagement/actions";
 import { AnalyticsView, TrackedLink } from "@/components/AnalyticsSignal";
-import { accommodationLabel } from "@/lib/accommodation";
 import { ShareButton } from "@/components/ShareButton";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { PublicVenueCatalogue } from "@/components/PublicVenueCatalogue";
@@ -171,11 +170,6 @@ export default async function VenuePage({
           ← {m.discover}
         </Link>
         <article className="detail-card detail-card-primary">
-          {venue.discoveryVertical === "accommodation" && (
-            <span className="accommodation-badge">
-              {accommodationLabel(locale)}
-            </span>
-          )}
           {bgImage ? (
             <div
               className="detail-cover"
