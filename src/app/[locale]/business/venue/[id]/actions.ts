@@ -545,7 +545,7 @@ export async function uploadVenueImage(formData: FormData) {
     file.size < 1 ||
     file.size > 10 * 1024 * 1024
   ) {
-    if (inline) return { ok: false as const, error: "media" };
+    if (inline) return { ok: false as const, error: "invalid-file" };
     redirect(destination(locale, venueId, "error=media"));
   }
   const { supabase, user } = await requireBusinessAccess(locale);
@@ -564,7 +564,7 @@ export async function uploadVenueImage(formData: FormData) {
     .from("event-media")
     .upload(path, file, { contentType: file.type, upsert: false });
   if (uploadError) {
-    if (inline) return { ok: false as const, error: "media" };
+    if (inline) return { ok: false as const, error: "storage" };
     redirect(destination(locale, venueId, "error=media"));
   }
   const mediaId = crypto.randomUUID();
@@ -581,7 +581,7 @@ export async function uploadVenueImage(formData: FormData) {
   });
   if (error) {
     await supabase.storage.from("event-media").remove([path]);
-    if (inline) return { ok: false as const, error: "media" };
+    if (inline) return { ok: false as const, error: "database" };
     redirect(destination(locale, venueId, "error=media"));
   }
   if (inline) {
