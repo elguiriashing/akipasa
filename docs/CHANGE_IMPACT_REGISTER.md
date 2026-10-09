@@ -175,7 +175,6 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - Added narrow split-screen responsive tab styling and tests/akiduermo-manager.test.tsx, included in package.json default npm test command.
 - Checks **not run locally**: lint/typecheck/build, CI pending. No DB migration, real hotel inventory or production deployment. Await green checks and full feature implementation before live reservation claims.
 
-
 ## 2026-10-09 | Accommodation room-night schema candidate on PR #82
 
 - Implemented additive room type/unit, nightly rate, booking and maintenance block tables; exclusive check-out range semantics, overlap constraints and shared unit locking; authenticated owner/manager inventory RLS and no guest write grant.
