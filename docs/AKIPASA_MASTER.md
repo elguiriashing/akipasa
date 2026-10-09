@@ -63,6 +63,32 @@ Each item must be validated against source route discovery before claiming exhau
 - Staff-created official town events hosted by an official AkiPasa venue, privileged creation and publishing, dedicated map marker, audit and visibility under density (**INTENT**). Never let an ordinary claimed business impersonate the official organizer.
 - Claim, save, publish and event editing must preserve all fields and error recovery; full-screen compact editor must not crop header/details.
 
+### Booking engine: resource-backed recurring availability (branch candidate, not deployed)
+
+- Venues retain External / Via AkiPasa / Disabled modes. External remains
+  a single URL, disabled hides public booking actions, and native booking
+  requests use the existing capacity-locked `request_booking` function.
+- Resource pools (`booking_resources`) have a venue owner, name, kind, seat
+  capacity, active state, and owner/manager-only RLS. Assigning a resource
+  to `venue_availability_slots.resource_id` is optional, preserving all
+  historical unassigned slots and booking requests.
+- Resource-backed slots cannot overlap in active time ranges for one resource.
+  The database validates resource ownership, active state and per-slot
+  capacity; cross-venue assignments must fail.
+- The new `create_recurring_booking_slots` RPC expands weekday selections
+  into bounded (maximum 90-day span) slots in Europe/Madrid civil time.
+  It applies authorization, active native-mode checks, duplicate suppression,
+  DST round-trip validation and an atomic SQL transaction.
+- The AkiBusiness manager exposes resources, individual slots and recurring
+  rules; seven presets remain suggested UI defaults, not complete specialist
+  hotel/restaurant/ticketing engines.
+- Regression surfaces: public venue and event booking availability, external
+  redirects, existing request confirmation, Supabase RLS, EN/ES, small screens,
+  venue membership permissions and future AkiDuermo integrations.
+- **Not yet verified:** recurring SQL on an upgraded test database, live
+  booking via a resource, browser acceptance, Cloudflare production status.
+  Never merge/deploy before required validation and migrations.
+
 ### AkiHQ / management / operations
 
 - AkiHQ Pro plan, POS/till/table service, staff devices/roles, order movement/splitting, inventory and printers are **planned/partially built** until code and live evidence prove otherwise. Never represent an untested action as live.
