@@ -109,7 +109,7 @@ export default async function VenueWorkspace({
     supabase
       .from("venues")
       .select(
-        "id,name,slug,description_es,description_en,address,accessibility,contact_phone,whatsapp_phone,website_url,status,verified",
+        "id,name,slug,description_es,description_en,address,accessibility,contact_phone,whatsapp_phone,website_url,status,verified,discovery_vertical,accommodation_type",
       )
       .eq("id", id)
       .maybeSingle(),
@@ -352,6 +352,15 @@ export default async function VenueWorkspace({
         members: members?.length || 0,
       }}
       overview={
+        <>
+        {venue.discovery_vertical === "accommodation" && (
+          <section className="panel stack" aria-label={es ? "Gestión de AkiDuermo" : "AkiDuermo property management"}>
+            <span className="eyebrow">AkiDuermo · {es ? "Alojamiento" : "Accommodation"}</span>
+            <h2>{es ? "Tu alojamiento en AkiDuermo" : "Your AkiDuermo property"}</h2>
+            <p>{es ? "Gestiona aquí la información del alojamiento, las fotos y los eventos. El calendario de habitaciones, las tarifas por noche y las reservas hoteleras todavía no están activos." : "Manage your property details, photos and events here. Room-night inventory, nightly rates and accommodation bookings are not available yet."}</p>
+            {venue.status === "published" && <a className="button secondary" href={`https://akiduermo.akipasa.com/stays/${encodeURIComponent(venue.slug)}`} target="_blank" rel="noopener noreferrer">{es ? "Ver ficha en AkiDuermo ↗" : "Preview on AkiDuermo ↗"}</a>}
+          </section>
+        )}
         <OwnerReadiness
           locale={locale}
           venueId={id}
@@ -381,6 +390,7 @@ export default async function VenueWorkspace({
           )}
           results={ownerResultsError ? null : ownerResults}
         />
+        </>
       }
       sections={{
         profile: (
