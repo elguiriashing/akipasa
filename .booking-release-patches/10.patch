@@ -1,0 +1,9 @@
+--- a/scripts/test-booking-browser.mjs
++++ b/scripts/test-booking-browser.mjs
+@@ -94,4 +94,6 @@
+           page.evaluate((t) => {
+             document.documentElement.setAttribute("data-theme", t);
++            document.documentElement.classList.toggle("theme-light", t === "light");
++            document.documentElement.classList.toggle("theme-dark", t === "dark");
+           }, theme);
+         const overflow = async () =>

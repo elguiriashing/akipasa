@@ -1,0 +1,51 @@
+name: Apply reviewed booking release
+on:
+  push:
+    branches: [feature/booking-ux-confirmations]
+    paths: [.github/workflows/booking-release-apply.yml]
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/booking-ux-confirmations
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Apply reviewed release patch set
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          for p in sorted(Path('.booking-release-patches').glob('*.patch')):
+              if p.name == '08.patch':
+                  lines=[]
+                  for line in p.read_text().splitlines(True):
+                      if line.startswith(' '):
+                          line=line.replace('check(audience','check (audience').replace('primary key(','primary key (').replace("errcode='42501'","errcode = '42501'").replace('on conflict(','on conflict (')
+                      lines.append(line)
+                  p.write_text(''.join(lines))
+              subprocess.run(['git','apply','--ignore-space-change',str(p)],check=True)
+          PY
+          git rm -r -f .booking-release-patches
+          git add src scripts docs tests package.json custom-worker.ts wrangler.jsonc supabase/migrations
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          changed=subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines()
+          paths=[p for p in changed if Path(p).is_file() and Path(p).suffix in {'.ts','.tsx','.mjs','.css','.md','.json','.jsonc'}]
+          paths.append('scripts/test-booking-engine-sql.mjs')
+          subprocess.run(['npx','prettier','--write',*paths],check=True)
+          PY
+          git add src scripts docs tests package.json custom-worker.ts wrangler.jsonc supabase/migrations
+      - name: Commit release implementation without force
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "fix(bookings): enforce secure inventory, private history and durable confirmation delivery"
+          git push origin HEAD:feature/booking-ux-confirmations

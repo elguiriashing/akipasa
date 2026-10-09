@@ -1,0 +1,379 @@
+diff --git a/src/components/BookingManager.tsx b/src/components/BookingManager.tsx
+index 4920c56..06958c9 100644
+--- a/src/components/BookingManager.tsx
++++ b/src/components/BookingManager.tsx
+@@ -3,4 +3,5 @@
+ import React, { useState } from "react";
+ import { Icon, type IconName } from "./Icons";
++import { bookingTab } from "../lib/booking-ui";
+ 
+ type Mode = "external" | "request" | "disabled";
+@@ -40,5 +41,18 @@ export function BookingManager({
+   createOffering,
+   updateRequest,
++  initialTab,
++  notifications = [],
++  emailConfigured = false,
++  retryEmails,
+ }: {
++  initialTab?: string;
++  notifications?: Array<{
++    booking_id: string;
++    audience: string;
++    status: string;
++    last_error?: string | null;
++  }>;
++  emailConfigured?: boolean;
++  retryEmails?: (form: FormData) => Promise<void>;
+   locale: "es" | "en";
+   venueId: string;
+@@ -75,4 +89,5 @@ export function BookingManager({
+     status: string;
+     created_at: string;
++    slot_id?: string | null;
+   }>;
+   save: (formData: FormData) => Promise<void>;
+@@ -91,5 +106,5 @@ export function BookingManager({
+   const [section, setSection] = useState<
+     "setup" | "offerings" | "resources" | "calendar" | "inbox"
+-  >("inbox");
++  >(bookingTab(initialTab));
+   const [showResources, setShowResources] = useState(false);
+   const [template, setTemplate] = useState(
+@@ -97,16 +112,38 @@ export function BookingManager({
+   );
+   React.useEffect(() => {
+-    const tab = new URLSearchParams(window.location.search).get("bookingTab");
+-    if (
+-      tab === "setup" ||
+-      tab === "offerings" ||
+-      tab === "resources" ||
+-      tab === "calendar" ||
+-      tab === "inbox"
+-    ) {
++    const tab = bookingTab(
++      initialTab ||
++        new URLSearchParams(window.location.search).get("bookingTab"),
++    );
+     setSection(tab === "resources" ? "offerings" : tab);
+-      if (tab === "resources") setShowResources(true);
++    setShowResources(tab === "resources");
++  }, [initialTab]);
++  const statusText: Record<string, string> = {
++    requested: es ? "Pendiente" : "Pending",
++    confirmed: es ? "Confirmada" : "Confirmed",
++    declined: es ? "Rechazada" : "Declined",
++    cancelled: es ? "Cancelada" : "Cancelled",
++    completed: es ? "Completada" : "Completed",
++  };
++  const resourceText: Record<string, string> = es
++    ? {
++        table: "Mesa",
++        staff: "Personal",
++        vehicle: "Vehículo",
++        equipment: "Equipo",
++        court: "Pista",
++        room: "Habitación",
++        other: "Otro",
+       }
+-  }, []);
++    : {};
++  const mailText: Record<string, string> = {
++    pending: es ? "En cola" : "Queued",
++    sending: es ? "Enviando" : "Sending",
++    sent: es ? "Enviado al proveedor" : "Submitted to provider",
++    failed: es ? "Reintento pendiente" : "Retry pending",
++    blocked: es ? "Falta email del local" : "Venue email missing",
++    review: es ? "Requiere revisión" : "Needs review",
++    cancelled: es ? "Cancelado" : "Cancelled",
++  };
+   const pending = requests.filter((r) => r.status === "requested").length;
+   return (
+@@ -167,5 +204,10 @@ export function BookingManager({
+             className={section === key ? "button" : "button secondary"}
+             aria-current={section === key ? "page" : undefined}
+-            onClick={() => setSection(key)}
++            onClick={() => {
++              setSection(key);
++              const url = new URL(window.location.href);
++              url.searchParams.set("bookingTab", key);
++              window.history.replaceState({}, "", url);
++            }}
+           >
+             {label}
+@@ -173,4 +215,5 @@ export function BookingManager({
+         ))}
+       </nav>
++      <div className="booking-manager-body" data-booking-panel={section}>
+         {section === "setup" && (
+           <form
+@@ -276,6 +319,6 @@ export function BookingManager({
+                   <small>
+                     {es
+-                    ? "Enviaremos una confirmación al cliente y otra a esta dirección al aprobar una reserva."
+-                    : "When you approve a booking, the guest receives a confirmation and this address receives a copy."}
++                      ? "Una confirmación para el cliente y otra para el local. En blanco, usamos el email verificado del propietario."
++                      : "One confirmation for the guest, one for the venue. Leave blank to use the verified owner email."}
+                   </small>
+                 </label>
+@@ -312,5 +355,8 @@ export function BookingManager({
+                   <div className="managed-row" key={offering.id}>
+                     <span>
+-                    <strong>{offering.name}</strong> · {offering.kind}
++                      <strong>{offering.name}</strong> ·{" "}
++                      {templates.find((t) => t[0] === offering.kind)?.[
++                        es ? 3 : 2
++                      ] || offering.kind}
+                     </span>
+                     <span>
+@@ -360,5 +406,17 @@ export function BookingManager({
+                     maxLength={120}
+                     required
+-                  placeholder={es ? "Ej. Ruta en buggy" : "E.g. Buggy tour"}
++                    placeholder={
++                      template === "dining"
++                        ? es
++                          ? "Ej. Desayuno"
++                          : "E.g. Breakfast"
++                        : template === "appointment"
++                          ? es
++                            ? "Ej. Corte de pelo"
++                            : "E.g. Haircut"
++                          : es
++                            ? "Nombre de la actividad"
++                            : "Activity name"
++                    }
+                   />
+                 </label>
+@@ -371,5 +429,12 @@ export function BookingManager({
+                     min="15"
+                     max="1440"
+-                  defaultValue={60}
++                    key={template}
++                    defaultValue={
++                      template === "dining"
++                        ? 90
++                        : template === "appointment"
++                          ? 30
++                          : 60
++                    }
+                     required
+                   />
+@@ -420,5 +485,6 @@ export function BookingManager({
+                   <div className="managed-row" key={resource.id}>
+                     <span>
+-                    <strong>{resource.name}</strong> · {resource.kind}
++                      <strong>{resource.name}</strong> ·{" "}
++                      {resourceText[resource.kind] || resource.kind}
+                     </span>
+                     <span>
+@@ -494,5 +560,7 @@ export function BookingManager({
+               <>
+                 <h3>
+-                {es ? "Calendario y disponibilidad" : "Calendar & availability"}
++                  {es
++                    ? "Calendario y disponibilidad"
++                    : "Calendar & availability"}
+                 </h3>
+                 {slots.length ? (
+@@ -528,5 +596,8 @@ export function BookingManager({
+                     {es ? "Crear horario" : "Create availability"}
+                   </summary>
+-                <form action={createSlot} className="stack compact-action-form">
++                  <form
++                    action={createSlot}
++                    className="stack compact-action-form"
++                  >
+                     <input type="hidden" name="locale" value={locale} />
+                     <input type="hidden" name="venueId" value={venueId} />
+@@ -678,5 +749,15 @@ export function BookingManager({
+                                 defaultChecked={i < 5}
+                               />
+-                            {day}
++                              {es
++                                ? [
++                                    "Lun",
++                                    "Mar",
++                                    "Mié",
++                                    "Jue",
++                                    "Vie",
++                                    "Sáb",
++                                    "Dom",
++                                  ][i]
++                                : day}
+                             </label>
+                           ),
+@@ -701,4 +782,11 @@ export function BookingManager({
+           <div className="booking-inbox">
+             <h3>{es ? "Solicitudes de reserva" : "Booking requests"}</h3>
++            {!emailConfigured && (
++              <p className="notice" role="status">
++                {es
++                  ? "Las reservas funcionan. Los emails quedarán en cola hasta configurar RESEND_API_KEY en Cloudflare."
++                  : "Bookings work normally. Confirmation emails stay queued until RESEND_API_KEY is configured in Cloudflare."}
++              </p>
++            )}
+             {!requests.length && (
+               <p>
+@@ -707,13 +795,14 @@ export function BookingManager({
+             )}
+             <div className="managed-list">
+-            {requests.map((request) => (
+-              <form
+-                action={updateRequest}
+-                className="managed-row booking-request-row"
+-                key={request.id}
+-              >
+-                <input type="hidden" name="locale" value={locale} />
+-                <input type="hidden" name="venueId" value={venueId} />
+-                <input type="hidden" name="requestId" value={request.id} />
++              {requests.map((request) => {
++                const slot = slots.find((s) => s.id === request.slot_id);
++                const service = offerings.find(
++                  (o) => o.id === slot?.offering_id,
++                );
++                const mails = notifications.filter(
++                  (n) => n.booking_id === request.id,
++                );
++                return (
++                  <article className="booking-request-card" key={request.id}>
+                     <div>
+                       <strong>
+@@ -721,34 +810,117 @@ export function BookingManager({
+                         {es ? "personas" : "guests"}
+                       </strong>
+-                  <span>{request.contact_email}</span>
++                      <small>{request.contact_email}</small>
++                      {slot && (
++                        <time dateTime={slot.starts_at}>
++                          {new Date(slot.starts_at).toLocaleString(locale, {
++                            timeZone: "Europe/Madrid",
++                            dateStyle: "medium",
++                            timeStyle: "short",
++                          })}
++                        </time>
++                      )}
++                      {service && <small>{service.name}</small>}
+                     </div>
+-                <span className="status-pill">{request.status}</span>
+-                <select
++                    <span className="status-pill">
++                      {statusText[request.status] || request.status}
++                    </span>
++                    <form
++                      action={updateRequest}
++                      className="booking-request-controls"
++                    >
++                      <input type="hidden" name="locale" value={locale} />
++                      <input type="hidden" name="venueId" value={venueId} />
++                      <input
++                        type="hidden"
++                        name="requestId"
++                        value={request.id}
++                      />
++                      {request.status === "requested" && (
++                        <>
++                          <button
++                            className="button"
+                             name="status"
+-                  aria-label={es ? "Estado" : "Status"}
+-                  defaultValue={
+-                    request.status === "requested"
+-                      ? "confirmed"
+-                      : request.status
+-                  }
++                            value="confirmed"
++                          >
++                            {es ? "Aprobar" : "Approve"}
++                          </button>
++                          <button
++                            className="button secondary"
++                            name="status"
++                            value="declined"
+                           >
+-                  <option value="confirmed">
+-                    {es ? "Confirmar" : "Confirm"}
+-                  </option>
+-                  <option value="declined">
+                             {es ? "Rechazar" : "Decline"}
+-                  </option>
+-                  <option value="completed">
+-                    {es ? "Completada" : "Completed"}
+-                  </option>
+-                </select>
+-                <button className="button secondary" type="submit">
+-                  {es ? "Guardar" : "Save"}
+                           </button>
++                        </>
++                      )}
++                      {request.status === "confirmed" && (
++                        <>
++                          <button
++                            className="button secondary"
++                            name="status"
++                            value="completed"
++                            disabled={
++                              !!slot &&
++                              new Date(slot.starts_at).getTime() > Date.now()
++                            }
++                          >
++                            {es ? "Completar" : "Complete"}
++                          </button>
++                          <details>
++                            <summary>{es ? "Cancelar" : "Cancel"}</summary>
++                            <button
++                              className="button secondary"
++                              name="status"
++                              value="cancelled"
++                            >
++                              {es
++                                ? "Confirmar cancelación"
++                                : "Confirm cancellation"}
++                            </button>
++                          </details>
++                        </>
++                      )}
+                     </form>
++                    {mails.length > 0 && (
++                      <div className="booking-mail-status">
++                        {mails.map((mail) => (
++                          <small key={mail.audience}>
++                            {mail.audience === "customer"
++                              ? es
++                                ? "Cliente"
++                                : "Guest"
++                              : es
++                                ? "Local"
++                                : "Venue"}
++                            : {mailText[mail.status] || mail.status}
++                          </small>
+                         ))}
+                       </div>
++                    )}
++                    {retryEmails &&
++                      emailConfigured &&
++                      mails.some((m) =>
++                        ["pending", "failed", "blocked"].includes(m.status),
++                      ) && (
++                        <form action={retryEmails}>
++                          <input type="hidden" name="locale" value={locale} />
++                          <input type="hidden" name="venueId" value={venueId} />
++                          <input
++                            type="hidden"
++                            name="requestId"
++                            value={request.id}
++                          />
++                          <button className="button secondary" type="submit">
++                            {es ? "Reintentar emails" : "Retry emails"}
++                          </button>
++                        </form>
++                      )}
++                  </article>
++                );
++              })}
++            </div>
+           </div>
+         )}
++      </div>
+     </section>
+   );
