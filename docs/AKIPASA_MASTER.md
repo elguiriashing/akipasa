@@ -189,6 +189,7 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 ### Tablet, multi-window and PWA identity (2026-10-09 candidate)
 
 - Each public hostname must expose its own manifest name, stable app ID, correct start URL and branded icon. AkiBusiness is **not** an AkiPasa installation, even though all three share the worker and original global metadata.
+- AkiHQ (`hq.akipasa.com`) has its own PWA identity and a rounded navy tile with a purple HQ monogram and gold spark, served from `public/pwa/akihq.svg`; its manifest and page metadata must use this artwork while AkiPasa, AkiBusiness and AkiDuermo retain their own icons.
 - Treat viewport width, not hardware type, as the layout signal: split-screen on a landscape tablet can be narrower than a phone landscape window. Test roughly 390, 600, 768, 820, 1024 and 1280 CSS pixels in both orientations and browser/PWA modes.
 - AkiBusiness venue rows must keep name/role/status and both Manage/Delete actions available, wrapped without clipping, plus safe delete confirmation at narrow widths. Preserve the two-language account and business login flows.
 - Files: src/app/manifest.ts, src/app/pwa-icon.svg/route.ts, src/lib/akiduermo-routing.ts, src/app/tablet-responsive.css, src/app/layout.tsx. This is a **candidate partial fix**, not certification that every AkiPasa, AkiBusiness, or AkiDuermo page has been visually audited.
