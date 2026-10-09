@@ -1,0 +1,30 @@
+name: Temporary confirmation test formatter
+on:
+  push:
+    branches: [feature/booking-ux-confirmations]
+permissions:
+  contents: write
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/booking-ux-confirmations
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx prettier --write scripts/test-booking-engine-sql.mjs
+      - name: Commit formatted acceptance test
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/test-booking-engine-sql.mjs
+          if ! git diff --cached --quiet; then
+            git commit -m "style(bookings): format email acceptance tests"
+            git fetch origin feature/booking-ux-confirmations
+            git rebase origin/feature/booking-ux-confirmations
+            git push origin HEAD:feature/booking-ux-confirmations
+          fi
