@@ -59,7 +59,7 @@ describe("AkiBusiness advanced booking manager", () => {
     expect(screen.getByRole("checkbox", { name: "Mon" })).toBeChecked();
     expect(screen.getByRole("checkbox", { name: "Sun" })).not.toBeChecked();
     expect(screen.getByRole("button", { name: "Create schedule" })).toBeVisible();
-    expect(screen.getAllByRole("option", { name: "Buggy 1 · 2" })).toHaveLength(2);
+    expect(screen.getAllByRole("option", { name: "Buggy 1 · 2" })).toHaveLength(1);
   });
 
   it("keeps external mode link-only, without resource or deposit settings", () => {
