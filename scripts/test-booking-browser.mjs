@@ -13,6 +13,7 @@ const entry = `import React,{useState} from "react";import{createRoot}from"react
 import{BookingWizard}from"./src/components/BookingWizard";
 import{BookingManager}from"./src/components/BookingManager";
 import{MyBookings}from"./src/components/MyBookings";
+import dashboardStyles from "./src/components/VenueDashboard.module.css";
 const q=new URLSearchParams(location.search),locale=q.get("locale")||"en",mode=q.get("screen")||"wizard";
 const date=d=>new Date(Date.now()+d*86400000).toISOString();
 const venueId="00000000-0000-4000-8000-000000000001",slotId="00000000-0000-4000-8000-000000000002";
@@ -21,13 +22,14 @@ function App(){const[tab,setTab]=useState("inbox");const action=async data=>{win
 const requests=[{id:slotId,slot_id:slotId,contact_name:"Test guest",contact_email:"guest@example.com",party_size:2,status:"requested",created_at:date(-1)}];
 return <main style={{maxWidth:1000,margin:"0 auto",padding:16}}>
 {mode==="wizard"?<BookingWizard locale={locale} slug="example" venueId={venueId} venueName="Example venue" slots={slots} offerings={{}} profile={{name:"Test guest",email:"guest@example.com",phone:""}} submit={async data=>{window.submitted=Object.fromEntries(data);return {error:locale==="es"?"Prueba: disponibilidad actualizada":"Test: availability refreshed",remaining:1};}}/>:
-mode==="manager"?<BookingManager locale={locale} venueId={venueId} settings={{mode:"request",booking_template:"experience"}} slots={slots} resources={[]} offerings={[]} requests={requests} save={action} createSlot={action} createRecurringSlots={action} createResource={action} createOffering={action} updateRequest={action} initialTab={tab}/>:
+mode==="manager"?<div className="akibusiness-host"><div className={dashboardStyles.dashboard}><section className={dashboardStyles.section}><BookingManager locale={locale} venueId={venueId} settings={{mode:"request",booking_template:"experience"}} slots={slots} resources={[]} offerings={[]} requests={requests} save={action} createSlot={action} createRecurringSlots={action} createResource={action} createOffering={action} updateRequest={action} initialTab={tab}/></section></div></div>:
 <MyBookings locale={locale} bookings={[{...requests[0],venue:{name:"Example venue",slug:"example"},slot:slots[0]},{...requests[0],id:"past",status:"completed",venue:{name:"Previous venue",slug:"previous"},slot:{starts_at:date(-2),ends_at:date(-1)}}]}/>}
 </main>;}createRoot(document.getElementById("root")).render(<App/>);`;
 const js = await build({
   stdin: { contents: entry, resolveDir: process.cwd(), loader: "tsx" },
   bundle: true,
   write: false,
+  outdir: "/tmp/booking-browser-build",
   platform: "browser",
   format: "iife",
   jsx: "automatic",
@@ -50,16 +52,18 @@ const js = await build({
     },
   ],
 });
-const css = (
-  await postcss([tailwind()]).process(
-    readFileSync("src/app/globals.css", "utf8"),
-    { from: resolve("src/app/globals.css") },
-  )
-).css;
+const css =
+  (
+    await postcss([tailwind()]).process(
+      readFileSync("src/app/globals.css", "utf8"),
+      { from: resolve("src/app/globals.css") },
+    )
+  ).css +
+  (js.outputFiles.find((file) => file.path.endsWith(".css"))?.text || "");
 const server = createServer((req, res) => {
   if (req.url === "/bundle.js") {
     res.setHeader("Content-Type", "text/javascript");
-    res.end(js.outputFiles[0].text);
+    res.end(js.outputFiles.find((file) => file.path.endsWith(".js")).text);
   } else if (req.url === "/styles.css") {
     res.setHeader("Content-Type", "text/css");
     res.end(css);

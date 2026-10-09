@@ -1264,7 +1264,8 @@
 
 /* Bookings: status first, configuration on demand. */
 .dashboard .section :global(.booking-hub) {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0.9rem;
 }
 .dashboard .section :global(.booking-status-strip) {
