@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Icon, type IconName } from "./Icons";
 
 type Mode = "external" | "request" | "disabled";
 type Settings = {
@@ -13,15 +14,15 @@ type Settings = {
   instructions_en?: string | null;
 } | null;
 
-const templates = [
-  ["dining", "🍽️", "Tables & dining", "Mesas y restaurantes"],
-  ["experience", "🚙", "Tours & experiences", "Tours y experiencias"],
-  ["resource", "🎾", "Facilities & rentals", "Instalaciones y alquiler"],
-  ["appointment", "✂️", "Appointments", "Citas y servicios"],
-  ["ticket", "🎟️", "Events & tickets", "Eventos y entradas"],
-  ["class", "🧘", "Classes & activities", "Clases y actividades"],
-  ["stay", "🛏️", "Overnight stays", "Alojamientos"],
-] as const;
+const templates: ReadonlyArray<readonly [string, IconName, string, string]> = [
+  ["dining","utensils","Tables & dining","Mesas y restaurantes"],
+  ["experience","compass","Tours & experiences","Tours y experiencias"],
+  ["resource","calendar","Facilities & rentals","Instalaciones y alquiler"],
+  ["appointment","clock","Appointments","Citas y servicios"],
+  ["ticket","ticket","Events & tickets","Eventos y entradas"],
+  ["class","users","Classes & activities","Clases y actividades"],
+  ["stay","home","Overnight stays","Alojamientos"],
+];
 
 export function BookingManager({
   locale,
@@ -31,6 +32,7 @@ export function BookingManager({
   requests,
   save,
   createSlot,
+  createRecurringSlots,
   updateRequest,
 }: {
   locale: "es" | "en";
@@ -53,6 +55,7 @@ export function BookingManager({
   }>;
   save: (formData: FormData) => Promise<void>;
   createSlot: (formData: FormData) => Promise<void>;
+  createRecurringSlots: (formData: FormData) => Promise<void>;
   updateRequest: (formData: FormData) => Promise<void>;
 }) {
   const es = locale === "es";
@@ -143,7 +146,7 @@ export function BookingManager({
               [
                 [
                   "external",
-                  "🔗",
+                  "link",
                   es ? "Enlace externo" : "External link",
                   es
                     ? "Usa tu proveedor de reservas."
@@ -151,13 +154,13 @@ export function BookingManager({
                 ],
                 [
                   "request",
-                  "📅",
+                  "calendar",
                   es ? "Reservas AkiPasa" : "Via AkiPasa",
                   es ? "Gestiona reservas aquí." : "Manage bookings here.",
                 ],
                 [
                   "disabled",
-                  "🚫",
+                  "close",
                   es ? "Sin reservas" : "Bookings off",
                   es
                     ? "Oculta el botón al público."
@@ -173,7 +176,7 @@ export function BookingManager({
                   checked={mode === value}
                   onChange={() => setMode(value)}
                 />
-                <span aria-hidden="true">{icon}</span>
+                <span aria-hidden="true"><Icon name={icon as IconName}/></span>
                 <span>
                   <strong>{title}</strong>
                   <small>{description}</small>
@@ -329,6 +332,29 @@ export function BookingManager({
                   <button className="button" type="submit">
                     {es ? "Añadir horario" : "Add slot"}
                   </button>
+                </form>
+              </details>
+              <details className="workspace-action-card">
+                <summary>{es ? "Programar horarios recurrentes" : "Schedule recurring availability"}</summary>
+                <form action={createRecurringSlots} className="stack compact-action-form">
+                  <input type="hidden" name="locale" value={locale} />
+                  <input type="hidden" name="venueId" value={venueId} />
+                  <div className="form-grid-three">
+                    <label>{es ? "Desde" : "From"}<input type="date" name="startDate" required /></label>
+                    <label>{es ? "Hasta (máx. 90 días)" : "Until (max 90 days)"}<input type="date" name="endDate" required /></label>
+                    <label>{es ? "Hora de inicio" : "Start time"}<input type="time" name="startTime" required /></label>
+                    <label>{es ? "Duración en minutos" : "Duration in minutes"}<input type="number" name="duration" min="15" max="1440" defaultValue="60" required /></label>
+                    <label>{es ? "Plazas por horario" : "Places per slot"}<input type="number" name="capacity" min="1" max="10000" defaultValue="1" required /></label>
+                  </div>
+                  <fieldset><legend>{es ? "Días de la semana" : "Days of the week"}</legend>
+                    <div className="booking-weekday-options">
+                      {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((day,i) => (
+                        <label key={day}><input type="checkbox" name="weekdays" value={i+1} defaultChecked={i<5} />{day}</label>
+                      ))}
+                    </div>
+                  </fieldset>
+                  <p>{es ? "Los horarios existentes no se duplicarán. Los horarios nuevos conservarán la capacidad elegida." : "Existing dates won't be duplicated. New slots use your selected capacity."}</p>
+                  <button type="submit" className="button">{es ? "Crear programación" : "Create schedule"}</button>
                 </form>
               </details>
             </>
