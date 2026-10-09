@@ -89,6 +89,14 @@ Each item must be validated against source route discovery before claiming exhau
   booking via a resource, browser acceptance, Cloudflare production status.
   Never merge/deploy before required validation and migrations.
 
+### Multiple independent booking offerings (draft extension)
+
+- `booking_offerings` models a venue-owned service or activity, with type, duration, capacity and active state, protected by RLS. The customer booking page shows the offering name for each assigned slot.
+- `venue_availability_slots.offering_id` is optional and references an offering at the *same venue*; existing general booking slots remain valid and are not moved.
+- Single and recurring slot creation can assign both an offering and a physical resource. Database triggers reject exceeding the offering or resource capacity. Historical request_booking capacity locking is retained.
+- No payment entitlement, ticket fulfilment, automatic staff assignment or hotel room-night pricing is implied by this model.
+- Acceptance required: additive migrations applied in order, disposable Postgres suite, EN/ES responsive UI, direct customer reservation, cross-tenant and duplicate-capacity checks. **Not deployed to production.**
+
 ### AkiHQ / management / operations
 
 - AkiHQ Pro plan, POS/till/table service, staff devices/roles, order movement/splitting, inventory and printers are **planned/partially built** until code and live evidence prove otherwise. Never represent an untested action as live.
