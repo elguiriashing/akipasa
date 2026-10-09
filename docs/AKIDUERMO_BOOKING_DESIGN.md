@@ -75,3 +75,9 @@ Required matrix: ES/EN, light/dark, signed out/owner/other-owner/staff, 360/390/
 ## Explicit non-goals unless separately approved
 
 No payment capture/deposit processing, channel manager/OTA sync, travel platform commissions, tourist-tax accounting, passport data collection, room cleaning workforce assignment, or third-party property management integration in the initial implementation. No fake reservation availability or booking success confirmation.
+
+## Implementation update: isolated room-night database foundation (2026-10-09)
+
+The candidate migration `supabase/migrations/20261009220000_accommodation_inventory_foundation.sql` introduces property-owned room types, physical units, nightly rate ranges, reservation records and maintenance blocks. Active reservation date ranges exclude one another per unit. Blocks and reservations use a common per-unit lock to serialize overlap checks. Guest reservation writes remain denied; this **does not enable public or private booking**. It needs an explicit server-validated quote and booking RPC, capacity/active-state checks, audit/outbox, cancellation permissions, retention/export and authenticated UI.
+
+The accompanying `tests/accommodation-inventory-contract.test.ts` checks static SQL invariants only. It **does not** run the migration against PostgreSQL, validate RLS or prove concurrent transactions. Add disposable DB acceptance tests and a tested rollback before migration deployment. Staging data must remain non-public.
