@@ -3,6 +3,16 @@
 This is an engineering milestone log, not a semantic-version release log.
 Entries are newest first and must not contain credentials or personal data.
 
+## 2026-10-09 - Tablet booking inbox and scrolling
+
+- Add 20-row server paging, guest/contact/reference search, status filters,
+  received-date sorting and independent pending totals in AkiBusiness.
+- Keep filters and page after booking actions; show read failures explicitly.
+- Remove the clipped nested Services scroll area, compact status badges and
+  preserve all existing booking, service, resource and calendar controls.
+- Expand EN/ES light/dark tablet acceptance to nine viewport shapes with
+  populated inbox search, paging and filter interactions.
+
 ## 2026-09-14 - Compact venue management dashboard
 
 - Replace the long venue management page with an overview and focused Profile,

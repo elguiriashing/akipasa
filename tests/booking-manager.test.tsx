@@ -5,8 +5,17 @@ import "@testing-library/jest-dom/vitest";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { BookingManager } from "../src/components/BookingManager";
+import { createClient } from "@supabase/supabase-js";
+import {
+  loadBookingInbox,
+  parseBookingInbox,
+  bookingInboxHref,
+} from "../src/lib/business-booking-inbox";
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  window.history.replaceState({}, "", "/");
+});
 
 const venueId = "00000000-0000-4000-8000-000000000001";
 const props = {
@@ -119,5 +128,213 @@ describe("AkiBusiness advanced booking manager", () => {
     expect(
       screen.getByRole("button", { name: "Events & tickets" }),
     ).toBeInTheDocument();
+  });
+});
+
+describe("bounded booking inbox", () => {
+  const requests = Array.from({ length: 20 }, (_, i) => ({
+    id: `00000000-0000-4000-8000-${String(i).padStart(12, "0")}`,
+    contact_name: `Guest ${i}`,
+    contact_email: `guest${i}@example.invalid`,
+    party_size: 2,
+    status: "requested",
+    created_at: "2026-10-09T12:00:00Z",
+    slot_id: null,
+  }));
+  it.each(["en", "es"] as const)(
+    "shows a bounded page and preserves %s filters in links/actions",
+    (locale) => {
+      const { container } = render(
+        <BookingManager
+          {...props}
+          locale={locale}
+          requests={requests}
+          inbox={{
+            search: "Guest",
+            status: "requested",
+            sort: "oldest",
+            page: 2,
+            total: 420,
+            pending: 280,
+          }}
+        />,
+      );
+      expect(container.querySelectorAll(".booking-request-card")).toHaveLength(
+        20,
+      );
+      expect(screen.getByText("21–40 / 420")).toBeVisible();
+      const next = screen.getByRole("link", {
+        name: locale === "es" ? "Siguiente" : "Next",
+      });
+      expect(next.getAttribute("href")).toContain("bookingPage=3");
+      expect(next.getAttribute("href")).toContain("bookingSearch=Guest");
+      expect(next.getAttribute("href")).toContain("bookingStatus=requested");
+      expect(
+        container.querySelector(
+          '.booking-request-controls input[name="bookingPage"]',
+        ),
+      ).toHaveValue("2");
+      const search = screen.getByRole("search");
+      expect(search.getAttribute("method")).toBe("get");
+      expect(search.querySelector('input[name="bookingPage"]')).toBeNull();
+      expect(screen.getByText("280")).toBeVisible();
+    },
+  );
+  it("distinguishes failed reads from empty filtered results", () => {
+    const { rerender } = render(
+      <BookingManager
+        {...props}
+        inbox={{
+          search: "nobody",
+          status: "all",
+          sort: "newest",
+          page: 1,
+          total: 0,
+          pending: 0,
+          error: true,
+        }}
+      />,
+    );
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "Bookings could not be loaded",
+    );
+    expect(screen.queryByText(/No matching bookings/)).not.toBeInTheDocument();
+    rerender(
+      <BookingManager
+        {...props}
+        inbox={{
+          search: "nobody",
+          status: "all",
+          sort: "newest",
+          page: 1,
+          total: 0,
+          pending: 0,
+        }}
+      />,
+    );
+    expect(screen.getByText(/No matching bookings/)).toBeVisible();
+    expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
+  });
+  it("shows historic slot dates and details without relying on the calendar array", () => {
+    render(
+      <BookingManager
+        {...props}
+        slots={[]}
+        requests={[
+          {
+            ...requests[0],
+            contact_phone: "+34000000000",
+            notes: "Accessible table",
+            venue_availability_slots: {
+              starts_at: "2026-11-01T10:00:00Z",
+              ends_at: "2026-11-01T11:00:00Z",
+            },
+          },
+        ]}
+      />,
+    );
+    expect(document.querySelector("time")).toHaveAttribute(
+      "datetime",
+      "2026-11-01T10:00:00Z",
+    );
+    fireEvent.click(screen.getByText("Details & reference"));
+    expect(screen.getByText(/Accessible table/)).toBeInTheDocument();
+  });
+  it("bounds invalid inputs and removes PostgREST grammar/wildcards", () => {
+    const parsed = parseBookingInbox({
+      bookingPage: "Infinity",
+      bookingStatus: "unknown",
+      bookingSort: "other",
+      bookingSearch: 'Álex@example.com%,status.eq.confirmed()"\\',
+    });
+    expect(parsed).toEqual({
+      page: 1,
+      status: "all",
+      sort: "newest",
+      search: "Álex@example.comstatus.eq.confirmed",
+    });
+    expect(parseBookingInbox({ bookingPage: "9999999" }).page).toBe(50000);
+    expect(
+      bookingInboxHref("es", venueId, { ...parsed, search: "a+b@example.com" }),
+    ).toContain("a%2Bb%40example.com");
+  });
+  it("uses the real Supabase client to scope, filter, count and page queries; scopes email reads to visible bookings", async () => {
+    const calls: URL[] = [];
+    const client = createClient(
+      "https://disposable.example.invalid",
+      "disposable-key",
+      {
+        auth: { persistSession: false, autoRefreshToken: false },
+        global: {
+          fetch: async (input) => {
+            const url = new URL(String(input));
+            calls.push(url);
+            return new Response(
+              JSON.stringify(
+                url.pathname.endsWith("booking_requests") ? requests : [],
+              ),
+              {
+                status: 200,
+                headers: {
+                  "content-type": "application/json",
+                  "content-range": "20-39/420",
+                },
+              },
+            );
+          },
+        },
+      },
+    );
+    const result = await loadBookingInbox(client, venueId, {
+      search: "Guest@example.com",
+      status: "requested",
+      sort: "oldest",
+      page: 2,
+    });
+    expect(result.total).toBe(420);
+    expect(calls[0].searchParams.get("venue_id")).toBe(`eq.${venueId}`);
+    expect(calls[0].searchParams.get("status")).toBe("eq.requested");
+    expect(calls[0].searchParams.get("offset")).toBe("20");
+    expect(calls[0].searchParams.get("limit")).toBe("20");
+    expect(calls[0].searchParams.get("order")).toBe("created_at.asc,id.asc");
+    expect(calls[0].searchParams.get("or")).toContain(
+      'contact_email.ilike."%Guest@example.com%"',
+    );
+    expect(calls[1].searchParams.get("venue_id")).toBe(`eq.${venueId}`);
+    expect(calls[1].searchParams.get("booking_id")).toContain(requests[0].id);
+  });
+  it("clamps pages after a filter/action and uses exact reference lookup", async () => {
+    const calls: URL[] = [];
+    const client = createClient(
+      "https://disposable.example.invalid",
+      "disposable-key",
+      {
+        auth: { persistSession: false, autoRefreshToken: false },
+        global: {
+          fetch: async (input) => {
+            const url = new URL(String(input));
+            calls.push(url);
+            return new Response("[]", {
+              status: 200,
+              headers: {
+                "content-type": "application/json",
+                "content-range": "*/0",
+              },
+            });
+          },
+        },
+      },
+    );
+    const result = await loadBookingInbox(client, venueId, {
+      search: requests[0].id,
+      status: "all",
+      sort: "newest",
+      page: 5,
+    });
+    expect(result.filters.page).toBe(1);
+    expect(calls).toHaveLength(2);
+    expect(calls[0].searchParams.get("id")).toBe(`eq.${requests[0].id}`);
+    expect(calls[0].searchParams.has("or")).toBe(false);
+    expect(calls[1].searchParams.get("offset")).toBe("0");
   });
 });

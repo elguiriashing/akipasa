@@ -1,4 +1,8 @@
 import { bookingEmailConfigured } from "@/lib/booking-mail-delivery";
+import {
+  loadBookingInbox,
+  parseBookingInbox,
+} from "@/lib/business-booking-inbox";
 import { BookingManager } from "@/components/BookingManager";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
@@ -97,11 +101,11 @@ export default async function VenueWorkspace({
     { data: passportOptions },
     { data: bookingSettings },
     { data: bookingNotificationSettings },
-    { data: bookingEmailStatuses },
+    { count: pendingBookingCount },
     { data: bookingSlots },
     { data: bookingResources },
     { data: bookingOfferings },
-    { data: bookingRequests },
+    bookingInbox,
     { data: catalogue },
     { data: audience },
     { data: ownerResults, error: ownerResultsError },
@@ -171,9 +175,10 @@ export default async function VenueWorkspace({
       .eq("venue_id", id)
       .maybeSingle(),
     supabase
-      .from("booking_confirmation_emails")
-      .select("booking_id,audience,status,last_error")
-      .eq("venue_id", id),
+      .from("booking_requests")
+      .select("id", { count: "exact", head: true })
+      .eq("venue_id", id)
+      .eq("status", "requested"),
     supabase
       .from("venue_availability_slots")
       .select("id,starts_at,ends_at,capacity,active,resource_id,offering_id")
@@ -189,13 +194,7 @@ export default async function VenueWorkspace({
       .select("id,name,kind,duration_minutes,capacity,active")
       .eq("venue_id", id)
       .order("name"),
-    supabase
-      .from("booking_requests")
-      .select(
-        "id,slot_id,party_size,contact_name,contact_email,contact_phone,notes,status,created_at,venue_availability_slots(starts_at,ends_at)",
-      )
-      .eq("venue_id", id)
-      .order("created_at", { ascending: false }),
+    loadBookingInbox(supabase, id, parseBookingInbox(query)),
     supabase
       .from("venue_catalogues")
       .select("revision,draft_document,published_revision,published_at")
@@ -348,9 +347,7 @@ export default async function VenueWorkspace({
         catalogueItems: catalogueItemCount,
         programs: programs?.filter((program) => program.active).length || 0,
         credentials: credentials?.length || 0,
-        requests:
-          bookingRequests?.filter((request) => request.status === "requested")
-            .length || 0,
+        requests: pendingBookingCount || 0,
         members: members?.length || 0,
       }}
       overview={
@@ -1606,13 +1603,20 @@ export default async function VenueWorkspace({
                 bookingNotificationSettings?.notification_email,
             }}
             initialTab={query.bookingTab}
-            notifications={bookingEmailStatuses || []}
+            notifications={bookingInbox.notifications}
+            inbox={{
+              ...bookingInbox.filters,
+              total: bookingInbox.total,
+              pending: pendingBookingCount || 0,
+              error: bookingInbox.error,
+              notificationError: bookingInbox.notificationError,
+            }}
             emailConfigured={bookingEmailConfigured()}
             retryEmails={retryBookingEmails}
             slots={bookingSlots || []}
             resources={bookingResources || []}
             offerings={bookingOfferings || []}
-            requests={bookingRequests || []}
+            requests={bookingInbox.requests}
             save={saveBookingSettings}
             createSlot={createBookingSlot}
             createRecurringSlots={createRecurringBookingSlots}

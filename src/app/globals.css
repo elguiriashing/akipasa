@@ -19077,9 +19077,10 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
 .booking-hub {
   display: flex;
   flex-direction: column;
-  max-height: calc(100dvh - 210px);
-  min-height: 400px;
-  overflow: hidden;
+  min-width: 0;
+  max-height: none;
+  min-height: 0;
+  overflow: visible;
 }
 .booking-hub > .workspace-inline-heading,
 .booking-hub > .booking-status-strip,
@@ -19088,8 +19089,7 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
 }
 .booking-manager-body {
   min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  overflow: visible;
   padding: 0.25rem;
 }
 .booking-request-card {
@@ -19165,8 +19165,8 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
 }
 @media (max-width: 600px) {
   .booking-hub {
-    max-height: calc(100dvh - 160px);
-    min-height: 350px;
+    max-height: none;
+    min-height: 0;
   }
   .booking-request-card {
     grid-template-columns: 1fr;

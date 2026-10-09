@@ -4,6 +4,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { dispatchBookingConfirmations } from "@/lib/booking-mail-delivery";
+import {
+  bookingInboxHref,
+  parseBookingInbox,
+} from "@/lib/business-booking-inbox";
 import { requireBusinessAccess } from "@/lib/entitlements";
 import { safeExternalUrlSchema } from "@/lib/auth-security";
 import { madridLocalDateTimeSchema } from "@/lib/time";
@@ -953,7 +957,20 @@ export async function redeemRewardClaim(formData: FormData) {
   );
 }
 
-function bookingDestination(locale: string, venueId: string, result: string) {
+function bookingDestination(
+  locale: string,
+  venueId: string,
+  result: string,
+  form?: FormData,
+) {
+  if (form && result.includes("booking-request")) {
+    const href = bookingInboxHref(
+      locale,
+      venueId,
+      parseBookingInbox(Object.fromEntries(form)),
+    );
+    return href.replace("#booking-inbox", `&${result}#booking-inbox`);
+  }
   const tab = result.includes("booking-request")
     ? "inbox"
     : result.includes("booking-resource")
@@ -991,7 +1008,9 @@ export async function retryBookingEmails(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success)
-    redirect(bookingDestination(locale, venueId, "error=booking-request"));
+    redirect(
+      bookingDestination(locale, venueId, "error=booking-request", formData),
+    );
   const { supabase } = await requireBusinessAccess(locale);
   await requireBookingManager(supabase, locale, venueId);
   const { error } = await supabase.rpc("retry_booking_confirmation", {
@@ -1009,6 +1028,7 @@ export async function retryBookingEmails(formData: FormData) {
       locale,
       venueId,
       error ? "error=booking-request" : "updated=booking-request",
+      formData,
     ),
   );
 }
@@ -1283,7 +1303,9 @@ export async function updateBookingRequest(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success)
-    redirect(bookingDestination(locale, venueId, "error=booking-request"));
+    redirect(
+      bookingDestination(locale, venueId, "error=booking-request", formData),
+    );
   const { supabase } = await requireBusinessAccess(locale);
   await requireBookingManager(supabase, locale, venueId);
   if (parsed.data.status === "confirmed") {
@@ -1292,13 +1314,17 @@ export async function updateBookingRequest(formData: FormData) {
       p_booking: parsed.data.requestId,
     });
     if (error)
-      redirect(bookingDestination(locale, venueId, "error=booking-request"));
+      redirect(
+        bookingDestination(locale, venueId, "error=booking-request", formData),
+      );
     await dispatchBookingConfirmations(
       undefined,
       parsed.data.venueId,
       parsed.data.requestId,
     ).catch(() => undefined);
-    redirect(bookingDestination(locale, venueId, "updated=booking-request"));
+    redirect(
+      bookingDestination(locale, venueId, "updated=booking-request", formData),
+    );
   }
   const { error } = await supabase
     .from("booking_requests")
@@ -1313,6 +1339,7 @@ export async function updateBookingRequest(formData: FormData) {
       locale,
       venueId,
       error ? "error=booking-request" : "updated=booking-request",
+      formData,
     ),
   );
 }
