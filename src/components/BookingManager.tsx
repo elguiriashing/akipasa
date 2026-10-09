@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Icon, type IconName } from "./Icons";
 import { bookingTab } from "../lib/booking-ui";
 import {
@@ -46,6 +47,7 @@ export function BookingManager({
   createRecurringSlots,
   createResource,
   createOffering,
+  updateOffering,
   updateRequest,
   initialTab,
   notifications = [],
@@ -116,8 +118,10 @@ export function BookingManager({
   createRecurringSlots: (formData: FormData) => Promise<void>;
   createResource: (formData: FormData) => Promise<void>;
   createOffering: (formData: FormData) => Promise<void>;
+  updateOffering: (formData: FormData) => Promise<void>;
   updateRequest: (formData: FormData) => Promise<void>;
 }) {
+  const router = useRouter();
   const es = locale === "es";
   const [mode, setMode] = useState<Mode>(
     settings?.mode === "request" || settings?.mode === "disabled"
@@ -128,6 +132,7 @@ export function BookingManager({
     "setup" | "offerings" | "resources" | "calendar" | "inbox"
   >(bookingTab(initialTab));
   const [showResources, setShowResources] = useState(false);
+  const [editingOffering, setEditingOffering] = useState<string | null>(null);
   const [template, setTemplate] = useState(
     settings?.booking_template || "experience",
   );
@@ -178,6 +183,25 @@ export function BookingManager({
   const pages = Math.max(1, Math.ceil(total / BOOKING_INBOX_PAGE_SIZE));
   const inboxHref = (page: number) =>
     bookingInboxHref(locale, venueId, { ...inboxFilters, page });
+  const applyInboxFilters = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const statusValue = String(form.get("bookingStatus") || "all");
+    const sortValue = String(form.get("bookingSort") || "newest");
+    router.push(
+      bookingInboxHref(locale, venueId, {
+        search: String(form.get("bookingSearch") || ""),
+        status: bookingInboxStatuses.includes(
+          statusValue as (typeof bookingInboxStatuses)[number],
+        )
+          ? (statusValue as (typeof bookingInboxStatuses)[number])
+          : "all",
+        sort: sortValue === "oldest" ? "oldest" : "newest",
+        page: 1,
+      }),
+      { scroll: false },
+    );
+  };
   return (
     <section
       className="panel booking-workbench booking-hub"
@@ -385,16 +409,109 @@ export function BookingManager({
               <div className="managed-list">
                 {offerings.map((offering) => (
                   <div className="managed-row" key={offering.id}>
-                    <span>
-                      <strong>{offering.name}</strong> ·{" "}
-                      {templates.find((t) => t[0] === offering.kind)?.[
-                        es ? 3 : 2
-                      ] || offering.kind}
-                    </span>
-                    <span>
-                      {offering.duration_minutes} min · {offering.capacity}{" "}
-                      {es ? "plazas" : "places"}
-                    </span>
+                    {editingOffering === offering.id ? (
+                      <form
+                        action={updateOffering}
+                        className="stack compact-action-form booking-inline-edit"
+                      >
+                        <input type="hidden" name="locale" value={locale} />
+                        <input type="hidden" name="venueId" value={venueId} />
+                        <input
+                          type="hidden"
+                          name="offeringId"
+                          value={offering.id}
+                        />
+                        <div className="form-grid-three">
+                          <label>
+                            {es ? "Nombre del servicio" : "Offering name"}
+                            <input
+                              type="text"
+                              name="name"
+                              maxLength={120}
+                              required
+                              defaultValue={offering.name}
+                            />
+                          </label>
+                          <label>
+                            {es ? "Tipo" : "Type"}
+                            <select name="kind" defaultValue={offering.kind}>
+                              {templates.map(([key, , en, spanish]) => (
+                                <option key={key} value={key}>
+                                  {es ? spanish : en}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                          <label>
+                            {es ? "Duración (min)" : "Duration (min)"}
+                            <input
+                              name="duration"
+                              type="number"
+                              min="15"
+                              max="1440"
+                              defaultValue={offering.duration_minutes}
+                              required
+                            />
+                          </label>
+                          <label>
+                            {es ? "Capacidad máxima" : "Maximum capacity"}
+                            <input
+                              name="capacity"
+                              type="number"
+                              min="1"
+                              max="10000"
+                              defaultValue={offering.capacity}
+                              required
+                            />
+                          </label>
+                          <label className="toggle-row">
+                            <input
+                              type="checkbox"
+                              name="active"
+                              defaultChecked={offering.active}
+                            />
+                            {es
+                              ? "Activo y visible para nuevos horarios"
+                              : "Active and visible for new slots"}
+                          </label>
+                        </div>
+                        <div className="inline-actions">
+                          <button className="button" type="submit">
+                            {es ? "Guardar servicio" : "Save offering"}
+                          </button>
+                          <button
+                            type="button"
+                            className="button secondary"
+                            onClick={() => setEditingOffering(null)}
+                          >
+                            {es ? "Cancelar" : "Cancel"}
+                          </button>
+                        </div>
+                      </form>
+                    ) : (
+                      <>
+                        <span>
+                          <strong>{offering.name}</strong> ·{" "}
+                          {templates.find((t) => t[0] === offering.kind)?.[
+                            es ? 3 : 2
+                          ] || offering.kind}
+                          {!offering.active && (
+                            <> · {es ? "inactivo" : "inactive"}</>
+                          )}
+                        </span>
+                        <span>
+                          {offering.duration_minutes} min · {offering.capacity}{" "}
+                          {es ? "plazas" : "places"}
+                        </span>
+                        <button
+                          type="button"
+                          className="button secondary compact-button"
+                          onClick={() => setEditingOffering(offering.id)}
+                        >
+                          {es ? "Editar" : "Edit"}
+                        </button>
+                      </>
+                    )}
                   </div>
                 ))}
               </div>
@@ -821,6 +938,7 @@ export function BookingManager({
             <form
               method="get"
               action={`/${locale}/business/venue/${venueId}#booking-inbox`}
+              onSubmit={applyInboxFilters}
               className="booking-inbox-toolbar"
               key={`${inboxFilters.search}-${inboxFilters.status}-${inboxFilters.sort}`}
               role="search"
@@ -959,7 +1077,7 @@ export function BookingManager({
                   : "Email delivery status could not be loaded."}
               </p>
             )}
-            <div className="managed-list">
+            <div className="booking-inbox-grid">
               {requests.map((request) => {
                 const slot =
                   request.venue_availability_slots ||

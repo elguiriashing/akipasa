@@ -43,6 +43,7 @@ import {
   saveOffer,
   setRecurrence,
   updateBookingRequest,
+  updateBookingOffering,
   retryBookingEmails,
   updateOccurrence,
   updateVenue,
@@ -1622,6 +1623,7 @@ export default async function VenueWorkspace({
             createRecurringSlots={createRecurringBookingSlots}
             createResource={createBookingResource}
             createOffering={createBookingOffering}
+            updateOffering={updateBookingOffering}
             updateRequest={updateBookingRequest}
           />
         ),

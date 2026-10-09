@@ -4118,6 +4118,20 @@ html[data-theme="dark"] .card:hover {
   color: var(--muted);
 }
 
+.booking-inline-edit {
+  width: 100%;
+}
+
+.booking-inline-edit .toggle-row {
+  align-items: center;
+  display: flex;
+  gap: 0.55rem;
+}
+
+.booking-inline-edit .toggle-row input {
+  width: auto;
+}
+
 .managed-list {
   display: flex;
   flex-direction: column;
@@ -19092,12 +19106,19 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
   overflow: visible;
   padding: 0.25rem;
 }
+.booking-inbox-grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+}
 .booking-request-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.65rem;
   padding: 1rem;
-  border-bottom: 1px solid var(--line, rgba(150, 150, 180, 0.2));
+  border: 1px solid var(--line, rgba(150, 150, 180, 0.2));
+  border-radius: 0.9rem;
+  background: color-mix(in oklab, var(--surface) 92%, transparent);
 }
 .booking-request-card small,
 .booking-request-card time {

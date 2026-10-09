@@ -1179,6 +1179,51 @@ export async function createBookingOffering(formData: FormData) {
   );
 }
 
+export async function updateBookingOffering(formData: FormData) {
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const venueId = String(formData.get("venueId") || "");
+  const parsed = context
+    .extend({
+      offeringId: z.string().uuid(),
+      name: z.string().trim().min(2).max(120),
+      kind: z.enum([
+        "dining",
+        "experience",
+        "resource",
+        "appointment",
+        "ticket",
+        "class",
+        "stay",
+      ]),
+      duration: z.coerce.number().int().min(15).max(1440),
+      capacity: z.coerce.number().int().min(1).max(10000),
+      active: z.enum(["on"]).optional(),
+    })
+    .safeParse(Object.fromEntries(formData));
+  if (!parsed.success)
+    redirect(bookingDestination(locale, venueId, "error=booking-offering"));
+  const { supabase } = await requireBusinessAccess(locale);
+  await requireBookingManager(supabase, locale, venueId);
+  const { error } = await supabase
+    .from("booking_offerings")
+    .update({
+      name: parsed.data.name,
+      kind: parsed.data.kind,
+      duration_minutes: parsed.data.duration,
+      capacity: parsed.data.capacity,
+      active: parsed.data.active === "on",
+    })
+    .eq("id", parsed.data.offeringId)
+    .eq("venue_id", parsed.data.venueId);
+  redirect(
+    bookingDestination(
+      locale,
+      venueId,
+      error ? "error=booking-offering" : "updated=booking-offering",
+    ),
+  );
+}
+
 export async function createBookingResource(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
