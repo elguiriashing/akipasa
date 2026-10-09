@@ -241,6 +241,9 @@ describe("bounded booking inbox", () => {
     expect(screen.getByText(/Accessible table/)).toBeInTheDocument();
   });
   it("bounds invalid inputs and removes PostgREST grammar/wildcards", () => {
+    expect(
+      parseBookingInbox({ bookingSearch: "O'Neill_guest@example.com" }).search,
+    ).toBe("O'Neill_guest@example.com");
     const parsed = parseBookingInbox({
       bookingPage: "Infinity",
       bookingStatus: "unknown",
@@ -286,7 +289,7 @@ describe("bounded booking inbox", () => {
       },
     );
     const result = await loadBookingInbox(client, venueId, {
-      search: "Guest@example.com",
+      search: "Guest_Name@example.com",
       status: "requested",
       sort: "oldest",
       page: 2,
@@ -298,7 +301,7 @@ describe("bounded booking inbox", () => {
     expect(calls[0].searchParams.get("limit")).toBe("20");
     expect(calls[0].searchParams.get("order")).toBe("created_at.asc,id.asc");
     expect(calls[0].searchParams.get("or")).toContain(
-      'contact_email.ilike."%Guest@example.com%"',
+      'contact_email.ilike."%Guest\\\\_Name@example.com%"',
     );
     expect(calls[1].searchParams.get("venue_id")).toBe(`eq.${venueId}`);
     expect(calls[1].searchParams.get("booking_id")).toContain(requests[0].id);

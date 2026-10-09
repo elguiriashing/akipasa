@@ -24,7 +24,7 @@ export function parseBookingInbox(
   const search =
     typeof query.bookingSearch === "string"
       ? query.bookingSearch
-          .replace(/[^\p{L}\p{N}\s@.+-]/gu, "")
+          .replace(/[^\p{L}\p{N}\s@.+'_-]/gu, "")
           .trim()
           .slice(0, 80)
       : "";
@@ -76,7 +76,9 @@ export function bookingInboxQuery(
     ) {
       query = query.eq("id", filters.search);
     } else {
-      const literal = `"%${filters.search}%"`;
+      // Escape SQL LIKE underscores, then escape that backslash in the quoted
+      // PostgREST value. Apostrophes are literal inside these double quotes.
+      const literal = `"%${filters.search.replaceAll("_", "\\_").replaceAll("\\", "\\\\")}%"`;
       query = query.or(
         `contact_name.ilike.${literal},contact_email.ilike.${literal},contact_phone.ilike.${literal}`,
       );
