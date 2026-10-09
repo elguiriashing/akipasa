@@ -21,9 +21,31 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          p=Path('src/components/VenueDashboard.module.css');s=p.read_text();old='.dashboard .section :global(.booking-hub) {\n  display: grid;\n  gap: 0.9rem;\n}';assert old in s;s=s.replace(old,'.dashboard .section :global(.booking-hub) {\n  display: flex;\n  flex-direction: column;\n  gap: 0.9rem;\n}');p.write_text(s)
-          p=Path('scripts/test-booking-browser.mjs');s=p.read_text()
-          old='import{MyBookings}from"./src/components/MyBookings";';assert old in s;s=s.replace(old,old+'\nimport dashboardStyles from "./src/components/VenueDashboard.module.css";')
-          old='mode==="manager"?<BookingManager';assert old in s;s=s.replace(old,'mode==="manager"?<div className="akibusiness-host"><div className={dashboardStyles.dashboard}><section className={dashboardStyles.section}><BookingManager')
-          old='updateRequest={action} initialTab={tab}/>:':assertion=None
+          p=Path('src/components/VenueDashboard.module.css')
+          s=p.read_text()
+          old='.dashboard .section :global(.booking-hub) {\n  display: grid;\n  gap: 0.9rem;\n}'
+          assert old in s
+          s=s.replace(old,'.dashboard .section :global(.booking-hub) {\n  display: flex;\n  flex-direction: column;\n  gap: 0.9rem;\n}')
+          p.write_text(s)
+          p=Path('scripts/test-booking-browser.mjs')
+          s=p.read_text()
+          old='import{MyBookings}from"./src/components/MyBookings";'
+          assert old in s
+          s=s.replace(old,old+'\nimport dashboardStyles from "./src/components/VenueDashboard.module.css";')
+          old='mode==="manager"?<BookingManager'
+          assert old in s
+          s=s.replace(old,'mode==="manager"?<div className="akibusiness-host"><div className={dashboardStyles.dashboard}><section className={dashboardStyles.section}><BookingManager')
+          old='updateRequest={action} initialTab={tab}/>:'
+          assert old in s
+          s=s.replace(old,'updateRequest={action} initialTab={tab}/></section></div></div>:')
+          s=s.replace('  write: false,','  write: false,\n  outdir: "/tmp/booking-browser-build",')
+          s=s.replace(').css;',').css + (js.outputFiles.find(file => file.path.endsWith(".css"))?.text || "");')
+          s=s.replace('res.end(js.outputFiles[0].text);','res.end(js.outputFiles.find(file => file.path.endsWith(".js")).text);')
+          p.write_text(s)
           PY
+          npx prettier --write scripts/test-booking-browser.mjs src/components/VenueDashboard.module.css
+          git add scripts/test-booking-browser.mjs src/components/VenueDashboard.module.css
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "fix(bookings): preserve one-screen dashboard and exercise real module styles in browsers"
+          git push origin HEAD:feature/booking-ux-confirmations
