@@ -2363,3 +2363,12 @@ body:has(.subscription-app) > .privacy-preferences {
 .venue-event-feature-body p{margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.5;opacity:.75}
 .venue-event-feature-action{margin-top:.35rem;font-weight:700}
 @media(max-width:640px){.venue-event-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding:.25rem .15rem 1rem;scrollbar-width:thin}.venue-event-feature{flex:0 0 min(80vw,310px);scroll-snap-align:start}.venue-events-heading{align-items:center}}
+
+
+.event-menu-choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:.7rem;margin:1rem 0}
+.event-menu-choice{display:flex;align-items:center;gap:.6rem;min-height:66px;padding:.85rem;border:1px solid var(--border,rgba(126,110,155,.35));border-radius:14px;color:inherit;background:transparent;cursor:pointer;text-align:left}
+.event-menu-choice.selected{border-color:#846be5;background:rgba(132,107,229,.13)}
+.event-menu-choice>span{display:grid;place-items:center;width:28px;height:28px;flex-shrink:0;border-radius:50%;background:rgba(132,107,229,.13);font-weight:800}
+.event-menu-choice small{margin-left:auto;white-space:nowrap;opacity:.7}
+.event-menu-linked{margin-top:1.5rem}
+.event-menu-linked>summary{font-weight:700;cursor:pointer;padding:.8rem 0}
