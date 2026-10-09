@@ -82,16 +82,22 @@ try {
   `,
     )
     .simple();
-  for (const file of [
-    "20261009113000_booking_offerings.sql",
-    "20261009115000_booking_resources.sql",
-    "20261009120000_recurring_booking_slots.sql",
-    "20261009160000_booking_notification_email.sql",
-    "20261009170000_booking_release_integrity.sql",
-  ])
-    await sql
-      .unsafe(readFileSync(`supabase/migrations/${file}`, "utf8"))
-      .simple();
+  const migrationSql = postgres(connection, { max: 1, onnotice: () => {} });
+  try {
+    for (const file of [
+      "20261009113000_booking_offerings.sql",
+      "20261009115000_booking_resources.sql",
+      "20261009120000_recurring_booking_slots.sql",
+      "20261009160000_booking_notification_email.sql",
+      "20261009170000_booking_release_integrity.sql",
+    ])
+      await sql
+        .unsafe(readFileSync(`supabase/migrations/${file}`, "utf8"))
+        .simple();
+  } finally {
+    await migrationSql.end();
+  }
+
   check("all additive release migrations compile in PostgreSQL");
   for (const user of [owner, customer, stranger, editor, otherOwner]) {
     await sql`insert into auth.users values(${user},${`${user}@example.com`},now())`;

@@ -374,16 +374,21 @@ export function BookingWizard({
           )}
           {step < 2 ? (
             <button
+              key="continue"
               type="button"
               className="button"
               disabled={!canContinue}
-              onClick={() => setStep((n) => n + 1)}
+              onClick={(event) => {
+                event.preventDefault();
+                setStep((n) => n + 1);
+              }}
             >
               {es ? "Continuar" : "Continue"}{" "}
               <Icon name="arrow-right" size={16} />
             </button>
           ) : (
             <button
+              key="submit"
               type="submit"
               form="customer-booking-form"
               className="button"

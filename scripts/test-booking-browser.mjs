@@ -87,6 +87,24 @@ try {
           colorScheme: theme,
         });
         const errors = [];
+        const diagnostic = async () => {
+          await page
+            .screenshot({
+              path: resolve(dir, `failure-${locale}-${width}-${theme}.png`),
+              fullPage: true,
+            })
+            .catch(() => {});
+          writeFileSync(
+            resolve(dir, `failure-${locale}-${width}-${theme}.html`),
+            await page.content().catch(() => ""),
+          );
+          console.error(
+            JSON.stringify({
+              errors,
+              buttons: await page.locator("button").allTextContents(),
+            }),
+          );
+        };
         page.on("pageerror", (e) => errors.push(e.message));
         const url = (s) =>
           `http://127.0.0.1:3199/?screen=${s}&locale=${locale}`;
@@ -133,7 +151,11 @@ try {
           .getByRole("button", {
             name: locale === "es" ? "Solicitar reserva" : "Request booking",
           })
-          .click();
+          .click()
+          .catch(async (error) => {
+            await diagnostic();
+            throw error;
+          });
         await expect(page.getByRole("alert")).toContainText(
           locale === "es" ? "actualizada" : "refreshed",
         );
