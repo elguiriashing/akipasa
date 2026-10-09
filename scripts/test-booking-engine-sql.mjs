@@ -91,7 +91,7 @@ try {
       "20261009160000_booking_notification_email.sql",
       "20261009170000_booking_release_integrity.sql",
     ])
-      await sql
+      await migrationSql
         .unsafe(readFileSync(`supabase/migrations/${file}`, "utf8"))
         .simple();
   } finally {
