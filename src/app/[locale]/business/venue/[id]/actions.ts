@@ -127,6 +127,7 @@ export async function updateEvent(formData: FormData) {
   const parsed = context
     .extend({
       eventId: z.string().uuid(),
+      catalogueSectionIds: z.string().max(8000).default("[]"),
       title: z.string().trim().min(3).max(160),
       description: z.string().trim().min(20).max(4000),
       priceEuros: z.coerce.number().min(0).max(10000),
@@ -174,6 +175,39 @@ export async function updateEvent(formData: FormData) {
     redirect(destination(locale, venueId, "error=event"));
   }
 
+  // Menu selections must belong to this venue's catalogue, not another venue.
+  let selectedCatalogueSections: string[];
+  try {
+    const selected = JSON.parse(v.catalogueSectionIds) as unknown;
+    if (!Array.isArray(selected) || selected.length > 50 ||
+        !selected.every((id) => typeof id === "string" && id.length <= 120)) {
+      throw new Error("Invalid catalogue section IDs");
+    }
+    selectedCatalogueSections = [...new Set(selected as string[])];
+  } catch {
+    if (inline) return { ok: false as const, error: "event" };
+    redirect(destination(locale, venueId, "error=event"));
+  }
+  const { data: venueCatalogue } = await supabase
+    .from("venue_catalogues")
+    .select("draft_document")
+    .eq("venue_id", v.venueId)
+    .maybeSingle();
+  const availableSections = new Set(
+    (venueCatalogue?.draft_document &&
+      typeof venueCatalogue.draft_document === "object" &&
+      "sections" in venueCatalogue.draft_document &&
+      Array.isArray(venueCatalogue.draft_document.sections)
+      ? venueCatalogue.draft_document.sections : []
+    ).flatMap((section: unknown) =>
+      section && typeof section === "object" && "id" in section &&
+      typeof section.id === "string" ? [section.id] : []),
+  );
+  if (selectedCatalogueSections.some((id) => !availableSections.has(id))) {
+    if (inline) return { ok: false as const, error: "event" };
+    redirect(destination(locale, venueId, "error=event"));
+  }
+
   let localized;
   try {
     localized = await translateSubmittedLocalizedFields(
@@ -212,6 +246,7 @@ export async function updateEvent(formData: FormData) {
       description_en: localized.description.en,
       price_cents: Math.round(v.priceEuros * 100),
       price_display_mode: v.priceDisplayMode,
+      catalogue_section_ids: selectedCatalogueSections,
       booking_url: v.bookingUrl || null,
       minimum_age: v.minimumAge === "" ? null : v.minimumAge,
       accessibility_notes_es: localized.accessibilityNotes.es || null,
