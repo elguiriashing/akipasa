@@ -22,6 +22,8 @@ import {
   addTeamMember,
   assignReward,
   createBookingSlot,
+  createBookingResource,
+  createRecurringBookingSlots,
   createBusinessReward,
   createCheckInCredential,
   createStampCard,
@@ -91,6 +93,7 @@ export default async function VenueWorkspace({
     { data: passportOptions },
     { data: bookingSettings },
     { data: bookingSlots },
+    { data: bookingResources },
     { data: bookingRequests },
     { data: catalogue },
     { data: audience },
@@ -157,9 +160,14 @@ export default async function VenueWorkspace({
       .maybeSingle(),
     supabase
       .from("venue_availability_slots")
-      .select("id,starts_at,ends_at,capacity,active")
+      .select("id,starts_at,ends_at,capacity,active,resource_id")
       .eq("venue_id", id)
       .order("starts_at"),
+    supabase
+      .from("booking_resources")
+      .select("id,name,kind,capacity,active")
+      .eq("venue_id", id)
+      .order("name"),
     supabase
       .from("booking_requests")
       .select(
@@ -1519,9 +1527,12 @@ export default async function VenueWorkspace({
             venueId={id}
             settings={bookingSettings}
             slots={bookingSlots || []}
+            resources={bookingResources || []}
             requests={bookingRequests || []}
             save={saveBookingSettings}
             createSlot={createBookingSlot}
+            createRecurringSlots={createRecurringBookingSlots}
+            createResource={createBookingResource}
             updateRequest={updateBookingRequest}
           />
         ),
