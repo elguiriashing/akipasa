@@ -98,11 +98,15 @@ export default async function VenuePage({
     .select("mode,active,external_url")
     .eq("venue_id", venue.id)
     .maybeSingle();
-  const externalBookingUrl = bookingSettings?.mode === "external" && bookingSettings.active
-    && typeof bookingSettings.external_url === "string"
-    && /^https?:\/\/[^\s/]+/i.test(bookingSettings.external_url)
-    ? bookingSettings.external_url : null;
-  const nativeBooking = bookingSettings?.mode === "request" && bookingSettings.active;
+  const externalBookingUrl =
+    bookingSettings?.mode === "external" &&
+    bookingSettings.active &&
+    typeof bookingSettings.external_url === "string" &&
+    /^https?:\/\/[^\s/]+/i.test(bookingSettings.external_url)
+      ? bookingSettings.external_url
+      : null;
+  const nativeBooking =
+    bookingSettings?.mode === "request" && bookingSettings.active;
   const bgImage = venue.coverImage?.url || venue.media?.[0]?.url;
 
   return (

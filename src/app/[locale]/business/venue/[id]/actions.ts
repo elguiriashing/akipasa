@@ -909,14 +909,28 @@ export async function redeemRewardClaim(formData: FormData) {
 }
 
 export async function saveBookingSettings(formData: FormData) {
-  const parsed = context.extend({
-    mode: z.enum(["external", "request", "disabled"]),
-    externalUrl: z.string().trim().max(2048).default(""),
-    requiresDeposit: z.string().optional(),
-    depositEuros: z.union([z.literal(""), z.coerce.number().min(0).max(10000)]).default(""),
-    instructions: z.string().trim().max(1000).default(""),
-    template: z.enum(["dining", "experience", "resource", "appointment", "ticket", "class", "stay"]).default("experience"),
-  }).safeParse(Object.fromEntries(formData));
+  const parsed = context
+    .extend({
+      mode: z.enum(["external", "request", "disabled"]),
+      externalUrl: z.string().trim().max(2048).default(""),
+      requiresDeposit: z.string().optional(),
+      depositEuros: z
+        .union([z.literal(""), z.coerce.number().min(0).max(10000)])
+        .default(""),
+      instructions: z.string().trim().max(1000).default(""),
+      template: z
+        .enum([
+          "dining",
+          "experience",
+          "resource",
+          "appointment",
+          "ticket",
+          "class",
+          "stay",
+        ])
+        .default("experience"),
+    })
+    .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const venueId = String(formData.get("venueId") || "");
   if (!parsed.success) redirect(destination(locale, venueId, "error=booking"));
@@ -926,7 +940,12 @@ export async function saveBookingSettings(formData: FormData) {
   if (v.mode === "external") {
     try {
       const url = new URL(v.externalUrl);
-      if (!["https:", "http:"].includes(url.protocol) || !url.hostname || url.username || url.password)
+      if (
+        !["https:", "http:"].includes(url.protocol) ||
+        !url.hostname ||
+        url.username ||
+        url.password
+      )
         throw new Error("Invalid booking URL");
       externalUrl = url.toString();
     } catch {
@@ -937,7 +956,13 @@ export async function saveBookingSettings(formData: FormData) {
   let localizedInstructions = { es: "", en: "" };
   if (v.mode === "request" && v.instructions) {
     try {
-      localizedInstructions = (await translateLocalizedFields(locale, { instructions: v.instructions }, user.id)).instructions;
+      localizedInstructions = (
+        await translateLocalizedFields(
+          locale,
+          { instructions: v.instructions },
+          user.id,
+        )
+      ).instructions;
     } catch {
       redirect(destination(locale, venueId, "error=translation"));
     }
@@ -948,12 +973,19 @@ export async function saveBookingSettings(formData: FormData) {
     external_url: externalUrl,
     booking_template: v.mode === "request" ? v.template : null,
     requires_deposit: v.mode === "request" && v.requiresDeposit === "on",
-    deposit_cents: v.mode === "request" && v.depositEuros !== "" ? Math.round(v.depositEuros * 100) : null,
-    instructions_es: v.mode === "request" ? localizedInstructions.es || null : null,
-    instructions_en: v.mode === "request" ? localizedInstructions.en || null : null,
+    deposit_cents:
+      v.mode === "request" && v.depositEuros !== ""
+        ? Math.round(v.depositEuros * 100)
+        : null,
+    instructions_es:
+      v.mode === "request" ? localizedInstructions.es || null : null,
+    instructions_en:
+      v.mode === "request" ? localizedInstructions.en || null : null,
     active: v.mode !== "disabled",
   });
-  redirect(destination(locale, venueId, error ? "error=booking" : "updated=booking"));
+  redirect(
+    destination(locale, venueId, error ? "error=booking" : "updated=booking"),
+  );
 }
 
 export async function createBookingSlot(formData: FormData) {
