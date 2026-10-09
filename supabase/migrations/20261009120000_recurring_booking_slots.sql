@@ -37,14 +37,17 @@ begin
     raise exception 'invalid schedule parameters';
   end if;
 
+  -- Serialize schedule writers per venue to avoid duplicate rows on retries.
+  perform pg_advisory_xact_lock(hashtextextended(p_venue::text, 0));
+
   -- Reject DST-normalized/nonexistent local times rather than silently shifting them.
   if exists (
     select 1
-    from generate_series(p_start_date,p_end_date,interval '1 day') g(day)
-    where extract(isodow from g.day)::int = any(p_weekdays)
-      and (((g.day::date + p_start_time) at time zone 'Europe/Madrid')
+    from generate_series(0,p_end_date-p_start_date) g(day_offset)
+    where extract(isodow from (p_start_date + g.day_offset))::int = any(p_weekdays)
+      and (((p_start_date + g.day_offset + p_start_time) at time zone 'Europe/Madrid')
            at time zone 'Europe/Madrid')::timestamp
-          <> (g.day::date + p_start_time)
+          <> (p_start_date + g.day_offset + p_start_time)
   ) then
     raise exception 'schedule contains nonexistent local time';
   end if;
@@ -54,9 +57,9 @@ begin
       (venue_id,starts_at,ends_at,capacity)
   select p_venue, at_start, at_start + make_interval(mins => p_duration_minutes),p_capacity
   from (
-    select ((g.day::date + p_start_time) at time zone 'Europe/Madrid') at_start
-    from generate_series(p_start_date,p_end_date,interval '1 day') g(day)
-    where extract(isodow from g.day)::int = any(p_weekdays)
+    select ((p_start_date + g.day_offset + p_start_time) at time zone 'Europe/Madrid') at_start
+    from generate_series(0,p_end_date-p_start_date) g(day_offset)
+    where extract(isodow from (p_start_date + g.day_offset))::int = any(p_weekdays)
   ) proposed
   where not exists (
     select 1 from public.venue_availability_slots existing
