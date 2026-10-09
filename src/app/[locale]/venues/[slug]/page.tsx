@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element -- Venue media uses native images with existing layout controls. */
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
 import { localizedMetadata, languageUrls, serializeJsonLd } from "@/lib/seo";
 import Link from "next/link";
@@ -11,7 +11,6 @@ import { googleMapsDirectionsUrl } from "@/lib/maps";
 import { optionalUser } from "@/lib/auth";
 import { toggleFollowedVenue } from "../../engagement/actions";
 import { AnalyticsView, TrackedLink } from "@/components/AnalyticsSignal";
-import { accommodationLabel } from "@/lib/accommodation";
 import { ShareButton } from "@/components/ShareButton";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { PublicVenueCatalogue } from "@/components/PublicVenueCatalogue";
@@ -45,6 +44,12 @@ export default async function VenuePage({
   if (!isLocale(locale)) notFound();
   const venue = await loadVenue(slug);
   if (!venue) notFound();
+  // Accommodation is presented exclusively through the AkiDuermo stay experience.
+  if (venue.discoveryVertical === "accommodation") {
+    redirect(
+      `https://akiduermo.akipasa.com/stays/${encodeURIComponent(venue.slug)}?lang=${locale}`,
+    );
+  }
   const events = await repository.eventsForVenue(venue.id);
   const now = Date.now();
   const upcomingEvents = events
@@ -165,11 +170,6 @@ export default async function VenuePage({
           ← {m.discover}
         </Link>
         <article className="detail-card detail-card-primary">
-          {venue.discoveryVertical === "accommodation" && (
-            <span className="accommodation-badge">
-              {accommodationLabel(locale)}
-            </span>
-          )}
           {bgImage ? (
             <div
               className="detail-cover"
