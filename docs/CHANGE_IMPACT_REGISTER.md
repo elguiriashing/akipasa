@@ -104,7 +104,6 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - Verified: demo venue and owner membership by read-only SQL; migration applied. CI source/format/build/browser results remain pending until PR checks. No claim mutation or authenticated full browser test performed.
 - Rollback: revert branch code; new claim read functions may remain unused. Keep demo listing private to discovery, remove only on user request.
 
-
 ## 2026-10-09 | Tablet viewport and per-host PWA identity candidate
 
 - Observed: Android Chrome offered AkiBusiness as AkiPasa; shared manifest had one name/start URL. Tablet portrait AkiBusiness auth showed desktop two-column layout with cramped copy; split-window landscape venue rows clipped action buttons.
