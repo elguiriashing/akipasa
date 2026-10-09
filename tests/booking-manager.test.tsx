@@ -62,7 +62,7 @@ describe("AkiBusiness advanced booking manager", () => {
       screen.getByRole("button", { name: "Create schedule" }),
     ).toBeVisible();
     expect(screen.getAllByRole("option", { name: "Buggy 1 · 2" })).toHaveLength(
-      1,
+      2,
     );
   });
 
