@@ -6,7 +6,7 @@ alter table public.venue_booking_settings
   add constraint venue_booking_notification_email_valid
   check (notification_email is null or (
     char_length(notification_email) between 5 and 254
-    and notification_email ~* '^[A-Z0-9._%+\\-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$'
+    and notification_email ~* '^[^ @]+@[^ @]+[.][^ @]+$'
   ));
 
 create table public.booking_confirmation_emails (
