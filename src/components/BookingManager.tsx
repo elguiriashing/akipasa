@@ -8,6 +8,7 @@ type Settings = {
   mode?: string | null;
   external_url?: string | null;
   booking_template?: string | null;
+  notification_email?: string | null;
   requires_deposit?: boolean | null;
   deposit_cents?: number | null;
   instructions_es?: string | null;
@@ -89,14 +90,16 @@ export function BookingManager({
   );
   const [section, setSection] = useState<
     "setup" | "offerings" | "resources" | "calendar" | "inbox"
-  >("setup");
+  >("inbox");
+  const [showResources, setShowResources] = useState(false);
   const [template, setTemplate] = useState(
     settings?.booking_template || "experience",
   );
   React.useEffect(() => {
     const tab = new URLSearchParams(window.location.search).get("bookingTab");
     if (tab === "setup" || tab === "offerings" || tab === "resources" || tab === "calendar" || tab === "inbox") {
-      setSection(tab);
+      setSection(tab === "resources" ? "offerings" : tab);
+      if (tab === "resources") setShowResources(true);
     }
   }, []);
   const pending = requests.filter((r) => r.status === "requested").length;
@@ -146,11 +149,10 @@ export function BookingManager({
       >
         {(
           [
-            ["setup", es ? "Configuración" : "Setup"],
-            ["offerings", es ? "Servicios" : "Offerings"],
-            ["resources", es ? "Recursos" : "Resources"],
-            ["calendar", es ? "Disponibilidad" : "Availability"],
-            ["inbox", es ? "Solicitudes" : "Requests"],
+            ["inbox", es ? "Reservas" : "Bookings"],
+            ["calendar", es ? "Calendario" : "Calendar"],
+            ["offerings", es ? "Servicios" : "Services"],
+            ["setup", es ? "Ajustes" : "Settings"],
           ] as const
         ).map(([key, label]) => (
           <button
@@ -232,32 +234,6 @@ export function BookingManager({
           )}
           {mode === "request" && (
             <>
-              <h3>{es ? "Tipo de reserva" : "Booking template"}</h3>
-              <p>
-                {es
-                  ? "Elige el tipo más parecido a tu negocio. Los horarios y plazas se gestionan en Disponibilidad."
-                  : "Choose the closest fit for your business. Manage slots and capacity in Availability."}
-              </p>
-              <div className="booking-template-grid">
-                {templates.map(([key, icon, en, spanish]) => (
-                  <button
-                    key={key}
-                    type="button"
-                    aria-pressed={template === key}
-                    onClick={() => setTemplate(key)}
-                    className={
-                      template === key
-                        ? "booking-template-card selected"
-                        : "booking-template-card"
-                    }
-                  >
-                    <span aria-hidden="true">
-                      <Icon name={icon} />
-                    </span>
-                    <strong>{es ? spanish : en}</strong>
-                  </button>
-                ))}
-              </div>
               <label className="toggle-card">
                 <input
                   name="requiresDeposit"
@@ -280,6 +256,18 @@ export function BookingManager({
                       : ""
                   }
                 />
+              </label>
+              <label>
+                {es ? "Email para confirmaciones del local" : "Venue confirmation email"}
+                <input
+                  type="email"
+                  name="notificationEmail"
+                  placeholder="reservas@ejemplo.com"
+                  defaultValue={settings?.notification_email || ""}
+                />
+                <small>{es
+                  ? "Enviaremos una confirmación al cliente y otra a esta dirección al aprobar una reserva."
+                  : "When you approve a booking, the guest receives a confirmation and this address receives a copy."}</small>
               </label>
               <label>
                 {es ? "Instrucciones de reserva" : "Booking instructions"}
@@ -323,6 +311,33 @@ export function BookingManager({
               ))}
             </div>
           )}
+              <h3>{es ? "¿Qué vas a ofrecer?" : "What are you offering?"}</h3>
+              <p>
+                {es
+                  ? "Selecciona un tipo. Se usará al crear el servicio, con su propio horario y plazas."
+                  : "Choose a type for the service you are creating. Its capacity and schedule are separate."}
+              </p>
+              <div className="booking-template-grid">
+                {templates.map(([key, icon, en, spanish]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    aria-pressed={template === key}
+                    onClick={() => setTemplate(key)}
+                    className={
+                      template === key
+                        ? "booking-template-card selected"
+                        : "booking-template-card"
+                    }
+                  >
+                    <span aria-hidden="true">
+                      <Icon name={icon} />
+                    </span>
+                    <strong>{es ? spanish : en}</strong>
+                  </button>
+                ))}
+              </div>
+
           <form action={createOffering} className="stack compact-action-form">
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="venueId" value={venueId} />
@@ -337,16 +352,7 @@ export function BookingManager({
                   placeholder={es ? "Ej. Ruta en buggy" : "E.g. Buggy tour"}
                 />
               </label>
-              <label>
-                {es ? "Tipo" : "Type"}
-                <select name="kind" defaultValue={template}>
-                  {templates.map(([key, , en, spanish]) => (
-                    <option key={key} value={key}>
-                      {es ? spanish : en}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <input type="hidden" name="kind" value={template} />
               <label>
                 {es ? "Duración (min)" : "Duration (min)"}
                 <input
@@ -374,9 +380,15 @@ export function BookingManager({
               {es ? "Crear servicio" : "Create offering"}
             </button>
           </form>
+          <button type="button" className="button secondary" onClick={() => setShowResources(!showResources)}>
+            <Icon name="venue" size={17} />
+            {showResources
+              ? (es ? "Ocultar mesas, equipos y personal" : "Hide tables, equipment and staff")
+              : (es ? "Gestionar mesas, equipos y personal" : "Manage tables, equipment and staff")}
+          </button>
         </div>
       )}
-      {section === "resources" && (
+      {section === "offerings" && showResources && (
         <div className="stack booking-manager-form">
           <h3>{es ? "Recursos reservables" : "Bookable resources"}</h3>
           <p>
