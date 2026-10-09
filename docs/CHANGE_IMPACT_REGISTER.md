@@ -161,7 +161,6 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - Production build/deployment ID, URL smoke, metrics/logs (or NOT DEPLOYED): NOT DEPLOYED at entry composition.
 - Outstanding gaps and accountable follow-up: run full repository check/build, push PR, merge only after checks pass, then verify Cloudflare master deployment and tablet UI.
 
-
 ## 2026-10-09 | AkiBusiness unified properties and AkiDuermo-specific manager candidate
 
 - Requested: after AkiBusiness login, show all managed AkiPasa venues and AkiDuermo properties; opening each exposes an appropriate dedicated tool suite, with a full future accommodation reservation service.
