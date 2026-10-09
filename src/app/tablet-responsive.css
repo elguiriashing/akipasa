@@ -257,3 +257,9 @@
 @media (max-width: 700px) {
   .accommodation-tool-grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+.accommodation-management-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; min-width: 0; }
+.accommodation-management-tabs > button { flex: 1 1 10rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-width: 0; white-space: normal; }
+.accommodation-section-content { min-width: 0; border: 1px solid var(--line); border-radius: 1rem; padding: clamp(1rem, 2vw, 1.5rem); }
+@media (max-width: 600px) { .accommodation-management-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 370px) { .accommodation-management-tabs { grid-template-columns: 1fr; } }
