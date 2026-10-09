@@ -208,10 +208,15 @@ try {
         });
         await settings.click();
         await page
-          .getByRole("radio", {
-            name: locale === "es" ? /Enlace externo/ : /External link/,
+          .getByText(locale === "es" ? "Enlace externo" : "External link", {
+            exact: true,
           })
-          .check();
+          .click();
+        await expect(
+          page.getByRole("radio", {
+            name: locale === "es" ? /Enlace externo/ : /External link/,
+          }),
+        ).toBeChecked();
         await expect(page.locator('input[name="externalUrl"]')).toBeVisible();
         await expect(page.locator('input[name="depositEuros"]')).toHaveCount(0);
         await page.goto(url("account"));
