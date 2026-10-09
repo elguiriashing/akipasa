@@ -335,7 +335,9 @@ export default async function VenueWorkspace({
       verified={venue.verified}
       publicHref={
         venue.status === "published" && venue.slug
-          ? `/${locale}/venues/${venue.slug}`
+          ? venue.discovery_vertical === "accommodation"
+            ? `https://akiduermo.akipasa.com/stays/${encodeURIComponent(venue.slug)}?lang=${locale}`
+            : `/${locale}/venues/${venue.slug}`
           : undefined
       }
       initialSection={getVenueDashboardSection(query)}
