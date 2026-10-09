@@ -212,3 +212,9 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 - AkiBusiness Services must support editing existing `booking_offerings`, not only creating them. Managers can update name, type, duration, capacity and active state through the same booking manager, using owner/manager authorization and existing RLS; no schema migration is required.
 - Booking inbox filters remain URL-backed for share/reload persistence, but the search form submits through the client router so applying search/status/sort does not trigger a full document reload. Booking action redirects still preserve validated filters.
 - Booking request cards use a responsive grid on tablet/desktop to use horizontal space; narrow screens collapse to one card per row. Keep approval/decline/complete/cancel/retry controls visible inside each card.
+
+### Business vs accommodation tool selection (2026-10-09, unverified candidate)
+
+- AkiBusiness managed list now resolves `venues.discovery_vertical`: regular AkiPasa venues and AkiDuermo accommodations are visible within one authorized account, labelled separately, with their existing verified membership/role gates.
+- VenueDashboard receives an explicit product type. Accommodation exposes Overview, Profile, Bookings, Team only; venue-specific events/catalogue/rewards/check-in remain available unchanged on regular venues. AkiDuermo booking area is separate from timed-slot BookingManager, and remains intentionally NON-BOOKABLE until room-night inventory and rates ship.
+- See `docs/AKIDUERMO_BOOKING_DESIGN.md` for complete seven-template booking system, room-night transaction model, UI contract and rollout phases. This branch does not implement accommodation inventory, actual nightly-rate quotes or booking transactions; no deployment claims.
