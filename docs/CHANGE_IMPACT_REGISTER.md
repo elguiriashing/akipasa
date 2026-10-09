@@ -95,7 +95,6 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - Verification: NOT RUN locally: checkout unavailable in tool runtime. GitHub CI requested; pending status, migration deployment and live smoke checks must not be represented as passed.
 - Rollback: revert feature code first; added database column can safely remain with empty default. No live production changes performed as part of initial PR preparation.
 
-
 ## 2026-10-09 | PR pending | AkiDuermo claim selection and owner playtest seed
 
 - Adds Activities/Accommodation selection to the existing AkiBusiness claim picker, reusing standard claim approvals and venue member authorization.

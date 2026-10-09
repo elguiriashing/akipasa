@@ -175,8 +175,8 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 - Public event detail reads the current published venue catalogue and renders selected matching sections, never copied prices/allergens. No selection gives no menu. Menu deletion/unpublish removes it from event display.
 - Cross-surface release prerequisites: migration before Workers deploy, full check/e2e, EN/ES mobile/desktop, role ownership, published/unpublished catalogue, bookings and media regression. Never claim deployed before verification.
 
-
 ### AkiDuermo accommodation claim discovery (2026-10-09)
+
 - AkiBusiness claim picker now has Activities / Accommodation tabs, using validated `vertical` on `/api/business/claim-search` and `/api/business/claim-map`.
 - Existing activity RPCs remain unchanged. Accommodation uses `search_claimable_accommodations` and `claimable_accommodation_cards_in_bounds`, restricting results to genuinely unclaimed, published, enabled, located, non-suspect accommodation.
 - All claims still use the existing `venue_claims` and member grant process, with no automatic ownership on claim submission.
