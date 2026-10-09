@@ -2,6 +2,7 @@ import "./globals.css";
 import "./compact-app.css";
 import "./brand.css";
 import "./appearance.css";
+import "./tablet-responsive.css";
 import type { Metadata, Viewport } from "next";
 import { ConsentAnalytics } from "@/components/ConsentAnalytics";
 import { PersonalisationConsent } from "@/components/PersonalisationConsent";
