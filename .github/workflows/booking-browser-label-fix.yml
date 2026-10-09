@@ -1,0 +1,41 @@
+name: Use visible booking mode labels in browser acceptance
+on:
+  push:
+    branches: [feature/booking-ux-confirmations]
+    paths: [.github/workflows/booking-browser-label-fix.yml]
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/booking-ux-confirmations
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Click the customer-visible mode label
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/test-booking-browser.mjs');s=p.read_text()
+          old='''        await page
+                    .getByRole("radio", {
+                      name: locale === "es" ? /Enlace externo/ : /External link/,
+                    })
+                    .check();'''
+          start=s.index('        await page\n          .getByRole("radio",')
+          end=s.index('          .check();',start)+len('          .check();')
+          new='''        await page.getByText(locale === "es" ? "Enlace externo" : "External link", { exact: true }).click();
+                  await expect(page.getByRole("radio", { name: locale === "es" ? /Enlace externo/ : /External link/ })).toBeChecked();'''
+          p.write_text(s[:start]+new+s[end:])
+          PY
+          npx prettier --write scripts/test-booking-browser.mjs
+          git add scripts/test-booking-browser.mjs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "test(bookings): operate actual visible mode cards with dashboard styles"
+          git push origin HEAD:feature/booking-ux-confirmations
