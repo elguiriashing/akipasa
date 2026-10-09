@@ -21,10 +21,10 @@ jobs:
       - name: Wait for connected deployment and inspect public routes
         run: |
           python - <<'PY'
-          import json,time,urllib.request,urllib.error
+          import json,time,urllib.request,urllib.error,urllib.parse
           from pathlib import Path
           expected='2026-10-09-booking-ux-r1'
-          evidence={'source_commit':'${{ github.sha }}','checks':[],'authenticated_production_test':'not performed; no browser session or credentials'}
+          evidence={'source_commit':'${{ github.sha }}','application_release_commit':'ce9f74c2ef9bb936dc3573e27252ccd3885a0405','checks':[],'authenticated_production_test':'not performed; no browser session or credentials'}
           def get(url):
               req=urllib.request.Request(url,headers={'User-Agent':'AkiPasa-release-smoke/1.0','Cache-Control':'no-cache'})
               try:
@@ -49,11 +49,12 @@ jobs:
                   evidence['checks']+=sample; ready=True; break
               time.sleep(30)
           evidence['edge_release_verified']=ready
-          urls=['https://akipasa.com/en','https://akipasa.com/es','https://www.akipasa.com/en','https://akipasa.com/en/venues/beasty-bites-004b87','https://akipasa.com/es/venues/beasty-bites-004b87','https://akipasa.com/en/account/bookings','https://akipasa.com/es/account/bookings','https://business.akipasa.com/en/login']
+          urls=['https://akipasa.com/en','https://akipasa.com/es','https://www.akipasa.com/en','https://akipasa.com/en/venues/beasty-bites-004b87','https://akipasa.com/es/venues/beasty-bites-004b87','https://akipasa.com/en/account/bookings','https://akipasa.com/es/account/bookings','https://akipasa.com/en/venues/beasty-bites-004b87/book','https://akipasa.com/es/venues/beasty-bites-004b87/book','https://business.akipasa.com/en/auth']
           for url in urls:
               code,final,body=get(url)
-              protected='/account/bookings' in url
-              healthy=code==200 and (not protected or '/login' in final or '/signin' in final)
+              protected='/account/bookings' in url or urllib.parse.urlparse(url).path.endswith('/book')
+              final_path=urllib.parse.urlparse(final).path.rstrip('/')
+              healthy=code==200 and (not protected or final_path in ('/en/auth','/es/auth'))
               evidence['checks'].append({'url':url,'http_status':code,'final_url':final,'healthy':healthy})
           Path('booking-live-evidence.json').write_text(json.dumps(evidence,indent=2))
           print(json.dumps(evidence,indent=2))
