@@ -1099,9 +1099,9 @@ export async function createRecurringBookingSlots(formData: FormData) {
   const venueId = String(formData.get("venueId") || "");
   const parsed = context
     .extend({
-      startDate: z.string().regex(/^\\d{4}-\\d{2}-\\d{2}$/),
-      endDate: z.string().regex(/^\\d{4}-\\d{2}-\\d{2}$/),
-      startTime: z.string().regex(/^([01]\\d|2[0-3]):[0-5]\\d$/),
+      startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      startTime: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
       duration: z.coerce.number().int().min(15).max(1440),
       capacity: z.coerce.number().int().min(1).max(10000),
       resourceId: z.union([z.string().uuid(), z.literal("")]).default(""),
