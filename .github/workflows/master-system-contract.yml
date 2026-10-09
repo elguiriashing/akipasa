@@ -14,7 +14,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: 22
       - name: Source inventory summary
         run: node scripts/generate-system-inventory.mjs --summary > source-inventory.json
       - name: Check impact documentation for application changes
