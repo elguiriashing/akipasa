@@ -15,11 +15,11 @@ type Settings = {
 } | null;
 
 const templates: ReadonlyArray<readonly [string, IconName, string, string]> = [
-  ["dining","utensils","Tables & dining","Mesas y restaurantes"],
-  ["experience","compass","Tours & experiences","Tours y experiencias"],
+  ["dining","venue","Tables & dining","Mesas y restaurantes"],
+  ["experience","discover","Tours & experiences","Tours y experiencias"],
   ["resource","calendar","Facilities & rentals","Instalaciones y alquiler"],
-  ["appointment","clock","Appointments","Citas y servicios"],
-  ["ticket","ticket","Events & tickets","Eventos y entradas"],
+  ["appointment","calendar","Appointments","Citas y servicios"],
+  ["membership","membership","Events & tickets","Eventos y entradas"],
   ["class","users","Classes & activities","Clases y actividades"],
   ["stay","home","Overnight stays","Alojamientos"],
 ];
@@ -146,7 +146,7 @@ export function BookingManager({
               [
                 [
                   "external",
-                  "link",
+                  "globe",
                   es ? "Enlace externo" : "External link",
                   es
                     ? "Usa tu proveedor de reservas."
