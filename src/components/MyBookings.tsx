@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
-import { Icon } from "@/components/Icons";
+import { Icon } from "./Icons";
 
 export type MyBooking = {
   id: string;
