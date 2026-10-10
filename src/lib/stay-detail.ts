@@ -41,7 +41,8 @@ export const loadStayDetail = cache(
       .eq("target_key", "stay_header")
       .order("sort_order")
       .limit(12);
-    if (placementError) throw new Error("Accommodation photos are temporarily unavailable");
+    if (placementError)
+      throw new Error("Accommodation photos are temporarily unavailable");
     const orderedIds = (headerPlacements || []).map((item) => item.media_id);
     const { data: media, error: mediaError } = orderedIds.length
       ? await client
@@ -50,7 +51,8 @@ export const loadStayDetail = cache(
           .eq("venue_id", data.id)
           .in("id", orderedIds)
       : { data: [], error: null };
-    if (mediaError) throw new Error("Accommodation photos are temporarily unavailable");
+    if (mediaError)
+      throw new Error("Accommodation photos are temporarily unavailable");
     const mediaById = new Map((media || []).map((item) => [item.id, item]));
     const photos = (
       await Promise.all(
