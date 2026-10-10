@@ -58,7 +58,7 @@ export async function sendWorkspaceMessage(
     return { ok: false, error: code.startsWith("workspace_") ? code : "workspace_auth_unavailable", ambiguous: false, retryable: false };
   }
   // CR/LF sanitization also protects MIME headers from a malformed contact address.
-  if (!/^[^\\s@\\r\\n]+@[^\\s@\\r\\n]+\\.[^\\s@\\r\\n]+$/.test(recipient))
+  if (!/^[^\s@\r\n]+@[^\s@\r\n]+\.[^\s@\r\n]+$/.test(recipient))
     return { ok: false, error: "invalid_recipient", ambiguous: false, retryable: false };
   const b64 = (text: string) => btoa(Array.from(utf8(text), b => String.fromCharCode(b)).join(""));
   const boundary = "akipasa_" + id.replace(/[^a-zA-Z0-9]/g, "").slice(0,100);
@@ -72,7 +72,7 @@ export async function sendWorkspaceMessage(
     `--${boundary}`, "Content-Type: text/html; charset=UTF-8",
     "Content-Transfer-Encoding: base64", "", b64(message.html),
     `--${boundary}--`, "",
-  ].join("\\r\\n");
+  ].join("\r\n");
   try {
     const response = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
       method: "POST",
