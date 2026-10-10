@@ -9,11 +9,24 @@ import {
   type ClaimDecision,
 } from "./claim-decision-email";
 
+export type ClaimMailEnv = BookingMailEnv & { CLAIM_RESEND_API_KEY?: string };
+export function claimMailEnvironment(): ClaimMailEnv {
+  return {
+    ...bookingMailEnvironment(),
+    CLAIM_RESEND_API_KEY: process.env.CLAIM_RESEND_API_KEY,
+  };
+}
+export function claimMailConfigured(env: ClaimMailEnv) {
+  return bookingEmailConfigured({
+    ...env,
+    RESEND_API_KEY: env.CLAIM_RESEND_API_KEY || env.RESEND_API_KEY,
+  });
+}
 export async function dispatchClaimDecisions(
-  env: BookingMailEnv = bookingMailEnvironment(),
+  env: ClaimMailEnv = claimMailEnvironment(),
   claimId?: string,
 ) {
-  if (!bookingEmailConfigured(env))
+  if (!claimMailConfigured(env))
     return { sent: 0, failed: 0, configured: false };
   const db = createClient(
     env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -32,7 +45,7 @@ export async function dispatchClaimDecisions(
   for (const row of data || []) {
     const outcome = await sendClaimDecisionEmail(
       { ...(row.payload as ClaimDecision), recipient: row.recipient },
-      env.RESEND_API_KEY,
+      env.CLAIM_RESEND_API_KEY || env.RESEND_API_KEY,
     );
     const { error: ackError } = await db.rpc("finish_claim_decision_email", {
       p_claim: row.claim_id,

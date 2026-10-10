@@ -197,3 +197,29 @@ it("leaves queue read failures unsent and acknowledges provider failures for ret
   });
   log.mockRestore();
 });
+it("supports an isolated claim-only key without enabling booking delivery", async () => {
+  rpc
+    .mockResolvedValueOnce({
+      data: [
+        {
+          claim_id: claim.claimId,
+          lease_id: "lease-1",
+          recipient: "applicant@example.test",
+          payload: claim,
+        },
+      ],
+    })
+    .mockResolvedValueOnce({ data: true });
+  const fetcher = vi.fn().mockResolvedValue(Response.json({ id: "mail-1" }));
+  vi.stubGlobal("fetch", fetcher);
+  expect(
+    await dispatchClaimDecisions({
+      ...env,
+      RESEND_API_KEY: undefined,
+      CLAIM_RESEND_API_KEY: "claim-only-disposable",
+    }),
+  ).toMatchObject({ sent: 1, configured: true });
+  expect(fetcher.mock.calls[0][1].headers.Authorization).toBe(
+    "Bearer claim-only-disposable",
+  );
+});
