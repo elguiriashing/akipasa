@@ -40,7 +40,7 @@ export default async function AuthPage({
   };
   return (
     <main
-      className={`auth-page auth-product-theme ${isBusinessHost ? "auth-theme-business" : "auth-theme-akipasa"}`}
+      className={`auth-page auth-product-theme ${isStayHost ? "auth-theme-stay" : isBusinessHost ? "auth-theme-business" : "auth-theme-akipasa"}`}
     >
       <section className="auth-intro">
         <div className="auth-intro-copy">
@@ -75,6 +75,13 @@ export default async function AuthPage({
                     ? "Tu cuenta AkiPasa"
                     : "Your AkiPasa account"}
           </h1>
+          {isStayHost && (
+            <p className="akiduermo-auth-promise">
+              {es
+                ? "Guarda tus favoritos, organiza tus escapadas y vuelve a tus reservas cuando quieras."
+                : "Save your favourites, plan the next escape and find every stay in one place."}
+            </p>
+          )}
         </div>
         {!isStayHost && (
           <aside className="auth-product-portals">

@@ -10,6 +10,7 @@ import {
 } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { AkiDuermo } from "../src/components/AkiDuermo";
+vi.mock("next/navigation", () => ({ usePathname: () => "/saved" }));
 vi.mock("next/dynamic", () => ({
   default: () =>
     function TestMap({
@@ -61,10 +62,14 @@ it("shows saved stays on their own route with local filters and dedicated naviga
   );
   render(<AkiDuermo initialLocale="en" initialView="saved" />);
   await waitFor(() =>
-    expect(screen.getByRole("link", { name: "Saved (2)" })).toBeInTheDocument(),
+    expect(screen.getByRole("link", { name: "Saved" })).toBeInTheDocument(),
   );
+  expect(screen.queryByRole("region", { name: "Plan your stay" })).toBeNull();
+  expect(
+    screen.getByRole("searchbox", { name: "Search saved stays" }),
+  ).toBeVisible();
   fireEvent.click(screen.getByRole("button", { name: "Hotels" }));
-  expect(screen.getByRole("link", { name: "Saved (2)" })).toHaveAttribute(
+  expect(screen.getByRole("link", { name: "Saved" })).toHaveAttribute(
     "aria-current",
     "page",
   );
@@ -95,4 +100,9 @@ it("shows saved stays on their own route with local filters and dedicated naviga
     "href",
     "/?lang=en",
   );
+  expect(
+    Array.from(
+      screen.getByRole("navigation", { name: "AkiDuermo navigation" }).children,
+    ).map((link) => link.textContent),
+  ).toEqual(["Explore", "Map", "Saved", "Bookings", "Account"]);
 });

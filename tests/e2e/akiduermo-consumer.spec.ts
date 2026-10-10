@@ -39,11 +39,40 @@ for (const locale of ["en", "es"] as const) {
             { waitUntil: "domcontentloaded" },
           );
           await expect(page.locator("main")).toBeVisible();
+          if (path === "/saved") {
+            await expect(
+              page.getByRole("searchbox", {
+                name:
+                  locale === "es" ? "Buscar guardados" : "Search saved stays",
+              }),
+            ).toBeVisible();
+            await expect(
+              page.getByRole("region", {
+                name: locale === "es" ? "Planea tu estancia" : "Plan your stay",
+              }),
+            ).toHaveCount(0);
+          }
+          if (path.includes("/auth?")) {
+            await expect(
+              page.getByRole("link", { name: /AkiDuermo\./ }),
+            ).toBeVisible();
+            await expect(
+              page.getByRole("complementary", { name: "Primary navigation" }),
+            ).toHaveCount(0);
+          }
           expect(
             await page.evaluate(() => document.documentElement.scrollWidth),
             path,
           ).toBeLessThanOrEqual(viewport.width + 1);
           if (path === "/map") {
+            const filter = page.locator("details").filter({
+              has: page.getByText(
+                locale === "es" ? "Buscar y filtrar" : "Search & filters",
+              ),
+            });
+            await expect(filter).not.toHaveAttribute("open", "");
+            await filter.locator("summary").click();
+            await expect(filter).toHaveAttribute("open", "");
             await expect(
               page.getByRole("application", {
                 name: locale === "es" ? "Mapa interactivo" : "Interactive map",
@@ -52,6 +81,26 @@ for (const locale of ["en", "es"] as const) {
             const map = await page.locator(".production-map").boundingBox();
             expect(map?.width).toBeGreaterThan(viewport.width * 0.9);
             expect(map?.height).toBeGreaterThan(viewport.height * 0.6);
+          }
+          if (path === "/saved" || path === "/map") {
+            const links = await page
+              .getByRole("navigation", {
+                name:
+                  locale === "es"
+                    ? "Navegación de AkiDuermo"
+                    : "AkiDuermo navigation",
+              })
+              .locator("a")
+              .evaluateAll((elements) =>
+                elements.map((a) => a.getAttribute("href")?.split("?")[0]),
+              );
+            expect(links).toEqual([
+              "/",
+              "/map",
+              "/saved",
+              "/bookings",
+              "/account",
+            ]);
           }
         }
         await page.screenshot({
