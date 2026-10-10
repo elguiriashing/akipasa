@@ -17,8 +17,30 @@ for (const locale of ["en", "es"] as const) {
         // Exercise the same Next server through the stay virtual host, without real credentials.
         await page.route(/http:\/\/127\.0\.0\.1:\d+\//, async (route) => {
           const path = new URL(route.request().url()).pathname;
-          if (path === "/api/stays")
-            return route.fulfill({ json: { rows: [], total: 0 } });
+          if (path === "/api/stays") {
+            const hasDates = new URL(route.request().url()).searchParams.has(
+              "checkIn",
+            );
+            return route.fulfill({
+              json: {
+                rows: hasDates
+                  ? [
+                      {
+                        id: "00000000-0000-4000-8000-000000000001",
+                        slug: "test-stay",
+                        name: "Test stay",
+                        address: "Fuengirola",
+                        accommodationType: "apartment",
+                        website: null,
+                        city: "Fuengirola",
+                      },
+                    ]
+                  : [],
+                total: hasDates ? 1 : 0,
+                availabilityChecked: hasDates,
+              },
+            });
+          }
           if (path === "/api/map/stays")
             return route.fulfill({ json: { ids: [], total: 0 } });
           const response = await route.fetch({
@@ -31,6 +53,7 @@ for (const locale of ["en", "es"] as const) {
         });
         for (const path of [
           `/${locale}/auth?next=%2Fbookings`,
+          "/",
           "/saved",
           "/map",
         ]) {
@@ -39,6 +62,34 @@ for (const locale of ["en", "es"] as const) {
             { waitUntil: "domcontentloaded" },
           );
           await expect(page.locator("main")).toBeVisible();
+          if (path === "/") {
+            await page
+              .getByRole("textbox", {
+                name: locale === "es" ? "Destino" : "Destination",
+              })
+              .fill("Fuengirola");
+            await page
+              .getByLabel(locale === "es" ? "Entrada" : "Check in")
+              .fill("2026-10-10");
+            await page
+              .getByLabel(locale === "es" ? "Salida" : "Check out")
+              .fill("2026-10-14");
+            await page
+              .getByRole("button", {
+                name: locale === "es" ? "Buscar alojamiento" : "Find a stay",
+              })
+              .click();
+            await expect(
+              page.getByRole("link", { name: "Test stay", exact: true }),
+            ).toBeVisible();
+            await expect(
+              page.getByText(
+                locale === "es"
+                  ? /Disponibilidad comprobada/
+                  : /Availability checked/,
+              ),
+            ).toBeVisible();
+          }
           if (path === "/saved") {
             await expect(
               page.getByRole("searchbox", {
@@ -71,8 +122,25 @@ for (const locale of ["en", "es"] as const) {
               ),
             });
             await expect(filter).not.toHaveAttribute("open", "");
+            await expect(page.locator(".map-legend")).toBeHidden();
             await filter.locator("summary").click();
             await expect(filter).toHaveAttribute("open", "");
+            const canvas = page.locator(".production-map canvas");
+            if (await canvas.count()) {
+              await canvas.evaluate((element) =>
+                element.setAttribute("data-stay-map-instance", "original"),
+              );
+            }
+            await page
+              .getByRole("button", {
+                name: locale === "es" ? "Hoteles" : "Hotels",
+              })
+              .click();
+            if (await canvas.count())
+              await expect(canvas).toHaveAttribute(
+                "data-stay-map-instance",
+                "original",
+              );
             await expect(
               page.getByRole("application", {
                 name: locale === "es" ? "Mapa interactivo" : "Interactive map",

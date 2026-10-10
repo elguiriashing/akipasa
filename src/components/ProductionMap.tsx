@@ -208,6 +208,9 @@ export function ProductionMap({
   const [mapUnavailable, setMapUnavailable] = useState(false);
   const stayType = stayFilters?.type;
   const stayQuery = stayFilters?.q;
+  const stayFiltersRef = useRef({ type: stayType, q: stayQuery });
+  stayFiltersRef.current = { type: stayType, q: stayQuery };
+  const refreshStaysRef = useRef<(() => void) | null>(null);
   const container = useRef<HTMLDivElement>(null);
   const initialCenterRef = useRef(center);
   const initialPointsRef = useRef(points);
@@ -224,6 +227,9 @@ export function ProductionMap({
     venueIdsRef.current = venueIds;
     renderVenuesRef.current?.();
   }, [vertical, venueIds]);
+  useEffect(() => {
+    refreshStaysRef.current?.();
+  }, [stayType, stayQuery]);
 
   useEffect(() => {
     trackBehaviour({
@@ -305,7 +311,7 @@ export function ProductionMap({
           new maplibregl.NavigationControl({ showCompass: false }),
           "top-right",
         );
-        if (stayType === undefined)
+        if (stayFiltersRef.current.type === undefined)
           navigator.geolocation?.getCurrentPosition(
             ({ coords }) => {
               if (disposed) return;
@@ -607,14 +613,16 @@ export function ProductionMap({
           const renderVenues = () => {
             if (disposed) return;
             const markers = (
-              stayType !== undefined ? stayMarkers : tileLoader.values()
+              stayFiltersRef.current.type !== undefined
+                ? stayMarkers
+                : tileLoader.values()
             ).filter(
               (marker) =>
                 markerIsVisible(marker, verticalRef.current) &&
                 (!venueIdsRef.current || venueIdsRef.current.has(marker[0])) &&
                 !(
                   verticalRef.current === "activities" &&
-                  stayType === undefined &&
+                  stayFiltersRef.current.type === undefined &&
                   eventVenueIds.has(marker[0])
                 ),
             );
@@ -716,15 +724,16 @@ export function ProductionMap({
             loading = true;
             setVenueStatus("loading");
             const bounds = map.getBounds();
+            const currentStayFilters = stayFiltersRef.current;
             try {
-              if (stayType !== undefined) {
+              if (currentStayFilters.type !== undefined) {
                 const params = new URLSearchParams({
                   west: String(Math.max(-180, bounds.getWest())),
                   east: String(Math.min(180, bounds.getEast())),
                   south: String(Math.max(-85, bounds.getSouth())),
                   north: String(Math.min(85, bounds.getNorth())),
-                  type: stayType,
-                  q: stayQuery || "",
+                  type: currentStayFilters.type,
+                  q: currentStayFilters.q || "",
                 });
                 const response = await fetch(`/api/map/stays?${params}`, {
                   signal: request.signal,
@@ -732,6 +741,13 @@ export function ProductionMap({
                 if (!response.ok) throw new Error("Stay map unavailable");
                 const data = await response.json();
                 if (disposed) return;
+                if (
+                  currentStayFilters.type !== stayFiltersRef.current.type ||
+                  currentStayFilters.q !== stayFiltersRef.current.q
+                ) {
+                  queued = true;
+                  return;
+                }
                 stayMarkers = compactMarkerSchema
                   .array()
                   .max(1001)
@@ -769,6 +785,7 @@ export function ProductionMap({
               }
             }
           };
+          refreshStaysRef.current = () => void loadVenues();
           const publishMapCenter = () => {
             const current = map.getCenter();
             window.dispatchEvent(
@@ -803,6 +820,7 @@ export function ProductionMap({
           }
         });
         cleanup = () => {
+          refreshStaysRef.current = null;
           themeObserver.disconnect();
           window.removeEventListener("akipasa:map-resize", resizeMap);
           map.off("style.load", onMapStyleLoad);
@@ -816,12 +834,13 @@ export function ProductionMap({
     return () => {
       disposed = true;
       renderVenuesRef.current = null;
+      refreshStaysRef.current = null;
       clearTimeout(timer);
       request.abort();
       popupRequest?.abort();
       cleanup();
     };
-  }, [locale, styleUrl, fullScreen, venueDestination, stayType, stayQuery]);
+  }, [locale, styleUrl, fullScreen, venueDestination]);
 
   return (
     <section className="map-panel" aria-labelledby="production-map-title">
