@@ -573,6 +573,8 @@ export async function addTeamMember(formData: FormData) {
     p_role: parsed.data.role,
   });
   if (error) redirect(destination(locale, venueId, "error=member"));
+  revalidatePath("/en/business", "page");
+  revalidatePath("/es/business", "page");
   redirect(destination(locale, venueId, "updated=member"));
 }
 

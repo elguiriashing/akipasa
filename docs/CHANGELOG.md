@@ -876,3 +876,7 @@ Completed the AkiDuermo room-night request candidate: explicit booking modes, re
 
 - Candidate: claimant-localized approval/welcome and denial/resubmission emails
   from alex@akipasa.com, with atomic private outbox and duplicate-safe delivery.
+
+## 2026-10-10
+
+- Fix AkiBusiness access for added venue/accommodation team members, including consumer editors and members of unverified properties, while retaining tenant role and Pro entitlement checks.
