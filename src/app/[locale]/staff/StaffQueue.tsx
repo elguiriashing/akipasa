@@ -21,6 +21,14 @@ export type StaffQueueItem = {
     email?: string | null;
     phone?: string | null;
     created_at?: string | null;
+    submission?: {
+      applicant_name?: string | null;
+      relationship?: string | null;
+      applicant_phone?: string | null;
+      business_email?: string | null;
+      business_website?: string | null;
+      business_phone?: string | null;
+    } | null;
   } | null;
   venues?: {
     name?: string | null;
@@ -201,6 +209,72 @@ function ClaimDetails({
           </dd>
         </div>
       </dl>
+      <div>
+        <h4>{es ? "Datos facilitados en la solicitud" : "Details supplied with the claim"}</h4>
+        <dl className="claim-review-grid claim-submitted-details">
+          <div>
+            <dt>{es ? "Nombre de contacto" : "Contact name"}</dt>
+            <dd>{item.claimant?.submission?.applicant_name || missing}</dd>
+          </div>
+          <div>
+            <dt>{es ? "Relación con el negocio" : "Role at the business"}</dt>
+            <dd>
+              {({
+                owner: es ? "Propietario/a" : "Owner",
+                manager: es ? "Gerente / responsable" : "Manager",
+                authorized: es ? "Representante autorizado/a" : "Authorised representative",
+                employee: es ? "Empleado/a" : "Employee",
+                other: es ? "Otra relación" : "Other",
+              } as Record<string, string>)[item.claimant?.submission?.relationship || ""] || missing}
+            </dd>
+          </div>
+          <div>
+            <dt>{es ? "Teléfono facilitado" : "Submitted phone"}</dt>
+            <dd>
+              {item.claimant?.submission?.applicant_phone ? (
+                <a href={`tel:${item.claimant.submission.applicant_phone.replace(/[^+0-9]/g, "")}`}>
+                  {item.claimant.submission.applicant_phone}
+                </a>
+              ) : missing}
+            </dd>
+          </div>
+          <div>
+            <dt>{es ? "Email del negocio facilitado" : "Submitted business email"}</dt>
+            <dd>
+              {item.claimant?.submission?.business_email ? (
+                <a href={`mailto:${encodeURIComponent(item.claimant.submission.business_email)}`}>
+                  {item.claimant.submission.business_email}
+                </a>
+              ) : missing}
+            </dd>
+          </div>
+          <div>
+            <dt>{es ? "Web facilitada" : "Submitted website"}</dt>
+            <dd>
+              {item.claimant?.submission?.business_website?.startsWith("https://") ? (
+                <a href={item.claimant.submission.business_website} target="_blank" rel="noopener noreferrer">
+                  {item.claimant.submission.business_website}
+                </a>
+              ) : item.claimant?.submission?.business_website || missing}
+            </dd>
+          </div>
+          <div>
+            <dt>{es ? "Teléfono del local facilitado" : "Submitted venue phone"}</dt>
+            <dd>
+              {item.claimant?.submission?.business_phone ? (
+                <a href={`tel:${item.claimant.submission.business_phone.replace(/[^+0-9]/g, "")}`}>
+                  {item.claimant.submission.business_phone}
+                </a>
+              ) : missing}
+            </dd>
+          </div>
+        </dl>
+        <p className="fine-print">
+          {es
+            ? "Datos declarados por el solicitante. No se han verificado ni aplicado a la ficha pública."
+            : "Applicant-supplied details. These have not been verified or applied to the public listing."}
+        </p>
+      </div>
       <div>
         <h4>{es ? "Pruebas de la solicitud" : "Claim evidence"}</h4>
         <p className="claim-evidence">{item.evidence || missing}</p>
