@@ -1,5 +1,23 @@
 # Change Impact Register
 
+## 2026-10-10 | Stop database application-conflict retry storm
+
+- Evidence: 63,163 catalogue and 974 workspace revision errors in 15 minutes;
+  production PostgREST 14.5; five functions explicitly raise 40001 for stale
+  application revisions, matching Supabase's documented infinite retry bug.
+- Change: additive migration replaces only those five functions' conflict
+  codes with PT409, retaining authorization, grants, validation and row locks.
+  Venue-review API accepts both codes during rollout. No locale or layout change.
+- Dependencies: AkiBusiness catalogue save/unpublish, staff venue review, AkiHQ
+  company and workspace saves, shared production PostgreSQL/PostgREST. Public
+  booking, billing, storage, Google integrations and analytics stay unchanged.
+- Verification: embedded PostgreSQL regression covers stale conflict, denied
+  authorization, valid writes, preserved function attributes/grants, idempotent
+  migration and optional absent CRM functions. Release check and live evidence
+  must be recorded after execution; see database-conflict-incident.md.
+- Recovery: inspect current authenticator backends; terminate only confirmed
+  in-flight loops. Restoring 40001 before PostgREST 16 recreates the incident.
+
 Every behavior-changing PR adds an entry before merge. No invented verification.
 
 ## 2026-10-10 | AkiDuermo auth shell follow-up

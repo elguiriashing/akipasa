@@ -5,6 +5,10 @@
 
 ## Mandatory change protocol
 
+Database application revision conflicts use SQLSTATE `PT409` (HTTP 409), never
+`40001`: PostgREST 14 retries the latter indefinitely. See
+`docs/database-conflict-incident.md` for the October 10 incident and recovery.
+
 1. Read `AGENTS.md`, **this entire document**, `docs/ARCHITECTURE.md`, `docs/DECISIONS.md`, `docs/deployment-source.md`, and the relevant domain files. Also inspect current source, tests, migrations, deployment config, and the full import/call graph of touched code.
 2. Record the requested behavior, current observed behavior, locale/portal/role/device matrix, exact source paths, data ownership, upstream/downstream consumers, failure/rollback modes, and potential regressions **before** editing.
 3. Search for ALL instances of the affected function, copy, action, routes, translations, tables, permissions, caches, events, background jobs, telemetry, callbacks, mobile integrations, and tests. No isolated UI patch without tracing server and storage effects.

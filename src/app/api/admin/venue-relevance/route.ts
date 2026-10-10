@@ -75,11 +75,14 @@ export async function POST(request: Request) {
     return Response.json(
       {
         error:
-          error.code === "40001"
+          error.code === "PT409" || error.code === "40001"
             ? "This listing changed. Refresh before reviewing."
             : "Decision could not be saved",
       },
-      { status: error.code === "40001" ? 409 : 503, headers },
+      {
+        status: error.code === "PT409" || error.code === "40001" ? 409 : 503,
+        headers,
+      },
     );
   return Response.json(data, { headers });
 }
