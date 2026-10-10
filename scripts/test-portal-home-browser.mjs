@@ -144,7 +144,9 @@ try {
           });
           await page.addInitScript((theme) => {
             localStorage.setItem("akipasa.theme", theme);
-            document.documentElement.dataset.theme = theme;
+            document.addEventListener("DOMContentLoaded", () => {
+              document.documentElement.dataset.theme = theme;
+            });
           }, theme);
           await page.goto(
             `http://127.0.0.1:3197/?lang=${locale}&product=${product}`,
