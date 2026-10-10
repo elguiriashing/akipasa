@@ -1040,6 +1040,52 @@ export default async function BusinessPage({
                 }
               />
 
+              <div className="akibusiness-claim-details">
+                <div className="akibusiness-claim-details-heading">
+                  <h3>{es ? "Tus datos de contacto" : "Your contact details"}</h3>
+                  <p>{es ? "Estos datos son solo para comprobar tu solicitud. No cambian la ficha pública del local." : "These details are only used to review your claim. They will not change the venue’s public listing."}</p>
+                </div>
+                <div className="akibusiness-claim-details-grid">
+                  <label>
+                    <span>{es ? "Nombre y apellidos" : "Full name"}</span>
+                    <input name="applicantName" type="text" required minLength={2} maxLength={120} autoComplete="name" placeholder={es ? "Tu nombre completo" : "Your full name"} />
+                  </label>
+                  <label>
+                    <span>{es ? "Tu relación con el negocio" : "Your role at the business"}</span>
+                    <select name="businessRole" required defaultValue="">
+                      <option value="" disabled>{es ? "Selecciona tu relación" : "Select your role"}</option>
+                      <option value="owner">{es ? "Propietario/a" : "Owner"}</option>
+                      <option value="manager">{es ? "Gerente / responsable" : "Manager"}</option>
+                      <option value="authorized">{es ? "Representante autorizado/a" : "Authorised representative"}</option>
+                      <option value="employee">{es ? "Empleado/a" : "Employee"}</option>
+                      <option value="other">{es ? "Otra relación" : "Other"}</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>{es ? "Tu teléfono (opcional)" : "Your phone number (optional)"}</span>
+                    <input name="applicantPhone" type="tel" autoComplete="tel" inputMode="tel" maxLength={30} placeholder="+34 600 000 000" />
+                  </label>
+                  <label>
+                    <span>{es ? "Email de trabajo (opcional)" : "Business email (optional)"}</span>
+                    <input name="businessEmail" type="email" autoComplete="email" maxLength={254} placeholder="info@negocio.es" />
+                  </label>
+                </div>
+                <div className="akibusiness-claim-details-heading">
+                  <h3>{es ? "Información para verificar el local" : "Venue verification details"}</h3>
+                  <p>{es ? "Indica la web o el teléfono del negocio si los conoces. Los revisaremos antes de dar acceso." : "Provide the venue website or phone if you know them. We’ll check them before granting access."}</p>
+                </div>
+                <div className="akibusiness-claim-details-grid">
+                  <label>
+                    <span>{es ? "Web oficial del local (opcional)" : "Official venue website (optional)"}</span>
+                    <input name="businessWebsite" type="url" inputMode="url" autoComplete="url" maxLength={500} placeholder="https://negocio.es" />
+                  </label>
+                  <label>
+                    <span>{es ? "Teléfono del local (opcional)" : "Venue phone number (optional)"}</span>
+                    <input name="businessPhone" type="tel" inputMode="tel" maxLength={30} placeholder="+34 952 000 000" />
+                  </label>
+                </div>
+              </div>
+
               <label className="akibusiness-evidence-field">
                 <span>
                   {es
@@ -1048,8 +1094,8 @@ export default async function BusinessPage({
                 </span>
                 <small>
                   {es
-                    ? "Una web oficial, email corporativo, teléfono o cualquier dato que nos ayude a verificarlo."
-                    : "An official website, company email, phone number or anything else that helps us verify it."}
+                    ? "Explica cómo podemos verificar que estás autorizado a gestionar este local. Evita incluir contraseñas o documentos sensibles."
+                    : "Explain how we can verify that you are authorised to manage this venue. Never include passwords or sensitive documents."}
                 </small>
                 <textarea
                   name="evidence"
@@ -1058,8 +1104,8 @@ export default async function BusinessPage({
                   rows={4}
                   placeholder={
                     es
-                      ? "Por ejemplo: soy el propietario, este es nuestro sitio web y este es el teléfono del local..."
-                      : "For example: I am the owner, this is our website and this is the venue phone number..."
+                      ? "Por ejemplo: puedo responder desde el correo corporativo o confirmar la solicitud por teléfono..."
+                      : "For example: I can reply from our business email or confirm this request by phone..."
                   }
                 />
               </label>
