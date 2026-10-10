@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
-import { config } from "@/lib/config";
+import { config } from "../lib/config";
 import { Icon } from "./Icons";
 import { LanguageLink } from "./LanguageLink";
 import { PortalLogo } from "./PortalLogo";
