@@ -165,7 +165,9 @@ export function VenueMediaStudio({
         : await removeStayHeaderPhoto(fd);
       if (result.ok) {
         setHeaderIds((current) =>
-          add ? [...new Set([...current, mediaId])] : current.filter((id) => id !== mediaId),
+          add
+            ? [...new Set([...current, mediaId])]
+            : current.filter((id) => id !== mediaId),
         );
         setStatus("saved");
       } else {
@@ -194,9 +196,11 @@ export function VenueMediaStudio({
     const sharedAlt = String(source.get("alt") || "").trim();
     const toHeader = source.get("destination") === "stay_header";
     if (toHeader && files.length + headerIds.length > 12) {
-      setUploadError(es
-        ? "La cabecera admite un máximo de 12 fotos. Quita algunas o selecciona menos."
-        : "The header holds up to 12 photos. Remove some or select fewer.");
+      setUploadError(
+        es
+          ? "La cabecera admite un máximo de 12 fotos. Quita algunas o selecciona menos."
+          : "The header holds up to 12 photos. Remove some or select fewer.",
+      );
       return;
     }
     setBusy(true);
@@ -294,12 +298,16 @@ export function VenueMediaStudio({
         placement.set("locale", locale);
         placement.set("venueId", venueId);
         placement.set("mediaId", result.media.id);
-        const assigned = await addStayHeaderPhoto(placement).catch(() => ({ ok: false }));
+        const assigned = await addStayHeaderPhoto(placement).catch(() => ({
+          ok: false,
+        }));
         if (!assigned.ok) {
           setItems((current) => [...current, ...uploaded]);
-          setUploadError(es
-            ? "La imagen se guardó en la biblioteca, pero no se pudo añadir a la cabecera. Selecciónala abajo."
-            : "Photo saved to the library, but could not be added to the header. Select it below.");
+          setUploadError(
+            es
+              ? "La imagen se guardó en la biblioteca, pero no se pudo añadir a la cabecera. Selecciónala abajo."
+              : "Photo saved to the library, but could not be added to the header. Select it below.",
+          );
           setStatus("error");
           setBusy(false);
           setUploadProgress(null);
@@ -361,7 +369,13 @@ export function VenueMediaStudio({
       <header className="media-studio-header">
         <div>
           <span className="eyebrow">
-            {accommodation ? (es ? "Imágenes del alojamiento" : "Property images") : (es ? "Imágenes del local" : "Venue images")}
+            {accommodation
+              ? es
+                ? "Imágenes del alojamiento"
+                : "Property images"
+              : es
+                ? "Imágenes del local"
+                : "Venue images"}
           </span>
           <h2>
             {es
@@ -458,20 +472,33 @@ export function VenueMediaStudio({
       </div>
 
       {accommodation ? (
-        <section className="stay-header-media" aria-label={es ? "Fotos de la cabecera" : "Header photos"}>
-          <span className="eyebrow">{es ? "AkiDuermo · cabecera" : "AkiDuermo · header"}</span>
+        <section
+          className="stay-header-media"
+          aria-label={es ? "Fotos de la cabecera" : "Header photos"}
+        >
+          <span className="eyebrow">
+            {es ? "AkiDuermo · cabecera" : "AkiDuermo · header"}
+          </span>
           <h3>{es ? "Galería del alojamiento" : "Property header gallery"}</h3>
-          <p>{es
-            ? "Sube fotos aquí o elige imágenes de la biblioteca. Solo las fotos añadidas a esta galería aparecen en la cabecera pública (máximo 12)."
-            : "Upload here or choose from the media bin. Only photos added to this gallery appear in the public header (up to 12)."}</p>
+          <p>
+            {es
+              ? "Sube fotos aquí o elige imágenes de la biblioteca. Solo las fotos añadidas a esta galería aparecen en la cabecera pública (máximo 12)."
+              : "Upload here or choose from the media bin. Only photos added to this gallery appear in the public header (up to 12)."}
+          </p>
           <div className="media-library-grid">
             {headerIds.map((id) => {
               const photo = items.find((item) => item.id === id);
               return photo ? (
                 <article className="media-library-item" key={id}>
-                  <div className="media-library-thumb"><img src={photo.url} alt={photo.alt} /></div>
+                  <div className="media-library-thumb">
+                    <img src={photo.url} alt={photo.alt} />
+                  </div>
                   <div className="media-library-actions">
-                    <button type="button" disabled={busy} onClick={() => updateHeader(id, false)}>
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => updateHeader(id, false)}
+                    >
                       {es ? "Quitar de la cabecera" : "Remove from header"}
                     </button>
                   </div>
@@ -479,25 +506,64 @@ export function VenueMediaStudio({
               ) : null;
             })}
           </div>
-          {!headerIds.length ? <p>{es ? "Aún no hay fotos públicas." : "No public header photos yet."}</p> : null}
-          <form onSubmit={uploadMedia} className="media-upload-form" encType="multipart/form-data">
+          {!headerIds.length ? (
+            <p>
+              {es
+                ? "Aún no hay fotos públicas."
+                : "No public header photos yet."}
+            </p>
+          ) : null}
+          <form
+            onSubmit={uploadMedia}
+            className="media-upload-form"
+            encType="multipart/form-data"
+          >
             <input type="hidden" name="destination" value="stay_header" />
-            <label>{es ? "Subir fotos a la cabecera" : "Upload header photos"}
-              <SafeMediaFileInput locale={locale} name="image" required multiple maxFiles={12} />
+            <label>
+              {es ? "Subir fotos a la cabecera" : "Upload header photos"}
+              <SafeMediaFileInput
+                locale={locale}
+                name="image"
+                required
+                multiple
+                maxFiles={12}
+              />
             </label>
-            <button className="button" type="submit" disabled={busy || headerIds.length >= 12}>
-              {busy ? (es ? "Subiendo…" : "Uploading…") : (es ? "Subir a la cabecera" : "Upload to header")}
+            <button
+              className="button"
+              type="submit"
+              disabled={busy || headerIds.length >= 12}
+            >
+              {busy
+                ? es
+                  ? "Subiendo…"
+                  : "Uploading…"
+                : es
+                  ? "Subir a la cabecera"
+                  : "Upload to header"}
             </button>
           </form>
-          {items.some((item) => !headerIds.includes(item.id)) && headerIds.length < 12 ? (
+          {items.some((item) => !headerIds.includes(item.id)) &&
+          headerIds.length < 12 ? (
             <div className="media-five-picker">
-              {items.filter((item) => !headerIds.includes(item.id)).map((item) => (
-                <button key={item.id} type="button" className="media-mini-tile" disabled={busy}
-                  aria-label={es ? `Añadir ${item.alt} a la cabecera` : `Add ${item.alt} to header`}
-                  onClick={() => updateHeader(item.id, true)}>
-                  <img src={item.url} alt="" />
-                </button>
-              ))}
+              {items
+                .filter((item) => !headerIds.includes(item.id))
+                .map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className="media-mini-tile"
+                    disabled={busy}
+                    aria-label={
+                      es
+                        ? `Añadir ${item.alt} a la cabecera`
+                        : `Add ${item.alt} to header`
+                    }
+                    onClick={() => updateHeader(item.id, true)}
+                  >
+                    <img src={item.url} alt="" />
+                  </button>
+                ))}
             </div>
           ) : null}
         </section>
