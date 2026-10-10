@@ -13899,11 +13899,13 @@ body:has(#passport-privacy-controls) > .privacy-preferences {
 }
 
 .claim-search-results {
-  position: absolute;
+  /* Flow below the search input instead of covering it at narrow widths. */
+  position: relative;
   z-index: 9;
-  top: 7.8rem;
-  right: 1rem;
-  left: 1rem;
+  top: auto;
+  right: auto;
+  left: auto;
+  width: 100%;
   max-height: 23rem;
   overflow: auto;
   padding: 0.35rem;
