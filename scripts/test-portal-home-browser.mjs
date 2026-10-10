@@ -25,7 +25,10 @@ const bundle = await build({
   platform: "browser",
   format: "iife",
   jsx: "automatic",
-  define: { "process.env.NODE_ENV": '"production"' },
+  define: {
+    "process.env.NODE_ENV": '"production"',
+    "process.env": JSON.stringify({ NODE_ENV: "production" }),
+  },
   plugins: [
     {
       name: "next-browser-adapters",
@@ -127,12 +130,18 @@ try {
         [640, 400],
       ])
         for (const product of ["business", "stay"]) {
+          console.log(
+            `Checking ${product} ${locale} ${theme} ${width}x${height}`,
+          );
           const page = await browser.newPage({
             viewport: { width, height },
             colorScheme: theme,
           });
           const errors = [];
-          page.on("pageerror", (error) => errors.push(error.message));
+          page.on("pageerror", (error) => {
+            errors.push(error.message);
+            console.error(error);
+          });
           await page.addInitScript((theme) => {
             localStorage.setItem("akipasa.theme", theme);
             document.documentElement.dataset.theme = theme;
@@ -140,7 +149,18 @@ try {
           await page.goto(
             `http://127.0.0.1:3197/?lang=${locale}&product=${product}`,
           );
-          await expect(page.locator("header").first()).toBeVisible();
+          try {
+            await expect(page.locator("header").first()).toBeVisible();
+          } catch (error) {
+            await page.screenshot({
+              path: `${dir}/failed-${product}-${locale}-${theme}-${width}.png`,
+            });
+            writeFileSync(
+              `${dir}/errors.json`,
+              JSON.stringify(errors, null, 2),
+            );
+            throw error;
+          }
           expect(
             await page.evaluate(() => document.documentElement.scrollWidth),
           ).toBeLessThanOrEqual(width + 1);
