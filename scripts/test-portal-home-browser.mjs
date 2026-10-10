@@ -254,7 +254,8 @@ try {
             // Search CTA reachable in the first phone/tablet screen; short split windows scroll naturally.
             if (height >= 768) {
               const box = await search.boundingBox();
-              expect(box.y + box.height).toBeLessThanOrEqual(height);
+              const navBox = await nav.boundingBox();
+              expect(box.y + box.height).toBeLessThanOrEqual(navBox.y);
             }
             await page
               .getByRole("textbox", {
