@@ -275,6 +275,7 @@ export default async function VenueWorkspace({
       "venue_menu",
       "venue_events",
       "venue_explore",
+      "venue_gallery",
       "event_banner",
       "event_explore",
       "event_profile",
@@ -326,6 +327,9 @@ export default async function VenueWorkspace({
       : [];
   });
   const mediaStudioItems = allMediaItems.filter((item) => !item.eventSpecific);
+  const stayHeaderIds = (mediaPlacements || [])
+    .filter((item) => item.placement === "venue_gallery" && item.target_key === "stay_header")
+    .map((item) => item.media_id);
 
   const eventIds = (events || []).map((event) => event.id);
   const eventMediaPlacements = (mediaPlacements || []).filter((item) =>
@@ -686,6 +690,8 @@ export default async function VenueWorkspace({
                 venueId={id}
                 media={mediaStudioItems}
                 placements={venueMediaSlots}
+                accommodation={isAccommodation}
+                stayHeaderIds={stayHeaderIds}
               />
             </section>
           </>
