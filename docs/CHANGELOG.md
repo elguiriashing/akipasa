@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-10 - Staff claim review context (candidate)
+
+Show applicant identity/contact, venue address/contact, received and account dates, full evidence and reference IDs in the pending ownership queue. Add staff-only paginated identity lookup, explicit load errors and preserve the claims page after a decision. Requires the new read-only RPC migration before release.
+
 ## 2026-10-10 - AkiDuermo consumer app routes (candidate)
 
 - Add same-host customer sign-in, account, bookings and settings with a shared AkiPasa identity; keep the reservation return path on AkiDuermo.

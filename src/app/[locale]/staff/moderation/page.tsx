@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { WorkspacePageHeader } from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
+import { canModerate } from "@/lib/roles";
 import { isLocale } from "@/lib/config";
 import { StaffQueue, type StaffQueueItem } from "../StaffQueue";
 import { setAutomaticModeration } from "../../moderation/actions";
@@ -12,6 +13,7 @@ type Queue = (typeof queues)[number];
 async function loadQueue(
   supabase: Awaited<ReturnType<typeof requireUser>>["supabase"],
   queue: Queue,
+  claimOffset = 0,
 ) {
   if (queue === "venues")
     return supabase
@@ -37,11 +39,7 @@ async function loadQueue(
       .select("id,title,venue_name,venue_address,state,created_at")
       .eq("state", "pending")
       .order("created_at");
-  return supabase
-    .from("venue_claims")
-    .select("id,evidence,status,created_at,venues(name)")
-    .eq("status", "pending")
-    .order("created_at");
+  return supabase.rpc("staff_pending_venue_claims", { p_offset: claimOffset });
 }
 
 export default async function StaffModerationPage({
@@ -61,18 +59,22 @@ export default async function StaffModerationPage({
     locale,
     `/${locale}/staff/moderation`,
   );
-  const [{ data }, { data: automaticMode }, { data: profile }] =
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("app_role")
+    .eq("id", user.id)
+    .maybeSingle();
+  if (!profile || !canModerate(profile.app_role)) notFound();
+  const claimPage = /^\d{1,5}$/.test(query.page || "")
+    ? Math.min(10001, Math.max(1, Number(query.page)))
+    : 1;
+  const [{ data, error: queueError }, { data: automaticMode }] =
     await Promise.all([
-      loadQueue(supabase, queue),
+      loadQueue(supabase, queue, (claimPage - 1) * 20),
       supabase
         .from("automatic_moderation_settings")
         .select("enabled,changed_at")
         .eq("singleton", true)
-        .maybeSingle(),
-      supabase
-        .from("profiles")
-        .select("app_role")
-        .eq("id", user.id)
         .maybeSingle(),
     ]);
   const automaticEnabled = automaticMode?.enabled === true;
@@ -186,16 +188,49 @@ export default async function StaffModerationPage({
       </nav>
       <section>
         <h2>{labels[queue]}</h2>
-        <StaffQueue
-          locale={locale}
-          items={(data || []) as StaffQueueItem[]}
-          targetType={target}
-          approve={
-            queue === "community" || queue === "claims"
-              ? "approved"
-              : "published"
-          }
-        />
+        {queueError ? (
+          <p className="notice" role="alert">
+            {es
+              ? "No se pudo cargar la cola. Vuelve a intentarlo."
+              : "Could not load the queue. Please try again."}
+          </p>
+        ) : (
+          <StaffQueue
+            locale={locale}
+            items={(data || []) as StaffQueueItem[]}
+            targetType={target}
+            claimPage={claimPage}
+            approve={
+              queue === "community" || queue === "claims"
+                ? "approved"
+                : "published"
+            }
+          />
+        )}
+        {queue === "claims" && !queueError && (
+          <nav
+            className="workspace-subnav"
+            aria-label={es ? "Páginas de reclamaciones" : "Claim pages"}
+          >
+            {claimPage > 1 && (
+              <Link
+                href={`/${locale}/staff/moderation?queue=claims&page=${claimPage - 1}`}
+              >
+                {es ? "Anterior" : "Previous"}
+              </Link>
+            )}
+            <span>
+              {es ? "Página" : "Page"} {claimPage}
+            </span>
+            {claimPage * 20 < Number(data?.[0]?.total_count || 0) && (
+              <Link
+                href={`/${locale}/staff/moderation?queue=claims&page=${claimPage + 1}`}
+              >
+                {es ? "Siguiente" : "Next"}
+              </Link>
+            )}
+          </nav>
+        )}
       </section>
     </>
   );

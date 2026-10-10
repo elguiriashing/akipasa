@@ -7,6 +7,7 @@ export default defineConfig({
   test: {
     include: [
       "tests/portal-home.test.tsx",
+      "tests/staff-claims.test.tsx",
       "tests/akiduermo-search-api.test.ts",
       "tests/venue-media-upload.test.ts",
       "tests/venue-media-studio.test.tsx",
