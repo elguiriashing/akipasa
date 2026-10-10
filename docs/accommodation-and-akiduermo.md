@@ -124,3 +124,7 @@ count. Map matching loads all published matching accommodation IDs in bounded
 filters the geographic tile markers before clustering. Filter updates preserve
 the current map camera and close popups excluded by the new filter. Aborted or
 failed filter requests never apply partial or stale results.
+
+### Accommodation photo publishing (October 2026 candidate)
+
+AkiBusiness retains five listing media slots. Its separate AkiDuermo header gallery accepts up to 12 explicitly selected images from the private management bin, including direct uploads. Public stay pages load only those ordered `venue_gallery` placements with `target_key='stay_header'`; without assigned photos they show the existing placeholder. Removing a header assignment keeps the file private. Source JPEG/PNG/WebP images up to 50 MB are downscaled and JPEG compressed in the browser before the existing 10 MB authenticated upload endpoint validates them. This candidate requires EN/ES mobile and desktop, owner and anonymous acceptance before deployment.
