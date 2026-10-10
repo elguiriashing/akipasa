@@ -267,7 +267,7 @@ export default async function VenueWorkspace({
 
   const { data: mediaPlacements } = await supabase
     .from("venue_media_placements")
-    .select("media_id,placement,target_key")
+    .select("media_id,placement,target_key,sort_order")
     .eq("venue_id", id)
     .in("placement", [
       "venue_profile",
@@ -282,7 +282,8 @@ export default async function VenueWorkspace({
       "event_background",
       "event_map_vertical",
       "event_bin",
-    ]);
+    ])
+    .order("sort_order");
   const mediaPaths = (media || []).map((item) => item.storage_path);
   const { data: signedMediaRows } = mediaPaths.length
     ? await supabase.storage
