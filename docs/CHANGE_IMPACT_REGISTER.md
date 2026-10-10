@@ -1,5 +1,14 @@
 # Change Impact Register
 
+## 2026-10-10 | Staff operations overview includes pending ownership claims
+- User-visible defect: the Staff operations hero, publishing queue badge and “por revisar” stat displayed 0 even while Moderation → Reclamaciones showed a pending venue claim.
+- Cause: Staff homepage queried pending venues/events/community but omitted `venue_claims` entirely (and separately omitted pending offers), while Moderation queried the privileged, paginated `staff_pending_venue_claims` RPC.
+- Fix: staff-only `staff_pending_venue_claim_count()` RPC with the same pending/venue/profile join and authorization; add offers to overview counts, explicit claims metric, direct claims shortcut, and responsive 4-metric grid.
+- Completeness: any failed/null moderation counter gives an unavailable total rather than a false “all up to date”. Publishing queue shortcut goes straight to claims when claims are the only outstanding work.
+- Security/data: aggregate-only count, moderator/administrator gate, schema-qualified private data, revoked PUBLIC/anon execute. Existing claimant contact details, decision workflow, notification emails, memberships and queued records unchanged.
+- Validation: PGlite suite verifies count matches paginated claim RPC even with >20 records and denies anon/consumer/business roles; unit tests cover claims/offers and unknown counts; EN/ES labels share the same source. Pending release checks before merge: TypeScript, lint, Vitest and browser/Cloudflare acceptance.
+- Deployment: public AkiPasa branch `master`, Supabase SQL migration before UI publication; verify count against real pending queue. No data backfill or schema column rewrite.
+
 ## 2026-10-10 | Stop database application-conflict retry storm
 
 - Evidence: 63,163 catalogue and 974 workspace revision errors in 15 minutes;
