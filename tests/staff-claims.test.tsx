@@ -19,6 +19,14 @@ const item = {
     display_name: "Test Applicant",
     email: "applicant@example.test",
     phone: "+34600000000",
+    submission: {
+      applicant_name: "Business Contact",
+      relationship: "owner",
+      applicant_phone: "+34600000001",
+      business_email: "business@example.test",
+      business_website: "https://example.test",
+      business_phone: "+34900000001",
+    },
     created_at: "2026-09-01T10:00:00Z",
   },
   venues: {
@@ -51,6 +59,17 @@ it.each(["en", "es"] as const)(
     ).toHaveAttribute("href", "mailto:applicant%40example.test");
     expect(screen.getByText("+34600000000")).toBeInTheDocument();
     expect(screen.getByText("+34900000000")).toBeInTheDocument();
+    expect(screen.getByText("Business Contact")).toBeInTheDocument();
+    expect(screen.getByText("+34600000001")).toBeInTheDocument();
+    expect(screen.getByText("business@example.test")).toBeInTheDocument();
+    expect(screen.getByText("+34900000001")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        locale === "en"
+          ? "Applicant-supplied details. These have not been verified or applied to the public listing."
+          : "Datos declarados por el solicitante. No se han verificado ni aplicado a la ficha pública.",
+      ),
+    ).toBeInTheDocument();
     expect(screen.getByText("Example Street 1")).toBeInTheDocument();
     expect(document.querySelector("time")?.textContent).toContain("12:00");
     expect(document.querySelector("time")).toHaveAttribute(
