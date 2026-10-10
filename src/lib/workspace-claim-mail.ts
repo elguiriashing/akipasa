@@ -10,7 +10,7 @@ export type WorkspaceMailCredentials = {
 
 const encode = (data: Uint8Array) =>
   btoa(Array.from(data, (byte) => String.fromCharCode(byte)).join(""))
-    .replace(/\\+/g, "-").replace(/\\//g, "_").replace(/=+$/g, "");
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 const utf8 = (text: string) => new TextEncoder().encode(text);
 const sanitizeHeader = (text: string) => text.replace(/[\r\n]/g, " ");
 const address = "alex@akipasa.com";
@@ -43,10 +43,12 @@ async function getAccessToken(credentials: WorkspaceMailCredentials) {
   return payload.access_token;
 }
 
-/** Gmail has no server-side idempotency key. Ambiguous sends must be held for review, never blindly replayed. */
-export async function sendWorkspaceClaimDecision(
-  data: ClaimDecision & { recipient: string },
+
+export async function sendWorkspaceMessage(
+  recipient: string,
+  message: { subject: string; text: string; html: string },
   credentials: WorkspaceMailCredentials,
+  id: string,
 ): Promise<BookingMailOutcome & { retryable?: boolean }> {
   let accessToken: string;
   try {
@@ -55,28 +57,22 @@ export async function sendWorkspaceClaimDecision(
     const code = error instanceof Error ? error.message : "workspace_auth_unavailable";
     return { ok: false, error: code.startsWith("workspace_") ? code : "workspace_auth_unavailable", ambiguous: false, retryable: false };
   }
-  const rendered = renderClaimDecision(data);
-  const boundary = "akipasa_claim_" + data.claimId.replace(/[^a-zA-Z0-9]/g, "");
+  // CR/LF sanitization also protects MIME headers from a malformed contact address.
+  if (!/^[^\\s@\\r\\n]+@[^\\s@\\r\\n]+\\.[^\\s@\\r\\n]+$/.test(recipient))
+    return { ok: false, error: "invalid_recipient", ambiguous: false, retryable: false };
+  const b64 = (text: string) => btoa(Array.from(utf8(text), b => String.fromCharCode(b)).join(""));
+  const boundary = "akipasa_" + id.replace(/[^a-zA-Z0-9]/g, "").slice(0,100);
   const mime = [
-    `From: ${claimEmailFrom}`,
-    `To: ${sanitizeHeader(data.recipient)}`,
+    `From: ${claimEmailFrom}`, `To: ${sanitizeHeader(recipient)}`,
     `Reply-To: ${address}`,
-    `Subject: =?UTF-8?B?${btoa(Array.from(utf8(rendered.subject), (b) => String.fromCharCode(b)).join(""))}?=`,
-    "MIME-Version: 1.0",
-    `Content-Type: multipart/alternative; boundary="${boundary}"`,
-    "",
-    `--${boundary}`,
-    "Content-Type: text/plain; charset=UTF-8",
-    "Content-Transfer-Encoding: base64",
-    "",
-    btoa(Array.from(utf8(rendered.text), (b) => String.fromCharCode(b)).join("")),
-    `--${boundary}`,
-    "Content-Type: text/html; charset=UTF-8",
-    "Content-Transfer-Encoding: base64",
-    "",
-    btoa(Array.from(utf8(rendered.html), (b) => String.fromCharCode(b)).join("")),
+    `Subject: =?UTF-8?B?${b64(message.subject)}?=`,
+    "MIME-Version: 1.0", `Content-Type: multipart/alternative; boundary="${boundary}"`,
+    "", `--${boundary}`, "Content-Type: text/plain; charset=UTF-8",
+    "Content-Transfer-Encoding: base64", "", b64(message.text),
+    `--${boundary}`, "Content-Type: text/html; charset=UTF-8",
+    "Content-Transfer-Encoding: base64", "", b64(message.html),
     `--${boundary}--`, "",
-  ].join("\r\n");
+  ].join("\\r\\n");
   try {
     const response = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
       method: "POST",
@@ -84,16 +80,20 @@ export async function sendWorkspaceClaimDecision(
       body: JSON.stringify({ raw: encode(utf8(mime)) }),
       signal: AbortSignal.timeout(8000),
     });
-    if (!response.ok) return {
-      ok: false, error: `gmail_${response.status}`,
-      ambiguous: response.status >= 500 || response.status === 429,
-      retryable: false,
-    };
+    if (!response.ok) return { ok: false, error: `gmail_${response.status}`,
+      ambiguous: response.status >= 500 || response.status === 429, retryable: false };
     const payload = (await response.json()) as { id?: string };
-    return payload.id
-      ? { ok: true, messageId: payload.id }
-      : { ok: false, error: "gmail_response_invalid", ambiguous: true, retryable: false };
+    return payload.id ? { ok: true, messageId: payload.id } :
+      { ok: false, error: "gmail_response_invalid", ambiguous: true, retryable: false };
   } catch {
     return { ok: false, error: "gmail_send_uncertain", ambiguous: true, retryable: false };
   }
+}
+
+/** Preserve the existing claim template and queue while changing only the transport. */
+export async function sendWorkspaceClaimDecision(
+  data: ClaimDecision & { recipient: string },
+  credentials: WorkspaceMailCredentials,
+): Promise<BookingMailOutcome & { retryable?: boolean }> {
+  return sendWorkspaceMessage(data.recipient, renderClaimDecision(data), credentials, data.claimId);
 }
