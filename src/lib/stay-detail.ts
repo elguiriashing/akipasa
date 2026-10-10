@@ -31,15 +31,32 @@ export const loadStayDetail = cache(
       "accommodation_public_settings",
       { p_venue: data.id },
     );
-    const { data: media } = await client
-      .from("venue_media")
-      .select("storage_path,alt_es,alt_en")
+    // Only images explicitly assigned to the accommodation header are public.
+    // The private management bin and five surface selections are independent.
+    const { data: headerPlacements, error: placementError } = await client
+      .from("venue_media_placements")
+      .select("media_id,sort_order")
       .eq("venue_id", data.id)
+      .eq("placement", "venue_gallery")
+      .eq("target_key", "stay_header")
       .order("sort_order")
-      .limit(5);
+      .limit(12);
+    if (placementError) throw new Error("Accommodation photos are temporarily unavailable");
+    const orderedIds = (headerPlacements || []).map((item) => item.media_id);
+    const { data: media, error: mediaError } = orderedIds.length
+      ? await client
+          .from("venue_media")
+          .select("id,storage_path,alt_es,alt_en")
+          .eq("venue_id", data.id)
+          .in("id", orderedIds)
+      : { data: [], error: null };
+    if (mediaError) throw new Error("Accommodation photos are temporarily unavailable");
+    const mediaById = new Map((media || []).map((item) => [item.id, item]));
     const photos = (
       await Promise.all(
-        (media || []).map(async (photo) => {
+        orderedIds.map(async (id) => {
+          const photo = mediaById.get(id);
+          if (!photo) return null;
           const { data: signed } = await client.storage
             .from("event-media")
             .createSignedUrl(photo.storage_path, 3600);
