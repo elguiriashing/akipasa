@@ -4,7 +4,9 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 
 vi.mock("../src/app/[locale]/business/venue/[id]/actions", () => ({
+  addStayHeaderPhoto: vi.fn(async () => ({ ok: true })),
   clearVenueMediaPlacement: vi.fn(),
+  removeStayHeaderPhoto: vi.fn(async () => ({ ok: true })),
   removeVenueImage: vi.fn(),
   setVenueMediaPlacement: vi.fn(),
 }));
@@ -77,3 +79,36 @@ it.each(["es", "en"] as const)(
     );
   },
 );
+
+it("keeps the accommodation bin private until a photo is assigned to the header", async () => {
+  const actions = await import(
+    "../src/app/[locale]/business/venue/[id]/actions"
+  );
+  const photo = {
+    id: "photo-1",
+    url: "https://example.test/photo.jpg",
+    alt: "Room",
+    sizeBytes: 1024,
+  };
+  render(
+    <VenueMediaStudio
+      locale="en"
+      venueId="8c1cf670-18c7-4dac-8c4b-bbc9b6ff05a3"
+      media={[photo]}
+      placements={{}}
+      accommodation
+      stayHeaderIds={[]}
+    />,
+  );
+  expect(screen.getByText("No public header photos yet.")).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "Add Room to header" }));
+  await waitFor(() =>
+    expect(actions.addStayHeaderPhoto).toHaveBeenCalledOnce(),
+  );
+  expect(screen.queryByText("No public header photos yet.")).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: "Remove from header" }));
+  await waitFor(() =>
+    expect(actions.removeStayHeaderPhoto).toHaveBeenCalledOnce(),
+  );
+  expect(screen.getByText("No public header photos yet.")).toBeTruthy();
+});

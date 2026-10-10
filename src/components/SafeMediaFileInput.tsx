@@ -2,7 +2,9 @@
 
 import { useState, type ChangeEvent } from "react";
 
-const MAX_INPUT_BYTES = 10 * 1024 * 1024;
+const MAX_INPUT_BYTES = 50 * 1024 * 1024;
+const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+const MAX_IMAGE_DIMENSION = 2560;
 const MAX_PDF_PAGES = 20;
 const MAX_RENDER_HEIGHT = 14_000;
 const MAX_RENDER_WIDTH = 1_600;
@@ -143,6 +145,40 @@ async function renderPdfAsSafeJpeg(file: File) {
   });
 }
 
+async function compressImage(file: File): Promise<File> {
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type))
+    throw new Error("unsupported_image");
+  const bitmap = await createImageBitmap(file, {
+    imageOrientation: "from-image",
+  });
+  try {
+    let width = Math.min(bitmap.width, MAX_IMAGE_DIMENSION);
+    let height = Math.min(bitmap.height, MAX_IMAGE_DIMENSION);
+    const scale = Math.min(width / bitmap.width, height / bitmap.height);
+    width = Math.max(1, Math.round(bitmap.width * scale));
+    height = Math.max(1, Math.round(bitmap.height * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d", { alpha: false });
+    if (!context) throw new Error("canvas_unavailable");
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, width, height);
+    context.drawImage(bitmap, 0, 0, width, height);
+    let blob = await canvasToBlob(canvas, 0.85);
+    if (blob.size > MAX_UPLOAD_BYTES) blob = await canvasToBlob(canvas, 0.68);
+    if (blob.size > MAX_UPLOAD_BYTES)
+      throw new Error("converted_file_too_large");
+    const basename = file.name.replace(/\.[^.]+$/, "").slice(0, 120) || "photo";
+    return new File([blob], `${basename}.jpg`, {
+      type: "image/jpeg",
+      lastModified: Date.now(),
+    });
+  } finally {
+    bitmap.close();
+  }
+}
+
 export function SafeMediaFileInput({
   locale,
   name,
@@ -182,31 +218,17 @@ export function SafeMediaFileInput({
       input.value = "";
       setError(
         es
-          ? `${oversized.name} supera 10 MB.`
-          : `${oversized.name} is larger than 10 MB.`,
+          ? `${oversized.name} supera 50 MB.`
+          : `${oversized.name} is larger than 50 MB.`,
       );
-      return;
-    }
-
-    const pdfs = files.filter(
-      (file) => file.type === "application/pdf" || /\.pdf$/i.test(file.name),
-    );
-    if (!pdfs.length) {
-      if (multiple && files.length > 1) {
-        setStatus(
-          es
-            ? `${files.length} archivos listos para subir.`
-            : `${files.length} files ready to upload.`,
-        );
-      }
       return;
     }
 
     setSubmitDisabled(input, true);
     setStatus(
       es
-        ? `Convirtiendo ${pdfs.length} PDF${pdfs.length === 1 ? "" : "s"} a imágenes seguras…`
-        : `Converting ${pdfs.length} PDF${pdfs.length === 1 ? "" : "s"} to safe images…`,
+        ? "Preparando y comprimiendo imágenes…"
+        : "Preparing and compressing images…",
     );
 
     try {
@@ -214,13 +236,15 @@ export function SafeMediaFileInput({
       for (const file of files) {
         const isPdf =
           file.type === "application/pdf" || /\.pdf$/i.test(file.name);
-        transfer.items.add(isPdf ? await renderPdfAsSafeJpeg(file) : file);
+        transfer.items.add(
+          isPdf ? await renderPdfAsSafeJpeg(file) : await compressImage(file),
+        );
       }
       input.files = transfer.files;
       setStatus(
         es
-          ? `${transfer.files.length} archivo${transfer.files.length === 1 ? "" : "s"} listo${transfer.files.length === 1 ? "" : "s"}. Los PDF se han convertido a imágenes seguras.`
-          : `${transfer.files.length} file${transfer.files.length === 1 ? "" : "s"} ready. PDFs were converted to safe images.`,
+          ? `${transfer.files.length} archivo${transfer.files.length === 1 ? "" : "s"} listo${transfer.files.length === 1 ? "" : "s"} y comprimido${transfer.files.length === 1 ? "" : "s"}.`
+          : `${transfer.files.length} file${transfer.files.length === 1 ? "" : "s"} compressed and ready.`,
       );
     } catch (conversionError) {
       input.value = "";
@@ -232,8 +256,8 @@ export function SafeMediaFileInput({
             ? `Cada PDF debe tener entre 1 y ${MAX_PDF_PAGES} páginas.`
             : `Each PDF must contain between 1 and ${MAX_PDF_PAGES} pages.`
           : es
-            ? "No se pudo convertir uno de los PDF. Prueba con otro PDF o imágenes."
-            : "One of the PDFs could not be converted. Try another PDF or images.",
+            ? "No se pudo procesar un archivo. Prueba otra imagen o PDF."
+            : "A file could not be processed. Try another image or PDF.",
       );
     } finally {
       setSubmitDisabled(input, false);
