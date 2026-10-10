@@ -8,6 +8,7 @@ import {
   signInWithPassword,
   signUpWithPassword,
 } from "./actions";
+import { safeStayDestination } from "@/lib/akiduermo-routing";
 
 export default async function AuthPage({
   params,
@@ -22,10 +23,12 @@ export default async function AuthPage({
   const requestHeaders = await headers();
   const isBusinessHost =
     requestHeaders.get("x-akipasa-product") === "akibusiness";
+  const isStayHost = requestHeaders.get("x-akipasa-product") === "akiduermo";
   const es = locale === "es";
-  const next =
-    query.next ||
-    (isBusinessHost ? `/${locale}/business` : `/${locale}/account`);
+  const next = isStayHost
+    ? safeStayDestination(query.next)
+    : query.next ||
+      (isBusinessHost ? `/${locale}/business` : `/${locale}/account`);
   const businessIntent = next.startsWith(`/${locale}/business/apply`);
   const mode = ["signup", "magic", "recover"].includes(query.mode ?? "")
     ? query.mode
@@ -41,67 +44,76 @@ export default async function AuthPage({
     >
       <section className="auth-intro">
         <div className="auth-intro-copy">
+          {isStayHost && <a href={`/?lang=${locale}`}>← AkiDuermo</a>}
           <div className="eyebrow">
-            {isBusinessHost
-              ? "AkiBusiness"
-              : businessIntent
-                ? es
-                  ? "Paso 1 de 3 · Añade tu negocio"
-                  : "Step 1 of 3 · Add your business"
-                : es
-                  ? "Cuenta"
-                  : "Account"}
+            {isStayHost
+              ? "AkiDuermo"
+              : isBusinessHost
+                ? "AkiBusiness"
+                : businessIntent
+                  ? es
+                    ? "Paso 1 de 3 · Añade tu negocio"
+                    : "Step 1 of 3 · Add your business"
+                  : es
+                    ? "Cuenta"
+                    : "Account"}
           </div>
           <h1>
-            {isBusinessHost
+            {isStayHost
               ? es
-                ? "Gestiona tu negocio"
-                : "Manage your business"
-              : businessIntent
+                ? "Tu próxima estancia empieza aquí"
+                : "Your next stay starts here"
+              : isBusinessHost
                 ? es
-                  ? "Primero, crea tu cuenta gratuita"
-                  : "First, create your free account"
-                : es
-                  ? "Tu cuenta AkiPasa"
-                  : "Your AkiPasa account"}
+                  ? "Gestiona tu negocio"
+                  : "Manage your business"
+                : businessIntent
+                  ? es
+                    ? "Primero, crea tu cuenta gratuita"
+                    : "First, create your free account"
+                  : es
+                    ? "Tu cuenta AkiPasa"
+                    : "Your AkiPasa account"}
           </h1>
         </div>
-        <aside className="auth-product-portals">
-          <span>{es ? "Elige tu espacio" : "Choose your workspace"}</span>
-          <a
-            className={`auth-product-card ${!isBusinessHost ? "active" : ""}`}
-            href={`${config.siteUrl}/${locale}/auth`}
-          >
-            <i
-              className="auth-product-dot auth-product-dot-akipasa"
-              aria-hidden="true"
-            />
-            <span>
-              <strong>AkiPasa</strong>
-            </span>
-          </a>
-          <a
-            className={`auth-product-card ${isBusinessHost ? "active" : ""}`}
-            href={`${config.businessUrl}/${locale}/auth?next=/${locale}/business`}
-          >
-            <i
-              className="auth-product-dot auth-product-dot-business"
-              aria-hidden="true"
-            />
-            <span>
-              <strong>AkiBusiness</strong>
-            </span>
-          </a>
-          <a className="auth-product-card" href={config.crmUrl}>
-            <i
-              className="auth-product-dot auth-product-dot-hq"
-              aria-hidden="true"
-            />
-            <span>
-              <strong>AkiHQ</strong>
-            </span>
-          </a>
-        </aside>
+        {!isStayHost && (
+          <aside className="auth-product-portals">
+            <span>{es ? "Elige tu espacio" : "Choose your workspace"}</span>
+            <a
+              className={`auth-product-card ${!isBusinessHost ? "active" : ""}`}
+              href={`${config.siteUrl}/${locale}/auth`}
+            >
+              <i
+                className="auth-product-dot auth-product-dot-akipasa"
+                aria-hidden="true"
+              />
+              <span>
+                <strong>AkiPasa</strong>
+              </span>
+            </a>
+            <a
+              className={`auth-product-card ${isBusinessHost ? "active" : ""}`}
+              href={`${config.businessUrl}/${locale}/auth?next=/${locale}/business`}
+            >
+              <i
+                className="auth-product-dot auth-product-dot-business"
+                aria-hidden="true"
+              />
+              <span>
+                <strong>AkiBusiness</strong>
+              </span>
+            </a>
+            <a className="auth-product-card" href={config.crmUrl}>
+              <i
+                className="auth-product-dot auth-product-dot-hq"
+                aria-hidden="true"
+              />
+              <span>
+                <strong>AkiHQ</strong>
+              </span>
+            </a>
+          </aside>
+        )}
       </section>
       {businessIntent && (
         <aside
@@ -202,13 +214,17 @@ export default async function AuthPage({
                   ? es
                     ? "Restablece tu contraseña"
                     : "Reset your password"
-                  : isBusinessHost
+                  : isStayHost
                     ? es
-                      ? "Entra en AkiBusiness"
-                      : "Sign in to AkiBusiness"
-                    : es
-                      ? "Entra en AkiPasa"
-                      : "Sign in to AkiPasa"}
+                      ? "Entra en AkiDuermo"
+                      : "Sign in to AkiDuermo"
+                    : isBusinessHost
+                      ? es
+                        ? "Entra en AkiBusiness"
+                        : "Sign in to AkiBusiness"
+                      : es
+                        ? "Entra en AkiPasa"
+                        : "Sign in to AkiPasa"}
           </h2>
         </div>
         {config.googleAuthEnabled && mode !== "recover" && mode !== "magic" && (

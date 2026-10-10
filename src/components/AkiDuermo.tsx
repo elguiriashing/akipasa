@@ -3,8 +3,6 @@ import { nearbyEventsHref, type TripIntent } from "../lib/trip-links";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import dynamic from "next/dynamic";
-import { config } from "../lib/config";
 import { stayTypeNames, staySchema, type Stay } from "../lib/akiduermo";
 import { stayText, type StayLocale } from "../lib/akiduermo-i18n";
 import { filterSavedStays } from "../lib/stay-filters";
@@ -12,11 +10,6 @@ import { stayHref } from "../lib/akiduermo-routing";
 import { Icon } from "./Icons";
 import { ThemeToggle } from "./ThemeModeControls";
 import styles from "./AkiDuermo.module.css";
-const StayMap = dynamic(
-  () => import("./ProductionMap").then((m) => m.ProductionMap),
-  { ssr: false },
-);
-const noEvents: [] = [];
 const destinations = [
   {
     name: "Málaga",
@@ -50,9 +43,11 @@ const destinations = [
 export function AkiDuermo({
   initialLocale = "en",
   initialTrip,
+  initialView = "explore",
 }: {
   initialLocale?: StayLocale;
   initialTrip?: TripIntent;
+  initialView?: "explore" | "saved";
 }) {
   const [locale, setLocale] = useState<StayLocale>(initialLocale);
   const t = (text: string) => stayText(locale, text);
@@ -81,7 +76,7 @@ export function AkiDuermo({
   const [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
   const [saved, setSaved] = useState<Stay[]>([]);
-  const [view, setView] = useState<"explore" | "saved" | "map">("explore");
+  const [view] = useState<"explore" | "saved">(initialView);
   const [checkIn, setCheckIn] = useState(initialTrip?.checkIn || "");
   const [checkOut, setCheckOut] = useState(initialTrip?.checkOut || "");
   const [guests, setGuests] = useState(String(initialTrip?.guests || 2));
@@ -188,7 +183,7 @@ export function AkiDuermo({
           </span>
         </Link>
         <div className={styles.headerRight}>
-          <span className={styles.preview}>{t("EARLY PREVIEW")}</span>
+          <a href={`/bookings?lang=${locale}`}>{t("Bookings")}</a>
           <ThemeToggle locale={locale} />
           <button
             type="button"
@@ -207,34 +202,36 @@ export function AkiDuermo({
         </div>
       </header>
       <main>
-        <section className={styles.hero}>
-          <Image
-            src="/images/cities/malaga.webp"
-            alt={t("Málaga, Spain")}
-            fill
-            priority
-            sizes="100vw"
-          />
-          <div className={styles.heroShade} />
-          <div className={styles.heroContent}>
-            <span className={styles.eyebrow}>
-              {t("GO OUT. STAY A LITTLE LONGER.")}
-            </span>
-            <h1>
-              {t("A good day deserves")}
-              <br />
-              <em>{t("a great stay.")}</em>
-            </h1>
-            <p>
-              {t("Little hideaways. City weekends. One more night.")}
-              <br />
-              {t("Find your place in Spain.")}
-            </p>
-            <span className={styles.heroLocation}>
-              <Icon name="map" size={16} /> Málaga, Costa del Sol
-            </span>
-          </div>
-        </section>
+        {view === "explore" && (
+          <section className={styles.hero}>
+            <Image
+              src="/images/cities/malaga.webp"
+              alt={t("Málaga, Spain")}
+              fill
+              priority
+              sizes="100vw"
+            />
+            <div className={styles.heroShade} />
+            <div className={styles.heroContent}>
+              <span className={styles.eyebrow}>
+                {t("GO OUT. STAY A LITTLE LONGER.")}
+              </span>
+              <h1>
+                {t("A good day deserves")}
+                <br />
+                <em>{t("a great stay.")}</em>
+              </h1>
+              <p>
+                {t("Little hideaways. City weekends. One more night.")}
+                <br />
+                {t("Find your place in Spain.")}
+              </p>
+              <span className={styles.heroLocation}>
+                <Icon name="map" size={16} /> Málaga, Costa del Sol
+              </span>
+            </div>
+          </section>
+        )}
         <section className={styles.searchWrap} aria-label={t("Plan your stay")}>
           <form
             className={styles.search}
@@ -320,41 +317,45 @@ export function AkiDuermo({
           </form>
           <p className={styles.searchNote}>
             {t("A new way to stay, from the people behind AkiPasa.")}{" "}
-            <span>{t("Browse now · Bookings coming later")}</span>
+            <span>{t("Check live availability on participating stays")}</span>
           </p>
         </section>
-        <section className={styles.section}>
-          <div className={styles.sectionHead}>
-            <div>
-              <span className={styles.kicker}>{t("A CHANGE OF SCENERY")}</span>
-              <h2>{t("Where will you wake up?")}</h2>
-            </div>
-            <span className={styles.quiet}>{t("A few places to start")}</span>
-          </div>
-          <div className={styles.destinations}>
-            {destinations.map((d) => (
-              <button
-                key={d.slug}
-                onClick={() => chooseDestination(d.name)}
-                className={styles.destinationCard}
-              >
-                <Image
-                  src={`/images/cities/${d.slug}.webp`}
-                  alt={d.name}
-                  fill
-                  sizes="(max-width:600px) 64vw,25vw"
-                />
-                <span>
-                  <strong>{d.name}</strong>
-                  <small>{t(d.tag)}</small>
+        {view === "explore" && (
+          <section className={styles.section}>
+            <div className={styles.sectionHead}>
+              <div>
+                <span className={styles.kicker}>
+                  {t("A CHANGE OF SCENERY")}
                 </span>
-                <i>
-                  <Icon name="arrow-right" size={18} />
-                </i>
-              </button>
-            ))}
-          </div>
-        </section>
+                <h2>{t("Where will you wake up?")}</h2>
+              </div>
+              <span className={styles.quiet}>{t("A few places to start")}</span>
+            </div>
+            <div className={styles.destinations}>
+              {destinations.map((d) => (
+                <button
+                  key={d.slug}
+                  onClick={() => chooseDestination(d.name)}
+                  className={styles.destinationCard}
+                >
+                  <Image
+                    src={`/images/cities/${d.slug}.webp`}
+                    alt={d.name}
+                    fill
+                    sizes="(max-width:600px) 64vw,25vw"
+                  />
+                  <span>
+                    <strong>{d.name}</strong>
+                    <small>{t(d.tag)}</small>
+                  </span>
+                  <i>
+                    <Icon name="arrow-right" size={18} />
+                  </i>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
         <section id="stays" className={styles.section}>
           <div className={styles.sectionHead}>
             <div>
@@ -369,13 +370,9 @@ export function AkiDuermo({
                     : t("A place for every kind of trip")}
               </h2>
             </div>
-            <button
-              className={styles.mapButton}
-              onClick={() => setView(view === "map" ? "explore" : "map")}
-            >
-              <Icon name={view === "map" ? "audit" : "map"} size={18} />
-              {view === "map" ? t("List view") : t("Map view")}
-            </button>
+            <Link className={styles.mapButton} href={`/map?lang=${locale}`}>
+              <Icon name="map" size={18} /> {t("Map view")}
+            </Link>
           </div>
           <div
             className={styles.filters}
@@ -414,164 +411,151 @@ export function AkiDuermo({
               {t("Dates are for planning; availability is not checked yet.")}
             </p>
           )}
-          {view === "map" ? (
-            <div className={styles.stayMap}>
-              <StayMap
-                locale={locale}
-                points={noEvents}
-                styleUrl={config.mapStyleUrl}
-                center={{ latitude: center.lat, longitude: center.lng }}
-                initialVertical="accommodation"
-                showVerticalTabs={false}
-                venueDestination="akiduermo"
-                stayFilters={{ type, q: search }}
-              />
-            </div>
-          ) : (
-            <>
-              {error && view !== "saved" ? (
-                <button
-                  className={styles.mapButton}
-                  onClick={() => setRetry((v) => v + 1)}
-                >
-                  {t("Try again")}
-                </button>
-              ) : loading && view !== "saved" ? (
-                <div className={styles.cards}>
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className={styles.skeleton} />
-                  ))}
-                </div>
-              ) : (
-                <div className={styles.cards}>
-                  {shown.map((stay) => (
-                    <article key={stay.id} className={styles.card}>
-                      <div className={styles.propertyVisual}>
-                        <div>
-                          <Icon name="bed" size={40} />
-                          <span>
-                            {t(
-                              stayTypeNames[stay.accommodationType] ||
-                                "Accommodation",
-                            )}
-                          </span>
-                        </div>
-                        <small>{t("Property photos coming soon")}</small>
-                        <button
-                          className={styles.saveButton}
-                          aria-label={`${saved.some((x) => x.id === stay.id) ? t("Unsave") : t("Save")} ${stay.name}`}
-                          aria-pressed={saved.some((x) => x.id === stay.id)}
-                          onClick={() => toggleSaved(stay)}
-                        >
-                          <Icon
-                            name={
-                              saved.some((x) => x.id === stay.id)
-                                ? "heart-fill"
-                                : "heart"
-                            }
-                            size={21}
-                          />
-                        </button>
-                      </div>
-                      <div className={styles.cardBody}>
-                        <span className={styles.city}>
-                          <Icon name="map" size={14} /> {stay.city}
+          <>
+            {error && view !== "saved" ? (
+              <button
+                className={styles.mapButton}
+                onClick={() => setRetry((v) => v + 1)}
+              >
+                {t("Try again")}
+              </button>
+            ) : loading && view !== "saved" ? (
+              <div className={styles.cards}>
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className={styles.skeleton} />
+                ))}
+              </div>
+            ) : (
+              <div className={styles.cards}>
+                {shown.map((stay) => (
+                  <article key={stay.id} className={styles.card}>
+                    <div className={styles.propertyVisual}>
+                      <div>
+                        <Icon name="bed" size={40} />
+                        <span>
+                          {t(
+                            stayTypeNames[stay.accommodationType] ||
+                              "Accommodation",
+                          )}
                         </span>
-                        <h3>
-                          <Link
-                            href={`${stayHref(stay.slug, locale)}&${new URLSearchParams({ checkIn, checkOut, guests })}`}
-                          >
-                            {stay.name}
-                          </Link>
-                        </h3>
-                        <p>{stay.address}</p>
-                        <div className={styles.cardFoot}>
-                          <span>
-                            {t("Discover the property")}
-                            <small>
-                              {t("Rates & availability coming later")}
-                            </small>
-                          </span>
-                          <Link
-                            className={styles.viewStay}
-                            href={`${stayHref(stay.slug, locale)}&${new URLSearchParams({ checkIn, checkOut, guests })}`}
-                            aria-label={`${t("View")} ${stay.name}`}
-                          >
-                            <Icon name="arrow-right" size={20} />
-                          </Link>
-                        </div>
                       </div>
-                    </article>
-                  ))}
-                </div>
-              )}
-              {(view === "saved" || (!loading && !error)) && !shown.length && (
-                <p className={styles.empty}>
-                  {view === "saved"
-                    ? saved.length
-                      ? t("No saved stays match these filters.")
-                      : t("Tap the heart on a stay to keep it here.")
-                    : t(
-                        "No stays found. Try a nearby town or another property type.",
-                      )}
-                </p>
-              )}
-              {view === "explore" && total > 12 && !error && (
-                <div className={styles.pagination}>
-                  <button
-                    disabled={page === 1 || loading}
-                    onClick={() => setPage((p) => p - 1)}
-                  >
-                    <Icon
-                      name="arrow-right"
-                      size={16}
-                      className={styles.backArrow}
-                    />{" "}
-                    {t("Previous")}
-                  </button>
-                  <span>
-                    {t("Page")} {page} {t("of")} {Math.ceil(total / 12)}
-                  </span>
-                  <button
-                    disabled={page * 12 >= total || loading}
-                    onClick={() => setPage((p) => p + 1)}
-                  >
-                    {t("Next")} <Icon name="arrow-right" size={16} />
-                  </button>
-                </div>
-              )}
-            </>
-          )}
-        </section>
-        <section className={styles.crossSell}>
-          <Icon name="discover" size={32} />
-          <div>
-            <span className={styles.kicker}>
-              {t("THE NIGHT IS ONLY HALF THE STORY")}
-            </span>
-            <h2>{t("Stay here. Go everywhere.")}</h2>
-            <p>
-              {t(
-                "Find a place to stay, then discover the food, music and little adventures around it.",
-              )}
-            </p>
-          </div>
-          <a
-            href={nearbyEventsHref(
-              locale,
-              search || center.name,
-              checkIn,
-              checkOut,
-              !search ||
-                normalizedDestination(search) ===
-                  normalizedDestination(center.name)
-                ? { latitude: center.lat, longitude: center.lng }
-                : undefined,
+                      <small>{t("Property photos coming soon")}</small>
+                      <button
+                        className={styles.saveButton}
+                        aria-label={`${saved.some((x) => x.id === stay.id) ? t("Unsave") : t("Save")} ${stay.name}`}
+                        aria-pressed={saved.some((x) => x.id === stay.id)}
+                        onClick={() => toggleSaved(stay)}
+                      >
+                        <Icon
+                          name={
+                            saved.some((x) => x.id === stay.id)
+                              ? "heart-fill"
+                              : "heart"
+                          }
+                          size={21}
+                        />
+                      </button>
+                    </div>
+                    <div className={styles.cardBody}>
+                      <span className={styles.city}>
+                        <Icon name="map" size={14} /> {stay.city}
+                      </span>
+                      <h3>
+                        <Link
+                          href={`${stayHref(stay.slug, locale)}&${new URLSearchParams({ checkIn, checkOut, guests })}`}
+                        >
+                          {stay.name}
+                        </Link>
+                      </h3>
+                      <p>{stay.address}</p>
+                      <div className={styles.cardFoot}>
+                        <span>
+                          {t("Discover the property")}
+                          <small>
+                            {t("Check the property for live rates")}
+                          </small>
+                        </span>
+                        <Link
+                          className={styles.viewStay}
+                          href={`${stayHref(stay.slug, locale)}&${new URLSearchParams({ checkIn, checkOut, guests })}`}
+                          aria-label={`${t("View")} ${stay.name}`}
+                        >
+                          <Icon name="arrow-right" size={20} />
+                        </Link>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
             )}
-          >
-            {t("Explore AkiPasa")} <Icon name="arrow-right" size={18} />
-          </a>
+            {(view === "saved" || (!loading && !error)) && !shown.length && (
+              <p className={styles.empty}>
+                {view === "saved"
+                  ? saved.length
+                    ? t("No saved stays match these filters.")
+                    : t("Tap the heart on a stay to keep it here.")
+                  : t(
+                      "No stays found. Try a nearby town or another property type.",
+                    )}
+              </p>
+            )}
+            {view === "explore" && total > 12 && !error && (
+              <div className={styles.pagination}>
+                <button
+                  disabled={page === 1 || loading}
+                  onClick={() => setPage((p) => p - 1)}
+                >
+                  <Icon
+                    name="arrow-right"
+                    size={16}
+                    className={styles.backArrow}
+                  />{" "}
+                  {t("Previous")}
+                </button>
+                <span>
+                  {t("Page")} {page} {t("of")} {Math.ceil(total / 12)}
+                </span>
+                <button
+                  disabled={page * 12 >= total || loading}
+                  onClick={() => setPage((p) => p + 1)}
+                >
+                  {t("Next")} <Icon name="arrow-right" size={16} />
+                </button>
+              </div>
+            )}
+          </>
         </section>
+        {view === "explore" && (
+          <section className={styles.crossSell}>
+            <Icon name="discover" size={32} />
+            <div>
+              <span className={styles.kicker}>
+                {t("THE NIGHT IS ONLY HALF THE STORY")}
+              </span>
+              <h2>{t("Stay here. Go everywhere.")}</h2>
+              <p>
+                {t(
+                  "Find a place to stay, then discover the food, music and little adventures around it.",
+                )}
+              </p>
+            </div>
+            <a
+              href={nearbyEventsHref(
+                locale,
+                search || center.name,
+                checkIn,
+                checkOut,
+                !search ||
+                  normalizedDestination(search) ===
+                    normalizedDestination(center.name)
+                  ? { latitude: center.lat, longitude: center.lng }
+                  : undefined,
+              )}
+            >
+              {t("Explore AkiPasa")} <Icon name="arrow-right" size={18} />
+            </a>
+          </section>
+        )}
         <footer className={styles.footer}>
           <strong>
             AkiDuermo<span>.</span>
@@ -579,7 +563,9 @@ export function AkiDuermo({
           <p>{t("A new chapter in the AkiPasa family.")}</p>
           <div>
             <span>
-              {t("Discovery preview. No bookings or payments are taken.")}
+              {t(
+                "Booking requests only at participating stays. No online payments.",
+              )}
             </span>
             <a href={`https://akipasa.com/${locale}/privacy`}>{t("Privacy")}</a>
             <a href={`https://akipasa.com/${locale}/terms`}>{t("Terms")}</a>
@@ -587,47 +573,33 @@ export function AkiDuermo({
         </footer>
       </main>
       <nav className={styles.bottomNav} aria-label={t("AkiDuermo navigation")}>
-        <button
-          aria-pressed={view === "explore"}
-          onClick={() => {
-            setView("explore");
-            document
-              .getElementById("stays")
-              ?.scrollIntoView({ behavior: "smooth" });
-          }}
+        <Link
+          href={`/?lang=${locale}`}
+          aria-current={view === "explore" ? "page" : undefined}
         >
           <Icon name="discover" size={22} />
           {t("Explore")}
-        </button>
-        <button
-          aria-pressed={view === "saved"}
-          onClick={() => {
-            setView("saved");
-            document
-              .getElementById("stays")
-              ?.scrollIntoView({ behavior: "smooth" });
-          }}
+        </Link>
+        <Link
+          href={`/saved?lang=${locale}`}
+          aria-current={view === "saved" ? "page" : undefined}
         >
           <Icon name="saved" size={22} />
           {t("Saved")}
           {saved.length ? ` (${saved.length})` : ""}
-        </button>
-        <button
-          aria-pressed={view === "map"}
-          onClick={() => {
-            setView("map");
-            document
-              .getElementById("stays")
-              ?.scrollIntoView({ behavior: "smooth" });
-          }}
-        >
+        </Link>
+        <Link href={`/map?lang=${locale}`}>
           <Icon name="map" size={22} />
           {t("Map")}
-        </button>
-        <a href={`https://akipasa.com/${locale}`}>
-          <Icon name="activity" size={22} />
-          AkiPasa
-        </a>
+        </Link>
+        <Link href={`/bookings?lang=${locale}`}>
+          <Icon name="bed" size={22} />
+          {t("Bookings")}
+        </Link>
+        <Link href={`/account?lang=${locale}`}>
+          <Icon name="account" size={22} />
+          {t("Account")}
+        </Link>
       </nav>
     </div>
   );

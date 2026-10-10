@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-10 - AkiDuermo consumer app routes (candidate)
+
+- Add same-host customer sign-in, account, bookings and settings with a shared AkiPasa identity; keep the reservation return path on AkiDuermo.
+- Give discovery, saved stays and map separate destinations. The accommodation map occupies a full-screen viewport with one-finger gestures, and navigation works across mobile and desktop.
+- Keep saved stays device-local, booking access owner-scoped, and payment/availability claims conditional on participating properties.
+
 ## 2026-10-10 - Compact AkiDuermo property workspace
 
 Reworked the AkiBusiness accommodation manager into a responsive one-panel WebApp with operational summary cards, compact navigation, collapsible inventory editors and visual booking-mode controls. Existing room, unit, rate, block, reservation and settings actions are preserved, while setup guidance now reports actual inventory readiness instead of implying that overlap protection remains unverified.

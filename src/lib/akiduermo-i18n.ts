@@ -29,6 +29,12 @@ const spanish: Record<string, string> = {
   "A new way to stay, from the people behind AkiPasa.":
     "Una nueva forma de alojarte, de la mano de AkiPasa.",
   "Browse now · Bookings coming later": "Explora ahora · Reservas próximamente",
+  "Check live availability on participating stays":
+    "Consulta la disponibilidad de los alojamientos participantes",
+  "Check the property for live rates":
+    "Consulta la ficha para ver precios disponibles",
+  "Booking requests only at participating stays. No online payments.":
+    "Solicitudes de reserva solo en alojamientos participantes. Sin pagos en línea.",
   "A CHANGE OF SCENERY": "CAMBIA DE AIRES",
   "Where will you wake up?": "¿Dónde te despertarás?",
   "A few places to start": "Ideas para empezar",
@@ -86,6 +92,8 @@ const spanish: Record<string, string> = {
   Explore: "Descubrir",
   Saved: "Guardados",
   Map: "Mapa",
+  Bookings: "Reservas",
+  Account: "Cuenta",
   "Close property details": "Cerrar detalles del alojamiento",
   "This listing is unclaimed and awaits property verification. Prices, facilities and availability have not been confirmed.":
     "Este alojamiento aún no tiene un propietario verificado. Los precios, las instalaciones y la disponibilidad no se han confirmado.",

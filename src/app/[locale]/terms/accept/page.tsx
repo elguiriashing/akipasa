@@ -4,6 +4,8 @@ import { config, isLocale } from "@/lib/config";
 import { safeAuthDestination } from "@/lib/auth-security";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { acceptTerms } from "./actions";
+import { headers } from "next/headers";
+import { safeStayDestination } from "@/lib/akiduermo-routing";
 
 export default async function TermsAcceptancePage({
   params,
@@ -15,7 +17,10 @@ export default async function TermsAcceptancePage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
-  const next = safeAuthDestination(locale, query.next);
+  const stayHost = (await headers()).get("x-akipasa-product") === "akiduermo";
+  const next = stayHost
+    ? safeStayDestination(query.next)
+    : safeAuthDestination(locale, query.next);
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },

@@ -4,11 +4,16 @@ import { redirect } from "next/navigation";
 import { config, isLocale } from "@/lib/config";
 import { safeAuthDestination } from "@/lib/auth-security";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { headers } from "next/headers";
+import { safeStayDestination } from "@/lib/akiduermo-routing";
 
 export async function acceptTerms(formData: FormData) {
   const requestedLocale = String(formData.get("locale"));
   const locale = isLocale(requestedLocale) ? requestedLocale : "es";
-  const next = safeAuthDestination(locale, String(formData.get("next") || ""));
+  const stayHost = (await headers()).get("x-akipasa-product") === "akiduermo";
+  const next = stayHost
+    ? safeStayDestination(String(formData.get("next") || ""))
+    : safeAuthDestination(locale, String(formData.get("next") || ""));
   if (formData.get("acceptTerms") !== "accepted")
     redirect(
       `/${locale}/terms/accept?error=required&next=${encodeURIComponent(next)}`,
