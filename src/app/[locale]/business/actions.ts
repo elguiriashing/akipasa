@@ -159,6 +159,12 @@ export async function deleteManagedVenue(formData: FormData) {
 const claimSchema = z.object({
   locale: z.string(),
   venueId: z.string().uuid(),
+  applicantName: z.string().trim().min(2).max(120),
+  businessRole: z.enum(["owner", "manager", "authorized", "employee", "other"]),
+  applicantPhone: z.string().trim().max(30).regex(/^[+0-9 ()-]*$/),
+  businessEmail: z.union([z.literal(""), z.string().trim().email().max(254)]),
+  businessWebsite: z.union([z.literal(""), safeExternalUrlSchema]),
+  businessPhone: z.string().trim().max(30).regex(/^[+0-9 ()-]*$/),
   evidence: z.string().trim().min(20).max(2000),
 });
 export async function submitVenueClaim(formData: FormData) {
@@ -166,7 +172,7 @@ export async function submitVenueClaim(formData: FormData) {
   const locale = isLocale(String(formData.get("locale")))
     ? (String(formData.get("locale")) as "es" | "en")
     : "es";
-  if (!parsed.success) redirect(`/${locale}/business?error=claim`);
+  if (!parsed.success) redirect(`/${locale}/business?view=claims&error=claim-validation`);
   const { supabase, user } = await requireUser(
     locale,
     `/${locale}/business?view=claims&venueId=${parsed.data.venueId}`,
@@ -175,8 +181,16 @@ export async function submitVenueClaim(formData: FormData) {
     venue_id: parsed.data.venueId,
     claimant_id: user.id,
     evidence: parsed.data.evidence,
+    claim_details: {
+      applicant_name: parsed.data.applicantName,
+      relationship: parsed.data.businessRole,
+      applicant_phone: parsed.data.applicantPhone,
+      business_email: parsed.data.businessEmail,
+      business_website: parsed.data.businessWebsite,
+      business_phone: parsed.data.businessPhone,
+    },
   });
-  if (error) redirect(`/${locale}/business?error=claim`);
+  if (error) redirect(`/${locale}/business?view=claims&error=claim`);
   redirect(`/${locale}/business?view=claims&created=claim`);
 }
 
