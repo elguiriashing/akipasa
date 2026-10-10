@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import "../stay-auth.css";
 import Link from "next/link";
 import { headers } from "next/headers";
 import { LocaleDocumentLanguage } from "@/components/LocaleDocumentLanguage";
@@ -33,6 +34,26 @@ export default async function LocaleLayout({
   const requestHeaders = await headers();
   const isBusinessHost =
     requestHeaders.get("x-akipasa-product") === "akibusiness";
+  const isStayHost = requestHeaders.get("x-akipasa-product") === "akiduermo";
+  if (isStayHost) {
+    return (
+      <>
+        <LocaleDocumentLanguage locale={locale} />
+        <div className="akiduermo-auth-host">
+          <header className="akiduermo-auth-header">
+            <Link href={`/?lang=${locale}`} className="akiduermo-auth-brand">
+              <span aria-hidden="true">A</span> AkiDuermo.
+            </Link>
+            <nav aria-label={locale === "es" ? "Opciones" : "Options"}>
+              <ThemeToggle locale={locale} />
+              <LanguageLink locale={locale === "es" ? "en" : "es"} compact />
+            </nav>
+          </header>
+          {children}
+        </div>
+      </>
+    );
+  }
   const { supabase, user } = await optionalUser();
   const [profileResult, ownerResult] = user
     ? await Promise.all([

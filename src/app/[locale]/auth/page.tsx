@@ -40,7 +40,7 @@ export default async function AuthPage({
   };
   return (
     <main
-      className={`auth-page auth-product-theme ${isBusinessHost ? "auth-theme-business" : "auth-theme-akipasa"}`}
+      className={`auth-page auth-product-theme ${isStayHost ? "auth-theme-stay" : isBusinessHost ? "auth-theme-business" : "auth-theme-akipasa"}`}
     >
       <section className="auth-intro">
         <div className="auth-intro-copy">

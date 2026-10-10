@@ -39,6 +39,14 @@ for (const locale of ["en", "es"] as const) {
             { waitUntil: "domcontentloaded" },
           );
           await expect(page.locator("main")).toBeVisible();
+          if (path.includes("/auth?")) {
+            await expect(
+              page.getByRole("link", { name: /AkiDuermo\./ }),
+            ).toBeVisible();
+            await expect(
+              page.getByRole("complementary", { name: "Primary navigation" }),
+            ).toHaveCount(0);
+          }
           expect(
             await page.evaluate(() => document.documentElement.scrollWidth),
             path,
