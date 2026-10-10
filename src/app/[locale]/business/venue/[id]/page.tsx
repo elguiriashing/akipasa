@@ -328,7 +328,10 @@ export default async function VenueWorkspace({
   });
   const mediaStudioItems = allMediaItems.filter((item) => !item.eventSpecific);
   const stayHeaderIds = (mediaPlacements || [])
-    .filter((item) => item.placement === "venue_gallery" && item.target_key === "stay_header")
+    .filter(
+      (item) =>
+        item.placement === "venue_gallery" && item.target_key === "stay_header",
+    )
     .map((item) => item.media_id);
 
   const eventIds = (events || []).map((event) => event.id);
