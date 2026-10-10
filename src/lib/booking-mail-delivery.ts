@@ -1,26 +1,31 @@
+import {
+  sendWorkspaceMessage,
+  type WorkspaceMailCredentials,
+} from "./workspace-claim-mail";
 import { createClient } from "@supabase/supabase-js";
 import {
-  sendBookingConfirmationEmail,
+  renderBookingConfirmation,
   type BookingConfirmation,
 } from "./booking-confirmation-email";
 
-export type BookingMailEnv = {
-  RESEND_API_KEY?: string;
-  BOOKING_EMAIL_FROM?: string;
+export type BookingMailEnv = WorkspaceMailCredentials & {
   NEXT_PUBLIC_SUPABASE_URL?: string;
   SUPABASE_SERVICE_ROLE_KEY?: string;
 };
 export function bookingMailEnvironment(): BookingMailEnv {
   return {
-    RESEND_API_KEY: process.env.RESEND_API_KEY,
-    BOOKING_EMAIL_FROM: process.env.BOOKING_EMAIL_FROM,
+    GOOGLE_WORKSPACE_CLIENT_EMAIL: process.env.GOOGLE_WORKSPACE_CLIENT_EMAIL,
+    GOOGLE_WORKSPACE_PRIVATE_KEY: process.env.GOOGLE_WORKSPACE_PRIVATE_KEY,
+    GOOGLE_WORKSPACE_SENDER: process.env.GOOGLE_WORKSPACE_SENDER,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
   };
 }
 export function bookingEmailConfigured(env = bookingMailEnvironment()) {
   return Boolean(
-    env.RESEND_API_KEY &&
+    env.GOOGLE_WORKSPACE_CLIENT_EMAIL &&
+      env.GOOGLE_WORKSPACE_PRIVATE_KEY &&
+      env.GOOGLE_WORKSPACE_SENDER === "alex@akipasa.com" &&
       env.NEXT_PUBLIC_SUPABASE_URL &&
       env.SUPABASE_SERVICE_ROLE_KEY,
   );
@@ -83,13 +88,13 @@ async function dispatchConfirmations(
       !(accommodation && current?.status === "checked_in")
     )
       continue;
-    const outcome = await sendBookingConfirmationEmail(
-      {
-        ...(row.payload as BookingConfirmation),
-        recipient: row.recipient,
-        audience: row.audience as "customer" | "venue",
-      },
-      { apiKey: env.RESEND_API_KEY, from: env.BOOKING_EMAIL_FROM },
+    const payload = row.payload as BookingConfirmation;
+    const audience = row.audience as "customer" | "venue";
+    const outcome = await sendWorkspaceMessage(
+      row.recipient,
+      renderBookingConfirmation(payload, audience),
+      env,
+      `${row.booking_id}-${audience}`,
     );
     const { error: ackError } = await db.rpc(
       accommodation
