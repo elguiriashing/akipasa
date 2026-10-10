@@ -5,7 +5,7 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 ## 2026-10-10 | AkiDuermo auth shell follow-up
 
 - Live finding: the new same-host sign-in form worked but inherited the AkiPasa consumer sidebar from the shared locale layout.
-- Change: stay-host auth, recovery and terms acceptance render inside an AkiDuermo header with theme and language controls; the shared Auth and Supabase actions remain unchanged. The form uses the stay accent. Main AkiPasa and AkiBusiness layout paths retain their existing shells.
+- Change: stay-host auth, recovery and terms acceptance render inside an AkiDuermo header with theme and language controls; sign-in gets a dedicated night-sky hero and rounded form panel. The shared Auth and Supabase actions remain unchanged. Main AkiPasa and AkiBusiness layout paths retain their existing shells.
 - Cross-portal/security: middleware product header selects the shell; no new data, role, cookie, redirect, storage or payment behavior. Rollback is UI-only.
 - Verification: TypeScript, lint and formatting passed locally. Browser regression now asserts the AkiDuermo brand and absence of AkiPasa primary navigation on the stay-host sign-in page. Full check, CI browser matrix and live smoke are required before this follow-up release.
 

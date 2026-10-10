@@ -75,6 +75,13 @@ export default async function AuthPage({
                     ? "Tu cuenta AkiPasa"
                     : "Your AkiPasa account"}
           </h1>
+          {isStayHost && (
+            <p className="akiduermo-auth-promise">
+              {es
+                ? "Guarda tus favoritos, organiza tus escapadas y vuelve a tus reservas cuando quieras."
+                : "Save your favourites, plan the next escape and find every stay in one place."}
+            </p>
+          )}
         </div>
         {!isStayHost && (
           <aside className="auth-product-portals">
