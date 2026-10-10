@@ -92,28 +92,28 @@ export function BusinessHome({
         aria-label={es ? "Accesos rápidos" : "Quick actions"}
       >
         <Link href={`${base}?view=claims`}>
-          <Icon name="plus" />
+          <Icon name="plus" size={24} />
           <span>
             {es ? "Añadir negocio" : "Add a business"}
             <small>{es ? "Local o alojamiento" : "Venue or stay"}</small>
           </span>
-          <Icon name="arrow-right" />
+          <Icon name="arrow-right" size={18} />
         </Link>
         <Link href={`${base}?view=events`}>
-          <Icon name="calendar" />
+          <Icon name="calendar" size={24} />
           <span>
             {es ? "Eventos" : "Events"}
             <small>{es ? "Crear y gestionar" : "Create and manage"}</small>
           </span>
-          <Icon name="arrow-right" />
+          <Icon name="arrow-right" size={18} />
         </Link>
         <Link href={`${base}?view=analytics`}>
-          <Icon name="activity" />
+          <Icon name="activity" size={24} />
           <span>
             {es ? "Estadísticas" : "Analytics"}
             <small>{es ? "Ver actividad" : "View activity"}</small>
           </span>
-          <Icon name="arrow-right" />
+          <Icon name="arrow-right" size={18} />
         </Link>
       </div>
       <div className={styles.workspace}>
@@ -220,7 +220,7 @@ export function BusinessHome({
         </p>
         {readError ? (
           <div className={styles.empty} role="alert">
-            <Icon name="inbox" />
+            <Icon name="inbox" size={32} />
             <h3>
               {es
                 ? "No pudimos cargar tus negocios"
@@ -281,7 +281,7 @@ export function BusinessHome({
                         <summary
                           aria-label={`${es ? "Opciones de" : "Options for"} ${place.name}`}
                         >
-                          <Icon name="more" />
+                          <Icon name="more" size={20} />
                         </summary>
                         <div>
                           <VenueDeleteControl
@@ -299,7 +299,7 @@ export function BusinessHome({
           </div>
         ) : (
           <div className={styles.empty}>
-            <Icon name="business" />
+            <Icon name="business" size={32} />
             <h3>
               {places.length
                 ? es
@@ -325,7 +325,7 @@ export function BusinessHome({
             ) : (
               <Link href={`${base}?view=claims`}>
                 {es ? "Encontrar mi negocio" : "Find my business"}
-                <Icon name="arrow-right" />
+                <Icon name="arrow-right" size={18} />
               </Link>
             )}
           </div>

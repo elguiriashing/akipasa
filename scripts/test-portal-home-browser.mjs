@@ -183,6 +183,15 @@ try {
             expect(box.x + box.width).toBeLessThanOrEqual(width + 1);
           }
           if (product === "business") {
+            // Quick actions must leave space for the catalogue, even without installed fonts.
+            for (const shortcut of await page
+              .getByLabel(locale === "es" ? "Accesos rápidos" : "Quick actions")
+              .locator("a")
+              .all()) {
+              expect((await shortcut.boundingBox()).height).toBeLessThanOrEqual(
+                128,
+              );
+            }
             await expect(page.locator("article")).toHaveCount(8);
             await page
               .getByRole("button", {
