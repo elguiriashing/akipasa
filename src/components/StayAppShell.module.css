@@ -5,11 +5,13 @@
 }
 .header {
   height: 68px;
+  position: relative;
+  z-index: 75;
   padding: 8px clamp(16px, 3vw, 40px);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 8px;
   background: var(--surface);
   border-bottom: 1px solid var(--line);
 }
@@ -31,7 +33,7 @@
 .headerTools {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
 }
 .headerTools button,
 .headerTools a {

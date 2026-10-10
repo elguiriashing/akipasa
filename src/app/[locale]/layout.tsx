@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import "../stay-auth.css";
 import Link from "next/link";
+import { PortalLogo } from "@/components/PortalLogo";
+import { BusinessHeader } from "@/components/BusinessHeader";
 import { headers } from "next/headers";
 import { LocaleDocumentLanguage } from "@/components/LocaleDocumentLanguage";
 import { LanguageLink } from "@/components/LanguageLink";
@@ -41,8 +43,12 @@ export default async function LocaleLayout({
         <LocaleDocumentLanguage locale={locale} />
         <div className="akiduermo-auth-host">
           <header className="akiduermo-auth-header">
-            <Link href={`/?lang=${locale}`} className="akiduermo-auth-brand">
-              <span aria-hidden="true">A</span> AkiDuermo.
+            <Link
+              href={`/?lang=${locale}`}
+              className="akiduermo-auth-brand"
+              aria-label="AkiDuermo"
+            >
+              <PortalLogo product="duermo" />
             </Link>
             <nav aria-label={locale === "es" ? "Opciones" : "Options"}>
               <ThemeToggle locale={locale} />
@@ -98,35 +104,11 @@ export default async function LocaleLayout({
       <>
         <LocaleDocumentLanguage locale={locale} />
         <div className="akibusiness-host">
-          <header className="akibusiness-topbar">
-            <Link className="akibusiness-brand" href={`/${locale}/business`}>
-              <span className="akibusiness-brand-mark">A</span>
-              <span>
-                <strong>AkiBusiness</strong>
-                <small>{locale === "es" ? "by AkiPasa" : "by AkiPasa"}</small>
-              </span>
-            </Link>
-            <nav
-              aria-label={
-                locale === "es" ? "Productos AkiPasa" : "AkiPasa products"
-              }
-            >
-              <a href={config.siteUrl}>
-                {locale === "es" ? "Abrir AkiPasa" : "Open AkiPasa"}
-              </a>
-              <LanguageLink locale={locale === "es" ? "en" : "es"} compact />
-              <ThemeToggle locale={locale} />
-              <a href={config.crmUrl}>AkiHQ</a>
-              {user && (
-                <form action={signOut} className="akibusiness-logout-form">
-                  <input type="hidden" name="locale" value={locale} />
-                  <button type="submit">
-                    {locale === "es" ? "Cerrar sesión" : "Log out"}
-                  </button>
-                </form>
-              )}
-            </nav>
-          </header>
+          <BusinessHeader
+            locale={locale}
+            signedIn={Boolean(user)}
+            signOut={signOut}
+          />
           <div className="akibusiness-content">{children}</div>
           <SupportAgentLauncher
             locale={locale}

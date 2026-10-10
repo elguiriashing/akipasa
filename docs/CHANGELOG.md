@@ -858,3 +858,8 @@ Completed the AkiDuermo room-night request candidate: explicit booking modes, re
 
 - Require the PostgreSQL CI job, full check/browser suites and Cloudflare package to pass on the exact PR head.
 - Apply the additive migration before the Worker release, then verify signed-in customer and property-owner flows on both live hosts before enabling a property.
+
+## 2026-10-10 — Portal home unity candidate
+
+- AkiBusiness: branded compact header, home quick actions, searchable and paginated venue/stay picker with filters and safe secondary deletion. Analytics reads run only inside Analytics.
+- AkiDuermo: supplied green logo, shared header controls, green accents and compact home search layout. Business/Duermo installation icons use supplied masters; AkiPasa remains unchanged.

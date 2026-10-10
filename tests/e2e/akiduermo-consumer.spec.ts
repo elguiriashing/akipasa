@@ -111,7 +111,10 @@ for (const locale of ["en", "es"] as const) {
           }
           if (path.includes("/auth?")) {
             await expect(
-              page.getByRole("link", { name: /AkiDuermo\./ }),
+              page.getByRole("link", {
+                name: "AkiDuermo",
+                exact: true,
+              }),
             ).toBeVisible();
             await expect(
               page.getByRole("complementary", { name: "Primary navigation" }),

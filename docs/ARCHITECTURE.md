@@ -434,3 +434,7 @@ Slash command in configured group
 # Personalisation and recommendations (2026-08-13)
 
 The central recommendation boundary is `src/lib/personalisation/server.ts`; ranking components are in `src/lib/personalisation/ranking.ts`. Versioned ingestion is `/api/v1/behaviour/events` and versioned internal recommendations are `/api/v1/recommendations`. The existing discovery repository remains candidate infrastructure, so homepage, maps, AI tools and future partner gateways can converge on one engine. See `docs/RECOMMENDATIONS.md`.
+
+## Portal home composition (2026-10-10 candidate)
+
+Host identity from middleware is exposed on the body for Business/Duermo-only design tokens. `PortalLogo` uses the uploaded product icon masters; `BusinessHeader` and `StayHeader` keep each product's controls consistent. Business Home receives membership rows explicitly scoped to the current profile, adds the existing staff editorial access, and filters/paginates that authorized result in a client component. Mutations remain existing server actions; no browser filter grants access. Analytics RPC reads run only in the Analytics view. AkiPasa consumer components and brand remain unchanged. See the master contract and impact register for validation/release status.

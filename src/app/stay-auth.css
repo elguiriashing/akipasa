@@ -27,15 +27,7 @@
   font-weight: 850;
   text-decoration: none;
 }
-.akiduermo-auth-brand span {
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 13px;
-  background: #f36b1b;
-  color: #17213a;
-}
+
 .akiduermo-auth-header nav {
   display: flex;
   align-items: center;

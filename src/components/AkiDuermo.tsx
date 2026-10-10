@@ -8,7 +8,7 @@ import { stayText, type StayLocale } from "../lib/akiduermo-i18n";
 import { filterSavedStays } from "../lib/stay-filters";
 import { stayHref } from "../lib/akiduermo-routing";
 import { Icon } from "./Icons";
-import { ThemeToggle } from "./ThemeModeControls";
+import { StayHeader } from "./StayHeader";
 import { StayNavigation } from "./StayNavigation";
 import styles from "./AkiDuermo.module.css";
 const destinations = [
@@ -170,41 +170,7 @@ export function AkiDuermo({
         ) || destinations[0];
   return (
     <div className={styles.app}>
-      <header className={styles.header}>
-        <Link
-          href={`/akiduermo?lang=${locale}`}
-          className={`app-rail-brand ${styles.logo}`}
-          aria-label={t("AkiDuermo home")}
-        >
-          <span className="app-rail-mark" aria-hidden="true">
-            A
-          </span>
-          <span>
-            AkiDuermo
-            <i className="app-rail-brand-dot" aria-hidden="true">
-              .
-            </i>
-          </span>
-        </Link>
-        <div className={styles.headerRight}>
-          <a href={`/bookings?lang=${locale}`}>{t("Bookings")}</a>
-          <ThemeToggle locale={locale} />
-          <button
-            type="button"
-            className={styles.languageToggle}
-            onClick={changeLanguage}
-            aria-label={
-              locale === "en" ? "Cambiar a español" : "Switch to English"
-            }
-            lang={locale === "en" ? "es" : "en"}
-          >
-            {locale === "en" ? "ES" : "EN"}
-          </button>
-          <a href={`https://akipasa.com/${locale}`}>
-            {t("Go out with AkiPasa")} <Icon name="arrow-right" size={18} />
-          </a>
-        </div>
-      </header>
+      <StayHeader locale={locale} onLanguageChange={changeLanguage} />
       <main>
         {view === "explore" && (
           <section className={styles.hero}>
