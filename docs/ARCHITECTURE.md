@@ -463,3 +463,8 @@ team membership, independent of the member's personal subscription/platform role
 The Home loader relies on this admission guard and lists only the caller's
 membership rows. Tenant and operation authorization stays in existing RLS/RPCs;
 Business Pro retains a separate paid-entitlement check.
+
+
+### Venue claim contact submission
+
+The owner claim form sends claim-specific details (submitted name, relationship, applicant/business phones, business email and website) inside a private `venue_claims.claim_details` JSONB object validated by the server. This does not alter the canonical venue or account profile fields. The existing staff-only `staff_pending_venue_claims` RPC returns the details within claimant.submission, preserving the RPC signature and review/decision workflow. Missing historic fields render explicitly as not provided. The private claim metadata follows the same venue_claims RLS and account export/deletion lifecycle. The migration `20261010231500_venue_claim_details.sql` must precede app rollout.
