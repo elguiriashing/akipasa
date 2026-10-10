@@ -24,6 +24,12 @@
 .business .wordmark i {
   color: #c99700;
 }
+.pasa .wordmark span {
+  color: #f26b1d;
+}
+.pasa .wordmark i {
+  color: #ffbe2e;
+}
 .duermo .wordmark span,
 .duermo .wordmark i {
   color: #08735e;

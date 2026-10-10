@@ -30,23 +30,6 @@
   color: var(--primary);
   margin-left: -10px;
 }
-.headerTools {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.headerTools button,
-.headerTools a {
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: var(--surface);
-  color: var(--ink);
-  min-width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  text-decoration: none;
-}
 .main {
   width: min(1100px, 100%);
   margin: 0 auto;
