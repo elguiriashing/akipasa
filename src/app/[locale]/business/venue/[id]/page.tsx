@@ -267,7 +267,7 @@ export default async function VenueWorkspace({
 
   const { data: mediaPlacements } = await supabase
     .from("venue_media_placements")
-    .select("media_id,placement,target_key")
+    .select("media_id,placement,target_key,sort_order")
     .eq("venue_id", id)
     .in("placement", [
       "venue_profile",
@@ -275,13 +275,15 @@ export default async function VenueWorkspace({
       "venue_menu",
       "venue_events",
       "venue_explore",
+      "venue_gallery",
       "event_banner",
       "event_explore",
       "event_profile",
       "event_background",
       "event_map_vertical",
       "event_bin",
-    ]);
+    ])
+    .order("sort_order");
   const mediaPaths = (media || []).map((item) => item.storage_path);
   const { data: signedMediaRows } = mediaPaths.length
     ? await supabase.storage
@@ -326,6 +328,12 @@ export default async function VenueWorkspace({
       : [];
   });
   const mediaStudioItems = allMediaItems.filter((item) => !item.eventSpecific);
+  const stayHeaderIds = (mediaPlacements || [])
+    .filter(
+      (item) =>
+        item.placement === "venue_gallery" && item.target_key === "stay_header",
+    )
+    .map((item) => item.media_id);
 
   const eventIds = (events || []).map((event) => event.id);
   const eventMediaPlacements = (mediaPlacements || []).filter((item) =>
@@ -686,6 +694,8 @@ export default async function VenueWorkspace({
                 venueId={id}
                 media={mediaStudioItems}
                 placements={venueMediaSlots}
+                accommodation={isAccommodation}
+                stayHeaderIds={stayHeaderIds}
               />
             </section>
           </>

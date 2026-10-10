@@ -4,7 +4,9 @@
 import { useMemo, useRef, useState, type FormEvent } from "react";
 import { SafeMediaFileInput } from "@/components/SafeMediaFileInput";
 import {
+  addStayHeaderPhoto,
   clearVenueMediaPlacement,
+  removeStayHeaderPhoto,
   removeVenueImage,
   setVenueMediaPlacement,
 } from "@/app/[locale]/business/venue/[id]/actions";
@@ -78,14 +80,19 @@ export function VenueMediaStudio({
   venueId,
   media,
   placements,
+  accommodation = false,
+  stayHeaderIds = [],
 }: {
   locale: "es" | "en";
   venueId: string;
   media: VenueMediaStudioItem[];
   placements: Partial<Record<VenueMediaPlacement, string>>;
+  accommodation?: boolean;
+  stayHeaderIds?: string[];
 }) {
   const es = locale === "es";
   const [items, setItems] = useState(media);
+  const [headerIds, setHeaderIds] = useState(stayHeaderIds);
   const [slotState, setSlotState] =
     useState<Partial<Record<VenueMediaPlacement, string>>>(placements);
   const [busy, setBusy] = useState(false);
@@ -102,7 +109,7 @@ export function VenueMediaStudio({
     const explicit = slotState[slot]
       ? items.find((item) => item.id === slotState[slot])
       : null;
-    return explicit || fallback;
+    return explicit || (accommodation ? null : fallback);
   }
 
   async function setPlacement(slot: VenueMediaPlacement, mediaId: string) {
@@ -146,6 +153,33 @@ export function VenueMediaStudio({
     window.setTimeout(() => setStatus("idle"), 1800);
   }
 
+  async function updateHeader(mediaId: string, add: boolean) {
+    setBusy(true);
+    const fd = new FormData();
+    fd.set("locale", locale);
+    fd.set("venueId", venueId);
+    fd.set("mediaId", mediaId);
+    try {
+      const result = add
+        ? await addStayHeaderPhoto(fd)
+        : await removeStayHeaderPhoto(fd);
+      if (result.ok) {
+        setHeaderIds((current) =>
+          add
+            ? [...new Set([...current, mediaId])]
+            : current.filter((id) => id !== mediaId),
+        );
+        setStatus("saved");
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function uploadMedia(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -160,6 +194,15 @@ export function VenueMediaStudio({
     if (!files.length) return;
 
     const sharedAlt = String(source.get("alt") || "").trim();
+    const toHeader = source.get("destination") === "stay_header";
+    if (toHeader && files.length + headerIds.length > 12) {
+      setUploadError(
+        es
+          ? "La cabecera admite un máximo de 12 fotos. Quita algunas o selecciona menos."
+          : "The header holds up to 12 photos. Remove some or select fewer.",
+      );
+      return;
+    }
     setBusy(true);
     setUploadError("");
     setUploadProgress({ done: 0, total: files.length });
@@ -250,6 +293,28 @@ export function VenueMediaStudio({
         return;
       }
       uploaded.push(result.media);
+      if (toHeader) {
+        const placement = new FormData();
+        placement.set("locale", locale);
+        placement.set("venueId", venueId);
+        placement.set("mediaId", result.media.id);
+        const assigned = await addStayHeaderPhoto(placement).catch(() => ({
+          ok: false,
+        }));
+        if (!assigned.ok) {
+          setItems((current) => [...current, ...uploaded]);
+          setUploadError(
+            es
+              ? "La imagen se guardó en la biblioteca, pero no se pudo añadir a la cabecera. Selecciónala abajo."
+              : "Photo saved to the library, but could not be added to the header. Select it below.",
+          );
+          setStatus("error");
+          setBusy(false);
+          setUploadProgress(null);
+          return;
+        }
+        setHeaderIds((current) => [...current, result.media.id]);
+      }
       setUploadProgress({ done: index + 1, total: files.length });
     }
 
@@ -271,6 +336,7 @@ export function VenueMediaStudio({
     const result = await removeVenueImage(fd);
     if (result?.ok) {
       setItems((current) => current.filter((item) => item.id !== mediaId));
+      setHeaderIds((current) => current.filter((id) => id !== mediaId));
       setSlotState((current) => {
         const next = { ...current };
         (Object.keys(next) as VenueMediaPlacement[]).forEach((key) => {
@@ -303,7 +369,13 @@ export function VenueMediaStudio({
       <header className="media-studio-header">
         <div>
           <span className="eyebrow">
-            {es ? "Imágenes del local" : "Venue images"}
+            {accommodation
+              ? es
+                ? "Imágenes del alojamiento"
+                : "Property images"
+              : es
+                ? "Imágenes del local"
+                : "Venue images"}
           </span>
           <h2>
             {es
@@ -311,9 +383,13 @@ export function VenueMediaStudio({
               : "Five surfaces, one media library."}
           </h2>
           <p>
-            {es
-              ? "Elige cada imagen sin salir de la página. Si una ranura queda vacía, AkiPasa usa la primera imagen de la biblioteca."
-              : "Assign each image without leaving the page. Empty slots automatically use the first media-library image."}
+            {accommodation
+              ? es
+                ? "Elige las cinco imágenes de la ficha. Las fotos de la cabecera se gestionan por separado."
+                : "Choose the five listing images. Manage public header photos separately below."
+              : es
+                ? "Elige cada imagen sin salir de la página. Si una ranura queda vacía, AkiPasa usa la primera imagen de la biblioteca."
+                : "Assign each image without leaving the page. Empty slots automatically use the first media-library image."}
           </p>
         </div>
         <small className="media-studio-live-status" aria-live="polite">
@@ -394,6 +470,104 @@ export function VenueMediaStudio({
           );
         })}
       </div>
+
+      {accommodation ? (
+        <section
+          className="stay-header-media"
+          aria-label={es ? "Fotos de la cabecera" : "Header photos"}
+        >
+          <span className="eyebrow">
+            {es ? "AkiDuermo · cabecera" : "AkiDuermo · header"}
+          </span>
+          <h3>{es ? "Galería del alojamiento" : "Property header gallery"}</h3>
+          <p>
+            {es
+              ? "Sube fotos aquí o elige imágenes de la biblioteca. Solo las fotos añadidas a esta galería aparecen en la cabecera pública (máximo 12)."
+              : "Upload here or choose from the media bin. Only photos added to this gallery appear in the public header (up to 12)."}
+          </p>
+          <div className="media-library-grid">
+            {headerIds.map((id) => {
+              const photo = items.find((item) => item.id === id);
+              return photo ? (
+                <article className="media-library-item" key={id}>
+                  <div className="media-library-thumb">
+                    <img src={photo.url} alt={photo.alt} />
+                  </div>
+                  <div className="media-library-actions">
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => updateHeader(id, false)}
+                    >
+                      {es ? "Quitar de la cabecera" : "Remove from header"}
+                    </button>
+                  </div>
+                </article>
+              ) : null;
+            })}
+          </div>
+          {!headerIds.length ? (
+            <p>
+              {es
+                ? "Aún no hay fotos públicas."
+                : "No public header photos yet."}
+            </p>
+          ) : null}
+          <form
+            onSubmit={uploadMedia}
+            className="media-upload-form"
+            encType="multipart/form-data"
+          >
+            <input type="hidden" name="destination" value="stay_header" />
+            <label>
+              {es ? "Subir fotos a la cabecera" : "Upload header photos"}
+              <SafeMediaFileInput
+                locale={locale}
+                name="image"
+                required
+                multiple
+                maxFiles={12}
+              />
+            </label>
+            <button
+              className="button"
+              type="submit"
+              disabled={busy || headerIds.length >= 12}
+            >
+              {busy
+                ? es
+                  ? "Subiendo…"
+                  : "Uploading…"
+                : es
+                  ? "Subir a la cabecera"
+                  : "Upload to header"}
+            </button>
+          </form>
+          {items.some((item) => !headerIds.includes(item.id)) &&
+          headerIds.length < 12 ? (
+            <div className="media-five-picker">
+              {items
+                .filter((item) => !headerIds.includes(item.id))
+                .map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className="media-mini-tile"
+                    disabled={busy}
+                    aria-label={
+                      es
+                        ? `Añadir ${item.alt} a la cabecera`
+                        : `Add ${item.alt} to header`
+                    }
+                    onClick={() => updateHeader(item.id, true)}
+                  >
+                    <img src={item.url} alt="" />
+                  </button>
+                ))}
+            </div>
+          ) : null}
+        </section>
+      ) : null}
 
       <div className="media-bin-heading">
         <div>
