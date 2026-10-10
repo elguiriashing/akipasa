@@ -6,31 +6,42 @@ import {
   type MapEdgeCache,
 } from "./cloudflare/map-edge-cache";
 export { MapSnapshot } from "./cloudflare/map-snapshot";
+import {
+  dispatchClaimDecisions,
+  claimMailConfigured,
+  type ClaimMailEnv,
+} from "./src/lib/claim-mail-delivery";
 
 import {
   dispatchBookingConfirmations,
   dispatchAccommodationConfirmations,
-  type BookingMailEnv,
 } from "./src/lib/booking-mail-delivery";
 
 const worker = {
   async scheduled(
     _event: unknown,
-    env: BookingMailEnv,
+    env: ClaimMailEnv,
     ctx: { waitUntil(work: Promise<unknown>): void },
   ) {
     ctx.waitUntil(dispatchBookingConfirmations(env));
     ctx.waitUntil(dispatchAccommodationConfirmations(env));
+    ctx.waitUntil(dispatchClaimDecisions(env));
   },
   async fetch(
     request: Request,
-    env: MapEdgeEnv & BookingMailEnv,
+    env: MapEdgeEnv & ClaimMailEnv,
     ctx: { waitUntil(work: Promise<unknown>): void },
   ) {
     const path = new URL(request.url).pathname;
     if (path === "/api/bookings/release" && request.method === "GET") {
       return Response.json(
-        { release: "2026-10-09-booking-ux-r1" },
+        {
+          release: "2026-10-09-booking-ux-r1",
+          claimNotifications: {
+            release: "2026-10-10-claim-decision-email-v1",
+            configured: claimMailConfigured(env),
+          },
+        },
         {
           headers: { "Cache-Control": "no-store", "X-Robots-Tag": "noindex" },
         },

@@ -22,6 +22,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium chrome
+      - run: node scripts/test-claim-email-browser.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: claim-email-previews
+          path: test-results/claim-emails
+          retention-days: 7
       - run: node scripts/test-staff-claims-browser.mjs
       - uses: actions/upload-artifact@v4
         with:

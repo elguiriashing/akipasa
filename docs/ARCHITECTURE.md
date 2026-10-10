@@ -446,3 +446,14 @@ with current database role authorization, bounded pagination and private Auth em
 lookup. It returns contact details only for pending claimants to staff/admin;
 no service key or public profile projection is involved. The existing audited
 claim decision RPC remains authoritative for ownership grants.
+
+## Claim decision notification boundary
+
+The existing audited claim decision RPC remains authoritative. A future pending
+claim decision atomically appends a private localized recipient/content snapshot
+through a trigger, without backfilling historical claims. A separate service-key
+adapter delivers from alex@akipasa.com through Resend immediately after review or
+on the existing Worker cron. Leased batches, frozen content, provider idempotency,
+bounded retries and cumulative ambiguity holds preserve decision integrity.
+Claimant/staff read RLS, service-only mutation, account export and cascade deletion
+apply to the new outbox. Existing booking senders and ownership rules are unchanged.

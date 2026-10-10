@@ -17,6 +17,7 @@ export const accountExportTables = [
   ["event_submissions", "submitter_id"],
   ["reports", "reporter_id"],
   ["venue_claims", "claimant_id"],
+  ["claim_decision_emails", "claimant_id"],
   ["business_applications", "applicant_id"],
   ["billing_customers", "profile_id"],
   ["billing_subscriptions", "profile_id"],
