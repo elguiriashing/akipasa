@@ -19,42 +19,53 @@ export function StayMapPage({ locale }: { locale: StayLocale }) {
   return (
     <StayAppShell locale={locale} fullMap>
       <div className={styles.controls}>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            setSearch(query.trim());
-          }}
-        >
-          <label htmlFor="stay-map-search" className={styles.srOnly}>
-            {t("Destination")}
-          </label>
-          <input
-            id="stay-map-search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder={t("City, town or property")}
-            maxLength={100}
-          />
-          <button type="submit">{locale === "es" ? "Buscar" : "Search"}</button>
-        </form>
-        <div
-          role="group"
-          aria-label={t("Property type")}
-          className={styles.types}
-        >
-          {[["all", "All stays"], ...Object.entries(stayTypeNames)].map(
-            ([key, name]) => (
-              <button
-                key={key}
-                type="button"
-                aria-pressed={type === key}
-                onClick={() => setType(key)}
-              >
-                {t(name)}
+        <details className={styles.filterMenu}>
+          <summary>
+            {locale === "es" ? "Buscar y filtrar" : "Search & filters"}
+            {type !== "all" &&
+              ` · ${t(stayTypeNames[type as keyof typeof stayTypeNames])}`}
+          </summary>
+          <div className={styles.filterPanel}>
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                setSearch(query.trim());
+              }}
+            >
+              <label htmlFor="stay-map-search" className={styles.srOnly}>
+                {t("Destination")}
+              </label>
+              <input
+                id="stay-map-search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder={t("City, town or property")}
+                maxLength={100}
+              />
+              <button type="submit">
+                {locale === "es" ? "Buscar" : "Search"}
               </button>
-            ),
-          )}
-        </div>
+            </form>
+            <div
+              role="group"
+              aria-label={t("Property type")}
+              className={styles.types}
+            >
+              {[["all", "All stays"], ...Object.entries(stayTypeNames)].map(
+                ([key, name]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    aria-pressed={type === key}
+                    onClick={() => setType(key)}
+                  >
+                    {t(name)}
+                  </button>
+                ),
+              )}
+            </div>
+          </div>
+        </details>
       </div>
       <ProductionMap
         locale={locale}

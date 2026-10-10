@@ -4,18 +4,45 @@
   top: 80px;
   left: 12px;
   width: min(460px, calc(100% - 24px));
-  pointer-events: none;
+}
+.filterMenu > summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-soft);
+  font-weight: 750;
+  cursor: pointer;
+  list-style: none;
+}
+.filterMenu > summary::-webkit-details-marker {
+  display: none;
+}
+.filterMenu > summary::after {
+  content: "⌄";
+  margin-left: 12px;
+}
+.filterMenu[open] > summary {
+  border-radius: 16px 16px 0 0;
+}
+.filterPanel {
+  max-height: calc(100dvh - 190px);
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 0 16px 16px 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
 }
 .controls form,
 .types {
-  pointer-events: auto;
   display: flex;
   gap: 6px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 6px;
-  box-shadow: var(--shadow-soft);
+  padding: 4px;
 }
 .controls form input {
   min-width: 0;
@@ -38,8 +65,7 @@
 }
 .types {
   margin-top: 7px;
-  overflow-x: auto;
-  scrollbar-width: thin;
+  flex-wrap: wrap;
 }
 .types button {
   white-space: nowrap;

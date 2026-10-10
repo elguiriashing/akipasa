@@ -9,6 +9,7 @@ import { filterSavedStays } from "../lib/stay-filters";
 import { stayHref } from "../lib/akiduermo-routing";
 import { Icon } from "./Icons";
 import { ThemeToggle } from "./ThemeModeControls";
+import { StayNavigation } from "./StayNavigation";
 import styles from "./AkiDuermo.module.css";
 const destinations = [
   {
@@ -232,94 +233,99 @@ export function AkiDuermo({
             </div>
           </section>
         )}
-        <section className={styles.searchWrap} aria-label={t("Plan your stay")}>
-          <form
-            className={styles.search}
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSearch(destination);
-              setPage(1);
-              setTrip(
-                checkIn && checkOut ? { checkIn, checkOut, guests } : null,
-              );
-              document
-                .getElementById("stays")
-                ?.scrollIntoView({ behavior: "smooth" });
-            }}
+        {view === "explore" && (
+          <section
+            className={styles.searchWrap}
+            aria-label={t("Plan your stay")}
           >
-            <label className={styles.destination}>
-              <Icon name="search" size={20} />
-              <span>
-                {t("WHERE TO?")}
-                <input
-                  aria-label={t("Destination")}
-                  placeholder={t("City, town or property")}
-                  value={destination}
-                  onChange={(e) => setDestination(e.target.value)}
-                  maxLength={100}
-                />
-              </span>
-            </label>
-            <label>
-              <span>
-                {t("CHECK IN")}
-                <input
-                  aria-label={t("Check in")}
-                  type="date"
-                  min={new Date().toISOString().slice(0, 10)}
-                  value={checkIn}
-                  required={Boolean(checkOut)}
-                  onChange={(e) => {
-                    setCheckIn(e.target.value);
-                    if (checkOut <= e.target.value) setCheckOut("");
-                  }}
-                />
-              </span>
-            </label>
-            <label>
-              <span>
-                {t("CHECK OUT")}
-                <input
-                  aria-label={t("Check out")}
-                  type="date"
-                  min={
-                    checkIn
-                      ? new Date(new Date(checkIn).getTime() + 86400000)
-                          .toISOString()
-                          .slice(0, 10)
-                      : new Date().toISOString().slice(0, 10)
-                  }
-                  value={checkOut}
-                  onChange={(e) => setCheckOut(e.target.value)}
-                  required={Boolean(checkIn)}
-                />
-              </span>
-            </label>
-            <label>
-              <span>
-                {t("WHO’S COMING?")}
-                <select
-                  aria-label={t("Guests")}
-                  value={guests}
-                  onChange={(e) => setGuests(e.target.value)}
-                >
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-                    <option key={n} value={n}>
-                      {n} {n === 1 ? t("guest") : t("guests")}
-                    </option>
-                  ))}
-                </select>
-              </span>
-            </label>
-            <button className={styles.searchButton} type="submit">
-              <Icon name="search" size={20} /> {t("Find a stay")}
-            </button>
-          </form>
-          <p className={styles.searchNote}>
-            {t("A new way to stay, from the people behind AkiPasa.")}{" "}
-            <span>{t("Check live availability on participating stays")}</span>
-          </p>
-        </section>
+            <form
+              className={styles.search}
+              onSubmit={(e) => {
+                e.preventDefault();
+                setSearch(destination);
+                setPage(1);
+                setTrip(
+                  checkIn && checkOut ? { checkIn, checkOut, guests } : null,
+                );
+                document
+                  .getElementById("stays")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
+              <label className={styles.destination}>
+                <Icon name="search" size={20} />
+                <span>
+                  {t("WHERE TO?")}
+                  <input
+                    aria-label={t("Destination")}
+                    placeholder={t("City, town or property")}
+                    value={destination}
+                    onChange={(e) => setDestination(e.target.value)}
+                    maxLength={100}
+                  />
+                </span>
+              </label>
+              <label>
+                <span>
+                  {t("CHECK IN")}
+                  <input
+                    aria-label={t("Check in")}
+                    type="date"
+                    min={new Date().toISOString().slice(0, 10)}
+                    value={checkIn}
+                    required={Boolean(checkOut)}
+                    onChange={(e) => {
+                      setCheckIn(e.target.value);
+                      if (checkOut <= e.target.value) setCheckOut("");
+                    }}
+                  />
+                </span>
+              </label>
+              <label>
+                <span>
+                  {t("CHECK OUT")}
+                  <input
+                    aria-label={t("Check out")}
+                    type="date"
+                    min={
+                      checkIn
+                        ? new Date(new Date(checkIn).getTime() + 86400000)
+                            .toISOString()
+                            .slice(0, 10)
+                        : new Date().toISOString().slice(0, 10)
+                    }
+                    value={checkOut}
+                    onChange={(e) => setCheckOut(e.target.value)}
+                    required={Boolean(checkIn)}
+                  />
+                </span>
+              </label>
+              <label>
+                <span>
+                  {t("WHO’S COMING?")}
+                  <select
+                    aria-label={t("Guests")}
+                    value={guests}
+                    onChange={(e) => setGuests(e.target.value)}
+                  >
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                      <option key={n} value={n}>
+                        {n} {n === 1 ? t("guest") : t("guests")}
+                      </option>
+                    ))}
+                  </select>
+                </span>
+              </label>
+              <button className={styles.searchButton} type="submit">
+                <Icon name="search" size={20} /> {t("Find a stay")}
+              </button>
+            </form>
+            <p className={styles.searchNote}>
+              {t("A new way to stay, from the people behind AkiPasa.")}{" "}
+              <span>{t("Check live availability on participating stays")}</span>
+            </p>
+          </section>
+        )}
         {view === "explore" && (
           <section className={styles.section}>
             <div className={styles.sectionHead}>
@@ -357,6 +363,20 @@ export function AkiDuermo({
           </section>
         )}
         <section id="stays" className={styles.section}>
+          {view === "saved" && (
+            <div className={styles.savedSearch}>
+              <input
+                id="saved-stay-search"
+                type="search"
+                aria-label={
+                  locale === "es" ? "Buscar guardados" : "Search saved stays"
+                }
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder={t("City, town or property")}
+              />
+            </div>
+          )}
           <div className={styles.sectionHead}>
             <div>
               <span className={styles.kicker}>
@@ -572,35 +592,7 @@ export function AkiDuermo({
           </div>
         </footer>
       </main>
-      <nav className={styles.bottomNav} aria-label={t("AkiDuermo navigation")}>
-        <Link
-          href={`/?lang=${locale}`}
-          aria-current={view === "explore" ? "page" : undefined}
-        >
-          <Icon name="discover" size={22} />
-          {t("Explore")}
-        </Link>
-        <Link
-          href={`/saved?lang=${locale}`}
-          aria-current={view === "saved" ? "page" : undefined}
-        >
-          <Icon name="saved" size={22} />
-          {t("Saved")}
-          {saved.length ? ` (${saved.length})` : ""}
-        </Link>
-        <Link href={`/map?lang=${locale}`}>
-          <Icon name="map" size={22} />
-          {t("Map")}
-        </Link>
-        <Link href={`/bookings?lang=${locale}`}>
-          <Icon name="bed" size={22} />
-          {t("Bookings")}
-        </Link>
-        <Link href={`/account?lang=${locale}`}>
-          <Icon name="account" size={22} />
-          {t("Account")}
-        </Link>
-      </nav>
+      <StayNavigation locale={locale} />
     </div>
   );
 }

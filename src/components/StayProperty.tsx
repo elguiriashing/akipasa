@@ -11,6 +11,7 @@ import { googleMapsDirectionsUrl } from "@/lib/maps";
 import { Icon } from "./Icons";
 import { ThemeToggle } from "./ThemeModeControls";
 import { StayBookingPanel } from "./StayBookingPanel";
+import { StayNavigation } from "./StayNavigation";
 import base from "./AkiDuermo.module.css";
 import styles from "./StayProperty.module.css";
 
@@ -554,31 +555,7 @@ export function StayProperty({
           </div>
         </footer>
       </main>
-      <nav
-        className={base.bottomNav}
-        aria-label={text("AkiDuermo navigation", "Navegación de AkiDuermo")}
-      >
-        <Link href={`/?lang=${locale}`}>
-          <Icon name="discover" size={20} />
-          {text("Explore", "Descubrir")}
-        </Link>
-        <Link href={`/map?lang=${locale}`}>
-          <Icon name="map" size={20} />
-          {text("Map", "Mapa")}
-        </Link>
-        <Link href={`/saved?lang=${locale}`}>
-          <Icon name="saved" size={20} />
-          {text("Saved", "Guardados")}
-        </Link>
-        <Link href={`/bookings?lang=${locale}`}>
-          <Icon name="bed" size={20} />
-          {text("Bookings", "Reservas")}
-        </Link>
-        <Link href={`/account?lang=${locale}`}>
-          <Icon name="account" size={20} />
-          {text("Account", "Cuenta")}
-        </Link>
-      </nav>
+      <StayNavigation locale={locale} />
       <div className={styles.mobileBar}>
         <span>
           <strong>{text("Your next escape", "Tu próxima escapada")}</strong>

@@ -1,19 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Icon } from "./Icons";
 import { ThemeToggle } from "./ThemeModeControls";
+import { StayNavigation } from "./StayNavigation";
 import type { StayLocale } from "@/lib/akiduermo-i18n";
 import styles from "./StayAppShell.module.css";
-
-const items = [
-  { href: "/", icon: "discover", en: "Explore", es: "Descubrir" },
-  { href: "/map", icon: "map", en: "Map", es: "Mapa" },
-  { href: "/saved", icon: "saved", en: "Saved", es: "Guardados" },
-  { href: "/bookings", icon: "bed", en: "Bookings", es: "Reservas" },
-  { href: "/account", icon: "account", en: "Account", es: "Cuenta" },
-] as const;
 
 export function StayAppShell({
   locale,
@@ -24,10 +16,8 @@ export function StayAppShell({
   children: React.ReactNode;
   fullMap?: boolean;
 }) {
-  const pathname = usePathname();
   const lang = locale;
   const es = lang === "es";
-  const active = pathname?.replace(/^\/akiduermo/, "") || "/";
   function changeLanguage() {
     const next = es ? "en" : "es";
     document.cookie = `akiduermo_locale=${next}; Path=/; Max-Age=31536000; SameSite=Lax${location.protocol === "https:" ? "; Secure" : ""}`;
@@ -66,26 +56,7 @@ export function StayAppShell({
         </div>
       </header>
       <main className={styles.main}>{children}</main>
-      <nav
-        className={styles.nav}
-        aria-label={es ? "Navegación de AkiDuermo" : "AkiDuermo navigation"}
-      >
-        {items.map((item) => (
-          <Link
-            key={item.href}
-            href={`${item.href}?lang=${lang}`}
-            aria-current={
-              active === item.href ||
-              (item.href === "/account" && active === "/settings")
-                ? "page"
-                : undefined
-            }
-          >
-            <Icon name={item.icon} size={21} />
-            <span>{es ? item.es : item.en}</span>
-          </Link>
-        ))}
-      </nav>
+      <StayNavigation locale={locale} />
     </div>
   );
 }
