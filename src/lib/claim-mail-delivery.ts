@@ -4,7 +4,10 @@ import {
   type BookingMailEnv,
 } from "./booking-mail-delivery";
 import type { ClaimDecision } from "./claim-decision-email";
-import { sendWorkspaceClaimDecision, type WorkspaceMailCredentials } from "./workspace-claim-mail";
+import {
+  sendWorkspaceClaimDecision,
+  type WorkspaceMailCredentials,
+} from "./workspace-claim-mail";
 
 export type ClaimMailEnv = BookingMailEnv & WorkspaceMailCredentials;
 export function claimMailEnvironment(): ClaimMailEnv {
@@ -16,7 +19,13 @@ export function claimMailEnvironment(): ClaimMailEnv {
   };
 }
 export function claimMailConfigured(env: ClaimMailEnv) {
-  return Boolean(env.GOOGLE_WORKSPACE_CLIENT_EMAIL && env.GOOGLE_WORKSPACE_PRIVATE_KEY && env.GOOGLE_WORKSPACE_SENDER === "alex@akipasa.com" && env.NEXT_PUBLIC_SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY);
+  return Boolean(
+    env.GOOGLE_WORKSPACE_CLIENT_EMAIL &&
+      env.GOOGLE_WORKSPACE_PRIVATE_KEY &&
+      env.GOOGLE_WORKSPACE_SENDER === "alex@akipasa.com" &&
+      env.NEXT_PUBLIC_SUPABASE_URL &&
+      env.SUPABASE_SERVICE_ROLE_KEY,
+  );
 }
 export async function dispatchClaimDecisions(
   env: ClaimMailEnv = claimMailEnvironment(),

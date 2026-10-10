@@ -1,4 +1,7 @@
-import { sendWorkspaceMessage, type WorkspaceMailCredentials } from "./workspace-claim-mail";
+import {
+  sendWorkspaceMessage,
+  type WorkspaceMailCredentials,
+} from "./workspace-claim-mail";
 import { createClient } from "@supabase/supabase-js";
 import {
   renderBookingConfirmation,
