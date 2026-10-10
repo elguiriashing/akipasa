@@ -9,6 +9,7 @@ describe("account data export contract", () => {
     const tables = new Set<string>(accountExportTables.map(([table]) => table));
     for (const required of [
       "profiles",
+      "claim_decision_emails",
       "saved_events",
       "recent_event_views",
       "check_ins",

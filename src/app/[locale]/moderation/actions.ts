@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
+import { dispatchClaimDecisions } from "@/lib/claim-mail-delivery";
 import {
   moderationDecisionSchema,
   reportResolutionSchema,
@@ -29,6 +30,14 @@ export async function moderateItem(formData: FormData) {
       : "";
   if (error)
     redirect(`/${locale}/staff/moderation?error=decision${claimQuery}`);
+  if (value.targetType === "venue_claim") {
+    // The decision and durable email already committed. Provider failure must not undo it.
+    try {
+      await dispatchClaimDecisions(undefined, value.targetId);
+    } catch {
+      console.error("claim_email_dispatch_pending");
+    }
+  }
   redirect(`/${locale}/staff/moderation?updated=decision${claimQuery}`);
 }
 

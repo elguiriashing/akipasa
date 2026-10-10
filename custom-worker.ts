@@ -6,6 +6,7 @@ import {
   type MapEdgeCache,
 } from "./cloudflare/map-edge-cache";
 export { MapSnapshot } from "./cloudflare/map-snapshot";
+import { dispatchClaimDecisions } from "./src/lib/claim-mail-delivery";
 
 import {
   dispatchBookingConfirmations,
@@ -21,6 +22,7 @@ const worker = {
   ) {
     ctx.waitUntil(dispatchBookingConfirmations(env));
     ctx.waitUntil(dispatchAccommodationConfirmations(env));
+    ctx.waitUntil(dispatchClaimDecisions(env));
   },
   async fetch(
     request: Request,

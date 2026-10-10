@@ -873,3 +873,6 @@ Completed the AkiDuermo room-night request candidate: explicit booking modes, re
 - Match Business and Duermo language/theme/app dropdown controls, including localized Duermo auth pages.
 - Brand the AkiPasa app link consistently, hide the current app, and retain logout/settings within the menu.
 - Add header order, destination, theme, keyboard and menu-bounds regression coverage.
+
+- Candidate: claimant-localized approval/welcome and denial/resubmission emails
+  from alex@akipasa.com, with atomic private outbox and duplicate-safe delivery.
