@@ -5,7 +5,7 @@ revision errors and 974 workspace revision errors. The database reported
 PostgREST 14.5. Five application functions deliberately raised SQLSTATE 40001
 for stale revisions, triggering PostgREST 14's unbounded transaction retry bug.
 
-Migration `20261010030000_stop_application_conflict_retries.sql` changes only
+Migration `20261010021926_stop_application_conflict_retries.sql` changes only
 these functions' explicit conflict codes to PT409. Existing revision checks,
 authorization, row locks, validation, function ownership and grants remain.
 CRM functions absent from a public-app-only development database are skipped.
@@ -28,6 +28,12 @@ The dashboard's rolling 24-hour totals retain historical errors after repair.
 The same window contained 108 `offers.audience` missing-column errors. The
 application already reads/writes this field; the production schema was missing
 the original `0033_premium_entitlements.sql` offer column and visibility policy.
-Migration `20261010030100_restore_offer_audience.sql` restores that narrow
+Migration `20261010021927_restore_offer_audience.sql` restores that narrow
 contract, defaulting existing offers to public and enforcing Premium visibility
 through the existing entitlement function. It does not rerun billing migrations.
+
+Production verification: both migrations applied successfully at 02:19 UTC.
+All five function body hashes match the expected conflict-code substitution;
+grants, security-definer settings and search paths match their previous values.
+A rollback-only stale catalogue unpublish test returned PT409. Local embedded
+PostgreSQL tests passed for conflict/authorization/write and offer RLS behavior.

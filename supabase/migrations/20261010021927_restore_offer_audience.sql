@@ -1,5 +1,7 @@
 begin;
 
+-- Production migration version: 20261010021927.
+
 -- Restore the offer audience contract already used by public and business code.
 alter table public.offers
   add column if not exists audience text not null default 'public'
@@ -26,4 +28,3 @@ using (
 
 notify pgrst, 'reload schema';
 commit;
-

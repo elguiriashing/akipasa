@@ -27,7 +27,7 @@ it("restores offers without exposing Premium or draft offers anonymously", async
     `);
     const migration = readFileSync(
       new URL(
-        "../supabase/migrations/20261010030100_restore_offer_audience.sql",
+        "../supabase/migrations/20261010021927_restore_offer_audience.sql",
         import.meta.url,
       ),
       "utf8",
@@ -88,7 +88,7 @@ it("preserves authorization and valid writes while returning finite conflicts", 
     const before = await db.query(attributes);
     const migration = readFileSync(
       new URL(
-        "../supabase/migrations/20261010030000_stop_application_conflict_retries.sql",
+        "../supabase/migrations/20261010021926_stop_application_conflict_retries.sql",
         import.meta.url,
       ),
       "utf8",

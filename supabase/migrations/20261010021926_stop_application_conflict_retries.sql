@@ -1,5 +1,7 @@
 begin;
 
+-- Production migration version: 20261010021926.
+
 -- Stale application revisions are permanent conflicts, not serialization failures.
 -- PostgREST 14 retries 40001 indefinitely; PT409 returns once with HTTP 409.
 do $migration$
@@ -37,4 +39,3 @@ $migration$;
 
 notify pgrst, 'reload schema';
 commit;
-
