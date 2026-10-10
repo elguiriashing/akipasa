@@ -25,6 +25,12 @@ beforeAll(async () => {
       "utf8",
     ),
   );
+  await db.exec(
+    readFileSync(
+      "database/migrations/20261010231800_staff_pending_claim_count.sql",
+      "utf8",
+    ),
+  );
 }, 30000);
 afterAll(async () => {
   await db?.close();
@@ -82,5 +88,26 @@ it("does not expose a deleted Auth email", async () => {
     "select * from staff_pending_venue_claims(0)",
   );
   expect(result.rows[0].claimant.email).toBeNull();
+  await db.exec("reset role");
+});
+
+it("counts the same pending claims as the paged review queue without exposing applicant data", async () => {
+  for (const id of [uid(1), uid(3)]) {
+    await db.exec(`set role authenticated; select set_config('test.uid','${id}',false)`);
+    const result = await db.query<{ staff_pending_venue_claim_count: number }>(
+      "select staff_pending_venue_claim_count()",
+    );
+    expect(Number(result.rows[0].staff_pending_venue_claim_count)).toBe(24);
+    await db.exec("reset role");
+  }
+});
+it("never grants a pending-claims count to anonymous, consumer or organiser roles", async () => {
+  for (const id of ["", uid(2), uid(4)]) {
+    await db.exec(`set role authenticated; select set_config('test.uid','${id}',false)`);
+    await expect(db.query("select staff_pending_venue_claim_count()")).rejects.toThrow("staff role required");
+    await db.exec("reset role");
+  }
+  await db.exec("set role anon");
+  await expect(db.query("select staff_pending_venue_claim_count()")).rejects.toThrow("permission denied");
   await db.exec("reset role");
 });
