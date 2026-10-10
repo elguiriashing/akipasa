@@ -148,7 +148,9 @@ async function renderPdfAsSafeJpeg(file: File) {
 async function compressImage(file: File): Promise<File> {
   if (!["image/jpeg", "image/png", "image/webp"].includes(file.type))
     throw new Error("unsupported_image");
-  const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+  const bitmap = await createImageBitmap(file, {
+    imageOrientation: "from-image",
+  });
   try {
     let width = Math.min(bitmap.width, MAX_IMAGE_DIMENSION);
     let height = Math.min(bitmap.height, MAX_IMAGE_DIMENSION);
@@ -165,10 +167,12 @@ async function compressImage(file: File): Promise<File> {
     context.drawImage(bitmap, 0, 0, width, height);
     let blob = await canvasToBlob(canvas, 0.85);
     if (blob.size > MAX_UPLOAD_BYTES) blob = await canvasToBlob(canvas, 0.68);
-    if (blob.size > MAX_UPLOAD_BYTES) throw new Error("converted_file_too_large");
+    if (blob.size > MAX_UPLOAD_BYTES)
+      throw new Error("converted_file_too_large");
     const basename = file.name.replace(/\.[^.]+$/, "").slice(0, 120) || "photo";
     return new File([blob], `${basename}.jpg`, {
-      type: "image/jpeg", lastModified: Date.now(),
+      type: "image/jpeg",
+      lastModified: Date.now(),
     });
   } finally {
     bitmap.close();
