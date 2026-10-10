@@ -1,8 +1,10 @@
 import Link from "next/link";
+import "./staff-overview.css";
 import { notFound } from "next/navigation";
 import { Icon, type IconName } from "@/components/Icons";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
+import { summarizeStaffModerationCounts } from "@/lib/staff-moderation-summary";
 
 export default async function StaffOverview({
   params,
@@ -13,9 +15,11 @@ export default async function StaffOverview({
   if (!isLocale(locale)) notFound();
   const { supabase } = await requireUser(locale, `/${locale}/staff`);
   const [
-    { count: venues },
-    { count: events },
-    { count: submissions },
+    { count: venues, error: venuesError },
+    { count: events, error: eventsError },
+    { count: offers, error: offersError },
+    { count: submissions, error: submissionsError },
+    { data: claimsCount, error: claimsError },
     { count: reports },
     { data: recent },
   ] = await Promise.all([
@@ -28,9 +32,14 @@ export default async function StaffOverview({
       .select("*", { count: "exact", head: true })
       .eq("status", "pending"),
     supabase
+      .from("offers")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "pending"),
+    supabase
       .from("event_submissions")
       .select("*", { count: "exact", head: true })
       .eq("state", "pending"),
+    supabase.rpc("staff_pending_venue_claim_count"),
     supabase
       .from("reports")
       .select("*", { count: "exact", head: true })
@@ -42,7 +51,16 @@ export default async function StaffOverview({
       .limit(6),
   ]);
   const es = locale === "es";
-  const pending = (venues || 0) + (events || 0) + (submissions || 0);
+  const summary = summarizeStaffModerationCounts({
+    venues: venuesError ? null : venues,
+    events: eventsError ? null : events,
+    offers: offersError ? null : offers,
+    community: submissionsError ? null : submissions,
+    claims: claimsError || claimsCount == null ? null : Number(claimsCount),
+  });
+  const pending = summary.pending;
+  const displayCount = (value: number | null) =>
+    value === null ? "—" : value.toLocaleString(locale);
   const actions: Array<{
     href: string;
     icon: IconName;
@@ -51,13 +69,24 @@ export default async function StaffOverview({
     count?: number;
   }> = [
     {
-      href: `/${locale}/staff/moderation`,
+      href:
+        (summary.claims ?? 0) > 0 &&
+        pending === summary.claims
+          ? `/${locale}/staff/moderation?queue=claims`
+          : `/${locale}/staff/moderation`,
       icon: "shield",
       title: es ? "Cola de publicación" : "Publishing queue",
       detail: es
-        ? "Locales, eventos y contenido"
-        : "Venues, events and content",
-      count: pending,
+        ? "Locales, eventos, contenido y reclamaciones"
+        : "Venues, events, content and claims",
+      count: pending ?? undefined,
+    },
+    {
+      href: `/${locale}/staff/moderation?queue=claims`,
+      icon: "venue",
+      title: es ? "Reclamaciones" : "Business claims",
+      detail: es ? "Solicitudes de titularidad pendientes" : "Pending ownership requests",
+      count: summary.claims ?? undefined,
     },
     {
       href: `/${locale}/staff/support`,
@@ -98,13 +127,17 @@ export default async function StaffOverview({
       <section className="operations-hero">
         <span>{es ? "Prioridad de hoy" : "Today’s priority"}</span>
         <h2>
-          {pending
+          {pending === null
             ? es
-              ? `${pending} elementos esperan revisión`
-              : `${pending} items await review`
-            : es
-              ? "Todo está al día"
-              : "Everything is up to date"}
+              ? "Algunos contadores no están disponibles"
+              : "Some queue counts are unavailable"
+            : pending > 0
+              ? es
+                ? `${pending} elementos esperan revisión`
+                : `${pending} items await review`
+              : es
+                ? "Todo está al día"
+                : "Everything is up to date"}
         </h2>
         <p>
           {es
@@ -117,11 +150,11 @@ export default async function StaffOverview({
         </Link>
       </section>
       <section
-        className="operations-pulse"
+        className="operations-pulse staff-operations-pulse"
         aria-label={es ? "Estado operativo" : "Operational status"}
       >
         <div>
-          <strong>{pending}</strong>
+          <strong>{displayCount(pending)}</strong>
           <span>{es ? "por revisar" : "to review"}</span>
         </div>
         <div>
@@ -129,8 +162,12 @@ export default async function StaffOverview({
           <span>{es ? "casos" : "cases"}</span>
         </div>
         <div>
-          <strong>{venues || 0}</strong>
+          <strong>{displayCount(summary.venues)}</strong>
           <span>{es ? "locales" : "venues"}</span>
+        </div>
+        <div>
+          <strong>{displayCount(summary.claims)}</strong>
+          <span>{es ? "reclamaciones" : "claims"}</span>
         </div>
       </section>
       <section className="operations-tools">
