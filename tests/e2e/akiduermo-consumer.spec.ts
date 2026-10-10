@@ -63,6 +63,12 @@ for (const locale of ["en", "es"] as const) {
           );
           await expect(page.locator("main")).toBeVisible();
           if (path === "/") {
+            const checkIn = new Date(Date.now() + 86_400_000)
+              .toISOString()
+              .slice(0, 10);
+            const checkOut = new Date(Date.now() + 5 * 86_400_000)
+              .toISOString()
+              .slice(0, 10);
             await page
               .getByRole("textbox", {
                 name: locale === "es" ? "Destino" : "Destination",
@@ -70,10 +76,10 @@ for (const locale of ["en", "es"] as const) {
               .fill("Fuengirola");
             await page
               .getByLabel(locale === "es" ? "Entrada" : "Check in")
-              .fill("2026-10-10");
+              .fill(checkIn);
             await page
               .getByLabel(locale === "es" ? "Salida" : "Check out")
-              .fill("2026-10-14");
+              .fill(checkOut);
             await page
               .getByRole("button", {
                 name: locale === "es" ? "Buscar alojamiento" : "Find a stay",

@@ -471,23 +471,32 @@ export function AkiDuermo({
                         </span>
                       </div>
                       <small>{t("Property photos coming soon")}</small>
-                      <button
-                        className={styles.saveButton}
-                        aria-label={`${saved.some((x) => x.id === stay.id) ? t("Unsave") : t("Save")} ${stay.name}`}
-                        aria-pressed={saved.some((x) => x.id === stay.id)}
-                        onClick={() => toggleSaved(stay)}
-                      >
-                        <Icon
-                          name={
-                            saved.some((x) => x.id === stay.id)
-                              ? "heart-fill"
-                              : "heart"
-                          }
-                          size={21}
-                        />
-                      </button>
+                      {!stay.ownerPreview && (
+                        <button
+                          className={styles.saveButton}
+                          aria-label={`${saved.some((x) => x.id === stay.id) ? t("Unsave") : t("Save")} ${stay.name}`}
+                          aria-pressed={saved.some((x) => x.id === stay.id)}
+                          onClick={() => toggleSaved(stay)}
+                        >
+                          <Icon
+                            name={
+                              saved.some((x) => x.id === stay.id)
+                                ? "heart-fill"
+                                : "heart"
+                            }
+                            size={21}
+                          />
+                        </button>
+                      )}
                     </div>
                     <div className={styles.cardBody}>
+                      {stay.ownerPreview && (
+                        <span className={styles.city}>
+                          {locale === "es"
+                            ? "Vista privada de propietario"
+                            : "Private owner preview"}
+                        </span>
+                      )}
                       <span className={styles.city}>
                         <Icon name="map" size={14} /> {stay.city}
                       </span>

@@ -109,6 +109,10 @@ it("shows saved stays on their own route with local filters and dedicated naviga
 
 it("sends trip dates and guests to live availability search", async () => {
   vi.stubGlobal("React", React);
+  const checkIn = new Date(Date.now() + 86_400_000).toISOString().slice(0, 10);
+  const checkOut = new Date(Date.now() + 5 * 86_400_000)
+    .toISOString()
+    .slice(0, 10);
   Element.prototype.scrollIntoView = vi.fn();
   const fetchMock = vi.fn(async (url: string) =>
     Response.json({
@@ -123,15 +127,15 @@ it("sends trip dates and guests to live availability search", async () => {
     target: { value: "Fuengirola" },
   });
   fireEvent.change(screen.getByLabelText("Check in"), {
-    target: { value: "2026-10-10" },
+    target: { value: checkIn },
   });
   fireEvent.change(screen.getByLabelText("Check out"), {
-    target: { value: "2026-10-14" },
+    target: { value: checkOut },
   });
   fireEvent.click(screen.getByRole("button", { name: "Find a stay" }));
   await waitFor(() =>
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining("checkIn=2026-10-10"),
+      expect.stringContaining(`checkIn=${checkIn}`),
       expect.anything(),
     ),
   );
@@ -139,7 +143,7 @@ it("sends trip dates and guests to live availability search", async () => {
     fetchMock.mock.calls.some(
       ([url]) =>
         url.includes("q=Fuengirola") &&
-        url.includes("checkOut=2026-10-14") &&
+        url.includes(`checkOut=${checkOut}`) &&
         url.includes("guests=2"),
     ),
   ).toBe(true);

@@ -33,6 +33,7 @@ export const staySchema = z.object({
   accommodationType: z.string().max(100),
   website: z.string().nullable(),
   city: z.string().max(150),
+  ownerPreview: z.boolean().optional(),
 });
 export type Stay = z.infer<typeof staySchema>;
 export function safePropertyWebsite(value: string | null): string | null {
