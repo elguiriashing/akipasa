@@ -14,6 +14,11 @@ import {
   type ManagedPlace,
 } from "../src/components/BusinessHome";
 import { StayHeader } from "../src/components/StayHeader";
+import { BusinessHeader } from "../src/components/BusinessHeader";
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/en/business",
+  useSearchParams: () => new URLSearchParams("view=venues"),
+}));
 vi.mock("next/image", () => ({
   default: (
     props: React.ImgHTMLAttributes<HTMLImageElement> & { priority?: boolean },
@@ -82,6 +87,76 @@ it.each(["en", "es"] as const)(
     expect(container.querySelectorAll("article")).toHaveLength(8);
   },
 );
+it.each(["en", "es"] as const)(
+  "shares ordered controls and branded app destinations while excluding the current app in %s",
+  (locale) => {
+    for (const product of ["business", "duermo"] as const) {
+      const { container, unmount } = render(
+        product === "business" ? (
+          <BusinessHeader locale={locale} signedIn signOut={vi.fn()} />
+        ) : (
+          <StayHeader locale={locale} onLanguageChange={vi.fn()} />
+        ),
+      );
+      const tools = container.querySelector(".portal-header-tools")!;
+      expect(tools.children).toHaveLength(3);
+      expect(tools.children[0]).toHaveTextContent(
+        locale === "es" ? "EN" : "ES",
+      );
+      expect(tools.children[1]).toHaveAttribute("aria-label", "Theme");
+      expect(tools.children[2].tagName).toBe("DETAILS");
+      const menu = tools.querySelector("details")!;
+      menu.setAttribute("open", "");
+      const popover = tools.querySelector(
+        ".portal-product-popover",
+      )! as HTMLElement;
+      expect(
+        within(popover).queryByRole("link", {
+          name: product === "business" ? "AkiBusiness" : "AkiDuermo",
+        }),
+      ).toBeNull();
+      const pasa = within(popover).getByRole("link", {
+        name: "AkiPasa",
+      });
+      expect(pasa).toHaveAttribute("href", `https://akipasa.com/${locale}`);
+      expect(pasa.querySelector("img")).toHaveAttribute(
+        "src",
+        "/pwa/akipasa-512.png",
+      );
+      expect(
+        within(popover)
+          .getByRole("link", { name: "AkiHQ" })
+          .querySelector("img"),
+      ).toHaveAttribute("src", "/brand/hq-icon.png");
+      const other = within(popover).getByRole("link", {
+        name: product === "business" ? "AkiDuermo" : "AkiBusiness",
+      });
+      expect(other).toHaveAttribute(
+        "href",
+        product === "business"
+          ? `https://akiduermo.akipasa.com/?lang=${locale}`
+          : `https://business.akipasa.com/${locale}/business`,
+      );
+      fireEvent.keyDown(document, { key: "Escape" });
+      expect(menu).not.toHaveAttribute("open");
+      expect(menu.querySelector("summary")).toHaveFocus();
+      menu.setAttribute("open", "");
+      fireEvent.pointerDown(document.body);
+      expect(menu).not.toHaveAttribute("open");
+      unmount();
+    }
+  },
+);
+it("retains business locale query state and only offers logout when signed in", () => {
+  const { container } = render(
+    <BusinessHeader locale="en" signedIn={false} signOut={vi.fn()} />,
+  );
+  expect(
+    screen.getByRole("link", { name: "Cambiar a español" }),
+  ).toHaveAttribute("href", "/es/business?view=venues");
+  container.querySelector("details")!.setAttribute("open", "");
+  expect(screen.queryByRole("button", { name: "Log out" })).toBeNull();
+});
 it("keeps destructive actions outside primary navigation and preserves owner/editorial gates", () => {
   const { container } = render(
     <BusinessHome locale="en" places={places} deleteAction={vi.fn()} />,

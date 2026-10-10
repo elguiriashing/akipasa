@@ -438,3 +438,5 @@ The central recommendation boundary is `src/lib/personalisation/server.ts`; rank
 ## Portal home composition (2026-10-10 candidate)
 
 Host identity from middleware is exposed on the body for Business/Duermo-only design tokens. `PortalLogo` uses the uploaded product icon masters; `BusinessHeader` and `StayHeader` keep each product's controls consistent. Business Home receives membership rows explicitly scoped to the current profile, adds the existing staff editorial access, and filters/paginates that authorized result in a client component. Mutations remain existing server actions; no browser filter grants access. Analytics RPC reads run only in the Analytics view. AkiPasa consumer components and brand remain unchanged. See the master contract and impact register for validation/release status.
+
+Business and Duermo headers compose the same `PortalHeaderTools` client component. It owns ordered locale/theme/app controls and excludes the current app from shared branded destinations. Host-specific language behavior and authenticated logout/settings are passed through existing adapters/slots; no authentication or data logic moves into the shared control.

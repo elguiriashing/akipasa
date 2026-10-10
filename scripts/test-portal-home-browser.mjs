@@ -85,11 +85,12 @@ const server = createServer((req, res) => {
     );
   } else if (
     req.url.startsWith("/brand/") ||
+    req.url.startsWith("/pwa/") ||
     req.url.startsWith("/images/cities/")
   ) {
     try {
       const path = new URL(req.url, "http://localhost").pathname;
-      if (!/^\/(brand|images\/cities)\/[a-z-]+\.(png|webp)$/.test(path))
+      if (!/^\/(brand|pwa|images\/cities)\/[a-z0-9-]+\.(png|webp)$/.test(path))
         throw new Error("invalid");
       res.setHeader(
         "Content-Type",
@@ -182,6 +183,85 @@ try {
             expect(box.x).toBeGreaterThanOrEqual(0);
             expect(box.x + box.width).toBeLessThanOrEqual(width + 1);
           }
+          const tools = page.locator("header .portal-header-tools").first();
+          const order = await tools.evaluate((nav) =>
+            Array.from(nav.children).map((el) => el.tagName),
+          );
+          expect(order).toEqual([
+            product === "business" ? "A" : "BUTTON",
+            "BUTTON",
+            "DETAILS",
+          ]);
+          await expect(tools.locator(":scope > :first-child")).toHaveText(
+            locale === "es" ? "EN" : "ES",
+          );
+          await tools.locator(".theme-toggle").click();
+          await expect(page.locator("html")).toHaveAttribute(
+            "data-theme",
+            theme === "light" ? "dark" : "light",
+          );
+          await tools.locator(".theme-toggle").click();
+          for (const control of await tools
+            .locator(":scope > a, :scope > button, summary")
+            .all()) {
+            const box = await control.boundingBox();
+            expect(box.width).toBe(44);
+            expect(box.height).toBe(44);
+          }
+          const more = tools.locator("summary");
+          await more.focus();
+          await page.keyboard.press("Enter");
+          const popover = tools.locator(".portal-product-popover");
+          await expect(popover).toBeVisible();
+          const currentApp =
+            product === "business" ? "AkiBusiness" : "AkiDuermo";
+          await expect(
+            popover.getByRole("link", { name: currentApp, exact: true }),
+          ).toHaveCount(0);
+          for (const app of [
+            "AkiPasa",
+            "AkiHQ",
+            product === "business" ? "AkiDuermo" : "AkiBusiness",
+          ]) {
+            const link = popover.getByRole("link", { name: app, exact: true });
+            await expect(link).toBeVisible();
+            await expect(link.locator("img")).toBeVisible();
+            expect(
+              await link
+                .locator("img")
+                .evaluate((img) => img.complete && img.naturalWidth > 0),
+            ).toBe(true);
+          }
+          const menuBox = await popover.boundingBox();
+          expect(menuBox.x).toBeGreaterThanOrEqual(0);
+          expect(menuBox.x + menuBox.width).toBeLessThanOrEqual(width + 1);
+          expect(menuBox.y + menuBox.height).toBeLessThanOrEqual(height);
+          if (product === "business") {
+            await expect(
+              popover.getByRole("button", {
+                name: locale === "es" ? "Cerrar sesión" : "Log out",
+              }),
+            ).toBeVisible();
+          } else {
+            await expect(
+              popover.getByRole("link", {
+                name: locale === "es" ? "Ajustes" : "Settings",
+              }),
+            ).toHaveAttribute("href", `/settings?lang=${locale}`);
+          }
+          if ([390, 960, 1536].includes(width))
+            await page.screenshot({
+              path: `${dir}/menu-${product}-${locale}-${theme}-${width}.png`,
+            });
+          await page.keyboard.press("Escape");
+          await expect(popover).not.toBeVisible();
+          await expect(more).toBeFocused();
+          await more.click();
+          await page
+            .locator("header")
+            .first()
+            .click({ position: { x: 2, y: 2 } });
+          await expect(popover).not.toBeVisible();
           if (product === "business") {
             // Quick actions must leave space for the catalogue, even without installed fonts.
             for (const shortcut of await page
@@ -220,17 +300,6 @@ try {
               "href",
               `/${locale}/business/venue/34`,
             );
-            const more = page.locator("header summary");
-            await more.click();
-            await expect(
-              page.getByRole("link", { name: "AkiHQ", exact: true }),
-            ).toBeVisible();
-            await expect(
-              page.getByRole("button", {
-                name: locale === "es" ? "Cerrar sesión" : "Log out",
-              }),
-            ).toBeVisible();
-            await more.click();
             await page
               .getByRole("button", {
                 name: locale === "es" ? "Restablecer filtros" : "Reset filters",

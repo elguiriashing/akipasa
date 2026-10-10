@@ -1,8 +1,7 @@
 "use client";
 import Link from "next/link";
-import { Icon } from "./Icons";
 import { PortalLogo } from "./PortalLogo";
-import { ThemeToggle } from "./ThemeModeControls";
+import { PortalHeaderTools } from "./PortalHeaderTools";
 import type { StayLocale } from "@/lib/akiduermo-i18n";
 import styles from "./StayAppShell.module.css";
 
@@ -31,22 +30,18 @@ export function StayHeader({
       >
         <PortalLogo product="duermo" />
       </Link>
-      <div className={styles.headerTools}>
-        <ThemeToggle locale={locale} />
-        <button
-          type="button"
-          onClick={changeLanguage}
-          aria-label={es ? "Switch to English" : "Cambiar a español"}
-        >
-          {es ? "EN" : "ES"}
-        </button>
+      <PortalHeaderTools
+        locale={locale}
+        product="duermo"
+        onLanguageChange={changeLanguage}
+      >
         <Link
           href={`/settings?lang=${locale}`}
           aria-label={es ? "Ajustes" : "Settings"}
         >
-          <Icon name="settings" size={20} />
+          {es ? "Ajustes" : "Settings"}
         </Link>
-      </div>
+      </PortalHeaderTools>
     </header>
   );
 }

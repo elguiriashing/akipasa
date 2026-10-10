@@ -5,8 +5,7 @@ import { PortalLogo } from "@/components/PortalLogo";
 import { BusinessHeader } from "@/components/BusinessHeader";
 import { headers } from "next/headers";
 import { LocaleDocumentLanguage } from "@/components/LocaleDocumentLanguage";
-import { LanguageLink } from "@/components/LanguageLink";
-import { ThemeToggle } from "@/components/ThemeModeControls";
+import { PortalHeaderTools } from "@/components/PortalHeaderTools";
 import { AppShell } from "@/components/AppShell";
 import { OwnerToolboxLauncher } from "@/components/owner/OwnerToolboxLauncher";
 import { SupportAgentLauncher } from "@/components/support/SupportAgentLauncher";
@@ -50,10 +49,7 @@ export default async function LocaleLayout({
             >
               <PortalLogo product="duermo" />
             </Link>
-            <nav aria-label={locale === "es" ? "Opciones" : "Options"}>
-              <ThemeToggle locale={locale} />
-              <LanguageLink locale={locale === "es" ? "en" : "es"} compact />
-            </nav>
+            <PortalHeaderTools locale={locale} product="duermo" />
           </header>
           {children}
         </div>

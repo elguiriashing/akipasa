@@ -29,12 +29,29 @@ html[data-theme="dark"] body[data-product="akibusiness"] {
   background: var(--surface);
   gap: 8px;
 }
-.akibusiness-host .akibusiness-topbar nav {
+/* Keep legacy Business/auth selectors from changing the shared controls. */
+:is(
+    .akibusiness-host .akibusiness-topbar,
+    .akiduermo-auth-header,
+    body[data-product="akiduermo"]
+  )
+  nav.portal-header-tools {
+  display: flex;
+  align-items: center;
   gap: 5px;
   flex: 0 0 auto;
+  flex-wrap: nowrap;
 }
-.akibusiness-host .akibusiness-topbar :is(.language, .theme-toggle),
+:is(
+    .akibusiness-host .akibusiness-topbar,
+    .akiduermo-auth-header,
+    body[data-product="akiduermo"]
+  )
+  nav.portal-header-tools
+  > :is(.language, .theme-toggle),
 .portal-product-menu > summary {
+  width: 44px;
+  height: 44px;
   min-width: 44px;
   min-height: 44px;
   padding: 8px;
@@ -44,6 +61,14 @@ html[data-theme="dark"] body[data-product="akibusiness"] {
   border-radius: 50%;
   color: var(--ink);
   background: var(--surface);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+  text-decoration: none;
+}
+.portal-header-tools > .theme-toggle svg {
+  width: 20px;
+  height: 20px;
 }
 .portal-product-menu {
   position: relative;
@@ -57,10 +82,13 @@ html[data-theme="dark"] body[data-product="akibusiness"] {
 }
 .portal-product-popover {
   position: absolute;
+  z-index: 100;
   top: calc(100% + 10px);
   right: 0;
   width: 230px;
   max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 96px);
+  overflow-y: auto;
   display: grid;
   gap: 8px;
   padding: 12px;
@@ -69,11 +97,36 @@ html[data-theme="dark"] body[data-product="akibusiness"] {
   background: var(--surface);
   box-shadow: var(--shadow-soft);
 }
-.akibusiness-host .portal-product-popover a {
+:is(
+    .akibusiness-host .akibusiness-topbar,
+    .akiduermo-auth-header,
+    body[data-product="akiduermo"]
+  )
+  nav.portal-header-tools
+  .portal-product-popover
+  a {
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
   border: 0;
   border-radius: 10px;
+  color: var(--ink);
+  background: var(--surface-alt);
+  text-decoration: none;
 }
-.akibusiness-host .portal-product-popover form button {
+.portal-product-popover a:hover {
+  background: var(--primary-soft);
+}
+.portal-header-tools :is(a, button, summary):focus-visible {
+  outline: 2px solid var(--primary-text, var(--primary));
+  outline-offset: 3px;
+}
+.portal-product-actions {
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+.portal-product-actions form button {
   width: 100%;
   min-height: 44px;
 }
@@ -105,6 +158,10 @@ html[data-theme="dark"] body[data-product="akibusiness"] {
   .brand-pin
   path:last-child {
   fill: #f26b1d;
+}
+.akiduermo-auth-header {
+  position: relative;
+  z-index: 75;
 }
 .akiduermo-auth-brand {
   text-decoration: none;
@@ -141,17 +198,9 @@ html[data-theme="dark"] body[data-product="akibusiness"] {
   .akibusiness-host .akibusiness-topbar {
     padding-inline: 10px;
   }
-  .akibusiness-host .akibusiness-topbar nav {
-    gap: 3px;
-  }
 }
 
 .akibusiness-host .akibusiness-brand > span:last-child {
   display: inline-flex;
   line-height: 1;
-}
-
-/* Legacy mobile chrome hid the former first product link; keep language and menu links visible. */
-.akibusiness-host .akibusiness-topbar nav a:first-child {
-  display: inline-flex;
 }
