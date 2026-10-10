@@ -17,6 +17,9 @@
   must be recorded after execution; see database-conflict-incident.md.
 - Recovery: inspect current authenticator backends; terminate only confirmed
   in-flight loops. Restoring 40001 before PostgREST 16 recreates the incident.
+- Secondary repair: restore missing offers.audience and the original Premium
+  visibility policy. Existing rows default to public; embedded PostgreSQL tests
+  verify anonymous, ordinary authenticated and Premium visibility under RLS.
 
 Every behavior-changing PR adds an entry before merge. No invented verification.
 

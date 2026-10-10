@@ -24,3 +24,10 @@ The migration changes existing definitions rather than replacing them with
 older source copies. Rollback can restore the prior function definitions, but
 restoring 40001 on PostgREST 14 recreates the incident; prefer a forward fix.
 The dashboard's rolling 24-hour totals retain historical errors after repair.
+
+The same window contained 108 `offers.audience` missing-column errors. The
+application already reads/writes this field; the production schema was missing
+the original `0033_premium_entitlements.sql` offer column and visibility policy.
+Migration `20261010030100_restore_offer_audience.sql` restores that narrow
+contract, defaulting existing offers to public and enforcing Premium visibility
+through the existing entitlement function. It does not rerun billing migrations.
