@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Icon } from "./Icons";
+import { BusinessTeamRefresh } from "./BusinessTeamRefresh";
 import { VenueDeleteControl } from "./VenueDeleteControl";
 import styles from "./BusinessHome.module.css";
 
@@ -87,6 +88,7 @@ export function BusinessHome({
   }
   return (
     <section className={styles.home}>
+      <BusinessTeamRefresh />
       <div
         className={styles.shortcuts}
         aria-label={es ? "Accesos rápidos" : "Quick actions"}

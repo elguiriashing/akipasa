@@ -457,3 +457,9 @@ on the existing Worker cron. Leased batches, frozen content, provider idempotenc
 bounded retries and cumulative ambiguity holds preserve decision integrity.
 Claimant/staff read RLS, service-only mutation, account export and cascade deletion
 apply to the new outbox. Existing booking senders and ownership rules are unchanged.
+
+Basic AkiBusiness workspace admission also accepts existing caller-scoped venue
+team membership, independent of the member's personal subscription/platform role.
+The Home loader relies on this admission guard and lists only the caller's
+membership rows. Tenant and operation authorization stays in existing RLS/RPCs;
+Business Pro retains a separate paid-entitlement check.

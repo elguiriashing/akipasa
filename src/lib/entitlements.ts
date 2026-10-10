@@ -16,6 +16,17 @@ export async function requireBusinessAccess(
 
   if (canModerate(profile?.app_role || "")) return context;
 
+  // Team access belongs to the venue, not the member's personal subscription
+  // or platform role. RLS/RPCs still enforce each venue role on every operation.
+  const { data: membership, error: membershipError } = await context.supabase
+    .from("venue_members")
+    .select("venue_id")
+    .eq("profile_id", context.user.id)
+    .in("role", ["editor", "manager", "owner"])
+    .limit(1)
+    .maybeSingle();
+  if (!membershipError && membership) return context;
+
   const { data: active, error } = await context.supabase.rpc(
     "has_active_entitlement",
     {

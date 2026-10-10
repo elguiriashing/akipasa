@@ -39,7 +39,7 @@ const bundle = await build({
         }));
         b.onLoad({ filter: /.*/, namespace: "test" }, (args) => ({
           contents: args.path.endsWith("navigation")
-            ? 'export function usePathname(){return "/"}export function useSearchParams(){return new URLSearchParams(location.search)}'
+            ? 'export function useRouter(){return {refresh(){}}}export function usePathname(){return "/"}export function useSearchParams(){return new URLSearchParams(location.search)}'
             : args.path.endsWith("image")
               ? 'import React from "react";export default function Image({fill,priority,sizes,...props}){return React.createElement("img",{...props,style:fill?{position:"absolute",inset:0,width:"100%",height:"100%"}:props.style})}'
               : 'import React from "react";export default function Link({children,...props}){return React.createElement("a",props,children)}',

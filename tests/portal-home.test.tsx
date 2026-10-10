@@ -16,6 +16,7 @@ import {
 import { StayHeader } from "../src/components/StayHeader";
 import { BusinessHeader } from "../src/components/BusinessHeader";
 vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: vi.fn() }),
   usePathname: () => "/en/business",
   useSearchParams: () => new URLSearchParams("view=venues"),
 }));

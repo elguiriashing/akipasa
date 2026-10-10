@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { config, isLocale } from "@/lib/config";
 import { loadFeatureFlags } from "@/lib/feature-flags";
 import { requireUser } from "@/lib/auth";
@@ -102,14 +102,6 @@ export default async function BusinessPage({
     .select("app_role")
     .eq("id", user.id)
     .maybeSingle();
-
-  if (
-    !claimView &&
-    profile?.app_role !== "organiser" &&
-    !canModerate(profile?.app_role || "")
-  ) {
-    redirect(`/${locale}/business/apply`);
-  }
 
   const flags = await loadFeatureFlags(supabase);
   const es = locale === "es";
