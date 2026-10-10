@@ -205,8 +205,8 @@ try {
             .locator(":scope > a, :scope > button, summary")
             .all()) {
             const box = await control.boundingBox();
-            expect(box.width).toBe(44);
-            expect(box.height).toBe(44);
+            expect(box.width).toBeCloseTo(44, 3);
+            expect(box.height).toBeCloseTo(44, 3);
           }
           const more = tools.locator("summary");
           await more.focus();
