@@ -117,6 +117,7 @@ try {
           reason: "Ownership evidence verified",
           claimPage: "2",
         });
+        await page.getByRole("textbox").fill("Claim evidence is insufficient");
         await page
           .getByRole("button", {
             name: locale === "es" ? "Rechazar" : "Reject",
