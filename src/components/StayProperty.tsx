@@ -9,7 +9,7 @@ import { stayText, type StayLocale } from "@/lib/akiduermo-i18n";
 import { stayOrigin } from "@/lib/akiduermo-routing";
 import { googleMapsDirectionsUrl } from "@/lib/maps";
 import { Icon } from "./Icons";
-import { ThemeToggle } from "./ThemeModeControls";
+import { StayHeader } from "./StayHeader";
 import { StayBookingPanel } from "./StayBookingPanel";
 import { StayNavigation } from "./StayNavigation";
 import base from "./AkiDuermo.module.css";
@@ -95,37 +95,7 @@ export function StayProperty({
     : stay.descriptionEn || stay.descriptionEs;
   return (
     <div className={base.app}>
-      <header className={base.header}>
-        <Link
-          href={home}
-          className={`app-rail-brand ${base.logo}`}
-          aria-label={text("AkiDuermo home", "Inicio de AkiDuermo")}
-        >
-          <span className="app-rail-mark" aria-hidden="true">
-            A
-          </span>
-          <span>
-            AkiDuermo<i className="app-rail-brand-dot">.</i>
-          </span>
-        </Link>
-        <div className={base.headerRight}>
-          <span className={base.preview}>
-            {text("EARLY PREVIEW", "VISTA PREVIA")}
-          </span>
-          <ThemeToggle locale={locale} />
-          <button
-            className={base.languageToggle}
-            onClick={changeLanguage}
-            aria-label={es ? "Switch to English" : "Cambiar a español"}
-            lang={es ? "en" : "es"}
-          >
-            {es ? "EN" : "ES"}
-          </button>
-          <Link href={`/bookings?lang=${locale}`}>
-            {text("My bookings", "Mis reservas")}
-          </Link>
-        </div>
-      </header>
+      <StayHeader locale={locale} onLanguageChange={changeLanguage} />
       <main className={styles.page}>
         <Link href={home} className={styles.back}>
           <Icon name="arrow-right" size={18} className={base.backArrow} />

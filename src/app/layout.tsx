@@ -3,6 +3,7 @@ import "./compact-app.css";
 import "./brand.css";
 import "./appearance.css";
 import "./tablet-responsive.css";
+import "./portal-unity.css";
 import type { Metadata, Viewport } from "next";
 import { ConsentAnalytics } from "@/components/ConsentAnalytics";
 import { PersonalisationConsent } from "@/components/PersonalisationConsent";
@@ -93,7 +94,11 @@ export default async function RootLayout({
     requestLocale && isLocale(requestLocale) ? requestLocale : "es";
   return (
     <html lang={locale}>
-      <body>
+      <body
+        data-product={
+          isAkiDuermo ? "akiduermo" : isAkiBusiness ? "akibusiness" : undefined
+        }
+      >
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

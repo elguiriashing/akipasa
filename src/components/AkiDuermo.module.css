@@ -1028,3 +1028,84 @@
   min-width: 0;
   max-width: 100%;
 }
+
+/* Compact stay discovery: the booking controls sit directly beneath the welcome. */
+.app {
+  font-family: "Avenir Next", "Montserrat", "Inter", "Segoe UI", sans-serif;
+}
+.hero {
+  height: 250px;
+  margin-top: 20px;
+  border-radius: 20px;
+}
+.heroShade {
+  background: linear-gradient(90deg, #143c43f2, #143c4399 65%, #143c4340);
+}
+.heroContent {
+  padding: 28px 32px;
+}
+.hero h1 {
+  font-size: clamp(28px, 3.2vw, 40px);
+  margin: 10px 0;
+}
+.hero h1 em,
+.hero .eyebrow {
+  color: #b3f4cd;
+}
+.hero p {
+  font-size: 13px;
+  margin: 10px 0;
+}
+.searchWrap {
+  margin-top: 14px;
+}
+.search {
+  border-radius: 16px;
+  box-shadow: none;
+}
+.searchNote {
+  margin-top: 8px;
+}
+.section {
+  margin-block: 28px;
+}
+.sectionHead {
+  margin-bottom: 16px;
+}
+.section h2 {
+  font-size: clamp(22px, 2.3vw, 28px);
+}
+.destinationCard {
+  height: 190px;
+}
+@media (max-width: 600px) {
+  .hero {
+    height: 190px;
+    margin: 14px 16px 0;
+  }
+  .heroContent {
+    padding: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(26px, 6vw, 34px);
+    margin: 8px 0;
+  }
+  .hero p {
+    font-size: 12px;
+    margin: 8px 0;
+  }
+  .section {
+    margin-block: 24px;
+    padding-inline: 16px;
+  }
+  .searchWrap {
+    margin-top: 12px;
+  }
+  .destinationCard {
+    flex-basis: 60%;
+    height: 180px;
+  }
+  .destinationCard strong {
+    font-size: 22px;
+  }
+}

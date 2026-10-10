@@ -18,7 +18,7 @@ import { OfficialEventLocationPicker } from "@/components/OfficialEventLocationP
 import { PromotionRequestFields } from "@/components/PromotionRequestFields";
 import { Icon } from "@/components/Icons";
 import { ClaimVenuePicker } from "@/components/ClaimVenuePicker";
-import { VenueDeleteControl } from "@/components/VenueDeleteControl";
+import { BusinessHome } from "@/components/BusinessHome";
 import {
   WorkspaceShell,
   type WorkspaceItem,
@@ -116,7 +116,7 @@ export default async function BusinessPage({
   const platformStaff = canModerate(profile?.app_role || "");
 
   const [
-    { data: members },
+    { data: members, error: membersError },
     { data: categories },
     { data: claims },
     { data: programs },
@@ -125,7 +125,8 @@ export default async function BusinessPage({
   ] = await Promise.all([
     supabase
       .from("venue_members")
-      .select("role,venues(id,name,slug,status,verified,discovery_vertical)"),
+      .select("role,venues(id,name,slug,status,verified,discovery_vertical)")
+      .eq("profile_id", user.id),
     supabase.from("categories").select("id,name_es,name_en").order("name_es"),
     supabase
       .from("venue_claims")
@@ -252,27 +253,30 @@ export default async function BusinessPage({
   const currentEvents = businessEvents.filter(
     (event) => !archivedEvents.includes(event) && !pastEvents.includes(event),
   );
-  const analytics = await Promise.all(
-    managed
-      .filter((item) => item.venues)
-      .map(async (item) => {
-        const venue = item.venues!;
-        const { data } = await supabase.rpc("venue_analytics", {
-          p_venue: venue.id,
-        });
-        return {
-          venue,
-          rows: (data || []) as { action: string; total: number }[],
-        };
-      }),
-  );
+  const analytics =
+    view === "analytics"
+      ? await Promise.all(
+          managed
+            .filter((item) => item.venues)
+            .map(async (item) => {
+              const venue = item.venues!;
+              const { data } = await supabase.rpc("venue_analytics", {
+                p_venue: venue.id,
+              });
+              return {
+                venue,
+                rows: (data || []) as { action: string; total: number }[],
+              };
+            }),
+        )
+      : [];
 
   const base = `/${locale}/business`;
   const items: WorkspaceItem[] = [
     {
       href: base,
-      label: es ? "Locales" : "Venues",
-      icon: "venue",
+      label: es ? "Inicio" : "Home",
+      icon: "home",
       count: managed.length || undefined,
     },
     {
@@ -302,7 +306,7 @@ export default async function BusinessPage({
   ];
   return (
     <WorkspaceShell
-      title={es ? "Tu negocio" : "Your business"}
+      title={es ? "Tu negocio, a mano" : "Your business, at a glance"}
       eyebrow={es ? "Panel de negocio" : "Business workspace"}
       description={
         es
@@ -489,80 +493,28 @@ export default async function BusinessPage({
         {/* AkiHQ is now a separate product surface. Keep AkiBusiness focused
             on public listing, events, loyalty, promotion and analytics. */}
         {view === "venues" && (
-          <div className="panel catalogue-edit-card">
-            <div className="catalogue-section-header">
-              <h2>
-                {es ? "Mis negocios y alojamientos" : "My businesses and stays"}
-              </h2>
-              <p className="catalogue-section-sub">
-                {es
-                  ? "Elige qué negocio o alojamiento quieres gestionar. Las herramientas se adaptan a cada tipo."
-                  : "Choose a business or accommodation to manage. Each opens its own set of tools."}
-              </p>
-            </div>
-
-            {managed.length ? (
-              <div className="managed-list">
-                {managed.map(
-                  (m) =>
-                    m.venues && (
-                      <div className="managed-row" key={m.venues.id}>
-                        <div>
-                          <strong>{m.venues.name}</strong>
-                          <span className="business-product-type">
-                            {m.venues.discovery_vertical === "accommodation"
-                              ? "AkiDuermo"
-                              : "AkiPasa"}
-                          </span>
-                          <span>
-                            {m.role} · <small>{m.venues.status}</small>
-                          </span>
-                        </div>
-                        <div className="business-venue-row-actions">
-                          <a
-                            className="button secondary business-venue-action"
-                            href={`/${locale}/business/venue/${m.venues.id}`}
-                          >
-                            <Icon
-                              name={
-                                m.venues.discovery_vertical === "accommodation"
-                                  ? "home"
-                                  : "venue"
-                              }
-                            />
-                            {m.venues.discovery_vertical === "accommodation"
-                              ? es
-                                ? "Gestionar alojamiento"
-                                : "Manage stay"
-                              : es
-                                ? "Gestionar local"
-                                : "Manage venue"}
-                            <Icon name="arrow-right" />
-                          </a>
-                          {m.role === "owner" &&
-                            m.venues.slug !== "akipasa-editorial" && (
-                              <VenueDeleteControl
-                                locale={locale}
-                                venueId={m.venues.id}
-                                venueName={m.venues.name}
-                                action={deleteManagedVenue}
-                              />
-                            )}
-                        </div>
-                      </div>
-                    ),
-                )}
-              </div>
-            ) : (
-              <div className="catalogue-empty-card">
-                <p>
-                  {es
-                    ? "Todavía no gestionas ningún local. ¡Crea el primero abajo!"
-                    : "You do not manage a venue yet. Create your first one below!"}
-                </p>
-              </div>
+          <BusinessHome
+            locale={locale}
+            readError={Boolean(membersError)}
+            places={managed.flatMap((item) =>
+              item.venues
+                ? [
+                    {
+                      id: item.venues.id,
+                      name: item.venues.name,
+                      slug: item.venues.slug,
+                      status: item.venues.status,
+                      role: item.role,
+                      product:
+                        item.venues.discovery_vertical === "accommodation"
+                          ? ("stay" as const)
+                          : ("venue" as const),
+                    },
+                  ]
+                : [],
             )}
-          </div>
+            deleteAction={deleteManagedVenue}
+          />
         )}
 
         {/* Create Venue Form */}

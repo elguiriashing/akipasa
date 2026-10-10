@@ -23,7 +23,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
         : "Todo lo que pasa cerca de ti.",
     start_url: business ? "/es/business" : stay ? "/" : "/es",
     display: "standalone",
-    background_color: "#14213d",
+    background_color: business ? "#192b48" : stay ? "#143c43" : "#14213d",
     theme_color: business ? "#ffd447" : stay ? "#35c6a6" : "#14213d",
     lang: "es",
     scope: "/",
@@ -33,12 +33,16 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
         ? ["business"]
         : ["entertainment", "lifestyle", "travel"],
     icons: [
-      {
-        src: "/pwa-icon.svg",
-        sizes: "any",
-        type: "image/svg+xml",
-        purpose: "any",
-      },
+      ...(business || stay
+        ? []
+        : [
+            {
+              src: "/pwa-icon.svg",
+              sizes: "any",
+              type: "image/svg+xml",
+              purpose: "any" as const,
+            },
+          ]),
       ...([192, 512] as const).flatMap((size) => [
         {
           src: `/pwa/${icon}-${size}.png`,
