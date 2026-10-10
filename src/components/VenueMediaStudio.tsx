@@ -7,7 +7,6 @@ import {
   clearVenueMediaPlacement,
   removeVenueImage,
   setVenueMediaPlacement,
-  uploadVenueImage,
 } from "@/app/[locale]/business/venue/[id]/actions";
 
 export type VenueMediaStudioItem = {
@@ -196,7 +195,15 @@ export function VenueMediaStudio({
 
       let result;
       try {
-        result = await uploadVenueImage(fd);
+        const response = await fetch("/api/business/venue-media", {
+          method: "POST",
+          body: fd,
+          credentials: "same-origin",
+          cache: "no-store",
+        });
+        result = await response
+          .json()
+          .catch(() => ({ ok: false, error: "unavailable" }));
       } catch {
         setUploadError(
           es
@@ -228,9 +235,13 @@ export function VenueMediaStudio({
                   ? es
                     ? "Falló la traducción de la descripción."
                     : "Description translation failed."
-                  : es
-                    ? "No se pudo completar la subida."
-                    : "Upload could not be completed.";
+                  : reason === "unavailable" || reason === "origin"
+                    ? es
+                      ? "El servidor no pudo procesar la subida. Vuelve a iniciar sesión y reinténtalo."
+                      : "The server could not process the upload. Sign in again and retry."
+                    : es
+                      ? "No se pudo completar la subida."
+                      : "Upload could not be completed.";
         setUploadError(`${file.name}: ${explanation}`);
         setItems((current) => [...current, ...uploaded]);
         setStatus("error");
