@@ -11,7 +11,7 @@ it("restores offers without exposing Premium or draft offers anonymously", async
       create schema auth;
       create type public.app_role as enum ('moderator','administrator');
       create function auth.uid() returns uuid language sql as $$
-        select nullif(current_setting('test.user',true),'')::uuid
+        select nullif(current_setting('test.actor',true),'')::uuid
       $$;
       create function public.has_active_entitlement(uuid,text) returns boolean language sql as $$
         select coalesce(current_setting('test.premium',true),'')='yes'
@@ -44,7 +44,7 @@ it("restores offers without exposing Premium or draft offers anonymously", async
       (await db.query("select id from public.offers order by id")).rows,
     ).toEqual([{ id: 1 }]);
     await db.exec(
-      "reset role; set role authenticated; set test.user='00000000-0000-4000-8000-000000000001';",
+      "reset role; set role authenticated; set test.actor='00000000-0000-4000-8000-000000000001';",
     );
     expect(
       (await db.query("select id from public.offers order by id")).rows,
