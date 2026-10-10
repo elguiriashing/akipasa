@@ -37,3 +37,9 @@ All five function body hashes match the expected conflict-code substitution;
 grants, security-definer settings and search paths match their previous values.
 A rollback-only stale catalogue unpublish test returned PT409. Local embedded
 PostgreSQL tests passed for conflict/authorization/write and offer RLS behavior.
+
+Anonymous role verification exposed an additional helper EXECUTE restriction.
+Follow-up `20261010022234_split_offer_visibility_roles.sql` separates anonymous
+public-offer reads from authenticated entitlement checks. Both roles now query
+offers successfully in production; the local RLS test models the restricted
+helper grant and verifies Premium offers remain hidden without entitlement.

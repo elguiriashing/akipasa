@@ -16,6 +16,8 @@ it("restores offers without exposing Premium or draft offers anonymously", async
       create function public.has_active_entitlement(uuid,text) returns boolean language sql as $$
         select coalesce(current_setting('test.premium',true),'')='yes'
       $$;
+      revoke execute on function public.has_active_entitlement(uuid,text) from public;
+      grant execute on function public.has_active_entitlement(uuid,text) to authenticated;
       create function public.is_venue_member(uuid) returns boolean language sql as $$ select false $$;
       create function public.has_platform_role(public.app_role[]) returns boolean language sql as $$ select false $$;
       create table public.offers (id integer, venue_id uuid, status text);
@@ -34,6 +36,15 @@ it("restores offers without exposing Premium or draft offers anonymously", async
     );
     await db.exec(migration);
     await db.exec(migration);
+    const roleMigration = readFileSync(
+      new URL(
+        "../supabase/migrations/20261010022234_split_offer_visibility_roles.sql",
+        import.meta.url,
+      ),
+      "utf8",
+    );
+    await db.exec(roleMigration);
+    await db.exec(roleMigration);
     expect(
       (await db.query("select audience from public.offers order by id")).rows,
     ).toEqual([{ audience: "public" }, { audience: "public" }]);
