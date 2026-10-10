@@ -210,7 +210,11 @@ function ClaimDetails({
         </div>
       </dl>
       <div>
-        <h4>{es ? "Datos facilitados en la solicitud" : "Details supplied with the claim"}</h4>
+        <h4>
+          {es
+            ? "Datos facilitados en la solicitud"
+            : "Details supplied with the claim"}
+        </h4>
         <dl className="claim-review-grid claim-submitted-details">
           <div>
             <dt>{es ? "Nombre de contacto" : "Contact name"}</dt>
@@ -219,53 +223,81 @@ function ClaimDetails({
           <div>
             <dt>{es ? "Relación con el negocio" : "Role at the business"}</dt>
             <dd>
-              {({
-                owner: es ? "Propietario/a" : "Owner",
-                manager: es ? "Gerente / responsable" : "Manager",
-                authorized: es ? "Representante autorizado/a" : "Authorised representative",
-                employee: es ? "Empleado/a" : "Employee",
-                other: es ? "Otra relación" : "Other",
-              } as Record<string, string>)[item.claimant?.submission?.relationship || ""] || missing}
+              {(
+                {
+                  owner: es ? "Propietario/a" : "Owner",
+                  manager: es ? "Gerente / responsable" : "Manager",
+                  authorized: es
+                    ? "Representante autorizado/a"
+                    : "Authorised representative",
+                  employee: es ? "Empleado/a" : "Employee",
+                  other: es ? "Otra relación" : "Other",
+                } as Record<string, string>
+              )[item.claimant?.submission?.relationship || ""] || missing}
             </dd>
           </div>
           <div>
             <dt>{es ? "Teléfono facilitado" : "Submitted phone"}</dt>
             <dd>
               {item.claimant?.submission?.applicant_phone ? (
-                <a href={`tel:${item.claimant.submission.applicant_phone.replace(/[^+0-9]/g, "")}`}>
+                <a
+                  href={`tel:${item.claimant.submission.applicant_phone.replace(/[^+0-9]/g, "")}`}
+                >
                   {item.claimant.submission.applicant_phone}
                 </a>
-              ) : missing}
+              ) : (
+                missing
+              )}
             </dd>
           </div>
           <div>
-            <dt>{es ? "Email del negocio facilitado" : "Submitted business email"}</dt>
+            <dt>
+              {es ? "Email del negocio facilitado" : "Submitted business email"}
+            </dt>
             <dd>
               {item.claimant?.submission?.business_email ? (
-                <a href={`mailto:${encodeURIComponent(item.claimant.submission.business_email)}`}>
+                <a
+                  href={`mailto:${encodeURIComponent(item.claimant.submission.business_email)}`}
+                >
                   {item.claimant.submission.business_email}
                 </a>
-              ) : missing}
+              ) : (
+                missing
+              )}
             </dd>
           </div>
           <div>
             <dt>{es ? "Web facilitada" : "Submitted website"}</dt>
             <dd>
-              {item.claimant?.submission?.business_website?.startsWith("https://") ? (
-                <a href={item.claimant.submission.business_website} target="_blank" rel="noopener noreferrer">
+              {item.claimant?.submission?.business_website?.startsWith(
+                "https://",
+              ) ? (
+                <a
+                  href={item.claimant.submission.business_website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {item.claimant.submission.business_website}
                 </a>
-              ) : item.claimant?.submission?.business_website || missing}
+              ) : (
+                item.claimant?.submission?.business_website || missing
+              )}
             </dd>
           </div>
           <div>
-            <dt>{es ? "Teléfono del local facilitado" : "Submitted venue phone"}</dt>
+            <dt>
+              {es ? "Teléfono del local facilitado" : "Submitted venue phone"}
+            </dt>
             <dd>
               {item.claimant?.submission?.business_phone ? (
-                <a href={`tel:${item.claimant.submission.business_phone.replace(/[^+0-9]/g, "")}`}>
+                <a
+                  href={`tel:${item.claimant.submission.business_phone.replace(/[^+0-9]/g, "")}`}
+                >
                   {item.claimant.submission.business_phone}
                 </a>
-              ) : missing}
+              ) : (
+                missing
+              )}
             </dd>
           </div>
         </dl>

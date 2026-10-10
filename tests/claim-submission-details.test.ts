@@ -31,7 +31,9 @@ describe("structured venue claim form and privacy contract", () => {
   });
 
   it("validates applicant fields server-side and never edits the public venue or profile", () => {
-    expect(actions).toContain('applicantName: z.string().trim().min(2).max(120)');
+    expect(actions).toContain(
+      "applicantName: z.string().trim().min(2).max(120)",
+    );
     expect(actions).toContain("businessRole: z.enum");
     expect(actions).toContain("businessEmail: z.union");
     expect(actions).toContain("claim_details: {");
@@ -49,7 +51,9 @@ describe("structured venue claim form and privacy contract", () => {
     expect(migration).toContain("add column if not exists claim_details");
     expect(migration).toContain("'submission',c.claim_details");
     expect(migration).toContain("staff role required");
-    expect(migration).toContain("revoke all on function public.staff_pending_venue_claims");
+    expect(migration).toContain(
+      "revoke all on function public.staff_pending_venue_claims",
+    );
     expect(staff).toContain("item.claimant?.submission?.applicant_name");
     expect(staff).toContain("item.claimant?.submission?.business_email");
     expect(staff).toContain("Applicant-supplied details.");

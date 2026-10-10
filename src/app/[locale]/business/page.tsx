@@ -1046,46 +1046,128 @@ export default async function BusinessPage({
 
               <div className="akibusiness-claim-details">
                 <div className="akibusiness-claim-details-heading">
-                  <h3>{es ? "Tus datos de contacto" : "Your contact details"}</h3>
-                  <p>{es ? "Estos datos son solo para comprobar tu solicitud. No cambian la ficha pública del local." : "These details are only used to review your claim. They will not change the venue’s public listing."}</p>
+                  <h3>
+                    {es ? "Tus datos de contacto" : "Your contact details"}
+                  </h3>
+                  <p>
+                    {es
+                      ? "Estos datos son solo para comprobar tu solicitud. No cambian la ficha pública del local."
+                      : "These details are only used to review your claim. They will not change the venue’s public listing."}
+                  </p>
                 </div>
                 <div className="akibusiness-claim-details-grid">
                   <label>
                     <span>{es ? "Nombre y apellidos" : "Full name"}</span>
-                    <input name="applicantName" type="text" required minLength={2} maxLength={120} autoComplete="name" placeholder={es ? "Tu nombre completo" : "Your full name"} />
+                    <input
+                      name="applicantName"
+                      type="text"
+                      required
+                      minLength={2}
+                      maxLength={120}
+                      autoComplete="name"
+                      placeholder={es ? "Tu nombre completo" : "Your full name"}
+                    />
                   </label>
                   <label>
-                    <span>{es ? "Tu relación con el negocio" : "Your role at the business"}</span>
+                    <span>
+                      {es
+                        ? "Tu relación con el negocio"
+                        : "Your role at the business"}
+                    </span>
                     <select name="businessRole" required defaultValue="">
-                      <option value="" disabled>{es ? "Selecciona tu relación" : "Select your role"}</option>
-                      <option value="owner">{es ? "Propietario/a" : "Owner"}</option>
-                      <option value="manager">{es ? "Gerente / responsable" : "Manager"}</option>
-                      <option value="authorized">{es ? "Representante autorizado/a" : "Authorised representative"}</option>
-                      <option value="employee">{es ? "Empleado/a" : "Employee"}</option>
-                      <option value="other">{es ? "Otra relación" : "Other"}</option>
+                      <option value="" disabled>
+                        {es ? "Selecciona tu relación" : "Select your role"}
+                      </option>
+                      <option value="owner">
+                        {es ? "Propietario/a" : "Owner"}
+                      </option>
+                      <option value="manager">
+                        {es ? "Gerente / responsable" : "Manager"}
+                      </option>
+                      <option value="authorized">
+                        {es
+                          ? "Representante autorizado/a"
+                          : "Authorised representative"}
+                      </option>
+                      <option value="employee">
+                        {es ? "Empleado/a" : "Employee"}
+                      </option>
+                      <option value="other">
+                        {es ? "Otra relación" : "Other"}
+                      </option>
                     </select>
                   </label>
                   <label>
-                    <span>{es ? "Tu teléfono (opcional)" : "Your phone number (optional)"}</span>
-                    <input name="applicantPhone" type="tel" autoComplete="tel" inputMode="tel" maxLength={30} placeholder="+34 600 000 000" />
+                    <span>
+                      {es
+                        ? "Tu teléfono (opcional)"
+                        : "Your phone number (optional)"}
+                    </span>
+                    <input
+                      name="applicantPhone"
+                      type="tel"
+                      autoComplete="tel"
+                      inputMode="tel"
+                      maxLength={30}
+                      placeholder="+34 600 000 000"
+                    />
                   </label>
                   <label>
-                    <span>{es ? "Email de trabajo (opcional)" : "Business email (optional)"}</span>
-                    <input name="businessEmail" type="email" autoComplete="email" maxLength={254} placeholder="info@negocio.es" />
+                    <span>
+                      {es
+                        ? "Email de trabajo (opcional)"
+                        : "Business email (optional)"}
+                    </span>
+                    <input
+                      name="businessEmail"
+                      type="email"
+                      autoComplete="email"
+                      maxLength={254}
+                      placeholder="info@negocio.es"
+                    />
                   </label>
                 </div>
                 <div className="akibusiness-claim-details-heading">
-                  <h3>{es ? "Información para verificar el local" : "Venue verification details"}</h3>
-                  <p>{es ? "Indica la web o el teléfono del negocio si los conoces. Los revisaremos antes de dar acceso." : "Provide the venue website or phone if you know them. We’ll check them before granting access."}</p>
+                  <h3>
+                    {es
+                      ? "Información para verificar el local"
+                      : "Venue verification details"}
+                  </h3>
+                  <p>
+                    {es
+                      ? "Indica la web o el teléfono del negocio si los conoces. Los revisaremos antes de dar acceso."
+                      : "Provide the venue website or phone if you know them. We’ll check them before granting access."}
+                  </p>
                 </div>
                 <div className="akibusiness-claim-details-grid">
                   <label>
-                    <span>{es ? "Web oficial del local (opcional)" : "Official venue website (optional)"}</span>
-                    <input name="businessWebsite" type="url" inputMode="url" autoComplete="url" maxLength={500} placeholder="https://negocio.es" />
+                    <span>
+                      {es
+                        ? "Web oficial del local (opcional)"
+                        : "Official venue website (optional)"}
+                    </span>
+                    <input
+                      name="businessWebsite"
+                      type="url"
+                      inputMode="url"
+                      autoComplete="url"
+                      maxLength={500}
+                      placeholder="https://negocio.es"
+                    />
                   </label>
                   <label>
-                    <span>{es ? "Teléfono del local (opcional)" : "Venue phone number (optional)"}</span>
-                    <input name="businessPhone" type="tel" inputMode="tel" maxLength={30} placeholder="+34 952 000 000" />
+                    <span>
+                      {es
+                        ? "Teléfono del local (opcional)"
+                        : "Venue phone number (optional)"}
+                    </span>
+                    <input
+                      name="businessPhone"
+                      type="tel"
+                      inputMode="tel"
+                      maxLength={30}
+                      placeholder="+34 952 000 000"
+                    />
                   </label>
                 </div>
               </div>

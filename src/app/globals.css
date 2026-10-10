@@ -19234,7 +19234,6 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
   }
 }
 
-
 /* Private venue claim verification details: EN/ES, tablet and phone friendly. */
 .akibusiness-claim-details {
   display: grid;
@@ -19303,8 +19302,14 @@ html[data-theme="light"] .akibusiness-host .akibusiness-claim-details-heading p,
 html.theme-light .akibusiness-host .akibusiness-claim-details-heading p {
   color: #526077;
 }
-html[data-theme="light"] .akibusiness-host .akibusiness-claim-details-grid :is(input, select),
-html.theme-light .akibusiness-host .akibusiness-claim-details-grid :is(input, select) {
+html[data-theme="light"]
+  .akibusiness-host
+  .akibusiness-claim-details-grid
+  :is(input, select),
+html.theme-light
+  .akibusiness-host
+  .akibusiness-claim-details-grid
+  :is(input, select) {
   background: #ffffff;
   color: #14213d;
   border-color: rgba(20, 33, 61, 0.22);

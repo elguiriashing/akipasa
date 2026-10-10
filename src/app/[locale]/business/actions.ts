@@ -161,10 +161,18 @@ const claimSchema = z.object({
   venueId: z.string().uuid(),
   applicantName: z.string().trim().min(2).max(120),
   businessRole: z.enum(["owner", "manager", "authorized", "employee", "other"]),
-  applicantPhone: z.string().trim().max(30).regex(/^[+0-9 ()-]*$/),
+  applicantPhone: z
+    .string()
+    .trim()
+    .max(30)
+    .regex(/^[+0-9 ()-]*$/),
   businessEmail: z.union([z.literal(""), z.string().trim().email().max(254)]),
   businessWebsite: safeExternalUrlSchema.refine((value) => value.length <= 500),
-  businessPhone: z.string().trim().max(30).regex(/^[+0-9 ()-]*$/),
+  businessPhone: z
+    .string()
+    .trim()
+    .max(30)
+    .regex(/^[+0-9 ()-]*$/),
   evidence: z.string().trim().min(20).max(2000),
 });
 export async function submitVenueClaim(formData: FormData) {
@@ -172,7 +180,8 @@ export async function submitVenueClaim(formData: FormData) {
   const locale = isLocale(String(formData.get("locale")))
     ? (String(formData.get("locale")) as "es" | "en")
     : "es";
-  if (!parsed.success) redirect(`/${locale}/business?view=claims&error=claim-validation`);
+  if (!parsed.success)
+    redirect(`/${locale}/business?view=claims&error=claim-validation`);
   const { supabase, user } = await requireUser(
     locale,
     `/${locale}/business?view=claims&venueId=${parsed.data.venueId}`,

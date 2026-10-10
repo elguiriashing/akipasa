@@ -92,13 +92,17 @@ it("does not expose a deleted Auth email", async () => {
 });
 
 it("keeps structured claim details private to the staff-only pending queue", async () => {
-  await db.exec(`update venue_claims set claim_details='{"applicant_name":"Sample Owner","relationship":"owner","applicant_phone":"+34600000000","business_email":"owner@example.test","business_website":"https://example.test","business_phone":"+34900000000"}'::jsonb where status='pending';`);
+  await db.exec(
+    `update venue_claims set claim_details='{"applicant_name":"Sample Owner","relationship":"owner","applicant_phone":"+34600000000","business_email":"owner@example.test","business_website":"https://example.test","business_phone":"+34900000000"}'::jsonb where status='pending';`,
+  );
   await db.exec(
     `set role authenticated; select set_config('test.uid','${uid(1)}',false)`,
   );
-  const result = await db.query<{ claimant: { submission?: { applicant_name: string; business_email: string } } }>(
-    "select * from staff_pending_venue_claims(0)",
-  );
+  const result = await db.query<{
+    claimant: {
+      submission?: { applicant_name: string; business_email: string };
+    };
+  }>("select * from staff_pending_venue_claims(0)");
   expect(result.rows[0].claimant.submission).toMatchObject({
     applicant_name: "Sample Owner",
     business_email: "owner@example.test",
@@ -107,6 +111,8 @@ it("keeps structured claim details private to the staff-only pending queue", asy
   await db.exec(
     `set role authenticated; select set_config('test.uid','${uid(2)}',false)`,
   );
-  await expect(db.query("select * from staff_pending_venue_claims(0)")).rejects.toThrow("staff role required");
+  await expect(
+    db.query("select * from staff_pending_venue_claims(0)"),
+  ).rejects.toThrow("staff role required");
   await db.exec("reset role");
 });
