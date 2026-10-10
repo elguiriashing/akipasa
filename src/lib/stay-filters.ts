@@ -11,9 +11,17 @@ export function staySearchFilters(q: string) {
     .replace(/\s+/g, " ")
     .trim();
   if (!search) return "";
-  const probes = venueSearchProbes(search).filter(
-    (probe) => comparableVenueSearch(probe) === comparableVenueSearch(search),
-  );
+  // Long place names generated dozens of ILIKE clauses and timed out the
+  // public listing query. Short names still get bounded accent variants.
+  const probes =
+    search.length <= 6
+      ? venueSearchProbes(search)
+          .filter(
+            (probe) =>
+              comparableVenueSearch(probe) === comparableVenueSearch(search),
+          )
+          .slice(0, 8)
+      : [];
   return [...new Set([search, ...probes])]
     .flatMap((probe) => {
       const pattern = escapeVenueSearchPattern(probe);

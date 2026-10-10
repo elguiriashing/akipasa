@@ -106,3 +106,50 @@ it("shows saved stays on their own route with local filters and dedicated naviga
     ).map((link) => link.textContent),
   ).toEqual(["Explore", "Map", "Saved", "Bookings", "Account"]);
 });
+
+it("sends trip dates and guests to live availability search", async () => {
+  vi.stubGlobal("React", React);
+  const checkIn = new Date(Date.now() + 86_400_000).toISOString().slice(0, 10);
+  const checkOut = new Date(Date.now() + 5 * 86_400_000)
+    .toISOString()
+    .slice(0, 10);
+  Element.prototype.scrollIntoView = vi.fn();
+  const fetchMock = vi.fn(async (url: string) =>
+    Response.json({
+      rows: [],
+      total: 1,
+      availabilityChecked: url.includes("checkIn="),
+    }),
+  );
+  vi.stubGlobal("fetch", fetchMock);
+  render(<AkiDuermo initialLocale="en" />);
+  fireEvent.change(screen.getByRole("textbox", { name: "Destination" }), {
+    target: { value: "Fuengirola" },
+  });
+  fireEvent.change(screen.getByLabelText("Check in"), {
+    target: { value: checkIn },
+  });
+  fireEvent.change(screen.getByLabelText("Check out"), {
+    target: { value: checkOut },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Find a stay" }));
+  await waitFor(() =>
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining(`checkIn=${checkIn}`),
+      expect.anything(),
+    ),
+  );
+  expect(
+    fetchMock.mock.calls.some(
+      ([url]) =>
+        url.includes("q=Fuengirola") &&
+        url.includes(`checkOut=${checkOut}`) &&
+        url.includes("guests=2"),
+    ),
+  ).toBe(true);
+  await waitFor(() =>
+    expect(
+      screen.getByText(/Availability checked for your dates/),
+    ).toBeVisible(),
+  );
+});

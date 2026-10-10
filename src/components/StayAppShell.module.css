@@ -109,6 +109,9 @@
   overflow: hidden;
   clip-path: inset(50%);
 }
+.fullMap .main :global(.map-legend) {
+  display: none;
+}
 .fullMap .main :global(.production-map-wrap),
 .fullMap .main :global(.production-map) {
   position: absolute;

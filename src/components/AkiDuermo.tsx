@@ -76,6 +76,7 @@ export function AkiDuermo({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
+  const [availabilityChecked, setAvailabilityChecked] = useState(false);
   const [saved, setSaved] = useState<Stay[]>([]);
   const [view] = useState<"explore" | "saved">(initialView);
   const [checkIn, setCheckIn] = useState(initialTrip?.checkIn || "");
@@ -110,7 +111,7 @@ export function AkiDuermo({
     setLoading(true);
     setError("");
     fetch(
-      `/api/stays?${new URLSearchParams({ q: search, type, page: String(page) })}`,
+      `/api/stays?${new URLSearchParams({ q: search, type, page: String(page), ...(view === "explore" && trip ? { checkIn: trip.checkIn, checkOut: trip.checkOut, guests: trip.guests } : {}) })}`,
       { signal: abort.signal },
     )
       .then(async (r) => {
@@ -120,6 +121,7 @@ export function AkiDuermo({
       .then((data) => {
         setRows(data.rows);
         setTotal(data.total);
+        setAvailabilityChecked(Boolean(data.availabilityChecked));
       })
       .catch(() => {
         if (!abort.signal.aborted) setError("We couldn’t load stays just now.");
@@ -128,7 +130,7 @@ export function AkiDuermo({
         if (!abort.signal.aborted) setLoading(false);
       });
     return () => abort.abort();
-  }, [search, type, page, retry]);
+  }, [search, type, page, retry, trip, view]);
   function toggleSaved(stay: Stay) {
     setSaved((prev) => {
       const next = prev.some((x) => x.id === stay.id)
@@ -148,6 +150,7 @@ export function AkiDuermo({
     setDestination(name);
     setSearch(name);
     setPage(1);
+    setTrip(null);
     document.getElementById("stays")?.scrollIntoView({ behavior: "smooth" });
   }
   const shown = view === "saved" ? filterSavedStays(saved, type, search) : rows;
@@ -421,14 +424,22 @@ export function AkiDuermo({
                 ? t("Finding your next stay…")
                 : error
                   ? t(error)
-                  : `${total.toLocaleString(locale === "es" ? "es-ES" : "en-GB")} ${t("places to explore")} ${search ? `${t("around")} ${search}` : t("across Spain")}`}{" "}
+                  : availabilityChecked
+                    ? locale === "es"
+                      ? `${shown.length} alojamientos disponibles en esta página`
+                      : `${shown.length} available stays on this page`
+                    : `${total.toLocaleString(locale === "es" ? "es-ES" : "en-GB")} ${t("places to explore")} ${search ? `${t("around")} ${search}` : t("across Spain")}`}{" "}
             · <span>{t("Listings awaiting property verification")}</span>
           </p>
           {trip && (
             <p className={styles.trip}>
               {trip.checkIn} → {trip.checkOut} · {trip.guests}{" "}
               {t(Number(trip.guests) === 1 ? "guest" : "guests")}.{" "}
-              {t("Dates are for planning; availability is not checked yet.")}
+              {availabilityChecked
+                ? locale === "es"
+                  ? "Disponibilidad comprobada para las fechas y huéspedes seleccionados."
+                  : "Availability checked for your dates and guests."
+                : t("Dates are for planning; availability is not checked yet.")}
             </p>
           )}
           <>
@@ -460,23 +471,32 @@ export function AkiDuermo({
                         </span>
                       </div>
                       <small>{t("Property photos coming soon")}</small>
-                      <button
-                        className={styles.saveButton}
-                        aria-label={`${saved.some((x) => x.id === stay.id) ? t("Unsave") : t("Save")} ${stay.name}`}
-                        aria-pressed={saved.some((x) => x.id === stay.id)}
-                        onClick={() => toggleSaved(stay)}
-                      >
-                        <Icon
-                          name={
-                            saved.some((x) => x.id === stay.id)
-                              ? "heart-fill"
-                              : "heart"
-                          }
-                          size={21}
-                        />
-                      </button>
+                      {!stay.ownerPreview && (
+                        <button
+                          className={styles.saveButton}
+                          aria-label={`${saved.some((x) => x.id === stay.id) ? t("Unsave") : t("Save")} ${stay.name}`}
+                          aria-pressed={saved.some((x) => x.id === stay.id)}
+                          onClick={() => toggleSaved(stay)}
+                        >
+                          <Icon
+                            name={
+                              saved.some((x) => x.id === stay.id)
+                                ? "heart-fill"
+                                : "heart"
+                            }
+                            size={21}
+                          />
+                        </button>
+                      )}
                     </div>
                     <div className={styles.cardBody}>
+                      {stay.ownerPreview && (
+                        <span className={styles.city}>
+                          {locale === "es"
+                            ? "Vista privada de propietario"
+                            : "Private owner preview"}
+                        </span>
+                      )}
                       <span className={styles.city}>
                         <Icon name="map" size={14} /> {stay.city}
                       </span>
@@ -492,7 +512,11 @@ export function AkiDuermo({
                         <span>
                           {t("Discover the property")}
                           <small>
-                            {t("Check the property for live rates")}
+                            {availabilityChecked
+                              ? locale === "es"
+                                ? "Consulta las habitaciones y el precio final"
+                                : "View rooms and final price"
+                              : t("Check the property for live rates")}
                           </small>
                         </span>
                         <Link
@@ -515,7 +539,11 @@ export function AkiDuermo({
                     ? t("No saved stays match these filters.")
                     : t("Tap the heart on a stay to keep it here.")
                   : t(
-                      "No stays found. Try a nearby town or another property type.",
+                      availabilityChecked
+                        ? locale === "es"
+                          ? "No hay habitaciones disponibles en esta página. Prueba otras fechas o la página siguiente."
+                          : "No rooms available on this page. Try other dates or the next page."
+                        : "No stays found. Try a nearby town or another property type.",
                     )}
               </p>
             )}
