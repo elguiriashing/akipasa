@@ -163,7 +163,7 @@ const claimSchema = z.object({
   businessRole: z.enum(["owner", "manager", "authorized", "employee", "other"]),
   applicantPhone: z.string().trim().max(30).regex(/^[+0-9 ()-]*$/),
   businessEmail: z.union([z.literal(""), z.string().trim().email().max(254)]),
-  businessWebsite: z.union([z.literal(""), safeExternalUrlSchema]),
+  businessWebsite: safeExternalUrlSchema.refine((value) => value.length <= 500),
   businessPhone: z.string().trim().max(30).regex(/^[+0-9 ()-]*$/),
   evidence: z.string().trim().min(20).max(2000),
 });
