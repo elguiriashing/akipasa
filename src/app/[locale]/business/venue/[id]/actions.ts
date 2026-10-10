@@ -1844,16 +1844,24 @@ export async function addStayHeaderPhoto(formData: FormData) {
   const parsed = stayHeaderSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { ok: false as const, error: "media" };
   const { supabase, user } = await requireBusinessAccess(parsed.data.locale);
-  const { data: venue } = await supabase.from("venues")
-    .select("id").eq("id", parsed.data.venueId)
-    .eq("discovery_vertical", "accommodation").maybeSingle();
-  const { data: media } = await supabase.from("venue_media")
-    .select("id").eq("id", parsed.data.mediaId)
-    .eq("venue_id", parsed.data.venueId).maybeSingle();
+  const { data: venue } = await supabase
+    .from("venues")
+    .select("id")
+    .eq("id", parsed.data.venueId)
+    .eq("discovery_vertical", "accommodation")
+    .maybeSingle();
+  const { data: media } = await supabase
+    .from("venue_media")
+    .select("id")
+    .eq("id", parsed.data.mediaId)
+    .eq("venue_id", parsed.data.venueId)
+    .maybeSingle();
   if (!venue || !media) return { ok: false as const, error: "media" };
   const { data: existing, error: readError } = await supabase
-    .from("venue_media_placements").select("media_id,sort_order")
-    .eq("venue_id", parsed.data.venueId).eq("placement", "venue_gallery")
+    .from("venue_media_placements")
+    .select("media_id,sort_order")
+    .eq("venue_id", parsed.data.venueId)
+    .eq("placement", "venue_gallery")
     .eq("target_key", "stay_header");
   if (readError) return { ok: false as const, error: "media" };
   if (existing?.some((item) => item.media_id === parsed.data.mediaId))
@@ -1861,14 +1869,17 @@ export async function addStayHeaderPhoto(formData: FormData) {
   if ((existing?.length || 0) >= 12)
     return { ok: false as const, error: "limit" };
   const used = new Set((existing || []).map((item) => item.sort_order));
-  const sortOrder = Array.from({ length: 12 }, (_, index) => index)
-    .find((index) => !used.has(index));
-  if (sortOrder === undefined)
-    return { ok: false as const, error: "limit" };
+  const sortOrder = Array.from({ length: 12 }, (_, index) => index).find(
+    (index) => !used.has(index),
+  );
+  if (sortOrder === undefined) return { ok: false as const, error: "limit" };
   const { error } = await supabase.from("venue_media_placements").insert({
-    venue_id: parsed.data.venueId, media_id: parsed.data.mediaId,
-    placement: "venue_gallery", target_key: "stay_header",
-    sort_order: sortOrder, created_by: user.id,
+    venue_id: parsed.data.venueId,
+    media_id: parsed.data.mediaId,
+    placement: "venue_gallery",
+    target_key: "stay_header",
+    sort_order: sortOrder,
+    created_by: user.id,
   });
   if (error) return { ok: false as const, error: "media" };
   revalidatePath("/akiduermo/stays", "layout");
@@ -1879,13 +1890,20 @@ export async function removeStayHeaderPhoto(formData: FormData) {
   const parsed = stayHeaderSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { ok: false as const, error: "media" };
   const { supabase } = await requireBusinessAccess(parsed.data.locale);
-  const { data: venue } = await supabase.from("venues")
-    .select("id").eq("id", parsed.data.venueId)
-    .eq("discovery_vertical", "accommodation").maybeSingle();
+  const { data: venue } = await supabase
+    .from("venues")
+    .select("id")
+    .eq("id", parsed.data.venueId)
+    .eq("discovery_vertical", "accommodation")
+    .maybeSingle();
   if (!venue) return { ok: false as const, error: "media" };
-  const { error } = await supabase.from("venue_media_placements").delete()
-    .eq("venue_id", parsed.data.venueId).eq("media_id", parsed.data.mediaId)
-    .eq("placement", "venue_gallery").eq("target_key", "stay_header");
+  const { error } = await supabase
+    .from("venue_media_placements")
+    .delete()
+    .eq("venue_id", parsed.data.venueId)
+    .eq("media_id", parsed.data.mediaId)
+    .eq("placement", "venue_gallery")
+    .eq("target_key", "stay_header");
   if (error) return { ok: false as const, error: "media" };
   revalidatePath("/akiduermo/stays", "layout");
   return { ok: true as const, mediaId: parsed.data.mediaId };
