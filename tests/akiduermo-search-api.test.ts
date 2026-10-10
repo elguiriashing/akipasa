@@ -1,5 +1,5 @@
 import { beforeEach, expect, it, vi } from "vitest";
-import { staySearchFilters } from "../src/lib/stay-filters";
+import { staySearchTerms } from "../src/lib/stay-filters";
 
 const { db, availability } = vi.hoisted(() => ({
   db: { from: vi.fn(), rpc: vi.fn() },
@@ -33,7 +33,7 @@ const stay = (id: string) => ({
 beforeEach(() => {
   vi.clearAllMocks();
   const query: Record<string, (...args: unknown[]) => unknown> = {};
-  for (const method of ["select", "eq", "or", "order"])
+  for (const method of ["select", "eq", "textSearch", "order"])
     query[method] = vi.fn(() => query);
   query.range = vi.fn(async () => ({
     data: [stay("a"), stay("b")],
@@ -47,10 +47,10 @@ beforeEach(() => {
   ownerDb.auth.getUser.mockResolvedValue({ data: { user: null } });
 });
 
-it("keeps long place queries bounded so Fuengirola does not fan out", () => {
-  expect(staySearchFilters("Fuengirola")).toBe(
-    "name.ilike.%Fuengirola%,address.ilike.%Fuengirola%",
-  );
+it("uses the indexed accent-normalized catalogue terms for place and property searches", () => {
+  expect(staySearchTerms("Fuengirola")).toBe("fuengirola:*");
+  expect(staySearchTerms("AkiDuermo HQ")).toBe("akiduermo:* & hq:*");
+  expect(staySearchTerms("Málaga")).toBe("malaga:*");
 });
 
 it("filters listed properties through the real room availability RPC", async () => {
@@ -64,6 +64,11 @@ it("filters listed properties through the real room availability RPC", async () 
     ),
   );
   expect(response.status).toBe(200);
+  expect(db.from.mock.results[0].value.textSearch).toHaveBeenCalledWith(
+    "search_document",
+    "fuengirola:*",
+    { config: "simple" },
+  );
   expect(await response.json()).toMatchObject({
     rows: [{ id: "a" }],
     total: 2,

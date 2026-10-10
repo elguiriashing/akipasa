@@ -1,33 +1,15 @@
 import type { Stay } from "./akiduermo";
-import {
-  comparableVenueSearch,
-  escapeVenueSearchPattern,
-  venueSearchProbes,
-} from "./venue-search";
+import { comparableVenueSearch, venueSearchTokens } from "./venue-search";
 
-export function staySearchFilters(q: string) {
-  const search = q
-    .replace(/[(),.]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-  if (!search) return "";
-  // Long place names generated dozens of ILIKE clauses and timed out the
-  // public listing query. Short names still get bounded accent variants.
-  const probes =
-    search.length <= 6
-      ? venueSearchProbes(search)
-          .filter(
-            (probe) =>
-              comparableVenueSearch(probe) === comparableVenueSearch(search),
-          )
-          .slice(0, 8)
-      : [];
-  return [...new Set([search, ...probes])]
-    .flatMap((probe) => {
-      const pattern = escapeVenueSearchPattern(probe);
-      return [`name.ilike.%${pattern}%`, `address.ilike.%${pattern}%`];
-    })
-    .join(",");
+export function staySearchTerms(q: string) {
+  // The published catalogue already has an unaccented GIN search_document.
+  // Prefix terms retain city/name partial matches without an unindexed ILIKE
+  // scan across every accommodation row.
+  return venueSearchTokens(q)
+    .filter((token) => /^[a-z0-9]+$/.test(token))
+    .slice(0, 6)
+    .map((token) => `${token}:*`)
+    .join(" & ");
 }
 export function filterSavedStays(stays: Stay[], type: string, q: string) {
   const search = comparableVenueSearch(q.replace(/[(),.]/g, " "));

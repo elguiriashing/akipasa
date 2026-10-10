@@ -7,7 +7,7 @@ import {
   safePropertyWebsite,
   stayQuerySchema,
 } from "@/lib/akiduermo";
-import { staySearchFilters } from "@/lib/stay-filters";
+import { staySearchTerms } from "@/lib/stay-filters";
 import { comparableVenueSearch } from "@/lib/venue-search";
 import { z } from "zod";
 
@@ -40,6 +40,17 @@ export async function GET(request: Request) {
   if (!parsed.success)
     return Response.json({ error: "Invalid search" }, { status: 400 });
   const { q, type, page, checkIn, checkOut, guests } = parsed.data;
+  const search = staySearchTerms(q);
+  if (q.trim() && !search)
+    return Response.json(
+      {
+        rows: [],
+        total: 0,
+        page,
+        availabilityChecked: Boolean(checkIn && checkOut && guests),
+      },
+      { headers: { "Cache-Control": "private, no-store" } },
+    );
   const hasSession = hasSupabaseAuthCookie(
     (request.headers.get("cookie") || "")
       .split(";")
@@ -57,8 +68,8 @@ export async function GET(request: Request) {
     .eq("discovery_vertical", "accommodation");
   if (flags.venue_relevance) query = query.eq("discovery_enabled", true);
   if (type !== "all") query = query.eq("accommodation_type", type);
-  const search = staySearchFilters(q);
-  if (search) query = query.or(search);
+  if (search)
+    query = query.textSearch("search_document", search, { config: "simple" });
   const { data, error, count } = await query
     .order("name")
     .order("id")
