@@ -19199,3 +19199,37 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
     padding: 1rem;
   }
 }
+
+/* Pending ownership claims: distinct applicant and catalogue details. */
+.claim-review-details {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.claim-review-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+.claim-review-details dt {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.claim-review-details dd {
+  margin: 0.25rem 0 0;
+}
+.claim-review-details h4 {
+  margin-bottom: 0.5rem;
+}
+.claim-evidence {
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+.claim-review-details details {
+  margin-block: 1rem;
+}
+@media (max-width: 600px) {
+  .claim-review-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -22,6 +22,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium chrome
+      - run: node scripts/test-staff-claims-browser.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: staff-claims-evidence
+          path: test-results/staff-claims
+          retention-days: 7
       - run: node scripts/test-portal-home-browser.mjs
       - uses: actions/upload-artifact@v4
         with:

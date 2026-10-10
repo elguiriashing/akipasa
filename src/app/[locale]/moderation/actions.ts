@@ -22,8 +22,14 @@ export async function moderateItem(formData: FormData) {
     reason: value.reason,
     p_duplicate_of: value.duplicateOf || null,
   });
-  if (error) redirect(`/${locale}/staff/moderation?error=decision`);
-  redirect(`/${locale}/staff/moderation?updated=decision`);
+  const page = String(formData.get("claimPage") || "1");
+  const claimQuery =
+    value.targetType === "venue_claim"
+      ? `&queue=claims&page=${/^\d{1,5}$/.test(page) ? Math.min(10001, Math.max(1, Number(page))) : 1}`
+      : "";
+  if (error)
+    redirect(`/${locale}/staff/moderation?error=decision${claimQuery}`);
+  redirect(`/${locale}/staff/moderation?updated=decision${claimQuery}`);
 }
 
 export async function setAutomaticModeration(formData: FormData) {
