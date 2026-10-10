@@ -321,9 +321,13 @@ export default async function BusinessPage({
               : es
                 ? "✓ Guardado correctamente."
                 : "✓ Saved successfully."
-            : es
-              ? "✕ No se pudo guardar. Revisa los campos o permisos."
-              : "✕ Could not save. Check the fields or permissions."}
+            : query.error === "claim-validation"
+              ? es
+                ? "Revisa el nombre, la relación con el negocio y las pruebas antes de enviar la reclamación."
+                : "Check your name, business role and supporting evidence before submitting the claim."
+              : es
+                ? "✕ No se pudo guardar. Revisa los campos o permisos."
+                : "✕ Could not save. Check the fields or permissions."}
         </p>
       )}
       <section className="dashboard-grid">
