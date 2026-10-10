@@ -11,6 +11,7 @@ import { dispatchClaimDecisions } from "./src/lib/claim-mail-delivery";
 import {
   dispatchBookingConfirmations,
   dispatchAccommodationConfirmations,
+  bookingEmailConfigured,
   type BookingMailEnv,
 } from "./src/lib/booking-mail-delivery";
 
@@ -32,7 +33,13 @@ const worker = {
     const path = new URL(request.url).pathname;
     if (path === "/api/bookings/release" && request.method === "GET") {
       return Response.json(
-        { release: "2026-10-09-booking-ux-r1" },
+        {
+          release: "2026-10-09-booking-ux-r1",
+          claimNotifications: {
+            release: "2026-10-10-claim-decision-email-v1",
+            configured: bookingEmailConfigured(env),
+          },
+        },
         {
           headers: { "Cache-Control": "no-store", "X-Robots-Tag": "noindex" },
         },
