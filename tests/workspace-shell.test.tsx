@@ -245,14 +245,16 @@ describe("progressive disclosure workspace shell", () => {
     const menuButton = screen.getByRole("button", {
       name: `${eyebrow} ${title} menu`,
     });
-    const stickyContainer = container.querySelector(
+    const stickyContainer = container.querySelector<HTMLElement>(
       ".workspace-mobile-navigation",
     );
     expect(stickyContainer).toContainElement(menuButton);
     expect(menuButton).toHaveAttribute("aria-expanded", "false");
 
     fireEvent.click(menuButton);
-    const layer = container.querySelector(".workspace-drawer-layer");
+    const layer = container.querySelector<HTMLElement>(
+      ".workspace-drawer-layer",
+    );
     expect(stickyContainer).toContainElement(layer);
     expect(menuButton).toHaveAttribute("aria-expanded", "true");
     expect(screen.getByText("Content stays in place")).toBeInTheDocument();
