@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { stayHref } from "@/lib/akiduermo-routing";
+import { ClaimReview } from "./ClaimReview";
 import { moderateItem } from "../moderation/actions";
 
 export type StaffQueueItem = {
@@ -47,12 +47,14 @@ export function StaffQueue({
   targetType,
   approve,
   claimPage = 1,
+  selectedClaimId,
 }: {
   locale: "es" | "en";
   items: StaffQueueItem[];
   targetType: "submission" | "venue" | "event" | "offer" | "venue_claim";
   approve: "approved" | "published";
   claimPage?: number;
+  selectedClaimId?: string;
 }) {
   const es = locale === "es";
   if (!items.length)
@@ -61,6 +63,38 @@ export function StaffQueue({
         {es ? "La cola está vacía." : "This queue is empty."}
       </p>
     );
+  if (targetType === "venue_claim") {
+    const selected = items.find((candidate) => candidate.id === selectedClaimId) || items[0];
+    return (
+      <div className="claim-modern-workspace">
+        <div className="claim-modern-workspace-title">
+          <div>
+            <p className="claim-modern-eyebrow">{es ? "BANDEJA DE RECLAMACIONES" : "CLAIMS INBOX"}</p>
+            <h2>{es ? "Solicitudes de titularidad" : "Venue ownership claims"}</h2>
+            <p>{es ? "Revisa la solicitud y compara los datos enviados con la ficha existente." : "Review each request and compare submitted details with the existing venue record."}</p>
+          </div>
+          <span className="claim-modern-count-pill">{items.length} {es ? "en esta página" : "on this page"}</span>
+        </div>
+        {items.length > 1 && (
+          <nav className="claim-modern-picker" aria-label={es ? "Seleccionar reclamación" : "Select claim"}>
+            {items.map((candidate) => (
+              <Link
+                href={"/" + locale + "/staff/moderation?queue=claims&page=" + claimPage + "&claim=" + encodeURIComponent(candidate.id)}
+                aria-current={candidate.id === selected.id ? "true" : undefined}
+                className={candidate.id === selected.id ? "active" : undefined}
+                key={candidate.id}
+              >
+                <span className="claim-modern-picker-dot" aria-hidden="true"/>
+                <span>{candidate.venues?.name || (es ? "Local sin nombre" : "Unnamed venue")}</span>
+                <small>{candidate.status || "pending"}</small>
+              </Link>
+            ))}
+          </nav>
+        )}
+        <ClaimReview item={selected} locale={locale} approve={approve} claimPage={claimPage}/>
+      </div>
+    );
+  }
   return (
     <div className="queue-list">
       {items.map((item) => (
@@ -119,223 +153,3 @@ export function StaffQueue({
   );
 }
 
-function ClaimDetails({
-  item,
-  locale,
-}: {
-  item: StaffQueueItem;
-  locale: "en" | "es";
-}) {
-  const es = locale === "es";
-  const missing = es ? "No facilitado" : "Not provided";
-  const date = (value?: string | null) => {
-    if (!value || Number.isNaN(Date.parse(value))) return missing;
-    let timeZone = item.venues?.timezone || "Europe/Madrid";
-    try {
-      new Intl.DateTimeFormat(locale, { timeZone });
-    } catch {
-      timeZone = "Europe/Madrid";
-    }
-    return (
-      <time dateTime={value}>
-        {new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", {
-          dateStyle: "medium",
-          timeStyle: "short",
-          timeZone,
-        }).format(new Date(value))}{" "}
-        ({timeZone})
-      </time>
-    );
-  };
-  const email = item.claimant?.email;
-  const phone = item.claimant?.phone;
-  return (
-    <div className="claim-review-details">
-      <dl className="claim-review-grid">
-        <div>
-          <dt>{es ? "Solicitante" : "Applicant"}</dt>
-          <dd>{item.claimant?.display_name || missing}</dd>
-        </div>
-        <div>
-          <dt>{es ? "Email de la cuenta" : "Account email"}</dt>
-          <dd>
-            {email ? (
-              <a href={`mailto:${encodeURIComponent(email)}`}>{email}</a>
-            ) : (
-              missing
-            )}
-          </dd>
-        </div>
-        <div>
-          <dt>{es ? "Teléfono del solicitante" : "Applicant phone"}</dt>
-          <dd>
-            {phone ? (
-              <a href={`tel:${phone.replace(/[^+0-9]/g, "")}`}>{phone}</a>
-            ) : (
-              missing
-            )}
-          </dd>
-        </div>
-        <div>
-          <dt>{es ? "Solicitud recibida" : "Submitted"}</dt>
-          <dd>{date(item.created_at)}</dd>
-        </div>
-        <div>
-          <dt>{es ? "Cuenta creada" : "Account created"}</dt>
-          <dd>{date(item.claimant?.created_at)}</dd>
-        </div>
-        <div>
-          <dt>{es ? "Dirección del local" : "Venue address"}</dt>
-          <dd>{item.venues?.address || missing}</dd>
-        </div>
-        <div>
-          <dt>{es ? "Teléfono del local" : "Venue phone"}</dt>
-          <dd>{item.venues?.contact_phone || missing}</dd>
-        </div>
-        <div>
-          <dt>{es ? "Web del local" : "Venue website"}</dt>
-          <dd>
-            {item.venues?.website_url?.startsWith("https://") ? (
-              <a
-                href={item.venues.website_url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {item.venues.website_url}
-              </a>
-            ) : (
-              missing
-            )}
-          </dd>
-        </div>
-      </dl>
-      <div>
-        <h4>
-          {es
-            ? "Datos facilitados en la solicitud"
-            : "Details supplied with the claim"}
-        </h4>
-        <dl className="claim-review-grid claim-submitted-details">
-          <div>
-            <dt>{es ? "Nombre de contacto" : "Contact name"}</dt>
-            <dd>{item.claimant?.submission?.applicant_name || missing}</dd>
-          </div>
-          <div>
-            <dt>{es ? "Relación con el negocio" : "Role at the business"}</dt>
-            <dd>
-              {(
-                {
-                  owner: es ? "Propietario/a" : "Owner",
-                  manager: es ? "Gerente / responsable" : "Manager",
-                  authorized: es
-                    ? "Representante autorizado/a"
-                    : "Authorised representative",
-                  employee: es ? "Empleado/a" : "Employee",
-                  other: es ? "Otra relación" : "Other",
-                } as Record<string, string>
-              )[item.claimant?.submission?.relationship || ""] || missing}
-            </dd>
-          </div>
-          <div>
-            <dt>{es ? "Teléfono facilitado" : "Submitted phone"}</dt>
-            <dd>
-              {item.claimant?.submission?.applicant_phone ? (
-                <a
-                  href={`tel:${item.claimant.submission.applicant_phone.replace(/[^+0-9]/g, "")}`}
-                >
-                  {item.claimant.submission.applicant_phone}
-                </a>
-              ) : (
-                missing
-              )}
-            </dd>
-          </div>
-          <div>
-            <dt>
-              {es ? "Email del negocio facilitado" : "Submitted business email"}
-            </dt>
-            <dd>
-              {item.claimant?.submission?.business_email ? (
-                <a
-                  href={`mailto:${encodeURIComponent(item.claimant.submission.business_email)}`}
-                >
-                  {item.claimant.submission.business_email}
-                </a>
-              ) : (
-                missing
-              )}
-            </dd>
-          </div>
-          <div>
-            <dt>{es ? "Web facilitada" : "Submitted website"}</dt>
-            <dd>
-              {item.claimant?.submission?.business_website?.startsWith(
-                "https://",
-              ) ? (
-                <a
-                  href={item.claimant.submission.business_website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {item.claimant.submission.business_website}
-                </a>
-              ) : (
-                item.claimant?.submission?.business_website || missing
-              )}
-            </dd>
-          </div>
-          <div>
-            <dt>
-              {es ? "Teléfono del local facilitado" : "Submitted venue phone"}
-            </dt>
-            <dd>
-              {item.claimant?.submission?.business_phone ? (
-                <a
-                  href={`tel:${item.claimant.submission.business_phone.replace(/[^+0-9]/g, "")}`}
-                >
-                  {item.claimant.submission.business_phone}
-                </a>
-              ) : (
-                missing
-              )}
-            </dd>
-          </div>
-        </dl>
-        <p className="fine-print">
-          {es
-            ? "Datos declarados por el solicitante. No se han verificado ni aplicado a la ficha pública."
-            : "Applicant-supplied details. These have not been verified or applied to the public listing."}
-        </p>
-      </div>
-      <div>
-        <h4>{es ? "Pruebas de la solicitud" : "Claim evidence"}</h4>
-        <p className="claim-evidence">{item.evidence || missing}</p>
-      </div>
-      <details>
-        <summary>{es ? "Referencias" : "References"}</summary>
-        <dl>
-          <div>
-            <dt>{es ? "ID de solicitud" : "Claim ID"}</dt>
-            <dd>{item.id}</dd>
-          </div>
-          <div>
-            <dt>{es ? "ID de solicitante" : "Applicant ID"}</dt>
-            <dd>{item.claimant_id || missing}</dd>
-          </div>
-        </dl>
-      </details>
-      {item.venues?.slug && (
-        <Link
-          className="button secondary"
-          href={
-            item.venues.discovery_vertical === "accommodation"
-              ? stayHref(item.venues.slug, locale)
-              : `/${locale}/venues/${encodeURIComponent(item.venues.slug)}`
-          }
-        >
-          {es ? "Ver local" : "View venue"}
-        </Link>
-      )}
-    </div>
-  );
-}
