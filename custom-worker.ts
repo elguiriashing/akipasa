@@ -13,6 +13,7 @@ import {
 } from "./src/lib/claim-mail-delivery";
 
 import { dispatchClaimSubmissionAlerts } from "./src/lib/claim-alert-delivery";
+import { dispatchSuiteEmails } from "./src/lib/suite-mail-delivery";
 
 import {
   dispatchBookingConfirmations,
@@ -29,6 +30,7 @@ const worker = {
     ctx.waitUntil(dispatchAccommodationConfirmations(env));
     ctx.waitUntil(dispatchClaimDecisions(env));
     ctx.waitUntil(dispatchClaimSubmissionAlerts(env));
+    ctx.waitUntil(dispatchSuiteEmails(env));
   },
   async fetch(
     request: Request,
@@ -43,6 +45,10 @@ const worker = {
           claimNotifications: {
             release: "2026-10-10-claim-decision-email-v1",
             configured: claimMailConfigured(env),
+            suiteEmails: {
+              release: "2026-10-11-suite-transactional-v1",
+              configured: claimMailConfigured(env),
+            },
             submissionAlerts: {
               release: "2026-10-11-claim-submission-v1",
               configured: claimMailConfigured(env),

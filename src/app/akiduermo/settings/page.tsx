@@ -2,6 +2,7 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { requireUser } from "@/lib/auth";
 import { stayLocale } from "@/lib/akiduermo-i18n";
+import { queueSuitePortalWelcome } from "@/lib/suite-welcome";
 import { StayAppShell } from "@/components/StayAppShell";
 import { changeStayAccountEmail, resetStayPassword } from "./actions";
 import styles from "../member.module.css";
@@ -17,6 +18,7 @@ export default async function StaySettingsPage({
 }) {
   const locale = stayLocale((await headers()).get("x-akipasa-locale"));
   const { user } = await requireUser(locale, "/settings");
+  await queueSuitePortalWelcome("akiduermo", locale);
   const query = await searchParams;
   const es = locale === "es";
   return (

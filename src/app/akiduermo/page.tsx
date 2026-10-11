@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { AkiDuermo } from "@/components/AkiDuermo";
 import { stayLocale } from "@/lib/akiduermo-i18n";
+import { optionalUser } from "@/lib/auth";
+import { queueSuitePortalWelcome } from "@/lib/suite-welcome";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = stayLocale((await headers()).get("x-akipasa-locale"));
@@ -27,6 +29,8 @@ export default async function AkiDuermoPage({
   searchParams: Promise<Record<string, string | undefined>>;
 }) {
   const locale = stayLocale((await headers()).get("x-akipasa-locale"));
+  const { user } = await optionalUser();
+  if (user) await queueSuitePortalWelcome("akiduermo", locale);
   const trip = tripSchema.safeParse(await searchParams);
   return (
     <AkiDuermo

@@ -16,6 +16,7 @@ export async function requestEventBooking(formData: FormData) {
       contactEmail: z.string().email().max(254),
       contactPhone: z.string().trim().max(40),
       notes: z.string().trim().max(1000),
+      requestKey: z.string().uuid(),
     })
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
@@ -26,7 +27,7 @@ export async function requestEventBooking(formData: FormData) {
     locale,
     `/${locale}/events/${slug}/book`,
   );
-  const { error } = await supabase.rpc("request_booking", {
+  const { error } = await supabase.rpc("request_booking_v2", {
     p_slot: parsed.data.slotId,
     p_event: parsed.data.eventId,
     p_party_size: parsed.data.partySize,
@@ -34,6 +35,8 @@ export async function requestEventBooking(formData: FormData) {
     p_email: parsed.data.contactEmail,
     p_phone: parsed.data.contactPhone,
     p_notes: parsed.data.notes,
+    p_key: parsed.data.requestKey,
+    p_locale: parsed.data.locale,
   });
   redirect(
     `/${locale}/events/${slug}/book?${error ? "error=unavailable" : "requested=1"}`,
