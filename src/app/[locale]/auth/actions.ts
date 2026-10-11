@@ -22,6 +22,26 @@ function authDestination(
     : safeAuthDestination(locale, requested);
 }
 
+/** Shared identity, separate once-per-portal welcome. A verified session is required.
+ * Queueing is idempotent and does not block a valid login on mail errors. */
+async function queueWelcomeForAuth(
+  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
+  origin: string,
+  locale: "en" | "es",
+) {
+  const host = new URL(origin).hostname;
+  const portal = origin === stayOrigin || host.startsWith("akiduermo.")
+    ? "akiduermo"
+    : host.startsWith("business.")
+      ? "akibusiness" : "akipasa";
+  try {
+    const {error}=await supabase.rpc("aki_register_portal_welcome",{
+      p_portal:portal,p_locale:locale
+    });
+    if(error)console.error("welcome_enqueue_failed",error.code);
+  }catch{console.error("welcome_enqueue_unavailable")}
+}
+
 export async function requestMagicLink(formData: FormData) {
   const parsed = z
     .object({
@@ -100,7 +120,10 @@ export async function signUpWithPassword(formData: FormData) {
     },
   });
   if (error) redirect(`/${locale}/auth?error=signup`);
-  if (data.session) redirect(next);
+  if (data.session) {
+    await queueWelcomeForAuth(supabase,origin,locale);
+    redirect(next);
+  }
   redirect(`/${locale}/auth?registered=1`);
 }
 
@@ -126,6 +149,7 @@ export async function signInWithPassword(formData: FormData) {
     password: parsed.data.password,
   });
   if (error) redirect(`/${locale}/auth?error=signin`);
+  await queueWelcomeForAuth(supabase,requestOrigin(await headers()),locale);
   redirect(next);
 }
 
