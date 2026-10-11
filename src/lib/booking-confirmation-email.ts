@@ -135,12 +135,10 @@ export async function sendBookingConfirmationEmail(
     recipient: string;
     audience: "customer" | "venue";
   },
-  config: { apiKey?: string; from?: string } = {},
+  config: { apiKey?: string } = {},
 ): Promise<BookingMailOutcome> {
   const apiKey = config.apiKey || process.env.RESEND_API_KEY;
   if (!apiKey) return { ok: false, error: "api_key_missing", ambiguous: false };
-  const from =
-    config.from || process.env.BOOKING_EMAIL_FROM || bookingEmailFrom;
   const body = renderBookingConfirmation(data, data.audience);
   try {
     const response = await fetch("https://api.resend.com/emails", {
@@ -150,7 +148,12 @@ export async function sendBookingConfirmationEmail(
         "Content-Type": "application/json",
         "Idempotency-Key": `${data.product === "accommodation" ? "akiduermo" : "akipasa"}-booking-${data.bookingId}-${data.audience}`,
       },
-      body: JSON.stringify({ from, to: [data.recipient], ...body }),
+      body: JSON.stringify({
+        from: bookingEmailFrom,
+        reply_to: "support@akipasa.com",
+        to: [data.recipient],
+        ...body,
+      }),
       signal: AbortSignal.timeout(8000),
     });
     if (!response.ok)
