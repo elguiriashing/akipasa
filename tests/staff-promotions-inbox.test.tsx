@@ -141,7 +141,7 @@ describe("Staff promotions operational inbox", () => {
     expect(
       screen.getByRole("heading", { name: "Promociones" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Local destacado")).toBeInTheDocument();
+    expect(screen.getAllByText("Local destacado")).toHaveLength(2);
     expect(
       screen.getByRole("searchbox", { name: "Buscar solicitudes" }),
     ).toBeInTheDocument();
