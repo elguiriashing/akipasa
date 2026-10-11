@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { resendSendingKey } from "./booking-mail-delivery";
 import {
   suiteEmailKinds,
   sendSuiteEmail,
@@ -250,7 +251,7 @@ export async function dispatchSuiteEmails(
             row.locale === "en" ? "en" : "es",
             row.payload,
             row.recipient,
-            env.CLAIM_RESEND_API_KEY || env.RESEND_API_KEY,
+            resendSendingKey(env),
           );
         }
       }
