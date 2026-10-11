@@ -76,6 +76,8 @@ export function WorkspaceShell({
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const desktopNavigationRef = useRef<HTMLElement>(null);
+  const mobileNavigationRef = useRef<HTMLDivElement>(null);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
   const dragState = useRef({
     active: false,
     moved: false,
@@ -156,10 +158,25 @@ export function WorkspaceShell({
     if (!drawerOpen) return;
 
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setDrawerOpen(false);
+      if (event.key === "Escape") {
+        setDrawerOpen(false);
+        mobileMenuButtonRef.current?.focus();
+      }
+    };
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      if (
+        event.target instanceof Node &&
+        !mobileNavigationRef.current?.contains(event.target)
+      ) {
+        setDrawerOpen(false);
+      }
     };
     document.addEventListener("keydown", closeOnEscape);
-    return () => document.removeEventListener("keydown", closeOnEscape);
+    document.addEventListener("pointerdown", closeOnOutsidePointer);
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+      document.removeEventListener("pointerdown", closeOnOutsidePointer);
+    };
   }, [drawerOpen]);
 
   useEffect(() => {
@@ -276,7 +293,9 @@ export function WorkspaceShell({
         .join(" ")}
       aria-label={title}
     >
-      <button
+      <div className="workspace-mobile-navigation" ref={mobileNavigationRef}>
+        <button
+        ref={mobileMenuButtonRef}
         className="workspace-mobile-trigger"
         type="button"
         aria-label={`${eyebrow} ${navigationTitle} menu`}
@@ -294,20 +313,21 @@ export function WorkspaceShell({
           <strong>{activeItem?.label ?? navigationTitle}</strong>
         </span>
         <span aria-hidden="true">{menuLabel}</span>
-      </button>
+        </button>
+
+        {drawerOpen && (
+          <div className="workspace-drawer-layer" id="workspace-mobile-drawer">
+            <aside
+              className="workspace-drawer"
+              aria-label={`${navigationTitle} navigation`}
+            >
+              {navigation}
+            </aside>
+          </div>
+        )}
+      </div>
 
       <aside className="workspace-sidebar">{navigation}</aside>
-
-      {drawerOpen && (
-        <div className="workspace-drawer-layer" id="workspace-mobile-drawer">
-          <aside
-            className="workspace-drawer"
-            aria-label={`${navigationTitle} navigation`}
-          >
-            {navigation}
-          </aside>
-        </div>
-      )}
 
       <div className="workspace-content">
         <header className="workspace-page-heading">
