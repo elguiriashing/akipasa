@@ -438,3 +438,239 @@
   background: var(--surface);
   color: var(--ink);
 }
+
+/* Admin Users: do not put labels, inputs and hints inside a sticky pill.
+   Keep each text line within a separate, genuinely padded rectangular panel. */
+.admin-workspace .user-search-workspace {
+  width: 100%;
+  max-width: 52rem;
+  min-width: 0;
+}
+.admin-workspace .admin-search-field {
+  position: relative;
+  top: auto;
+  z-index: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: clamp(1rem, 2vw, 1.35rem);
+  border: 1px solid var(--consumer-line, var(--line));
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface) 95%, transparent);
+  backdrop-filter: none;
+  box-shadow: none;
+}
+.admin-workspace .admin-search-field > label {
+  display: block;
+  min-width: 0;
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  font-weight: 800;
+  color: var(--ink);
+}
+.admin-workspace .admin-search-field > input[type="search"] {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 3.1rem !important;
+  margin: 0;
+  padding: 0.7rem 1rem !important;
+  border: 1px solid var(--consumer-line, var(--line)) !important;
+  border-radius: 0.8rem !important;
+  background: var(--consumer-soft, var(--surface-alt)) !important;
+  color: var(--ink);
+  line-height: 1.4;
+}
+.admin-workspace .admin-search-field > small {
+  display: block;
+  max-width: 100%;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* Commercial request inbox: summary first, focused edit controls on demand. */
+.admin-workspace .admin-list-entry > details.admin-promotion-request {
+  display: block;
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--consumer-line, var(--line));
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface) 93%, transparent);
+  box-shadow: none;
+  overflow: hidden;
+}
+.admin-workspace .admin-list-entry > details.admin-promotion-request[open] {
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--line));
+}
+.admin-workspace .admin-promotion-request > summary.admin-promotion-request-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  justify-content: stretch;
+  gap: 0.6rem 0.9rem;
+  min-width: 0;
+  margin: 0;
+  padding: clamp(0.9rem, 2vw, 1.15rem);
+  border-radius: 0;
+  background: transparent;
+  cursor: pointer;
+  list-style: none;
+}
+.admin-workspace .admin-promotion-request > summary.admin-promotion-request-summary::after {
+  display: none;
+  content: none;
+}
+.admin-workspace .admin-promotion-request-summary::-webkit-details-marker {
+  display: none;
+}
+.admin-promotion-request-identity {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+.admin-promotion-request-identity strong {
+  color: var(--ink);
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+.admin-promotion-request-identity small {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.admin-workspace .admin-promotion-request-status {
+  justify-self: end;
+  align-self: start;
+  text-transform: none;
+}
+.admin-promotion-request-preview {
+  display: -webkit-box;
+  grid-column: 1 / -1;
+  overflow: hidden;
+  max-width: 90ch;
+  color: var(--muted);
+  font-size: 0.83rem;
+  font-weight: 450;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.admin-promotion-request-footer {
+  display: flex;
+  grid-column: 1 / -1;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--consumer-line, var(--line));
+  color: var(--muted);
+  font-size: 0.77rem;
+  font-weight: 550;
+}
+.admin-promotion-request-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--primary-strong);
+  font-weight: 850;
+}
+.admin-promotion-request-open span {
+  display: inline-block;
+  font-size: 1.05rem;
+  transition: transform 0.15s ease;
+}
+.admin-promotion-request[open] .admin-promotion-request-open span {
+  transform: rotate(180deg);
+}
+.admin-promotion-request-detail {
+  display: grid;
+  gap: 1.15rem;
+  min-width: 0;
+  padding: clamp(1rem, 2vw, 1.4rem);
+  border-top: 1px solid var(--consumer-line, var(--line));
+}
+.admin-promotion-request-detail h4 {
+  margin: 0 0 0.5rem;
+  color: var(--ink);
+  font-size: 0.88rem;
+}
+.admin-promotion-request-message {
+  min-width: 0;
+}
+.admin-workspace .admin-promotion-request-message p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.admin-workspace .admin-promotion-request-form {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 1.1rem 0 0;
+  border-top: 1px solid var(--consumer-line, var(--line));
+}
+.admin-promotion-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  min-width: 0;
+}
+.admin-promotion-form-grid > label,
+.admin-promotion-request-notes {
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+.admin-workspace .admin-promotion-form-grid :is(input, select),
+.admin-workspace .admin-promotion-request-notes textarea {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  border-radius: 0.8rem !important;
+}
+.admin-workspace .admin-promotion-request-notes textarea {
+  min-height: 6rem !important;
+  resize: vertical;
+}
+.admin-promotion-request-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+.admin-workspace .admin-promotion-request-actions button {
+  width: auto;
+  min-height: 2.9rem;
+}
+@media (max-width: 690px) {
+  .admin-promotion-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .admin-promotion-request-actions,
+  .admin-promotion-request-actions button {
+    width: 100% !important;
+  }
+}
