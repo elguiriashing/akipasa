@@ -38,9 +38,6 @@ export default async function AwardsPage({
         }
       />
       <nav className="action-row">
-        <Link href={`/${locale}/admin/passports`}>
-          {locale === "es" ? "Rutas" : "Routes"}
-        </Link>
         <Link href={`/${locale}/admin/achievements/venues`}>
           {locale === "es" ? "Clasificar locales" : "Classify venues"}
         </Link>
