@@ -97,6 +97,12 @@ export default async function BusinessPage({
   const { supabase, user } = claimView
     ? await requireUser(locale, returnPath)
     : await requireBusinessAccess(locale, returnPath);
+  // First AkiBusiness access, including already authenticated users.
+  // The database job key prevents repeat welcome emails on future renders.
+  const {error:welcomeError}=await supabase.rpc("aki_register_portal_welcome",{
+    p_portal:"akibusiness",p_locale:locale
+  });
+  if(welcomeError)console.error("business_welcome_enqueue_failed",welcomeError.code);
   const { data: profile } = await supabase
     .from("profiles")
     .select("app_role")
