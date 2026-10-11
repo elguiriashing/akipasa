@@ -549,3 +549,45 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Admin business applications: one disclosure chevron, not the shared
+   chevron border combined with this suite's generic + / minus text. */
+.admin-workspace
+  .workspace-grid-body
+  details.settings-disclosure.full-width-disclosure
+  > summary {
+  list-style: none;
+}
+
+.admin-workspace
+  .workspace-grid-body
+  details.settings-disclosure.full-width-disclosure
+  > summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-workspace
+  .workspace-grid-body
+  details.settings-disclosure.full-width-disclosure
+  > summary::after {
+  content: "";
+  display: block;
+  width: 0.55rem;
+  height: 0.55rem;
+  flex: 0 0 0.55rem;
+  margin-left: auto;
+  border: 0;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  color: var(--primary-text, var(--primary));
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.admin-workspace
+  .workspace-grid-body
+  details.settings-disclosure.full-width-disclosure[open]
+  > summary::after {
+  content: "";
+  transform: rotate(225deg);
+}
