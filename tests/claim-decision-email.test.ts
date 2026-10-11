@@ -78,7 +78,7 @@ it("uses the requested sender/reply address and stable claim key across retries"
   );
   expect(JSON.parse(first.body)).toMatchObject({
     from: claimEmailFrom,
-    reply_to: "alex@akipasa.com",
+    reply_to: "support@akipasa.com",
     to: ["applicant@example.test"],
   });
 });
