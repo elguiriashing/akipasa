@@ -78,6 +78,9 @@ export function AkiDuermo({
   const [retry, setRetry] = useState(0);
   const [availabilityChecked, setAvailabilityChecked] = useState(false);
   const [saved, setSaved] = useState<Stay[]>([]);
+  const [reminderEnabled, setReminderEnabled] = useState(false);
+  const [remindersAvailable, setRemindersAvailable] = useState(false);
+  const [reminderBusy, setReminderBusy] = useState(false);
   const [view] = useState<"explore" | "saved">(initialView);
   const [checkIn, setCheckIn] = useState(initialTrip?.checkIn || "");
   const [checkOut, setCheckOut] = useState(initialTrip?.checkOut || "");
@@ -131,7 +134,66 @@ export function AkiDuermo({
       });
     return () => abort.abort();
   }, [search, type, page, retry, trip, view]);
+  useEffect(() => {
+    const abort = new AbortController();
+    fetch("/api/stays/saved", { cache: "no-store", signal: abort.signal })
+      .then((response) => response.json())
+      .then((data) => {
+        if (abort.signal.aborted) return;
+        setRemindersAvailable(data.authenticated === true);
+        setReminderEnabled(data.reminders === true);
+      })
+      .catch(() => {});
+    return () => abort.abort();
+  }, []);
+  async function setStayReminderPreference(enabled: boolean) {
+    setReminderBusy(true);
+    try {
+      const response = await fetch("/api/stays/saved", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "set-reminders", enabled }),
+      });
+      if (!response.ok) throw new Error("reminder_preference_failed");
+      setReminderEnabled((await response.json()).reminders === true);
+    } catch {
+      setError(
+        locale === "es"
+          ? "No pudimos actualizar los recordatorios. Inténtalo de nuevo."
+          : "Couldn't update reminder settings. Please try again.",
+      );
+    } finally {
+      setReminderBusy(false);
+    }
+  }
   function toggleSaved(stay: Stay) {
+    const isAlreadySaved = saved.some((item) => item.id === stay.id);
+    void fetch("/api/stays/saved", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "set-saved",
+        venueId: stay.id,
+        saved: !isAlreadySaved,
+        locale,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok && remindersAvailable)
+          setError(
+            locale === "es"
+              ? "Se guardó en este dispositivo, pero no se pudo sincronizar para los recordatorios."
+              : "Saved on this device, but reminder sync is temporarily unavailable.",
+          );
+      })
+      .catch(() => {
+        if (remindersAvailable)
+          setError(
+            locale === "es"
+              ? "No se pudo sincronizar este favorito."
+              : "Could not sync this favourite.",
+          );
+      });
     setSaved((prev) => {
       const next = prev.some((x) => x.id === stay.id)
         ? prev.filter((x) => x.id !== stay.id)
@@ -334,6 +396,39 @@ export function AkiDuermo({
         <section id="stays" className={styles.section}>
           {view === "saved" && (
             <div className={styles.savedSearch}>
+              <div className={styles.reminderPreference}>
+                <div>
+                  <strong>
+                    {locale === "es"
+                      ? "Recordatorio de estancias guardadas"
+                      : "Saved stay reminders"}
+                  </strong>
+                  <span>
+                    {locale === "es"
+                      ? "Actívalo para recibir un único recordatorio tras 5 días si sigues sin solicitar una reserva."
+                      : "Opt in for one reminder after 5 days if you still haven't requested a reservation."}
+                  </span>
+                </div>
+                {remindersAvailable ? (
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={reminderEnabled}
+                      disabled={reminderBusy}
+                      onChange={(event) =>
+                        void setStayReminderPreference(event.target.checked)
+                      }
+                    />
+                    {locale === "es" ? "Activar emails" : "Email me"}
+                  </label>
+                ) : (
+                  <a href={`/${locale}/auth?next=/saved`}>
+                    {locale === "es"
+                      ? "Inicia sesión para activarlo"
+                      : "Sign in to enable"}
+                  </a>
+                )}
+              </div>
               <input
                 id="saved-stay-search"
                 type="search"
