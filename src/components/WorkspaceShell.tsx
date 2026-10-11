@@ -217,7 +217,7 @@ export function WorkspaceShell({
     }
   }, [pathname, searchParams]);
 
-  const navigation = (
+  const renderNavigation = (mobile = false) => (
     <>
       <div className="workspace-brand">
         <Link href={homeHref} onClick={() => setDrawerOpen(false)}>
@@ -241,7 +241,7 @@ export function WorkspaceShell({
       <nav
         className="workspace-navigation"
         aria-label={`${navigationTitle} sections`}
-        ref={desktopNavigationRef}
+        ref={mobile ? undefined : desktopNavigationRef}
         onPointerDown={startNavigationDrag}
         onPointerMove={moveNavigationDrag}
         onPointerUp={endNavigationDrag}
@@ -321,13 +321,13 @@ export function WorkspaceShell({
               className="workspace-drawer"
               aria-label={`${navigationTitle} navigation`}
             >
-              {navigation}
+              {renderNavigation(true)}
             </aside>
           </div>
         )}
       </div>
 
-      <aside className="workspace-sidebar">{navigation}</aside>
+      <aside className="workspace-sidebar">{renderNavigation()}</aside>
 
       <div className="workspace-content">
         <header className="workspace-page-heading">
