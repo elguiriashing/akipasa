@@ -92,7 +92,7 @@ export async function sendClaimSubmissionAlert(
       },
       body: JSON.stringify({
         from: claimEmailFrom,
-        reply_to: "alex@akipasa.com",
+        reply_to: "support@akipasa.com",
         to: [...claimSubmissionRecipients],
         ...renderClaimSubmissionAlert(data),
       }),
