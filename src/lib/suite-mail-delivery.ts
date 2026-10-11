@@ -23,7 +23,10 @@ type SuiteEmailRow = {
   payload: SuiteEmailPayload;
   lease_id: string;
 };
-type SuiteMailDb = ReturnType<typeof createClient>;
+function suiteDatabase(env: ClaimMailEnv) {
+  return createClient(env.NEXT_PUBLIC_SUPABASE_URL!, env.SUPABASE_SERVICE_ROLE_KEY!, { auth: { persistSession: false, autoRefreshToken: false } });
+}
+type SuiteMailDb = ReturnType<typeof suiteDatabase>;
 
 const readable = (value: unknown) => (typeof value === "string" ? value : "");
 
@@ -51,7 +54,8 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
       .eq("claimant_id", row.profile_id)
       .maybeSingle();
     if (error) throw new Error("claim_recheck_failed");
-    if (data?.status !== "pending") return "claim_not_pending";
+    const claim = data as unknown as { status: string } | null;
+    if (claim?.status !== "pending") return "claim_not_pending";
   }
 
   if (
@@ -65,9 +69,10 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
       .eq("profile_id", row.profile_id)
       .maybeSingle();
     if (error) throw new Error("booking_recheck_failed");
+    const booking = data as unknown as { status: string } | null;
     if (
-      !data ||
-      data.status !==
+      !booking ||
+      booking.status !==
         (row.kind === "event_booking_requested" ? "requested" : "cancelled")
     )
       return "booking_status_changed";
@@ -84,9 +89,10 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
       .eq("profile_id", row.profile_id)
       .maybeSingle();
     if (error) throw new Error("stay_booking_recheck_failed");
+    const reservation = data as unknown as { status: string } | null;
     if (
-      !data ||
-      data.status !==
+      !reservation ||
+      reservation.status !==
         (row.kind === "stay_booking_requested" ? "requested" : "cancelled")
     )
       return "stay_reservation_status_changed";
@@ -102,10 +108,11 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
       .eq("profile_id", row.profile_id)
       .maybeSingle();
     if (prefError) throw new Error("reminder_preference_unavailable");
+    const preference = pref as unknown as { event_reminders: boolean; stay_reminders: boolean } | null;
     if (
       row.kind === "event_saved_reminder"
-        ? !pref?.event_reminders
-        : !pref?.stay_reminders
+        ? !preference?.event_reminders
+        : !preference?.stay_reminders
     )
       return "reminders_opted_out";
 
@@ -127,12 +134,13 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
         .eq("event_id", eventId)
         .maybeSingle();
       if (occurrenceError) throw new Error("occurrence_lookup_failed");
+      const activeOccurrence = occurrence as unknown as { starts_at: string; status: string } | null;
       if (
-        !occurrence ||
-        ["cancelled", "expired"].includes(occurrence.status) ||
-        new Date(occurrence.starts_at).getTime() !==
+        !activeOccurrence ||
+        ["cancelled", "expired"].includes(activeOccurrence.status) ||
+        new Date(activeOccurrence.starts_at).getTime() !==
           new Date(readable(row.payload.startsAt)).getTime() ||
-        new Date(occurrence.starts_at).getTime() < Date.now() + 24 * 3_600_000
+        new Date(activeOccurrence.starts_at).getTime() < Date.now() + 24 * 3_600_000
       )
         return "saved_event_date_changed_or_too_near";
       const { data: event, error: eventError } = await db
@@ -141,7 +149,8 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
         .eq("id", eventId)
         .maybeSingle();
       if (eventError) throw new Error("event_lookup_failed");
-      if (event?.status !== "published") return "event_no_longer_published";
+      const publishedEvent = event as unknown as {status:string} | null;
+      if (publishedEvent?.status !== "published") return "event_no_longer_published";
     } else {
       const venueId = readable(row.payload.venueId);
       const { data: saved, error: savedError } = await db
@@ -151,9 +160,10 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
         .eq("venue_id", venueId)
         .maybeSingle();
       if (savedError) throw new Error("saved_stay_lookup_failed");
+      const savedStay = saved as unknown as {saved_at:string} | null;
       if (
-        !saved ||
-        new Date(saved.saved_at).getTime() !==
+        !savedStay ||
+        new Date(savedStay.saved_at).getTime() !==
           new Date(readable(row.payload.savedAt)).getTime()
       )
         return "stay_unsaved_or_saved_again";
@@ -162,7 +172,7 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
         .select("id")
         .eq("profile_id", row.profile_id)
         .eq("venue_id", venueId)
-        .gte("created_at", saved.saved_at)
+        .gte("created_at", savedStay.saved_at)
         .in("status", ["requested", "confirmed", "checked_in"])
         .limit(1);
       if (bookingError) throw new Error("stay_booking_lookup_failed");
@@ -177,11 +187,7 @@ export async function dispatchSuiteEmails(
 ) {
   if (!suiteMailSenderConfigured(env))
     return { sent: 0, failed: 0, skipped: 0, configured: false };
-  const db = createClient(
-    env.NEXT_PUBLIC_SUPABASE_URL!,
-    env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false, autoRefreshToken: false } },
-  );
+  const db = suiteDatabase(env);
   const { error: schedulingError } = await db.rpc("queue_due_suite_reminders");
   if (schedulingError)
     console.error("suite_reminder_schedule_unavailable", schedulingError.code);
