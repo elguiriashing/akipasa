@@ -6,7 +6,7 @@ const uid = (n: number) =>
   `10000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
 beforeAll(async () => {
   db = new PGlite();
-  await db.exec(`create role anon; create role authenticated; create schema auth;
+  await db.exec(`create role anon; create role authenticated; create role service_role; create schema auth;
  create function auth.uid() returns uuid language sql as $$select nullif(current_setting('test.uid',true),'')::uuid$$;
  create table profiles(id uuid primary key,app_role text,display_name text,phone text,created_at timestamptz default now());
  create table auth.users(id uuid primary key,email text,deleted_at timestamptz);
@@ -30,6 +30,9 @@ beforeAll(async () => {
       "database/migrations/20261010231800_staff_pending_claim_count.sql",
       "utf8",
     ),
+  );
+  await db.exec(
+    readFileSync("database/migrations/20261011010000_claim_submission_alerts.sql", "utf8"),
   );
 }, 30000);
 afterAll(async () => {
@@ -110,4 +113,39 @@ it("never grants a pending-claims count to anonymous, consumer or organiser role
   await db.exec("set role anon");
   await expect(db.query("select staff_pending_venue_claim_count()")).rejects.toThrow("permission denied");
   await db.exec("reset role");
+});
+
+it("queues exactly one staff alert for future pending claim inserts without backfilling old claims", async () => {
+  const before = await db.query<{ count: number }>(
+    "select count(*)::integer from public.claim_submission_alerts",
+  );
+  expect(Number(before.rows[0].count)).toBe(0);
+  await db.exec(
+    "insert into public.venue_claims(id,venue_id,claimant_id,evidence,status,created_at) values ('10000000-0000-4000-8000-000000000026','10000000-0000-4000-8000-000000000006','10000000-0000-4000-8000-000000000002','Evidence is provided','pending',now())",
+  );
+  const after = await db.query<{ claim_id: string; payload: Record<string, string>; status: string }>(
+    "select claim_id,payload,status from public.claim_submission_alerts",
+  );
+  expect(after.rows).toHaveLength(1);
+  expect(after.rows[0].status).toBe("pending");
+  expect(after.rows[0].payload).toMatchObject({
+    venueName: "Venue",
+    claimId: "10000000-0000-4000-8000-000000000026",
+  });
+  expect(JSON.stringify(after.rows[0].payload)).not.toContain("Evidence is provided");
+});
+
+it("prevents signed-in clients from accessing private staff alert jobs", async () => {
+  for (const id of [uid(1), uid(2)]) {
+    await db.exec(
+      "set role authenticated; select set_config('test.uid','" + id + "',false)",
+    );
+    await expect(
+      db.query("select * from public.claim_submission_alerts"),
+    ).rejects.toThrow("permission denied");
+    await expect(
+      db.query("select * from public.claim_due_submission_alerts(null)"),
+    ).rejects.toThrow("permission denied");
+    await db.exec("reset role");
+  }
 });
