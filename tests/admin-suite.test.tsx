@@ -173,8 +173,8 @@ describe("Admin business application disclosure indicator", () => {
     )[1];
     expect(rules).toBeDefined();
     expect(rules).toContain("details.settings-disclosure.full-width-disclosure");
-    expect(rules).toMatch(/summary::after\\s*\\{\\s*content: "";[\\s\\S]*?transform: rotate\\(45deg\\);/);
-    expect(rules).toMatch(/full-width-disclosure\\[open\\][\\s\\S]*?summary::after\\s*\\{\\s*content: "";\\s*transform: rotate\\(225deg\\);/);
+    expect(rules).toMatch(/summary::after\s*\{\s*content: "";[\s\\S]*?transform: rotate\(45deg\);/);
+    expect(rules).toMatch(/full-width-disclosure\[open\][\s\\S]*?summary::after\s*\{\s*content: "";\s*transform: rotate\(225deg\);/);
     expect(rules).not.toContain('content: "+"');
     expect(rules).not.toContain('content: "−"');
   });
