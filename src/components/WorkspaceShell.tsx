@@ -61,6 +61,7 @@ export function WorkspaceShell({
   homeHref,
   items,
   navigationTitle = title,
+  hidePageHeading = false,
   children,
 }: {
   title: string;
@@ -69,6 +70,7 @@ export function WorkspaceShell({
   homeHref: string;
   items: WorkspaceItem[];
   navigationTitle?: string;
+  hidePageHeading?: boolean;
   children: ReactNode;
 }) {
   const pathname = usePathname();
@@ -330,13 +332,15 @@ export function WorkspaceShell({
       <aside className="workspace-sidebar">{renderNavigation()}</aside>
 
       <div className="workspace-content">
-        <header className="workspace-page-heading">
-          <div>
-            <span>{eyebrow}</span>
-            <h1>{title}</h1>
-          </div>
-          <p>{description}</p>
-        </header>
+        {!hidePageHeading && (
+          <header className="workspace-page-heading">
+            <div>
+              <span>{eyebrow}</span>
+              <h1>{title}</h1>
+            </div>
+            <p>{description}</p>
+          </header>
+        )
         <div className="workspace-grid-body">{children}</div>
       </div>
     </main>
