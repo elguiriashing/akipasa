@@ -12,6 +12,7 @@ import { SupportAgentLauncher } from "@/components/support/SupportAgentLauncher"
 import { optionalUser } from "@/lib/auth";
 import { config, isLocale } from "@/lib/config";
 import { signOut } from "@/app/[locale]/auth/actions";
+import { queueSuitePortalWelcome } from "@/lib/suite-welcome";
 import {
   defaultOwnerPreferences,
   type OwnerPreferences,
@@ -57,6 +58,7 @@ export default async function LocaleLayout({
     );
   }
   const { supabase, user } = await optionalUser();
+  if (user) await queueSuitePortalWelcome(isBusinessHost ? "akibusiness" : "akipasa", locale);
   const [profileResult, ownerResult] = user
     ? await Promise.all([
         supabase
