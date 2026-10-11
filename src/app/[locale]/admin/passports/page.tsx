@@ -1,3 +1,4 @@
+import { AdminSearchList } from "../AdminSearchList";
 import { RewardsTabs } from "../RewardsTabs";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -132,35 +133,28 @@ export default async function AdminPassportsPage({
           </button>
         </form>
       </details>
-      {passports?.length ? (
-        <div className="panel managed-list">
-          {passports.map((item) => (
-            <div className="managed-row" key={item.id}>
+      <AdminSearchList
+        locale={locale}
+        label={es ? "Campañas de pasaporte" : "Passport campaigns"}
+        items={(passports || []).map((item) => ({
+          id: item.id,
+          status: item.status,
+          search: [item.title_es, item.title_en, item.status, item.starts_at, item.ends_at].filter(Boolean).join(" "),
+          content: (
+            <article className="panel managed-row">
               <div>
-                <strong>
-                  {locale === "en"
-                    ? item.title_en || item.title_es
-                    : item.title_es}
-                </strong>
+                <strong>{locale === "en" ? item.title_en || item.title_es : item.title_es}</strong>
                 <span>
-                  {new Date(item.starts_at).toLocaleDateString(locale)} –{" "}
-                  {new Date(item.ends_at).toLocaleDateString(locale)}
+                  {new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", { dateStyle: "medium", timeZone: "Europe/Madrid" }).format(new Date(item.starts_at))}
+                  {" – "}
+                  {new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", { dateStyle: "medium", timeZone: "Europe/Madrid" }).format(new Date(item.ends_at))}
                 </span>
               </div>
               <span className="status-pill">{item.status}</span>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <WorkspaceEmpty
-          title={es ? "Sin pasaportes" : "No passports"}
-          description={
-            es
-              ? "Crea la primera campaña cuando esté lista."
-              : "Create the first campaign when it is ready."
-          }
-        />
-      )}
+            </article>
+          ),
+        }))}
+      />
     </>
   );
 }
