@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Icon, type IconName } from "@/components/Icons";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
+import { canModerate } from "@/lib/roles";
 import { summarizeStaffModerationCounts } from "@/lib/staff-moderation-summary";
 
 export default async function StaffOverview({
@@ -13,7 +14,13 @@ export default async function StaffOverview({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const { supabase } = await requireUser(locale, `/${locale}/staff`);
+  const { supabase, user } = await requireUser(locale, `/${locale}/staff`);
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("app_role")
+    .eq("id", user.id)
+    .maybeSingle();
+  if (!profile || !canModerate(profile.app_role)) notFound();
   const [
     { count: venues, error: venuesError },
     { count: events, error: eventsError },
