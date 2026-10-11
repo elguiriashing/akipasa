@@ -30,6 +30,11 @@ navigation, physical-device frame timings, real-network percentiles and app-stor
 acceptance remain unmeasured. The timing tables below describe simulated SSR,
 not production click-to-screen latency or scroll FPS.
 
+The final candidate also incorporates `master` claim-contact update `35c4649`
+(PR #102), preserving its form, private metadata, Staff renderer, migrations,
+notification dispatch and tests. The measurements remain comparisons against the
+original audit baseline; they are not rerun production measurements.
+
 ## Implemented in this candidate
 
 | Change                                                                            | Purpose and boundary                                                                                                                                                                                                      |
@@ -154,7 +159,7 @@ states instead of waiting for the slowest dashboard counter.
 
 ### 4. Shared CSS and paint pressure
 
-Six global stylesheets total approximately **497 KB of source**, including a
+At the audit baseline, six global stylesheets total approximately **497 KB of source**, including a
 409,927-byte, 19,235-line `globals.css`. Multiple later overrides and `!important`
 rules make both cost and design changes difficult to reason about. Shared glass
 surfaces sample blurred content as it moves; animated body background-position
