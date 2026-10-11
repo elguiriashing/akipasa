@@ -96,6 +96,24 @@ it("enforces the verified Resend support sender for every booking confirmation",
   expect(dispatch).not.toContain("from: suiteEmailFrom");
 });
 
+it("uses a single canonical Resend key throughout suite dispatchers", () => {
+  const booking = source("src/lib/booking-mail-delivery.ts");
+  expect(booking).toContain("export function resendSendingKey(");
+  expect(booking).toContain(
+    "env.RESEND_API_KEY?.trim() || env.CLAIM_RESEND_API_KEY?.trim()",
+  );
+  for (const file of [
+    "src/lib/claim-mail-delivery.ts",
+    "src/lib/claim-alert-delivery.ts",
+    "src/lib/suite-mail-delivery.ts",
+  ]) {
+    expect(source(file)).toContain("resendSendingKey(env)");
+    expect(source(file)).not.toContain(
+      "env.CLAIM_RESEND_API_KEY || env.RESEND_API_KEY",
+    );
+  }
+});
+
 it("uses support as sender for claim, confirmation and suite email providers", () => {
   for (const path of [
     "src/lib/booking-confirmation-email.ts",

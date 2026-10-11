@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { resendSendingKey } from "./booking-mail-delivery";
 import {
   claimMailConfigured,
   claimMailEnvironment,
@@ -34,7 +35,7 @@ export async function dispatchClaimSubmissionAlerts(
   for (const row of data || []) {
     const outcome = await sendClaimSubmissionAlert(
       row.payload as ClaimSubmissionAlert,
-      env.CLAIM_RESEND_API_KEY || env.RESEND_API_KEY,
+      resendSendingKey(env),
     );
     const { error: ackError } = await db.rpc("finish_claim_submission_alert", {
       p_claim: row.claim_id,

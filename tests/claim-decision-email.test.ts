@@ -7,6 +7,7 @@ import {
   sendClaimDecisionEmail,
 } from "../src/lib/claim-decision-email";
 import { dispatchClaimDecisions } from "../src/lib/claim-mail-delivery";
+import { resendSendingKey } from "../src/lib/booking-mail-delivery";
 const claim = {
   claimId: "10000000-0000-4000-8000-000000000010",
   venueId: "10000000-0000-4000-8000-000000000005",
@@ -228,6 +229,50 @@ it("does not misreport a live 403 as a sent customer email", async () => {
   });
 });
 
+it("prefers canonical Resend credentials over stale claim-only credentials", async () => {
+  expect(
+    resendSendingKey({
+      ...env,
+      RESEND_API_KEY: " current-sending-key ",
+      CLAIM_RESEND_API_KEY: "stale-claim-key",
+    }),
+  ).toBe("current-sending-key");
+  expect(
+    resendSendingKey({
+      ...env,
+      RESEND_API_KEY: " ",
+      CLAIM_RESEND_API_KEY: " fallback-key ",
+    }),
+  ).toBe("fallback-key");
+  rpc
+    .mockResolvedValueOnce({
+      data: [
+        {
+          claim_id: claim.claimId,
+          lease_id: "lease-precedence",
+          recipient: "applicant@example.test",
+          payload: claim,
+        },
+      ],
+      error: null,
+    })
+    .mockResolvedValueOnce({ data: true, error: null });
+  const fetcher = vi.fn().mockResolvedValue(Response.json({ id: "mail-2" }));
+  vi.stubGlobal("fetch", fetcher);
+  expect(
+    await dispatchClaimDecisions(
+      {
+        ...env,
+        RESEND_API_KEY: "current-sending-key",
+        CLAIM_RESEND_API_KEY: "stale-claim-key",
+      },
+      claim.claimId,
+    ),
+  ).toMatchObject({ sent: 1, configured: true });
+  expect(fetcher.mock.calls[0][1].headers.Authorization).toBe(
+    "Bearer current-sending-key",
+  );
+});
 it("supports an isolated claim-only key without enabling booking delivery", async () => {
   rpc
     .mockResolvedValueOnce({
