@@ -42,7 +42,9 @@ export async function moderateItem(formData: FormData) {
   }
   const mailQuery =
     value.targetType === "venue_claim" ? `&mail=${claimantMailStatus}` : "";
-  redirect(`/${locale}/staff/moderation?updated=decision${claimQuery}${mailQuery}`);
+  redirect(
+    `/${locale}/staff/moderation?updated=decision${claimQuery}${mailQuery}`,
+  );
 }
 
 export async function setAutomaticModeration(formData: FormData) {

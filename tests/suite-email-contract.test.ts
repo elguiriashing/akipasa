@@ -88,7 +88,7 @@ it("enforces the verified Resend support sender for every booking confirmation",
   const sender = source("src/lib/booking-confirmation-email.ts");
   const dispatch = source("src/lib/booking-mail-delivery.ts");
   expect(sender).toContain('fetch("https://api.resend.com/emails"');
-  expect(sender).toContain('from: bookingEmailFrom');
+  expect(sender).toContain("from: bookingEmailFrom");
   expect(sender).toContain('reply_to: "support@akipasa.com"');
   expect(sender).not.toContain("BOOKING_EMAIL_FROM");
   expect(sender).not.toContain("config.from");
