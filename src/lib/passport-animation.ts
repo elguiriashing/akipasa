@@ -14,6 +14,7 @@ export function animatePassportFoil(
   let x = 0;
   let y = 0;
   let stopped = false;
+  let initialized = false;
   const render = (now: number) => {
     frame = 0;
     const element = surface();
@@ -29,12 +30,16 @@ export function animatePassportFoil(
     }
     for (const [key, value] of Object.entries(foilProperties(x, y)))
       element.style.setProperty(key, value);
+    initialized = true;
     last = now;
     if (!settled) frame = requestFrame(render);
   };
   return {
     wake() {
       if (stopped || frame) return;
+      const next = target();
+      if (initialized && Math.abs(next.x - x) + Math.abs(next.y - y) < 0.001)
+        return;
       last = 0;
       frame = requestFrame(render);
     },

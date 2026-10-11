@@ -41,11 +41,15 @@ describe("passport foil scheduling", () => {
     expect(h.frames.size).toBe(1);
     h.tick();
     expect(h.frames.size).toBe(0);
+    h.animator.wake();
+    expect(h.frames.size).toBe(0);
     const writes = h.setProperty.mock.calls.length;
     h.tick();
     expect(h.setProperty).toHaveBeenCalledTimes(writes);
     h.move({ x: 0.8, y: -0.6 });
     for (let i = 0; i < 100 && h.frames.size; i++) h.tick();
+    expect(h.frames.size).toBe(0);
+    h.move({ x: 0.8, y: -0.6 });
     expect(h.frames.size).toBe(0);
     expect(
       h.setProperty.mock.calls.filter(([key]) => key === "--mx").at(-1)?.[1],
