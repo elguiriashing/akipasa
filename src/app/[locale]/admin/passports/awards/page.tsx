@@ -1,4 +1,4 @@
-import { RewardsTabs } from "../../../RewardsTabs";
+import { RewardsTabs } from "../../RewardsTabs";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
