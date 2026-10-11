@@ -1110,3 +1110,11 @@
     font-size: 22px;
   }
 }
+
+.reminderPreference{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;width:100%;padding:14px 16px;border:1px solid rgba(74,167,143,.35);border-radius:15px;background:rgba(29,98,84,.1)}
+.reminderPreference>div{display:grid;gap:5px;flex:1;min-width:190px}
+.reminderPreference strong{font-size:14px}
+.reminderPreference span{font-size:12px;line-height:1.5;opacity:.8}
+.reminderPreference label{display:flex;gap:8px;align-items:center;cursor:pointer;font-size:12px;font-weight:700}
+.reminderPreference input[type=checkbox]{height:21px;width:21px;accent-color:#21876b}
+.reminderPreference a{color:inherit;text-decoration:underline;font-size:12px}
