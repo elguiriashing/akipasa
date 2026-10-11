@@ -152,9 +152,7 @@ export function StaffQueue({
               {item.status || item.state || "pending"}
             </span>
           </div>
-          {targetType === "venue_claim" && (
-            <ClaimDetails item={item} locale={locale} />
-          )}
+          
           <form action={moderateItem} className="moderation-form">
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="targetType" value={targetType} />
