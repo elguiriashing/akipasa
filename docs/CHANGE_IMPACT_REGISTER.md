@@ -467,6 +467,7 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - **Tests/rollback:** `tests/admin-suite.test.tsx` covers search filtering/status/reset, unified tabs, retained privileged forms/routes. CI full check, browser matrices and Cloudflare package are release gates; authenticated production UI smoke remains required for complete acceptance. No DB migration. Roll back UI commit if regressions; do not replay mutations.
 
 ## 2026-10-12 | Admin commercial requests and user-search overlap follow-up
+
 - Screenshot regression: Users & Roles search label/help text intersect the rounded input, while commercial requests render as oversized unstructured accordions with expanded forms that feel like a text minefield.
 - UI-only: Admin-scoped CSS makes search label, input and helper separate grid rows, preventing overlap at tablet widths; commercial request summaries become compact and details group message + editable fields with sensible spacing and mobile one-column dates.
 - Preserves Admin authorization, server-side user search, request IDs, form actions, promotion status, event selection, dates and internal notes. No SQL/RLS/data mutations, changes to Staff or other AkiSuite apps. Verify EN/ES, dark/light, tablet landscape and portrait. Rollback via revert.
