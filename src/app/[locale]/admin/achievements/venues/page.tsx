@@ -1,3 +1,4 @@
+import { RewardsTabs } from "../../RewardsTabs";
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { isAdministrator } from "@/lib/roles";
@@ -41,6 +42,8 @@ export default async function AchievementVenuesPage({
   if (search) request = request.ilike("name", `%${search}%`);
   const { data: venues, error, count } = await request;
   return (
+    <>
+    <RewardsTabs locale={locale} active="achievements" />
     <section className={styles.manager}>
       <a href={`/${locale}/admin/achievements`}>
         ← {es ? "Logros" : "Achievements"}
@@ -124,5 +127,6 @@ export default async function AchievementVenuesPage({
         </>
       )}
     </section>
+    </>
   );
 }
