@@ -11,7 +11,7 @@
 ## Repair the sending permission, not the claim status
 
 1. In the Resend team that owns the verified `akipasa.com` domain, use a domain-scoped sending-enabled API key. Do not mistake the key **name** for its one-time secret value.
-2. In Cloudflare Workers & Pages > `akipasa` > Settings > Variables and Secrets, inspect the **production** encrypted `CLAIM_RESEND_API_KEY` binding. If invalid or not associated with the correct Resend team/domain, **replace its secret value** with the valid key, not a public variable, and ensure a new deployment retains secrets (`--keep-vars`). The runtime prefers `CLAIM_RESEND_API_KEY` to `RESEND_API_KEY` for claim decisions, staff alerts and suite mail.
+2. In Cloudflare Workers & Pages > `akipasa` > Settings > Variables and Secrets, inspect the **production** encrypted `CLAIM_RESEND_API_KEY` binding. If invalid or not associated with the correct Resend team/domain, **replace its secret value** with the valid key, not a public variable, and ensure a new deployment retains secrets (`--keep-vars`). The updated runtime prefers `RESEND_API_KEY` for all app-owned transactional email, using `CLAIM_RESEND_API_KEY` only as a legacy fallback. Before this fix, the stale claim-specific key shadowed the main key.
 3. The worker also requires correct `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`, but the recorded provider 403 proves the worker already reached the provider in the documented incident.
 4. Check Worker logs for the outbound HTTP 403, then perform **one owned test** through the live claim decision flow. Confirm a new outbox row reaches `sent` with `provider_message_id`, and separately confirm Resend reports delivery. Do not mistake the public configuration-boolean endpoint or direct Resend samples for live application delivery.
 
@@ -55,3 +55,11 @@ The existing scheduled dispatcher will send the exact saved language/decision wi
 ## Staff UI behavior
 
 The staff moderation server action now reports `mail=sent` only when the immediate dispatcher receives provider acceptance; otherwise it reports `mail=not_sent`. The bilingual Staff notice tells reviewers a saved decision is not proof that the customer was emailed. There is no public email address, provider key or queue payload in the redirect.
+
+## 11 October follow-up: verified direct send, remaining Worker credentials
+
+- Connected Resend accepted and delivered one explicitly labelled diagnostic from `AkiPasa Support <support@akipasa.com>` to the internal operator inbox on 11 October at 12:12 UTC. Thus the connected account's verified domain and provider service work independently of AkiPasa.
+- Two additional rejected claims at 12:02 and 12:09 UTC had `blocked/provider_403` and no provider acceptance ID, making seven claim-decision failures. They were not replayed.
+- Resend account request logs did not include matching application `POST /emails` calls, suggesting that Cloudflare is using credentials connected to a different Resend team/account (not yet proven). The current worker key value is inaccessible to the connector; the fact a secret is set is insufficient.
+- **Precedence fix:** all dispatchers now select the trimmed primary `RESEND_API_KEY`, then the legacy `CLAIM_RESEND_API_KEY` only if the primary is absent. A stale claim secret can no longer override a valid main key. Both names may remain configured temporarily, but operators should configure the primary for a verified sending-enabled Resend key on the intended account.
+- After this code is merged and deployed, verify a new internal test end to end, checking for provider acceptance ID in the database and delivery in Resend. Historical blocked decisions require explicit approval for selective recovery.
