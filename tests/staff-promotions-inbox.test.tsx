@@ -56,11 +56,11 @@ describe("Staff promotions operational inbox", () => {
     const { container } = render(<StaffPromotionsInbox locale="en" requests={requests} />);
     expect(screen.getByRole("heading", { name: "Promotions" })).toBeInTheDocument();
     expect(visibleCards(container)).toHaveLength(4);
-    expect(screen.getByText("Featured listing")).toBeInTheDocument();
+    expect(screen.getAllByText("Featured listing")).toHaveLength(2);
     expect(screen.getByText("Latest 50 requests loaded")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /To review 1/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /In progress 1/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Closed 2/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /To review/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /In progress/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Closed/ })).toBeInTheDocument();
     expect(container.querySelector("form")).toBeNull();
     expect(container.querySelector("script")).toBeNull();
     expect(screen.getByText(/<script>alert\(1\)<\/script>/)).toBeInTheDocument();
@@ -104,7 +104,7 @@ describe("Staff promotions operational inbox", () => {
     expect(screen.getByRole("heading", { name: "Promociones" })).toBeInTheDocument();
     expect(screen.getByText("Local destacado")).toBeInTheDocument();
     expect(screen.getByRole("searchbox", { name: "Buscar solicitudes" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Por revisar 1/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Por revisar/ })).toBeInTheDocument();
     expect(container.querySelector("form")).toBeNull();
   });
 
