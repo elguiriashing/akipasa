@@ -1,3 +1,4 @@
+import { RewardsTabs } from "../../../RewardsTabs";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
@@ -24,6 +25,7 @@ export default async function AwardsPage({
   if (!data || !isAdministrator(data.app_role)) notFound();
   return (
     <>
+      <RewardsTabs locale={locale} active="awards" />
       <WorkspacePageHeader
         eyebrow="AkiPasa"
         title={
