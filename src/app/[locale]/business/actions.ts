@@ -178,6 +178,7 @@ export async function submitVenueClaim(formData: FormData) {
     venue_id: parsed.data.venueId,
     claimant_id: user.id,
     evidence: parsed.data.evidence,
+    claim_locale: parsed.data.locale,
   });
   if (error) redirect(`/${locale}/business?error=claim`);
   // The database trigger already committed a durable staff-alert outbox row.
