@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import {
   bookingEmailConfigured,
   bookingMailEnvironment,
+  resendSendingKey,
   type BookingMailEnv,
 } from "./booking-mail-delivery";
 import {
@@ -17,10 +18,7 @@ export function claimMailEnvironment(): ClaimMailEnv {
   };
 }
 export function claimMailConfigured(env: ClaimMailEnv) {
-  return bookingEmailConfigured({
-    ...env,
-    RESEND_API_KEY: env.CLAIM_RESEND_API_KEY || env.RESEND_API_KEY,
-  });
+  return bookingEmailConfigured(env);
 }
 export async function dispatchClaimDecisions(
   env: ClaimMailEnv = claimMailEnvironment(),
@@ -45,7 +43,7 @@ export async function dispatchClaimDecisions(
   for (const row of data || []) {
     const outcome = await sendClaimDecisionEmail(
       { ...(row.payload as ClaimDecision), recipient: row.recipient },
-      env.CLAIM_RESEND_API_KEY || env.RESEND_API_KEY,
+      resendSendingKey(env),
     );
     const { error: ackError } = await db.rpc("finish_claim_decision_email", {
       p_claim: row.claim_id,
