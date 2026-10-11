@@ -467,3 +467,8 @@ Business Pro retains a separate paid-entitlement check.
 ### Staff-owned claim submission alerts
 
 The staff homepage counts pending `venue_claims` through the staff-gated `staff_pending_venue_claim_count()` aggregate, in sync with the paginated moderation read RPC. A new claim INSERT creates one `claim_submission_alerts` outbox row without modifying ownership or claimant-facing decision emails. The Cloudflare scheduled worker dispatches notifications to both cofounder Workspace inboxes through the existing provider, with an immediate best-effort dispatch after the server action. The outbox uses service-only leases, stable message keys, confirmed ACK, bounded retries and ambiguity review. No unverified claimant contact data is emailed.
+
+
+### Unified AkiSuite email notification lifecycle
+
+The authoritative source for new transactional notifications is `public.suite_email_outbox` with service-only leasing and delivery acknowledgments. `src/lib/suite-email-templates.ts` renders EN/ES HTML/text; `src/lib/suite-mail-delivery.ts` revalidates recipient and event state immediately before sending via the Cloudflare five-minute cron, using `support@akipasa.com`. Existing confirmed booking and claim-decision outboxes are preserved and continue to be triggered by authoritative transitions. Welcome keys are unique per account/product, not per browser, and use the authenticated `queue_suite_portal_welcome` RPC. Reminders require explicit saved-event/stay consent and present saved records. The migration `20261011013000_suite_emails.sql` must precede application/worker release. AkiHQ triggers its own welcome after workspace-verified sign-in using the same RPC.
