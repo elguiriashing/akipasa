@@ -222,15 +222,15 @@ returns integer language plpgsql security definer set search_path='' as $$
 declare count_rows integer := 0; n integer;
 begin
  with due as (
-  select s.profile_id,s.event_id,oc.id occurrence_id,oc.starts_at,
+  select s.profile_id,oc.event_id,oc.id occurrence_id,oc.starts_at,
      e.title_en,e.title_es,e.slug,p.preferred_locale,u.email
-  from public.saved_events s
+  from public.saved_event_refs s
   join public.suite_email_preferences pref on pref.profile_id=s.profile_id and pref.event_reminders=true
-  join public.event_occurrences oc on oc.event_id=s.event_id
+  join public.event_occurrences oc on oc.event_id::text=s.event_key
     and oc.starts_at>now()+interval '47 hours'
     and oc.starts_at<=now()+interval '49 hours'
     and s.created_at<=oc.starts_at-interval '48 hours'
-  join public.events e on e.id=s.event_id and e.status::text='published'
+  join public.events e on e.id=oc.event_id and e.status::text='published'
   join public.profiles p on p.id=s.profile_id
   join auth.users u on u.id=s.profile_id and u.deleted_at is null and u.email_confirmed_at is not null
   where oc.status::text not in('cancelled','expired')
