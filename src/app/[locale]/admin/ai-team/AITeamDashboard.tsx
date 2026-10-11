@@ -144,6 +144,7 @@ export function AITeamDashboard({
 }) {
   const es = locale === "es";
   const [section, setSection] = useState<Section>("team");
+  const [listSearch, setListSearch] = useState("");
   const [agents, setAgents] = useState(initial.agents);
   const [messages, setMessages] = useState(initial.messages);
   const [selectedAgentId, setSelectedAgentId] = useState(
@@ -164,6 +165,11 @@ export function AITeamDashboard({
     ["queued", "in_progress", "waiting"].includes(item.status),
   );
   const errors = initial.activity.filter((item) => item.level === "error");
+  const matchesListSearch = (...values: Array<string | null | undefined>) =>
+    !listSearch.trim() ||
+    values.some((value) =>
+      (value || "").toLocaleLowerCase(locale).includes(listSearch.trim().toLocaleLowerCase(locale)),
+    );
   const spend = initial.usage.reduce(
     (total, item) =>
       total + Number(item.actual_cost_eur ?? item.reserved_cost_eur ?? 0),
@@ -345,6 +351,18 @@ export function AITeamDashboard({
         ))}
       </nav>
 
+      {(section === "tasks" || section === "approvals" || section === "activity") && (
+        <label className="admin-ai-search">
+          <span>{es ? "Buscar en esta sección" : "Search this section"}</span>
+          <input
+            type="search"
+            aria-label={es ? "Buscar en equipo de IA" : "Search AI Team"}
+            placeholder={es ? "Buscar tareas, estados y actividad…" : "Search tasks, statuses and activity…"}
+            value={listSearch}
+            onChange={(event) => setListSearch(event.target.value)}
+          />
+        </label>
+      )}
       {section === "team" && selectedAgent && (
         <section className={styles.teamLayout}>
           <aside className={styles.roster}>
@@ -465,7 +483,7 @@ export function AITeamDashboard({
             <h2>{es ? "Tareas" : "Tasks"}</h2>
             <TaskForm agents={agents} busy={busy} onCreate={act} es={es} />
             <div className={styles.list}>
-              {initial.tasks.map((task) => (
+              {initial.tasks.filter((task) => matchesListSearch(task.title, task.description, task.status, task.assigned?.display_name)).map((task) => (
                 <article key={task.id}>
                   <header>
                     <strong>{task.title}</strong>
@@ -499,7 +517,7 @@ export function AITeamDashboard({
             <h2>{es ? "Trabajos recurrentes" : "Recurring jobs"}</h2>
             <ScheduleForm agents={agents} busy={busy} onCreate={act} es={es} />
             <div className={styles.list}>
-              {initial.schedules.map((schedule) => (
+              {initial.schedules.filter((schedule) => matchesListSearch(schedule.name, schedule.prompt, schedule.agent?.display_name)).map((schedule) => (
                 <article key={schedule.id}>
                   <header>
                     <strong>{schedule.name}</strong>
@@ -557,7 +575,7 @@ export function AITeamDashboard({
               : "Nothing in this queue executes until you approve it here."}
           </p>
           <div className={styles.list}>
-            {initial.approvals.map((approval) => (
+            {initial.approvals.filter((approval) => matchesListSearch(approval.tool_name, approval.reason, approval.status, approval.agent?.display_name)).map((approval) => (
               <article key={approval.id}>
                 <header>
                   <strong>{approval.tool_name}</strong>
@@ -614,7 +632,7 @@ export function AITeamDashboard({
           <div>
             <h2>{es ? "Actividad reciente" : "Recent activity"}</h2>
             <div className={styles.timeline}>
-              {initial.activity.map((item) => (
+              {initial.activity.filter((item) => matchesListSearch(item.message, item.event_type, item.agent?.display_name, item.level)).map((item) => (
                 <article key={item.id} className={styles[item.level]}>
                   <span />
                   <div>
@@ -636,7 +654,7 @@ export function AITeamDashboard({
                   {es ? "No hay errores registrados." : "No recorded errors."}
                 </p>
               ) : (
-                errors.map((item) => (
+                errors.filter((item) => matchesListSearch(item.message, item.event_type, item.agent?.display_name)).map((item) => (
                   <article key={item.id}>
                     <strong>{item.message}</strong>
                     <p>{String(item.details?.error || item.event_type)}</p>
