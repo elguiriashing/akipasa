@@ -1,10 +1,9 @@
 import { notFound } from "next/navigation";
-import {
-  WorkspaceEmpty,
-  WorkspacePageHeader,
-} from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
+import { canModerate } from "@/lib/roles";
+import { StaffPromotionsInbox, type StaffPromotion } from "./StaffPromotionsInbox";
+import "./staff-promotions.css";
 
 export default async function StaffPromotionsPage({
   params,
@@ -13,56 +12,52 @@ export default async function StaffPromotionsPage({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const { supabase } = await requireUser(locale, `/${locale}/staff/promotions`);
-  const { data } = await supabase
+  const { supabase, user } = await requireUser(
+    locale,
+    "/" + locale + "/staff/promotions",
+  );
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("app_role")
+    .eq("id", user.id)
+    .maybeSingle();
+  if (!profile || !canModerate(profile.app_role)) notFound();
+
+  const { data, error } = await supabase
     .from("promotion_requests")
     .select("id,service,message,state,operator_notes,created_at,venues(name)")
     .order("created_at", { ascending: false })
     .limit(50);
+
   const es = locale === "es";
-  return (
-    <>
-      <WorkspacePageHeader
-        eyebrow={es ? "Comercial" : "Commercial"}
-        title={es ? "Promociones" : "Promotions"}
-        description={
-          es
-            ? "Solicitudes de visibilidad y servicios enviadas por negocios."
-            : "Visibility and service requests submitted by businesses."
-        }
-      />
-      {data?.length ? (
-        <div className="queue-list">
-          {data.map((item) => {
-            const venue = item.venues as unknown as {
-              name?: string | null;
-            } | null;
-            return (
-              <article className="panel queue-card" key={item.id}>
-                <div className="queue-card-header">
-                  <div>
-                    <h2>
-                      {venue?.name || (es ? "Local" : "Venue")} / {item.service}
-                    </h2>
-                    <p>{item.message}</p>
-                  </div>
-                  <span className="status-pill">{item.state}</span>
-                </div>
-                {item.operator_notes && <p>{item.operator_notes}</p>}
-              </article>
-            );
-          })}
-        </div>
-      ) : (
-        <WorkspaceEmpty
-          title={es ? "Sin solicitudes" : "No requests"}
-          description={
-            es
-              ? "Las nuevas promociones aparecerán aquí."
-              : "New promotion requests will appear here."
-          }
-        />
-      )}
-    </>
-  );
+  if (error) {
+    return (
+      <section className="staff-promotions-page staff-promotions-error" role="alert">
+        <h1>{es ? "No se pudieron cargar las promociones" : "Could not load promotions"}</h1>
+        <p>
+          {es
+            ? "No podemos consultar las solicitudes ahora. Inténtalo de nuevo más tarde."
+            : "The requests are unavailable right now. Please try again later."}
+        </p>
+      </section>
+    );
+  }
+
+  const requests: StaffPromotion[] = (data || []).map((item) => {
+    const rawVenue = item.venues as unknown;
+    const venue = (
+      Array.isArray(rawVenue) ? rawVenue[0] : rawVenue
+    ) as { name?: string | null } | null | undefined;
+    return {
+      id: item.id,
+      venueName: venue?.name || null,
+      service: item.service,
+      message: item.message,
+      state: item.state,
+      operatorNotes: item.operator_notes,
+      createdAt: item.created_at,
+    };
+  });
+
+  return <StaffPromotionsInbox locale={locale} requests={requests} />;
 }
