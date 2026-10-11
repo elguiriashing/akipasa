@@ -74,18 +74,8 @@ export default async function AdminLayout({
     },
     {
       href: `${base}/passports`,
-      label: es ? "Pasaportes" : "Passports",
+      label: es ? "Recompensas" : "Rewards",
       icon: "gift",
-    },
-    {
-      href: `${base}/passports/awards`,
-      label: es ? "Otorgar sellos" : "Grant awards",
-      icon: "star",
-    },
-    {
-      href: `${base}/achievements`,
-      label: es ? "Logros" : "Achievements",
-      icon: "star",
     },
     {
       href: `${base}/settings`,
@@ -108,6 +98,7 @@ export default async function AdminLayout({
           : "Governance, access and settings in focused workflows."
       }
       homeHref={base}
+      hidePageHeading
       items={items}
     >
       {children}
