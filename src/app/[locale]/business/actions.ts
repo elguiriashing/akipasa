@@ -193,6 +193,7 @@ export async function submitVenueClaim(formData: FormData) {
     venue_id: parsed.data.venueId,
     claimant_id: user.id,
     evidence: parsed.data.evidence,
+    claim_locale: parsed.data.locale,
     claim_details: {
       applicant_name: parsed.data.applicantName,
       relationship: parsed.data.businessRole,
