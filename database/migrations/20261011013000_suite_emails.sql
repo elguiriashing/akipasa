@@ -278,12 +278,13 @@ begin
  where status in('sending','failed') and first_attempt_at < now()-interval '23 hours';
  return query with due as (
   select x.id from public.suite_email_outbox x
-  where x.status in('pending','failed')
+  where (x.status in('pending','failed') or (x.status='sending' and x.attempted_at<now()-interval '10 minutes'))
     and x.available_at<=now() and x.attempts<12
   order by x.available_at,x.created_at limit 15
   for update of x skip locked
  ) update public.suite_email_outbox q
  set status='sending',attempts=q.attempts+1,lease_id=gen_random_uuid(),
+     delivery_uncertain=q.delivery_uncertain or q.status='sending',
      attempted_at=now(),first_attempt_at=coalesce(q.first_attempt_at,now())
  from due where q.id=due.id returning q.*;
 end $$;
