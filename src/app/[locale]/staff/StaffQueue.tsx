@@ -131,22 +131,17 @@ export function StaffQueue({
           <div className="queue-card-header">
             <div>
               <h3>
-                {targetType === "venue_claim"
-                  ? item.venues?.name ||
-                    (es ? "Local no disponible" : "Venue unavailable")
-                  : locale === "en"
-                    ? item.title_en || item.title_es || item.title || item.name
-                    : item.title_es || item.title || item.name || item.title_en}
+                {locale === "en"
+                  ? item.title_en || item.title_es || item.title || item.name
+                  : item.title_es || item.title || item.name || item.title_en}
               </h3>
-              {targetType !== "venue_claim" && (
-                <p>
-                  {item.venue_name ||
-                    item.venues?.name ||
-                    item.address ||
-                    item.venue_address ||
-                    item.evidence}
-                </p>
-              )}
+              <p>
+                {item.venue_name ||
+                  item.venues?.name ||
+                  item.address ||
+                  item.venue_address ||
+                  item.evidence}
+              </p>
             </div>
             <span className="status-pill">
               {item.status || item.state || "pending"}
@@ -156,9 +151,6 @@ export function StaffQueue({
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="targetType" value={targetType} />
             <input type="hidden" name="targetId" value={item.id} />
-            {targetType === "venue_claim" && (
-              <input type="hidden" name="claimPage" value={claimPage} />
-            )}
             <input
               name="reason"
               required
