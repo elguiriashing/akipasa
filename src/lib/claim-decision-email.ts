@@ -9,7 +9,7 @@ export type ClaimDecision = {
   reason: string;
   locale: "en" | "es";
 };
-export const claimEmailFrom = "Alex at AkiPasa <alex@akipasa.com>";
+export const claimEmailFrom = "AkiPasa Support <support@akipasa.com>";
 const escapeHtml = (value: string) =>
   value.replace(
     /[&<>"']/g,
@@ -138,7 +138,7 @@ export async function sendClaimDecisionEmail(
       },
       body: JSON.stringify({
         from: claimEmailFrom,
-        reply_to: "alex@akipasa.com",
+        reply_to: "support@akipasa.com",
         to: [data.recipient],
         ...renderClaimDecision(data),
       }),
