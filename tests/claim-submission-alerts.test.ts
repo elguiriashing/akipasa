@@ -111,7 +111,5 @@ it("leases one queued alert, acknowledges outcome and never leaks recipients via
       p_ok: true,
     }),
   );
-  expect(JSON.stringify(rpc.mock.calls)).not.toContain(
-    "andrew@akipasa.com",
-  );
+  expect(JSON.stringify(rpc.mock.calls)).not.toContain("andrew@akipasa.com");
 });

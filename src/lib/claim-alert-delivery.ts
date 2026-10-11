@@ -36,18 +36,15 @@ export async function dispatchClaimSubmissionAlerts(
       row.payload as ClaimSubmissionAlert,
       env.CLAIM_RESEND_API_KEY || env.RESEND_API_KEY,
     );
-    const { error: ackError } = await db.rpc(
-      "finish_claim_submission_alert",
-      {
-        p_claim: row.claim_id,
-        p_lease: row.lease_id,
-        p_ok: outcome.ok,
-        p_message: outcome.messageId || null,
-        p_error: outcome.error || null,
-        p_ambiguous: outcome.ambiguous ?? true,
-        p_retryable: outcome.retryable ?? false,
-      },
-    );
+    const { error: ackError } = await db.rpc("finish_claim_submission_alert", {
+      p_claim: row.claim_id,
+      p_lease: row.lease_id,
+      p_ok: outcome.ok,
+      p_message: outcome.messageId || null,
+      p_error: outcome.error || null,
+      p_ambiguous: outcome.ambiguous ?? true,
+      p_retryable: outcome.retryable ?? false,
+    });
     if (ackError)
       console.error("claim_submission_alert_ack_pending", ackError.code);
     if (outcome.ok) sent++;

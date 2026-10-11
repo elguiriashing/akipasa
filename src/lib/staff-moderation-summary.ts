@@ -20,9 +20,7 @@ export function summarizeStaffModerationCounts(counts: StaffModerationCounts) {
   ];
   const complete = values.every(
     (count): count is number =>
-      typeof count === "number" &&
-      Number.isSafeInteger(count) &&
-      count >= 0,
+      typeof count === "number" && Number.isSafeInteger(count) && count >= 0,
   );
   const pending = complete
     ? (values as number[]).reduce((total, count) => total + count, 0)

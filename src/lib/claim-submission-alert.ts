@@ -18,13 +18,13 @@ function escapeHtml(value: string) {
     /[&<>"']/g,
     (char) =>
       (
-        {
+        ({
           "&": "&amp;",
           "<": "&lt;",
           ">": "&gt;",
           '"': "&quot;",
           "'": "&#39;",
-        } as Record<string, string>
+        }) as Record<string, string>
       )[char] || char,
   );
 }
@@ -32,12 +32,13 @@ function escapeHtml(value: string) {
 /** Internal notification. Applicant evidence and contact details stay in the
  * authenticated staff review screen, not email notifications. */
 export function renderClaimSubmissionAlert(data: ClaimSubmissionAlert) {
-  const venue = String(data.venueName || "Venue").trim().slice(0, 160);
+  const venue = String(data.venueName || "Venue")
+    .trim()
+    .slice(0, 160);
   const title = "New venue ownership claim";
   const safeVenue = venue.replace(/[\r\n]/g, " ");
   const subject = "AkiPasa · New claim: " + safeVenue;
-  const reviewUrl =
-    "https://akipasa.com/en/staff/moderation?queue=claims";
+  const reviewUrl = "https://akipasa.com/en/staff/moderation?queue=claims";
   const submitted = Number.isNaN(Date.parse(data.submittedAt))
     ? "Recently"
     : new Date(data.submittedAt).toISOString();
@@ -57,9 +58,9 @@ export function renderClaimSubmissionAlert(data: ClaimSubmissionAlert) {
     escapeHtml(title) +
     '</title></head><body style="margin:0;background:#f1f4fa;color:#14213b;font:16px Arial,sans-serif;line-height:1.6"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:24px 12px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:620px;margin:auto;background:#fff;border-radius:16px"><tr><td style="padding:28px;overflow-wrap:anywhere"><p style="color:#c65912;font-weight:bold">AkiPasa · Staff alert</p><h1 style="font-size:24px">' +
     escapeHtml(title) +
-    '</h1><p>Someone has submitted a new business ownership claim.</p><p><strong>Venue:</strong> ' +
+    "</h1><p>Someone has submitted a new business ownership claim.</p><p><strong>Venue:</strong> " +
     escapeHtml(venue) +
-    '</p><p><strong>Submitted:</strong> ' +
+    "</p><p><strong>Submitted:</strong> " +
     escapeHtml(submitted) +
     '</p><p style="font-size:13px;color:#52627b"><strong>Claim:</strong> ' +
     escapeHtml(data.claimId) +

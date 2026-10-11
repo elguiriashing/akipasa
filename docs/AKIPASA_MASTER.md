@@ -280,7 +280,6 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 - Successful team additions invalidate both localized Home routes. Home refreshes current membership on focus/visibility return and every 30 seconds while visible, retaining filters. This addresses stale open sessions; database acceptance alone does not prove the user’s browser symptom is resolved.
 - Acceptance: `business-team-access.test.ts` checks guard/subscriber/Pro/error/revocation behavior; `business-team-home.test.tsx` invokes the actual Home loader with consumer membership in both property types/locales. Production and full validation status is recorded in the impact register.
 
-
 ### New claim notifications for staff (2026-10-11)
 
 - A new pending `venue_claims` INSERT creates exactly one private `claim_submission_alerts` row in the same transaction. The insert trigger covers any venue-claim entry path (activity or accommodation), not just AkiBusiness's web form. Historical claims are not silently emailed retroactively.

@@ -77,8 +77,7 @@ export default async function StaffOverview({
   }> = [
     {
       href:
-        (summary.claims ?? 0) > 0 &&
-        pending === summary.claims
+        (summary.claims ?? 0) > 0 && pending === summary.claims
           ? `/${locale}/staff/moderation?queue=claims`
           : `/${locale}/staff/moderation`,
       icon: "shield",
@@ -92,7 +91,9 @@ export default async function StaffOverview({
       href: `/${locale}/staff/moderation?queue=claims`,
       icon: "venue",
       title: es ? "Reclamaciones" : "Business claims",
-      detail: es ? "Solicitudes de titularidad pendientes" : "Pending ownership requests",
+      detail: es
+        ? "Solicitudes de titularidad pendientes"
+        : "Pending ownership requests",
       count: summary.claims ?? undefined,
     },
     {
