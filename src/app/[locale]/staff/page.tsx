@@ -202,7 +202,11 @@ export default async function StaffOverview({
         aria-label={es ? "Resumen de tareas" : "Task summary"}
       >
         {metrics.map((metric) => (
-          <Link href={metric.href} key={metric.label} className="staff-dashboard-metric">
+          <Link
+            href={metric.href}
+            key={metric.label}
+            className="staff-dashboard-metric"
+          >
             <span className="staff-dashboard-metric-icon">
               <Icon name={metric.icon} />
             </span>
@@ -213,7 +217,10 @@ export default async function StaffOverview({
         ))}
       </section>
 
-      <section className="staff-dashboard-section" aria-labelledby="staff-priorities-title">
+      <section
+        className="staff-dashboard-section"
+        aria-labelledby="staff-priorities-title"
+      >
         <header className="staff-dashboard-heading">
           <div>
             <span>{es ? "Acceso rápido" : "Quick access"}</span>
@@ -227,9 +234,16 @@ export default async function StaffOverview({
             </p>
           </div>
         </header>
-        <nav className="staff-dashboard-task-grid" aria-label={es ? "Tareas principales" : "Priority tasks"}>
+        <nav
+          className="staff-dashboard-task-grid"
+          aria-label={es ? "Tareas principales" : "Priority tasks"}
+        >
           {primaryActions.map((action) => (
-            <Link href={action.href} key={action.href} className="staff-dashboard-task staff-dashboard-task-primary">
+            <Link
+              href={action.href}
+              key={action.href}
+              className="staff-dashboard-task staff-dashboard-task-primary"
+            >
               <span className="staff-dashboard-task-icon">
                 <Icon name={action.icon} />
               </span>
@@ -248,16 +262,28 @@ export default async function StaffOverview({
         </nav>
       </section>
 
-      <section className="staff-dashboard-section" aria-labelledby="staff-tools-title">
+      <section
+        className="staff-dashboard-section"
+        aria-labelledby="staff-tools-title"
+      >
         <header className="staff-dashboard-heading">
           <div>
             <span>{es ? "Herramientas" : "Tools"}</span>
-            <h2 id="staff-tools-title">{es ? "Más herramientas" : "More tools"}</h2>
+            <h2 id="staff-tools-title">
+              {es ? "Más herramientas" : "More tools"}
+            </h2>
           </div>
         </header>
-        <nav className="staff-dashboard-task-grid staff-dashboard-task-grid-secondary" aria-label={es ? "Más herramientas" : "More tools"}>
+        <nav
+          className="staff-dashboard-task-grid staff-dashboard-task-grid-secondary"
+          aria-label={es ? "Más herramientas" : "More tools"}
+        >
           {secondaryActions.map((action) => (
-            <Link href={action.href} key={action.href} className="staff-dashboard-task">
+            <Link
+              href={action.href}
+              key={action.href}
+              className="staff-dashboard-task"
+            >
               <span className="staff-dashboard-task-icon">
                 <Icon name={action.icon} />
               </span>

@@ -11,7 +11,10 @@ export default async function StaffAuditPage({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const { supabase, user } = await requireUser(locale, `/${locale}/staff/audit`);
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/staff/audit`,
+  );
   const { data: profile } = await supabase
     .from("profiles")
     .select("app_role")

@@ -44,9 +44,7 @@ describe("administrator-only audit access", () => {
         `set role authenticated; select set_config('test.role','${role}',false)`,
       );
       try {
-        const data = await db.query(
-          "select id from public.moderation_actions",
-        );
+        const data = await db.query("select id from public.moderation_actions");
         expect(data.rows).toHaveLength(0);
       } finally {
         await db.exec("reset role");
@@ -59,9 +57,7 @@ describe("administrator-only audit access", () => {
       "set role authenticated; select set_config('test.role','administrator',false)",
     );
     try {
-      const result = await db.query(
-        "select id from public.moderation_actions",
-      );
+      const result = await db.query("select id from public.moderation_actions");
       expect(result.rows).toHaveLength(1);
     } finally {
       await db.exec("reset role");
@@ -84,7 +80,10 @@ describe("administrator-only audit access", () => {
 
   it("does not fetch or link full audit content from Staff pages", () => {
     const overview = readFileSync("src/app/[locale]/staff/page.tsx", "utf8");
-    const navigation = readFileSync("src/app/[locale]/staff/layout.tsx", "utf8");
+    const navigation = readFileSync(
+      "src/app/[locale]/staff/layout.tsx",
+      "utf8",
+    );
     const auditRoute = readFileSync(
       "src/app/[locale]/staff/audit/page.tsx",
       "utf8",
