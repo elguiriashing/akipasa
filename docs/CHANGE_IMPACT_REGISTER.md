@@ -416,3 +416,9 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - **Dependencies/risks:** Staff desktop/mobile/theme presentation uses the existing notice style. No Supabase schema, permission, queue, sender, booking, accommodation, AkiHQ, consent or admin-email recipient change. Delayed cron sends may succeed later; the notice truthfully describes only immediate provider acceptance. Code cannot repair a bad production Cloudflare secret.
 - **Tests:** claim-decision provider 403 dispatcher regression and static moderation redirect/notice contract. Full CI/browser verification remains required before merge; no production mail or blocked-row replay was attempted. Operator runbook: `docs/CLAIM_EMAIL_403_RECOVERY.md`.
 - **Rollback:** revert action/page/contract-test changes only; retain immutable recorded mail failures. Repair worker secret and perform individual approved requeue after proven live sending.
+
+## 2026-10-11 | Standardize all app-owned Resend mail on the support address
+
+- Requested sender: `AkiPasa Support <support@akipasa.com>` through Resend (reply to support). Confirmed claim decision, staff alert, suite email and booking dispatchers already use Resend; removed the last configurable From override in the booking confirmation implementation.
+- Surfaces: AkiPasa EN/ES confirmed venue/event reservations, AkiDuermo confirmed stays, AkiBusiness claim decision and staff notifications, shared suite welcome/requests/cancellation/reminders. No other production function behavior, database schema, recipient, plan or role changes.
+- Testing: extended suite email contract to require the booking sender's Resend endpoint and fixed From/Reply-To and forbid legacy overrides. GitHub CI and browser acceptance must pass before merge. This does **not** resolve the actual Cloudflare API-key 403 or send historical blocked messages; see `docs/CLAIM_EMAIL_403_RECOVERY.md`.
