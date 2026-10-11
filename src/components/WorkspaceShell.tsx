@@ -32,6 +32,7 @@ export type WorkspaceItem = {
   label: string;
   icon: WorkspaceIcon;
   count?: number;
+  matchPaths?: string[];
 };
 
 function matchesPath(
@@ -109,9 +110,12 @@ export function WorkspaceShell({
             : homeHref.includes("/community")
               ? "community-workspace"
               : "";
-  const activeItem = items.find((item) =>
-    matchesPath(pathname, searchParams, item.href),
-  );
+  const isItemActive = (item: WorkspaceItem) =>
+    matchesPath(pathname, searchParams, item.href) ||
+    (item.matchPaths || []).some(
+      (path) => pathname === path || pathname.startsWith(`${path}/`),
+    );
+  const activeItem = items.find(isItemActive);
 
   function startNavigationDrag(event: React.PointerEvent<HTMLElement>) {
     if (event.pointerType === "touch" || event.button !== 0) return;
@@ -251,7 +255,7 @@ export function WorkspaceShell({
         onWheel={scrollNavigation}
       >
         {items.map((item) => {
-          const active = matchesPath(pathname, searchParams, item.href);
+          const active = isItemActive(item);
           return (
             <Link
               href={item.href}
