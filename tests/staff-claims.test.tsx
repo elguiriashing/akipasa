@@ -60,6 +60,17 @@ it.each(["en", "es"] as const)(
     expect(screen.getByText("+34600000000")).toBeInTheDocument();
     expect(screen.getByText("+34900000000")).toBeInTheDocument();
     expect(screen.getByText("Business Contact")).toBeInTheDocument();
+    expect(document.querySelector(".claim-modern-hero")).toBeInTheDocument();
+    expect(document.querySelector(".claim-modern-columns")).toBeInTheDocument();
+    expect(document.querySelector(".claim-modern-approve")).toBeInTheDocument();
+    expect(document.querySelector(".claim-modern-deny")).toBeInTheDocument();
+    expect(document.querySelector(".claim-modern-facts")).toBeInTheDocument();
+    // Account metadata belongs to the hero, not repeated inside the submitted data.
+    expect(screen.getAllByText("applicant@example.test")).toHaveLength(1);
+    expect(document.querySelectorAll(".claim-modern")).toHaveLength(1);
+    expect(document.querySelector(".queue-card")).toBeNull();
+    expect(document.querySelector('input[name="decision"]')).toBeNull();
+
     expect(screen.getByText("+34600000001")).toBeInTheDocument();
     expect(screen.getByText("business@example.test")).toBeInTheDocument();
     expect(screen.getByText("+34900000001")).toBeInTheDocument();
@@ -84,7 +95,7 @@ it.each(["en", "es"] as const)(
     expect(document.querySelector('[name="claimPage"]')).toHaveValue("2");
     expect(
       screen.getByRole("button", {
-        name: locale === "en" ? "Approve" : "Aprobar",
+        name: locale === "en" ? "Approve claim" : "Aprobar reclamación",
       }),
     ).toHaveAttribute("value", "approved");
   },
@@ -142,4 +153,64 @@ it("preserves other queues and empty state", () => {
     />,
   );
   expect(screen.getByText("This queue is empty.")).toBeInTheDocument();
+});
+
+it("shows one selected claim and lets staff navigate requests without duplicating cards", () => {
+  render(
+    <StaffQueue
+      locale="en"
+      items={[
+        item,
+        {
+          ...item,
+          id: "claim-second",
+          claimant: { ...item.claimant, email: "second@example.test" },
+          venues: { ...item.venues, name: "Second venue" },
+        },
+      ]}
+      selectedClaimId="claim-second"
+      targetType="venue_claim"
+      approve="approved"
+      claimPage={3}
+    />,
+  );
+  expect(
+    screen.getByRole("heading", { name: "Second venue" }),
+  ).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: /Second venue/i })).toHaveAttribute(
+    "aria-current",
+    "true",
+  );
+  expect(document.querySelectorAll(".claim-modern")).toHaveLength(1);
+  expect(document.querySelector('[name="claimPage"]')).toHaveValue("3");
+  expect(document.querySelector('[name="targetId"]')).toHaveValue(
+    "claim-second",
+  );
+  expect(screen.queryByRole("heading", { name: "Test Venue" })).toBeNull();
+  expect(screen.getByRole("link", { name: /Test Venue/i })).toHaveAttribute(
+    "href",
+    "/en/staff/moderation?queue=claims&page=3&claim=claim-fixture",
+  );
+});
+
+it("request more information composes email without changing claim state", () => {
+  render(
+    <StaffQueue
+      locale="en"
+      items={[item]}
+      targetType="venue_claim"
+      approve="approved"
+    />,
+  );
+  const link = screen.getByRole("link", { name: "Request more information" });
+  expect(link.getAttribute("href")).toContain(
+    "mailto:applicant%40example.test",
+  );
+  expect(link.getAttribute("href")).toContain("subject=");
+  expect(screen.getByText(/does not change claim status/)).toBeInTheDocument();
+  expect(document.querySelectorAll('button[name="decision"]')).toHaveLength(2);
+  expect(screen.getByRole("button", { name: "Deny claim" })).toHaveAttribute(
+    "value",
+    "rejected",
+  );
 });
