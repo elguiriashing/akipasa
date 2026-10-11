@@ -48,6 +48,20 @@ export async function GET(
         }
         cookieStore.delete("akipasa_terms_ack");
       }
+      // OAuth and email-verification callback are the first verified login.
+      // The once-per-portal database key prevents replayed callback duplicates.
+      try {
+        const {data:{user}}=await supabase.auth.getUser();
+        if(user){
+          const host=new URL(publicOrigin).hostname;
+          const portal=publicOrigin===stayOrigin||host.startsWith("akiduermo.")
+            ?"akiduermo":host.startsWith("business.")?"akibusiness":"akipasa";
+          const {error: welcomeError}=await supabase.rpc("aki_register_portal_welcome",{
+            p_portal:portal,p_locale:safeLocale
+          });
+          if(welcomeError)console.error("welcome_callback_enqueue_failed",welcomeError.code);
+        }
+      }catch{console.error("welcome_callback_enqueue_unavailable")}
       return NextResponse.redirect(new URL(next, publicOrigin));
     }
   }
