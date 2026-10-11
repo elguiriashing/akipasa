@@ -55,6 +55,10 @@ begin
  if p_product not in ('akipasa','akiduermo','akibusiness','akihq') then raise exception 'Invalid welcome product'; end if;
  select * into u from auth.users where id=auth.uid() and deleted_at is null;
  if u.id is null or u.email_confirmed_at is null or u.email is null then return false; end if;
+ -- Legacy AkiPasa users should not receive a first-signup email years later.
+ if p_product='akipasa' and u.created_at<'2026-10-11T00:00:00Z'::timestamptz then
+   return false;
+ end if;
  chosen:=case when p_locale='en' then 'en' else 'es' end;
  insert into public.suite_email_outbox(dedupe_key,kind,profile_id,recipient,locale,payload)
  values('welcome:'||auth.uid()::text||':'||p_product,'welcome_'||p_product,
