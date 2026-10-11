@@ -132,19 +132,24 @@ export function AkiDuermo({
     return () => abort.abort();
   }, [search, type, page, retry, trip, view]);
   function toggleSaved(stay: Stay) {
-    setSaved((prev) => {
-      const next = prev.some((x) => x.id === stay.id)
-        ? prev.filter((x) => x.id !== stay.id)
-        : [stay, ...prev].slice(0, 100);
-      try {
-        localStorage.setItem("akiduermo-saved-v1", JSON.stringify(next));
-      } catch {
-        setError(
-          "Your browser couldn’t save this stay. Allow local storage to keep favourites.",
-        );
-      }
-      return next;
-    });
+    const alreadySaved=saved.some((item)=>item.id===stay.id);
+    const next=alreadySaved?saved.filter((item)=>item.id!==stay.id)
+      :[stay,...saved].slice(0,100);
+    setSaved(next);
+    try{
+      localStorage.setItem("akiduermo-saved-v1",JSON.stringify(next));
+    }catch{
+      setError("Your browser couldn’t save this stay. Allow local storage to keep favourites.");
+    }
+    // Browser favourites remain available to guests. For signed-in customers
+    // the server records this bookmark, without enrolling them in marketing.
+    // Preferences are opt-in and checked again at the five-day send time.
+    void fetch("/api/stays/saved",{
+      method:alreadySaved?"DELETE":"POST",
+      credentials:"same-origin",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({venueId:stay.id,locale})
+    }).catch(()=>{});
   }
   function chooseDestination(name: string) {
     setDestination(name);
