@@ -119,6 +119,7 @@ export default async function StaffModerationPage({
               : "Decision failed."}
         </p>
       )}
+      {queue !== "claims" && (
       <section
         className="settings-row moderation-mode-card"
         aria-labelledby="moderation-mode-title"
@@ -171,6 +172,7 @@ export default async function StaffModerationPage({
           </button>
         </form>
       </section>
+      )}
       <nav
         className="workspace-subnav"
         aria-label={es ? "Colas de moderación" : "Moderation queues"}
@@ -187,7 +189,7 @@ export default async function StaffModerationPage({
         ))}
       </nav>
       <section>
-        <h2>{labels[queue]}</h2>
+        {queue !== "claims" && <h2>{labels[queue]}</h2>}
         {queueError ? (
           <p className="notice" role="alert">
             {es
@@ -200,6 +202,7 @@ export default async function StaffModerationPage({
             items={(data || []) as StaffQueueItem[]}
             targetType={target}
             claimPage={claimPage}
+            selectedClaimId={query.claim}
             approve={
               queue === "community" || queue === "claims"
                 ? "approved"
