@@ -6,6 +6,7 @@ import { isLocale } from "@/lib/config";
 import { requireUser } from "@/lib/auth";
 import { requireBusinessAccess } from "@/lib/entitlements";
 import { safeExternalUrlSchema } from "@/lib/auth-security";
+import { dispatchClaimSubmissionAlerts } from "@/lib/claim-alert-delivery";
 import { madridLocalDateTimeSchema } from "@/lib/time";
 import { createEventSlug, createVenueSlug } from "@/lib/business";
 import { reviewPendingCatalogueItem } from "@/lib/automatic-moderation";
@@ -171,12 +172,22 @@ export async function submitVenueClaim(formData: FormData) {
     locale,
     `/${locale}/business?view=claims&venueId=${parsed.data.venueId}`,
   );
+  const claimId = crypto.randomUUID();
   const { error } = await supabase.from("venue_claims").insert({
+    id: claimId,
     venue_id: parsed.data.venueId,
     claimant_id: user.id,
     evidence: parsed.data.evidence,
   });
   if (error) redirect(`/${locale}/business?error=claim`);
+  // The database trigger already committed a durable staff-alert outbox row.
+  // Best-effort immediate dispatch; Cloudflare's scheduled worker retries if
+  // the mail provider is unavailable. Never undo the submitted claim.
+  try {
+    await dispatchClaimSubmissionAlerts(undefined, claimId);
+  } catch {
+    console.error("claim_submission_alert_immediate_dispatch_failed");
+  }
   redirect(`/${locale}/business?view=claims&created=claim`);
 }
 
