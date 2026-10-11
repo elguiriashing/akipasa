@@ -12350,61 +12350,80 @@ html[data-owner-focus="true"] .app-content {
   }
 }
 
-/* Mobile workspace menu: an in-flow disclosure below the trigger. It does not
-   create a backdrop, side drawer, focus trap, or competing overlay. */
+/* The mobile wrapper must not occupy a desktop workspace grid cell. */
+.workspace-mobile-navigation {
+  display: none;
+}
+
+/* Mobile workspace menus stay attached to the sticky trigger. The panel
+   floats above page content instead of reopening at the document's top. */
 @media (max-width: 850px) {
-  .workspace-drawer-layer,
-  .consumer-workspace .workspace-drawer-layer {
-    position: static;
-    inset: auto;
-    z-index: auto;
+  .workspace-mobile-navigation {
     display: block;
-    grid-column: 1 / -1;
+    position: sticky;
+    z-index: 95;
+    top: calc(0.4rem + env(safe-area-inset-top, 0px));
+    margin-bottom: 0.6rem;
+    isolation: isolate;
+  }
+
+  .workspace-mobile-navigation .workspace-mobile-trigger,
+  .consumer-workspace .workspace-mobile-navigation .workspace-mobile-trigger {
+    position: relative;
+    inset: auto;
     width: 100%;
+    margin: 0;
+  }
+
+  .workspace-mobile-navigation .workspace-drawer-layer,
+  .consumer-workspace .workspace-mobile-navigation .workspace-drawer-layer {
+    position: absolute;
+    z-index: 1;
+    inset: calc(100% + 0.35rem) 0 auto;
+    display: block;
+    width: 100%;
+    margin: 0;
     padding: 0;
     background: transparent;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
 
-  .workspace-drawer-backdrop {
-    display: none;
-  }
-
-  .workspace-drawer,
-  .consumer-workspace .workspace-drawer {
-    position: static;
+  .workspace-mobile-navigation .workspace-drawer,
+  .consumer-workspace .workspace-mobile-navigation .workspace-drawer {
+    position: relative;
     inset: auto;
     width: 100%;
     max-width: none;
-    max-height: none;
-    margin: -0.15rem 0 0.75rem;
+    max-height: min(68dvh, calc(100dvh - 10rem));
+    margin: 0;
     padding: 0.55rem;
-    overflow: visible;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--line));
     border-radius: 0.85rem;
-    background: color-mix(in srgb, var(--surface) 94%, transparent);
-    box-shadow: 0 0.8rem 2rem rgb(20 33 61 / 12%);
+    background: color-mix(in srgb, var(--surface) 96%, transparent);
+    box-shadow: 0 0.8rem 2rem rgb(20 33 61 / 22%);
   }
 
-  .workspace-drawer .workspace-brand,
-  .consumer-workspace .workspace-drawer .workspace-brand,
-  .workspace-drawer::before {
+  .workspace-mobile-navigation .workspace-drawer .workspace-brand,
+  .workspace-mobile-navigation .workspace-drawer::before {
     display: none;
   }
 
-  .workspace-drawer .workspace-navigation,
-  .consumer-workspace .workspace-drawer .workspace-navigation {
+  .workspace-mobile-navigation .workspace-drawer .workspace-navigation {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.35rem;
     padding: 0;
   }
 
-  .workspace-drawer .workspace-navigation a,
-  .consumer-workspace .workspace-drawer .workspace-navigation a,
-  .workspace-drawer .workspace-navigation a.active,
-  .consumer-workspace .workspace-drawer .workspace-navigation a.active {
+  .workspace-mobile-navigation .workspace-drawer .workspace-navigation a,
+  .workspace-mobile-navigation
+    .workspace-drawer
+    .workspace-navigation
+    a.active {
     min-height: 46px;
     padding: 0.5rem 0.58rem;
     border: 0;
@@ -12412,8 +12431,10 @@ html[data-owner-focus="true"] .app-content {
     background: color-mix(in srgb, var(--surface-alt) 72%, transparent);
   }
 
-  .workspace-drawer .workspace-navigation a.active,
-  .consumer-workspace .workspace-drawer .workspace-navigation a.active {
+  .workspace-mobile-navigation
+    .workspace-drawer
+    .workspace-navigation
+    a.active {
     background: color-mix(in srgb, var(--primary) 22%, var(--surface-alt));
   }
 }

@@ -76,6 +76,8 @@ export function WorkspaceShell({
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const desktopNavigationRef = useRef<HTMLElement>(null);
+  const mobileNavigationRef = useRef<HTMLDivElement>(null);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
   const dragState = useRef({
     active: false,
     moved: false,
@@ -156,10 +158,25 @@ export function WorkspaceShell({
     if (!drawerOpen) return;
 
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setDrawerOpen(false);
+      if (event.key === "Escape") {
+        setDrawerOpen(false);
+        mobileMenuButtonRef.current?.focus();
+      }
+    };
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      if (
+        event.target instanceof Node &&
+        !mobileNavigationRef.current?.contains(event.target)
+      ) {
+        setDrawerOpen(false);
+      }
     };
     document.addEventListener("keydown", closeOnEscape);
-    return () => document.removeEventListener("keydown", closeOnEscape);
+    document.addEventListener("pointerdown", closeOnOutsidePointer);
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+      document.removeEventListener("pointerdown", closeOnOutsidePointer);
+    };
   }, [drawerOpen]);
 
   useEffect(() => {
@@ -200,7 +217,7 @@ export function WorkspaceShell({
     }
   }, [pathname, searchParams]);
 
-  const navigation = (
+  const renderNavigation = (mobile = false) => (
     <>
       <div className="workspace-brand">
         <Link href={homeHref} onClick={() => setDrawerOpen(false)}>
@@ -224,7 +241,7 @@ export function WorkspaceShell({
       <nav
         className="workspace-navigation"
         aria-label={`${navigationTitle} sections`}
-        ref={desktopNavigationRef}
+        ref={mobile ? undefined : desktopNavigationRef}
         onPointerDown={startNavigationDrag}
         onPointerMove={moveNavigationDrag}
         onPointerUp={endNavigationDrag}
@@ -276,38 +293,41 @@ export function WorkspaceShell({
         .join(" ")}
       aria-label={title}
     >
-      <button
-        className="workspace-mobile-trigger"
-        type="button"
-        aria-label={`${eyebrow} ${navigationTitle} menu`}
-        aria-expanded={drawerOpen}
-        aria-controls="workspace-mobile-drawer"
-        onClick={() => setDrawerOpen((value) => !value)}
-      >
-        <span className="workspace-menu-glyph" aria-hidden="true">
-          <i />
-          <i />
-          <i />
-        </span>
-        <span>
-          <small>{eyebrow}</small>
-          <strong>{activeItem?.label ?? navigationTitle}</strong>
-        </span>
-        <span aria-hidden="true">{menuLabel}</span>
-      </button>
+      <div className="workspace-mobile-navigation" ref={mobileNavigationRef}>
+        <button
+          ref={mobileMenuButtonRef}
+          className="workspace-mobile-trigger"
+          type="button"
+          aria-label={`${eyebrow} ${navigationTitle} menu`}
+          aria-expanded={drawerOpen}
+          aria-controls="workspace-mobile-drawer"
+          onClick={() => setDrawerOpen((value) => !value)}
+        >
+          <span className="workspace-menu-glyph" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+          <span>
+            <small>{eyebrow}</small>
+            <strong>{activeItem?.label ?? navigationTitle}</strong>
+          </span>
+          <span aria-hidden="true">{menuLabel}</span>
+        </button>
 
-      <aside className="workspace-sidebar">{navigation}</aside>
+        {drawerOpen && (
+          <div className="workspace-drawer-layer" id="workspace-mobile-drawer">
+            <aside
+              className="workspace-drawer"
+              aria-label={`${navigationTitle} navigation`}
+            >
+              {renderNavigation(true)}
+            </aside>
+          </div>
+        )}
+      </div>
 
-      {drawerOpen && (
-        <div className="workspace-drawer-layer" id="workspace-mobile-drawer">
-          <aside
-            className="workspace-drawer"
-            aria-label={`${navigationTitle} navigation`}
-          >
-            {navigation}
-          </aside>
-        </div>
-      )}
+      <aside className="workspace-sidebar">{renderNavigation()}</aside>
 
       <div className="workspace-content">
         <header className="workspace-page-heading">

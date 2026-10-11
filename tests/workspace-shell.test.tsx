@@ -206,29 +206,97 @@ describe("progressive disclosure workspace shell", () => {
     expect(shell).toHaveClass("is-collapsed");
   });
 
-  it("opens and closes the in-flow mobile navigation", () => {
-    render(
-      <WorkspaceShell
-        title="Account"
-        eyebrow="AkiPasa account"
-        description="Focused account"
-        homeHref="/en/account"
-        items={[{ href: "/en/account", label: "Overview", icon: "home" }]}
-      >
-        <p>Content</p>
-      </WorkspaceShell>,
+  it.each([
+    {
+      homeHref: "/en/account",
+      title: "Account",
+      eyebrow: "AkiPasa account",
+      label: "Overview",
+    },
+    {
+      homeHref: "/es/staff",
+      title: "Operaciones",
+      eyebrow: "Espacio de staff",
+      label: "Operaciones",
+    },
+    {
+      homeHref: "/en/admin",
+      title: "Administration",
+      eyebrow: "Platform control",
+      label: "Overview",
+    },
+  ])(
+    "opens an anchored, dismissible menu for $homeHref",
+    ({ homeHref, title, eyebrow, label }) => {
+      const { container } = render(
+        <WorkspaceShell
+          title={title}
+          eyebrow={eyebrow}
+          description="Focused workflow"
+          homeHref={homeHref}
+          items={[{ href: homeHref, label, icon: "home" }]}
+        >
+          <p>Content stays in place</p>
+        </WorkspaceShell>,
+      );
+      const menuButton = screen.getByRole("button", {
+        name: `${eyebrow} ${title} menu`,
+      });
+      const stickyContainer = container.querySelector<HTMLElement>(
+        ".workspace-mobile-navigation",
+      );
+      expect(stickyContainer).toContainElement(menuButton);
+      expect(menuButton).toHaveAttribute("aria-expanded", "false");
+
+      fireEvent.click(menuButton);
+      const layer = container.querySelector<HTMLElement>(
+        ".workspace-drawer-layer",
+      );
+      expect(stickyContainer).toContainElement(layer);
+      expect(menuButton).toHaveAttribute("aria-expanded", "true");
+      expect(screen.getByText("Content stays in place")).toBeInTheDocument();
+      const mobileNavigation = screen.getByRole("complementary", {
+        name: `${title} navigation`,
+      });
+
+      fireEvent.pointerDown(document.body);
+      expect(mobileNavigation).not.toBeInTheDocument();
+      expect(menuButton).toHaveAttribute("aria-expanded", "false");
+
+      fireEvent.click(menuButton);
+      fireEvent.keyDown(document, { key: "Escape" });
+      expect(
+        screen.queryByRole("complementary", { name: `${title} navigation` }),
+      ).not.toBeInTheDocument();
+      expect(menuButton).toHaveFocus();
+
+      fireEvent.click(menuButton);
+      fireEvent.click(
+        within(
+          screen.getByRole("complementary", { name: `${title} navigation` }),
+        ).getByRole("link", { name: label }),
+      );
+      expect(menuButton).toHaveAttribute("aria-expanded", "false");
+    },
+  );
+
+  it("positions the mobile menu as an independently scrollable overlay", () => {
+    const css = readFileSync(
+      resolve(process.cwd(), "src/app/globals.css"),
+      "utf8",
     );
-    const menuButton = screen.getByRole("button", {
-      name: /AkiPasa account Account menu/i,
-    });
-    fireEvent.click(menuButton);
-    expect(
-      screen.getByRole("complementary", { name: "Account navigation" }),
-    ).toBeInTheDocument();
-    fireEvent.click(menuButton);
-    expect(
-      screen.queryByRole("complementary", { name: "Account navigation" }),
-    ).not.toBeInTheDocument();
+    const overlayRules = css.split(
+      "/* Mobile workspace menus stay attached to the sticky trigger.",
+    )[1];
+    expect(overlayRules).toBeDefined();
+    expect(overlayRules).toMatch(
+      /\.workspace-mobile-navigation \{[\s\S]*?position: sticky;/,
+    );
+    expect(overlayRules).toMatch(
+      /\.workspace-mobile-navigation \.workspace-drawer-layer,[\s\S]*?position: absolute;/,
+    );
+    expect(overlayRules).toContain("overflow-y: auto;");
+    expect(overlayRules).toContain("max-height: min(68dvh");
   });
 });
 
