@@ -215,16 +215,20 @@ export default async function AdminPromotionsPage({
                 .filter(Boolean)
                 .join(" "),
               content: (
-                <details className="panel settings-row">
+                <details className="panel settings-row admin-commercial-request">
                   <summary>
-                    {venue?.name || (es ? "Local" : "Venue")} /{" "}
+                    <span className="admin-commercial-request-title">{venue?.name || (es ? "Local" : "Venue")} /{" "}
                     {(es ? selectedEvent?.title_es : selectedEvent?.title_en) ||
                       selectedEvent?.title_es ||
-                      item.service}
+                      item.service}</span>
                     <span className="status-pill">{item.state}</span>
                   </summary>
-                  <p>{item.message}</p>
-                  <form action={updatePromotion} className="stack">
+                  <div className="admin-commercial-request-details">
+                    <div className="admin-commercial-request-message">
+                      <strong>{es ? "Mensaje" : "Message"}</strong>
+                      <p>{item.message || (es ? "Sin mensaje." : "No message.")}</p>
+                    </div>
+                  <form action={updatePromotion} className="stack admin-commercial-request-form">
                     <input type="hidden" name="locale" value={locale} />
                     <input type="hidden" name="requestId" value={item.id} />
                     <input type="hidden" name="service" value={item.service} />
@@ -307,6 +311,7 @@ export default async function AdminPromotionsPage({
                       {es ? "Actualizar" : "Update"}
                     </button>
                   </form>
+                  </div>
                 </details>
               ),
             };
