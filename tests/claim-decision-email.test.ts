@@ -197,6 +197,37 @@ it("leaves queue read failures unsent and acknowledges provider failures for ret
   });
   log.mockRestore();
 });
+it("does not misreport a live 403 as a sent customer email", async () => {
+  rpc
+    .mockResolvedValueOnce({
+      data: [
+        {
+          claim_id: claim.claimId,
+          lease_id: "lease-403",
+          recipient: "applicant@example.test",
+          payload: { ...claim, decision: "rejected" },
+        },
+      ],
+      error: null,
+    })
+    .mockResolvedValueOnce({ data: true, error: null });
+  vi.stubGlobal(
+    "fetch",
+    vi.fn().mockResolvedValue(new Response("", { status: 403 })),
+  );
+  expect(await dispatchClaimDecisions(env, claim.claimId)).toMatchObject({
+    sent: 0,
+    failed: 1,
+    configured: true,
+  });
+  expect(rpc.mock.calls.at(-1)?.[1]).toMatchObject({
+    p_ok: false,
+    p_error: "provider_403",
+    p_retryable: false,
+    p_ambiguous: false,
+  });
+});
+
 it("supports an isolated claim-only key without enabling booking delivery", async () => {
   rpc
     .mockResolvedValueOnce({
