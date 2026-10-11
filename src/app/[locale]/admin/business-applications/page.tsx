@@ -62,7 +62,15 @@ export default async function BusinessApplicationsPage({
         items={(applications || []).map((application) => ({
           id: application.id,
           status: application.state,
-          search: [application.business_name, application.contact_name, application.locality, application.payment_state, application.state, application.message, application.review_reason]
+          search: [
+            application.business_name,
+            application.contact_name,
+            application.locality,
+            application.payment_state,
+            application.state,
+            application.message,
+            application.review_reason,
+          ]
             .filter(Boolean)
             .join(" "),
           content: (

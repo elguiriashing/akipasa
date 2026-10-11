@@ -39,18 +39,30 @@ export function AdminSearchList({
   }, [items, locale, search, state]);
   const statusOptions = statuses.length
     ? statuses
-    : [...new Set(items.map((item) => item.status).filter((value): value is string => Boolean(value)))];
+    : [
+        ...new Set(
+          items
+            .map((item) => item.status)
+            .filter((value): value is string => Boolean(value)),
+        ),
+      ];
   const loadedLabel = es ? "registros cargados" : "loaded records";
   return (
     <section className="admin-search-list" aria-label={label}>
       <div className="admin-list-controls">
         <label className="admin-list-search">
           <Icon name="search" />
-          <span className="sr-only">{es ? "Buscar en" : "Search"} {label}</span>
+          <span className="sr-only">
+            {es ? "Buscar en" : "Search"} {label}
+          </span>
           <input
             type="search"
             aria-label={es ? `Buscar en ${label}` : `Search ${label}`}
-            placeholder={es ? "Buscar por nombre, estado o contenido…" : "Search names, status or content…"}
+            placeholder={
+              es
+                ? "Buscar por nombre, estado o contenido…"
+                : "Search names, status or content…"
+            }
             value={search}
             onChange={(event) => {
               setSearch(event.target.value);
@@ -62,14 +74,18 @@ export function AdminSearchList({
           <label className="admin-list-select">
             <span>{es ? "Estado" : "Status"}</span>
             <select
-              aria-label={es ? `Filtrar ${label} por estado` : `Filter ${label} by status`}
+              aria-label={
+                es ? `Filtrar ${label} por estado` : `Filter ${label} by status`
+              }
               value={state}
               onChange={(event) => {
                 setState(event.target.value);
                 setVisibleCount(limit);
               }}
             >
-              <option value="all">{es ? "Todos los estados" : "All statuses"}</option>
+              <option value="all">
+                {es ? "Todos los estados" : "All statuses"}
+              </option>
               {statusOptions.map((value) => (
                 <option key={value} value={value}>
                   {value.replaceAll("_", " ")}
@@ -83,7 +99,9 @@ export function AdminSearchList({
         <span>
           <strong>{result.length}</strong> {es ? "coincidencias" : "matches"}
         </span>
-        <span>{items.length} {loadedLabel}</span>
+        <span>
+          {items.length} {loadedLabel}
+        </span>
       </div>
       {result.length ? (
         <div className={`admin-list-results ${className}`}>
@@ -96,14 +114,24 @@ export function AdminSearchList({
       ) : (
         <div className="admin-list-no-results">
           <Icon name="inbox" />
-          <p>{items.length === 0
-            ? (es ? "No hay registros en esta vista." : "No records in this view.")
-            : (es ? "No hay coincidencias. Cambia la búsqueda o el estado." : "No matches. Try a different search or status.")}</p>
+          <p>
+            {items.length === 0
+              ? es
+                ? "No hay registros en esta vista."
+                : "No records in this view."
+              : es
+                ? "No hay coincidencias. Cambia la búsqueda o el estado."
+                : "No matches. Try a different search or status."}
+          </p>
           {(search || state !== "all") && (
             <button
               type="button"
               className="button secondary"
-              onClick={() => { setSearch(""); setState("all"); setVisibleCount(limit); }}
+              onClick={() => {
+                setSearch("");
+                setState("all");
+                setVisibleCount(limit);
+              }}
             >
               {es ? "Limpiar filtros" : "Clear filters"}
             </button>
@@ -111,7 +139,11 @@ export function AdminSearchList({
         </div>
       )}
       {visibleCount < result.length && (
-        <button className="button secondary admin-load-more" type="button" onClick={() => setVisibleCount((current) => current + limit)}>
+        <button
+          className="button secondary admin-load-more"
+          type="button"
+          onClick={() => setVisibleCount((current) => current + limit)}
+        >
           {es ? "Ver más" : "Show more"} ({result.length - visibleCount})
         </button>
       )}

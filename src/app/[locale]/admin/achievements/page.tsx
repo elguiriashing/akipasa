@@ -39,7 +39,10 @@ export default async function AchievementsPage({
   return (
     <>
       <RewardsTabs locale={locale} active="achievements" />
-      <AchievementManager locale={locale} achievements={data as Achievement[]} />
+      <AchievementManager
+        locale={locale}
+        achievements={data as Achievement[]}
+      />
     </>
   );
 }

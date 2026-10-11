@@ -25,7 +25,11 @@
   padding: clamp(1rem, 2.5vw, 1.5rem);
   border: 1px solid color-mix(in srgb, var(--primary) 17%, var(--line));
   border-radius: 1.2rem;
-  background: linear-gradient(115deg, color-mix(in srgb, var(--surface) 93%, #352448), color-mix(in srgb, var(--surface) 89%, #1b4264));
+  background: linear-gradient(
+    115deg,
+    color-mix(in srgb, var(--surface) 93%, #352448),
+    color-mix(in srgb, var(--surface) 89%, #1b4264)
+  );
   overflow: visible;
   box-shadow: none;
 }
@@ -34,7 +38,7 @@
   max-width: 100%;
   padding: 0;
 }
-.admin-workspace .workspace-section-heading :is(span,h2,p) {
+.admin-workspace .workspace-section-heading :is(span, h2, p) {
   overflow-wrap: anywhere;
   max-width: 100%;
 }
@@ -49,21 +53,34 @@
   font-size: 0.88rem;
   line-height: 1.55;
 }
-.admin-workspace :is(.workspace-grid-body, .settings-list, .managed-list, .settings-row, .catalogue-card, .audit-card) {
+.admin-workspace
+  :is(
+    .workspace-grid-body,
+    .settings-list,
+    .managed-list,
+    .settings-row,
+    .catalogue-card,
+    .audit-card
+  ) {
   min-width: 0;
 }
-.admin-workspace :is(.settings-row, .catalogue-card, .audit-card, .managed-row) {
+.admin-workspace
+  :is(.settings-row, .catalogue-card, .audit-card, .managed-row) {
   overflow-wrap: anywhere;
 }
-.admin-workspace .workspace-grid-body :where(a,button,summary,input,select,textarea):focus-visible {
+.admin-workspace
+  .workspace-grid-body
+  :where(a, button, summary, input, select, textarea):focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 3px;
 }
-.admin-workspace .workspace-grid-body :where(input,select,textarea) {
+.admin-workspace .workspace-grid-body :where(input, select, textarea) {
   max-width: 100%;
   min-width: 0;
 }
-.admin-workspace .workspace-grid-body :where(.button,button,details > summary) {
+.admin-workspace
+  .workspace-grid-body
+  :where(.button, button, details > summary) {
   touch-action: manipulation;
 }
 .admin-workspace .workspace-grid-body > .action-row {
@@ -82,7 +99,10 @@
   font-weight: 800;
   text-decoration: none;
 }
-.admin-workspace .workspace-grid-body :where(.settings-disclosure, .sensitive-action) > summary {
+.admin-workspace
+  .workspace-grid-body
+  :where(.settings-disclosure, .sensitive-action)
+  > summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -95,16 +115,25 @@
   cursor: pointer;
   overflow-wrap: anywhere;
 }
-.admin-workspace .workspace-grid-body :where(.settings-disclosure, .sensitive-action) > summary::after {
+.admin-workspace
+  .workspace-grid-body
+  :where(.settings-disclosure, .sensitive-action)
+  > summary::after {
   content: "+";
   font-size: 1.35rem;
   color: var(--primary-strong);
   margin-left: 0.75rem;
 }
-.admin-workspace .workspace-grid-body :where(.settings-disclosure, .sensitive-action)[open] > summary::after {
+.admin-workspace
+  .workspace-grid-body
+  :where(.settings-disclosure, .sensitive-action)[open]
+  > summary::after {
   content: "−";
 }
-.admin-workspace .workspace-grid-body :where(.settings-disclosure, .sensitive-action) > :where(form,div:not(:first-child)) {
+.admin-workspace
+  .workspace-grid-body
+  :where(.settings-disclosure, .sensitive-action)
+  > :where(form, div:not(:first-child)) {
   min-width: 0;
 }
 .admin-workspace .workspace-grid-body :where(.settings-row, .catalogue-card) p {
@@ -148,7 +177,11 @@
   padding: clamp(1rem, 2.7vw, 1.65rem);
   border: 1px solid color-mix(in srgb, var(--primary) 23%, var(--line));
   border-radius: 1.25rem;
-  background: linear-gradient(125deg, color-mix(in srgb, var(--surface) 88%, #292449), color-mix(in srgb, var(--surface) 88%, #183b53));
+  background: linear-gradient(
+    125deg,
+    color-mix(in srgb, var(--surface) 88%, #292449),
+    color-mix(in srgb, var(--surface) 88%, #183b53)
+  );
 }
 .admin-rewards-intro span {
   color: var(--primary-text, var(--primary));
@@ -218,7 +251,9 @@
   color: var(--muted);
   font-size: 0.72rem;
 }
-.admin-workspace:has(.admin-rewards-hub) .workspace-grid-body > .workspace-section-heading {
+.admin-workspace:has(.admin-rewards-hub)
+  .workspace-grid-body
+  > .workspace-section-heading {
   margin-top: 0.15rem;
 }
 
@@ -359,7 +394,7 @@
     font-size: 0.79rem;
   }
   .admin-list-results.admin-list-grid {
-    grid-template-columns: minmax(0,1fr);
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 @media (max-width: 520px) {

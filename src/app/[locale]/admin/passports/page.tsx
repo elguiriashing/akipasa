@@ -133,15 +133,33 @@ export default async function AdminPassportsPage({
         items={(passports || []).map((item) => ({
           id: item.id,
           status: item.status,
-          search: [item.title_es, item.title_en, item.status, item.starts_at, item.ends_at].filter(Boolean).join(" "),
+          search: [
+            item.title_es,
+            item.title_en,
+            item.status,
+            item.starts_at,
+            item.ends_at,
+          ]
+            .filter(Boolean)
+            .join(" "),
           content: (
             <article className="panel managed-row">
               <div>
-                <strong>{locale === "en" ? item.title_en || item.title_es : item.title_es}</strong>
+                <strong>
+                  {locale === "en"
+                    ? item.title_en || item.title_es
+                    : item.title_es}
+                </strong>
                 <span>
-                  {new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", { dateStyle: "medium", timeZone: "Europe/Madrid" }).format(new Date(item.starts_at))}
+                  {new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", {
+                    dateStyle: "medium",
+                    timeZone: "Europe/Madrid",
+                  }).format(new Date(item.starts_at))}
                   {" – "}
-                  {new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", { dateStyle: "medium", timeZone: "Europe/Madrid" }).format(new Date(item.ends_at))}
+                  {new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", {
+                    dateStyle: "medium",
+                    timeZone: "Europe/Madrid",
+                  }).format(new Date(item.ends_at))}
                 </span>
               </div>
               <span className="status-pill">{item.status}</span>

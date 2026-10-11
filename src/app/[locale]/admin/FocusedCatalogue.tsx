@@ -159,10 +159,14 @@ export function FocusedCatalogue({
           label={es ? "Categorías" : "Categories"}
           items={categories.map((category) => ({
             id: category.id,
-            search: [category.name_es, category.name_en, category.slug].join(" "),
+            search: [category.name_es, category.name_en, category.slug].join(
+              " ",
+            ),
             content: (
               <details className="settings-row">
-                <summary>{locale === "en" ? category.name_en : category.name_es}</summary>
+                <summary>
+                  {locale === "en" ? category.name_en : category.name_es}
+                </summary>
                 <CategoryForm locale={locale} category={category} />
               </details>
             ),
@@ -183,10 +187,19 @@ export function FocusedCatalogue({
           label={es ? "Localidades" : "Localities"}
           items={cities.map((city) => ({
             id: city.id,
-            search: [city.slug, city.name_es, city.name_en || "", city.timezone].join(" "),
+            search: [
+              city.slug,
+              city.name_es,
+              city.name_en || "",
+              city.timezone,
+            ].join(" "),
             content: (
               <details className="settings-row">
-                <summary>{locale === "en" ? city.name_en || city.name_es : city.name_es}</summary>
+                <summary>
+                  {locale === "en"
+                    ? city.name_en || city.name_es
+                    : city.name_es}
+                </summary>
                 <CityForm locale={locale} city={city} />
               </details>
             ),
@@ -203,33 +216,40 @@ export function FocusedCatalogue({
         items={flags.map((flag) => ({
           id: flag.key,
           status: flag.enabled ? "enabled" : "disabled",
-          search: [flag.key, flag.label_es, flag.label_en, flag.enabled ? "on enabled" : "off disabled"].join(" "),
+          search: [
+            flag.key,
+            flag.label_es,
+            flag.label_en,
+            flag.enabled ? "on enabled" : "off disabled",
+          ].join(" "),
           content: (
-          <details className="settings-row">
-            <summary>
-              {locale === "en" ? flag.label_en : flag.label_es}
-              <span className="status-pill">{flag.enabled ? "On" : "Off"}</span>
-            </summary>
-            <form action={updateFeatureFlag} className="stack">
-              <input type="hidden" name="locale" value={locale} />
-              <input type="hidden" name="key" value={flag.key} />
-              <label className="switch-row">
-                <input
-                  name="enabled"
-                  type="checkbox"
-                  defaultChecked={flag.enabled}
-                />
-                <span>{es ? "Activado" : "Enabled"}</span>
-              </label>
-              <label>
-                {es ? "Motivo del cambio" : "Change reason"}
-                <textarea name="reason" required minLength={10} />
-              </label>
-              <button className="button secondary" type="submit">
-                {es ? "Guardar control" : "Save control"}
-              </button>
-            </form>
-          </details>
+            <details className="settings-row">
+              <summary>
+                {locale === "en" ? flag.label_en : flag.label_es}
+                <span className="status-pill">
+                  {flag.enabled ? "On" : "Off"}
+                </span>
+              </summary>
+              <form action={updateFeatureFlag} className="stack">
+                <input type="hidden" name="locale" value={locale} />
+                <input type="hidden" name="key" value={flag.key} />
+                <label className="switch-row">
+                  <input
+                    name="enabled"
+                    type="checkbox"
+                    defaultChecked={flag.enabled}
+                  />
+                  <span>{es ? "Activado" : "Enabled"}</span>
+                </label>
+                <label>
+                  {es ? "Motivo del cambio" : "Change reason"}
+                  <textarea name="reason" required minLength={10} />
+                </label>
+                <button className="button secondary" type="submit">
+                  {es ? "Guardar control" : "Save control"}
+                </button>
+              </form>
+            </details>
           ),
         }))}
       />

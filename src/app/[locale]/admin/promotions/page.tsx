@@ -158,15 +158,27 @@ export default async function AdminPromotionsPage({
           label={es ? "Destacados recientes" : "Recent feature slots"}
           items={(slots || []).map((slot) => ({
             id: slot.id,
-            search: [eventNames.get(slot.event_id), slot.label_es, slot.label_en, slot.starts_at].filter(Boolean).join(" "),
+            search: [
+              eventNames.get(slot.event_id),
+              slot.label_es,
+              slot.label_en,
+              slot.starts_at,
+            ]
+              .filter(Boolean)
+              .join(" "),
             content: (
               <article className="panel settings-row">
-                <strong>{eventNames.get(slot.event_id) || (es ? "Evento no disponible" : "Unavailable event")}</strong>
-                <span>{new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", {
-                  dateStyle: "medium",
-                  timeStyle: "short",
-                  timeZone: "Europe/Madrid",
-                }).format(new Date(slot.starts_at))}</span>
+                <strong>
+                  {eventNames.get(slot.event_id) ||
+                    (es ? "Evento no disponible" : "Unavailable event")}
+                </strong>
+                <span>
+                  {new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", {
+                    dateStyle: "medium",
+                    timeStyle: "short",
+                    timeZone: "Europe/Madrid",
+                  }).format(new Date(slot.starts_at))}
+                </span>
               </article>
             ),
           }))}
@@ -179,24 +191,32 @@ export default async function AdminPromotionsPage({
           locale={locale}
           label={es ? "Solicitudes comerciales" : "Commercial requests"}
           items={(requests || []).map((item) => {
-          const venue = item.venues as unknown as {
-            name?: string | null;
-          } | null;
-          const selectedEvent = item.events as unknown as {
-            title_es?: string | null;
-            title_en?: string | null;
-          } | null;
-          const rawRequestSlot = item.feature_slots as unknown;
-          const requestSlot = (
-            Array.isArray(rawRequestSlot)
-              ? rawRequestSlot[0]
-              : rawRequestSlot
-          ) as { starts_at: string; ends_at: string } | null | undefined;
+            const venue = item.venues as unknown as {
+              name?: string | null;
+            } | null;
+            const selectedEvent = item.events as unknown as {
+              title_es?: string | null;
+              title_en?: string | null;
+            } | null;
+            const rawRequestSlot = item.feature_slots as unknown;
+            const requestSlot = (
+              Array.isArray(rawRequestSlot) ? rawRequestSlot[0] : rawRequestSlot
+            ) as { starts_at: string; ends_at: string } | null | undefined;
 
             return {
               id: item.id,
               status: item.state,
-              search: [venue?.name, item.service, item.message, item.state, item.operator_notes, selectedEvent?.title_es, selectedEvent?.title_en].filter(Boolean).join(" "),
+              search: [
+                venue?.name,
+                item.service,
+                item.message,
+                item.state,
+                item.operator_notes,
+                selectedEvent?.title_es,
+                selectedEvent?.title_en,
+              ]
+                .filter(Boolean)
+                .join(" "),
               content: (
                 <details className="panel settings-row">
                   <summary>

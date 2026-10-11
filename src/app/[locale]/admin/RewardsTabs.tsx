@@ -34,17 +34,25 @@ export function RewardsTabs({
     },
   ];
   return (
-    <section className="admin-rewards-hub" aria-label={es ? "Centro de recompensas" : "Rewards centre"}>
+    <section
+      className="admin-rewards-hub"
+      aria-label={es ? "Centro de recompensas" : "Rewards centre"}
+    >
       <div className="admin-rewards-intro">
         <div>
           <span>{es ? "Centro de recompensas" : "Rewards centre"}</span>
           <h2>{es ? "Recompensas y pasaportes" : "Rewards & passports"}</h2>
-          <p>{es
-            ? "Campañas, sellos y logros en un solo espacio. Elige la herramienta."
-            : "Campaigns, stamps and achievements in one workspace. Choose your tool."}</p>
+          <p>
+            {es
+              ? "Campañas, sellos y logros en un solo espacio. Elige la herramienta."
+              : "Campaigns, stamps and achievements in one workspace. Choose your tool."}
+          </p>
         </div>
       </div>
-      <nav className="admin-rewards-tabs" aria-label={es ? "Herramientas de recompensas" : "Rewards tools"}>
+      <nav
+        className="admin-rewards-tabs"
+        aria-label={es ? "Herramientas de recompensas" : "Rewards tools"}
+      >
         {tabs.map((tab) => (
           <Link
             key={tab.id}
@@ -53,7 +61,10 @@ export function RewardsTabs({
             className={tab.id === active ? "active" : ""}
           >
             <Icon name={tab.icon} />
-            <span><strong>{tab.title}</strong><small>{tab.detail}</small></span>
+            <span>
+              <strong>{tab.title}</strong>
+              <small>{tab.detail}</small>
+            </span>
             <Icon name="chevron" />
           </Link>
         ))}

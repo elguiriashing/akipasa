@@ -53,12 +53,17 @@ export default async function PrivacyRequestsPage({
         locale={locale}
         label={es ? "Solicitudes de privacidad" : "Privacy requests"}
         items={(data || []).map((item) => {
-          const profile = item.profiles as unknown as { display_name?: string | null } | null;
+          const profile = item.profiles as unknown as {
+            display_name?: string | null;
+          } | null;
           return {
             id: item.id,
             status: item.state,
-            search: [profile?.display_name, item.profile_id, item.state].filter(Boolean).join(" "),
-            content: (<details className="panel settings-row">
+            search: [profile?.display_name, item.profile_id, item.state]
+              .filter(Boolean)
+              .join(" "),
+            content: (
+              <details className="panel settings-row">
                 <summary>
                   {profile?.display_name || item.profile_id.slice(0, 8)}
                   <span className="status-pill">{item.state}</span>
@@ -90,7 +95,8 @@ export default async function PrivacyRequestsPage({
                     {es ? "Actualizar solicitud" : "Update request"}
                   </button>
                 </form>
-              </details>),
+              </details>
+            ),
           };
         })}
       />

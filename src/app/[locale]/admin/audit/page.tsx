@@ -50,11 +50,9 @@ export default async function AdminAuditPage({
         statuses={[]}
         items={(data || []).map((item) => {
           const badgeClass =
-            item.action.includes("published") ||
-            item.action.includes("create")
+            item.action.includes("published") || item.action.includes("create")
               ? "badge-success"
-              : item.action.includes("delete") ||
-                  item.action.includes("reject")
+              : item.action.includes("delete") || item.action.includes("reject")
                 ? "badge-danger"
                 : item.action.includes("role")
                   ? "badge-warning"
@@ -62,15 +60,25 @@ export default async function AdminAuditPage({
           return {
             id: item.id,
             status: item.target_type,
-            search: [item.action, item.target_type, item.reason, item.target_id, item.actor_id]
+            search: [
+              item.action,
+              item.target_type,
+              item.reason,
+              item.target_id,
+              item.actor_id,
+            ]
               .filter(Boolean)
               .join(" "),
             content: (
               <article className="panel audit-card">
                 <div className="audit-card-header">
                   <div className="audit-title-group">
-                    <span className={`status-pill ${badgeClass}`}>{item.action.replaceAll("_", " ")}</span>
-                    <strong className="audit-target-type">{item.target_type.replaceAll("_", " ")}</strong>
+                    <span className={`status-pill ${badgeClass}`}>
+                      {item.action.replaceAll("_", " ")}
+                    </span>
+                    <strong className="audit-target-type">
+                      {item.target_type.replaceAll("_", " ")}
+                    </strong>
                   </div>
                   <time className="audit-time" dateTime={item.created_at}>
                     {new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", {
