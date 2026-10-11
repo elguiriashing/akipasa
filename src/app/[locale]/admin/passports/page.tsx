@@ -1,10 +1,7 @@
 import { AdminSearchList } from "../AdminSearchList";
 import { RewardsTabs } from "../RewardsTabs";
 import { notFound } from "next/navigation";
-import {
-  WorkspaceEmpty,
-  WorkspacePageHeader,
-} from "@/components/WorkspaceShell";
+import { WorkspacePageHeader } from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { createPassport } from "../actions";
