@@ -259,3 +259,5 @@ before production release. This branch is a candidate; no deployment is implied.
 Primary references: [Next 15 navigation](https://nextjs.org/docs/15/app/getting-started/linking-and-navigating),
 [INP and its limits](https://web.dev/articles/inp),
 [Supabase RLS performance](https://supabase.com/docs/guides/database/postgres/row-level-security#rls-performance-recommendations).
+
+Browser follow-up: the first newly enabled Passport run exposed obsolete test selectors/drawer expectations; those checks now follow the existing mobile menu and accessible names, with the same interaction/permission/consent checks. The phone menu target is increased from 38 to 44 px. The first touch-surface assertion also needed to accept one scrolling attachment per background layer. See the PR for the final CI rerun; these initial failures are not counted as acceptance.
