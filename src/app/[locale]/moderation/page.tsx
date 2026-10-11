@@ -17,7 +17,7 @@ export default async function ModerationCompatibilityPage({
         : query.view === "commercial"
           ? `/${locale}/staff/promotions`
           : query.view === "audit"
-            ? `/${locale}/staff/audit`
+            ? `/${locale}/admin/audit`
             : `/${locale}/staff/moderation${query.queue ? `?queue=${encodeURIComponent(query.queue)}` : ""}`;
   redirect(destination);
 }

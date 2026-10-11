@@ -5,6 +5,7 @@ import {
 } from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
+import { isAdministrator } from "@/lib/roles";
 
 export default async function AdminAuditPage({
   params,
@@ -13,7 +14,16 @@ export default async function AdminAuditPage({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const { supabase } = await requireUser(locale, `/${locale}/admin/audit`);
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/admin/audit`,
+  );
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("app_role")
+    .eq("id", user.id)
+    .maybeSingle();
+  if (!profile || !isAdministrator(profile.app_role)) notFound();
   const { data } = await supabase
     .from("moderation_actions")
     .select(

@@ -244,8 +244,7 @@ describe("staff homepage moderation counts", () => {
     );
     expect(source).toContain('supabase.rpc("staff_pending_venue_claim_count")');
     expect(source).toContain("staff/moderation?queue=claims");
-    expect(source).toContain(
-      'className="operations-pulse staff-operations-pulse"',
-    );
+    expect(source).toContain('className="staff-dashboard-metrics"');
+    expect(source).toContain("count: summary.claims");
   });
 });

@@ -52,11 +52,6 @@ export default async function StaffLayout({
       label: es ? "Promociones" : "Promotions",
       icon: "megaphone",
     },
-    {
-      href: `${base}/audit`,
-      label: es ? "Auditoría" : "Audit history",
-      icon: "audit",
-    },
   ];
   return (
     <WorkspaceShell
