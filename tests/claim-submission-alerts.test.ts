@@ -41,7 +41,7 @@ it("addresses both company inboxes and provides a staff-only review destination"
 });
 
 it("sends one provider message to both owners using a stable idempotency key", async () => {
-  const fetcher = vi.fn().mockResolvedValue(Response.json({ id: "mail-1" }));
+  const fetcher = vi.fn().mockImplementation(async () => Response.json({ id: "mail-1" }));
   vi.stubGlobal("fetch", fetcher);
   for (let i = 0; i < 2; i++)
     expect(await sendClaimSubmissionAlert(claim, env.RESEND_API_KEY)).toEqual({
