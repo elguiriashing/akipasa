@@ -1,3 +1,4 @@
+import { AdminSearchList } from "../AdminSearchList";
 import { notFound } from "next/navigation";
 import {
   WorkspaceEmpty,
@@ -152,56 +153,52 @@ export default async function AdminPromotionsPage({
 
       <section className="workspace-section">
         <h3>{es ? "Destacados recientes" : "Recent feature slots"}</h3>
-        {slots?.length ? (
-          <div className="settings-list">
-            {slots.map((slot) => (
-              <article className="panel settings-row" key={slot.id}>
-                <strong>
-                  {eventNames.get(slot.event_id) ||
-                    (es ? "Evento no disponible" : "Unavailable event")}
-                </strong>
-                <span>
-                  {new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", {
-                    dateStyle: "medium",
-                    timeStyle: "short",
-                    timeZone: "Europe/Madrid",
-                  }).format(new Date(slot.starts_at))}
-                </span>
+        <AdminSearchList
+          locale={locale}
+          label={es ? "Destacados recientes" : "Recent feature slots"}
+          items={(slots || []).map((slot) => ({
+            id: slot.id,
+            search: [eventNames.get(slot.event_id), slot.label_es, slot.label_en, slot.starts_at].filter(Boolean).join(" "),
+            content: (
+              <article className="panel settings-row">
+                <strong>{eventNames.get(slot.event_id) || (es ? "Evento no disponible" : "Unavailable event")}</strong>
+                <span>{new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", {
+                  dateStyle: "medium",
+                  timeStyle: "short",
+                  timeZone: "Europe/Madrid",
+                }).format(new Date(slot.starts_at))}</span>
               </article>
-            ))}
-          </div>
-        ) : (
-          <WorkspaceEmpty
-            title={es ? "Sin destacados" : "No feature slots"}
-            description={
-              es
-                ? "Los destacados programados aparecerán aquí."
-                : "Scheduled feature slots will appear here."
-            }
-          />
-        )}
+            ),
+          }))}
+        />
       </section>
 
       <section className="workspace-section">
         <h3>{es ? "Solicitudes comerciales" : "Commercial requests"}</h3>
-        {requests?.length ? (
-          <div className="settings-list">
-            {requests.map((item) => {
-              const venue = item.venues as unknown as {
-                name?: string | null;
-              } | null;
-              const selectedEvent = item.events as unknown as {
-                title_es?: string | null;
-                title_en?: string | null;
-              } | null;
-              const rawRequestSlot = item.feature_slots as unknown;
-              const requestSlot = (
-                Array.isArray(rawRequestSlot)
-                  ? rawRequestSlot[0]
-                  : rawRequestSlot
-              ) as { starts_at: string; ends_at: string } | null | undefined;
-              return (
-                <details className="panel settings-row" key={item.id}>
+        <AdminSearchList
+          locale={locale}
+          label={es ? "Solicitudes comerciales" : "Commercial requests"}
+          items={(requests || []).map((item) => {
+          const venue = item.venues as unknown as {
+            name?: string | null;
+          } | null;
+          const selectedEvent = item.events as unknown as {
+            title_es?: string | null;
+            title_en?: string | null;
+          } | null;
+          const rawRequestSlot = item.feature_slots as unknown;
+          const requestSlot = (
+            Array.isArray(rawRequestSlot)
+              ? rawRequestSlot[0]
+              : rawRequestSlot
+          ) as { starts_at: string; ends_at: string } | null | undefined;
+
+            return {
+              id: item.id,
+              status: item.state,
+              search: [venue?.name, item.service, item.message, item.state, item.operator_notes, selectedEvent?.title_es, selectedEvent?.title_en].filter(Boolean).join(" "),
+              content: (
+                <details className="panel settings-row">
                   <summary>
                     {venue?.name || (es ? "Local" : "Venue")} /{" "}
                     {(es ? selectedEvent?.title_es : selectedEvent?.title_en) ||
@@ -294,19 +291,10 @@ export default async function AdminPromotionsPage({
                     </button>
                   </form>
                 </details>
-              );
-            })}
-          </div>
-        ) : (
-          <WorkspaceEmpty
-            title={es ? "Sin solicitudes" : "No requests"}
-            description={
-              es
-                ? "Las solicitudes de negocio aparecerán aquí."
-                : "Business requests will appear here."
-            }
-          />
-        )}
+              ),
+            };
+          })}
+        />
       </section>
     </>
   );
