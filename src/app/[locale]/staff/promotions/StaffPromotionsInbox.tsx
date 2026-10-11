@@ -15,10 +15,7 @@ export type StaffPromotion = {
 
 type Filter = "all" | "new" | "working" | "closed";
 
-const knownStates: Record<
-  string,
-  { en: string; es: string; tone: string }
-> = {
+const knownStates: Record<string, { en: string; es: string; tone: string }> = {
   new: { en: "New", es: "Nueva", tone: "new" },
   contacted: { en: "Contacted", es: "Contactada", tone: "working" },
   qualified: { en: "Qualified", es: "Cualificada", tone: "working" },
@@ -34,14 +31,21 @@ const knownServices: Record<string, { en: string; es: string }> = {
 };
 
 function stateLabel(state: string, es: boolean) {
-  return (es ? knownStates[state]?.es : knownStates[state]?.en) || state.replaceAll("_", " ");
+  return (
+    (es ? knownStates[state]?.es : knownStates[state]?.en) ||
+    state.replaceAll("_", " ")
+  );
 }
 
 function serviceLabel(service: string, es: boolean) {
   const known = knownServices[service];
   if (known) return es ? known.es : known.en;
   const human = service.replaceAll("_", " ").trim();
-  return human ? human[0].toUpperCase() + human.slice(1) : (es ? "Servicio" : "Service");
+  return human
+    ? human[0].toUpperCase() + human.slice(1)
+    : es
+      ? "Servicio"
+      : "Service";
 }
 
 function requestDate(value: string, es: boolean) {
@@ -69,8 +73,11 @@ export function StaffPromotionsInbox({
     () => ({
       all: requests.length,
       new: requests.filter((item) => item.state === "new").length,
-      working: requests.filter((item) => ["contacted", "qualified"].includes(item.state)).length,
-      closed: requests.filter((item) => ["won", "lost"].includes(item.state)).length,
+      working: requests.filter((item) =>
+        ["contacted", "qualified"].includes(item.state),
+      ).length,
+      closed: requests.filter((item) => ["won", "lost"].includes(item.state))
+        .length,
     }),
     [requests],
   );
@@ -81,12 +88,21 @@ export function StaffPromotionsInbox({
         const inGroup =
           filter === "all" ||
           (filter === "new" && item.state === "new") ||
-          (filter === "working" && ["contacted", "qualified"].includes(item.state)) ||
+          (filter === "working" &&
+            ["contacted", "qualified"].includes(item.state)) ||
           (filter === "closed" && ["won", "lost"].includes(item.state));
         if (!inGroup) return false;
         if (!lowerSearch) return true;
-        return [item.venueName, item.service, serviceLabel(item.service, es), item.message, item.operatorNotes, stateLabel(item.state, es)]
-          .some((value) => value?.toLocaleLowerCase(locale).includes(lowerSearch));
+        return [
+          item.venueName,
+          item.service,
+          serviceLabel(item.service, es),
+          item.message,
+          item.operatorNotes,
+          stateLabel(item.state, es),
+        ].some((value) =>
+          value?.toLocaleLowerCase(locale).includes(lowerSearch),
+        );
       }),
     [requests, filter, lowerSearch, es, locale],
   );
@@ -94,8 +110,16 @@ export function StaffPromotionsInbox({
   const filters: { value: Filter; label: string; count: number }[] = [
     { value: "all", label: es ? "Todas" : "All", count: counts.all },
     { value: "new", label: es ? "Nuevas" : "New", count: counts.new },
-    { value: "working", label: es ? "En gestión" : "In progress", count: counts.working },
-    { value: "closed", label: es ? "Cerradas" : "Closed", count: counts.closed },
+    {
+      value: "working",
+      label: es ? "En gestión" : "In progress",
+      count: counts.working,
+    },
+    {
+      value: "closed",
+      label: es ? "Cerradas" : "Closed",
+      count: counts.closed,
+    },
   ];
 
   return (
@@ -126,16 +150,38 @@ export function StaffPromotionsInbox({
         aria-label={es ? "Resumen de solicitudes" : "Request summary"}
       >
         {[
-          { value: counts.new, label: es ? "Por revisar" : "To review", tone: "new", group: "new" as Filter },
-          { value: counts.working, label: es ? "En seguimiento" : "In progress", tone: "working", group: "working" as Filter },
-          { value: counts.closed, label: es ? "Finalizadas" : "Closed", tone: "closed", group: "closed" as Filter },
+          {
+            value: counts.new,
+            label: es ? "Por revisar" : "To review",
+            tone: "new",
+            group: "new" as Filter,
+          },
+          {
+            value: counts.working,
+            label: es ? "En seguimiento" : "In progress",
+            tone: "working",
+            group: "working" as Filter,
+          },
+          {
+            value: counts.closed,
+            label: es ? "Finalizadas" : "Closed",
+            tone: "closed",
+            group: "closed" as Filter,
+          },
         ].map((item) => (
           <button
             key={item.group}
-            className={"staff-promotions-highlight staff-promotions-highlight--" + item.tone}
+            className={
+              "staff-promotions-highlight staff-promotions-highlight--" +
+              item.tone
+            }
             type="button"
             aria-pressed={filter === item.group}
-            onClick={() => setFilter((current) => (current === item.group ? "all" : item.group))}
+            onClick={() =>
+              setFilter((current) =>
+                current === item.group ? "all" : item.group,
+              )
+            }
           >
             <strong>{item.value}</strong>
             <span>{item.label}</span>
@@ -144,7 +190,10 @@ export function StaffPromotionsInbox({
         ))}
       </section>
 
-      <section className="staff-promotions-worklist" aria-label={es ? "Lista de solicitudes" : "Requests list"}>
+      <section
+        className="staff-promotions-worklist"
+        aria-label={es ? "Lista de solicitudes" : "Requests list"}
+      >
         <div className="staff-promotions-controls">
           <div className="staff-promotions-search">
             <Icon name="search" />
@@ -152,11 +201,19 @@ export function StaffPromotionsInbox({
               type="search"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder={es ? "Buscar local, servicio o mensaje" : "Search venue, service or message"}
+              placeholder={
+                es
+                  ? "Buscar local, servicio o mensaje"
+                  : "Search venue, service or message"
+              }
               aria-label={es ? "Buscar solicitudes" : "Search requests"}
             />
           </div>
-          <div className="staff-promotions-filters" role="group" aria-label={es ? "Filtrar por estado" : "Filter by status"}>
+          <div
+            className="staff-promotions-filters"
+            role="group"
+            aria-label={es ? "Filtrar por estado" : "Filter by status"}
+          >
             {filters.map((item) => (
               <button
                 key={item.value}
@@ -176,7 +233,9 @@ export function StaffPromotionsInbox({
           <strong>{shown.length}</strong>{" "}
           {es ? "solicitudes visibles" : "requests shown"}
           <span>
-            {es ? "Últimas 50 solicitudes cargadas" : "Latest 50 requests loaded"}
+            {es
+              ? "Últimas 50 solicitudes cargadas"
+              : "Latest 50 requests loaded"}
           </span>
         </div>
 
@@ -192,18 +251,27 @@ export function StaffPromotionsInbox({
                         <Icon name="megaphone" />
                         {serviceLabel(item.service, es)}
                       </span>
-                      <span className={"staff-promotions-state staff-promotions-state--" + (state?.tone || "other")}>
+                      <span
+                        className={
+                          "staff-promotions-state staff-promotions-state--" +
+                          (state?.tone || "other")
+                        }
+                      >
                         {stateLabel(item.state, es)}
                       </span>
                     </span>
                     <span className="staff-promotions-card-title">
-                      {item.venueName || (es ? "Local sin nombre" : "Unnamed venue")}
+                      {item.venueName ||
+                        (es ? "Local sin nombre" : "Unnamed venue")}
                     </span>
                     <span className="staff-promotions-card-preview">
-                      {item.message?.trim() || (es ? "Sin mensaje adjunto" : "No message supplied")}
+                      {item.message?.trim() ||
+                        (es ? "Sin mensaje adjunto" : "No message supplied")}
                     </span>
                     <span className="staff-promotions-card-footer">
-                      <time dateTime={item.createdAt}>{requestDate(item.createdAt, es)}</time>
+                      <time dateTime={item.createdAt}>
+                        {requestDate(item.createdAt, es)}
+                      </time>
                       <span className="staff-promotions-details-toggle">
                         {es ? "Ver detalles" : "View details"}
                         <Icon name="chevron" />
@@ -213,11 +281,21 @@ export function StaffPromotionsInbox({
                   <div className="staff-promotions-card-details">
                     <div>
                       <h3>{es ? "Mensaje del negocio" : "Business message"}</h3>
-                      <p>{item.message?.trim() || (es ? "Sin mensaje adjunto." : "No message supplied.")}</p>
+                      <p>
+                        {item.message?.trim() ||
+                          (es
+                            ? "Sin mensaje adjunto."
+                            : "No message supplied.")}
+                      </p>
                     </div>
                     <div>
                       <h3>{es ? "Notas internas" : "Internal notes"}</h3>
-                      <p>{item.operatorNotes?.trim() || (es ? "Todavía no hay notas." : "No notes recorded yet.")}</p>
+                      <p>
+                        {item.operatorNotes?.trim() ||
+                          (es
+                            ? "Todavía no hay notas."
+                            : "No notes recorded yet.")}
+                      </p>
                     </div>
                     <p className="staff-promotions-readonly">
                       <Icon name="lock" />
@@ -233,7 +311,15 @@ export function StaffPromotionsInbox({
         ) : (
           <div className="staff-promotions-empty">
             <Icon name="inbox" />
-            <h2>{counts.all === 0 ? (es ? "Sin solicitudes todavía" : "No requests yet") : (es ? "Nada coincide" : "No matching requests")}</h2>
+            <h2>
+              {counts.all === 0
+                ? es
+                  ? "Sin solicitudes todavía"
+                  : "No requests yet"
+                : es
+                  ? "Nada coincide"
+                  : "No matching requests"}
+            </h2>
             <p>
               {counts.all === 0
                 ? es
@@ -246,7 +332,10 @@ export function StaffPromotionsInbox({
             {counts.all > 0 && (
               <button
                 type="button"
-                onClick={() => { setFilter("all"); setSearch(""); }}
+                onClick={() => {
+                  setFilter("all");
+                  setSearch("");
+                }}
               >
                 {es ? "Limpiar filtros" : "Clear filters"}
               </button>

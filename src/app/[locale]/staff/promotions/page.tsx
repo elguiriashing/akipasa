@@ -2,7 +2,10 @@ import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { canModerate } from "@/lib/roles";
-import { StaffPromotionsInbox, type StaffPromotion } from "./StaffPromotionsInbox";
+import {
+  StaffPromotionsInbox,
+  type StaffPromotion,
+} from "./StaffPromotionsInbox";
 import "./staff-promotions.css";
 
 export default async function StaffPromotionsPage({
@@ -32,8 +35,15 @@ export default async function StaffPromotionsPage({
   const es = locale === "es";
   if (error) {
     return (
-      <section className="staff-promotions-page staff-promotions-error" role="alert">
-        <h1>{es ? "No se pudieron cargar las promociones" : "Could not load promotions"}</h1>
+      <section
+        className="staff-promotions-page staff-promotions-error"
+        role="alert"
+      >
+        <h1>
+          {es
+            ? "No se pudieron cargar las promociones"
+            : "Could not load promotions"}
+        </h1>
         <p>
           {es
             ? "No podemos consultar las solicitudes ahora. Inténtalo de nuevo más tarde."
@@ -45,9 +55,10 @@ export default async function StaffPromotionsPage({
 
   const requests: StaffPromotion[] = (data || []).map((item) => {
     const rawVenue = item.venues as unknown;
-    const venue = (
-      Array.isArray(rawVenue) ? rawVenue[0] : rawVenue
-    ) as { name?: string | null } | null | undefined;
+    const venue = (Array.isArray(rawVenue) ? rawVenue[0] : rawVenue) as
+      | { name?: string | null }
+      | null
+      | undefined;
     return {
       id: item.id,
       venueName: venue?.name || null,

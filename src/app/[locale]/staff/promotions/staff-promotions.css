@@ -1,5 +1,7 @@
 /* AkiPasa Staff Promotions: focused, read-only commercial inbox. */
-.staff-workspace .workspace-content:has(.staff-promotions-page) > .workspace-page-heading {
+.staff-workspace
+  .workspace-content:has(.staff-promotions-page)
+  > .workspace-page-heading {
   display: none;
 }
 
@@ -107,7 +109,9 @@
   color: var(--ink);
   cursor: pointer;
   text-align: left;
-  transition: border-color 0.18s ease, background 0.18s ease;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease;
 }
 
 .staff-promotions-highlight strong {

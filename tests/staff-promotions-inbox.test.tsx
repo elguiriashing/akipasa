@@ -2,9 +2,18 @@
 
 import React from "react";
 import "@testing-library/jest-dom/vitest";
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import { StaffPromotionsInbox, type StaffPromotion } from "../src/app/[locale]/staff/promotions/StaffPromotionsInbox";
+import {
+  StaffPromotionsInbox,
+  type StaffPromotion,
+} from "../src/app/[locale]/staff/promotions/StaffPromotionsInbox";
 
 afterEach(cleanup);
 
@@ -53,13 +62,21 @@ function visibleCards(container: HTMLElement) {
 
 describe("Staff promotions operational inbox", () => {
   it("shows clean readable cards with counts, status and bounded initial content", () => {
-    const { container } = render(<StaffPromotionsInbox locale="en" requests={requests} />);
-    expect(screen.getByRole("heading", { name: "Promotions" })).toBeInTheDocument();
+    const { container } = render(
+      <StaffPromotionsInbox locale="en" requests={requests} />,
+    );
+    expect(
+      screen.getByRole("heading", { name: "Promotions" }),
+    ).toBeInTheDocument();
     expect(visibleCards(container)).toHaveLength(4);
     expect(screen.getAllByText("Featured listing")).toHaveLength(2);
     expect(screen.getByText("Latest 50 requests loaded")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /To review/ })).toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: /In progress/ })).toHaveLength(2);
+    expect(
+      screen.getByRole("button", { name: /To review/ }),
+    ).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: /In progress/ })).toHaveLength(
+      2,
+    );
     expect(screen.getAllByRole("button", { name: /Closed/ })).toHaveLength(2);
     expect(container.querySelector("form")).toBeNull();
     expect(container.querySelector("script")).toBeNull();
@@ -67,12 +84,18 @@ describe("Staff promotions operational inbox", () => {
   });
 
   it("filters and searches the same bounded list without discarding requests", () => {
-    const { container } = render(<StaffPromotionsInbox locale="en" requests={requests} />);
+    const { container } = render(
+      <StaffPromotionsInbox locale="en" requests={requests} />,
+    );
     const status = screen.getByRole("group", { name: "Filter by status" });
-    fireEvent.click(within(status).getByRole("button", { name: "In progress 1" }));
+    fireEvent.click(
+      within(status).getByRole("button", { name: "In progress 1" }),
+    );
     expect(visibleCards(container)).toHaveLength(1);
     expect(screen.getByText("Venue With A Very Long Name")).toBeInTheDocument();
-    expect(within(status).getByRole("button", { name: "In progress 1" })).toHaveAttribute("aria-pressed", "true");
+    expect(
+      within(status).getByRole("button", { name: "In progress 1" }),
+    ).toHaveAttribute("aria-pressed", "true");
 
     fireEvent.click(within(status).getByRole("button", { name: "All 4" }));
     const search = screen.getByRole("searchbox", { name: "Search requests" });
@@ -81,36 +104,60 @@ describe("Staff promotions operational inbox", () => {
     expect(screen.getByText("New Beach Bar")).toBeInTheDocument();
 
     fireEvent.change(search, { target: { value: "not a real venue" } });
-    expect(screen.getByRole("heading", { name: "No matching requests" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "No matching requests" }),
+    ).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Clear filters" }));
     expect(visibleCards(container)).toHaveLength(4);
     expect(search).toHaveValue("");
   });
 
   it("provides full original message and internal notes on demand", () => {
-    const { container } = render(<StaffPromotionsInbox locale="en" requests={requests} />);
-    const card = Array.from(visibleCards(container)).find((node) => node.textContent?.includes("Venue With A Very Long Name"));
+    const { container } = render(
+      <StaffPromotionsInbox locale="en" requests={requests} />,
+    );
+    const card = Array.from(visibleCards(container)).find((node) =>
+      node.textContent?.includes("Venue With A Very Long Name"),
+    );
     expect(card).toBeDefined();
     const disclosure = card as HTMLDetailsElement;
     expect(disclosure).not.toHaveAttribute("open");
     fireEvent.click(within(disclosure).getByText("View details"));
     expect(disclosure).toHaveAttribute("open");
-    expect(within(disclosure).getByText("Awaiting artwork from organiser.")).toBeInTheDocument();
-    expect(within(disclosure).getByText("Read-only view. Manage requests and update statuses in Administration.")).toBeInTheDocument();
+    expect(
+      within(disclosure).getByText("Awaiting artwork from organiser."),
+    ).toBeInTheDocument();
+    expect(
+      within(disclosure).getByText(
+        "Read-only view. Manage requests and update statuses in Administration.",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("localizes Spanish labels, preserving the original service and message", () => {
-    const { container } = render(<StaffPromotionsInbox locale="es" requests={requests} />);
-    expect(screen.getByRole("heading", { name: "Promociones" })).toBeInTheDocument();
+    const { container } = render(
+      <StaffPromotionsInbox locale="es" requests={requests} />,
+    );
+    expect(
+      screen.getByRole("heading", { name: "Promociones" }),
+    ).toBeInTheDocument();
     expect(screen.getByText("Local destacado")).toBeInTheDocument();
-    expect(screen.getByRole("searchbox", { name: "Buscar solicitudes" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Por revisar/ })).toBeInTheDocument();
+    expect(
+      screen.getByRole("searchbox", { name: "Buscar solicitudes" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Por revisar/ }),
+    ).toBeInTheDocument();
     expect(container.querySelector("form")).toBeNull();
   });
 
   it("distinguishes an empty inbox from filtered-away rows", () => {
-    const { container } = render(<StaffPromotionsInbox locale="en" requests={[]} />);
-    expect(screen.getByRole("heading", { name: "No requests yet" })).toBeInTheDocument();
+    const { container } = render(
+      <StaffPromotionsInbox locale="en" requests={[]} />,
+    );
+    expect(
+      screen.getByRole("heading", { name: "No requests yet" }),
+    ).toBeInTheDocument();
     expect(visibleCards(container)).toHaveLength(0);
     expect(screen.queryByRole("button", { name: "Clear filters" })).toBeNull();
   });
