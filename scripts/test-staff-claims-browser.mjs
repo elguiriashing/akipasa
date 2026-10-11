@@ -141,7 +141,7 @@ try {
         await page.getByRole("textbox").fill("Claim evidence is insufficient");
         await page
           .getByRole("button", {
-            name: locale === "es" ? "Rechazar" : "Reject",
+            name: locale === "es" ? "Denegar" : "Deny claim",
           })
           .click();
         await expect
