@@ -156,3 +156,32 @@ describe("integrated Admin rewards tabs", () => {
     );
   });
 });
+
+describe("Admin business application disclosure indicator", () => {
+  it("uses one CSS chevron for closed and open application rows", () => {
+    const root = "src/app/[locale]/admin/";
+    const applications = readFileSync(
+      root + "business-applications/page.tsx",
+      "utf8",
+    );
+    const css = readFileSync(root + "admin-suite.css", "utf8");
+    expect(applications).toContain(
+      'className="settings-disclosure full-width-disclosure"',
+    );
+    const rules = css.split(
+      "/* Admin business applications: one disclosure chevron",
+    )[1];
+    expect(rules).toBeDefined();
+    expect(rules).toContain(
+      "details.settings-disclosure.full-width-disclosure",
+    );
+    expect(rules).toMatch(
+      /summary::after\s*\{\s*content: "";[\s\S]*?transform: rotate\(45deg\);/,
+    );
+    expect(rules).toMatch(
+      /full-width-disclosure\[open\][\s\S]*?summary::after\s*\{\s*content: "";\s*transform: rotate\(225deg\);/,
+    );
+    expect(rules).not.toContain('content: "+"');
+    expect(rules).not.toContain('content: "−"');
+  });
+});

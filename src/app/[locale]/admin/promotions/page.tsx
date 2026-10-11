@@ -215,98 +215,118 @@ export default async function AdminPromotionsPage({
                 .filter(Boolean)
                 .join(" "),
               content: (
-                <details className="panel settings-row">
+                <details className="panel settings-row admin-commercial-request">
                   <summary>
-                    {venue?.name || (es ? "Local" : "Venue")} /{" "}
-                    {(es ? selectedEvent?.title_es : selectedEvent?.title_en) ||
-                      selectedEvent?.title_es ||
-                      item.service}
+                    <span className="admin-commercial-request-title">
+                      {venue?.name || (es ? "Local" : "Venue")} /{" "}
+                      {(es
+                        ? selectedEvent?.title_es
+                        : selectedEvent?.title_en) ||
+                        selectedEvent?.title_es ||
+                        item.service}
+                    </span>
                     <span className="status-pill">{item.state}</span>
                   </summary>
-                  <p>{item.message}</p>
-                  <form action={updatePromotion} className="stack">
-                    <input type="hidden" name="locale" value={locale} />
-                    <input type="hidden" name="requestId" value={item.id} />
-                    <input type="hidden" name="service" value={item.service} />
-                    <label>
-                      {es ? "Estado" : "State"}
-                      <select name="state" defaultValue={item.state}>
-                        <option value="new">New</option>
-                        <option value="contacted">Contacted</option>
-                        <option value="qualified">Qualified</option>
-                        <option value="won">Won</option>
-                        <option value="lost">Lost</option>
-                      </select>
-                    </label>
-                    {item.service === "featured_listing" ? (
-                      <>
-                        <label>
-                          {es ? "Evento destacado" : "Featured event"}
-                          <select
-                            name="eventId"
-                            defaultValue={item.event_id || ""}
-                            required
-                          >
-                            <option value="" disabled>
-                              {es ? "Selecciona un evento" : "Select an event"}
-                            </option>
-                            {(events || [])
-                              .filter(
-                                (event) => event.venue_id === item.venue_id,
-                              )
-                              .map((event) => (
-                                <option value={event.id} key={event.id}>
-                                  {(es ? event.title_es : event.title_en) ||
-                                    event.title_es}
-                                </option>
-                              ))}
-                          </select>
-                        </label>
-                        <div className="form-grid-two">
-                          <label>
-                            {es ? "Inicio del destacado" : "Feature starts"}
-                            <input
-                              type="datetime-local"
-                              name="startsAt"
-                              defaultValue={madridInputValue(
-                                requestSlot?.starts_at,
-                              )}
-                            />
-                          </label>
-                          <label>
-                            {es ? "Fin del destacado" : "Feature ends"}
-                            <input
-                              type="datetime-local"
-                              name="endsAt"
-                              defaultValue={madridInputValue(
-                                requestSlot?.ends_at,
-                              )}
-                            />
-                          </label>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <input
-                          type="hidden"
-                          name="eventId"
-                          value={item.event_id || ""}
-                        />
-                        <input type="hidden" name="startsAt" value="" />
-                        <input type="hidden" name="endsAt" value="" />
-                      </>
-                    )}
-                    <label>
-                      {es ? "Notas internas" : "Internal notes"}
-                      <textarea
-                        name="notes"
-                        defaultValue={item.operator_notes || ""}
+                  <div className="admin-commercial-request-details">
+                    <div className="admin-commercial-request-message">
+                      <strong>{es ? "Mensaje" : "Message"}</strong>
+                      <p>
+                        {item.message || (es ? "Sin mensaje." : "No message.")}
+                      </p>
+                    </div>
+                    <form
+                      action={updatePromotion}
+                      className="stack admin-commercial-request-form"
+                    >
+                      <input type="hidden" name="locale" value={locale} />
+                      <input type="hidden" name="requestId" value={item.id} />
+                      <input
+                        type="hidden"
+                        name="service"
+                        value={item.service}
                       />
-                    </label>
-                    <button className="button" type="submit">
-                      {es ? "Actualizar" : "Update"}
-                    </button>
-                  </form>
+                      <label>
+                        {es ? "Estado" : "State"}
+                        <select name="state" defaultValue={item.state}>
+                          <option value="new">New</option>
+                          <option value="contacted">Contacted</option>
+                          <option value="qualified">Qualified</option>
+                          <option value="won">Won</option>
+                          <option value="lost">Lost</option>
+                        </select>
+                      </label>
+                      {item.service === "featured_listing" ? (
+                        <>
+                          <label>
+                            {es ? "Evento destacado" : "Featured event"}
+                            <select
+                              name="eventId"
+                              defaultValue={item.event_id || ""}
+                              required
+                            >
+                              <option value="" disabled>
+                                {es
+                                  ? "Selecciona un evento"
+                                  : "Select an event"}
+                              </option>
+                              {(events || [])
+                                .filter(
+                                  (event) => event.venue_id === item.venue_id,
+                                )
+                                .map((event) => (
+                                  <option value={event.id} key={event.id}>
+                                    {(es ? event.title_es : event.title_en) ||
+                                      event.title_es}
+                                  </option>
+                                ))}
+                            </select>
+                          </label>
+                          <div className="form-grid-two">
+                            <label>
+                              {es ? "Inicio del destacado" : "Feature starts"}
+                              <input
+                                type="datetime-local"
+                                name="startsAt"
+                                defaultValue={madridInputValue(
+                                  requestSlot?.starts_at,
+                                )}
+                              />
+                            </label>
+                            <label>
+                              {es ? "Fin del destacado" : "Feature ends"}
+                              <input
+                                type="datetime-local"
+                                name="endsAt"
+                                defaultValue={madridInputValue(
+                                  requestSlot?.ends_at,
+                                )}
+                              />
+                            </label>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <input
+                            type="hidden"
+                            name="eventId"
+                            value={item.event_id || ""}
+                          />
+                          <input type="hidden" name="startsAt" value="" />
+                          <input type="hidden" name="endsAt" value="" />
+                        </>
+                      )}
+                      <label>
+                        {es ? "Notas internas" : "Internal notes"}
+                        <textarea
+                          name="notes"
+                          defaultValue={item.operator_notes || ""}
+                        />
+                      </label>
+                      <button className="button" type="submit">
+                        {es ? "Actualizar" : "Update"}
+                      </button>
+                    </form>
+                  </div>
                 </details>
               ),
             };

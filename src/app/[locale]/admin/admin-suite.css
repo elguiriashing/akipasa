@@ -438,3 +438,159 @@
   background: var(--surface);
   color: var(--ink);
 }
+
+/* Keep Admin form labels and hints in normal flow, outside rounded inputs. */
+.admin-workspace .user-search-workspace .admin-search-field {
+  display: grid;
+  gap: 0.55rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--consumer-line, var(--line));
+  border-radius: 1rem;
+  background: var(--surface);
+}
+.admin-workspace .user-search-workspace .admin-search-field > label,
+.admin-workspace .user-search-workspace .admin-search-field > small {
+  display: block;
+  position: static;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  transform: none;
+}
+.admin-workspace
+  .user-search-workspace
+  .admin-search-field
+  > input[type="search"] {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 3rem;
+  margin: 0;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--consumer-line, var(--line));
+  border-radius: 0.75rem;
+  background: var(--surface-alt, var(--surface));
+  color: var(--ink);
+  box-sizing: border-box;
+}
+.admin-workspace .user-search-workspace .admin-search-field > small {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.admin-workspace .admin-commercial-request {
+  padding: 0 !important;
+  overflow: hidden;
+  border-radius: 1rem;
+}
+.admin-workspace .admin-commercial-request > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: space-between;
+  min-height: 4rem;
+  padding: 1rem 1.15rem;
+  cursor: pointer;
+}
+.admin-workspace .admin-commercial-request-title {
+  display: block;
+  min-width: 0;
+  flex: 1;
+  overflow-wrap: anywhere;
+  font-weight: 800;
+}
+.admin-workspace .admin-commercial-request-details {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem 1.15rem 1.15rem;
+  border-top: 1px solid var(--consumer-line, var(--line));
+}
+.admin-workspace .admin-commercial-request-message {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+.admin-workspace .admin-commercial-request-message strong {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.admin-workspace .admin-commercial-request-message p {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.55;
+}
+.admin-workspace .admin-commercial-request-form {
+  display: grid;
+  gap: 0.9rem;
+  min-width: 0;
+}
+.admin-workspace .admin-commercial-request-form > label,
+.admin-workspace .admin-commercial-request-form .form-grid-two > label {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  margin: 0;
+}
+.admin-workspace .admin-commercial-request-form :is(input, select, textarea) {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.admin-workspace .admin-commercial-request-form textarea {
+  min-height: 6rem;
+}
+.admin-workspace .admin-commercial-request-form > button {
+  justify-self: start;
+  min-width: min(100%, 12rem);
+}
+@media (max-width: 650px) {
+  .admin-workspace .admin-commercial-request-form .form-grid-two {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Admin business applications: one disclosure chevron, not the shared
+   chevron border combined with this suite's generic + / minus text. */
+.admin-workspace
+  .workspace-grid-body
+  details.settings-disclosure.full-width-disclosure
+  > summary {
+  list-style: none;
+}
+
+.admin-workspace
+  .workspace-grid-body
+  details.settings-disclosure.full-width-disclosure
+  > summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-workspace
+  .workspace-grid-body
+  details.settings-disclosure.full-width-disclosure
+  > summary::after {
+  content: "";
+  display: block;
+  width: 0.55rem;
+  height: 0.55rem;
+  flex: 0 0 0.55rem;
+  margin-left: auto;
+  border: 0;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  color: var(--primary-text, var(--primary));
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.admin-workspace
+  .workspace-grid-body
+  details.settings-disclosure.full-width-disclosure[open]
+  > summary::after {
+  content: "";
+  transform: rotate(225deg);
+}
