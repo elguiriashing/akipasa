@@ -1,0 +1,29 @@
+name: Temporary claim email formatting
+on:
+  pull_request:
+    branches: [master]
+permissions:
+  contents: write
+jobs:
+  format:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm ci
+      - name: Format changed email files
+        run: npx prettier --write docs/CLAIM_EMAIL_403_RECOVERY.md 'src/app/[locale]/moderation/actions.ts' tests/suite-email-contract.test.ts
+      - name: Commit formatted files
+        run: |
+          if ! git diff --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add docs/CLAIM_EMAIL_403_RECOVERY.md 'src/app/[locale]/moderation/actions.ts' tests/suite-email-contract.test.ts
+            git commit -m "style: format claim delivery changes"
+            git push origin HEAD:${{ github.event.pull_request.head.ref }}
+          fi
