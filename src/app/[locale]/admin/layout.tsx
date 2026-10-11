@@ -1,3 +1,4 @@
+import "./admin-suite.css";
 import { notFound } from "next/navigation";
 import {
   WorkspaceShell,
