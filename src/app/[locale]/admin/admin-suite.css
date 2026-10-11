@@ -461,7 +461,10 @@
   line-height: 1.5;
   transform: none;
 }
-.admin-workspace .user-search-workspace .admin-search-field > input[type="search"] {
+.admin-workspace
+  .user-search-workspace
+  .admin-search-field
+  > input[type="search"] {
   display: block;
   width: 100%;
   min-width: 0;
