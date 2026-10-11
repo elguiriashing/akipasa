@@ -1,3 +1,4 @@
+import { summarizeStaffModerationCounts } from "../src/lib/staff-moderation-summary";
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -197,5 +198,54 @@ describe("community and moderation validation", () => {
     expect(
       isCustomerSupportMessage("No puedo iniciar sesiÃ³n en mi cuenta"),
     ).toBe(true);
+  });
+});
+
+describe("staff homepage moderation counts", () => {
+  it("includes pending venue claims and offers rather than claiming the queues are empty", () => {
+    const result = summarizeStaffModerationCounts({
+      venues: 0,
+      events: 0,
+      offers: 2,
+      community: 0,
+      claims: 1,
+    });
+    expect(result).toEqual({
+      pending: 3,
+      complete: true,
+      claims: 1,
+      venues: 0,
+    });
+  });
+  it("preserves actual zero while displaying an unavailable counter as unknown", () => {
+    expect(
+      summarizeStaffModerationCounts({
+        venues: 0,
+        events: 0,
+        offers: 0,
+        community: 0,
+        claims: 0,
+      }).pending,
+    ).toBe(0);
+    expect(
+      summarizeStaffModerationCounts({
+        venues: 0,
+        events: 0,
+        offers: 0,
+        community: 0,
+        claims: null,
+      }).pending,
+    ).toBeNull();
+  });
+  it("keeps Staff overview connected to the protected claim count RPC and claim queue", () => {
+    const source = readFileSync(
+      join(process.cwd(), "src/app/[locale]/staff/page.tsx"),
+      "utf8",
+    );
+    expect(source).toContain('supabase.rpc("staff_pending_venue_claim_count")');
+    expect(source).toContain("staff/moderation?queue=claims");
+    expect(source).toContain(
+      'className="operations-pulse staff-operations-pulse"',
+    );
   });
 });

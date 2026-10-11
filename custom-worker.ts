@@ -12,6 +12,8 @@ import {
   type ClaimMailEnv,
 } from "./src/lib/claim-mail-delivery";
 
+import { dispatchClaimSubmissionAlerts } from "./src/lib/claim-alert-delivery";
+
 import {
   dispatchBookingConfirmations,
   dispatchAccommodationConfirmations,
@@ -26,6 +28,7 @@ const worker = {
     ctx.waitUntil(dispatchBookingConfirmations(env));
     ctx.waitUntil(dispatchAccommodationConfirmations(env));
     ctx.waitUntil(dispatchClaimDecisions(env));
+    ctx.waitUntil(dispatchClaimSubmissionAlerts(env));
   },
   async fetch(
     request: Request,
@@ -40,6 +43,10 @@ const worker = {
           claimNotifications: {
             release: "2026-10-10-claim-decision-email-v1",
             configured: claimMailConfigured(env),
+            submissionAlerts: {
+              release: "2026-10-11-claim-submission-v1",
+              configured: claimMailConfigured(env),
+            },
           },
         },
         {

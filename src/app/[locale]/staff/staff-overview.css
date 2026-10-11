@@ -1,0 +1,23 @@
+/* Keep the business-claims metric distinct from pending venue publication. */
+.staff-operations-pulse {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.staff-operations-pulse > div {
+  padding-inline: 0.35rem;
+}
+.staff-operations-pulse span {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+}
+@media (max-width: 560px) {
+  .staff-operations-pulse {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .staff-operations-pulse > div:nth-child(2) {
+    border-right: 0;
+  }
+  .staff-operations-pulse > div:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--consumer-line);
+  }
+}
