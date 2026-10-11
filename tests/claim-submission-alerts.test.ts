@@ -52,7 +52,7 @@ it("sends one provider message to both owners using a stable idempotency key", a
     });
   const payload = JSON.parse(fetcher.mock.calls[0][1].body);
   expect(payload.to).toEqual([...claimSubmissionRecipients]);
-  expect(payload.from).toContain("alex@akipasa.com");
+  expect(payload.from).toContain("support@akipasa.com");
   expect(fetcher.mock.calls[0][1].headers["Idempotency-Key"]).toBe(
     fetcher.mock.calls[1][1].headers["Idempotency-Key"],
   );
