@@ -1,8 +1,6 @@
+import { AdminSearchList } from "../AdminSearchList";
 import { notFound } from "next/navigation";
-import {
-  WorkspaceEmpty,
-  WorkspacePageHeader,
-} from "@/components/WorkspaceShell";
+import { WorkspacePageHeader } from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { isAdministrator } from "@/lib/roles";
@@ -43,53 +41,55 @@ export default async function AdminAuditPage({
             : "Recent privileged changes and operational decisions."
         }
       />
-      {data?.length ? (
-        <div className="audit-card-list">
-          {data.map((item) => {
-            const badgeClass =
-              item.action.includes("published") ||
-              item.action.includes("create")
-                ? "badge-success"
-                : item.action.includes("delete") ||
-                    item.action.includes("reject")
-                  ? "badge-danger"
-                  : item.action.includes("role")
-                    ? "badge-warning"
-                    : "badge-neutral";
-
-            return (
-              <article className="panel audit-card" key={item.id}>
+      <AdminSearchList
+        locale={locale}
+        label={es ? "Historial de auditoría" : "Audit history"}
+        statuses={[]}
+        items={(data || []).map((item) => {
+          const badgeClass =
+            item.action.includes("published") || item.action.includes("create")
+              ? "badge-success"
+              : item.action.includes("delete") || item.action.includes("reject")
+                ? "badge-danger"
+                : item.action.includes("role")
+                  ? "badge-warning"
+                  : "badge-neutral";
+          return {
+            id: item.id,
+            status: item.target_type,
+            search: [
+              item.action,
+              item.target_type,
+              item.reason,
+              item.target_id,
+              item.actor_id,
+            ]
+              .filter(Boolean)
+              .join(" "),
+            content: (
+              <article className="panel audit-card">
                 <div className="audit-card-header">
                   <div className="audit-title-group">
                     <span className={`status-pill ${badgeClass}`}>
-                      {item.action}
+                      {item.action.replaceAll("_", " ")}
                     </span>
                     <strong className="audit-target-type">
-                      {item.target_type}
+                      {item.target_type.replaceAll("_", " ")}
                     </strong>
                   </div>
                   <time className="audit-time" dateTime={item.created_at}>
                     {new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", {
                       dateStyle: "medium",
-                      timeStyle: "medium",
+                      timeStyle: "short",
                     }).format(new Date(item.created_at))}
                   </time>
                 </div>
                 <p className="audit-reason">{item.reason}</p>
               </article>
-            );
-          })}
-        </div>
-      ) : (
-        <WorkspaceEmpty
-          title={es ? "Sin actividad" : "No activity"}
-          description={
-            es
-              ? "Las acciones auditadas aparecerán aquí."
-              : "Audited actions will appear here."
-          }
-        />
-      )}
+            ),
+          };
+        })}
+      />
     </>
   );
 }

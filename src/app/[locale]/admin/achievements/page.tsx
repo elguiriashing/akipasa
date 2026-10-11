@@ -1,3 +1,4 @@
+import { RewardsTabs } from "../RewardsTabs";
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
@@ -36,6 +37,12 @@ export default async function AchievementsPage({
       </p>
     );
   return (
-    <AchievementManager locale={locale} achievements={data as Achievement[]} />
+    <>
+      <RewardsTabs locale={locale} active="achievements" />
+      <AchievementManager
+        locale={locale}
+        achievements={data as Achievement[]}
+      />
+    </>
   );
 }

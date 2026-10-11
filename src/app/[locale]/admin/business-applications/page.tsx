@@ -1,8 +1,6 @@
+import { AdminSearchList } from "../AdminSearchList";
 import { notFound } from "next/navigation";
-import {
-  WorkspaceEmpty,
-  WorkspacePageHeader,
-} from "@/components/WorkspaceShell";
+import { WorkspacePageHeader } from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { reviewBusinessApplication } from "./actions";
@@ -54,10 +52,26 @@ export default async function BusinessApplicationsPage({
               : "The decision could not be saved."}
         </p>
       )}
-      {applications?.length ? (
-        <div className="catalogue-grid business-application-admin-grid">
-          {applications.map((application) => (
-            <article className="panel catalogue-card" key={application.id}>
+      <AdminSearchList
+        locale={locale}
+        label={es ? "Solicitudes de negocio" : "Business applications"}
+        className="admin-list-grid"
+        items={(applications || []).map((application) => ({
+          id: application.id,
+          status: application.state,
+          search: [
+            application.business_name,
+            application.contact_name,
+            application.locality,
+            application.payment_state,
+            application.state,
+            application.message,
+            application.review_reason,
+          ]
+            .filter(Boolean)
+            .join(" "),
+          content: (
+            <article className="panel catalogue-card">
               <div className="catalogue-card-header">
                 <div>
                   <h2 className="catalogue-card-title">
@@ -151,18 +165,9 @@ export default async function BusinessApplicationsPage({
                 </form>
               </details>
             </article>
-          ))}
-        </div>
-      ) : (
-        <WorkspaceEmpty
-          title={es ? "No hay solicitudes" : "No applications"}
-          description={
-            es
-              ? "Las nuevas solicitudes de negocio aparecerán aquí."
-              : "New business applications will appear here."
-          }
-        />
-      )}
+          ),
+        }))}
+      />
     </>
   );
 }

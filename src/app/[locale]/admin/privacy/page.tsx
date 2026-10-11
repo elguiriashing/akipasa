@@ -1,8 +1,6 @@
+import { AdminSearchList } from "../AdminSearchList";
 import { notFound } from "next/navigation";
-import {
-  WorkspaceEmpty,
-  WorkspacePageHeader,
-} from "@/components/WorkspaceShell";
+import { WorkspacePageHeader } from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { updateDeletionRequest } from "../actions";
@@ -48,14 +46,21 @@ export default async function PrivacyRequestsPage({
               : "Update failed."}
         </p>
       )}
-      {data?.length ? (
-        <div className="settings-list">
-          {data.map((item) => {
-            const profile = item.profiles as unknown as {
-              display_name?: string | null;
-            } | null;
-            return (
-              <details className="panel settings-row" key={item.id}>
+      <AdminSearchList
+        locale={locale}
+        label={es ? "Solicitudes de privacidad" : "Privacy requests"}
+        items={(data || []).map((item) => {
+          const profile = item.profiles as unknown as {
+            display_name?: string | null;
+          } | null;
+          return {
+            id: item.id,
+            status: item.state,
+            search: [profile?.display_name, item.profile_id, item.state]
+              .filter(Boolean)
+              .join(" "),
+            content: (
+              <details className="panel settings-row">
                 <summary>
                   {profile?.display_name || item.profile_id.slice(0, 8)}
                   <span className="status-pill">{item.state}</span>
@@ -88,19 +93,10 @@ export default async function PrivacyRequestsPage({
                   </button>
                 </form>
               </details>
-            );
-          })}
-        </div>
-      ) : (
-        <WorkspaceEmpty
-          title={es ? "Sin solicitudes abiertas" : "No open requests"}
-          description={
-            es
-              ? "Las nuevas solicitudes aparecerán aquí."
-              : "New privacy requests will appear here."
-          }
-        />
-      )}
+            ),
+          };
+        })}
+      />
     </>
   );
 }

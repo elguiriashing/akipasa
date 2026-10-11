@@ -1,3 +1,4 @@
+import { AdminSearchList } from "./AdminSearchList";
 import { saveCategory, saveCity, updateFeatureFlag } from "./actions";
 
 type Category = { id: string; slug: string; name_es: string; name_en: string };
@@ -153,16 +154,24 @@ export function FocusedCatalogue({
           <summary>{es ? "Crear categoría" : "Create category"}</summary>
           <CategoryForm locale={locale} />
         </details>
-        <div className="settings-list">
-          {categories.map((category) => (
-            <details className="settings-row" key={category.id}>
-              <summary>
-                {locale === "en" ? category.name_en : category.name_es}
-              </summary>
-              <CategoryForm locale={locale} category={category} />
-            </details>
-          ))}
-        </div>
+        <AdminSearchList
+          locale={locale}
+          label={es ? "Categorías" : "Categories"}
+          items={categories.map((category) => ({
+            id: category.id,
+            search: [category.name_es, category.name_en, category.slug].join(
+              " ",
+            ),
+            content: (
+              <details className="settings-row">
+                <summary>
+                  {locale === "en" ? category.name_en : category.name_es}
+                </summary>
+                <CategoryForm locale={locale} category={category} />
+              </details>
+            ),
+          }))}
+        />
       </section>
     );
   }
@@ -173,50 +182,77 @@ export function FocusedCatalogue({
           <summary>{es ? "Crear localidad" : "Create locality"}</summary>
           <CityForm locale={locale} />
         </details>
-        <div className="settings-list">
-          {cities.map((city) => (
-            <details className="settings-row" key={city.id}>
-              <summary>
-                {locale === "en" ? city.name_en || city.name_es : city.name_es}
-              </summary>
-              <CityForm locale={locale} city={city} />
-            </details>
-          ))}
-        </div>
+        <AdminSearchList
+          locale={locale}
+          label={es ? "Localidades" : "Localities"}
+          items={cities.map((city) => ({
+            id: city.id,
+            search: [
+              city.slug,
+              city.name_es,
+              city.name_en || "",
+              city.timezone,
+            ].join(" "),
+            content: (
+              <details className="settings-row">
+                <summary>
+                  {locale === "en"
+                    ? city.name_en || city.name_es
+                    : city.name_es}
+                </summary>
+                <CityForm locale={locale} city={city} />
+              </details>
+            ),
+          }))}
+        />
       </section>
     );
   }
   return (
     <section className="panel console-card">
-      <div className="settings-list">
-        {flags.map((flag) => (
-          <details className="settings-row" key={flag.key}>
-            <summary>
-              {locale === "en" ? flag.label_en : flag.label_es}
-              <span className="status-pill">{flag.enabled ? "On" : "Off"}</span>
-            </summary>
-            <form action={updateFeatureFlag} className="stack">
-              <input type="hidden" name="locale" value={locale} />
-              <input type="hidden" name="key" value={flag.key} />
-              <label className="switch-row">
-                <input
-                  name="enabled"
-                  type="checkbox"
-                  defaultChecked={flag.enabled}
-                />
-                <span>{es ? "Activado" : "Enabled"}</span>
-              </label>
-              <label>
-                {es ? "Motivo del cambio" : "Change reason"}
-                <textarea name="reason" required minLength={10} />
-              </label>
-              <button className="button secondary" type="submit">
-                {es ? "Guardar control" : "Save control"}
-              </button>
-            </form>
-          </details>
-        ))}
-      </div>
+      <AdminSearchList
+        locale={locale}
+        label={es ? "Controles de plataforma" : "Platform controls"}
+        items={flags.map((flag) => ({
+          id: flag.key,
+          status: flag.enabled ? "enabled" : "disabled",
+          search: [
+            flag.key,
+            flag.label_es,
+            flag.label_en,
+            flag.enabled ? "on enabled" : "off disabled",
+          ].join(" "),
+          content: (
+            <details className="settings-row">
+              <summary>
+                {locale === "en" ? flag.label_en : flag.label_es}
+                <span className="status-pill">
+                  {flag.enabled ? "On" : "Off"}
+                </span>
+              </summary>
+              <form action={updateFeatureFlag} className="stack">
+                <input type="hidden" name="locale" value={locale} />
+                <input type="hidden" name="key" value={flag.key} />
+                <label className="switch-row">
+                  <input
+                    name="enabled"
+                    type="checkbox"
+                    defaultChecked={flag.enabled}
+                  />
+                  <span>{es ? "Activado" : "Enabled"}</span>
+                </label>
+                <label>
+                  {es ? "Motivo del cambio" : "Change reason"}
+                  <textarea name="reason" required minLength={10} />
+                </label>
+                <button className="button secondary" type="submit">
+                  {es ? "Guardar control" : "Save control"}
+                </button>
+              </form>
+            </details>
+          ),
+        }))}
+      />
     </section>
   );
 }
