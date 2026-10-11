@@ -13,6 +13,7 @@ import {
 } from "./src/lib/claim-mail-delivery";
 
 import { dispatchClaimSubmissionAlerts } from "./src/lib/claim-alert-delivery";
+import { dispatchAkiLifecycleEmails } from "./src/lib/aki-lifecycle-delivery";
 
 import {
   dispatchBookingConfirmations,
@@ -29,6 +30,7 @@ const worker = {
     ctx.waitUntil(dispatchAccommodationConfirmations(env));
     ctx.waitUntil(dispatchClaimDecisions(env));
     ctx.waitUntil(dispatchClaimSubmissionAlerts(env));
+    ctx.waitUntil(dispatchAkiLifecycleEmails(env));
   },
   async fetch(
     request: Request,
