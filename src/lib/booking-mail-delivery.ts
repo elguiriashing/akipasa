@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { suiteEmailFrom } from "./suite-email-templates";
 import {
   sendBookingConfirmationEmail,
   type BookingConfirmation,
@@ -6,6 +7,7 @@ import {
 
 export type BookingMailEnv = {
   RESEND_API_KEY?: string;
+  CLAIM_RESEND_API_KEY?: string;
   BOOKING_EMAIL_FROM?: string;
   NEXT_PUBLIC_SUPABASE_URL?: string;
   SUPABASE_SERVICE_ROLE_KEY?: string;
@@ -13,6 +15,7 @@ export type BookingMailEnv = {
 export function bookingMailEnvironment(): BookingMailEnv {
   return {
     RESEND_API_KEY: process.env.RESEND_API_KEY,
+    CLAIM_RESEND_API_KEY: process.env.CLAIM_RESEND_API_KEY,
     BOOKING_EMAIL_FROM: process.env.BOOKING_EMAIL_FROM,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
@@ -20,7 +23,7 @@ export function bookingMailEnvironment(): BookingMailEnv {
 }
 export function bookingEmailConfigured(env = bookingMailEnvironment()) {
   return Boolean(
-    env.RESEND_API_KEY &&
+    (env.RESEND_API_KEY || env.CLAIM_RESEND_API_KEY) &&
       env.NEXT_PUBLIC_SUPABASE_URL &&
       env.SUPABASE_SERVICE_ROLE_KEY,
   );
@@ -89,7 +92,10 @@ async function dispatchConfirmations(
         recipient: row.recipient,
         audience: row.audience as "customer" | "venue",
       },
-      { apiKey: env.RESEND_API_KEY, from: env.BOOKING_EMAIL_FROM },
+      {
+        apiKey: env.CLAIM_RESEND_API_KEY || env.RESEND_API_KEY,
+        from: suiteEmailFrom,
+      },
     );
     const { error: ackError } = await db.rpc(
       accommodation
