@@ -59,11 +59,11 @@ describe("Staff promotions operational inbox", () => {
     expect(screen.getAllByText("Featured listing")).toHaveLength(2);
     expect(screen.getByText("Latest 50 requests loaded")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /To review/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /In progress/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Closed/ })).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: /In progress/ })).toHaveLength(2);
+    expect(screen.getAllByRole("button", { name: /Closed/ })).toHaveLength(2);
     expect(container.querySelector("form")).toBeNull();
     expect(container.querySelector("script")).toBeNull();
-    expect(screen.getByText(/<script>alert\(1\)<\/script>/)).toBeInTheDocument();
+    expect(screen.getAllByText(/<script>alert\(1\)<\/script>/)).toHaveLength(2);
   });
 
   it("filters and searches the same bounded list without discarding requests", () => {
