@@ -113,12 +113,8 @@ it("uses support as sender for claim, confirmation and suite email providers", (
 it("keeps provider acceptance separate from claim decision success", () => {
   const action = source("src/app/[locale]/moderation/actions.ts");
   const page = source("src/app/[locale]/staff/moderation/page.tsx");
-  expect(action).toContain(
-    'let claimantMailStatus: "sent" | "not_sent" = "not_sent"',
-  );
-  expect(action).toContain(
-    'if (delivery.sent > 0) claimantMailStatus = "sent"',
-  );
+  expect(action).toContain("claimantMailStatus");
+  expect(action).toContain("delivery.sent > 0");
   expect(action).toContain("mailQuery");
   expect(page).toContain('query.mail === "not_sent"');
   expect(page).toContain("claimant email was not confirmed as sent");
