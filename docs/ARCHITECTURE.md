@@ -463,3 +463,8 @@ team membership, independent of the member's personal subscription/platform role
 The Home loader relies on this admission guard and lists only the caller's
 membership rows. Tenant and operation authorization stays in existing RLS/RPCs;
 Business Pro retains a separate paid-entitlement check.
+
+
+### Staff-owned claim submission alerts
+
+The staff homepage counts pending `venue_claims` through the staff-gated `staff_pending_venue_claim_count()` aggregate, in sync with the paginated moderation read RPC. A new claim INSERT creates one `claim_submission_alerts` outbox row without modifying ownership or claimant-facing decision emails. The Cloudflare scheduled worker dispatches notifications to both cofounder Workspace inboxes through the existing provider, with an immediate best-effort dispatch after the server action. The outbox uses service-only leases, stable message keys, confirmed ACK, bounded retries and ambiguity review. No unverified claimant contact data is emailed.
