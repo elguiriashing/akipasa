@@ -156,3 +156,54 @@ describe("integrated Admin rewards tabs", () => {
     );
   });
 });
+
+describe("Admin commercial and user search layout regression", () => {
+  it("keeps the full promotion decision form behind a compact details summary", () => {
+    const source = readFileSync(
+      "src/app/[locale]/admin/promotions/page.tsx",
+      "utf8",
+    );
+    expect(source).toContain("admin-promotion-request-summary");
+    expect(source).toContain("admin-promotion-request-preview");
+    expect(source).toContain("admin-promotion-request-detail");
+    expect(source).toContain("admin-promotion-request-form");
+    expect(source).toContain("promotionServiceNames");
+    expect(source).toContain("promotionStateNames");
+    expect(source).toContain("madridInputValue");
+    expect(source).toContain("action={updatePromotion}");
+    for (const name of [
+      "locale", "requestId", "service", "state",
+      "eventId", "startsAt", "endsAt", "notes",
+    ]) {
+      expect(source).toContain(`name="${name}"`);
+    }
+    expect(source).toContain('value="won"');
+    expect(source).toContain('value="lost"');
+  });
+
+  it("keeps the Users search accessible and its boundaries unclipped", () => {
+    const users = readFileSync(
+      "src/app/[locale]/admin/users/UserSearch.tsx",
+      "utf8",
+    );
+    expect(users).toContain('htmlFor="admin-user-search"');
+    expect(users).toContain('id="admin-user-search"');
+    expect(users).toContain('aria-describedby="admin-user-search-hint"');
+    const styles = readFileSync(
+      "src/app/[locale]/admin/admin-suite.css",
+      "utf8",
+    );
+    const userStyles = styles.split("/* Admin Users:")[1]?.split("/* Commercial request inbox:")[0];
+    expect(userStyles).toContain(".admin-workspace .admin-search-field");
+    expect(userStyles).toContain("top: auto;");
+    expect(userStyles).toContain("display: grid;");
+    expect(userStyles).toContain("grid-template-columns: minmax(0, 1fr)");
+    expect(userStyles).toContain("position: relative;");
+    expect(userStyles).toContain("padding: clamp(");
+    expect(userStyles).toContain('input[type="search"]');
+    expect(userStyles).toContain(".admin-search-field > small");
+    expect(styles).toContain(".admin-promotion-form-grid");
+    expect(styles).toContain(".admin-promotion-request-summary");
+    expect(styles).toContain("-webkit-line-clamp: 2");
+  });
+});
