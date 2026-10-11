@@ -248,7 +248,7 @@ begin
  insert into public.suite_email_outbox(dedupe_key,kind,profile_id,recipient,locale,payload,available_at)
  select 'stay-saved:'||s.profile_id||':'||s.venue_id||':'||md5(s.saved_at::text),
    'stay_saved_reminder',s.profile_id,u.email,s.locale,
-   jsonb_build_object('venueId',s.venue_id,'venueName',v.name,'venueSlug',v.slug),
+   jsonb_build_object('venueId',s.venue_id,'venueName',v.name,'venueSlug',v.slug,'savedAt',s.saved_at),
    s.saved_at+interval '5 days'
  from public.suite_saved_stays s
  join public.suite_email_preferences pref on pref.profile_id=s.profile_id and pref.stay_reminders=true
