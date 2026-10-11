@@ -30,15 +30,19 @@ export async function moderateItem(formData: FormData) {
       : "";
   if (error)
     redirect(`/${locale}/staff/moderation?error=decision${claimQuery}`);
+  let claimantMailStatus: "sent" | "not_sent" = "not_sent";
   if (value.targetType === "venue_claim") {
     // The decision and durable email already committed. Provider failure must not undo it.
     try {
-      await dispatchClaimDecisions(undefined, value.targetId);
+      const delivery = await dispatchClaimDecisions(undefined, value.targetId);
+      if (delivery.sent > 0) claimantMailStatus = "sent";
     } catch {
       console.error("claim_email_dispatch_pending");
     }
   }
-  redirect(`/${locale}/staff/moderation?updated=decision${claimQuery}`);
+  const mailQuery =
+    value.targetType === "venue_claim" ? `&mail=${claimantMailStatus}` : "";
+  redirect(`/${locale}/staff/moderation?updated=decision${claimQuery}${mailQuery}`);
 }
 
 export async function setAutomaticModeration(formData: FormData) {
