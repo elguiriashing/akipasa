@@ -27,8 +27,7 @@ export default async function StaffOverview({
     { count: offers, error: offersError },
     { count: submissions, error: submissionsError },
     { data: claimsCount, error: claimsError },
-    { count: reports },
-    { data: recent },
+    { count: reports, error: reportsError },
   ] = await Promise.all([
     supabase
       .from("venues")
@@ -51,11 +50,6 @@ export default async function StaffOverview({
       .from("reports")
       .select("*", { count: "exact", head: true })
       .eq("state", "open"),
-    supabase
-      .from("moderation_actions")
-      .select("id,action,target_type,reason,created_at")
-      .order("created_at", { ascending: false })
-      .limit(6),
   ]);
   const es = locale === "es";
   const summary = summarizeStaffModerationCounts({
@@ -73,7 +67,7 @@ export default async function StaffOverview({
     icon: IconName;
     title: string;
     detail: string;
-    count?: number;
+    count?: number | null;
   }> = [
     {
       href:
@@ -85,7 +79,7 @@ export default async function StaffOverview({
       detail: es
         ? "Locales, eventos, contenido y reclamaciones"
         : "Venues, events, content and claims",
-      count: pending ?? undefined,
+      count: pending,
     },
     {
       href: `/${locale}/staff/moderation?queue=claims`,
@@ -94,14 +88,14 @@ export default async function StaffOverview({
       detail: es
         ? "Solicitudes de titularidad pendientes"
         : "Pending ownership requests",
-      count: summary.claims ?? undefined,
+      count: summary.claims,
     },
     {
       href: `/${locale}/staff/support`,
       icon: "inbox",
       title: es ? "Soporte" : "Customer support",
       detail: es ? "Casos enviados por usuarios" : "User-submitted cases",
-      count: reports || 0,
+      count: reportsError ? null : reports,
     },
     {
       href: `/${locale}/staff/creators`,
@@ -123,109 +117,158 @@ export default async function StaffOverview({
       title: es ? "Promociones" : "Promotions",
       detail: es ? "Campañas y solicitudes" : "Campaigns and requests",
     },
+  ];
+  const primaryActions = actions.slice(0, 3);
+  const secondaryActions = actions.slice(3);
+  const reportsCount = reportsError ? null : reports;
+  const focusHref =
+    (summary.claims ?? 0) > 0
+      ? `/${locale}/staff/moderation?queue=claims`
+      : `/${locale}/staff/moderation`;
+  const metrics = [
     {
-      href: `/${locale}/staff/audit`,
-      icon: "audit",
-      title: es ? "Auditoría" : "Audit history",
-      detail: es ? "Registro de decisiones" : "Decision log",
+      label: es ? "Por revisar" : "Awaiting review",
+      count: pending,
+      icon: "shield" as IconName,
+      href: `/${locale}/staff/moderation`,
+    },
+    {
+      label: es ? "Reclamaciones" : "Ownership claims",
+      count: summary.claims,
+      icon: "venue" as IconName,
+      href: `/${locale}/staff/moderation?queue=claims`,
+    },
+    {
+      label: es ? "Casos abiertos" : "Open support cases",
+      count: reportsCount,
+      icon: "inbox" as IconName,
+      href: `/${locale}/staff/support`,
+    },
+    {
+      label: es ? "Locales pendientes" : "Pending venues",
+      count: summary.venues,
+      icon: "venue" as IconName,
+      href: `/${locale}/staff/moderation?queue=venues`,
     },
   ];
+
   return (
-    <div className="operations-overview">
-      <section className="operations-hero">
-        <span>{es ? "Prioridad de hoy" : "Today’s priority"}</span>
-        <h2>
-          {pending === null
-            ? es
-              ? "Algunos contadores no están disponibles"
-              : "Some queue counts are unavailable"
-            : pending > 0
+    <div className="operations-overview staff-dashboard">
+      <section className="operations-hero staff-dashboard-hero">
+        <div className="staff-dashboard-hero-copy">
+          <span className="staff-dashboard-eyebrow">
+            {es ? "Centro de operaciones" : "Operations desk"}
+          </span>
+          <h2>
+            {pending === null
               ? es
-                ? `${pending} elementos esperan revisión`
-                : `${pending} items await review`
+                ? "Revisa las colas de trabajo"
+                : "Check the work queues"
+              : pending > 0
+                ? es
+                  ? `${displayCount(pending)} asuntos por resolver`
+                  : `${displayCount(pending)} items need attention`
+                : es
+                  ? "Todo está al día"
+                  : "All caught up"}
+          </h2>
+          <p>
+            {pending === null
+              ? es
+                ? "Algunos contadores no están disponibles. Abre las colas para comprobar el trabajo pendiente."
+                : "Some counts are unavailable. Open the queues to check outstanding work."
               : es
-                ? "Todo está al día"
-                : "Everything is up to date"}
-        </h2>
-        <p>
-          {es
-            ? "Entra directamente en la tarea que necesita atención."
-            : "Go straight to the work that needs attention."}
-        </p>
-        <Link href={`/${locale}/staff/moderation`}>
-          {es ? "Revisar ahora" : "Review now"}
-          <Icon name="arrow-right" />
-        </Link>
+                ? "Reclamaciones, moderación y soporte en un solo lugar."
+                : "Claims, moderation and support in one place."}
+          </p>
+        </div>
+        <div className="staff-dashboard-hero-actions">
+          <Link href={focusHref} className="staff-dashboard-hero-primary">
+            {es ? "Empezar a revisar" : "Start reviewing"}
+            <Icon name="arrow-right" />
+          </Link>
+          <Link
+            href={`/${locale}/staff/support`}
+            className="staff-dashboard-hero-secondary"
+          >
+            <Icon name="inbox" />
+            {es ? "Abrir soporte" : "Open support"}
+          </Link>
+        </div>
       </section>
+
       <section
-        className="operations-pulse staff-operations-pulse"
-        aria-label={es ? "Estado operativo" : "Operational status"}
+        className="staff-dashboard-metrics"
+        aria-label={es ? "Resumen de tareas" : "Task summary"}
       >
-        <div>
-          <strong>{displayCount(pending)}</strong>
-          <span>{es ? "por revisar" : "to review"}</span>
-        </div>
-        <div>
-          <strong>{reports || 0}</strong>
-          <span>{es ? "casos" : "cases"}</span>
-        </div>
-        <div>
-          <strong>{displayCount(summary.venues)}</strong>
-          <span>{es ? "locales" : "venues"}</span>
-        </div>
-        <div>
-          <strong>{displayCount(summary.claims)}</strong>
-          <span>{es ? "reclamaciones" : "claims"}</span>
-        </div>
+        {metrics.map((metric) => (
+          <Link href={metric.href} key={metric.label} className="staff-dashboard-metric">
+            <span className="staff-dashboard-metric-icon">
+              <Icon name={metric.icon} />
+            </span>
+            <strong>{displayCount(metric.count)}</strong>
+            <span className="staff-dashboard-metric-label">{metric.label}</span>
+            <Icon name="chevron" />
+          </Link>
+        ))}
       </section>
-      <section className="operations-tools">
-        <header>
-          <span>{es ? "Herramientas" : "Tools"}</span>
-          <h2>{es ? "Elige una tarea" : "Choose a task"}</h2>
+
+      <section className="staff-dashboard-section" aria-labelledby="staff-priorities-title">
+        <header className="staff-dashboard-heading">
+          <div>
+            <span>{es ? "Acceso rápido" : "Quick access"}</span>
+            <h2 id="staff-priorities-title">
+              {es ? "Tareas principales" : "Priority tasks"}
+            </h2>
+            <p>
+              {es
+                ? "Ve directamente a la cola que necesitas gestionar."
+                : "Jump straight into the work you need to handle."}
+            </p>
+          </div>
         </header>
-        <nav>
-          {actions.map((action) => (
-            <Link href={action.href} key={action.href}>
-              <span>
+        <nav className="staff-dashboard-task-grid" aria-label={es ? "Tareas principales" : "Priority tasks"}>
+          {primaryActions.map((action) => (
+            <Link href={action.href} key={action.href} className="staff-dashboard-task staff-dashboard-task-primary">
+              <span className="staff-dashboard-task-icon">
                 <Icon name={action.icon} />
               </span>
-              <span>
+              <span className="staff-dashboard-task-body">
                 <strong>{action.title}</strong>
                 <small>{action.detail}</small>
               </span>
-              {action.count !== undefined && <b>{action.count}</b>}
-              <Icon name="chevron" />
+              {action.count !== undefined && (
+                <b className="staff-dashboard-task-count">
+                  {displayCount(action.count)}
+                </b>
+              )}
+              <Icon name="arrow-right" />
             </Link>
           ))}
         </nav>
       </section>
-      <section className="operations-recent">
-        <header>
-          <span>{es ? "Registro" : "Log"}</span>
-          <h2>{es ? "Actividad reciente" : "Recent activity"}</h2>
+
+      <section className="staff-dashboard-section" aria-labelledby="staff-tools-title">
+        <header className="staff-dashboard-heading">
+          <div>
+            <span>{es ? "Herramientas" : "Tools"}</span>
+            <h2 id="staff-tools-title">{es ? "Más herramientas" : "More tools"}</h2>
+          </div>
         </header>
-        <div className="managed-list">
-          {(recent || []).map((item) => (
-            <div className="managed-row" key={item.id}>
-              <div>
-                <strong>
-                  {item.action} / {item.target_type}
-                </strong>
-                <span>{item.reason}</span>
-              </div>
-              <time dateTime={item.created_at}>
-                {new Date(item.created_at).toLocaleDateString(locale)}
-              </time>
-            </div>
+        <nav className="staff-dashboard-task-grid staff-dashboard-task-grid-secondary" aria-label={es ? "Más herramientas" : "More tools"}>
+          {secondaryActions.map((action) => (
+            <Link href={action.href} key={action.href} className="staff-dashboard-task">
+              <span className="staff-dashboard-task-icon">
+                <Icon name={action.icon} />
+              </span>
+              <span className="staff-dashboard-task-body">
+                <strong>{action.title}</strong>
+                <small>{action.detail}</small>
+              </span>
+              <Icon name="chevron" />
+            </Link>
           ))}
-          {!recent?.length && (
-            <p className="muted">
-              {es
-                ? "Aún no hay actividad reciente."
-                : "No recent activity yet."}
-            </p>
-          )}
-        </div>
+        </nav>
       </section>
     </div>
   );
