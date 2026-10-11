@@ -24,6 +24,27 @@ function madridInputValue(value?: string | null) {
   return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
 }
 
+
+const promotionServiceNames: Record<string, { es: string; en: string }> = {
+  featured_listing: { es: "Local destacado", en: "Featured listing" },
+  featured_event: { es: "Evento destacado", en: "Featured event" },
+  sponsored_event: { es: "Evento patrocinado", en: "Sponsored event" },
+  sponsored_listing: { es: "Local patrocinado", en: "Sponsored listing" },
+};
+
+const promotionStateNames: Record<string, { es: string; en: string }> = {
+  new: { es: "Nueva", en: "New" },
+  contacted: { es: "Contactada", en: "Contacted" },
+  qualified: { es: "Cualificada", en: "Qualified" },
+  won: { es: "Ganada", en: "Won" },
+  lost: { es: "Perdida", en: "Lost" },
+};
+
+function promotionName(value: string, es: boolean, names: Record<string, { es: string; en: string }>) {
+  const named = names[value];
+  return named ? (es ? named.es : named.en) : value.replaceAll("_", " ");
+}
+
 export default async function AdminPromotionsPage({
   params,
   searchParams,
@@ -215,62 +236,90 @@ export default async function AdminPromotionsPage({
                 .filter(Boolean)
                 .join(" "),
               content: (
-                <details className="panel settings-row">
-                  <summary>
-                    {venue?.name || (es ? "Local" : "Venue")} /{" "}
-                    {(es ? selectedEvent?.title_es : selectedEvent?.title_en) ||
-                      selectedEvent?.title_es ||
-                      item.service}
-                    <span className="status-pill">{item.state}</span>
+                <details className="panel settings-row admin-promotion-request">
+                  <summary className="admin-promotion-request-summary">
+                    <span className="admin-promotion-request-identity">
+                      <strong>{venue?.name || (es ? "Local sin nombre" : "Unnamed venue")}</strong>
+                      <small>
+                        {((es ? selectedEvent?.title_es : selectedEvent?.title_en) ||
+                          selectedEvent?.title_es)
+                          ? ((es ? selectedEvent?.title_es : selectedEvent?.title_en) ||
+                              selectedEvent?.title_es)
+                          : promotionName(item.service, es, promotionServiceNames)}
+                      </small>
+                    </span>
+                    <span className={`status-pill admin-promotion-request-status admin-promotion-request-status--${item.state}`}>
+                      {promotionName(item.state, es, promotionStateNames)}
+                    </span>
+                    <span className="admin-promotion-request-preview">
+                      {item.message || (es ? "Sin mensaje adjunto" : "No message supplied")}
+                    </span>
+                    <span className="admin-promotion-request-footer">
+                      <time dateTime={item.created_at}>
+                        {new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", {
+                          dateStyle: "medium",
+                          timeZone: "Europe/Madrid",
+                        }).format(new Date(item.created_at))}
+                      </time>
+                      <span className="admin-promotion-request-open">
+                        {es ? "Ver y gestionar" : "View and manage"}
+                        <span aria-hidden="true">⌄</span>
+                      </span>
+                    </span>
                   </summary>
-                  <p>{item.message}</p>
-                  <form action={updatePromotion} className="stack">
-                    <input type="hidden" name="locale" value={locale} />
-                    <input type="hidden" name="requestId" value={item.id} />
-                    <input type="hidden" name="service" value={item.service} />
-                    <label>
-                      {es ? "Estado" : "State"}
-                      <select name="state" defaultValue={item.state}>
-                        <option value="new">New</option>
-                        <option value="contacted">Contacted</option>
-                        <option value="qualified">Qualified</option>
-                        <option value="won">Won</option>
-                        <option value="lost">Lost</option>
-                      </select>
-                    </label>
-                    {item.service === "featured_listing" ? (
-                      <>
+                  <div className="admin-promotion-request-detail">
+                    <section className="admin-promotion-request-message">
+                      <h4>{es ? "Mensaje del negocio" : "Business message"}</h4>
+                      <p>{item.message || (es ? "Sin mensaje adjunto." : "No message supplied.")}</p>
+                    </section>
+                    <form action={updatePromotion} className="stack admin-promotion-request-form">
+                      <input type="hidden" name="locale" value={locale} />
+                      <input type="hidden" name="requestId" value={item.id} />
+                      <input type="hidden" name="service" value={item.service} />
+                      <h4>{es ? "Gestionar solicitud" : "Manage request"}</h4>
+                      <div className="admin-promotion-form-grid">
                         <label>
-                          {es ? "Evento destacado" : "Featured event"}
-                          <select
-                            name="eventId"
-                            defaultValue={item.event_id || ""}
-                            required
-                          >
-                            <option value="" disabled>
-                              {es ? "Selecciona un evento" : "Select an event"}
-                            </option>
-                            {(events || [])
-                              .filter(
-                                (event) => event.venue_id === item.venue_id,
-                              )
-                              .map((event) => (
-                                <option value={event.id} key={event.id}>
-                                  {(es ? event.title_es : event.title_en) ||
-                                    event.title_es}
-                                </option>
-                              ))}
+                          {es ? "Estado" : "Status"}
+                          <select name="state" defaultValue={item.state}>
+                            <option value="new">{es ? "Nueva" : "New"}</option>
+                            <option value="contacted">{es ? "Contactada" : "Contacted"}</option>
+                            <option value="qualified">{es ? "Cualificada" : "Qualified"}</option>
+                            <option value="won">{es ? "Ganada" : "Won"}</option>
+                            <option value="lost">{es ? "Perdida" : "Lost"}</option>
                           </select>
                         </label>
-                        <div className="form-grid-two">
+                        {item.service === "featured_listing" ? (
+                          <label>
+                            {es ? "Evento destacado" : "Featured event"}
+                            <select name="eventId" defaultValue={item.event_id || ""} required>
+                              <option value="" disabled>
+                                {es ? "Selecciona un evento" : "Select an event"}
+                              </option>
+                              {(events || [])
+                                .filter((event) => event.venue_id === item.venue_id)
+                                .map((event) => (
+                                  <option value={event.id} key={event.id}>
+                                    {(es ? event.title_es : event.title_en) || event.title_es}
+                                  </option>
+                                ))}
+                            </select>
+                          </label>
+                        ) : (
+                          <>
+                            <input type="hidden" name="eventId" value={item.event_id || ""} />
+                            <input type="hidden" name="startsAt" value="" />
+                            <input type="hidden" name="endsAt" value="" />
+                          </>
+                        )}
+                      </div>
+                      {item.service === "featured_listing" && (
+                        <div className="admin-promotion-form-grid">
                           <label>
                             {es ? "Inicio del destacado" : "Feature starts"}
                             <input
                               type="datetime-local"
                               name="startsAt"
-                              defaultValue={madridInputValue(
-                                requestSlot?.starts_at,
-                              )}
+                              defaultValue={madridInputValue(requestSlot?.starts_at)}
                             />
                           </label>
                           <label>
@@ -278,35 +327,22 @@ export default async function AdminPromotionsPage({
                             <input
                               type="datetime-local"
                               name="endsAt"
-                              defaultValue={madridInputValue(
-                                requestSlot?.ends_at,
-                              )}
+                              defaultValue={madridInputValue(requestSlot?.ends_at)}
                             />
                           </label>
                         </div>
-                      </>
-                    ) : (
-                      <>
-                        <input
-                          type="hidden"
-                          name="eventId"
-                          value={item.event_id || ""}
-                        />
-                        <input type="hidden" name="startsAt" value="" />
-                        <input type="hidden" name="endsAt" value="" />
-                      </>
-                    )}
-                    <label>
-                      {es ? "Notas internas" : "Internal notes"}
-                      <textarea
-                        name="notes"
-                        defaultValue={item.operator_notes || ""}
-                      />
-                    </label>
-                    <button className="button" type="submit">
-                      {es ? "Actualizar" : "Update"}
-                    </button>
-                  </form>
+                      )}
+                      <label className="admin-promotion-request-notes">
+                        {es ? "Notas internas" : "Internal notes"}
+                        <textarea name="notes" rows={3} defaultValue={item.operator_notes || ""} />
+                      </label>
+                      <div className="admin-promotion-request-actions">
+                        <button className="button primary" type="submit">
+                          {es ? "Guardar cambios" : "Save changes"}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
                 </details>
               ),
             };
