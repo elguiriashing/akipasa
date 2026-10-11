@@ -84,6 +84,18 @@ it("preserves existing confirmation hooks and offers new request/cancellation em
   );
 });
 
+it("enforces the verified Resend support sender for every booking confirmation", () => {
+  const sender = source("src/lib/booking-confirmation-email.ts");
+  const dispatch = source("src/lib/booking-mail-delivery.ts");
+  expect(sender).toContain('fetch("https://api.resend.com/emails"');
+  expect(sender).toContain("from: bookingEmailFrom");
+  expect(sender).toContain('reply_to: "support@akipasa.com"');
+  expect(sender).not.toContain("BOOKING_EMAIL_FROM");
+  expect(sender).not.toContain("config.from");
+  expect(dispatch).not.toContain("BOOKING_EMAIL_FROM");
+  expect(dispatch).not.toContain("from: suiteEmailFrom");
+});
+
 it("uses support as sender for claim, confirmation and suite email providers", () => {
   for (const path of [
     "src/lib/booking-confirmation-email.ts",
@@ -95,4 +107,15 @@ it("uses support as sender for claim, confirmation and suite email providers", (
     "suiteEmailFrom",
   );
   expect(source("custom-worker.ts")).toContain("dispatchSuiteEmails(env)");
+});
+
+// A successful staff moderation decision must never imply its claimant email was delivered.
+it("keeps provider acceptance separate from claim decision success", () => {
+  const action = source("src/app/[locale]/moderation/actions.ts");
+  const page = source("src/app/[locale]/staff/moderation/page.tsx");
+  expect(action).toContain("claimantMailStatus");
+  expect(action).toContain("delivery.sent > 0");
+  expect(action).toContain("mailQuery");
+  expect(page).toContain('query.mail === "not_sent"');
+  expect(page).toContain("claimant email was not confirmed as sent");
 });
