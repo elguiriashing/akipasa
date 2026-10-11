@@ -96,6 +96,9 @@ create table if not exists public.suite_saved_stays (
 alter table public.suite_saved_stays enable row level security;
 revoke all on public.suite_saved_stays from public,anon,authenticated;
 grant all on public.suite_saved_stays to service_role;
+grant select on public.suite_saved_stays to authenticated;
+create policy suite_saved_stays_own_read on public.suite_saved_stays
+  for select to authenticated using(profile_id=(select auth.uid()));
 
 create or replace function public.suite_save_stay(p_venue uuid,p_saved boolean,p_locale text default 'es')
 returns boolean language plpgsql security definer set search_path='' as $$
