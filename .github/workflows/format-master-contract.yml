@@ -17,13 +17,13 @@ jobs:
           node-version: "22"
       - run: npm ci
       - name: Format documentation and scripts
-        run: npx prettier --write AGENTS.md docs/AKIPASA_MASTER.md docs/CHANGE_IMPACT_REGISTER.md docs/SOURCE_ROUTE_BASELINE.md scripts/generate-system-inventory.mjs scripts/check-change-contract.mjs "src/app/[locale]/staff/page.tsx" "src/lib/staff-moderation-summary.ts" "src/app/[locale]/staff/staff-overview.css" "src/app/[locale]/business/actions.ts" "custom-worker.ts" "src/lib/claim-alert-delivery.ts" "src/lib/claim-submission-alert.ts" "tests/claim-submission-alerts.test.ts" "tests/moderation.test.ts" "tests/staff-claims-sql.test.ts" "src/lib/account-export.ts" "docs/ARCHITECTURE.md"
+        run: npx prettier --write AGENTS.md docs/AKIPASA_MASTER.md docs/CHANGE_IMPACT_REGISTER.md docs/SOURCE_ROUTE_BASELINE.md scripts/generate-system-inventory.mjs scripts/check-change-contract.mjs
       - name: Commit formatted files
         run: |
           if ! git diff --quiet; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add AGENTS.md docs/AKIPASA_MASTER.md docs/CHANGE_IMPACT_REGISTER.md docs/SOURCE_ROUTE_BASELINE.md scripts/generate-system-inventory.mjs scripts/check-change-contract.mjs "src/app/[locale]/staff/page.tsx" "src/lib/staff-moderation-summary.ts" "src/app/[locale]/staff/staff-overview.css" "src/app/[locale]/business/actions.ts" "custom-worker.ts" "src/lib/claim-alert-delivery.ts" "src/lib/claim-submission-alert.ts" "tests/claim-submission-alerts.test.ts" "tests/moderation.test.ts" "tests/staff-claims-sql.test.ts" "src/lib/account-export.ts" "docs/ARCHITECTURE.md"
+            git add AGENTS.md docs/AKIPASA_MASTER.md docs/CHANGE_IMPACT_REGISTER.md docs/SOURCE_ROUTE_BASELINE.md scripts/generate-system-inventory.mjs scripts/check-change-contract.mjs
             git commit -m "style: format master contract docs and scripts"
             git push origin HEAD:${{ github.event.pull_request.head.ref }}
           fi
