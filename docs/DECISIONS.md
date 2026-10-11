@@ -478,3 +478,19 @@ ownership records must be retained.
 # 2026-08-13: Central, explainable recommendation platform
 
 Recommendation logic lives behind one service boundary and begins with an explainable weighted ranker. Raw exposure is distinct from preference; skips are weak, explicit rejection is strong, repeated signals diminish, recent and long-term interests decay separately, and sponsored placement requires organic relevance. Behavioural collection is consented, pseudonymous where possible, bounded and non-blocking. Commercial partner access will call the same service through a separately authenticated/metered gateway.
+
+## 2026-10-11: Improve boundaries before replacing the suite stack
+
+Retain Next/Supabase and the existing product deployments for the first store
+release. Reduce explicit request waterfalls and global client/paint work now;
+prioritize measured catalogue/RLS hot paths next. Use request-only identity/profile
+memoization, streamed loading feedback and demand-loaded optional tools. Never
+trade role revocation, tenant isolation or booking/payment correctness for blanket
+authenticated caching.
+
+The suite should share typed domain services and versioned APIs before adopting
+additional native clients or moving shared code into packages. AkiHQ needs scoped
+render/store updates and bounded background synchronization; migrate one view at
+a time with POS durability acceptance. A rewrite alone would retain slow backend
+queries while adding migration risk. See `PERFORMANCE_AUDIT_2026-10-11.md` for
+evidence, proposed budgets and the staged implementation path.

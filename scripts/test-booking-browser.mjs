@@ -49,7 +49,7 @@ const js = await build({
         b.onLoad({ filter: /.*/, namespace: "test" }, (args) => ({
           contents: args.path.endsWith("navigation")
             ? 'export function useRouter(){return {push(url){history.pushState(history.state,"",url)}}}'
-            : 'import React from "react";export default function Link({children,...props}){return React.createElement("a",props,children)}',
+            : 'import React from "react";export default function Link({children,...props}){return React.createElement("a",props,children)}export function useLinkStatus(){return {pending:false}}',
           loader: "jsx",
           resolveDir: process.cwd(),
         }));

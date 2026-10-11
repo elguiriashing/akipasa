@@ -1,0 +1,28 @@
+/* Touch devices benefit more from stable surfaces than live backdrop sampling.
+   Keep palette, borders and layout; avoid repainting the canvas while scrolling. */
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  html:root body {
+    background-attachment: scroll !important;
+    animation: none !important;
+  }
+
+  html:root
+    :is(
+      .app-rail,
+      .app-topbar-mobile,
+      .app-bottom-nav,
+      .workspace-sidebar,
+      .workspace-mobile-trigger,
+      .workspace-page-heading,
+      .workspace-section-heading,
+      .admin-search-field,
+      .filters-shell,
+      .topbar,
+      .panel,
+      .owner-toolbox-trigger
+    ) {
+    background-color: var(--surface) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}

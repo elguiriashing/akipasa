@@ -1,4 +1,5 @@
 import { loadFeatureFlags } from "./feature-flags";
+import { signVenueMedia } from "./venue-media-signing";
 import {
   effectiveVenueRelevance,
   recommendationWeight,
@@ -742,26 +743,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       reward: { es: item.reward_es, en: item.reward_en || undefined },
       stampsRequired: item.stamps_required,
     }));
-    const signedMedia = await Promise.all(
-      (media || []).map(async (item) => {
-        const { data: signed } = await supabase.storage
-          .from("event-media")
-          .createSignedUrl(item.storage_path, 3600);
-        if (!signed?.signedUrl) return null;
-        return {
-          id: String(item.id),
-          url: signed.signedUrl,
-          alt: {
-            es: String(item.alt_es),
-            ...(item.alt_en ? { en: String(item.alt_en) } : {}),
-          },
-        };
-      }),
-    );
-    venue.media = signedMedia.filter(
-      (item): item is NonNullable<(typeof signedMedia)[number]> =>
-        item !== null,
-    );
+    venue.media = await signVenueMedia(supabase, media || []);
     const { data: visualPlacements } = await supabase
       .from("venue_media_placements")
       .select("media_id,placement")
@@ -820,26 +802,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       .not("storage_path", "like", "%/events/%")
       .order("sort_order")
       .limit(60);
-    const signedMedia = await Promise.all(
-      (media || []).map(async (item) => {
-        const { data: signed } = await supabase.storage
-          .from("event-media")
-          .createSignedUrl(item.storage_path, 3600);
-        if (!signed?.signedUrl) return null;
-        return {
-          id: String(item.id),
-          url: signed.signedUrl,
-          alt: {
-            es: String(item.alt_es),
-            ...(item.alt_en ? { en: String(item.alt_en) } : {}),
-          },
-        };
-      }),
-    );
-    venue.media = signedMedia.filter(
-      (item): item is NonNullable<(typeof signedMedia)[number]> =>
-        item !== null,
-    );
+    venue.media = await signVenueMedia(supabase, media || []);
     const { data: visualPlacements } = await supabase
       .from("venue_media_placements")
       .select("media_id,placement")

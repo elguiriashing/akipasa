@@ -41,12 +41,8 @@ export default async function PassportsPage({
     ? query.view!
     : "progress";
   const { supabase, user } = await optionalUser();
-  const passportResult = user
-    ? await myPassportCollection()
-        .then((data) => ({ data, error: false }))
-        .catch(() => ({ data: undefined, error: true }))
-    : { data: undefined, error: false };
   const [
+    passportResult,
     { data: passports },
     { data: programs },
     { data: ledger },
@@ -55,6 +51,11 @@ export default async function PassportsPage({
     { data: enrollments },
     { data: claims },
   ] = await Promise.all([
+    user
+      ? myPassportCollection()
+          .then((data) => ({ data, error: false }))
+          .catch(() => ({ data: undefined, error: true }))
+      : { data: undefined, error: false },
     supabase
       .from("passports")
       .select(

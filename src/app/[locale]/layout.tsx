@@ -9,7 +9,7 @@ import { PortalHeaderTools } from "@/components/PortalHeaderTools";
 import { AppShell } from "@/components/AppShell";
 import { OwnerToolboxLauncher } from "@/components/owner/OwnerToolboxLauncher";
 import { SupportAgentLauncher } from "@/components/support/SupportAgentLauncher";
-import { optionalUser } from "@/lib/auth";
+import { optionalUser, viewerProfile } from "@/lib/auth";
 import { config, isLocale } from "@/lib/config";
 import { signOut } from "@/app/[locale]/auth/actions";
 import {
@@ -57,16 +57,9 @@ export default async function LocaleLayout({
     );
   }
   const { supabase, user } = await optionalUser();
-  const [profileResult, ownerResult] = user
-    ? await Promise.all([
-        supabase
-          .from("profiles")
-          .select("app_role")
-          .eq("id", user.id)
-          .maybeSingle(),
-        supabase.rpc("has_owner_console"),
-      ])
-    : [{ data: null }, { data: false }];
+  const [profile, ownerResult] = user
+    ? await Promise.all([viewerProfile(), supabase.rpc("has_owner_console")])
+    : [null, { data: false }];
   const ownerConsole = ownerResult.data === true;
 
   let ownerPreferences: OwnerPreferences = defaultOwnerPreferences;
@@ -124,7 +117,7 @@ export default async function LocaleLayout({
       <AppShell
         locale={locale}
         signedIn={Boolean(user)}
-        role={profileResult.data?.app_role || "consumer"}
+        role={profile?.app_role || "consumer"}
         ownerConsole={ownerConsole}
       >
         {children}

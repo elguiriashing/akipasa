@@ -3,7 +3,7 @@ import {
   WorkspaceShell,
   type WorkspaceItem,
 } from "@/components/WorkspaceShell";
-import { requireUser } from "@/lib/auth";
+import { requireUser, viewerProfile } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { isAdministrator } from "@/lib/roles";
 
@@ -16,12 +16,8 @@ export default async function AdminLayout({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const { supabase, user } = await requireUser(locale, `/${locale}/admin`);
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("app_role")
-    .eq("id", user.id)
-    .maybeSingle();
+  const { supabase } = await requireUser(locale, `/${locale}/admin`);
+  const profile = await viewerProfile();
   if (!profile || !isAdministrator(profile.app_role)) notFound();
   const { count: pendingApplications } = await supabase
     .from("business_applications")

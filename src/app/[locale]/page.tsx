@@ -105,38 +105,40 @@ export default async function DiscoverPage({
     if (accessible) params.set("accessible", "on");
     return `/${locale}?${params}`;
   };
-  const recommendations = await recommendDiscovery({
-    query: {
-      locality,
-      latitude: searchCenter.latitude,
-      longitude: searchCenter.longitude,
+  const [recommendations, venuePage] = await Promise.all([
+    recommendDiscovery({
+      query: {
+        locality,
+        latitude: searchCenter.latitude,
+        longitude: searchCenter.longitude,
+        radiusKm: radius,
+        time,
+        category,
+        price,
+        minPriceCents,
+        maxPriceCents,
+        dateFrom,
+        dateTo,
+        accessible,
+      },
+      surface: "discover",
+    }),
+    nearbyVenuePage({
+      page: resultPage(query.venuePage),
+      center: searchCenter,
       radiusKm: radius,
-      time,
-      category,
-      price,
-      minPriceCents,
-      maxPriceCents,
-      dateFrom,
-      dateTo,
-      accessible,
-    },
-    surface: "discover",
-  });
+    })
+      .then((page) => ({ ...page, unavailable: false }))
+      .catch((error: unknown) => {
+        console.error("Discover nearby venues unavailable", error);
+        return { rows: [], total: 0, page: 1, unavailable: true };
+      }),
+  ]);
   const results = recommendations.items.map((item) => item.result);
   const eventPage = resultSlice(
     recommendations.items,
     resultPage(query.eventPage),
   );
-  const venuePage = await nearbyVenuePage({
-    page: resultPage(query.venuePage),
-    center: searchCenter,
-    radiusKm: radius,
-  })
-    .then((page) => ({ ...page, unavailable: false }))
-    .catch((error: unknown) => {
-      console.error("Discover nearby venues unavailable", error);
-      return { rows: [], total: 0, page: 1, unavailable: true };
-    });
 
   const resultText =
     results.length === 1

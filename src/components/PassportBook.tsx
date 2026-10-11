@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import { NavigationLink as Link } from "./NavigationLink";
 import { useRouter } from "next/navigation";
 import {
   useCallback,
@@ -20,7 +20,8 @@ import {
   type PassportCollection,
 } from "@/lib/passport-collection";
 import type { Locale } from "@/lib/config";
-import { foilProperties, foilTarget } from "@/lib/passport-holo";
+import { foilTarget } from "@/lib/passport-holo";
+import { animatePassportFoil } from "@/lib/passport-animation";
 import {
   readMotionPreference,
   writeMotionPreference,
@@ -119,6 +120,11 @@ export function PassportBook({
   const origin = useRef<{ beta: number; gamma: number } | null>(null);
   const latest = useRef<{ beta: number; gamma: number } | null>(null);
   const target = useRef({ x: 0, y: 0 });
+  const wakeFoil = useRef<(() => void) | null>(null);
+  const updateTarget = useCallback((next: { x: number; y: number }) => {
+    target.current = next;
+    wakeFoil.current?.();
+  }, []);
   const swipe = useRef<{ x: number; y: number } | null>(null);
   const total = chapters.length + cities.length;
   const city = page >= chapters.length ? cities[page - chapters.length] : null;
@@ -145,9 +151,9 @@ export function PassportBook({
         url.searchParams.delete("city");
       }
       window.history.replaceState(null, "", url.toString());
-      target.current = { x: 0, y: 0 };
+      updateTarget({ x: 0, y: 0 });
     },
-    [page, total],
+    [page, total, updateTarget],
   );
 
   useEffect(() => {
@@ -170,7 +176,7 @@ export function PassportBook({
       if ((event as CustomEvent<boolean>).detail) start();
       else {
         setMotion(false);
-        target.current = { x: 0, y: 0 };
+        updateTarget({ x: 0, y: 0 });
       }
     };
     const permission = (event: Event) => {
@@ -186,7 +192,7 @@ export function PassportBook({
       window.removeEventListener(motionPreferenceEvent, preference);
       window.removeEventListener(motionPermissionEvent, permission);
     };
-  }, []);
+  }, [updateTarget]);
   useEffect(() => {
     if (firstPage.current) {
       firstPage.current = false;
@@ -200,30 +206,22 @@ export function PassportBook({
       surface.current?.style.setProperty("--ry", "0deg");
       return;
     }
-    let frame = 0,
-      last = 0,
-      x = 0,
-      y = 0;
-    const render = (now: number) => {
-      const t = 1 - Math.exp(-Math.min(last ? now - last : 16, 64) / 85);
-      x += (target.current.x - x) * t;
-      y += (target.current.y - y) * t;
-      for (const [key, value] of Object.entries(foilProperties(x, y)))
-        surface.current?.style.setProperty(key, value);
-      last = now;
-      frame = requestAnimationFrame(render);
+    const animator = animatePassportFoil(
+      () => surface.current,
+      () => target.current,
+    );
+    wakeFoil.current = () => {
+      if (!document.hidden) animator.wake();
     };
     const visibility = () => {
-      cancelAnimationFrame(frame);
-      if (!document.hidden) {
-        last = 0;
-        frame = requestAnimationFrame(render);
-      }
+      animator.pause();
+      if (!document.hidden) animator.wake();
     };
     visibility();
     document.addEventListener("visibilitychange", visibility);
     return () => {
-      cancelAnimationFrame(frame);
+      animator.stop();
+      wakeFoil.current = null;
       document.removeEventListener("visibilitychange", visibility);
     };
   }, [page, city, reduced, shine]);
@@ -240,11 +238,13 @@ export function PassportBook({
         return;
       latest.current = { beta: event.beta, gamma: event.gamma };
       if (!origin.current) origin.current = latest.current;
-      target.current = foilTarget(
-        event.beta,
-        event.gamma,
-        origin.current,
-        screen.orientation?.angle || 0,
+      updateTarget(
+        foilTarget(
+          event.beta,
+          event.gamma,
+          origin.current,
+          screen.orientation?.angle || 0,
+        ),
       );
       if (!received) {
         received = true;
@@ -279,12 +279,12 @@ export function PassportBook({
       window.removeEventListener("deviceorientation", listener);
       screen.orientation?.removeEventListener("change", recenter);
     };
-  }, [motion, reduced, shine, es]);
+  }, [motion, reduced, shine, es, updateTarget]);
   async function enableMotion() {
     if (motion) {
       writeMotionPreference(false);
       setMotion(false);
-      target.current = { x: 0, y: 0 };
+      updateTarget({ x: 0, y: 0 });
       setStatus("");
       return;
     }
@@ -416,7 +416,7 @@ export function PassportBook({
                 className={styles.motionButton}
                 onClick={() => {
                   origin.current = latest.current;
-                  target.current = { x: 0, y: 0 };
+                  updateTarget({ x: 0, y: 0 });
                 }}
                 aria-label={es ? "Centrar inclinación" : "Recenter tilt"}
                 title={es ? "Centrar inclinación" : "Recenter tilt"}
@@ -511,13 +511,13 @@ export function PassportBook({
                 onPointerMove={(event) => {
                   if (motion || reduced || !shine) return;
                   const r = event.currentTarget.getBoundingClientRect();
-                  target.current = {
+                  updateTarget({
                     x: ((event.clientX - r.left) / r.width) * 2 - 1,
                     y: ((event.clientY - r.top) / r.height) * 2 - 1,
-                  };
+                  });
                 }}
                 onPointerLeave={() => {
-                  if (!motion) target.current = { x: 0, y: 0 };
+                  if (!motion) updateTarget({ x: 0, y: 0 });
                 }}
               >
                 <Image
@@ -677,13 +677,13 @@ export function PassportBook({
                   onPointerMove={(event) => {
                     if (motion || reduced || !shine) return;
                     const r = event.currentTarget.getBoundingClientRect();
-                    target.current = {
+                    updateTarget({
                       x: ((event.clientX - r.left) / r.width) * 2 - 1,
                       y: ((event.clientY - r.top) / r.height) * 2 - 1,
-                    };
+                    });
                   }}
                   onPointerLeave={() => {
-                    if (!motion) target.current = { x: 0, y: 0 };
+                    if (!motion) updateTarget({ x: 0, y: 0 });
                   }}
                 >
                   <Image

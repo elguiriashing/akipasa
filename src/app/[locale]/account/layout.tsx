@@ -3,7 +3,7 @@ import {
   WorkspaceShell,
   type WorkspaceItem,
 } from "@/components/WorkspaceShell";
-import { requireUser } from "@/lib/auth";
+import { requireUser, viewerProfile } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 
 export default async function AccountLayout({
@@ -15,12 +15,8 @@ export default async function AccountLayout({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const { supabase, user } = await requireUser(locale);
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("display_name,app_role,membership_tier")
-    .eq("id", user.id)
-    .maybeSingle();
+  await requireUser(locale);
+  const profile = await viewerProfile();
   const es = locale === "es";
   const base = `/${locale}/account`;
   const items: WorkspaceItem[] = [
