@@ -24,7 +24,6 @@ function madridInputValue(value?: string | null) {
   return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
 }
 
-
 const promotionServiceNames: Record<string, { es: string; en: string }> = {
   featured_listing: { es: "Local destacado", en: "Featured listing" },
   featured_event: { es: "Evento destacado", en: "Featured event" },
@@ -40,7 +39,11 @@ const promotionStateNames: Record<string, { es: string; en: string }> = {
   lost: { es: "Perdida", en: "Lost" },
 };
 
-function promotionName(value: string, es: boolean, names: Record<string, { es: string; en: string }>) {
+function promotionName(
+  value: string,
+  es: boolean,
+  names: Record<string, { es: string; en: string }>,
+) {
   const named = names[value];
   return named ? (es ? named.es : named.en) : value.replaceAll("_", " ");
 }
@@ -239,20 +242,33 @@ export default async function AdminPromotionsPage({
                 <details className="panel settings-row admin-promotion-request">
                   <summary className="admin-promotion-request-summary">
                     <span className="admin-promotion-request-identity">
-                      <strong>{venue?.name || (es ? "Local sin nombre" : "Unnamed venue")}</strong>
+                      <strong>
+                        {venue?.name ||
+                          (es ? "Local sin nombre" : "Unnamed venue")}
+                      </strong>
                       <small>
-                        {((es ? selectedEvent?.title_es : selectedEvent?.title_en) ||
-                          selectedEvent?.title_es)
-                          ? ((es ? selectedEvent?.title_es : selectedEvent?.title_en) ||
-                              selectedEvent?.title_es)
-                          : promotionName(item.service, es, promotionServiceNames)}
+                        {(es
+                          ? selectedEvent?.title_es
+                          : selectedEvent?.title_en) || selectedEvent?.title_es
+                          ? (es
+                              ? selectedEvent?.title_es
+                              : selectedEvent?.title_en) ||
+                            selectedEvent?.title_es
+                          : promotionName(
+                              item.service,
+                              es,
+                              promotionServiceNames,
+                            )}
                       </small>
                     </span>
-                    <span className={`status-pill admin-promotion-request-status admin-promotion-request-status--${item.state}`}>
+                    <span
+                      className={`status-pill admin-promotion-request-status admin-promotion-request-status--${item.state}`}
+                    >
                       {promotionName(item.state, es, promotionStateNames)}
                     </span>
                     <span className="admin-promotion-request-preview">
-                      {item.message || (es ? "Sin mensaje adjunto" : "No message supplied")}
+                      {item.message ||
+                        (es ? "Sin mensaje adjunto" : "No message supplied")}
                     </span>
                     <span className="admin-promotion-request-footer">
                       <time dateTime={item.created_at}>
@@ -270,43 +286,74 @@ export default async function AdminPromotionsPage({
                   <div className="admin-promotion-request-detail">
                     <section className="admin-promotion-request-message">
                       <h4>{es ? "Mensaje del negocio" : "Business message"}</h4>
-                      <p>{item.message || (es ? "Sin mensaje adjunto." : "No message supplied.")}</p>
+                      <p>
+                        {item.message ||
+                          (es
+                            ? "Sin mensaje adjunto."
+                            : "No message supplied.")}
+                      </p>
                     </section>
-                    <form action={updatePromotion} className="stack admin-promotion-request-form">
+                    <form
+                      action={updatePromotion}
+                      className="stack admin-promotion-request-form"
+                    >
                       <input type="hidden" name="locale" value={locale} />
                       <input type="hidden" name="requestId" value={item.id} />
-                      <input type="hidden" name="service" value={item.service} />
+                      <input
+                        type="hidden"
+                        name="service"
+                        value={item.service}
+                      />
                       <h4>{es ? "Gestionar solicitud" : "Manage request"}</h4>
                       <div className="admin-promotion-form-grid">
                         <label>
                           {es ? "Estado" : "Status"}
                           <select name="state" defaultValue={item.state}>
                             <option value="new">{es ? "Nueva" : "New"}</option>
-                            <option value="contacted">{es ? "Contactada" : "Contacted"}</option>
-                            <option value="qualified">{es ? "Cualificada" : "Qualified"}</option>
+                            <option value="contacted">
+                              {es ? "Contactada" : "Contacted"}
+                            </option>
+                            <option value="qualified">
+                              {es ? "Cualificada" : "Qualified"}
+                            </option>
                             <option value="won">{es ? "Ganada" : "Won"}</option>
-                            <option value="lost">{es ? "Perdida" : "Lost"}</option>
+                            <option value="lost">
+                              {es ? "Perdida" : "Lost"}
+                            </option>
                           </select>
                         </label>
                         {item.service === "featured_listing" ? (
                           <label>
                             {es ? "Evento destacado" : "Featured event"}
-                            <select name="eventId" defaultValue={item.event_id || ""} required>
+                            <select
+                              name="eventId"
+                              defaultValue={item.event_id || ""}
+                              required
+                            >
                               <option value="" disabled>
-                                {es ? "Selecciona un evento" : "Select an event"}
+                                {es
+                                  ? "Selecciona un evento"
+                                  : "Select an event"}
                               </option>
                               {(events || [])
-                                .filter((event) => event.venue_id === item.venue_id)
+                                .filter(
+                                  (event) => event.venue_id === item.venue_id,
+                                )
                                 .map((event) => (
                                   <option value={event.id} key={event.id}>
-                                    {(es ? event.title_es : event.title_en) || event.title_es}
+                                    {(es ? event.title_es : event.title_en) ||
+                                      event.title_es}
                                   </option>
                                 ))}
                             </select>
                           </label>
                         ) : (
                           <>
-                            <input type="hidden" name="eventId" value={item.event_id || ""} />
+                            <input
+                              type="hidden"
+                              name="eventId"
+                              value={item.event_id || ""}
+                            />
                             <input type="hidden" name="startsAt" value="" />
                             <input type="hidden" name="endsAt" value="" />
                           </>
@@ -319,7 +366,9 @@ export default async function AdminPromotionsPage({
                             <input
                               type="datetime-local"
                               name="startsAt"
-                              defaultValue={madridInputValue(requestSlot?.starts_at)}
+                              defaultValue={madridInputValue(
+                                requestSlot?.starts_at,
+                              )}
                             />
                           </label>
                           <label>
@@ -327,14 +376,20 @@ export default async function AdminPromotionsPage({
                             <input
                               type="datetime-local"
                               name="endsAt"
-                              defaultValue={madridInputValue(requestSlot?.ends_at)}
+                              defaultValue={madridInputValue(
+                                requestSlot?.ends_at,
+                              )}
                             />
                           </label>
                         </div>
                       )}
                       <label className="admin-promotion-request-notes">
                         {es ? "Notas internas" : "Internal notes"}
-                        <textarea name="notes" rows={3} defaultValue={item.operator_notes || ""} />
+                        <textarea
+                          name="notes"
+                          rows={3}
+                          defaultValue={item.operator_notes || ""}
+                        />
                       </label>
                       <div className="admin-promotion-request-actions">
                         <button className="button primary" type="submit">

@@ -512,7 +512,9 @@
 .admin-workspace .admin-list-entry > details.admin-promotion-request[open] {
   border-color: color-mix(in srgb, var(--primary) 45%, var(--line));
 }
-.admin-workspace .admin-promotion-request > summary.admin-promotion-request-summary {
+.admin-workspace
+  .admin-promotion-request
+  > summary.admin-promotion-request-summary {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
@@ -526,7 +528,9 @@
   cursor: pointer;
   list-style: none;
 }
-.admin-workspace .admin-promotion-request > summary.admin-promotion-request-summary::after {
+.admin-workspace
+  .admin-promotion-request
+  > summary.admin-promotion-request-summary::after {
   display: none;
   content: none;
 }

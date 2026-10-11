@@ -172,8 +172,14 @@ describe("Admin commercial and user search layout regression", () => {
     expect(source).toContain("madridInputValue");
     expect(source).toContain("action={updatePromotion}");
     for (const name of [
-      "locale", "requestId", "service", "state",
-      "eventId", "startsAt", "endsAt", "notes",
+      "locale",
+      "requestId",
+      "service",
+      "state",
+      "eventId",
+      "startsAt",
+      "endsAt",
+      "notes",
     ]) {
       expect(source).toContain(`name="${name}"`);
     }
@@ -193,7 +199,9 @@ describe("Admin commercial and user search layout regression", () => {
       "src/app/[locale]/admin/admin-suite.css",
       "utf8",
     );
-    const userStyles = styles.split("/* Admin Users:")[1]?.split("/* Commercial request inbox:")[0];
+    const userStyles = styles
+      .split("/* Admin Users:")[1]
+      ?.split("/* Commercial request inbox:")[0];
     expect(userStyles).toContain(".admin-workspace .admin-search-field");
     expect(userStyles).toContain("top: auto;");
     expect(userStyles).toContain("display: grid;");
