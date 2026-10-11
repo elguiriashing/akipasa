@@ -26,7 +26,7 @@ beforeAll(async () => {
   `);
   await db.exec(
     readFileSync(
-      "database/migrations/20261011220000_staff_audit_admin_only.sql",
+      "database/migrations/20261011204631_staff_audit_admin_only_20261011.sql",
       "utf8",
     ),
   );
@@ -67,12 +67,12 @@ describe("administrator-only audit access", () => {
   it("keeps both operational migration copies identical", () => {
     expect(
       readFileSync(
-        "database/migrations/20261011220000_staff_audit_admin_only.sql",
+        "database/migrations/20261011204631_staff_audit_admin_only_20261011.sql",
         "utf8",
       ),
     ).toBe(
       readFileSync(
-        "supabase/migrations/20261011220000_staff_audit_admin_only.sql",
+        "supabase/migrations/20261011204631_staff_audit_admin_only_20261011.sql",
         "utf8",
       ),
     );
