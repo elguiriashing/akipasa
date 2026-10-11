@@ -1,3 +1,4 @@
+import "./../../claim-review.css";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { WorkspacePageHeader } from "@/components/WorkspaceShell";
