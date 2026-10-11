@@ -182,6 +182,7 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 - `AGENTS.md`: mandatory start/stop instructions.
 - `docs/CHANGE_IMPACT_REGISTER.md`: per-change before/after evidence ledger.
 - `docs/ARCHITECTURE.md`, `docs/DECISIONS.md`: deeper architecture/ADRs.
+- `docs/PERFORMANCE_AUDIT_2026-10-11.md`: navigation/scrolling findings, bounded candidate fixes, controlled evidence and staged suite architecture.
 - `docs/deployment-source.md`, `docs/RUNBOOK.md`: source and release/rollback.
 - `docs/AI_HANDOFF.md`, `docs/PROJECT_STATUS.md`, `docs/TODO.md`, `docs/ACCEPTANCE.md`, `docs/CHANGELOG.md`: check freshness and reconcile, never blindly trust.
 
@@ -288,6 +289,16 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 - The alert contains only venue name, timestamp, claim reference and protected review URL. It does not copy claimant email, private phone, evidence or unverified documents into mail. Fixed recipients, provider idempotency key based on immutable claim ID, service-role-only leases and acknowledgments, bounded retry and ambiguous-delivery review preserve staff privacy and prevent storms.
 - `public.staff_pending_venue_claim_count()` powers Staff summary and matches the staff-authorized paginated claim queue; zero is never inferred from a failed query. Existing moderation approval, rejection, ownership grants and claimant decision notifications are unchanged.
 - Additive migrations mirrored under `database/migrations` and `supabase/migrations`: `20261010231800_staff_pending_claim_count.sql`, `20261011010000_claim_submission_alerts.sql`. Apply before the app release. No backfill of historical email sends or automatic ownership decision. The private outbox follows claimant account export/deletion as with decision notifications.
+
+### Navigation and scrolling foundation (2026-10-11 candidate)
+
+- `optionalUser` and `viewerProfile` use React request-scoped memoization. Account/Staff/Admin and locale shell reuse the viewer projection; fresh Auth, terms, roles, owner access and RLS remain authoritative on subsequent requests. Identity/roles are never placed in persistent/shared caches. Admin overview now authorizes before loading its counters.
+- Localized loading boundaries and `NavigationLink` use Next's real pending state for immediate feedback, partial prefetch and repeated-link suppression. Modified clicks, locale/query/history and cancellation remain native router behavior. Discover/Map/Passport parallelize independent existing reads and retain error/visibility/pagination semantics.
+- Owner appearance/launcher remain immediate while the full toolbox loads on opening. Venue detail signs private media in one Storage batch, maps by path and preserves labels/order while omitting failed objects. No database, storage policy, billing, email or consent change.
+- Touch/reduced-motion surfaces use static scrolling backgrounds and solid shared navigation/panels instead of backdrop blur. Custom backgrounds scroll on that path. Passport foil stops frame/style work when settled and hidden, waking on real input. Device scrolling improvement remains unmeasured; fine-pointer effects otherwise remain.
+- Evidence: local full check and Cloudflare packaging passed; controlled hybrid builds show Account viewer reads 4→1, Map complete SSR 530→399 ms and Passport 640→526 ms with 120 ms disposable-backend latency. These are single-run simulation results, not production navigation/FPS. Invalid/stale/denied and subsequent anonymous requests pass the probe. Browser launch is blocked locally; tablet CI includes touch and Passport acceptance. Review browser/physical/live evidence before release. No deployment performed. See the audit and impact register for limits and rollback.
+
+- Browser follow-up for this candidate: Passport acceptance follows the existing collapsed phone drawer and current accessible labels; exact selectors distinguish opening the book from its menu. The menu meets a 44 px minimum touch target. Permission/consent/foil/recenter/swipe and responsive assertions remain; the initial newly enabled suite failed on stale selectors and one multi-background CSS expectation. Final CI acceptance remains required.
 
 ### Claim-specific applicant verification fields (2026-10-11)
 

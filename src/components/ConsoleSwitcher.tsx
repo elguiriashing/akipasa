@@ -1,5 +1,5 @@
 import React from "react";
-import Link from "next/link";
+import { NavigationLink as Link } from "./NavigationLink";
 import { Icon } from "./Icons";
 import { config, type Locale } from "../lib/config";
 import { roleCapabilities } from "../lib/roles";

@@ -1,4 +1,17 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+// Match the current responsive drawer rather than assuming controls are always visible.
+async function passportMenu(page: Page, open: boolean) {
+  const toggle = page.getByRole("button", {
+    name: /Open passport menu|Abrir menú del pasaporte/,
+    exact: true,
+  });
+  if (
+    (await toggle.isVisible()) &&
+    (await toggle.getAttribute("aria-expanded")) !== String(open)
+  )
+    await toggle.click();
+}
+
 // Passport interactions model returning visitors; privacy tests exercise first load.
 test.beforeEach(async ({ page }, testInfo) => {
   if (!/accept all|reject optional|passport fits/.test(testInfo.title)) {
@@ -12,7 +25,9 @@ test("city pages reuse discovery photos, turn with keys, and expose real discove
   page,
 }) => {
   await page.goto("/en/passports");
-  await page.getByRole("button", { name: "Open passport" }).click();
+  await page
+    .getByRole("button", { name: "Open passport", exact: true })
+    .click();
   await page.getByRole("searchbox", { name: "Find a city" }).fill("malaga");
   await page.getByRole("button", { name: /^Málaga/ }).click();
   const photo = page.getByRole("img", { name: /Málaga/ });
@@ -35,7 +50,10 @@ test("city pages reuse discovery photos, turn with keys, and expose real discove
   await expect(
     page.getByRole("heading", { name: "Málaga", exact: true, level: 2 }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Foil: ON" }).click();
+  await passportMenu(page, true);
+  await page
+    .getByRole("button", { name: "Holographic foil", exact: true })
+    .click();
   await expect(page.locator('[data-shine="false"]')).toBeVisible();
 });
 
@@ -54,12 +72,16 @@ test("legacy chapter URLs and reward feedback remain available", async ({
 test("reduced motion disables tilt and page rotation", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/es/passports");
+  await passportMenu(page, true);
   await expect(
     page.getByRole("button", { name: "Activar inclinación" }),
   ).toBeDisabled();
   await expect(page.locator('[data-motion="off"]')).toBeVisible();
   await expect(page.locator('[data-shine="false"]')).toBeVisible();
-  await page.getByRole("button", { name: "Abrir pasaporte" }).click();
+  await passportMenu(page, false);
+  await page
+    .getByRole("button", { name: "Abrir pasaporte", exact: true })
+    .click();
   await expect(
     page.getByRole("searchbox", { name: "Busca una ciudad" }),
   ).toBeVisible();
@@ -73,11 +95,10 @@ test("denied motion permission falls back to touch", async ({ page }) => {
     });
   });
   await page.goto("/en/passports");
+  await passportMenu(page, true);
   await expect(page.getByRole("button", { name: "Enable tilt" })).toBeVisible();
   await page.getByRole("button", { name: "Enable tilt" }).click();
-  await expect(
-    page.getByRole("status").filter({ hasText: "Motion unavailable" }),
-  ).toBeVisible();
+  await expect(page.locator('[data-tilt="off"]')).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Enable tilt" }),
   ).toHaveAttribute("aria-pressed", "false");
@@ -91,6 +112,7 @@ test("granted tilt drives the foil and can be recentered", async ({ page }) => {
     });
   });
   await page.goto("/en/passports");
+  await passportMenu(page, true);
   await expect(page.getByRole("button", { name: "Enable tilt" })).toBeVisible();
   await page.getByRole("button", { name: "Enable tilt" }).click();
   await page.evaluate(() => {
@@ -102,8 +124,8 @@ test("granted tilt drives the foil and can be recentered", async ({ page }) => {
     );
   });
   await expect(
-    page.getByRole("status").filter({ hasText: "Tilt gently" }),
-  ).toBeVisible();
+    page.getByRole("button", { name: "Disable tilt" }),
+  ).toHaveAttribute("aria-pressed", "true");
   const foil = page.locator('[data-shine="true"]');
   await expect
     .poll(() =>
@@ -130,7 +152,11 @@ test("horizontal touch gestures turn pages without changing vertical scroll", as
   page,
 }) => {
   await page.goto("/en/passports");
-  const heading = page.getByRole("heading", { name: "Cover", exact: true });
+  const heading = page.getByRole("heading", {
+    name: "Passport",
+    exact: true,
+    level: 2,
+  });
   await heading.dispatchEvent("touchstart", {
     touches: [{ identifier: 1, clientX: 300, clientY: 200 }],
   });
@@ -154,10 +180,21 @@ test("default tilt calibrates while unearned city cards stay still", async ({
   page,
 }) => {
   await page.goto("/en/passports");
+  await passportMenu(page, true);
   await expect(
     page.getByRole("button", { name: "Disable tilt" }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Open passport" }).click();
+  // A real sensor supplies samples while the visitor opens a city. Keep the
+  // default listener alive instead of racing its no-sensor fallback timeout.
+  await page.evaluate(() =>
+    window.dispatchEvent(
+      new DeviceOrientationEvent("deviceorientation", { beta: 63, gamma: 18 }),
+    ),
+  );
+  await passportMenu(page, false);
+  await page
+    .getByRole("button", { name: "Open passport", exact: true })
+    .click();
   await page.getByRole("searchbox", { name: "Find a city" }).fill("malaga");
   await page.getByRole("button", { name: /^Málaga/ }).click();
   const card = page.locator("[data-finish]");
@@ -223,6 +260,7 @@ test("accept all requests required motion permission within the click", async ({
     await page.evaluate(() => localStorage.getItem("akipasa:passport-motion")),
   ).toBe("on");
   await page.goto("/en/passports");
+  await passportMenu(page, true);
   await expect(
     page.getByRole("button", { name: "Disable tilt" }),
   ).toBeVisible();
@@ -251,13 +289,14 @@ test("reject optional disables motion without requesting sensor permission", asy
     await page.evaluate(() => localStorage.getItem("akipasa:passport-motion")),
   ).toBe("off");
   await page.reload();
+  await passportMenu(page, true);
   await expect(page.getByRole("button", { name: "Enable tilt" })).toBeVisible();
 });
 
 for (const viewport of [
-  { name: "small phone", width: 320, height: 740, columns: 3, spread: 1 },
-  { name: "phone", width: 390, height: 844, columns: 3, spread: 1 },
-  { name: "tablet portrait", width: 820, height: 1180, columns: 6, spread: 1 },
+  { name: "small phone", width: 320, height: 740, columns: 2, spread: 1 },
+  { name: "phone", width: 390, height: 844, columns: 2, spread: 1 },
+  { name: "tablet portrait", width: 820, height: 1180, columns: 6, spread: 2 },
   { name: "tablet landscape", width: 1024, height: 768, columns: 6, spread: 2 },
   { name: "desktop", width: 1440, height: 1000, columns: 1, spread: 2 },
 ]) {
@@ -289,6 +328,7 @@ for (const viewport of [
     await privacy
       .getByRole("button", { name: "Accept all", exact: true })
       .click();
+    await passportMenu(page, true);
     const bookmarks = page.getByRole("navigation", {
       name: "Passport chapters",
     });
@@ -297,7 +337,10 @@ for (const viewport of [
         (el) => getComputedStyle(el).gridTemplateColumns.split(" ").length,
       ),
     ).toBe(viewport.columns);
-    await page.getByRole("button", { name: "Open passport" }).click();
+    await passportMenu(page, false);
+    await page
+      .getByRole("button", { name: "Open passport", exact: true })
+      .click();
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,

@@ -44,7 +44,6 @@ export default async function MapPage({
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
   const m = msg(locale);
-  const companion = await mapPreviewPortrait();
 
   const selectedLocation = discoveryLocationFromQuery(query, locale);
   const { locality, center: searchCenter } = selectedLocation;
@@ -91,34 +90,36 @@ export default async function MapPage({
     dateTo,
     accessible,
   };
-  const recommendations = await recommendDiscovery({
-    query: discoveryQuery,
-    surface: "map",
-  });
+  const [companion, recommendations, nationwideEvents, venuePage] =
+    await Promise.all([
+      mapPreviewPortrait(),
+      recommendDiscovery({
+        query: discoveryQuery,
+        surface: "map",
+      }),
+      repository.discover({
+        locality,
+        latitude: searchCenter.latitude,
+        longitude: searchCenter.longitude,
+        radiusKm: 5000,
+        time: "all",
+      }),
+      nearbyVenuePage({
+        center: searchCenter,
+        radiusKm: radius,
+        page: resultPage(query.venuePage),
+      })
+        .then((page) => ({ ...page, unavailable: false }))
+        .catch((error: unknown) => {
+          console.error("Map nearby venues unavailable", error);
+          return { rows: [], total: 0, page: 1, unavailable: true };
+        }),
+    ]);
   const results = recommendations.items.map((item) => item.result);
   const eventPage = resultSlice(
     recommendations.items,
     resultPage(query.eventPage),
   );
-  const [nationwideEvents, venuePage] = await Promise.all([
-    repository.discover({
-      locality,
-      latitude: searchCenter.latitude,
-      longitude: searchCenter.longitude,
-      radiusKm: 5000,
-      time: "all",
-    }),
-    nearbyVenuePage({
-      center: searchCenter,
-      radiusKm: radius,
-      page: resultPage(query.venuePage),
-    })
-      .then((page) => ({ ...page, unavailable: false }))
-      .catch((error: unknown) => {
-        console.error("Map nearby venues unavailable", error);
-        return { rows: [], total: 0, page: 1, unavailable: true };
-      }),
-  ]);
   const eventPoints = nationwideEvents.map((result) => ({
     id: result.event.id,
     latitude: result.event.location?.latitude ?? result.venue.latitude,

@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Icon, type IconName } from "@/components/Icons";
-import { requireUser } from "@/lib/auth";
+import { requireUser, viewerProfile } from "@/lib/auth";
+import { isAdministrator } from "@/lib/roles";
 import { isLocale } from "@/lib/config";
 
 export default async function AdminOverview({
@@ -26,6 +27,8 @@ export default async function AdminOverview({
       redirect(`/${locale}/admin/${routes[query.view]}`);
   }
   const { supabase } = await requireUser(locale, `/${locale}/admin`);
+  const profile = await viewerProfile();
+  if (!profile || !isAdministrator(profile.app_role)) notFound();
   const [
     { count: users },
     { count: venues },

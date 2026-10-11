@@ -1,6 +1,6 @@
 # Architecture
 
-Last updated: 2026-07-31.
+Last updated: 2026-10-11.
 
 ## Overall system architecture
 
@@ -50,6 +50,22 @@ Supabase SSR client or calling `auth.getUser()`. Public catalogue reads use a
 separate non-persistent client with Auth refresh disabled. Event, venue, and
 passport pages switch to the cookie-backed client only for signed-in visitors.
 MapLibre and QR generation are client-only and are excluded from server chunks.
+
+### Navigation and rendering candidate
+
+React request-scoped caching reuses `optionalUser`/`viewerProfile` only inside a
+server render; middleware and subsequent requests retain fresh Auth and access
+checks. Localized loading boundaries enable streaming/partial route prefetch,
+and shared links expose Next's actual pending state. Independent Discover/Map/
+Passport reads run concurrently. Owner toolbox code is lazy; private venue media
+uses one batch-signing request, with response-to-row matching by path.
+
+Touch/reduced-motion devices use stable shared surfaces and scrolling backgrounds.
+Passport foil uses demand-driven frames and pauses when hidden. These changes
+need device/browser acceptance; they do not claim production FPS improvement.
+The detailed evidence and next query/module/API boundaries are in
+`PERFORMANCE_AUDIT_2026-10-11.md`. No authenticated shared response cache or
+production database change is part of this candidate.
 
 ## Folder structure
 

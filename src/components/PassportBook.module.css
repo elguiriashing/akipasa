@@ -2024,7 +2024,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    min-height: 38px;
+    min-height: 44px;
     max-width: min(190px, 52vw);
     padding: 8px 11px;
     border: 1px solid var(--passport-line);

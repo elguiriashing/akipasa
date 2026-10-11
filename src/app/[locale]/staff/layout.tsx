@@ -3,7 +3,7 @@ import {
   WorkspaceShell,
   type WorkspaceItem,
 } from "@/components/WorkspaceShell";
-import { requireUser } from "@/lib/auth";
+import { requireUser, viewerProfile } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { canModerate } from "@/lib/roles";
 
@@ -16,12 +16,8 @@ export default async function StaffLayout({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const { supabase, user } = await requireUser(locale, `/${locale}/staff`);
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("app_role")
-    .eq("id", user.id)
-    .maybeSingle();
+  await requireUser(locale, `/${locale}/staff`);
+  const profile = await viewerProfile();
   if (!profile || !canModerate(profile.app_role)) notFound();
   const es = locale === "es";
   const base = `/${locale}/staff`;

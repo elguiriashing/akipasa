@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AccountWorkspacePortals } from "@/components/AccountWorkspacePortals";
 import { Icon, type IconName } from "@/components/Icons";
-import { requireUser } from "@/lib/auth";
+import { requireUser, viewerProfile } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 
 export default async function AccountOverview({
@@ -15,16 +15,12 @@ export default async function AccountOverview({
   const { supabase, user } = await requireUser(locale);
   const es = locale === "es";
   const [
-    { data: profile },
+    profile,
     { count: savedCount },
     { count: followedCount },
     { data: xp },
   ] = await Promise.all([
-    supabase
-      .from("profiles")
-      .select("display_name,app_role,preferred_locale,membership_tier")
-      .eq("id", user.id)
-      .maybeSingle(),
+    viewerProfile(),
     supabase
       .from("saved_event_refs")
       .select("*", { count: "exact", head: true }),
