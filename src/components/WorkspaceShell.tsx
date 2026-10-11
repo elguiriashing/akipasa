@@ -344,7 +344,7 @@ export function WorkspaceShell({
             </div>
             <p>{description}</p>
           </header>
-        )
+        )}
         <div className="workspace-grid-body">{children}</div>
       </div>
     </main>
