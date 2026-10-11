@@ -67,7 +67,7 @@ describe("booking release boundaries", () => {
     ).toBe(false);
   });
   it("formats distinct recipient-localized confirmations and escapes untrusted HTML", () => {
-    expect(bookingEmailFrom).toBe("AkiPasa <contact@akipasa.com>");
+    expect(bookingEmailFrom).toBe("AkiPasa Support <support@akipasa.com>");
     const guest = renderBookingConfirmation(booking, "customer");
     const owner = renderBookingConfirmation(
       { ...booking, locale: "es" },
