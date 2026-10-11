@@ -64,34 +64,63 @@ export function StaffQueue({
       </p>
     );
   if (targetType === "venue_claim") {
-    const selected = items.find((candidate) => candidate.id === selectedClaimId) || items[0];
+    const selected =
+      items.find((candidate) => candidate.id === selectedClaimId) || items[0];
     return (
       <div className="claim-modern-workspace">
         <div className="claim-modern-workspace-title">
           <div>
-            <p className="claim-modern-eyebrow">{es ? "BANDEJA DE RECLAMACIONES" : "CLAIMS INBOX"}</p>
-            <h2>{es ? "Solicitudes de titularidad" : "Venue ownership claims"}</h2>
-            <p>{es ? "Revisa la solicitud y compara los datos enviados con la ficha existente." : "Review each request and compare submitted details with the existing venue record."}</p>
+            <p className="claim-modern-eyebrow">
+              {es ? "BANDEJA DE RECLAMACIONES" : "CLAIMS INBOX"}
+            </p>
+            <h2>
+              {es ? "Solicitudes de titularidad" : "Venue ownership claims"}
+            </h2>
+            <p>
+              {es
+                ? "Revisa la solicitud y compara los datos enviados con la ficha existente."
+                : "Review each request and compare submitted details with the existing venue record."}
+            </p>
           </div>
-          <span className="claim-modern-count-pill">{items.length} {es ? "en esta página" : "on this page"}</span>
+          <span className="claim-modern-count-pill">
+            {items.length} {es ? "en esta página" : "on this page"}
+          </span>
         </div>
         {items.length > 1 && (
-          <nav className="claim-modern-picker" aria-label={es ? "Seleccionar reclamación" : "Select claim"}>
+          <nav
+            className="claim-modern-picker"
+            aria-label={es ? "Seleccionar reclamación" : "Select claim"}
+          >
             {items.map((candidate) => (
               <Link
-                href={"/" + locale + "/staff/moderation?queue=claims&page=" + claimPage + "&claim=" + encodeURIComponent(candidate.id)}
+                href={
+                  "/" +
+                  locale +
+                  "/staff/moderation?queue=claims&page=" +
+                  claimPage +
+                  "&claim=" +
+                  encodeURIComponent(candidate.id)
+                }
                 aria-current={candidate.id === selected.id ? "true" : undefined}
                 className={candidate.id === selected.id ? "active" : undefined}
                 key={candidate.id}
               >
-                <span className="claim-modern-picker-dot" aria-hidden="true"/>
-                <span>{candidate.venues?.name || (es ? "Local sin nombre" : "Unnamed venue")}</span>
+                <span className="claim-modern-picker-dot" aria-hidden="true" />
+                <span>
+                  {candidate.venues?.name ||
+                    (es ? "Local sin nombre" : "Unnamed venue")}
+                </span>
                 <small>{candidate.status || "pending"}</small>
               </Link>
             ))}
           </nav>
         )}
-        <ClaimReview item={selected} locale={locale} approve={approve} claimPage={claimPage}/>
+        <ClaimReview
+          item={selected}
+          locale={locale}
+          approve={approve}
+          claimPage={claimPage}
+        />
       </div>
     );
   }
@@ -152,4 +181,3 @@ export function StaffQueue({
     </div>
   );
 }
-

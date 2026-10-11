@@ -103,10 +103,14 @@ try {
         await expect(page.locator(".claim-modern-columns")).toBeVisible();
         await expect(page.locator(".claim-modern-actions")).toBeVisible();
         expect(await page.locator(".claim-modern").count()).toBe(1);
-        const layout = await page.locator(".claim-modern-columns").evaluate((node) => {
-          const columns = getComputedStyle(node).gridTemplateColumns.split(" ").filter(Boolean);
-          return columns.length;
-        });
+        const layout = await page
+          .locator(".claim-modern-columns")
+          .evaluate((node) => {
+            const columns = getComputedStyle(node)
+              .gridTemplateColumns.split(" ")
+              .filter(Boolean);
+            return columns.length;
+          });
         expect(layout).toBe(width >= 1000 ? 2 : 1);
         expect(
           await page.evaluate(

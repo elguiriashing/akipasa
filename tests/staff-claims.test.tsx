@@ -174,11 +174,18 @@ it("shows one selected claim and lets staff navigate requests without duplicatin
       claimPage={3}
     />,
   );
-  expect(screen.getByRole("heading", { name: "Second venue" })).toBeInTheDocument();
-  expect(screen.getByRole("link", { name: /Second venue/i })).toHaveAttribute("aria-current", "true");
+  expect(
+    screen.getByRole("heading", { name: "Second venue" }),
+  ).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: /Second venue/i })).toHaveAttribute(
+    "aria-current",
+    "true",
+  );
   expect(document.querySelectorAll(".claim-modern")).toHaveLength(1);
   expect(document.querySelector('[name="claimPage"]')).toHaveValue("3");
-  expect(document.querySelector('[name="targetId"]')).toHaveValue("claim-second");
+  expect(document.querySelector('[name="targetId"]')).toHaveValue(
+    "claim-second",
+  );
   expect(screen.queryByRole("heading", { name: "Test Venue" })).toBeNull();
   expect(screen.getByRole("link", { name: /Test Venue/i })).toHaveAttribute(
     "href",
@@ -187,11 +194,23 @@ it("shows one selected claim and lets staff navigate requests without duplicatin
 });
 
 it("request more information composes email without changing claim state", () => {
-  render(<StaffQueue locale="en" items={[item]} targetType="venue_claim" approve="approved" />);
+  render(
+    <StaffQueue
+      locale="en"
+      items={[item]}
+      targetType="venue_claim"
+      approve="approved"
+    />,
+  );
   const link = screen.getByRole("link", { name: "Request more information" });
-  expect(link.getAttribute("href")).toContain("mailto:applicant%40example.test");
+  expect(link.getAttribute("href")).toContain(
+    "mailto:applicant%40example.test",
+  );
   expect(link.getAttribute("href")).toContain("subject=");
   expect(screen.getByText(/does not change claim status/)).toBeInTheDocument();
   expect(document.querySelectorAll('button[name="decision"]')).toHaveLength(2);
-  expect(screen.getByRole("button", { name: "Deny claim" })).toHaveAttribute("value", "rejected");
+  expect(screen.getByRole("button", { name: "Deny claim" })).toHaveAttribute(
+    "value",
+    "rejected",
+  );
 });

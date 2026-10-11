@@ -121,58 +121,58 @@ export default async function StaffModerationPage({
         </p>
       )}
       {queue !== "claims" && (
-      <section
-        className="settings-row moderation-mode-card"
-        aria-labelledby="moderation-mode-title"
-      >
-        <div>
-          <p className="eyebrow">{es ? "Modo de revisión" : "Review mode"}</p>
-          <h2 id="moderation-mode-title">
-            {automaticEnabled
-              ? es
-                ? "Moderación automática activa"
-                : "Automatic moderation is on"
-              : es
-                ? "Moderación manual activa"
-                : "Manual moderation is on"}
-          </h2>
-          <p>
-            {es
-              ? "En modo automático, el agente de catálogo revisa nuevas solicitudes de locales, eventos de negocios y eventos comunitarios. Los casos inciertos o los errores permanecen en esta cola."
-              : "In automatic mode, the catalogue agent reviews new venue, business event, and community event requests. Uncertain cases and service failures stay in this queue."}
-          </p>
-        </div>
-        <form action={setAutomaticModeration}>
-          <input type="hidden" name="locale" value={locale} />
-          <input
-            type="hidden"
-            name="enabled"
-            value={automaticEnabled ? "false" : "true"}
-          />
-          <button
-            className={`button moderation-mode-toggle${automaticEnabled ? "active" : ""}`}
-            type="submit"
-            aria-pressed={automaticEnabled}
-            disabled={!canChangeAutomaticMode}
-            title={
-              !canChangeAutomaticMode
+        <section
+          className="settings-row moderation-mode-card"
+          aria-labelledby="moderation-mode-title"
+        >
+          <div>
+            <p className="eyebrow">{es ? "Modo de revisión" : "Review mode"}</p>
+            <h2 id="moderation-mode-title">
+              {automaticEnabled
                 ? es
-                  ? "Solo un administrador puede cambiar este modo"
-                  : "Only an administrator can change this mode"
-                : undefined
-            }
-          >
-            <span aria-hidden="true" className="moderation-mode-indicator" />
-            {automaticEnabled
-              ? es
-                ? "Automático"
-                : "Automatic"
-              : es
-                ? "Manual"
-                : "Manual"}
-          </button>
-        </form>
-      </section>
+                  ? "Moderación automática activa"
+                  : "Automatic moderation is on"
+                : es
+                  ? "Moderación manual activa"
+                  : "Manual moderation is on"}
+            </h2>
+            <p>
+              {es
+                ? "En modo automático, el agente de catálogo revisa nuevas solicitudes de locales, eventos de negocios y eventos comunitarios. Los casos inciertos o los errores permanecen en esta cola."
+                : "In automatic mode, the catalogue agent reviews new venue, business event, and community event requests. Uncertain cases and service failures stay in this queue."}
+            </p>
+          </div>
+          <form action={setAutomaticModeration}>
+            <input type="hidden" name="locale" value={locale} />
+            <input
+              type="hidden"
+              name="enabled"
+              value={automaticEnabled ? "false" : "true"}
+            />
+            <button
+              className={`button moderation-mode-toggle${automaticEnabled ? "active" : ""}`}
+              type="submit"
+              aria-pressed={automaticEnabled}
+              disabled={!canChangeAutomaticMode}
+              title={
+                !canChangeAutomaticMode
+                  ? es
+                    ? "Solo un administrador puede cambiar este modo"
+                    : "Only an administrator can change this mode"
+                  : undefined
+              }
+            >
+              <span aria-hidden="true" className="moderation-mode-indicator" />
+              {automaticEnabled
+                ? es
+                  ? "Automático"
+                  : "Automatic"
+                : es
+                  ? "Manual"
+                  : "Manual"}
+            </button>
+          </form>
+        </section>
       )}
       <nav
         className="workspace-subnav"
