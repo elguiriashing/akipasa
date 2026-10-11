@@ -77,6 +77,7 @@ export default async function AdminLayout({
       href: `${base}/passports`,
       label: es ? "Recompensas" : "Rewards",
       icon: "gift",
+      matchPaths: [`${base}/achievements`],
     },
     {
       href: `${base}/settings`,
