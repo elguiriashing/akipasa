@@ -13,10 +13,13 @@ for (const locale of ["en", "es"]) {
         document.documentElement.dataset.ownerGlass = "true";
         document.documentElement.dataset.ownerMotion = "true";
       }, theme);
-      await expect(page.locator("body")).toHaveCSS(
-        "background-attachment",
-        "scroll",
-      );
+      expect(
+        await page.locator("body").evaluate((body) =>
+          getComputedStyle(body)
+            .backgroundAttachment.split(",")
+            .every((attachment) => attachment.trim() === "scroll"),
+        ),
+      ).toBe(true);
       await expect(page.locator("body")).toHaveCSS("animation-name", "none");
       await expect(page.locator(".app-bottom-nav")).toHaveCSS(
         "backdrop-filter",
