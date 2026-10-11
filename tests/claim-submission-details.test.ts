@@ -5,6 +5,7 @@ describe("structured venue claim form and privacy contract", () => {
   const page = readFileSync("src/app/[locale]/business/page.tsx", "utf8");
   const actions = readFileSync("src/app/[locale]/business/actions.ts", "utf8");
   const staff = readFileSync("src/app/[locale]/staff/StaffQueue.tsx", "utf8");
+  const review = readFileSync("src/app/[locale]/staff/ClaimReview.tsx", "utf8");
   const migration = readFileSync(
     "database/migrations/20261010231500_venue_claim_details.sql",
     "utf8",
@@ -54,8 +55,10 @@ describe("structured venue claim form and privacy contract", () => {
     expect(migration).toContain(
       "revoke all on function public.staff_pending_venue_claims",
     );
-    expect(staff).toContain("item.claimant?.submission?.applicant_name");
-    expect(staff).toContain("item.claimant?.submission?.business_email");
-    expect(staff).toContain("Applicant-supplied details.");
+    expect(staff).toContain("<ClaimReview");
+    expect(review).toContain("const submission = item.claimant?.submission");
+    expect(review).toContain("submission?.applicant_name");
+    expect(review).toContain("submission?.business_email");
+    expect(review).toContain("Applicant-supplied details.");
   });
 });
