@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Icon } from "../../../../components/Icons";
 
 export type StaffPromotion = {
