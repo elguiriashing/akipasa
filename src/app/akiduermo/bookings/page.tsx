@@ -2,6 +2,7 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { requireUser } from "@/lib/auth";
 import { stayLocale } from "@/lib/akiduermo-i18n";
+import { queueSuitePortalWelcome } from "@/lib/suite-welcome";
 import { StayAppShell } from "@/components/StayAppShell";
 import { cancelStayRequest } from "./actions";
 import styles from "../member.module.css";
@@ -25,6 +26,7 @@ export default async function StayBookingsPage({
     Math.min(1000, Number.parseInt(query.page || "0", 10) || 0),
   );
   const { supabase, user } = await requireUser(locale, "/bookings");
+  await queueSuitePortalWelcome("akiduermo", locale);
   const today = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Europe/Madrid",
     year: "numeric",
