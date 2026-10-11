@@ -1,6 +1,7 @@
 # Claim email delivery: production 403 recovery (11 October 2026)
 
 ## Verified incident
+
 - A staff action successfully updates `venue_claims` and enqueues an immutable `claim_decision_emails` row.
 - Five claim-decision outbox rows (including the 11 October 10:50 UTC rejection) have `status='blocked'`, `last_error='provider_403'`, and `attempts=1`. No provider acceptance IDs were recorded.
 - Three staff submission alerts and one suite email also reached `provider_403`; two older receipt jobs have `claim_not_pending`, meaning the claims were decided before the receipts could be sent.
@@ -8,6 +9,7 @@
 - The linked Google Workspace inbox has no sent customer messages for these attempts. Current application notifications send via the Resend HTTP API; Gmail access in ChatGPT does not authorize the Cloudflare runtime to send through Google Workspace.
 
 ## Repair the sending permission, not the claim status
+
 1. In the Resend team that owns the verified `akipasa.com` domain, use a domain-scoped sending-enabled API key. Do not mistake the key **name** for its one-time secret value.
 2. In Cloudflare Workers & Pages > `akipasa` > Settings > Variables and Secrets, inspect the **production** encrypted `CLAIM_RESEND_API_KEY` binding. If invalid or not associated with the correct Resend team/domain, **replace its secret value** with the valid key, not a public variable, and ensure a new deployment retains secrets (`--keep-vars`). The runtime prefers `CLAIM_RESEND_API_KEY` to `RESEND_API_KEY` for claim decisions, staff alerts and suite mail.
 3. The worker also requires correct `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`, but the recorded provider 403 proves the worker already reached the provider in the documented incident.
@@ -50,4 +52,5 @@ commit;
 The existing scheduled dispatcher will send the exact saved language/decision with its stable idempotency key. Verify provider acceptance, delivery and the final row state. Never bulk replay without checking each recipient and the current real-world decision. Closed-claim staff alerts and receipt emails may be stale and must **not** be indiscriminately replayed. If delivery might be ambiguous, hold for manual investigation instead.
 
 ## Staff UI behavior
+
 The staff moderation server action now reports `mail=sent` only when the immediate dispatcher receives provider acceptance; otherwise it reports `mail=not_sent`. The bilingual Staff notice tells reviewers a saved decision is not proof that the customer was emailed. There is no public email address, provider key or queue payload in the redirect.
