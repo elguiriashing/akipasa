@@ -41,7 +41,9 @@ export async function moderateItem(formData: FormData) {
     }
   }
   const mailQuery =
-    value.targetType === "venue_claim" ? `&mail=${claimantMailStatus}` : "";
+    value.targetType === "venue_claim"
+      ? `&mail=${claimantMailStatus}`
+      : "";
   redirect(`/${locale}/staff/moderation?updated=decision${claimQuery}${mailQuery}`);
 }
 
