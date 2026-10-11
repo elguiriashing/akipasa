@@ -305,4 +305,19 @@ revoke all on function public.aki_finish_email_job(uuid,uuid,boolean,text,text,b
  from PUBLIC,anon,authenticated;
 grant execute on function public.aki_finish_email_job(uuid,uuid,boolean,text,text,boolean,boolean) to service_role;
 
+
+-- Cancel reminders that no longer qualify at delivery time. This operation
+-- is service-role-only and requires the active lease, preventing races.
+create or replace function public.aki_cancel_email_job(p_id uuid,p_lease uuid)
+returns boolean language plpgsql security definer set search_path='' as $$
+begin
+ update public.aki_lifecycle_email_jobs
+ set status='cancelled',lease_id=null,last_error='reminder_no_longer_eligible'
+ where id=p_id and lease_id=p_lease and status='sending'
+ and kind in('event_saved_reminder','stay_saved_reminder');
+ return found;
+end $$;
+revoke all on function public.aki_cancel_email_job(uuid,uuid) from PUBLIC,anon,authenticated;
+grant execute on function public.aki_cancel_email_job(uuid,uuid) to service_role;
+
 commit;
