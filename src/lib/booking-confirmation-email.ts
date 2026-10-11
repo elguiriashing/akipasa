@@ -15,7 +15,7 @@ export type BookingConfirmation = {
   totalCents?: number;
   policy?: string;
 };
-export const bookingEmailFrom = "AkiPasa <contact@akipasa.com>";
+export const bookingEmailFrom = "AkiPasa Support <support@akipasa.com>";
 const escapeHtml = (value: string) =>
   value.replace(
     /[&<>"']/g,
