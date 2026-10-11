@@ -384,3 +384,11 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - Privacy/security: static recipients; no applicant PII/evidence in outbound notification; protected review links; service-only outbox leasing/ack; status, attempt, ambiguous-delivery and permanent failure logging. No new public response or bypass to moderation roles. Account export covers the claimant's outbox row.
 - Tests: PGlite tests of staff count authorization and no-backfill/private new-claim trigger; unit tests of dual-recipient sender, idempotency, provider errors and dispatcher acknowledgment. `npm run check`, Cloudflare packaging, staff EN/ES browser and release endpoint must pass before merge. Supabase migration before app, safe rollback via application revert keeping additive tables.
 - Limits: an email accepted by a provider is not proof of inbox delivery. Existing pending claims are **not** backfilled. Customer claim-decision emails continue their separate queue.
+
+## 2026-10-11 | Publish structured AkiBusiness claim form
+
+- **Bug:** the live /business?view=claims form contained only a giant evidence textarea, even though Staff expected applicant name, phone, and business contact details. The earlier structured-form PR was never merged.
+- **Surfaces:** `src/app/[locale]/business/page.tsx` (bilingual responsive form), `src/app/[locale]/business/actions.ts` (Zod + private `claim_details`), `src/app/[locale]/staff/StaffQueue.tsx` (explicit unverified applicant data), `src/app/globals.css` (mobile/light/dark), two mirrored migrations and tests.
+- **Invariants:** profile/account email is not rewritten; unverified business website and phones are private claim metadata, not public venue fields. Existing owner-approval/denial policy, RLS, staff-only read RPC, subscriber decision emails and staff submission-alert trigger/dispatcher remain intact. No retroactive data from old claims; missing fields display “not provided.”
+- **Release order:** run format/lint/typecheck, PGlite staff-only claim tests, EN/ES rendering checks, Cloudflare and browser builds; apply additive Supabase migration before merging. Verify the new form is present on the business hostname after deployment.
+- **Rollback:** app-only rollback of form/UI; retain claim metadata and audit evidence. Do not delete pending claims or re-trigger notifications.
