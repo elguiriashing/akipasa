@@ -31,7 +31,7 @@ it("guards optional reminders with consent and authoritative saved-item and book
   const sql = source("supabase/migrations/20261011013000_suite_emails.sql");
   expect(sql).toContain("event_reminders boolean not null default false");
   expect(sql).toContain("stay_reminders boolean not null default false");
-  expect(sql).toContain("join public.saved_event_refs s");
+  expect(sql).toContain("from public.saved_event_refs s");
   expect(sql).toContain("join public.event_occurrences oc");
   expect(sql).toContain("s.saved_at<=now()-interval '5 days'");
   expect(sql).toContain("not exists (");
