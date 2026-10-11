@@ -87,7 +87,11 @@ export default async function EventBookingPage({
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="slug" value={slug} />
             <input type="hidden" name="eventId" value={event.id} />
-            <input type="hidden" name="requestKey" value={crypto.randomUUID()} />
+            <input
+              type="hidden"
+              name="requestKey"
+              value={crypto.randomUUID()}
+            />
             <label>
               {es ? "Horario" : "Time"}
               <select name="slotId" required>

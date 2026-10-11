@@ -11,10 +11,5 @@ export default async function SavedStaysPage() {
   const locale = stayLocale((await headers()).get("x-akipasa-locale"));
   const { user } = await optionalUser();
   if (user) await queueSuitePortalWelcome("akiduermo", locale);
-  return (
-    <AkiDuermo
-      initialLocale={locale}
-      initialView="saved"
-    />
-  );
+  return <AkiDuermo initialLocale={locale} initialView="saved" />;
 }

@@ -35,12 +35,9 @@ beforeEach(() => {
   from.mockReset();
   adminGetUserById.mockReset();
   rpc.mockImplementation(async (name: string) => {
-    if (name === "queue_due_suite_reminders")
-      return { data: 0, error: null };
-    if (name === "claim_due_suite_emails")
-      return { data: [row], error: null };
-    if (name === "finish_suite_email")
-      return { data: true, error: null };
+    if (name === "queue_due_suite_reminders") return { data: 0, error: null };
+    if (name === "claim_due_suite_emails") return { data: [row], error: null };
+    if (name === "finish_suite_email") return { data: true, error: null };
     return { data: null, error: { code: "unknown" } };
   });
 });
@@ -74,7 +71,9 @@ it("sends a welcome once and acknowledges only a provider-confirmed message ID",
   });
   vi.stubGlobal(
     "fetch",
-    vi.fn().mockImplementation(async () => Response.json({ id: "provider-123" })),
+    vi
+      .fn()
+      .mockImplementation(async () => Response.json({ id: "provider-123" })),
   );
   const result = await dispatchSuiteEmails(env);
   expect(result).toMatchObject({ sent: 1, failed: 0, configured: true });

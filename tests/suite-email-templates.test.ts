@@ -52,9 +52,15 @@ it("claims acknowledge receipt without suggesting the request has been approved"
 });
 
 it("welcome links are product-specific, bilingual and single-action", () => {
-  expect(renderSuiteEmail("welcome_akipasa", "en", sample).text).toContain("https://akipasa.com/en");
-  expect(renderSuiteEmail("welcome_akiduermo", "es", sample).text).toContain("https://akiduermo.akipasa.com/");
-  expect(renderSuiteEmail("welcome_akibusiness", "es", sample).text).toContain("https://business.akipasa.com/es/business");
+  expect(renderSuiteEmail("welcome_akipasa", "en", sample).text).toContain(
+    "https://akipasa.com/en",
+  );
+  expect(renderSuiteEmail("welcome_akiduermo", "es", sample).text).toContain(
+    "https://akiduermo.akipasa.com/",
+  );
+  expect(renderSuiteEmail("welcome_akibusiness", "es", sample).text).toContain(
+    "https://business.akipasa.com/es/business",
+  );
   const hq = renderSuiteEmail("welcome_akihq", "en", sample);
   expect(hq.text).toContain("https://crm.akipasa.com/");
   expect(hq.text).toContain("inventory");
@@ -62,7 +68,10 @@ it("welcome links are product-specific, bilingual and single-action", () => {
 });
 
 it("booking acknowledgements never claim a reservation is already confirmed", () => {
-  for (const kind of ["event_booking_requested", "stay_booking_requested"] as const)
+  for (const kind of [
+    "event_booking_requested",
+    "stay_booking_requested",
+  ] as const)
     for (const locale of ["es", "en"] as const) {
       const mail = renderSuiteEmail(kind, locale, sample);
       expect(mail.text).toContain(locale === "es" ? "confirm" : "confirm");
@@ -80,7 +89,9 @@ it("reminders state their opt-in basis and use appropriate destinations", () => 
 });
 
 it("sends from support using per-message idempotency and real provider receipts", async () => {
-  const mockFetch = vi.fn().mockImplementation(async () => Response.json({ id: "mail-123" }));
+  const mockFetch = vi
+    .fn()
+    .mockImplementation(async () => Response.json({ id: "mail-123" }));
   vi.stubGlobal("fetch", mockFetch);
   const out = await sendSuiteEmail(
     "00000000-0000-4000-8000-000000000006",
@@ -102,12 +113,27 @@ it("sends from support using per-message idempotency and real provider receipts"
 });
 
 it("fails safely with absent credentials, ambiguous failure or denied provider send", async () => {
-  expect(await sendSuiteEmail("id", "claim_received", "es", sample, "recipient@example.test"))
-    .toMatchObject({ ok: false, ambiguous: false });
+  expect(
+    await sendSuiteEmail(
+      "id",
+      "claim_received",
+      "es",
+      sample,
+      "recipient@example.test",
+    ),
+  ).toMatchObject({ ok: false, ambiguous: false });
   for (const status of [400, 429, 503, 409]) {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("", { status })));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(new Response("", { status })),
+    );
     const result = await sendSuiteEmail(
-      "id", "claim_received", "es", sample, "recipient@example.test", "dummy",
+      "id",
+      "claim_received",
+      "es",
+      sample,
+      "recipient@example.test",
+      "dummy",
     );
     expect(result).toMatchObject({
       ok: false,

@@ -20,12 +20,21 @@ export async function GET() {
   const supabase = await createSupabaseServerClient();
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user)
-    return Response.json({ authenticated: false, reminders: false, savedIds: [] }, {
-      headers: { "Cache-Control": "private, no-store" },
-    });
+    return Response.json(
+      { authenticated: false, reminders: false, savedIds: [] },
+      {
+        headers: { "Cache-Control": "private, no-store" },
+      },
+    );
   const [{ data: saved }, { data: pref }] = await Promise.all([
-    supabase.from("suite_saved_stays").select("venue_id").eq("profile_id", auth.user.id),
-    supabase.rpc("suite_email_reminder_preferences", { p_event: null, p_stay: null }),
+    supabase
+      .from("suite_saved_stays")
+      .select("venue_id")
+      .eq("profile_id", auth.user.id),
+    supabase.rpc("suite_email_reminder_preferences", {
+      p_event: null,
+      p_stay: null,
+    }),
   ]);
   return Response.json(
     {
@@ -51,14 +60,20 @@ export async function POST(request: Request) {
   if (!auth.user)
     return Response.json({ error: "sign_in_required" }, { status: 401 });
   if (parsed.data.action === "set-reminders") {
-    const { data, error } = await supabase.rpc("suite_email_reminder_preferences", {
-      p_event: null,
-      p_stay: parsed.data.enabled,
-    });
+    const { data, error } = await supabase.rpc(
+      "suite_email_reminder_preferences",
+      {
+        p_event: null,
+        p_stay: parsed.data.enabled,
+      },
+    );
     if (error) return Response.json({ error: "unavailable" }, { status: 503 });
-    return Response.json({ reminders: data?.stay_reminders === true }, {
-      headers: { "Cache-Control": "private, no-store" },
-    });
+    return Response.json(
+      { reminders: data?.stay_reminders === true },
+      {
+        headers: { "Cache-Control": "private, no-store" },
+      },
+    );
   }
   const { error } = await supabase.rpc("suite_save_stay", {
     p_venue: parsed.data.venueId,
@@ -66,7 +81,10 @@ export async function POST(request: Request) {
     p_locale: parsed.data.locale,
   });
   if (error) return Response.json({ error: "unavailable" }, { status: 503 });
-  return Response.json({ saved: parsed.data.saved }, {
-    headers: { "Cache-Control": "private, no-store" },
-  });
+  return Response.json(
+    { saved: parsed.data.saved },
+    {
+      headers: { "Cache-Control": "private, no-store" },
+    },
+  );
 }

@@ -69,7 +69,8 @@ export function stayHostRoute(pathname: string) {
 export function stayHostMethodAllowed(pathname: string, method: string) {
   return (
     ["GET", "HEAD"].includes(method) ||
-    ((pathname === "/api/stays/bookings" || pathname === "/api/stays/saved") && method === "POST") ||
+    ((pathname === "/api/stays/bookings" || pathname === "/api/stays/saved") &&
+      method === "POST") ||
     (pathname === "/api/v1/personalisation/consent" && method === "POST") ||
     (method === "POST" &&
       (/^\/(en|es)\/auth(?:\/|$)/.test(pathname) ||

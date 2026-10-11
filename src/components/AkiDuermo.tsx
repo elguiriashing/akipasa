@@ -157,9 +157,11 @@ export function AkiDuermo({
       if (!response.ok) throw new Error("reminder_preference_failed");
       setReminderEnabled((await response.json()).reminders === true);
     } catch {
-      setError(locale === "es"
-        ? "No pudimos actualizar los recordatorios. Inténtalo de nuevo."
-        : "Couldn't update reminder settings. Please try again.");
+      setError(
+        locale === "es"
+          ? "No pudimos actualizar los recordatorios. Inténtalo de nuevo."
+          : "Couldn't update reminder settings. Please try again.",
+      );
     } finally {
       setReminderBusy(false);
     }
@@ -169,13 +171,29 @@ export function AkiDuermo({
     void fetch("/api/stays/saved", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "set-saved", venueId: stay.id, saved: !isAlreadySaved, locale }),
-    }).then((response) => {
-      if (!response.ok && remindersAvailable)
-        setError(locale === "es" ? "Se guardó en este dispositivo, pero no se pudo sincronizar para los recordatorios." : "Saved on this device, but reminder sync is temporarily unavailable.");
-    }).catch(() => {
-      if (remindersAvailable) setError(locale === "es" ? "No se pudo sincronizar este favorito." : "Could not sync this favourite.");
-    });
+      body: JSON.stringify({
+        action: "set-saved",
+        venueId: stay.id,
+        saved: !isAlreadySaved,
+        locale,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok && remindersAvailable)
+          setError(
+            locale === "es"
+              ? "Se guardó en este dispositivo, pero no se pudo sincronizar para los recordatorios."
+              : "Saved on this device, but reminder sync is temporarily unavailable.",
+          );
+      })
+      .catch(() => {
+        if (remindersAvailable)
+          setError(
+            locale === "es"
+              ? "No se pudo sincronizar este favorito."
+              : "Could not sync this favourite.",
+          );
+      });
     setSaved((prev) => {
       const next = prev.some((x) => x.id === stay.id)
         ? prev.filter((x) => x.id !== stay.id)
@@ -380,10 +398,16 @@ export function AkiDuermo({
             <div className={styles.savedSearch}>
               <div className={styles.reminderPreference}>
                 <div>
-                  <strong>{locale === "es" ? "Recordatorio de estancias guardadas" : "Saved stay reminders"}</strong>
-                  <span>{locale === "es"
-                    ? "Actívalo para recibir un único recordatorio tras 5 días si sigues sin solicitar una reserva."
-                    : "Opt in for one reminder after 5 days if you still haven't requested a reservation."}</span>
+                  <strong>
+                    {locale === "es"
+                      ? "Recordatorio de estancias guardadas"
+                      : "Saved stay reminders"}
+                  </strong>
+                  <span>
+                    {locale === "es"
+                      ? "Actívalo para recibir un único recordatorio tras 5 días si sigues sin solicitar una reserva."
+                      : "Opt in for one reminder after 5 days if you still haven't requested a reservation."}
+                  </span>
                 </div>
                 {remindersAvailable ? (
                   <label>
@@ -391,13 +415,17 @@ export function AkiDuermo({
                       type="checkbox"
                       checked={reminderEnabled}
                       disabled={reminderBusy}
-                      onChange={(event) => void setStayReminderPreference(event.target.checked)}
+                      onChange={(event) =>
+                        void setStayReminderPreference(event.target.checked)
+                      }
                     />
                     {locale === "es" ? "Activar emails" : "Email me"}
                   </label>
                 ) : (
                   <a href={`/${locale}/auth?next=/saved`}>
-                    {locale === "es" ? "Inicia sesión para activarlo" : "Sign in to enable"}
+                    {locale === "es"
+                      ? "Inicia sesión para activarlo"
+                      : "Sign in to enable"}
                   </a>
                 )}
               </div>

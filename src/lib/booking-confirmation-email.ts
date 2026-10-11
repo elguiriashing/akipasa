@@ -43,8 +43,12 @@ export function renderBookingConfirmation(
         ? "Consulta con el local"
         : "Contact the venue";
   const title = stay
-    ? es ? "Estancia confirmada" : "Stay confirmed"
-    : es ? "Reserva confirmada" : "Booking confirmed";
+    ? es
+      ? "Estancia confirmada"
+      : "Stay confirmed"
+    : es
+      ? "Reserva confirmada"
+      : "Booking confirmed";
   const intro =
     audience === "venue"
       ? es

@@ -58,7 +58,11 @@ export default async function LocaleLayout({
     );
   }
   const { supabase, user } = await optionalUser();
-  if (user) await queueSuitePortalWelcome(isBusinessHost ? "akibusiness" : "akipasa", locale);
+  if (user)
+    await queueSuitePortalWelcome(
+      isBusinessHost ? "akibusiness" : "akipasa",
+      locale,
+    );
   const [profileResult, ownerResult] = user
     ? await Promise.all([
         supabase

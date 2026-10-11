@@ -92,7 +92,10 @@ async function dispatchConfirmations(
         recipient: row.recipient,
         audience: row.audience as "customer" | "venue",
       },
-      { apiKey: env.CLAIM_RESEND_API_KEY || env.RESEND_API_KEY, from: suiteEmailFrom },
+      {
+        apiKey: env.CLAIM_RESEND_API_KEY || env.RESEND_API_KEY,
+        from: suiteEmailFrom,
+      },
     );
     const { error: ackError } = await db.rpc(
       accommodation

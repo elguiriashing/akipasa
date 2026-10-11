@@ -25,8 +25,7 @@ type SuiteEmailRow = {
 };
 type SuiteMailDb = ReturnType<typeof createClient>;
 
-const readable = (value: unknown) =>
-  typeof value === "string" ? value : "";
+const readable = (value: unknown) => (typeof value === "string" ? value : "");
 
 async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
   // The account must still exist with the same confirmed address. This also
@@ -55,7 +54,10 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
     if (data?.status !== "pending") return "claim_not_pending";
   }
 
-  if (row.kind === "event_booking_requested" || row.kind === "event_booking_cancelled") {
+  if (
+    row.kind === "event_booking_requested" ||
+    row.kind === "event_booking_cancelled"
+  ) {
     const { data, error } = await db
       .from("booking_requests")
       .select("status,profile_id")
@@ -71,7 +73,10 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
       return "booking_status_changed";
   }
 
-  if (row.kind === "stay_booking_requested" || row.kind === "stay_booking_cancelled") {
+  if (
+    row.kind === "stay_booking_requested" ||
+    row.kind === "stay_booking_cancelled"
+  ) {
     const { data, error } = await db
       .from("accommodation_reservations")
       .select("status,profile_id")
@@ -87,7 +92,10 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
       return "stay_reservation_status_changed";
   }
 
-  if (row.kind === "event_saved_reminder" || row.kind === "stay_saved_reminder") {
+  if (
+    row.kind === "event_saved_reminder" ||
+    row.kind === "stay_saved_reminder"
+  ) {
     const { data: pref, error: prefError } = await db
       .from("suite_email_preferences")
       .select("event_reminders,stay_reminders")
@@ -177,7 +185,9 @@ export async function dispatchSuiteEmails(
   const { error: schedulingError } = await db.rpc("queue_due_suite_reminders");
   if (schedulingError)
     console.error("suite_reminder_schedule_unavailable", schedulingError.code);
-  const { data: leased, error: claimError } = await db.rpc("claim_due_suite_emails");
+  const { data: leased, error: claimError } = await db.rpc(
+    "claim_due_suite_emails",
+  );
   if (claimError) {
     console.error("suite_email_queue_unavailable", claimError.code);
     return { sent: 0, failed: 0, skipped: 0, configured: true };
@@ -187,17 +197,33 @@ export async function dispatchSuiteEmails(
   let skipped = 0;
   for (const row of (leased || []) as SuiteEmailRow[]) {
     let outcome:
-      | { ok: boolean; messageId?: string; error?: string; ambiguous?: boolean; retryable?: boolean }
+      | {
+          ok: boolean;
+          messageId?: string;
+          error?: string;
+          ambiguous?: boolean;
+          retryable?: boolean;
+        }
       | undefined;
     const kind = row.kind as SuiteEmailKind;
     try {
       if (!suiteEmailKinds.includes(kind)) {
-        outcome = { ok: false, error: "unsupported_email_kind", retryable: false, ambiguous: false };
+        outcome = {
+          ok: false,
+          error: "unsupported_email_kind",
+          retryable: false,
+          ambiguous: false,
+        };
         skipped++;
       } else {
         const invalid = await validateSuiteEmail(row, db);
         if (invalid) {
-          outcome = { ok: false, error: invalid, retryable: false, ambiguous: false };
+          outcome = {
+            ok: false,
+            error: invalid,
+            retryable: false,
+            ambiguous: false,
+          };
           skipped++;
         } else {
           outcome = await sendSuiteEmail(
@@ -212,8 +238,16 @@ export async function dispatchSuiteEmails(
       }
     } catch (error) {
       // Database problems are retryable but never reported as sent.
-      console.error("suite_email_validation_unavailable", String(error).slice(0, 100));
-      outcome = { ok: false, error: "validation_unavailable", retryable: true, ambiguous: false };
+      console.error(
+        "suite_email_validation_unavailable",
+        String(error).slice(0, 100),
+      );
+      outcome = {
+        ok: false,
+        error: "validation_unavailable",
+        retryable: true,
+        ambiguous: false,
+      };
     }
     const { error: ackError } = await db.rpc("finish_suite_email", {
       p_id: row.id,
