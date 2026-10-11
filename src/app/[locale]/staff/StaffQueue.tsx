@@ -152,7 +152,6 @@ export function StaffQueue({
               {item.status || item.state || "pending"}
             </span>
           </div>
-          
           <form action={moderateItem} className="moderation-form">
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="targetType" value={targetType} />
