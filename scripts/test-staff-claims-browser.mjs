@@ -9,7 +9,7 @@ const dir = resolve("test-results/staff-claims");
 mkdirSync(dir, { recursive: true });
 const bundle = await build({
   stdin: {
-    contents: `import React from 'react';import{createRoot}from'react-dom/client';import{StaffQueue}from'./src/app/[locale]/staff/StaffQueue';const locale=new URLSearchParams(location.search).get('lang')||'en';createRoot(document.getElementById('root')).render(<main className="staff-workspace" style={{padding:16,maxWidth:1100,margin:'auto'}}><StaffQueue locale={locale} targetType="venue_claim" approve="approved" claimPage={2} items={[{id:'claim-test',claimant_id:'applicant-test',created_at:'2026-10-10T10:00:00Z',evidence:'I manage this venue.\\nPlease verify my business documents.',status:'pending',claimant:{display_name:'Test Applicant',email:'very-long-applicant-address@example.test',phone:'+34600000000',created_at:'2026-09-01T10:00:00Z'},venues:{name:'Test Venue',address:'Example Street 1, Fuengirola, Málaga',slug:'test-venue',contact_phone:'+34900000000',website_url:'https://example.test',timezone:'Europe/Madrid'}}]}/></main>);`,
+    contents: `import React from 'react';import{createRoot}from'react-dom/client';import{StaffQueue}from'./src/app/[locale]/staff/StaffQueue';const locale=new URLSearchParams(location.search).get('lang')||'en';createRoot(document.getElementById('root')).render(<main className="staff-workspace" style={{padding:16,maxWidth:1100,margin:'auto'}}><StaffQueue locale={locale} targetType="venue_claim" approve="approved" claimPage={2} items={[{id:'claim-test',claimant_id:'applicant-test',created_at:'2026-10-10T10:00:00Z',evidence:'I manage this venue.\\nPlease verify my business documents.',status:'pending',claimant:{display_name:'Test Applicant',email:'very-long-applicant-address@example.test',phone:'+34600000000',submission:{applicant_name:'Business Contact',relationship:'owner',applicant_phone:'+34600000001',business_email:'business@example.test',business_website:'https://example.test',business_phone:'+34900000001'},created_at:'2026-09-01T10:00:00Z'},venues:{name:'Test Venue',address:'Example Street 1, Fuengirola, Málaga',slug:'test-venue',contact_phone:'+34900000000',website_url:'https://example.test',timezone:'Europe/Madrid'}}]}/></main>);`,
     resolveDir: process.cwd(),
     loader: "tsx",
   },
@@ -47,6 +47,7 @@ const css = (
   await postcss([tailwind()]).process(
     ["globals.css", "compact-app.css", "brand.css", "appearance.css"]
       .map((f) => readFileSync(`src/app/${f}`, "utf8"))
+      .concat(readFileSync("src/app/[locale]/staff/claim-review.css", "utf8"))
       .join("\n"),
     { from: resolve("src/app/globals.css") },
   )
@@ -97,6 +98,16 @@ try {
             name: "very-long-applicant-address@example.test",
           }),
         ).toBeVisible();
+        await expect(page.locator(".claim-modern-hero")).toBeVisible();
+        await expect(page.getByText("Business Contact")).toBeVisible();
+        await expect(page.locator(".claim-modern-columns")).toBeVisible();
+        await expect(page.locator(".claim-modern-actions")).toBeVisible();
+        expect(await page.locator(".claim-modern").count()).toBe(1);
+        const layout = await page.locator(".claim-modern-columns").evaluate((node) => {
+          const columns = getComputedStyle(node).gridTemplateColumns.split(" ").filter(Boolean);
+          return columns.length;
+        });
+        expect(layout).toBe(width >= 1000 ? 2 : 1);
         expect(
           await page.evaluate(
             () => document.documentElement.scrollWidth <= innerWidth + 1,
@@ -105,7 +116,7 @@ try {
         await page.getByRole("textbox").fill("Ownership evidence verified");
         await page
           .getByRole("button", {
-            name: locale === "es" ? "Aprobar" : "Approve",
+            name: locale === "es" ? "Aprobar reclamación" : "Approve claim",
           })
           .click();
         await expect
