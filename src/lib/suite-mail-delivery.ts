@@ -105,10 +105,10 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
       const eventId = readable(row.payload.eventId);
       const occurrenceId = readable(row.payload.occurrenceId);
       const { data: saved, error: savedError } = await db
-        .from("saved_events")
-        .select("event_id")
+        .from("saved_event_refs")
+        .select("event_key")
         .eq("profile_id", row.profile_id)
-        .eq("event_id", eventId)
+        .eq("event_key", eventId)
         .maybeSingle();
       if (savedError) throw new Error("saved_event_lookup_failed");
       if (!saved) return "event_unsaved";
