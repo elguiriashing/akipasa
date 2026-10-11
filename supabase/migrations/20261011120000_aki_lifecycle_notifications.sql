@@ -225,6 +225,7 @@ begin
      'event_saved_reminder',item.profile_id,item.preferred_locale,
      jsonb_build_object('eventId',item.event_id,'occurrenceId',item.occurrence_id,
        'venueName',coalesce(item.title_en,item.title_es,'Event'),'startsAt',item.starts_at,
+       'eventSlug',item.slug,
        'reference',item.event_key));
    if accepted then n:=n+1;end if;
  end loop;
