@@ -24,7 +24,11 @@ type SuiteEmailRow = {
   lease_id: string;
 };
 function suiteDatabase(env: ClaimMailEnv) {
-  return createClient(env.NEXT_PUBLIC_SUPABASE_URL!, env.SUPABASE_SERVICE_ROLE_KEY!, { auth: { persistSession: false, autoRefreshToken: false } });
+  return createClient(
+    env.NEXT_PUBLIC_SUPABASE_URL!,
+    env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false, autoRefreshToken: false } },
+  );
 }
 type SuiteMailDb = ReturnType<typeof suiteDatabase>;
 
@@ -108,7 +112,10 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
       .eq("profile_id", row.profile_id)
       .maybeSingle();
     if (prefError) throw new Error("reminder_preference_unavailable");
-    const preference = pref as unknown as { event_reminders: boolean; stay_reminders: boolean } | null;
+    const preference = pref as unknown as {
+      event_reminders: boolean;
+      stay_reminders: boolean;
+    } | null;
     if (
       row.kind === "event_saved_reminder"
         ? !preference?.event_reminders
@@ -134,13 +141,17 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
         .eq("event_id", eventId)
         .maybeSingle();
       if (occurrenceError) throw new Error("occurrence_lookup_failed");
-      const activeOccurrence = occurrence as unknown as { starts_at: string; status: string } | null;
+      const activeOccurrence = occurrence as unknown as {
+        starts_at: string;
+        status: string;
+      } | null;
       if (
         !activeOccurrence ||
         ["cancelled", "expired"].includes(activeOccurrence.status) ||
         new Date(activeOccurrence.starts_at).getTime() !==
           new Date(readable(row.payload.startsAt)).getTime() ||
-        new Date(activeOccurrence.starts_at).getTime() < Date.now() + 24 * 3_600_000
+        new Date(activeOccurrence.starts_at).getTime() <
+          Date.now() + 24 * 3_600_000
       )
         return "saved_event_date_changed_or_too_near";
       const { data: event, error: eventError } = await db
@@ -149,8 +160,9 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
         .eq("id", eventId)
         .maybeSingle();
       if (eventError) throw new Error("event_lookup_failed");
-      const publishedEvent = event as unknown as {status:string} | null;
-      if (publishedEvent?.status !== "published") return "event_no_longer_published";
+      const publishedEvent = event as unknown as { status: string } | null;
+      if (publishedEvent?.status !== "published")
+        return "event_no_longer_published";
     } else {
       const venueId = readable(row.payload.venueId);
       const { data: saved, error: savedError } = await db
@@ -160,7 +172,7 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
         .eq("venue_id", venueId)
         .maybeSingle();
       if (savedError) throw new Error("saved_stay_lookup_failed");
-      const savedStay = saved as unknown as {saved_at:string} | null;
+      const savedStay = saved as unknown as { saved_at: string } | null;
       if (
         !savedStay ||
         new Date(savedStay.saved_at).getTime() !==
