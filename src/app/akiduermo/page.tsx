@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { AkiDuermo } from "@/components/AkiDuermo";
 import { stayLocale } from "@/lib/akiduermo-i18n";
+import { optionalUser } from "@/lib/auth";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = stayLocale((await headers()).get("x-akipasa-locale"));
@@ -27,6 +28,13 @@ export default async function AkiDuermoPage({
   searchParams: Promise<Record<string, string | undefined>>;
 }) {
   const locale = stayLocale((await headers()).get("x-akipasa-locale"));
+  const {supabase,user}=await optionalUser();
+  if(user){
+    const {error}=await supabase.rpc("aki_register_portal_welcome",{
+      p_portal:"akiduermo",p_locale:locale
+    });
+    if(error)console.error("aki_stay_welcome_enqueue_failed",error.code);
+  }
   const trip = tripSchema.safeParse(await searchParams);
   return (
     <AkiDuermo
