@@ -42,15 +42,17 @@ export function renderBookingConfirmation(
       : es
         ? "Consulta con el local"
         : "Contact the venue";
-  const title = es ? "Reserva confirmada" : "Booking confirmed";
+  const title = stay
+    ? es ? "Estancia confirmada" : "Stay confirmed"
+    : es ? "Reserva confirmada" : "Booking confirmed";
   const intro =
     audience === "venue"
       ? es
         ? "Tu equipo ha confirmado esta reserva."
         : "Your team has confirmed this booking."
       : es
-        ? `Hola ${data.customerName}, tu reserva está confirmada.`
-        : `Hi ${data.customerName}, your booking is confirmed.`;
+        ? `Hola ${data.customerName}, tu ${stay ? "estancia" : "reserva"} está confirmada.`
+        : `Hi ${data.customerName}, your ${stay ? "stay" : "booking"} is confirmed.`;
   const detail = [
     [es ? "Local" : "Venue", data.venueName],
     ...(data.offeringName
@@ -87,7 +89,9 @@ export function renderBookingConfirmation(
   ];
   const href =
     audience === "customer"
-      ? `https://akipasa.com/${data.locale}/account/bookings`
+      ? stay
+        ? `https://akiduermo.akipasa.com/bookings?lang=${data.locale}`
+        : `https://akipasa.com/${data.locale}/account/bookings`
       : `https://business.akipasa.com/${data.locale}/business/venue/${encodeURIComponent(data.venueId)}?section=bookings&${stay ? "accommodationTab=reservations" : "bookingTab=inbox"}`;
   const cta =
     audience === "customer"
@@ -111,7 +115,7 @@ export function renderBookingConfirmation(
       `${cta}: ${href}`,
       "AkiPasa · akipasa.com",
     ].join("\n"),
-    html: `<!doctype html><html lang="${data.locale}"><body style="margin:0;padding:24px;background:#f1f4fa;font-family:Arial,sans-serif;color:#14213b"><main style="max-width:580px;margin:auto;background:#fff;border-radius:20px;padding:32px"><p style="font-weight:bold;color:#e66a16">AKIPASA</p><h1 style="font-size:27px">${escapeHtml(title)}</h1><p>${escapeHtml(intro)}</p><div style="background:#f1f4fa;border-radius:14px;padding:20px">${detail.map(([key, value]) => `<p style="margin:10px 0"><span style="color:#536078">${escapeHtml(key)}:</span> <strong>${escapeHtml(value)}</strong></p>`).join("")}</div><p style="margin:28px 0"><a href="${escapeHtml(href)}" style="background:#284cc6;color:#fff;padding:14px 20px;border-radius:10px;text-decoration:none;font-weight:bold">${cta}</a></p><p style="color:#536078;font-size:12px">AkiPasa · akipasa.com</p></main></body></html>`,
+    html: `<!doctype html><html lang="${data.locale}"><body style="margin:0;padding:24px;background:#f1f4fa;font-family:Arial,sans-serif;color:#14213b"><main style="max-width:580px;margin:auto;background:#fff;border-radius:20px;padding:32px"><p style="font-weight:bold;color:${stay ? "#21876b" : "#e66a16"}">${stay ? "AKIDUERMO" : "AKIPASA"}</p><h1 style="font-size:27px">${escapeHtml(title)}</h1><p>${escapeHtml(intro)}</p><div style="background:#f1f4fa;border-radius:14px;padding:20px">${detail.map(([key, value]) => `<p style="margin:10px 0"><span style="color:#536078">${escapeHtml(key)}:</span> <strong>${escapeHtml(value)}</strong></p>`).join("")}</div><p style="margin:28px 0"><a href="${escapeHtml(href)}" style="background:${stay ? "#21876b" : "#284cc6"};color:#fff;padding:14px 20px;border-radius:10px;text-decoration:none;font-weight:bold">${cta}</a></p><p style="color:#536078;font-size:12px">${stay ? "AkiDuermo · akiduermo.akipasa.com" : "AkiPasa · akipasa.com"}</p></main></body></html>`,
   };
 }
 
