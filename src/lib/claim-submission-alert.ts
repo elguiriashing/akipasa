@@ -1,4 +1,4 @@
-import { claimEmailFrom } from "./claim-decision-email";
+import { suiteEmailFrom } from "./suite-email-templates";
 import type { BookingMailOutcome } from "./booking-confirmation-email";
 
 export const claimSubmissionRecipients = [
@@ -91,8 +91,8 @@ export async function sendClaimSubmissionAlert(
         "Idempotency-Key": "akipasa-claim-submission-" + data.claimId,
       },
       body: JSON.stringify({
-        from: claimEmailFrom,
-        reply_to: "alex@akipasa.com",
+        from: suiteEmailFrom,
+        reply_to: "support@akipasa.com",
         to: [...claimSubmissionRecipients],
         ...renderClaimSubmissionAlert(data),
       }),
