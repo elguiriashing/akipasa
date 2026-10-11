@@ -19233,3 +19233,89 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Private venue claim verification details: EN/ES, tablet and phone friendly. */
+.akibusiness-claim-details {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1rem, 2vw, 1.4rem);
+  border: 1px solid rgba(255, 212, 71, 0.17);
+  border-radius: 1rem;
+  background: rgba(18, 31, 61, 0.47);
+}
+.akibusiness-claim-details-heading h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.06rem;
+}
+.akibusiness-claim-details-heading p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #aeb8ca;
+}
+.akibusiness-claim-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1rem;
+}
+.akibusiness-claim-details-grid label {
+  display: grid;
+  gap: 0.4rem;
+  align-content: start;
+  min-width: 0;
+}
+.akibusiness-claim-details-grid label > span {
+  font-size: 0.86rem;
+  font-weight: 740;
+}
+.akibusiness-claim-details-grid input,
+.akibusiness-claim-details-grid select {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.9rem;
+  border: 1px solid rgba(151, 167, 203, 0.27);
+  border-radius: 0.78rem;
+  padding: 0.7rem 0.82rem;
+  box-sizing: border-box;
+  background: rgba(7, 18, 42, 0.67);
+  color: #f8f9ff;
+}
+.akibusiness-claim-details-grid input::placeholder {
+  color: #9cacc4;
+}
+.akibusiness-claim-details-grid :is(input, select):focus-visible {
+  outline: 2px solid var(--akibusiness-accent, #ffd447);
+  outline-offset: 2px;
+}
+.claim-submitted-details {
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--accent, #58d1b8) 28%, transparent);
+  border-radius: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+html[data-theme="light"] .akibusiness-host .akibusiness-claim-details,
+html.theme-light .akibusiness-host .akibusiness-claim-details {
+  background: rgba(255, 255, 255, 0.87);
+  border-color: rgba(20, 33, 61, 0.14);
+}
+html[data-theme="light"] .akibusiness-host .akibusiness-claim-details-heading p,
+html.theme-light .akibusiness-host .akibusiness-claim-details-heading p {
+  color: #526077;
+}
+html[data-theme="light"]
+  .akibusiness-host
+  .akibusiness-claim-details-grid
+  :is(input, select),
+html.theme-light
+  .akibusiness-host
+  .akibusiness-claim-details-grid
+  :is(input, select) {
+  background: #ffffff;
+  color: #14213d;
+  border-color: rgba(20, 33, 61, 0.22);
+}
+@media (max-width: 650px) {
+  .akibusiness-claim-details-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

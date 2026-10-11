@@ -467,3 +467,7 @@ Business Pro retains a separate paid-entitlement check.
 ### Staff-owned claim submission alerts
 
 The staff homepage counts pending `venue_claims` through the staff-gated `staff_pending_venue_claim_count()` aggregate, in sync with the paginated moderation read RPC. A new claim INSERT creates one `claim_submission_alerts` outbox row without modifying ownership or claimant-facing decision emails. The Cloudflare scheduled worker dispatches notifications to both cofounder Workspace inboxes through the existing provider, with an immediate best-effort dispatch after the server action. The outbox uses service-only leases, stable message keys, confirmed ACK, bounded retries and ambiguity review. No unverified claimant contact data is emailed.
+
+### Structured venue claim metadata
+
+AkiBusiness collects claim-specific applicant name, relationship, optional phone, business email, website and venue phone in the ownership claim form. The server validates the inputs, writes them to the private `venue_claims.claim_details` JSONB object with the original evidence, and preserves the existing staff alert dispatch. The existing staff-gated `staff_pending_venue_claims(integer)` RPC returns this metadata under `claimant.submission` for review, explicitly labelled as unverified. The official venue catalogue and profile contact information are never overwritten by unapproved requests. Legacy claims retain empty metadata. Additive migration `20261010231500_venue_claim_details.sql` must be applied before frontend deployment.
