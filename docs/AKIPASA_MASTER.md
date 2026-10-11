@@ -313,7 +313,6 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 - Booking request received and cancellation messages clearly distinguish pending from confirmed; existing booking confirmation email outboxes only activate on confirmed statuses. Cancellation never claims an unsupported refund. The 5-minute Cloudflare cron `dispatchSuiteEmails` revalidates current email verification, save/booking state, and consent before delivery, with bounded retry and no historical backfill.
 - Mirrored `20261011013000_suite_emails.sql` migration must be applied before release. No live old decisions/customer notifications must be resent without verifying delivery and authorisation. Review Cloudflare runtime credentials before claiming production mail delivery.
 
-
 ### Claim-decision email 403 visibility and recovery (2026-10-11)
 
 - Live evidence: five claim decisions, three staff submission alerts and one suite notice returned Resend HTTP 403 despite saved status/audited moderation. The production Cloudflare sending credential or its permissions must be repaired; direct Resend sample sends do not validate the worker secret. Gmail is not the current application sending transport.

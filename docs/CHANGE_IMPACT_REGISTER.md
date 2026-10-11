@@ -409,7 +409,6 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - **Dependency map:** master auth + account saved + AkiBusiness + AkiDuermo + event booking -> guarded Supabase functions and immutable outbox -> scheduled worker -> Resend provider -> verified recipient. Existing booking and claim decision notifications untouched apart from from-address branding.
 - **Validation:** suite contract, bilingual templates, dispatcher mock/provider errors, existing booking/claim regressions, PGlite safety, EN/ES responsive portal checks, full Next/OpenNext builds. SQL migration before master merge. Production Cloudflare secret correctness and actual end-to-end sends require separate verification; direct Resend previews do not prove worker credentials. Rollback app without deleting queued history.
 
-
 ## 2026-10-11 | Surface unsent claim-decision emails after provider 403
 
 - **Observed live failure:** latest rejected claim plus four earlier moderation decisions persist, but all five customer outbox jobs are `blocked/provider_403`; three staff alerts and one suite notification also failed with 403. Provider IDs absent. The existing Staff UI only said the decision was recorded.
