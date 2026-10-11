@@ -18,9 +18,14 @@ export function bookingMailEnvironment(): BookingMailEnv {
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
   };
 }
+/** Canonical AkiSuite Resend secret; legacy claim-only key is a fallback during migration. */
+export function resendSendingKey(env: BookingMailEnv) {
+  return env.RESEND_API_KEY?.trim() || env.CLAIM_RESEND_API_KEY?.trim();
+}
+
 export function bookingEmailConfigured(env = bookingMailEnvironment()) {
   return Boolean(
-    (env.RESEND_API_KEY || env.CLAIM_RESEND_API_KEY) &&
+    resendSendingKey(env) &&
       env.NEXT_PUBLIC_SUPABASE_URL &&
       env.SUPABASE_SERVICE_ROLE_KEY,
   );
@@ -90,7 +95,7 @@ async function dispatchConfirmations(
         audience: row.audience as "customer" | "venue",
       },
       {
-        apiKey: env.CLAIM_RESEND_API_KEY || env.RESEND_API_KEY,
+        apiKey: resendSendingKey(env),
       },
     );
     const { error: ackError } = await db.rpc(
