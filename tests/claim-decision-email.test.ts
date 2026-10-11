@@ -246,23 +246,28 @@ it("prefers canonical Resend credentials over stale claim-only credentials", asy
   ).toBe("fallback-key");
   rpc
     .mockResolvedValueOnce({
-      data: [{
-        claim_id: claim.claimId,
-        lease_id: "lease-precedence",
-        recipient: "applicant@example.test",
-        payload: claim,
-      }],
+      data: [
+        {
+          claim_id: claim.claimId,
+          lease_id: "lease-precedence",
+          recipient: "applicant@example.test",
+          payload: claim,
+        },
+      ],
       error: null,
     })
     .mockResolvedValueOnce({ data: true, error: null });
   const fetcher = vi.fn().mockResolvedValue(Response.json({ id: "mail-2" }));
   vi.stubGlobal("fetch", fetcher);
   expect(
-    await dispatchClaimDecisions({
-      ...env,
-      RESEND_API_KEY: "current-sending-key",
-      CLAIM_RESEND_API_KEY: "stale-claim-key",
-    }, claim.claimId),
+    await dispatchClaimDecisions(
+      {
+        ...env,
+        RESEND_API_KEY: "current-sending-key",
+        CLAIM_RESEND_API_KEY: "stale-claim-key",
+      },
+      claim.claimId,
+    ),
   ).toMatchObject({ sent: 1, configured: true });
   expect(fetcher.mock.calls[0][1].headers.Authorization).toBe(
     "Bearer current-sending-key",
