@@ -120,6 +120,15 @@ export default async function StaffModerationPage({
               : "Decision failed."}
         </p>
       )}
+      {queue === "claims" &&
+        query.updated === "decision" &&
+        query.mail === "not_sent" && (
+          <p className="notice" role="alert">
+            {es
+              ? "La decisión se ha guardado, pero no se ha confirmado el envío del email al solicitante. Comprueba la cola de notificaciones y la configuración del proveedor."
+              : "The decision was saved, but the claimant email was not confirmed as sent. Check the notification queue and email provider configuration."}
+          </p>
+        )}
       {queue !== "claims" && (
         <section
           className="settings-row moderation-mode-card"
