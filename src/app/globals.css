@@ -12350,10 +12350,16 @@ html[data-owner-focus="true"] .app-content {
   }
 }
 
+/* The mobile wrapper must not occupy a desktop workspace grid cell. */
+.workspace-mobile-navigation {
+  display: none;
+}
+
 /* Mobile workspace menus stay attached to the sticky trigger. The panel
    floats above page content instead of reopening at the document's top. */
 @media (max-width: 850px) {
   .workspace-mobile-navigation {
+    display: block;
     position: sticky;
     z-index: 95;
     top: calc(0.4rem + env(safe-area-inset-top, 0px));
