@@ -295,24 +295,24 @@ export function WorkspaceShell({
     >
       <div className="workspace-mobile-navigation" ref={mobileNavigationRef}>
         <button
-        ref={mobileMenuButtonRef}
-        className="workspace-mobile-trigger"
-        type="button"
-        aria-label={`${eyebrow} ${navigationTitle} menu`}
-        aria-expanded={drawerOpen}
-        aria-controls="workspace-mobile-drawer"
-        onClick={() => setDrawerOpen((value) => !value)}
-      >
-        <span className="workspace-menu-glyph" aria-hidden="true">
-          <i />
-          <i />
-          <i />
-        </span>
-        <span>
-          <small>{eyebrow}</small>
-          <strong>{activeItem?.label ?? navigationTitle}</strong>
-        </span>
-        <span aria-hidden="true">{menuLabel}</span>
+          ref={mobileMenuButtonRef}
+          className="workspace-mobile-trigger"
+          type="button"
+          aria-label={`${eyebrow} ${navigationTitle} menu`}
+          aria-expanded={drawerOpen}
+          aria-controls="workspace-mobile-drawer"
+          onClick={() => setDrawerOpen((value) => !value)}
+        >
+          <span className="workspace-menu-glyph" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+          <span>
+            <small>{eyebrow}</small>
+            <strong>{activeItem?.label ?? navigationTitle}</strong>
+          </span>
+          <span aria-hidden="true">{menuLabel}</span>
         </button>
 
         {drawerOpen && (
