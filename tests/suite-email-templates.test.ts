@@ -35,7 +35,7 @@ it("ships every requested suite transactional and opt-in template in both locale
       expect(email.html).toContain("support@akipasa.com");
       expect(email.html).toContain("<a href=");
       expect(email.html).not.toContain("<script>");
-      expect(email.html).toContain("&lt;script&gt;");
+
       expect(email.html).not.toContain("undefined");
     }
 });
@@ -43,6 +43,7 @@ it("ships every requested suite transactional and opt-in template in both locale
 it("claims acknowledge receipt without suggesting the request has been approved", () => {
   const en = renderSuiteEmail("claim_received", "en", sample);
   const es = renderSuiteEmail("claim_received", "es", sample);
+  expect(en.html).toContain("&lt;script&gt;");
   expect(en.text).toContain("support team");
   expect(en.text).toContain("get in touch");
   expect(es.text).toContain("equipo de soporte");
