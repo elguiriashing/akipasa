@@ -7,6 +7,7 @@ import {
   requestAccountPasswordReset,
 } from "../actions";
 import { signOut } from "../../auth/actions";
+import { saveEmailReminderPreferences } from "./email-actions";
 
 export default async function AccountSettingsPage({
   params,
@@ -18,7 +19,8 @@ export default async function AccountSettingsPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
-  const { user } = await requireUser(locale);
+  const { user, supabase } = await requireUser(locale);
+  const {data: mailPreferences} = await supabase.rpc("aki_my_email_preferences");
   const es = locale === "es";
   const emailError =
     query.error === "email-validation"
@@ -130,6 +132,32 @@ export default async function AccountSettingsPage({
               {es ? "Cambiar mi contraseña" : "Change my password"}
             </button>
           </form>
+        </article>
+
+        <article className="panel console-card">
+          <h2>{es ? "Recordatorios por correo" : "Email reminders"}</h2>
+          <p>{es
+            ? "Elige si quieres recibir recordatorios de tus planes y alojamientos guardados. Guardar algo no implica recibir emails."
+            : "Choose whether to get email reminders for saved events and stays. Saving something does not automatically subscribe you."}</p>
+          {query.updated === "reminders" && <p className="notice notice-success" role="status">{es ? "Preferencias guardadas." : "Preferences saved."}</p>}
+          {query.error?.startsWith("reminder") && <p className="notice notice-error" role="alert">{es ? "No se pudieron actualizar las preferencias." : "Could not update email preferences."}</p>}
+          <form action={saveEmailReminderPreferences} className="stack">
+            <input type="hidden" name="locale" value={locale} />
+            <label className="email-reminder-option">
+              <input type="checkbox" name="eventReminders" value="on"
+                defaultChecked={mailPreferences?.saved_event_reminders === true} />
+              <span>{es ? "Recordarme 2 días antes de un evento que guardé" : "Remind me two days before saved events"}</span>
+            </label>
+            <label className="email-reminder-option">
+              <input type="checkbox" name="stayReminders" value="on"
+                defaultChecked={mailPreferences?.saved_stay_reminders === true} />
+              <span>{es ? "Recordarme un alojamiento guardado después de 5 días" : "Remind me about saved stays after five days"}</span>
+            </label>
+            <button className="button secondary" type="submit">{es ? "Guardar preferencias de email" : "Save email preferences"}</button>
+          </form>
+          <small>{es
+            ? "Puedes desactivar estos avisos cuando quieras. Las confirmaciones de reserva siguen siendo transaccionales."
+            : "Unsubscribe from reminders here at any time. Booking confirmations are transactional."}</small>
         </article>
 
         <article className="panel console-card">
