@@ -89,7 +89,7 @@ async function dispatchConfirmations(
         recipient: row.recipient,
         audience: row.audience as "customer" | "venue",
       },
-      { apiKey: env.RESEND_API_KEY, from: env.BOOKING_EMAIL_FROM },
+      { apiKey: env.RESEND_API_KEY, from: "AkiPasa Support <support@akipasa.com>" },
     );
     const { error: ackError } = await db.rpc(
       accommodation
