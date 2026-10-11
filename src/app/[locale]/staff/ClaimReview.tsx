@@ -96,7 +96,7 @@ export function ClaimReview({item,locale,approve,claimPage}:{item:StaffQueueItem
       </div>
       <div className="claim-modern-column">
         <section className="claim-modern-panel">
-          <h4><Icon name="store"/>{es?"Ficha actual del local y cuenta":"Existing venue and account data"}{url&&<Link className="claim-modern-venue-link" href={url} target="_blank" rel="noopener noreferrer">{es?"Ver local":"View venue"} ↗</Link>}</h4>
+          <h4><Icon name="store"/>{es?"Ficha actual del local y cuenta":"Existing venue and account data"}{url&&<Link className="claim-modern-venue-link" href={url} aria-label={es?"Ver local":"View venue"} target="_blank" rel="noopener noreferrer">{es?"Ver local":"View venue"} ↗</Link>}</h4>
           <dl className="claim-modern-existing">
             <ClaimFact icon="person" label={es?"Nombre del perfil":"Profile name"}>{item.claimant?.display_name||missing}</ClaimFact>
             <ClaimFact icon="phone" label={es?"Teléfono del perfil":"Profile phone"}>{phone(item.claimant?.phone)}</ClaimFact>
