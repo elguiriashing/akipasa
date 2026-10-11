@@ -1,3 +1,4 @@
+import { RewardsTabs } from "../RewardsTabs";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -33,6 +34,7 @@ export default async function AdminPassportsPage({
   const es = locale === "es";
   return (
     <>
+      <RewardsTabs locale={locale} active="passports" />
       <WorkspacePageHeader
         eyebrow={es ? "Recompensas" : "Rewards"}
         title={es ? "Pasaportes" : "Passports"}
