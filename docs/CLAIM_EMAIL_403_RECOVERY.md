@@ -29,6 +29,7 @@ from public.suite_email_outbox group by status,last_error;
 ```
 
 ## Controlled recovery (operator approval required)
+
 403 is a provider authorization rejection, a *non-ambiguous* failed send. The outbox intentionally marks it `blocked` rather than retrying indefinitely. **Fix the credential and independently verify a new live test first.** The prior rows do not automatically requeue on key rotation.
 
 Choose and verify a specific intended **customer** claim and recipient privately. After approval, reset only that row, and only if it has never been provider-accepted:
