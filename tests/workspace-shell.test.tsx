@@ -290,10 +290,10 @@ describe("progressive disclosure workspace shell", () => {
     )[1];
     expect(overlayRules).toBeDefined();
     expect(overlayRules).toMatch(
-      /\\.workspace-mobile-navigation \\{[\\s\\S]*?position: sticky;/,
+      /\.workspace-mobile-navigation \{[\s\S]*?position: sticky;/,
     );
     expect(overlayRules).toMatch(
-      /\\.workspace-mobile-navigation \\.workspace-drawer-layer,[\\s\\S]*?position: absolute;/,
+      /\.workspace-mobile-navigation \.workspace-drawer-layer,[\s\S]*?position: absolute;/,
     );
     expect(overlayRules).toContain("overflow-y: auto;");
     expect(overlayRules).toContain("max-height: min(68dvh");
