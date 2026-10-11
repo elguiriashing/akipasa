@@ -385,7 +385,6 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - Tests: PGlite tests of staff count authorization and no-backfill/private new-claim trigger; unit tests of dual-recipient sender, idempotency, provider errors and dispatcher acknowledgment. `npm run check`, Cloudflare packaging, staff EN/ES browser and release endpoint must pass before merge. Supabase migration before app, safe rollback via application revert keeping additive tables.
 - Limits: an email accepted by a provider is not proof of inbox delivery. Existing pending claims are **not** backfilled. Customer claim-decision emails continue their separate queue.
 
-
 ## 2026-10-11 | Unified transactional and consent-based AkiSuite emails
 
 - Request: consistent Support sender, EN/ES claim-received email and English internal alert; welcome messages for four products; event/stay booking request/confirmation/cancellation; saved-event two-day and saved-stay five-day opt-in reminders; editable sample catalogue.

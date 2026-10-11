@@ -289,7 +289,6 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 - `public.staff_pending_venue_claim_count()` powers Staff summary and matches the staff-authorized paginated claim queue; zero is never inferred from a failed query. Existing moderation approval, rejection, ownership grants and claimant decision notifications are unchanged.
 - Additive migrations mirrored under `database/migrations` and `supabase/migrations`: `20261010231800_staff_pending_claim_count.sql`, `20261011010000_claim_submission_alerts.sql`. Apply before the app release. No backfill of historical email sends or automatic ownership decision. The private outbox follows claimant account export/deletion as with decision notifications.
 
-
 ### AkiSuite unified transactional email platform (2026-10-11 release candidate)
 
 - Sender identity across all requested mail: `AkiPasa Support <support@akipasa.com>`. Outbound transport remains the existing Resend-backed Cloudflare worker with keys provided via secrets, **not** Google Workspace SMTP. Workspace mailboxes can receive messages normally; no Gmail API is required for receiving.
