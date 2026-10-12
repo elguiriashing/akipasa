@@ -208,16 +208,21 @@ describe("venue action return sections", () => {
   });
 });
 
-
 describe("shared AkiBusiness media inventory", () => {
   it("passes the same venue-scoped assets to profile and event editing", () => {
-    const page = readFileSync("src/app/[locale]/business/venue/[id]/page.tsx", "utf8");
+    const page = readFileSync(
+      "src/app/[locale]/business/venue/[id]/page.tsx",
+      "utf8",
+    );
     expect(page).toContain("const mediaStudioItems = allMediaItems;");
     expect(page).toContain("media={allMediaItems.map((item) => ({");
   });
 
   it("makes every venue asset selectable and filters the shared library", () => {
-    const editor = readFileSync("src/components/BusinessEventEditPanel.tsx", "utf8");
+    const editor = readFileSync(
+      "src/components/BusinessEventEditPanel.tsx",
+      "utf8",
+    );
     expect(editor).toContain("const selectableMedia = allMedia;");
     expect(editor).toContain("const filteredLibrary = allMedia.filter");
     expect(editor).toContain("setLibraryFolder(folder)");
