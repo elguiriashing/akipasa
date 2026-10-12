@@ -1,5 +1,15 @@
 # Change Impact Register
 
+## 2026-10-12 | AkiBusiness shared media inventory (issue #118)
+
+- Requested: Venue Profile, Event Media and Event Library must expose the same venue-owned media, with lightweight browsing by origin.
+- Previously: venue profile hid event-path files; events received only their own event-bin files plus venue-origin files. Uploads already persisted into the common `venue_media` table.
+- Changed: both editors now receive all signed assets for their authorised venue. The event media picker sees every asset; the library offers All/Venue/Events virtual folders and search. Event association buttons retain the existing `event_bin` placement actions. No data migration, duplicate storage, or automatic publishing is introduced.
+- Dependencies: AkiBusiness EN/ES, venue-membership RLS and signed media URLs, venue/event image slots, existing event-bin placements, legacy upload API and server actions, responsive event editor and venue profile.
+- Risk: Existing physical-media delete behaviour and signed URL freshness are unchanged; files shared across event and venue surfaces may still need explicit referential deletion protection. Full local build, database checks and E2E remain required before release.
+- Regressions: Static contract assertions added to `tests/venue-dashboard.test.tsx`. Runtime checks are not claimed until CI or local execution confirms them.
+
+
 ## 2026-10-12 | Aki Spotlight public venue and event detail layouts
 
 - **User request:** implement the selected **01 / Aki Spotlight** concept for
