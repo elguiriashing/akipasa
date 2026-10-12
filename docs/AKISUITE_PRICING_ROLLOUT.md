@@ -11,3 +11,7 @@ Annual EUR prices in cents are Math.round(monthlyCents * 12 * 0.8). Enterprise â
 Dependencies: consumer and business accounts, staff roles, Stripe webhook, Supabase billing grants and RLS, media storage, event scheduling, analytics consent, localization, Cloudflare environment. Rollback: revert isolated catalogue commit; no Stripe resources or migrations created.
 
 Verification: code review only. Automated checks and production tests not yet run; do not merge to live.
+
+## Staged Growth UX
+
+The Growth tab presents managed venues, events, and reported AkiPasa venue analytics with responsive layouts and direct links to existing event and venue editors. Premium is clearly marked unavailable, so no customer can accidentally purchase unfinished benefits. This is not implementation of recurrence, media quota, billing products or full historical reporting. Existing promotion requests remain unchanged.
