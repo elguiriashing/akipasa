@@ -219,107 +219,106 @@ export default async function SubscriptionPage({
             )}
           </section>
         )}
-      {!accessUnavailable && (
-        suiteCatalogueReady ? (
+      {!accessUnavailable &&
+        (suiteCatalogueReady ? (
           <AkiSuiteMembershipGrid locale={locale} />
         ) : (
           <MembershipPicker locale={locale} initialPlan={query.plan}>
-          {plans.map((item) => (
-            <article
-              className={[
-                "panel console-card billing-plan-card",
-                query.plan === item.plan ? "selected" : "",
-              ]
-                .filter(Boolean)
-                .join(" ")}
-              key={item.plan}
-            >
-              <div className="account-plan-details">
-                <span className="status-pill">
-                  {item.plan === "premium"
-                    ? es
-                      ? "Premium personal"
-                      : "Personal Premium"
-                    : item.plan === "business_pro"
-                      ? "Business Pro"
-                      : es
-                        ? "Negocio"
-                        : "Business"}
-                </span>
-                <h2>
-                  {item.plan === "premium"
-                    ? "AkiPasa Premium"
-                    : item.plan === "business_pro"
-                      ? "AkiBusiness Pro"
-                      : "AkiBusiness"}
-                </h2>
-                <p>
-                  {item.plan === "business_pro"
-                    ? es
-                      ? "AkiHQ CRM seguro, cuatro usuarios incluidos e inventario inteligente para operaciones avanzadas."
-                      : "Secure AkiHQ CRM, four included users, and smart inventory for advanced operations."
-                    : item.plan === "business"
+            {plans.map((item) => (
+              <article
+                className={[
+                  "panel console-card billing-plan-card",
+                  query.plan === item.plan ? "selected" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                key={item.plan}
+              >
+                <div className="account-plan-details">
+                  <span className="status-pill">
+                    {item.plan === "premium"
                       ? es
-                        ? "Publica y gestiona locales, eventos, fidelidad y promociones tras la revisión."
-                        : "Publish and manage venues, events, loyalty, and promotions after review."
-                      : es
-                        ? "Ofertas para miembros, doble XP y calendarios para tus planes."
-                        : "Member-only offers, double XP, and calendar tools for your plans."}
-                </p>
-                <ul className="membership-benefit-list">
-                  {(item.plan === "premium"
-                    ? es
-                      ? [
-                          "Ofertas Premium en locales participantes",
-                          "20 XP por check-in aceptado",
-                          "Exportación de eventos y guardados",
-                        ]
-                      : [
-                          "Premium offers at participating venues",
-                          "20 XP per accepted check-in",
-                          "Event and saved-plan exports",
-                        ]
-                    : item.plan === "business_pro"
+                        ? "Premium personal"
+                        : "Personal Premium"
+                      : item.plan === "business_pro"
+                        ? "Business Pro"
+                        : es
+                          ? "Negocio"
+                          : "Business"}
+                  </span>
+                  <h2>
+                    {item.plan === "premium"
+                      ? "AkiPasa Premium"
+                      : item.plan === "business_pro"
+                        ? "AkiBusiness Pro"
+                        : "AkiBusiness"}
+                  </h2>
+                  <p>
+                    {item.plan === "business_pro"
+                      ? es
+                        ? "AkiHQ CRM seguro, cuatro usuarios incluidos e inventario inteligente para operaciones avanzadas."
+                        : "Secure AkiHQ CRM, four included users, and smart inventory for advanced operations."
+                      : item.plan === "business"
+                        ? es
+                          ? "Publica y gestiona locales, eventos, fidelidad y promociones tras la revisión."
+                          : "Publish and manage venues, events, loyalty, and promotions after review."
+                        : es
+                          ? "Ofertas para miembros, doble XP y calendarios para tus planes."
+                          : "Member-only offers, double XP, and calendar tools for your plans."}
+                  </p>
+                  <ul className="membership-benefit-list">
+                    {(item.plan === "premium"
                       ? es
                         ? [
-                            "Todo lo incluido en Business",
-                            "AkiHQ CRM con espacios de trabajo aislados",
-                            "Hasta cuatro usuarios e inventario inteligente",
+                            "Ofertas Premium en locales participantes",
+                            "20 XP por check-in aceptado",
+                            "Exportación de eventos y guardados",
                           ]
                         : [
-                            "Everything in Business",
-                            "AkiHQ CRM with isolated workspaces",
-                            "Up to four users and smart inventory",
+                            "Premium offers at participating venues",
+                            "20 XP per accepted check-in",
+                            "Event and saved-plan exports",
                           ]
-                      : es
-                        ? [
-                            "Perfil y herramientas de negocio",
-                            "Locales, eventos y analítica",
-                            "Fidelidad, promociones y ofertas Premium",
-                          ]
-                        : [
-                            "Business profile and tools",
-                            "Venues, events, and analytics",
-                            "Loyalty, promotions, and Premium offers",
-                          ]
-                  ).map((benefit) => (
-                    <li key={benefit}>{benefit}</li>
-                  ))}
-                </ul>
-              </div>
-              <BillingOption
-                locale={locale}
-                plan={item.plan}
-                monthly={item.monthly}
-                yearly={item.yearly}
-                saving={item.saving}
-                businessCategory={query.category}
-              />
-            </article>
-          ))}
-        </MembershipPicker>
-        )
-      )}
+                      : item.plan === "business_pro"
+                        ? es
+                          ? [
+                              "Todo lo incluido en Business",
+                              "AkiHQ CRM con espacios de trabajo aislados",
+                              "Hasta cuatro usuarios e inventario inteligente",
+                            ]
+                          : [
+                              "Everything in Business",
+                              "AkiHQ CRM with isolated workspaces",
+                              "Up to four users and smart inventory",
+                            ]
+                        : es
+                          ? [
+                              "Perfil y herramientas de negocio",
+                              "Locales, eventos y analítica",
+                              "Fidelidad, promociones y ofertas Premium",
+                            ]
+                          : [
+                              "Business profile and tools",
+                              "Venues, events, and analytics",
+                              "Loyalty, promotions, and Premium offers",
+                            ]
+                    ).map((benefit) => (
+                      <li key={benefit}>{benefit}</li>
+                    ))}
+                  </ul>
+                </div>
+                <BillingOption
+                  locale={locale}
+                  plan={item.plan}
+                  monthly={item.monthly}
+                  yearly={item.yearly}
+                  saving={item.saving}
+                  businessCategory={query.category}
+                />
+              </article>
+            ))}
+          </MembershipPicker>
+        ))}
       <p className="subscription-note">
         {es
           ? "Pago seguro con Stripe. Gestiona o cancela desde tu portal de facturación."
