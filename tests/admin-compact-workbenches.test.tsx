@@ -178,17 +178,23 @@ describe("Catalogue relevance decision workbench", () => {
       }),
     );
     const { container } = render(<VenueRelevanceReview locale="es" />);
-    const proposalList = container.querySelector<HTMLElement>(".admin-relevance-items");
+    const proposalList = container.querySelector<HTMLElement>(
+      ".admin-relevance-items",
+    );
     expect(proposalList).toBeInTheDocument();
     await waitFor(() =>
       expect(
-        within(proposalList!).getByRole("button", { name: /Desidero Pizzeria/ }),
+        within(proposalList!).getByRole("button", {
+          name: /Desidero Pizzeria/,
+        }),
       ).toBeInTheDocument(),
     );
     expect(
       container.querySelector(".admin-relevance-workspace--list"),
     ).toBeInTheDocument();
-    fireEvent.click(within(proposalList!).getByRole("button", { name: /Desidero Pizzeria/ }));
+    fireEvent.click(
+      within(proposalList!).getByRole("button", { name: /Desidero Pizzeria/ }),
+    );
     expect(
       container.querySelector(".admin-relevance-workspace--editor"),
     ).toBeInTheDocument();
