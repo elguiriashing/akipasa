@@ -148,7 +148,7 @@ export function AkiSuiteMembershipHub({
                       <div className={styles.recordTop}><strong>{catalogue?.label || oldName}</strong><span className={styles.active}>{record.status === "trialing" ? (es ? "Prueba" : "Trial") : (es ? "Activo" : "Active")}</span></div>
                       <div className={styles.recordMeta}>
                         <span>{record.billing_interval === "year" ? (es ? "Anual" : "Yearly") : (es ? "Mensual" : "Monthly")}</span>
-                        {record.current_period_end && <span>{record.cancel_at_period_end ? (es ? "Termina" : "Ends") : (es ? "Renueva") : (es ? "Renews")} {date(record.current_period_end)}</span>}
+                        {record.current_period_end && <span>{record.cancel_at_period_end ? (es ? "Termina" : "Ends") : (es ? "Renueva" : "Renews")} {date(record.current_period_end)}</span>}
                       </div>
                     </article>
                   );
