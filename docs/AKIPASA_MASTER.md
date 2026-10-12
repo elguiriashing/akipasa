@@ -414,3 +414,7 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 ### AkiBusiness shared venue media (2026-10-12)
 
 The canonical media asset store is `venue_media`, scoped by `venue_id`, with public surface selection in `venue_media_placements`. Venue Profile and all event editors should receive the same signed venue-scoped inventory, regardless of its original upload path. Event-specific associations (`event_bin`) are independent of owning or viewing the asset. Virtual folders are presentation filters; no files are copied or migrated to organise them. Uploading media alone must not publish it. Validate permissions on the server for every mutation.
+
+### Profile media slot picker (2026-10-12)
+
+AkiBusiness venue Profile image slots reuse the event editor's modal media gallery patterns, including searchable paged thumbnail cards and Auto fallback. Selection continues to write through the existing authorized `setVenueMediaPlacement` and `clearVenueMediaPlacement` actions; it does not upload files or change storage, tenant access, or public visibility. Maintain EN/ES accessibility and responsive modal layouts.
