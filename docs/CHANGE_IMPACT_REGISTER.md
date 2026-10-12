@@ -8,7 +8,6 @@
 - **Acceptance:** source contract test, full `npm run check`, browser/tablet CI and Cloudflare build are mandatory; verify user interaction and modal on devices where available.
 - **Rollback:** revert source change; asset assignments remain untouched.
 
-
 ## 2026-10-12 | AkiBusiness shared media inventory (issue #118)
 
 - Requested: Venue Profile, Event Media and Event Library must expose the same venue-owned media, with lightweight browsing by origin.
