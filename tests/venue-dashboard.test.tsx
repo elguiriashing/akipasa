@@ -229,3 +229,15 @@ describe("shared AkiBusiness media inventory", () => {
     expect(editor).toContain("setLibrarySearch(e.target.value)");
   });
 });
+
+describe("venue profile media picker", () => {
+  it("uses the reusable event media gallery for profile slots", () => {
+    const source = readFileSync("src/components/VenueMediaStudio.tsx", "utf8");
+    expect(source).toContain('className="event-media-modal"');
+    expect(source).toContain('className="event-media-modal-grid"');
+    expect(source).toContain("setPickerSlot(slot.key)");
+    expect(source).toContain("setPickerSearch(event.target.value)");
+    expect(source).toContain("setPlacement(pickerSlot, item.id)");
+    expect(source).toContain("clearPlacement(pickerSlot)");
+  });
+});
