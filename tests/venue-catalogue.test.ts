@@ -16,6 +16,15 @@ describe("venue catalogue foundations", () => {
     expect(new Set(euAllergens.map(([key]) => key)).size).toBe(14);
   });
 
+  it("makes newly added items valid to save before editing either locale", () => {
+    const item = blankCatalogueItem();
+    expect(item.name).toEqual({ es: "Nuevo elemento", en: "New item" });
+    expect(item.name.es.trim()).not.toBe("");
+    expect(item.name.en.trim()).not.toBe("");
+    expect(item.priceCents).toBe(0);
+    expect(item.variants).toEqual([]);
+  });
+
   it("starts food safety declarations as unknown rather than safe", () => {
     const item = blankCatalogueItem();
     expect(Object.values(item.allergens.states)).toHaveLength(14);
