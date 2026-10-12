@@ -37,3 +37,5 @@ All four AkiSuite products are now shown in one bilingual, responsive membership
 Fixed the unsupported Growth navigation icon, removed a duplicate subscription-error alert, and added the membership hub regression test to the formatting workflow. Re-run all checks before approving deployment. Keep paid checkout disabled until its database and feature gates have been verified.
 
 Stripe webhook unit tests now explicitly resolve the new price-validation adapter in Vitest. Formatter committed the changed test file; a fresh full verification run is required before merge.
+
+Membership recovery now gates the central billing action on profile-read success, preventing duplicate payment controls during partial account failures. The formatter has normalised the patch and a fresh full CI run is required.
