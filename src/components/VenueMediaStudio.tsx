@@ -96,6 +96,11 @@ export function VenueMediaStudio({
   const [slotState, setSlotState] =
     useState<Partial<Record<VenueMediaPlacement, string>>>(placements);
   const [busy, setBusy] = useState(false);
+  const [pickerSlot, setPickerSlot] = useState<VenueMediaPlacement | null>(
+    null,
+  );
+  const [pickerPage, setPickerPage] = useState(0);
+  const [pickerSearch, setPickerSearch] = useState("");
   const [uploadProgress, setUploadProgress] = useState<{
     done: number;
     total: number;
@@ -104,6 +109,18 @@ export function VenueMediaStudio({
   const [uploadError, setUploadError] = useState("");
   const uploadFormRef = useRef<HTMLFormElement>(null);
   const fallback = items[0] || null;
+  const filteredPickerItems = items.filter((item) =>
+    item.alt.toLocaleLowerCase().includes(pickerSearch.toLocaleLowerCase()),
+  );
+  const pickerPageCount = Math.max(
+    1,
+    Math.ceil(filteredPickerItems.length / 12),
+  );
+  const safePickerPage = Math.min(pickerPage, pickerPageCount - 1);
+  const visiblePickerItems = filteredPickerItems.slice(
+    safePickerPage * 12,
+    safePickerPage * 12 + 12,
+  );
 
   function selectedFor(slot: VenueMediaPlacement) {
     const explicit = slotState[slot]
@@ -434,35 +451,27 @@ export function VenueMediaStudio({
                 </strong>
                 <small>{es ? slot.esHelp : slot.enHelp}</small>
               </div>
-              <div className="media-five-picker">
-                {items.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    disabled={busy}
-                    className={
-                      slotState[slot.key] === item.id
-                        ? "media-mini-tile selected"
-                        : "media-mini-tile"
-                    }
-                    aria-label={
-                      es
-                        ? `Usar ${item.alt} para ${slot.es}`
-                        : `Use ${item.alt} for ${slot.en}`
-                    }
-                    onClick={() => setPlacement(slot.key, item.id)}
-                  >
-                    <img src={item.url} alt="" />
-                  </button>
-                ))}
+              <div className="event-surface-actions">
+                <button
+                  className="button"
+                  type="button"
+                  disabled={busy}
+                  onClick={() => {
+                    setPickerSlot(slot.key);
+                    setPickerPage(0);
+                    setPickerSearch("");
+                  }}
+                >
+                  {es ? "Elegir imagen" : "Choose image"}
+                </button>
                 {explicit ? (
                   <button
-                    className="media-auto-button"
+                    className="button subtle"
                     type="button"
                     disabled={busy}
                     onClick={() => clearPlacement(slot.key)}
                   >
-                    {es ? "Auto" : "Auto"}
+                    Auto
                   </button>
                 ) : null}
               </div>
@@ -682,6 +691,110 @@ export function VenueMediaStudio({
           <strong>{es ? "Todavía no hay imágenes" : "No media yet"}</strong>
         </div>
       )}
+      {pickerSlot ? (
+        <div
+          className="event-media-modal-backdrop"
+          role="presentation"
+          onMouseDown={() => setPickerSlot(null)}
+        >
+          <section
+            className="event-media-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label={es ? "Elegir imagen" : "Choose image"}
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <header>
+              <div>
+                <span className="eyebrow">
+                  {es ? "Biblioteca multimedia" : "Media library"}
+                </span>
+                <h3>
+                  {es
+                    ? slots.find((slot) => slot.key === pickerSlot)?.es
+                    : slots.find((slot) => slot.key === pickerSlot)?.en}
+                </h3>
+              </div>
+              <button
+                type="button"
+                className="event-media-modal-close"
+                aria-label={es ? "Cerrar" : "Close"}
+                onClick={() => setPickerSlot(null)}
+              >
+                ×
+              </button>
+            </header>
+            <input
+              type="search"
+              aria-label={es ? "Buscar imágenes" : "Search images"}
+              placeholder={es ? "Buscar imágenes…" : "Search images…"}
+              value={pickerSearch}
+              onChange={(event) => {
+                setPickerSearch(event.target.value);
+                setPickerPage(0);
+              }}
+            />
+            <div className="event-media-modal-grid">
+              {visiblePickerItems.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  disabled={busy}
+                  className={
+                    slotState[pickerSlot] === item.id ? "selected" : ""
+                  }
+                  onClick={async () => {
+                    const slot = pickerSlot;
+                    await setPlacement(slot, item.id);
+                    setPickerSlot(null);
+                  }}
+                >
+                  <img src={item.url} alt={item.alt} />
+                  <span>{item.alt}</span>
+                </button>
+              ))}
+            </div>
+            {!filteredPickerItems.length ? (
+              <p className="muted">
+                {es ? "No hay imágenes disponibles." : "No images available."}
+              </p>
+            ) : null}
+            <footer>
+              <button
+                type="button"
+                className="button subtle"
+                disabled={busy}
+                onClick={async () => {
+                  const slot = pickerSlot;
+                  await clearPlacement(slot);
+                  setPickerSlot(null);
+                }}
+              >
+                {es ? "Usar automático" : "Use automatic"}
+              </button>
+              <div className="event-media-pagination">
+                <button
+                  type="button"
+                  disabled={safePickerPage === 0}
+                  onClick={() => setPickerPage((page) => page - 1)}
+                >
+                  ←
+                </button>
+                <span>
+                  {safePickerPage + 1} / {pickerPageCount}
+                </span>
+                <button
+                  type="button"
+                  disabled={safePickerPage >= pickerPageCount - 1}
+                  onClick={() => setPickerPage((page) => page + 1)}
+                >
+                  →
+                </button>
+              </div>
+            </footer>
+          </section>
+        </div>
+      ) : null}
     </section>
   );
 }

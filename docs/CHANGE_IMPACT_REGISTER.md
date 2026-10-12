@@ -1,5 +1,12 @@
 # Change Impact Register
 
+## 2026-10-12 | Venue profile media picker usability
+
+- **Request:** Replace the increasingly narrow five-slot image strips with the existing event-style gallery selector in AkiBusiness Profile.
+- **Change:** Each venue image slot opens the shared event gallery modal with searchable, paginated, touch-friendly previews. Existing venue image placements and Auto behavior still use the same authorized server actions. The venue-wide library and accommodation gallery remain unchanged.
+- **Dependencies:** VenueMediaStudio, event media modal CSS, signed venue media URLs, EN/ES, tablet/phone/desktop, Supabase placement mutations. No schema, storage, permissions, email, payment or public page changes.
+- **Regression:** Static venue-dashboard contract assertion added. CI format, lint, types, tests, Cloudflare build and tablet/browser acceptance must pass before merge. Rollback by reverting this UI-only change.
+
 ## 2026-10-12 | AkiBusiness shared media inventory (issue #118)
 
 - Requested: Venue Profile, Event Media and Event Library must expose the same venue-owned media, with lightweight browsing by origin.
