@@ -139,7 +139,6 @@ describe("integrated Admin rewards tabs", () => {
       "privacy/page.tsx",
       "audit/page.tsx",
       "passports/page.tsx",
-      "FocusedCatalogue.tsx",
     ]) {
       expect(readFileSync(root + file, "utf8")).toContain("<AdminSearchList");
     }
@@ -148,6 +147,7 @@ describe("integrated Admin rewards tabs", () => {
       "utf8",
     );
     expect(source).toContain("reviewBusinessApplication");
+    expect(readFileSync(root + "FocusedCatalogue.tsx", "utf8")).toContain("<AdminWorkbench");
     expect(readFileSync(root + "promotions/page.tsx", "utf8")).toContain(
       "updatePromotion",
     );
