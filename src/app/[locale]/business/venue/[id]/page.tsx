@@ -1209,6 +1209,27 @@ export default async function VenueWorkspace({
                 alt: item.alt,
               }))}
             />
+            {query.error === "catalogue-item" && (
+              <p className="notice notice-error" role="alert">
+                {es
+                  ? "No se ha guardado: comprueba que cada artículo tenga nombre, precio y datos válidos. Elimina los artículos incompletos o termina de editarlos antes de guardar."
+                  : "Not saved: check that every item has a name, price and valid details. Remove incomplete items or finish editing them before saving."}
+              </p>
+            )}
+            {query.error === "catalogue-conflict" && (
+              <p className="notice notice-error" role="alert">
+                {es
+                  ? "El catálogo cambió en otra sesión. Recarga antes de guardar para evitar sobrescribir cambios."
+                  : "This catalogue changed in another session. Reload before saving to avoid overwriting changes."}
+              </p>
+            )}
+            {query.error === "catalogue-permission" && (
+              <p className="notice notice-error" role="alert">
+                {es
+                  ? "No tienes permiso para modificar este catálogo. Comprueba tu acceso al local."
+                  : "You do not have permission to change this catalogue. Check your venue access."}
+              </p>
+            )}
             {query.error === "allergens" && (
               <p className="notice notice-error" role="alert">
                 {es
