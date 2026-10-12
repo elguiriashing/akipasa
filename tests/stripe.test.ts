@@ -132,18 +132,15 @@ describe("paid entitlement contracts", () => {
     expect(migration).not.toContain("module_price");
   });
 
-  it("updates an existing Business subscription without creating a second one", () => {
+  it("closes superseded checkout while preserving legacy billing management", () => {
     const actions = readFileSync(
       "src/app/[locale]/account/subscription/actions.ts",
       "utf8",
     );
-
-    expect(actions).toContain('subscription.plan_code === "business"');
-    expect(actions).toContain('parsed.data.plan === "business_pro"');
-    expect(actions).toContain('payment_behavior: "pending_if_incomplete"');
-    expect(actions).toContain('proration_behavior: "always_invoice"');
-    expect(actions).toContain("business-pro-upgrade:");
-    expect(actions).toContain("/subscriptions/${subscriptionId}");
+    expect(actions).toContain("legacy_checkout_closed");
+    expect(actions).not.toContain('"/checkout/sessions"');
+    expect(actions).toContain("/billing_portal/sessions");
+    expect(actions).toContain("STRIPE_AKIPASA_PORTAL_CONFIGURATION_ID");
   });
 
   it("recognizes portal upgrades from the subscription price instead of stale metadata", () => {
@@ -283,7 +280,11 @@ describe("payment event fulfillment", () => {
         id: "sub_test",
         customer: "cus_test",
         status,
-        metadata: { profile_id: "profile_test", plan_code: "business_pro" },
+        metadata: {
+          profile_id: "10000000-0000-4000-8000-000000000001",
+          plan_code: "business_pro",
+          workspace_id: "ws_fixture",
+        },
         items: {
           data: [{ price: { id: price }, current_period_end: 2_000_000_000 }],
         },
@@ -366,7 +367,7 @@ describe("payment event fulfillment", () => {
         p_plan: "premium",
         p_interval: "month",
         p_status: status,
-        p_profile: "profile_test",
+        p_profile: "10000000-0000-4000-8000-000000000001",
       });
     },
   );
@@ -388,6 +389,7 @@ describe("payment event fulfillment", () => {
     expect(duplicate.fetchMock).not.toHaveBeenCalled();
   });
   it("fulfils configured Enterprise via the isolated ledger, not legacy plans", async () => {
+    vi.stubEnv("AKISUITE_SUBSCRIPTIONS_READY", "true");
     vi.stubEnv(
       "STRIPE_AKISUITE_ENTERPRISE_MONTH_PRICE_ID",
       "price_suite_enterprise",
@@ -405,7 +407,7 @@ describe("payment event fulfillment", () => {
       p_plan: "aki_enterprise",
       p_interval: "month",
       p_status: "active",
-      p_profile: "profile_test",
+      p_profile: "10000000-0000-4000-8000-000000000001",
     });
   });
 

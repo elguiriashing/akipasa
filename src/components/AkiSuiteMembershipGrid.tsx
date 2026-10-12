@@ -6,6 +6,11 @@ import {
   akisuitePlans,
   akisuitePriceCents,
   type AkiSuitePlan,
+  type AkiSuiteApp,
+  akiSuitePlanApp,
+  effectiveAkiSuitePlans,
+  businessAddonEligible,
+  overlappingAkiSuitePlan,
 } from "@/lib/akisuite-catalogue";
 import styles from "./AkiSuiteMembershipGrid.module.css";
 
@@ -45,14 +50,14 @@ const descriptions: Record<
     en: "Extra marketing tools for accommodation hosts.",
     es: "Herramientas de marketing para alojamientos.",
     benefitsEn: [
-      "Accommodation growth tools",
-      "Deeper listing insights",
-      "Enhanced property presentation",
+      "Confirmed-night and booking comparisons",
+      "Exportable property reports",
+      "Expanded shared media and folders",
     ],
     benefitsEs: [
-      "Herramientas para alojamientos",
-      "Análisis detallados",
-      "Presentación mejorada del alojamiento",
+      "Comparaciones de noches y reservas",
+      "Informes exportables del alojamiento",
+      "Biblioteca ampliada con carpetas",
     ],
   },
   akihq_standard: {
@@ -114,24 +119,40 @@ const descriptions: Record<
 };
 
 const order: AkiSuitePlan[] = [
+  "aki_enterprise",
   "akipasa_premium",
   "akibusiness_premium",
   "akiduermo_premium",
   "akihq_standard",
   "akihq_pro",
   "akihq_business_addon",
-  "aki_enterprise",
 ];
 
 export function AkiSuiteMembershipGrid({
   locale,
   checkoutReady = false,
+  originatingApp = "akipasa",
+  activePlans = [],
+  accessUnavailable = false,
+  workspaces = [],
+  workspacePlans = {},
 }: {
   locale: "en" | "es";
   checkoutReady?: boolean;
+  originatingApp?: AkiSuiteApp;
+  activePlans?: AkiSuitePlan[];
+  accessUnavailable?: boolean;
+  workspaces?: Array<{ id: string; name: string }>;
+  workspacePlans?: Record<string, AkiSuitePlan[]>;
 }) {
   const [interval, setInterval] = useState<"month" | "year">("month");
+  const [workspaceId, setWorkspaceId] = useState(workspaces[0]?.id || "");
   const es = locale === "es";
+  const selectedPlans = [
+    ...activePlans,
+    ...(workspacePlans[workspaceId] || []),
+  ];
+  const included = effectiveAkiSuitePlans(selectedPlans);
   const currency = new Intl.NumberFormat(es ? "es-ES" : "en-IE", {
     style: "currency",
     currency: "EUR",
@@ -172,26 +193,61 @@ export function AkiSuiteMembershipGrid({
           </label>
         </fieldset>
       </header>
+      {workspaces.length > 1 && (
+        <fieldset className={styles.workspaces}>
+          <legend>
+            {es
+              ? "Negocio que recibirá las ventajas"
+              : "Business receiving the benefits"}
+          </legend>
+          {workspaces.map((workspace) => (
+            <label key={workspace.id}>
+              <input
+                type="radio"
+                name="akisuite-workspace"
+                value={workspace.id}
+                checked={workspaceId === workspace.id}
+                onChange={() => setWorkspaceId(workspace.id)}
+              />
+              {workspace.name}
+            </label>
+          ))}
+        </fieldset>
+      )}
       <div className={styles.grid}>
         {order.map((key) => {
           const item = akisuitePlans[key];
           const details = descriptions[key];
           const cents = akisuitePriceCents(key, interval);
           const featured = key === "aki_enterprise";
+          const app = akiSuitePlanApp(key);
+          const current = included.has(key);
+          const origin = app === originatingApp;
+          const overlap = overlappingAkiSuitePlan(key, selectedPlans);
+          const eligible =
+            key !== "akihq_business_addon" ||
+            businessAddonEligible(selectedPlans);
           return (
             <article
               key={key}
+              id={key}
+              data-product={app}
+              data-origin={origin || undefined}
               className={[styles.card, featured ? styles.featured : ""].join(
                 " ",
               )}
             >
               <div className={styles.cardHeader}>
                 <span className={styles.eyebrow}>
-                  {key.startsWith("akihq")
-                    ? "AkiHQ"
-                    : key === "aki_enterprise"
-                      ? "AkiSuite"
-                      : "Aki"}
+                  {app === "akisuite"
+                    ? "AkiSuite"
+                    : app === "akihq"
+                      ? "AkiHQ"
+                      : app === "akibusiness"
+                        ? "AkiBusiness"
+                        : app === "akiduermo"
+                          ? "AkiDuermo"
+                          : "AkiPasa"}
                 </span>
                 {featured && (
                   <span className={styles.pill}>
@@ -199,6 +255,16 @@ export function AkiSuiteMembershipGrid({
                   </span>
                 )}
               </div>
+              {origin && (
+                <span className={styles.origin}>
+                  {es ? "Tu aplicación" : "Your app"}
+                </span>
+              )}
+              {current && (
+                <span className={styles.pill}>
+                  {es ? "Incluido en tu acceso" : "Included in your access"}
+                </span>
+              )}
               <h3>{item.label}</h3>
               <p className={styles.description}>{details[locale]}</p>
               <div className={styles.price}>
@@ -217,8 +283,8 @@ export function AkiSuiteMembershipGrid({
               {interval === "year" && (
                 <p className={styles.saving}>
                   {es
-                    ? "20 % menos que doce pagos mensuales"
-                    : "20% off twelve monthly payments"}
+                    ? `Ahorras ${currency.format((item.monthlyCents * 12 - cents) / 100)} al año · 20 %`
+                    : `Save ${currency.format((item.monthlyCents * 12 - cents) / 100)} per year · 20%`}
                 </p>
               )}
               <ul className={styles.benefits}>
@@ -232,24 +298,37 @@ export function AkiSuiteMembershipGrid({
                 <input type="hidden" name="locale" value={locale} />
                 <input type="hidden" name="plan" value={key} />
                 <input type="hidden" name="interval" value={interval} />
+                {key !== "akipasa_premium" && workspaceId && (
+                  <input type="hidden" name="workspaceId" value={workspaceId} />
+                )}
                 <button
                   type="submit"
                   className={
                     featured ? "button button-strong" : "button secondary"
                   }
-                  disabled={!checkoutReady}
+                  disabled={
+                    !checkoutReady ||
+                    current ||
+                    accessUnavailable ||
+                    overlap ||
+                    !eligible
+                  }
                 >
-                  {!checkoutReady
+                  {current
                     ? es
-                      ? "Disponible próximamente"
-                      : "Coming soon"
-                    : key === "akihq_business_addon"
+                      ? "Plan incluido"
+                      : "Plan included"
+                    : !checkoutReady
                       ? es
-                        ? "Añadir a AkiHQ Pro"
-                        : "Add to AkiHQ Pro"
-                      : es
-                        ? "Elegir plan"
-                        : "Choose plan"}
+                        ? "Disponible próximamente"
+                        : "Coming soon"
+                      : key === "akihq_business_addon"
+                        ? es
+                          ? "Añadir a AkiHQ Pro"
+                          : "Add to AkiHQ Pro"
+                        : es
+                          ? "Elegir plan"
+                          : "Choose plan"}
                 </button>
               </form>
             </article>
@@ -258,8 +337,8 @@ export function AkiSuiteMembershipGrid({
       </div>
       <p className={styles.footnote}>
         {es
-          ? "El total y los impuestos aplicables se muestran antes de confirmar el pago. Las funciones se activan tras la confirmación de Stripe."
-          : "Final totals and applicable taxes appear before payment confirmation. Features activate only after Stripe confirmation."}
+          ? "La verificación de titularidad de un local es independiente de Premium. El total y los impuestos aplicables se muestran antes de confirmar el pago. Las funciones se activan tras la confirmación de Stripe."
+          : "Verified venue ownership is independent of Premium. Final totals and applicable taxes appear before payment confirmation. Features activate only after Stripe confirmation."}
       </p>
     </section>
   );

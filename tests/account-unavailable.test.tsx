@@ -2,7 +2,13 @@
 
 import "@testing-library/jest-dom/vitest";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from "@testing-library/react";
 
 const fixture = vi.hoisted(() => ({
   failedTable: "",
@@ -189,13 +195,16 @@ it("retains plan selection after successful reads with no billing records", asyn
     }),
   );
   expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-  expect(screen.getByRole("tablist")).toBeVisible();
-  const form = screen
-    .getByRole("button", { name: "Continue" })
+  expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+  const card = screen
+    .getByRole("heading", { name: "AkiPasa Premium" })
+    .closest("article")!;
+  const form = within(card)
+    .getByRole("button", { name: "Coming soon" })
     .closest("form")!;
   expect(Object.fromEntries(new FormData(form))).toEqual({
     locale: "en",
-    plan: "premium",
+    plan: "akipasa_premium",
     interval: "month",
   });
   expect(startSubscriptionCheckout).not.toHaveBeenCalled();

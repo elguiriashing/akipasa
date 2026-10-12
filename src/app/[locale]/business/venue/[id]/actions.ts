@@ -8,6 +8,7 @@ import {
   bookingInboxHref,
   parseBookingInbox,
 } from "@/lib/business-booking-inbox";
+import { authorizedSuiteMedia } from "@/lib/akisuite-media";
 import { requireBusinessAccess } from "@/lib/entitlements";
 import { safeExternalUrlSchema } from "@/lib/auth-security";
 import { madridLocalDateTimeSchema } from "@/lib/time";
@@ -469,11 +470,13 @@ export async function setRecurrence(formData: FormData) {
   const parsed = context
     .extend({
       eventId: z.string().uuid(),
-      startsAt: madridLocalDateTimeSchema,
-      endsAt: madridLocalDateTimeSchema,
+      startsAt: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/),
+      endsAt: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/),
       frequency: z.enum(["daily", "weekly"]),
       interval: z.coerce.number().int().min(1).max(12),
       occurrences: z.coerce.number().int().min(2).max(52),
+      timezone: z.string().trim().min(3).max(100).default("Europe/Madrid"),
+      exceptions: z.string().max(800).default(""),
     })
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
@@ -482,14 +485,34 @@ export async function setRecurrence(formData: FormData) {
     redirect(destination(locale, venueId, "error=recurrence"));
   const { supabase } = await requireBusinessAccess(locale);
   const value = parsed.data;
-  const { error } = await supabase.rpc("set_owned_event_recurrence", {
-    p_event: value.eventId,
-    p_starts: value.startsAt.toISOString(),
-    p_ends: value.endsAt.toISOString(),
-    p_frequency: value.frequency,
-    p_interval: value.interval,
-    p_occurrences: value.occurrences,
-  });
+  const exceptions = value.exceptions.split(/[\s,]+/).filter(Boolean);
+  if (exceptions.some((date) => !/^\d{4}-\d{2}-\d{2}$/.test(date)))
+    redirect(destination(locale, venueId, "error=recurrence"));
+  const ready = process.env.AKISUITE_FEATURES_READY === "true";
+  const { error } = await supabase.rpc(
+    ready ? "set_owned_event_recurrence_v2" : "set_owned_event_recurrence",
+    ready
+      ? {
+          p_event: value.eventId,
+          p_local_starts: String(formData.get("startsAt")),
+          p_local_ends: String(formData.get("endsAt")),
+          p_frequency: value.frequency,
+          p_interval: value.interval,
+          p_occurrences: value.occurrences,
+          p_timezone: value.timezone,
+          p_exceptions: exceptions,
+        }
+      : {
+          p_event: value.eventId,
+          p_starts: madridLocalDateTimeSchema
+            .parse(value.startsAt)
+            .toISOString(),
+          p_ends: madridLocalDateTimeSchema.parse(value.endsAt).toISOString(),
+          p_frequency: value.frequency,
+          p_interval: value.interval,
+          p_occurrences: value.occurrences,
+        },
+  );
   if (error) redirect(destination(locale, venueId, "error=recurrence"));
   redirect(destination(locale, venueId, "updated=recurrence"));
 }
@@ -632,7 +655,11 @@ export async function uploadVenueImage(formData: FormData) {
   });
   if (error) {
     await supabase.storage.from("event-media").remove([path]);
-    if (inline) return { ok: false as const, error: "database" };
+    if (inline)
+      return {
+        ok: false as const,
+        error: error.code === "PT402" ? "quota" : "database",
+      };
     redirect(destination(locale, venueId, "error=media"));
   }
   if (inline) {
@@ -1875,12 +1902,11 @@ export async function addStayHeaderPhoto(formData: FormData) {
     .eq("id", parsed.data.venueId)
     .eq("discovery_vertical", "accommodation")
     .maybeSingle();
-  const { data: media } = await supabase
-    .from("venue_media")
-    .select("id")
-    .eq("id", parsed.data.mediaId)
-    .eq("venue_id", parsed.data.venueId)
-    .maybeSingle();
+  const media = await authorizedSuiteMedia(
+    supabase,
+    parsed.data.venueId,
+    parsed.data.mediaId,
+  );
   if (!venue || !media) return { ok: false as const, error: "media" };
   const { data: existing, error: readError } = await supabase
     .from("venue_media_placements")
@@ -1958,12 +1984,11 @@ export async function setVenueMediaPlacement(formData: FormData) {
   }
 
   const { supabase, user } = await requireBusinessAccess(locale);
-  const { data: media } = await supabase
-    .from("venue_media")
-    .select("id")
-    .eq("id", parsed.data.mediaId)
-    .eq("venue_id", parsed.data.venueId)
-    .maybeSingle();
+  const media = await authorizedSuiteMedia(
+    supabase,
+    parsed.data.venueId,
+    parsed.data.mediaId,
+  );
   if (!media) {
     if (inline) return { ok: false as const, error: "media" };
     redirect(destination(locale, venueId, "error=media"));

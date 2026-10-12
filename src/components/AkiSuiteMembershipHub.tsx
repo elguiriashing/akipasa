@@ -1,20 +1,16 @@
 import Link from "next/link";
+import Image from "next/image";
+import { changeAkiSuiteSubscription } from "@/app/[locale]/account/subscription/akisuite-actions";
 import { openBillingPortal } from "@/app/[locale]/account/subscription/actions";
 import { akisuitePlans, type AkiSuitePlan } from "@/lib/akisuite-catalogue";
 import styles from "./AkiSuiteMembershipHub.module.css";
 
-type SubscriptionRow = {
-  plan_code: string;
-  billing_interval: string;
-  status: string;
-  current_period_end: string | null;
-  cancel_at_period_end: boolean;
-};
-type GrantRow = {
-  plan_code: string;
-  grant_kind: string;
-  expires_at: string | null;
-};
+import {
+  resolveMembershipHub,
+  type SuiteSubscriptionRow as SubscriptionRow,
+  type SuiteGrantRow as GrantRow,
+} from "@/lib/akisuite-membership";
+
 const apps = [
   {
     key: "akipasa",
@@ -46,49 +42,6 @@ const apps = [
   },
 ] as const;
 
-function active(record: SubscriptionRow, now: number) {
-  return (
-    ["active", "trialing"].includes(record.status) &&
-    (!record.current_period_end || Date.parse(record.current_period_end) > now)
-  );
-}
-
-export function resolveMembershipHub(
-  legacy: SubscriptionRow[],
-  suite: SubscriptionRow[],
-  grants: GrantRow[],
-  now: number,
-) {
-  const paid = [...legacy, ...suite].filter((s) => active(s, now));
-  const paidCodes = new Set(paid.map((s) => s.plan_code));
-  const grantCodes = new Set(
-    grants
-      .filter((g) => !g.expires_at || Date.parse(g.expires_at) > now)
-      .map((g) => g.plan_code),
-  );
-  const has = (code: string) => paidCodes.has(code) || grantCodes.has(code);
-  const enterprise = has("aki_enterprise");
-  const pro = enterprise || has("akihq_pro") || has("business_pro");
-  const premiumBusiness =
-    enterprise ||
-    has("akibusiness_premium") ||
-    (has("akihq_business_addon") && pro);
-  return {
-    enterprise,
-    apps: {
-      akipasa: enterprise || has("akipasa_premium") || has("premium"),
-      akibusiness: premiumBusiness,
-      akiduermo: enterprise || has("akiduermo_premium"),
-      akihq: pro
-        ? "pro"
-        : has("akihq_standard") || has("business")
-          ? "standard"
-          : "free",
-    },
-    paid,
-  };
-}
-
 export function AkiSuiteMembershipHub({
   locale,
   legacy,
@@ -97,6 +50,8 @@ export function AkiSuiteMembershipHub({
   hasStripeCustomer,
   unavailable = false,
   now,
+  workspaceAccess = [],
+  planChangesReady = false,
 }: {
   locale: "en" | "es";
   legacy: SubscriptionRow[];
@@ -105,6 +60,8 @@ export function AkiSuiteMembershipHub({
   hasStripeCustomer: boolean;
   unavailable?: boolean;
   now: number;
+  planChangesReady?: boolean;
+  workspaceAccess?: Array<{ id: string; name: string; plans: AkiSuitePlan[] }>;
 }) {
   const es = locale === "es";
   const membership = resolveMembershipHub(legacy, suite, grants, now);
@@ -190,7 +147,16 @@ export function AkiSuiteMembershipHub({
                           data-hue={app.hue}
                           aria-hidden="true"
                         >
-                          {app.initial}
+                          <Image
+                            src={
+                              app.key === "akipasa"
+                                ? "/pwa/akipasa-512.png"
+                                : `/brand/${app.key === "akibusiness" ? "business" : app.key === "akiduermo" ? "duermo" : "hq"}-icon.png`
+                            }
+                            alt=""
+                            width={40}
+                            height={40}
+                          />
                         </span>
                         <span className={enabled ? styles.active : styles.free}>
                           {enabled
@@ -206,7 +172,7 @@ export function AkiSuiteMembershipHub({
                       <span className={styles.appPlan}>{plan(app.key)}</span>
                       <Link
                         className={styles.appLink}
-                        href={`/${locale}/membership#${app.key}`}
+                        href={`/${locale}/membership?from=${app.key}#${app.plans[0]}`}
                       >
                         {enabled
                           ? es
@@ -239,8 +205,8 @@ export function AkiSuiteMembershipHub({
               </div>
               <p>
                 {es
-                  ? "Aplicaciones con acceso de pago"
-                  : "Apps with paid access"}
+                  ? "Aplicaciones con herramientas ampliadas"
+                  : "Apps with upgraded tools"}
               </p>
               {membership.enterprise && (
                 <p className={styles.enterpriseText}>
@@ -257,6 +223,42 @@ export function AkiSuiteMembershipHub({
               </Link>
             </aside>
           </div>
+          {workspaceAccess.length > 0 && (
+            <section className={styles.records}>
+              <h3>
+                {es
+                  ? "Acceso de tus espacios de trabajo"
+                  : "Your workspace access"}
+              </h3>
+              <p>
+                {es
+                  ? "Las ventajas de negocio se aplican a estos espacios autorizados. El Premium personal corresponde a la persona suscrita."
+                  : "Business benefits apply to these authorised workspaces. Personal Premium belongs to the subscriber."}
+              </p>
+              <div className={styles.recordGrid}>
+                {workspaceAccess.map((workspace) => (
+                  <article className={styles.record} key={workspace.id}>
+                    <strong>{workspace.name}</strong>
+                    <p>
+                      {workspace.plans.length
+                        ? workspace.plans
+                            .filter(
+                              (plan) =>
+                                plan !== "akihq_standard" ||
+                                !workspace.plans.includes("akihq_pro"),
+                            )
+                            .map((plan) => akisuitePlans[plan]?.label)
+                            .filter(Boolean)
+                            .join(" · ")
+                        : es
+                          ? "Acceso gratuito"
+                          : "Free access"}
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
           <div className={styles.records}>
             <div className={styles.sectionHead}>
               <div>
@@ -308,6 +310,74 @@ export function AkiSuiteMembershipHub({
                               : "Active"}
                         </span>
                       </div>
+                      {planChangesReady &&
+                        catalogue &&
+                        record.stripe_subscription_id && (
+                          <details>
+                            <summary>
+                              {es ? "Cambiar este plan" : "Change this plan"}
+                            </summary>
+                            <form action={changeAkiSuiteSubscription}>
+                              <input
+                                type="hidden"
+                                name="locale"
+                                value={locale}
+                              />
+                              <input
+                                type="hidden"
+                                name="subscriptionId"
+                                value={record.stripe_subscription_id}
+                              />
+                              <label>
+                                {es ? "Plan" : "Plan"}
+                                <select
+                                  name="plan"
+                                  defaultValue={record.plan_code}
+                                >
+                                  {(
+                                    Object.keys(akisuitePlans) as AkiSuitePlan[]
+                                  )
+                                    .filter(
+                                      (key) =>
+                                        (key === "akipasa_premium") ===
+                                        (record.plan_code ===
+                                          "akipasa_premium"),
+                                    )
+                                    .map((key) => (
+                                      <option key={key} value={key}>
+                                        {akisuitePlans[key].label}
+                                      </option>
+                                    ))}
+                                </select>
+                              </label>
+                              <label>
+                                {es ? "Periodo" : "Interval"}
+                                <select
+                                  name="interval"
+                                  defaultValue={record.billing_interval}
+                                >
+                                  <option value="month">
+                                    {es ? "Mensual" : "Monthly"}
+                                  </option>
+                                  <option value="year">
+                                    {es ? "Anual" : "Yearly"}
+                                  </option>
+                                </select>
+                              </label>
+                              <p>
+                                {es
+                                  ? "Stripe muestra los ajustes antes de confirmar. El cambio sustituye esta suscripción."
+                                  : "Stripe shows adjustments before confirmation. The change replaces this subscription."}
+                              </p>
+                              <button
+                                className="button secondary"
+                                type="submit"
+                              >
+                                {es ? "Revisar cambio" : "Review change"}
+                              </button>
+                            </form>
+                          </details>
+                        )}
                       <div className={styles.recordMeta}>
                         <span>
                           {record.billing_interval === "year"

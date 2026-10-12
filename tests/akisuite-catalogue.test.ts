@@ -4,6 +4,8 @@ import {
   akisuitePriceCents,
   businessAddonEligible,
   effectiveAkiSuitePlans,
+  blocksAkiSuitePurchase,
+  overlappingAkiSuitePlan,
 } from "../src/lib/akisuite-catalogue";
 describe("AkiSuite commercial catalogue", () => {
   it("applies 20 percent off every yearly plan", () => {
@@ -31,7 +33,7 @@ describe("AkiSuite commercial catalogue", () => {
       ),
     ).toBe(true);
   });
-  it("grants all four Enterprise components without Standard", () => {
+  it("inherits Pro capabilities through Enterprise", () => {
     const access = effectiveAkiSuitePlans(["aki_enterprise"]);
     for (const plan of [
       "akipasa_premium",
@@ -40,6 +42,53 @@ describe("AkiSuite commercial catalogue", () => {
       "akihq_pro",
     ] as const)
       expect(access.has(plan)).toBe(true);
-    expect(access.has("akihq_standard")).toBe(false);
+    expect(access.has("akihq_standard")).toBe(true);
   });
+  it("blocks a second charge while the first subscription can resume", () => {
+    for (const status of [
+      "active",
+      "trialing",
+      "past_due",
+      "unpaid",
+      "incomplete",
+      "paused",
+    ])
+      expect(blocksAkiSuitePurchase(status)).toBe(true);
+    expect(blocksAkiSuitePurchase("canceled")).toBe(false);
+    expect(overlappingAkiSuitePlan("aki_enterprise", ["premium"])).toBe(true);
+    expect(overlappingAkiSuitePlan("akihq_pro", ["business"])).toBe(true);
+    expect(overlappingAkiSuitePlan("akipasa_premium", ["aki_enterprise"])).toBe(
+      true,
+    );
+    expect(
+      overlappingAkiSuitePlan("akibusiness_premium", ["akihq_business_addon"]),
+    ).toBe(true);
+    expect(
+      overlappingAkiSuitePlan("akiduermo_premium", ["akipasa_premium"]),
+    ).toBe(false);
+  });
+});
+
+it("scopes business purchases while retaining Enterprise's payer-wide consumer benefit", async () => {
+  const { akiSuiteRelevantSubscription } = await import(
+    "../src/lib/akisuite-catalogue"
+  );
+  expect(
+    akiSuiteRelevantSubscription("akipasa_premium", null, {
+      plan_code: "aki_enterprise",
+      workspace_id: "ws_other",
+    }),
+  ).toBe(true);
+  expect(
+    akiSuiteRelevantSubscription("akihq_pro", "ws_one", {
+      plan_code: "akihq_pro",
+      workspace_id: "ws_two",
+    }),
+  ).toBe(false);
+  expect(
+    akiSuiteRelevantSubscription("akihq_pro", "ws_one", {
+      plan_code: "akihq_pro",
+      workspace_id: "ws_one",
+    }),
+  ).toBe(true);
 });

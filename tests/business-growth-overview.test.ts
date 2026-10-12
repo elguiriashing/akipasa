@@ -16,7 +16,8 @@ describe("AkiBusiness Growth rollout boundaries", () => {
     expect(page).toContain("requireBusinessAccess");
     expect(page).toContain("BusinessGrowthOverview");
     expect(page).toContain("premiumEnabled={premiumEnabled}");
-    expect(growth).toContain("premiumEnabled && !premiumActive");
+    expect(growth).toContain("!premiumActive &&");
+    expect(growth).toContain("account/subscription?from=akibusiness");
     expect(page).toContain("action={requestPromotion}");
     expect(page).toContain('view === "analytics" || view === "growth"');
   });
@@ -30,8 +31,8 @@ describe("AkiBusiness Growth rollout boundaries", () => {
   });
 
   it("provides phone, tablet and wide-screen layout rules", () => {
-    expect(css).toContain("grid-template-columns:repeat(3");
-    expect(css).toContain("@media(max-width:780px)");
-    expect(css).toContain("@media(max-width:480px)");
+    expect(css.replace(/\s/g, "")).toContain("grid-template-columns:repeat(3");
+    expect(css.replace(/\s/g, "")).toContain("@media(max-width:780px)");
+    expect(css.replace(/\s/g, "")).toContain("@media(max-width:480px)");
   });
 });

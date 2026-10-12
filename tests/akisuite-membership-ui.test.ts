@@ -35,11 +35,8 @@ describe("AkiSuite localized membership catalogue", () => {
   it("renders the full catalogue regardless of checkout activation", () => {
     for (const source of [publicPage, accountPage]) {
       expect(source).toContain("AkiSuiteMembershipGrid");
-      expect(source).toContain("checkoutReady={suiteCatalogueReady}");
-      expect(source).toContain(
-        'process.env.AKISUITE_CHECKOUT_ENABLED === "true"',
-      );
-      expect(source).toContain('process.env.AKISUITE_TAX_READY === "true"');
+      expect(source).toContain("suiteCatalogueReady");
+      expect(source).toContain("akiSuiteCheckoutReady()");
       expect(source).not.toContain("MembershipPicker");
     }
     expect(publicPage).not.toContain("membership-details");
@@ -52,7 +49,7 @@ describe("AkiSuite localized membership catalogue", () => {
       "src/app/[locale]/duermo/memberships/page.tsx",
     ]) {
       const source = readFileSync(path, "utf8");
-      expect(source).toContain("/account/subscription");
+      expect(source).toContain("/membership?from=");
     }
   });
 });

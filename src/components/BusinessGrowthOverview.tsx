@@ -27,7 +27,8 @@ export function BusinessGrowthOverview({
     (sum, venue) => sum + (venue.interactions || 0),
     0,
   );
-  const measured = venues.some((venue) => venue.interactions !== null);
+  const measured =
+    venues.length > 0 && venues.every((venue) => venue.interactions !== null);
   return (
     <section className={styles.root} aria-labelledby="business-growth-heading">
       <header className={styles.header}>
@@ -144,18 +145,18 @@ export function BusinessGrowthOverview({
                   ? "Repetición automática de eventos, plantillas, biblioteca ampliada y análisis detallados. Todavía no se puede contratar."
                   : "Automatic event recurrence, templates, expanded media and detailed insights. Checkout is not available yet."}
             </p>
-            {premiumEnabled && !premiumActive && (
+            {!premiumActive && (
               <Link
                 className="button button-strong"
-                href={`/${locale}/account/subscription`}
+                href={`/${locale}/account/subscription?from=akibusiness`}
               >
                 {es ? "Ver AkiBusiness Premium" : "Explore AkiBusiness Premium"}
               </Link>
             )}
             <p className={styles.fine}>
               {es
-                ? "20 % de descuento anual previsto. Sin promesas de posición en Google."
-                : "Planned 20% annual discount. No Google ranking guarantees."}
+                ? "20 % de descuento anual. Sin promesas de posición en Google."
+                : "20% annual discount. No Google ranking guarantees."}
             </p>
           </div>
         </div>

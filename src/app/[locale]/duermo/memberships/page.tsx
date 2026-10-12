@@ -7,5 +7,5 @@ export default async function SuiteMembershipRedirect({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  redirect(`/${locale === "en" ? "en" : "es"}/account/subscription`);
+  redirect(`/${locale === "en" ? "en" : "es"}/membership?from=akiduermo`);
 }

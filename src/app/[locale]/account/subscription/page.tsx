@@ -4,7 +4,11 @@ import { notFound } from "next/navigation";
 import { AkiSuiteMembershipGrid } from "@/components/AkiSuiteMembershipGrid";
 import { AkiSuiteMembershipHub } from "@/components/AkiSuiteMembershipHub";
 import { requireUser } from "@/lib/auth";
+import { resolveMembershipHub } from "@/lib/akisuite-membership";
+import { type AkiSuitePlan, akiSuiteApp } from "@/lib/akisuite-catalogue";
+import { akiSuiteCheckoutReady } from "@/lib/akisuite-readiness";
 import { isLocale } from "@/lib/config";
+import { prepareAkiSuiteWorkspace } from "./akisuite-actions";
 import { openBillingPortal } from "./actions";
 import { AccountPageHeader } from "../AccountPageHeader";
 import { AccountCollectionRefresh } from "../AccountCollectionRefresh";
@@ -27,7 +31,7 @@ export default async function SubscriptionPage({
     { data: subscriptions, error: subscriptionsError },
     { data: grants, error: grantsError },
     { data: customer, error: customerError },
-    { data: profile, error: profileError },
+    { error: profileError },
   ] = await Promise.all([
     supabase
       .from("billing_subscriptions")
@@ -37,7 +41,7 @@ export default async function SubscriptionPage({
       .eq("profile_id", user.id),
     supabase
       .from("staff_billing_grants")
-      .select("plan_code,grant_kind,expires_at")
+      .select("plan_code,grant_kind,starts_at,expires_at")
       .eq("profile_id", user.id)
       .eq("active", true),
     supabase
@@ -56,34 +60,82 @@ export default async function SubscriptionPage({
       ? await supabase
           .from("akisuite_billing_subscriptions")
           .select(
-            "plan_code,billing_interval,status,current_period_end,cancel_at_period_end",
+            "stripe_subscription_id,plan_code,billing_interval,status,current_period_end,cancel_at_period_end,workspace_id",
           )
           .eq("profile_id", user.id)
       : { data: [], error: null };
+  const workspaceResult =
+    process.env.AKISUITE_SUBSCRIPTIONS_READY === "true"
+      ? await supabase.rpc("akisuite_owned_workspaces")
+      : { data: [], error: null };
+  const teamAccess =
+    process.env.AKISUITE_SUBSCRIPTIONS_READY === "true"
+      ? await supabase.rpc("akisuite_accessible_workspace_plans")
+      : { data: [], error: null };
+  const access = resolveMembershipHub(
+    subscriptions || [],
+    (suiteRows.data || []).filter(
+      (row) =>
+        row.plan_code === "akipasa_premium" ||
+        row.plan_code === "aki_enterprise",
+    ),
+    grants || [],
+    Date.now(),
+  );
+  const workspacePlans: Record<string, AkiSuitePlan[]> = {};
+  for (const workspace of workspaceResult.data || []) {
+    workspacePlans[workspace.id] = resolveMembershipHub(
+      [],
+      (suiteRows.data || []).filter((row) => row.workspace_id === workspace.id),
+      [],
+      Date.now(),
+    ).activePlans;
+  }
+  // Enterprise's personal benefit follows the payer; its business benefits follow its workspace.
+  const personalPlans = access.activePlans.filter(
+    (plan) => plan !== "aki_enterprise",
+  );
+  if (
+    access.activePlans.includes("aki_enterprise") &&
+    !personalPlans.includes("akipasa_premium")
+  )
+    personalPlans.push("akipasa_premium");
   const es = locale === "es";
-  const suiteCatalogueReady =
-    process.env.AKISUITE_CHECKOUT_ENABLED === "true" &&
-    process.env.AKISUITE_TAX_READY === "true" &&
-    Boolean(process.env.AKISUITE_STRIPE_ACCOUNT_ID);
+  const suiteCatalogueReady = akiSuiteCheckoutReady();
   const accessUnavailable = Boolean(
-    subscriptionsError || grantsError || customerError || profileError,
+    subscriptionsError ||
+      grantsError ||
+      customerError ||
+      profileError ||
+      suiteRows.error ||
+      workspaceResult.error ||
+      teamAccess.error,
   );
   const errorMessage =
-    query.error === "active"
+    query.error === "existing_subscription" ||
+    query.error === "checkout_in_progress"
       ? es
-        ? "Este plan ya está activo en tu cuenta."
-        : "This plan is already active on your account."
-      : query.error === "business_required"
+        ? "Ya existe una suscripción o un pago en curso. Gestiona el plan actual antes de elegir otro."
+        : "A subscription or checkout is already in progress. Manage the current plan before choosing another."
+      : query.error === "legacy_checkout_closed"
         ? es
-          ? "Necesitas un plan Business activo para abrir esas herramientas."
-          : "You need an active Business plan to open those tools."
-        : query.error === "business_pro_required"
+          ? "Los nuevos planes se eligen desde el catálogo AkiSuite."
+          : "Choose new plans from the AkiSuite catalogue."
+        : query.error === "active"
           ? es
-            ? "Necesitas Business Pro para acceder a AkiHQ CRM."
-            : "You need Business Pro to access AkiHQ CRM."
-          : es
-            ? "No se pudo iniciar la operación de facturación."
-            : "The billing operation could not be started.";
+            ? "Este plan ya está activo en tu cuenta."
+            : "This plan is already active on your account."
+          : query.error === "business_required"
+            ? es
+              ? "Necesitas un plan Business activo para abrir esas herramientas."
+              : "You need an active Business plan to open those tools."
+            : query.error === "business_pro_required"
+              ? es
+                ? "Necesitas Business Pro para acceder a AkiHQ CRM."
+                : "You need Business Pro to access AkiHQ CRM."
+              : es
+                ? "No se pudo iniciar la operación de facturación."
+                : "The billing operation could not be started.";
 
   return (
     <section className="subscription-app account-controls-page">
@@ -110,6 +162,11 @@ export default async function SubscriptionPage({
             suiteRows.error,
         )}
         now={Date.now()}
+        workspaceAccess={teamAccess.data || []}
+        planChangesReady={
+          suiteCatalogueReady &&
+          Boolean(process.env.STRIPE_AKISUITE_PORTAL_CONFIGURATION_ID)
+        }
       />
       {query.checkout === "success" && query.session_id && (
         <PremiumAdsConversion sessionId={query.session_id} />
@@ -128,8 +185,8 @@ export default async function SubscriptionPage({
       {query.upgrade === "pending" && (
         <p className="notice" role="status">
           {es
-            ? "La mejora a Business Pro está en curso. El acceso a AkiHQ aparecerá en cuanto Stripe confirme el pago."
-            : "Your Business Pro upgrade is processing. AkiHQ access will appear as soon as Stripe confirms payment."}
+            ? "El cambio de plan está en curso. El acceso se actualizará cuando Stripe confirme el pago."
+            : "Your plan change is processing. Access updates when Stripe confirms payment."}
         </p>
       )}
       {query.error && (
@@ -156,9 +213,34 @@ export default async function SubscriptionPage({
           )}
         </section>
       )}
+      {suiteCatalogueReady &&
+        !workspaceResult.error &&
+        !workspaceResult.data?.length && (
+          <form
+            action={prepareAkiSuiteWorkspace}
+            className="account-control-card"
+          >
+            <input type="hidden" name="locale" value={locale} />
+            <p>
+              {es
+                ? "Las ventajas de negocio se asignan a un espacio de trabajo autorizado."
+                : "Business benefits belong to an authorised workspace."}
+            </p>
+            <button type="submit" className="button secondary">
+              {es ? "Preparar mi negocio" : "Prepare my business"}
+            </button>
+          </form>
+        )}
       <AkiSuiteMembershipGrid
         locale={locale}
-        checkoutReady={suiteCatalogueReady}
+        checkoutReady={
+          suiteCatalogueReady && !accessUnavailable && !suiteRows.error
+        }
+        originatingApp={akiSuiteApp(query.from)}
+        workspaces={workspaceResult.data || []}
+        activePlans={personalPlans}
+        workspacePlans={workspacePlans}
+        accessUnavailable={accessUnavailable || Boolean(suiteRows.error)}
       />
       <p className="subscription-note">
         {es

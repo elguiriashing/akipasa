@@ -29,11 +29,9 @@
   flex-wrap: wrap;
 }
 .interval legend {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
+  padding: 0 0.5rem;
+  font-size: 0.8rem;
+  color: var(--muted, #8b949e);
 }
 .interval label {
   display: flex;
@@ -68,12 +66,34 @@
 }
 .featured {
   border: 2px solid #cfa33a;
+  grid-column: 1 / -1;
+  background: var(--surface-elevated, rgba(180, 180, 180, 0.08));
+}
+.card[data-product="akipasa"] {
+  border-top: 4px solid #f08c3a;
+}
+.card[data-product="akibusiness"] {
+  border-top: 4px solid #d4ab40;
+}
+.card[data-product="akiduermo"] {
+  border-top: 4px solid #3a9569;
+}
+.card[data-product="akihq"] {
+  border-top: 4px solid #a985d4;
+}
+.card[data-origin="true"] {
+  box-shadow: 0 0 0 1px var(--text, #718096);
+}
+.origin {
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 .cardHeader {
   display: flex;
   justify-content: space-between;
   gap: 0.5rem;
   align-items: center;
+  flex-wrap: wrap;
 }
 .eyebrow {
   color: var(--muted, #8b949e);
@@ -113,7 +133,8 @@
 .saving {
   font-size: 0.8rem;
   margin: 0;
-  color: #d5a63c;
+  color: var(--text, currentColor);
+  font-weight: 650;
 }
 .benefits {
   list-style: none;
@@ -166,5 +187,34 @@
   }
   .description {
     min-height: 0;
+  }
+}
+
+.workspaces {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  padding: 1rem;
+}
+.workspaces label {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  min-height: 44px;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 800px) {
+  .featured .description {
+    min-height: 0;
+  }
+  .featured .benefits {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .featured form {
+    max-width: 22rem;
+    width: 100%;
   }
 }

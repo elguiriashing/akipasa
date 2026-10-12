@@ -3,22 +3,24 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AkiSuiteMembershipGrid } from "@/components/AkiSuiteMembershipGrid";
 import { optionalUser } from "@/lib/auth";
+import { akiSuiteApp } from "@/lib/akisuite-catalogue";
+import { akiSuiteCheckoutReady } from "@/lib/akisuite-readiness";
 import { isLocale } from "@/lib/config";
 
 export const generateMetadata = publicPageMetadata("/membership");
 
 export default async function MembershipPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<Record<string, string | undefined>>;
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const query = await searchParams;
   const es = locale === "es";
-  const suiteCatalogueReady =
-    process.env.AKISUITE_CHECKOUT_ENABLED === "true" &&
-    process.env.AKISUITE_TAX_READY === "true" &&
-    Boolean(process.env.AKISUITE_STRIPE_ACCOUNT_ID);
+  const suiteCatalogueReady = akiSuiteCheckoutReady();
   const { user } = await optionalUser();
   const signedIn = Boolean(user);
 
@@ -39,6 +41,7 @@ export default async function MembershipPage({
       <AkiSuiteMembershipGrid
         locale={locale}
         checkoutReady={suiteCatalogueReady}
+        originatingApp={akiSuiteApp(query.from)}
       />
       <div className="membership-free-row">
         <span>

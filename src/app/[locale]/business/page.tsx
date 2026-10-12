@@ -19,6 +19,7 @@ import { PromotionRequestFields } from "@/components/PromotionRequestFields";
 import { Icon } from "@/components/Icons";
 import { ClaimVenuePicker } from "@/components/ClaimVenuePicker";
 import { BusinessHome } from "@/components/BusinessHome";
+import { akiSuiteCheckoutReady } from "@/lib/akisuite-readiness";
 import { BusinessGrowthOverview } from "@/components/BusinessGrowthOverview";
 import {
   WorkspaceShell,
@@ -253,11 +254,12 @@ export default async function BusinessPage({
             .filter((item) => item.venues)
             .map(async (item) => {
               const venue = item.venues!;
-              const { data } = await supabase.rpc("venue_analytics", {
+              const { data, error } = await supabase.rpc("venue_analytics", {
                 p_venue: venue.id,
               });
               return {
                 venue,
+                unavailable: Boolean(error),
                 rows: (data || []) as { action: string; total: number }[],
               };
             }),
@@ -303,17 +305,25 @@ export default async function BusinessPage({
       count: claims?.length || undefined,
     },
   ];
-  const premiumEnabled =
-    process.env.AKISUITE_CHECKOUT_ENABLED === "true" &&
-    process.env.AKISUITE_TAX_READY === "true" &&
-    Boolean(process.env.AKISUITE_STRIPE_ACCOUNT_ID);
-  const { data: premiumActive } =
-    view === "growth" && premiumEnabled
-      ? await supabase.rpc("has_akisuite_plan", {
-          p_profile: user.id,
-          p_plan: "akibusiness_premium",
-        })
-      : { data: false };
+  const premiumEnabled = akiSuiteCheckoutReady();
+  const premiumChecks =
+    view === "growth" &&
+    process.env.AKISUITE_FEATURES_READY === "true" &&
+    process.env.AKISUITE_SUBSCRIPTIONS_READY === "true"
+      ? await Promise.all(
+          managed
+            .filter((item) => item.venues)
+            .map(async (item) => {
+              const { data, error } = await supabase.rpc(
+                "akisuite_venue_premium",
+                { p_venue: item.venues!.id },
+              );
+              return !error && data === true;
+            }),
+        )
+      : [];
+  const premiumActive =
+    premiumChecks.length > 0 && premiumChecks.every(Boolean);
 
   return (
     <WorkspaceShell
@@ -909,14 +919,16 @@ export default async function BusinessPage({
                   events: businessEvents.filter(
                     (event) => event.venue_id === venue.id,
                   ).length,
-                  interactions: result?.rows.length
-                    ? result.rows.reduce(
-                        (total, row) => total + Number(row.total || 0),
-                        0,
-                      )
-                    : result
-                      ? 0
-                      : null,
+                  interactions: result?.unavailable
+                    ? null
+                    : result?.rows.length
+                      ? result.rows.reduce(
+                          (total, row) => total + Number(row.total || 0),
+                          0,
+                        )
+                      : result
+                        ? 0
+                        : null,
                 };
               })}
           />

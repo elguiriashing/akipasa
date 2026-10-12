@@ -91,6 +91,8 @@ const actionNames = [
   "cancelMyBooking",
   "cancelMyStay",
   "startSubscriptionCheckout",
+  "startAkiSuiteCheckout",
+  "prepareAkiSuiteWorkspace",
   "openBillingPortal",
 ];
 const navigationAdapter = `
@@ -133,14 +135,17 @@ const bundle = await build({
           { filter: /^next\/(link|image|navigation)$/ },
           (args) => ({ path: args.path, namespace: "account-fixture" }),
         );
-        builder.onResolve({ filter: /(?:^|\/)actions$/ }, (args) => {
-          if (
-            !args.importer.includes("account") &&
-            !args.importer.includes("auth")
-          )
-            return;
-          return { path: "actions", namespace: "account-fixture" };
-        });
+        builder.onResolve(
+          { filter: /(?:^|\/)(?:akisuite-)?actions$/ },
+          (args) => {
+            if (
+              !args.importer.includes("account") &&
+              !args.importer.includes("auth")
+            )
+              return;
+            return { path: "actions", namespace: "account-fixture" };
+          },
+        );
         builder.onLoad(
           { filter: /.*/, namespace: "account-fixture" },
           (args) => ({

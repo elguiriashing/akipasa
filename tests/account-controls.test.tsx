@@ -348,7 +348,7 @@ describe("Account control disclosure preserves existing workflows", () => {
     expect(screen.queryByText("Iniciar eliminación")).not.toBeInTheDocument();
   });
 
-  it("retains separate billing management and selected-plan checkout forms", async () => {
+  it("retains legacy billing management beside the unified gated catalogue", async () => {
     account.tables.profiles = {
       membership_tier: "premium",
       business_plan_active: true,
@@ -373,22 +373,20 @@ describe("Account control disclosure preserves existing workflows", () => {
     const manage = screen
       .getByRole("button", { name: "Manage billing" })
       .closest("form")!;
-    const selectedPanel = screen.getByRole("tabpanel");
-    expect(
-      within(selectedPanel).getByRole("heading", { name: "AkiBusiness Pro" }),
-    ).toBeVisible();
-    fireEvent.click(
-      within(selectedPanel).getByRole("radio", { name: /Annual/ }),
-    );
-    const checkout = within(selectedPanel)
-      .getByRole("button", { name: "Continue" })
+    expect(screen.queryByRole("tabpanel")).not.toBeInTheDocument();
+    const card = screen
+      .getByRole("heading", { name: "AkiHQ Pro" })
+      .closest("article")!;
+    fireEvent.click(screen.getByRole("radio", { name: /Yearly/ }));
+    const checkout = within(card)
+      .getByRole("button", { name: "Coming soon" })
       .closest("form")!;
     expect(Object.fromEntries(new FormData(checkout))).toEqual({
       locale: "en",
-      plan: "business_pro",
+      plan: "akihq_pro",
       interval: "year",
-      businessCategory: "food",
     });
+    expect(within(card).getByRole("button")).toBeDisabled();
     expect(manage).not.toBe(checkout);
     expect(Object.fromEntries(new FormData(manage))).toEqual({ locale: "en" });
     fireEvent.submit(manage);
