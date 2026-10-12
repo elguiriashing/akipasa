@@ -297,6 +297,14 @@ export default async function BusinessPage({
       count: claims?.length || undefined,
     },
   ];
+  const premiumEnabled =
+    process.env.AKISUITE_CHECKOUT_ENABLED === "true" &&
+    process.env.AKISUITE_TAX_READY === "true" &&
+    Boolean(process.env.AKISUITE_STRIPE_ACCOUNT_ID);
+  const { data: premiumActive } = view === "growth" && premiumEnabled
+    ? await supabase.rpc("has_akisuite_plan", { p_profile: user.id, p_plan: "akibusiness_premium" })
+    : { data: false };
+
   return (
     <WorkspaceShell
       title={es ? "Tu negocio, a mano" : "Your business, at a glance"}
@@ -875,6 +883,8 @@ export default async function BusinessPage({
         {view === "growth" && (
           <BusinessGrowthOverview
             locale={locale}
+            premiumEnabled={premiumEnabled}
+            premiumActive={Boolean(premiumActive)}
             events={businessEvents.length}
             venues={managed
               .filter((item) => item.venues)
