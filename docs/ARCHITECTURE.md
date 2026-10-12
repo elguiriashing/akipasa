@@ -93,6 +93,14 @@ database constraints, triggers, and audited RPCs.
 - `HybridDiscoveryRepository`: live data plus non-conflicting labelled
   fixtures, deduplicated by slug.
 
+The public browser runner can select the existing Supabase adapter against its
+disposable venue HTTP fixture. This requires the fixture provider, an exact
+private flag set only on the Next server child, and an independently validated
+uncredentialed loopback URL matching the compiled public client configuration.
+Ordinary provider selection stays unchanged. The fixture supplies synthetic
+discovery and matching detail reads, rejects unsupported requests and writes,
+and does not authenticate users or forward traffic to a real backend.
+
 Authentication, maps, storage, analytics, email, and future ticketing remain
 behind provider boundaries.
 

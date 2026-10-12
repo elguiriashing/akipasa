@@ -16,6 +16,68 @@ export const publicUiVenues = Array.from({ length: 2_105 }, (_, index) => ({
   claimStatus: index % 3 === 0 ? "unclaimed" : "claimed",
 }));
 
+const detailTables = new Set([
+  "offers",
+  "loyalty_programs",
+  "venue_media",
+  "venue_media_placements",
+  "venue_booking_settings",
+]);
+
+function venueRow(venue) {
+  return {
+    id: venue.id,
+    slug: venue.slug,
+    name: venue.name,
+    address: venue.address,
+    description_es:
+      "Local sintético usado solo en pruebas aisladas de interfaz.",
+    description_en: "Synthetic venue used only for isolated browser tests.",
+    location: { type: "Point", coordinates: [venue.longitude, venue.latitude] },
+    verified: false,
+    accessibility: { claim_status: venue.claimStatus, step_free: true },
+    discovery_vertical: "activities",
+    discovery_enabled: true,
+    recommendation_weight: 1,
+    cities: { slug: "fuengirola" },
+  };
+}
+
+function knownVenueFilter(value) {
+  return value?.startsWith("eq.")
+    ? publicUiVenues.find((venue) => venue.id === value.slice(3))
+    : undefined;
+}
+
+function publicDetailRead(url) {
+  const table = url.pathname.replace(/^\/rest\/v1\//, "");
+  if (table === "venues" && url.searchParams.get("status") === "eq.published") {
+    const slug = url.searchParams.get("slug");
+    const id = url.searchParams.get("id");
+    if (!slug?.startsWith("eq.") && !id?.startsWith("eq.")) return undefined;
+    const venue = publicUiVenues.find(
+      (item) =>
+        (!slug || item.slug === slug.slice(3)) &&
+        (!id || item.id === id.slice(3)),
+    );
+    return venue ? [venueRow(venue)] : [];
+  }
+  const venueId = url.searchParams.get("venue_id");
+  if (detailTables.has(table) && knownVenueFilter(venueId)) return [];
+  if (
+    table === "events" &&
+    url.searchParams.get("status") === "eq.published" &&
+    (!venueId || knownVenueFilter(venueId))
+  )
+    return [];
+  if (
+    table === "feature_flags" &&
+    url.searchParams.get("select") === "key,enabled"
+  )
+    return [];
+  return undefined;
+}
+
 export function publicUiFixtureAddress(env = process.env) {
   if (env.NEXT_PUBLIC_DATA_PROVIDER !== "fixtures") return null;
   let address;
@@ -137,25 +199,39 @@ export async function startPublicUiSupabase(env = process.env) {
   if (!address) return null;
   const calls = [];
   const server = createServer(async (request, response) => {
-    const path = new URL(request.url, address).pathname;
+    const url = new URL(request.url, address);
+    const path = url.pathname;
     if (request.method === "GET" && path === "/__public_ui_fixture__") {
       return json(response, 200, {
         fixture: "akipasa-public-ui",
         venueCount: publicUiVenues.length,
       });
     }
+    if (request.method === "GET") {
+      const rows = publicDetailRead(url);
+      if (rows !== undefined) {
+        calls.push({ path, params: Object.fromEntries(url.searchParams) });
+        return json(response, 200, rows);
+      }
+    }
     const rpc =
       path === "/rest/v1/rpc/public_nearby_venue_page"
         ? nearbyPage
         : path === "/rest/v1/rpc/public_map_venue_page"
           ? mapPage
-          : null;
+          : path === "/rest/v1/rpc/public_venue_catalogue"
+            ? ({ p_venue }) => {
+                if (!publicUiVenues.some((venue) => venue.id === p_venue))
+                  throw new Error("Unknown synthetic venue");
+                return null;
+              }
+            : null;
     if (!rpc || request.method !== "POST") {
       // Never forward requests, authenticate users, or accept arbitrary writes.
       return json(response, 501, {
         code: "E2E_UNSUPPORTED",
         message:
-          "This public UI fixture only serves the two read-only venue RPCs.",
+          "This public UI fixture only serves read-only synthetic venue discovery and details.",
       });
     }
     try {

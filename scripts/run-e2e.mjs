@@ -30,7 +30,17 @@ function startServer() {
       "--port",
       baseURL.port,
     ],
-    { cwd: root, stdio: "inherit", windowsHide: true },
+    {
+      cwd: root,
+      stdio: "inherit",
+      windowsHide: true,
+      env: {
+        ...process.env,
+        // The fixture has already validated and bound its disposable local URL.
+        // Never inherit this override when no fixture backend was started.
+        AKIPASA_E2E_PUBLIC_UI: fixture ? "1" : "0",
+      },
+    },
   );
 }
 

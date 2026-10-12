@@ -942,9 +942,48 @@ export class HybridDiscoveryRepository implements DiscoveryRepository {
   }
 }
 
+// Public browser tests exercise real repository reads against a disposable
+// localhost backend. Ordinary fixture builds still use the empty catalogue.
+export function usesPublicUiFixtureBackend(
+  dataProvider: string,
+  privateFlag: string | undefined,
+  supabaseUrl: string | undefined,
+) {
+  if (
+    typeof window !== "undefined" ||
+    dataProvider !== "fixtures" ||
+    privateFlag !== "1" ||
+    !supabaseUrl
+  )
+    return false;
+  try {
+    const address = new URL(supabaseUrl);
+    return (
+      address.protocol === "http:" &&
+      ["127.0.0.1", "localhost", "[::1]"].includes(address.hostname) &&
+      Boolean(address.port) &&
+      Number(address.port) >= 1024 &&
+      !address.username &&
+      !address.password &&
+      address.pathname === "/" &&
+      !address.search &&
+      !address.hash
+    );
+  } catch {
+    return false;
+  }
+}
+
+const publicUiFixtureBackend = usesPublicUiFixtureBackend(
+  config.dataProvider,
+  process.env.AKIPASA_E2E_PUBLIC_UI,
+  // Keep the same direct build-time expression as the public Supabase client.
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+);
+
 export const repository: DiscoveryRepository =
-  config.dataProvider === "fixtures"
+  config.dataProvider === "fixtures" && !publicUiFixtureBackend
     ? new FixtureRepository()
-    : config.dataProvider === "supabase"
+    : config.dataProvider === "supabase" || publicUiFixtureBackend
       ? new SupabaseDiscoveryRepository()
       : new HybridDiscoveryRepository();

@@ -1,12 +1,70 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { DiscoveryRepository } from "../src/lib/repository";
 import {
   FixtureRepository,
   HybridDiscoveryRepository,
   parseDatabasePoint,
   rankDiscoveryResults,
+  usesPublicUiFixtureBackend,
 } from "../src/lib/repository";
 import type { DiscoveryResult } from "../src/lib/domain";
+
+describe("disposable public UI repository guard", () => {
+  it.each([
+    "http://127.0.0.1:3999",
+    "http://localhost:3999",
+    "http://[::1]:3999",
+  ])("allows an explicitly opted-in fixture server at %s", (url) => {
+    expect(usesPublicUiFixtureBackend("fixtures", "1", url)).toBe(true);
+  });
+
+  it.each([undefined, "", "0", "true"])(
+    "keeps ordinary fixtures unchanged without the exact private flag (%s)",
+    (flag) => {
+      expect(
+        usesPublicUiFixtureBackend("fixtures", flag, "http://127.0.0.1:3999"),
+      ).toBe(false);
+    },
+  );
+
+  it.each(["supabase", "hybrid", ""])(
+    "never overrides the %s provider",
+    (provider) => {
+      expect(
+        usesPublicUiFixtureBackend(provider, "1", "http://127.0.0.1:3999"),
+      ).toBe(false);
+    },
+  );
+
+  it.each([
+    undefined,
+    "not-a-url",
+    "https://project.supabase.co",
+    "http://project.supabase.co:3999",
+    "http://127.0.0.1.evil.example:3999",
+    "http://0.0.0.0:3999",
+    "https://127.0.0.1:3999",
+    "http://127.0.0.1",
+    "http://127.0.0.1:443",
+    "http://user:password@127.0.0.1:3999",
+    "http://127.0.0.1:3999/rest/v1",
+    "http://127.0.0.1:3999?target=remote",
+    "http://127.0.0.1:3999#fixture",
+  ])("rejects a non-disposable backend URL (%s)", (url) => {
+    expect(usesPublicUiFixtureBackend("fixtures", "1", url)).toBe(false);
+  });
+
+  it("cannot enable the override in a browser", () => {
+    vi.stubGlobal("window", {});
+    try {
+      expect(
+        usesPublicUiFixtureBackend("fixtures", "1", "http://127.0.0.1:3999"),
+      ).toBe(false);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+});
 
 const unavailable: DiscoveryRepository = {
   discover: async () => {
