@@ -1,7 +1,9 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("next/navigation", () => ({
-  redirect: (path: string) => { throw new Error(`REDIRECT:${path}`); },
+  redirect: (path: string) => {
+    throw new Error(`REDIRECT:${path}`);
+  },
 }));
 
 describe("AkiSuite checkout activation safeguards", () => {
@@ -10,7 +12,9 @@ describe("AkiSuite checkout activation safeguards", () => {
   it("refuses checkout until billing and tax gates are enabled", async () => {
     vi.stubEnv("AKISUITE_CHECKOUT_ENABLED", "false");
     vi.stubEnv("AKISUITE_TAX_READY", "false");
-    const { startAkiSuiteCheckout } = await import("../src/app/[locale]/account/subscription/akisuite-actions");
+    const { startAkiSuiteCheckout } = await import(
+      "../src/app/[locale]/account/subscription/akisuite-actions"
+    );
     const form = new FormData();
     form.set("locale", "en");
     form.set("plan", "aki_enterprise");
@@ -24,7 +28,9 @@ describe("AkiSuite checkout activation safeguards", () => {
     vi.stubEnv("AKISUITE_CHECKOUT_ENABLED", "true");
     vi.stubEnv("AKISUITE_TAX_READY", "true");
     vi.stubEnv("AKISUITE_STRIPE_ACCOUNT_ID", "acct_example");
-    const { startAkiSuiteCheckout } = await import("../src/app/[locale]/account/subscription/akisuite-actions");
+    const { startAkiSuiteCheckout } = await import(
+      "../src/app/[locale]/account/subscription/akisuite-actions"
+    );
     const form = new FormData();
     form.set("locale", "es");
     form.set("plan", "free_enterprise_admin");

@@ -384,7 +384,10 @@ describe("payment event fulfillment", () => {
     expect(duplicate.fetchMock).not.toHaveBeenCalled();
   });
   it("fulfils configured Enterprise via the isolated ledger, not legacy plans", async () => {
-    vi.stubEnv("STRIPE_AKISUITE_ENTERPRISE_MONTH_PRICE_ID", "price_suite_enterprise");
+    vi.stubEnv(
+      "STRIPE_AKISUITE_ENTERPRISE_MONTH_PRICE_ID",
+      "price_suite_enterprise",
+    );
     const result = await deliver(
       "checkout.session.completed",
       { subscription: "sub_test", payment_status: "paid" },
@@ -403,7 +406,10 @@ describe("payment event fulfillment", () => {
   });
 
   it("does not grant new entitlements for unpaid AkiSuite checkout", async () => {
-    vi.stubEnv("STRIPE_AKISUITE_ENTERPRISE_MONTH_PRICE_ID", "price_suite_enterprise");
+    vi.stubEnv(
+      "STRIPE_AKISUITE_ENTERPRISE_MONTH_PRICE_ID",
+      "price_suite_enterprise",
+    );
     const result = await deliver(
       "checkout.session.completed",
       { subscription: "sub_test", payment_status: "unpaid" },

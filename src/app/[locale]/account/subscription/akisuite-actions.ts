@@ -10,16 +10,28 @@ import { stripeRequest, stripeRetrieve } from "@/lib/stripe";
 
 const planSchema = z.object({
   plan: z.enum([
-    "akipasa_premium", "akibusiness_premium", "akiduermo_premium",
-    "akihq_standard", "akihq_pro", "akihq_business_addon", "aki_enterprise",
+    "akipasa_premium",
+    "akibusiness_premium",
+    "akiduermo_premium",
+    "akihq_standard",
+    "akihq_pro",
+    "akihq_business_addon",
+    "aki_enterprise",
   ]),
   interval: z.enum(["month", "year"]),
 });
 
-type ExistingPlan = { plan_code: string; status: string; current_period_end: string | null };
+type ExistingPlan = {
+  plan_code: string;
+  status: string;
+  current_period_end: string | null;
+};
 function currentPaid(row: ExistingPlan) {
-  return ["active", "trialing"].includes(row.status) &&
-    (!row.current_period_end || new Date(row.current_period_end).getTime() > Date.now());
+  return (
+    ["active", "trialing"].includes(row.status) &&
+    (!row.current_period_end ||
+      new Date(row.current_period_end).getTime() > Date.now())
+  );
 }
 
 /** Explicitly disabled until database migration, VAT registration and new Stripe catalogue are verified. */
@@ -29,57 +41,80 @@ export async function startAkiSuiteCheckout(formData: FormData) {
     process.env.AKISUITE_CHECKOUT_ENABLED !== "true" ||
     process.env.AKISUITE_TAX_READY !== "true" ||
     !process.env.AKISUITE_STRIPE_ACCOUNT_ID
-  ) redirect(`/${locale}/account/subscription?error=checkout_unavailable`);
+  )
+    redirect(`/${locale}/account/subscription?error=checkout_unavailable`);
 
   const parsed = planSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success || !(parsed.data.plan in akisuitePlans))
     redirect(`/${locale}/account/subscription?error=plan`);
   const { plan, interval } = parsed.data;
-  const { supabase, user } = await requireUser(locale, `/${locale}/account/subscription`);
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/account/subscription`,
+  );
 
   const [newResult, legacyResult, customerResult] = await Promise.all([
-    supabase.from("akisuite_billing_subscriptions")
-      .select("plan_code,status,current_period_end").eq("profile_id", user.id),
-    supabase.from("billing_subscriptions")
-      .select("plan_code,status,current_period_end").eq("profile_id", user.id),
-    supabase.from("billing_customers")
-      .select("stripe_customer_id").eq("profile_id", user.id).maybeSingle(),
+    supabase
+      .from("akisuite_billing_subscriptions")
+      .select("plan_code,status,current_period_end")
+      .eq("profile_id", user.id),
+    supabase
+      .from("billing_subscriptions")
+      .select("plan_code,status,current_period_end")
+      .eq("profile_id", user.id),
+    supabase
+      .from("billing_customers")
+      .select("stripe_customer_id")
+      .eq("profile_id", user.id)
+      .maybeSingle(),
   ]);
   if (newResult.error || legacyResult.error || customerResult.error)
     redirect(`/${locale}/account/subscription?error=checkout_unavailable`);
 
-  const activeNew = (newResult.data || []).filter(currentPaid).map((row) => row.plan_code);
-  const activeLegacy = (legacyResult.data || []).filter(currentPaid).map((row) => row.plan_code);
-  const conflictingLegacy = (
+  const activeNew = (newResult.data || [])
+    .filter(currentPaid)
+    .map((row) => row.plan_code);
+  const activeLegacy = (legacyResult.data || [])
+    .filter(currentPaid)
+    .map((row) => row.plan_code);
+  const conflictingLegacy =
     (plan === "akipasa_premium" && activeLegacy.includes("premium")) ||
-    (plan === "akihq_standard" && activeLegacy.some((p) => p === "business" || p === "business_pro")) ||
-    (plan === "akihq_pro" && activeLegacy.some((p) => p === "business" || p === "business_pro"))
-  );
+    (plan === "akihq_standard" &&
+      activeLegacy.some((p) => p === "business" || p === "business_pro")) ||
+    (plan === "akihq_pro" &&
+      activeLegacy.some((p) => p === "business" || p === "business_pro"));
 
   // Replacing one paid product with Enterprise, or another tier, needs an atomic subscription
   // change and proration preview. Do not silently create a second charge.
   const overlap =
     activeNew.includes(plan) ||
     activeNew.includes("aki_enterprise") ||
-    (plan === "aki_enterprise" && (activeNew.length > 0 || activeLegacy.length > 0)) ||
+    (plan === "aki_enterprise" &&
+      (activeNew.length > 0 || activeLegacy.length > 0)) ||
     conflictingLegacy ||
-    (plan === "akibusiness_premium" && activeNew.includes("akihq_business_addon")) ||
-    (plan === "akihq_business_addon" && activeNew.includes("akibusiness_premium"));
-  if (overlap) redirect(`/${locale}/account/subscription?error=existing_subscription`);
+    (plan === "akibusiness_premium" &&
+      activeNew.includes("akihq_business_addon")) ||
+    (plan === "akihq_business_addon" &&
+      activeNew.includes("akibusiness_premium"));
+  if (overlap)
+    redirect(`/${locale}/account/subscription?error=existing_subscription`);
 
   if (plan === "akihq_business_addon") {
     const { data: eligible, error } = await supabase.rpc("has_akisuite_plan", {
-      p_profile: user.id, p_plan: "akihq_pro",
+      p_profile: user.id,
+      p_plan: "akihq_pro",
     });
     if (error || !eligible)
       redirect(`/${locale}/account/subscription?error=hq_pro_required`);
   }
   if (plan !== "akipasa_premium") {
     const { data: venues, error } = await supabase
-      .from("venue_members").select("venue_id")
-      .eq("profile_id", user.id).in("role", ["owner", "manager"]).limit(1);
-    if (error || !venues?.length)
-      redirect(`/${locale}/business?view=claims`);
+      .from("venue_members")
+      .select("venue_id")
+      .eq("profile_id", user.id)
+      .in("role", ["owner", "manager"])
+      .limit(1);
+    if (error || !venues?.length) redirect(`/${locale}/business?view=claims`);
   }
 
   let checkoutUrl: string | null = null;
@@ -113,10 +148,10 @@ export async function startAkiSuiteCheckout(formData: FormData) {
     });
     if (customerResult.data?.stripe_customer_id)
       parameters.set("customer", customerResult.data.stripe_customer_id);
-    else if (user.email)
-      parameters.set("customer_email", user.email);
+    else if (user.email) parameters.set("customer_email", user.email);
     const session = await stripeRequest<{ url?: string | null }>(
-      "/checkout/sessions", parameters,
+      "/checkout/sessions",
+      parameters,
     );
     checkoutUrl = session.url || null;
   } catch {

@@ -84,7 +84,9 @@ async function processEvent(event: StripeEvent) {
     | undefined;
   const priceId = stringValue(subscriptionItems?.data?.[0]?.price?.id);
   const pricePlan = stripeBillingPlanForPrice(priceId);
-  const akiSuitePricePlan = pricePlan ? null : matchConfiguredAkiSuitePriceId(priceId);
+  const akiSuitePricePlan = pricePlan
+    ? null
+    : matchConfiguredAkiSuitePriceId(priceId);
   // Unknown prices belong to other products; metadata cannot grant a paid tier.
   if (!pricePlan && !akiSuitePricePlan) return;
   const planCode = (pricePlan || akiSuitePricePlan)!.plan;
@@ -126,7 +128,8 @@ async function processEvent(event: StripeEvent) {
   if (
     existingAkiSuiteSubscription &&
     existingAkiSuiteSubscription.stripe_customer_id !== customerId
-  ) throw new Error("AkiSuite subscription customer mismatch");
+  )
+    throw new Error("AkiSuite subscription customer mismatch");
   if (existingCustomer && existingCustomer.profile_id !== profileId)
     throw new Error("Subscription ownership mismatch");
   const objectStatus = stringValue(object.status);
@@ -137,7 +140,10 @@ async function processEvent(event: StripeEvent) {
     !profileId ||
     !subscriptionId ||
     !customerId ||
-    !(akiSuitePricePlan || ["premium", "business", "business_pro"].includes(planCode || "")) ||
+    !(
+      akiSuitePricePlan ||
+      ["premium", "business", "business_pro"].includes(planCode || "")
+    ) ||
     !["month", "year"].includes(billingInterval || "") ||
     !status ||
     !subscriptionStatuses.has(status) ||
@@ -157,17 +163,22 @@ async function processEvent(event: StripeEvent) {
     );
   if (customerError) throw customerError;
 
-  const { error } = await supabase.rpc(akiSuitePricePlan ? "sync_akisuite_subscription" : "sync_stripe_subscription", {
-    p_subscription_id: subscriptionId,
-    p_profile: profileId,
-    p_customer_id: customerId,
-    p_plan: planCode,
-    p_interval: billingInterval,
-    p_status: status,
-    p_current_period_end: stripeSubscriptionPeriodEnd(object),
-    p_cancel_at_period_end: object.cancel_at_period_end === true,
-    p_event_created_at: unixDate(event.created),
-  });
+  const { error } = await supabase.rpc(
+    akiSuitePricePlan
+      ? "sync_akisuite_subscription"
+      : "sync_stripe_subscription",
+    {
+      p_subscription_id: subscriptionId,
+      p_profile: profileId,
+      p_customer_id: customerId,
+      p_plan: planCode,
+      p_interval: billingInterval,
+      p_status: status,
+      p_current_period_end: stripeSubscriptionPeriodEnd(object),
+      p_cancel_at_period_end: object.cancel_at_period_end === true,
+      p_event_created_at: unixDate(event.created),
+    },
+  );
   if (error) throw error;
 }
 
