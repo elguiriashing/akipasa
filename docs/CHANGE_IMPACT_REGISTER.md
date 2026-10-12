@@ -9,7 +9,6 @@
 - Risk: Existing physical-media delete behaviour and signed URL freshness are unchanged; files shared across event and venue surfaces may still need explicit referential deletion protection. Full local build, database checks and E2E remain required before release.
 - Regressions: Static contract assertions added to `tests/venue-dashboard.test.tsx`. Runtime checks are not claimed until CI or local execution confirms them.
 
-
 ## 2026-10-12 | Aki Spotlight public venue and event detail layouts
 
 - **User request:** implement the selected **01 / Aki Spotlight** concept for
