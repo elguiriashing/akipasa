@@ -1,10 +1,25 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   accountExportTables,
+  currentAccountExportTables,
   exportableAuthentication,
 } from "../src/lib/account-export";
 
 describe("account data export contract", () => {
+  afterEach(() => vi.unstubAllEnvs());
+  it("exports new payer billing only after its schema is ready", () => {
+    vi.stubEnv("AKISUITE_SUBSCRIPTIONS_READY", "false");
+    expect(
+      currentAccountExportTables().some(
+        ([table]) => table === "akisuite_billing_subscriptions",
+      ),
+    ).toBe(false);
+    vi.stubEnv("AKISUITE_SUBSCRIPTIONS_READY", "true");
+    expect(currentAccountExportTables()).toContainEqual([
+      "akisuite_billing_subscriptions",
+      "profile_id",
+    ]);
+  });
   it("covers consumer, business, community, analytics and privacy records", () => {
     const tables = new Set<string>(accountExportTables.map(([table]) => table));
     for (const required of [

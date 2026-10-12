@@ -41,6 +41,15 @@ export const accountExportTables = [
   ["account_deletion_requests", "profile_id"],
 ] as const;
 
+export function currentAccountExportTables() {
+  return process.env.AKISUITE_SUBSCRIPTIONS_READY === "true"
+    ? [
+        ...accountExportTables,
+        ["akisuite_billing_subscriptions", "profile_id"] as const,
+      ]
+    : [...accountExportTables];
+}
+
 export function exportableAuthentication(user: {
   created_at?: string;
   last_sign_in_at?: string;

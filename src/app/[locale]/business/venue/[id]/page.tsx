@@ -1200,6 +1200,9 @@ export default async function VenueWorkspace({
                             eventId={event.id}
                             premium={venuePremium}
                             published={event.status === "published"}
+                            trustedDraft={Boolean(
+                              venue.verified && event.status === "draft",
+                            )}
                           />
                         )}
                         <form action={duplicateEvent} className="stack">

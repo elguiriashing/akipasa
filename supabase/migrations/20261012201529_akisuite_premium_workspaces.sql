@@ -25,6 +25,13 @@ language sql stable set search_path='' as $$
 $$;
 revoke all on function akisuite_private.venue_workspace(uuid) from public,anon,authenticated;
 
+create function akisuite_private.workspace_member(p_workspace text) returns boolean
+language sql stable set search_path='' as $$
+  select exists(select 1 from public.crm_workspace_members m join public.crm_workspaces w on w.id=m.workspace_id
+    where m.workspace_id=p_workspace and m.profile_id=(select auth.uid()) and m.status='active' and w.status in ('active','trial'));
+$$;
+revoke all on function akisuite_private.workspace_member(text) from public,anon,authenticated;
+
 create function public.akisuite_venue_premium(p_venue uuid) returns boolean
 language sql stable security definer set search_path='' as $$
   select public.is_venue_member(p_venue) and (
@@ -182,7 +189,7 @@ begin
   select venue_id into v_venue from public.events where id=p_event;
   if not public.akisuite_venue_premium(v_venue) then raise exception 'AkiBusiness Premium required' using errcode='PT402'; end if;
   v_workspace:=akisuite_private.venue_workspace(v_venue);
-  if v_workspace is null then raise exception 'workspace required'; end if;
+  if v_workspace is null or not akisuite_private.workspace_member(v_workspace) then raise exception 'workspace membership required' using errcode='42501'; end if;
   insert into public.akisuite_event_templates(workspace_id,name,source_event_id,created_by,template_document)
     select v_workspace,btrim(p_name),p_event,(select auth.uid()),jsonb_build_object(
       'title_es',e.title_es,'title_en',e.title_en,'description_es',e.description_es,'description_en',e.description_en,
@@ -215,7 +222,7 @@ begin
   if not public.akisuite_venue_premium(p_venue) then raise exception 'AkiBusiness Premium required' using errcode='PT402'; end if;
   if p_slug is null or p_slug !~ '^[a-z0-9]+(-[a-z0-9]+)*$' or length(p_slug)>150 then raise exception 'invalid slug'; end if;
   select template_document into v_document from public.akisuite_event_templates t
-    where t.id=p_template and t.workspace_id=akisuite_private.venue_workspace(p_venue);
+    where t.id=p_template and t.workspace_id=akisuite_private.venue_workspace(p_venue) and akisuite_private.workspace_member(t.workspace_id);
   if v_document is null then raise exception 'template access required' using errcode='42501'; end if;
   insert into public.events(id,venue_id,slug,title_es,title_en,description_es,description_en,category_id,price_cents,currency,source,sponsored,booking_url,status)
     values(v_id,p_venue,p_slug,v_document->>'title_es',v_document->>'title_en',v_document->>'description_es',v_document->>'description_en',
@@ -391,7 +398,9 @@ language sql stable security definer set search_path='' as $$
   select public.is_venue_member(p_venue) and exists(select 1 from public.venue_media m where m.id=p_media
     and (m.venue_id=p_venue or (
       akisuite_private.venue_workspace(p_venue) is not null
-      and akisuite_private.venue_workspace(p_venue)=akisuite_private.venue_workspace(m.venue_id))));
+      and akisuite_private.venue_workspace(p_venue)=akisuite_private.venue_workspace(m.venue_id)
+      and ((public.akisuite_venue_premium(p_venue) and akisuite_private.workspace_member(akisuite_private.venue_workspace(p_venue))) or exists(select 1 from public.venue_media_placements keep
+        where keep.venue_id=p_venue and keep.media_id=m.id)))));
 $$;
 revoke all on function public.akisuite_media_allowed(uuid,uuid) from public,anon;
 grant execute on function public.akisuite_media_allowed(uuid,uuid) to authenticated;
@@ -405,12 +414,26 @@ begin
   v_workspace:=akisuite_private.venue_workspace(p_venue);
   return query select m.id,m.venue_id,m.storage_path,m.alt_es,m.alt_en,m.mime_type,m.size_bytes,m.sort_order,f.id,f.name
     from public.venue_media m left join public.akisuite_media_folders f on f.id=m.akisuite_folder_id
-    where m.venue_id=p_venue or (v_workspace is not null and akisuite_private.venue_workspace(m.venue_id)=v_workspace)
+    where m.venue_id=p_venue or (v_workspace is not null and akisuite_private.workspace_member(v_workspace) and akisuite_private.venue_workspace(m.venue_id)=v_workspace)
+      or exists(select 1 from public.venue_media_placements retained where retained.venue_id=p_venue and retained.media_id=m.id)
     order by m.sort_order,m.id limit 1000;
 end;
 $$;
 revoke all on function public.akisuite_media_library(uuid) from public,anon;
 grant execute on function public.akisuite_media_library(uuid) to authenticated;
+
+-- Check all referencing venues under the asset owner's authority, including rows hidden by RLS.
+create function public.akisuite_media_in_use(p_media uuid) returns boolean
+language plpgsql stable security definer set search_path='' as $$
+declare v_venue uuid;
+begin
+  select venue_id into v_venue from public.venue_media where id=p_media;
+  if v_venue is null or not public.is_venue_member(v_venue) then raise exception 'media owner required' using errcode='42501'; end if;
+  return exists(select 1 from public.venue_media_placements p where p.media_id=p_media);
+end;
+$$;
+revoke all on function public.akisuite_media_in_use(uuid) from public,anon;
+grant execute on function public.akisuite_media_in_use(uuid) to authenticated;
 
 create function public.set_akisuite_media_folder(p_media uuid,p_name text) returns uuid
 language plpgsql security definer set search_path='' as $$
@@ -419,7 +442,7 @@ begin
   select venue_id into v_venue from public.venue_media where id=p_media;
   if not public.akisuite_venue_premium(v_venue) then raise exception 'Premium required' using errcode='PT402'; end if;
   v_workspace:=akisuite_private.venue_workspace(v_venue);
-  if v_workspace is null then raise exception 'workspace required'; end if;
+  if v_workspace is null or not akisuite_private.workspace_member(v_workspace) then raise exception 'workspace membership required' using errcode='42501'; end if;
   if p_name is null or length(btrim(p_name))=0 then
     update public.venue_media set akisuite_folder_id=null where id=p_media; return null;
   end if;
@@ -435,6 +458,11 @@ grant execute on function public.set_akisuite_media_folder(uuid,text) to authent
 create function akisuite_private.guard_media_placement() returns trigger language plpgsql
 security definer set search_path='' as $$
 begin
+  if (select enabled from akisuite_private.launch_settings where singleton) then
+    perform pg_advisory_xact_lock(hashtextextended(new.media_id::text,4));
+    if not exists(select 1 from public.venue_media m join storage.objects o on o.bucket_id='event-media' and o.name=m.storage_path where m.id=new.media_id)
+      then raise exception 'stored media unavailable'; end if;
+  end if;
   if (select enabled from akisuite_private.launch_settings where singleton)
     and not public.akisuite_media_allowed(new.venue_id,new.media_id)
     then raise exception 'media access required' using errcode='42501'; end if;
@@ -469,10 +497,10 @@ begin
   select * into v_event from public.events where id=p_event for update;
   if v_event.id is null or not public.akisuite_venue_premium(v_event.venue_id)
     then raise exception 'AkiBusiness Premium required' using errcode='PT402'; end if;
-  if v_event.status<>'published' then raise exception 'approved event required'; end if;
+  if v_event.status<>'published' and not (v_event.status='draft' and exists(select 1 from public.venues trusted where trusted.id=v_event.venue_id and trusted.verified)) then raise exception 'approved event required'; end if;
   if p_publish_at is null or p_publish_at<=now() or p_publish_at>now()+interval '366 days' then raise exception 'invalid publication time'; end if;
   insert into public.akisuite_event_publication_schedules(event_id,publish_at,approved_fingerprint,created_by)
-    values(p_event,p_publish_at,md5((to_jsonb(v_event)-'status'-'updated_at')::text),(select auth.uid()))
+    values(p_event,p_publish_at,encode(sha256(convert_to((to_jsonb(v_event)-'status'-'updated_at')::text,'UTF8')),'hex'),(select auth.uid()))
     on conflict(event_id) do update set publish_at=excluded.publish_at,approved_fingerprint=excluded.approved_fingerprint,state='scheduled',blocked_reason=null;
   update public.events set status='draft' where id=p_event;
 end;
@@ -504,8 +532,12 @@ begin
     v_workspace:=akisuite_private.venue_workspace(v_event.venue_id);
     v_paid:=akisuite_private.plan_active(null,v_workspace,'akibusiness_premium') or exists(
       select 1 from public.venue_members m where m.venue_id=v_event.venue_id and m.role='owner'
-        and public.has_active_entitlement(m.profile_id,'business_pro'));
-    if not v_paid or v_event.status<>'draft' or md5((to_jsonb(v_event)-'status'-'updated_at')::text)<>v_schedule.approved_fingerprint then
+        and (exists(select 1 from public.billing_subscriptions legacy where legacy.profile_id=m.profile_id
+          and legacy.plan_code in ('business','business_pro') and legacy.status in ('active','trialing')
+          and (legacy.current_period_end is null or legacy.current_period_end>now()))
+        or exists(select 1 from public.staff_billing_grants g where g.profile_id=m.profile_id
+          and g.plan_code in ('business','business_pro') and g.active and g.starts_at<=now() and (g.expires_at is null or g.expires_at>now()))));
+    if not v_paid or v_event.status<>'draft' or encode(sha256(convert_to((to_jsonb(v_event)-'status'-'updated_at')::text,'UTF8')),'hex')<>v_schedule.approved_fingerprint then
       update public.akisuite_event_publication_schedules set state='blocked',blocked_reason=case when not v_paid then 'entitlement' else 'content_changed' end where event_id=v_schedule.event_id;
       continue;
     end if;
@@ -590,15 +622,14 @@ end;
 $$;
 revoke all on function public.akisuite_can_read_shared_media(text) from public,anon;
 grant execute on function public.akisuite_can_read_shared_media(text) to authenticated;
-create policy akisuite_shared_media_read on storage.objects for select to authenticated
-  using(bucket_id='event-media' and public.akisuite_can_read_shared_media(name));
+
 
 create function public.akisuite_templates_for_venue(p_venue uuid) returns table(id uuid,name text)
 language plpgsql stable security definer set search_path='' as $$
 begin
   if not public.is_venue_member(p_venue) then raise exception 'venue access required' using errcode='42501'; end if;
   return query select t.id,t.name from public.akisuite_event_templates t
-    where t.workspace_id=akisuite_private.venue_workspace(p_venue) order by t.name;
+    where t.workspace_id=akisuite_private.venue_workspace(p_venue) and akisuite_private.workspace_member(t.workspace_id) order by t.name;
 end;
 $$;
 revoke all on function public.akisuite_templates_for_venue(uuid) from public,anon;
@@ -608,7 +639,7 @@ create function public.akisuite_addons_requiring_cancellation() returns table(su
 language sql stable security definer set search_path='' as $$
   select a.stripe_subscription_id,a.stripe_customer_id from public.akisuite_billing_subscriptions a
   where a.plan_code='akihq_business_addon' and a.status not in ('canceled','incomplete_expired') and not a.cancel_at_period_end
-    and (not akisuite_private.plan_active(null,a.workspace_id,'akihq_pro') or exists(
+    and (not akisuite_private.paid_pro(a.workspace_id,false) or exists(
       select 1 from public.akisuite_billing_subscriptions p where p.workspace_id=a.workspace_id
         and p.plan_code='akihq_pro' and p.status in ('active','trialing') and p.cancel_at_period_end))
   order by a.stripe_subscription_id limit 25;
@@ -625,7 +656,7 @@ begin
     then raise exception 'stored media identity is immutable' using errcode='42501'; end if;
   new.size_bytes:=old.size_bytes;
   if new.akisuite_folder_id is distinct from old.akisuite_folder_id and new.akisuite_folder_id is not null then
-    if not public.akisuite_venue_premium(old.venue_id) or not exists(select 1 from public.akisuite_media_folders f
+    if not public.akisuite_venue_premium(old.venue_id) or not akisuite_private.workspace_member(akisuite_private.venue_workspace(old.venue_id)) or not exists(select 1 from public.akisuite_media_folders f
       where f.id=new.akisuite_folder_id and f.workspace_id=akisuite_private.venue_workspace(old.venue_id))
       then raise exception 'authorised Premium folder required' using errcode='42501'; end if;
   end if;
@@ -635,4 +666,92 @@ $$;
 revoke all on function akisuite_private.guard_media_update() from public,anon,authenticated;
 create trigger akisuite_media_update before update on public.venue_media
   for each row execute function akisuite_private.guard_media_update();
+-- Restrictive policies complement existing Storage policies; they never grant new write access.
+create function public.akisuite_storage_upload_allowed(p_name text) returns boolean
+language plpgsql security definer set search_path='' as $$
+declare v_venue uuid; v_workspace text; v_limit integer; v_count bigint; v_bytes bigint;
+begin
+  if not (select enabled from akisuite_private.launch_settings where singleton) then return true; end if;
+  if p_name is null or length(p_name)>1000 or split_part(p_name,'/',1)!~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' then return false; end if;
+  v_venue:=split_part(p_name,'/',1)::uuid;
+  if not public.is_venue_member(v_venue) then return false; end if;
+  v_workspace:=akisuite_private.venue_workspace(v_venue);
+  perform pg_advisory_xact_lock(hashtextextended(coalesce(v_workspace,v_venue::text),2));
+  v_limit:=case when public.akisuite_venue_premium(v_venue) then 250 else 15 end;
+  select count(*),coalesce(sum(case when o.metadata->>'size' ~ '^[0-9]+$' then (o.metadata->>'size')::bigint else 10485760 end),0)
+    into v_count,v_bytes from storage.objects o
+    where o.bucket_id='event-media' and o.name<>p_name and (
+      split_part(o.name,'/',1)=v_venue::text or (v_workspace is not null and exists(
+        select 1 from public.crm_workspace_venues linked where linked.workspace_id=v_workspace and linked.venue_id::text=split_part(o.name,'/',1))));
+  -- The existing bucket caps objects at 10 MiB. Reserve that upper bound before accepting bytes.
+  return v_count<v_limit and v_bytes+10485760<=case when v_limit=250 then 1073741824 else 157286400 end;
+end;
+$$;
+revoke all on function public.akisuite_storage_upload_allowed(text) from public,anon;
+grant execute on function public.akisuite_storage_upload_allowed(text) to authenticated;
+create policy akisuite_storage_upload_quota on storage.objects as restrictive for insert to authenticated
+  with check(bucket_id<>'event-media' or public.akisuite_storage_upload_allowed(name));
+create policy akisuite_storage_update_quota on storage.objects as restrictive for update to authenticated
+  using(bucket_id<>'event-media' or public.akisuite_storage_upload_allowed(name))
+  with check(bucket_id<>'event-media' or public.akisuite_storage_upload_allowed(name));
+
+create function public.akisuite_storage_delete_allowed(p_name text) returns boolean
+language plpgsql security definer set search_path='' as $$
+declare v_media uuid;
+begin
+  if not (select enabled from akisuite_private.launch_settings where singleton) then return true; end if;
+  select id into v_media from public.venue_media where storage_path=p_name;
+  if v_media is null then return true; end if;
+  perform pg_advisory_xact_lock(hashtextextended(v_media::text,4));
+  return not exists(select 1 from public.venue_media_placements where media_id=v_media);
+end;
+$$;
+revoke all on function public.akisuite_storage_delete_allowed(text) from public,anon;
+grant execute on function public.akisuite_storage_delete_allowed(text) to authenticated;
+create policy akisuite_storage_reference_delete on storage.objects as restrictive for delete to authenticated
+  using(bucket_id<>'event-media' or public.akisuite_storage_delete_allowed(name));
+
+-- Public reads expose selected artwork and the existing own-venue fallback, never the entire private bin.
+create function public.akisuite_storage_owner(p_name text) returns boolean
+language plpgsql stable security definer set search_path='' as $$
+begin
+  if p_name is null or length(p_name)>1000 or split_part(p_name,'/',1)!~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' then return false; end if;
+  return public.is_venue_member(split_part(p_name,'/',1)::uuid);
+end;
+$$;
+revoke all on function public.akisuite_storage_owner(text) from public,anon;
+grant execute on function public.akisuite_storage_owner(text) to authenticated;
+create function public.akisuite_storage_read_allowed(p_name text) returns boolean
+language plpgsql stable security definer set search_path='' as $$
+declare v_media public.venue_media%rowtype; v_workspace text;
+begin
+  if not (select enabled from akisuite_private.launch_settings where singleton) then return true; end if;
+  if public.akisuite_storage_owner(p_name) then return true; end if;
+  select * into v_media from public.venue_media where storage_path=p_name;
+  if v_media.id is null then return false; end if;
+  v_workspace:=akisuite_private.venue_workspace(v_media.venue_id);
+  if v_workspace is not null and akisuite_private.workspace_member(v_workspace) and exists(select 1 from public.venue_members member
+    where member.profile_id=(select auth.uid()) and member.role in ('editor','manager','owner')
+      and akisuite_private.venue_workspace(member.venue_id)=v_workspace) then return true; end if;
+  if exists(select 1 from public.venues v where v.id=v_media.venue_id and v.status='published'
+    and v_media.id=(select fallback.id from public.venue_media fallback where fallback.venue_id=v.id order by fallback.sort_order,fallback.id limit 1)) then return true; end if;
+  if exists(select 1 from public.venue_media_placements retained where retained.media_id=v_media.id and public.is_venue_member(retained.venue_id)) then return true; end if;
+  return exists(select 1 from public.venue_media_placements place join public.venues visible on visible.id=place.venue_id
+    where place.media_id=v_media.id and visible.status='published' and (
+      (place.placement in ('venue_profile','venue_cover','venue_menu','venue_events','venue_explore') and place.target_key='')
+      or (place.placement='venue_gallery' and place.target_key='stay_header')
+      or (place.placement in ('event_banner','event_explore','event_profile','event_background','event_map_vertical')
+        and exists(select 1 from public.events e where e.id::text=place.target_key and e.venue_id=place.venue_id and e.status='published'))));
+end;
+$$;
+revoke all on function public.akisuite_storage_read_allowed(text) from public;
+grant execute on function public.akisuite_storage_read_allowed(text) to anon,authenticated;
+create policy akisuite_storage_owner_read on storage.objects for select to authenticated
+  using(bucket_id='event-media' and public.akisuite_storage_owner(name));
+create policy akisuite_storage_workspace_read on storage.objects for select to authenticated
+  using(bucket_id='event-media' and public.akisuite_launch_ready() and public.akisuite_storage_read_allowed(name));
+create policy akisuite_storage_private_bin on storage.objects as restrictive for select to anon,authenticated
+  using(bucket_id<>'event-media' or public.akisuite_storage_read_allowed(name));
+create policy akisuite_media_private_bin on public.venue_media as restrictive for select to anon,authenticated
+  using(public.akisuite_storage_read_allowed(storage_path));
 commit;

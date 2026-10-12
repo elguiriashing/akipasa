@@ -40,6 +40,7 @@
   padding: 0.55rem 0.85rem;
   border-radius: 999px;
   cursor: pointer;
+  min-height: 44px;
   white-space: nowrap;
 }
 .interval label.selected {

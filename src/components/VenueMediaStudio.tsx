@@ -121,7 +121,7 @@ export function VenueMediaStudio({
   const [status, setStatus] = useState<"idle" | "saved" | "error">("idle");
   const [uploadError, setUploadError] = useState("");
   const uploadFormRef = useRef<HTMLFormElement>(null);
-  const fallback = items[0] || null;
+  const fallback = items.find((item) => item.canDelete !== false) || null;
   const filteredPickerItems = items.filter(
     (item) =>
       (!pickerFolder || item.folder === pickerFolder) &&
@@ -625,8 +625,8 @@ export function VenueMediaStudio({
           <h3>{es ? "Imágenes internas" : "Internal media"}</h3>
           <p>
             {es
-              ? "Esta biblioteca es privada de gestión. Subir una imagen aquí no la publica automáticamente en la ficha."
-              : "This is an internal management library. Uploading media here does not automatically publish it on the venue page."}
+              ? "Gestiona aquí tus archivos. Las imágenes elegidas para superficies públicas son visibles; la primera imagen propia puede usarse como predeterminada."
+              : "Manage your files here. Artwork selected for public surfaces is visible; your first own image can be used as the default."}
           </p>
         </div>
         <span>{items.length}</span>

@@ -284,13 +284,30 @@ export async function updateEvent(formData: FormData) {
   const selectedMediaIds = requestedSlots.flatMap(([, mediaId]) =>
     mediaId ? [mediaId] : [],
   );
-  const { data: allowedRows } = selectedMediaIds.length
-    ? await supabase
-        .from("venue_media")
-        .select("id")
-        .eq("venue_id", v.venueId)
-        .in("id", selectedMediaIds)
-    : { data: [] };
+  const allowedRows =
+    process.env.AKISUITE_FEATURES_READY === "true" &&
+    process.env.AKISUITE_SUBSCRIPTIONS_READY === "true"
+      ? (
+          await Promise.all(
+            selectedMediaIds.map((mediaId) =>
+              authorizedSuiteMedia(supabase, v.venueId, mediaId),
+            ),
+          )
+        ).filter((row): row is { id: string } => Boolean(row))
+      : (
+          await supabase
+            .from("venue_media")
+            .select("id")
+            .eq("venue_id", v.venueId)
+            .in("id", selectedMediaIds)
+        ).data || [];
+  if (
+    new Set(allowedRows.map((row) => row.id)).size !==
+    new Set(selectedMediaIds).size
+  ) {
+    if (inline) return { ok: false as const, error: "media" };
+    redirect(destination(locale, venueId, "error=media"));
+  }
   const allowed = new Set((allowedRows || []).map((item) => item.id));
 
   await supabase
@@ -758,11 +775,23 @@ export async function removeVenueImage(formData: FormData) {
   }
   // The shared bin may feed multiple public venue/event surfaces. Never
   // remove a file that is still referenced by a placement.
-  const { count: placementCount, error: placementError } = await supabase
-    .from("venue_media_placements")
-    .select("id", { count: "exact", head: true })
-    .eq("venue_id", parsed.data.venueId)
-    .eq("media_id", parsed.data.mediaId);
+  const sharedReady =
+    process.env.AKISUITE_FEATURES_READY === "true" &&
+    process.env.AKISUITE_SUBSCRIPTIONS_READY === "true";
+  const usage = sharedReady
+    ? await supabase.rpc("akisuite_media_in_use", {
+        p_media: parsed.data.mediaId,
+      })
+    : null;
+  const localUsage = !sharedReady
+    ? await supabase
+        .from("venue_media_placements")
+        .select("id", { count: "exact", head: true })
+        .eq("venue_id", parsed.data.venueId)
+        .eq("media_id", parsed.data.mediaId)
+    : null;
+  const placementCount = usage ? (usage.data ? 1 : 0) : localUsage?.count;
+  const placementError = usage?.error || localUsage?.error;
   if (placementError || (placementCount ?? 0) > 0) {
     if (inline) return { ok: false as const, error: "media-in-use" };
     redirect(destination(locale, venueId, "error=media-in-use"));
@@ -2094,12 +2123,11 @@ export async function addVenueMediaToEventBin(formData: FormData) {
       .eq("id", parsed.data.eventId)
       .eq("venue_id", parsed.data.venueId)
       .maybeSingle(),
-    supabase
-      .from("venue_media")
-      .select("id")
-      .eq("id", parsed.data.mediaId)
-      .eq("venue_id", parsed.data.venueId)
-      .maybeSingle(),
+    authorizedSuiteMedia(
+      supabase,
+      parsed.data.venueId,
+      parsed.data.mediaId,
+    ).then((data) => ({ data })),
   ]);
   if (!event || !media) {
     if (inline) return { ok: false as const, error: "media" };

@@ -269,12 +269,14 @@ export function AkiSuiteEventTools({
   eventId,
   premium,
   published,
+  trustedDraft = false,
 }: {
   locale: "en" | "es";
   venueId: string;
   eventId: string;
   premium: boolean;
   published: boolean;
+  trustedDraft?: boolean;
 }) {
   const es = locale === "es";
   const fields = (
@@ -303,7 +305,7 @@ export function AkiSuiteEventTools({
           </form>
         </details>
       )}
-      {premium && published && (
+      {premium && (published || trustedDraft) && (
         <details>
           <summary>
             {es ? "Programar publicación" : "Schedule publication"}

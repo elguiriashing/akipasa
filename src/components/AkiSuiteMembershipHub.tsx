@@ -267,8 +267,8 @@ export function AkiSuiteMembershipHub({
                 </h3>
                 <p>
                   {es
-                    ? "Muestra las suscripciones vinculadas a tu cuenta. Las ventajas del paquete Enterprise no generan cargos separados."
-                    : "Subscriptions linked to this account. Enterprise's included benefits don't create separate charges."}
+                    ? "Muestra las suscripciones vinculadas a tu cuenta. Las suscripciones anteriores mantienen sus condiciones; Enterprise no genera cargos separados por sus ventajas incluidas."
+                    : "Subscriptions linked to this account. Existing subscriptions keep their current billing terms; Enterprise's included benefits don't create separate charges."}
                 </p>
               </div>
             </div>
@@ -287,7 +287,9 @@ export function AkiSuiteMembershipHub({
                       : null;
                   const oldName =
                     record.plan_code === "premium"
-                      ? "AkiPasa Premium"
+                      ? es
+                        ? "AkiPasa Premium (anterior)"
+                        : "AkiPasa Premium (legacy)"
                       : record.plan_code === "business"
                         ? "AkiHQ Standard (legacy)"
                         : record.plan_code === "business_pro"

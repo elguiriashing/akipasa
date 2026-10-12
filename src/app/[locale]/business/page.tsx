@@ -293,7 +293,7 @@ export default async function BusinessPage({
     },
     { href: `${base}?view=analytics`, label: "Analytics", icon: "activity" },
     {
-      href: `/${locale}/account/subscription`,
+      href: `/${locale}/account/subscription?from=akibusiness`,
       label: es ? "Membresías" : "Memberships",
       icon: "settings",
     },

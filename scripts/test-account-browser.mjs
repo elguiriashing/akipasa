@@ -92,6 +92,7 @@ const actionNames = [
   "cancelMyStay",
   "startSubscriptionCheckout",
   "startAkiSuiteCheckout",
+  "changeAkiSuiteSubscription",
   "prepareAkiSuiteWorkspace",
   "openBillingPortal",
 ];
@@ -140,7 +141,8 @@ const bundle = await build({
           (args) => {
             if (
               !args.importer.includes("account") &&
-              !args.importer.includes("auth")
+              !args.importer.includes("auth") &&
+              !args.path.includes("/account/")
             )
               return;
             return { path: "actions", namespace: "account-fixture" };
@@ -492,20 +494,24 @@ async function interactions(page, route, locale) {
       page.locator(`a[href="/${locale}/account/export"]`),
     ).toHaveCount(1);
   } else if (route === "subscription") {
-    const tabs = page.getByRole("tablist");
-    await tabs.getByRole("tab", { name: "Business", exact: true }).click();
-    const panel = page.getByRole("tabpanel", { name: "Business", exact: true });
-    await expect(panel).toBeVisible();
-    await panel.locator('input[value="year"]').check();
-    await panel
-      .getByRole("button", { name: es ? "Continuar" : "Continue", exact: true })
-      .click();
-    await lastAction(page, "startSubscriptionCheckout", {
-      locale,
-      plan: "business",
-      interval: "year",
-    });
-    await tabs.getByRole("tab", { name: "Personal", exact: true }).click();
+    await expect(page.getByRole("tablist")).toHaveCount(0);
+    await expect(page.locator('[id="aki_enterprise"]')).toBeVisible();
+    const catalogue = page.locator(
+      '[aria-labelledby="akisuite-catalogue-title"]',
+    );
+    await expect(catalogue.locator("article")).toHaveCount(7);
+    await catalogue
+      .getByRole("radio", { name: es ? /Anual/ : /Yearly/ })
+      .check();
+    const card = catalogue.locator("#akihq_pro");
+    await expect(card).toContainText(es ? "576,00" : "576.00");
+    const payload = await card
+      .locator("form")
+      .evaluate((form) => Object.fromEntries(new FormData(form)));
+    expect(payload).toEqual({ locale, plan: "akihq_pro", interval: "year" });
+    for (const button of await catalogue.getByRole("button").all())
+      await expect(button).toBeDisabled();
+    expect(await page.evaluate(() => window.__accountActions)).toEqual([]);
   } else if (route === "bookings") {
     const cancel = page.locator(".booking-cancel").first();
     await cancel.locator("summary").click();
@@ -780,9 +786,21 @@ try {
             );
             for (const alert of await alerts.all())
               await expect(alert).toBeVisible();
-            await expect(page.locator(".workspace-content form")).toHaveCount(
-              0,
-            );
+            if (fixture === "billing-error") {
+              const catalogue = page.locator(
+                '[aria-labelledby="akisuite-catalogue-title"]',
+              );
+              await expect(catalogue.locator("article")).toHaveCount(7);
+              await expect(catalogue.locator("form")).toHaveCount(7);
+              for (const button of await catalogue.getByRole("button").all())
+                await expect(button).toBeDisabled();
+              await expect(page.locator(".workspace-content form")).toHaveCount(
+                7,
+              );
+            } else
+              await expect(page.locator(".workspace-content form")).toHaveCount(
+                0,
+              );
             await expect(page.getByRole("checkbox")).toHaveCount(0);
             if (fixture === "privacy-error") {
               await expect(

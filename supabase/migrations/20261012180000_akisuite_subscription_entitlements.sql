@@ -39,6 +39,14 @@ create policy akisuite_billing_subscriptions_read on public.akisuite_billing_sub
   for select to authenticated using (profile_id = (select auth.uid()));
 
 -- Internal lookup: never grant EXECUTE or expose this schema to the Data API.
+create function akisuite_private.paid_pro(p_workspace text,p_allow_ending boolean default false)
+returns boolean language sql stable set search_path='' as $$
+  select exists(select 1 from public.akisuite_billing_subscriptions s join public.crm_workspaces w on w.id=s.workspace_id
+    where s.workspace_id=p_workspace and s.plan_code='akihq_pro' and s.status='active' and s.current_period_end>now()
+      and (p_allow_ending or not s.cancel_at_period_end) and w.owner_profile_id=s.profile_id and w.status in ('active','trial'));
+$$;
+revoke all on function akisuite_private.paid_pro(text,boolean) from public,anon,authenticated;
+
 create function akisuite_private.plan_active(p_profile uuid,p_workspace text,p_plan text)
 returns boolean language sql stable set search_path = '' as $$
   with paid as (
@@ -74,8 +82,7 @@ returns boolean language sql stable set search_path = '' as $$
     or (p_plan='akibusiness_premium' and exists(select 1 from legacy where plan_code in ('business','business_pro')))
     or (p_plan in ('akibusiness_premium','akihq_business_addon')
       and exists(select 1 from paid where plan_code='akihq_business_addon')
-      and (exists(select 1 from paid where plan_code='akihq_pro')
-        or exists(select 1 from legacy where plan_code='business_pro')));
+      and akisuite_private.paid_pro(p_workspace,true));
 $$;
 revoke all on function akisuite_private.plan_active(uuid,text,text) from public,anon,authenticated;
 
@@ -97,6 +104,14 @@ returns boolean language sql stable security definer set search_path = '' as $$
 $$;
 revoke all on function public.has_akisuite_workspace_plan(text,text) from public,anon;
 grant execute on function public.has_akisuite_workspace_plan(text,text) to authenticated;
+
+create function public.akisuite_addon_eligible(p_workspace text) returns boolean
+language sql stable security definer set search_path='' as $$
+  select exists(select 1 from public.crm_workspaces w where w.id=p_workspace and w.owner_profile_id=(select auth.uid()))
+    and akisuite_private.paid_pro(p_workspace,false) and not akisuite_private.plan_active(null,p_workspace,'aki_enterprise');
+$$;
+revoke all on function public.akisuite_addon_eligible(text) from public,anon;
+grant execute on function public.akisuite_addon_eligible(text) to authenticated;
 
 -- No user-level AkiHQ upgrade. Free venue access and every legacy paid/staff grant survive.
 create or replace function public.has_active_entitlement(p_profile uuid,p_plan text)
@@ -205,7 +220,7 @@ begin
       or (p_plan in ('akihq_standard','akihq_pro','akibusiness_premium','akihq_business_addon') and s.plan_code in ('business','business_pro'))))
     then raise exception 'existing subscription'; end if;
   if p_plan='akihq_business_addon' and (
-    not akisuite_private.plan_active(null,p_workspace,'akihq_pro')
+    not akisuite_private.paid_pro(p_workspace,false)
     or akisuite_private.plan_active(null,p_workspace,'aki_enterprise')) then raise exception 'HQ Pro required'; end if;
   select * into v_old from public.akisuite_checkout_reservations r
     where r.expires_at>now() and (r.profile_id=v_profile or r.workspace_id=p_workspace) for update;

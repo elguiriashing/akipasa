@@ -195,8 +195,8 @@ export async function startAkiSuiteCheckout(formData: FormData) {
     const activePlans: AkiSuitePlan[] = [];
     if (workspace) {
       const { data: pro, error } = await supabase.rpc(
-        "has_akisuite_workspace_plan",
-        { p_workspace: workspace, p_plan: "akihq_pro" },
+        "akisuite_addon_eligible",
+        { p_workspace: workspace },
       );
       if (error) throw error;
       if (pro) activePlans.push("akihq_pro");
@@ -220,6 +220,7 @@ export async function startAkiSuiteCheckout(formData: FormData) {
       "subscription_data[metadata][akisuite_plan]": plan,
       "subscription_data[metadata][billing_interval]": interval,
       "customer_update[address]": "auto",
+      "customer_update[name]": "auto",
       billing_address_collection: "required",
     });
     if (workspace) {
@@ -274,7 +275,7 @@ export async function changeAkiSuiteSubscription(formData: FormData) {
   const { data: rows, error } = await supabase
     .from("akisuite_billing_subscriptions")
     .select(
-      "stripe_subscription_id,stripe_customer_id,plan_code,status,workspace_id",
+      "stripe_subscription_id,stripe_customer_id,plan_code,billing_interval,status,workspace_id",
     )
     .eq("profile_id", user.id);
   const source = rows?.find(
@@ -295,6 +296,12 @@ export async function changeAkiSuiteSubscription(formData: FormData) {
         akiSuiteRelevantSubscription(plan, source.workspace_id, row),
     )
     .map((row) => row.plan_code);
+  if (
+    source.plan_code === "akihq_pro" &&
+    others.includes("akihq_business_addon") &&
+    source.billing_interval !== interval
+  )
+    failed("existing_subscription");
   const legacy = await supabase
     .from("billing_subscriptions")
     .select("plan_code,status")
@@ -346,9 +353,8 @@ export async function changeAkiSuiteSubscription(formData: FormData) {
     )
       throw new Error("Subscription must reconcile first");
     const pro = source.workspace_id
-      ? await supabase.rpc("has_akisuite_workspace_plan", {
+      ? await supabase.rpc("akisuite_addon_eligible", {
           p_workspace: source.workspace_id,
-          p_plan: "akihq_pro",
         })
       : { data: false, error: null };
     if (pro.error) throw pro.error;

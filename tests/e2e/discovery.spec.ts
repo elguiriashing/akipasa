@@ -194,7 +194,7 @@ test("membership offer is reachable before sign in", async ({ page }) => {
     page.getByRole("heading", { name: "Aki Enterprise" }),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "AkiBusiness Premium" }),
+    page.getByRole("heading", { name: "AkiBusiness Premium", exact: true }),
   ).toBeVisible();
   const catalogue = page.locator(
     'section[aria-labelledby="akisuite-catalogue-title"]',
