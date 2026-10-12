@@ -34,6 +34,7 @@ jobs:
           }
           function privateResponse(response, status) {
             assert.equal(response.status, status);
+            assert.equal(response.headers.get('x-akipals-release'), '2026-10-12-playground-r1');
             assert.match(response.headers.get('cache-control') || '', /private/i);
             assert.match(response.headers.get('cache-control') || '', /no-store/i);
             assert.match(response.headers.get('x-robots-tag') || '', /noindex/i);
@@ -43,7 +44,7 @@ jobs:
           for (let attempt = 1; attempt <= 36; attempt++) {
             try {
               const { response, text } = await request('/pals');
-              if (response.status === 401 && text.includes('Private preview')) {
+              if (response.status === 401 && text.includes('Private preview') && response.headers.get('x-akipals-release') === '2026-10-12-playground-r1') {
                 privateResponse(response, 401);
                 assert.ok(text.includes('/en/auth?next=%2Fpals'));
                 assert.ok(!text.includes('PALS_CLIENT') && !text.includes('Lost &amp; found'));

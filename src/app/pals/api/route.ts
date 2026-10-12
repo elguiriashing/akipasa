@@ -14,6 +14,7 @@ import {
 import { legacyCatalogue } from "@/lib/pals/catalogue-legacy";
 import type { PalsAnalyticsEvent } from "@/lib/pals/analytics";
 import { payload } from "@/lib/pals/view";
+import { MAX_ARCADE_MOVES } from "@/lib/pals/arcade";
 
 export const dynamic = "force-dynamic";
 const family = z.enum([
@@ -61,7 +62,35 @@ const actionSchema = z.discriminatedUnion("type", [
     .object({ type: z.literal("appearance"), itemId: id, appearance: id })
     .strict(),
   z.object({ type: z.literal("parcel") }).strict(),
+  z
+    .object({
+      type: z.literal("care"),
+      activity: z.enum(["snack", "play", "rest"]),
+    })
+    .strict(),
+  z
+    .object({
+      type: z.literal("journey-claim"),
+      period: z.enum(["day", "week"]),
+    })
+    .strict(),
   z.object({ type: z.literal("claim") }).strict(),
+  z
+    .object({
+      type: z.literal("arcade-start"),
+      game: z.enum(["memory", "trail"]),
+    })
+    .strict(),
+  z
+    .object({
+      type: z.literal("arcade-finish"),
+      runId: z.string().uuid(),
+      moves: z
+        .array(z.number().int().min(0).max(24))
+        .min(1)
+        .max(MAX_ARCADE_MOVES),
+    })
+    .strict(),
   z.object({ type: z.literal("leave") }).strict(),
   z.object({ type: z.literal("buy"), sku: id }).strict(),
   z.object({ type: z.literal("start"), adventure: id }).strict(),

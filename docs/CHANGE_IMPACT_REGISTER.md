@@ -1,5 +1,53 @@
 # Change Impact Register
 
+## 2026-10-12 | AkiPals companion playground and playable arcade
+
+- **User request:** six specialist roles to improve the existing `/pals`
+  interface, original characters/outfits, game progression/interactions,
+  minigames, integrated supervision and QA, then merge the verified result to
+  live. Work starts from public `master` at
+  `554aeca23724e5049b4def403c48119e4f8b8f35`.
+- **Observed:** live anonymous `/pals` correctly returns the private team
+  sign-in gate. Source had English-only standalone nonce HTML, ten families,
+  61 designs, banked parcels and ten choice stories. A story-card string
+  precedence error could omit the card body and Start action; the interface
+  rewrite repairs it while retaining all existing story choices.
+- **Changes:** dark/light responsive collector studio, distinct vector faces
+  and garment silhouettes, ten curated styles from stable existing IDs,
+  wardrobe search/collection filters, care and permanent bond ranks,
+  daily/weekly activity bonuses and two interactive arcade puzzles. Games
+  validate bounded move transcripts server-side; rewards use existing account
+  authorization, version checks, command UUID and `pals_commit` transaction.
+- **Compatibility:** `journey` and arcade state are optional schema-1 fields.
+  Existing equipment, appearance, entitlements, achievement trophies, maps and
+  saved progress survive. Care rewards are once/activity/UTC day; completed
+  but unclaimed journey bonuses remain available across period boundaries.
+  No new SQL schema, service, external asset, currency purchase, invitation,
+  public/social map exposure, auth role or production data backfill.
+- **Dependency matrix:** isolated route -> preview shell/client/styles ->
+  authenticated API -> engine/journey/arcade -> existing own-account JSONB
+  save and command ledger. Art also feeds the existing opt-in marker. Other
+  AkiSuite portals, bookings/claims/email, billing, analytics consent and
+  discovery/SEO behavior are unchanged. Private response release marker
+  `2026-10-12-playground-r1` lets the live smoke wait for this rollout.
+- **Verification:** focused API tests exercise authorization, forged fields,
+  stale versions and ambiguous committed-response replay. Disposable PGlite
+  executes the existing save migration to verify own-row reads, denied client
+  writes/commit, schema-1 extension persistence and duplicate/stale commands.
+  Read-only live catalog inspection confirmed both existing saves are schema 1
+  and `pals_commit` remains service-only with RLS on all three preview tables.
+  All 15 Pals browser scenarios passed (32 completed games; 298 requests,
+  297 commits), along with the 603-test repository check, clean Cloudflare
+  packaging and Worker dry-run. The general site E2E suite is not green in
+  the local fixture environment; two stale-selector failures reproduce with
+  identical errors on untouched `master`. No unrelated tests were weakened.
+  See `docs/AKIPALS_RELEASE_20261012.md` and the release PR for complete checks,
+  remaining broad-suite limitations, CI and observed deployment evidence.
+- **Rollback:** application revert; retain saves, inventory, entitlement and
+  command history. No data deletion, reward replay, access relaxation or
+  migration rollback. Authenticated live gameplay still needs a valid preview
+  session; local test adapters never stand in for that evidence.
+
 ## 2026-10-10 | Staff operations overview includes pending ownership claims
 
 - User-visible defect: the Staff operations hero, publishing queue badge and “por revisar” stat displayed 0 even while Moderation → Reclamaciones showed a pending venue claim.

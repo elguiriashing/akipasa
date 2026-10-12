@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-10-12 - AkiPals companion playground
+
+- Rework the private preview around a responsive Hideout, Wardrobe, Stories
+  and Arcade, with genuine light/dark themes, collection filters and clearer
+  touch/keyboard interactions.
+- Give all ten original families distinct expressions, garment details and
+  collectable signature looks while preserving all existing design IDs.
+- Add repeatable care, permanent bond ranks and banked daily/weekly goal
+  bonuses without inactivity penalties or save resets.
+- Add Memory Mix and Trail Finder with local play, server-validated move
+  transcripts, once-per-game daily rewards and unlimited free practice.
+- Retain private preview access, existing saves, earned-only keepsakes and
+  transactional command replay. Add actual API/SQL tests, responsive browser
+  acceptance and a release-specific live deployment check.
+- Fix the story-card expression that could omit its content and Start button.
+
+Verification and deployment evidence: `docs/AKIPALS_RELEASE_20261012.md`.
+
 ## 2026-10-10 - Staff claim review context (candidate)
 
 Show applicant identity/contact, venue address/contact, received and account dates, full evidence and reference IDs in the pending ownership queue. Add staff-only paginated identity lookup, explicit load errors and preserve the claims page after a decision. Requires the new read-only RPC migration before release.

@@ -4,6 +4,22 @@ import {
   legacyAchievementRewardRules,
   rewardFactsFromAchievements,
 } from "./reward-catalogue";
+import {
+  careActivities,
+  claimJourneyReward,
+  recordJourneyActivity,
+  type CareActivity,
+  type JourneyPeriod,
+  type JourneyProgress,
+} from "./journey";
+import {
+  ArcadeRuleError,
+  arcadeReward,
+  finishArcade,
+  startArcade,
+  type ArcadeGame,
+  type ArcadeProgress,
+} from "./arcade";
 /** Server-authoritative, deterministic-with-context rules for the restricted AkiPals preview. */
 export type Stat = "wits" | "energy" | "charm";
 export type Slot = "head" | "body" | "back" | "held";
@@ -1556,6 +1572,10 @@ export type State = {
   entitlements?: Entitlement[];
   /** Generic reward rules already resolved. Optional for legacy saves. */
   claimedRewardRules?: string[];
+  /** Optional schema-1 progression, upgraded lazily without resetting older saves. */
+  journey?: JourneyProgress;
+  /** Optional bounded puzzle summaries; existing schema-1 saves remain compatible. */
+  arcade?: ArcadeProgress;
   run: Run | null;
   mapEnabled: boolean;
   goal: string | null;
@@ -1575,6 +1595,10 @@ export type Action =
   | { type: "buy"; sku: string }
   | { type: "start"; adventure: string }
   | { type: "choice"; index: number }
+  | { type: "care"; activity: CareActivity }
+  | { type: "journey-claim"; period: JourneyPeriod }
+  | { type: "arcade-start"; game: ArcadeGame }
+  | { type: "arcade-finish"; runId: string; moves: number[] }
   | { type: "map"; enabled: boolean }
   | { type: "goal"; sku: string | null };
 export type EarnedAchievement = {
@@ -1778,6 +1802,38 @@ export function applyAction(
   const day = Math.floor(ctx.now / DAY);
   if (!s.family && action.type !== "adopt") fail("Adopt your Pal first.");
   switch (action.type) {
+    case "arcade-start": {
+      try {
+        startArcade(s, action.game, ctx);
+      } catch (error) {
+        if (error instanceof ArcadeRuleError) fail(error.message);
+        throw error;
+      }
+      say(
+        s,
+        action.game === "memory"
+          ? "A little memory mix"
+          : "Take the scenic route",
+        "Your new puzzle is ready. Play at your own pace, then save your result.",
+      );
+      break;
+    }
+    case "arcade-finish": {
+      let result;
+      try {
+        result = finishArcade(s, action.runId, action.moves, ctx);
+      } catch (error) {
+        if (error instanceof ArcadeRuleError) fail(error.message);
+        throw error;
+      }
+      recordJourneyActivity(s, { type: "play" }, ctx.now);
+      say(
+        s,
+        result.personalBest ? "A new personal best" : "Another little win",
+        `${result.score} points. ${result.rewarded ? `+${arcadeReward.threads} Threads, +${arcadeReward.scrap} Scrap and +${arcadeReward.xp} bond XP.` : "Practice complete. Today's reward for this game is already collected."}`,
+      );
+      break;
+    }
     case "adopt": {
       if (s.family)
         fail(
@@ -1811,6 +1867,45 @@ export function applyAction(
       s.name = cleanName(action.name);
       say(s, "New name, same little legend", `Your Pal is now ${s.name}.`);
       break;
+    case "care": {
+      const activity = careActivities.find(
+        (entry) => entry.id === action.activity,
+      );
+      if (!activity) fail("Choose a snack, a play or a breather together.");
+      const result = recordJourneyActivity(
+        s,
+        { type: "care", activity: action.activity },
+        ctx.now,
+      );
+      const moments = {
+        snack: "Snack acquired. Crumbs everywhere. Priorities immaculate.",
+        play: "One tiny victory dance later, the hideout has excellent energy.",
+        rest: "A quiet minute together. Big plans can wait.",
+      };
+      say(
+        s,
+        activity.label,
+        `${moments[action.activity]} ${result.xp ? "+5 friendship XP. Your progress never fades while you are away." : "Just for fun — today's friendship XP for this moment is already collected."}`,
+      );
+      break;
+    }
+    case "journey-claim": {
+      if (action.period !== "day" && action.period !== "week")
+        fail("Choose an available daily or weekly reward.");
+      const reward = claimJourneyReward(s, action.period, ctx.now);
+      if (!reward)
+        fail(
+          "Finish the activities first. Collected rewards cannot be claimed twice.",
+        );
+      say(
+        s,
+        action.period === "day"
+          ? "A good little day"
+          : "A week of little stories",
+        `+${reward.threads} Threads, +${reward.scrap} Scrap and +${reward.xp} friendship XP. ${reward.count > 1 ? `${reward.count} completed bonuses collected together. ` : ""}Earned bonuses always wait for you.`,
+      );
+      break;
+    }
     case "family": {
       if (!families.some((f) => f.id === action.family))
         fail("Choose one of the ten Pal families.");
@@ -2043,6 +2138,11 @@ export function applyAction(
           );
           s.rewards.push(key);
         }
+        recordJourneyActivity(
+          s,
+          { type: "play", adventureId: adventure.id },
+          ctx.now,
+        );
         say(
           s,
           "Another story for the collection",
@@ -2141,6 +2241,20 @@ export function applyAction(
     default:
       fail("Unknown action.");
   }
+  const styled =
+    action.type === "adopt" ||
+    action.type === "upgrade" ||
+    action.type === "socket" ||
+    action.type === "module" ||
+    action.type === "merge" ||
+    (action.type === "family" && current.family !== s.family) ||
+    (action.type === "unequip" && current.equipped[action.slot] !== null) ||
+    (action.type === "equip" &&
+      current.equipped[getDesign(getItem(s, action.itemId).design).slot] !==
+        action.itemId) ||
+    (action.type === "appearance" &&
+      getItem(current, action.itemId).appearance !== action.appearance);
+  if (styled) recordJourneyActivity(s, { type: "style" }, ctx.now);
   s.updatedAt = ctx.now;
   return s;
 }

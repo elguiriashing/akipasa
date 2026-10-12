@@ -75,6 +75,41 @@ preview still renders through the existing vector engine, but Passport,
 profiles, Community and future map/social surfaces can eventually consume this
 snapshot rather than rebuilding Pal state themselves.
 
+`style-guide.ts` defines ten family palettes, expression/theme descriptions and
+curated four-piece signature looks using existing design IDs. It also supplies
+the wardrobe categories and collection filter metadata. These looks are
+presentation recipes, not automatic ownership grants. The original SVG renderer
+keeps unique IDs and layer order while giving coats, jackets, robes, bags and
+city keepsakes clearer silhouettes and original detailing.
+
+### Companion journey and arcade
+
+`journey.ts` owns server-time care rewards, bond labels derived from permanent
+XP, daily task progress and distinct-story weekly progress. Completed unclaimed
+bonuses bank when a period advances; missed days do not remove earned progress.
+Only successful, meaningful actions record progress. Read summaries are pure,
+and mutations persist an optional version-1 `journey` value inside schema-1
+state through the existing `pals_commit` transaction.
+
+`arcade.ts` owns Memory Mix and Trail Finder. Starting creates a server-random
+board and UUID. The client plays locally, then submits that UUID and a bounded
+transcript of integer cell indices. The server reconstructs completion, derives
+the score and consumes the active run together with the once-per-game/UTC-day
+reward. Trail generation and shortest-route scoring search at most 200
+cell/star states. No transcript history or user-supplied score is stored.
+
+The optional version-1 `arcade` save contains one active board and fixed-size
+best-score, play-count, daily-earning and last-result summaries. Daily earning
+periods never move backwards with server clock corrections. Validated arcade
+completion can satisfy the daily play task; the weekly goal remains three
+distinct story adventures. No new table, migration, paid currency or external
+service is required.
+
+The HTML client integrates the arcade fragment inside its existing scope so
+navigation, command locking, ambiguous-response retry and focus handling share
+one implementation. Main navigation, touch targets, themes and filters stay in
+the UI layer; balance changes stay in the domain/API layers.
+
 ### Analytics
 
 `analytics.ts` defines whitelisted product events:
