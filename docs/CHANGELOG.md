@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-10-12 - Aki Spotlight venue and event details
+
+- Give public venues a photography/identity split, real menu-section previews,
+  compact upcoming events and accessible information/perks navigation.
+- Give events a poster/date composition, clear timing and reservation action,
+  social controls and a linked host card.
+- Recompose both layouts for landscape and portrait tablets, phone and short
+  split-screen, preserving EN/ES, light/dark and existing booking/data rules.
+- Add named icon sharing and disposable real-route browser acceptance.
+
+Verification and deployment evidence: `docs/SPOTLIGHT_DETAIL_REDESIGN.md`.
+
 ## 2026-10-12 - AkiPals companion playground
 
 - Rework the private preview around a responsive Hideout, Wardrobe, Stories

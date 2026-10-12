@@ -1,0 +1,209 @@
+/* Spotlight's shared chrome is scoped to public venue/event details. */
+.app-detail-page.spotlight-page {
+  --spotlight-surface: var(--surface, #1c2d4b);
+  --spotlight-surface-alt: var(--surface-alt, #14213d);
+  --spotlight-ink: var(--ink, #faf7f2);
+  --spotlight-muted: var(--muted, #b4bfd1);
+  --spotlight-line: var(--line, rgb(250 247 242 / 14%));
+  --spotlight-blue: #97baff;
+  --spotlight-orange: #ce4b0b;
+  --spotlight-orange-text: #ff9b55;
+  --spotlight-radius: 18px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1440px;
+  min-width: 0;
+  margin-inline: auto;
+  padding: 20px clamp(16px, 2.4vw, 40px) 32px;
+  color: var(--spotlight-ink);
+}
+
+html[data-theme="light"] .spotlight-page,
+html.theme-light .spotlight-page {
+  --spotlight-blue: #1848b8;
+  --spotlight-orange-text: #ba430a;
+}
+
+.app-detail-page.spotlight-page.detail-layout {
+  display: block;
+  max-width: 1440px;
+}
+
+.spotlight-page :where(h1, h2, h3, p, dd, a, button) {
+  overflow-wrap: anywhere;
+}
+
+.spotlight-page :where(section, article, header, nav, dl, div) {
+  min-width: 0;
+}
+
+.spotlight-page .detail-back {
+  gap: 8px;
+  width: fit-content;
+  margin: 0 0 8px;
+  padding: 0 2px;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.spotlight-page .spotlight-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 8px;
+  margin: 0;
+}
+
+.spotlight-page .spotlight-actions > :where(a, button, form) {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+
+.spotlight-page .spotlight-actions form {
+  margin: 0;
+}
+
+.spotlight-page .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 11px 15px;
+  border-radius: 10px;
+  box-shadow: none;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: center;
+  text-decoration: none;
+  white-space: normal;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+.spotlight-page .button:not(.secondary):not(.ghost) {
+  border: 1px solid var(--spotlight-orange);
+  background: var(--spotlight-orange);
+  color: #fff;
+}
+
+.spotlight-page .button:not(.secondary):not(.ghost):hover {
+  border-color: #ad3b06;
+  background: #ad3b06;
+}
+
+.spotlight-page .button.secondary {
+  border: 1px solid var(--spotlight-line);
+  background: var(--spotlight-surface);
+  color: var(--spotlight-ink);
+}
+
+.spotlight-page .button.secondary:hover {
+  border-color: var(--spotlight-blue);
+  background: color-mix(
+    in srgb,
+    var(--spotlight-blue) 8%,
+    var(--spotlight-surface)
+  );
+}
+
+.spotlight-page .button svg {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+}
+
+.spotlight-page .spotlight-actions form > .button {
+  width: 100%;
+}
+
+.spotlight-page .spotlight-secondary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.spotlight-page .spotlight-secondary form {
+  margin: 0;
+}
+
+.spotlight-page :is(.share-button--icon, .spotlight-icon-action) {
+  flex: 0 0 44px;
+  width: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 10px;
+}
+
+.spotlight-page :where(a, button, summary, [role="tab"]):focus-visible {
+  outline: 3px solid var(--spotlight-blue);
+  outline-offset: 3px;
+}
+
+.spotlight-page .spotlight-mobile-actions {
+  display: none;
+}
+
+.app-content:has(> .spotlight-page) > .liquid-glass-bg {
+  display: none;
+}
+
+.app-content:has(> .spotlight-page) > .footer {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 16px clamp(16px, 2.4vw, 40px);
+}
+
+@media (max-width: 850px) {
+  /* The same support launcher remains in the footer, clear of the visit CTA. */
+  .app-shell:has(.spotlight-page) .global-support-trigger {
+    display: none;
+  }
+
+  .app-detail-page.spotlight-page {
+    padding: 8px 12px 18px;
+  }
+
+  .spotlight-page .detail-back {
+    margin-bottom: 4px;
+  }
+
+  .spotlight-page .spotlight-mobile-actions {
+    position: sticky;
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+    z-index: 7;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid var(--spotlight-line);
+    border-radius: 14px;
+    background: var(--spotlight-surface);
+    box-shadow: 0 6px 24px rgb(10 26 55 / 16%);
+  }
+
+  .spotlight-page .spotlight-mobile-actions > .spotlight-actions {
+    flex: 1 1 auto;
+  }
+
+  .spotlight-page .spotlight-mobile-actions .button {
+    min-height: 44px;
+    padding: 10px 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-detail-page.spotlight-page {
+    animation: none;
+  }
+
+  .spotlight-page .button {
+    transition: none;
+  }
+}

@@ -1,5 +1,42 @@
 # Change Impact Register
 
+## 2026-10-12 | Aki Spotlight public venue and event detail layouts
+
+- **User request:** implement the selected **01 / Aki Spotlight** concept for
+  both public detail page types across desktop, landscape tablet, portrait
+  tablet and phone, then merge the verified result to live. Isolated source
+  begins at public `master` commit `c651a69`.
+- **Observed:** both detail types inherited the same generic cover/facts/action
+  layout. The selected design instead prioritizes venue photography, menu and
+  visiting actions on venues, and event artwork, timing, host and booking on
+  events. EN/ES and light/dark modes are preserved.
+- **Changes:** scoped shared detail chrome, distinct venue/event layout styles,
+  accessible venue section navigation with real published catalogue previews,
+  compact upcoming events, intact event posters and a clear date ribbon.
+  Responsive action bars keep visiting and booking actions available. Shared
+  sharing gains a named icon variant, clipboard status and native-cancel/error
+  handling; existing text-button callers retain their presentation.
+- **Dependency matrix:** public route -> existing repository/published rows and
+  media placements -> server-authorized personal/booking state -> existing
+  engagement forms, booking routes and catalogue/allergen component. Preserve
+  metadata/JSON-LD, custom event location, Madrid start/end dates, external vs
+  native booking, cancellation/sold-out gates, authenticated favorites/going,
+  premium calendar/offers, loyalty, contact and accommodation redirect.
+  The concept's sample opening hours and imagery are not production data.
+- **Boundaries:** no SQL/RLS, API, credential, storage upload, production record,
+  billing/email or other portal redesign. CSS is scoped to these public detail
+  pages. Revert the source change for rollback; no data restoration needed.
+- **Verification:** focused route/component and sharing tests, full repository
+  check and Cloudflare package, plus the mandatory `test:spotlight:browser`
+  command in tablet CI. The browser harness serves disposable read-only
+  Supabase-shaped responses through the real Next routes; empty default
+  fixtures cannot exercise venue/event detail. Detailed acceptance and release
+  evidence is maintained in `docs/SPOTLIGHT_DETAIL_REDESIGN.md`. Full check
+  passed with 623 tests and the production build; dedicated acceptance passed
+  all 28 cases. The broad legacy suite was diagnostically interrupted after
+  repeated obsolete-selector timeouts and is explicitly not green. Final
+  browser/package, CI and live proof are recorded in the release document.
+
 ## 2026-10-12 | AkiPals companion playground and playable arcade
 
 - **User request:** six specialist roles to improve the existing `/pals`
