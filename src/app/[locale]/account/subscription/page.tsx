@@ -122,7 +122,11 @@ export default async function SubscriptionPage({
         grants={grants || []}
         hasStripeCustomer={Boolean(customer?.stripe_customer_id)}
         unavailable={Boolean(
-          subscriptionsError || grantsError || customerError || profileError || suiteRows.error,
+          subscriptionsError ||
+            grantsError ||
+            customerError ||
+            profileError ||
+            suiteRows.error,
         )}
         now={Date.now()}
       />
