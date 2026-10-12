@@ -39,3 +39,5 @@ Fixed the unsupported Growth navigation icon, removed a duplicate subscription-e
 Stripe webhook unit tests now explicitly resolve the new price-validation adapter in Vitest. Formatter committed the changed test file; a fresh full verification run is required before merge.
 
 Membership recovery now gates the central billing action on profile-read success, preventing duplicate payment controls during partial account failures. The formatter has normalised the patch and a fresh full CI run is required.
+
+The responsive public-browser suite now explicitly checks the seven-plan catalogue and expands legacy plans before asserting their preserved account-creation links. The formatter has committed the updated browser assertions.
