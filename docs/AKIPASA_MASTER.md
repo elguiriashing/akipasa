@@ -446,3 +446,5 @@ Premium media enforcement includes restrictive Storage policies for direct API w
 Shared media/template reuse additionally requires active workspace membership; venue-only editors retain their venue and assigned-content rights. Verified-venue drafts can be scheduled directly with SHA-256 approval fingerprints. After any new paid subscription exists, billing adapters/reconciliation must survive presentation rollback. HQ's companion merge `21843db608932eea46d1e83d82b8481ee19b5767` serves the refreshed membership navigation in production; authenticated acceptance remains separate.
 
 Live migration preflight must include managed Storage ownership/DDL permissions: current migration role is non-superuser `postgres` and is not a member of `supabase_storage_admin`. Do not infer hosted policy-management permission from disposable PGlite ownership.
+
+HQ setup can create a named self-owned workspace before venue ownership, preserving separate venue authorisation. Auth redirects from membership retain the originating app. New-plan webhook customer mapping cannot overwrite a profile's existing Stripe customer.

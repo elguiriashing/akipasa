@@ -26,6 +26,42 @@ describe("Premium SQL functionality and downgrade retention", () => {
       false,
     );
   });
+  it("prepares a named HQ workspace without venue ownership and never adopts another owner's workspace", async () => {
+    const profile = "10000000-0000-4000-8000-000000000003";
+    await db.exec(
+      `insert into profiles(id,app_role) values('${profile}','consumer'); select set_config('test.uid','${profile}',false); set role authenticated`,
+    );
+    const workspace = await scalar(
+      "select public.prepare_akisuite_workspace('Independent studio') as value",
+    );
+    expect(workspace).toBe(`ws_suite_${profile}`);
+    expect(
+      await scalar(
+        "select public.prepare_akisuite_workspace('Independent studio') as value",
+      ),
+    ).toBe(workspace);
+    await db.exec("reset role");
+    expect(
+      (
+        await db.query(
+          `select name,owner_profile_id,source_venue_id,plan from crm_workspaces where id='${workspace}'`,
+        )
+      ).rows[0],
+    ).toMatchObject({
+      name: "Independent studio",
+      owner_profile_id: profile,
+      source_venue_id: null,
+      plan: "growth",
+    });
+    expect(
+      Number(
+        await scalar(
+          `select count(*) as value from crm_workspace_venues where workspace_id='${workspace}'`,
+        ),
+      ),
+    ).toBe(0);
+    await db.exec(`select set_config('test.uid','${suiteOwner}',false)`);
+  });
   it("requires venue Premium for advanced reporting and recurrence", async () => {
     await expect(
       db.query(`select public.akisuite_growth_report('${suiteVenue}')`),

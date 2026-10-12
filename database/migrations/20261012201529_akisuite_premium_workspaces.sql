@@ -306,14 +306,16 @@ $$;
 revoke all on function public.akisuite_owned_workspaces() from public,anon;
 grant execute on function public.akisuite_owned_workspaces() to authenticated;
 
-create function public.prepare_akisuite_workspace() returns text language plpgsql
+create function public.prepare_akisuite_workspace(p_name text default null) returns text language plpgsql
 security definer set search_path='' as $$
 declare v_profile uuid:=(select auth.uid()); v_venue uuid; v_name text; v_workspace text;
 begin
   if v_profile is null then raise exception 'sign in required' using errcode='42501'; end if;
   select v.id,v.name into v_venue,v_name from public.venue_members m join public.venues v on v.id=m.venue_id
     where m.profile_id=v_profile and m.role='owner' order by v.id limit 1;
-  if v_venue is null then raise exception 'venue ownership required' using errcode='42501'; end if;
+  if p_name is not null and length(btrim(p_name)) not between 2 and 120 then raise exception 'invalid workspace name'; end if;
+  v_name:=coalesce(nullif(btrim(p_name),''),v_name);
+  if v_name is null then raise exception 'workspace name required'; end if;
   perform pg_advisory_xact_lock(hashtextextended(v_profile::text,0));
   select w.id into v_workspace from public.crm_workspaces w where w.owner_profile_id=v_profile
     and w.id<>'ws_akipasa' and w.status in ('active','trial') order by w.id limit 1;
@@ -331,8 +333,8 @@ begin
   return v_workspace;
 end;
 $$;
-revoke all on function public.prepare_akisuite_workspace() from public,anon;
-grant execute on function public.prepare_akisuite_workspace() to authenticated;
+revoke all on function public.prepare_akisuite_workspace(text) from public,anon;
+grant execute on function public.prepare_akisuite_workspace(text) to authenticated;
 
 create or replace function public.crm_can_access_workspace(p_workspace text) returns boolean
 language sql stable security definer set search_path='' as $$

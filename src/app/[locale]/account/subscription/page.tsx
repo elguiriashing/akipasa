@@ -25,7 +25,7 @@ export default async function SubscriptionPage({
   const query = await searchParams;
   const { supabase, user } = await requireUser(
     locale,
-    `/${locale}/account/subscription`,
+    `/${locale}/account/subscription${query.from ? `?from=${akiSuiteApp(query.from)}` : ""}`,
   );
   const [
     { data: subscriptions, error: subscriptionsError },
@@ -226,6 +226,15 @@ export default async function SubscriptionPage({
                 ? "Las ventajas de negocio se asignan a un espacio de trabajo autorizado."
                 : "Business benefits belong to an authorised workspace."}
             </p>
+            <label>
+              {es ? "Nombre del espacio de trabajo" : "Workspace name"}
+              <input
+                name="workspaceName"
+                minLength={2}
+                maxLength={120}
+                required
+              />
+            </label>
             <button type="submit" className="button secondary">
               {es ? "Preparar mi negocio" : "Prepare my business"}
             </button>

@@ -31,8 +31,8 @@ export default async function MembershipPage({
         <Link
           href={
             signedIn
-              ? `/${locale}/account/subscription`
-              : `/${locale}/auth?next=${encodeURIComponent(`/${locale}/account/subscription`)}`
+              ? `/${locale}/account/subscription?from=${akiSuiteApp(query.from)}`
+              : `/${locale}/auth?next=${encodeURIComponent(`/${locale}/account/subscription?from=${akiSuiteApp(query.from)}`)}`
           }
         >
           {es ? "Gestionar" : "Manage"}

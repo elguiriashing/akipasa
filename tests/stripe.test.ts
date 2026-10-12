@@ -271,6 +271,7 @@ describe("payment event fulfillment", () => {
     status = "active",
     price = "price_premium",
     duplicate = false,
+    mappedCustomer: string | null = null,
   ) {
     vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_test");
     vi.stubEnv("STRIPE_SECRET_KEY", "test-key");
@@ -295,11 +296,17 @@ describe("payment event fulfillment", () => {
       data: name === "claim_stripe_webhook_event" ? !duplicate : true,
       error: null,
     }));
-    webhookDb.from.mockImplementation(() => {
+    webhookDb.from.mockImplementation((table: string) => {
       const chain = {
         select: () => chain,
         eq: () => chain,
-        maybeSingle: async () => ({ data: null, error: null }),
+        maybeSingle: async () => ({
+          data:
+            table === "billing_customers" && mappedCustomer
+              ? { stripe_customer_id: mappedCustomer }
+              : null,
+          error: null,
+        }),
         upsert: async () => ({ error: null }),
         update: () => ({ eq: async () => ({ error: null }) }),
       };
@@ -409,6 +416,25 @@ describe("payment event fulfillment", () => {
       p_status: "active",
       p_profile: "10000000-0000-4000-8000-000000000001",
     });
+  });
+
+  it("rejects a new subscription that would replace the profile's existing customer", async () => {
+    vi.stubEnv("AKISUITE_SUBSCRIPTIONS_READY", "true");
+    vi.stubEnv(
+      "STRIPE_AKISUITE_ENTERPRISE_MONTH_PRICE_ID",
+      "price_suite_enterprise",
+    );
+    const result = await deliver(
+      "checkout.session.completed",
+      { subscription: "sub_test", payment_status: "paid" },
+      "active",
+      "price_suite_enterprise",
+      false,
+      "cus_existing",
+    );
+    expect(result.response.status).toBe(500);
+    expect(result.suiteSync).toHaveLength(0);
+    expect(result.sync).toHaveLength(0);
   });
 
   it("does not grant new entitlements for unpaid AkiSuite checkout", async () => {

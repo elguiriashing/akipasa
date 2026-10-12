@@ -249,7 +249,17 @@ export async function prepareAkiSuiteWorkspace(formData: FormData) {
   );
   if (process.env.AKISUITE_SUBSCRIPTIONS_READY !== "true")
     redirect(`/${locale}/account/subscription?error=checkout_unavailable`);
-  const { error } = await supabase.rpc("prepare_akisuite_workspace");
+  const name = z
+    .string()
+    .trim()
+    .min(2)
+    .max(120)
+    .safeParse(formData.get("workspaceName"));
+  if (!name.success)
+    redirect(`/${locale}/account/subscription?error=workspace_required`);
+  const { error } = await supabase.rpc("prepare_akisuite_workspace", {
+    p_name: name.data,
+  });
   redirect(
     `/${locale}/account/subscription${error ? "?error=workspace_owner_required" : ""}`,
   );

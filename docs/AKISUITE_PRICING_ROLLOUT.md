@@ -34,7 +34,7 @@ Two pending migrations, mirrored byte-for-byte in `database/migrations` and `sup
 - Growth reports compare actual AkiPasa interactions by action and event, current/prior periods and listing-readiness checks. No Google ranking promises or invented data.
 - AkiDuermo Premium includes accommodation night/request comparisons, exportable reports, and expanded shared property media/folders. Quotes are not treated as collected revenue. Existing room-night inventory and booking transactions stay authoritative.
 - HQ Standard core operations and Pro modules use workspace entitlements plus existing role-template permissions. Platform AI/admin tools remain excluded. Legacy paid/manual/staff tool access remains valid.
-- Staff grants and trialing Pro access never qualify for the discounted purchase. Conditional add-on access stops when its paid Pro subscription is unavailable. A gated service reconciliation stops add-on future renewal when Pro is ending/unavailable; it does not refund, delete content or create charges. Stripe renewal-boundary races still require sandbox acceptance before activation.
+- Authenticated users can prepare a named workspace for HQ without a venue; venue permissions still require authorised ownership/membership. Staff grants and trialing Pro access never qualify for the discounted purchase. Conditional add-on access stops when its paid Pro subscription is unavailable. A gated service reconciliation stops add-on future renewal when Pro is ending/unavailable; it does not refund, delete content or create charges. Stripe renewal-boundary races still require sandbox acceptance before activation.
 
 ## Payment blockers observed
 
@@ -55,11 +55,11 @@ The CLI could not provision an isolated Stripe sandbox without authentication; n
 
 ## Validation checkpoint
 
-- Focused AkiSuite suite: 83 tests passed (catalogue, routes, component rendering, checkout guards, price validation, signed-webhook source contracts, replacement rules, mocked conditional renewal, disposable SQL/RLS and features).
+- Focused AkiSuite suite: 84 tests passed (catalogue, routes, component rendering, checkout guards, price validation, signed-webhook source contracts, replacement rules, mocked conditional renewal, disposable SQL/RLS and features).
 - AkiHQ full check: 340 passed, one existing environment-gated skip. Companion PR #26 merged at `21843db608932eea46d1e83d82b8481ee19b5767`; production serves bundle v36/cache v110 with the origin-aware membership link. Authenticated navigation remains separate.
 - The preceding full AkiPasa check and Cloudflare package passed. Current changes are being revalidated; exact outcomes are recorded in the release PR.
-- Local Chrome browser acceptance is blocked by OS `socket()` denial at ProcessSingleton startup. Current CI passed tablet, booking and Pals acceptance; account/public old-selector failures were repaired and require a fresh head. Earlier CI account clipping was a genuine visually-hidden legend assertion; the legend is now visible. Earlier pricing failures expected removed legacy tabs/widgets and have been rewritten for the approved catalogue. `action_required` CI runs are not passes.
+- Local Chrome browser acceptance is blocked by OS `socket()` denial at ProcessSingleton startup. The preceding CI head passed account/public, booking and Pals acceptance; its tablet workflow and the final compatibility head still require completion. Earlier CI account clipping was a genuine visually-hidden legend assertion; the legend is now visible. Earlier pricing failures expected removed legacy tabs/widgets and have been rewritten for the approved catalogue. `action_required` CI runs are not passes.
 - Production baseline inspected: existing membership still shows legacy tabs/prices, and Business/Duermo localised plural membership aliases return 404. This does not validate the new release.
-- Authenticated production access, responsive browser acceptance and Stripe sandbox checkout remain unverified until the corresponding CI/authentication gates can run. No production migration, new payment or deployment is claimed.
+- Authenticated production access and Stripe sandbox checkout remain unverified. Catalogue responsive acceptance passed in remote CI; final-head CI and production smoke checks remain required. No production migration, new payment or deployment is claimed.
 
 Rollback: disable checkout first, then private launch and feature flags. Revert presentation code if needed; retain ledger/media/occurrences and all Stripe prices. Once any new subscription exists, preserve its webhook adapter and billing reconciliation jobs through rollback. Never roll back by deleting customer data or replaying invoices/webhooks.

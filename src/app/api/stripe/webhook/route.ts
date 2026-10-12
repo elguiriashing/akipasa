@@ -168,6 +168,17 @@ async function processEvent(event: StripeEvent) {
   )
     throw new Error("Subscription metadata is incomplete");
 
+  if (akiSuitePricePlan) {
+    const mapping = await supabase
+      .from("billing_customers")
+      .select("stripe_customer_id")
+      .eq("profile_id", profileId)
+      .maybeSingle();
+    if (mapping.error) throw mapping.error;
+    if (mapping.data && mapping.data.stripe_customer_id !== customerId)
+      throw new Error("AkiSuite profile customer mismatch");
+  }
+
   const { error: customerError } = await supabase
     .from("billing_customers")
     .upsert(
