@@ -1,5 +1,14 @@
 # Change Impact Register
 
+## 2026-10-12 | Venue profile media pop-out picker
+
+- **Request:** replace unusably narrow five-slot image strips with the event media selector.
+- **Source:** `src/components/VenueMediaStudio.tsx` now uses the existing `event-media-modal-*` gallery classes, pagination and search; each slot has an explicit choose-image button with the existing Auto action.
+- **Dependencies:** existing per-venue signed media inputs, locale EN/ES, AkiBusiness mobile/tablet/desktop responsive styling, server-authorized placement actions. No schema, API, storage, RLS, billing or publishing change.
+- **Acceptance:** source contract test, full `npm run check`, browser/tablet CI and Cloudflare build are mandatory; verify user interaction and modal on devices where available.
+- **Rollback:** revert source change; asset assignments remain untouched.
+
+
 ## 2026-10-12 | AkiBusiness shared media inventory (issue #118)
 
 - Requested: Venue Profile, Event Media and Event Library must expose the same venue-owned media, with lightweight browsing by origin.
