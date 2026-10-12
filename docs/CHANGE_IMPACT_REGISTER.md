@@ -1,5 +1,14 @@
 # Change Impact Register
 
+## 2026-10-12 | Venue profile media slot pop-out gallery
+
+- **Request:** replace thin, hard-to-tap strips of dozens of thumbnails with the event-style modal media gallery in all five venue profile media slots.
+- **Implementation:** `VenueMediaStudio` uses the same modal gallery CSS as Events with search, pagination, labelled previews, a selected state, and Auto fallback. Existing placement server actions and upload behaviour are unchanged.
+- **Dependencies and effects:** AkiBusiness EN/ES, authenticated venue membership, signed asset URLs, venue profile surfaces, mobile/tablet/desktop UI. No schema, storage migration, event-asset deletion, or publishing changes.
+- **Rollback:** revert UI/test change without mutating stored media or placement assignments.
+- **Regression:** source-level slot/modal contract coverage plus required full CI browser, tablet, build, security and locale checks.
+
+
 ## 2026-10-12 | AkiBusiness shared media inventory (issue #118)
 
 - Requested: Venue Profile, Event Media and Event Library must expose the same venue-owned media, with lightweight browsing by origin.
