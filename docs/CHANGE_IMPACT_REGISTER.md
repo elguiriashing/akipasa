@@ -7,6 +7,7 @@
 - **Dependencies:** existing per-venue signed media inputs, locale EN/ES, AkiBusiness mobile/tablet/desktop responsive styling, server-authorized placement actions. No schema, API, storage, RLS, billing or publishing change.
 - **Acceptance:** source contract test, full `npm run check`, browser/tablet CI and Cloudflare build are mandatory; verify user interaction and modal on devices where available.
 - **Rollback:** revert source change; asset assignments remain untouched.
+- **Implementation detail:** slot selections keep their server-side write path; filtering and paging affect only the gallery display.
 
 ## 2026-10-12 | AkiBusiness shared media inventory (issue #118)
 
