@@ -635,3 +635,11 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - Does not touch live Stripe products, old membership pages, webhook code, database migrations or existing entitlements. Checkout remains inactive pending cross-portal rollout.
 - Live merchant ambiguity: connected account named Alex Ashing LTD; no Tax registrations surfaced. Do not launch without confirmed merchant of record and VAT settings.
 - Regression: new Stripe tests plus existing legacy checkout and webhook suite, app check and E2E required. Rollback by removing adapter and tests.
+
+## 2026-10-12 | Staged multi-plan Stripe ledger and checkout guard
+
+- **Request:** distinct AkiBusiness marketing, AkiHQ operations, AkiDuermo and consumer plans, Enterprise bundle, 20% annual savings, safe legacy migration.
+- **Change:** separate AkiSuite Stripe ledger plus RLS/SQL RPC, signed webhook dispatch into new ledger, disabled-by-default checkout action with account/tax/price gates and duplicate-payment checks, and focused regression tests.
+- **Dependencies:** existing `billing_customers`, Stripe webhook event lock, profile reconciliation, CRM AkiHQ gates, venue ownership, legacy subscription records, AkiBusiness/AkiDuermo EN/ES and Stripe Tax. No live Stripe write performed. No customer-facing new checkout enabled.
+- **Risk:** account connected as Alex Ashing LTD with unrelated products and no tax registrations; current staging attaches plan to billing profile, not a validated multi-location organisation. Production migrations require SQL/RLS and end-to-end tests; don't merge or provision paid resources until resolved.
+- **Rollback:** revert application and SQL migration only after reviewing any new subscription records; never drop paid entitlements or overwrite legacy subscriptions.
