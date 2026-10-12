@@ -293,7 +293,7 @@ export default async function BusinessPage({
     {
       href: `/${locale}/account/subscription`,
       label: es ? "Membresías" : "Memberships",
-      icon: "membership",
+      icon: "settings",
     },
 
     {
