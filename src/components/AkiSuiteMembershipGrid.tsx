@@ -199,7 +199,7 @@ export function AkiSuiteMembershipGrid({
                   </span>
                 )}
               </div>
-              <h3>{item.name}</h3>
+              <h3>{item.label}</h3>
               <p className={styles.description}>{details[locale]}</p>
               <div className={styles.price}>
                 <strong>{currency.format(cents / 100)}</strong>
