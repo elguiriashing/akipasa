@@ -19,6 +19,7 @@ import { PromotionRequestFields } from "@/components/PromotionRequestFields";
 import { Icon } from "@/components/Icons";
 import { ClaimVenuePicker } from "@/components/ClaimVenuePicker";
 import { BusinessHome } from "@/components/BusinessHome";
+import { BusinessGrowthOverview } from "@/components/BusinessGrowthOverview";
 import {
   WorkspaceShell,
   type WorkspaceItem,
@@ -246,7 +247,7 @@ export default async function BusinessPage({
     (event) => !archivedEvents.includes(event) && !pastEvents.includes(event),
   );
   const analytics =
-    view === "analytics"
+    (view === "analytics" || view === "growth")
       ? await Promise.all(
           managed
             .filter((item) => item.venues)
@@ -869,6 +870,25 @@ export default async function BusinessPage({
               ))}
             </div>
           </section>
+        )}
+
+        {view === "growth" && (
+          <BusinessGrowthOverview
+            locale={locale}
+            events={businessEvents.length}
+            venues={managed.filter((item) => item.venues).map((item) => {
+              const venue = item.venues!;
+              const result = analytics.find((entry) => entry.venue.id === venue.id);
+              return {
+                id: venue.id,
+                name: venue.name,
+                events: businessEvents.filter((event) => event.venue_id === venue.id).length,
+                interactions: result?.rows.length
+                  ? result.rows.reduce((total, row) => total + Number(row.total || 0), 0)
+                  : result ? 0 : null,
+              };
+            })}
+          />
         )}
 
         {/* Growth & Promotion Requests */}
