@@ -291,6 +291,12 @@ export default async function BusinessPage({
     },
     { href: `${base}?view=analytics`, label: "Analytics", icon: "activity" },
     {
+      href: `/${locale}/account/subscription`,
+      label: es ? "Membresías" : "Memberships",
+      icon: "membership",
+    },
+
+    {
       href: `${base}?view=claims`,
       label: es ? "Reclamar" : "Claims",
       icon: "inbox",
