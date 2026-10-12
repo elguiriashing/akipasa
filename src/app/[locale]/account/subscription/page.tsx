@@ -156,7 +156,10 @@ export default async function SubscriptionPage({
           )}
         </section>
       )}
-      <AkiSuiteMembershipGrid locale={locale} checkoutReady={suiteCatalogueReady} />
+      <AkiSuiteMembershipGrid
+        locale={locale}
+        checkoutReady={suiteCatalogueReady}
+      />
       <p className="subscription-note">
         {es
           ? "Pago seguro con Stripe. Gestiona o cancela desde tu portal de facturación."
@@ -165,4 +168,3 @@ export default async function SubscriptionPage({
     </section>
   );
 }
-

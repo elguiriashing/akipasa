@@ -36,7 +36,9 @@ describe("AkiSuite localized membership catalogue", () => {
     for (const source of [publicPage, accountPage]) {
       expect(source).toContain("AkiSuiteMembershipGrid");
       expect(source).toContain("checkoutReady={suiteCatalogueReady}");
-      expect(source).toContain('process.env.AKISUITE_CHECKOUT_ENABLED === "true"');
+      expect(source).toContain(
+        'process.env.AKISUITE_CHECKOUT_ENABLED === "true"',
+      );
       expect(source).toContain('process.env.AKISUITE_TAX_READY === "true"');
       expect(source).not.toContain("MembershipPicker");
     }
