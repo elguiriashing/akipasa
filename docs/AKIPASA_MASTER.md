@@ -438,3 +438,7 @@ The existing /[locale]/business?view=growth now includes BusinessGrowthOverview 
 ### Staged Stripe price resolver, 2026-10-12
 
 The disconnected src/lib/akisuite-stripe.ts verifies new AkiSuite recurring price IDs, Euro amounts, metadata, billing interval and the HQ Pro discount precondition without altering legacy billing or live entitlements. See tests/akisuite-stripe.test.ts and docs/AKISUITE_PRICING_ROLLOUT.md. New product price IDs are not configured and must not be used for checkout without full SQL/webhook rollout.
+
+### 2026-10-12 staged new-plan billing integration, not deployed
+
+A new additive AkiSuite subscription ledger, `has_akisuite_plan` RPC and signed Stripe webhook routing are staged in PR #125, along with a checkout action gated off by default until legal merchant, tax readiness and verified price IDs are set. Old `premium`, `business`, `business_pro` and their benefits remain distinct. New entitlements currently attach to the billing profile, and organisation-wide workspace billing requires validation before release. The migration and webhook must be deployed atomically with testing; do not expose new checkout UI or claim payments are available before then.
