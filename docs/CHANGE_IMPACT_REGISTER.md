@@ -8,7 +8,6 @@
 - **Rollback:** revert UI/test change without mutating stored media or placement assignments.
 - **Regression:** source-level slot/modal contract coverage plus required full CI browser, tablet, build, security and locale checks.
 
-
 ## 2026-10-12 | AkiBusiness shared media inventory (issue #118)
 
 - Requested: Venue Profile, Event Media and Event Library must expose the same venue-owned media, with lightweight browsing by origin.
