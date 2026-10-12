@@ -7,7 +7,7 @@ import { readFileSync, mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { resolve, extname } from "node:path";
 
 // Real async page loaders, AccountLayout, client components and production CSS.
-// Only Auth/database reads, Next routing and server actions are disposable adapters.
+// Only Auth/database reads, Next routing/request headers and server actions are disposable adapters.
 // This verifies UI behavior; it does not claim live authentication/payment acceptance.
 const directory = resolve("test-results/account");
 mkdirSync(directory, { recursive: true });
@@ -133,7 +133,7 @@ const bundle = await build({
           path: resolve("tests/fixtures/account-browser-data.mjs"),
         }));
         builder.onResolve(
-          { filter: /^next\/(link|image|navigation)$/ },
+          { filter: /^next\/(link|image|navigation|headers)$/ },
           (args) => ({ path: args.path, namespace: "account-fixture" }),
         );
         builder.onResolve(
@@ -156,9 +156,11 @@ const bundle = await build({
                 ? `import {recordAction} from '${resolve("tests/fixtures/account-browser-data.mjs")}';\n${actionNames.map((name) => `export const ${name}=form=>recordAction('${name}',form);`).join("\n")}`
                 : args.path.endsWith("navigation")
                   ? navigationAdapter
-                  : args.path.endsWith("image")
-                    ? `import React from 'react';export default function Image({fill,priority,sizes,...props}){return <img {...props}/>}`
-                    : linkAdapter,
+                  : args.path.endsWith("headers")
+                    ? "export async function headers(){return new Headers()}"
+                    : args.path.endsWith("image")
+                      ? `import React from 'react';export default function Image({fill,priority,sizes,...props}){return <img {...props}/>}`
+                      : linkAdapter,
             loader: "jsx",
             resolveDir: process.cwd(),
           }),
