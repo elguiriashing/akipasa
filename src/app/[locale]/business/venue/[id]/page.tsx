@@ -327,7 +327,7 @@ export default async function VenueWorkspace({
         ]
       : [];
   });
-  const mediaStudioItems = allMediaItems.filter((item) => !item.eventSpecific);
+  const mediaStudioItems = allMediaItems;
   const stayHeaderIds = (mediaPlacements || [])
     .filter(
       (item) =>
@@ -835,17 +835,7 @@ export default async function VenueWorkspace({
                           event.catalogue_section_ids || []
                         }
                         venueMediaIds={mediaStudioItems.map((item) => item.id)}
-                        media={[
-                          ...mediaStudioItems,
-                          ...allMediaItems.filter(
-                            (item) =>
-                              item.eventSpecific &&
-                              (
-                                eventPlacementMap.get(event.id)?.binMediaIds ||
-                                []
-                              ).includes(item.id),
-                          ),
-                        ].map((item) => ({
+                        media={allMediaItems.map((item) => ({
                           id: item.id,
                           url: item.url,
                           alt: item.alt,
