@@ -7,7 +7,6 @@
 - **Dependencies:** VenueMediaStudio, event media modal CSS, signed venue media URLs, EN/ES, tablet/phone/desktop, Supabase placement mutations. No schema, storage, permissions, email, payment or public page changes.
 - **Regression:** Static venue-dashboard contract assertion added. CI format, lint, types, tests, Cloudflare build and tablet/browser acceptance must pass before merge. Rollback by reverting this UI-only change.
 
-
 ## 2026-10-12 | AkiBusiness shared media inventory (issue #118)
 
 - Requested: Venue Profile, Event Media and Event Library must expose the same venue-owned media, with lightweight browsing by origin.
