@@ -96,7 +96,9 @@ export function VenueMediaStudio({
   const [slotState, setSlotState] =
     useState<Partial<Record<VenueMediaPlacement, string>>>(placements);
   const [busy, setBusy] = useState(false);
-  const [pickerSlot, setPickerSlot] = useState<VenueMediaPlacement | null>(null);
+  const [pickerSlot, setPickerSlot] = useState<VenueMediaPlacement | null>(
+    null,
+  );
   const [pickerPage, setPickerPage] = useState(0);
   const [pickerSearch, setPickerSearch] = useState("");
   const [uploadProgress, setUploadProgress] = useState<{
@@ -738,7 +740,9 @@ export function VenueMediaStudio({
                   key={item.id}
                   type="button"
                   disabled={busy}
-                  className={slotState[pickerSlot] === item.id ? "selected" : ""}
+                  className={
+                    slotState[pickerSlot] === item.id ? "selected" : ""
+                  }
                   onClick={async () => {
                     const slot = pickerSlot;
                     await setPlacement(slot, item.id);
