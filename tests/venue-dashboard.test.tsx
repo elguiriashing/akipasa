@@ -230,7 +230,6 @@ describe("shared AkiBusiness media inventory", () => {
   });
 });
 
-
 describe("venue media gallery picker", () => {
   it("uses the event gallery modal instead of thumbnail strips", () => {
     const studio = readFileSync("src/components/VenueMediaStudio.tsx", "utf8");
