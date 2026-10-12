@@ -434,3 +434,7 @@ A separate commercial catalogue exists in src/lib/akisuite-catalogue.ts with sev
 ### Staged Business Growth overview (2026-10-12)
 
 The existing /[locale]/business?view=growth now includes BusinessGrowthOverview above the unchanged commercial promotion request form. It consumes venue_analytics RPC rows for the user's authorised managed venues and existing event records; no sample traffic, Google impressions, billing or entitlement claims. Responsive CSS supports 320px mobile to desktop. Premium displays as 'coming later' without a checkout CTA. Existing /business analytics route is preserved.
+
+### Staged Stripe price resolver, 2026-10-12
+
+The disconnected src/lib/akisuite-stripe.ts verifies new AkiSuite recurring price IDs, Euro amounts, metadata, billing interval and the HQ Pro discount precondition without altering legacy billing or live entitlements. See tests/akisuite-stripe.test.ts and docs/AKISUITE_PRICING_ROLLOUT.md. New product price IDs are not configured and must not be used for checkout without full SQL/webhook rollout.
