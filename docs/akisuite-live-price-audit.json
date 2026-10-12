@@ -1,0 +1,219 @@
+{
+  "account": "acct_1SVLH2GfzDhsgsQZ",
+  "verified_at": "2026-10-12",
+  "live": true,
+  "checkout_enabled": false,
+  "tax_registrations_verified": 0,
+  "prices": [
+    {
+      "plan": "aki_enterprise",
+      "interval": "year",
+      "id": "price_1UPmDdGfzDhsgsQZzkWUymhk",
+      "product": "akisuite_2026_aki_enterprise",
+      "currency": "eur",
+      "amount": 76790,
+      "interval_count": 1,
+      "metadata": {
+        "akisuite_interval": "year",
+        "akisuite_plan": "aki_enterprise"
+      },
+      "tax_code": null,
+      "tax_behavior": "unspecified"
+    },
+    {
+      "plan": "aki_enterprise",
+      "interval": "month",
+      "id": "price_1UPmDaGfzDhsgsQZhkqYwj57",
+      "product": "akisuite_2026_aki_enterprise",
+      "currency": "eur",
+      "amount": 7999,
+      "interval_count": 1,
+      "metadata": {
+        "akisuite_interval": "month",
+        "akisuite_plan": "aki_enterprise"
+      },
+      "tax_code": null,
+      "tax_behavior": "unspecified"
+    },
+    {
+      "plan": "akihq_business_addon",
+      "interval": "year",
+      "id": "price_1UPmDYGfzDhsgsQZDZHYx66B",
+      "product": "akisuite_2026_akihq_business_addon",
+      "currency": "eur",
+      "amount": 7670,
+      "interval_count": 1,
+      "metadata": {
+        "akisuite_interval": "year",
+        "akisuite_plan": "akihq_business_addon"
+      },
+      "tax_code": null,
+      "tax_behavior": "unspecified"
+    },
+    {
+      "plan": "akihq_business_addon",
+      "interval": "month",
+      "id": "price_1UPmDWGfzDhsgsQZ0Jym6yBU",
+      "product": "akisuite_2026_akihq_business_addon",
+      "currency": "eur",
+      "amount": 799,
+      "interval_count": 1,
+      "metadata": {
+        "akisuite_interval": "month",
+        "akisuite_plan": "akihq_business_addon"
+      },
+      "tax_code": null,
+      "tax_behavior": "unspecified"
+    },
+    {
+      "plan": "akihq_pro",
+      "interval": "year",
+      "id": "price_1UPmDTGfzDhsgsQZ8Pl8tLR2",
+      "product": "akisuite_2026_akihq_pro",
+      "currency": "eur",
+      "amount": 57600,
+      "interval_count": 1,
+      "metadata": {
+        "akisuite_interval": "year",
+        "akisuite_plan": "akihq_pro"
+      },
+      "tax_code": null,
+      "tax_behavior": "unspecified"
+    },
+    {
+      "plan": "akihq_pro",
+      "interval": "month",
+      "id": "price_1UPmDRGfzDhsgsQZQ63P4zjM",
+      "product": "akisuite_2026_akihq_pro",
+      "currency": "eur",
+      "amount": 6000,
+      "interval_count": 1,
+      "metadata": {
+        "akisuite_interval": "month",
+        "akisuite_plan": "akihq_pro"
+      },
+      "tax_code": null,
+      "tax_behavior": "unspecified"
+    },
+    {
+      "plan": "akihq_standard",
+      "interval": "year",
+      "id": "price_1UPmDOGfzDhsgsQZfvwiJv41",
+      "product": "akisuite_2026_akihq_standard",
+      "currency": "eur",
+      "amount": 19200,
+      "interval_count": 1,
+      "metadata": {
+        "akisuite_interval": "year",
+        "akisuite_plan": "akihq_standard"
+      },
+      "tax_code": null,
+      "tax_behavior": "unspecified"
+    },
+    {
+      "plan": "akihq_standard",
+      "interval": "month",
+      "id": "price_1UPmDMGfzDhsgsQZbcNXSRCC",
+      "product": "akisuite_2026_akihq_standard",
+      "currency": "eur",
+      "amount": 2000,
+      "interval_count": 1,
+      "metadata": {
+        "akisuite_interval": "month",
+        "akisuite_plan": "akihq_standard"
+      },
+      "tax_code": null,
+      "tax_behavior": "unspecified"
+    },
+    {
+      "plan": "akiduermo_premium",
+      "interval": "year",
+      "id": "price_1UPmDKGfzDhsgsQZfbDTriSu",
+      "product": "akisuite_2026_akiduermo_premium",
+      "currency": "eur",
+      "amount": 5750,
+      "interval_count": 1,
+      "metadata": {
+        "akisuite_interval": "year",
+        "akisuite_plan": "akiduermo_premium"
+      },
+      "tax_code": null,
+      "tax_behavior": "unspecified"
+    },
+    {
+      "plan": "akiduermo_premium",
+      "interval": "month",
+      "id": "price_1UPmDIGfzDhsgsQZHbtLqQC5",
+      "product": "akisuite_2026_akiduermo_premium",
+      "currency": "eur",
+      "amount": 599,
+      "interval_count": 1,
+      "metadata": {
+        "akisuite_interval": "month",
+        "akisuite_plan": "akiduermo_premium"
+      },
+      "tax_code": null,
+      "tax_behavior": "unspecified"
+    },
+    {
+      "plan": "akibusiness_premium",
+      "interval": "year",
+      "id": "price_1UPmDGGfzDhsgsQZBm7Xdsgd",
+      "product": "akisuite_2026_akibusiness_premium",
+      "currency": "eur",
+      "amount": 14390,
+      "interval_count": 1,
+      "metadata": {
+        "akisuite_interval": "year",
+        "akisuite_plan": "akibusiness_premium"
+      },
+      "tax_code": null,
+      "tax_behavior": "unspecified"
+    },
+    {
+      "plan": "akibusiness_premium",
+      "interval": "month",
+      "id": "price_1UPmDAGfzDhsgsQZAsBi5XR9",
+      "product": "akisuite_2026_akibusiness_premium",
+      "currency": "eur",
+      "amount": 1499,
+      "interval_count": 1,
+      "metadata": {
+        "akisuite_interval": "month",
+        "akisuite_plan": "akibusiness_premium"
+      },
+      "tax_code": null,
+      "tax_behavior": "unspecified"
+    },
+    {
+      "plan": "akipasa_premium",
+      "interval": "year",
+      "id": "price_1UPmD7GfzDhsgsQZeXqvR0vo",
+      "product": "akisuite_2026_akipasa_premium",
+      "currency": "eur",
+      "amount": 1910,
+      "interval_count": 1,
+      "metadata": {
+        "akisuite_interval": "year",
+        "akisuite_plan": "akipasa_premium"
+      },
+      "tax_code": null,
+      "tax_behavior": "unspecified"
+    },
+    {
+      "plan": "akipasa_premium",
+      "interval": "month",
+      "id": "price_1UPmD5GfzDhsgsQZ5uS3lV7b",
+      "product": "akisuite_2026_akipasa_premium",
+      "currency": "eur",
+      "amount": 199,
+      "interval_count": 1,
+      "metadata": {
+        "akisuite_interval": "month",
+        "akisuite_plan": "akipasa_premium"
+      },
+      "tax_code": null,
+      "tax_behavior": "unspecified"
+    }
+  ]
+}

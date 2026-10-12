@@ -427,22 +427,12 @@ The canonical media asset store is `venue_media`, scoped by `venue_id`, with pub
 
 The five venue surface cards use the same full-size event gallery picker styling and pagination rather than inline thumbnail strips. Selection persists via the existing `setVenueMediaPlacement` action; Auto clears the explicit placement via `clearVenueMediaPlacement`. The venue-wide library remains the sole media inventory.
 
-## 2026-10-12 staged AkiSuite catalogue (NOT LIVE)
+## 2026-10-12 AkiSuite membership and Premium rollout
 
-A separate commercial catalogue exists in src/lib/akisuite-catalogue.ts with seven monthly/annual prices and Enterprise/add-on composition. It is not connected to Stripe, UI or SQL entitlements. See docs/AKISUITE_PRICING_ROLLOUT.md; existing premium/business/business_pro subscriptions remain unchanged. Billing must not be deployed from this isolated foundation as a finished migration.
+`docs/AKISUITE_PRICING_ROLLOUT.md` is the current commercial, workspace, retention, deployment and validation contract. Seven plans are always visible through the shared EN/ES public/account catalogue, independent of payment activation. Enterprise is featured first. Cross-host aliases preserve locale and originating app; AkiHQ points to the same account hub.
 
-### Staged Business Growth overview (2026-10-12)
+The approved Stripe account and fourteen existing live price IDs are verified and recorded; no duplicate products were created. New payments require all five readiness flags, actual tax/product validation, workspace ownership, durable reservation and ledger/Stripe overlap checks. Existing legacy prices, subscriptions, free venue access and staff grants remain valid; superseded new-checkout forms redirect to the catalogue. Do not enable payment until legal invoicing/tax details and isolated checkout/lifecycle tests are complete.
 
-The existing /[locale]/business?view=growth now includes BusinessGrowthOverview above the unchanged commercial promotion request form. It consumes venue_analytics RPC rows for the user's authorised managed venues and existing event records; no sample traffic, Google impressions, billing or entitlement claims. Responsive CSS supports 320px mobile to desktop. Premium displays as 'coming later' without a checkout CTA. Existing /business analytics route is preserved.
+New migrations are pending, mirrored in both migration locations and exercised through disposable PGlite SQL/RLS tests. Business/Duermo/HQ paid access belongs to an authorised workspace, preserving active employee membership and role templates. Personal Enterprise Premium belongs only to the payer. Workspace-scoped recurrence, templates, scheduled approved publication, media quotas/folders/sharing, historical growth and accommodation reports are gated. Published content and media are retained after downgrade; future automation/uploads are restricted. Service cron is bounded and respects approval fingerprints and conditional add-on renewal. Full-schema compatibility, live advisors, sandbox tests and authenticated production acceptance remain separate release requirements.
 
-### Staged Stripe price resolver, 2026-10-12
-
-The disconnected src/lib/akisuite-stripe.ts verifies new AkiSuite recurring price IDs, Euro amounts, metadata, billing interval and the HQ Pro discount precondition without altering legacy billing or live entitlements. See tests/akisuite-stripe.test.ts and docs/AKISUITE_PRICING_ROLLOUT.md. New product price IDs are not configured and must not be used for checkout without full SQL/webhook rollout.
-
-### 2026-10-12 staged new-plan billing integration, not deployed
-
-A new additive AkiSuite subscription ledger, `has_akisuite_plan` RPC and signed Stripe webhook routing are staged in PR #125, along with a checkout action gated off by default until legal merchant, tax readiness and verified price IDs are set. Old `premium`, `business`, `business_pro` and their benefits remain distinct. New entitlements currently attach to the billing profile, and organisation-wide workspace billing requires validation before release. The migration and webhook must be deployed atomically with testing; do not expose new checkout UI or claim payments are available before then.
-
-### 2026-10-12 | Unified four-app membership overview (staged)
-
-`/[locale]/account/subscription` now renders `AkiSuiteMembershipHub`, summarising AkiPasa, AkiBusiness, AkiDuermo and AkiHQ from authenticated legacy subscription/grant records and (only after `AKISUITE_SUBSCRIPTIONS_READY=true`) the new AkiSuite ledger. It provides a single existing Stripe Customer Portal action and bilingual per-product access, with past legacy details in a collapsed disclosure. `/membership` shows the same seven-plan responsive public catalogue with disabled new checkouts until enabled; legacy purchasable plans remain in a disclosure. `/account/membership` and `/account/memberships` redirect to canonical `/account/subscription`. The AkiBusiness navigation links there. AkiHQ's separate repository PR #25 adds the equivalent navigation link. Screens must not treat preview pricing as purchase availability.
+Release marker `membershipCatalogue: 2026-10-12-akisuite-catalogue-v2` is added to the existing read-only release endpoint. Record merge/deployment/live smoke evidence before declaring success. A release with checkout disabled is independently permissible only after its relevant checks pass; it does not complete paid rollout.

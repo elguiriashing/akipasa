@@ -1,43 +1,65 @@
-# AkiSuite commercial separation: staged foundation
+# AkiSuite rollout — implementation and release gates
 
-Requested 2026-10-12. The isolated catalogue is not connected to Stripe checkout, database entitlements or customer-facing prices.
+The approved merchant account is **Alex Ashing LTD**, `acct_1SVLH2GfzDhsgsQZ`. Account use is authorised; this is distinct from confirming its legal invoicing identity and VAT treatment. The seven existing products and fourteen live recurring prices were retrieved and verified, with no duplicates created. `docs/akisuite-live-price-audit.json` records non-secret IDs, amounts, currency, cadence and metadata. Wrangler retains every legacy price and configures the fourteen new IDs with all five activation flags **false**.
 
-Legacy billing currently maps premium, business and business_pro; business and business_pro represent old AkiHQ tiers, not AkiBusiness Premium. Never rename these in place or revoke existing subscriptions. The connected live Stripe account is labelled Alex Ashing LTD, and merchant ownership must be confirmed before creation of paid products.
+| Plan                       | Monthly EUR | Annual EUR |
+| -------------------------- | ----------: | ---------: |
+| AkiPasa Premium            |        1.99 |      19.10 |
+| AkiBusiness Premium        |       14.99 |     143.90 |
+| AkiDuermo Premium          |        5.99 |      57.50 |
+| AkiHQ Standard             |       20.00 |     192.00 |
+| AkiHQ Pro                  |       60.00 |     576.00 |
+| Business add-on for HQ Pro |        7.99 |      76.70 |
+| Aki Enterprise             |       79.99 |     767.90 |
 
-Rollout scope: verify merchant and VAT rules; create product/price IDs in approved account; add workspace entitlements and backward-compatible database/webhook processing; build AkiBusiness Growth, recurrence, duplication, templates and server-enforced media quotas; add AkiDuermo features; update EN/ES membership and account screens; coordinate AkiHQ; run lint, typecheck, unit, browser, checkout and webhook tests before release. The consumer account must display only consumer membership.
+Annual amounts are rounded cents of monthly × 12 × 0.8. Enterprise includes personal AkiPasa Premium for its payer and Business/Duermo Premium plus HQ Pro for its authorised workspace. HQ Pro includes Standard tools. Employees inherit workspace tools through their existing membership and role template, never the owner's personal Premium or access to unrelated organisations.
 
-Annual EUR prices in cents are Math.round(monthlyCents _ 12 _ 0.8). Enterprise €79.99 monthly includes AkiPasa Premium, AkiBusiness Premium, AkiDuermo Premium, AkiHQ Pro. The €7.99 add-on requires active HQ Pro, including on renewal/downgrade.
+## Shared catalogue
 
-Dependencies: consumer and business accounts, staff roles, Stripe webhook, Supabase billing grants and RLS, media storage, event scheduling, analytics consent, localization, Cloudflare environment. Rollback: revert isolated catalogue commit; no Stripe resources or migrations created.
+The public and account membership pages always render all seven plans, Enterprise first. Monthly/yearly controls, actual annual savings, origin-app highlight, current access and EN/ES copy use one component. Root and localised `membership(s)` and account `membership(s)/subscription` aliases on AkiPasa, Business and Duermo lead to canonical AkiPasa membership/account routes. Companion HQ navigation includes `from=akihq`. Checkout activation never controls catalogue visibility. Current workplace access is displayed separately from payer invoices and owner verification.
 
-Verification: code review only. Automated checks and production tests not yet run; do not merge to live.
+Superseded checkout server actions redirect to the catalogue. Legacy subscriptions keep their price IDs, webhook reconciliation, renewals, grants and Customer Portal access. Free verified venue management remains independent from billing.
 
-## Staged Growth UX
+## Workspace features and migration
 
-The Growth tab presents managed venues, events, and reported AkiPasa venue analytics with responsive layouts and direct links to existing event and venue editors. Premium is clearly marked unavailable, so no customer can accidentally purchase unfinished benefits. This is not implementation of recurrence, media quota, billing products or full historical reporting. Existing promotion requests remain unchanged.
+Two pending migrations, mirrored byte-for-byte in `database/migrations` and `supabase/migrations`, implement the additive subscription ledger and Premium workspace features. Neither is applied to production at this checkpoint.
 
-CI note: All changed Growth and catalogue files were formatted through the existing PR formatter. The release remains gated by the complete verification suite and billing migration.
+- Service-only subscription sync, immutable payer/customer/workspace, event chronology, terminal-state protection and payer-only invoice RLS.
+- Durable checkout reservations, server and Stripe overlap checks, same-workspace Pro add-on eligibility and owner checks. Delinquent/paused/incomplete subscriptions block replacement Checkout.
+- Same-scope subscription changes use Stripe's hosted update confirmation and replace an existing item; unsupported personal/workspace scope changes or multi-subscription consolidation are refused. A dedicated allowlisted Customer Portal configuration and sandbox acceptance are required.
+- Free media allowance: 15 images and 150 MiB shared across a linked workspace. Premium: 250 images and 1 GiB; 10 MiB per file. Storage metadata is authoritative. Updates cannot forge storage accounting or move assets between tenants. Larger pre-existing libraries are preserved.
+- Shared searchable media, folders and existing surface selection; borrowed assets cannot be deleted through another venue. Existing published placements are retained after downgrade. No automatic media or content deletion occurs; over-quota customers can remove their own files and continue editing published content.
+- Recurrence uses civil time plus validated IANA timezone, bounded daily/weekly schedules, DST gap rejection, exceptions, persistent cancelled individual dates, timezone updates, advisory locks and unique occurrence constraints. Existing individual events remain free.
+- Duplication and template snapshots produce drafts in authorised workspace venues. Scheduled publication requires previously approved content; changes invalidate its approval fingerprint. A bounded service cron runs every five minutes. Cancelling publication keeps a draft and does not publish it. New unreviewed drafts still require normal moderation.
+- Growth reports compare actual AkiPasa interactions by action and event, current/prior periods and listing-readiness checks. No Google ranking promises or invented data.
+- AkiDuermo Premium includes accommodation night/request comparisons, exportable reports, and expanded shared property media/folders. Quotes are not treated as collected revenue. Existing room-night inventory and booking transactions stay authoritative.
+- HQ Standard core operations and Pro modules use workspace entitlements plus existing role-template permissions. Platform AI/admin tools remain excluded. Legacy paid/manual/staff tool access remains valid.
+- Conditional add-on access stops when Pro is unavailable. A gated service reconciliation stops add-on future renewal when Pro is ending/unavailable; it does not refund, delete content or create charges. Stripe renewal-boundary races still require sandbox acceptance before activation.
 
-## Staged Stripe validation adapter
+## Payment blockers observed
 
-The typed src/lib/akisuite-stripe.ts maps each future AkiSuite plan/interval to a distinct environment price ID. Before new Checkout it validates Stripe active state, EUR amount, yearly discount, cadence and plan/interval metadata, and refuses the discounted HQ add-on unless HQ Pro is active. It does not enable checkout, process webhook events or grant database entitlements. Existing Stripe legacy price mapping stays intact. The live connected account lists as Alex Ashing LTD and had no active Stripe Tax registrations on 2026-10-12. Company-of-record and tax registrations must be verified before enabling new checkout. Unit tests are in tests/akisuite-stripe.test.ts.
+The connected live account currently has no Stripe Tax registrations. All seven new product tax codes are unset; all fourteen new prices have unspecified tax behaviour. The account's stored individual/business profile and recording-studio descriptor differ from its Alex Ashing LTD display name. Do not change the shared account's identity or register taxes without confirming the authorised business configuration.
 
-## Staged backend billing, 2026-10-12
+Required confirmation: legal invoice name, registered address, VAT/tax ID and registration jurisdiction, customer-facing descriptor/support details, appropriate product tax classification and whether approved prices include VAT. Consumer and business supply-location/reverse-charge/OSS treatment must match that configuration. Reference: [AEAT electronic services and place-of-supply rules](https://sede.agenciatributaria.gob.es/Sede/no-residentes/iva-empresarios-profesionales-no-establecidos/iva-telecomunicaciones-servicios-electronicos.html?faqId=4717cab0aff90710VgnVCM100000dc381e0aRCRD), [AEAT OSS regimes](https://sede.agenciatributaria.gob.es/Sede/iva/iva-comercio-electronico/cuestiones-generales.html?faqId=943b790496d78710VgnVCM100000dc381e0aRCRD), and [European Commission persons liable for VAT](https://taxation-customs.ec.europa.eu/taxation/vat/vat-directive/persons-liable-vat_en). These rules require the actual establishment/customer/registration facts; they do not establish this merchant's tax position. Existence of products is not payment readiness.
 
-New migration `database/migrations/20261012180000_akisuite_subscription_entitlements.sql` creates an additive new subscriptions ledger, RLS, chronological webhook sync RPC and legacy-compatible entitlement expansion. Existing `billing_subscriptions`, `premium`, `business`, `business_pro` remain intact. The existing signed webhook now routes **recognised configured new price IDs** into `sync_akisuite_subscription`, while unknown prices are ignored. New Checkout code in `src/app/[locale]/account/subscription/akisuite-actions.ts` is deliberately gated behind AKISUITE_CHECKOUT_ENABLED, AKISUITE_TAX_READY, and AKISUITE_STRIPE_ACCOUNT_ID, plus new Stripe price configuration, matching account identity and per-user overlap checks. Without all gates no session is created. The new checkout action is not yet connected to public or account membership screens.
+The CLI could not provision an isolated Stripe sandbox without authentication; no sandbox account, keys or test checkout was created. Do not test with live charges. Test prices must be isolated from the verified live ID allowlist.
 
-**Deployment requirements before production:** Verify SQL migration against disposable Postgres including RLS, subscription changes and legacy regression; verify webhook tests and expiry/downgrade semantics. Confirm organisation ownership model for workspace-level plans (current staged ledger is per billing profile). Configure Stripe Product tax codes and tax registrations and test actual customer tax breakdown. Validate AkiHQ access with new AkiHQ Pro, consumer plan badges, free venue ownership, multi-venue organisation and existing staff grants. Add live products only in correct legal account; avoid double billing when migrating subscriptions. Integrate pricing controls in AkiBusiness and AkiDuermo and update existing membership cards only after checkout prices exist. **This is not a finished/live billing migration.**
+## Activation sequence
 
-## Unified membership UX
+1. Complete disposable full-schema PostgreSQL migration compatibility and Supabase permission/advisor tests, including legacy subscription and staff-grant fixtures. PGlite executes both actual migrations with a bounded production-shaped schema, not a full production clone.
+2. Validate sandbox checkout, signatures, retries, failures, renewal boundaries, cancellation, plan switches, add-on lifecycle and hosted proration confirmation. Configure the dedicated update portal with only approved products and supported updates, plus a management portal permitting cancellation/payment updates without general plan switching.
+3. Confirm legal/tax configuration and verify merchant, active registration, product tax codes and price tax behaviour. Review the one-time update of unspecified tax behaviour on the existing new prices after confirming inclusive/exclusive treatment; never change legacy subscription prices or create duplicate products.
+4. Apply tested additive migrations through the authorised integration. Keep private `akisuite_private.launch_settings.enabled=false` initially. Check advisors and role permissions after application.
+5. Configure runtime flags: `AKISUITE_SUBSCRIPTIONS_READY`, `AKISUITE_FEATURES_READY`, `AKISUITE_BILLING_VERIFIED`, `AKISUITE_TAX_READY`, `AKISUITE_CHECKOUT_ENABLED`. Enable checkout last after both database and application readiness. Configure `AKISUITE_TAX_REGISTRATION_ID`, `AKISUITE_TAX_BEHAVIOR`, per-plan `AKISUITE_TAX_CODE_<PLAN>` and `STRIPE_AKISUITE_PORTAL_CONFIGURATION_ID` and `STRIPE_AKISUITE_MANAGEMENT_CONFIGURATION_ID` from verified configuration. Never infer tax IDs or tax codes.
+6. Verify the exact production commit/deployment and `/api/bookings/release` catalogue marker, CityDiscovery, every alias/portal, EN/ES light/dark, desktop/tablet/mobile, authenticated account access, existing subscriptions and real permitted test transactions. A merge alone is not deployment evidence.
 
-All four AkiSuite products are now shown in one bilingual, responsive membership centre (`AkiSuiteMembershipHub`) on the canonical account billing page. The account shows exact subscriptions only when read successfully, categorises historical paid AkiPasa and AkiHQ plans correctly, and allows payment management through existing Stripe Customer Portal. New AkiSuite records are queried only once `AKISUITE_SUBSCRIPTIONS_READY=true` to avoid exposing a missing migration as a false empty list. Public `/membership` now always shows the new pricing grid with checkout disabled until explicitly enabled; old purchasable plans remain disclosed separately for existing customer continuity. Aliases `/account/membership` and `/account/memberships` redirect to canonical account subscription. Companion AkiHQ PR #25 adds the shared link.
+## Validation checkpoint
 
-## CI repair checkpoint
+- Focused AkiSuite suite: 76 tests passed (catalogue, routes, component rendering, checkout guards, price validation, signed-webhook source contracts, replacement rules, mocked conditional renewal, disposable SQL/RLS and features).
+- AkiHQ full check: 339 passed, one existing environment-gated skip.
+- Full AkiPasa check and Cloudflare package: being completed; outcomes recorded in the release PR.
+- Local Chrome browser acceptance is blocked by OS `socket()` denial at ProcessSingleton startup. Earlier CI account clipping was a genuine visually-hidden legend assertion; the legend is now visible. Earlier pricing failures expected removed legacy tabs/widgets and have been rewritten for the approved catalogue. `action_required` CI runs are not passes.
+- Production baseline inspected: existing membership still shows legacy tabs/prices, and Business/Duermo localised plural membership aliases return 404. This does not validate the new release.
+- Authenticated production access, responsive browser acceptance and Stripe sandbox checkout remain unverified until the corresponding CI/authentication gates can run. No production migration, new payment or deployment is claimed.
 
-Fixed the unsupported Growth navigation icon, removed a duplicate subscription-error alert, and added the membership hub regression test to the formatting workflow. Re-run all checks before approving deployment. Keep paid checkout disabled until its database and feature gates have been verified.
-
-Stripe webhook unit tests now explicitly resolve the new price-validation adapter in Vitest. Formatter committed the changed test file; a fresh full verification run is required before merge.
-
-Membership recovery now gates the central billing action on profile-read success, preventing duplicate payment controls during partial account failures. The formatter has normalised the patch and a fresh full CI run is required.
-
-The responsive public-browser suite now explicitly checks the seven-plan catalogue and expands legacy plans before asserting their preserved account-creation links. The formatter has committed the updated browser assertions.
+Rollback: disable checkout first, then private launch and feature flags. Revert UI/Worker code if needed; retain ledger/media/occurrences and all legacy Stripe prices. Never roll back by deleting customer data or replaying invoices/webhooks.
