@@ -620,3 +620,11 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - Change: add typed standalone catalogue with pricing and composition tests; add staged rollout and rollback documentation. No checkout, DB, webhook, media or event behavior changed.
 - Dependencies: existing Stripe billing and migrations use legacy premium/business/business_pro; the staged catalogue does not grant access. Locales, routes, analytics, claims and storage untouched.
 - Verification: review only; no npm check/CI or Stripe live transaction verified. Do not merge without verified checks. Rollback: revert new files and documentation.
+
+## 2026-10-12 | Staged AkiBusiness Growth overview
+
+- Request: move toward a responsive AkiBusiness Growth marketing dashboard and accurate new tier positioning.
+- Before: Growth view contained only commercial promotion requests; analytics was a separate view.
+- After: Growth presents authorised venue and event counts, existing per-venue engagement RPC results and quick links, followed by the unchanged promotion request flow. Premium capabilities are labelled coming later, without functioning checkout or fabricated statistics.
+- Dependencies: BusinessPage auth/permissions, venue_members and venue_analytics RPC, managed events, responsive CSS, EN/ES. No schema, data mutation, Stripe, cloud environment or scheduled job changes.
+- Checks: CI required on updated head; no local execution claimed. Rollback: revert Growth component/CSS and BusinessPage integration.
