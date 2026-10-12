@@ -411,8 +411,8 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 - Shared `spotlight-detail.css` and route-specific CSS are scoped to public detail variants. `ShareButton` gains an optional accessible icon presentation and handles native-share cancellation/clipboard errors without changing existing text callers. No schema/RLS migration, production data mutation, storage upload, role/payment/email boundary or other AkiSuite portal layout change. Rollback is a source revert.
 - Focused route/component/sharing coverage lives in `vitest.spotlight.config.ts` and `npm test`. Mandatory `npm run test:spotlight:browser` uses disposable read-only Supabase-shaped records with the real Next routes and CSP for EN/ES/light/dark responsive acceptance; default fixtures contain no venues/events and cannot establish detail-route acceptance. Full `npm run check`, Cloudflare package, CI and live CityDiscovery/venue/event smoke must be recorded before declaring release complete. See `docs/SPOTLIGHT_DETAIL_REDESIGN.md` and `docs/CHANGE_IMPACT_REGISTER.md` for dependency and acceptance evidence.
 
-
 ### 2026-10-12 AkiBusiness catalogue save regression (candidate)
+
 - New catalogue items must have non-empty localized names immediately, because `save_venue_catalogue` validates the entire JSON document on both draft and publish. Empty names used to make all subsequent edits to that document fail with PostgreSQL `Invalid item`, misleadingly shown as a permission error.
 - `blankCatalogueItem` supplies safe bilingual starter labels; editors can replace either label. New item tests cover non-empty names and valid starter price/variants. No database schema, RLS, memberships, public catalogue rendering or existing records are changed.
 - Business save errors now separate invalid items/sections/prices, stale revisions (`PT409`) and lack of access (`42501`) in EN/ES. Allergen publishing checks remain strict.
