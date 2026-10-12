@@ -2,6 +2,7 @@ import { publicPageMetadata } from "@/lib/page-metadata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MembershipPicker } from "@/components/MembershipPicker";
+import { AkiSuiteMembershipGrid } from "@/components/AkiSuiteMembershipGrid";
 import { BusinessPackageExplorer } from "@/components/BusinessPackageExplorer";
 import { optionalUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
@@ -16,6 +17,10 @@ export default async function MembershipPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const es = locale === "es";
+  const suiteCatalogueReady =
+    process.env.AKISUITE_CHECKOUT_ENABLED === "true" &&
+    process.env.AKISUITE_TAX_READY === "true" &&
+    Boolean(process.env.AKISUITE_STRIPE_ACCOUNT_ID);
   const { user } = await optionalUser();
   const signedIn = Boolean(user);
 
@@ -33,7 +38,10 @@ export default async function MembershipPage({
           {es ? "Gestionar" : "Manage"}
         </Link>
       </header>
-      <MembershipPicker locale={locale}>
+      {suiteCatalogueReady ? (
+        <AkiSuiteMembershipGrid locale={locale} />
+      ) : (
+        <MembershipPicker locale={locale}>
         <MembershipCard
           locale={locale}
           plan="premium"
@@ -121,6 +129,7 @@ export default async function MembershipPage({
           id="business-pro-plan"
         />
       </MembershipPicker>
+      )}
       <div className="membership-free-row">
         <span>
           {es ? "Tu local en AkiPasa: gratis" : "Your venue on AkiPasa: free"}
