@@ -672,3 +672,5 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - **Production compatibility preflight:** zero current legacy recurrence rules. The connected `postgres` role is not a superuser or member of the Storage table owner (`supabase_storage_admin`); hosted policy-management permission remains a concrete disposable-schema validation requirement. No production DDL attempted to probe that permission.
 
 - **Membership compatibility:** preserve origin through public/account sign-in redirects, permit named HQ workspace preparation without requiring a venue, and reject new-plan webhook customer-map reassignment. No global HQ profile upgrade or implicit venue verification.
+
+Responsive catalogue screenshot review also corrected Spanish add-on wording and preserved whole words in compact disabled purchase buttons.

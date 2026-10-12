@@ -448,3 +448,5 @@ Shared media/template reuse additionally requires active workspace membership; v
 Live migration preflight must include managed Storage ownership/DDL permissions: current migration role is non-superuser `postgres` and is not a member of `supabase_storage_admin`. Do not infer hosted policy-management permission from disposable PGlite ownership.
 
 HQ setup can create a named self-owned workspace before venue ownership, preserving separate venue authorisation. Auth redirects from membership retain the originating app. New-plan webhook customer mapping cannot overwrite a profile's existing Stripe customer.
+
+Responsive catalogue screenshot review also corrected Spanish add-on wording and preserved whole words in compact disabled purchase buttons.

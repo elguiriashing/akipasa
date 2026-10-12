@@ -265,7 +265,11 @@ export function AkiSuiteMembershipGrid({
                   {es ? "Incluido en tu acceso" : "Included in your access"}
                 </span>
               )}
-              <h3>{item.label}</h3>
+              <h3>
+                {es && key === "akihq_business_addon"
+                  ? "AkiBusiness Premium para AkiHQ Pro"
+                  : item.label}
+              </h3>
               <p className={styles.description}>{details[locale]}</p>
               <div className={styles.price}>
                 <strong>{currency.format(cents / 100)}</strong>

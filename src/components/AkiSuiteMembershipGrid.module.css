@@ -161,6 +161,9 @@
 .card button {
   width: 100%;
   min-height: 44px;
+  padding: 0.7rem 0.5rem;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 .footnote {
   margin: 0;
