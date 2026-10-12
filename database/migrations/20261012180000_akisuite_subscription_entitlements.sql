@@ -24,6 +24,8 @@ create table if not exists public.akisuite_billing_subscriptions (
 create index if not exists akisuite_billing_subscriptions_profile_idx
   on public.akisuite_billing_subscriptions(profile_id,plan_code,status);
 alter table public.akisuite_billing_subscriptions enable row level security;
+revoke all on public.akisuite_billing_subscriptions from anon,authenticated;
+grant select on public.akisuite_billing_subscriptions to authenticated;
 create policy akisuite_billing_subscriptions_read on public.akisuite_billing_subscriptions
   for select to authenticated using (profile_id = (select auth.uid()));
 
