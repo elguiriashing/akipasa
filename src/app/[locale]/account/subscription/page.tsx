@@ -2,6 +2,7 @@ import { SubscriptionRefresh } from "@/components/SubscriptionRefresh";
 import { PremiumAdsConversion } from "@/components/PremiumAdsConversion";
 import { notFound } from "next/navigation";
 import { MembershipPicker } from "@/components/MembershipPicker";
+import { AkiSuiteMembershipGrid } from "@/components/AkiSuiteMembershipGrid";
 import { Icon } from "@/components/Icons";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
@@ -69,6 +70,10 @@ export default async function SubscriptionPage({
       .maybeSingle(),
   ]);
   const es = locale === "es";
+  const suiteCatalogueReady =
+    process.env.AKISUITE_CHECKOUT_ENABLED === "true" &&
+    process.env.AKISUITE_TAX_READY === "true" &&
+    Boolean(process.env.AKISUITE_STRIPE_ACCOUNT_ID);
   const accessUnavailable = Boolean(
     subscriptionsError || grantsError || customerError || profileError,
   );
@@ -215,7 +220,10 @@ export default async function SubscriptionPage({
           </section>
         )}
       {!accessUnavailable && (
-        <MembershipPicker locale={locale} initialPlan={query.plan}>
+        suiteCatalogueReady ? (
+          <AkiSuiteMembershipGrid locale={locale} />
+        ) : (
+          <MembershipPicker locale={locale} initialPlan={query.plan}>
           {plans.map((item) => (
             <article
               className={[
@@ -310,6 +318,7 @@ export default async function SubscriptionPage({
             </article>
           ))}
         </MembershipPicker>
+        )
       )}
       <p className="subscription-note">
         {es
