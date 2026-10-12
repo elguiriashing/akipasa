@@ -834,7 +834,9 @@ export default async function VenueWorkspace({
                         selectedCatalogueSectionIds={
                           event.catalogue_section_ids || []
                         }
-                        venueMediaIds={allMediaItems.filter((item) => !item.eventSpecific).map((item) => item.id)}
+                        venueMediaIds={allMediaItems
+                          .filter((item) => !item.eventSpecific)
+                          .map((item) => item.id)}
                         media={allMediaItems.map((item) => ({
                           id: item.id,
                           url: item.url,
