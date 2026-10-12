@@ -3,6 +3,7 @@ import { PremiumAdsConversion } from "@/components/PremiumAdsConversion";
 import { notFound } from "next/navigation";
 import { MembershipPicker } from "@/components/MembershipPicker";
 import { AkiSuiteMembershipGrid } from "@/components/AkiSuiteMembershipGrid";
+import { AkiSuiteMembershipHub } from "@/components/AkiSuiteMembershipHub";
 import { Icon } from "@/components/Icons";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
@@ -69,6 +70,11 @@ export default async function SubscriptionPage({
       .eq("id", user.id)
       .maybeSingle(),
   ]);
+  const suiteRows = process.env.AKISUITE_SUBSCRIPTIONS_READY === "true"
+    ? await supabase.from("akisuite_billing_subscriptions")
+        .select("plan_code,billing_interval,status,current_period_end,cancel_at_period_end")
+        .eq("profile_id", user.id)
+    : { data: [], error: null };
   const es = locale === "es";
   const suiteCatalogueReady =
     process.env.AKISUITE_CHECKOUT_ENABLED === "true" &&
@@ -104,6 +110,15 @@ export default async function SubscriptionPage({
             ? "Revisa tu acceso y elige el plan que va contigo."
             : "Review your access and choose the plan that suits you."
         }
+      />
+      <AkiSuiteMembershipHub
+        locale={locale}
+        legacy={subscriptions || []}
+        suite={suiteRows.data || []}
+        grants={grants || []}
+        hasStripeCustomer={Boolean(customer?.stripe_customer_id)}
+        unavailable={Boolean(subscriptionsError || grantsError || customerError || suiteRows.error)}
+        now={Date.now()}
       />
       {query.checkout === "success" && query.session_id && (
         <PremiumAdsConversion sessionId={query.session_id} />
