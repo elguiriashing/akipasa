@@ -430,3 +430,7 @@ The five venue surface cards use the same full-size event gallery picker styling
 ## 2026-10-12 staged AkiSuite catalogue (NOT LIVE)
 
 A separate commercial catalogue exists in src/lib/akisuite-catalogue.ts with seven monthly/annual prices and Enterprise/add-on composition. It is not connected to Stripe, UI or SQL entitlements. See docs/AKISUITE_PRICING_ROLLOUT.md; existing premium/business/business_pro subscriptions remain unchanged. Billing must not be deployed from this isolated foundation as a finished migration.
+
+### Staged Business Growth overview (2026-10-12)
+
+The existing /[locale]/business?view=growth now includes BusinessGrowthOverview above the unchanged commercial promotion request form. It consumes venue_analytics RPC rows for the user's authorised managed venues and existing event records; no sample traffic, Google impressions, billing or entitlement claims. Responsive CSS supports 320px mobile to desktop. Premium displays as 'coming later' without a checkout CTA. Existing /business analytics route is preserved.
