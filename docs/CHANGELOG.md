@@ -1,3 +1,10 @@
+# 2026-10-12 — Account workspace and Spanish accents
+
+- Replace repeated Account banners with compact page headings and fully visible wider-screen navigation; remove the duplicate Progress tab and route old links to Passport.
+- Refresh Overview, Saved, Following, My bookings, Activity, Premium, Profile, Settings, Privacy and Membership with responsive cards and focused edit controls. Preserve original server actions and confirmation paths.
+- Correct three verified historical Spanish system labels without changing their IDs or feature values; guard future interface source against broken UTF-8 sequences.
+- Release and validation evidence lives in `CHANGE_IMPACT_REGISTER.md`; implementation status alone is not a live-deployment claim.
+
 # Changelog
 
 ## 2026-10-12 - AkiPals companion playground

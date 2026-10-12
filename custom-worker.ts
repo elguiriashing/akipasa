@@ -42,6 +42,7 @@ const worker = {
       return Response.json(
         {
           release: "2026-10-09-booking-ux-r1",
+          accountWorkspace: "2026-10-12-account-suite-v1",
           claimNotifications: {
             release: "2026-10-10-claim-decision-email-v1",
             configured: claimMailConfigured(env),

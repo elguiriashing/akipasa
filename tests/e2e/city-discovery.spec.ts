@@ -6,6 +6,13 @@ const expect = baseExpect.configure({ timeout: 60_000 });
 test.setTimeout(300_000);
 test.use({ navigationTimeout: 120_000 });
 
+// Navigation checks model a returning visitor; optional consent remains unset.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    document.cookie = "ak_consent_version=2; Path=/";
+  });
+});
+
 for (const width of [360, 390, 768, 1440]) {
   test(`city tiles and dropdown fit ${width}px screens`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
@@ -22,9 +29,9 @@ for (const width of [360, 390, 768, 1440]) {
     await expect(page.locator(".hero")).toHaveCount(0);
     await expect(page.locator("#site-search-panel")).toBeHidden();
     await page
-      .getByRole("button", { name: "Search plans", exact: true })
+      .getByRole("button", { name: "Search AkiPasa", exact: true })
       .click();
-    const search = page.getByRole("search", { name: "Search plans" });
+    const search = page.getByRole("search", { name: "Search AkiPasa" });
     await expect(search).toBeVisible();
     await search.getByLabel("Radius", { exact: true }).selectOption("50");
     await expect(page).toHaveURL(/radius=50/);
@@ -77,7 +84,9 @@ test("GPS selects the closest three major cities and updates when location chang
     "Ourense",
   ]);
   await context.setGeolocation({ latitude: 28.4636, longitude: -16.2518 });
-  await page.getByRole("button", { name: "Search plans", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Search AkiPasa", exact: true })
+    .click();
   await page
     .getByRole("search")
     .getByRole("button", { name: "Use my location" })
@@ -113,14 +122,18 @@ test("denied GPS uses the labelled selected area and global search works from ot
     page.getByRole("heading", { name: "Cities near Bilbao" }),
   ).toBeVisible();
   await page.goto("/en/privacy", { waitUntil: "domcontentloaded" });
-  await page.getByRole("button", { name: "Search plans", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Search AkiPasa", exact: true })
+    .click();
   await page
     .getByRole("search")
     .getByLabel("Radius", { exact: true })
     .selectOption("50");
   await expect(page).toHaveURL(/\/en\?.*radius=50/);
   await page.goto("/en/map", { waitUntil: "domcontentloaded" });
-  await page.getByRole("button", { name: "Search plans", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Search AkiPasa", exact: true })
+    .click();
   await page
     .getByRole("search")
     .getByLabel("Radius", { exact: true })

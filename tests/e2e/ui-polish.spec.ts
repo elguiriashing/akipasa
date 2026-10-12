@@ -18,6 +18,15 @@ const publicRoutes = [
 ] as const;
 
 test.describe("polished public UI", () => {
+  test.beforeEach(async ({ page }, testInfo) => {
+    // Retain first-load privacy controls in the public route sizing audit.
+    if (!testInfo.title.startsWith("public routes fit")) {
+      await page.addInitScript(() => {
+        document.cookie = "ak_consent_version=2; Path=/";
+      });
+    }
+  });
+
   for (const viewport of [
     { name: "mobile", width: 390, height: 844 },
     { name: "desktop", width: 1440, height: 1000 },
@@ -110,23 +119,49 @@ test.describe("polished public UI", () => {
     await expect(page.locator("body")).not.toHaveCSS("overflow", "hidden");
   });
 
-  test("authentication disclosures open smoothly and expose usable forms", async ({
+  test("authentication modes expose usable forms and preserve the return route", async ({
     page,
   }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("/en/auth");
+    await page.goto("/en/auth?next=%2Fen%2Faccount");
     const passwordPanel = page
-      .locator("details")
-      .filter({ hasText: "Sign in with password" });
-    const summary = passwordPanel.locator("summary");
-    await summary.click();
-    await expect(passwordPanel).toHaveAttribute("open", "");
+      .locator(".auth-focus-panel form")
+      .filter({ has: page.locator('input[name="password"]') });
     await expect(passwordPanel.locator('input[name="email"]')).toBeVisible();
     await expect(
-      passwordPanel.getByRole("button", { name: "Sign in" }),
+      passwordPanel.locator('input[name="password"]'),
+    ).toHaveAttribute("autocomplete", "current-password");
+    await expect(
+      passwordPanel.getByRole("button", { name: "Sign in", exact: true }),
     ).toBeVisible();
-    await summary.click();
-    await expect(passwordPanel).not.toHaveAttribute("open", "");
+    const modes = page.getByRole("navigation", { name: "Access options" });
+    await modes
+      .getByRole("link", { name: "Create account", exact: true })
+      .click();
+    await expect(page).toHaveURL(/mode=signup/);
+    await expect(
+      passwordPanel.getByRole("button", { name: "Sign in", exact: true }),
+    ).toHaveCount(0);
+    await expect(
+      passwordPanel.getByRole("button", {
+        name: "Create account",
+        exact: true,
+      }),
+    ).toBeVisible();
+    await expect(
+      passwordPanel.locator('input[name="password"]'),
+    ).toHaveAttribute("autocomplete", "new-password");
+    await expect(passwordPanel.locator('input[name="next"]')).toHaveValue(
+      "/en/account",
+    );
+    await modes.getByRole("link", { name: "Sign in", exact: true }).click();
+    await expect(page).toHaveURL(/mode=signin/);
+    await expect(
+      passwordPanel.getByRole("button", { name: "Sign in", exact: true }),
+    ).toBeVisible();
+    await expect(passwordPanel.locator('input[name="next"]')).toHaveValue(
+      "/en/account",
+    );
   });
   test("passport chapter bookmarks stay available across breakpoints", async ({
     page,
@@ -139,11 +174,22 @@ test.describe("polished public UI", () => {
       const chapters = page.getByRole("navigation", {
         name: "Passport chapters",
       });
-      await expect(chapters).toBeVisible();
-      await expect(chapters.getByRole("button")).toHaveCount(6);
       await expect(
-        page.getByRole("button", { name: "Open passport" }),
+        page.getByRole("button", { name: "Open passport", exact: true }),
       ).toBeVisible();
+      if (width === 390) {
+        await expect(chapters).toBeHidden();
+        await page
+          .getByRole("button", { name: "Open passport menu", exact: true })
+          .click();
+      }
+      await expect(chapters).toBeVisible();
+      await expect(chapters.locator(":scope > button")).toHaveCount(6);
+      await chapters.getByRole("button", { name: /Cities/ }).click();
+      await expect(
+        page.getByRole("searchbox", { name: "Find a city" }),
+      ).toBeVisible();
+      if (width === 390) await expect(chapters).toBeHidden();
       expect(
         await page.evaluate(
           () => document.documentElement.scrollWidth <= innerWidth,

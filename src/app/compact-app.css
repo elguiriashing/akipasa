@@ -484,11 +484,14 @@
   display: block;
 }
 .map-legend summary {
-  min-height: 36px;
-  padding: 8px 10px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 13px 10px;
   line-height: 18px;
   cursor: pointer;
   font-size: 0.8rem;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 .map-legend[open] > span {
   display: flex;

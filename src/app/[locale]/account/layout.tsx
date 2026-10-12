@@ -5,6 +5,9 @@ import {
 } from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
+import "./account-suite.css";
+import "./account-controls.css";
+import "./account-collections.css";
 
 export default async function AccountLayout({
   children,
@@ -41,11 +44,6 @@ export default async function AccountLayout({
       label: es ? "Actividad" : "Activity",
       icon: "activity",
     },
-    {
-      href: `${base}/rewards`,
-      label: es ? "Progreso" : "Progress",
-      icon: "gift",
-    },
     ...(profile?.membership_tier === "premium"
       ? [
           {
@@ -79,14 +77,16 @@ export default async function AccountLayout({
   return (
     <WorkspaceShell
       title={profile?.display_name || (es ? "Tu cuenta" : "Your account")}
+      navigationTitle={es ? "Tu cuenta" : "Your account"}
       eyebrow={es ? "Cuenta AkiPasa" : "AkiPasa account"}
       description={
         es
-          ? "Tus planes, progreso y datos, organizados por tarea."
-          : "Your plans, progress and data, organised by task."
+          ? "Tus planes, reservas y preferencias."
+          : "Your plans, bookings and preferences."
       }
       homeHref={base}
       items={items}
+      hidePageHeading
     >
       {children}
     </WorkspaceShell>

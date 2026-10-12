@@ -130,7 +130,11 @@ icon-led `WorkspaceShell` navigation and focused sub-pages:
 - Desktop: a collapsible, sticky sidebar with route-aware links.
 - Mobile: a burger trigger and bounded in-flow panel with initial focus,
   Escape, explicit close behavior, and no viewport-covering overlay.
-- Account: eight focused routes under `/{locale}/account`.
+- Account: ten focused workflows under `/{locale}/account`, with one compact
+  page title, wrapping desktop navigation, responsive cards and explicit edit
+  disclosures. The old `account/rewards` route redirects to the localized
+  Passport after the existing session guard. Account-specific styles do not
+  change the Staff, Admin or Business layouts.
 - Staff: six operational routes under `/{locale}/staff`; legacy
   `/{locale}/moderation` requests redirect to the matching staff workflow.
 - Administrator: eight routes under `/{locale}/admin`; overview pages query

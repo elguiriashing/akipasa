@@ -1,0 +1,55 @@
+name: Account and public UI acceptance
+on:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  account-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PW_TEST_SCREENSHOT_NO_FONTS_READY: "1"
+      NEXT_PUBLIC_DATA_PROVIDER: fixtures
+      NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:3999
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: account-local-disposable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium chrome
+      - run: node scripts/test-account-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: account-responsive-evidence
+          path: test-results/account
+          retention-days: 7
+  public-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PW_TEST_SCREENSHOT_NO_FONTS_READY: "1"
+      NEXT_PUBLIC_DATA_PROVIDER: fixtures
+      NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:3999
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: public-ui-local-disposable
+      NEXT_PUBLIC_GOOGLE_AUTH_ENABLED: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium chrome
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: public-ui-evidence
+          path: test-results
+          retention-days: 7

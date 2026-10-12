@@ -1,9 +1,13 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
-import { WorkspacePageHeader } from "@/components/WorkspaceShell";
+import { Icon } from "@/components/Icons";
 import { MyBookings, type MyBooking } from "@/components/MyBookings";
 import { BookingLiveRefresh } from "@/components/BookingLiveRefresh";
+import { AccountPageHeader } from "../AccountPageHeader";
+import { AccountCollectionState } from "../AccountCollectionState";
+import { AccountStayBookings } from "../AccountStayBookings";
 import { cancelMyBooking, cancelMyStay } from "./actions";
 export default async function MyBookingsPage({
   params,
@@ -44,7 +48,7 @@ export default async function MyBookingsPage({
   const es = locale === "es";
   return (
     <>
-      <WorkspacePageHeader
+      <AccountPageHeader
         eyebrow={es ? "Tus planes" : "Your plans"}
         title={es ? "Mis reservas" : "My bookings"}
         description={
@@ -52,46 +56,14 @@ export default async function MyBookingsPage({
             ? "Próximas, en curso e historial. Todo en un sitio."
             : "Upcoming, active and past. Everything in one place."
         }
+        actions={
+          <Link className="button secondary" href={`/${locale}`}>
+            <Icon name="discover" size={17} />
+            {es ? "Buscar un plan" : "Find a plan"}
+          </Link>
+        }
       />
       <BookingLiveRefresh />
-      <section className="stack" aria-label="AkiDuermo">
-        <h2>AkiDuermo</h2>
-        {stayError ? (
-          <p role="alert">
-            {es
-              ? "No se han podido cargar las estancias."
-              : "Stays could not be loaded."}
-          </p>
-        ) : (
-          <div className="booking-list">
-            {(stays || []).map((stay) => (
-              <article className="booking-list-card" key={stay.id}>
-                <strong>{stay.quote_snapshot?.room_name || "AkiDuermo"}</strong>
-                <span>
-                  {stay.check_in} - {stay.check_out}
-                </span>
-                <span>
-                  {stay.status} ·{" "}
-                  {new Intl.NumberFormat(es ? "es-ES" : "en-GB", {
-                    style: "currency",
-                    currency: "EUR",
-                  }).format(stay.quoted_total_cents / 100)}
-                </span>
-                <small>{stay.id}</small>
-                {["requested", "confirmed"].includes(stay.status) && (
-                  <form action={cancelMyStay}>
-                    <input type="hidden" name="locale" value={locale} />
-                    <input type="hidden" name="bookingId" value={stay.id} />
-                    <button className="button secondary">
-                      {es ? "Cancelar estancia" : "Cancel stay"}
-                    </button>
-                  </form>
-                )}
-              </article>
-            ))}
-          </div>
-        )}
-      </section>
       {query.requested &&
         result?.bookings.some((b) => b.id === query.requested) && (
           <p className="notice" role="status">
@@ -112,22 +84,54 @@ export default async function MyBookingsPage({
             : "This booking could not be cancelled. Please contact the venue."}
         </p>
       )}
-      {error || !result ? (
-        <p className="panel" role="alert">
-          {es
-            ? "No se han podido cargar las reservas. Vuelve a intentarlo."
-            : "Bookings could not be loaded. Please try again."}
-        </p>
-      ) : (
-        <MyBookings
-          locale={locale}
-          bookings={result.bookings}
-          counts={result.counts}
-          currentTab={tab}
-          pageNumber={page}
-          cancel={cancelMyBooking}
-        />
-      )}
+      <section
+        className="account-booking-section"
+        aria-labelledby="account-plans-heading"
+      >
+        <header className="account-collection-section-heading">
+          <span className="account-collection-icon" aria-hidden="true">
+            <Icon name="calendar" size={23} />
+          </span>
+          <div>
+            <span>AkiPasa</span>
+            <h2 id="account-plans-heading">
+              {es ? "Eventos y locales" : "Events and venues"}
+            </h2>
+          </div>
+        </header>
+        {error || !result ? (
+          <AccountCollectionState
+            locale={locale}
+            icon="calendar"
+            title={
+              es
+                ? "No se han podido cargar las reservas"
+                : "Bookings could not be loaded"
+            }
+            description={
+              es
+                ? "Vuelve a intentarlo para consultar tus planes."
+                : "Try again to see your plans."
+            }
+            failed
+          />
+        ) : (
+          <MyBookings
+            locale={locale}
+            bookings={result.bookings}
+            counts={result.counts}
+            currentTab={tab}
+            pageNumber={page}
+            cancel={cancelMyBooking}
+          />
+        )}
+      </section>
+      <AccountStayBookings
+        locale={locale}
+        stays={stays || []}
+        failed={Boolean(stayError)}
+        cancel={cancelMyStay}
+      />
     </>
   );
 }

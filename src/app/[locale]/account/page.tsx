@@ -15,10 +15,9 @@ export default async function AccountOverview({
   const { supabase, user } = await requireUser(locale);
   const es = locale === "es";
   const [
-    { data: profile },
-    { count: savedCount },
-    { count: followedCount },
-    { data: xp },
+    { data: profile, error: profileError },
+    { count: savedCount, error: savedError },
+    { count: followedCount, error: followedError },
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -27,13 +26,13 @@ export default async function AccountOverview({
       .maybeSingle(),
     supabase
       .from("saved_event_refs")
-      .select("*", { count: "exact", head: true }),
+      .select("*", { count: "exact", head: true })
+      .eq("profile_id", user.id),
     supabase
       .from("followed_venue_refs")
-      .select("*", { count: "exact", head: true }),
-    supabase.from("xp_ledger").select("delta").eq("profile_id", user.id),
+      .select("*", { count: "exact", head: true })
+      .eq("profile_id", user.id),
   ]);
-  const totalXp = xp?.reduce((sum, entry) => sum + entry.delta, 0) || 0;
   const role = profile?.app_role || "consumer";
   const premium = profile?.membership_tier === "premium";
   const displayName = profile?.display_name || user.email || "AkiPasa";
@@ -56,15 +55,15 @@ export default async function AccountOverview({
       href: `/${locale}/account/saved`,
       icon: "saved",
       label: es ? "Planes guardados" : "Saved plans",
-      detail: es
-        ? `${savedCount || 0} para cuando quieras`
-        : `${savedCount || 0} ready when you are`,
+      detail: es ? "Vuelve a tus favoritos" : "Back to your favourites",
     },
     {
-      href: `/${locale}/account/rewards`,
-      icon: "gift",
-      label: es ? "Premios y progreso" : "Rewards and progress",
-      detail: es ? `${totalXp} XP acumulados` : `${totalXp} XP collected`,
+      href: `/${locale}/passports`,
+      icon: "passport",
+      label: "Passport",
+      detail: es
+        ? "Sellos, logros y recompensas"
+        : "Stamps, achievements and rewards",
     },
     {
       href: `/${locale}/account/profile`,
@@ -77,8 +76,8 @@ export default async function AccountOverview({
       icon: "settings",
       label: es ? "Preferencias" : "Preferences",
       detail: es
-        ? "Idioma, avisos y experiencia"
-        : "Language, alerts and experience",
+        ? "Correo, contraseña y sesión"
+        : "Email, password and session",
     },
   ];
 
@@ -90,9 +89,17 @@ export default async function AccountOverview({
         </div>
         <div className="account-welcome-copy">
           <span>{es ? "Tu espacio" : "Your space"}</span>
-          <h2>{es ? `Hola, ${firstName}` : `Hi, ${firstName}`}</h2>
+          <h1>{es ? `Hola, ${firstName}` : `Hi, ${firstName}`}</h1>
           <p>
-            {premium ? "Premium" : es ? "Gratis" : "Free"} · {totalXp} XP
+            {profileError
+              ? es
+                ? "Plan no disponible"
+                : "Plan unavailable"
+              : premium
+                ? "Premium"
+                : es
+                  ? "Cuenta gratuita"
+                  : "Free account"}
           </p>
         </div>
         <Link
@@ -104,118 +111,154 @@ export default async function AccountOverview({
         </Link>
       </header>
 
-      <section className="account-next-step">
-        <div>
-          <span>{es ? "Siguiente plan" : "Find your next plan"}</span>
-          <h2>
-            {es ? "¿Qué te apetece hacer hoy?" : "What do you feel like doing?"}
-          </h2>
-        </div>
-        <Link className="account-discover-link" href={`/${locale}`}>
-          <span>{es ? "Explorar cerca de ti" : "Explore near you"}</span>
-          <Icon name="arrow-right" />
-        </Link>
-      </section>
+      <div className="account-overview-main">
+        <section className="account-next-step">
+          <div>
+            <span>{es ? "Siguiente plan" : "Find your next plan"}</span>
+            <h2>
+              {es
+                ? "¿Qué te apetece hacer hoy?"
+                : "What do you feel like doing?"}
+            </h2>
+          </div>
+          <Link className="account-discover-link" href={`/${locale}`}>
+            <span>{es ? "Explorar cerca de ti" : "Explore near you"}</span>
+            <Icon name="arrow-right" />
+          </Link>
+        </section>
 
-      <section
-        className="account-pulse"
-        aria-label={es ? "Tu actividad" : "Your activity"}
-      >
-        <Link href={`/${locale}/account/saved`}>
-          <strong>{savedCount || 0}</strong>
-          <span>{es ? "guardados" : "saved"}</span>
-        </Link>
-        <Link href={`/${locale}/account/following`}>
-          <strong>{followedCount || 0}</strong>
-          <span>{es ? "siguiendo" : "following"}</span>
-        </Link>
-        <Link href={`/${locale}/account/rewards`}>
-          <strong>{totalXp}</strong>
-          <span>XP</span>
-        </Link>
-      </section>
-
-      <section className="account-section">
-        <header>
-          <span>{es ? "Accesos rápidos" : "Quick access"}</span>
-          <h2>{es ? "Todo lo tuyo" : "Everything that’s yours"}</h2>
-        </header>
-        <nav
-          className="account-shortcuts"
-          aria-label={es ? "Accesos rápidos" : "Quick access"}
+        <section
+          className="account-pulse"
+          aria-label={es ? "Tu actividad" : "Your activity"}
         >
-          {shortcuts.map((item) => (
-            <Link href={item.href} key={item.href}>
-              <span className="account-shortcut-icon">
-                <Icon name={item.icon} />
-              </span>
-              <span>
-                <strong>{item.label}</strong>
-                <small>{item.detail}</small>
-              </span>
-              <Icon name="chevron" />
-            </Link>
-          ))}
-        </nav>
-      </section>
-
-      <section className="account-membership-strip">
-        <div>
-          <span>{premium ? "Premium" : es ? "Membresía" : "Membership"}</span>
-          <h2>
-            {premium
-              ? es
-                ? "Tus ventajas están activas"
-                : "Your benefits are active"
-              : es
-                ? "Más ventajas, cuando quieras"
-                : "More benefits, when you want them"}
-          </h2>
-          <p>
-            {premium
-              ? es
-                ? "Ofertas exclusivas, 2x XP y calendarios."
-                : "Member offers, 2x XP and calendars."
-              : es
-                ? "Compara los planes sin compromiso."
-                : "Compare plans with no commitment."}
+          <Link href={`/${locale}/account/saved`}>
+            <strong>{savedError ? "—" : (savedCount ?? 0)}</strong>
+            <span>{es ? "guardados" : "saved"}</span>
+          </Link>
+          <Link href={`/${locale}/account/following`}>
+            <strong>{followedError ? "—" : (followedCount ?? 0)}</strong>
+            <span>{es ? "siguiendo" : "following"}</span>
+          </Link>
+          <Link href={`/${locale}/account/subscription`}>
+            <strong>
+              {profileError
+                ? "—"
+                : premium
+                  ? "Premium"
+                  : es
+                    ? "Gratis"
+                    : "Free"}
+            </strong>
+            <span>{es ? "tu plan" : "your plan"}</span>
+          </Link>
+        </section>
+        {(profileError || savedError || followedError) && (
+          <p className="notice" role="status">
+            {es
+              ? "Algunos datos de tu cuenta no están disponibles. Abre la sección para volver a intentarlo."
+              : "Some account details are unavailable. Open the section to try again."}
           </p>
-        </div>
+        )}
+
+        <section className="account-section">
+          <header>
+            <span>{es ? "Accesos rápidos" : "Quick access"}</span>
+            <h2>{es ? "Todo lo tuyo" : "Everything that’s yours"}</h2>
+          </header>
+          <nav
+            className="account-shortcuts"
+            aria-label={es ? "Accesos rápidos" : "Quick access"}
+          >
+            {shortcuts.map((item) => (
+              <Link href={item.href} key={item.href}>
+                <span className="account-shortcut-icon">
+                  <Icon name={item.icon} />
+                </span>
+                <span>
+                  <strong>{item.label}</strong>
+                  <small>{item.detail}</small>
+                </span>
+                <Icon name="chevron" />
+              </Link>
+            ))}
+          </nav>
+        </section>
+
         <Link
-          href={
-            premium
-              ? `/${locale}/account/premium`
-              : `/${locale}/account/subscription`
-          }
+          className="account-business-link"
+          href={`/${locale}/business/apply`}
         >
-          {premium
-            ? es
-              ? "Abrir Premium"
-              : "Open Premium"
-            : es
-              ? "Ver opciones"
-              : "See options"}
+          <span className="account-shortcut-icon">
+            <Icon name="business" />
+          </span>
+          <span>
+            <strong>{es ? "¿Gestionas un negocio?" : "Run a business?"}</strong>
+            <small>
+              {es ? "Solicita acceso para tu local" : "Apply for venue access"}
+            </small>
+          </span>
           <Icon name="arrow-right" />
         </Link>
-      </section>
+      </div>
 
-      <AccountWorkspacePortals locale={locale} role={role} />
-
-      <Link
-        className="account-business-link"
-        href={`/${locale}/business/apply`}
+      <aside
+        className="account-overview-aside"
+        aria-label={es ? "Opciones de cuenta" : "Account options"}
       >
-        <span className="account-shortcut-icon">
-          <Icon name="business" />
-        </span>
-        <span>
-          <strong>{es ? "¿Gestionas un negocio?" : "Run a business?"}</strong>
-          <small>
-            {es ? "Solicita acceso para tu local" : "Apply for venue access"}
-          </small>
-        </span>
-        <Icon name="arrow-right" />
-      </Link>
+        <section className="account-membership-strip">
+          <div>
+            <span>{premium ? "Premium" : es ? "Membresía" : "Membership"}</span>
+            <h2>
+              {profileError
+                ? es
+                  ? "Revisa tu membresía"
+                  : "Check your membership"
+                : premium
+                  ? es
+                    ? "Tus ventajas están activas"
+                    : "Your benefits are active"
+                  : es
+                    ? "Más ventajas, cuando quieras"
+                    : "More benefits, when you want them"}
+            </h2>
+            <p>
+              {profileError
+                ? es
+                  ? "No pudimos consultar tu plan. Vuelve a intentarlo desde Membresía."
+                  : "We couldn’t load your plan. Try again from Membership."
+                : premium
+                  ? es
+                    ? "Ofertas exclusivas, 2x XP y calendarios."
+                    : "Member offers, 2x XP and calendars."
+                  : es
+                    ? "Compara los planes sin compromiso."
+                    : "Compare plans with no commitment."}
+            </p>
+          </div>
+          <Link
+            href={
+              premium
+                ? `/${locale}/account/premium`
+                : `/${locale}/account/subscription`
+            }
+          >
+            {profileError
+              ? es
+                ? "Abrir Membresía"
+                : "Open Membership"
+              : premium
+                ? es
+                  ? "Abrir Premium"
+                  : "Open Premium"
+                : es
+                  ? "Ver opciones"
+                  : "See options"}
+            <Icon name="arrow-right" />
+          </Link>
+        </section>
+
+        <AccountWorkspacePortals locale={locale} role={role} />
+      </aside>
     </div>
   );
 }

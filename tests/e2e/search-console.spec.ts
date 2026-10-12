@@ -98,7 +98,7 @@ test("sign-in is excluded from indexing and the root redirect is permanent", asy
   ).toBe("?utm_source=poster");
 });
 
-test("homepage excludes map CSS while the map route retains it and analytics has a narrowly scoped CSP", async ({
+test("homepage excludes vendor map CSS while the map route retains it and analytics has a narrowly scoped CSP", async ({
   request,
 }) => {
   async function cssFor(path: string) {
@@ -121,13 +121,16 @@ test("homepage excludes map CSS while the map route retains it and analytics has
       csp: response.headers()["content-security-policy"],
     };
   }
+  // Shared layout CSS may size `.map-page .maplibregl-map`. The vendor's
+  // unscoped root selector must remain exclusive to routes that load a map.
+  const vendorMapRoot = /(?:^|[{}])\s*\.maplibregl-map\s*\{/;
   const home = await cssFor("/en");
-  expect(home.css).not.toContain(".maplibregl-map");
+  expect(home.css).not.toMatch(vendorMapRoot);
   expect(home.csp).toContain(
     "https://static.cloudflareinsights.com/beacon.min.js/",
   );
   expect(home.csp).toContain("object-src 'none'");
   expect(home.csp).toContain("frame-ancestors 'none'");
   const map = await cssFor("/en/map");
-  expect(map.css).toContain(".maplibregl-map");
+  expect(map.css).toMatch(vendorMapRoot);
 });
