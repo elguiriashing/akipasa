@@ -414,7 +414,9 @@ export function blankCatalogue(locale: "es" | "en"): VenueCatalogueDocument {
 export function blankCatalogueItem(): CatalogueItem {
   return {
     id: crypto.randomUUID(),
-    name: { es: "", en: "" },
+    // A newly added item must be saveable immediately, including as a draft.
+    // The database requires a non-empty localized name for every item.
+    name: { es: "Nuevo elemento", en: "New item" },
     description: { es: "", en: "" },
     kind: "product",
     visible: true,

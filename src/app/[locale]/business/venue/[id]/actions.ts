@@ -1817,9 +1817,21 @@ export async function saveVenueCatalogue(formData: FormData) {
     p_publish: parsed.data.publish === "1",
   });
   if (error) {
-    const code = error.message?.includes("ALLERGEN_REVIEW_REQUIRED")
+    // Distinguish bad catalogue data from membership failures; the generic
+    // "check permissions" notice hid valid users' failed saves.
+    const message = error.message || "";
+    const code = message.includes("ALLERGEN_REVIEW_REQUIRED")
       ? "allergens"
-      : "catalogue";
+      : message.includes("Invalid item") ||
+          message.includes("Invalid section") ||
+          message.includes("Invalid price") ||
+          message.includes("Invalid allergen")
+        ? "catalogue-item"
+        : error.code === "PT409"
+          ? "catalogue-conflict"
+          : error.code === "42501"
+            ? "catalogue-permission"
+            : "catalogue";
     redirect(destination(locale, venueId, `section=catalogue&error=${code}`));
   }
   revalidatePath(`/${locale}/venues`, "layout");
