@@ -9,6 +9,7 @@ import {
 } from "./analytics";
 
 export const privateHeaders = {
+  "X-AkiPals-Release": "2026-10-12-playground-r1",
   "Cache-Control": "private, no-store, max-age=0, must-revalidate",
   "CDN-Cache-Control": "no-store",
   "X-Robots-Tag": "noindex, nofollow, noarchive, nosnippet",

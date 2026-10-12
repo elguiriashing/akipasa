@@ -435,6 +435,18 @@ Slash command in configured group
 
 The central recommendation boundary is `src/lib/personalisation/server.ts`; ranking components are in `src/lib/personalisation/ranking.ts`. Versioned ingestion is `/api/v1/behaviour/events` and versioned internal recommendations are `/api/v1/recommendations`. The existing discovery repository remains candidate infrastructure, so homepage, maps, AI tools and future partner gateways can converge on one engine. See `docs/RECOMMENDATIONS.md`.
 
+## AkiPals isolated playground (2026-10-12)
+
+The `/pals` document stays outside the public React/analytics bundle. Its
+nonce-protected client composes the shared vector catalogue and authoritative
+payload from `/pals/api`. Optional schema-1 journey and arcade extensions use
+the existing `pals_states` JSONB row and `pals_commit` version/command transaction.
+Care/checklist progression and validated arcade completion never accept a
+client balance or reward. Games animate locally and submit bounded transcripts
+for server replay; missing historical extension fields are upgraded lazily.
+The style guide contains editorial recipes referencing stable cosmetic IDs,
+not ownership grants. See `docs/AKIPALS_RELEASE_20261012.md` for release evidence.
+
 ## Portal home composition (2026-10-10 candidate)
 
 Host identity from middleware is exposed on the body for Business/Duermo-only design tokens. `PortalLogo` uses the uploaded product icon masters; `BusinessHeader` and `StayHeader` keep each product's controls consistent. Business Home receives membership rows explicitly scoped to the current profile, adds the existing staff editorial access, and filters/paginates that authorized result in a client component. Mutations remain existing server actions; no browser filter grants access. Analytics RPC reads run only in the Analytics view. AkiPasa consumer components and brand remain unchanged. See the master contract and impact register for validation/release status.

@@ -12,6 +12,9 @@ import { itemSvg, palSvg, statePortrait } from "./art";
 import { legacyCatalogue } from "./catalogue-legacy";
 import { renderSnapshotFromState } from "./render-snapshot";
 import { legacyWardrobeEntitlements } from "./entitlements";
+import { familyStyles, wardrobeCategories, stylesForItem } from "./style-guide";
+import { journeySummary } from "./journey";
+import { arcadeSummary } from "./arcade";
 
 export function payload(
   state: State,
@@ -25,6 +28,8 @@ export function payload(
     serverNow: now,
     derived: {
       stats: stats(state),
+      journey: journeySummary(state, now),
+      arcade: arcadeSummary(state, now),
       activeModules: activeModules(state),
       parcels: parcels(state, now),
       portrait: statePortrait(state),
@@ -41,10 +46,22 @@ export function payload(
           catalog: {
             families: families.map((f) => ({
               ...f,
+              style: familyStyles[f.id],
               baseSvg: palSvg(f.id, [], `base-${f.id}`),
               masterSvg: palSvg(f.id, f.master, `master-${f.id}`, true),
+              signatureSvg: palSvg(
+                f.id,
+                familyStyles[f.id].signature,
+                `style-${f.id}`,
+                true,
+              ),
             })),
-            designs: designs.map((d) => ({ ...d, svg: itemSvg(d) })),
+            designs: designs.map((d) => ({
+              ...d,
+              svg: itemSvg(d),
+              styleFamilies: stylesForItem(d.id),
+            })),
+            wardrobeCategories,
             adventures,
             cityCollections,
             v2: legacyCatalogue(),

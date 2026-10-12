@@ -19,6 +19,8 @@ this restriction does not make committed source confidential.
 
 - Ten original character families, with interchangeable equipment and an
   official master-outfit gallery. Family changes are free in the preview.
+  Each family also has an original expression, accent palette and four-piece
+  signature collection assembled from existing, collectable design IDs.
 - Sixty-one current legacy-compatible designs, including expanded family signature
   drops, three achievement trophies and six original city jackets. The new
   catalogue-v2 adapter exposes them as collection-aware cosmetic items. No
@@ -34,12 +36,28 @@ this restriction does not make committed source confidential.
 - Ten three-scene adventures with visible requirements, loadout snapshots,
   fallback results and bonus approaches. Rewards are once per story per UTC
   day, with free practice replays. Basic equipment can complete every story.
+- Snack, Play and Chill care actions each give 5 XP once per UTC day. Repeating
+  them is free and does not grant further rewards. Existing permanent XP maps
+  to ten bond ranks; inactivity never reduces it.
+- A daily checklist rewards care, an actual outfit/loadout change and a
+  completed story or arcade game. Its claim gives 25 Threads, 10 Scrap and
+  15 XP. Completing three distinct stories in a UTC Monday-based week gives
+  70 Threads, 30 Scrap and 40 XP. Practice stories count toward that goal.
+  Completed bonuses bank across period changes until explicitly collected.
+- Memory Mix is a six-pair matching game; Trail Finder is a five-by-five
+  routing puzzle with three stars and a finish flag. Each game gives
+  20 Threads, 8 Scrap and 10 XP once per UTC day. Further games are free
+  practice with personal-best scores. Boards are saved on start, interactions
+  run locally, and the server replays bounded move transcripts on completion.
 - Verified achievement synchronization now resolves through the universal
   AkiPals reward-rule engine: one/five/ten unlocked-achievement trophies and
   city-scoped rewards for Fuengirola, Málaga, Marbella, Granada, Sevilla and
   Madrid. Passport/event/campaign rules use the same condition/reward model.
 - An opt-in own-account map companion, account saves, export snapshots,
   keyboard-accessible dialogs and reduced-motion support.
+- A responsive Hideout, Wardrobe, Stories, Arcade and More navigation system,
+  persistent light/dark preference, and name/slot/signature-collection filters
+  for wardrobe, workshop and shop. The private preview remains English-only.
 
 ## Economy and integrity
 
@@ -55,8 +73,12 @@ mutations. A row lock, expected save version and unique command identifier
 commit state and idempotency records in one database transaction. Ambiguous
 client network failures retain the same command identifier for a safe retry.
 
-The API never accepts client-supplied balances, reward results, inventory,
-user identifiers or achievement claims. Saves are separate from the existing
+The API never accepts client-supplied balances, reward results, arcade scores,
+inventory, user identifiers or achievement claims. Arcade runs have a
+server-created UUID and accept at most 128 move indices; a successful finish
+consumes the run inside the same atomic save as its reward. Care, checklist and
+arcade state are optional schema-1 extensions, so historical saves require no
+migration. Saves are separate from the existing
 passport and loyalty tables. No location coordinates are stored in Pal state.
 
 ## Map boundary
@@ -85,7 +107,7 @@ Applied/repository migrations:
 - `20261005131500_akipals_unlock_rule_constraints.sql` (persisted unlock-rule
   references and earned-item non-sale constraints)
 
-The three new tables have RLS enabled. Authenticated users may read only their
+The three original preview tables have RLS enabled. Authenticated users may read only their
 own invitation and save, and cannot write state or execute `pals_commit`.
 The commit function is SECURITY INVOKER and executable only by service_role.
 Account deletion cascades to preview state, invitations and command records.
@@ -98,6 +120,10 @@ an administrator role blocks the next authorised request; client cookies do
 not grant access by themselves.
 
 ## Verification record
+
+The October 12 playground changes and current release checks are recorded in
+`docs/AKIPALS_RELEASE_20261012.md`. The paragraphs below describe the earlier
+restricted-preview baseline, not evidence that the newer release has deployed.
 
 Before production publication, the isolated engine was strictly compiled and
 29 rule/art/privacy tests passed in a local Node assertion harness. Chromium

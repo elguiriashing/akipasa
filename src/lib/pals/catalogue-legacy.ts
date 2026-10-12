@@ -1,4 +1,5 @@
 import { designs } from "./engine";
+import { stylesForItem } from "./style-guide";
 import type {
   Catalogue,
   CosmeticCollection,
@@ -54,14 +55,15 @@ export function legacyCatalogue(): Catalogue {
     campaignId: null,
     stat: design.stat,
     prestigious: design.source === "earned",
-    metadata: { legacy: true },
+    metadata: { legacy: true, styleIds: stylesForItem(design.id) },
   }));
 
   const collections: CosmeticCollection[] = [
     {
       id: ORIGINALS,
       title: "AkiPasa Originals",
-      description: "The core AkiPals wardrobe and signature looks.",
+      description:
+        "Ten signature styles, from Kitchen Heat to Scenic Route. Collect the pieces and mix them your way.",
       itemIds: items
         .filter((item) => item.collectionId === ORIGINALS)
         .map((item) => item.id),
@@ -72,7 +74,7 @@ export function legacyCatalogue(): Catalogue {
       id: CITY,
       title: "City Keepsakes",
       description:
-        "Prestigious city-linked pieces earned through real AkiPasa progress.",
+        "Six city jackets with original embroidered emblems. Earn each keepsake through verified AkiPasa progress.",
       itemIds: items
         .filter((item) => item.collectionId === CITY)
         .map((item) => item.id),
@@ -82,7 +84,8 @@ export function legacyCatalogue(): Catalogue {
     {
       id: EXPLORER,
       title: "Explorer Story",
-      description: "Milestone pieces tied to verified AkiPasa achievements.",
+      description:
+        "Your first, fifth and tenth verified AkiPasa achievements, made wearable. Each trophy is earned only.",
       itemIds: items
         .filter((item) => item.collectionId === EXPLORER)
         .map((item) => item.id),

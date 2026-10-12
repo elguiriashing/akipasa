@@ -59,6 +59,17 @@ Each item must be validated against source route discovery before claiming exhau
 - Passport immersive responsive page, dark/light themes, holographic card/tilt, motion permission and privacy, scroll handling, city cards, rank tiers and city-specific category stamps (**INTENT**). Keep desktop and mobile navigation parity.
 - Check-ins/XP/stamps/rewards MUST be transactional, authorized, rate-limited, idempotent with audit; regrant/revoke other tiers atomically where applicable.
 - AkiPals (**INTENT**): character families, layered wardrobe/inventory, rarity/ownership, item grants, shop, daily rewards, adventures, sponsored cosmetics and future monetization. Source foundations are exercised by `tests/pals*.test.ts`; do not assume planned features are released.
+- October 12 AkiPals playground (**CODE-DOC**): `/pals` remains an English-language,
+  account-authorized, noindex/private preview. A responsive dark/light hideout,
+  distinct vector family expressions and ten curated outfit recipes retain all
+  61 existing design IDs. Schema-1 saves gain optional journey progression:
+  care actions, permanent XP-based bond ranks, real-activity daily goals and a
+  three-distinct-story weekly goal. Completed bonuses bank without expiring.
+  Interactive arcade challenges join the same server-validated action and
+  atomic command ledger; browser scores/balances are never authoritative.
+  No migration, real-money commerce, public navigation or new map/location
+  integration is added. Current source/dependency and release evidence lives
+  in `docs/AKIPALS_RELEASE_20261012.md`; local fixtures are not live login proof.
 
 ### AkiBusiness and event management
 

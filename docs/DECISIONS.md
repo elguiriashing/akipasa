@@ -478,3 +478,28 @@ ownership records must be retained.
 # 2026-08-13: Central, explainable recommendation platform
 
 Recommendation logic lives behind one service boundary and begins with an explainable weighted ranker. Raw exposure is distinct from preference; skips are weak, explicit rejection is strong, repeated signals diminish, recent and long-term interests decay separately, and sponsored placement requires organic relevance. Behavioural collection is consented, pseudonymous where possible, bounded and non-blocking. Commercial partner access will call the same service through a separately authenticated/metered gateway.
+
+## ADR-030: Extend the private AkiPals save for companion play
+
+**Decision:** Add optional versioned journey and arcade fields to the existing
+schema-1 save. Keep all reward decisions behind strict domain actions and the
+existing account-scoped atomic command ledger. Play arcade moves locally and
+submit a bounded transcript for server validation only when the puzzle ends.
+
+**Reasoning:** Existing preview accounts retain their equipment, cosmetics,
+entitlements and story progress without a migration or reset. Local puzzle
+interaction feels immediate while the server still owns completion, scoring,
+daily reward limits and replay protection. Non-decaying bond XP and banked
+completed goals support returning players without removing earned progress.
+
+**Alternatives considered:** Introduce separate game tables and a save-schema
+upgrade now; accept a client-reported win/score; make each cell move a network
+mutation; add a decaying care meter or missed-day penalty.
+
+**Trade-offs:** Saved state and the command ledger remain the persistence
+boundary for this private preview. Only one arcade puzzle can be active at a
+time. In-progress moves survive a refresh in the same browser tab through
+session storage; another device resumes the saved board without those local
+moves. A future public
+competitive mode would need a separately reviewed challenge/competition model;
+the current fixed-reward solo games do not claim anti-cheat competition.
