@@ -15,3 +15,5 @@ Verification: code review only. Automated checks and production tests not yet ru
 ## Staged Growth UX
 
 The Growth tab presents managed venues, events, and reported AkiPasa venue analytics with responsive layouts and direct links to existing event and venue editors. Premium is clearly marked unavailable, so no customer can accidentally purchase unfinished benefits. This is not implementation of recurrence, media quota, billing products or full historical reporting. Existing promotion requests remain unchanged.
+
+CI note: All changed Growth and catalogue files were formatted through the existing PR formatter. The release remains gated by the complete verification suite and billing migration.
