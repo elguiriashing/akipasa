@@ -38,9 +38,10 @@ export default async function MembershipPage({
           {es ? "Gestionar" : "Manage"}
         </Link>
       </header>
-      {suiteCatalogueReady ? (
-        <AkiSuiteMembershipGrid locale={locale} />
-      ) : (
+      <AkiSuiteMembershipGrid locale={locale} checkoutReady={suiteCatalogueReady} />
+      {!suiteCatalogueReady && (
+        <details className="membership-details">
+          <summary>{es ? "Gestionar los planes anteriores disponibles" : "Manage currently available legacy plans"}</summary>
         <MembershipPicker locale={locale}>
           <MembershipCard
             locale={locale}
@@ -129,6 +130,7 @@ export default async function MembershipPage({
             id="business-pro-plan"
           />
         </MembershipPicker>
+        </details>
       )}
       <div className="membership-free-row">
         <span>
