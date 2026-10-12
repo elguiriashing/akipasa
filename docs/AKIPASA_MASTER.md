@@ -426,3 +426,7 @@ The canonical media asset store is `venue_media`, scoped by `venue_id`, with pub
 ### Venue profile media selector (2026-10-12)
 
 The five venue surface cards use the same full-size event gallery picker styling and pagination rather than inline thumbnail strips. Selection persists via the existing `setVenueMediaPlacement` action; Auto clears the explicit placement via `clearVenueMediaPlacement`. The venue-wide library remains the sole media inventory.
+
+## 2026-10-12 staged AkiSuite catalogue (NOT LIVE)
+
+A separate commercial catalogue exists in src/lib/akisuite-catalogue.ts with seven monthly/annual prices and Enterprise/add-on composition. It is not connected to Stripe, UI or SQL entitlements. See docs/AKISUITE_PRICING_ROLLOUT.md; existing premium/business/business_pro subscriptions remain unchanged. Billing must not be deployed from this isolated foundation as a finished migration.
