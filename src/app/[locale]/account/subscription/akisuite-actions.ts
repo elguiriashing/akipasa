@@ -89,6 +89,8 @@ export async function startAkiSuiteCheckout(formData: FormData) {
   const overlap =
     activeNew.includes(plan) ||
     activeNew.includes("aki_enterprise") ||
+    (plan === "akihq_standard" && activeNew.includes("akihq_pro")) ||
+    (plan === "akihq_pro" && activeNew.includes("akihq_standard")) ||
     (plan === "aki_enterprise" &&
       (activeNew.length > 0 || activeLegacy.length > 0)) ||
     conflictingLegacy ||
