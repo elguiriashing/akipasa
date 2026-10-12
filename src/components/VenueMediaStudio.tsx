@@ -112,7 +112,10 @@ export function VenueMediaStudio({
   );
   const pickerPageCount = Math.max(1, Math.ceil(filteredPickerItems.length / 12));
   const safePickerPage = Math.min(pickerPage, pickerPageCount - 1);
-  const visiblePickerItems = filteredPickerItems.slice(safePickerPage * 12, safePickerPage * 12 + 12);
+  const visiblePickerItems = filteredPickerItems.slice(
+    safePickerPage * 12,
+    safePickerPage * 12 + 12,
+  );
 
   function selectedFor(slot: VenueMediaPlacement) {
     const explicit = slotState[slot]
@@ -698,17 +701,33 @@ export function VenueMediaStudio({
           >
             <header>
               <div>
-                <span className="eyebrow">{es ? "Biblioteca multimedia" : "Media library"}</span>
-                <h3>{es ? slots.find((slot) => slot.key === pickerSlot)?.es : slots.find((slot) => slot.key === pickerSlot)?.en}</h3>
+                <span className="eyebrow">
+                  {es ? "Biblioteca multimedia" : "Media library"}
+                </span>
+                <h3>
+                  {es
+                    ? slots.find((slot) => slot.key === pickerSlot)?.es
+                    : slots.find((slot) => slot.key === pickerSlot)?.en}
+                </h3>
               </div>
-              <button type="button" className="event-media-modal-close" aria-label={es ? "Cerrar" : "Close"} onClick={() => setPickerSlot(null)}>×</button>
+              <button
+                type="button"
+                className="event-media-modal-close"
+                aria-label={es ? "Cerrar" : "Close"}
+                onClick={() => setPickerSlot(null)}
+              >
+                ×
+              </button>
             </header>
             <input
               type="search"
               aria-label={es ? "Buscar imágenes" : "Search images"}
               placeholder={es ? "Buscar imágenes…" : "Search images…"}
               value={pickerSearch}
-              onChange={(event) => { setPickerSearch(event.target.value); setPickerPage(0); }}
+              onChange={(event) => {
+                setPickerSearch(event.target.value);
+                setPickerPage(0);
+              }}
             />
             <div className="event-media-modal-grid">
               {visiblePickerItems.map((item) => (
@@ -728,17 +747,42 @@ export function VenueMediaStudio({
                 </button>
               ))}
             </div>
-            {!filteredPickerItems.length ? <p className="muted">{es ? "No hay imágenes disponibles." : "No images available."}</p> : null}
+            {!filteredPickerItems.length ? (
+              <p className="muted">
+                {es ? "No hay imágenes disponibles." : "No images available."}
+              </p>
+            ) : null}
             <footer>
-              <button type="button" className="button subtle" disabled={busy} onClick={async () => {
-                const slot = pickerSlot;
-                await clearPlacement(slot);
-                setPickerSlot(null);
-              }}>{es ? "Usar automático" : "Use automatic"}</button>
+              <button
+                type="button"
+                className="button subtle"
+                disabled={busy}
+                onClick={async () => {
+                  const slot = pickerSlot;
+                  await clearPlacement(slot);
+                  setPickerSlot(null);
+                }}
+              >
+                {es ? "Usar automático" : "Use automatic"}
+              </button>
               <div className="event-media-pagination">
-                <button type="button" disabled={safePickerPage === 0} onClick={() => setPickerPage((page) => page - 1)}>←</button>
-                <span>{safePickerPage + 1} / {pickerPageCount}</span>
-                <button type="button" disabled={safePickerPage >= pickerPageCount - 1} onClick={() => setPickerPage((page) => page + 1)}>→</button>
+                <button
+                  type="button"
+                  disabled={safePickerPage === 0}
+                  onClick={() => setPickerPage((page) => page - 1)}
+                >
+                  ←
+                </button>
+                <span>
+                  {safePickerPage + 1} / {pickerPageCount}
+                </span>
+                <button
+                  type="button"
+                  disabled={safePickerPage >= pickerPageCount - 1}
+                  onClick={() => setPickerPage((page) => page + 1)}
+                >
+                  →
+                </button>
               </div>
             </footer>
           </section>
