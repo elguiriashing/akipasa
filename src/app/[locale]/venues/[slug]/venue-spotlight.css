@@ -1,0 +1,1021 @@
+/* Aki Spotlight venue composition. All rules stay inside this public page. */
+.spotlight-venue {
+  container-name: venue-detail;
+  container-type: inline-size;
+}
+
+.spotlight-venue .venue-spotlight-card {
+  overflow: hidden;
+  border: 1px solid var(--spotlight-line);
+  border-radius: 22px;
+  background: var(--spotlight-surface);
+}
+
+.spotlight-venue .venue-spotlight-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(300px, 0.88fr);
+  min-height: 340px;
+}
+
+.spotlight-venue .venue-spotlight-art {
+  position: relative;
+  min-width: 0;
+  min-height: 340px;
+  background: var(--spotlight-surface-alt);
+}
+
+.spotlight-venue .venue-spotlight-art > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.spotlight-venue .venue-spotlight-art[data-logo-media="true"] > img {
+  object-fit: contain;
+  padding: clamp(36px, 5cqw, 76px);
+}
+
+.spotlight-venue .venue-spotlight-art-placeholder {
+  display: flex;
+  height: 100%;
+  min-height: 340px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  color: var(--spotlight-blue);
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      color-mix(in srgb, var(--spotlight-orange) 10%, transparent),
+      transparent 55%
+    ),
+    var(--spotlight-surface-alt);
+}
+
+.spotlight-venue .venue-spotlight-art-placeholder span {
+  font-size: 1.2rem;
+  font-weight: 850;
+  letter-spacing: -0.04em;
+}
+
+.spotlight-venue .venue-spotlight-back {
+  position: absolute;
+  inset: 14px auto auto 14px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 10px 13px;
+  border: 1px solid var(--spotlight-line);
+  border-radius: 12px;
+  background: var(--spotlight-surface);
+  color: var(--spotlight-ink);
+  font-size: 0.8rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.spotlight-venue .venue-spotlight-back svg {
+  transform: rotate(180deg);
+}
+
+.spotlight-venue .venue-spotlight-summary {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(22px, 3.2cqw, 42px);
+}
+
+.spotlight-venue .venue-spotlight-status {
+  display: flex;
+  align-items: center;
+  min-height: 24px;
+  margin-bottom: 10px;
+  color: var(--spotlight-muted);
+  font-size: 0.73rem;
+}
+
+.spotlight-venue .venue-spotlight-status .verified-badge {
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, #12a879 11%, var(--spotlight-surface));
+  color: #65d9b1;
+  font-size: 0.7rem;
+}
+
+html[data-theme="light"]
+  .spotlight-venue
+  .venue-spotlight-status
+  .verified-badge,
+html.theme-light .spotlight-venue .venue-spotlight-status .verified-badge {
+  color: #07815d;
+}
+
+.spotlight-venue .venue-spotlight-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.spotlight-venue .venue-spotlight-title > img {
+  flex: 0 0 56px;
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  border: 1px solid var(--spotlight-line);
+  border-radius: 14px;
+  background: var(--spotlight-surface-alt);
+}
+
+.spotlight-venue .venue-spotlight-title h1 {
+  margin: 0;
+  min-width: 0;
+  max-width: none;
+  color: var(--spotlight-ink);
+  font-size: clamp(1.8rem, 4cqw, 3.25rem);
+  font-weight: 850;
+  line-height: 1.05;
+  letter-spacing: -0.055em;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.spotlight-venue .venue-spotlight-categories-summary {
+  margin: 10px 0 8px;
+  color: var(--spotlight-blue);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.spotlight-venue .venue-spotlight-location {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 12px 0 0;
+  color: var(--spotlight-muted);
+  font-size: 0.84rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.spotlight-venue .venue-spotlight-location svg {
+  flex: 0 0 20px;
+  margin-top: 1px;
+  color: var(--spotlight-orange-text, var(--spotlight-orange));
+}
+
+.spotlight-venue .venue-spotlight-access {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 9px 0 0;
+  color: var(--spotlight-muted);
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+.spotlight-venue .venue-spotlight-access svg {
+  flex: 0 0 17px;
+}
+
+.spotlight-venue .venue-spotlight-visit-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  margin-top: 24px;
+  align-items: stretch;
+}
+
+.spotlight-venue .spotlight-actions.venue-spotlight-primary-actions {
+  display: contents;
+}
+
+.spotlight-venue .venue-spotlight-visit-controls .button {
+  min-height: 48px;
+  border-radius: 11px;
+  box-shadow: none;
+  gap: 8px;
+  padding: 11px 14px;
+  font-size: 0.87rem;
+  font-weight: 750;
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal;
+}
+
+.spotlight-venue .venue-spotlight-directions {
+  grid-column: 1 / -1;
+  background: var(--spotlight-orange);
+  color: #fff;
+  border-color: transparent;
+}
+
+.spotlight-venue .venue-spotlight-social {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+}
+
+.spotlight-venue .venue-spotlight-social form {
+  margin: 0;
+}
+
+.spotlight-venue .venue-spotlight-visit-controls .venue-spotlight-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  min-height: 48px;
+  padding: 0;
+}
+
+.spotlight-venue .venue-spotlight-icon-button[aria-pressed="true"] {
+  color: var(--spotlight-orange-text, var(--spotlight-orange));
+}
+
+.spotlight-venue
+  .venue-spotlight-visit-controls:not(.has-booking)
+  .venue-spotlight-directions {
+  grid-column: auto;
+}
+
+.spotlight-venue .venue-spotlight-content {
+  min-width: 0;
+  padding: 0 24px 24px;
+}
+
+.spotlight-venue .venue-spotlight-tabs {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--spotlight-line);
+  scrollbar-width: thin;
+}
+
+.spotlight-venue .venue-spotlight-tabs > button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 56px;
+  margin: 0;
+  padding: 14px 3px 11px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--spotlight-muted);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.spotlight-venue .venue-spotlight-tabs > button[aria-selected="true"] {
+  border-bottom-color: var(--spotlight-blue);
+  color: var(--spotlight-blue);
+}
+
+.spotlight-venue .venue-spotlight-tabs > button > span {
+  display: inline-grid;
+  place-items: center;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 4px;
+  border-radius: 6px;
+  background: var(--spotlight-surface-alt);
+  color: var(--spotlight-muted);
+  font-size: 0.65rem;
+}
+
+.spotlight-venue .venue-spotlight-panel {
+  padding-top: 18px;
+}
+
+.spotlight-venue .venue-spotlight-panel[hidden] {
+  display: none;
+}
+
+.spotlight-venue .venue-spotlight-overview {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}
+
+.spotlight-venue .venue-spotlight-overview.has-events {
+  grid-template-columns: minmax(0, 1.8fr) minmax(245px, 1fr);
+}
+
+.spotlight-venue .venue-spotlight-overview > *,
+.spotlight-venue .venue-spotlight-menu {
+  min-width: 0;
+}
+
+.spotlight-venue .venue-spotlight-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  min-height: 26px;
+  margin-bottom: 12px;
+}
+
+.spotlight-venue .venue-spotlight-section-heading h2,
+.spotlight-venue .venue-spotlight-information h2,
+.spotlight-venue .venue-spotlight-perks h2 {
+  margin: 0;
+  color: var(--spotlight-ink);
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+
+.spotlight-venue .venue-spotlight-section-caption {
+  color: var(--spotlight-muted);
+  font-size: 0.72rem;
+}
+
+.spotlight-venue .venue-spotlight-categories {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(145px, 1fr);
+  gap: 10px;
+  overflow-x: auto;
+  padding: 3px 2px 10px;
+  margin: -3px -2px 0;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+.spotlight-venue .venue-spotlight-category {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--spotlight-line);
+  border-radius: 12px;
+  background: var(--spotlight-surface-alt);
+  color: var(--spotlight-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  scroll-snap-align: start;
+}
+
+.spotlight-venue .venue-spotlight-category[aria-expanded="true"] {
+  border-color: var(--spotlight-orange-text, var(--spotlight-orange));
+  box-shadow: 0 0 0 2px var(--spotlight-orange);
+}
+
+.spotlight-venue .venue-spotlight-category-art {
+  display: grid;
+  width: 100%;
+  min-height: 105px;
+  aspect-ratio: 1 / 1;
+  place-items: center;
+  overflow: hidden;
+  background: color-mix(
+    in srgb,
+    var(--spotlight-blue) 5%,
+    var(--spotlight-surface-alt)
+  );
+  color: var(--spotlight-blue);
+}
+
+.spotlight-venue .venue-spotlight-category-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.spotlight-venue .venue-spotlight-category-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+  min-height: 62px;
+  padding: 10px 11px;
+  background: var(--spotlight-surface);
+}
+
+.spotlight-venue .venue-spotlight-category-label > span {
+  min-width: 0;
+}
+
+.spotlight-venue .venue-spotlight-category-label > svg {
+  flex: 0 0 18px;
+}
+
+.spotlight-venue .venue-spotlight-category-label strong {
+  display: block;
+  font-size: 0.85rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.spotlight-venue .venue-spotlight-category-label small {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.spotlight-venue
+  .venue-spotlight-category.has-image
+  .venue-spotlight-category-label {
+  position: absolute;
+  inset: auto 0 0;
+  padding-top: 24px;
+  background: linear-gradient(transparent, rgb(3 18 35 / 88%));
+  color: #fff;
+}
+
+.spotlight-venue .venue-spotlight-menu-details > summary,
+.spotlight-venue .venue-spotlight-more > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 44px;
+  padding: 9px 0;
+  color: var(--spotlight-blue);
+  font-size: 0.8rem;
+  font-weight: 750;
+  cursor: pointer;
+  list-style: none;
+}
+
+.spotlight-venue
+  .venue-spotlight-menu-details
+  > summary::-webkit-details-marker,
+.spotlight-venue .venue-spotlight-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.spotlight-venue .venue-spotlight-menu-details[open] > summary > svg,
+.spotlight-venue .venue-spotlight-more[open] > summary > svg {
+  transform: rotate(90deg);
+}
+
+.spotlight-venue .venue-spotlight-menu-details .public-venue-catalogue {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.spotlight-venue
+  .venue-spotlight-menu-details
+  .public-catalogue-heading
+  > .eyebrow,
+.spotlight-venue .venue-spotlight-menu-details .public-catalogue-heading > h2,
+.spotlight-venue .venue-spotlight-menu-details .public-catalogue-tabs {
+  display: none;
+}
+
+.spotlight-venue .venue-spotlight-menu-details .public-catalogue-hero-media {
+  width: 100%;
+  max-height: 120px;
+  margin: 0;
+  border-radius: 10px;
+  object-fit: contain;
+  background: var(--spotlight-surface-alt);
+}
+
+.spotlight-venue .venue-spotlight-menu-details .public-catalogue-heading > p {
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.spotlight-venue .venue-spotlight-menu-details .public-catalogue-app {
+  border-color: var(--spotlight-line);
+  background: var(--spotlight-surface);
+}
+
+.spotlight-venue
+  .venue-spotlight-menu-details
+  .public-catalogue-item-details
+  > summary {
+  min-height: 44px;
+}
+
+.spotlight-venue .venue-spotlight-menu-details .public-catalogue-allergens {
+  gap: 6px;
+  font-size: 0.73rem;
+}
+
+.spotlight-venue
+  .venue-spotlight-menu-details
+  .public-catalogue-allergens
+  > span {
+  padding: 6px 8px;
+}
+
+.spotlight-venue .venue-spotlight-text-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 44px;
+  margin: -9px 0;
+  padding: 7px 0;
+  border: 0;
+  background: transparent;
+  color: var(--spotlight-blue);
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.spotlight-venue .venue-spotlight-events {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.spotlight-venue .venue-spotlight-events.is-preview > :nth-child(n + 3) {
+  display: none;
+}
+
+.spotlight-venue .venue-spotlight-events.is-full {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.spotlight-venue .venue-spotlight-event {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  gap: 12px;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--spotlight-line);
+  border-radius: 12px;
+  background: var(--spotlight-surface);
+  color: var(--spotlight-ink);
+  text-decoration: none;
+}
+
+.spotlight-venue .venue-spotlight-event:hover {
+  border-color: var(--spotlight-blue);
+}
+
+.spotlight-venue .venue-spotlight-event-art {
+  display: grid;
+  min-height: 114px;
+  place-items: center;
+  overflow: hidden;
+  background: var(--spotlight-surface-alt);
+  color: var(--spotlight-orange-text, var(--spotlight-orange));
+}
+
+.spotlight-venue .venue-spotlight-event-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.spotlight-venue .venue-spotlight-event-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 11px 12px 11px 0;
+}
+
+.spotlight-venue .venue-spotlight-event-date {
+  color: var(--spotlight-orange-text, var(--spotlight-orange));
+  font-size: 0.8rem;
+  font-weight: 850;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.spotlight-venue .venue-spotlight-event-date span {
+  white-space: nowrap;
+}
+
+.spotlight-venue .venue-spotlight-event h3 {
+  margin: 4px 0;
+  color: var(--spotlight-ink);
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.spotlight-venue .venue-spotlight-event p {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: var(--spotlight-muted);
+  font-size: 0.71rem;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.spotlight-venue .venue-spotlight-event-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+  color: var(--spotlight-blue);
+  font-size: 0.7rem;
+  font-weight: 750;
+}
+
+.spotlight-venue .venue-spotlight-information,
+.spotlight-venue .venue-spotlight-perks {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 28px;
+}
+
+.spotlight-venue .venue-spotlight-information > *,
+.spotlight-venue .venue-spotlight-perks > * {
+  min-width: 0;
+}
+
+.spotlight-venue .venue-spotlight-description {
+  margin: 12px 0 0;
+  color: var(--spotlight-muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.spotlight-venue .venue-spotlight-contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.spotlight-venue .venue-spotlight-contact-actions .button {
+  min-height: 44px;
+  gap: 6px;
+  padding: 10px 13px;
+  font-size: 0.8rem;
+}
+
+.spotlight-venue .venue-spotlight-more {
+  margin-top: 14px;
+  border-top: 1px solid var(--spotlight-line);
+}
+
+.spotlight-venue .venue-spotlight-more > div {
+  display: grid;
+  gap: 4px;
+}
+
+.spotlight-venue .venue-spotlight-more a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--spotlight-muted);
+  font-size: 0.78rem;
+}
+
+.spotlight-venue .venue-spotlight-perk-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.spotlight-venue .venue-spotlight-perk {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--spotlight-line);
+  border-radius: 14px;
+  background: var(--spotlight-surface-alt);
+}
+
+.spotlight-venue .venue-spotlight-perk > svg {
+  flex: 0 0 24px;
+  color: var(--spotlight-orange-text, var(--spotlight-orange));
+}
+
+.spotlight-venue .venue-spotlight-perk h3 {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.spotlight-venue .venue-spotlight-perk p {
+  margin: 6px 0 0;
+  color: var(--spotlight-muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.spotlight-venue .venue-spotlight-perk a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin-top: 4px;
+  color: var(--spotlight-blue);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.spotlight-venue :is(button, a, summary):focus-visible {
+  outline: 3px solid var(--spotlight-blue);
+  outline-offset: 3px;
+}
+
+.spotlight-venue .venue-spotlight-panel:focus-visible {
+  outline: 2px solid var(--spotlight-blue);
+  outline-offset: 5px;
+}
+
+@container venue-detail (max-width: 800px) {
+  .spotlight-venue .venue-spotlight-hero {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .spotlight-venue .venue-spotlight-art {
+    min-height: 0;
+    height: clamp(190px, 37cqw, 300px);
+  }
+
+  .spotlight-venue .venue-spotlight-art-placeholder {
+    min-height: 0;
+  }
+
+  .spotlight-venue .venue-spotlight-summary {
+    padding: 22px 24px;
+  }
+
+  .spotlight-venue .venue-spotlight-title h1 {
+    font-size: clamp(1.8rem, 5cqw, 2.6rem);
+  }
+
+  .spotlight-venue .venue-spotlight-visit-controls {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.7fr) auto;
+    margin-top: 20px;
+  }
+
+  .spotlight-venue .venue-spotlight-directions {
+    grid-column: auto;
+  }
+
+  .spotlight-venue .venue-spotlight-visit-controls:not(.has-booking) {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .spotlight-venue .venue-spotlight-overview.has-events {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .spotlight-venue .venue-spotlight-categories {
+    grid-auto-columns: minmax(145px, 1fr);
+  }
+
+  .spotlight-venue .venue-spotlight-category-art {
+    aspect-ratio: 4 / 3;
+  }
+
+  .spotlight-venue
+    .venue-spotlight-category.has-image
+    .venue-spotlight-category-label {
+    position: static;
+    padding: 10px 11px;
+    background: var(--spotlight-surface);
+    color: var(--spotlight-ink);
+  }
+
+  .spotlight-venue .venue-spotlight-events.is-preview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container venue-detail (max-width: 540px) {
+  .spotlight-venue .venue-spotlight-content {
+    padding: 0 16px 18px;
+  }
+
+  .spotlight-venue .venue-spotlight-summary {
+    padding: 18px 16px;
+  }
+
+  .spotlight-venue .venue-spotlight-tabs {
+    gap: 17px;
+  }
+
+  .spotlight-venue .venue-spotlight-tabs > button {
+    min-height: 48px;
+    padding-block: 10px 9px;
+    font-size: 0.8rem;
+  }
+
+  .spotlight-venue .venue-spotlight-categories {
+    grid-auto-columns: calc((100% - 10px) / 2);
+  }
+
+  .spotlight-venue .venue-spotlight-events.is-preview,
+  .spotlight-venue .venue-spotlight-events.is-full,
+  .spotlight-venue .venue-spotlight-information,
+  .spotlight-venue .venue-spotlight-perks {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .spotlight-venue .venue-spotlight-information,
+  .spotlight-venue .venue-spotlight-perks {
+    gap: 24px;
+  }
+
+  .spotlight-venue .venue-spotlight-event {
+    grid-template-columns: 86px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .spotlight-venue {
+    /* A size container would become the containing block for the fixed CTA. */
+    container-type: normal;
+  }
+
+  .app-detail-page.spotlight-page.spotlight-venue {
+    padding-bottom: 94px;
+  }
+
+  .spotlight-venue .venue-spotlight-card {
+    border-radius: 15px;
+  }
+
+  .spotlight-venue .venue-spotlight-hero {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .spotlight-venue .venue-spotlight-art {
+    height: clamp(180px, 49vw, 250px);
+    min-height: 0;
+  }
+
+  .spotlight-venue .venue-spotlight-art-placeholder {
+    min-height: 0;
+  }
+
+  .spotlight-venue .venue-spotlight-summary {
+    padding: 18px 16px 14px;
+  }
+
+  .spotlight-venue .venue-spotlight-title h1 {
+    font-size: clamp(1.7rem, 7vw, 2.25rem);
+  }
+
+  .spotlight-venue .venue-spotlight-content {
+    padding: 0 16px 18px;
+  }
+
+  .spotlight-venue .venue-spotlight-tabs {
+    gap: 17px;
+  }
+
+  .spotlight-venue .venue-spotlight-tabs > button {
+    min-height: 48px;
+    padding-block: 10px 9px;
+    font-size: 0.8rem;
+  }
+
+  .spotlight-venue .venue-spotlight-overview.has-events,
+  .spotlight-venue .venue-spotlight-events.is-preview,
+  .spotlight-venue .venue-spotlight-events.is-full,
+  .spotlight-venue .venue-spotlight-information,
+  .spotlight-venue .venue-spotlight-perks {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .spotlight-venue .venue-spotlight-categories {
+    grid-auto-columns: calc((100% - 10px) / 2);
+  }
+
+  .spotlight-venue .venue-spotlight-category-art {
+    aspect-ratio: 4 / 3;
+  }
+
+  .spotlight-venue
+    .venue-spotlight-category.has-image
+    .venue-spotlight-category-label {
+    position: static;
+    padding: 10px 11px;
+    background: var(--spotlight-surface);
+    color: var(--spotlight-ink);
+  }
+
+  .spotlight-venue .venue-spotlight-back {
+    inset: 12px auto auto 12px;
+    width: 44px;
+    padding: 0;
+  }
+
+  .spotlight-venue .venue-spotlight-back > span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .spotlight-venue .venue-spotlight-visit-controls {
+    margin-top: 0;
+  }
+
+  .spotlight-venue .venue-spotlight-social {
+    position: absolute;
+    z-index: 1;
+    inset: 12px 12px auto auto;
+  }
+
+  .spotlight-venue
+    .venue-spotlight-visit-controls
+    .venue-spotlight-icon-button {
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    background: var(--spotlight-surface);
+  }
+
+  .spotlight-venue .spotlight-actions.venue-spotlight-primary-actions {
+    position: fixed;
+    z-index: 8;
+    inset: auto 10px calc(var(--app-bottom, 64px) + 8px) 10px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    margin: 0;
+    padding: 8px;
+    border: 1px solid var(--spotlight-line);
+    border-radius: 16px;
+    background: var(--spotlight-surface);
+    box-shadow: 0 4px 24px rgb(3 19 39 / 12%);
+  }
+
+  .spotlight-venue .has-booking .venue-spotlight-primary-actions {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+
+  .spotlight-venue
+    .venue-spotlight-primary-actions
+    .venue-spotlight-directions {
+    grid-column: auto;
+  }
+
+  .spotlight-venue .spotlight-actions.venue-spotlight-primary-actions .button {
+    min-height: 44px;
+    padding: 10px 9px;
+    font-size: 0.82rem;
+  }
+
+  .spotlight-venue
+    .spotlight-actions.venue-spotlight-primary-actions
+    .button
+    svg {
+    flex: 0 0 17px;
+    width: 17px;
+    height: 17px;
+  }
+
+  .spotlight-venue .venue-spotlight-section-caption {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spotlight-venue * {
+    scroll-behavior: auto;
+  }
+}

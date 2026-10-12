@@ -13,8 +13,14 @@ import { toggleFollowedVenue } from "../../engagement/actions";
 import { AnalyticsView, TrackedLink } from "@/components/AnalyticsSignal";
 import { ShareButton } from "@/components/ShareButton";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
-import { PublicVenueCatalogue } from "@/components/PublicVenueCatalogue";
-import { parseCatalogueDocument } from "@/lib/venue-catalogue";
+import { Icon } from "@/components/Icons";
+import { VenueSpotlightSections } from "@/components/VenueSpotlightSections";
+import {
+  catalogueTextForDisplay,
+  parseCatalogueDocument,
+} from "@/lib/venue-catalogue";
+import "@/components/spotlight-detail.css";
+import "./venue-spotlight.css";
 
 const loadVenue = cache((slug: string) => repository.venueBySlug(slug));
 
@@ -139,7 +145,225 @@ export default async function VenuePage({
       : null;
   const nativeBooking =
     bookingSettings?.mode === "request" && bookingSettings.active;
-  const bgImage = venue.coverImage?.url || venue.media?.[0]?.url;
+  const heroImage = venue.coverImage || venue.media?.[0];
+  const es = locale === "es";
+  const catalogueSections =
+    catalogueDocument?.sections.filter((section) =>
+      section.items.some((item) => item.visible !== false),
+    ) || [];
+  const catalogueSummary = catalogueSections
+    .slice(0, 3)
+    .map((section) =>
+      catalogueTextForDisplay(section.title, locale, "section_title"),
+    )
+    .filter(Boolean)
+    .join(" · ");
+  // Keep the media bin private: only images explicitly referenced by the
+  // published catalogue enter this client-side menu, plus its selected cover.
+  const catalogueMediaIds = new Set(
+    catalogueSections.flatMap((section) =>
+      section.items
+        .filter((item) => item.visible !== false && item.mediaId)
+        .map((item) => item.mediaId),
+    ),
+  );
+  const catalogueMedia = (venue.media || [])
+    .filter((item) => catalogueMediaIds.has(item.id))
+    .map((item) => ({
+      id: item.id,
+      url: item.url,
+      alt: translated(item.alt, locale),
+    }));
+  const followLabel = followed
+    ? es
+      ? "Dejar de seguir"
+      : "Unfollow"
+    : es
+      ? "Seguir local"
+      : "Follow venue";
+
+  const upcomingEventCards = upcomingEvents.map(({ event, occurrence }) => {
+    const artwork =
+      event.exploreImage ||
+      event.bannerImage ||
+      event.profileImage ||
+      venue.eventsImage;
+    const startsAt = new Date(occurrence.startsAt);
+    const formatDate = (options: Intl.DateTimeFormatOptions) =>
+      new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", {
+        ...options,
+        timeZone: "Europe/Madrid",
+      }).format(startsAt);
+    return (
+      <Link
+        className="venue-spotlight-event"
+        href={`/${locale}/events/${event.slug}`}
+        key={event.id}
+      >
+        <div className="venue-spotlight-event-art">
+          {artwork ? (
+            <img
+              src={artwork.url}
+              alt={translated(artwork.alt, locale)}
+              loading="lazy"
+            />
+          ) : (
+            <Icon name="calendar" size={30} />
+          )}
+        </div>
+        <div className="venue-spotlight-event-copy">
+          <time
+            className="venue-spotlight-event-date"
+            dateTime={occurrence.startsAt}
+          >
+            {formatDate({ day: "numeric", month: "short" })}
+            <span> · {formatDate({ hour: "2-digit", minute: "2-digit" })}</span>
+          </time>
+          <h3>{translated(event.title, locale)}</h3>
+          <p>{translated(event.description, locale)}</p>
+          <span className="venue-spotlight-event-link">
+            {es ? "Ver evento" : "View event"}
+            <Icon name="arrow-right" size={15} />
+          </span>
+        </div>
+      </Link>
+    );
+  });
+
+  const information = (
+    <div className="venue-spotlight-information">
+      <section>
+        <h2>{es ? "Así es el local" : "About the venue"}</h2>
+        <p className="venue-spotlight-description">
+          {translated(venue.description, locale)}
+        </p>
+      </section>
+      <section className="venue-spotlight-visit">
+        <h2>{es ? "Tu visita" : "Your visit"}</h2>
+        <p className="venue-spotlight-location">
+          <Icon name="map" size={20} />
+          <span>{venue.address}</span>
+        </p>
+        {venue.accessible && (
+          <p className="venue-spotlight-access">
+            <Icon name="shield" size={18} />
+            {es
+              ? "Acceso sin escalones indicado"
+              : "Step-free access indicated"}
+          </p>
+        )}
+        <div className="venue-spotlight-contact-actions">
+          {venue.phone && (
+            <TrackedLink
+              className="button secondary"
+              href={`tel:${venue.phone}`}
+              action="phone_click"
+              venueId={venue.id}
+              locale={locale}
+            >
+              {es ? "Llamar" : "Call"}
+            </TrackedLink>
+          )}
+          {venue.whatsappPhone && (
+            <TrackedLink
+              className="button secondary"
+              href={`https://wa.me/${venue.whatsappPhone.replace(/\D/g, "")}`}
+              target="_blank"
+              rel="noreferrer"
+              action="whatsapp_click"
+              venueId={venue.id}
+              locale={locale}
+            >
+              WhatsApp
+            </TrackedLink>
+          )}
+          {venue.websiteUrl && (
+            <TrackedLink
+              className="button secondary"
+              href={venue.websiteUrl}
+              target="_blank"
+              rel="noreferrer"
+              action="booking_click"
+              venueId={venue.id}
+              locale={locale}
+            >
+              <Icon name="globe" size={17} />
+              {es ? "Sitio web" : "Website"}
+            </TrackedLink>
+          )}
+        </div>
+        <details className="venue-spotlight-more">
+          <summary>
+            {es ? "Más opciones" : "More options"}
+            <Icon name="chevron" size={16} />
+          </summary>
+          <div>
+            {venue.claimStatus === "unclaimed" && (
+              <Link
+                href={`/${locale}/business?view=claims&venueId=${venue.id}`}
+              >
+                {es ? "Reclamar este local" : "Claim this venue"}
+                <Icon name="arrow-right" size={16} />
+              </Link>
+            )}
+            <Link href={`/${locale}/community?target=venue:${venue.id}`}>
+              {es ? "Informar de un problema" : "Report a problem"}
+              <Icon name="arrow-right" size={16} />
+            </Link>
+          </div>
+        </details>
+      </section>
+    </div>
+  );
+
+  const extras = (
+    <div className="venue-spotlight-perks">
+      {visibleOffers.length > 0 && (
+        <section>
+          <h2>{es ? "Ofertas" : "Offers"}</h2>
+          <div className="venue-spotlight-perk-list">
+            {visibleOffers.map((offer) => (
+              <article className="venue-spotlight-perk" key={offer.id}>
+                <Icon name="gift" size={24} />
+                <div>
+                  {offer.premium && (
+                    <span className="status-pill">
+                      {es ? "Oferta Premium" : "Premium offer"}
+                    </span>
+                  )}
+                  <h3>{translated(offer.title, locale)}</h3>
+                  <p>{translated(offer.terms, locale)}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+      {venue.loyalty?.length ? (
+        <section>
+          <h2>{es ? "Fidelidad" : "Loyalty"}</h2>
+          <div className="venue-spotlight-perk-list">
+            {venue.loyalty.map((program) => (
+              <article className="venue-spotlight-perk" key={program.id}>
+                <Icon name="passport" size={24} />
+                <div>
+                  <h3>{translated(program.title, locale)}</h3>
+                  <p>
+                    {program.stampsRequired} {es ? "sellos" : "stamps"} ·{" "}
+                    {translated(program.reward, locale)}
+                  </p>
+                  <Link href={`/${locale}/passports`}>
+                    {es ? "Ver mi progreso" : "View my progress"}
+                    <Icon name="arrow-right" size={16} />
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+    </div>
+  );
 
   return (
     <>
@@ -158,348 +382,196 @@ export default async function VenuePage({
           }),
         }}
       />
-      {bgImage && (
-        <div
-          className="liquid-glass-bg"
-          style={{ backgroundImage: `url(${bgImage})` }}
-        />
-      )}
-      <main className="shell detail-layout app-detail-page compact-venue-page">
+      <main className="shell app-detail-page spotlight-page spotlight-venue">
         <AnalyticsView action="venue_view" venueId={venue.id} locale={locale} />
-        <Link className="detail-back" href={`/${locale}`}>
-          ← {m.discover}
-        </Link>
-        <article className="detail-card detail-card-primary">
-          {bgImage ? (
+        <article className="venue-spotlight-card">
+          <header
+            className={["venue-spotlight-hero", !heroImage && "without-image"]
+              .filter(Boolean)
+              .join(" ")}
+          >
             <div
-              className="detail-cover"
-              style={{ backgroundImage: `url(${bgImage})` }}
-              aria-hidden
-            />
-          ) : null}
-          <div className="detail-intro">
-            <div className="eyebrow">
-              {venue.verified ? (
-                <VerifiedBadge locale={locale} />
-              ) : venue.claimStatus === "unclaimed" ? (
-                locale === "es" ? (
-                  "Local sin reclamar"
-                ) : (
-                  "Unclaimed venue"
-                )
-              ) : (
-                m.community
+              className="venue-spotlight-art"
+              data-logo-media={Boolean(
+                heroImage && heroImage.id === venue.logoImage?.id,
               )}
-            </div>
-            <div className="venue-title-row">
-              {venue.logoImage ? (
+            >
+              {heroImage ? (
                 <img
-                  className="venue-profile-logo"
-                  src={venue.logoImage.url}
-                  alt={translated(venue.logoImage.alt, locale)}
+                  src={heroImage.url}
+                  alt={translated(heroImage.alt, locale) || venue.name}
+                  fetchPriority="high"
                 />
-              ) : null}
-              <div>
-                <h1>{venue.name}</h1>
-                <p className="lede">{venue.address}</p>
-              </div>
+              ) : (
+                <div
+                  className="venue-spotlight-art-placeholder"
+                  aria-hidden="true"
+                >
+                  <Icon name="venue" size={56} />
+                  <span>AkiPasa</span>
+                </div>
+              )}
+              <Link className="venue-spotlight-back" href={`/${locale}`}>
+                <Icon name="arrow-right" size={18} />
+                <span>{m.discover}</span>
+              </Link>
             </div>
-            <div className="detail-overview">
+            <div className="venue-spotlight-summary">
+              <div className="venue-spotlight-status">
+                {venue.verified ? (
+                  <VerifiedBadge locale={locale} />
+                ) : venue.claimStatus === "unclaimed" ? (
+                  <span>{es ? "Local sin reclamar" : "Unclaimed venue"}</span>
+                ) : (
+                  <span>{m.community}</span>
+                )}
+              </div>
+              <div className="venue-spotlight-title">
+                {venue.logoImage && venue.logoImage.id !== heroImage?.id ? (
+                  <img
+                    src={venue.logoImage.url}
+                    alt={translated(venue.logoImage.alt, locale)}
+                    width="56"
+                    height="56"
+                  />
+                ) : null}
+                <h1>{venue.name}</h1>
+              </div>
+              {catalogueSummary && (
+                <p className="venue-spotlight-categories-summary">
+                  {catalogueSummary}
+                </p>
+              )}
+              <p className="venue-spotlight-location">
+                <Icon name="map" size={20} />
+                <span>{venue.address}</span>
+              </p>
               {venue.accessible && (
-                <p className="detail-access">
-                  ✓{" "}
-                  {locale === "es"
+                <p className="venue-spotlight-access">
+                  <Icon name="shield" size={17} />
+                  {es
                     ? "Acceso sin escalones indicado"
                     : "Step-free access indicated"}
                 </p>
               )}
-              <div className="actions detail-actions">
-                <TrackedLink
-                  className="button"
-                  href={googleMapsDirectionsUrl(venue)}
-                  target="_blank"
-                  rel="noreferrer"
-                  action="directions_click"
-                  venueId={venue.id}
-                  locale={locale}
-                >
-                  {m.directions}
-                </TrackedLink>
-                {externalBookingUrl && (
+              <div
+                className={[
+                  "venue-spotlight-visit-controls",
+                  (externalBookingUrl || nativeBooking) && "has-booking",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
+                <div className="spotlight-actions venue-spotlight-primary-actions venue-spotlight-mobile-actions">
                   <TrackedLink
-                    className="button secondary"
-                    href={externalBookingUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    action="booking_click"
-                    venueId={venue.id}
-                    locale={locale}
-                  >
-                    {locale === "es" ? "Reservar" : "Book now"}
-                  </TrackedLink>
-                )}
-                {nativeBooking && (
-                  <TrackedLink
-                    className="button secondary"
-                    href={`/${locale}/venues/${encodeURIComponent(venue.slug)}/book`}
-                    action="booking_click"
-                    venueId={venue.id}
-                    locale={locale}
-                  >
-                    {locale === "es" ? "Reservar" : "Book now"}
-                  </TrackedLink>
-                )}
-                {venue.phone && (
-                  <TrackedLink
-                    className="button secondary"
-                    href={`tel:${venue.phone}`}
-                    action="phone_click"
-                    venueId={venue.id}
-                    locale={locale}
-                  >
-                    {locale === "es" ? "Llamar" : "Call"}
-                  </TrackedLink>
-                )}
-                {venue.whatsappPhone && (
-                  <TrackedLink
-                    className="button secondary"
-                    href={`https://wa.me/${venue.whatsappPhone.replace(/\D/g, "")}`}
+                    className="button venue-spotlight-directions"
+                    href={googleMapsDirectionsUrl(venue)}
                     target="_blank"
                     rel="noreferrer"
-                    action="whatsapp_click"
+                    action="directions_click"
                     venueId={venue.id}
                     locale={locale}
                   >
-                    WhatsApp
+                    <Icon name="directions" size={19} />
+                    {m.directions}
                   </TrackedLink>
-                )}
-                {venue.websiteUrl && (
-                  <TrackedLink
-                    className="button secondary"
-                    href={venue.websiteUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    action="booking_click"
-                    venueId={venue.id}
-                    locale={locale}
-                  >
-                    {locale === "es" ? "Sitio web" : "Website"}
-                  </TrackedLink>
-                )}
-                {user ? (
-                  <form action={toggleFollowedVenue}>
-                    <input type="hidden" name="locale" value={locale} />
-                    <input type="hidden" name="key" value={venue.id} />
-                    <input type="hidden" name="label" value={venue.name} />
-                    <input type="hidden" name="href" value={returnTo} />
-                    <input type="hidden" name="returnTo" value={returnTo} />
-                    <input
-                      type="hidden"
-                      name="intent"
-                      value={followed ? "remove" : "add"}
-                    />
-                    <button className="button secondary" type="submit">
-                      {followed
-                        ? locale === "es"
-                          ? "Dejar de seguir"
-                          : "Unfollow"
-                        : locale === "es"
-                          ? "Seguir local"
-                          : "Follow venue"}
-                    </button>
-                  </form>
-                ) : (
-                  <Link
-                    className="button secondary"
-                    href={`/${locale}/auth?next=${encodeURIComponent(returnTo)}`}
-                  >
-                    {locale === "es" ? "Seguir local" : "Follow venue"}
-                  </Link>
-                )}
-                <ShareButton
-                  title={venue.name}
-                  label={locale === "es" ? "Compartir" : "Share"}
-                  copiedLabel={
-                    locale === "es" ? "Enlace copiado" : "Link copied"
-                  }
-                  venueId={venue.id}
-                  locale={locale}
-                />
-                <details className="detail-more">
-                  <summary>
-                    {locale === "es" ? "Más opciones" : "More options"}
-                  </summary>
-                  <div className="detail-more-actions">
-                    {venue.claimStatus === "unclaimed" && (
-                      <Link
-                        className="button secondary"
-                        href={`/${locale}/business?view=claims&venueId=${venue.id}`}
-                      >
-                        {locale === "es"
-                          ? "Reclamar este local"
-                          : "Claim this venue"}
-                      </Link>
-                    )}
-                    <Link
-                      className="button secondary"
-                      href={`/${locale}/community?target=venue:${venue.id}`}
+                  {externalBookingUrl && (
+                    <TrackedLink
+                      className="button secondary venue-spotlight-book"
+                      href={externalBookingUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      action="booking_click"
+                      venueId={venue.id}
+                      locale={locale}
                     >
-                      {locale === "es"
-                        ? "Informar de un problema"
-                        : "Report a problem"}
+                      <Icon name="calendar" size={18} />
+                      {es ? "Reservar" : "Book now"}
+                    </TrackedLink>
+                  )}
+                  {nativeBooking && (
+                    <TrackedLink
+                      className="button secondary venue-spotlight-book"
+                      href={`/${locale}/venues/${encodeURIComponent(venue.slug)}/book`}
+                      action="booking_click"
+                      venueId={venue.id}
+                      locale={locale}
+                    >
+                      <Icon name="calendar" size={18} />
+                      {es ? "Reservar" : "Book now"}
+                    </TrackedLink>
+                  )}
+                </div>
+                <div className="spotlight-secondary venue-spotlight-social">
+                  {user ? (
+                    <form action={toggleFollowedVenue}>
+                      <input type="hidden" name="locale" value={locale} />
+                      <input type="hidden" name="key" value={venue.id} />
+                      <input type="hidden" name="label" value={venue.name} />
+                      <input type="hidden" name="href" value={returnTo} />
+                      <input type="hidden" name="returnTo" value={returnTo} />
+                      <input
+                        type="hidden"
+                        name="intent"
+                        value={followed ? "remove" : "add"}
+                      />
+                      <button
+                        className="button secondary venue-spotlight-icon-button"
+                        type="submit"
+                        aria-label={followLabel}
+                        title={followLabel}
+                        aria-pressed={Boolean(followed)}
+                      >
+                        <Icon
+                          name={followed ? "heart-fill" : "heart"}
+                          size={20}
+                        />
+                      </button>
+                    </form>
+                  ) : (
+                    <Link
+                      className="button secondary venue-spotlight-icon-button"
+                      href={`/${locale}/auth?next=${encodeURIComponent(returnTo)}`}
+                      aria-label={followLabel}
+                      title={followLabel}
+                    >
+                      <Icon name="heart" size={20} />
                     </Link>
-                  </div>
-                </details>
+                  )}
+                  <ShareButton
+                    title={venue.name}
+                    label={es ? "Compartir" : "Share"}
+                    copiedLabel={es ? "Enlace copiado" : "Link copied"}
+                    venueId={venue.id}
+                    locale={locale}
+                    iconOnly
+                    className="venue-spotlight-icon-button"
+                  />
+                </div>
               </div>
             </div>
-            <p className="detail-copy">
-              {translated(venue.description, locale)}
-            </p>
-            {upcomingEvents.length > 0 && (
-              <section
-                className="venue-section"
-                aria-label={
-                  locale === "es" ? "Próximos eventos" : "Upcoming events"
-                }
-              >
-                <div className="venue-events-heading">
-                  <div>
-                    <span className="eyebrow">
-                      {locale === "es"
-                        ? "Descubre qué pasa"
-                        : "What's happening"}
-                    </span>
-                    <h2>
-                      {locale === "es" ? "Próximos eventos" : "Upcoming events"}
-                    </h2>
-                  </div>
-                  <span className="status-pill">
-                    {upcomingEvents.length}{" "}
-                    {locale === "es" ? "eventos" : "events"}
-                  </span>
-                </div>
-                <div className="venue-event-grid">
-                  {upcomingEvents.map(({ event, occurrence }) => {
-                    const artwork =
-                      event.exploreImage ||
-                      event.bannerImage ||
-                      event.profileImage ||
-                      venue.eventsImage;
-                    const startsAt = new Date(occurrence.startsAt);
-                    return (
-                      <Link
-                        className="venue-event-feature"
-                        href={`/${locale}/events/${event.slug}`}
-                        key={event.id}
-                      >
-                        <div className="venue-event-feature-art">
-                          {artwork ? (
-                            <img
-                              src={artwork.url}
-                              alt={translated(artwork.alt, locale)}
-                              loading="lazy"
-                            />
-                          ) : (
-                            <span aria-hidden="true">✦</span>
-                          )}
-                          <span className="venue-event-feature-date">
-                            <strong>
-                              {new Intl.DateTimeFormat(
-                                locale === "es" ? "es-ES" : "en-GB",
-                                { day: "numeric", timeZone: "Europe/Madrid" },
-                              ).format(startsAt)}
-                            </strong>
-                            <small>
-                              {new Intl.DateTimeFormat(
-                                locale === "es" ? "es-ES" : "en-GB",
-                                { month: "short", timeZone: "Europe/Madrid" },
-                              ).format(startsAt)}
-                            </small>
-                          </span>
-                        </div>
-                        <div className="venue-event-feature-body">
-                          <span className="eyebrow">
-                            {new Intl.DateTimeFormat(
-                              locale === "es" ? "es-ES" : "en-GB",
-                              {
-                                weekday: "short",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                                timeZone: "Europe/Madrid",
-                              },
-                            ).format(startsAt)}
-                          </span>
-                          <h3>{translated(event.title, locale)}</h3>
-                          <p>{translated(event.description, locale)}</p>
-                          <span className="venue-event-feature-action">
-                            {locale === "es" ? "Ver evento" : "View event"}{" "}
-                            <span aria-hidden="true">→</span>
-                          </span>
-                        </div>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
-            {/* Raw media-library items are internal. Public images render only
-                through explicit placements such as cover/profile/menu. */}
-            {catalogueDocument && catalogueDocument.sections.length > 0 && (
-              <PublicVenueCatalogue
-                locale={locale}
-                document={catalogueDocument}
-                media={(venue.media || []).map((item) => ({
-                  id: item.id,
-                  url: item.url,
-                  alt: translated(item.alt, locale),
-                }))}
-                heroMedia={
-                  venue.menuImage
-                    ? {
-                        id: venue.menuImage.id,
-                        url: venue.menuImage.url,
-                        alt: translated(venue.menuImage.alt, locale),
-                      }
-                    : undefined
-                }
-              />
-            )}
-            {visibleOffers.length ? (
-              <section className="venue-section">
-                <h2>{locale === "es" ? "Ofertas" : "Offers"}</h2>
-                {visibleOffers.map((offer) => (
-                  <article className="offer-card" key={offer.id}>
-                    {offer.premium && (
-                      <span className="status-pill">
-                        {locale === "es" ? "Oferta Premium" : "Premium offer"}
-                      </span>
-                    )}
-                    <h3>{translated(offer.title, locale)}</h3>
-                    <p>{translated(offer.terms, locale)}</p>
-                  </article>
-                ))}
-              </section>
-            ) : null}
-            {venue.loyalty?.length ? (
-              <section className="venue-section">
-                <h2>{locale === "es" ? "Fidelidad" : "Loyalty"}</h2>
-                {venue.loyalty.map((program) => (
-                  <article className="offer-card" key={program.id}>
-                    <h3>{translated(program.title, locale)}</h3>
-                    <p>
-                      {program.stampsRequired}{" "}
-                      {locale === "es" ? "sellos" : "stamps"} ·{" "}
-                      {translated(program.reward, locale)}
-                    </p>
-                    <Link href={`/${locale}/passports`}>
-                      {locale === "es" ? "Ver mi progreso" : "View my progress"}{" "}
-                      →
-                    </Link>
-                  </article>
-                ))}
-              </section>
-            ) : null}
-          </div>
+          </header>
+          <VenueSpotlightSections
+            locale={locale}
+            catalogueDocument={catalogueDocument}
+            media={catalogueMedia}
+            menuImage={
+              venue.menuImage
+                ? {
+                    id: venue.menuImage.id,
+                    url: venue.menuImage.url,
+                    alt: translated(venue.menuImage.alt, locale),
+                  }
+                : undefined
+            }
+            events={upcomingEventCards}
+            eventCount={upcomingEvents.length}
+            information={information}
+            extras={extras}
+            hasExtras={
+              visibleOffers.length > 0 || Boolean(venue.loyalty?.length)
+            }
+          />
         </article>
       </main>
     </>
