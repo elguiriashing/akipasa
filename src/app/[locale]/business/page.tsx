@@ -19,6 +19,8 @@ import { PromotionRequestFields } from "@/components/PromotionRequestFields";
 import { Icon } from "@/components/Icons";
 import { ClaimVenuePicker } from "@/components/ClaimVenuePicker";
 import { BusinessHome } from "@/components/BusinessHome";
+import { akiSuiteCheckoutReady } from "@/lib/akisuite-readiness";
+import { BusinessGrowthOverview } from "@/components/BusinessGrowthOverview";
 import {
   WorkspaceShell,
   type WorkspaceItem,
@@ -246,17 +248,18 @@ export default async function BusinessPage({
     (event) => !archivedEvents.includes(event) && !pastEvents.includes(event),
   );
   const analytics =
-    view === "analytics"
+    view === "analytics" || view === "growth"
       ? await Promise.all(
           managed
             .filter((item) => item.venues)
             .map(async (item) => {
               const venue = item.venues!;
-              const { data } = await supabase.rpc("venue_analytics", {
+              const { data, error } = await supabase.rpc("venue_analytics", {
                 p_venue: venue.id,
               });
               return {
                 venue,
+                unavailable: Boolean(error),
                 rows: (data || []) as { action: string; total: number }[],
               };
             }),
@@ -290,12 +293,38 @@ export default async function BusinessPage({
     },
     { href: `${base}?view=analytics`, label: "Analytics", icon: "activity" },
     {
+      href: `/${locale}/account/subscription?from=akibusiness`,
+      label: es ? "Membresías" : "Memberships",
+      icon: "settings",
+    },
+
+    {
       href: `${base}?view=claims`,
       label: es ? "Reclamar" : "Claims",
       icon: "inbox",
       count: claims?.length || undefined,
     },
   ];
+  const premiumEnabled = akiSuiteCheckoutReady();
+  const premiumChecks =
+    view === "growth" &&
+    process.env.AKISUITE_FEATURES_READY === "true" &&
+    process.env.AKISUITE_SUBSCRIPTIONS_READY === "true"
+      ? await Promise.all(
+          managed
+            .filter((item) => item.venues)
+            .map(async (item) => {
+              const { data, error } = await supabase.rpc(
+                "akisuite_venue_premium",
+                { p_venue: item.venues!.id },
+              );
+              return !error && data === true;
+            }),
+        )
+      : [];
+  const premiumActive =
+    premiumChecks.length > 0 && premiumChecks.every(Boolean);
+
   return (
     <WorkspaceShell
       title={es ? "Tu negocio, a mano" : "Your business, at a glance"}
@@ -869,6 +898,40 @@ export default async function BusinessPage({
               ))}
             </div>
           </section>
+        )}
+
+        {view === "growth" && (
+          <BusinessGrowthOverview
+            locale={locale}
+            premiumEnabled={premiumEnabled}
+            premiumActive={Boolean(premiumActive)}
+            events={businessEvents.length}
+            venues={managed
+              .filter((item) => item.venues)
+              .map((item) => {
+                const venue = item.venues!;
+                const result = analytics.find(
+                  (entry) => entry.venue.id === venue.id,
+                );
+                return {
+                  id: venue.id,
+                  name: venue.name,
+                  events: businessEvents.filter(
+                    (event) => event.venue_id === venue.id,
+                  ).length,
+                  interactions: result?.unavailable
+                    ? null
+                    : result?.rows.length
+                      ? result.rows.reduce(
+                          (total, row) => total + Number(row.total || 0),
+                          0,
+                        )
+                      : result
+                        ? 0
+                        : null,
+                };
+              })}
+          />
         )}
 
         {/* Growth & Promotion Requests */}

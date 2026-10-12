@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import {
-  accountExportTables,
+  currentAccountExportTables,
   exportableAuthentication,
 } from "@/lib/account-export";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -16,7 +16,7 @@ export async function GET() {
       { status: 401 },
     );
   const entries = await Promise.all(
-    accountExportTables.map(async ([table, column]) => {
+    currentAccountExportTables().map(async ([table, column]) => {
       const { data, error } = await supabase
         .from(table)
         .select("*")

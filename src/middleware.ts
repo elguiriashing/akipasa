@@ -21,6 +21,33 @@ export async function middleware(request: NextRequest) {
         ? "akiduermo"
         : "akipasa",
   );
+  const membershipAlias = request.nextUrl.pathname.match(
+    /^\/(?:(en|es)\/)?(membership|memberships|account\/(?:membership|memberships|subscription))\/?$/,
+  );
+  if (membershipAlias) {
+    const target = request.nextUrl.clone();
+    const locale =
+      membershipAlias[1] ||
+      (isAkiDuermo
+        ? stayLocale(
+            request.nextUrl.searchParams.get("lang"),
+            request.cookies.get("akiduermo_locale")?.value,
+          )
+        : "es");
+    const account = membershipAlias[2].startsWith("account/");
+    target.pathname = `/${locale}/${account ? "account/subscription" : "membership"}`;
+    if (isAkiBusiness || isAkiDuermo) {
+      target.hostname = "akipasa.com";
+      target.protocol = "https:";
+      target.port = "";
+      target.searchParams.set(
+        "from",
+        isAkiBusiness ? "akibusiness" : "akiduermo",
+      );
+    }
+    if (target.toString() !== request.nextUrl.toString())
+      return NextResponse.redirect(target, 307);
+  }
   if (isAkiBusiness) {
     const pathname = request.nextUrl.pathname;
     const target = request.nextUrl.clone();

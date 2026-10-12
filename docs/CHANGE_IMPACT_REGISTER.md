@@ -613,3 +613,64 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - Security: venue access and SQL/RLS unchanged. Published allergen confirmation enforcement unchanged. Existing catalogue records unchanged. Other portals, translations of existing content, API and SEO unaffected.
 - Rollback: revert code-only commits; no schema or data migration.
 - Checks: no local Node checkout in connector runtime; full npm, browser E2E, Cloudflare build and authenticated live checks unverified. Do not merge without green checks and release approval.
+
+## 2026-10-12 | Independent AkiSuite catalogue foundation (NOT LIVE)
+
+- Request: separate AkiBusiness marketing from AkiHQ operations, AkiDuermo and consumer premium, with 20% annual discount and bundle.
+- Change: add typed standalone catalogue with pricing and composition tests; add staged rollout and rollback documentation. No checkout, DB, webhook, media or event behavior changed.
+- Dependencies: existing Stripe billing and migrations use legacy premium/business/business_pro; the staged catalogue does not grant access. Locales, routes, analytics, claims and storage untouched.
+- Verification: review only; no npm check/CI or Stripe live transaction verified. Do not merge without verified checks. Rollback: revert new files and documentation.
+
+## 2026-10-12 | Staged AkiBusiness Growth overview
+
+- Request: move toward a responsive AkiBusiness Growth marketing dashboard and accurate new tier positioning.
+- Before: Growth view contained only commercial promotion requests; analytics was a separate view.
+- After: Growth presents authorised venue and event counts, existing per-venue engagement RPC results and quick links, followed by the unchanged promotion request flow. Premium capabilities are labelled coming later, without functioning checkout or fabricated statistics.
+- Dependencies: BusinessPage auth/permissions, venue_members and venue_analytics RPC, managed events, responsive CSS, EN/ES. No schema, data mutation, Stripe, cloud environment or scheduled job changes.
+- Checks: CI required on updated head; no local execution claimed. Rollback: revert Growth component/CSS and BusinessPage integration.
+
+## 2026-10-12 | Staged AkiSuite Stripe mapping
+
+- Added isolated Stripe price ID mapping/validator for all seven new commercial plans, plus unit tests for annual/interval/amount mismatch and HQ add-on eligibility.
+- Does not touch live Stripe products, old membership pages, webhook code, database migrations or existing entitlements. Checkout remains inactive pending cross-portal rollout.
+- Live merchant ambiguity: connected account named Alex Ashing LTD; no Tax registrations surfaced. Do not launch without confirmed merchant of record and VAT settings.
+- Regression: new Stripe tests plus existing legacy checkout and webhook suite, app check and E2E required. Rollback by removing adapter and tests.
+
+## 2026-10-12 | Staged multi-plan Stripe ledger and checkout guard
+
+- **Request:** distinct AkiBusiness marketing, AkiHQ operations, AkiDuermo and consumer plans, Enterprise bundle, 20% annual savings, safe legacy migration.
+- **Change:** separate AkiSuite Stripe ledger plus RLS/SQL RPC, signed webhook dispatch into new ledger, disabled-by-default checkout action with account/tax/price gates and duplicate-payment checks, and focused regression tests.
+- **Dependencies:** existing `billing_customers`, Stripe webhook event lock, profile reconciliation, CRM AkiHQ gates, venue ownership, legacy subscription records, AkiBusiness/AkiDuermo EN/ES and Stripe Tax. No live Stripe write performed. No customer-facing new checkout enabled.
+- **Risk:** account connected as Alex Ashing LTD with unrelated products and no tax registrations; current staging attaches plan to billing profile, not a validated multi-location organisation. Production migrations require SQL/RLS and end-to-end tests; don't merge or provision paid resources until resolved.
+- **Rollback:** revert application and SQL migration only after reviewing any new subscription records; never drop paid entitlements or overwrite legacy subscriptions.
+
+## 2026-10-12 | Unified four-app membership centre
+
+- **Requested:** clean, horizontal-space-efficient, responsive membership overview/management for AkiPasa, AkiDuermo, AkiBusiness and AkiHQ, plus `/membership` and account membership routes.
+- **Before:** account subscription page displayed legacy three-plan billing cards and access records; public membership displayed a separate legacy picker; new suite UI was hidden behind readiness flags; AkiHQ lacked a central membership link.
+- **After:** bilingual responsive hub and shared seven-plan grid; data grounded in per-user Stripe-backed subscription rows and grants; current legacy records remain valid; Stripe Customer Portal handles payment updates and cancellation; disabled new checkout unless readiness flags are set. On desktop app overview displays four horizontal tiles and a side summary; tablet/mobile collapse cleanly. Account aliases redirect and AkiBusiness sidebar includes membership. Separate AkiHQ PR #25 provides matching nav link.
+- **Dependencies:** `billing_subscriptions`, `billing_customers`, `staff_billing_grants`; opt-in new AkiSuite table via `AKISUITE_SUBSCRIPTIONS_READY`, authenticated RLS, `openBillingPortal` server action, host-local EN/ES routing, workspace navigation, membership styling and account error/retry states. No direct Stripe charges or database mutations.
+- **Release checks:** typecheck, formatting, unit + UI, EN/ES, phone/tablet/desktop, paid/legacy/missing-data grants, Customer Portal click and rollback smoke. The plan UI must not offer unavailable Premium benefits as purchasable.
+- **Rollback:** revert hub and page integrations; leave existing customer subscriptions and Stripe products untouched. AkiHQ nav-only PR can revert independently.
+
+## 2026-10-12 | Workspace Premium implementation and gated catalogue release
+
+- **Scope and dependencies:** seven-plan catalogue and all EN/ES membership aliases across public AkiPasa, Business, Duermo and companion HQ; authenticated billing customer/subscription/grant reads; workspace ownership and existing member role templates; signed Stripe webhook, price allowlist and server Checkout; event/recurrence/moderation tables; shared private storage/media; consent-derived analytics; existing five-minute Cloudflare cron and release marker. Current master design and booking/room-night systems are retained.
+- **Behaviour:** catalogue remains visible with checkout off. New ledger is workspace-scoped for business plans, customer read-only/service-write, chronology and ownership protected. Legacy billing/grants/free management remain authoritative. Superseded sales close without cancelling existing subscriptions. Replacement updates an existing Stripe item through hosted confirmation; ambiguous consolidation is refused. SQL checks enforce recurrence, template, media and report access. Recurrence uses IANA/DST exceptions/cancellation and duplicate constraints. Approved-content scheduled publishing and conditional add-on renewal use bounded service jobs.
+- **Retention/security:** 15-image free workspace/250-image Premium allowances and fair-use bytes apply to future uploads only; existing content/files remain after downgrade. Storage accounting and folder tenancy are server-enforced. Consumer Enterprise access never propagates to employees; HQ tools retain role-template restrictions. No Stripe identity/tax registration or production schema changes were performed. All five activation flags and private database launch default false.
+- **Evidence:** initial full check exposed an unused variable and old-tab tests; fixed and rerun. Focused AkiSuite SQL/RLS/render/routing/billing suites passed 76 tests. HQ full check passed 339 with one existing gated skip. Full check/package and remote CI outcomes are recorded in the PR. Local browser launch is blocked by OS socket denial, not a screenshot success. Earlier CI clipping and pricing expectations were investigated and repaired; action_required is unvalidated. Sandbox provisioning requires sign-in. Production baseline still has legacy membership and plural alias 404s.
+- **Release limitations:** actual tax registrations absent; product tax codes unset and price tax behaviour unspecified; legal invoice/profile/descriptor reconciliation required. Disposable tests are a bounded schema, not a full production clone. No production migrations, actual sandbox charges, authenticated portal acceptance or live rollout claimed at this checkpoint. Disable checkout/feature/private-launch flags and revert source for rollback; retain customer data and legacy subscriptions. See the rewritten rollout contract for exact activation gates and outstanding checks.
+
+- **CI follow-up:** the first current account browser run reached subscription rendering and then timed out on its old Business tab selector. Replace the interaction with seven-plan/annual payload checks and assert that disabled catalogue forms remain visible during billing errors. The actual ten-page browser bundle compiles. Updated shared-media checks deny new cross-venue reuse after downgrade while retaining existing placements; owner deletion checks every referencing venue through an authorised RPC. The publication worker now preserves both legacy Business tiers and staff grants without requiring a linked new workspace. New CI evidence remains required before merge.
+
+- **Additional acceptance:** real SQL tests exercise AkiDuermo confirmed-night comparisons, retained cross-venue media after downgrade, global reference protection, conditional renewal queue and authenticated employee role-template restrictions. Account exports add only the payer's new billing rows and only after the schema-ready flag. Public CI's lone catalogue failure was an ambiguous Premium/add-on heading selector; exact heading matching retains both visible plans. HQ entry and offline-cache versions refresh the new navigation for existing installations. Full current checks and browser CI remain release gates.
+
+- **Storage/billing enforcement:** restrictive Storage INSERT/UPDATE checks count physical objects and protect byte limits; Storage DELETE checks all shared references, and placement writes serialize against deletion. Gated public reads retain selected artwork and the existing fallback while protecting private bin contents. Policies use authorised definer wrappers, never direct calls into the revoked private schema. A staff grant or trialing Pro retains its legacy access but cannot qualify for a discounted paid add-on. Disposable tests exercise actual authenticated/anonymous roles and direct Storage writes, not just disabled buttons.
+
+- **Release checkpoint:** HQ #26 merged at `21843db608932eea46d1e83d82b8481ee19b5767`; live bundle v36 and cache v110 verified. AP checkpoint passed repository/Cloudflare, tablet, booking and Pals CI; updated account/public browser selectors still require fresh CI. Workspace-wide media/template reuse requires explicit active company membership as well as venue rights; existing assigned assets remain usable after downgrade. Approval fingerprints now use SHA-256, and already-verified venue drafts can be scheduled without briefly publishing them first. Rollback after accepting any new payment must retain its billing adapter/jobs.
+
+- **Production compatibility preflight:** zero current legacy recurrence rules. The connected `postgres` role is not a superuser or member of the Storage table owner (`supabase_storage_admin`); hosted policy-management permission remains a concrete disposable-schema validation requirement. No production DDL attempted to probe that permission.
+
+- **Membership compatibility:** preserve origin through public/account sign-in redirects, permit named HQ workspace preparation without requiring a venue, and reject new-plan webhook customer-map reassignment. No global HQ profile upgrade or implicit venue verification.
+
+Responsive catalogue screenshot review also corrected Spanish add-on wording and preserved whole words in compact disabled purchase buttons.

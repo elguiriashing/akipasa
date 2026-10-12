@@ -2,6 +2,7 @@
 "use client";
 
 import { useMemo, useRef, useState, type FormEvent } from "react";
+import { setMediaFolder } from "@/app/[locale]/business/venue/[id]/premium-actions";
 import { SafeMediaFileInput } from "@/components/SafeMediaFileInput";
 import {
   addStayHeaderPhoto,
@@ -16,6 +17,8 @@ export type VenueMediaStudioItem = {
   url: string;
   alt: string;
   sizeBytes: number;
+  folder?: string;
+  canDelete?: boolean;
 };
 
 export type VenueMediaPlacement =
@@ -82,6 +85,7 @@ export function VenueMediaStudio({
   placements,
   accommodation = false,
   stayHeaderIds = [],
+  premium = false,
 }: {
   locale: "es" | "en";
   venueId: string;
@@ -89,6 +93,7 @@ export function VenueMediaStudio({
   placements: Partial<Record<VenueMediaPlacement, string>>;
   accommodation?: boolean;
   stayHeaderIds?: string[];
+  premium?: boolean;
 }) {
   const es = locale === "es";
   const [items, setItems] = useState(media);
@@ -101,6 +106,14 @@ export function VenueMediaStudio({
   );
   const [pickerPage, setPickerPage] = useState(0);
   const [pickerSearch, setPickerSearch] = useState("");
+  const [pickerFolder, setPickerFolder] = useState("");
+  const folders = [
+    ...new Set(
+      items
+        .map((item) => item.folder)
+        .filter((folder): folder is string => Boolean(folder)),
+    ),
+  ];
   const [uploadProgress, setUploadProgress] = useState<{
     done: number;
     total: number;
@@ -108,9 +121,13 @@ export function VenueMediaStudio({
   const [status, setStatus] = useState<"idle" | "saved" | "error">("idle");
   const [uploadError, setUploadError] = useState("");
   const uploadFormRef = useRef<HTMLFormElement>(null);
-  const fallback = items[0] || null;
-  const filteredPickerItems = items.filter((item) =>
-    item.alt.toLocaleLowerCase().includes(pickerSearch.toLocaleLowerCase()),
+  const fallback = items.find((item) => item.canDelete !== false) || null;
+  const filteredPickerItems = items.filter(
+    (item) =>
+      (!pickerFolder || item.folder === pickerFolder) &&
+      `${item.alt} ${item.folder || ""}`
+        .toLocaleLowerCase()
+        .includes(pickerSearch.toLocaleLowerCase()),
   );
   const pickerPageCount = Math.max(
     1,
@@ -287,21 +304,25 @@ export function VenueMediaStudio({
               ? es
                 ? "El almacenamiento rechazó el archivo."
                 : "Storage rejected the file."
-              : reason === "database"
+              : reason === "quota"
                 ? es
-                  ? "No se pudo guardar el archivo en la biblioteca."
-                  : "Could not save the file to the media library."
-                : reason === "translation"
+                  ? "Has alcanzado el límite de imágenes o almacenamiento de este espacio. El contenido existente se conserva."
+                  : "This workspace has reached its image or storage allowance. Existing content is retained."
+                : reason === "database"
                   ? es
-                    ? "Falló la traducción de la descripción."
-                    : "Description translation failed."
-                  : reason === "unavailable" || reason === "origin"
+                    ? "No se pudo guardar el archivo en la biblioteca."
+                    : "Could not save the file to the media library."
+                  : reason === "translation"
                     ? es
-                      ? "El servidor no pudo procesar la subida. Vuelve a iniciar sesión y reinténtalo."
-                      : "The server could not process the upload. Sign in again and retry."
-                    : es
-                      ? "No se pudo completar la subida."
-                      : "Upload could not be completed.";
+                      ? "Falló la traducción de la descripción."
+                      : "Description translation failed."
+                    : reason === "unavailable" || reason === "origin"
+                      ? es
+                        ? "El servidor no pudo procesar la subida. Vuelve a iniciar sesión y reinténtalo."
+                        : "The server could not process the upload. Sign in again and retry."
+                      : es
+                        ? "No se pudo completar la subida."
+                        : "Upload could not be completed.";
         setUploadError(`${file.name}: ${explanation}`);
         setItems((current) => [...current, ...uploaded]);
         setStatus("error");
@@ -343,6 +364,24 @@ export function VenueMediaStudio({
     window.setTimeout(() => setStatus("idle"), 1800);
   }
 
+  async function assignFolder(mediaId: string, name: string) {
+    setBusy(true);
+    const fd = new FormData();
+    fd.set("locale", locale);
+    fd.set("venueId", venueId);
+    fd.set("mediaId", mediaId);
+    fd.set("name", name);
+    const result = await setMediaFolder(fd);
+    if (result.ok) {
+      setItems((current) =>
+        current.map((item) =>
+          item.id === mediaId ? { ...item, folder: name } : item,
+        ),
+      );
+      setStatus("saved");
+    } else setStatus("error");
+    setBusy(false);
+  }
   async function removeMedia(mediaId: string) {
     setBusy(true);
     const fd = new FormData();
@@ -586,8 +625,8 @@ export function VenueMediaStudio({
           <h3>{es ? "Imágenes internas" : "Internal media"}</h3>
           <p>
             {es
-              ? "Esta biblioteca es privada de gestión. Subir una imagen aquí no la publica automáticamente en la ficha."
-              : "This is an internal management library. Uploading media here does not automatically publish it on the venue page."}
+              ? "Gestiona aquí tus archivos. Las imágenes elegidas para superficies públicas son visibles; la primera imagen propia puede usarse como predeterminada."
+              : "Manage your files here. Artwork selected for public surfaces is visible; your first own image can be used as the default."}
           </p>
         </div>
         <span>{items.length}</span>
@@ -672,11 +711,45 @@ export function VenueMediaStudio({
                     : ""}
                 </small>
               </div>
+              {premium && item.canDelete !== false && (
+                <form
+                  className="media-upload-form"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    void assignFolder(
+                      item.id,
+                      String(
+                        new FormData(event.currentTarget).get("folder") || "",
+                      ).trim(),
+                    );
+                  }}
+                >
+                  <label>
+                    {es ? "Carpeta" : "Folder"}
+                    <input
+                      name="folder"
+                      defaultValue={item.folder || ""}
+                      maxLength={80}
+                      aria-label={
+                        es ? `Carpeta de ${item.alt}` : `Folder for ${item.alt}`
+                      }
+                    />
+                  </label>
+                  <button type="submit" disabled={busy}>
+                    {es ? "Guardar carpeta" : "Save folder"}
+                  </button>
+                </form>
+              )}
+              {item.canDelete === false && (
+                <small>
+                  {es ? "Compartida por otro local" : "Shared by another venue"}
+                </small>
+              )}
               <div className="media-library-actions media-library-actions-simple">
                 <button
                   type="button"
                   className="danger"
-                  disabled={busy}
+                  disabled={busy || item.canDelete === false}
                   onClick={() => removeMedia(item.id)}
                 >
                   {es ? "Eliminar" : "Delete"}
@@ -734,6 +807,25 @@ export function VenueMediaStudio({
                 setPickerPage(0);
               }}
             />
+            {folders.length > 0 && (
+              <label>
+                {es ? "Carpeta" : "Folder"}
+                <select
+                  value={pickerFolder}
+                  onChange={(event) => {
+                    setPickerFolder(event.target.value);
+                    setPickerPage(0);
+                  }}
+                >
+                  <option value="">
+                    {es ? "Todas las carpetas" : "All folders"}
+                  </option>
+                  {folders.map((folder) => (
+                    <option key={folder}>{folder}</option>
+                  ))}
+                </select>
+              </label>
+            )}
             <div className="event-media-modal-grid">
               {visiblePickerItems.map((item) => (
                 <button

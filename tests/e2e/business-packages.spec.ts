@@ -1,108 +1,71 @@
 import { expect, test } from "@playwright/test";
 
-// Exercise plan comparison as a returning visitor; consent has its own coverage.
-test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => {
-    document.cookie = "ak_consent_version=2; Path=/";
-  });
-});
-
 for (const locale of ["en", "es"] as const) {
-  for (const width of [390, 1440]) {
-    test(`business tools stay compact and accurate: ${locale}, ${width}px`, async ({
+  for (const [width, height] of [
+    [390, 844],
+    [768, 1024],
+    [1024, 768],
+    [1440, 1000],
+  ]) {
+    test(`all seven AkiSuite plans: ${locale}, ${width}px`, async ({
       page,
     }) => {
-      await page.setViewportSize({ width, height: 1000 });
       const errors: string[] = [];
       page.on("pageerror", (error) => errors.push(error.message));
-      await page.goto(`/${locale}/membership`);
-      const es = locale === "es";
-      const comparison = page.locator("details.membership-details");
-      await expect(comparison).not.toHaveAttribute("open", "");
-      await expect(comparison.locator(":scope > summary")).toHaveText(
-        es
-          ? "Comparar herramientas y condiciones"
-          : "Compare tools and conditions",
-      );
-      await comparison.locator(":scope > summary").click();
-      await expect(comparison).toHaveAttribute("open", "");
-      const region = page.getByRole("region", {
-        name: es ? "Tus herramientas, de un vistazo" : "Your tools at a glance",
+      await page.setViewportSize({ width, height });
+      await page.addInitScript(() => {
+        document.cookie = "ak_consent_version=2; Path=/";
       });
-      await expect(region).toBeVisible();
-      const selector = region.getByLabel(
-        es ? "Tipo de negocio" : "Business type",
+      await page.goto(`/${locale}/membership?from=akibusiness`);
+      const catalogue = page.locator(
+        'section[aria-labelledby="akisuite-catalogue-title"]',
       );
-      await expect(region.getByRole("group")).toHaveCount(0);
-      await selector.selectOption("food");
-      const preview = region.locator('[aria-live="polite"]');
-      await expect(preview.getByRole("listitem")).toHaveCount(3);
-      await expect(preview).toContainText(es ? "Facturas" : "Invoices");
-      await expect(preview).not.toContainText(es ? "Inventario" : "Inventory");
-      await region.getByRole("button", { name: /Pro/ }).click();
-      await expect(preview).toContainText(
-        es ? "Punto de venta" : "Point of sale",
-      );
-      await expect(preview).toContainText(es ? "Inventario" : "Inventory");
-      await expect(region.getByRole("link", { name: /Pro/ })).toHaveAttribute(
-        "href",
-        `/${locale}/business/apply?category=food&plan=business_pro`,
-      );
-      const allTools = region.locator("details").first();
-      await expect(allTools).not.toHaveAttribute("open", "");
-      await allTools.locator("summary").click();
-      await expect(allTools.getByRole("listitem")).toHaveCount(12);
-      await allTools.locator("summary").click();
-      await selector.selectOption("music");
-      await expect(preview).toContainText(es ? "Chat de equipo" : "Team chat");
-      await expect(preview).not.toContainText(
-        es ? "Punto de venta" : "Point of sale",
-      );
-      await region
-        .getByRole("button", { name: es ? /Básico/ : /Basic/ })
-        .click();
-      await expect(preview).not.toContainText(
-        es ? "Chat de equipo" : "Team chat",
-      );
+      await expect(catalogue.locator("article")).toHaveCount(7);
       await expect(
-        region.getByRole("link", { name: es ? /Básico/ : /Basic/ }),
-      ).toHaveAttribute(
-        "href",
-        `/${locale}/business/apply?category=music&plan=business`,
-      );
+        catalogue.locator("article").first().getByRole("heading"),
+      ).toHaveText("Aki Enterprise");
       await expect(
-        region.locator("details").first().locator("summary"),
-      ).toContainText("7");
-      for (const category of ["social", "workshop", "family", "sport"]) {
-        await selector.selectOption(category);
-        await expect(preview.getByRole("listitem")).toHaveCount(3);
-        await expect(region.getByRole("link")).toHaveAttribute(
-          "href",
-          `/${locale}/business/apply?category=${category}&plan=business`,
-        );
-      }
-      await selector.selectOption("food");
-      await region.getByRole("button", { name: /Pro/ }).click();
-      const box = await region.boundingBox();
-      expect(box!.height).toBeLessThan(720);
-      const dimensions = await region.evaluate((element) => ({
-        width: element.clientWidth,
-        scroll: element.scrollWidth,
-      }));
-      expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.width + 1);
+        catalogue.locator('article[data-origin="true"]'),
+      ).toContainText("AkiBusiness Premium");
+      await expect(catalogue.locator("select")).toHaveCount(0);
+      await expect(catalogue.getByRole("button")).toHaveCount(7);
+      for (const button of await catalogue.getByRole("button").all())
+        await expect(button).toBeDisabled();
+      await catalogue.getByRole("radio").nth(1).check();
+      await expect(catalogue.locator("#aki_enterprise")).toContainText(
+        locale === "es" ? "767,90" : "767.90",
+      );
+      await expect(catalogue.locator("#akipasa_premium")).toContainText(
+        locale === "es" ? "19,10" : "19.10",
+      );
+      await expect(catalogue.locator("#akihq_business_addon")).toContainText(
+        locale === "es" ? "76,70" : "76.70",
+      );
+      await catalogue.getByRole("radio").nth(0).check();
+      await expect(catalogue.locator("#aki_enterprise")).toContainText(
+        locale === "es" ? "79,99" : "79.99",
+      );
       for (const theme of ["light", "dark"]) {
-        await page.evaluate((value) => {
-          window.localStorage.setItem("akipasa.theme", value);
-        }, theme);
+        await page.evaluate(
+          (value) => window.localStorage.setItem("akipasa.theme", value),
+          theme,
+        );
         await page.reload();
         await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
-        await expect(comparison).not.toHaveAttribute("open", "");
-        await comparison.locator(":scope > summary").click();
-        await expect(region).toBeVisible();
-        await selector.selectOption("food");
-        await region.getByRole("button", { name: /Pro/ }).click();
-        await region.screenshot({
-          path: `test-results/membership-${locale}-${width}-${theme}.png`,
+        const dimensions = await page.evaluate(() => ({
+          width: document.documentElement.clientWidth,
+          scroll: document.documentElement.scrollWidth,
+        }));
+        expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.width + 1);
+        for (const card of await catalogue.locator("article").all()) {
+          const bounds = await card.evaluate((element) => ({
+            width: element.clientWidth,
+            scroll: element.scrollWidth,
+          }));
+          expect(bounds.scroll).toBeLessThanOrEqual(bounds.width + 1);
+        }
+        await catalogue.screenshot({
+          path: `test-results/akisuite-${locale}-${width}-${theme}.png`,
         });
       }
       expect(errors).toEqual([]);

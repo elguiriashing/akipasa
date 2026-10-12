@@ -8,6 +8,7 @@ import {
   bookingInboxHref,
   parseBookingInbox,
 } from "@/lib/business-booking-inbox";
+import { authorizedSuiteMedia } from "@/lib/akisuite-media";
 import { requireBusinessAccess } from "@/lib/entitlements";
 import { safeExternalUrlSchema } from "@/lib/auth-security";
 import { madridLocalDateTimeSchema } from "@/lib/time";
@@ -283,13 +284,30 @@ export async function updateEvent(formData: FormData) {
   const selectedMediaIds = requestedSlots.flatMap(([, mediaId]) =>
     mediaId ? [mediaId] : [],
   );
-  const { data: allowedRows } = selectedMediaIds.length
-    ? await supabase
-        .from("venue_media")
-        .select("id")
-        .eq("venue_id", v.venueId)
-        .in("id", selectedMediaIds)
-    : { data: [] };
+  const allowedRows =
+    process.env.AKISUITE_FEATURES_READY === "true" &&
+    process.env.AKISUITE_SUBSCRIPTIONS_READY === "true"
+      ? (
+          await Promise.all(
+            selectedMediaIds.map((mediaId) =>
+              authorizedSuiteMedia(supabase, v.venueId, mediaId),
+            ),
+          )
+        ).filter((row): row is { id: string } => Boolean(row))
+      : (
+          await supabase
+            .from("venue_media")
+            .select("id")
+            .eq("venue_id", v.venueId)
+            .in("id", selectedMediaIds)
+        ).data || [];
+  if (
+    new Set(allowedRows.map((row) => row.id)).size !==
+    new Set(selectedMediaIds).size
+  ) {
+    if (inline) return { ok: false as const, error: "media" };
+    redirect(destination(locale, venueId, "error=media"));
+  }
   const allowed = new Set((allowedRows || []).map((item) => item.id));
 
   await supabase
@@ -469,11 +487,13 @@ export async function setRecurrence(formData: FormData) {
   const parsed = context
     .extend({
       eventId: z.string().uuid(),
-      startsAt: madridLocalDateTimeSchema,
-      endsAt: madridLocalDateTimeSchema,
+      startsAt: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/),
+      endsAt: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/),
       frequency: z.enum(["daily", "weekly"]),
       interval: z.coerce.number().int().min(1).max(12),
       occurrences: z.coerce.number().int().min(2).max(52),
+      timezone: z.string().trim().min(3).max(100).default("Europe/Madrid"),
+      exceptions: z.string().max(800).default(""),
     })
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
@@ -482,14 +502,34 @@ export async function setRecurrence(formData: FormData) {
     redirect(destination(locale, venueId, "error=recurrence"));
   const { supabase } = await requireBusinessAccess(locale);
   const value = parsed.data;
-  const { error } = await supabase.rpc("set_owned_event_recurrence", {
-    p_event: value.eventId,
-    p_starts: value.startsAt.toISOString(),
-    p_ends: value.endsAt.toISOString(),
-    p_frequency: value.frequency,
-    p_interval: value.interval,
-    p_occurrences: value.occurrences,
-  });
+  const exceptions = value.exceptions.split(/[\s,]+/).filter(Boolean);
+  if (exceptions.some((date) => !/^\d{4}-\d{2}-\d{2}$/.test(date)))
+    redirect(destination(locale, venueId, "error=recurrence"));
+  const ready = process.env.AKISUITE_FEATURES_READY === "true";
+  const { error } = await supabase.rpc(
+    ready ? "set_owned_event_recurrence_v2" : "set_owned_event_recurrence",
+    ready
+      ? {
+          p_event: value.eventId,
+          p_local_starts: String(formData.get("startsAt")),
+          p_local_ends: String(formData.get("endsAt")),
+          p_frequency: value.frequency,
+          p_interval: value.interval,
+          p_occurrences: value.occurrences,
+          p_timezone: value.timezone,
+          p_exceptions: exceptions,
+        }
+      : {
+          p_event: value.eventId,
+          p_starts: madridLocalDateTimeSchema
+            .parse(value.startsAt)
+            .toISOString(),
+          p_ends: madridLocalDateTimeSchema.parse(value.endsAt).toISOString(),
+          p_frequency: value.frequency,
+          p_interval: value.interval,
+          p_occurrences: value.occurrences,
+        },
+  );
   if (error) redirect(destination(locale, venueId, "error=recurrence"));
   redirect(destination(locale, venueId, "updated=recurrence"));
 }
@@ -632,7 +672,11 @@ export async function uploadVenueImage(formData: FormData) {
   });
   if (error) {
     await supabase.storage.from("event-media").remove([path]);
-    if (inline) return { ok: false as const, error: "database" };
+    if (inline)
+      return {
+        ok: false as const,
+        error: error.code === "PT402" ? "quota" : "database",
+      };
     redirect(destination(locale, venueId, "error=media"));
   }
   if (inline) {
@@ -731,11 +775,23 @@ export async function removeVenueImage(formData: FormData) {
   }
   // The shared bin may feed multiple public venue/event surfaces. Never
   // remove a file that is still referenced by a placement.
-  const { count: placementCount, error: placementError } = await supabase
-    .from("venue_media_placements")
-    .select("id", { count: "exact", head: true })
-    .eq("venue_id", parsed.data.venueId)
-    .eq("media_id", parsed.data.mediaId);
+  const sharedReady =
+    process.env.AKISUITE_FEATURES_READY === "true" &&
+    process.env.AKISUITE_SUBSCRIPTIONS_READY === "true";
+  const usage = sharedReady
+    ? await supabase.rpc("akisuite_media_in_use", {
+        p_media: parsed.data.mediaId,
+      })
+    : null;
+  const localUsage = !sharedReady
+    ? await supabase
+        .from("venue_media_placements")
+        .select("id", { count: "exact", head: true })
+        .eq("venue_id", parsed.data.venueId)
+        .eq("media_id", parsed.data.mediaId)
+    : null;
+  const placementCount = usage ? (usage.data ? 1 : 0) : localUsage?.count;
+  const placementError = usage?.error || localUsage?.error;
   if (placementError || (placementCount ?? 0) > 0) {
     if (inline) return { ok: false as const, error: "media-in-use" };
     redirect(destination(locale, venueId, "error=media-in-use"));
@@ -1875,12 +1931,11 @@ export async function addStayHeaderPhoto(formData: FormData) {
     .eq("id", parsed.data.venueId)
     .eq("discovery_vertical", "accommodation")
     .maybeSingle();
-  const { data: media } = await supabase
-    .from("venue_media")
-    .select("id")
-    .eq("id", parsed.data.mediaId)
-    .eq("venue_id", parsed.data.venueId)
-    .maybeSingle();
+  const media = await authorizedSuiteMedia(
+    supabase,
+    parsed.data.venueId,
+    parsed.data.mediaId,
+  );
   if (!venue || !media) return { ok: false as const, error: "media" };
   const { data: existing, error: readError } = await supabase
     .from("venue_media_placements")
@@ -1958,12 +2013,11 @@ export async function setVenueMediaPlacement(formData: FormData) {
   }
 
   const { supabase, user } = await requireBusinessAccess(locale);
-  const { data: media } = await supabase
-    .from("venue_media")
-    .select("id")
-    .eq("id", parsed.data.mediaId)
-    .eq("venue_id", parsed.data.venueId)
-    .maybeSingle();
+  const media = await authorizedSuiteMedia(
+    supabase,
+    parsed.data.venueId,
+    parsed.data.mediaId,
+  );
   if (!media) {
     if (inline) return { ok: false as const, error: "media" };
     redirect(destination(locale, venueId, "error=media"));
@@ -2069,12 +2123,11 @@ export async function addVenueMediaToEventBin(formData: FormData) {
       .eq("id", parsed.data.eventId)
       .eq("venue_id", parsed.data.venueId)
       .maybeSingle(),
-    supabase
-      .from("venue_media")
-      .select("id")
-      .eq("id", parsed.data.mediaId)
-      .eq("venue_id", parsed.data.venueId)
-      .maybeSingle(),
+    authorizedSuiteMedia(
+      supabase,
+      parsed.data.venueId,
+      parsed.data.mediaId,
+    ).then((data) => ({ data })),
   ]);
   if (!event || !media) {
     if (inline) return { ok: false as const, error: "media" };

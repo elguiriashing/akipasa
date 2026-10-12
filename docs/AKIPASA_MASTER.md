@@ -426,3 +426,27 @@ The canonical media asset store is `venue_media`, scoped by `venue_id`, with pub
 ### Venue profile media selector (2026-10-12)
 
 The five venue surface cards use the same full-size event gallery picker styling and pagination rather than inline thumbnail strips. Selection persists via the existing `setVenueMediaPlacement` action; Auto clears the explicit placement via `clearVenueMediaPlacement`. The venue-wide library remains the sole media inventory.
+
+## 2026-10-12 AkiSuite membership and Premium rollout
+
+`docs/AKISUITE_PRICING_ROLLOUT.md` is the current commercial, workspace, retention, deployment and validation contract. Seven plans are always visible through the shared EN/ES public/account catalogue, independent of payment activation. Enterprise is featured first. Cross-host aliases preserve locale and originating app; AkiHQ points to the same account hub.
+
+The approved Stripe account and fourteen existing live price IDs are verified and recorded; no duplicate products were created. New payments require all five readiness flags, actual tax/product validation, workspace ownership, durable reservation and ledger/Stripe overlap checks. Existing legacy prices, subscriptions, free venue access and staff grants remain valid; superseded new-checkout forms redirect to the catalogue. Do not enable payment until legal invoicing/tax details and isolated checkout/lifecycle tests are complete.
+
+New migrations are pending, mirrored in both migration locations and exercised through disposable PGlite SQL/RLS tests. Business/Duermo/HQ paid access belongs to an authorised workspace, preserving active employee membership and role templates. Personal Enterprise Premium belongs only to the payer. Workspace-scoped recurrence, templates, scheduled approved publication, media quotas/folders/sharing, historical growth and accommodation reports are gated. Published content and media are retained after downgrade; future automation/uploads are restricted. Service cron is bounded and respects approval fingerprints and conditional add-on renewal. Full-schema compatibility, live advisors, sandbox tests and authenticated production acceptance remain separate release requirements.
+
+Release marker `membershipCatalogue: 2026-10-12-akisuite-catalogue-v2` is added to the existing read-only release endpoint. Record merge/deployment/live smoke evidence before declaring success. A release with checkout disabled is independently permissible only after its relevant checks pass; it does not complete paid rollout.
+
+Membership browser acceptance uses seven catalogue cards and the global annual toggle, preserving card visibility during partial billing failure. Shared-media mutation permissions are independent of read retention: downgrade preserves media/placements while restricting new reuse, and owner deletion checks cross-venue references. Legacy scheduled publication preserves both Business tiers and staff grants.
+
+The authenticated account export includes the new payer ledger only once the schema-ready flag is enabled; existing exports remain available before migration. SQL acceptance separately verifies AkiDuermo comparisons, media retention/reference protection, conditional add-on renewal and employee role templates.
+
+Premium media enforcement includes restrictive Storage policies for direct API writes and referenced-file deletion, plus gated private-bin reads that preserve selected/fallback public artwork. Discount eligibility requires a paid, active, non-ending Pro subscription; staff grants and trials continue to grant their authorised tools without qualifying for that purchase.
+
+Shared media/template reuse additionally requires active workspace membership; venue-only editors retain their venue and assigned-content rights. Verified-venue drafts can be scheduled directly with SHA-256 approval fingerprints. After any new paid subscription exists, billing adapters/reconciliation must survive presentation rollback. HQ's companion merge `21843db608932eea46d1e83d82b8481ee19b5767` serves the refreshed membership navigation in production; authenticated acceptance remains separate.
+
+Live migration preflight must include managed Storage ownership/DDL permissions: current migration role is non-superuser `postgres` and is not a member of `supabase_storage_admin`. Do not infer hosted policy-management permission from disposable PGlite ownership.
+
+HQ setup can create a named self-owned workspace before venue ownership, preserving separate venue authorisation. Auth redirects from membership retain the originating app. New-plan webhook customer mapping cannot overwrite a profile's existing Stripe customer.
+
+Responsive catalogue screenshot review also corrected Spanish add-on wording and preserved whole words in compact disabled purchase buttons.

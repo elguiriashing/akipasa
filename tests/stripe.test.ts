@@ -132,18 +132,15 @@ describe("paid entitlement contracts", () => {
     expect(migration).not.toContain("module_price");
   });
 
-  it("updates an existing Business subscription without creating a second one", () => {
+  it("closes superseded checkout while preserving legacy billing management", () => {
     const actions = readFileSync(
       "src/app/[locale]/account/subscription/actions.ts",
       "utf8",
     );
-
-    expect(actions).toContain('subscription.plan_code === "business"');
-    expect(actions).toContain('parsed.data.plan === "business_pro"');
-    expect(actions).toContain('payment_behavior: "pending_if_incomplete"');
-    expect(actions).toContain('proration_behavior: "always_invoice"');
-    expect(actions).toContain("business-pro-upgrade:");
-    expect(actions).toContain("/subscriptions/${subscriptionId}");
+    expect(actions).toContain("legacy_checkout_closed");
+    expect(actions).not.toContain('"/checkout/sessions"');
+    expect(actions).toContain("/billing_portal/sessions");
+    expect(actions).toContain("STRIPE_AKIPASA_PORTAL_CONFIGURATION_ID");
   });
 
   it("recognizes portal upgrades from the subscription price instead of stale metadata", () => {
@@ -254,6 +251,10 @@ vi.mock("@/lib/supabase/service", () => ({
 }));
 vi.mock("@/lib/stripe", async () => await import("../src/lib/stripe"));
 vi.mock(
+  "@/lib/akisuite-stripe",
+  async () => await import("../src/lib/akisuite-stripe"),
+);
+vi.mock(
   "@/lib/request-security",
   async () => await import("../src/lib/request-security"),
 );
@@ -270,6 +271,7 @@ describe("payment event fulfillment", () => {
     status = "active",
     price = "price_premium",
     duplicate = false,
+    mappedCustomer: string | null = null,
   ) {
     vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_test");
     vi.stubEnv("STRIPE_SECRET_KEY", "test-key");
@@ -279,7 +281,11 @@ describe("payment event fulfillment", () => {
         id: "sub_test",
         customer: "cus_test",
         status,
-        metadata: { profile_id: "profile_test", plan_code: "business_pro" },
+        metadata: {
+          profile_id: "10000000-0000-4000-8000-000000000001",
+          plan_code: "business_pro",
+          workspace_id: "ws_fixture",
+        },
         items: {
           data: [{ price: { id: price }, current_period_end: 2_000_000_000 }],
         },
@@ -290,11 +296,17 @@ describe("payment event fulfillment", () => {
       data: name === "claim_stripe_webhook_event" ? !duplicate : true,
       error: null,
     }));
-    webhookDb.from.mockImplementation(() => {
+    webhookDb.from.mockImplementation((table: string) => {
       const chain = {
         select: () => chain,
         eq: () => chain,
-        maybeSingle: async () => ({ data: null, error: null }),
+        maybeSingle: async () => ({
+          data:
+            table === "billing_customers" && mappedCustomer
+              ? { stripe_customer_id: mappedCustomer }
+              : null,
+          error: null,
+        }),
         upsert: async () => ({ error: null }),
         update: () => ({ eq: async () => ({ error: null }) }),
       };
@@ -322,6 +334,9 @@ describe("payment event fulfillment", () => {
       fetchMock,
       sync: webhookDb.rpc.mock.calls.filter(
         ([name]) => name === "sync_stripe_subscription",
+      ),
+      suiteSync: webhookDb.rpc.mock.calls.filter(
+        ([name]) => name === "sync_akisuite_subscription",
       ),
     };
   }
@@ -359,7 +374,7 @@ describe("payment event fulfillment", () => {
         p_plan: "premium",
         p_interval: "month",
         p_status: status,
-        p_profile: "profile_test",
+        p_profile: "10000000-0000-4000-8000-000000000001",
       });
     },
   );
@@ -380,6 +395,63 @@ describe("payment event fulfillment", () => {
     expect(duplicate.sync).toHaveLength(0);
     expect(duplicate.fetchMock).not.toHaveBeenCalled();
   });
+  it("fulfils configured Enterprise via the isolated ledger, not legacy plans", async () => {
+    vi.stubEnv("AKISUITE_SUBSCRIPTIONS_READY", "true");
+    vi.stubEnv(
+      "STRIPE_AKISUITE_ENTERPRISE_MONTH_PRICE_ID",
+      "price_suite_enterprise",
+    );
+    const result = await deliver(
+      "checkout.session.completed",
+      { subscription: "sub_test", payment_status: "paid" },
+      "active",
+      "price_suite_enterprise",
+    );
+    expect(result.response.status).toBe(200);
+    expect(result.sync).toHaveLength(0);
+    expect(result.suiteSync).toHaveLength(1);
+    expect(result.suiteSync[0][1]).toMatchObject({
+      p_plan: "aki_enterprise",
+      p_interval: "month",
+      p_status: "active",
+      p_profile: "10000000-0000-4000-8000-000000000001",
+    });
+  });
+
+  it("rejects a new subscription that would replace the profile's existing customer", async () => {
+    vi.stubEnv("AKISUITE_SUBSCRIPTIONS_READY", "true");
+    vi.stubEnv(
+      "STRIPE_AKISUITE_ENTERPRISE_MONTH_PRICE_ID",
+      "price_suite_enterprise",
+    );
+    const result = await deliver(
+      "checkout.session.completed",
+      { subscription: "sub_test", payment_status: "paid" },
+      "active",
+      "price_suite_enterprise",
+      false,
+      "cus_existing",
+    );
+    expect(result.response.status).toBe(500);
+    expect(result.suiteSync).toHaveLength(0);
+    expect(result.sync).toHaveLength(0);
+  });
+
+  it("does not grant new entitlements for unpaid AkiSuite checkout", async () => {
+    vi.stubEnv(
+      "STRIPE_AKISUITE_ENTERPRISE_MONTH_PRICE_ID",
+      "price_suite_enterprise",
+    );
+    const result = await deliver(
+      "checkout.session.completed",
+      { subscription: "sub_test", payment_status: "unpaid" },
+      "incomplete",
+      "price_suite_enterprise",
+    );
+    expect(result.suiteSync).toHaveLength(0);
+    expect(result.fetchMock).not.toHaveBeenCalled();
+  });
+
   it("does not grant access for unrelated products with misleading metadata", async () => {
     const result = await deliver(
       "customer.subscription.created",

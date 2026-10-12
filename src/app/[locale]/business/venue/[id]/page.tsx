@@ -11,6 +11,12 @@ import { OwnerReadiness } from "@/components/OwnerReadiness";
 import { Icon } from "@/components/Icons";
 import { VenueDashboard } from "@/components/VenueDashboard";
 import { VenueCatalogueEditor } from "@/components/VenueCatalogueEditor";
+import {
+  AkiSuiteVenueTools,
+  AkiSuiteEventTools,
+  type SuiteGrowthReport,
+  type SuiteStayReport,
+} from "@/components/AkiSuiteVenueTools";
 import { VenueMediaStudio } from "@/components/VenueMediaStudio";
 import { BusinessEventEditPanel } from "@/components/BusinessEventEditPanel";
 import { getVenueDashboardSection } from "@/lib/venue-dashboard";
@@ -106,7 +112,7 @@ export default async function VenueWorkspace({
     { data: events },
     { data: offers },
     { data: members },
-    { data: media },
+    { data: ownedMedia },
     { data: programs },
     { data: credentials },
     { data: rewards },
@@ -217,6 +223,43 @@ export default async function VenueWorkspace({
   ]);
   if (!venue) notFound();
   const isAccommodation = venue.discovery_vertical === "accommodation";
+  const suiteToolsReady =
+    process.env.AKISUITE_FEATURES_READY === "true" &&
+    process.env.AKISUITE_SUBSCRIPTIONS_READY === "true";
+  const premiumResult = suiteToolsReady
+    ? await supabase.rpc("akisuite_venue_premium", { p_venue: id })
+    : { data: false, error: null };
+  const venuePremium = premiumResult.data === true;
+  const [sharedMedia, growthReport, stayReport, templates] = suiteToolsReady
+    ? await Promise.all([
+        supabase.rpc("akisuite_media_library", { p_venue: id }),
+        venuePremium
+          ? supabase.rpc("akisuite_growth_report", { p_venue: id, p_days: 28 })
+          : Promise.resolve({ data: null, error: null }),
+        venuePremium && isAccommodation
+          ? supabase.rpc("akisuite_stay_report", { p_venue: id, p_days: 28 })
+          : Promise.resolve({ data: null, error: null }),
+        supabase.rpc("akisuite_templates_for_venue", { p_venue: id }),
+      ])
+    : [
+        { data: null, error: null },
+        { data: null, error: null },
+        { data: null, error: null },
+        { data: [], error: null },
+      ];
+  type MediaRow = {
+    id: string;
+    venue_id?: string;
+    storage_path: string;
+    alt_es: string | null;
+    alt_en: string | null;
+    mime_type: string;
+    size_bytes: number;
+    sort_order: number;
+    folder_name?: string | null;
+  };
+  const media: MediaRow[] = sharedMedia.data || ownedMedia || [];
+
   const { data: accommodationSettings } = isAccommodation
     ? await supabase
         .from("accommodation_booking_settings")
@@ -322,6 +365,8 @@ export default async function VenueWorkspace({
               (es ? item.alt_es : item.alt_en || item.alt_es) ||
               (es ? "Imagen del local" : "Venue image"),
             sizeBytes: item.size_bytes,
+            folder: item.folder_name || "",
+            canDelete: !item.venue_id || item.venue_id === id,
             eventSpecific: item.storage_path.includes("/events/"),
           },
         ]
@@ -487,6 +532,44 @@ export default async function VenueWorkspace({
       sections={{
         profile: (
           <>
+            {suiteToolsReady && (
+              <AkiSuiteVenueTools
+                locale={locale}
+                venueId={id}
+                premium={venuePremium}
+                accommodation={isAccommodation}
+                report={growthReport.data as SuiteGrowthReport | null}
+                stayReport={stayReport.data as SuiteStayReport | null}
+                unavailable={Boolean(
+                  growthReport.error || stayReport.error || premiumResult.error,
+                )}
+                templates={templates.data || []}
+                readiness={[
+                  {
+                    label: es
+                      ? "Descripción del negocio"
+                      : "Business description",
+                    complete: Boolean(
+                      venue.description_es && venue.description_en,
+                    ),
+                  },
+                  {
+                    label: es ? "Dirección completa" : "Complete address",
+                    complete: Boolean(venue.address),
+                  },
+                  {
+                    label: es
+                      ? "Información de contacto"
+                      : "Contact information",
+                    complete: Boolean(venue.contact_phone || venue.website_url),
+                  },
+                  {
+                    label: es ? "Imágenes seleccionadas" : "Selected images",
+                    complete: Object.keys(venueMediaSlots).length > 0,
+                  },
+                ]}
+              />
+            )}
             <section className="panel profile-hub">
               <div className="profile-summary-grid">
                 <article className="profile-summary-card">
@@ -689,6 +772,13 @@ export default async function VenueWorkspace({
             </section>
 
             <section className="panel profile-media-hub">
+              {sharedMedia.error && (
+                <p className="notice" role="status">
+                  {es
+                    ? "La biblioteca compartida no está disponible; se muestran los archivos de este local."
+                    : "Shared library unavailable; showing this venue's files."}
+                </p>
+              )}
               <VenueMediaStudio
                 locale={locale}
                 venueId={id}
@@ -696,6 +786,7 @@ export default async function VenueWorkspace({
                 placements={venueMediaSlots}
                 accommodation={isAccommodation}
                 stayHeaderIds={stayHeaderIds}
+                premium={suiteToolsReady && venuePremium}
               />
             </section>
           </>
@@ -964,6 +1055,13 @@ export default async function VenueWorkspace({
                         <summary>
                           {es ? "Configurar repetición" : "Set recurrence"}
                         </summary>
+                        {suiteToolsReady && !venuePremium && (
+                          <p className="notice">
+                            {es
+                              ? "Las nuevas repeticiones y copias requieren AkiBusiness Premium. Las fechas actuales se conservan."
+                              : "New recurrence and duplication require AkiBusiness Premium. Existing dates are retained."}
+                          </p>
+                        )}
                         <form action={setRecurrence} className="stack">
                           <input type="hidden" name="locale" value={locale} />
                           <input type="hidden" name="venueId" value={id} />
@@ -1025,6 +1123,29 @@ export default async function VenueWorkspace({
                               required
                             />
                           </label>
+                          {suiteToolsReady && (
+                            <div className="two-col">
+                              <label>
+                                {es ? "Zona horaria IANA" : "IANA time zone"}
+                                <input
+                                  name="timezone"
+                                  defaultValue="Europe/Madrid"
+                                  required
+                                  maxLength={100}
+                                />
+                              </label>
+                              <label>
+                                {es
+                                  ? "Excluir fechas (AAAA-MM-DD)"
+                                  : "Exclude dates (YYYY-MM-DD)"}
+                                <input
+                                  name="exceptions"
+                                  placeholder="2026-12-25, 2026-12-31"
+                                  maxLength={800}
+                                />
+                              </label>
+                            </div>
+                          )}
                           <p className="fine-print">
                             {es
                               ? "Las fechas ya existentes no se duplicarán."
@@ -1072,6 +1193,18 @@ export default async function VenueWorkspace({
                       </details>
                       <details>
                         <summary>{es ? "Duplicar" : "Duplicate"}</summary>
+                        {suiteToolsReady && (
+                          <AkiSuiteEventTools
+                            locale={locale}
+                            venueId={id}
+                            eventId={event.id}
+                            premium={venuePremium}
+                            published={event.status === "published"}
+                            trustedDraft={Boolean(
+                              venue.verified && event.status === "draft",
+                            )}
+                          />
+                        )}
                         <form action={duplicateEvent} className="stack">
                           <input type="hidden" name="locale" value={locale} />
                           <input type="hidden" name="venueId" value={id} />

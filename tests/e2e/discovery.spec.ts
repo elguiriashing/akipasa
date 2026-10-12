@@ -191,25 +191,16 @@ test("membership offer is reachable before sign in", async ({ page }) => {
     }),
   ).toBeVisible();
   await expect(
-    page.getByRole("link", { name: "Choose Personal Premium" }),
-  ).toHaveAttribute(
-    "href",
-    "/en/auth?next=%2Fen%2Faccount%2Fsubscription%3Fplan%3Dpremium",
-  );
-  await expect(
-    page.getByRole("link", { name: "Manage", exact: true }),
-  ).toHaveAttribute("href", "/en/auth?next=%2Fen%2Faccount%2Fsubscription");
-  await page.getByRole("tab", { name: "Business", exact: true }).click();
-  await expect(
-    page.getByRole("tab", { name: "Business", exact: true }),
-  ).toHaveAttribute("aria-selected", "true");
-  const businessPlan = page.locator("#business-plan");
-  await expect(
-    businessPlan.getByRole("link", { name: "Start the free business review" }),
-  ).toHaveAttribute("href", "/en/auth?next=%2Fen%2Fbusiness%2Fapply");
-  await expect(
-    businessPlan.getByText("No payment today. We review your business first."),
+    page.getByRole("heading", { name: "Aki Enterprise" }),
   ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "AkiBusiness Premium", exact: true }),
+  ).toBeVisible();
+  const catalogue = page.locator(
+    'section[aria-labelledby="akisuite-catalogue-title"]',
+  );
+  await expect(catalogue.locator("article")).toHaveCount(7);
+  await expect(catalogue.getByRole("button").first()).toBeDisabled();
 });
 
 test("business intent survives account creation", async ({ page }) => {

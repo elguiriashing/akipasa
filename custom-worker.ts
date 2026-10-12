@@ -20,10 +20,19 @@ import {
   dispatchAccommodationConfirmations,
 } from "./src/lib/booking-mail-delivery";
 
+import { stopIneligibleAkiSuiteAddonRenewals } from "./src/lib/akisuite-addon-renewal";
+import { publishScheduledAkiSuiteEvents } from "./src/lib/akisuite-publication";
+
 const worker = {
   async scheduled(
     _event: unknown,
-    env: ClaimMailEnv,
+    env: ClaimMailEnv & {
+      AKISUITE_SUBSCRIPTIONS_READY?: string;
+      AKISUITE_FEATURES_READY?: string;
+      AKISUITE_BILLING_VERIFIED?: string;
+      AKISUITE_STRIPE_ACCOUNT_ID?: string;
+      STRIPE_SECRET_KEY?: string;
+    },
     ctx: { waitUntil(work: Promise<unknown>): void },
   ) {
     ctx.waitUntil(dispatchBookingConfirmations(env));
@@ -31,6 +40,12 @@ const worker = {
     ctx.waitUntil(dispatchClaimDecisions(env));
     ctx.waitUntil(dispatchClaimSubmissionAlerts(env));
     ctx.waitUntil(dispatchSuiteEmails(env));
+    ctx.waitUntil(publishScheduledAkiSuiteEvents(env));
+    ctx.waitUntil(
+      stopIneligibleAkiSuiteAddonRenewals(env).catch(() =>
+        console.error("akisuite_addon_renewal_retry"),
+      ),
+    );
   },
   async fetch(
     request: Request,
@@ -43,6 +58,7 @@ const worker = {
         {
           release: "2026-10-09-booking-ux-r1",
           accountWorkspace: "2026-10-12-account-suite-v1",
+          membershipCatalogue: "2026-10-12-akisuite-catalogue-v2",
           claimNotifications: {
             release: "2026-10-10-claim-decision-email-v1",
             configured: claimMailConfigured(env),
