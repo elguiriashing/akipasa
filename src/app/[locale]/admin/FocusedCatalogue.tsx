@@ -1,4 +1,4 @@
-import { AdminSearchList } from "./AdminSearchList";
+import { AdminWorkbench } from "./AdminWorkbench";
 import { saveCategory, saveCity, updateFeatureFlag } from "./actions";
 
 type Category = { id: string; slug: string; name_es: string; name_en: string };
@@ -149,110 +149,95 @@ export function FocusedCatalogue({
   const es = locale === "es";
   if (section === "categories") {
     return (
-      <section className="panel console-card">
-        <details className="settings-disclosure">
-          <summary>{es ? "Crear categoría" : "Create category"}</summary>
-          <CategoryForm locale={locale} />
-        </details>
-        <AdminSearchList
-          locale={locale}
-          label={es ? "Categorías" : "Categories"}
-          items={categories.map((category) => ({
-            id: category.id,
-            search: [category.name_es, category.name_en, category.slug].join(
-              " ",
-            ),
-            content: (
-              <details className="settings-row">
-                <summary>
-                  {locale === "en" ? category.name_en : category.name_es}
-                </summary>
-                <CategoryForm locale={locale} category={category} />
-              </details>
-            ),
-          }))}
-        />
-      </section>
-    );
-  }
-  if (section === "cities") {
-    return (
-      <section className="panel console-card">
-        <details className="settings-disclosure">
-          <summary>{es ? "Crear localidad" : "Create locality"}</summary>
-          <CityForm locale={locale} />
-        </details>
-        <AdminSearchList
-          locale={locale}
-          label={es ? "Localidades" : "Localities"}
-          items={cities.map((city) => ({
-            id: city.id,
-            search: [
-              city.slug,
-              city.name_es,
-              city.name_en || "",
-              city.timezone,
-            ].join(" "),
-            content: (
-              <details className="settings-row">
-                <summary>
-                  {locale === "en"
-                    ? city.name_en || city.name_es
-                    : city.name_es}
-                </summary>
-                <CityForm locale={locale} city={city} />
-              </details>
-            ),
-          }))}
-        />
-      </section>
-    );
-  }
-  return (
-    <section className="panel console-card">
-      <AdminSearchList
+      <AdminWorkbench
         locale={locale}
-        label={es ? "Controles de plataforma" : "Platform controls"}
-        items={flags.map((flag) => ({
-          id: flag.key,
-          status: flag.enabled ? "enabled" : "disabled",
-          search: [
-            flag.key,
-            flag.label_es,
-            flag.label_en,
-            flag.enabled ? "on enabled" : "off disabled",
-          ].join(" "),
-          content: (
-            <details className="settings-row">
-              <summary>
-                {locale === "en" ? flag.label_en : flag.label_es}
-                <span className="status-pill">
-                  {flag.enabled ? "On" : "Off"}
-                </span>
-              </summary>
-              <form action={updateFeatureFlag} className="stack">
-                <input type="hidden" name="locale" value={locale} />
-                <input type="hidden" name="key" value={flag.key} />
-                <label className="switch-row">
-                  <input
-                    name="enabled"
-                    type="checkbox"
-                    defaultChecked={flag.enabled}
-                  />
-                  <span>{es ? "Activado" : "Enabled"}</span>
-                </label>
-                <label>
-                  {es ? "Motivo del cambio" : "Change reason"}
-                  <textarea name="reason" required minLength={10} />
-                </label>
-                <button className="button secondary" type="submit">
-                  {es ? "Guardar control" : "Save control"}
-                </button>
-              </form>
-            </details>
+        title={es ? "Categorías" : "Categories"}
+        createLabel={es ? "Nueva categoría" : "New category"}
+        createContent={<CategoryForm locale={locale} />}
+        items={categories.map((category) => ({
+          id: category.id,
+          title: es ? category.name_es : category.name_en || category.name_es,
+          subtitle: category.slug,
+          keywords: [category.name_es, category.name_en, category.slug].join(
+            " ",
           ),
+          content: <CategoryForm locale={locale} category={category} />,
         }))}
       />
-    </section>
+    );
+  }
+
+  if (section === "cities") {
+    return (
+      <AdminWorkbench
+        locale={locale}
+        title={es ? "Localidades" : "Localities"}
+        createLabel={es ? "Nueva localidad" : "New locality"}
+        createContent={<CityForm locale={locale} />}
+        items={cities.map((city) => ({
+          id: city.id,
+          title: es ? city.name_es : city.name_en || city.name_es,
+          subtitle: city.slug + " · " + city.timezone,
+          keywords: [city.slug, city.name_es, city.name_en, city.timezone]
+            .filter(Boolean)
+            .join(" "),
+          content: <CityForm locale={locale} city={city} />,
+        }))}
+      />
+    );
+  }
+
+  return (
+    <AdminWorkbench
+      locale={locale}
+      title={es ? "Funciones de plataforma" : "Platform features"}
+      statusLabels={{
+        enabled: es ? "Activado" : "Enabled",
+        disabled: es ? "Desactivado" : "Disabled",
+      }}
+      items={flags.map((flag) => ({
+        id: flag.key,
+        title: es ? flag.label_es : flag.label_en,
+        subtitle: flag.key.replaceAll("_", " "),
+        status: flag.enabled ? "enabled" : "disabled",
+        keywords: [flag.key, flag.label_es, flag.label_en].join(" "),
+        content: (
+          <form
+            action={updateFeatureFlag}
+            className="stack admin-workbench-form"
+          >
+            <input type="hidden" name="locale" value={locale} />
+            <input type="hidden" name="key" value={flag.key} />
+            <label className="admin-flag-toggle">
+              <input
+                name="enabled"
+                type="checkbox"
+                defaultChecked={flag.enabled}
+              />
+              <span>{es ? "Función activada" : "Feature enabled"}</span>
+            </label>
+            <label>
+              {es ? "Motivo del cambio" : "Change reason"}
+              <textarea
+                name="reason"
+                required
+                minLength={10}
+                maxLength={500}
+                placeholder={
+                  es
+                    ? "Explica por qué cambias este control…"
+                    : "Explain why you are changing this control…"
+                }
+              />
+            </label>
+            <div className="admin-workbench-action">
+              <button className="button primary" type="submit">
+                {es ? "Guardar control" : "Save setting"}
+              </button>
+            </div>
+          </form>
+        ),
+      }))}
+    />
   );
 }
