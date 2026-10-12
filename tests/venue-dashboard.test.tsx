@@ -230,7 +230,6 @@ describe("shared AkiBusiness media inventory", () => {
   });
 });
 
-
 describe("venue profile media picker", () => {
   it("uses the reusable event media gallery for profile slots", () => {
     const source = readFileSync("src/components/VenueMediaStudio.tsx", "utf8");
