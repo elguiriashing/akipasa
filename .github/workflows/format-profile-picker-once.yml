@@ -1,0 +1,31 @@
+name: Format profile picker once
+on:
+  push:
+    branches:
+      - fix/profile-media-popout-picker-20261012
+    paths:
+      - .github/workflows/format-profile-picker-once.yml
+permissions:
+  contents: write
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/profile-media-popout-picker-20261012
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Format and remove temporary formatter
+        run: |
+          npx prettier --write src/components/VenueMediaStudio.tsx tests/venue-dashboard.test.tsx
+          rm .github/workflows/format-profile-picker-once.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/components/VenueMediaStudio.tsx tests/venue-dashboard.test.tsx .github/workflows/format-profile-picker-once.yml
+          git commit -m "style: format profile gallery picker" || exit 0
+          git push origin HEAD:fix/profile-media-popout-picker-20261012
