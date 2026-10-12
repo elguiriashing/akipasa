@@ -236,14 +236,6 @@ export default async function SubscriptionPage({
                   ))}
                 </div>
               </details>
-              {customer && (
-                <form action={openBillingPortal}>
-                  <input type="hidden" name="locale" value={locale} />
-                  <button className="button secondary" type="submit">
-                    {es ? "Gestionar pago" : "Manage billing"}
-                  </button>
-                </form>
-              )}
             </section>
           )}
       </details>
