@@ -450,3 +450,5 @@ Live migration preflight must include managed Storage ownership/DDL permissions:
 HQ setup can create a named self-owned workspace before venue ownership, preserving separate venue authorisation. Auth redirects from membership retain the originating app. New-plan webhook customer mapping cannot overwrite a profile's existing Stripe customer.
 
 Responsive catalogue screenshot review also corrected Spanish add-on wording and preserved whole words in compact disabled purchase buttons.
+
+Live membership smoke verification found that the parent account layout replaced the subscription destination with the account root before page authentication. A server-derived, same-locale membership return header now preserves subscription/from through sign-in and terms acceptance; middleware removes caller-supplied headers, and unrelated account routes keep their previous return behavior. Regression coverage includes the actual layout guard, spoofed headers, and signed-out EN/ES browser aliases.

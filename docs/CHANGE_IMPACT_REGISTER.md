@@ -674,3 +674,5 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - **Membership compatibility:** preserve origin through public/account sign-in redirects, permit named HQ workspace preparation without requiring a venue, and reject new-plan webhook customer-map reassignment. No global HQ profile upgrade or implicit venue verification.
 
 Responsive catalogue screenshot review also corrected Spanish add-on wording and preserved whole words in compact disabled purchase buttons.
+
+Live membership smoke verification found that the parent account layout replaced the subscription destination with the account root before page authentication. A server-derived, same-locale membership return header now preserves subscription/from through sign-in and terms acceptance; middleware removes caller-supplied headers, and unrelated account routes keep their previous return behavior. Regression coverage includes the actual layout guard, spoofed headers, and signed-out EN/ES browser aliases.

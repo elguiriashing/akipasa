@@ -19,6 +19,26 @@ export function akiSuiteApp(value: unknown): AkiSuiteApp {
     ? value
     : "akipasa";
 }
+/** Preserve only a same-locale membership destination through the account layout. */
+export function akiSuiteMembershipReturnPath(
+  locale: "en" | "es",
+  candidate: string | null,
+) {
+  const fallback = `/${locale}/account`;
+  if (!candidate) return fallback;
+  try {
+    const url = new URL(candidate, "https://akipasa.com");
+    if (
+      url.origin !== "https://akipasa.com" ||
+      url.pathname !== `/${locale}/account/subscription`
+    )
+      return fallback;
+    const from = url.searchParams.get("from");
+    return `${url.pathname}${from ? `?from=${akiSuiteApp(from)}` : ""}`;
+  } catch {
+    return fallback;
+  }
+}
 export function akiSuitePlanApp(plan: AkiSuitePlan): AkiSuiteApp | "akisuite" {
   if (plan === "aki_enterprise") return "akisuite";
   if (plan.startsWith("akihq")) return "akihq";
