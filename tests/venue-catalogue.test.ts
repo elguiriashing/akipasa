@@ -21,6 +21,7 @@ describe("venue catalogue foundations", () => {
     expect(item.name).toEqual({ es: "Nuevo elemento", en: "New item" });
     expect(item.name.es.trim()).not.toBe("");
     expect(item.name.en.trim()).not.toBe("");
+    expect(item.id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
     expect(item.priceCents).toBe(0);
     expect(item.variants).toEqual([]);
   });
