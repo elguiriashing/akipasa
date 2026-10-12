@@ -235,8 +235,8 @@ describe("venue profile media picker", () => {
     const source = readFileSync("src/components/VenueMediaStudio.tsx", "utf8");
     expect(source).toContain('className="event-media-modal"');
     expect(source).toContain('className="event-media-modal-grid"');
-    expect(source).toContain('setPickerSlot(slot.key)');
-    expect(source).toContain('setPickerSearch(event.target.value)');
+    expect(source).toContain("setPickerSlot(slot.key)");
+    expect(source).toContain("setPickerSearch(event.target.value)");
     expect(source).toContain("setPlacement(pickerSlot, item.id)");
     expect(source).toContain("clearPlacement(pickerSlot)");
   });

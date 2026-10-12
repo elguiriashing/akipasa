@@ -92,7 +92,9 @@ export function VenueMediaStudio({
 }) {
   const es = locale === "es";
   const [items, setItems] = useState(media);
-  const [pickerSlot, setPickerSlot] = useState<VenueMediaPlacement | null>(null);
+  const [pickerSlot, setPickerSlot] = useState<VenueMediaPlacement | null>(
+    null,
+  );
   const [pickerPage, setPickerPage] = useState(0);
   const [pickerSearch, setPickerSearch] = useState("");
   const [headerIds, setHeaderIds] = useState(stayHeaderIds);
@@ -777,7 +779,9 @@ export function VenueMediaStudio({
                 >
                   ←
                 </button>
-                <span>{currentPickerPage + 1} / {pickerPages}</span>
+                <span>
+                  {currentPickerPage + 1} / {pickerPages}
+                </span>
                 <button
                   type="button"
                   disabled={currentPickerPage >= pickerPages - 1}
