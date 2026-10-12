@@ -231,8 +231,9 @@ export function AkiSuiteMembershipGrid({ locale, checkoutReady = false }: { loca
                   className={
                     featured ? "button button-strong" : "button secondary"
                   }
+                  disabled={!checkoutReady}
                 >
-                  {key === "akihq_business_addon"
+                  {!checkoutReady ? (es ? "Disponible próximamente" : "Coming soon") : key === "akihq_business_addon"
                     ? es
                       ? "Añadir a AkiHQ Pro"
                       : "Add to AkiHQ Pro"
