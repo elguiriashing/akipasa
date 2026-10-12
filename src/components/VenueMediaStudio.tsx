@@ -111,7 +111,10 @@ export function VenueMediaStudio({
   const pickerMatches = items.filter((item) =>
     item.alt.toLocaleLowerCase().includes(pickerSearch.toLocaleLowerCase()),
   );
-  const pickerPages = Math.max(1, Math.ceil(pickerMatches.length / pickerPageSize));
+  const pickerPages = Math.max(
+    1,
+    Math.ceil(pickerMatches.length / pickerPageSize),
+  );
   const currentPickerPage = Math.min(pickerPage, pickerPages - 1);
   const pickerItems = pickerMatches.slice(
     currentPickerPage * pickerPageSize,
@@ -736,7 +739,9 @@ export function VenueMediaStudio({
                   type="button"
                   key={item.id}
                   disabled={busy}
-                  className={slotState[pickerSlot] === item.id ? "selected" : ""}
+                  className={
+                    slotState[pickerSlot] === item.id ? "selected" : ""
+                  }
                   onClick={async () => {
                     await setPlacement(pickerSlot, item.id);
                     setPickerSlot(null);
@@ -748,7 +753,9 @@ export function VenueMediaStudio({
               ))}
             </div>
             {!pickerMatches.length ? (
-              <p>{es ? "No hay imágenes disponibles." : "No matching images."}</p>
+              <p>
+                {es ? "No hay imágenes disponibles." : "No matching images."}
+              </p>
             ) : null}
             <footer>
               <button
