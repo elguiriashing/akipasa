@@ -165,6 +165,8 @@ export default async function SubscriptionPage({
           )}
         </section>
       )}
+      <details className="account-control-card account-control-disclosure">
+        <summary>{es ? "Detalles del acceso anterior" : "Previous-plan access details"}</summary>
       {!accessUnavailable &&
         Boolean(
           subscriptions?.length ||
@@ -234,6 +236,7 @@ export default async function SubscriptionPage({
             )}
           </section>
         )}
+      </details>
       {!accessUnavailable &&
         (suiteCatalogueReady ? (
           <AkiSuiteMembershipGrid locale={locale} checkoutReady={suiteCatalogueReady} />
