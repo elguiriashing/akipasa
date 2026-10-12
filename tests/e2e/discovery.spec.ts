@@ -190,8 +190,12 @@ test("membership offer is reachable before sign in", async ({ page }) => {
       exact: true,
     }),
   ).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Aki Enterprise" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "AkiBusiness Premium" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Aki Enterprise" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "AkiBusiness Premium" }),
+  ).toBeVisible();
   const legacyPlans = page.locator("details.membership-details").first();
   await legacyPlans.locator("summary").click();
   await expect(
