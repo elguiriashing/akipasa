@@ -123,7 +123,7 @@ const order: AkiSuitePlan[] = [
   "aki_enterprise",
 ];
 
-export function AkiSuiteMembershipGrid({ locale }: { locale: "en" | "es" }) {
+export function AkiSuiteMembershipGrid({ locale, checkoutReady = false }: { locale: "en" | "es"; checkoutReady?: boolean }) {
   const [interval, setInterval] = useState<"month" | "year">("month");
   const es = locale === "es";
   const currency = new Intl.NumberFormat(es ? "es-ES" : "en-IE", {
