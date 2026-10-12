@@ -236,7 +236,7 @@ export default async function SubscriptionPage({
         )}
       {!accessUnavailable &&
         (suiteCatalogueReady ? (
-          <AkiSuiteMembershipGrid locale={locale} />
+          <AkiSuiteMembershipGrid locale={locale} checkoutReady={suiteCatalogueReady} />
         ) : (
           <MembershipPicker locale={locale} initialPlan={query.plan}>
             {plans.map((item) => (
