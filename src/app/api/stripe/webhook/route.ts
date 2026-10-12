@@ -1,4 +1,5 @@
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
+import { matchConfiguredAkiSuitePriceId } from "@/lib/akisuite-stripe";
 import {
   stripeBillingPlanForPrice,
   stripeEventSubscriptionId,
@@ -83,10 +84,11 @@ async function processEvent(event: StripeEvent) {
     | undefined;
   const priceId = stringValue(subscriptionItems?.data?.[0]?.price?.id);
   const pricePlan = stripeBillingPlanForPrice(priceId);
+  const akiSuitePricePlan = pricePlan ? null : matchConfiguredAkiSuitePriceId(priceId);
   // Unknown prices belong to other products; metadata cannot grant a paid tier.
-  if (!pricePlan) return;
-  const planCode = pricePlan.plan;
-  const billingInterval = pricePlan.interval;
+  if (!pricePlan && !akiSuitePricePlan) return;
+  const planCode = (pricePlan || akiSuitePricePlan)!.plan;
+  const billingInterval = (pricePlan || akiSuitePricePlan)!.interval;
   const subscriptionId = stringValue(object.id);
   const customerId = stripeObjectId(object.customer);
   const { data: existingSubscription, error: subscriptionLookupError } =
@@ -96,6 +98,15 @@ async function processEvent(event: StripeEvent) {
       .eq("stripe_subscription_id", relatedSubscription)
       .maybeSingle();
   if (subscriptionLookupError) throw subscriptionLookupError;
+  const { data: existingAkiSuiteSubscription, error: akiSuiteLookupError } =
+    akiSuitePricePlan
+      ? await supabase
+          .from("akisuite_billing_subscriptions")
+          .select("profile_id,stripe_customer_id")
+          .eq("stripe_subscription_id", relatedSubscription)
+          .maybeSingle()
+      : { data: null, error: null };
+  if (akiSuiteLookupError) throw akiSuiteLookupError;
   const { data: existingCustomer, error: customerLookupError } = await supabase
     .from("billing_customers")
     .select("profile_id")
@@ -104,6 +115,7 @@ async function processEvent(event: StripeEvent) {
   if (customerLookupError) throw customerLookupError;
   const profileId =
     existingSubscription?.profile_id ||
+    existingAkiSuiteSubscription?.profile_id ||
     existingCustomer?.profile_id ||
     stringValue(metadata.profile_id);
   if (
@@ -111,6 +123,10 @@ async function processEvent(event: StripeEvent) {
     existingSubscription.stripe_customer_id !== customerId
   )
     throw new Error("Subscription customer mismatch");
+  if (
+    existingAkiSuiteSubscription &&
+    existingAkiSuiteSubscription.stripe_customer_id !== customerId
+  ) throw new Error("AkiSuite subscription customer mismatch");
   if (existingCustomer && existingCustomer.profile_id !== profileId)
     throw new Error("Subscription ownership mismatch");
   const objectStatus = stringValue(object.status);
@@ -121,7 +137,7 @@ async function processEvent(event: StripeEvent) {
     !profileId ||
     !subscriptionId ||
     !customerId ||
-    !["premium", "business", "business_pro"].includes(planCode || "") ||
+    !(akiSuitePricePlan || ["premium", "business", "business_pro"].includes(planCode || "")) ||
     !["month", "year"].includes(billingInterval || "") ||
     !status ||
     !subscriptionStatuses.has(status) ||
@@ -141,7 +157,7 @@ async function processEvent(event: StripeEvent) {
     );
   if (customerError) throw customerError;
 
-  const { error } = await supabase.rpc("sync_stripe_subscription", {
+  const { error } = await supabase.rpc(akiSuitePricePlan ? "sync_akisuite_subscription" : "sync_stripe_subscription", {
     p_subscription_id: subscriptionId,
     p_profile: profileId,
     p_customer_id: customerId,
