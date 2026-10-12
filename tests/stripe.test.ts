@@ -253,6 +253,7 @@ vi.mock("@/lib/supabase/service", () => ({
   createSupabaseServiceClient: () => webhookDb,
 }));
 vi.mock("@/lib/stripe", async () => await import("../src/lib/stripe"));
+vi.mock("@/lib/akisuite-stripe", async () => await import("../src/lib/akisuite-stripe"));
 vi.mock(
   "@/lib/request-security",
   async () => await import("../src/lib/request-security"),
