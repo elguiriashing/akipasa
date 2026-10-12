@@ -38,98 +38,107 @@ export default async function MembershipPage({
           {es ? "Gestionar" : "Manage"}
         </Link>
       </header>
-      <AkiSuiteMembershipGrid locale={locale} checkoutReady={suiteCatalogueReady} />
+      <AkiSuiteMembershipGrid
+        locale={locale}
+        checkoutReady={suiteCatalogueReady}
+      />
       {!suiteCatalogueReady && (
         <details className="membership-details">
-          <summary>{es ? "Gestionar los planes anteriores disponibles" : "Manage currently available legacy plans"}</summary>
-        <MembershipPicker locale={locale}>
-          <MembershipCard
-            locale={locale}
-            plan="premium"
-            title={es ? "Premium personal" : "Personal Premium"}
-            description={
-              es
-                ? "Para quienes quieren sacar más partido a sus planes, progreso y ventajas locales."
-                : "For people who want more from local plans, progress, and member benefits."
-            }
-            monthly={"\u20ac1.99"}
-            yearly={"\u20ac19.99"}
-            saving={
-              es ? "Ahorra \u20ac3,89 al a\u00f1o" : "Save \u20ac3.89 each year"
-            }
-            features={
-              es
-                ? [
-                    "Ofertas exclusivas en locales participantes",
-                    "Doble XP en cada check-in aceptado",
-                    "Exportación de eventos y guardados al calendario",
-                  ]
-                : [
-                    "Member-only offers at participating venues",
-                    "Double XP on every accepted check-in",
-                    "Calendar export for events and saved plans",
-                  ]
-            }
-            signedIn={signedIn}
-          />
-          <MembershipCard
-            locale={locale}
-            plan="business"
-            title="AkiHQ Business"
-            description={
-              es
-                ? "Para negocios que quieren añadir herramientas de CRM, tareas y equipo a su ficha gratuita."
-                : "For businesses adding CRM, task and team tools to their free listing."
-            }
-            monthly="€20"
-            yearly="€190"
-            saving={es ? "Ahorra €50 al año" : "Save €50 each year"}
-            features={
-              es
-                ? [
-                    "Perfil de negocio y equipo",
-                    "Locales, eventos y analítica",
-                    "Fidelidad, promociones y ofertas Premium",
-                  ]
-                : [
-                    "Business profile and team",
-                    "Venues, events, and analytics",
-                    "Loyalty, promotions, and Premium offers",
-                  ]
-            }
-            featured
-            signedIn={signedIn}
-            id="business-plan"
-          />
-          <MembershipCard
-            locale={locale}
-            plan="business_pro"
-            title="AkiHQ Pro"
-            description={
-              es
-                ? "Para negocios que necesitan un CRM operativo seguro, equipo e inventario inteligente."
-                : "For businesses that need a secure operational CRM, team access, and smart inventory."
-            }
-            monthly="€60"
-            yearly="€570"
-            saving={es ? "Ahorra €150 al año" : "Save €150 each year"}
-            features={
-              es
-                ? [
-                    "Todo lo incluido en AkiPasa Business",
-                    "AkiHQ CRM con espacio de trabajo privado",
-                    "Hasta 4 usuarios e inventario inteligente",
-                  ]
-                : [
-                    "Everything in AkiPasa Business",
-                    "AkiHQ CRM with a private workspace",
-                    "Up to 4 users and smart inventory",
-                  ]
-            }
-            signedIn={signedIn}
-            id="business-pro-plan"
-          />
-        </MembershipPicker>
+          <summary>
+            {es
+              ? "Gestionar los planes anteriores disponibles"
+              : "Manage currently available legacy plans"}
+          </summary>
+          <MembershipPicker locale={locale}>
+            <MembershipCard
+              locale={locale}
+              plan="premium"
+              title={es ? "Premium personal" : "Personal Premium"}
+              description={
+                es
+                  ? "Para quienes quieren sacar más partido a sus planes, progreso y ventajas locales."
+                  : "For people who want more from local plans, progress, and member benefits."
+              }
+              monthly={"\u20ac1.99"}
+              yearly={"\u20ac19.99"}
+              saving={
+                es
+                  ? "Ahorra \u20ac3,89 al a\u00f1o"
+                  : "Save \u20ac3.89 each year"
+              }
+              features={
+                es
+                  ? [
+                      "Ofertas exclusivas en locales participantes",
+                      "Doble XP en cada check-in aceptado",
+                      "Exportación de eventos y guardados al calendario",
+                    ]
+                  : [
+                      "Member-only offers at participating venues",
+                      "Double XP on every accepted check-in",
+                      "Calendar export for events and saved plans",
+                    ]
+              }
+              signedIn={signedIn}
+            />
+            <MembershipCard
+              locale={locale}
+              plan="business"
+              title="AkiHQ Business"
+              description={
+                es
+                  ? "Para negocios que quieren añadir herramientas de CRM, tareas y equipo a su ficha gratuita."
+                  : "For businesses adding CRM, task and team tools to their free listing."
+              }
+              monthly="€20"
+              yearly="€190"
+              saving={es ? "Ahorra €50 al año" : "Save €50 each year"}
+              features={
+                es
+                  ? [
+                      "Perfil de negocio y equipo",
+                      "Locales, eventos y analítica",
+                      "Fidelidad, promociones y ofertas Premium",
+                    ]
+                  : [
+                      "Business profile and team",
+                      "Venues, events, and analytics",
+                      "Loyalty, promotions, and Premium offers",
+                    ]
+              }
+              featured
+              signedIn={signedIn}
+              id="business-plan"
+            />
+            <MembershipCard
+              locale={locale}
+              plan="business_pro"
+              title="AkiHQ Pro"
+              description={
+                es
+                  ? "Para negocios que necesitan un CRM operativo seguro, equipo e inventario inteligente."
+                  : "For businesses that need a secure operational CRM, team access, and smart inventory."
+              }
+              monthly="€60"
+              yearly="€570"
+              saving={es ? "Ahorra €150 al año" : "Save €150 each year"}
+              features={
+                es
+                  ? [
+                      "Todo lo incluido en AkiPasa Business",
+                      "AkiHQ CRM con espacio de trabajo privado",
+                      "Hasta 4 usuarios e inventario inteligente",
+                    ]
+                  : [
+                      "Everything in AkiPasa Business",
+                      "AkiHQ CRM with a private workspace",
+                      "Up to 4 users and smart inventory",
+                    ]
+              }
+              signedIn={signedIn}
+              id="business-pro-plan"
+            />
+          </MembershipPicker>
         </details>
       )}
       <div className="membership-free-row">

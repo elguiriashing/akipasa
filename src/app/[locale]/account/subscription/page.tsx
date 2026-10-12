@@ -70,11 +70,15 @@ export default async function SubscriptionPage({
       .eq("id", user.id)
       .maybeSingle(),
   ]);
-  const suiteRows = process.env.AKISUITE_SUBSCRIPTIONS_READY === "true"
-    ? await supabase.from("akisuite_billing_subscriptions")
-        .select("plan_code,billing_interval,status,current_period_end,cancel_at_period_end")
-        .eq("profile_id", user.id)
-    : { data: [], error: null };
+  const suiteRows =
+    process.env.AKISUITE_SUBSCRIPTIONS_READY === "true"
+      ? await supabase
+          .from("akisuite_billing_subscriptions")
+          .select(
+            "plan_code,billing_interval,status,current_period_end,cancel_at_period_end",
+          )
+          .eq("profile_id", user.id)
+      : { data: [], error: null };
   const es = locale === "es";
   const suiteCatalogueReady =
     process.env.AKISUITE_CHECKOUT_ENABLED === "true" &&
@@ -117,7 +121,9 @@ export default async function SubscriptionPage({
         suite={suiteRows.data || []}
         grants={grants || []}
         hasStripeCustomer={Boolean(customer?.stripe_customer_id)}
-        unavailable={Boolean(subscriptionsError || grantsError || customerError || suiteRows.error)}
+        unavailable={Boolean(
+          subscriptionsError || grantsError || customerError || suiteRows.error,
+        )}
         now={Date.now()}
       />
       {query.checkout === "success" && query.session_id && (
@@ -166,80 +172,87 @@ export default async function SubscriptionPage({
         </section>
       )}
       <details className="account-control-card account-control-disclosure">
-        <summary>{es ? "Detalles del acceso anterior" : "Previous-plan access details"}</summary>
-      {!accessUnavailable &&
-        Boolean(
-          subscriptions?.length ||
-            grants?.length ||
-            profile?.membership_tier === "premium" ||
-            profile?.business_plan_active,
-        ) && (
-          <section className="subscription-access account-control-card">
-            <header className="account-control-heading">
-              <span className="account-control-icon">
-                <Icon name="membership" />
-              </span>
-              <div>
-                <h2>{es ? "Acceso actual" : "Current access"}</h2>
-                <p>
-                  {es
-                    ? "Tus planes y permisos de membresía."
-                    : "Your plans and membership access."}
-                </p>
-              </div>
-            </header>
-            <div className="account-access-badges">
-              {profile?.membership_tier === "premium" && (
-                <p>
-                  <strong>Premium</strong>: {es ? "activo" : "active"}
-                </p>
-              )}
-              {profile?.business_plan_active && (
-                <p>
-                  <strong>
-                    {profile.business_tier === "business_pro"
-                      ? "Business Pro"
-                      : "Business"}
-                  </strong>
-                  : {es ? "activo" : "active"}
-                </p>
-              )}
-            </div>
-            <details className="subscription-records account-control-disclosure">
-              <summary>{es ? "Detalles del acceso" : "Access details"}</summary>
-              <div className="account-disclosure-content account-access-records">
-                {subscriptions?.map((item) => (
-                  <p key={`${item.plan_code}-${item.billing_interval}`}>
-                    <strong>{planLabel(item.plan_code)}</strong>:{" "}
-                    {accessLabel(item.status, es)} (
-                    {accessLabel(item.billing_interval, es)})
+        <summary>
+          {es ? "Detalles del acceso anterior" : "Previous-plan access details"}
+        </summary>
+        {!accessUnavailable &&
+          Boolean(
+            subscriptions?.length ||
+              grants?.length ||
+              profile?.membership_tier === "premium" ||
+              profile?.business_plan_active,
+          ) && (
+            <section className="subscription-access account-control-card">
+              <header className="account-control-heading">
+                <span className="account-control-icon">
+                  <Icon name="membership" />
+                </span>
+                <div>
+                  <h2>{es ? "Acceso actual" : "Current access"}</h2>
+                  <p>
+                    {es
+                      ? "Tus planes y permisos de membresía."
+                      : "Your plans and membership access."}
                   </p>
-                ))}
-                {grants?.map((item) => (
-                  <p key={`${item.plan_code}-${item.grant_kind}`}>
-                    <strong>{planLabel(item.plan_code)}</strong>:{" "}
-                    {accessLabel(item.grant_kind, es)}
-                    {item.expires_at
-                      ? ` - ${item.expires_at.slice(0, 10)}`
-                      : ""}
+                </div>
+              </header>
+              <div className="account-access-badges">
+                {profile?.membership_tier === "premium" && (
+                  <p>
+                    <strong>Premium</strong>: {es ? "activo" : "active"}
                   </p>
-                ))}
+                )}
+                {profile?.business_plan_active && (
+                  <p>
+                    <strong>
+                      {profile.business_tier === "business_pro"
+                        ? "Business Pro"
+                        : "Business"}
+                    </strong>
+                    : {es ? "activo" : "active"}
+                  </p>
+                )}
               </div>
-            </details>
-            {customer && (
-              <form action={openBillingPortal}>
-                <input type="hidden" name="locale" value={locale} />
-                <button className="button secondary" type="submit">
-                  {es ? "Gestionar pago" : "Manage billing"}
-                </button>
-              </form>
-            )}
-          </section>
-        )}
+              <details className="subscription-records account-control-disclosure">
+                <summary>
+                  {es ? "Detalles del acceso" : "Access details"}
+                </summary>
+                <div className="account-disclosure-content account-access-records">
+                  {subscriptions?.map((item) => (
+                    <p key={`${item.plan_code}-${item.billing_interval}`}>
+                      <strong>{planLabel(item.plan_code)}</strong>:{" "}
+                      {accessLabel(item.status, es)} (
+                      {accessLabel(item.billing_interval, es)})
+                    </p>
+                  ))}
+                  {grants?.map((item) => (
+                    <p key={`${item.plan_code}-${item.grant_kind}`}>
+                      <strong>{planLabel(item.plan_code)}</strong>:{" "}
+                      {accessLabel(item.grant_kind, es)}
+                      {item.expires_at
+                        ? ` - ${item.expires_at.slice(0, 10)}`
+                        : ""}
+                    </p>
+                  ))}
+                </div>
+              </details>
+              {customer && (
+                <form action={openBillingPortal}>
+                  <input type="hidden" name="locale" value={locale} />
+                  <button className="button secondary" type="submit">
+                    {es ? "Gestionar pago" : "Manage billing"}
+                  </button>
+                </form>
+              )}
+            </section>
+          )}
       </details>
       {!accessUnavailable &&
         (suiteCatalogueReady ? (
-          <AkiSuiteMembershipGrid locale={locale} checkoutReady={suiteCatalogueReady} />
+          <AkiSuiteMembershipGrid
+            locale={locale}
+            checkoutReady={suiteCatalogueReady}
+          />
         ) : (
           <MembershipPicker locale={locale} initialPlan={query.plan}>
             {plans.map((item) => (

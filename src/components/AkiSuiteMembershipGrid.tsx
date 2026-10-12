@@ -123,7 +123,13 @@ const order: AkiSuitePlan[] = [
   "aki_enterprise",
 ];
 
-export function AkiSuiteMembershipGrid({ locale, checkoutReady = false }: { locale: "en" | "es"; checkoutReady?: boolean }) {
+export function AkiSuiteMembershipGrid({
+  locale,
+  checkoutReady = false,
+}: {
+  locale: "en" | "es";
+  checkoutReady?: boolean;
+}) {
   const [interval, setInterval] = useState<"month" | "year">("month");
   const es = locale === "es";
   const currency = new Intl.NumberFormat(es ? "es-ES" : "en-IE", {
@@ -233,13 +239,17 @@ export function AkiSuiteMembershipGrid({ locale, checkoutReady = false }: { loca
                   }
                   disabled={!checkoutReady}
                 >
-                  {!checkoutReady ? (es ? "Disponible próximamente" : "Coming soon") : key === "akihq_business_addon"
+                  {!checkoutReady
                     ? es
-                      ? "Añadir a AkiHQ Pro"
-                      : "Add to AkiHQ Pro"
-                    : es
-                      ? "Elegir plan"
-                      : "Choose plan"}
+                      ? "Disponible próximamente"
+                      : "Coming soon"
+                    : key === "akihq_business_addon"
+                      ? es
+                        ? "Añadir a AkiHQ Pro"
+                        : "Add to AkiHQ Pro"
+                      : es
+                        ? "Elegir plan"
+                        : "Choose plan"}
                 </button>
               </form>
             </article>
