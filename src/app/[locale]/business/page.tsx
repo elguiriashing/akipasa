@@ -301,9 +301,13 @@ export default async function BusinessPage({
     process.env.AKISUITE_CHECKOUT_ENABLED === "true" &&
     process.env.AKISUITE_TAX_READY === "true" &&
     Boolean(process.env.AKISUITE_STRIPE_ACCOUNT_ID);
-  const { data: premiumActive } = view === "growth" && premiumEnabled
-    ? await supabase.rpc("has_akisuite_plan", { p_profile: user.id, p_plan: "akibusiness_premium" })
-    : { data: false };
+  const { data: premiumActive } =
+    view === "growth" && premiumEnabled
+      ? await supabase.rpc("has_akisuite_plan", {
+          p_profile: user.id,
+          p_plan: "akibusiness_premium",
+        })
+      : { data: false };
 
   return (
     <WorkspaceShell

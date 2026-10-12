@@ -122,16 +122,33 @@ export function BusinessGrowthOverview({
           </div>
           <div className={styles.future}>
             <span className={styles.pill}>
-              {premiumActive ? (es ? "Premium activo" : "Premium active") : premiumEnabled ? (es ? "Plan Premium" : "Premium plan") : (es ? "Próximamente" : "Coming later")}
+              {premiumActive
+                ? es
+                  ? "Premium activo"
+                  : "Premium active"
+                : premiumEnabled
+                  ? es
+                    ? "Plan Premium"
+                    : "Premium plan"
+                  : es
+                    ? "Próximamente"
+                    : "Coming later"}
             </span>
             <h4>AkiBusiness Premium · €14.99/{es ? "mes" : "month"}</h4>
             <p>
               {premiumEnabled
-                ? (es ? "Automatiza eventos, reutiliza contenido y consigue información avanzada." : "Automate events, reuse content and unlock advanced insights.")
-                : (es ? "Repetición automática de eventos, plantillas, biblioteca ampliada y análisis detallados. Todavía no se puede contratar." : "Automatic event recurrence, templates, expanded media and detailed insights. Checkout is not available yet.")}
+                ? es
+                  ? "Automatiza eventos, reutiliza contenido y consigue información avanzada."
+                  : "Automate events, reuse content and unlock advanced insights."
+                : es
+                  ? "Repetición automática de eventos, plantillas, biblioteca ampliada y análisis detallados. Todavía no se puede contratar."
+                  : "Automatic event recurrence, templates, expanded media and detailed insights. Checkout is not available yet."}
             </p>
             {premiumEnabled && !premiumActive && (
-              <Link className="button button-strong" href={`/${locale}/account/subscription`}>
+              <Link
+                className="button button-strong"
+                href={`/${locale}/account/subscription`}
+              >
                 {es ? "Ver AkiBusiness Premium" : "Explore AkiBusiness Premium"}
               </Link>
             )}
