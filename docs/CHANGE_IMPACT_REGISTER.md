@@ -613,3 +613,10 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - Security: venue access and SQL/RLS unchanged. Published allergen confirmation enforcement unchanged. Existing catalogue records unchanged. Other portals, translations of existing content, API and SEO unaffected.
 - Rollback: revert code-only commits; no schema or data migration.
 - Checks: no local Node checkout in connector runtime; full npm, browser E2E, Cloudflare build and authenticated live checks unverified. Do not merge without green checks and release approval.
+
+## 2026-10-12 | Independent AkiSuite catalogue foundation (NOT LIVE)
+
+- Request: separate AkiBusiness marketing from AkiHQ operations, AkiDuermo and consumer premium, with 20% annual discount and bundle.
+- Change: add typed standalone catalogue with pricing and composition tests; add staged rollout and rollback documentation. No checkout, DB, webhook, media or event behavior changed.
+- Dependencies: existing Stripe billing and migrations use legacy premium/business/business_pro; the staged catalogue does not grant access. Locales, routes, analytics, claims and storage untouched.
+- Verification: review only; no npm check/CI or Stripe live transaction verified. Do not merge without verified checks. Rollback: revert new files and documentation.
