@@ -323,6 +323,9 @@ describe("payment event fulfillment", () => {
       sync: webhookDb.rpc.mock.calls.filter(
         ([name]) => name === "sync_stripe_subscription",
       ),
+      suiteSync: webhookDb.rpc.mock.calls.filter(
+        ([name]) => name === "sync_akisuite_subscription",
+      ),
     };
   }
   it.each([
@@ -380,6 +383,37 @@ describe("payment event fulfillment", () => {
     expect(duplicate.sync).toHaveLength(0);
     expect(duplicate.fetchMock).not.toHaveBeenCalled();
   });
+  it("fulfils configured Enterprise via the isolated ledger, not legacy plans", async () => {
+    vi.stubEnv("STRIPE_AKISUITE_ENTERPRISE_MONTH_PRICE_ID", "price_suite_enterprise");
+    const result = await deliver(
+      "checkout.session.completed",
+      { subscription: "sub_test", payment_status: "paid" },
+      "active",
+      "price_suite_enterprise",
+    );
+    expect(result.response.status).toBe(200);
+    expect(result.sync).toHaveLength(0);
+    expect(result.suiteSync).toHaveLength(1);
+    expect(result.suiteSync[0][1]).toMatchObject({
+      p_plan: "aki_enterprise",
+      p_interval: "month",
+      p_status: "active",
+      p_profile: "profile_test",
+    });
+  });
+
+  it("does not grant new entitlements for unpaid AkiSuite checkout", async () => {
+    vi.stubEnv("STRIPE_AKISUITE_ENTERPRISE_MONTH_PRICE_ID", "price_suite_enterprise");
+    const result = await deliver(
+      "checkout.session.completed",
+      { subscription: "sub_test", payment_status: "unpaid" },
+      "incomplete",
+      "price_suite_enterprise",
+    );
+    expect(result.suiteSync).toHaveLength(0);
+    expect(result.fetchMock).not.toHaveBeenCalled();
+  });
+
   it("does not grant access for unrelated products with misleading metadata", async () => {
     const result = await deliver(
       "customer.subscription.created",
