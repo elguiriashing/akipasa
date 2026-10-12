@@ -147,7 +147,9 @@ describe("integrated Admin rewards tabs", () => {
       "utf8",
     );
     expect(source).toContain("reviewBusinessApplication");
-    expect(readFileSync(root + "FocusedCatalogue.tsx", "utf8")).toContain("<AdminWorkbench");
+    expect(readFileSync(root + "FocusedCatalogue.tsx", "utf8")).toContain(
+      "<AdminWorkbench",
+    );
     expect(readFileSync(root + "promotions/page.tsx", "utf8")).toContain(
       "updatePromotion",
     );

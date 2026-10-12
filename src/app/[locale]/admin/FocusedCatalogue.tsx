@@ -158,7 +158,9 @@ export function FocusedCatalogue({
           id: category.id,
           title: es ? category.name_es : category.name_en || category.name_es,
           subtitle: category.slug,
-          keywords: [category.name_es, category.name_en, category.slug].join(" "),
+          keywords: [category.name_es, category.name_en, category.slug].join(
+            " ",
+          ),
           content: <CategoryForm locale={locale} category={category} />,
         }))}
       />
@@ -176,7 +178,9 @@ export function FocusedCatalogue({
           id: city.id,
           title: es ? city.name_es : city.name_en || city.name_es,
           subtitle: city.slug + " · " + city.timezone,
-          keywords: [city.slug, city.name_es, city.name_en, city.timezone].filter(Boolean).join(" "),
+          keywords: [city.slug, city.name_es, city.name_en, city.timezone]
+            .filter(Boolean)
+            .join(" "),
           content: <CityForm locale={locale} city={city} />,
         }))}
       />
@@ -198,11 +202,18 @@ export function FocusedCatalogue({
         status: flag.enabled ? "enabled" : "disabled",
         keywords: [flag.key, flag.label_es, flag.label_en].join(" "),
         content: (
-          <form action={updateFeatureFlag} className="stack admin-workbench-form">
+          <form
+            action={updateFeatureFlag}
+            className="stack admin-workbench-form"
+          >
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="key" value={flag.key} />
             <label className="admin-flag-toggle">
-              <input name="enabled" type="checkbox" defaultChecked={flag.enabled} />
+              <input
+                name="enabled"
+                type="checkbox"
+                defaultChecked={flag.enabled}
+              />
               <span>{es ? "Función activada" : "Feature enabled"}</span>
             </label>
             <label>
@@ -212,7 +223,11 @@ export function FocusedCatalogue({
                 required
                 minLength={10}
                 maxLength={500}
-                placeholder={es ? "Explica por qué cambias este control…" : "Explain why you are changing this control…"}
+                placeholder={
+                  es
+                    ? "Explica por qué cambias este control…"
+                    : "Explain why you are changing this control…"
+                }
               />
             </label>
             <div className="admin-workbench-action">

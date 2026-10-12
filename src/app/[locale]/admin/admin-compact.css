@@ -222,7 +222,9 @@
 .admin-workspace .admin-master-editor-body > form > .admin-flag-toggle {
   grid-column: 1 / -1;
 }
-.admin-workspace .admin-master-editor-body :where(input:not([type="checkbox"]), select, textarea) {
+.admin-workspace
+  .admin-master-editor-body
+  :where(input:not([type="checkbox"]), select, textarea) {
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
@@ -472,7 +474,8 @@
   border-radius: 0.75rem;
   overflow-wrap: anywhere;
 }
-.admin-workspace :is(.admin-master-detail, .admin-relevance-workspace)
+.admin-workspace
+  :is(.admin-master-detail, .admin-relevance-workspace)
   :is(button, input, select, textarea, a):focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 3px;
