@@ -729,6 +729,17 @@ export async function removeVenueImage(formData: FormData) {
     if (inline) return { ok: false as const, error: "media" };
     redirect(destination(locale, venueId, "error=media"));
   }
+  // The shared bin may feed multiple public venue/event surfaces. Never
+  // remove a file that is still referenced by a placement.
+  const { count: placementCount, error: placementError } = await supabase
+    .from("venue_media_placements")
+    .select("id", { count: "exact", head: true })
+    .eq("venue_id", parsed.data.venueId)
+    .eq("media_id", parsed.data.mediaId);
+  if (placementError || (placementCount ?? 0) > 0) {
+    if (inline) return { ok: false as const, error: "media-in-use" };
+    redirect(destination(locale, venueId, "error=media-in-use"));
+  }
   const { error: storageError } = await supabase.storage
     .from("event-media")
     .remove([media.storage_path]);
