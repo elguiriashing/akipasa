@@ -6,6 +6,7 @@ import {
 } from "./akisuite-catalogue";
 import { stripeRetrieve } from "./stripe";
 
+// Keep this adapter disconnected until workspace entitlements and signed webhooks support the new plan codes.
 export type AkiSuiteInterval = "month" | "year";
 
 /** New plan IDs are deliberately independent of legacy premium/business/business_pro price IDs. */
