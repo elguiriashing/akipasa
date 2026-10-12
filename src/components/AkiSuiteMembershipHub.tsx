@@ -160,7 +160,7 @@ export function AkiSuiteMembershipHub({
         </div>
       </header>
       {unavailable ? (
-        <div className={styles.empty} role="alert">
+        <div className={styles.empty} role="status">
           {es
             ? "No se han podido cargar todas tus suscripciones. Vuelve a intentarlo antes de hacer cambios."
             : "We couldn't load all your subscriptions. Try again before making any changes."}
