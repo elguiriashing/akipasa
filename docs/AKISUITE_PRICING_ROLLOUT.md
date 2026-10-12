@@ -6,7 +6,7 @@ Legacy billing currently maps premium, business and business_pro; business and b
 
 Rollout scope: verify merchant and VAT rules; create product/price IDs in approved account; add workspace entitlements and backward-compatible database/webhook processing; build AkiBusiness Growth, recurrence, duplication, templates and server-enforced media quotas; add AkiDuermo features; update EN/ES membership and account screens; coordinate AkiHQ; run lint, typecheck, unit, browser, checkout and webhook tests before release. The consumer account must display only consumer membership.
 
-Annual EUR prices in cents are Math.round(monthlyCents * 12 * 0.8). Enterprise €79.99 monthly includes AkiPasa Premium, AkiBusiness Premium, AkiDuermo Premium, AkiHQ Pro. The €7.99 add-on requires active HQ Pro, including on renewal/downgrade.
+Annual EUR prices in cents are Math.round(monthlyCents _ 12 _ 0.8). Enterprise €79.99 monthly includes AkiPasa Premium, AkiBusiness Premium, AkiDuermo Premium, AkiHQ Pro. The €7.99 add-on requires active HQ Pro, including on renewal/downgrade.
 
 Dependencies: consumer and business accounts, staff roles, Stripe webhook, Supabase billing grants and RLS, media storage, event scheduling, analytics consent, localization, Cloudflare environment. Rollback: revert isolated catalogue commit; no Stripe resources or migrations created.
 

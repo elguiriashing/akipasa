@@ -3,8 +3,14 @@ import { describe, expect, it } from "vitest";
 
 describe("AkiBusiness Growth rollout boundaries", () => {
   const page = readFileSync("src/app/[locale]/business/page.tsx", "utf8");
-  const growth = readFileSync("src/components/BusinessGrowthOverview.tsx", "utf8");
-  const css = readFileSync("src/components/BusinessGrowthOverview.module.css", "utf8");
+  const growth = readFileSync(
+    "src/components/BusinessGrowthOverview.tsx",
+    "utf8",
+  );
+  const css = readFileSync(
+    "src/components/BusinessGrowthOverview.module.css",
+    "utf8",
+  );
 
   it("preserves authorized business entry and existing promotion request form", () => {
     expect(page).toContain("requireBusinessAccess");

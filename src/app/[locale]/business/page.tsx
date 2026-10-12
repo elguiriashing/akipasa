@@ -247,7 +247,7 @@ export default async function BusinessPage({
     (event) => !archivedEvents.includes(event) && !pastEvents.includes(event),
   );
   const analytics =
-    (view === "analytics" || view === "growth")
+    view === "analytics" || view === "growth"
       ? await Promise.all(
           managed
             .filter((item) => item.venues)
@@ -876,18 +876,29 @@ export default async function BusinessPage({
           <BusinessGrowthOverview
             locale={locale}
             events={businessEvents.length}
-            venues={managed.filter((item) => item.venues).map((item) => {
-              const venue = item.venues!;
-              const result = analytics.find((entry) => entry.venue.id === venue.id);
-              return {
-                id: venue.id,
-                name: venue.name,
-                events: businessEvents.filter((event) => event.venue_id === venue.id).length,
-                interactions: result?.rows.length
-                  ? result.rows.reduce((total, row) => total + Number(row.total || 0), 0)
-                  : result ? 0 : null,
-              };
-            })}
+            venues={managed
+              .filter((item) => item.venues)
+              .map((item) => {
+                const venue = item.venues!;
+                const result = analytics.find(
+                  (entry) => entry.venue.id === venue.id,
+                );
+                return {
+                  id: venue.id,
+                  name: venue.name,
+                  events: businessEvents.filter(
+                    (event) => event.venue_id === venue.id,
+                  ).length,
+                  interactions: result?.rows.length
+                    ? result.rows.reduce(
+                        (total, row) => total + Number(row.total || 0),
+                        0,
+                      )
+                    : result
+                      ? 0
+                      : null,
+                };
+              })}
           />
         )}
 
