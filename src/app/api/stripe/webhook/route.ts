@@ -89,6 +89,14 @@ async function processEvent(event: StripeEvent) {
     : matchConfiguredAkiSuitePriceId(priceId);
   // Unknown prices belong to other products; metadata cannot grant a paid tier.
   if (!pricePlan && !akiSuitePricePlan) return;
+  if (
+    akiSuitePricePlan &&
+    (process.env.AKISUITE_SUBSCRIPTIONS_READY !== "true" ||
+      subscriptionItems?.data?.length !== 1)
+  )
+    throw new Error(
+      "AkiSuite billing is not ready or subscription has unsupported items",
+    );
   const planCode = (pricePlan || akiSuitePricePlan)!.plan;
   const billingInterval = (pricePlan || akiSuitePricePlan)!.interval;
   const subscriptionId = stringValue(object.id);
@@ -104,7 +112,7 @@ async function processEvent(event: StripeEvent) {
     akiSuitePricePlan
       ? await supabase
           .from("akisuite_billing_subscriptions")
-          .select("profile_id,stripe_customer_id")
+          .select("profile_id,stripe_customer_id,workspace_id")
           .eq("stripe_subscription_id", relatedSubscription)
           .maybeSingle()
       : { data: null, error: null };
@@ -132,6 +140,15 @@ async function processEvent(event: StripeEvent) {
     throw new Error("AkiSuite subscription customer mismatch");
   if (existingCustomer && existingCustomer.profile_id !== profileId)
     throw new Error("Subscription ownership mismatch");
+  const workspaceId =
+    existingAkiSuiteSubscription?.workspace_id ||
+    stringValue(metadata.workspace_id);
+  if (
+    akiSuitePricePlan &&
+    akiSuitePricePlan.plan !== "akipasa_premium" &&
+    !workspaceId
+  )
+    throw new Error("AkiSuite workspace metadata is incomplete");
   const objectStatus = stringValue(object.status);
   const status =
     event.type === "customer.subscription.deleted" ? "canceled" : objectStatus;
@@ -177,6 +194,11 @@ async function processEvent(event: StripeEvent) {
       p_current_period_end: stripeSubscriptionPeriodEnd(object),
       p_cancel_at_period_end: object.cancel_at_period_end === true,
       p_event_created_at: unixDate(event.created),
+      ...(akiSuitePricePlan
+        ? {
+            p_workspace: workspaceId,
+          }
+        : {}),
     },
   );
   if (error) throw error;

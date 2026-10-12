@@ -6,7 +6,7 @@ import {
 } from "./akisuite-catalogue";
 import { stripeRetrieve } from "./stripe";
 
-// Keep this adapter disconnected until workspace entitlements and signed webhooks support the new plan codes.
+// New checkout stays behind the independent billing, feature and tax release gates.
 export type AkiSuiteInterval = "month" | "year";
 
 /** New plan IDs are deliberately independent of legacy premium/business/business_pro price IDs. */
@@ -49,7 +49,15 @@ type StripeRecurringPrice = {
   active: boolean;
   currency: string;
   unit_amount: number | null;
-  product: string | { id: string };
+  tax_behavior?: string;
+  product:
+    | string
+    | {
+        id: string;
+        active?: boolean;
+        tax_code?: string | null;
+        metadata?: Record<string, string>;
+      };
   metadata?: Record<string, string>;
   recurring?: { interval: string; interval_count: number };
 };
@@ -76,7 +84,7 @@ export async function verifiedAkiSuitePriceId(
     throw new Error("An active AkiHQ Pro workspace subscription is required");
   const id = configuredAkiSuitePriceId(plan, interval);
   const price = await stripeRetrieve<StripeRecurringPrice>(
-    `/prices/${encodeURIComponent(id)}`,
+    `/prices/${encodeURIComponent(id)}?expand[]=product`,
   );
   const productId =
     typeof price.product === "string" ? price.product : price.product?.id;
@@ -89,7 +97,17 @@ export async function verifiedAkiSuitePriceId(
     price.recurring.interval_count !== 1 ||
     price.metadata?.akisuite_plan !== plan ||
     price.metadata?.akisuite_interval !== interval ||
-    !productId
+    !productId ||
+    typeof price.product === "string" ||
+    !price.product.active ||
+    price.product.metadata?.akisuite_plan !== plan ||
+    !process.env[`AKISUITE_TAX_CODE_${plan.toUpperCase()}`] ||
+    price.product.tax_code !==
+      process.env[`AKISUITE_TAX_CODE_${plan.toUpperCase()}`] ||
+    !["inclusive", "exclusive"].includes(
+      process.env.AKISUITE_TAX_BEHAVIOR || "",
+    ) ||
+    price.tax_behavior !== process.env.AKISUITE_TAX_BEHAVIOR
   )
     throw new Error(
       "AkiSuite Stripe price does not match the approved catalogue",

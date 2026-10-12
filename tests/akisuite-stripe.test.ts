@@ -22,9 +22,17 @@ describe("staged AkiSuite Stripe integration (no live checkout)", () => {
       "price_enterprise123",
     );
     vi.stubEnv("STRIPE_SECRET_KEY", "test_secret");
+    vi.stubEnv("AKISUITE_TAX_CODE_AKI_ENTERPRISE", "txcd_fixture");
+    vi.stubEnv("AKISUITE_TAX_BEHAVIOR", "inclusive");
     const valid = {
       id: "price_enterprise123",
-      product: "prod_enterprise",
+      product: {
+        id: "prod_enterprise",
+        active: true,
+        tax_code: "txcd_fixture",
+        metadata: { akisuite_plan: "aki_enterprise" },
+      },
+      tax_behavior: "inclusive",
       active: true,
       currency: "eur",
       unit_amount: akisuitePriceCents("aki_enterprise", "month"),

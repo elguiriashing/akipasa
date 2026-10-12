@@ -25,7 +25,7 @@ describe("AkiSuite additive webhook migration contract", () => {
 
   it("uses a separate table with RLS and chronological webhook protections", () => {
     expect(migration).toContain(
-      "create table if not exists public.akisuite_billing_subscriptions",
+      "create table public.akisuite_billing_subscriptions",
     );
     expect(migration).toContain("enable row level security");
     expect(migration).toContain(
@@ -34,17 +34,17 @@ describe("AkiSuite additive webhook migration contract", () => {
     expect(migration).toContain("AkiSuite subscription ownership mismatch");
     expect(migration).toContain("to service_role");
     expect(migration).toContain(
-      "public.reconcile_profile_entitlements(new.profile_id)",
+      "public.reconcile_profile_entitlements(p_profile)",
     );
   });
 
   it("preserves free venue ownership while adding pro-equivalent access", () => {
     expect(migration).toContain("public.has_free_business_access(p_profile)");
     expect(migration).toContain(
-      "public.has_akisuite_plan(p_profile,'akihq_pro')",
+      "akisuite_private.plan_active(p_profile,null,'akipasa_premium')",
     );
     expect(migration).toContain(
-      "public.has_akisuite_plan(p_profile,'akipasa_premium')",
+      "akisuite_private.plan_active(p_profile,null,'akipasa_premium')",
     );
   });
 });

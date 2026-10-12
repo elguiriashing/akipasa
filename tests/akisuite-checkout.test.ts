@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+vi.mock("@/lib/auth", () => ({ requireUser: vi.fn() }));
+
 vi.mock("next/navigation", () => ({
   redirect: (path: string) => {
     throw new Error(`REDIRECT:${path}`);
@@ -27,7 +29,10 @@ describe("AkiSuite checkout activation safeguards", () => {
   it("never trusts unsupported client plan codes", async () => {
     vi.stubEnv("AKISUITE_CHECKOUT_ENABLED", "true");
     vi.stubEnv("AKISUITE_TAX_READY", "true");
-    vi.stubEnv("AKISUITE_STRIPE_ACCOUNT_ID", "acct_example");
+    vi.stubEnv("AKISUITE_STRIPE_ACCOUNT_ID", "acct_1SVLH2GfzDhsgsQZ");
+    vi.stubEnv("AKISUITE_FEATURES_READY", "true");
+    vi.stubEnv("AKISUITE_BILLING_VERIFIED", "true");
+    vi.stubEnv("AKISUITE_SUBSCRIPTIONS_READY", "true");
     const { startAkiSuiteCheckout } = await import(
       "../src/app/[locale]/account/subscription/akisuite-actions"
     );
