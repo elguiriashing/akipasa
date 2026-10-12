@@ -236,6 +236,7 @@ describe("venue media gallery picker", () => {
     expect(studio).toContain('className="event-media-modal"');
     expect(studio).toContain('className="event-media-modal-grid"');
     expect(studio).toContain("visiblePickerItems.map");
+    expect(studio).toContain("setPickerSearch(event.target.value)");
     expect(studio).toContain("setPickerSlot(slot.key)");
     expect(studio).not.toContain('className="media-mini-tile selected"');
   });
