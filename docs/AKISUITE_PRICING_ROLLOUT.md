@@ -31,3 +31,7 @@ New migration `database/migrations/20261012180000_akisuite_subscription_entitlem
 ## Unified membership UX
 
 All four AkiSuite products are now shown in one bilingual, responsive membership centre (`AkiSuiteMembershipHub`) on the canonical account billing page. The account shows exact subscriptions only when read successfully, categorises historical paid AkiPasa and AkiHQ plans correctly, and allows payment management through existing Stripe Customer Portal. New AkiSuite records are queried only once `AKISUITE_SUBSCRIPTIONS_READY=true` to avoid exposing a missing migration as a false empty list. Public `/membership` now always shows the new pricing grid with checkout disabled until explicitly enabled; old purchasable plans remain disclosed separately for existing customer continuity. Aliases `/account/membership` and `/account/memberships` redirect to canonical account subscription. Companion AkiHQ PR #25 adds the shared link.
+
+## CI repair checkpoint
+
+Fixed the unsupported Growth navigation icon, removed a duplicate subscription-error alert, and added the membership hub regression test to the formatting workflow. Re-run all checks before approving deployment. Keep paid checkout disabled until its database and feature gates have been verified.
