@@ -414,3 +414,11 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 ### AkiBusiness shared venue media (2026-10-12)
 
 The canonical media asset store is `venue_media`, scoped by `venue_id`, with public surface selection in `venue_media_placements`. Venue Profile and all event editors should receive the same signed venue-scoped inventory, regardless of its original upload path. Event-specific associations (`event_bin`) are independent of owning or viewing the asset. Virtual folders are presentation filters; no files are copied or migrated to organise them. Uploading media alone must not publish it. Validate permissions on the server for every mutation.
+
+### 2026-10-12 AkiBusiness catalogue save regression (candidate)
+
+- New catalogue items must have non-empty localized names immediately, because `save_venue_catalogue` validates the entire JSON document on both draft and publish. Empty names used to make all subsequent edits to that document fail with PostgreSQL `Invalid item`, misleadingly shown as a permission error.
+- `blankCatalogueItem` supplies safe bilingual starter labels; editors can replace either label. New item tests cover non-empty names and valid starter price/variants. No database schema, RLS, memberships, public catalogue rendering or existing records are changed.
+- Business save errors now separate invalid items/sections/prices, stale revisions (`PT409`) and lack of access (`42501`) in EN/ES. Allergen publishing checks remain strict.
+- Production read-only evidence: on October 12 multiple `save_venue_catalogue` calls returned HTTP 400; Postgres logs included `Invalid item`; live RPCs existed and revision-conflict SQL used `PT409`. This does not prove every unsuccessful save had the same root cause.
+- Verification pending: full `npm run check`, authenticated end-to-end edit flows and deployment smoke. Not live until confirmed CI and merge.
