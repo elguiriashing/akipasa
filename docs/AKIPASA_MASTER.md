@@ -422,3 +422,7 @@ The canonical media asset store is `venue_media`, scoped by `venue_id`, with pub
 - Business save errors now separate invalid items/sections/prices, stale revisions (`PT409`) and lack of access (`42501`) in EN/ES. Allergen publishing checks remain strict.
 - Production read-only evidence: on October 12 multiple `save_venue_catalogue` calls returned HTTP 400; Postgres logs included `Invalid item`; live RPCs existed and revision-conflict SQL used `PT409`. This does not prove every unsuccessful save had the same root cause.
 - Verification pending: full `npm run check`, authenticated end-to-end edit flows and deployment smoke. Not live until confirmed CI and merge.
+
+### Venue profile media selector (2026-10-12)
+
+The five venue surface cards use the same full-size event gallery picker styling and pagination rather than inline thumbnail strips. Selection persists via the existing `setVenueMediaPlacement` action; Auto clears the explicit placement via `clearVenueMediaPlacement`. The venue-wide library remains the sole media inventory.
