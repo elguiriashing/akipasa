@@ -230,6 +230,7 @@ describe("shared AkiBusiness media inventory", () => {
   });
 });
 
+// Profile uses the shared event gallery visual pattern and placement actions.
 describe("venue profile media picker", () => {
   it("uses the reusable event media gallery for profile slots", () => {
     const source = readFileSync("src/components/VenueMediaStudio.tsx", "utf8");
