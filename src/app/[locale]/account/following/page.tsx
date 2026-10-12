@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
-import { WorkspacePageHeader } from "@/components/WorkspaceShell";
+import Link from "next/link";
+import { Icon } from "@/components/Icons";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { AccountItems } from "../AccountItems";
+import { AccountPageHeader } from "../AccountPageHeader";
 
 export default async function FollowingPage({
   params,
@@ -12,24 +14,32 @@ export default async function FollowingPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const { supabase } = await requireUser(locale);
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("followed_venue_refs")
     .select("venue_key,name,href,created_at")
     .order("created_at", { ascending: false });
   const es = locale === "es";
   return (
     <>
-      <WorkspacePageHeader
+      <AccountPageHeader
         eyebrow={es ? "Conexiones" : "Connections"}
         title={es ? "Locales seguidos" : "Followed venues"}
         description={
           es
-            ? "Negocios de los que quieres recibir novedades."
-            : "Businesses you want to keep up with."
+            ? "Tus locales favoritos, siempre a mano."
+            : "Keep your favourite venues close."
+        }
+        actions={
+          <Link className="button secondary" href={`/${locale}`}>
+            <Icon name="discover" size={17} />
+            {es ? "Explorar locales" : "Explore venues"}
+          </Link>
         }
       />
       <AccountItems
         locale={locale}
+        kind="following"
+        failed={Boolean(error)}
         items={(data || []).map((item) => ({
           id: item.venue_key,
           label: item.name,

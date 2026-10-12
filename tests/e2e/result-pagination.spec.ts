@@ -1,5 +1,11 @@
 import { expect, test } from "@playwright/test";
 
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    document.cookie = "ak_consent_version=2; Path=/";
+  });
+});
+
 test("nearby businesses page through twenty cards with location preserved", async ({
   page,
 }) => {
@@ -27,9 +33,15 @@ test("map list is bounded and marker API validates its viewport", async ({
   request,
 }) => {
   await page.goto("/es/map?latitude=36.539&longitude=-4.624&radius=25");
-  await expect(page.locator("#venue-results a.card")).toHaveCount(20);
   await expect(
-    page.getByRole("heading", { name: "Mapa de eventos", exact: true }),
+    page.getByRole("application", { name: "Mapa interactivo" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Lista", exact: true }).click();
+  const list = page.getByRole("dialog", { name: "Cerca de aquí" });
+  await expect(list).toBeVisible();
+  await expect(list.locator("#venue-results a.card")).toHaveCount(20);
+  await expect(
+    list.getByRole("heading", { name: "Negocios cerca de ti", exact: true }),
   ).toBeVisible();
   const invalid = await request.get("/api/map/venues?west=bad");
   expect(invalid.status()).toBe(400);
@@ -44,12 +56,15 @@ test("map list is bounded and marker API validates its viewport", async ({
 
 test("map API continues beyond its first batch", async ({ request }) => {
   const url = "/api/map/venues?west=-19&east=5&south=27&north=45";
-  const first = await (await request.get(url)).json();
+  const firstResponse = await request.get(url);
+  expect(firstResponse.status()).toBe(200);
+  const first = await firstResponse.json();
+  expect(first.rows).toHaveLength(2000);
   expect(first.hasMore).toBe(true);
   expect(first.nextCursor).toBeTruthy();
-  const second = await (
-    await request.get(url + "&after=" + first.nextCursor)
-  ).json();
+  const secondResponse = await request.get(url + "&after=" + first.nextCursor);
+  expect(secondResponse.status()).toBe(200);
+  const second = await secondResponse.json();
   expect(second.rows.length).toBeGreaterThan(0);
   const firstIds = new Set(first.rows.map((row: { id: string }) => row.id));
   expect(second.rows.some((row: { id: string }) => firstIds.has(row.id))).toBe(

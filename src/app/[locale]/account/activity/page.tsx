@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
-import { WorkspacePageHeader } from "@/components/WorkspaceShell";
+import Link from "next/link";
+import { Icon } from "@/components/Icons";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { AccountItems } from "../AccountItems";
+import { AccountPageHeader } from "../AccountPageHeader";
 
 export default async function ActivityPage({
   params,
@@ -12,7 +14,7 @@ export default async function ActivityPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const { supabase } = await requireUser(locale);
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("recent_event_view_refs")
     .select("event_key,title,href,viewed_at")
     .order("viewed_at", { ascending: false })
@@ -20,7 +22,7 @@ export default async function ActivityPage({
   const es = locale === "es";
   return (
     <>
-      <WorkspacePageHeader
+      <AccountPageHeader
         eyebrow={es ? "Historial" : "History"}
         title={es ? "Actividad reciente" : "Recent activity"}
         description={
@@ -28,9 +30,17 @@ export default async function ActivityPage({
             ? "Los últimos planes que consultaste."
             : "The latest plans you viewed."
         }
+        actions={
+          <Link className="button secondary" href={`/${locale}`}>
+            <Icon name="discover" size={17} />
+            {es ? "Seguir explorando" : "Keep exploring"}
+          </Link>
+        }
       />
       <AccountItems
         locale={locale}
+        kind="activity"
+        failed={Boolean(error)}
         items={(data || []).map((item) => ({
           id: `${item.event_key}-${item.viewed_at}`,
           label: item.title,

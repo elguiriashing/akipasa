@@ -1231,9 +1231,6 @@
 .motionControls {
   justify-content: flex-end;
 }
-.motionControls p {
-  display: none;
-}
 .summary {
   justify-content: flex-start;
   padding-left: 178px;
@@ -1521,9 +1518,6 @@
     background: #1b3a52;
     color: #ffe0c1;
   }
-  .motionControls p {
-    display: none;
-  }
   .summary {
     bottom: 16px;
   }
@@ -1556,7 +1550,13 @@
   padding: 0;
 }
 .bookmarks .motionControls p {
-  display: none;
+  display: block;
+  flex-basis: 100%;
+  min-width: 0;
+  max-width: 100%;
+  color: var(--passport-muted);
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 @media (min-width: 1101px) {
   .atlas {
@@ -1896,10 +1896,6 @@
     backdrop-filter: blur(14px);
   }
 
-  .bookmarks .motionControls p {
-    display: none;
-  }
-
   .privacyControls {
     position: absolute;
     right: 6px;
@@ -1984,7 +1980,7 @@
 
   .coverText button,
   .explore {
-    min-height: 42px;
+    min-height: 44px;
     padding: 10px 15px;
     font-size: 12px;
   }
@@ -2024,7 +2020,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    min-height: 38px;
+    min-height: 44px;
     max-width: min(190px, 52vw);
     padding: 8px 11px;
     border: 1px solid var(--passport-line);
@@ -2065,12 +2061,12 @@
   .bookmarks {
     position: absolute;
     z-index: 13;
-    top: 56px;
+    top: 62px;
     right: 10px;
     bottom: auto;
     left: auto;
     width: min(310px, calc(100% - 20px));
-    max-height: calc(100% - 68px);
+    max-height: calc(100% - 74px);
     min-height: 0;
     margin: 0;
     padding: 8px;
@@ -2110,10 +2106,10 @@
   }
 
   .bookmarks .motionControls .motionButton {
-    width: 40px;
-    min-width: 40px;
-    height: 40px;
-    min-height: 40px;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
   }
 
   .privacyControls {
@@ -2126,8 +2122,8 @@
   .bookmarks .privacyControls button {
     width: 100%;
     min-width: 0;
-    height: 42px;
-    min-height: 42px;
+    height: auto;
+    min-height: 44px;
     padding: 8px 10px;
     font-size: 11px;
   }

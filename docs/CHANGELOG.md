@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-12 — Account workspace and Spanish accents
+
+- Replace repeated Account banners with compact page headings and fully visible wider-screen navigation; remove the duplicate Progress tab and route old links to Passport.
+- Refresh Overview, Saved, Following, My bookings, Activity, Premium, Profile, Settings, Privacy and Membership with responsive cards and focused edit controls. Preserve original server actions and confirmation paths.
+- Correct three verified historical Spanish system labels without changing their IDs or feature values; guard future interface source against broken UTF-8 sequences.
+- Restore visible Passport motion feedback and 44px phone, map legend and attribution controls during the wider public browser audit. Keep map credits and status text clear of Privacy and Support controls.
+- Release and validation evidence lives in `CHANGE_IMPACT_REGISTER.md`; implementation status alone is not a live-deployment claim.
+
 ## 2026-10-12 - Aki Spotlight venue and event details
 
 - Give public venues a photography/identity split, real menu-section previews,

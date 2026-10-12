@@ -1,86 +1,150 @@
 import { notFound } from "next/navigation";
-import { WorkspacePageHeader } from "@/components/WorkspaceShell";
+import Link from "next/link";
+import { Icon } from "@/components/Icons";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
+import { AccountPageHeader } from "../AccountPageHeader";
 import { AccountItems } from "../AccountItems";
+import { AccountCollectionRefresh } from "../AccountCollectionRefresh";
 import { setSavedEventReminder } from "./actions";
 
 export default async function SavedEventsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams?: Promise<Record<string, string | undefined>>;
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const query = (await searchParams) || {};
   const { supabase } = await requireUser(locale);
-  const { data: emailPreferences } = await supabase.rpc(
+  const { data: emailPreferences, error: preferenceError } = await supabase.rpc(
     "suite_email_reminder_preferences",
     { p_event: null, p_stay: null },
   );
+  const preferencesUnavailable =
+    Boolean(preferenceError) ||
+    typeof emailPreferences?.event_reminders !== "boolean";
   const eventReminders = emailPreferences?.event_reminders === true;
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("saved_event_refs")
     .select("event_key,title,href,created_at")
     .order("created_at", { ascending: false });
   const es = locale === "es";
   return (
     <>
-      <WorkspacePageHeader
-        eyebrow={es ? "Colección" : "Collection"}
+      <AccountPageHeader
+        eyebrow={es ? "Tu colección" : "Your collection"}
         title={es ? "Eventos guardados" : "Saved events"}
         description={
           es
-            ? "Planes que reservaste para volver más tarde."
-            : "Plans you kept for later."
+            ? "Tus próximos planes empiezan aquí."
+            : "Your next plans start here."
+        }
+        actions={
+          <Link className="button secondary" href={`/${locale}`}>
+            <Icon name="discover" size={17} />
+            {es ? "Explorar eventos" : "Explore events"}
+          </Link>
         }
       />
       <section
-        className="settings-row"
+        className="account-reminder-strip"
         aria-label={es ? "Recordatorios de eventos" : "Event reminders"}
       >
-        <div>
-          <strong>
-            {es
-              ? "Recordatorios de eventos guardados"
-              : "Saved event reminders"}
-          </strong>
+        <span className="account-collection-icon" aria-hidden="true">
+          <Icon name="bell" size={22} />
+        </span>
+        <div className="account-reminder-copy">
+          <div className="account-reminder-title">
+            <strong>
+              {es ? "Recordatorios por email" : "Email reminders"}
+            </strong>
+            <span
+              className={`account-reminder-status${eventReminders && !preferencesUnavailable ? "is-enabled" : ""}`}
+            >
+              {preferencesUnavailable
+                ? es
+                  ? "No disponible"
+                  : "Unavailable"
+                : eventReminders
+                  ? es
+                    ? "Activados"
+                    : "On"
+                  : es
+                    ? "Desactivados"
+                    : "Off"}
+            </span>
+          </div>
           <p>
             {es
-              ? "Opcional: un recordatorio por email aproximadamente 2 días antes de un evento guardado con fecha confirmada."
-              : "Optional: one email about 2 days before a saved event with a confirmed date."}
+              ? "Opcional · Un email unos 2 días antes de cada evento guardado con fecha confirmada."
+              : "Optional · One email about 2 days before each saved event with a confirmed date."}
           </p>
+          {preferencesUnavailable && (
+            <p role="alert">
+              {es
+                ? "No se ha podido consultar tu preferencia. Reintenta antes de cambiarla."
+                : "Your preference could not be loaded. Retry before changing it."}
+            </p>
+          )}
         </div>
-        <form action={setSavedEventReminder}>
-          <input type="hidden" name="locale" value={locale} />
-          <input
-            type="hidden"
-            name="enabled"
-            value={eventReminders ? "false" : "true"}
-          />
-          <button type="submit" className="button secondary">
-            {eventReminders
-              ? es
-                ? "Desactivar"
-                : "Disable"
-              : es
-                ? "Activar emails"
-                : "Enable emails"}
-          </button>
-        </form>
+        {preferencesUnavailable ? (
+          <AccountCollectionRefresh locale={locale} />
+        ) : (
+          <form action={setSavedEventReminder}>
+            <input type="hidden" name="locale" value={locale} />
+            <input
+              type="hidden"
+              name="enabled"
+              value={eventReminders ? "false" : "true"}
+            />
+            <button type="submit" className="button secondary">
+              {eventReminders
+                ? es
+                  ? "Desactivar"
+                  : "Disable"
+                : es
+                  ? "Activar emails"
+                  : "Enable emails"}
+            </button>
+          </form>
+        )}
       </section>
+      {query.email === "updated" && (
+        <p className="notice" role="status">
+          {es
+            ? "Preferencia de recordatorios actualizada."
+            : "Reminder preference updated."}
+        </p>
+      )}
+      {(query.email === "error" || query.email === "invalid") && (
+        <p className="notice" role="alert">
+          {es
+            ? "No se ha podido actualizar la preferencia. Vuelve a intentarlo."
+            : "Your reminder preference could not be updated. Please try again."}
+        </p>
+      )}
       <AccountItems
         locale={locale}
+        kind="saved"
+        failed={Boolean(error)}
         items={(data || []).map((item) => ({
           id: item.event_key,
           label: item.title,
           href: item.href,
           date: item.created_at,
         }))}
-        emptyTitle={es ? "Nada guardado todavía" : "Nothing saved yet"}
+        emptyTitle={
+          es
+            ? "Tu próxima aventura, a un toque"
+            : "Your next adventure is a tap away"
+        }
         emptyDescription={
           es
-            ? "Guarda un evento desde discovery para verlo aquí."
-            : "Save an event from discovery to see it here."
+            ? "Guarda los eventos que te gusten para tenerlos a mano."
+            : "Save events you like and find them here whenever you need them."
         }
       />
     </>

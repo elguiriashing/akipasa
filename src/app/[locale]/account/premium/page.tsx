@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { WorkspacePageHeader } from "@/components/WorkspaceShell";
+import { Icon } from "@/components/Icons";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
+import { AccountPageHeader } from "../AccountPageHeader";
 
 export default async function PremiumPage({
   params,
@@ -12,7 +13,10 @@ export default async function PremiumPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const { supabase, user } = await requireUser(locale);
-  const [{ data: premium }, { count: savedCount }] = await Promise.all([
+  const [
+    { data: premium, error: premiumError },
+    { count: savedCount, error: savedError },
+  ] = await Promise.all([
     supabase.rpc("has_active_entitlement", {
       p_profile: user.id,
       p_plan: "premium",
@@ -26,17 +30,25 @@ export default async function PremiumPage({
 
   return (
     <>
-      <WorkspacePageHeader
+      <AccountPageHeader
         eyebrow="Premium"
-        title={es ? "Tus ventajas, activadas" : "Your benefits, switched on"}
+        title={
+          premium
+            ? es
+              ? "Tus ventajas Premium"
+              : "Your Premium benefits"
+            : es
+              ? "Descubre Premium"
+              : "Discover Premium"
+        }
         description={
           premium
             ? es
-              ? "Menos ruido, más valor en cada plan local."
-              : "Less noise and more value in every local plan."
+              ? "Más ventajas para tus planes de cada día."
+              : "More benefits for your everyday plans."
             : es
-              ? "Desbloquea ventajas útiles para descubrir y organizar tus planes."
-              : "Unlock useful benefits for discovering and organising plans."
+              ? "Ofertas, doble XP y tus planes en el calendario."
+              : "Member offers, double XP and plans in your calendar."
         }
         actions={
           premium ? (
@@ -46,7 +58,7 @@ export default async function PremiumPage({
             >
               {es ? "Exportar guardados" : "Export saved events"}
             </Link>
-          ) : (
+          ) : premiumError ? undefined : (
             <Link
               className="button button-strong"
               href={`/${locale}/account/subscription?plan=premium`}
@@ -56,61 +68,93 @@ export default async function PremiumPage({
           )
         }
       />
-      <section className="metrics-grid" aria-label="Premium benefits">
-        <article className="panel console-card">
-          <span className="status-pill">2x XP</span>
-          <h2>{es ? "Avanza más rápido" : "Progress faster"}</h2>
+      {premiumError && (
+        <p className="notice error" role="alert">
+          {es
+            ? "No pudimos comprobar tu plan. Vuelve a intentarlo desde Membresía."
+            : "We couldn’t check your plan. Try again from Membership."}
+        </p>
+      )}
+      <section
+        className="account-premium-benefits"
+        aria-label={es ? "Ventajas Premium" : "Premium benefits"}
+      >
+        <article className="account-premium-benefit">
+          <span className="account-benefit-icon" aria-hidden="true">
+            <Icon name="star" />
+          </span>
+          <h2>{es ? "Doble XP" : "Double XP"}</h2>
           <p>
             {es
-              ? "Recibe 20 XP, en vez de 10, en cada check-in aceptado. Los sellos no cambian."
-              : "Receive 20 XP instead of 10 for every accepted check-in. Stamps stay unchanged."}
+              ? "20 XP por check-in aceptado, en lugar de 10. Los sellos mantienen su valor."
+              : "20 XP per accepted check-in instead of 10. Stamps keep their usual value."}
           </p>
+          <Link className="button secondary" href={`/${locale}/passports`}>
+            {es ? "Abrir Passport" : "Open Passport"}
+          </Link>
         </article>
-        <article className="panel console-card">
-          <span className="status-pill">
-            {es ? "Solo miembros" : "Members only"}
+        <article className="account-premium-benefit">
+          <span className="account-benefit-icon" aria-hidden="true">
+            <Icon name="gift" />
           </span>
           <h2>{es ? "Ofertas Premium" : "Premium offers"}</h2>
           <p>
             {es
-              ? "Descubre ventajas reservadas para miembros en las páginas de locales."
-              : "Discover member-only value on participating venue pages."}
+              ? "Encuentra ofertas para miembros en los locales participantes."
+              : "Find member offers at participating venues."}
           </p>
+          <Link className="button secondary" href={`/${locale}`}>
+            {es ? "Explorar locales" : "Explore venues"}
+          </Link>
         </article>
-        <article className="panel console-card">
-          <span className="status-pill">{savedCount || 0}</span>
+        <article className="account-premium-benefit">
+          <span className="account-benefit-icon" aria-hidden="true">
+            <Icon name="calendar" />
+          </span>
           <h2>{es ? "Tu calendario" : "Your calendar"}</h2>
           <p>
             {es
-              ? "Exporta un evento o todos tus guardados a cualquier calendario compatible."
-              : "Export one event or all saved events to any compatible calendar."}
+              ? "Añade tus eventos guardados a un calendario compatible."
+              : "Add your saved events to a compatible calendar."}
           </p>
+          <Link className="button secondary" href={`/${locale}/account/saved`}>
+            {es ? "Ver guardados" : "View saved events"}
+            {!savedError && savedCount !== null ? ` (${savedCount})` : ""}
+          </Link>
         </article>
       </section>
       <section className="panel console-card account-membership-card">
         <div>
           <span className="status-pill">
-            {premium
+            {premiumError
               ? es
-                ? "Premium activo"
-                : "Premium active"
-              : es
-                ? "Plan gratuito"
-                : "Free plan"}
+                ? "Plan no disponible"
+                : "Plan unavailable"
+              : premium
+                ? es
+                  ? "Premium activo"
+                  : "Premium active"
+                : es
+                  ? "Plan gratuito"
+                  : "Free plan"}
           </span>
           <h2>
-            {premium
+            {premiumError
               ? es
-                ? "Tu cuenta ya tiene acceso"
-                : "Your account has access"
-              : es
-                ? "Hazte Premium"
-                : "Upgrade to Premium"}
+                ? "Revisa tu membresía"
+                : "Check your membership"
+              : premium
+                ? es
+                  ? "Tu cuenta ya tiene acceso"
+                  : "Your account has access"
+                : es
+                  ? "Hazte Premium"
+                  : "Upgrade to Premium"}
           </h2>
           <p>
             {es
-              ? "Stripe gestiona tu suscripción de forma segura. Puedes cambiarla o cancelarla cuando quieras."
-              : "Stripe securely manages your subscription. Change or cancel it whenever you like."}
+              ? "Consulta tu plan, facturación y opciones de renovación."
+              : "Check your plan, billing and renewal options."}
           </p>
         </div>
         <Link

@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
-import { WorkspacePageHeader } from "@/components/WorkspaceShell";
+import { Icon } from "@/components/Icons";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
+import { AccountPageHeader } from "../AccountPageHeader";
 import {
   requestAccountEmailChange,
   requestAccountPasswordReset,
@@ -36,8 +37,8 @@ export default async function AccountSettingsPage({
           : null;
 
   return (
-    <>
-      <WorkspacePageHeader
+    <div className="account-controls-page">
+      <AccountPageHeader
         eyebrow={es ? "Preferencias" : "Preferences"}
         title={es ? "Ajustes" : "Settings"}
         description={
@@ -46,13 +47,23 @@ export default async function AccountSettingsPage({
             : "Manage account access and your current session."
         }
       />
-      <section className="dashboard-grid">
-        <article className="panel console-card">
-          <h2>{es ? "Correo de la cuenta" : "Account email"}</h2>
-          <p>
-            {es
-              ? "Cambia el correo con el que inicias sesión. Tus pases, Passport, negocios, logros y demás datos siguen en la misma cuenta."
-              : "Change the email you use to sign in. Your passes, Passport, businesses, achievements and other data stay on the same account."}
+      <section className="account-settings-grid">
+        <article className="account-control-card account-email-card">
+          <header className="account-control-heading">
+            <span className="account-control-icon">
+              <Icon name="inbox" />
+            </span>
+            <div>
+              <h2>{es ? "Correo de la cuenta" : "Account email"}</h2>
+              <p>
+                {es
+                  ? "Tu dirección para iniciar sesión."
+                  : "Your sign-in address."}
+              </p>
+            </div>
+          </header>
+          <p className="account-email-value">
+            {user.email || (es ? "Sin correo vinculado" : "No linked email")}
           </p>
           {query.email === "pending" && (
             <p className="notice notice-success" role="status">
@@ -73,39 +84,67 @@ export default async function AccountSettingsPage({
               {emailError}
             </p>
           )}
-          <form action={requestAccountEmailChange} className="stack">
-            <input type="hidden" name="locale" value={locale} />
-            <label htmlFor="current-email">
-              {es ? "Correo actual" : "Current email"}
-            </label>
-            <input
-              id="current-email"
-              type="email"
-              value={user.email || ""}
-              readOnly
-              disabled
-            />
-            <label htmlFor="new-email">
-              {es ? "Nuevo correo" : "New email"}
-            </label>
-            <input
-              id="new-email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              maxLength={254}
-              placeholder="nombre@ejemplo.com"
-            />
-            <button className="button secondary" type="submit">
-              {es ? "Enviar confirmación" : "Send confirmation"}
-            </button>
-          </form>
+          <details
+            className="account-control-disclosure"
+            open={Boolean(emailError)}
+          >
+            <summary>{es ? "Cambiar correo" : "Change email"}</summary>
+            <div className="account-disclosure-content">
+              <p className="account-control-help">
+                {es
+                  ? "Confirma el nuevo correo para completar el cambio. Tus datos y tu acceso se conservan en la misma cuenta."
+                  : "Confirm the new email to complete the change. Your data and access stay on the same account."}
+              </p>
+              <form
+                action={requestAccountEmailChange}
+                className="account-control-form"
+              >
+                <input type="hidden" name="locale" value={locale} />
+                <label htmlFor="current-email">
+                  {es ? "Correo actual" : "Current email"}
+                  <input
+                    id="current-email"
+                    type="email"
+                    value={user.email || ""}
+                    readOnly
+                    disabled
+                  />
+                </label>
+                <label htmlFor="new-email">
+                  {es ? "Nuevo correo" : "New email"}
+                  <input
+                    id="new-email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    maxLength={254}
+                    placeholder={es ? "nombre@ejemplo.com" : "name@example.com"}
+                  />
+                </label>
+                <button className="button secondary" type="submit">
+                  {es ? "Enviar confirmación" : "Send confirmation"}
+                </button>
+              </form>
+            </div>
+          </details>
         </article>
 
-        <article className="panel console-card">
-          <h2>{es ? "Contraseña" : "Password"}</h2>
-          <p>
+        <article className="account-control-card">
+          <header className="account-control-heading">
+            <span className="account-control-icon">
+              <Icon name="lock" />
+            </span>
+            <div>
+              <h2>{es ? "Contraseña" : "Password"}</h2>
+              <p>
+                {es
+                  ? "Recupera o renueva tu acceso."
+                  : "Recover or update your access."}
+              </p>
+            </div>
+          </header>
+          <p className="account-control-help">
             {es
               ? "Te enviaremos un enlace seguro a tu correo para elegir una nueva contraseña."
               : "We will email you a secure link to choose a new password."}
@@ -124,7 +163,10 @@ export default async function AccountSettingsPage({
                 : "We could not send the password-change link."}
             </p>
           )}
-          <form action={requestAccountPasswordReset}>
+          <form
+            action={requestAccountPasswordReset}
+            className="account-card-action"
+          >
             <input type="hidden" name="locale" value={locale} />
             <button className="button secondary" type="submit">
               {es ? "Cambiar mi contraseña" : "Change my password"}
@@ -132,14 +174,22 @@ export default async function AccountSettingsPage({
           </form>
         </article>
 
-        <article className="panel console-card">
-          <h2>{es ? "Sesión" : "Session"}</h2>
-          <p>
+        <article className="account-control-card">
+          <header className="account-control-heading">
+            <span className="account-control-icon">
+              <Icon name="person" />
+            </span>
+            <div>
+              <h2>{es ? "Sesión" : "Session"}</h2>
+              <p>{es ? "Este navegador" : "This browser"}</p>
+            </div>
+          </header>
+          <p className="account-control-help">
             {es
               ? "Cierra la sesión en este navegador."
               : "Sign out on this browser."}
           </p>
-          <form action={signOut}>
+          <form action={signOut} className="account-card-action">
             <input type="hidden" name="locale" value={locale} />
             <button className="button secondary" type="submit">
               {es ? "Cerrar sesión" : "Sign out"}
@@ -147,6 +197,6 @@ export default async function AccountSettingsPage({
           </form>
         </article>
       </section>
-    </>
+    </div>
   );
 }

@@ -135,21 +135,19 @@ for (const locale of ["en", "es"] as const) {
             await filter.locator("summary").click();
             await expect(filter).toHaveAttribute("open", "");
             const canvas = page.locator(".production-map canvas");
-            if (await canvas.count()) {
-              await canvas.evaluate((element) =>
-                element.setAttribute("data-stay-map-instance", "original"),
-              );
-            }
+            await expect(canvas).toBeVisible();
+            await canvas.evaluate((element) =>
+              element.setAttribute("data-stay-map-instance", "original"),
+            );
             await page
               .getByRole("button", {
                 name: locale === "es" ? "Hoteles" : "Hotels",
               })
               .click();
-            if (await canvas.count())
-              await expect(canvas).toHaveAttribute(
-                "data-stay-map-instance",
-                "original",
-              );
+            await expect(canvas).toHaveAttribute(
+              "data-stay-map-instance",
+              "original",
+            );
             await expect(
               page.getByRole("application", {
                 name: locale === "es" ? "Mapa interactivo" : "Interactive map",

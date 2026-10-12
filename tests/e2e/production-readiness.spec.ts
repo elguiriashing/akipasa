@@ -17,29 +17,62 @@ const publicRoutes = [
   "/es/terms",
 ] as const;
 
+function canonicalServerUrl(path: string, base: string) {
+  const url = new URL(path, base);
+  // The local Next server uses localhost in middleware and Route Handler URLs.
+  // Keep the request origin consistent when the runner connects over loopback.
+  if (url.hostname === "127.0.0.1") url.hostname = "localhost";
+  return url;
+}
+
 test("root, invalid content and all guest gates resolve safely", async ({
   page,
 }) => {
   const root = await page.request.get("/", { maxRedirects: 0 });
-  expect(root.status()).toBe(307);
-  expect(root.headers().location).toBe("/es");
+  expect(root.status()).toBe(308);
+  expect(new URL(root.headers().location, root.url()).href).toBe(
+    canonicalServerUrl("/es", root.url()).href,
+  );
 
   for (const route of [
     "/en/account",
-    "/en/business",
-    "/en/business/apply",
     "/en/staff",
     "/en/staff/support",
     "/en/admin/users",
     "/en/admin/venue-relevance",
     "/en/admin",
-    "/en/community",
+    "/en/community?view=suggest",
+    "/en/community?view=report",
     "/en/terms/accept",
   ]) {
     const response = await page.request.get(route, { maxRedirects: 0 });
     expect(response.status(), route).toBe(307);
     expect(response.headers().location, route).toContain("/en/auth?next=");
   }
+
+  for (const route of ["/en/business", "/en/business/apply"]) {
+    const canonical = await page.request.get(route, { maxRedirects: 0 });
+    expect(canonical.status(), route).toBe(307);
+    expect(canonical.headers().location, route).toBe(
+      `https://business.akipasa.com${route}`,
+    );
+    // Exercise the real Business host through this deployment, without sending
+    // the local acceptance run to the live site.
+    const gate = await page.request.get(route, {
+      headers: { host: "business.akipasa.com" },
+      maxRedirects: 0,
+    });
+    expect(gate.status(), route).toBe(307);
+    expect(gate.headers().location, route).toContain("/en/auth?next=");
+    expect(gate.headers()["x-robots-tag"], route).toBe("noindex, nofollow");
+  }
+
+  const community = await page.request.get("/en/community", {
+    maxRedirects: 0,
+  });
+  expect(community.status()).toBe(307);
+  expect(community.headers().location).toBe("/en/community/creators");
+  expect((await page.request.get("/en/community/creators")).status()).toBe(200);
 
   const relevanceApi = await page.request.get("/api/admin/venue-relevance");
   expect(relevanceApi.status()).toBe(401);
@@ -153,48 +186,100 @@ test("all internal links exposed on public screens return successfully", async (
   }
 
   for (const path of paths) {
-    const response = await page.request.get(path);
-    expect(response.status(), path).toBeLessThan(400);
+    const businessPath = /^\/(en|es)\/business(?:\/|\?|$)/.test(path);
+    if (businessPath) {
+      const canonical = await page.request.get(path, { maxRedirects: 0 });
+      expect(canonical.status(), path).toBe(307);
+      expect(canonical.headers().location, path).toBe(
+        `https://business.akipasa.com${path}`,
+      );
+    }
+    const response = await page.request.get(path, {
+      headers: businessPath ? { host: "business.akipasa.com" } : {},
+    });
+    expect(response.status(), path).toBe(200);
   }
 });
 
-test("authentication forms expose safe browser contracts", async ({ page }) => {
+test("authentication forms expose safe browser contracts", async ({
+  page,
+  baseURL,
+}) => {
+  // The notice has been acknowledged; optional consent remains at its defaults.
+  await page
+    .context()
+    .addCookies([{ name: "ak_consent_version", value: "2", url: baseURL! }]);
   await page.goto("/en/auth");
 
-  const newEmail = page.getByLabel("Email", { exact: true }).first();
-  const newPassword = page.getByLabel("Password", { exact: true }).first();
-  const signInEmail = page.getByLabel("Email", { exact: true }).nth(1);
-  const signInPassword = page.getByLabel("Password", { exact: true }).nth(1);
-
-  await expect(newEmail).toHaveAttribute("autocomplete", "email");
-  await expect(newEmail).toHaveAttribute("required", "");
-  await expect(newPassword).toHaveAttribute("autocomplete", "new-password");
-  await expect(newPassword).toHaveAttribute("minlength", "12");
+  const signIn = page.locator("form").filter({
+    has: page.getByRole("button", { name: "Sign in", exact: true }),
+  });
+  const signInEmail = signIn.getByLabel("Email", { exact: true });
+  const signInPassword = signIn.getByLabel(/^Password/);
   await expect(signInEmail).toHaveAttribute("autocomplete", "email");
+  await expect(signInEmail).toHaveAttribute("required", "");
   await expect(signInPassword).toHaveAttribute(
     "autocomplete",
     "current-password",
   );
-  const recovery = page
-    .locator("details")
-    .filter({ hasText: "Forgot my password" });
-  await recovery.locator("summary").click();
+  await expect(signInPassword).toHaveAttribute("required", "");
+
+  await page.getByRole("link", { name: "Forgot it?", exact: true }).click();
+  await expect(page).toHaveURL(/\/en\/auth\?mode=recover$/);
+  const recovery = page.locator("form").filter({
+    has: page.getByRole("button", { name: "Send recovery link" }),
+  });
   await expect(recovery.getByLabel("Email", { exact: true })).toHaveAttribute(
     "autocomplete",
     "email",
   );
+  await expect(recovery.getByLabel("Email", { exact: true })).toHaveAttribute(
+    "required",
+    "",
+  );
   await expect(
     recovery.getByRole("button", { name: "Send recovery link" }),
   ).toBeVisible();
+
+  await page
+    .getByRole("navigation", { name: "Access options" })
+    .getByRole("link", { name: "Create account", exact: true })
+    .click();
+  await expect(page).toHaveURL(/\/en\/auth\?mode=signup$/);
+  const registration = page.locator("form").filter({
+    has: page.getByRole("button", { name: "Create account", exact: true }),
+  });
+  const newEmail = registration.getByLabel("Email", { exact: true });
+  const newPassword = registration.getByLabel("Password", { exact: true });
+  const confirmation = registration.getByLabel("Confirm password", {
+    exact: true,
+  });
+  await expect(newEmail).toHaveAttribute("autocomplete", "email");
+  await expect(newEmail).toHaveAttribute("required", "");
+  for (const password of [newPassword, confirmation]) {
+    await expect(password).toHaveAttribute("autocomplete", "new-password");
+    await expect(password).toHaveAttribute("minlength", "12");
+    await expect(password).toHaveAttribute("required", "");
+  }
   const consentCheckboxes = page.locator('input[name="acceptTerms"]');
-  expect(await consentCheckboxes.count()).toBe(2);
+  await expect(consentCheckboxes).toHaveCount(2);
   await expect(consentCheckboxes.nth(0)).toHaveAttribute("required", "");
   await expect(consentCheckboxes.nth(1)).toHaveAttribute("required", "");
 
+  const submittedRequests: string[] = [];
+  await page.route("**/en/auth**", (route) => {
+    if (route.request().method() === "POST") {
+      submittedRequests.push(route.request().url());
+      return route.abort();
+    }
+    return route.continue();
+  });
   await newEmail.fill("invalid");
   await newPassword.fill("short");
   await page.getByRole("button", { name: "Create account" }).click();
-  await expect(page).toHaveURL(/\/en\/auth$/);
+  await expect(newEmail).toBeFocused();
+  await expect(page).toHaveURL(/\/en\/auth\?mode=signup$/);
+  expect(submittedRequests).toEqual([]);
 });
 
 test("SEO, install and offline assets are coherent and public", async ({
@@ -251,14 +336,24 @@ test("locale pages publish canonical and alternate language metadata", async ({
 
 test("analytics endpoint rejects malformed or personal payloads", async ({
   page,
+  baseURL,
 }) => {
-  const unsupported = await page.request.post("/api/analytics", {
+  const analyticsUrl = canonicalServerUrl("/api/analytics", baseURL!);
+  const origin = analyticsUrl.origin;
+  const crossOrigin = await page.request.post(analyticsUrl.href, {
+    headers: { origin: "https://untrusted.example" },
+    data: {},
+  });
+  expect(crossOrigin.status()).toBe(403);
+
+  const unsupported = await page.request.post(analyticsUrl.href, {
     data: "not-json",
-    headers: { "content-type": "text/plain" },
+    headers: { "content-type": "text/plain", origin },
   });
   expect(unsupported.status()).toBe(415);
 
-  const invalid = await page.request.post("/api/analytics", {
+  const invalid = await page.request.post(analyticsUrl.href, {
+    headers: { origin },
     data: {
       action: "event_view",
       eventId: "not-a-uuid",

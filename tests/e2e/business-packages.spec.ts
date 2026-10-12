@@ -1,5 +1,12 @@
 import { expect, test } from "@playwright/test";
 
+// Exercise plan comparison as a returning visitor; consent has its own coverage.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    document.cookie = "ak_consent_version=2; Path=/";
+  });
+});
+
 for (const locale of ["en", "es"] as const) {
   for (const width of [390, 1440]) {
     test(`business tools stay compact and accurate: ${locale}, ${width}px`, async ({
@@ -10,14 +17,19 @@ for (const locale of ["en", "es"] as const) {
       page.on("pageerror", (error) => errors.push(error.message));
       await page.goto(`/${locale}/membership`);
       const es = locale === "es";
-      const dismiss = page.getByRole("button", {
-        name: es ? "Ahora no" : "Not now",
-        exact: true,
-      });
-      if (await dismiss.isVisible()) await dismiss.click();
+      const comparison = page.locator("details.membership-details");
+      await expect(comparison).not.toHaveAttribute("open", "");
+      await expect(comparison.locator(":scope > summary")).toHaveText(
+        es
+          ? "Comparar herramientas y condiciones"
+          : "Compare tools and conditions",
+      );
+      await comparison.locator(":scope > summary").click();
+      await expect(comparison).toHaveAttribute("open", "");
       const region = page.getByRole("region", {
         name: es ? "Tus herramientas, de un vistazo" : "Your tools at a glance",
       });
+      await expect(region).toBeVisible();
       const selector = region.getByLabel(
         es ? "Tipo de negocio" : "Business type",
       );
@@ -84,6 +96,9 @@ for (const locale of ["en", "es"] as const) {
         }, theme);
         await page.reload();
         await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
+        await expect(comparison).not.toHaveAttribute("open", "");
+        await comparison.locator(":scope > summary").click();
+        await expect(region).toBeVisible();
         await selector.selectOption("food");
         await region.getByRole("button", { name: /Pro/ }).click();
         await region.screenshot({
