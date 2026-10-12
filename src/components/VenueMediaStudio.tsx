@@ -110,7 +110,10 @@ export function VenueMediaStudio({
   const filteredPickerItems = items.filter((item) =>
     item.alt.toLocaleLowerCase().includes(pickerSearch.toLocaleLowerCase()),
   );
-  const pickerPageCount = Math.max(1, Math.ceil(filteredPickerItems.length / 12));
+  const pickerPageCount = Math.max(
+    1,
+    Math.ceil(filteredPickerItems.length / 12),
+  );
   const safePickerPage = Math.min(pickerPage, pickerPageCount - 1);
   const visiblePickerItems = filteredPickerItems.slice(
     safePickerPage * 12,
