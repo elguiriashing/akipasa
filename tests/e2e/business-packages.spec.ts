@@ -17,7 +17,7 @@ for (const locale of ["en", "es"] as const) {
       page.on("pageerror", (error) => errors.push(error.message));
       await page.goto(`/${locale}/membership`);
       const es = locale === "es";
-      const comparison = page.locator("details.membership-details");
+      const comparison = page.locator("details.membership-details").last();
       await expect(comparison).not.toHaveAttribute("open", "");
       await expect(comparison.locator(":scope > summary")).toHaveText(
         es
