@@ -31,6 +31,7 @@ export function AdminWorkbench({
   const es = locale === "es";
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("all");
+  const [mobilePane, setMobilePane] = useState<"list" | "editor">("list");
   const [selection, setSelection] = useState(items[0]?.id ?? (createContent ? "__new__" : ""));
   const statuses = useMemo(
     () => [...new Set(items.map((item) => item.status).filter((value): value is string => Boolean(value)))],
@@ -57,7 +58,15 @@ export function AdminWorkbench({
   const label = creating ? createLabel : chosen?.title;
 
   return (
-    <section className="admin-master-detail" aria-label={title}>
+    <section className={"admin-master-detail admin-master-detail--" + mobilePane} aria-label={title}>
+      <div className="admin-workbench-mobile-tabs" role="group" aria-label={es ? "Vista del editor" : "Editor view"}>
+        <button type="button" aria-pressed={mobilePane === "list"} onClick={() => setMobilePane("list")}>
+          {es ? "Registros" : "Records"} ({visible.length})
+        </button>
+        <button type="button" aria-pressed={mobilePane === "editor"} onClick={() => setMobilePane("editor")}>
+          {es ? "Editor" : "Editor"}{label ? ` · ${label}` : ""}
+        </button>
+      </div>
       <aside className="admin-master-list">
         <header className="admin-master-list-head">
           <div>
@@ -70,7 +79,7 @@ export function AdminWorkbench({
               type="button"
               className="admin-master-create"
               aria-pressed={creating}
-              onClick={() => setSelection("__new__")}
+              onClick={() => { setSelection("__new__"); setMobilePane("editor"); }}
             >
               <span aria-hidden="true">+</span> {createLabel}
             </button>
@@ -112,7 +121,7 @@ export function AdminWorkbench({
               key={item.id}
               className={chosen?.id === item.id && !creating ? "admin-master-row selected" : "admin-master-row"}
               aria-pressed={chosen?.id === item.id && !creating}
-              onClick={() => setSelection(item.id)}
+              onClick={() => { setSelection(item.id); setMobilePane("editor"); }}
             >
               <span>
                 <strong>{item.title}</strong>
