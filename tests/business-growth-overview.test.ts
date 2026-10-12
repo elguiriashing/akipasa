@@ -15,6 +15,8 @@ describe("AkiBusiness Growth rollout boundaries", () => {
   it("preserves authorized business entry and existing promotion request form", () => {
     expect(page).toContain("requireBusinessAccess");
     expect(page).toContain("BusinessGrowthOverview");
+    expect(page).toContain("premiumEnabled={premiumEnabled}");
+    expect(growth).toContain("premiumEnabled && !premiumActive");
     expect(page).toContain("action={requestPromotion}");
     expect(page).toContain('view === "analytics" || view === "growth"');
   });
