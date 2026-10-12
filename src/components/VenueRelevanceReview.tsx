@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
-import type { Locale } from "@/lib/config";
+import type { Locale } from "../lib/config";
 import {
   relevanceActions,
   type RelevanceProposal,
-} from "@/lib/venue-relevance";
+} from "../lib/venue-relevance";
 
 export function VenueRelevanceReview({ locale }: { locale: Locale }) {
   const es = locale === "es";
