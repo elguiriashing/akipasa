@@ -116,7 +116,9 @@ export function BusinessEventEditPanel({
   const [pickerSlot, setPickerSlot] = useState<EventSlotKey | null>(null);
   const [pickerPage, setPickerPage] = useState(0);
   const [libraryPage, setLibraryPage] = useState(0);
-  const [libraryFolder, setLibraryFolder] = useState<"all" | "venue" | "events">("all");
+  const [libraryFolder, setLibraryFolder] = useState<
+    "all" | "venue" | "events"
+  >("all");
   const [librarySearch, setLibrarySearch] = useState("");
   const [priceMode, setPriceMode] = useState<"show" | "hide">(
     event.priceDisplayMode,
@@ -159,11 +161,18 @@ export function BusinessEventEditPanel({
     safePickerPage * PAGE_SIZE,
     safePickerPage * PAGE_SIZE + PAGE_SIZE,
   );
-  const filteredLibrary = allMedia.filter((item) =>
-    (libraryFolder === "all" || (libraryFolder === "venue" ? venueMediaIds.includes(item.id) : !venueMediaIds.includes(item.id))) &&
-    item.alt.toLocaleLowerCase().includes(librarySearch.toLocaleLowerCase()),
+  const filteredLibrary = allMedia.filter(
+    (item) =>
+      (libraryFolder === "all" ||
+        (libraryFolder === "venue"
+          ? venueMediaIds.includes(item.id)
+          : !venueMediaIds.includes(item.id))) &&
+      item.alt.toLocaleLowerCase().includes(librarySearch.toLocaleLowerCase()),
   );
-  const libraryPageCount = Math.max(1, Math.ceil(filteredLibrary.length / PAGE_SIZE));
+  const libraryPageCount = Math.max(
+    1,
+    Math.ceil(filteredLibrary.length / PAGE_SIZE),
+  );
   const safeLibraryPage = Math.min(libraryPage, libraryPageCount - 1);
   const libraryItems = filteredLibrary.slice(
     safeLibraryPage * PAGE_SIZE,
@@ -808,20 +817,52 @@ export function BusinessEventEditPanel({
             </p>
 
             <div className="event-library-controls">
-               <div className="event-library-folder-tabs" role="group" aria-label={es ? "Carpetas" : "Folders"}>
-                 {(["all", "venue", "events"] as const).map((folder) => (
-                   <button key={folder} type="button" aria-pressed={libraryFolder === folder}
-                     className={libraryFolder === folder ? "button secondary selected" : "button subtle"}
-                     onClick={() => { setLibraryFolder(folder); setLibraryPage(0); }}>
-                     {folder === "all" ? (es ? "Todo" : "All media") : folder === "venue" ? (es ? "Local" : "Venue") : (es ? "Eventos" : "Events")}
-                   </button>
-                 ))}
-               </div>
-               <input type="search" aria-label={es ? "Buscar archivos" : "Search media"}
-                 placeholder={es ? "Buscar archivos…" : "Search media…"} value={librarySearch}
-                 onChange={(e) => { setLibrarySearch(e.target.value); setLibraryPage(0); }} />
-             </div>
-             {filteredLibrary.length ? (
+              <div
+                className="event-library-folder-tabs"
+                role="group"
+                aria-label={es ? "Carpetas" : "Folders"}
+              >
+                {(["all", "venue", "events"] as const).map((folder) => (
+                  <button
+                    key={folder}
+                    type="button"
+                    aria-pressed={libraryFolder === folder}
+                    className={
+                      libraryFolder === folder
+                        ? "button secondary selected"
+                        : "button subtle"
+                    }
+                    onClick={() => {
+                      setLibraryFolder(folder);
+                      setLibraryPage(0);
+                    }}
+                  >
+                    {folder === "all"
+                      ? es
+                        ? "Todo"
+                        : "All media"
+                      : folder === "venue"
+                        ? es
+                          ? "Local"
+                          : "Venue"
+                        : es
+                          ? "Eventos"
+                          : "Events"}
+                  </button>
+                ))}
+              </div>
+              <input
+                type="search"
+                aria-label={es ? "Buscar archivos" : "Search media"}
+                placeholder={es ? "Buscar archivos…" : "Search media…"}
+                value={librarySearch}
+                onChange={(e) => {
+                  setLibrarySearch(e.target.value);
+                  setLibraryPage(0);
+                }}
+              />
+            </div>
+            {filteredLibrary.length ? (
               <>
                 <div className="event-editor-library-grid">
                   {libraryItems.map((item, index) => (
@@ -842,9 +883,19 @@ export function BusinessEventEditPanel({
                         <button
                           type="button"
                           disabled={mediaState === "working"}
-                          onClick={() => binIds.includes(item.id) ? removeFromEvent(item.id) : addToEvent(item.id)}
+                          onClick={() =>
+                            binIds.includes(item.id)
+                              ? removeFromEvent(item.id)
+                              : addToEvent(item.id)
+                          }
                         >
-                          {binIds.includes(item.id) ? (es ? "Quitar del evento" : "Remove from event") : (es ? "Añadir al evento" : "Add to event")}
+                          {binIds.includes(item.id)
+                            ? es
+                              ? "Quitar del evento"
+                              : "Remove from event"
+                            : es
+                              ? "Añadir al evento"
+                              : "Add to event"}
                         </button>
                       </div>
                     </article>
