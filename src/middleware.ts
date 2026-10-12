@@ -3,8 +3,10 @@ import { refreshSession } from "@/lib/supabase/middleware";
 import { stayLocale } from "@/lib/akiduermo-i18n";
 import { stayHostRoute, stayHostMethodAllowed } from "@/lib/akiduermo-routing";
 import { shouldNoindex } from "@/lib/seo";
+import { akiSuiteMembershipReturnPath } from "@/lib/akisuite-catalogue";
 
 export async function middleware(request: NextRequest) {
+  request.headers.delete("x-akipasa-membership-next");
   const hostname = (
     request.headers.get("host")?.split(":")[0] || request.nextUrl.hostname
   ).toLowerCase();
@@ -47,6 +49,14 @@ export async function middleware(request: NextRequest) {
     }
     if (target.toString() !== request.nextUrl.toString())
       return NextResponse.redirect(target, 307);
+    if (account)
+      request.headers.set(
+        "x-akipasa-membership-next",
+        akiSuiteMembershipReturnPath(
+          target.pathname.startsWith("/en/") ? "en" : "es",
+          target.pathname + target.search,
+        ),
+      );
   }
   if (isAkiBusiness) {
     const pathname = request.nextUrl.pathname;

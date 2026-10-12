@@ -1,10 +1,30 @@
 import { describe, expect, it, vi } from "vitest";
 import { NextRequest, NextResponse } from "next/server";
 vi.mock("@/lib/supabase/middleware", () => ({
-  refreshSession: async () => NextResponse.next(),
+  refreshSession: async (request: NextRequest) =>
+    NextResponse.next({ request: { headers: request.headers } }),
 }));
 import { middleware } from "../src/middleware";
 describe("shared EN/ES membership host aliases", () => {
+  it("overwrites spoofed membership headers and does not apply them to unrelated account routes", async () => {
+    const forged = { "x-akipasa-membership-next": "https://attacker.example" };
+    const request = new NextRequest(
+      "https://akipasa.com/en/account/subscription?from=akiduermo",
+      { headers: forged },
+    );
+    const response = await middleware(request);
+    expect(
+      response.headers.get("x-middleware-request-x-akipasa-membership-next"),
+    ).toBe("/en/account/subscription?from=akiduermo");
+    const unrelated = await middleware(
+      new NextRequest("https://akipasa.com/en/account/settings", {
+        headers: forged,
+      }),
+    );
+    expect(
+      unrelated.headers.get("x-middleware-request-x-akipasa-membership-next"),
+    ).toBeNull();
+  });
   for (const locale of ["en", "es"]) {
     for (const host of [
       "business.akipasa.com",

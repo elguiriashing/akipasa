@@ -1,6 +1,17 @@
 import { expect, test } from "@playwright/test";
 
 for (const locale of ["en", "es"] as const) {
+  test(`signed-out membership aliases retain ${locale} destination and origin`, async ({
+    page,
+  }) => {
+    for (const alias of ["membership", "memberships", "subscription"]) {
+      await page.goto(`/${locale}/account/${alias}?from=akiduermo`);
+      await expect(page).toHaveURL(/\/auth\?next=/);
+      expect(new URL(page.url()).searchParams.get("next")).toBe(
+        `/${locale}/account/subscription?from=akiduermo`,
+      );
+    }
+  });
   for (const [width, height] of [
     [390, 844],
     [768, 1024],
