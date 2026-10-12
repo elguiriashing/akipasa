@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import React from "react";
+import { readFileSync } from "node:fs";
 import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -204,5 +205,22 @@ describe("venue action return sections", () => {
     expect(getVenueDashboardSection({ section: "bookings" })).toBe("bookings");
     expect(getVenueDashboardSection({ section: "unknown" })).toBe("overview");
     expect(getVenueDashboardSection({})).toBe("overview");
+  });
+});
+
+
+describe("shared AkiBusiness media inventory", () => {
+  it("passes the same venue-scoped assets to profile and event editing", () => {
+    const page = readFileSync("src/app/[locale]/business/venue/[id]/page.tsx", "utf8");
+    expect(page).toContain("const mediaStudioItems = allMediaItems;");
+    expect(page).toContain("media={allMediaItems.map((item) => ({");
+  });
+
+  it("makes every venue asset selectable and filters the shared library", () => {
+    const editor = readFileSync("src/components/BusinessEventEditPanel.tsx", "utf8");
+    expect(editor).toContain("const selectableMedia = allMedia;");
+    expect(editor).toContain("const filteredLibrary = allMedia.filter");
+    expect(editor).toContain("setLibraryFolder(folder)");
+    expect(editor).toContain("setLibrarySearch(e.target.value)");
   });
 });
