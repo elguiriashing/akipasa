@@ -1,5 +1,42 @@
 # Change Impact Register
 
+## 2026-10-12 | Aki Spotlight public venue and event detail layouts
+
+- **User request:** implement the selected **01 / Aki Spotlight** concept for
+  both public detail page types across desktop, landscape tablet, portrait
+  tablet and phone, then merge the verified result to live. Isolated source
+  begins at public `master` commit `c651a69`.
+- **Observed:** both detail types inherited the same generic cover/facts/action
+  layout. The selected design instead prioritizes venue photography, menu and
+  visiting actions on venues, and event artwork, timing, host and booking on
+  events. EN/ES and light/dark modes are preserved.
+- **Changes:** scoped shared detail chrome, distinct venue/event layout styles,
+  accessible venue section navigation with real published catalogue previews,
+  compact upcoming events, intact event posters and a clear date ribbon.
+  Responsive action bars keep visiting and booking actions available. Shared
+  sharing gains a named icon variant, clipboard status and native-cancel/error
+  handling; existing text-button callers retain their presentation.
+- **Dependency matrix:** public route -> existing repository/published rows and
+  media placements -> server-authorized personal/booking state -> existing
+  engagement forms, booking routes and catalogue/allergen component. Preserve
+  metadata/JSON-LD, custom event location, Madrid start/end dates, external vs
+  native booking, cancellation/sold-out gates, authenticated favorites/going,
+  premium calendar/offers, loyalty, contact and accommodation redirect.
+  The concept's sample opening hours and imagery are not production data.
+- **Boundaries:** no SQL/RLS, API, credential, storage upload, production record,
+  billing/email or other portal redesign. CSS is scoped to these public detail
+  pages. Revert the source change for rollback; no data restoration needed.
+- **Verification:** focused route/component and sharing tests, full repository
+  check and Cloudflare package, plus the mandatory `test:spotlight:browser`
+  command in tablet CI. The browser harness serves disposable read-only
+  Supabase-shaped responses through the real Next routes; empty default
+  fixtures cannot exercise venue/event detail. Detailed acceptance and release
+  evidence is maintained in `docs/SPOTLIGHT_DETAIL_REDESIGN.md`. Full check
+  passed with 623 tests and the production build; dedicated acceptance passed
+  all 28 cases. The broad legacy suite was diagnostically interrupted after
+  repeated obsolete-selector timeouts and is explicitly not green. Final
+  browser/package, CI and live proof are recorded in the release document.
+
 ## 2026-10-12 | AkiPals companion playground and playable arcade
 
 - **User request:** six specialist roles to improve the existing `/pals`
@@ -549,3 +586,5 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - Final Account browser matrix passed 302/302: 240 normal screens (ten routes, EN/ES, both themes, six viewport sizes), 60 boundary cases and two localized legacy Progress redirects. Full results and reviewed screen captures are preserved as browser evidence. Broader public acceptance also retains exact auth/status/SEO/consent checks while following current menus/forms. Map legend touch sizing is corrected from 36px to at least 44px in its existing scoped selector. CI also exposed the undersized native MapLibre attribution summary: its toggle and compact wrapper now have matching 44px dimensions, with reserved space for expanded attribution text. The map stylesheet test distinguishes the standalone vendor selector from legitimate scoped layout rules; no map bundling change was needed.
 - Public test infrastructure supplies read-only synthetic venue discovery and details on an explicitly configured disposable localhost port: 2,105 records exercise 20-card nearby paging, the real Next map API's 2,000-record cursor continuation and the existing venue detail renderer. The fixture permits the two pagination RPCs, the public catalogue read (no catalogue), published venue lookup by slug/ID, and empty event, offer, loyalty, media, booking-setting and feature-flag reads; unsupported requests and all writes are rejected. The runner enables the existing Supabase repository only for its Next child through a private server-only flag, with independent guards requiring the fixture provider and the same build-time uncredentialed loopback HTTP URL used by the public client. Ordinary fixture, Supabase and hybrid deployments retain their existing selection. The E2E runner starts/stops the fixture with its production server, and CI runs the full public suite including exact 200 checks for synthetic card links. This does not authenticate users, forward requests or claim PostgreSQL/RLS integration. Authenticated production acceptance still requires separately supplied disposable QA credentials.
 - Final repository check passed after the recovery, public CSS and fixture-detail fixes: 680 tests (637 application, two database-conflict and 41 automation), formatting, zero-warning lint, TypeScript, database safety, automation Worker dry-run and the production Next build. The 24 new provider-guard cases verify exact opt-in, unchanged ordinary providers, safe local URLs and server-only selection. The final full public E2E run and CI Cloudflare package are release gates; their final outcomes and the connected live marker are recorded in the release PR.
+- Native map interaction follow-up: 44px sizing alone did not catch Privacy intercepting attribution on narrow screens or Support covering it on desktop. Scoped responsive offsets reserve space for all three controls and the short-window geolocation column; the map status caption wraps within its available horizontal space. A deterministic, tileless basemap response supplies attribution to the actual MapLibre control in one added public test: EN/ES, five viewport sizes, native disclosure clicks, control/container bounds, privacy reopening and screenshots. No forced clicks, hidden controls, consent saves or production map-style changes are used. At this checkpoint, before integrating Spotlight, the public suite contains 78 cases. A separate AkiDuermo test race is corrected by waiting for the canvas before marking it and always checking that filtering preserves that same canvas; the previous independent conditional counts could mark nothing and later assert against a newly loaded canvas. Application map lifecycle behavior is unchanged. Final focused, full-suite and CI results remain in the release PR.
+- Latest release integration retains public `master` at `4443b12`, including the Aki Spotlight venue/event layouts and all their test gates. Both the Account and Spotlight component suites remain in `npm test`. Generic public E2E now discovers 106 cases: the 28 Spotlight cases have an explicit separate-fixture gate and run through the mandatory `npm run test:spotlight:browser` command in tablet CI; the existing authenticated-production case retains its credential gate. These separate suites rebuild with different disposable backends and must run sequentially locally. Final combined check, browser and deployment outcomes are recorded in the release PR.

@@ -41,10 +41,25 @@ export type IconName =
   | "users"
   | "venue"
   | "arrow-right"
+  | "share"
+  | "directions"
+  | "clock"
   | "plus"
   | "trash";
 
 const paths: Record<IconName, React.ReactNode> = {
+  share: (
+    <>
+      <path d="M12 15V3m-4 4 4-4 4 4M6 11H4v10h16V11h-2" />
+    </>
+  ),
+  directions: <path d="m21 3-7 18-3-8-8-3 18-7Z" />,
+  clock: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </>
+  ),
   bed: <path d="M3 19V9m18 10V11H3m0 6h18M6 11V5h12v6M12 5v6" />,
   plus: <path d="M12 5v14M5 12h14" />,
   trash: (
