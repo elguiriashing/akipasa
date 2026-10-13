@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import type { DiscoveryRepository } from "../src/lib/repository";
 import {
+  SupabaseDiscoveryRepository,
   FixtureRepository,
   HybridDiscoveryRepository,
   parseDatabasePoint,
@@ -188,5 +189,182 @@ describe("discovery ranking", () => {
     expect(
       rankDiscoveryResults([later, earlier], now).map((item) => item.event.id),
     ).toEqual(["earlier", "later"]);
+  });
+});
+
+const publicMediaBackend = vi.hoisted(() => ({ client: {} }));
+vi.mock("../src/lib/supabase/public", () => ({
+  createSupabasePublicClient: () => publicMediaBackend.client,
+}));
+
+describe("shared venue public media placements", () => {
+  const venueId = "11111111-1111-4111-8111-111111111111";
+  const own = {
+    id: "own",
+    venue_id: venueId,
+    storage_path: "venue/own.jpg",
+    alt_es: "Propia",
+    alt_en: "Own",
+  };
+  const selected = {
+    id: "selected",
+    venue_id: venueId,
+    storage_path: "venue/events/selected.jpg",
+    alt_es: "Elegida",
+    alt_en: "Selected",
+  };
+  const privateEvent = {
+    id: "private",
+    venue_id: venueId,
+    storage_path: "venue/events/private.jpg",
+    alt_es: "Privada",
+    alt_en: "Private",
+  };
+  const foreign = {
+    id: "foreign",
+    venue_id: "other-venue",
+    storage_path: "other/events/private.jpg",
+    alt_es: "Otra",
+    alt_en: "Other",
+  };
+
+  function backend(
+    fallback: (typeof own)[],
+    placements: { media_id: string; placement: string }[],
+    signingFails = false,
+  ) {
+    const calls: {
+      table: string;
+      filters: Record<string, unknown>;
+      limit?: number;
+    }[] = [];
+    const signed: string[] = [];
+    publicMediaBackend.client = {
+      from(table: string) {
+        const call = {
+          table,
+          filters: {} as Record<string, unknown>,
+          limit: undefined as number | undefined,
+        };
+        calls.push(call);
+        const query = {
+          select: () => query,
+          eq(key: string, value: unknown) {
+            call.filters[key] = value;
+            return query;
+          },
+          in(key: string, value: unknown) {
+            call.filters[key] = value;
+            return query;
+          },
+          not() {
+            return query;
+          },
+          order: () => query,
+          limit(value: number) {
+            call.limit = value;
+            return query;
+          },
+          lte: () => query,
+          gte: () => query,
+          maybeSingle: () => query,
+          then(resolve: (value: unknown) => unknown) {
+            let data: unknown = [];
+            if (table === "venues")
+              data = {
+                id: venueId,
+                slug: "venue",
+                name: "Venue",
+                address: "Fuengirola",
+                location: null,
+              };
+            if (table === "venue_media_placements") data = placements;
+            if (table === "venue_media")
+              data = call.filters.id
+                ? [selected, privateEvent, foreign].filter(
+                    (item) =>
+                      item.venue_id === call.filters.venue_id &&
+                      (call.filters.id as string[]).includes(item.id),
+                  )
+                : fallback;
+            return Promise.resolve({ data, error: null }).then(resolve);
+          },
+        };
+        return query;
+      },
+      storage: {
+        from: () => ({
+          createSignedUrl: async (path: string) => {
+            signed.push(path);
+            return {
+              data:
+                signingFails && path === selected.storage_path
+                  ? null
+                  : { signedUrl: `https://media.invalid/${path}` },
+            };
+          },
+        }),
+      },
+    };
+    return { calls, signed };
+  }
+
+  it.each(["venueBySlug", "venueById"] as const)(
+    "%s resolves selected event uploads without signing private event-bin files",
+    async (method) => {
+      const { calls, signed } = backend(
+        [own],
+        [
+          { media_id: selected.id, placement: "venue_cover" },
+          { media_id: foreign.id, placement: "venue_profile" },
+        ],
+      );
+      const venue = await new SupabaseDiscoveryRepository()[method](
+        method === "venueById" ? venueId : "venue",
+      );
+      expect(venue?.coverImage?.id).toBe(selected.id);
+      expect(venue?.logoImage?.id).toBe(own.id);
+      expect(venue?.media?.map((item) => item.id)).toEqual([
+        selected.id,
+        own.id,
+      ]);
+      expect(signed).toEqual([own.storage_path, selected.storage_path]);
+      expect(
+        calls.find((call) => call.table === "venue_media" && call.filters.id),
+      ).toMatchObject({
+        filters: { venue_id: venueId, id: [selected.id, foreign.id] },
+      });
+    },
+  );
+
+  it.each(["venueBySlug", "venueById"] as const)(
+    "%s supports an explicitly placed event asset when no ordinary venue image exists",
+    async (method) => {
+      backend([], [{ media_id: selected.id, placement: "venue_cover" }]);
+      const venue = await new SupabaseDiscoveryRepository()[method](
+        method === "venueById" ? venueId : "venue",
+      );
+      expect(venue?.coverImage?.id).toBe(selected.id);
+    },
+  );
+
+  it("keeps the existing fallback when signing an explicit placement fails", async () => {
+    backend([own], [{ media_id: selected.id, placement: "venue_cover" }], true);
+    expect(
+      (await new SupabaseDiscoveryRepository().venueBySlug("venue"))?.coverImage
+        ?.id,
+    ).toBe(own.id);
+  });
+
+  it("does not fetch private event assets when there are no missing placements", async () => {
+    const { calls, signed } = backend(
+      [own],
+      [{ media_id: own.id, placement: "venue_cover" }],
+    );
+    await new SupabaseDiscoveryRepository().venueBySlug("venue");
+    expect(calls.filter((call) => call.table === "venue_media")).toHaveLength(
+      1,
+    );
+    expect(signed).toEqual([own.storage_path]);
   });
 });

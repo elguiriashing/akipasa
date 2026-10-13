@@ -273,6 +273,49 @@ const venueFields =
 const eventFields =
   "id,venue_id,slug,title_es,title_en,description_es,description_en,price_cents,price_display_mode,currency,source,sponsored,booking_url,minimum_age,accessibility_notes_es,accessibility_notes_en,location,location_label,directions_address,categories(slug),event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status,booking_url),feature_slots(starts_at,ends_at)";
 
+type PublicVenueMediaRow = {
+  id: string;
+  storage_path: string;
+  alt_es: string | null;
+  alt_en: string | null;
+};
+
+async function placedVenueMedia(
+  supabase: ReturnType<typeof createSupabasePublicClient>,
+  venueId: string,
+  fallbackMedia: PublicVenueMediaRow[],
+) {
+  const { data: visualPlacements } = await supabase
+    .from("venue_media_placements")
+    .select("media_id,placement")
+    .eq("venue_id", venueId)
+    .eq("target_key", "")
+    .in("placement", [
+      "venue_profile",
+      "venue_cover",
+      "venue_menu",
+      "venue_events",
+      "venue_explore",
+    ]);
+  const existingIds = new Set(fallbackMedia.map((item) => item.id));
+  const missingIds = [
+    ...new Set((visualPlacements || []).map((item) => String(item.media_id))),
+  ].filter((id) => !existingIds.has(id));
+  // Explicit venue placements may refer to event uploads or assets beyond the
+  // fallback gallery window. Read only those IDs, within this same venue/RLS.
+  const { data: selectedMedia } = missingIds.length
+    ? await supabase
+        .from("venue_media")
+        .select("id,storage_path,alt_es,alt_en")
+        .eq("venue_id", venueId)
+        .in("id", missingIds)
+    : { data: [] };
+  return {
+    media: [...fallbackMedia, ...(selectedMedia || [])],
+    visualPlacements,
+  };
+}
+
 export class SupabaseDiscoveryRepository implements DiscoveryRepository {
   async discover(query: DiscoveryQuery) {
     const supabase = createSupabasePublicClient();
@@ -742,8 +785,13 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       reward: { es: item.reward_es, en: item.reward_en || undefined },
       stampsRequired: item.stamps_required,
     }));
+    const { media: publicMedia, visualPlacements } = await placedVenueMedia(
+      supabase,
+      venue.id,
+      media || [],
+    );
     const signedMedia = await Promise.all(
-      (media || []).map(async (item) => {
+      publicMedia.map(async (item) => {
         const { data: signed } = await supabase.storage
           .from("event-media")
           .createSignedUrl(item.storage_path, 3600);
@@ -762,18 +810,6 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       (item): item is NonNullable<(typeof signedMedia)[number]> =>
         item !== null,
     );
-    const { data: visualPlacements } = await supabase
-      .from("venue_media_placements")
-      .select("media_id,placement")
-      .eq("venue_id", venue.id)
-      .eq("target_key", "")
-      .in("placement", [
-        "venue_profile",
-        "venue_cover",
-        "venue_menu",
-        "venue_events",
-        "venue_explore",
-      ]);
     if (venue.media?.length) {
       const primary = venue.media[0];
       const mediaFor = (placement: string) => {
@@ -820,8 +856,13 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       .not("storage_path", "like", "%/events/%")
       .order("sort_order")
       .limit(60);
+    const { media: publicMedia, visualPlacements } = await placedVenueMedia(
+      supabase,
+      venue.id,
+      media || [],
+    );
     const signedMedia = await Promise.all(
-      (media || []).map(async (item) => {
+      publicMedia.map(async (item) => {
         const { data: signed } = await supabase.storage
           .from("event-media")
           .createSignedUrl(item.storage_path, 3600);
@@ -840,18 +881,6 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       (item): item is NonNullable<(typeof signedMedia)[number]> =>
         item !== null,
     );
-    const { data: visualPlacements } = await supabase
-      .from("venue_media_placements")
-      .select("media_id,placement")
-      .eq("venue_id", venue.id)
-      .eq("target_key", "")
-      .in("placement", [
-        "venue_profile",
-        "venue_cover",
-        "venue_menu",
-        "venue_events",
-        "venue_explore",
-      ]);
     if (venue.media?.length) {
       const primary = venue.media[0];
       const mediaFor = (placement: string) => {
