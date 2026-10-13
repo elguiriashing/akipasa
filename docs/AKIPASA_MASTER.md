@@ -308,6 +308,14 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 
 ### Claim-specific applicant verification fields (2026-10-11)
 
+Claim picker search results stay in normal flow beneath the search input,
+including wrapped EN/ES headings and activity/accommodation controls. A bounded
+results list scrolls without obscuring the input or displacing content over the
+map. `scripts/test-claim-picker-browser.mjs` exercises the real component with
+disposable search responses across locales, themes and responsive widths,
+including selecting a result and clearing the selected venue. It validates map
+container geometry, not MapLibre rendering or authenticated live claiming.
+
 - The EN/ES AkiBusiness claim form `/[locale]/business?view=claims` uses the existing ClaimVenuePicker and now separately collects applicant full name and relationship to the business (required), optional applicant phone, business email, official venue URL and venue phone, plus the existing required evidence text. Mobile and light/dark forms must display these input controls.
 - `submitVenueClaim` performs server-side Zod validation and inserts private `venue_claims.claim_details` (including `submission_locale`) alongside the immutable claim ID, claimant ID and evidence. It must retain the existing transactional staff alert outbox and immediate `dispatchClaimSubmissionAlerts` call. No canonical venue/profile fields may be modified by an unapproved claim.
 - Staff moderation `staff_pending_venue_claims(integer)` includes `claimant.submission` from `claim_details` behind its existing moderator/administrator role check. Submitted applicant/venue contacts are labelled unverified and kept distinct from profile details and public listing. Historical claim rows default to an empty object and still render safely.
@@ -474,3 +482,29 @@ Live membership smoke verification found that the parent account layout replaced
 Read-only live revalidation confirms the same approved account `acct_1SVLH2GfzDhsgsQZ` now displays AkiPasa Marketing S.L., all fourteen AkiSuite prices use inclusive tax behaviour, and all seven products have tax codes (AkiPasa Premium `txcd_10103000`, others `txcd_10103001`). Stripe Tax registrations remain absent. Technical classification and account display name do not establish legal identity or VAT approval. `docs/AKISUITE_PRICING_ROLLOUT.md` and the checked-in price audit must describe the same observed state; the obsolete unspecified-tax update instruction is removed.
 
 The linked Supabase project's read-only schema probe found neither `public.akisuite_billing_subscriptions` nor `akisuite_private.launch_settings`. The two new migrations, hosted Storage DDL compatibility, legal registration, isolated payment lifecycle acceptance and authenticated portal validation remain release blockers. No flags, prices, products, registrations, subscriptions, permissions, schema or production data changed. Historic release-test claims remain dated evidence, not new validation. Documentation rollback is a source revert.
+
+## Exact source release evidence (2026-10-13)
+
+Cloudflare packaging stamps `.open-next/assets/release-source.json` with the clean tracked Git HEAD before deployment. Packaging refuses tracked changes; commit source before running `build:cloudflare`. The existing `/api/bookings/release` returns `sourceCommit` from this internal ASSETS binding, preserving feature markers and returning null for legacy/missing/malformed artifacts. The post-push smoke must observe the exact triggering commit on apex/www/Business/Duermo before claiming deployment; a constant feature marker alone is insufficient. This adds no database, billing, permission, locale or secret dependency. Rollback restores older code/assets and accurately loses current-source readiness. Browser/authenticated workflow acceptance remains separate.
+
+Exact-source release verification runs for every master push, including asset, dependency, configuration and documentation changes; there is no deployment-input path filter.
+
+### 2026-10-13 | Recovered venue media picker review defects
+
+Unmerged PRs #121/#122 contained review findings still present after #123: search/folder controls consumed the gallery scroll row, and the modal lacked keyboard focus containment, Escape dismissal, restoration and slot-specific trigger names. VenueMediaStudio now groups controls into one intrinsic row and empty/results into the scroll row, with dedicated CSS preserving the event editor modal. EN/ES triggers identify the image surface; opening resets filters, focuses search, traps keyboard/programmatic focus and closing restores the opener. Existing upload/placement/Auto actions, permission checks, media inventory, accommodation header, event editor, billing and SQL remain unchanged. Rollback is code-only. Component regression tests exercise actual focus wrapping, Escape/close restoration, filter reset and variable-content DOM rows in both locales. Full check, responsive browser/Cloudflare CI and authenticated live owner acceptance remain required before deployment; no live storage/data mutation or deployment is claimed.
+
+The recovered claim and venue-media browser harnesses run in tablet CI with disposable actions; their real-browser results remain separate from component tests and live authenticated acceptance.
+
+## 2026-10-13 | Historical backlog documentation authority
+
+The README entry point now directs engineers to `AGENTS.md` and this contract.
+The July/August AI handoff, project status and TODO files carry explicit
+historical-snapshot notices linking current change evidence and the gated
+AkiSuite billing contract. Their historical content remains intact for backlog
+recovery; an unchecked task is not proof of a current omission, and an old
+acceptance checkbox is not proof of the present deployment. No application,
+workflow, database, entitlement or payment-activation behavior changes.
+
+### 2026-10-13 | Venue picker short-window visual acceptance repair
+
+Actual CI screenshot review of PR #138 at 640×400 caught gallery cards collapsing into thin, unreadable strips even though modal/footer geometry checks passed. Dedicated venue-picker gallery rows now retain a nine-rem minimum and scroll instead of compressing; short-window controls share one row and the footer stays horizontal to reserve a readable first card. Shared event-picker geometry and existing placement/Auto actions remain unchanged. Browser acceptance now requires actual thumbnail and label dimensions, the first label inside the gallery, overflowing short-window results, scrolling to the last selectable thumbnail and successful selection/focus restoration with disposable actions. This repairs a visual acceptance failure; required browser CI and screenshot reinspection remain pending on the amended head. No production data, permissions, SQL or billing changes.

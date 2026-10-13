@@ -503,3 +503,7 @@ The shared transactional email catalogue is defined in `src/lib/suite-email-temp
 ### Public Spotlight detail presentation (2026-10-12)
 
 The venue and event Server Components retain their existing repository, authenticated personal state, published catalogue and booking boundaries. Venue presentation sends only published catalogue-referenced media into a small client section navigator; event presentation remains server-rendered, including the shared booking eligibility used by both responsive action placements. `spotlight-detail.css` supplies scoped theme/actions chrome, and route-specific CSS gives venues and events distinct responsive hierarchies. The optional ShareButton icon variant retains consent-controlled analytics and adds localized clipboard/native-share status. No data model or service boundary changes. A disposable read-only Supabase-shaped HTTP server provides real-route browser acceptance without introducing production fixture records; its mandatory CI command is `npm run test:spotlight:browser`.
+
+### Release source identity (2026-10-13)
+
+Cloudflare packaging writes the clean source Git SHA into an ignored generated asset. The Worker reads it directly through ASSETS for the existing read-only release endpoint; no request-supplied or runtime mutable source variable is trusted. Missing source evidence is null. Post-push release smoke verifies the triggering SHA across all public portal hosts, separately from database readiness and authenticated workflow tests.
