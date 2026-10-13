@@ -38,9 +38,9 @@ for (const locale of ["en", "es"] as const) {
       await expect(
         catalogue.locator('article[data-origin="true"]'),
       ).toContainText("AkiBusiness Premium");
-      await expect(catalogue.locator("select")).toHaveCount(0);
-      await expect(catalogue.getByRole("button")).toHaveCount(7);
-      for (const button of await catalogue.getByRole("button").all())
+      await expect(catalogue.locator("#akisuite-sector")).toHaveCount(1);
+      await expect(catalogue.locator("article button[type=submit]")).toHaveCount(7);
+      for (const button of await catalogue.locator("article button[type=submit]").all())
         await expect(button).toBeDisabled();
       await catalogue.getByRole("radio").nth(1).check();
       await expect(catalogue.locator("#aki_enterprise")).toContainText(
