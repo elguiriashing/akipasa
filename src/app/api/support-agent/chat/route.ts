@@ -2,6 +2,7 @@ import { z } from "zod";
 import { aiErrorResponse, requireAIUser } from "@/lib/ai-team/auth";
 import { runAIAgent } from "@/lib/ai-team/gateway";
 import { requireSameOrigin } from "@/lib/ai-team/request-security";
+import { readBoundedText, RequestSecurityError } from "@/lib/request-security";
 import {
   isCustomerSupportMessage,
   outOfScopeSupportReply,
@@ -54,12 +55,9 @@ const customerSupportRules = {
 export async function POST(request: Request) {
   try {
     await requireSameOrigin(request);
-    const contentLength = Number(request.headers.get("content-length") || 0);
-    if (contentLength > 8_000) {
-      return Response.json({ ok: false, error: "too_large" }, { status: 413 });
-    }
-
-    const parsed = supportChatSchema.safeParse(await request.json());
+    const parsed = supportChatSchema.safeParse(
+      JSON.parse(await readBoundedText(request, 8_000)),
+    );
     if (!parsed.success) {
       return Response.json(
         { ok: false, error: "invalid_request" },
@@ -96,6 +94,14 @@ export async function POST(request: Request) {
 
     return Response.json({ ok: true, text: result.text });
   } catch (error) {
+    if (error instanceof RequestSecurityError)
+      return Response.json(
+        {
+          ok: false,
+          error: error.status === 413 ? "too_large" : "invalid_request",
+        },
+        { status: error.status },
+      );
     return aiErrorResponse(error);
   }
 }
