@@ -1,5 +1,13 @@
 # Change Impact Register
 
+## 2026-10-13 | Recovered claim-picker overlap from PR #97
+
+- Before: `.claim-search-results` used absolute `top: 7.8rem`; additional business-type controls and wrapped headings can place results over the search input. Current master retained the defect despite later claim form releases.
+- After: results follow the actual input in normal flex flow, with the existing bounded scrolling and selection/clear behavior preserved. Applies to EN/ES, activity and accommodation searches, both themes and phone/tablet/desktop.
+- Dependency trace: `ClaimVenuePicker` -> existing `/api/business/claim-search` and `/api/business/claim-map` -> authorised claim submission. Only results geometry changes; no component/API/RPC/role/SQL/storage/email/billing/analytics/consent changes. Map network and selection semantics are unchanged.
+- Regression: real-component browser harness uses disposable search responses, verifies wrapped headings, populated/empty results, input/result/map geometry, list scrolling and selection/clear at six widths in both locales/themes. Map rendering and authenticated production claiming are not covered. Added to existing tablet CI, which retains all its previous steps and artifact upload.
+- Validation: pending execution; no merge or deployment claimed. Rollback: revert results CSS and harness/workflow addition, with no data migration.
+
 ## 2026-10-13 | Compact memberships with official app brands and sector tools
 
 - **Request:** Reduce excessive desktop/tablet/mobile scrolling and wasted horizontal space; restore the useful sector selector and make packages identifiable by original app marks.
@@ -539,6 +547,12 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - Fix: central `resendSendingKey` selects `RESEND_API_KEY` first and uses claim-specific secret only as a backwards-compatible fallback. All claim, staff, suite, venue booking and AkiDuermo booking modules use it. The caller's role, security, queue leases, locale, send From and Reply-To, recipients and UI do not change. No migration.
 - Tests: assert canonical selection when both secrets exist, legacy fallback, and real mocked claim delivery Authorization header. Contract assertions cover all dispatcher consumers. Required gates: full check, EN/ES browser and Cloudflare build. Live end-to-end validation and any requeue are deferred to corrected Cloudflare credentials.
 
+## 2026-10-13 | Canonical Resend recovery instruction
+
+The claim-email recovery runbook inspects production `RESEND_API_KEY` first, matching `resendSendingKey` in `booking-mail-delivery.ts`. Only absent or blank primary keys use legacy `CLAIM_RESEND_API_KEY`; rotating that fallback cannot repair an invalid nonblank primary. No keys, runtime configuration, queue status or messages are changed. Existing key-precedence regression coverage remains authoritative; live credential repair and individually authorized requeues are operational dependencies, not accomplished by this documentation change.
+
+Canonical-key recovery validation: the existing `tests/claim-decision-email.test.ts` suite passed 10/10 cases on 2026-10-13, including trimmed primary-key selection, absent/blank-primary legacy fallback and dispatcher selection. The isolated command retained the existing timeout limits; no credentials or real messages were used. Required exact-head CI remains the merge gate.
+
 ## 2026-10-11 | Anchored overlay for sticky mobile workspace menus
 
 - **Observed:** On Account/Staff/Admin, the menu button stayed at the mobile viewport top but opening it created an in-flow section near the page's beginning; the user had to scroll back upward to use its links.
@@ -689,8 +703,70 @@ Live membership smoke verification found that the parent account layout replaced
 
 2026-10-13 AkiSuite membership width/overlap follow-up: The membership-only shell now uses available desktop/tablet viewport width up to a 1720px bound while keeping responsive gutters. Catalogue cards reflow across wider screens, and the Enterprise card brand/header badge can wrap without label collision. No subscription billing, entitlement, feature flag, migration or checkout change. Validate EN/ES membership layouts on mobile, tablet and desktop.
 
+## 2026-10-13 | Recovered Stripe tax-audit follow-up (#127)
+
+Read-only live revalidation confirms the same approved account `acct_1SVLH2GfzDhsgsQZ` now displays AkiPasa Marketing S.L., all fourteen AkiSuite prices use inclusive tax behaviour, and all seven products have tax codes (AkiPasa Premium `txcd_10103000`, others `txcd_10103001`). Stripe Tax registrations remain absent. Technical classification and account display name do not establish legal identity or VAT approval. `docs/AKISUITE_PRICING_ROLLOUT.md` and the checked-in price audit must describe the same observed state; the obsolete unspecified-tax update instruction is removed.
+
+The linked Supabase project's read-only schema probe found neither `public.akisuite_billing_subscriptions` nor `akisuite_private.launch_settings`. The two new migrations, hosted Storage DDL compatibility, legal registration, isolated payment lifecycle acceptance and authenticated portal validation remain release blockers. No flags, prices, products, registrations, subscriptions, permissions, schema or production data changed. Historic release-test claims remain dated evidence, not new validation. Documentation rollback is a source revert.
+
+## 2026-10-13 | Exact source deployment verification
+
+- Before: Booking live smoke accepted the constant October 9 feature marker and reported a hardcoded historical application commit, allowing success before the triggering source deployed.
+- Change: successful clean-Git Cloudflare packaging writes an ignored asset source stamp. Existing read-only Worker release JSON resolves only the internal ASSETS binding and reports validated full source SHA or null. Smoke polls four public hostnames for the triggering GitHub SHA and original booking marker.
+- Dependencies: `scripts/run-cloudflare.mjs`, source-stamp utility, Worker endpoint, ASSETS and booking-live workflow. No customer state, migration, billing/tax flags, auth, locale/theme/UI, email or external credentials change. Revert code/assets to roll back.
+- Validation: targeted tests exercise clean/dirty Git, invalid stamp, exact current-host asset reads, legacy/missing/error responses. Full checks, packaging and connected production evidence remain required; none is implied by this entry.
+
+- Review follow-up: remove the master-push path filter so every connected deployment, including dependencies/assets/config changes, receives exact-source verification.
+
+### 2026-10-13 | Recovered venue media picker review defects
+
+Unmerged PRs #121/#122 contained review findings still present after #123: search/folder controls consumed the gallery scroll row, and the modal lacked keyboard focus containment, Escape dismissal, restoration and slot-specific trigger names. VenueMediaStudio now groups controls into one intrinsic row and empty/results into the scroll row, with dedicated CSS preserving the event editor modal. EN/ES triggers identify the image surface; opening resets filters, focuses search, traps keyboard/programmatic focus and closing restores the opener. Existing upload/placement/Auto actions, permission checks, media inventory, accommodation header, event editor, billing and SQL remain unchanged. Rollback is code-only. Component regression tests exercise actual focus wrapping, Escape/close restoration, filter reset and variable-content DOM rows in both locales. Full check, responsive browser/Cloudflare CI and authenticated live owner acceptance remain required before deployment; no live storage/data mutation or deployment is claimed.
+
+## 2026-10-13 | Recovered picker browser gates
+
+Tablet CI now runs `test-claim-picker-browser.mjs` and `test-venue-media-picker-browser.mjs`. These exercise real components/CSS with disposable actions; no production records are changed. Local browser downloads failed; actual browser execution remains a CI release gate.
+
+## 2026-10-13 | Recover current authority from historical handoff links
+
+- **Observed:** README instructed new sessions to start with the July handoff
+  and described August project status/July TODO as current. Those records
+  retain historical prices, pending migrations and inconsistent acceptance
+  boundaries, while the October master already identifies them as stale.
+- **Change:** point README to AGENTS/master and add prominent historical
+  notices to AI_HANDOFF, PROJECT_STATUS and TODO. Preserve their dated content
+  and link current impact/billing evidence instead of marking old tasks done.
+- **Scope:** documentation only, across all readers/portals. No runtime,
+  locales, roles, database, storage, analytics, CI or production settings
+  change. Rollback is a source revert with no customer-data impact.
+- **Validation:** review Markdown links against tracked files, preserve the
+  historical file bodies, check formatting and whitespace; CI remains
+  authoritative for required PR checks. No application or live workflow was
+  tested by this documentation change.
+
+### 2026-10-13 | Venue picker short-window visual acceptance repair
+
+Actual CI screenshot review of PR #138 at 640×400 caught gallery cards collapsing into thin, unreadable strips even though modal/footer geometry checks passed. Dedicated venue-picker gallery rows now retain a nine-rem minimum and scroll instead of compressing; short-window controls share one row and the footer stays horizontal to reserve a readable first card. Shared event-picker geometry and existing placement/Auto actions remain unchanged. Browser acceptance now requires actual thumbnail and label dimensions, the first label inside the gallery, overflowing short-window results, scrolling to the last selectable thumbnail and successful selection/focus restoration with disposable actions. This repairs a visual acceptance failure; required browser CI and screenshot reinspection remain pending on the amended head. No production data, permissions, SQL or billing changes.
+
+## 2026-10-13 | Count actual media and customer-support request bytes
+
+Both /api/business/venue-media and /api/support-agent/chat trusted Content-Length before parsing. Four isolated streamed-request cases reproduced oversized bodies reaching mocked authenticated adapters. Media now counts binary bytes before forwarding to the multipart parser, with an 11 MiB framing budget and cancellation on overflow; support reuses readBoundedText for its 8000-byte UTF-8 contract. Missing or understated length cannot bypass the limits. Origin checks, existing upload action authorization/file validation/RLS, authenticated support identity and provider/tool boundaries remain unchanged. No schema, data, email, prices, entitlements or consent behavior changes.
+
+Eleven focused cases, TypeScript, scoped lint and formatting passed, including cancellation failures, multibyte chunks, valid binary forms, legitimate support, malformed inputs and authorization/origin denials. The existing AkiSuite test glob includes the new file. Full integrated check, Cloudflare packaging, CI and approved authenticated acceptance remain release gates. Rollback is a source revert; no production writes or provider requests were made.
+
+## 2026-10-13 | AkiDuermo Saved avoids unused catalogue requests
+
+The device-local Saved view filtered only its own inventory but issued /api/stays requests on mount and each filter/search change. The discovery effect now skips the Saved view, preserving the separate authenticated /api/stays/saved preference read and save/unsave synchronization. EN/ES component reproduction measured four catalogue requests before and zero after; Explore still fetches and displays its existing private owner preview. Focused 4/4 and broader AkiDuermo 31/31 tests, scoped lint and formatting passed. No stopwatch/CWV or production speed improvement is claimed. No routes, roles, RLS, persistent save format, booking, paid access or data changed. Full check, browser/CI and live version verification remain release gates; rollback is a source revert. Homepage concurrency overlaps existing PR #103 and was not duplicated.
+
 ## 2026-10-13 | Locale navigation and membership control acceptance
 
 The health audit reproduces stale Spanish privacy copy after switching to an English localized route, a membership Manage/Search collision at 1363px, and auth language switching that retains the previous locale in a single local return destination. PersonalisationConsent derives copy from the exact current locale segment, then a valid reactive AkiDuermo lang query, with the existing server fallback; LanguageLink translates one well-formed localized next destination while preserving its suffix/query and the existing server destination sanitizer. Membership imports a narrow stylesheet reserving Search space at the existing 800px breakpoint. Consent choices, auth/session/roles, pricing, checkout gates, API/RLS, media, storage, analytics and production data are unchanged.
 
-Focused privacy 14/14 and language-return/auth 30/30 tests passed; 30 browser cases cover seven widths, both locales/themes, collision geometry, target size, overflow, normal Manage clicks and privacy draft preservation. Browser execution, combined check, Cloudflare packaging, CI and deployed-version/live smoke remain release gates. Source reverts roll back presentation; no data migration or restoration is required.
+Focused privacy 14/14 and language-return/auth 30/30 tests passed; 62 browser cases cover seven widths, both locales/themes, collision geometry, target size, overflow, normal Manage clicks and privacy draft preservation. Browser execution, combined check, Cloudflare packaging, CI and deployed-version/live smoke remain release gates. Source reverts roll back presentation; no data migration or restoration is required.
+
+### Stay privacy controls and property CTA protection (health follow-up)
+
+Production and CI reproduce the AkiDuermo Privacy trigger beneath fixed StayNavigation. Scoped StayAppShell rules place the trigger and bounded, scrollable panel above the dock/safe area. A property-only <=800px offset also preserves its separate planning CTA; wider screens and route departure reset the CSS variable automatically. Membership Manage uses a 46px minimum target while retaining the strict >=44px acceptance assertion. No consent defaults/submission, booking actions, property data, auth/roles, prices or shared global/root/picker styling changes. Sixty-two real-route cases include both locales/themes, seven catalogue widths, stay-host short windows and twelve synthetic property-renderer layouts. Property fixture shapes are layout evidence, not live inventory/RLS proof. Source reverts are sufficient; no migration. Final execution, integrated checks and deployment proof remain release gates.
+
+### In-place stay language acceptance (final Health follow-up)
+
+Actual browser acceptance caught Next retaining the old reactive query because the stay screens preserve history state markers. AkiDuermo and StayProperty now emit a bounded locale notification after their existing in-place language change. Consent validates EN/ES, keeps an exact localized pathname authoritative and clears scoped notifications on navigation, including return to an old route. Existing draft choices, motion, cookie and submission behavior remain. Seventeen component cases pass; the 62-case browser matrix now includes bidirectional property language switches with zero consent POST and no document reload. Current-head browser, CI, clean Cloudflare package and exact live source/smoke remain release gates. The branch includes reviewed #145/#144 prerequisites for ordered integration; no duplicate security migration.

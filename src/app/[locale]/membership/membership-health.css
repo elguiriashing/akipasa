@@ -1,3 +1,7 @@
+.membership-app .membership-app-header a {
+  min-block-size: 46px;
+}
+
 /* The public shell fixes Search in the upper-right corner on wide screens. */
 @media (min-width: 800px) {
   main.membership-app .membership-app-header {

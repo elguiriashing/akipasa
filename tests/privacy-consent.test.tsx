@@ -28,6 +28,7 @@ afterEach(() => {
     document.cookie = c.split("=")[0] + "=; Max-Age=0; Path=/";
   document.getElementById("ak-consented-ga")?.remove();
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
 });
 it("follows route language changes without resetting or submitting privacy choices", async () => {
   navigation.pathname = "/es/venues/test-venue";
@@ -125,6 +126,80 @@ it("follows AkiDuermo query language changes without resetting or submitting cho
   });
   expect(document.cookie).toContain("ak_consent_version=2");
 });
+it("follows bounded stay locale events with stale Next queries and preserves draft choices", async () => {
+  navigation.pathname = "/akiduermo";
+  navigation.search = "lang=es";
+  document.cookie = "ak_consent_version=2; Path=/";
+  const fetchMock = vi.fn();
+  vi.stubGlobal("fetch", fetchMock);
+  const removeListener = vi.spyOn(window, "removeEventListener");
+  const { rerender, unmount } = render(<PersonalisationConsent locale="es" />);
+  fireEvent.click(
+    await screen.findByRole("button", { name: "Opciones de privacidad" }),
+  );
+  fireEvent.click(
+    screen.getByLabelText("Recomendaciones según mis interacciones"),
+  );
+  fireEvent.click(
+    screen.getByLabelText(
+      "Inclinación del pasaporte con el movimiento del móvil",
+    ),
+  );
+  fireEvent(window, new CustomEvent("akipasa:locale-change", { detail: "en" }));
+  expect(screen.getByRole("button", { name: "Privacy choices" })).toBeVisible();
+  expect(
+    screen.getByLabelText("Recommendations based on my interactions"),
+  ).toBeChecked();
+  expect(
+    screen.getByLabelText("Passport tilt using phone motion"),
+  ).toBeChecked();
+  for (const detail of ["fr", { locale: "es" }, null])
+    fireEvent(window, new CustomEvent("akipasa:locale-change", { detail }));
+  expect(screen.getByRole("button", { name: "Privacy choices" })).toBeVisible();
+
+  navigation.pathname = "/akiduermo/saved";
+  rerender(<PersonalisationConsent locale="es" />);
+  expect(
+    screen.getByRole("button", { name: "Opciones de privacidad" }),
+  ).toBeVisible();
+  expect(
+    screen.getByLabelText("Recomendaciones según mis interacciones"),
+  ).toBeChecked();
+  navigation.pathname = "/akiduermo";
+  rerender(<PersonalisationConsent locale="es" />);
+  expect(
+    screen.getByRole("button", { name: "Opciones de privacidad" }),
+  ).toBeVisible();
+  expect(
+    screen.getByLabelText("Recomendaciones según mis interacciones"),
+  ).toBeChecked();
+  expect(fetchMock).not.toHaveBeenCalled();
+  expect(readPrivacyChoices()).toEqual({
+    analytics: false,
+    personalisation: false,
+    marketing: false,
+  });
+  expect(document.cookie).toContain("ak_consent_version=2");
+  unmount();
+  expect(removeListener).toHaveBeenCalledWith(
+    "akipasa:locale-change",
+    expect.any(Function),
+  );
+  removeListener.mockRestore();
+});
+it.each([
+  ["/es/membership", "en", "Opciones de privacidad"],
+  ["/en/membership", "es", "Privacy choices"],
+])(
+  "keeps the exact path language authoritative over a locale event: %s",
+  async (pathname, detail, label) => {
+    navigation.pathname = pathname;
+    document.cookie = "ak_consent_version=2; Path=/";
+    render(<PersonalisationConsent locale="es" />);
+    fireEvent(window, new CustomEvent("akipasa:locale-change", { detail }));
+    expect(await screen.findByRole("button", { name: label })).toBeVisible();
+  },
+);
 it.each([
   ["/es/membership", "lang=en", "Opciones de privacidad"],
   ["/en/membership", "lang=es", "Privacy choices"],

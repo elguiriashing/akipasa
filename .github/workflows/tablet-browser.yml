@@ -22,6 +22,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium chrome
+      - run: node scripts/test-claim-picker-browser.mjs
+      - run: node scripts/test-venue-media-picker-browser.mjs
       - run: node scripts/test-claim-email-browser.mjs
       - uses: actions/upload-artifact@v4
         with:

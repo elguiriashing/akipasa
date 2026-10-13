@@ -26,14 +26,36 @@ export function PersonalisationConsent({ locale }: { locale: Locale }) {
   const [motionDenied, setMotionDenied] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(false);
+  const [changedLocale, setChangedLocale] = useState<{
+    scope: string;
+    locale: Locale;
+  } | null>(null);
   // Root layouts persist during client navigation between localized routes.
   // AkiDuermo changes its language query in place through native history.
   // Keep the server locale as the fallback when neither route defines one.
   const queryLocale = searchParams?.get("lang");
+  const localeScope = `${pathname ?? ""}?${queryLocale ?? ""}`;
   const currentLocale =
     pathname?.match(/^\/(en|es)(?=\/|$)/)?.[1] ??
-    (queryLocale === "en" || queryLocale === "es" ? queryLocale : locale);
+    (changedLocale?.scope === localeScope
+      ? changedLocale.locale
+      : queryLocale === "en" || queryLocale === "es"
+        ? queryLocale
+        : locale);
   const es = currentLocale === "es";
+  useEffect(() => {
+    // Visiting another route must discard the previous route's override.
+    setChangedLocale(null);
+    // Stay screens retain Next's history markers, so their locale is explicit.
+    const changeLanguage = (event: Event) => {
+      const value = (event as CustomEvent<unknown>).detail;
+      if (value === "en" || value === "es")
+        setChangedLocale({ scope: localeScope, locale: value });
+    };
+    window.addEventListener("akipasa:locale-change", changeLanguage);
+    return () =>
+      window.removeEventListener("akipasa:locale-change", changeLanguage);
+  }, [localeScope]);
   useEffect(() => {
     setPrivacyHost(document.getElementById("passport-privacy-controls"));
   }, [pathname]);
