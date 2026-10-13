@@ -13,6 +13,7 @@ import {
   overlappingAkiSuitePlan,
 } from "@/lib/akisuite-catalogue";
 import styles from "./AkiSuiteMembershipGrid.module.css";
+import { businessCategories, businessPackageTools, getBusinessPackageHighlights, type BusinessTool } from "@/lib/business-packages";
 
 const descriptions: Record<
   AkiSuitePlan,
@@ -118,6 +119,21 @@ const descriptions: Record<
   },
 };
 
+const toolLabels: Record<BusinessTool, { en: string; es: string }> = {
+  crm: { en: "Customer management", es: "Gestión de clientes" },
+  "crm-social": { en: "Social media (pilot)", es: "Redes sociales (piloto)" },
+  employees: { en: "Team management", es: "Gestión de equipo" },
+  dashboard: { en: "Dashboard", es: "Panel de control" },
+  tasks: { en: "Tasks", es: "Tareas" },
+  calendar: { en: "Calendar", es: "Calendario" },
+  sales: { en: "Invoices", es: "Facturas" },
+  knowledge: { en: "Knowledge base", es: "Base de conocimiento" },
+  inventory: { en: "Inventory", es: "Inventario" },
+  inbox: { en: "Inbox (pilot)", es: "Bandeja (piloto)" },
+  pos: { en: "Point of sale", es: "TPV" },
+  collaboration: { en: "Team chat", es: "Chat de equipo" },
+};
+
 const order: AkiSuitePlan[] = [
   "aki_enterprise",
   "akipasa_premium",
@@ -146,6 +162,11 @@ export function AkiSuiteMembershipGrid({
   workspacePlans?: Record<string, AkiSuitePlan[]>;
 }) {
   const [interval, setInterval] = useState<"month" | "year">("month");
+  const [sector, setSector] = useState<(typeof businessCategories)[number]["key"]>("food");
+  const [sectorTier, setSectorTier] = useState<"business" | "business_pro">("business");
+  const [expandedPlans, setExpandedPlans] = useState<AkiSuitePlan[]>([]);
+  const selectedSector = businessCategories.find((category) => category.key === sector) ?? businessCategories[0];
+  const highlightedTools = getBusinessPackageHighlights(selectedSector, sectorTier);
   const [workspaceId, setWorkspaceId] = useState(workspaces[0]?.id || "");
   const es = locale === "es";
   const selectedPlans = [
@@ -214,6 +235,33 @@ export function AkiSuiteMembershipGrid({
           ))}
         </fieldset>
       )}
+      <section className={styles.sectorPanel} aria-labelledby="akisuite-sector-title">
+        <div className={styles.sectorIntro}>
+          <span className={styles.eyebrow}>AkiHQ · {es ? "Herramientas por sector" : "Tools by sector"}</span>
+          <h3 id="akisuite-sector-title">{es ? "Tu negocio, tus herramientas" : "Your business, your tools"}</h3>
+          <p>{es ? "Explora qué herramientas destacan para tu actividad. Los permisos dependen del plan, no del sector." : "Explore tools relevant to your business. Plan permissions do not change with your sector."}</p>
+        </div>
+        <div className={styles.sectorChoices}>
+          <label htmlFor="akisuite-sector">{es ? "Tipo de negocio" : "Business type"}</label>
+          <select id="akisuite-sector" value={sector} onChange={(event) => setSector(event.target.value as typeof sector)}>
+            {businessCategories.map((category) => (
+              <option value={category.key} key={category.key}>{category[locale]}</option>
+            ))}
+          </select>
+          <div className={styles.sectorSwitch} role="group" aria-label={es ? "Plan AkiHQ" : "AkiHQ plan"}>
+            <button type="button" aria-pressed={sectorTier === "business"} onClick={() => setSectorTier("business")}>Standard · 20 €</button>
+            <button type="button" aria-pressed={sectorTier === "business_pro"} onClick={() => setSectorTier("business_pro")}>Pro · 60 €</button>
+          </div>
+        </div>
+        <div className={styles.sectorResults} aria-live="polite">
+          <strong>{es ? "Destacadas para tu sector" : "Highlights for your sector"}</strong>
+          <ul>{highlightedTools.map((tool) => <li key={tool}>{toolLabels[tool][locale]}</li>)}</ul>
+          <details className={styles.toolDisclosure}>
+            <summary>{es ? `Ver las ${businessPackageTools[sectorTier].length} herramientas incluidas` : `See all ${businessPackageTools[sectorTier].length} included tools`}</summary>
+            <div className={styles.toolChips}>{businessPackageTools[sectorTier].map((tool) => <span key={tool}>{toolLabels[tool][locale]}</span>)}</div>
+          </details>
+        </div>
+      </section>
       <div className={styles.grid}>
         {order.map((key) => {
           const item = akisuitePlans[key];
@@ -233,6 +281,7 @@ export function AkiSuiteMembershipGrid({
               id={key}
               data-product={app}
               data-origin={origin || undefined}
+              data-expanded={expandedPlans.includes(key) || undefined}
               className={[styles.card, featured ? styles.featured : ""].join(
                 " ",
               )}
@@ -291,6 +340,11 @@ export function AkiSuiteMembershipGrid({
                     : `Save ${currency.format((item.monthlyCents * 12 - cents) / 100)} per year · 20%`}
                 </p>
               )}
+              <button type="button" className={styles.mobileExpand} aria-expanded={expandedPlans.includes(key)} aria-controls={`plan-benefits-${key}`} onClick={() => setExpandedPlans((plans) => plans.includes(key) ? plans.filter((plan) => plan !== key) : [...plans, key])}>
+                {expandedPlans.includes(key) ? (es ? "Menos detalles" : "Less detail") : (es ? "Ver ventajas y acceso" : "View benefits and access")}
+                <span aria-hidden="true">{expandedPlans.includes(key) ? "−" : "+"}</span>
+              </button>
+              <div id={`plan-benefits-${key}`} className={styles.cardDetails}>
               <ul className={styles.benefits}>
                 {(es ? details.benefitsEs : details.benefitsEn).map(
                   (benefit) => (
@@ -335,6 +389,7 @@ export function AkiSuiteMembershipGrid({
                           : "Choose plan"}
                 </button>
               </form>
+              </div>
             </article>
           );
         })}
