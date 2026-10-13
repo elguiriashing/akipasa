@@ -500,3 +500,220 @@
     align-items: center;
   }
 }
+
+/* Pricing catalogue: wide cards, compact two-column mobile comparison. */
+.root {
+  gap: 0.8rem;
+  width: 100%;
+}
+.heading {
+  align-items: center;
+}
+.heading h2 {
+  font-size: clamp(1.35rem, 2vw, 1.9rem);
+}
+.heading p {
+  font-size: 0.86rem;
+}
+.grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+.card {
+  min-width: 0;
+  gap: 0.4rem;
+  padding: 0.85rem;
+  border-radius: 0.95rem;
+}
+.cardHeader {
+  flex-wrap: nowrap;
+}
+.brandIdentity {
+  min-width: 0;
+}
+.card .eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 0.02em;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.card h3 {
+  font-size: clamp(0.98rem, 1.25vw, 1.15rem);
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.description {
+  font-size: 0.79rem;
+  line-height: 1.3;
+}
+.price {
+  flex-wrap: nowrap;
+}
+.price strong {
+  font-size: clamp(1.2rem, 2vw, 1.65rem);
+  white-space: nowrap;
+}
+.price span {
+  white-space: nowrap;
+}
+.featured {
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.interval {
+  justify-self: start;
+  width: fit-content;
+  border-radius: 0.85rem;
+  background: var(--surface-elevated, rgba(130, 130, 130, 0.1));
+}
+.interval label {
+  min-height: 38px;
+  padding: 0.35rem 0.8rem;
+}
+.sectorPanel {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  align-items: start;
+  gap: 0.8rem;
+  padding: 0.9rem;
+}
+.sectorIntro {
+  grid-column: 1/-1;
+}
+.sectorIntro h3 {
+  font-size: 1rem;
+}
+.sectorIntro p {
+  max-width: 70ch;
+}
+.sectorResults {
+  grid-column: auto;
+}
+.sectorChoices {
+  align-self: start;
+}
+.sectorResults ul {
+  gap: 0.3rem;
+}
+.sectorResults li {
+  font-size: 0.71rem;
+}
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 700px) {
+  .root {
+    gap: 0.55rem;
+  }
+  .heading {
+    gap: 0.25rem;
+  }
+  .heading h2 {
+    font-size: 1.25rem;
+  }
+  .heading p {
+    font-size: 0.75rem;
+  }
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+  .card,
+  .featured {
+    display: flex;
+    flex-direction: column;
+    padding: 0.6rem;
+    gap: 0.24rem;
+    border-radius: 0.72rem;
+  }
+  .featured {
+    grid-column: 1/-1;
+  }
+  .brandLogo,
+  .featured .brandLogo {
+    width: 25px;
+    height: 25px;
+    border-radius: 6px;
+  }
+  .brandIdentity {
+    gap: 0.3rem;
+  }
+  .cardHeader {
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .card .eyebrow {
+    font-size: 0.58rem;
+    letter-spacing: 0;
+  }
+  .pill,
+  .origin {
+    font-size: 0.63rem;
+    padding: 0.15rem 0.32rem;
+  }
+  .card h3 {
+    font-size: 0.88rem;
+    line-height: 1.2;
+  }
+  .description {
+    font-size: 0.68rem;
+    line-height: 1.24;
+  }
+  .price strong {
+    font-size: 1.14rem;
+  }
+  .price span {
+    font-size: 0.67rem;
+  }
+  .saving {
+    font-size: 0.65rem;
+  }
+  .mobileExpand {
+    min-height: 32px;
+    font-size: 0.68rem;
+    padding: 0.25rem 0;
+    margin-top: auto;
+  }
+  .benefits li {
+    font-size: 0.73rem;
+  }
+  .sectorPanel {
+    grid-template-columns: 1fr;
+    padding: 0.7rem;
+  }
+  .sectorIntro,
+  .sectorResults {
+    grid-column: 1;
+  }
+  .sectorIntro p {
+    display: none;
+  }
+  .interval {
+    width: 100%;
+    justify-content: center;
+  }
+  .interval label {
+    font-size: 0.78rem;
+    padding: 0.35rem 0.65rem;
+  }
+}
+@media (max-width: 360px) {
+  .card {
+    padding: 0.45rem;
+  }
+  .brandLogo,
+  .featured .brandLogo {
+    width: 22px;
+    height: 22px;
+  }
+  .card .eyebrow {
+    display: none;
+  }
+  .description {
+    font-size: 0.64rem;
+  }
+  .price strong {
+    font-size: 1rem;
+  }
+}

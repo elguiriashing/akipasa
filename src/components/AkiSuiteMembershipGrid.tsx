@@ -247,27 +247,6 @@ export function AkiSuiteMembershipGrid({
               : "Choose the tools you need to discover, promote or operate."}
           </p>
         </div>
-        <fieldset className={styles.interval}>
-          <legend>{es ? "Periodo de facturación" : "Billing interval"}</legend>
-          <label className={interval === "month" ? styles.selected : ""}>
-            <input
-              type="radio"
-              checked={interval === "month"}
-              onChange={() => setInterval("month")}
-              name="akisuite-interval"
-            />
-            {es ? "Mensual" : "Monthly"}
-          </label>
-          <label className={interval === "year" ? styles.selected : ""}>
-            <input
-              type="radio"
-              checked={interval === "year"}
-              onChange={() => setInterval("year")}
-              name="akisuite-interval"
-            />
-            {es ? "Anual · -20 %" : "Yearly · -20%"}
-          </label>
-        </fieldset>
       </header>
       {workspaces.length > 1 && (
         <fieldset className={styles.workspaces}>
@@ -290,82 +269,6 @@ export function AkiSuiteMembershipGrid({
           ))}
         </fieldset>
       )}
-      <section
-        className={styles.sectorPanel}
-        aria-labelledby="akisuite-sector-title"
-      >
-        <div className={styles.sectorIntro}>
-          <span className={styles.eyebrow}>
-            AkiHQ · {es ? "Herramientas por sector" : "Tools by sector"}
-          </span>
-          <h3 id="akisuite-sector-title">
-            {es ? "Tu negocio, tus herramientas" : "Your business, your tools"}
-          </h3>
-          <p>
-            {es
-              ? "Explora qué herramientas destacan para tu actividad. Los permisos dependen del plan, no del sector."
-              : "Explore tools relevant to your business. Plan permissions do not change with your sector."}
-          </p>
-        </div>
-        <div className={styles.sectorChoices}>
-          <label htmlFor="akisuite-sector">
-            {es ? "Tipo de negocio" : "Business type"}
-          </label>
-          <select
-            id="akisuite-sector"
-            value={sector}
-            onChange={(event) => setSector(event.target.value as typeof sector)}
-          >
-            {businessCategories.map((category) => (
-              <option value={category.key} key={category.key}>
-                {category[locale]}
-              </option>
-            ))}
-          </select>
-          <div
-            className={styles.sectorSwitch}
-            role="group"
-            aria-label={es ? "Plan AkiHQ" : "AkiHQ plan"}
-          >
-            <button
-              type="button"
-              aria-pressed={sectorTier === "business"}
-              onClick={() => setSectorTier("business")}
-            >
-              Standard · 20 €
-            </button>
-            <button
-              type="button"
-              aria-pressed={sectorTier === "business_pro"}
-              onClick={() => setSectorTier("business_pro")}
-            >
-              Pro · 60 €
-            </button>
-          </div>
-        </div>
-        <div className={styles.sectorResults} aria-live="polite">
-          <strong>
-            {es ? "Destacadas para tu sector" : "Highlights for your sector"}
-          </strong>
-          <ul>
-            {highlightedTools.map((tool) => (
-              <li key={tool}>{toolLabels[tool][locale]}</li>
-            ))}
-          </ul>
-          <details className={styles.toolDisclosure}>
-            <summary>
-              {es
-                ? `Ver las ${businessPackageTools[sectorTier].length} herramientas incluidas`
-                : `See all ${businessPackageTools[sectorTier].length} included tools`}
-            </summary>
-            <div className={styles.toolChips}>
-              {businessPackageTools[sectorTier].map((tool) => (
-                <span key={tool}>{toolLabels[tool][locale]}</span>
-              ))}
-            </div>
-          </details>
-        </div>
-      </section>
       <div className={styles.grid}>
         {order.map((key) => {
           const item = akisuitePlans[key];
@@ -525,6 +428,103 @@ export function AkiSuiteMembershipGrid({
           );
         })}
       </div>
+      <fieldset className={styles.interval}>
+        <legend>{es ? "Periodo de facturación" : "Billing interval"}</legend>
+        <label className={interval === "month" ? styles.selected : ""}>
+          <input
+            type="radio"
+            checked={interval === "month"}
+            onChange={() => setInterval("month")}
+            name="akisuite-interval"
+          />
+          {es ? "Mensual" : "Monthly"}
+        </label>
+        <label className={interval === "year" ? styles.selected : ""}>
+          <input
+            type="radio"
+            checked={interval === "year"}
+            onChange={() => setInterval("year")}
+            name="akisuite-interval"
+          />
+          {es ? "Anual · -20 %" : "Yearly · -20%"}
+        </label>
+      </fieldset>
+      <section
+        className={styles.sectorPanel}
+        aria-labelledby="akisuite-sector-title"
+      >
+        <div className={styles.sectorIntro}>
+          <span className={styles.eyebrow}>
+            AkiHQ · {es ? "Herramientas por sector" : "Tools by sector"}
+          </span>
+          <h3 id="akisuite-sector-title">
+            {es ? "Tu negocio, tus herramientas" : "Your business, your tools"}
+          </h3>
+          <p>
+            {es
+              ? "Explora qué herramientas destacan para tu actividad. Los permisos dependen del plan, no del sector."
+              : "Explore tools relevant to your business. Plan permissions do not change with your sector."}
+          </p>
+        </div>
+        <div className={styles.sectorChoices}>
+          <label htmlFor="akisuite-sector">
+            {es ? "Tipo de negocio" : "Business type"}
+          </label>
+          <select
+            id="akisuite-sector"
+            value={sector}
+            onChange={(event) => setSector(event.target.value as typeof sector)}
+          >
+            {businessCategories.map((category) => (
+              <option value={category.key} key={category.key}>
+                {category[locale]}
+              </option>
+            ))}
+          </select>
+          <div
+            className={styles.sectorSwitch}
+            role="group"
+            aria-label={es ? "Plan AkiHQ" : "AkiHQ plan"}
+          >
+            <button
+              type="button"
+              aria-pressed={sectorTier === "business"}
+              onClick={() => setSectorTier("business")}
+            >
+              Standard · 20 €
+            </button>
+            <button
+              type="button"
+              aria-pressed={sectorTier === "business_pro"}
+              onClick={() => setSectorTier("business_pro")}
+            >
+              Pro · 60 €
+            </button>
+          </div>
+        </div>
+        <div className={styles.sectorResults} aria-live="polite">
+          <strong>
+            {es ? "Destacadas para tu sector" : "Highlights for your sector"}
+          </strong>
+          <ul>
+            {highlightedTools.map((tool) => (
+              <li key={tool}>{toolLabels[tool][locale]}</li>
+            ))}
+          </ul>
+          <details className={styles.toolDisclosure}>
+            <summary>
+              {es
+                ? `Ver las ${businessPackageTools[sectorTier].length} herramientas incluidas`
+                : `See all ${businessPackageTools[sectorTier].length} included tools`}
+            </summary>
+            <div className={styles.toolChips}>
+              {businessPackageTools[sectorTier].map((tool) => (
+                <span key={tool}>{toolLabels[tool][locale]}</span>
+              ))}
+            </div>
+          </details>
+        </div>
+      </section>
       <p className={styles.footnote}>
         {es
           ? "La verificación de titularidad de un local es independiente de Premium. El total y los impuestos aplicables se muestran antes de confirmar el pago. Las funciones se activan tras la confirmación de Stripe."
