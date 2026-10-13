@@ -15,18 +15,131 @@ import {
   readPrivacyChoices,
   writePrivacyChoices,
 } from "../src/lib/privacy-consent";
-const navigation = vi.hoisted(() => ({ pathname: "/en" }));
+const navigation = vi.hoisted(() => ({ pathname: "/en", search: "" }));
 vi.mock("next/navigation", () => ({
   usePathname: () => navigation.pathname,
+  useSearchParams: () => new URLSearchParams(navigation.search),
 }));
 afterEach(() => {
   navigation.pathname = "/en";
+  navigation.search = "";
   cleanup();
   for (const c of document.cookie.split("; "))
     document.cookie = c.split("=")[0] + "=; Max-Age=0; Path=/";
   document.getElementById("ak-consented-ga")?.remove();
   vi.unstubAllGlobals();
 });
+it("follows route language changes without resetting or submitting privacy choices", async () => {
+  navigation.pathname = "/es/venues/test-venue";
+  document.cookie = "ak_consent_version=2; Path=/";
+  const fetchMock = vi.fn();
+  vi.stubGlobal("fetch", fetchMock);
+  const { rerender } = render(<PersonalisationConsent locale="es" />);
+  fireEvent.click(
+    await screen.findByRole("button", { name: "Opciones de privacidad" }),
+  );
+  fireEvent.click(
+    screen.getByLabelText("Recomendaciones según mis interacciones"),
+  );
+  fireEvent.click(
+    screen.getByLabelText(
+      "Inclinación del pasaporte con el movimiento del móvil",
+    ),
+  );
+
+  navigation.pathname = "/en/venues/test-venue";
+  rerender(<PersonalisationConsent locale="es" />);
+  expect(screen.getByRole("button", { name: "Privacy choices" })).toBeVisible();
+  expect(screen.getByRole("button", { name: "Save choices" })).toBeVisible();
+  expect(
+    screen.getByLabelText("Recommendations based on my interactions"),
+  ).toBeChecked();
+  expect(
+    screen.getByLabelText("Passport tilt using phone motion"),
+  ).toBeChecked();
+  expect(
+    screen.getByLabelText("Audience measurement (Google Analytics)"),
+  ).not.toBeChecked();
+
+  navigation.pathname = "/es/map";
+  rerender(<PersonalisationConsent locale="es" />);
+  expect(
+    screen.getByRole("button", { name: "Opciones de privacidad" }),
+  ).toBeVisible();
+  expect(
+    screen.getByLabelText("Recomendaciones según mis interacciones"),
+  ).toBeChecked();
+  expect(fetchMock).not.toHaveBeenCalled();
+  expect(readPrivacyChoices()).toEqual({
+    analytics: false,
+    personalisation: false,
+    marketing: false,
+  });
+  expect(document.cookie).toContain("ak_consent_version=2");
+});
+it.each(["/pals", "/akiduermo/saved", "/enough", "/escape"])(
+  "retains the server locale on the non-localized route %s",
+  async (pathname) => {
+    navigation.pathname = pathname;
+    document.cookie = "ak_consent_version=2; Path=/";
+    const { rerender } = render(<PersonalisationConsent locale="es" />);
+    expect(
+      await screen.findByRole("button", { name: "Opciones de privacidad" }),
+    ).toBeVisible();
+    rerender(<PersonalisationConsent locale="en" />);
+    expect(
+      screen.getByRole("button", { name: "Privacy choices" }),
+    ).toBeVisible();
+  },
+);
+it("follows AkiDuermo query language changes without resetting or submitting choices", async () => {
+  navigation.pathname = "/akiduermo";
+  navigation.search = "lang=es";
+  document.cookie = "ak_consent_version=2; Path=/";
+  const fetchMock = vi.fn();
+  vi.stubGlobal("fetch", fetchMock);
+  const { rerender } = render(<PersonalisationConsent locale="es" />);
+  fireEvent.click(
+    await screen.findByRole("button", { name: "Opciones de privacidad" }),
+  );
+  fireEvent.click(
+    screen.getByLabelText("Recomendaciones según mis interacciones"),
+  );
+
+  navigation.search = "lang=en";
+  rerender(<PersonalisationConsent locale="es" />);
+  expect(screen.getByRole("button", { name: "Privacy choices" })).toBeVisible();
+  expect(
+    screen.getByLabelText("Recommendations based on my interactions"),
+  ).toBeChecked();
+  navigation.search = "lang=es";
+  rerender(<PersonalisationConsent locale="es" />);
+  expect(
+    screen.getByLabelText("Recomendaciones según mis interacciones"),
+  ).toBeChecked();
+  expect(fetchMock).not.toHaveBeenCalled();
+  expect(readPrivacyChoices()).toEqual({
+    analytics: false,
+    personalisation: false,
+    marketing: false,
+  });
+  expect(document.cookie).toContain("ak_consent_version=2");
+});
+it.each([
+  ["/es/membership", "lang=en", "Opciones de privacidad"],
+  ["/en/membership", "lang=es", "Privacy choices"],
+  ["/akiduermo", "lang=es-ES", "Privacy choices"],
+  ["/akiduermo", "lang=", "Privacy choices"],
+])(
+  "uses a valid localized path before query values and rejects malformed fallback: %s?%s",
+  async (pathname, search, label) => {
+    navigation.pathname = pathname;
+    navigation.search = search;
+    document.cookie = "ak_consent_version=2; Path=/";
+    render(<PersonalisationConsent locale="en" />);
+    expect(await screen.findByRole("button", { name: label })).toBeVisible();
+  },
+);
 it("does not request Google tags while optional consent is denied", async () => {
   vi.stubGlobal("React", React);
   render(<ConsentAnalytics />);

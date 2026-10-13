@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import type { Locale } from "@/lib/config";
 import {
   deniedChoices,
@@ -18,6 +18,7 @@ import {
 
 export function PersonalisationConsent({ locale }: { locale: Locale }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [privacyHost, setPrivacyHost] = useState<HTMLElement | null>(null);
   const [visible, setVisible] = useState(false);
   const [choices, setChoices] = useState<PrivacyChoices>(deniedChoices);
@@ -25,7 +26,14 @@ export function PersonalisationConsent({ locale }: { locale: Locale }) {
   const [motionDenied, setMotionDenied] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(false);
-  const es = locale === "es";
+  // Root layouts persist during client navigation between localized routes.
+  // AkiDuermo changes its language query in place through native history.
+  // Keep the server locale as the fallback when neither route defines one.
+  const queryLocale = searchParams?.get("lang");
+  const currentLocale =
+    pathname?.match(/^\/(en|es)(?=\/|$)/)?.[1] ??
+    (queryLocale === "en" || queryLocale === "es" ? queryLocale : locale);
+  const es = currentLocale === "es";
   useEffect(() => {
     setPrivacyHost(document.getElementById("passport-privacy-controls"));
   }, [pathname]);
