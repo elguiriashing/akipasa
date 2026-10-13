@@ -32,6 +32,14 @@ describe("AkiSuite localized membership catalogue", () => {
     expect(grid).toContain("startAkiSuiteCheckout");
   });
 
+  it("keeps seven plans visible and restores sector-specific AkiHQ tool previews", () => {
+    expect(grid).toContain("businessCategories.map");
+    expect(grid).toContain("getBusinessPackageHighlights");
+    expect(grid).toContain("businessPackageTools[sectorTier]");
+    expect(grid).toContain('aria-expanded={expandedPlans.includes(key)}');
+    expect(grid).toContain("order.map");
+  });
+
   it("renders the full catalogue regardless of checkout activation", () => {
     for (const source of [publicPage, accountPage]) {
       expect(source).toContain("AkiSuiteMembershipGrid");
