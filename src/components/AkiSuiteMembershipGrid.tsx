@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { startAkiSuiteCheckout } from "@/app/[locale]/account/subscription/akisuite-actions";
 import {
   akisuitePlans,
@@ -138,6 +139,44 @@ const toolLabels: Record<BusinessTool, { en: string; es: string }> = {
   pos: { en: "Point of sale", es: "TPV" },
   collaboration: { en: "Team chat", es: "Chat de equipo" },
 };
+
+const brandLogos = {
+  akipasa: { src: "/pwa/akipasa-192.png", name: "AkiPasa" },
+  akibusiness: { src: "/brand/business-icon.png", name: "AkiBusiness" },
+  akiduermo: { src: "/brand/duermo-icon.png", name: "AkiDuermo" },
+  akihq: { src: "/brand/hq-icon.png", name: "AkiHQ" },
+} as const;
+
+function PlanBrandLogos({ plan }: { plan: AkiSuitePlan }) {
+  const apps: Array<keyof typeof brandLogos> =
+    plan === "aki_enterprise"
+      ? ["akipasa", "akibusiness", "akiduermo", "akihq"]
+      : plan === "akihq_business_addon"
+        ? ["akihq", "akibusiness"]
+        : plan === "akipasa_premium"
+          ? ["akipasa"]
+          : plan === "akibusiness_premium"
+            ? ["akibusiness"]
+            : plan === "akiduermo_premium"
+              ? ["akiduermo"]
+              : ["akihq"];
+  return (
+    <span className={styles.brandLogos} aria-label={apps.map((app) => brandLogos[app].name).join(" + ")}>
+      {apps.map((app) => (
+        <Image
+          key={app}
+          src={brandLogos[app].src}
+          alt=""
+          aria-hidden="true"
+          className={styles.brandLogo}
+          width={44}
+          height={44}
+          sizes="44px"
+        />
+      ))}
+    </span>
+  );
+}
 
 const order: AkiSuitePlan[] = [
   "aki_enterprise",
@@ -349,6 +388,8 @@ export function AkiSuiteMembershipGrid({
               )}
             >
               <div className={styles.cardHeader}>
+                <div className={styles.brandIdentity}>
+                  <PlanBrandLogos plan={key} />
                 <span className={styles.eyebrow}>
                   {app === "akisuite"
                     ? "AkiSuite"
@@ -360,6 +401,7 @@ export function AkiSuiteMembershipGrid({
                           ? "AkiDuermo"
                           : "AkiPasa"}
                 </span>
+                </div>
                 {featured && (
                   <span className={styles.pill}>
                     {es ? "Pack completo" : "Complete bundle"}
