@@ -1,4 +1,8 @@
 import { uploadVenueImage } from "@/app/[locale]/business/venue/[id]/actions";
+import {
+  readBoundedFormData,
+  RequestSecurityError,
+} from "@/lib/request-security";
 
 const reply = (body: unknown, status: number) =>
   Response.json(body, {
@@ -11,15 +15,15 @@ export async function POST(request: Request) {
     return reply({ ok: false, error: "origin" }, 403);
   if (!request.headers.get("content-type")?.startsWith("multipart/form-data"))
     return reply({ ok: false, error: "invalid-file" }, 415);
-  // Include multipart framing while the image itself remains capped at 10 MB.
-  if (Number(request.headers.get("content-length") || 0) > 11 * 1024 * 1024)
-    return reply({ ok: false, error: "invalid-file" }, 413);
-
   let formData: FormData;
   try {
-    formData = await request.formData();
-  } catch {
-    return reply({ ok: false, error: "invalid-file" }, 400);
+    // Include multipart framing while the image itself remains capped at 10 MB.
+    formData = await readBoundedFormData(request, 11 * 1024 * 1024);
+  } catch (error) {
+    return reply(
+      { ok: false, error: "invalid-file" },
+      error instanceof RequestSecurityError && error.status === 413 ? 413 : 400,
+    );
   }
   formData.set("inline", "1");
   try {
