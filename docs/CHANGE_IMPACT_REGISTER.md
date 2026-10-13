@@ -689,7 +689,6 @@ Live membership smoke verification found that the parent account layout replaced
 
 2026-10-13 AkiSuite membership width/overlap follow-up: The membership-only shell now uses available desktop/tablet viewport width up to a 1720px bound while keeping responsive gutters. Catalogue cards reflow across wider screens, and the Enterprise card brand/header badge can wrap without label collision. No subscription billing, entitlement, feature flag, migration or checkout change. Validate EN/ES membership layouts on mobile, tablet and desktop.
 
-
 ## 2026-10-13 | Recovered Pro-to-dependent-add-on replacement guard
 
 PR #125 review identified that replacing the qualifying AkiHQ Pro subscription with its own discounted Business add-on was allowed when no other add-on existed. `canReplaceAkiSuitePlan` now rejects that replacement before the hosted Stripe update request; add-on purchases remain a separate subscription requiring existing qualifying paid Pro. Same-plan interval changes, Standard/Pro switching without dependent add-ons, scope isolation and overlap guards remain unchanged.
