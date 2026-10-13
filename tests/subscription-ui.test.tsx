@@ -61,5 +61,6 @@ it("shows the entire catalogue and submits only the selected plan and interval",
     interval: "year",
   });
   expect(within(card).getByText("€576.00")).toBeTruthy();
-  expect(screen.queryByRole("combobox")).toBeNull();
+  const sector = screen.getByRole("combobox", { name: "Business type" });
+  expect(within(sector).getAllByRole("option")).toHaveLength(6);
 });
