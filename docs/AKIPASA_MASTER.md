@@ -466,3 +466,5 @@ Live membership smoke verification found that the parent account layout replaced
 ## 2026-10-13 | Canonical Resend recovery instruction
 
 The claim-email recovery runbook inspects production `RESEND_API_KEY` first, matching `resendSendingKey` in `booking-mail-delivery.ts`. Only absent or blank primary keys use legacy `CLAIM_RESEND_API_KEY`; rotating that fallback cannot repair an invalid nonblank primary. No keys, runtime configuration, queue status or messages are changed. Existing key-precedence regression coverage remains authoritative; live credential repair and individually authorized requeues are operational dependencies, not accomplished by this documentation change.
+
+Canonical-key recovery validation: the existing `tests/claim-decision-email.test.ts` suite passed 10/10 cases on 2026-10-13, including trimmed primary-key selection, absent/blank-primary legacy fallback and dispatcher selection. The isolated command retained the existing timeout limits; no credentials or real messages were used. Required exact-head CI remains the merge gate.
