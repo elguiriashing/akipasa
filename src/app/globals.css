@@ -19340,3 +19340,21 @@ html.theme-light
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+
+/* AkiSuite membership catalogue: use the available desktop and tablet canvas. */
+@media (min-width: 800px) {
+  main.shell.membership-page.membership-app {
+    width: calc(100% - clamp(2rem, 5vw, 6rem));
+    max-width: 1720px;
+    margin-inline: auto;
+  }
+}
+@media (min-width: 1350px) {
+  main.shell.membership-page.membership-app {
+    width: calc(100% - 4rem);
+  }
+}
+main.membership-app .membership-app-header {
+  min-width: 0;
+}
