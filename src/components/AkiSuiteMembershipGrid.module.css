@@ -224,55 +224,235 @@
 }
 
 /* Compact, responsive seven-plan catalogue. No plan or payment eligibility is filtered. */
-.root { width: 100%; }
-.card { gap: .55rem; padding: 1rem; }
-.description { min-height: 0; font-size: .87rem; line-height: 1.4; }
-.card h3 { font-size: clamp(1.07rem, 1.4vw, 1.35rem); line-height: 1.25; }
-.cardDetails { display: flex; flex: 1; flex-direction: column; gap: .65rem; }
-.benefits { margin: .2rem 0 .4rem; gap: .4rem; }
-.benefits li { font-size: .82rem; line-height: 1.4; }
-.featured { display: grid; grid-template-columns: minmax(0, 1fr) minmax(10rem, .8fr); align-items: center; column-gap: 1.5rem; }
-.featured .cardHeader, .featured h3, .featured .description, .featured .price, .featured .saving { grid-column: 1; }
-.featured .cardDetails { grid-column: 2; grid-row: 1 / 6; }
-.featured .benefits { grid-template-columns: 1fr; }
-.featured form { max-width: none; }
-.mobileExpand { display: none; }
-.sectorPanel { display: grid; grid-template-columns: 1fr minmax(12rem, .7fr) minmax(15rem, 1fr); gap: 1.2rem; align-items: center; padding: 1rem 1.2rem; border: 1px solid var(--line, rgba(127,127,127,.3)); border-radius: 1rem; background: var(--surface-elevated, rgba(180,180,180,.05)); min-width: 0; }
-.sectorIntro h3 { margin: .2rem 0; font-size: 1.15rem; }
-.sectorIntro p { margin: 0; color: var(--muted); font-size: .8rem; line-height: 1.45; }
-.sectorChoices { display: grid; gap: .35rem; min-width: 0; }
-.sectorChoices label { font-size: .8rem; color: var(--muted); }
-.sectorChoices select { min-width: 0; width: 100%; min-height: 44px; border: 1px solid var(--line); border-radius: .7rem; color: var(--ink); background: var(--surface-alt); padding: .5rem; }
-.sectorSwitch { display: grid; grid-template-columns: 1fr 1fr; gap: .3rem; }
-.sectorSwitch button { min-height: 44px; font-size: .8rem; padding: .4rem; border-radius: .6rem; background: transparent; color: var(--ink); border: 1px solid var(--line); }
-.sectorSwitch button[aria-pressed="true"] { background: var(--primary-soft); border-color: var(--primary); }
-.sectorResults { min-width: 0; }
-.sectorResults strong { font-size: .82rem; }
-.sectorResults ul { display: flex; flex-wrap: wrap; list-style: none; padding: 0; margin: .5rem 0; gap: .4rem; }
-.sectorResults li, .toolChips span { font-size: .75rem; padding: .3rem .5rem; border: 1px solid var(--line); border-radius: 999px; }
-.toolDisclosure summary { cursor: pointer; font-size: .8rem; min-height: 32px; }
-.toolChips { display: flex; flex-wrap: wrap; gap: .35rem; padding-top: .5rem; }
+.root {
+  width: 100%;
+}
+.card {
+  gap: 0.55rem;
+  padding: 1rem;
+}
+.description {
+  min-height: 0;
+  font-size: 0.87rem;
+  line-height: 1.4;
+}
+.card h3 {
+  font-size: clamp(1.07rem, 1.4vw, 1.35rem);
+  line-height: 1.25;
+}
+.cardDetails {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+.benefits {
+  margin: 0.2rem 0 0.4rem;
+  gap: 0.4rem;
+}
+.benefits li {
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+.featured {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(10rem, 0.8fr);
+  align-items: center;
+  column-gap: 1.5rem;
+}
+.featured .cardHeader,
+.featured h3,
+.featured .description,
+.featured .price,
+.featured .saving {
+  grid-column: 1;
+}
+.featured .cardDetails {
+  grid-column: 2;
+  grid-row: 1 / 6;
+}
+.featured .benefits {
+  grid-template-columns: 1fr;
+}
+.featured form {
+  max-width: none;
+}
+.mobileExpand {
+  display: none;
+}
+.sectorPanel {
+  display: grid;
+  grid-template-columns: 1fr minmax(12rem, 0.7fr) minmax(15rem, 1fr);
+  gap: 1.2rem;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--line, rgba(127, 127, 127, 0.3));
+  border-radius: 1rem;
+  background: var(--surface-elevated, rgba(180, 180, 180, 0.05));
+  min-width: 0;
+}
+.sectorIntro h3 {
+  margin: 0.2rem 0;
+  font-size: 1.15rem;
+}
+.sectorIntro p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+.sectorChoices {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+.sectorChoices label {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.sectorChoices select {
+  min-width: 0;
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  color: var(--ink);
+  background: var(--surface-alt);
+  padding: 0.5rem;
+}
+.sectorSwitch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.3rem;
+}
+.sectorSwitch button {
+  min-height: 44px;
+  font-size: 0.8rem;
+  padding: 0.4rem;
+  border-radius: 0.6rem;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.sectorSwitch button[aria-pressed="true"] {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+}
+.sectorResults {
+  min-width: 0;
+}
+.sectorResults strong {
+  font-size: 0.82rem;
+}
+.sectorResults ul {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+  gap: 0.4rem;
+}
+.sectorResults li,
+.toolChips span {
+  font-size: 0.75rem;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+.toolDisclosure summary {
+  cursor: pointer;
+  font-size: 0.8rem;
+  min-height: 32px;
+}
+.toolChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding-top: 0.5rem;
+}
 @media (max-width: 1200px) {
- .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
- .sectorPanel { grid-template-columns: 1fr 1fr; }
- .sectorResults { grid-column: 1 / -1; }
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sectorPanel {
+    grid-template-columns: 1fr 1fr;
+  }
+  .sectorResults {
+    grid-column: 1 / -1;
+  }
 }
 @media (max-width: 700px) {
- .root { gap: .75rem; }
- .heading { gap: .7rem; }
- .heading h2 { font-size: 1.5rem; }
- .heading p { font-size: .85rem; }
- .grid { grid-template-columns: 1fr; gap: .55rem; }
- .card, .featured { display: flex; flex-direction: column; align-items: stretch; gap: .35rem; padding: .8rem .9rem; border-radius: .9rem; }
- .card h3 { font-size: 1.05rem; }
- .description { font-size: .8rem; }
- .price strong { font-size: 1.4rem; }
- .cardDetails { display: none; }
- .card[data-expanded="true"] .cardDetails { display: flex; }
- .mobileExpand { display: flex; align-items: center; justify-content: space-between; gap: .5rem; min-height: 44px; width: 100%; padding: .4rem 0; border: 0; border-top: 1px solid var(--line); background: transparent; color: var(--ink); font-size: .83rem; text-align: left; cursor: pointer; }
- .sectorPanel { grid-template-columns: 1fr; padding: .8rem; gap: .65rem; }
- .sectorResults { grid-column: 1; }
- .sectorIntro p { font-size: .78rem; }
- .interval { justify-content: center; }
- .footnote { font-size: .77rem; }
+  .root {
+    gap: 0.75rem;
+  }
+  .heading {
+    gap: 0.7rem;
+  }
+  .heading h2 {
+    font-size: 1.5rem;
+  }
+  .heading p {
+    font-size: 0.85rem;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+  }
+  .card,
+  .featured {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.35rem;
+    padding: 0.8rem 0.9rem;
+    border-radius: 0.9rem;
+  }
+  .card h3 {
+    font-size: 1.05rem;
+  }
+  .description {
+    font-size: 0.8rem;
+  }
+  .price strong {
+    font-size: 1.4rem;
+  }
+  .cardDetails {
+    display: none;
+  }
+  .card[data-expanded="true"] .cardDetails {
+    display: flex;
+  }
+  .mobileExpand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    min-height: 44px;
+    width: 100%;
+    padding: 0.4rem 0;
+    border: 0;
+    border-top: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    font-size: 0.83rem;
+    text-align: left;
+    cursor: pointer;
+  }
+  .sectorPanel {
+    grid-template-columns: 1fr;
+    padding: 0.8rem;
+    gap: 0.65rem;
+  }
+  .sectorResults {
+    grid-column: 1;
+  }
+  .sectorIntro p {
+    font-size: 0.78rem;
+  }
+  .interval {
+    justify-content: center;
+  }
+  .footnote {
+    font-size: 0.77rem;
+  }
 }

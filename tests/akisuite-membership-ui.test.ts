@@ -36,7 +36,7 @@ describe("AkiSuite localized membership catalogue", () => {
     expect(grid).toContain("businessCategories.map");
     expect(grid).toContain("getBusinessPackageHighlights");
     expect(grid).toContain("businessPackageTools[sectorTier]");
-    expect(grid).toContain('aria-expanded={expandedPlans.includes(key)}');
+    expect(grid).toContain("aria-expanded={expandedPlans.includes(key)}");
     expect(grid).toContain("order.map");
   });
 
