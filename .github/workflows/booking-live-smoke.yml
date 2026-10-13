@@ -7,6 +7,8 @@ on:
       - "custom-worker.ts"
       - "wrangler.jsonc"
       - ".github/workflows/booking-live-smoke.yml"
+      - "scripts/run-cloudflare.mjs"
+      - "scripts/release-source.mjs"
   workflow_dispatch:
 permissions:
   contents: read
@@ -24,7 +26,8 @@ jobs:
           import json,time,urllib.request,urllib.error,urllib.parse
           from pathlib import Path
           expected='2026-10-09-booking-ux-r1'
-          evidence={'source_commit':'${{ github.sha }}','application_release_commit':'ce9f74c2ef9bb936dc3573e27252ccd3885a0405','checks':[],'authenticated_production_test':'not performed; no browser session or credentials'}
+          expected_commit='${{ github.sha }}'
+          evidence={'source_commit':expected_commit,'checks':[],'authenticated_production_test':'not performed; no browser session or credentials'}
           def get(url):
               req=urllib.request.Request(url,headers={'User-Agent':'AkiPasa-release-smoke/1.0','Cache-Control':'no-cache'})
               try:
@@ -34,18 +37,18 @@ jobs:
                   return e.code,url,e.read().decode('utf-8','replace')
               except Exception as e:
                   return 0,url,str(e)
-          markers=['https://akipasa.com/api/bookings/release','https://business.akipasa.com/api/bookings/release']
+          markers=[origin+'/api/bookings/release' for origin in ['https://akipasa.com','https://www.akipasa.com','https://business.akipasa.com','https://akiduermo.akipasa.com']]
           deadline=time.time()+12*60
           ready=False
           while time.time()<deadline:
               sample=[]
               for url in markers:
                   code,final,body=get(url+'?releaseCheck='+str(int(time.time())))
-                  try: release=json.loads(body).get('release')
-                  except Exception: release=None
-                  sample.append({'url':url,'http_status':code,'release':release})
+                  try: payload=json.loads(body)
+                  except Exception: payload={}
+                  sample.append({'url':url,'http_status':code,'release':payload.get('release'),'source_commit':payload.get('sourceCommit')})
               print(json.dumps(sample),flush=True)
-              if all(x['http_status']==200 and x['release']==expected for x in sample):
+              if all(x['http_status']==200 and x['release']==expected and x['source_commit']==expected_commit for x in sample):
                   evidence['checks']+=sample; ready=True; break
               time.sleep(30)
           evidence['edge_release_verified']=ready
