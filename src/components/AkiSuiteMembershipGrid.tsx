@@ -431,11 +431,21 @@ export function AkiSuiteMembershipGrid({
       <fieldset className={styles.interval}>
         <legend>{es ? "Periodo de facturación" : "Billing interval"}</legend>
         <label className={interval === "month" ? styles.selected : ""}>
-          <input type="radio" checked={interval === "month"} onChange={() => setInterval("month")} name="akisuite-interval" />
+          <input
+            type="radio"
+            checked={interval === "month"}
+            onChange={() => setInterval("month")}
+            name="akisuite-interval"
+          />
           {es ? "Mensual" : "Monthly"}
         </label>
         <label className={interval === "year" ? styles.selected : ""}>
-          <input type="radio" checked={interval === "year"} onChange={() => setInterval("year")} name="akisuite-interval" />
+          <input
+            type="radio"
+            checked={interval === "year"}
+            onChange={() => setInterval("year")}
+            name="akisuite-interval"
+          />
           {es ? "Anual · -20 %" : "Yearly · -20%"}
         </label>
       </fieldset>
