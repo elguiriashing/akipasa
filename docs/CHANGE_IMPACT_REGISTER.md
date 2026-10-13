@@ -1,5 +1,13 @@
 # Change Impact Register
 
+## 2026-10-13 | Recovered claim-picker overlap from PR #97
+
+- Before: `.claim-search-results` used absolute `top: 7.8rem`; additional business-type controls and wrapped headings can place results over the search input. Current master retained the defect despite later claim form releases.
+- After: results follow the actual input in normal flex flow, with the existing bounded scrolling and selection/clear behavior preserved. Applies to EN/ES, activity and accommodation searches, both themes and phone/tablet/desktop.
+- Dependency trace: `ClaimVenuePicker` -> existing `/api/business/claim-search` and `/api/business/claim-map` -> authorised claim submission. Only results geometry changes; no component/API/RPC/role/SQL/storage/email/billing/analytics/consent changes. Map network and selection semantics are unchanged.
+- Regression: real-component browser harness uses disposable search responses, verifies wrapped headings, populated/empty results, input/result/map geometry, list scrolling and selection/clear at six widths in both locales/themes. Map rendering and authenticated production claiming are not covered. Added to existing tablet CI, which retains all its previous steps and artifact upload.
+- Validation: pending execution; no merge or deployment claimed. Rollback: revert results CSS and harness/workflow addition, with no data migration.
+
 ## 2026-10-13 | Compact memberships with official app brands and sector tools
 
 - **Request:** Reduce excessive desktop/tablet/mobile scrolling and wasted horizontal space; restore the useful sector selector and make packages identifiable by original app marks.
@@ -688,3 +696,11 @@ Live membership smoke verification found that the parent account layout replaced
 2026-10-13 membership presentation refinement (PR #129): Public AkiSuite pricing retains all seven plans and the existing checkout eligibility, amounts, intervals and entitlements. Compact two-column mobile cards and wider responsive desktop comparison reduce vertical card height; the billing-period switch and sector-specific AkiHQ tool exploration now follow the plan catalogue. Business categories only change displayed tools, never granted access. Billing/migration readiness flags remain unchanged. Validate responsive overflow, screen-reader disclosure state and locale-aware prices before production promotion.
 
 2026-10-13 AkiSuite membership width/overlap follow-up: The membership-only shell now uses available desktop/tablet viewport width up to a 1720px bound while keeping responsive gutters. Catalogue cards reflow across wider screens, and the Enterprise card brand/header badge can wrap without label collision. No subscription billing, entitlement, feature flag, migration or checkout change. Validate EN/ES membership layouts on mobile, tablet and desktop.
+
+### 2026-10-13 | Recovered venue media picker review defects
+
+Unmerged PRs #121/#122 contained review findings still present after #123: search/folder controls consumed the gallery scroll row, and the modal lacked keyboard focus containment, Escape dismissal, restoration and slot-specific trigger names. VenueMediaStudio now groups controls into one intrinsic row and empty/results into the scroll row, with dedicated CSS preserving the event editor modal. EN/ES triggers identify the image surface; opening resets filters, focuses search, traps keyboard/programmatic focus and closing restores the opener. Existing upload/placement/Auto actions, permission checks, media inventory, accommodation header, event editor, billing and SQL remain unchanged. Rollback is code-only. Component regression tests exercise actual focus wrapping, Escape/close restoration, filter reset and variable-content DOM rows in both locales. Full check, responsive browser/Cloudflare CI and authenticated live owner acceptance remain required before deployment; no live storage/data mutation or deployment is claimed.
+
+## 2026-10-13 | Recovered picker browser gates
+
+Tablet CI now runs `test-claim-picker-browser.mjs` and `test-venue-media-picker-browser.mjs`. These exercise real components/CSS with disposable actions; no production records are changed. Local browser downloads failed; actual browser execution remains a CI release gate.

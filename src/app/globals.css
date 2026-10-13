@@ -13920,11 +13920,12 @@ body:has(#passport-privacy-controls) > .privacy-preferences {
 }
 
 .claim-search-results {
-  position: absolute;
+  position: relative;
   z-index: 9;
-  top: 7.8rem;
-  right: 1rem;
-  left: 1rem;
+  top: auto;
+  right: auto;
+  left: auto;
+  width: 100%;
   max-height: 23rem;
   overflow: auto;
   padding: 0.35rem;
@@ -18299,6 +18300,31 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
   border-radius: 1.15rem;
   background: var(--surface);
   box-shadow: 0 28px 90px rgb(0 0 0 / 42%);
+}
+
+/* Venue picker has an additional search/folder controls row. */
+.event-media-modal.venue-media-picker-modal {
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  max-height: min(48rem, calc(100dvh - 2rem));
+}
+
+.venue-media-picker-controls {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  min-width: 0;
+}
+
+.venue-media-picker-controls input,
+.venue-media-picker-controls select {
+  width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 480px) {
+  .event-media-modal.venue-media-picker-modal {
+    max-height: calc(100dvh - 0.8rem);
+  }
 }
 
 .event-media-modal > header {

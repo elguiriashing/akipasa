@@ -308,6 +308,14 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 
 ### Claim-specific applicant verification fields (2026-10-11)
 
+Claim picker search results stay in normal flow beneath the search input,
+including wrapped EN/ES headings and activity/accommodation controls. A bounded
+results list scrolls without obscuring the input or displacing content over the
+map. `scripts/test-claim-picker-browser.mjs` exercises the real component with
+disposable search responses across locales, themes and responsive widths,
+including selecting a result and clearing the selected venue. It validates map
+container geometry, not MapLibre rendering or authenticated live claiming.
+
 - The EN/ES AkiBusiness claim form `/[locale]/business?view=claims` uses the existing ClaimVenuePicker and now separately collects applicant full name and relationship to the business (required), optional applicant phone, business email, official venue URL and venue phone, plus the existing required evidence text. Mobile and light/dark forms must display these input controls.
 - `submitVenueClaim` performs server-side Zod validation and inserts private `venue_claims.claim_details` (including `submission_locale`) alongside the immutable claim ID, claimant ID and evidence. It must retain the existing transactional staff alert outbox and immediate `dispatchClaimSubmissionAlerts` call. No canonical venue/profile fields may be modified by an unapproved claim.
 - Staff moderation `staff_pending_venue_claims(integer)` includes `claimant.submission` from `claim_details` behind its existing moderator/administrator role check. Submitted applicant/venue contacts are labelled unverified and kept distinct from profile details and public listing. Historical claim rows default to an empty object and still render safely.
@@ -462,3 +470,9 @@ Live membership smoke verification found that the parent account layout replaced
 2026-10-13 membership presentation refinement (PR #129): Public AkiSuite pricing retains all seven plans and the existing checkout eligibility, amounts, intervals and entitlements. Compact two-column mobile cards and wider responsive desktop comparison reduce vertical card height; the billing-period switch and sector-specific AkiHQ tool exploration now follow the plan catalogue. Business categories only change displayed tools, never granted access. Billing/migration readiness flags remain unchanged. Validate responsive overflow, screen-reader disclosure state and locale-aware prices before production promotion.
 
 2026-10-13 AkiSuite membership width/overlap follow-up: The membership-only shell now uses available desktop/tablet viewport width up to a 1720px bound while keeping responsive gutters. Catalogue cards reflow across wider screens, and the Enterprise card brand/header badge can wrap without label collision. No subscription billing, entitlement, feature flag, migration or checkout change. Validate EN/ES membership layouts on mobile, tablet and desktop.
+
+### 2026-10-13 | Recovered venue media picker review defects
+
+Unmerged PRs #121/#122 contained review findings still present after #123: search/folder controls consumed the gallery scroll row, and the modal lacked keyboard focus containment, Escape dismissal, restoration and slot-specific trigger names. VenueMediaStudio now groups controls into one intrinsic row and empty/results into the scroll row, with dedicated CSS preserving the event editor modal. EN/ES triggers identify the image surface; opening resets filters, focuses search, traps keyboard/programmatic focus and closing restores the opener. Existing upload/placement/Auto actions, permission checks, media inventory, accommodation header, event editor, billing and SQL remain unchanged. Rollback is code-only. Component regression tests exercise actual focus wrapping, Escape/close restoration, filter reset and variable-content DOM rows in both locales. Full check, responsive browser/Cloudflare CI and authenticated live owner acceptance remain required before deployment; no live storage/data mutation or deployment is claimed.
+
+The recovered claim and venue-media browser harnesses run in tablet CI with disposable actions; their real-browser results remain separate from component tests and live authenticated acceptance.
