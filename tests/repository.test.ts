@@ -220,6 +220,12 @@ describe("shared venue public media placements", () => {
     alt_es: "Privada",
     alt_en: "Private",
   };
+  const shared = {
+    ...selected,
+    id: "shared",
+    venue_id: "other-venue",
+    storage_path: "other/events/shared.jpg",
+  };
   const foreign = {
     id: "foreign",
     venue_id: "other-venue",
@@ -281,9 +287,9 @@ describe("shared venue public media placements", () => {
             if (table === "venue_media_placements") data = placements;
             if (table === "venue_media")
               data = call.filters.id
-                ? [selected, privateEvent, foreign].filter(
+                ? [selected, privateEvent, shared, foreign].filter(
                     (item) =>
-                      item.venue_id === call.filters.venue_id &&
+                      item.id !== foreign.id &&
                       (call.filters.id as string[]).includes(item.id),
                   )
                 : fallback;
@@ -316,23 +322,30 @@ describe("shared venue public media placements", () => {
         [own],
         [
           { media_id: selected.id, placement: "venue_cover" },
-          { media_id: foreign.id, placement: "venue_profile" },
+          { media_id: shared.id, placement: "venue_profile" },
+          { media_id: foreign.id, placement: "venue_menu" },
         ],
       );
       const venue = await new SupabaseDiscoveryRepository()[method](
         method === "venueById" ? venueId : "venue",
       );
       expect(venue?.coverImage?.id).toBe(selected.id);
-      expect(venue?.logoImage?.id).toBe(own.id);
+      expect(venue?.logoImage?.id).toBe(shared.id);
+      expect(venue?.menuImage?.id).toBe(own.id);
       expect(venue?.media?.map((item) => item.id)).toEqual([
         selected.id,
         own.id,
+        shared.id,
       ]);
-      expect(signed).toEqual([own.storage_path, selected.storage_path]);
+      expect(signed).toEqual([
+        own.storage_path,
+        selected.storage_path,
+        shared.storage_path,
+      ]);
       expect(
         calls.find((call) => call.table === "venue_media" && call.filters.id),
       ).toMatchObject({
-        filters: { venue_id: venueId, id: [selected.id, foreign.id] },
+        filters: { id: [selected.id, shared.id, foreign.id] },
       });
     },
   );

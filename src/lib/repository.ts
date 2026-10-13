@@ -302,12 +302,12 @@ async function placedVenueMedia(
     ...new Set((visualPlacements || []).map((item) => String(item.media_id))),
   ].filter((id) => !existingIds.has(id));
   // Explicit venue placements may refer to event uploads or assets beyond the
-  // fallback gallery window. Read only those IDs, within this same venue/RLS.
+  // fallback gallery window, including authorized workspace-shared media.
+  // Read only IDs from this venue's public placements; RLS/signing deny access.
   const { data: selectedMedia } = missingIds.length
     ? await supabase
         .from("venue_media")
         .select("id,storage_path,alt_es,alt_en")
-        .eq("venue_id", venueId)
         .in("id", missingIds)
     : { data: [] };
   return {
