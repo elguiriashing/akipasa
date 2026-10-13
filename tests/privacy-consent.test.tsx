@@ -15,6 +15,7 @@ import {
   readPrivacyChoices,
   writePrivacyChoices,
 } from "../src/lib/privacy-consent";
+import { readMotionPreference } from "../src/lib/passport-motion";
 const navigation = vi.hoisted(() => ({ pathname: "/en", search: "" }));
 vi.mock("next/navigation", () => ({
   usePathname: () => navigation.pathname,
@@ -29,6 +30,130 @@ afterEach(() => {
   document.getElementById("ak-consented-ga")?.remove();
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
+});
+it.each(["en", "es"] as const)(
+  "dismisses a first-visit %s panel without applying optional consent or losing the draft",
+  async (locale) => {
+    navigation.pathname = `/${locale}`;
+    localStorage.removeItem("akipasa:passport-motion");
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    vi.stubGlobal("React", React);
+    const es = locale === "es";
+    render(
+      <>
+        <ConsentAnalytics />
+        <PersonalisationConsent locale={locale} />
+      </>,
+    );
+    const name = es ? "Opciones de privacidad" : "Privacy choices";
+    const trigger = screen.getByRole("button", { name, exact: true });
+    const panel = await screen.findByRole("complementary", { name });
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(trigger).toHaveAttribute("aria-controls", panel.id);
+    for (const input of panel.querySelectorAll("input"))
+      expect(input).not.toBeChecked();
+    fireEvent.click(
+      screen.getByLabelText(
+        es
+          ? "Recomendaciones según mis interacciones"
+          : "Recommendations based on my interactions",
+      ),
+    );
+    fireEvent.click(
+      screen.getByLabelText(
+        es
+          ? "Inclinación del pasaporte con el movimiento del móvil"
+          : "Passport tilt using phone motion",
+      ),
+    );
+    const cookies = document.cookie;
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: es ? "Cerrar opciones de privacidad" : "Close privacy choices",
+      }),
+    );
+    expect(screen.queryByRole("complementary", { name })).toBeNull();
+    expect(trigger).toHaveFocus();
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(document.cookie).toBe(cookies);
+    expect(document.cookie).not.toContain("ak_consent_version");
+    expect(readPrivacyChoices()).toEqual({
+      analytics: false,
+      personalisation: false,
+      marketing: false,
+    });
+    expect(readMotionPreference()).toBeNull();
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(document.getElementById("ak-consented-ga")).toBeNull();
+    expect(document.getElementById("ak-google-ads-loader")).toBeNull();
+    fireEvent.click(trigger);
+    expect(
+      screen.getByLabelText(
+        es
+          ? "Recomendaciones según mis interacciones"
+          : "Recommendations based on my interactions",
+      ),
+    ).toBeChecked();
+    expect(
+      screen.getByLabelText(
+        es
+          ? "Inclinación del pasaporte con el movimiento del móvil"
+          : "Passport tilt using phone motion",
+      ),
+    ).toBeChecked();
+    expect(fetchMock).not.toHaveBeenCalled();
+  },
+);
+it("closes with Escape from a panel control and leaves saved permissions unchanged", async () => {
+  const saved = { analytics: false, personalisation: true, marketing: false };
+  writePrivacyChoices(saved);
+  const fetchMock = vi.fn();
+  vi.stubGlobal("fetch", fetchMock);
+  render(<PersonalisationConsent locale="en" />);
+  const trigger = screen.getByRole("button", { name: "Privacy choices" });
+  fireEvent.click(trigger);
+  const input = screen.getByLabelText("Advertising personalisation");
+  fireEvent.click(input);
+  input.focus();
+  const cookies = document.cookie;
+  fireEvent.keyDown(input, { key: "Escape" });
+  expect(
+    screen.queryByRole("complementary", { name: "Privacy choices" }),
+  ).toBeNull();
+  expect(trigger).toHaveFocus();
+  expect(document.cookie).toBe(cookies);
+  expect(readPrivacyChoices()).toEqual(saved);
+  expect(fetchMock).not.toHaveBeenCalled();
+  fireEvent.click(trigger);
+  expect(screen.getByLabelText("Advertising personalisation")).toBeChecked();
+  expect(
+    screen.getByLabelText("Recommendations based on my interactions"),
+  ).toBeChecked();
+});
+it("keeps the panel visible while an explicit save is pending", async () => {
+  let resolveResponse: (response: Response) => void = () => {};
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(
+      () =>
+        new Promise<Response>((resolve) => {
+          resolveResponse = resolve;
+        }),
+    ),
+  );
+  render(<PersonalisationConsent locale="en" />);
+  const panel = await screen.findByRole("complementary", {
+    name: "Privacy choices",
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Save choices" }));
+  expect(
+    screen.getByRole("button", { name: "Close privacy choices" }),
+  ).toBeDisabled();
+  fireEvent.keyDown(panel, { key: "Escape" });
+  expect(panel).toBeVisible();
+  resolveResponse(new Response(null, { status: 204 }));
+  await waitFor(() => expect(panel).not.toBeInTheDocument());
 });
 it("follows route language changes without resetting or submitting privacy choices", async () => {
   navigation.pathname = "/es/venues/test-venue";

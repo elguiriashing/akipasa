@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { usePathname, useSearchParams } from "next/navigation";
 import type { Locale } from "@/lib/config";
@@ -15,6 +15,7 @@ import {
   writeMotionPreference,
   requestPassportMotion,
 } from "../lib/passport-motion";
+import styles from "./PersonalisationConsent.module.css";
 
 export function PersonalisationConsent({ locale }: { locale: Locale }) {
   const pathname = usePathname();
@@ -26,6 +27,8 @@ export function PersonalisationConsent({ locale }: { locale: Locale }) {
   const [motionDenied, setMotionDenied] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(false);
+  const privacyTrigger = useRef<HTMLButtonElement>(null);
+  const panelId = useId();
   const [changedLocale, setChangedLocale] = useState<{
     scope: string;
     locale: Locale;
@@ -103,6 +106,12 @@ export function PersonalisationConsent({ locale }: { locale: Locale }) {
     setChoices(next);
     setVisible(false);
   }
+  function dismiss() {
+    if (saving) return;
+    // Closing is not a consent decision. Keep saved permissions and the draft.
+    setVisible(false);
+    privacyTrigger.current?.focus({ preventScroll: true });
+  }
   const privacyControl = (
     <div
       className={
@@ -112,8 +121,11 @@ export function PersonalisationConsent({ locale }: { locale: Locale }) {
       }
     >
       <button
+        ref={privacyTrigger}
         type="button"
         className="button secondary"
+        aria-expanded={visible}
+        aria-controls={panelId}
         onClick={() => setVisible(true)}
       >
         {es ? "Opciones de privacidad" : "Privacy choices"}
@@ -125,15 +137,35 @@ export function PersonalisationConsent({ locale }: { locale: Locale }) {
       {privacyHost ? createPortal(privacyControl, privacyHost) : privacyControl}
       {visible && (
         <aside
+          id={panelId}
           className="personalisation-consent"
           aria-label={es ? "Opciones de privacidad" : "Privacy choices"}
+          onKeyDown={(event) => {
+            if (event.key !== "Escape" || saving) return;
+            event.preventDefault();
+            event.stopPropagation();
+            dismiss();
+          }}
         >
           <div>
-            <strong>
-              {es
-                ? "Tú eliges cómo usamos tus datos"
-                : "Choose how we use your data"}
-            </strong>
+            <div className={styles.heading}>
+              <strong>
+                {es
+                  ? "Tú eliges cómo usamos tus datos"
+                  : "Choose how we use your data"}
+              </strong>
+              <button
+                type="button"
+                className={`button secondary ${styles.close}`}
+                aria-label={
+                  es ? "Cerrar opciones de privacidad" : "Close privacy choices"
+                }
+                disabled={saving}
+                onClick={dismiss}
+              >
+                {es ? "Cerrar" : "Close"}
+              </button>
+            </div>
             <p>
               {es
                 ? "Las funciones esenciales siempre están activas. Elige por separado los usos opcionales; puedes cambiarlos aquí cuando quieras."

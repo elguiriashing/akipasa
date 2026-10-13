@@ -14,6 +14,15 @@ for (const locale of ["en", "es"] as const) {
           (value) => localStorage.setItem("akipasa.theme", value),
           theme,
         );
+        const consentRequests: string[] = [];
+        page.on("request", (request) => {
+          if (
+            request.method() === "POST" &&
+            new URL(request.url()).pathname ===
+              "/api/v1/personalisation/consent"
+          )
+            consentRequests.push(request.url());
+        });
         // Exercise the same Next server through the stay virtual host, without real credentials.
         await page.route(/http:\/\/127\.0\.0\.1:\d+\//, async (route) => {
           const path = new URL(route.request().url()).pathname;
@@ -62,6 +71,58 @@ for (const locale of ["en", "es"] as const) {
             { waitUntil: "domcontentloaded" },
           );
           await expect(page.locator("main")).toBeVisible();
+          // A first visitor must be able to dismiss the initially open panel
+          // without making a consent decision before using the stay controls.
+          const privacy = page.getByRole("complementary", {
+            name:
+              locale === "es" ? "Opciones de privacidad" : "Privacy choices",
+          });
+          await expect(privacy).toBeVisible();
+          await expect(privacy.getByRole("checkbox")).toHaveCount(4);
+          for (const checkbox of await privacy.getByRole("checkbox").all())
+            await expect(checkbox).not.toBeChecked();
+          const close = privacy.getByRole("button", {
+            name:
+              locale === "es"
+                ? "Cerrar opciones de privacidad"
+                : "Close privacy choices",
+          });
+          const closeBounds = await close.boundingBox();
+          expect(closeBounds?.height).toBeGreaterThanOrEqual(44);
+          expect(closeBounds?.width).toBeGreaterThanOrEqual(44);
+          if (path.includes("/auth?")) {
+            await privacy.getByRole("checkbox").nth(1).check();
+            await privacy.getByRole("checkbox").nth(3).check();
+          }
+          await close.click();
+          await expect(privacy).toBeHidden();
+          const privacyTrigger = page.getByRole("button", {
+            name:
+              locale === "es" ? "Opciones de privacidad" : "Privacy choices",
+            exact: true,
+          });
+          await expect(privacyTrigger).toBeFocused();
+          if (path.includes("/auth?")) {
+            await privacyTrigger.press("Enter");
+            await expect(privacy).toBeVisible();
+            await expect(privacy.getByRole("checkbox").nth(1)).toBeChecked();
+            await expect(privacy.getByRole("checkbox").nth(3)).toBeChecked();
+            await privacy.getByRole("checkbox").nth(1).focus();
+            await page.keyboard.press("Escape");
+            await expect(privacy).toBeHidden();
+            await expect(privacyTrigger).toBeFocused();
+          }
+          await expect(
+            page.locator("#ak-consented-ga, #ak-google-ads-loader"),
+          ).toHaveCount(0);
+          expect(consentRequests).toEqual([]);
+          expect(
+            (await page.context().cookies()).filter((cookie) =>
+              /^ak_(consent_version|analytics|personalisation|marketing)$/.test(
+                cookie.name,
+              ),
+            ),
+          ).toEqual([]);
           if (path === "/") {
             const checkIn = new Date(Date.now() + 86_400_000)
               .toISOString()
@@ -178,6 +239,7 @@ for (const locale of ["en", "es"] as const) {
             ]);
           }
         }
+        expect(consentRequests).toEqual([]);
         await page.screenshot({
           path: `test-results/duermo-${locale}-${theme}-${viewport.width}.png`,
         });
