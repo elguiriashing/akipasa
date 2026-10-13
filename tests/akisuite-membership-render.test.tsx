@@ -19,7 +19,9 @@ describe("real AkiSuite catalogue interactions", () => {
       expect(screen.getAllByRole("article")[0].textContent).toContain(
         "Aki Enterprise",
       );
-      for (const button of document.querySelectorAll("article form button[type=submit]"))
+      for (const button of document.querySelectorAll(
+        "article form button[type=submit]",
+      ))
         expect((button as HTMLButtonElement).disabled).toBe(true);
       fireEvent.click(screen.getAllByRole("radio")[1]);
       expect(document.getElementById("aki_enterprise")?.textContent).toContain(
