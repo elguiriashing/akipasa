@@ -796,7 +796,9 @@ try {
               );
               await expect(catalogue.locator("article")).toHaveCount(7);
               await expect(catalogue.locator("form")).toHaveCount(7);
-              for (const button of await catalogue.locator("article button[type=submit]").all())
+              for (const button of await catalogue
+                .locator("article button[type=submit]")
+                .all())
                 await expect(button).toBeDisabled();
               await expect(page.locator(".workspace-content form")).toHaveCount(
                 7,
