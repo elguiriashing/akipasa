@@ -44,7 +44,9 @@ describe("real AkiSuite catalogue interactions", () => {
     );
     expect(screen.getAllByText("Plan included")).toHaveLength(6);
     expect(
-      (document.querySelector("#akipasa_premium form button[type=submit]") as HTMLButtonElement)
+      (document.querySelector(
+        "#akipasa_premium form button[type=submit]",
+      ) as HTMLButtonElement)
         .disabled,
     ).toBe(true);
   });
