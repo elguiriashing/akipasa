@@ -507,3 +507,7 @@ The venue and event Server Components retain their existing repository, authenti
 ### Release source identity (2026-10-13)
 
 Cloudflare packaging writes the clean source Git SHA into an ignored generated asset. The Worker reads it directly through ASSETS for the existing read-only release endpoint; no request-supplied or runtime mutable source variable is trusted. Missing source evidence is null. Post-push release smoke verifies the triggering SHA across all public portal hosts, separately from database readiness and authenticated workflow tests.
+
+## Health audit boundary — Count actual media and customer-support request bytes (2026-10-13)
+
+Both /api/business/venue-media and /api/support-agent/chat trusted Content-Length before parsing. Four isolated streamed-request cases reproduced oversized bodies reaching mocked authenticated adapters. Media now counts binary bytes before forwarding to the multipart parser, with an 11 MiB framing budget and cancellation on overflow; support reuses readBoundedText for its 8000-byte UTF-8 contract. Missing or understated length cannot bypass the limits. Origin checks, existing upload action authorization/file validation/RLS, authenticated support identity and provider/tool boundaries remain unchanged. No schema, data, email, prices, entitlements or consent behavior changes.
