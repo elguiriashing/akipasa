@@ -1,6 +1,6 @@
 {
   "account": "acct_1SVLH2GfzDhsgsQZ",
-  "verified_at": "2026-10-12",
+  "verified_at": "2026-10-13",
   "live": true,
   "checkout_enabled": false,
   "tax_registrations_verified": 0,
@@ -17,8 +17,8 @@
         "akisuite_interval": "year",
         "akisuite_plan": "aki_enterprise"
       },
-      "tax_code": null,
-      "tax_behavior": "unspecified"
+      "tax_code": "txcd_10103001",
+      "tax_behavior": "inclusive"
     },
     {
       "plan": "aki_enterprise",
@@ -32,8 +32,8 @@
         "akisuite_interval": "month",
         "akisuite_plan": "aki_enterprise"
       },
-      "tax_code": null,
-      "tax_behavior": "unspecified"
+      "tax_code": "txcd_10103001",
+      "tax_behavior": "inclusive"
     },
     {
       "plan": "akihq_business_addon",
@@ -47,8 +47,8 @@
         "akisuite_interval": "year",
         "akisuite_plan": "akihq_business_addon"
       },
-      "tax_code": null,
-      "tax_behavior": "unspecified"
+      "tax_code": "txcd_10103001",
+      "tax_behavior": "inclusive"
     },
     {
       "plan": "akihq_business_addon",
@@ -62,8 +62,8 @@
         "akisuite_interval": "month",
         "akisuite_plan": "akihq_business_addon"
       },
-      "tax_code": null,
-      "tax_behavior": "unspecified"
+      "tax_code": "txcd_10103001",
+      "tax_behavior": "inclusive"
     },
     {
       "plan": "akihq_pro",
@@ -77,8 +77,8 @@
         "akisuite_interval": "year",
         "akisuite_plan": "akihq_pro"
       },
-      "tax_code": null,
-      "tax_behavior": "unspecified"
+      "tax_code": "txcd_10103001",
+      "tax_behavior": "inclusive"
     },
     {
       "plan": "akihq_pro",
@@ -92,8 +92,8 @@
         "akisuite_interval": "month",
         "akisuite_plan": "akihq_pro"
       },
-      "tax_code": null,
-      "tax_behavior": "unspecified"
+      "tax_code": "txcd_10103001",
+      "tax_behavior": "inclusive"
     },
     {
       "plan": "akihq_standard",
@@ -107,8 +107,8 @@
         "akisuite_interval": "year",
         "akisuite_plan": "akihq_standard"
       },
-      "tax_code": null,
-      "tax_behavior": "unspecified"
+      "tax_code": "txcd_10103001",
+      "tax_behavior": "inclusive"
     },
     {
       "plan": "akihq_standard",
@@ -122,8 +122,8 @@
         "akisuite_interval": "month",
         "akisuite_plan": "akihq_standard"
       },
-      "tax_code": null,
-      "tax_behavior": "unspecified"
+      "tax_code": "txcd_10103001",
+      "tax_behavior": "inclusive"
     },
     {
       "plan": "akiduermo_premium",
@@ -137,8 +137,8 @@
         "akisuite_interval": "year",
         "akisuite_plan": "akiduermo_premium"
       },
-      "tax_code": null,
-      "tax_behavior": "unspecified"
+      "tax_code": "txcd_10103001",
+      "tax_behavior": "inclusive"
     },
     {
       "plan": "akiduermo_premium",
@@ -152,8 +152,8 @@
         "akisuite_interval": "month",
         "akisuite_plan": "akiduermo_premium"
       },
-      "tax_code": null,
-      "tax_behavior": "unspecified"
+      "tax_code": "txcd_10103001",
+      "tax_behavior": "inclusive"
     },
     {
       "plan": "akibusiness_premium",
@@ -167,8 +167,8 @@
         "akisuite_interval": "year",
         "akisuite_plan": "akibusiness_premium"
       },
-      "tax_code": null,
-      "tax_behavior": "unspecified"
+      "tax_code": "txcd_10103001",
+      "tax_behavior": "inclusive"
     },
     {
       "plan": "akibusiness_premium",
@@ -182,8 +182,8 @@
         "akisuite_interval": "month",
         "akisuite_plan": "akibusiness_premium"
       },
-      "tax_code": null,
-      "tax_behavior": "unspecified"
+      "tax_code": "txcd_10103001",
+      "tax_behavior": "inclusive"
     },
     {
       "plan": "akipasa_premium",
@@ -197,8 +197,8 @@
         "akisuite_interval": "year",
         "akisuite_plan": "akipasa_premium"
       },
-      "tax_code": null,
-      "tax_behavior": "unspecified"
+      "tax_code": "txcd_10103000",
+      "tax_behavior": "inclusive"
     },
     {
       "plan": "akipasa_premium",
@@ -212,8 +212,11 @@
         "akisuite_interval": "month",
         "akisuite_plan": "akipasa_premium"
       },
-      "tax_code": null,
-      "tax_behavior": "unspecified"
+      "tax_code": "txcd_10103000",
+      "tax_behavior": "inclusive"
     }
-  ]
+  ],
+  "merchant_display_name": "AkiPasa Marketing S.L.",
+  "tax_registration_verified_active": false,
+  "tax_classification_note": "Technical Stripe tax categories configured. Legal suitability and Spanish VAT registration remain subject to gestor/AEAT verification; do not enable checkout."
 }

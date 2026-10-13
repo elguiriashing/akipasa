@@ -8,6 +8,14 @@
 - **Security and billing:** No checkout enablement, new plans, grants, workspace authorization, Stripe price or database modifications. Business sectors only change marketing previews, never entitlement checks.
 - **Regression:** Membership source tests and rendered subscription test updated to expect the six-option business selector; require format, lint, TypeScript, full checks, Cloudflare packaging and responsive account/public and tablet browser acceptance before merging.
 
+## 2026-10-13 | Backlog #119 public shared-media placement recovery
+
+- **Evidence:** merged PR #119 exposed event-uploaded assets in VenueMediaStudio, but its unresolved review identified `venueBySlug`/`venueById` excluding every `/events/` path before resolving explicit placements. Current master still contained both filters; the UI could save a placement which the public reader replaced with another photo.
+- **Repair:** retain the ordinary gallery query/filter/window and fetch missing explicitly selected venue-slot IDs separately, constrained to IDs from the target venue's public placements. Both public loaders resolve placements from the union. Existing public-client RLS, storage signing and fallback behavior remain authoritative. Discovery already reads selected placements independently; its private event-bin filter is retained.
+- **Matrix:** public venue details EN/ES, event host lookup, legacy ordinary uploads, selected event uploads, media beyond the 60-row fallback window, no own images, missing/deleted/un-signable media, same/cross-venue records. Manager mutation authorization, accommodation media gallery, premium media limits, email, payments and database schema are unchanged.
+- **Tests:** actual public repository loader tests exercise both slug and ID paths, explicit event asset display, unplaced event-bin exclusion, authorized cross-venue sharing and inaccessible-asset fallback, signing failure and avoiding unnecessary extra reads. Full CI/production build and authenticated owner placement/live detail smoke remain required for release. No database operations performed.
+- **Rollback:** revert application/test change; keep stored placement records and files intact. No migration reversal needed.
+
 ## 2026-10-12 | Venue profile media picker usability
 
 - **Request:** Replace the increasingly narrow five-slot image strips with the existing event-style gallery selector in AkiBusiness Profile.
@@ -689,10 +697,8 @@ Live membership smoke verification found that the parent account layout replaced
 
 2026-10-13 AkiSuite membership width/overlap follow-up: The membership-only shell now uses available desktop/tablet viewport width up to a 1720px bound while keeping responsive gutters. Catalogue cards reflow across wider screens, and the Enterprise card brand/header badge can wrap without label collision. No subscription billing, entitlement, feature flag, migration or checkout change. Validate EN/ES membership layouts on mobile, tablet and desktop.
 
-## 2026-10-13 | Backlog #119 public shared-media placement recovery
+## 2026-10-13 | Recovered Stripe tax-audit follow-up (#127)
 
-- **Evidence:** merged PR #119 exposed event-uploaded assets in VenueMediaStudio, but its unresolved review identified `venueBySlug`/`venueById` excluding every `/events/` path before resolving explicit placements. Current master still contained both filters; the UI could save a placement which the public reader replaced with another photo.
-- **Repair:** retain the ordinary gallery query/filter/window and fetch missing explicitly selected venue-slot IDs separately, constrained to IDs from the target venue's public placements. Both public loaders resolve placements from the union. Existing public-client RLS, storage signing and fallback behavior remain authoritative. Discovery already reads selected placements independently; its private event-bin filter is retained.
-- **Matrix:** public venue details EN/ES, event host lookup, legacy ordinary uploads, selected event uploads, media beyond the 60-row fallback window, no own images, missing/deleted/un-signable media, same/cross-venue records. Manager mutation authorization, accommodation media gallery, premium media limits, email, payments and database schema are unchanged.
-- **Tests:** actual public repository loader tests exercise both slug and ID paths, explicit event asset display, unplaced event-bin exclusion, authorized cross-venue sharing and inaccessible-asset fallback, signing failure and avoiding unnecessary extra reads. Full CI/production build and authenticated owner placement/live detail smoke remain required for release. No database operations performed.
-- **Rollback:** revert application/test change; keep stored placement records and files intact. No migration reversal needed.
+Read-only live revalidation confirms the same approved account `acct_1SVLH2GfzDhsgsQZ` now displays AkiPasa Marketing S.L., all fourteen AkiSuite prices use inclusive tax behaviour, and all seven products have tax codes (AkiPasa Premium `txcd_10103000`, others `txcd_10103001`). Stripe Tax registrations remain absent. Technical classification and account display name do not establish legal identity or VAT approval. `docs/AKISUITE_PRICING_ROLLOUT.md` and the checked-in price audit must describe the same observed state; the obsolete unspecified-tax update instruction is removed.
+
+The linked Supabase project's read-only schema probe found neither `public.akisuite_billing_subscriptions` nor `akisuite_private.launch_settings`. The two new migrations, hosted Storage DDL compatibility, legal registration, isolated payment lifecycle acceptance and authenticated portal validation remain release blockers. No flags, prices, products, registrations, subscriptions, permissions, schema or production data changed. Historic release-test claims remain dated evidence, not new validation. Documentation rollback is a source revert.
