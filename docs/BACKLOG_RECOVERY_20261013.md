@@ -32,37 +32,38 @@ Classification: COMPLETE means the stated implementation is evidenced, not that 
 
 ## Obsolete or redundant work
 
-| Repository / PR          | Classification                   | Evidence / reason                                                                                                                                               | Cleanup condition                                              |
-| ------------------------ | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| AkiPasa #38              | SUPERSEDED / SKIP                | #40 merged official-location picker with drag pin/location label/directions                                                                                     | Document successor before closure                              |
-| AkiPasa #67              | SUPERSEDED / SKIP                | `ff7b95d` catches discovery failure at homepage; current map equivalent; `3a1f1b8` bounds SQL dedupe. Old helper fallback would hide explicit unavailable state | Close without porting old fallback/index                       |
-| AkiPasa #98              | OBSOLETE / SKIP                  | Later user direction and merged #105–107 select Resend, support sender and canonical credential precedence                                                      | Close without replacing delivery transport                     |
-| AkiPasa #112             | SUPERSEDED layout / SKIP         | #113 merged Admin overlap/disclosure fixes                                                                                                                      | Keep any independent raw-service localization backlog separate |
-| AkiPasa #121 / #122      | SUPERSEDED implementation / SKIP | #123 merged media selector; accessibility/grid omissions transferred above                                                                                      | Close only with repair dependency documented                   |
-| AkiHQ #20                | SUPERSEDED / SKIP                | #23 merged after #21/#22 responsive PoS follow-ups                                                                                                              | Preserve physical/device acceptance as separate item           |
-| AkiPasa optional roadmap | DEFER / SKIP                     | Investor graphs, AI reports, partner API and Pals map/public commerce intentionally future scope                                                                | Do not convert roadmap into production emergency               |
+| Repository / PR          | Classification                   | Evidence / reason                                                                                                                                               | Cleanup condition                                 |
+| ------------------------ | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| AkiPasa #38              | SUPERSEDED / SKIP                | #40 merged official-location picker with drag pin/location label/directions                                                                                     | Closed with successor evidence                    |
+| AkiPasa #67              | SUPERSEDED / SKIP                | `ff7b95d` catches discovery failure at homepage; current map equivalent; `3a1f1b8` bounds SQL dedupe. Old helper fallback would hide explicit unavailable state | Closed; old fallback/index not ported             |
+| AkiPasa #98              | OBSOLETE / SKIP                  | Later user direction and merged #105–107 select Resend, support sender and canonical credential precedence                                                      | Closed; delivery transport preserved              |
+| AkiPasa #112             | SUPERSEDED layout / SKIP         | #113 merged Admin overlap/disclosure fixes                                                                                                                      | Closed; independent localization backlog retained |
+| AkiPasa #121 / #122      | SUPERSEDED implementation / SKIP | #123 merged media selector; accessibility/grid omissions transferred above                                                                                      | Closed; remaining findings retained in #138       |
+| AkiHQ #20                | SUPERSEDED / SKIP                | #23 merged after #21/#22 responsive PoS follow-ups                                                                                                              | Closed; physical/device acceptance retained       |
+| AkiPasa optional roadmap | DEFER / SKIP                     | Investor graphs, AI reports, partner API and Pals map/public commerce intentionally future scope                                                                | Do not convert roadmap into production emergency  |
 
 ## Release gates and current repair evidence
 
 No production DDL, Stripe write, billing activation or customer email replay is part of this mission. Safe code-only PRs may merge only with fresh checks and required reviews; changes to authorization/payment/data require their specific approval and acceptance gates.
 
-At this initial register checkpoint, docs-authority repair is locally committed and narrow checks pass. Claim layout, media modal, source-verification and tax documentation repairs are in progress. No new repair is claimed merged or deployed. Exact PRs and validation outcomes will be appended as they become available. GitHub source integration, connected build success, deployed source identity and authenticated acceptance are four distinct states.
+Recovery PRs: [#137](https://github.com/elguiriashing/akipasa/pull/137) documentation/register, [#138](https://github.com/elguiriashing/akipasa/pull/138) claim/media picker repair, [#141](https://github.com/elguiriashing/akipasa/pull/141) exact source verification and draft-only [#140](https://github.com/elguiriashing/akipasa/pull/140) webhook claim privileges. All are pending required CI/release conditions at this checkpoint; no new repair is claimed merged or deployed. Seven superseded/obsolete PRs were closed with individual evidence comments: AkiPasa #38/#67/#98/#112/#121/#122 and HQ #20. #127 has concurrent canonical-document edits, so duplicate publication was withheld. Exact PRs and validation outcomes will be appended as they become available. GitHub source integration, connected build success, deployed source identity and authenticated acceptance are four distinct states.
 
 ## Prioritized next actions (maximum 15)
 
-1. Health/security owner reviews exposed mutation privileges on PostGIS `spatial_ref_sys` and records compatible containment.
-2. Complete and review canonical #127 tax audit; keep paid checkout gated.
-3. Confirm approved tax registrations/legal invoice identity and tax-code suitability with accountant.
-4. Validate hosted Storage policy DDL permissions and production-schema migration compatibility in disposable environment.
-5. Run sandbox payment/lifecycle, tenant isolation and four-portal authenticated acceptance before paid activation.
-6. Repair claim search positioning and media modal scrolling/focus; run responsive regressions.
-7. Package exact commit stamp and verify production source on every host.
-8. Close verified superseded PRs with successor links and retained acceptance gaps.
-9. Reconcile #103 performance changes with current source and health-session findings.
-10. Implement dashboard login limiter under one security owner with fail-safe tests.
-11. Verify support gateway/mailbox routing and fresh QA notification delivery; do not replay historical mail blindly.
-12. Reconcile #72/#82 booking requirements; split shipped foundations from specialist engines.
-13. Complete legal, restore, Auth recovery-email, Android signing/device and printer acceptance with actual evidence.
+1. Review draft #140 and arrange explicitly authorized hosted webhook-claim privilege containment and signed-service acceptance.
+2. Health/security owner reviews exposed mutation privileges on PostGIS `spatial_ref_sys` and records compatible containment.
+3. Complete and review canonical #127 tax audit; keep paid checkout gated.
+4. Confirm approved tax registrations/legal invoice identity and tax-code suitability with accountant.
+5. Validate hosted Storage policy DDL permissions and production-schema migration compatibility in disposable environment.
+6. Run sandbox payment/lifecycle, tenant isolation and four-portal authenticated acceptance before paid activation.
+7. Repair claim search positioning and media modal scrolling/focus; run responsive regressions.
+8. Package exact commit stamp and verify production source on every host.
+9. Close verified superseded PRs with successor links and retained acceptance gaps.
+10. Reconcile #103 performance changes with current source and health-session findings.
+11. Implement dashboard login limiter under one security owner with fail-safe tests.
+12. Verify support gateway/mailbox routing and fresh QA notification delivery; do not replay historical mail blindly.
+13. Reconcile #72/#82 booking requirements; split shipped foundations from specialist engines.
+14. Complete legal, restore, Auth recovery-email, Android signing/device and printer acceptance with actual evidence.
 
 ## Evidence limits
 
