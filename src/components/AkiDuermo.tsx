@@ -110,6 +110,8 @@ export function AkiDuermo({
     } catch {}
   }, []);
   useEffect(() => {
+    // Saved stays and their filters use the device inventory, not discovery.
+    if (view === "saved") return;
     const abort = new AbortController();
     setLoading(true);
     setError("");
