@@ -511,7 +511,9 @@ async function interactions(page, route, locale) {
       .locator("form")
       .evaluate((form) => Object.fromEntries(new FormData(form)));
     expect(payload).toEqual({ locale, plan: "akihq_pro", interval: "year" });
-    for (const button of await catalogue.locator("article form button[type=submit]").all())
+    for (const button of await catalogue
+      .locator("article form button[type=submit]")
+      .all())
       await expect(button).toBeDisabled();
     expect(await page.evaluate(() => window.__accountActions)).toEqual([]);
   } else if (route === "bookings") {
