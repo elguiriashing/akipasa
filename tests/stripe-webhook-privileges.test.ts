@@ -7,6 +7,7 @@ const name = readdirSync("database/migrations").find((file) =>
 )!;
 const migration = readFileSync(`database/migrations/${name}`, "utf8");
 let db: PGlite;
+let retainedRows: unknown[];
 
 async function asRole(role: string, query: string) {
   await db.exec(`set role ${role}`);
@@ -31,6 +32,7 @@ beforeAll(async () => {
       error text, processed_at timestamptz
     );
     alter table public.stripe_webhook_events enable row level security;
+    grant select, insert, update, delete on public.stripe_webhook_events to anon, authenticated;
   `);
   const existing = readFileSync(
     "database/migrations/0082_free_venue_access_and_billing_repair.sql",
@@ -52,7 +54,11 @@ beforeAll(async () => {
       )
     ).rows,
   ).toEqual([{ claimed: true }]);
-  await db.exec("delete from public.stripe_webhook_events;");
+  retainedRows = (
+    await db.query(
+      "select * from public.stripe_webhook_events order by event_id",
+    )
+  ).rows;
   await db.exec(migration);
 }, 30000);
 
@@ -78,9 +84,38 @@ describe("service-only Stripe webhook deduplication", () => {
             "select count(*)::int as total from public.stripe_webhook_events",
           )
         ).rows,
-      ).toEqual([{ total: 0 }]);
+      ).toEqual([{ total: 1 }]);
     },
   );
+
+  it("retains existing ledger records and blocks direct public table writes", async () => {
+    expect(
+      (
+        await db.query(
+          "select * from public.stripe_webhook_events order by event_id",
+        )
+      ).rows,
+    ).toEqual(retainedRows);
+    for (const role of ["anon", "authenticated"]) {
+      await expect(
+        asRole(
+          role,
+          "insert into public.stripe_webhook_events(event_id,event_type) values('evt_direct','created')",
+        ),
+      ).rejects.toThrow(/row-level security/);
+      expect(
+        (await asRole(role, "select * from public.stripe_webhook_events")).rows,
+      ).toEqual([]);
+      await asRole(role, "delete from public.stripe_webhook_events");
+    }
+    expect(
+      (
+        await db.query(
+          "select * from public.stripe_webhook_events order by event_id",
+        )
+      ).rows,
+    ).toEqual(retainedRows);
+  });
 
   it("preserves signed service processing, retry and duplicate lifecycle", async () => {
     const claim = () =>
