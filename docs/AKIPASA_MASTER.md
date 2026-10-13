@@ -349,6 +349,12 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 - Central `resendSendingKey` now selects trimmed `RESEND_API_KEY` first with `CLAIM_RESEND_API_KEY` retained as legacy fallback; all claim decision, claim staff alert, booking, accommodation and suite outbox dispatchers share this selector. Both Worker cron and server actions use the same preference; no change to sender identity or delivery queue permissions.
 - Selection precedence alone cannot validate a production secret or confirm email delivery. Cloudflare must have a valid sending-enabled Resend key from the intended verified-domain account. Existing blocked outbox items are never automatically replayed. See `docs/CLAIM_EMAIL_403_RECOVERY.md`.
 
+## 2026-10-13 | Canonical Resend recovery instruction
+
+The claim-email recovery runbook inspects production `RESEND_API_KEY` first, matching `resendSendingKey` in `booking-mail-delivery.ts`. Only absent or blank primary keys use legacy `CLAIM_RESEND_API_KEY`; rotating that fallback cannot repair an invalid nonblank primary. No keys, runtime configuration, queue status or messages are changed. Existing key-precedence regression coverage remains authoritative; live credential repair and individually authorized requeues are operational dependencies, not accomplished by this documentation change.
+
+Canonical-key recovery validation: the existing `tests/claim-decision-email.test.ts` suite passed 10/10 cases on 2026-10-13, including trimmed primary-key selection, absent/blank-primary legacy fallback and dispatcher selection. The isolated command retained the existing timeout limits; no credentials or real messages were used. Required exact-head CI remains the merge gate.
+
 ### Sticky mobile workspace menu overlay (2026-10-11 candidate)
 
 - EN/ES Account, Staff, and Admin route layouts all mount the shared `WorkspaceShell`. Its mobile trigger was sticky but its drawer was explicitly styled as an in-flow block, leaving the expanded menu near the document's top after scrolling.
@@ -463,8 +469,8 @@ Live membership smoke verification found that the parent account layout replaced
 
 2026-10-13 AkiSuite membership width/overlap follow-up: The membership-only shell now uses available desktop/tablet viewport width up to a 1720px bound while keeping responsive gutters. Catalogue cards reflow across wider screens, and the Enterprise card brand/header badge can wrap without label collision. No subscription billing, entitlement, feature flag, migration or checkout change. Validate EN/ES membership layouts on mobile, tablet and desktop.
 
-## 2026-10-13 | Canonical Resend recovery instruction
+## 2026-10-13 | Recovered Stripe tax-audit follow-up (#127)
 
-The claim-email recovery runbook inspects production `RESEND_API_KEY` first, matching `resendSendingKey` in `booking-mail-delivery.ts`. Only absent or blank primary keys use legacy `CLAIM_RESEND_API_KEY`; rotating that fallback cannot repair an invalid nonblank primary. No keys, runtime configuration, queue status or messages are changed. Existing key-precedence regression coverage remains authoritative; live credential repair and individually authorized requeues are operational dependencies, not accomplished by this documentation change.
+Read-only live revalidation confirms the same approved account `acct_1SVLH2GfzDhsgsQZ` now displays AkiPasa Marketing S.L., all fourteen AkiSuite prices use inclusive tax behaviour, and all seven products have tax codes (AkiPasa Premium `txcd_10103000`, others `txcd_10103001`). Stripe Tax registrations remain absent. Technical classification and account display name do not establish legal identity or VAT approval. `docs/AKISUITE_PRICING_ROLLOUT.md` and the checked-in price audit must describe the same observed state; the obsolete unspecified-tax update instruction is removed.
 
-Canonical-key recovery validation: the existing `tests/claim-decision-email.test.ts` suite passed 10/10 cases on 2026-10-13, including trimmed primary-key selection, absent/blank-primary legacy fallback and dispatcher selection. The isolated command retained the existing timeout limits; no credentials or real messages were used. Required exact-head CI remains the merge gate.
+The linked Supabase project's read-only schema probe found neither `public.akisuite_billing_subscriptions` nor `akisuite_private.launch_settings`. The two new migrations, hosted Storage DDL compatibility, legal registration, isolated payment lifecycle acceptance and authenticated portal validation remain release blockers. No flags, prices, products, registrations, subscriptions, permissions, schema or production data changed. Historic release-test claims remain dated evidence, not new validation. Documentation rollback is a source revert.
