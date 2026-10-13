@@ -200,7 +200,7 @@ test("membership offer is reachable before sign in", async ({ page }) => {
     'section[aria-labelledby="akisuite-catalogue-title"]',
   );
   await expect(catalogue.locator("article")).toHaveCount(7);
-  await expect(catalogue.getByRole("button").first()).toBeDisabled();
+  await expect(catalogue.locator("article button[type=submit]").first()).toBeDisabled();
 });
 
 test("business intent survives account creation", async ({ page }) => {
