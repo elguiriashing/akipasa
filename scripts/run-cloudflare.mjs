@@ -1,5 +1,7 @@
 import { spawnSync } from "node:child_process";
+import { rmSync } from "node:fs";
 import path from "node:path";
+import { sourceCommit, stampReleaseSource } from "./release-source.mjs";
 
 const action = process.argv[2];
 if (action !== "build") {
@@ -16,6 +18,10 @@ const cli = path.join(
   "cli",
   "index.js",
 );
+const commit = sourceCommit();
+rmSync(path.join(process.cwd(), ".open-next/assets/release-source.json"), {
+  force: true,
+});
 const result = spawnSync(process.execPath, [cli, action], {
   stdio: "inherit",
   env: {
@@ -27,5 +33,13 @@ const result = spawnSync(process.execPath, [cli, action], {
 if (result.error) {
   console.error(result.error.message);
   process.exit(1);
+}
+if (result.status === 0) {
+  if (sourceCommit() !== commit) {
+    throw new Error(
+      "Source changed during release packaging; rebuild before deploy",
+    );
+  }
+  stampReleaseSource(commit);
 }
 process.exit(result.status ?? 1);

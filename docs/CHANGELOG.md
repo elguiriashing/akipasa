@@ -922,3 +922,9 @@ Completed the AkiDuermo room-night request candidate: explicit booking modes, re
 ## 2026-10-10
 
 - Fix AkiBusiness access for added venue/accommodation team members, including consumer editors and members of unverified properties, while retaining tenant role and Pro entitlement checks.
+
+## 2026-10-13 — Backlog recovery release verification
+
+- Release smoke now verifies the exact packaged source SHA across public portal hosts instead of accepting only an old feature marker.
+- Cloudflare packaging rejects uncommitted/untracked source and source changes during packaging.
+- Tablet CI runs recovered claim and media picker acceptance harnesses.
