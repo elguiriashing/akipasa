@@ -462,3 +462,13 @@ Live membership smoke verification found that the parent account layout replaced
 2026-10-13 membership presentation refinement (PR #129): Public AkiSuite pricing retains all seven plans and the existing checkout eligibility, amounts, intervals and entitlements. Compact two-column mobile cards and wider responsive desktop comparison reduce vertical card height; the billing-period switch and sector-specific AkiHQ tool exploration now follow the plan catalogue. Business categories only change displayed tools, never granted access. Billing/migration readiness flags remain unchanged. Validate responsive overflow, screen-reader disclosure state and locale-aware prices before production promotion.
 
 2026-10-13 AkiSuite membership width/overlap follow-up: The membership-only shell now uses available desktop/tablet viewport width up to a 1720px bound while keeping responsive gutters. Catalogue cards reflow across wider screens, and the Enterprise card brand/header badge can wrap without label collision. No subscription billing, entitlement, feature flag, migration or checkout change. Validate EN/ES membership layouts on mobile, tablet and desktop.
+
+## 2026-10-13 | Historical backlog documentation authority
+
+The README entry point now directs engineers to `AGENTS.md` and this contract.
+The July/August AI handoff, project status and TODO files carry explicit
+historical-snapshot notices linking current change evidence and the gated
+AkiSuite billing contract. Their historical content remains intact for backlog
+recovery; an unchecked task is not proof of a current omission, and an old
+acceptance checkbox is not proof of the present deployment. No application,
+workflow, database, entitlement or payment-activation behavior changes.

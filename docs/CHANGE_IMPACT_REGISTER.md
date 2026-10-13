@@ -688,3 +688,20 @@ Live membership smoke verification found that the parent account layout replaced
 2026-10-13 membership presentation refinement (PR #129): Public AkiSuite pricing retains all seven plans and the existing checkout eligibility, amounts, intervals and entitlements. Compact two-column mobile cards and wider responsive desktop comparison reduce vertical card height; the billing-period switch and sector-specific AkiHQ tool exploration now follow the plan catalogue. Business categories only change displayed tools, never granted access. Billing/migration readiness flags remain unchanged. Validate responsive overflow, screen-reader disclosure state and locale-aware prices before production promotion.
 
 2026-10-13 AkiSuite membership width/overlap follow-up: The membership-only shell now uses available desktop/tablet viewport width up to a 1720px bound while keeping responsive gutters. Catalogue cards reflow across wider screens, and the Enterprise card brand/header badge can wrap without label collision. No subscription billing, entitlement, feature flag, migration or checkout change. Validate EN/ES membership layouts on mobile, tablet and desktop.
+
+## 2026-10-13 | Recover current authority from historical handoff links
+
+- **Observed:** README instructed new sessions to start with the July handoff
+  and described August project status/July TODO as current. Those records
+  retain historical prices, pending migrations and inconsistent acceptance
+  boundaries, while the October master already identifies them as stale.
+- **Change:** point README to AGENTS/master and add prominent historical
+  notices to AI_HANDOFF, PROJECT_STATUS and TODO. Preserve their dated content
+  and link current impact/billing evidence instead of marking old tasks done.
+- **Scope:** documentation only, across all readers/portals. No runtime,
+  locales, roles, database, storage, analytics, CI or production settings
+  change. Rollback is a source revert with no customer-data impact.
+- **Validation:** review Markdown links against tracked files, preserve the
+  historical file bodies, check formatting and whitespace; CI remains
+  authoritative for required PR checks. No application or live workflow was
+  tested by this documentation change.

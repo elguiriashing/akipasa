@@ -29,11 +29,16 @@ Supabase-hosted database URLs are rejected before a connection is opened.
 Seeding replaces only stable AkiPasa local-test IDs in a transaction; reset
 removes only the exact test venue, event and occurrences owned by the seed.
 
-Start a new engineering or AI session with `docs/AI_HANDOFF.md`. Current work
-state is in `docs/PROJECT_STATUS.md`, prioritized work is in `docs/TODO.md`,
-and milestone history is in `docs/CHANGELOG.md`. Operational release, rollback,
-and recovery steps are in `docs/RUNBOOK.md`; acceptance evidence is tracked in
-`docs/ACCEPTANCE.md`.
+Start a new engineering or AI session with `AGENTS.md` and the current
+`docs/AKIPASA_MASTER.md` contract. Trace changes through
+`docs/CHANGE_IMPACT_REGISTER.md` and verify current source, PR checks and
+deployment evidence before treating work as complete. The dated
+`docs/AI_HANDOFF.md`, `docs/PROJECT_STATUS.md` and `docs/TODO.md` snapshots retain
+historical context; their old prices, migration status and acceptance claims
+are not current release authority. Billing gates live in
+`docs/AKISUITE_PRICING_ROLLOUT.md`. Operational release, rollback and recovery
+steps are in `docs/RUNBOOK.md`; milestone history and acceptance records remain
+in `docs/CHANGELOG.md` and `docs/ACCEPTANCE.md`.
 
 The production-safe, rollback-only database integration suite is
 `database/tests/acceptance.sql`. Run it from the Supabase SQL editor after
