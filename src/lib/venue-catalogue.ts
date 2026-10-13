@@ -419,7 +419,9 @@ export function blankCatalogueItem(): CatalogueItem {
     name: { es: "Nuevo elemento", en: "New item" },
     description: { es: "", en: "" },
     kind: "product",
-    visible: true,
+    // The existing editor toggle explicitly opts finished items into publication.
+    // Keep starter labels saveable without leaking them when other edits publish.
+    visible: false,
     mediaId: null,
     containsFood: false,
     availability: "available",

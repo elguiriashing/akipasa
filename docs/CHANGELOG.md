@@ -918,3 +918,5 @@ Completed the AkiDuermo room-night request candidate: explicit booking modes, re
 ## 2026-10-10
 
 - Fix AkiBusiness access for added venue/accommodation team members, including consumer editors and members of unverified properties, while retaining tenant role and Pro entitlement checks.
+
+- Keep new catalogue starter items hidden until editors explicitly enable public visibility, preserving immediate draft saves.
