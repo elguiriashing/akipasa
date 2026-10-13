@@ -21,3 +21,5 @@ Before accepting a release, inspect `/es` and `/en` for CityDiscovery, check the
 membership packages and venue dashboard, confirm the achievement route is
 admin-only, and verify sitemap XML. A Cloudflare rollback changes live traffic;
 it does not update GitHub source.
+
+The Cloudflare build now requires clean tracked source and stamps its full Git HEAD in the generated release asset. Commit changes before packaging. The booking live smoke compares `sourceCommit` from `/api/bookings/release` with the triggering commit on all four public hostnames; feature markers do not prove latest deployment. Missing evidence fails readiness rather than inventing a commit.
