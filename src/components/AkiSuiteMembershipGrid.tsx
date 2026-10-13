@@ -161,7 +161,10 @@ function PlanBrandLogos({ plan }: { plan: AkiSuitePlan }) {
               ? ["akiduermo"]
               : ["akihq"];
   return (
-    <span className={styles.brandLogos} aria-label={apps.map((app) => brandLogos[app].name).join(" + ")}>
+    <span
+      className={styles.brandLogos}
+      aria-label={apps.map((app) => brandLogos[app].name).join(" + ")}
+    >
       {apps.map((app) => (
         <Image
           key={app}
@@ -390,17 +393,17 @@ export function AkiSuiteMembershipGrid({
               <div className={styles.cardHeader}>
                 <div className={styles.brandIdentity}>
                   <PlanBrandLogos plan={key} />
-                <span className={styles.eyebrow}>
-                  {app === "akisuite"
-                    ? "AkiSuite"
-                    : app === "akihq"
-                      ? "AkiHQ"
-                      : app === "akibusiness"
-                        ? "AkiBusiness"
-                        : app === "akiduermo"
-                          ? "AkiDuermo"
-                          : "AkiPasa"}
-                </span>
+                  <span className={styles.eyebrow}>
+                    {app === "akisuite"
+                      ? "AkiSuite"
+                      : app === "akihq"
+                        ? "AkiHQ"
+                        : app === "akibusiness"
+                          ? "AkiBusiness"
+                          : app === "akiduermo"
+                            ? "AkiDuermo"
+                            : "AkiPasa"}
+                  </span>
                 </div>
                 {featured && (
                   <span className={styles.pill}>
