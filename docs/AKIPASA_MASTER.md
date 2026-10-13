@@ -3,6 +3,12 @@
 > Entry point for every human or AI modifying AkiPasa. Established 2026-10-09. **Living engineering contract, not a claim that every production behavior is verified.**
 > Source priority: running code + database schema + production evidence > current tests > these docs > historical handoff notes > chat discussions. If they disagree, investigate; never silently choose the older description.
 
+## 2026-10-13 | Responsive AkiSuite membership catalogue and AkiHQ sectors
+
+The shared seven-plan membership catalogue keeps every plan visible regardless of payment activation. It uses the original AkiPasa, AkiBusiness, AkiDuermo and AkiHQ icons; Enterprise shows all four and the conditional AkiHQ Pro business add-on shows the paired business/HQ marks. The legacy business-sector taxonomy from `src/lib/business-packages.ts` powers an informational Standard/Pro tool comparison, not separate checkout packages or sector-specific entitlements. Plans remain VAT-inclusive and checkout remains gated.
+
+Desktop cards use four columns, tablet two, and narrow mobile a single column with accessible, expandable benefit panels to reduce initial scrolling. The selector, recurring prices, plan inheritance, current-access indicators, server-side authorization and Stripe overlap guards must remain intact. EN/ES, light/dark, touch targets and responsive browser acceptance are release requirements. This change does not update billing, tax registration, database schema, grants or storage.
+
 ## Mandatory change protocol
 
 Database application revision conflicts use SQLSTATE `PT409` (HTTP 409), never

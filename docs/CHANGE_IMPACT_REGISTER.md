@@ -1,5 +1,13 @@
 # Change Impact Register
 
+## 2026-10-13 | Compact memberships with official app brands and sector tools
+
+- **Request:** Reduce excessive desktop/tablet/mobile scrolling and wasted horizontal space; restore the useful sector selector and make packages identifiable by original app marks.
+- **Change:** Shared seven-plan catalogue uses a four/two/one-column responsive grid, compact collapsed mobile details, original PWA/brand icons for each product, paired HQ/Business add-on icons and four-icon Enterprise grouping. The six existing business categories highlight tools from the existing `business-packages.ts` Standard/Pro allowlist, with the complete tool list available by disclosure.
+- **Dependencies:** `AkiSuiteMembershipGrid.tsx`, module CSS, `business-packages.ts`, existing public logo assets, shared account/public membership entry points, EN/ES and light/dark display.
+- **Security and billing:** No checkout enablement, new plans, grants, workspace authorization, Stripe price or database modifications. Business sectors only change marketing previews, never entitlement checks.
+- **Regression:** Membership source tests and rendered subscription test updated to expect the six-option business selector; require format, lint, TypeScript, full checks, Cloudflare packaging and responsive account/public and tablet browser acceptance before merging.
+
 ## 2026-10-12 | Venue profile media picker usability
 
 - **Request:** Replace the increasingly narrow five-slot image strips with the existing event-style gallery selector in AkiBusiness Profile.
