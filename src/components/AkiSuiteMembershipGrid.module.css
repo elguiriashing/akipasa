@@ -362,7 +362,7 @@
 .toolDisclosure summary {
   cursor: pointer;
   font-size: 0.8rem;
-  min-height: 32px;
+  min-height: 44px;
 }
 .toolChips {
   display: flex;
