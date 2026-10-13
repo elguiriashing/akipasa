@@ -48,6 +48,9 @@ describe("AkiSuite localized membership catalogue", () => {
     expect(grid).toContain('plan === "aki_enterprise"');
     expect(grid).toContain('plan === "akihq_business_addon"');
     expect(grid).toContain("<PlanBrandLogos plan={key} />");
+    expect(grid.indexOf("<PlanBrandLogos plan={key} />")).toBeLessThan(
+      grid.indexOf("className={styles.mobileExpand}"),
+    );
   });
 
   it("renders the full catalogue regardless of checkout activation", () => {
