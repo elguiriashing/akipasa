@@ -387,6 +387,7 @@ describe("Account control disclosure preserves existing workflows", () => {
       interval: "year",
     });
     expect(within(card).getByRole("button", { name: "Coming soon" })).toBeDisabled();
+    expect(within(card).getByRole("button", { name: "View benefits and access" })).toBeEnabled();
     expect(manage).not.toBe(checkout);
     expect(Object.fromEntries(new FormData(manage))).toEqual({ locale: "en" });
     fireEvent.submit(manage);
