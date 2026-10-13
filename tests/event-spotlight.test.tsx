@@ -348,6 +348,7 @@ describe("Aki Spotlight event detail", () => {
   it("passes only currently published linked sections, with original allergen data, to the menu", async () => {
     const menu = blankCatalogue("en");
     const item = blankCatalogueItem();
+    item.visible = true;
     item.name = { es: "Tarta", en: "Cake" };
     item.mediaId = "visible-item-media";
     item.allergens.states.milk = "contains";
@@ -358,6 +359,7 @@ describe("Aki Spotlight event detail", () => {
     };
     const unlinkedItem = {
       ...blankCatalogueItem(),
+      visible: true,
       mediaId: "unlinked-item-media",
     };
     menu.sections = [
