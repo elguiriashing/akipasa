@@ -928,3 +928,8 @@ Completed the AkiDuermo room-night request candidate: explicit booking modes, re
 - Release smoke now verifies the exact packaged source SHA across public portal hosts instead of accepting only an old feature marker.
 - Cloudflare packaging rejects uncommitted/untracked source and source changes during packaging.
 - Tablet CI runs recovered claim and media picker acceptance harnesses.
+
+## 2026-10-13 — Health privacy first-visit repair (candidate)
+
+- Add localized Close and Escape to the shared privacy panel, with focus restoration and no implied consent decision. Unsaved choices stay drafts; existing consent and motion state are unchanged by dismissal.
+- Exercise actual anonymous initial-panel state before normal AkiDuermo discovery/map interactions. Current-head browser and production acceptance remain pending.
