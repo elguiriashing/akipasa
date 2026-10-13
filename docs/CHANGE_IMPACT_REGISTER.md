@@ -688,3 +688,35 @@ Live membership smoke verification found that the parent account layout replaced
 2026-10-13 membership presentation refinement (PR #129): Public AkiSuite pricing retains all seven plans and the existing checkout eligibility, amounts, intervals and entitlements. Compact two-column mobile cards and wider responsive desktop comparison reduce vertical card height; the billing-period switch and sector-specific AkiHQ tool exploration now follow the plan catalogue. Business categories only change displayed tools, never granted access. Billing/migration readiness flags remain unchanged. Validate responsive overflow, screen-reader disclosure state and locale-aware prices before production promotion.
 
 2026-10-13 AkiSuite membership width/overlap follow-up: The membership-only shell now uses available desktop/tablet viewport width up to a 1720px bound while keeping responsive gutters. Catalogue cards reflow across wider screens, and the Enterprise card brand/header badge can wrap without label collision. No subscription billing, entitlement, feature flag, migration or checkout change. Validate EN/ES membership layouts on mobile, tablet and desktop.
+
+## 2026-10-13 | Recover unfinished PR #97 claim-search layout
+
+- Before: current master still positions `.claim-search-results` absolutely at
+  `top: 7.8rem`, while the picker includes wrapping heading and vertical buttons.
+  PR #97 is open, conflicts with current master and has a review requesting
+  responsive empty/populated browser regression evidence.
+- After: results participate in normal flow below the input, retain bounded
+  scrolling and use border-box sizing. Existing search RPC, selection/clear,
+  hidden venue ID, map and submission behavior remain unchanged.
+- Dependencies: real `ClaimVenuePicker`, shared global/portal/theme CSS, EN/ES,
+  phone/tablet/desktop and short windows. No production data, eligibility,
+  migration, role, payment, email, media, analytics or map-provider change.
+- Coverage: real-component browser harness uses disposable 24-row/empty search
+  responses and verifies input hit testing, forced heading wrapping, result
+  bounds/scrolling, map panel dimensions and selection/clear in 24 combinations.
+  No map initialization occurs with the deliberate empty style URL; do not treat
+  geometry checks as authenticated/live map acceptance. Tablet CI runs the
+  harness and preserves screenshots in its existing always-uploaded artifact.
+- Local: 11 claim-details/team-access tests pass; harness bundles/styles compile;
+  Prettier and ESLint pass. Browser launch is blocked by missing Chromium;
+  install returned truncated archive errors. Actual CI/browser screenshots and
+  live release remain pending, not passed. Full repository checks remain pending.
+- Rollback: revert this code/test-only change; no data or schema restoration.
+
+## 2026-10-13 | Recover unresolved venue picker and email runbook reviews
+
+- Evidence: merged #123 review identified a gallery/footer clipped by a three-row modal after adding search. Current master also adds optional folders as another child. #121/#122 keyboard/name comments remain valid in #123; #107 runbook still tells operators to rotate the ignored fallback key.
+- Paths: VenueMediaStudio, strictly scoped .venue-media-picker CSS, interaction tests registered in vitest.akiduermo.config.ts, venue-dashboard source assertion, CLAIM_EMAIL_403_RECOVERY runbook.
+- Matrix: AkiBusiness EN/ES venue/accommodation editors, phone/tablet/desktop, short windows, empty/full search, folder filters, keyboard focus and existing image assignment. Event editor modal CSS is unchanged. Placement server authorization, Storage/RLS, private bin, uploads/deletion, signed URLs, headers and Premium flags are preserved. No schema, live data, email send, external credentials, analytics, consent or billing changes.
+- Validation: Picker interaction regressions pass 4/4 (EN/ES focus-entry, bidirectional Tab containment, Escape/restoration, empty/folder filtering and exact placement mutation payload). Existing upload/header tests pass 3/3 and dashboard suite passes 33/33. Focused ESLint, JavaScript syntax and diff whitespace checks pass. TypeScript and integrated checks are recorded separately when completed. Local browser binary absent; no browser or authenticated live acceptance claimed.
+- Rollback: revert client/CSS/tests/docs; no stored records or assignments require restoration. Recovery steps now name RESEND_API_KEY first and use legacy CLAIM_RESEND_API_KEY only when primary is absent/blank. No blocked mail is replayed.

@@ -462,3 +462,22 @@ Live membership smoke verification found that the parent account layout replaced
 2026-10-13 membership presentation refinement (PR #129): Public AkiSuite pricing retains all seven plans and the existing checkout eligibility, amounts, intervals and entitlements. Compact two-column mobile cards and wider responsive desktop comparison reduce vertical card height; the billing-period switch and sector-specific AkiHQ tool exploration now follow the plan catalogue. Business categories only change displayed tools, never granted access. Billing/migration readiness flags remain unchanged. Validate responsive overflow, screen-reader disclosure state and locale-aware prices before production promotion.
 
 2026-10-13 AkiSuite membership width/overlap follow-up: The membership-only shell now uses available desktop/tablet viewport width up to a 1720px bound while keeping responsive gutters. Catalogue cards reflow across wider screens, and the Enterprise card brand/header badge can wrap without label collision. No subscription billing, entitlement, feature flag, migration or checkout change. Validate EN/ES membership layouts on mobile, tablet and desktop.
+
+## 2026-10-13 historical claim-search recovery (PR #97)
+
+Claim search results remain in normal flow below the real search input rather
+than using a fixed absolute top offset. Wrapped EN/ES headings and business-type
+buttons must not cover the field. Bounded result scrolling, venue selection,
+hidden venue ID and clear-selection behavior are preserved. No claim eligibility,
+API, RLS, email, subscription or database behavior changes. Tablet CI runs
+`scripts/test-claim-picker-browser.mjs` with the real picker, current styles and
+disposable search records across six widths, both locales and both themes.
+This is geometry/interaction acceptance: an empty style URL deliberately omits
+the live map initializer, so it does not prove tiles, production authentication,
+or database permission behavior. Browser acceptance and screenshot inspection
+must pass before release; local launch was blocked by missing Chromium and a
+truncated browser download, not counted as passing.
+
+### Historical venue media picker review recovery (2026-10-13)
+
+The merged PR #123 picker keeps its search and optional folder controls together in a separate automatic grid row, with a bounded scrollable gallery and a visible footer. Empty search feedback belongs inside the gallery row. The modal focuses search on opening, contains Tab/Shift+Tab, closes on Escape and restores its slot-specific trigger. Existing signed media, placement mutations, Auto fallback, premium gates and accommodation header remain unchanged. Regression tests run in the existing AkiDuermo Vitest group; browser/production evidence remains separately required. The Resend recovery runbook now instructs operators to inspect canonical RESEND_API_KEY first, matching the selected key rather than rotating an ignored fallback.
