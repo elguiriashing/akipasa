@@ -47,7 +47,7 @@ it.each(["en", "es"] as const)(
       </>,
     );
     const name = es ? "Opciones de privacidad" : "Privacy choices";
-    const trigger = screen.getByRole("button", { name, exact: true });
+    const trigger = screen.getByRole("button", { name });
     const panel = await screen.findByRole("complementary", { name });
     expect(trigger).toHaveAttribute("aria-expanded", "true");
     expect(trigger).toHaveAttribute("aria-controls", panel.id);
