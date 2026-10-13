@@ -19,9 +19,8 @@ describe("real AkiSuite catalogue interactions", () => {
       expect(screen.getAllByRole("article")[0].textContent).toContain(
         "Aki Enterprise",
       );
-      for (const button of document.querySelectorAll(
-        "article form button[type=submit]",
-      ))
+      const checkoutButtons = document.querySelectorAll("article form button");
+      for (const button of checkoutButtons)
         expect((button as HTMLButtonElement).disabled).toBe(true);
       fireEvent.click(screen.getAllByRole("radio")[1]);
       expect(document.getElementById("aki_enterprise")?.textContent).toContain(
@@ -43,12 +42,10 @@ describe("real AkiSuite catalogue interactions", () => {
       />,
     );
     expect(screen.getAllByText("Plan included")).toHaveLength(6);
-    expect(
-      (document.querySelector(
-        "#akipasa_premium form button[type=submit]",
-      ) as HTMLButtonElement)
-        .disabled,
-    ).toBe(true);
+    const personalCheckout = document.querySelector<HTMLButtonElement>(
+      "#akipasa_premium form button",
+    );
+    expect(personalCheckout?.disabled).toBe(true);
   });
   it("distinguishes staff access and excludes future grants and delinquent subscriptions", () => {
     const now = Date.parse("2026-10-12T12:00:00Z");
