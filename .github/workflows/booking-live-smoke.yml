@@ -1,5 +1,10 @@
 name: Booking live release smoke
 on:
+  pull_request:
+    branches: [master]
+    paths:
+      - ".github/workflows/booking-live-smoke.yml"
+      - "scripts/test-booking-live-evidence.py"
   push:
     branches: [master]
     paths:
@@ -7,24 +12,32 @@ on:
       - "custom-worker.ts"
       - "wrangler.jsonc"
       - ".github/workflows/booking-live-smoke.yml"
+      - "scripts/test-booking-live-evidence.py"
   workflow_dispatch:
 permissions:
   contents: read
 concurrency:
-  group: booking-live-release-smoke
+  group: booking-live-release-smoke-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 jobs:
+  evidence-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python scripts/test-booking-live-evidence.py
   live-read-only:
+    if: github.event_name != 'pull_request'
+    needs: evidence-contract
     runs-on: ubuntu-latest
     timeout-minutes: 18
     steps:
-      - name: Wait for connected deployment and inspect public routes
+      - name: Inspect live booking feature marker and public routes
         run: |
           python - <<'PY'
           import json,time,urllib.request,urllib.error,urllib.parse
           from pathlib import Path
           expected='2026-10-09-booking-ux-r1'
-          evidence={'source_commit':'${{ github.sha }}','application_release_commit':'ce9f74c2ef9bb936dc3573e27252ccd3885a0405','checks':[],'authenticated_production_test':'not performed; no browser session or credentials'}
+          evidence={'requested_source_commit':'${{ github.sha }}','deployed_source_commit':None,'deployment_source_verified':False,'deployment_source_limitation':'The static booking marker cannot identify the deployed source commit.','checks':[],'authenticated_production_test':'not performed; no browser session or credentials'}
           def get(url):
               req=urllib.request.Request(url,headers={'User-Agent':'AkiPasa-release-smoke/1.0','Cache-Control':'no-cache'})
               try:
@@ -48,7 +61,7 @@ jobs:
               if all(x['http_status']==200 and x['release']==expected for x in sample):
                   evidence['checks']+=sample; ready=True; break
               time.sleep(30)
-          evidence['edge_release_verified']=ready
+          evidence['feature_release_verified']=ready
           urls=['https://akipasa.com/en','https://akipasa.com/es','https://www.akipasa.com/en','https://akipasa.com/en/venues/beasty-bites-004b87','https://akipasa.com/es/venues/beasty-bites-004b87','https://akipasa.com/en/account/bookings','https://akipasa.com/es/account/bookings','https://akipasa.com/en/venues/beasty-bites-004b87/book','https://akipasa.com/es/venues/beasty-bites-004b87/book','https://business.akipasa.com/en/auth']
           for url in urls:
               code,final,body=get(url)
@@ -59,7 +72,7 @@ jobs:
           Path('booking-live-evidence.json').write_text(json.dumps(evidence,indent=2))
           print(json.dumps(evidence,indent=2))
           if not ready or any(x.get('healthy') is False for x in evidence['checks']):
-              raise SystemExit('Live release or public-route verification incomplete. Do not claim production acceptance.')
+              raise SystemExit('Live booking feature or public-route verification incomplete. Source deployment and authenticated acceptance remain unverified.')
           PY
       - uses: actions/upload-artifact@v4
         if: always()
