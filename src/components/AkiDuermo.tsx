@@ -60,6 +60,9 @@ export function AkiDuermo({
     const url = new URL(window.location.href);
     url.searchParams.set("lang", next);
     window.history.replaceState(window.history.state, "", url);
+    window.dispatchEvent(
+      new CustomEvent("akipasa:locale-change", { detail: next }),
+    );
   }
   useEffect(() => {
     document.title =

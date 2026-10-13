@@ -353,6 +353,9 @@
   display: none;
 }
 @media (max-width: 800px) {
+  :global(body[data-product="akiduermo"]):has(.mobileBar) {
+    --stay-privacy-dock-offset: 176px;
+  }
   .page {
     padding: 22px 16px 110px;
   }
