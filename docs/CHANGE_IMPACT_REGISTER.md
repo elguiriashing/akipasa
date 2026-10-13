@@ -1,5 +1,13 @@
 # Change Impact Register
 
+## 2026-10-13 | Recovered claim-picker overlap from PR #97
+
+- Before: `.claim-search-results` used absolute `top: 7.8rem`; additional business-type controls and wrapped headings can place results over the search input. Current master retained the defect despite later claim form releases.
+- After: results follow the actual input in normal flex flow, with the existing bounded scrolling and selection/clear behavior preserved. Applies to EN/ES, activity and accommodation searches, both themes and phone/tablet/desktop.
+- Dependency trace: `ClaimVenuePicker` -> existing `/api/business/claim-search` and `/api/business/claim-map` -> authorised claim submission. Only results geometry changes; no component/API/RPC/role/SQL/storage/email/billing/analytics/consent changes. Map network and selection semantics are unchanged.
+- Regression: real-component browser harness uses disposable search responses, verifies wrapped headings, populated/empty results, input/result/map geometry, list scrolling and selection/clear at six widths in both locales/themes. Map rendering and authenticated production claiming are not covered. Added to existing tablet CI, which retains all its previous steps and artifact upload.
+- Validation: pending execution; no merge or deployment claimed. Rollback: revert results CSS and harness/workflow addition, with no data migration.
+
 ## 2026-10-13 | Compact memberships with official app brands and sector tools
 
 - **Request:** Reduce excessive desktop/tablet/mobile scrolling and wasted horizontal space; restore the useful sector selector and make packages identifiable by original app marks.
@@ -689,9 +697,46 @@ Live membership smoke verification found that the parent account layout replaced
 
 2026-10-13 AkiSuite membership width/overlap follow-up: The membership-only shell now uses available desktop/tablet viewport width up to a 1720px bound while keeping responsive gutters. Catalogue cards reflow across wider screens, and the Enterprise card brand/header badge can wrap without label collision. No subscription billing, entitlement, feature flag, migration or checkout change. Validate EN/ES membership layouts on mobile, tablet and desktop.
 
+## 2026-10-13 | Recovered Stripe tax-audit follow-up (#127)
+
+Read-only live revalidation confirms the same approved account `acct_1SVLH2GfzDhsgsQZ` now displays AkiPasa Marketing S.L., all fourteen AkiSuite prices use inclusive tax behaviour, and all seven products have tax codes (AkiPasa Premium `txcd_10103000`, others `txcd_10103001`). Stripe Tax registrations remain absent. Technical classification and account display name do not establish legal identity or VAT approval. `docs/AKISUITE_PRICING_ROLLOUT.md` and the checked-in price audit must describe the same observed state; the obsolete unspecified-tax update instruction is removed.
+
+The linked Supabase project's read-only schema probe found neither `public.akisuite_billing_subscriptions` nor `akisuite_private.launch_settings`. The two new migrations, hosted Storage DDL compatibility, legal registration, isolated payment lifecycle acceptance and authenticated portal validation remain release blockers. No flags, prices, products, registrations, subscriptions, permissions, schema or production data changed. Historic release-test claims remain dated evidence, not new validation. Documentation rollback is a source revert.
+
 ## 2026-10-13 | Exact source deployment verification
 
 - Before: Booking live smoke accepted the constant October 9 feature marker and reported a hardcoded historical application commit, allowing success before the triggering source deployed.
 - Change: successful clean-Git Cloudflare packaging writes an ignored asset source stamp. Existing read-only Worker release JSON resolves only the internal ASSETS binding and reports validated full source SHA or null. Smoke polls four public hostnames for the triggering GitHub SHA and original booking marker.
 - Dependencies: `scripts/run-cloudflare.mjs`, source-stamp utility, Worker endpoint, ASSETS and booking-live workflow. No customer state, migration, billing/tax flags, auth, locale/theme/UI, email or external credentials change. Revert code/assets to roll back.
 - Validation: targeted tests exercise clean/dirty Git, invalid stamp, exact current-host asset reads, legacy/missing/error responses. Full checks, packaging and connected production evidence remain required; none is implied by this entry.
+
+- Review follow-up: remove the master-push path filter so every connected deployment, including dependencies/assets/config changes, receives exact-source verification.
+
+### 2026-10-13 | Recovered venue media picker review defects
+
+Unmerged PRs #121/#122 contained review findings still present after #123: search/folder controls consumed the gallery scroll row, and the modal lacked keyboard focus containment, Escape dismissal, restoration and slot-specific trigger names. VenueMediaStudio now groups controls into one intrinsic row and empty/results into the scroll row, with dedicated CSS preserving the event editor modal. EN/ES triggers identify the image surface; opening resets filters, focuses search, traps keyboard/programmatic focus and closing restores the opener. Existing upload/placement/Auto actions, permission checks, media inventory, accommodation header, event editor, billing and SQL remain unchanged. Rollback is code-only. Component regression tests exercise actual focus wrapping, Escape/close restoration, filter reset and variable-content DOM rows in both locales. Full check, responsive browser/Cloudflare CI and authenticated live owner acceptance remain required before deployment; no live storage/data mutation or deployment is claimed.
+
+## 2026-10-13 | Recovered picker browser gates
+
+Tablet CI now runs `test-claim-picker-browser.mjs` and `test-venue-media-picker-browser.mjs`. These exercise real components/CSS with disposable actions; no production records are changed. Local browser downloads failed; actual browser execution remains a CI release gate.
+
+## 2026-10-13 | Recover current authority from historical handoff links
+
+- **Observed:** README instructed new sessions to start with the July handoff
+  and described August project status/July TODO as current. Those records
+  retain historical prices, pending migrations and inconsistent acceptance
+  boundaries, while the October master already identifies them as stale.
+- **Change:** point README to AGENTS/master and add prominent historical
+  notices to AI_HANDOFF, PROJECT_STATUS and TODO. Preserve their dated content
+  and link current impact/billing evidence instead of marking old tasks done.
+- **Scope:** documentation only, across all readers/portals. No runtime,
+  locales, roles, database, storage, analytics, CI or production settings
+  change. Rollback is a source revert with no customer-data impact.
+- **Validation:** review Markdown links against tracked files, preserve the
+  historical file bodies, check formatting and whitespace; CI remains
+  authoritative for required PR checks. No application or live workflow was
+  tested by this documentation change.
+
+### 2026-10-13 | Venue picker short-window visual acceptance repair
+
+Actual CI screenshot review of PR #138 at 640×400 caught gallery cards collapsing into thin, unreadable strips even though modal/footer geometry checks passed. Dedicated venue-picker gallery rows now retain a nine-rem minimum and scroll instead of compressing; short-window controls share one row and the footer stays horizontal to reserve a readable first card. Shared event-picker geometry and existing placement/Auto actions remain unchanged. Browser acceptance now requires actual thumbnail and label dimensions, the first label inside the gallery, overflowing short-window results, scrolling to the last selectable thumbnail and successful selection/focus restoration with disposable actions. This repairs a visual acceptance failure; required browser CI and screenshot reinspection remain pending on the amended head. No production data, permissions, SQL or billing changes.

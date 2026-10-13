@@ -44,3 +44,12 @@ test("stamp records the clean checkout and rejects dirty or invalid identity", (
     rmSync(directory, { recursive: true, force: true });
   }
 });
+
+test("every master deployment receives exact-source verification", () => {
+  const workflow = readFileSync(
+    new URL("../.github/workflows/booking-live-smoke.yml", import.meta.url),
+    "utf8",
+  );
+  assert.match(workflow, /push:\s*\n\s*branches:\s*\[master\]/);
+  assert.doesNotMatch(workflow, /^\s+paths(?:-ignore)?:/m);
+});

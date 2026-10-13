@@ -2,13 +2,6 @@ name: Booking live release smoke
 on:
   push:
     branches: [master]
-    paths:
-      - "src/**"
-      - "custom-worker.ts"
-      - "wrangler.jsonc"
-      - ".github/workflows/booking-live-smoke.yml"
-      - "scripts/run-cloudflare.mjs"
-      - "scripts/release-source.mjs"
   workflow_dispatch:
 permissions:
   contents: read

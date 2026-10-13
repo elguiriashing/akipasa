@@ -1,5 +1,14 @@
 # AI Handoff
 
+> **Historical snapshot — review notice added 2026-10-13.** The dated record
+> below is preserved as historical evidence, not current release or pricing
+> authority. Start with [AGENTS.md](../AGENTS.md) and the
+> [master system contract](./AKIPASA_MASTER.md), then check the current source,
+> [change-impact register](./CHANGE_IMPACT_REGISTER.md), PR checks and deployment
+> evidence. For billing, use the [AkiSuite rollout contract](./AKISUITE_PRICING_ROLLOUT.md);
+> old prices, migration checkboxes and acceptance claims below do not authorize
+> checkout activation, production DDL or a repeat implementation.
+
 Last updated: 2026-07-28 15:28 +02:00.
 
 ## Project purpose
