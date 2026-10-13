@@ -717,3 +717,45 @@
     font-size: 1rem;
   }
 }
+
+
+/* Wide-screen catalogue and Enterprise label collision repair. */
+.cardHeader {
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.brandIdentity {
+  flex: 1 1 auto;
+  min-width: min(100%, 12rem);
+  flex-wrap: wrap;
+}
+.cardHeader .pill {
+  flex: 0 0 auto;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: normal;
+  line-height: 1.25;
+}
+.featured .cardHeader {
+  gap: .75rem 1.2rem;
+  justify-content: flex-start;
+}
+@media (min-width: 1350px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .9rem;
+  }
+  .featured {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .card { padding: 1.1rem 1.2rem; }
+}
+@media (min-width: 1700px) {
+  .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .featured { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+@media (max-width: 700px) {
+  .brandIdentity { min-width: 0; }
+  .featured .cardHeader { align-items:center; }
+  .cardHeader .pill { font-size:.63rem; }
+}
