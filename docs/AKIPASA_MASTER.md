@@ -349,6 +349,12 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 - Central `resendSendingKey` now selects trimmed `RESEND_API_KEY` first with `CLAIM_RESEND_API_KEY` retained as legacy fallback; all claim decision, claim staff alert, booking, accommodation and suite outbox dispatchers share this selector. Both Worker cron and server actions use the same preference; no change to sender identity or delivery queue permissions.
 - Selection precedence alone cannot validate a production secret or confirm email delivery. Cloudflare must have a valid sending-enabled Resend key from the intended verified-domain account. Existing blocked outbox items are never automatically replayed. See `docs/CLAIM_EMAIL_403_RECOVERY.md`.
 
+## 2026-10-13 | Canonical Resend recovery instruction
+
+The claim-email recovery runbook inspects production `RESEND_API_KEY` first, matching `resendSendingKey` in `booking-mail-delivery.ts`. Only absent or blank primary keys use legacy `CLAIM_RESEND_API_KEY`; rotating that fallback cannot repair an invalid nonblank primary. No keys, runtime configuration, queue status or messages are changed. Existing key-precedence regression coverage remains authoritative; live credential repair and individually authorized requeues are operational dependencies, not accomplished by this documentation change.
+
+Canonical-key recovery validation: the existing `tests/claim-decision-email.test.ts` suite passed 10/10 cases on 2026-10-13, including trimmed primary-key selection, absent/blank-primary legacy fallback and dispatcher selection. The isolated command retained the existing timeout limits; no credentials or real messages were used. Required exact-head CI remains the merge gate.
+
 ### Sticky mobile workspace menu overlay (2026-10-11 candidate)
 
 - EN/ES Account, Staff, and Admin route layouts all mount the shared `WorkspaceShell`. Its mobile trigger was sticky but its drawer was explicitly styled as an in-flow block, leaving the expanded menu near the document's top after scrolling.
