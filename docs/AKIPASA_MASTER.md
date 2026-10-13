@@ -429,6 +429,10 @@ The canonical media asset store is `venue_media`, scoped by `venue_id`, with pub
 - Production read-only evidence: on October 12 multiple `save_venue_catalogue` calls returned HTTP 400; Postgres logs included `Invalid item`; live RPCs existed and revision-conflict SQL used `PT409`. This does not prove every unsuccessful save had the same root cause.
 - Verification pending: full `npm run check`, authenticated end-to-end edit flows and deployment smoke. Not live until confirmed CI and merge.
 
+### Catalogue starter publication recovery (2026-10-13)
+
+New catalogue items retain nonempty bilingual starter names for immediate draft saves but default to hidden. Editors use the existing Visible publicly / Visible al público toggle after preparing the item; editing a name alone does not silently opt into publication. Existing documents, visibility choices, prices including legitimate zero-price items, translations and allergen publishing checks remain unchanged. Public venue and event catalogue consumers already omit hidden items. No database migration or existing-item rewrite is required.
+
 ### Venue profile media selector (2026-10-12)
 
 The five venue surface cards use the same full-size event gallery picker styling and pagination rather than inline thumbnail strips. Selection persists via the existing `setVenueMediaPlacement` action; Auto clears the explicit placement via `clearVenueMediaPlacement`. The venue-wide library remains the sole media inventory.
@@ -463,6 +467,8 @@ Live membership smoke verification found that the parent account layout replaced
 
 2026-10-13 AkiSuite membership width/overlap follow-up: The membership-only shell now uses available desktop/tablet viewport width up to a 1720px bound while keeping responsive gutters. Catalogue cards reflow across wider screens, and the Enterprise card brand/header badge can wrap without label collision. No subscription billing, entitlement, feature flag, migration or checkout change. Validate EN/ES membership layouts on mobile, tablet and desktop.
 
-### Catalogue starter publication recovery (2026-10-13)
+## 2026-10-13 | Recovered Stripe tax-audit follow-up (#127)
 
-New catalogue items retain nonempty bilingual starter names for immediate draft saves but default to hidden. Editors use the existing Visible publicly / Visible al público toggle after preparing the item; editing a name alone does not silently opt into publication. Existing documents, visibility choices, prices including legitimate zero-price items, translations and allergen publishing checks remain unchanged. Public venue and event catalogue consumers already omit hidden items. No database migration or existing-item rewrite is required.
+Read-only live revalidation confirms the same approved account `acct_1SVLH2GfzDhsgsQZ` now displays AkiPasa Marketing S.L., all fourteen AkiSuite prices use inclusive tax behaviour, and all seven products have tax codes (AkiPasa Premium `txcd_10103000`, others `txcd_10103001`). Stripe Tax registrations remain absent. Technical classification and account display name do not establish legal identity or VAT approval. `docs/AKISUITE_PRICING_ROLLOUT.md` and the checked-in price audit must describe the same observed state; the obsolete unspecified-tax update instruction is removed.
+
+The linked Supabase project's read-only schema probe found neither `public.akisuite_billing_subscriptions` nor `akisuite_private.launch_settings`. The two new migrations, hosted Storage DDL compatibility, legal registration, isolated payment lifecycle acceptance and authenticated portal validation remain release blockers. No flags, prices, products, registrations, subscriptions, permissions, schema or production data changed. Historic release-test claims remain dated evidence, not new validation. Documentation rollback is a source revert.
