@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- Venue media uses native images with existing layout controls. */
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createEvent } from "@/app/[locale]/business/actions";
 import { GuardedActionForm } from "@/components/GuardedActionForm";
 
@@ -41,6 +41,44 @@ export function BusinessEventComposer({
   const [activeMediaSlot, setActiveMediaSlot] = useState<
     keyof typeof slots | null
   >(null);
+
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
+  const closeMedia = () => setActiveMediaSlot(null);
+
+  useEffect(() => {
+    if (activeMediaSlot === null) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const previousFocus = openerRef.current;
+    const focusable = () => Array.from(
+      dialog.querySelectorAll<HTMLElement>('button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'),
+    );
+    focusable()[0]?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeMedia();
+      } else if (event.key === "Tab") {
+        const controls = focusable();
+        if (!controls.length) { event.preventDefault(); return; }
+        const first = controls[0];
+        const last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      previousFocus?.focus();
+    };
+  }, [activeMediaSlot]);
 
   const venueMedia = useMemo(
     () => media.filter((item) => item.venueId === venueId),
@@ -225,7 +263,7 @@ export function BusinessEventComposer({
                     <button
                       type="button"
                       className="button secondary small-btn"
-                      onClick={() => setActiveMediaSlot(slotKey)}
+                      onClick={(event) => { openerRef.current = event.currentTarget; setActiveMediaSlot(slotKey); }}
                     >
                       {es ? "Elegir de biblioteca" : "Choose from library"}
                     </button>
