@@ -1,5 +1,10 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
+
 export const accountExportTables = [
   ["profiles", "id"],
+  ["pals_preview_access", "user_id"],
+  ["pals_states", "user_id"],
+  ["pals_entitlements", "user_id"],
   ["booking_requests", "profile_id"],
   ["accommodation_reservations", "profile_id"],
   ["accommodation_quotes", "profile_id"],
@@ -40,6 +45,122 @@ export const accountExportTables = [
   ["passports", "created_by"],
   ["account_deletion_requests", "profile_id"],
 ] as const;
+
+// These tables use a primary key other than `id`. Include every component so
+// adjacent pages cannot reorder rows with equal timestamps or owner IDs.
+const accountExportOrder: Record<string, readonly string[]> = {
+  pals_preview_access: ["user_id"],
+  pals_states: ["user_id"],
+  saved_events: ["profile_id", "event_id"],
+  saved_event_refs: ["profile_id", "event_key"],
+  followed_venues: ["profile_id", "venue_id"],
+  followed_venue_refs: ["profile_id", "venue_key"],
+  recent_event_views: ["profile_id", "event_id"],
+  recent_event_view_refs: ["profile_id", "event_key"],
+  passport_progress: ["profile_id", "step_id"],
+  claim_decision_emails: ["claim_id"],
+  claim_submission_alerts: ["claim_id"],
+  suite_email_preferences: ["profile_id"],
+  suite_saved_stays: ["profile_id", "venue_id"],
+  billing_customers: ["profile_id"],
+  billing_subscriptions: ["stripe_subscription_id"],
+  akisuite_billing_subscriptions: ["stripe_subscription_id"],
+  venue_members: ["venue_id", "profile_id"],
+  personalisation_settings: ["profile_id"],
+  advertising_profiles: ["profile_id"],
+  behaviour_events: ["event_id"],
+  user_event_preferences: ["profile_id", "event_id"],
+  user_preference_signals: ["preference_profile_id", "dimension", "key"],
+  experiment_assignments: ["experiment_key", "preference_profile_id"],
+  recommendation_items: [
+    "recommendation_request_id",
+    "event_id",
+    "occurrence_id",
+  ],
+};
+
+const exportPageSize = 1_000;
+const exportReadLimit = 80;
+const recommendationBatchSize = 100;
+
+export type AccountExportEntry = {
+  table: string;
+  data: Record<string, unknown>[];
+  failed: boolean;
+};
+
+/** Keep the entire export within the Worker's subrequest limit. A capped or
+ * failed read never becomes a successful partial download. Uses only caller RLS. */
+export function createAccountExportReader(supabase: SupabaseClient) {
+  let remainingReads = exportReadLimit;
+  return async function read(
+    table: string,
+    column: string,
+    value: string | string[],
+  ): Promise<AccountExportEntry> {
+    const rows: Record<string, unknown>[] = [];
+    let expectedCount: number | undefined;
+    try {
+      while (remainingReads > 0) {
+        remainingReads -= 1;
+        let query = supabase.from(table).select("*", { count: "exact" });
+        query = Array.isArray(value)
+          ? query.in(column, value)
+          : query.eq(column, value);
+        for (const key of accountExportOrder[table] || ["id"]) {
+          query = query.order(key, { ascending: true });
+        }
+        // The installed client otherwise retries GET failures three times,
+        // which would bypass the shared HTTP request budget.
+        const { data, error, count } = await query
+          .range(rows.length, rows.length + exportPageSize - 1)
+          .retry(false);
+        if (
+          error ||
+          !Array.isArray(data) ||
+          count === null ||
+          !Number.isSafeInteger(count) ||
+          count < 0 ||
+          (expectedCount !== undefined && count !== expectedCount) ||
+          data.length > exportPageSize ||
+          rows.length + data.length > count
+        ) {
+          break;
+        }
+        expectedCount = count;
+        rows.push(...data);
+        if (rows.length === count) return { table, data: rows, failed: false };
+        // An exact count detects a server cap below our requested page size.
+        if (!data.length) break;
+      }
+    } catch {
+      // Network/parser failures use the same fail-closed response as SQL errors.
+    }
+    return { table, data: [], failed: true };
+  };
+}
+
+/** Bound each REST filter URL without changing the raw recommendation row shape. */
+export async function readAccountRecommendationItems(
+  read: ReturnType<typeof createAccountExportReader>,
+  recommendationIds: string[],
+): Promise<AccountExportEntry> {
+  const data: Record<string, unknown>[] = [];
+  for (
+    let offset = 0;
+    offset < recommendationIds.length;
+    offset += recommendationBatchSize
+  ) {
+    const entry = await read(
+      "recommendation_items",
+      "recommendation_request_id",
+      recommendationIds.slice(offset, offset + recommendationBatchSize),
+    );
+    if (entry.failed) return entry;
+    data.push(...entry.data);
+  }
+  return { table: "recommendation_items", data, failed: false };
+}
 
 export function currentAccountExportTables() {
   return process.env.AKISUITE_SUBSCRIPTIONS_READY === "true"
