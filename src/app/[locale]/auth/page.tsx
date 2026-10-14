@@ -9,6 +9,10 @@ import {
   signUpWithPassword,
 } from "./actions";
 import { safeStayDestination } from "@/lib/akiduermo-routing";
+import {
+  AuthEmailInput,
+  AuthSubmitButton,
+} from "@/components/AuthFormControls";
 
 export default async function AuthPage({
   params,
@@ -38,6 +42,41 @@ export default async function AuthPage({
     if (query.next) search.set("next", query.next);
     return `/${locale}/auth?${search.toString()}`;
   };
+  const authError = query.error
+    ? query.error === "password-policy"
+      ? es
+        ? "Usa 12 o más caracteres con mayúscula, minúscula y número, y confirma la misma contraseña."
+        : "Use 12 or more characters with uppercase, lowercase and a number, then confirm the same password."
+      : query.error === "invalid"
+        ? es
+          ? "Introduce una dirección de email válida."
+          : "Enter a valid email address."
+        : query.error === "terms"
+          ? es
+            ? "Acepta las condiciones para continuar."
+            : "Accept the terms to continue."
+          : query.error === "callback" || query.error === "recovery"
+            ? es
+              ? "El enlace ha caducado o ya se ha usado. Solicita uno nuevo para continuar."
+              : "The link expired or was already used. Request a new one to continue."
+            : query.error === "send"
+              ? es
+                ? "No pudimos enviar el email. Revisa la conexión e inténtalo de nuevo."
+                : "We could not send the email. Check your connection and try again."
+              : query.error === "signin"
+                ? es
+                  ? "No se aceptaron el email o la contraseña. Revisa ambos campos o recupera tu acceso."
+                  : "The email or password was not accepted. Check both fields or recover access."
+                : es
+                  ? "No se pudo completar el acceso. Revisa los datos e inténtalo de nuevo."
+                  : "Authentication could not be completed. Check the details and try again."
+    : null;
+  const clearSavedEmail = Boolean(
+    query.sent || query.registered || query.recovery === "sent",
+  );
+  const emailInvalid = query.error === "invalid" || query.error === "signin";
+  const passwordInvalid =
+    query.error === "password-policy" || query.error === "signin";
   return (
     <main
       className={`auth-page auth-product-theme ${isStayHost ? "auth-theme-stay" : isBusinessHost ? "auth-theme-business" : "auth-theme-akipasa"}`}
@@ -166,11 +205,9 @@ export default async function AuthPage({
               : "Password updated. You can now sign in."}
           </p>
         )}
-        {query.error && (
-          <p className="notice">
-            {es
-              ? "No se pudo completar el acceso. Revisa los datos e inténtalo de nuevo."
-              : "Authentication could not be completed. Check the details and try again."}
+        {authError && (
+          <p className="notice" id="auth-error" role="alert">
+            {authError}
           </p>
         )}
         <nav
@@ -239,11 +276,16 @@ export default async function AuthPage({
             <form action={signInWithGoogle} className="stack">
               <input type="hidden" name="locale" value={locale} />
               <input type="hidden" name="next" value={next} />
-              <TermsConsent locale={locale} suffix="google" />
-              <button className="button google-button" type="submit">
-                <span aria-hidden="true">G</span>
-                {es ? "Continuar con Google" : "Continue with Google"}
-              </button>
+              <TermsConsent
+                locale={locale}
+                suffix="google"
+                invalid={query.error === "terms"}
+              />
+              <AuthSubmitButton
+                className="button google-button"
+                idle={es ? "Continuar con Google" : "Continue with Google"}
+                pending={es ? "Abriendo Google…" : "Opening Google…"}
+              />
             </form>
             <div className="auth-divider">
               <span>{es ? "o con email" : "or with email"}</span>
@@ -256,7 +298,11 @@ export default async function AuthPage({
             <input type="hidden" name="next" value={next} />
             <label>
               Email
-              <input name="email" type="email" required autoComplete="email" />
+              <AuthEmailInput
+                id="signup-email"
+                invalid={emailInvalid}
+                clear={clearSavedEmail}
+              />
             </label>
             <label>
               {es ? "Contraseña" : "Password"}
@@ -267,7 +313,10 @@ export default async function AuthPage({
                 minLength={12}
                 maxLength={128}
                 autoComplete="new-password"
-                aria-describedby="password-help"
+                aria-describedby={
+                  passwordInvalid ? "password-help auth-error" : "password-help"
+                }
+                aria-invalid={passwordInvalid || undefined}
               />
             </label>
             <small id="password-help">
@@ -284,12 +333,19 @@ export default async function AuthPage({
                 minLength={12}
                 maxLength={128}
                 autoComplete="new-password"
+                aria-invalid={passwordInvalid || undefined}
+                aria-describedby={passwordInvalid ? "auth-error" : undefined}
               />
             </label>
-            <TermsConsent locale={locale} suffix="password" />
-            <button className="button" type="submit">
-              {es ? "Crear cuenta" : "Create account"}
-            </button>
+            <TermsConsent
+              locale={locale}
+              suffix="password"
+              invalid={query.error === "terms"}
+            />
+            <AuthSubmitButton
+              idle={es ? "Crear cuenta" : "Create account"}
+              pending={es ? "Creando cuenta…" : "Creating account…"}
+            />
           </form>
         )}
         {mode === "signin" && (
@@ -298,7 +354,11 @@ export default async function AuthPage({
             <input type="hidden" name="next" value={next} />
             <label>
               Email
-              <input name="email" type="email" required autoComplete="email" />
+              <AuthEmailInput
+                id="signin-email"
+                invalid={emailInvalid}
+                clear={clearSavedEmail}
+              />
             </label>
             <label>
               <span className="auth-label-line">
@@ -313,11 +373,14 @@ export default async function AuthPage({
                 required
                 maxLength={128}
                 autoComplete="current-password"
+                aria-invalid={passwordInvalid || undefined}
+                aria-describedby={passwordInvalid ? "auth-error" : undefined}
               />
             </label>
-            <button className="button" type="submit">
-              {es ? "Entrar" : "Sign in"}
-            </button>
+            <AuthSubmitButton
+              idle={es ? "Entrar" : "Sign in"}
+              pending={es ? "Entrando…" : "Signing in…"}
+            />
           </form>
         )}
         {mode === "magic" && (
@@ -325,17 +388,15 @@ export default async function AuthPage({
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="next" value={next} />
             <label htmlFor="magic-email">Email</label>
-            <input
+            <AuthEmailInput
               id="magic-email"
-              name="email"
-              type="email"
-              required
-              autoComplete="email"
-              placeholder="you@example.com"
+              invalid={emailInvalid}
+              clear={clearSavedEmail}
             />
-            <button className="button" type="submit">
-              {es ? "Enviar enlace" : "Send sign-in link"}
-            </button>
+            <AuthSubmitButton
+              idle={es ? "Enviar enlace" : "Send sign-in link"}
+              pending={es ? "Enviando…" : "Sending…"}
+            />
           </form>
         )}
         {mode === "recover" && (
@@ -343,17 +404,15 @@ export default async function AuthPage({
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="next" value={next} />
             <label htmlFor="recovery-email">Email</label>
-            <input
+            <AuthEmailInput
               id="recovery-email"
-              name="email"
-              type="email"
-              required
-              autoComplete="email"
-              placeholder="you@example.com"
+              invalid={emailInvalid}
+              clear={clearSavedEmail}
             />
-            <button className="button" type="submit">
-              {es ? "Enviar enlace de recuperación" : "Send recovery link"}
-            </button>
+            <AuthSubmitButton
+              idle={es ? "Enviar enlace de recuperación" : "Send recovery link"}
+              pending={es ? "Enviando…" : "Sending…"}
+            />
           </form>
         )}
         <div className="auth-secondary">
@@ -376,9 +435,11 @@ export default async function AuthPage({
 function TermsConsent({
   locale,
   suffix,
+  invalid = false,
 }: {
   locale: "es" | "en";
   suffix: string;
+  invalid?: boolean;
 }) {
   const es = locale === "es";
   return (
@@ -389,6 +450,8 @@ function TermsConsent({
         type="checkbox"
         value="accepted"
         required
+        aria-invalid={invalid || undefined}
+        aria-describedby={invalid ? "auth-error" : undefined}
       />
       <span>
         {es ? "Acepto las " : "I accept the "}

@@ -1,5 +1,22 @@
 # Change Impact Register
 
+## 2026-10-14 | Actionable authentication feedback
+
+- **Inventory:** AUTH-03.
+- **Before:** every authentication category displayed the same generic notice;
+  affected fields were not associated with it, safe email entry was lost, and
+  submit buttons gave no pending state.
+- **After:** EN/ES alerts explain email format, password policy/mismatch, terms,
+  credential retry and expired-link recovery while retaining account-existence
+  privacy. Email alone is restored from same-tab storage; passwords are never
+  stored. Form-status buttons disable and announce their pending action.
+- **Dependencies:** existing server error taxonomy, Zod/password validation,
+  provider rate limits, Terms controls and redirect allowlists remain unchanged.
+- **Evidence:** rendered auth/control tests cover safe restoration, pending state,
+  error roles and field associations; existing action suites remain green.
+- **Rollback:** revert component/page/tests/docs and clear optional tab storage; no
+  account, provider or database rollback.
+
 ## 2026-10-14 | Password recovery task continuity
 
 - **Inventory:** AUTH-02.

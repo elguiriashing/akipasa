@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-14 — Actionable authentication feedback
+
+- Replace the generic auth failure notice with localized, account-private guidance
+  for invalid email, password policy, terms, credentials and expired links.
+- Associate affected fields with the alert, retain only the email in tab-local
+  storage, and disable/rename submit buttons while each request is pending.
+
 ## 2026-10-14 — Password recovery task continuity
 
 - Carry an allowlisted public or AkiDuermo destination through reset request,

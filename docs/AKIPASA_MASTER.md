@@ -898,3 +898,15 @@ never serializes a password, recovery code or provider token. Existing password
 rules, callback exchange, Terms enforcement and sign-out behavior remain
 authoritative. Focused action/security tests pass; both host browser journeys,
 current-head CI and exact live-source verification remain release gates.
+
+## 2026-10-14 | Actionable authentication feedback
+
+AUTH-03 maps the existing authentication error categories to localized alerts and
+associates invalid email, password/confirmation and Terms controls with the active
+summary. Credential failures keep the same account-private wording for unknown and
+incorrect accounts. A client boundary stores only the typed email in host-scoped,
+tab-local session storage; it never receives or stores password fields. Submit
+buttons use native React form status to disable repeat submission and announce the
+pending action. Server validation, provider calls, rate limits, Terms enforcement,
+redirects and account-existence privacy remain authoritative. Rendered controls and
+existing inert action tests pass; full CI and live-source verification remain gates.
