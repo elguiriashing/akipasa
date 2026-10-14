@@ -56,6 +56,7 @@ vi.mock("@/components/SpainAddressAutocomplete", () => ({
 }));
 vi.mock("../src/app/[locale]/moderation/actions", () => ({
   resolveReport: vi.fn(),
+  setAutomaticModeration: vi.fn(),
 }));
 vi.mock("../src/app/[locale]/staff/creators/actions", () => ({
   moderateCreator: vi.fn(),
@@ -72,6 +73,7 @@ import CreatorModerationPage from "../src/app/[locale]/staff/creators/page";
 import StaffCataloguePage from "../src/app/[locale]/staff/catalogue/page";
 import StaffVenueRecord from "../src/app/[locale]/staff/catalogue/venues/[id]/page";
 import AdminOverview from "../src/app/[locale]/admin/page";
+import StaffModerationPage from "../src/app/[locale]/staff/moderation/page";
 
 const venueId = "10000000-0000-4000-8000-000000000001";
 const eventId = "20000000-0000-4000-8000-000000000001";
@@ -199,6 +201,31 @@ for (const locale of ["en", "es"] as const) {
     expect(
       screen.getByRole("button", { name: es ? "Rechazar" : "Reject" }),
     ).toHaveAttribute("value", "rejected");
+  });
+
+  it(`does not present a missing moderation mode as manual (${locale})`, async () => {
+    fixture.failedTable = "automatic_moderation_settings";
+    fixture.tables.profiles = { app_role: "administrator" };
+    render(
+      await StaffModerationPage({
+        params: params(locale),
+        searchParams: Promise.resolve({ queue: "venues" }),
+      }),
+    );
+
+    expect(
+      screen.getByRole("heading", {
+        name: es
+          ? "Modo de moderación no disponible"
+          : "Moderation mode unavailable",
+      }),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("link", { name: es ? "Reintentar" : "Retry" }),
+    ).toHaveAttribute("href", `/${locale}/staff/moderation?queue=venues`);
+    expect(
+      screen.queryByRole("button", { name: es ? "Manual" : "Manual" }),
+    ).not.toBeInTheDocument();
   });
 
   it(`retains catalogue filters when retrying a failed event search (${locale})`, async () => {

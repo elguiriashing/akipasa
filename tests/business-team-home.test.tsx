@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { isValidElement, type ReactNode } from "react";
+import { isValidElement, type ReactElement, type ReactNode } from "react";
 const mocks = vi.hoisted(() => ({ requireUser: vi.fn(), redirect: vi.fn() }));
 vi.mock("@/lib/auth", () => ({ requireUser: mocks.requireUser }));
 vi.mock("next/navigation", () => ({
@@ -26,6 +26,29 @@ function homeProps(node: ReactNode): Record<string, unknown> | undefined {
   if (!isValidElement<{ children?: ReactNode }>(node)) return;
   if (node.type === BusinessHome) return node.props;
   return homeProps(node.props.children);
+}
+type InspectableElement = ReactElement<{
+  children?: ReactNode;
+  role?: string;
+  href?: string;
+}>;
+function elements(node: ReactNode): InspectableElement[] {
+  if (Array.isArray(node)) return node.flatMap(elements);
+  if (
+    !isValidElement<{
+      children?: ReactNode;
+      role?: string;
+      href?: string;
+    }>(node)
+  )
+    return [];
+  return [node, ...elements(node.props.children)];
+}
+function textContent(node: ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(textContent).join(" ");
+  if (!isValidElement<{ children?: ReactNode }>(node)) return "";
+  return textContent(node.props.children);
 }
 describe("team member's real business page loader", () => {
   it.each([
@@ -125,6 +148,77 @@ describe("team member's real business page loader", () => {
         "team-user",
       ]);
       expect(mocks.redirect).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each(["en", "es"] as const)(
+    "keeps a failed %s venue analytics read distinct from no activity",
+    async (locale) => {
+      const venue = {
+        id: "venue",
+        name: "Team venue",
+        slug: "team-venue",
+        status: "published",
+        verified: true,
+        discovery_vertical: "activities",
+      };
+      const supabase = {
+        from: (table: string) => {
+          const result = {
+            data:
+              table === "profiles"
+                ? { app_role: "consumer" }
+                : table === "venue_members"
+                  ? [{ role: "manager", venues: venue }]
+                  : [],
+            error: null,
+          };
+          const query = {
+            select: () => query,
+            eq: () => query,
+            in: () => query,
+            order: () => query,
+            limit: () => query,
+            maybeSingle: async () => result,
+            then: (resolve: (value: unknown) => unknown) =>
+              Promise.resolve(result).then(resolve),
+          };
+          return query;
+        },
+        rpc: vi.fn().mockResolvedValue({
+          data: [{ action: "venue_view", total: 9 }],
+          error: { message: "Private analytics failure" },
+        }),
+      };
+      mocks.requireUser.mockResolvedValue({
+        supabase,
+        user: { id: "team-user" },
+      });
+      const result = await BusinessPage({
+        params: Promise.resolve({ locale }),
+        searchParams: Promise.resolve({ view: "analytics" }),
+      });
+      const allElements = elements(result);
+      const alert = allElements.find(
+        (element) => element.props.role === "alert",
+      );
+
+      expect(alert).toBeDefined();
+      expect(textContent(alert)).toContain(
+        locale === "es"
+          ? "No se pudieron cargar las analíticas"
+          : "Analytics for this venue could not be loaded",
+      );
+      expect(textContent(result)).not.toContain(
+        locale === "es" ? "Aún no hay actividad" : "No activity or impressions",
+      );
+      expect(textContent(result)).not.toContain("Private analytics failure");
+      expect(
+        allElements.find(
+          (element) =>
+            element.props.href === `/${locale}/business?view=analytics`,
+        ),
+      ).toBeDefined();
     },
   );
 });

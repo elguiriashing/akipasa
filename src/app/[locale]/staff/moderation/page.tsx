@@ -69,16 +69,20 @@ export default async function StaffModerationPage({
   const claimPage = /^\d{1,5}$/.test(query.page || "")
     ? Math.min(10001, Math.max(1, Number(query.page)))
     : 1;
-  const [{ data, error: queueError }, { data: automaticMode }] =
-    await Promise.all([
-      loadQueue(supabase, queue, (claimPage - 1) * 20),
-      supabase
-        .from("automatic_moderation_settings")
-        .select("enabled,changed_at")
-        .eq("singleton", true)
-        .maybeSingle(),
-    ]);
+  const [
+    { data, error: queueError },
+    { data: automaticMode, error: automaticModeError },
+  ] = await Promise.all([
+    loadQueue(supabase, queue, (claimPage - 1) * 20),
+    supabase
+      .from("automatic_moderation_settings")
+      .select("enabled,changed_at")
+      .eq("singleton", true)
+      .maybeSingle(),
+  ]);
   const automaticEnabled = automaticMode?.enabled === true;
+  const automaticModeKnown =
+    !automaticModeError && typeof automaticMode?.enabled === "boolean";
   const canChangeAutomaticMode = profile?.app_role === "administrator";
   const es = locale === "es";
   const labels: Record<Queue, string> = {
@@ -138,50 +142,70 @@ export default async function StaffModerationPage({
           <div>
             <p className="eyebrow">{es ? "Modo de revisión" : "Review mode"}</p>
             <h2 id="moderation-mode-title">
-              {automaticEnabled
+              {!automaticModeKnown
                 ? es
-                  ? "Moderación automática activa"
-                  : "Automatic moderation is on"
-                : es
-                  ? "Moderación manual activa"
-                  : "Manual moderation is on"}
+                  ? "Modo de moderación no disponible"
+                  : "Moderation mode unavailable"
+                : automaticEnabled
+                  ? es
+                    ? "Moderación automática activa"
+                    : "Automatic moderation is on"
+                  : es
+                    ? "Moderación manual activa"
+                    : "Manual moderation is on"}
             </h2>
             <p>
-              {es
-                ? "En modo automático, el agente de catálogo revisa nuevas solicitudes de locales, eventos de negocios y eventos comunitarios. Los casos inciertos o los errores permanecen en esta cola."
-                : "In automatic mode, the catalogue agent reviews new venue, business event, and community event requests. Uncertain cases and service failures stay in this queue."}
+              {!automaticModeKnown
+                ? es
+                  ? "No se pudo confirmar el modo actual. La cola sigue disponible, pero el modo no se puede cambiar hasta volver a cargarlo."
+                  : "The current mode could not be confirmed. The queue remains available, but the mode cannot be changed until it is reloaded."
+                : es
+                  ? "En modo automático, el agente de catálogo revisa nuevas solicitudes de locales, eventos de negocios y eventos comunitarios. Los casos inciertos o los errores permanecen en esta cola."
+                  : "In automatic mode, the catalogue agent reviews new venue, business event, and community event requests. Uncertain cases and service failures stay in this queue."}
             </p>
           </div>
-          <form action={setAutomaticModeration}>
-            <input type="hidden" name="locale" value={locale} />
-            <input
-              type="hidden"
-              name="enabled"
-              value={automaticEnabled ? "false" : "true"}
-            />
-            <button
-              className={`button moderation-mode-toggle${automaticEnabled ? "active" : ""}`}
-              type="submit"
-              aria-pressed={automaticEnabled}
-              disabled={!canChangeAutomaticMode}
-              title={
-                !canChangeAutomaticMode
+          {automaticModeKnown ? (
+            <form action={setAutomaticModeration}>
+              <input type="hidden" name="locale" value={locale} />
+              <input
+                type="hidden"
+                name="enabled"
+                value={automaticEnabled ? "false" : "true"}
+              />
+              <button
+                className={`button moderation-mode-toggle${automaticEnabled ? "active" : ""}`}
+                type="submit"
+                aria-pressed={automaticEnabled}
+                disabled={!canChangeAutomaticMode}
+                title={
+                  !canChangeAutomaticMode
+                    ? es
+                      ? "Solo un administrador puede cambiar este modo"
+                      : "Only an administrator can change this mode"
+                    : undefined
+                }
+              >
+                <span
+                  aria-hidden="true"
+                  className="moderation-mode-indicator"
+                />
+                {automaticEnabled
                   ? es
-                    ? "Solo un administrador puede cambiar este modo"
-                    : "Only an administrator can change this mode"
-                  : undefined
-              }
+                    ? "Automático"
+                    : "Automatic"
+                  : es
+                    ? "Manual"
+                    : "Manual"}
+              </button>
+            </form>
+          ) : (
+            <Link
+              className="button secondary"
+              href={`/${locale}/staff/moderation?queue=${queue}`}
             >
-              <span aria-hidden="true" className="moderation-mode-indicator" />
-              {automaticEnabled
-                ? es
-                  ? "Automático"
-                  : "Automatic"
-                : es
-                  ? "Manual"
-                  : "Manual"}
-            </button>
-          </form>
+              {es ? "Reintentar" : "Retry"}
+            </Link>
+          )}
         </section>
       )}
       <nav

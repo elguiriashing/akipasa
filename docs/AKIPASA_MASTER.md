@@ -3,6 +3,28 @@
 > Entry point for every human or AI modifying AkiPasa. Established 2026-10-09. **Living engineering contract, not a claim that every production behavior is verified.**
 > Source priority: running code + database schema + production evidence > current tests > these docs > historical handoff notes > chat discussions. If they disagree, investigate; never silently choose the older description.
 
+## 2026-10-14 | Independent read recovery for operations
+
+Admin user search clears prior results as soon as a new query begins, ignores
+superseded responses even when a transport does not honor abort, and offers an
+explicit retry after failure. Staff moderation treats a failed or missing mode
+record as unknown, keeps the independently loaded queue visible, and withholds
+the mode mutation until the current value is confirmed.
+
+Personalisation renders confirmed zero metrics as zero, but a failed or malformed
+aggregate response hides all metrics and removes the previous guessed migration
+diagnosis. Missing active-ranking configuration is distinguished from malformed
+ranking data. AkiBusiness handles each venue analytics RPC independently and
+never presents a failed venue read as “no activity.” Admin Passport campaign and
+published-venue reads are also independent: campaign history remains usable when
+venues fail, while creation stays hidden until its required first-step venue list
+is known.
+
+Existing server authorization, tenant/RLS checks, moderation mutations, analytics
+RPC ownership, reward creation action and stored records remain unchanged. No
+schema, role, data, provider, billing or checkout change is included. Retry links
+reload the same bounded view. Source revert is sufficient for rollback.
+
 ## 2026-10-14 | GUI workflow continuity, exact prices and unavailable reads
 
 The user approved implementation and live merging of the complete GUI inventory.

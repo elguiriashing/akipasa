@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-14 — Operational read recovery
+
+- Clear stale Admin account searches, ignore late responses and provide retry.
+- Keep moderation queues usable while treating an unavailable mode as unknown.
+- Hide failed personalisation and venue-analytics reads instead of showing zeros
+  or empty activity; preserve confirmed zero values and independent venue panels.
+- Separate Passport campaign history from its published-venue creation dependency.
+
 ## 2026-10-14 — Workflow continuity follow-up
 
 - Preserve exact/hidden event prices and current-language collection links.
