@@ -939,3 +939,8 @@ Completed the AkiDuermo room-night request candidate: explicit booking modes, re
 - Separate customer and operator model history; restart historical customer context safely while retaining stored records.
 - Enforce the request's effective advertised tool set during execution, preserving existing validation, approval, budgets and audit.
 - Add actual gateway/client/provider fixtures and persisted-state regression coverage. Release gates and limitations are recorded in the master contract and impact register.
+
+## 2026-10-14 — Venue media signing
+
+- Batch public venue image signing once per nonempty loader, preserving media order, cover behavior and localized labels.
+- Cover reversed/partial batch responses, denied paths, duplicates, failure and empty-media cases with installed-SDK fixtures. Request-count evidence is recorded separately from latency and Storage-download errors.
