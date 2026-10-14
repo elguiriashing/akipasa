@@ -937,7 +937,6 @@ existing inert action tests pass; full CI and live-source verification remain ga
 
 Tablet browser acceptance retains its existing route, portal-smoke and layout/Spotlight commands while running them in three independent GitHub Actions jobs. Route suites use two Playwright workers; superseded runs for the same PR are cancelled, and each job uploads distinct evidence artifacts. The existing `tablet-ui` required-check name remains available. This changes CI orchestration only; application behavior and test assertions are unchanged. Full exact-head CI and branch-protection verification remain required before merge. If parallel browser resource pressure causes instability, return route workers to one while retaining job parallelism.
 
-
 ## 2026-10-14 | Stripe webhook RPC production privilege repair (PR #140)
 
 Applied migration `20261013171937_restrict_stripe_webhook_claim_execution.sql` to confirmed production Supabase ref `vhpbvcfkcteswlsdjrfl` (recorded in migration history as `20261014183842_restrict_stripe_webhook_claim_execution`). It revokes `EXECUTE` from `PUBLIC`, `anon` and `authenticated`, retains `service_role`, and preserves the empty `search_path`. Post-migration catalog checks confirm anonymous/authenticated execution is denied and service-role execution remains allowed. No webhook ledger rows or subscription data were changed. The signed service webhook acceptance smoke remains a release verification item.
