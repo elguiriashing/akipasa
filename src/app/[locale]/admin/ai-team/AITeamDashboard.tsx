@@ -22,6 +22,8 @@ type ChatMessage = {
   id: string;
   agent_id: string;
   role: "user" | "assistant";
+  actor_id?: string | null;
+  metadata?: { audience?: string; context_version?: number };
   content: string;
   created_at: string;
 };
@@ -135,11 +137,13 @@ export function AITeamDashboard({
   locale,
   providerConfigured,
   setupError,
+  readErrors = {},
   initial,
 }: {
   locale: "es" | "en";
   providerConfigured: boolean;
   setupError: string | null;
+  readErrors?: Partial<Record<keyof DashboardData, boolean>>;
   initial: DashboardData;
 }) {
   const es = locale === "es";
@@ -177,7 +181,11 @@ export function AITeamDashboard({
       total + Number(item.actual_cost_eur ?? item.reserved_cost_eur ?? 0),
     0,
   );
-  const budgetLimit = Number(initial.budget?.monthly_limit_eur || 4);
+  const budgetLimit = Number(initial.budget?.monthly_limit_eur ?? Number.NaN);
+  const budgetUnavailable =
+    Boolean(readErrors.budget) ||
+    !Number.isFinite(budgetLimit) ||
+    budgetLimit < 0;
   const budgetPercent =
     budgetLimit > 0 ? Math.min(100, (spend / budgetLimit) * 100) : 100;
   const agentById = useMemo(
@@ -242,6 +250,7 @@ export function AITeamDashboard({
       setMessages((current) =>
         current.filter((message) => message.id !== temporaryId),
       );
+      setChatInput(content);
       setNotice(error instanceof Error ? error.message : "AI request failed");
     } finally {
       setBusy(false);
@@ -260,22 +269,47 @@ export function AITeamDashboard({
     }
   }
 
-  if (setupError && initial.agents.length === 0) {
-    return (
-      <section className={`${styles.alert} ${styles.error}`}>
-        <strong>
-          {es
-            ? "Falta la migración del Equipo de IA"
-            : "AI Team migration required"}
-        </strong>
-        <p>{setupError}</p>
-        <code>database/migrations/0034_ai_team.sql</code>
-      </section>
-    );
-  }
-
   return (
     <div className={styles.dashboard}>
+      {(setupError ||
+        Object.values(readErrors).some(Boolean) ||
+        budgetUnavailable) && (
+        <section className={`${styles.alert} ${styles.error}`} role="alert">
+          <strong>
+            {es ? "Hay datos no disponibles" : "Some records are unavailable"}
+          </strong>
+          <p>
+            {es
+              ? "Reintenta antes de actuar. No se ha hecho ninguna llamada al proveedor."
+              : "Retry before taking action. No provider request has been made."}
+          </p>
+          <ul>
+            {Object.entries(readErrors)
+              .filter(([, failed]) => failed)
+              .map(([key]) => (
+                <li key={key}>
+                  {
+                    (
+                      {
+                        agents: es ? "Agentes" : "Agents",
+                        messages: es ? "Conversaciones" : "Conversations",
+                        tasks: es ? "Tareas" : "Tasks",
+                        approvals: es ? "Aprobaciones" : "Approvals",
+                        activity: es ? "Actividad" : "Activity",
+                        budget: es ? "Presupuesto" : "Budget",
+                        usage: es ? "Uso" : "Usage",
+                        schedules: es ? "Horarios" : "Schedules",
+                      } as Record<string, string>
+                    )[key]
+                  }
+                </li>
+              ))}
+          </ul>
+          <a className="button secondary" href={`/${locale}/admin/ai-team`}>
+            {es ? "Reintentar" : "Retry"}
+          </a>
+        </section>
+      )}
       {!providerConfigured && (
         <section className={styles.alert}>
           <strong>
@@ -299,35 +333,42 @@ export function AITeamDashboard({
       <section className={styles.metrics} aria-label="AI Team summary">
         <article>
           <span>{es ? "Agentes" : "Agents"}</span>
-          <strong>{agents.length}</strong>
+          <strong>{readErrors.agents ? "—" : agents.length}</strong>
           <small>
-            {agents.filter((agent) => agent.enabled).length}{" "}
+            {readErrors.agents
+              ? "—"
+              : agents.filter((agent) => agent.enabled).length}{" "}
             {es ? "activos" : "enabled"}
           </small>
         </article>
         <article>
           <span>{es ? "Tareas activas" : "Active tasks"}</span>
-          <strong>{activeTasks.length}</strong>
+          <strong>{readErrors.tasks ? "—" : activeTasks.length}</strong>
           <small>
-            {initial.tasks.length} {es ? "totales" : "total"}
+            {readErrors.tasks ? "—" : initial.tasks.length}{" "}
+            {es ? "registros cargados" : "loaded records"}
           </small>
         </article>
         <article>
           <span>{es ? "Aprobaciones" : "Approvals"}</span>
-          <strong>{pendingApprovals.length}</strong>
+          <strong>
+            {readErrors.approvals ? "—" : pendingApprovals.length}
+          </strong>
           <small>{es ? "pendientes" : "waiting"}</small>
         </article>
         <article>
-          <span>{es ? "Gasto mensual" : "Monthly spend"}</span>
-          <strong>{money(spend)}</strong>
+          <span>{es ? "Gasto mensual cargado" : "Loaded monthly spend"}</span>
+          <strong>{readErrors.usage ? "—" : money(spend)}</strong>
           <small>
-            {money(Math.max(0, budgetLimit - spend))}{" "}
-            {es ? "disponible" : "remaining"}
+            {budgetUnavailable ? "—" : money(budgetLimit)}{" "}
+            {es
+              ? "límite configurado · hasta 500 registros"
+              : "configured cap · up to 500 records"}
           </small>
         </article>
         <article>
           <span>{es ? "Errores" : "Errors"}</span>
-          <strong>{errors.length}</strong>
+          <strong>{readErrors.activity ? "—" : errors.length}</strong>
           <small>{es ? "en el historial" : "in activity"}</small>
         </article>
       </section>
@@ -371,121 +412,137 @@ export function AITeamDashboard({
           />
         </label>
       )}
-      {section === "team" && selectedAgent && (
-        <section className={styles.teamLayout}>
-          <aside className={styles.roster}>
-            {agents.map((agent) => (
-              <button
-                key={agent.id}
-                type="button"
-                onClick={() => setSelectedAgentId(agent.id)}
-                className={
-                  agent.id === selectedAgent.id ? styles.selected : undefined
-                }
-              >
-                <span
-                  className={`${styles.statusDot} ${styles[agent.status]}`}
-                />
-                <span>
-                  <strong>{agent.display_name}</strong>
-                  <small>
-                    {agent.status} · {agent.model}
-                  </small>
-                </span>
-              </button>
-            ))}
-          </aside>
-          <div className={styles.agentWorkspace}>
-            <header className={styles.agentHeader}>
-              <div>
-                <span
-                  className={`${styles.statusPill} ${styles[selectedAgent.status]}`}
-                >
-                  {selectedAgent.status}
-                </span>
-                <h2>{selectedAgent.display_name}</h2>
-                <p>{selectedAgent.role_description}</p>
-              </div>
-              <details>
-                <summary>
-                  {es ? "Modelo y permisos" : "Model & permissions"}
-                </summary>
-                <AgentSettings
-                  agent={selectedAgent}
-                  busy={busy}
-                  onSave={act}
-                  es={es}
-                />
-              </details>
-            </header>
-            <div className={styles.chatLog} aria-live="polite">
-              {selectedMessages.length === 0 && (
-                <p className={styles.empty}>
-                  {es
-                    ? "Inicia una conversación. El historial y la memoria persistirán en el CRM."
-                    : "Start a conversation. History and memory persist in the CRM."}
-                </p>
-              )}
-              {selectedMessages.map((message) => (
-                <article
-                  key={message.id}
+      {section === "team" &&
+        selectedAgent &&
+        !readErrors.agents &&
+        !readErrors.messages && (
+          <section className={styles.teamLayout}>
+            <aside className={styles.roster}>
+              {agents.map((agent) => (
+                <button
+                  key={agent.id}
+                  type="button"
+                  onClick={() => setSelectedAgentId(agent.id)}
                   className={
-                    message.role === "user"
-                      ? styles.userMessage
-                      : styles.agentMessage
+                    agent.id === selectedAgent.id ? styles.selected : undefined
                   }
                 >
-                  <small>
-                    {message.role === "user"
-                      ? es
-                        ? "Tú"
-                        : "You"
-                      : selectedAgent.display_name}
-                  </small>
-                  <p>{message.content}</p>
-                </article>
+                  <span
+                    className={`${styles.statusDot} ${styles[agent.status]}`}
+                  />
+                  <span>
+                    <strong>{agent.display_name}</strong>
+                    <small>
+                      {agent.status} · {agent.model}
+                    </small>
+                  </span>
+                </button>
               ))}
-              {busy && (
-                <p className={styles.thinking}>
-                  {selectedAgent.display_name}{" "}
-                  {es ? "está trabajando…" : "is working…"}
-                </p>
-              )}
+            </aside>
+            <div className={styles.agentWorkspace}>
+              <header className={styles.agentHeader}>
+                <div>
+                  <span
+                    className={`${styles.statusPill} ${styles[selectedAgent.status]}`}
+                  >
+                    {selectedAgent.status}
+                  </span>
+                  <h2>{selectedAgent.display_name}</h2>
+                  <p>{selectedAgent.role_description}</p>
+                </div>
+                <details>
+                  <summary>
+                    {es ? "Modelo y permisos" : "Model & permissions"}
+                  </summary>
+                  <AgentSettings
+                    agent={selectedAgent}
+                    busy={busy}
+                    onSave={act}
+                    es={es}
+                  />
+                </details>
+              </header>
+              <div className={styles.chatLog} aria-live="polite">
+                {selectedMessages.length === 0 && (
+                  <p className={styles.empty}>
+                    {es
+                      ? "Inicia una conversación. El historial y la memoria persistirán en el CRM."
+                      : "Start a conversation. History and memory persist in the CRM."}
+                  </p>
+                )}
+                {selectedMessages.map((message) => (
+                  <article
+                    key={message.id}
+                    className={
+                      message.role === "user"
+                        ? styles.userMessage
+                        : styles.agentMessage
+                    }
+                  >
+                    <small>
+                      {message.role === "user"
+                        ? es
+                          ? "Autor"
+                          : "Author"
+                        : selectedAgent.display_name}
+                    </small>
+                    <span>
+                      {message.metadata?.audience === "customer"
+                        ? es
+                          ? "Cliente"
+                          : "Customer"
+                        : es
+                          ? "Operador"
+                          : "Operator"}
+                      {message.actor_id
+                        ? ` · ${message.actor_id.slice(0, 8)}`
+                        : ""}
+                    </span>
+                    <p>{message.content}</p>
+                  </article>
+                ))}
+                {busy && (
+                  <p className={styles.thinking}>
+                    {selectedAgent.display_name}{" "}
+                    {es ? "está trabajando…" : "is working…"}
+                  </p>
+                )}
+              </div>
+              <form className={styles.chatComposer} onSubmit={sendChat}>
+                <label htmlFor="ai-chat-input">
+                  {es ? "Mensaje" : "Message"}
+                </label>
+                <textarea
+                  id="ai-chat-input"
+                  value={chatInput}
+                  onChange={(event) => setChatInput(event.target.value)}
+                  maxLength={8000}
+                  readOnly={busy}
+                  rows={3}
+                  placeholder={
+                    es
+                      ? "Pide un análisis, una tarea o una acción…"
+                      : "Ask for analysis, a task, or an action…"
+                  }
+                />
+                <button
+                  type="submit"
+                  disabled={busy || !chatInput.trim() || !selectedAgent.enabled}
+                >
+                  {busy
+                    ? es
+                      ? "Trabajando…"
+                      : "Working…"
+                    : es
+                      ? "Enviar"
+                      : "Send"}
+                </button>
+              </form>
             </div>
-            <form className={styles.chatComposer} onSubmit={sendChat}>
-              <label htmlFor="ai-chat-input">
-                {es ? "Mensaje" : "Message"}
-              </label>
-              <textarea
-                id="ai-chat-input"
-                value={chatInput}
-                onChange={(event) => setChatInput(event.target.value)}
-                maxLength={8000}
-                rows={3}
-                placeholder={
-                  es
-                    ? "Pide un análisis, una tarea o una acción…"
-                    : "Ask for analysis, a task, or an action…"
-                }
-              />
-              <button
-                type="submit"
-                disabled={busy || !chatInput.trim() || !selectedAgent.enabled}
-              >
-                {busy
-                  ? es
-                    ? "Trabajando…"
-                    : "Working…"
-                  : es
-                    ? "Enviar"
-                    : "Send"}
-              </button>
-            </form>
-          </div>
-        </section>
-      )}
+          </section>
+        )}
 
-      {section === "tasks" && (
+      {section === "tasks" && !readErrors.tasks && !readErrors.schedules && (
         <section className={styles.split}>
           <div>
             <h2>{es ? "Tareas" : "Tasks"}</h2>
@@ -592,7 +649,7 @@ export function AITeamDashboard({
         </section>
       )}
 
-      {section === "approvals" && (
+      {section === "approvals" && !readErrors.approvals && (
         <section>
           <h2>{es ? "Acciones sensibles" : "Sensitive actions"}</h2>
           <p className={styles.sectionIntro}>
@@ -662,7 +719,7 @@ export function AITeamDashboard({
         </section>
       )}
 
-      {section === "activity" && (
+      {section === "activity" && !readErrors.activity && (
         <section className={styles.split}>
           <div>
             <h2>{es ? "Actividad reciente" : "Recent activity"}</h2>
@@ -720,67 +777,75 @@ export function AITeamDashboard({
         </section>
       )}
 
-      {section === "usage" && initial.budget && (
-        <section className={styles.split}>
-          <div>
-            <h2>{es ? "Presupuesto mensual" : "Monthly budget"}</h2>
-            <div className={styles.budgetCard}>
-              <div>
-                <strong>{money(spend)}</strong>
-                <span>/ {money(budgetLimit)}</span>
-              </div>
-              <div className={styles.progress}>
-                <i style={{ width: `${budgetPercent}%` }} />
+      {section === "usage" &&
+        initial.budget &&
+        !budgetUnavailable &&
+        !readErrors.usage && (
+          <section className={styles.split}>
+            <div>
+              <h2>{es ? "Presupuesto mensual" : "Monthly budget"}</h2>
+              <div className={styles.budgetCard}>
+                <div>
+                  <strong>{readErrors.usage ? "—" : money(spend)}</strong>
+                  <span>/ {money(budgetLimit)}</span>
+                </div>
+                <div className={styles.progress}>
+                  <i style={{ width: `${budgetPercent}%` }} />
+                </div>
+                <p>
+                  {initial.budget.hard_cap_enabled
+                    ? es
+                      ? "Límite duro activo: al agotarse, las llamadas pagadas se bloquean."
+                      : "Hard cap active: paid calls are blocked when exhausted."
+                    : es
+                      ? "Límite duro desactivado."
+                      : "Hard cap disabled."}
+                </p>
               </div>
               <p>
-                {initial.budget.hard_cap_enabled
-                  ? es
-                    ? "Límite duro activo: al agotarse, las llamadas pagadas se bloquean."
-                    : "Hard cap active: paid calls are blocked when exhausted."
-                  : es
-                    ? "Límite duro desactivado."
-                    : "Hard cap disabled."}
+                {es
+                  ? "El gasto muestra hasta 500 registros del mes. El servidor aplica el límite al registro completo."
+                  : "Spend shows up to 500 records from this month. The server enforces the cap against the complete ledger."}
               </p>
+              <BudgetForm
+                budget={initial.budget}
+                busy={busy}
+                onSave={act}
+                es={es}
+              />
             </div>
-            <BudgetForm
-              budget={initial.budget}
-              busy={busy}
-              onSave={act}
-              es={es}
-            />
-          </div>
-          <div>
-            <h2>{es ? "Registro de uso" : "Usage ledger"}</h2>
-            <div className={styles.list}>
-              {initial.usage.map((item) => (
-                <article key={item.id}>
-                  <header>
-                    <strong>
-                      {agentById.get(item.agent_id || "")?.display_name ||
-                        "System"}
-                    </strong>
-                    <span className={styles.statusPill}>{item.status}</span>
-                  </header>
-                  <p>
-                    {item.provider} / {item.model} · {item.request_kind}
-                  </p>
-                  <small>
-                    {(item.input_tokens || 0).toLocaleString()} in ·{" "}
-                    {(item.output_tokens || 0).toLocaleString()} out ·{" "}
-                    {money(
-                      Number(item.actual_cost_eur ?? item.reserved_cost_eur),
-                    )}{" "}
-                    · {dateTime(item.created_at, locale)}
-                  </small>
-                  {item.error_code && (
-                    <p className={styles.errorText}>{item.error_code}</p>
-                  )}
-                </article>
-              ))}
+            <div>
+              <h2>{es ? "Registro de uso" : "Usage ledger"}</h2>
+              <div className={styles.list}>
+                {initial.usage.map((item) => (
+                  <article key={item.id}>
+                    <header>
+                      <strong>
+                        {agentById.get(item.agent_id || "")?.display_name ||
+                          "System"}
+                      </strong>
+                      <span className={styles.statusPill}>{item.status}</span>
+                    </header>
+                    <p>
+                      {item.provider} / {item.model} · {item.request_kind}
+                    </p>
+                    <small>
+                      {(item.input_tokens || 0).toLocaleString()} in ·{" "}
+                      {(item.output_tokens || 0).toLocaleString()} out ·{" "}
+                      {money(
+                        Number(item.actual_cost_eur ?? item.reserved_cost_eur),
+                      )}{" "}
+                      · {dateTime(item.created_at, locale)}
+                    </small>
+                    {item.error_code && (
+                      <p className={styles.errorText}>{item.error_code}</p>
+                    )}
+                  </article>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
-      )}
+          </section>
+        )}
     </div>
   );
 }

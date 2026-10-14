@@ -451,3 +451,22 @@ test("unearned city cards show grey stamp slots and offer category progress", as
     0,
   );
 });
+
+for (const locale of ["en", "es"] as const) {
+  test(`${locale} passport start acknowledgement uses the actual route deadline`, async ({
+    page,
+  }) => {
+    await page.goto(`/${locale}/passports?passport=started`);
+    await expect(
+      page.getByText(
+        locale === "es"
+          ? "Pasaporte iniciado. Consulta la fecha límite de tu ruta en Progreso."
+          : "Passport started. Check your route’s deadline in Progress.",
+        { exact: true },
+      ),
+    ).toBeVisible();
+    await expect(
+      page.getByText(/(?:Tienes 30 d[ií]as|You have 30 days)/),
+    ).toHaveCount(0);
+  });
+}

@@ -3,6 +3,42 @@
 > Entry point for every human or AI modifying AkiPasa. Established 2026-10-09. **Living engineering contract, not a claim that every production behavior is verified.**
 > Source priority: running code + database schema + production evidence > current tests > these docs > historical handoff notes > chat discussions. If they disagree, investigate; never silently choose the older description.
 
+## 2026-10-14 | GUI workflow continuity, exact prices and unavailable reads
+
+The user approved implementation and live merging of the complete GUI inventory.
+This follow-up preserves exact event cents and hidden-price choices across cards,
+map popups and details using one currency formatter. Saved/followed/recent links
+rewrite only canonical local event/venue destinations to the current locale,
+preserving query and fragment; existing saved labels are retained pending current
+catalogue-title lookup. Workspace accessible names match EN/ES. Staff uses one
+page-specific heading with scoped safe padding, and accommodation reservation
+cards have explicit responsive rows without altering inventory actions. Narrow
+auth portal cards retain complete brand words and touch targets.
+
+Support failures restore an editable question and require explicit retry, with
+one transcript entry per successful submission and no automatic provider calls.
+Replies follow the transcript only when already near its end; older reading
+positions are retained with a localized jump control. Existing modal focus,
+scroll, same-origin payload, provider authorization and email fallback remain.
+
+Admin catalogue/configuration/privacy/audit/application read failures show a
+localized Retry and suppress unknown-data editors or decisions; successful empty
+reads retain their controls. Taxonomy/configuration saves display outcomes.
+AI section failures remain visible independently of loaded agents, affected
+lists and budget controls stay unavailable, and real zero budgets stay zero.
+Counts and monthly costs disclose their loaded sample; server budget enforcement
+is unchanged. Failed operator chat drafts remain editable. Existing conversation
+audience and actor references are displayed without changing provider history
+isolation or task/tool execution permissions.
+
+Passport start acknowledgement refers to the enrolled route deadline rather
+than inventing a 30-day window; returned expiry dates render in Europe/Madrid.
+
+No schema, authorization, RLS, price amount, booking transition, reward, consent,
+provider-send contract, checkout flag or production-data changes. Rollback is a
+source revert. Regression and responsive/current-head release evidence belong in
+the impact register; fixtures do not establish authenticated production behavior.
+
 ## 2026-10-14 | GUI and workflow upgrades (approved release candidate)
 
 The user approved implementation, commits, merges and live release on 14 October.

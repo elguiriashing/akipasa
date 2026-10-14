@@ -11,6 +11,7 @@ import { config, isLocale } from "@/lib/config";
 import type { TimeWindow } from "@/lib/domain";
 import { translated } from "@/lib/domain";
 import { discoveryLocationFromQuery } from "@/lib/discovery-location";
+import { eventPriceLabel } from "@/lib/event-price";
 import { msg } from "@/lib/messages";
 import { recommendDiscovery } from "@/lib/personalisation/server";
 import { repository } from "@/lib/repository";
@@ -133,10 +134,7 @@ export default async function MapPage({
     href: `/${locale}/events/${result.event.slug}`,
     category: result.event.category,
     startsAt: result.occurrence.startsAt,
-    priceLabel:
-      result.event.priceCents === 0
-        ? m.free
-        : `${(result.event.priceCents / 100).toFixed(0)}\u20ac`,
+    priceLabel: eventPriceLabel(result.event, locale) ?? undefined,
     source: result.event.source,
     kind: "event" as const,
     venueId: result.event.venueId,

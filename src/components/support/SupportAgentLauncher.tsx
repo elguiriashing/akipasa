@@ -49,6 +49,10 @@ export function SupportAgentLauncher({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
+  const nearLatestRef = useRef(true);
+  const requestPendingRef = useRef(false);
+  const [newReply, setNewReply] = useState(false);
   const mailSubject = es ? "Ayuda con AkiPasa" : "Help with AkiPasa";
   const mailHref =
     "mailto:support@akipasa.com?subject=" + encodeURIComponent(mailSubject);
@@ -129,11 +133,26 @@ export function SupportAgentLauncher({
     };
   }, [open, signedIn]);
 
+  function showLatest() {
+    const transcript = messagesRef.current;
+    if (transcript) transcript.scrollTop = transcript.scrollHeight;
+    nearLatestRef.current = true;
+    setNewReply(false);
+  }
+
+  useEffect(() => {
+    if (!open) return;
+    if (nearLatestRef.current) showLatest();
+    else if (messages.at(-1)?.role === "assistant") setNewReply(true);
+  }, [messages, busy, open]);
+
   async function send(event: FormEvent) {
     event.preventDefault();
     const question = input.trim();
-    if (!question || busy) return;
-    setMessages((current) => [...current, { role: "user", content: question }]);
+    if (!question || requestPendingRef.current) return;
+    requestPendingRef.current = true;
+    const submitted: Message = { role: "user", content: question };
+    setMessages((current) => [...current, submitted]);
     setInput("");
     setBusy(true);
     setError(null);
@@ -167,6 +186,10 @@ export function SupportAgentLauncher({
         { role: "assistant", content: result.text || "" },
       ]);
     } catch (caught) {
+      setMessages((current) =>
+        current.filter((message) => message !== submitted),
+      );
+      setInput(question);
       setError(
         caught instanceof Error
           ? caught.message
@@ -175,6 +198,7 @@ export function SupportAgentLauncher({
             : "The question could not be sent.",
       );
     } finally {
+      requestPendingRef.current = false;
       setBusy(false);
     }
   }
@@ -235,7 +259,21 @@ export function SupportAgentLauncher({
               </button>
             </header>
 
-            <div className={styles.messages} aria-live="polite">
+            <div
+              ref={messagesRef}
+              className={styles.messages}
+              aria-live="polite"
+              aria-busy={busy}
+              onScroll={(event) => {
+                const element = event.currentTarget;
+                nearLatestRef.current =
+                  element.scrollHeight -
+                    element.scrollTop -
+                    element.clientHeight <
+                  48;
+                if (nearLatestRef.current) setNewReply(false);
+              }}
+            >
               {messages.length === 0 && (
                 <p className={styles.welcome}>
                   {surface === "business_application"
@@ -274,6 +312,15 @@ export function SupportAgentLauncher({
                 </p>
               )}
             </div>
+            {newReply && (
+              <button
+                type="button"
+                className={styles.latest}
+                onClick={showLatest}
+              >
+                {es ? "Ver nueva respuesta" : "View new reply"}
+              </button>
+            )}
 
             <form className={styles.composer} onSubmit={send}>
               <label htmlFor={`${dialogId}-question`}>
@@ -287,6 +334,7 @@ export function SupportAgentLauncher({
                 maxLength={2000}
                 rows={3}
                 required
+                readOnly={busy}
                 placeholder={
                   es
                     ? "Por ejemplo: ayúdame a describir mi negocio"
@@ -303,7 +351,13 @@ export function SupportAgentLauncher({
                   {es ? "Contactar con una persona" : "Contact a person"}
                 </a>
                 <button type="submit" disabled={busy || !input.trim()}>
-                  {es ? "Enviar" : "Send"}
+                  {error
+                    ? es
+                      ? "Reintentar"
+                      : "Retry"
+                    : es
+                      ? "Enviar"
+                      : "Send"}
                 </button>
               </div>
             </form>

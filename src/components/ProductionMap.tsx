@@ -154,7 +154,7 @@ function popupContent(point: MapPoint, locale: Locale) {
           : locale === "es"
             ? "Local sin reclamar"
             : "Unclaimed venue"
-      : `${date} · ${point.priceLabel}`;
+      : [date, point.priceLabel].filter(Boolean).join(" · ");
   const link = document.createElement("a");
   link.href = point.href;
   link.textContent =

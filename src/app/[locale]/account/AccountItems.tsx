@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { Icon, type IconName } from "../../../components/Icons";
+import { collectionHref } from "@/lib/collection-links";
 import { AccountCollectionState } from "./AccountCollectionState";
 
 export function AccountItems({
@@ -95,7 +96,7 @@ export function AccountItems({
             <li key={item.id}>
               <Link
                 className="account-collection-card"
-                href={item.href}
+                href={collectionHref(item.href, locale)}
                 aria-label={`${labels.open}: ${item.label}`}
               >
                 <span className="account-collection-icon" aria-hidden="true">

@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 import type { DiscoveryResult } from "@/lib/domain";
 import { translated } from "@/lib/domain";
 import type { Locale } from "@/lib/config";
+import { eventPriceLabel } from "@/lib/event-price";
 import { msg } from "@/lib/messages";
 import { Icon } from "@/components/Icons";
 import { VerifiedBadge } from "./VerifiedBadge";
@@ -93,12 +94,7 @@ export function EventCard({
     Boolean(result.venue.logoImage) &&
     primaryImage?.id === result.venue.logoImage?.id;
   const profileImage = result.event.profileImage || result.venue.logoImage;
-  const priceLabel =
-    result.event.priceDisplayMode === "hide"
-      ? null
-      : result.event.priceCents === 0
-        ? m.free
-        : `${(result.event.priceCents / 100).toFixed(0)}€`;
+  const priceLabel = eventPriceLabel(result.event, locale);
 
   useEffect(() => {
     const element = cardRef.current;

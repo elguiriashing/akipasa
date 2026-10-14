@@ -208,3 +208,82 @@ it("keeps Escape inside Support while an outer menu retains its scroll lock", ()
     window.removeEventListener("keydown", outerWindowEscape);
   }
 });
+
+it.each(["en", "es"] as const)(
+  "retains %s failed question for an explicit editable retry without duplicate transcript",
+  async (locale) => {
+    const fetchMock = vi
+      .fn()
+      .mockRejectedValueOnce(new TypeError("Network unavailable"))
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ ok: true, text: "A useful answer" }),
+      });
+    vi.stubGlobal("fetch", fetchMock);
+    mount(locale);
+    const textarea = screen.getByRole("textbox");
+    fireEvent.change(textarea, { target: { value: "My original question" } });
+    fireEvent.click(
+      screen.getByRole("button", { name: locale === "es" ? "Enviar" : "Send" }),
+    );
+    await waitFor(() =>
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        "Network unavailable",
+      ),
+    );
+    expect(textarea).toHaveValue("My original question");
+    expect(
+      screen.queryByText("My original question", { selector: "article p" }),
+    ).toBeNull();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    fireEvent.change(textarea, { target: { value: "My edited question" } });
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: locale === "es" ? "Reintentar" : "Retry",
+      }),
+    );
+    await waitFor(() =>
+      expect(screen.getByText("A useful answer")).toBeVisible(),
+    );
+    expect(
+      screen.getAllByText("My edited question", { selector: "article p" }),
+    ).toHaveLength(1);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(JSON.parse(fetchMock.mock.calls[1][1].body).message).toBe(
+      "My edited question",
+    );
+  },
+);
+
+it("preserves older transcript reading and offers an explicit new-reply jump", async () => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ ok: true, text: "New answer" }),
+    }),
+  );
+  mount();
+  const transcript = screen.getByText(
+    "What can we help you with on AkiPasa?",
+  ).parentElement!;
+  Object.defineProperties(transcript, {
+    scrollHeight: { configurable: true, value: 2000 },
+    clientHeight: { configurable: true, value: 300 },
+  });
+  transcript.scrollTop = 100;
+  fireEvent.scroll(transcript);
+  fireEvent.change(screen.getByRole("textbox"), {
+    target: { value: "Question" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Send" }));
+  await waitFor(() =>
+    expect(
+      screen.getByRole("button", { name: "View new reply" }),
+    ).toBeVisible(),
+  );
+  expect(transcript.scrollTop).toBe(100);
+  fireEvent.click(screen.getByRole("button", { name: "View new reply" }));
+  expect(transcript.scrollTop).toBe(2000);
+  expect(screen.queryByRole("button", { name: "View new reply" })).toBeNull();
+});

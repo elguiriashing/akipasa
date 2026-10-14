@@ -1,3 +1,4 @@
+import { AdminReadFailure } from "../AdminReadState";
 import { AdminSearchList } from "../AdminSearchList";
 import { notFound } from "next/navigation";
 import { WorkspacePageHeader } from "@/components/WorkspaceShell";
@@ -16,7 +17,7 @@ export default async function PrivacyRequestsPage({
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
   const { supabase } = await requireUser(locale, `/${locale}/admin/privacy`);
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("account_deletion_requests")
     .select(
       "id,profile_id,state,requested_at,profiles!account_deletion_requests_profile_id_fkey(display_name)",
@@ -46,57 +47,61 @@ export default async function PrivacyRequestsPage({
               : "Update failed."}
         </p>
       )}
-      <AdminSearchList
-        locale={locale}
-        label={es ? "Solicitudes de privacidad" : "Privacy requests"}
-        items={(data || []).map((item) => {
-          const profile = item.profiles as unknown as {
-            display_name?: string | null;
-          } | null;
-          return {
-            id: item.id,
-            status: item.state,
-            search: [profile?.display_name, item.profile_id, item.state]
-              .filter(Boolean)
-              .join(" "),
-            content: (
-              <details className="panel settings-row">
-                <summary>
-                  {profile?.display_name || item.profile_id.slice(0, 8)}
-                  <span className="status-pill">{item.state}</span>
-                </summary>
-                <form action={updateDeletionRequest} className="stack">
-                  <input type="hidden" name="locale" value={locale} />
-                  <input type="hidden" name="requestId" value={item.id} />
-                  <label>
-                    {es ? "Estado" : "State"}
-                    <select name="state" defaultValue="processing">
-                      <option value="processing">Processing</option>
-                      <option value="completed">Completed</option>
-                      <option value="cancelled">Cancelled</option>
-                    </select>
-                  </label>
-                  <label>
-                    {es ? "Motivo y registro" : "Reason and record"}
-                    <textarea name="reason" required minLength={10} />
-                  </label>
-                  <label className="consent-row">
-                    <input name="confirmedDeleted" type="checkbox" />
-                    <span>
-                      {es
-                        ? "La identidad y los datos eliminables ya se borraron."
-                        : "Identity and erasable data have been deleted."}
-                    </span>
-                  </label>
-                  <button className="button" type="submit">
-                    {es ? "Actualizar solicitud" : "Update request"}
-                  </button>
-                </form>
-              </details>
-            ),
-          };
-        })}
-      />
+      {error ? (
+        <AdminReadFailure locale={locale} href={`/${locale}/admin/privacy`} />
+      ) : (
+        <AdminSearchList
+          locale={locale}
+          label={es ? "Solicitudes de privacidad" : "Privacy requests"}
+          items={(data || []).map((item) => {
+            const profile = item.profiles as unknown as {
+              display_name?: string | null;
+            } | null;
+            return {
+              id: item.id,
+              status: item.state,
+              search: [profile?.display_name, item.profile_id, item.state]
+                .filter(Boolean)
+                .join(" "),
+              content: (
+                <details className="panel settings-row">
+                  <summary>
+                    {profile?.display_name || item.profile_id.slice(0, 8)}
+                    <span className="status-pill">{item.state}</span>
+                  </summary>
+                  <form action={updateDeletionRequest} className="stack">
+                    <input type="hidden" name="locale" value={locale} />
+                    <input type="hidden" name="requestId" value={item.id} />
+                    <label>
+                      {es ? "Estado" : "State"}
+                      <select name="state" defaultValue="processing">
+                        <option value="processing">Processing</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                      </select>
+                    </label>
+                    <label>
+                      {es ? "Motivo y registro" : "Reason and record"}
+                      <textarea name="reason" required minLength={10} />
+                    </label>
+                    <label className="consent-row">
+                      <input name="confirmedDeleted" type="checkbox" />
+                      <span>
+                        {es
+                          ? "La identidad y los datos eliminables ya se borraron."
+                          : "Identity and erasable data have been deleted."}
+                      </span>
+                    </label>
+                    <button className="button" type="submit">
+                      {es ? "Actualizar solicitud" : "Update request"}
+                    </button>
+                  </form>
+                </details>
+              ),
+            };
+          })}
+        />
+      )}
     </>
   );
 }

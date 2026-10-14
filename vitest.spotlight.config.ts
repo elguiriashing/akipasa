@@ -13,6 +13,8 @@ export default defineConfig({
       "tests/staff-ui-upgrades.test.tsx",
       "tests/auth-ux-upgrades.test.ts",
       "tests/support-dialog-upgrades.test.tsx",
+      "tests/admin-read-recovery.test.tsx",
+      "tests/workflow-continuity.test.tsx",
     ],
   },
 });

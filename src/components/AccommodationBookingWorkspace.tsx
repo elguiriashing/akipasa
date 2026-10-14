@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import "./accommodation-workspace.css";
 import { Icon, type IconName } from "./Icons";
 import { stayReservationStatusLabel } from "../lib/stay-reservation-status";
 
@@ -836,7 +837,10 @@ export function AccommodationBookingWorkspace({
             </div>
             <div className="booking-list">
               {filteredReservations.map((reservation) => (
-                <article key={reservation.id} className="booking-list-card">
+                <article
+                  key={reservation.id}
+                  className="booking-list-card stay-reservation-card"
+                >
                   <strong>{reservation.contact_name}</strong>
                   <span>
                     {reservation.check_in} - {reservation.check_out}

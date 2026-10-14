@@ -31,6 +31,9 @@ jobs:
           path: test-results/claim-emails
           retention-days: 7
       - run: node scripts/test-staff-claims-browser.mjs
+      - run: node scripts/test-staff-ui-upgrades-browser.mjs
+      - run: node scripts/test-stay-ui-upgrades-browser.mjs
+      - run: node scripts/test-support-ui-upgrades-browser.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: staff-claims-evidence
