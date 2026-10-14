@@ -944,3 +944,8 @@ Completed the AkiDuermo room-night request candidate: explicit booking modes, re
 
 - Batch public venue image signing once per nonempty loader, preserving media order, cover behavior and localized labels.
 - Cover reversed/partial batch responses, denied paths, duplicates, failure and empty-media cases with installed-SDK fixtures. Request-count evidence is recorded separately from latency and Storage-download errors.
+
+## 2026-10-14 — Runtime security dependencies
+
+- Pin focused Next, PostCSS and Sharp fixes; preserve current MapLibre v5 map/worker contracts with the exact upstream attribute snapshot backport.
+- Fail installation/build checks for unknown, partially patched or alternate-entry MapLibre artifacts; retain the version-based npm alert and separate provider trust limitation in the audit.
