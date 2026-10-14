@@ -61,8 +61,8 @@ export function PassportBook({
   locale: Locale;
   initialView: string;
   signedIn: boolean;
-  totalXp: number;
-  totalStamps: number;
+  totalXp: number | null;
+  totalStamps: number | null;
   notices: ReactNode;
   progress: ReactNode;
   routes: ReactNode;
@@ -818,9 +818,11 @@ export function PassportBook({
         </span>
       </div>
       <div className={styles.summary}>
-        <span>{totalXp.toLocaleString(locale)} XP</span>
         <span>
-          {totalStamps.toLocaleString(locale)}{" "}
+          {totalXp === null ? "—" : totalXp.toLocaleString(locale)} XP
+        </span>
+        <span>
+          {totalStamps === null ? "—" : totalStamps.toLocaleString(locale)}{" "}
           {es ? "sellos de fidelidad" : "loyalty stamps"}
         </span>
         {!signedIn && (

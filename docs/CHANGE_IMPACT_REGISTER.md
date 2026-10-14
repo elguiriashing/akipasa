@@ -1,5 +1,27 @@
 # Change Impact Register
 
+## 2026-10-14 | Accommodation and member Passport read recovery
+
+- **Inventory:** BS-05 and PASS-01.
+- **Before:** six property-workspace reads discarded errors, so failed inventory
+  and reservation reads appeared as zero/empty and failed settings appeared as a
+  paused booking mode. Seven Passport reads discarded errors, turning outages into
+  zero XP/stamps, empty routes/claims and unsafe start or reward decisions.
+- **After:** the active property tab checks its precise dependencies, shows retry
+  and withholds its forms when unknown; unaffected tabs stay usable. Passport
+  catalogue and personal reads fail independently, unknown totals render as dashes,
+  and actions/badges/progress/claim codes remain hidden until required reads succeed.
+  Successful empty results remain truthful empty or zero states.
+- **Dependencies:** existing server actions, ownership/RLS, inventory overlap and
+  capacity rules, booking transitions, reward calculations and enrollment/claim
+  validation remain authoritative. There are no schema, grant, data or provider
+  changes.
+- **Evidence:** accommodation manager cases pass 7/7 and the Account/Passport suite
+  passes 64/64, including eight seven-read recovery cases. TypeScript and scoped
+  lint pass. Integrated CI, browser suites and exact deployed-source verification
+  remain release gates for the final rebased head.
+- **Rollback:** revert application/tests/docs; no stored-data rollback is needed.
+
 ## 2026-10-14 | Independent operational read recovery
 
 - **Inventory:** AS-17, AS-19, AS-29, AS-30, BS-06, PUB-18, the remainder of

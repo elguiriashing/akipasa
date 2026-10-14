@@ -17,6 +17,7 @@ export default defineConfig({
       "tests/venue-catalogue-visibility.test.tsx",
       "tests/stay-ui-upgrades.test.tsx",
       "tests/admin-city-integrity.test.tsx",
+      "tests/akiduermo-manager.test.tsx",
     ],
   },
 });
