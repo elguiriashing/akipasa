@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-14 — Membership blocked-action guidance
+
+- Replace misleading disabled purchase labels with the actual access, overlap,
+  workspace, eligibility or catalogue reason in EN/ES.
+- Link each recoverable state to account access, billing, retry, workspace setup or
+  the required AkiHQ Pro plan without weakening any purchase gate.
+
 ## 2026-10-14 — Passport status localization
 
 - Translate every stored reward-claim and Passport-enrollment state in EN/ES,

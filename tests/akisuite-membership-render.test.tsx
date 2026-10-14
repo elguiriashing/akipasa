@@ -48,6 +48,9 @@ describe("real AkiSuite catalogue interactions", () => {
       "#akipasa_premium form button",
     );
     expect(personalCheckout?.disabled).toBe(true);
+    expect(
+      screen.getAllByRole("link", { name: "View my access" }),
+    ).toHaveLength(6);
   });
   it("distinguishes staff access and excludes future grants and delinquent subscriptions", () => {
     const now = Date.parse("2026-10-12T12:00:00Z");
@@ -153,6 +156,11 @@ describe("membership account handoff", () => {
             : "Prepare a workspace",
       });
       expect(workspaceButtons).toHaveLength(6);
+      expect(
+        screen.getAllByRole("link", {
+          name: locale === "es" ? "Preparar mi negocio" : "Prepare my business",
+        }),
+      ).toHaveLength(6);
       for (const button of workspaceButtons)
         expect((button as HTMLButtonElement).disabled).toBe(true);
       expect(
@@ -191,6 +199,14 @@ describe("membership account handoff", () => {
       )?.disabled,
     ).toBe(true);
     expect(
+      document.querySelector<HTMLButtonElement>(
+        "#akihq_business_addon form button",
+      )?.textContent,
+    ).toContain("Requires AkiHQ Pro");
+    expect(
+      screen.getByRole("link", { name: "View AkiHQ Pro" }).getAttribute("href"),
+    ).toBe("/en/account/subscription#akihq_pro");
+    expect(
       document.querySelector<HTMLButtonElement>("#akihq_pro form button")
         ?.disabled,
     ).toBe(false);
@@ -212,11 +228,16 @@ describe("membership account handoff", () => {
         accessUnavailable
       />,
     );
-    expect(screen.queryAllByRole("link")).toHaveLength(0);
     for (const button of document.querySelectorAll<HTMLButtonElement>(
       "article form button",
     ))
       expect(button.disabled).toBe(true);
+    expect(
+      screen.getAllByText(/couldn't verify your current access/i),
+    ).toHaveLength(7);
+    expect(
+      screen.getAllByRole("link", { name: "Retry account access" }),
+    ).toHaveLength(7);
     view.unmount();
     render(
       <AkiSuiteMembershipGrid

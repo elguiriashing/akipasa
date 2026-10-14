@@ -1,5 +1,21 @@
 # Change Impact Register
 
+## 2026-10-14 | Membership blocked-action guidance
+
+- **Inventory:** MEMBER-01.
+- **Before:** some disabled cards retained “Choose plan” or add-on language even
+  when access was unreadable, another plan overlapped, no workspace existed or
+  AkiHQ Pro was missing.
+- **After:** every blocked card states the applicable EN/ES reason and uses a
+  matching disabled label. Recoverable states link to the existing account access,
+  billing, retry, workspace setup or AkiHQ Pro section.
+- **Dependencies:** seven-plan visibility, effective/overlapping-plan resolution,
+  checkout readiness, workspace selection, add-on eligibility and Stripe actions
+  remain authoritative and unchanged.
+- **Evidence:** AkiSuite rendering covers included plans, closed checkout, missing
+  workspace, add-on eligibility and failed access reads with their recovery links.
+- **Rollback:** revert component/style/page/tests/docs; no billing or data rollback.
+
 ## 2026-10-14 | Passport status localization
 
 - **Inventory:** PASS-03.

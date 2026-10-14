@@ -551,6 +551,10 @@ container geometry, not MapLibre rendering or authenticated live claiming.
   EN/ES and show a localized unknown-state fallback instead of raw backend values.
   Claim codes and state identifiers stay unchanged; all displayed claim and route
   deadlines use the shared Europe/Madrid civil-date formatter.
+- Disabled membership actions identify the controlling access-read, included-plan,
+  overlap, catalogue-readiness, workspace or add-on requirement in EN/ES. Links
+  lead to the existing account retry, access, billing, workspace setup or required
+  AkiHQ Pro section; entitlement and checkout gates remain unchanged.
 - Booking request received and cancellation messages clearly distinguish pending from confirmed; existing booking confirmation email outboxes only activate on confirmed statuses. Cancellation never claims an unsupported refund. The 5-minute Cloudflare cron `dispatchSuiteEmails` revalidates current email verification, save/booking state, and consent before delivery, with bounded retry and no historical backfill.
 - Mirrored `20261011013000_suite_emails.sql` migration must be applied before release. No live old decisions/customer notifications must be resent without verifying delivery and authorisation. Review Cloudflare runtime credentials before claiming production mail delivery.
 
