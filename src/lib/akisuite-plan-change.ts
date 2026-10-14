@@ -11,6 +11,9 @@ export function canReplaceAkiSuitePlan(
 ) {
   if ((current === "akipasa_premium") !== (requested === "akipasa_premium"))
     return false;
+  // The add-on must be a separate purchase while its qualifying Pro remains active.
+  if (current === "akihq_pro" && requested === "akihq_business_addon")
+    return false;
   if (
     current === "akihq_pro" &&
     requested !== "akihq_pro" &&
