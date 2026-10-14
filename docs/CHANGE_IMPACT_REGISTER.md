@@ -1128,3 +1128,7 @@ pricing, consent and action boundaries remain as documented in the three
 original recovery entries. No SQL, authorization/payment rollout, customer
 records or email replay is included; drafts #133/#140 stay excluded. Source
 revert rolls back these repairs without rewriting catalogue/media/history.
+
+## 2026-10-14 | AkiBusiness events grid, image dialog and claimed listings (#167)
+
+Scope: AkiBusiness EN/ES event catalogue, desktop/tablet/mobile grid and pagination; image-slot selection and keyboard access; public venue claim gating plus secure claim submission; database `public_venue_is_claimed` function; GitHub build cache. Safeguards: existing roles, event mutations, image storage permissions and claims approval are unchanged; existing ownership records are authoritative without requiring owners to edit listing data. Database deployment prerequisite: apply and verify new RPC migration. Regression evidence: `tests/business-event-workspace.test.ts` provides focused structural checks; existing browser suites cover public claim CTA and spotlight layouts. Full new-head CI, authenticated browser journeys and actual Cloudflare live-source verification remain separate release gates. Rollback: revert frontend changes after verifying migration compatibility; do not delete approved ownership memberships or claim records.
