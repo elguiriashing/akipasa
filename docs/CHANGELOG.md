@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-14 — Account collection management
+
+- Bound saved-event and followed-venue reads to deterministic 24-item pages with
+  localized name search and authoritative totals.
+- Add direct pending-aware unsave/unfollow controls, visible outcomes and account
+  count refresh without requiring a visit to each detail page.
+
 ## 2026-10-14 — Actionable authentication feedback
 
 - Replace the generic auth failure notice with localized, account-private guidance

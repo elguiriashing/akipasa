@@ -1,5 +1,22 @@
 # Change Impact Register
 
+## 2026-10-14 | Account collection management
+
+- **Inventory:** ACCOUNT-02.
+- **Before:** saved and followed pages read every reference into one static card
+  grid; people had to open an item detail to remove it.
+- **After:** both collections use exact counts, stable created-at/key ordering,
+  24-item server pages and localized name search. Each card exposes an authorized,
+  pending-aware remove action with localized success/failure feedback; stale page
+  numbers recover to the last available page.
+- **Dependencies:** existing per-profile reference tables/RLS, current catalogue
+  label refresh, reminder opt-in, account overview counts and export reads remain
+  authoritative. Removal records the existing trusted unsave/unfollow behavior.
+- **Evidence:** Account collection rendering covers search, totals, paging and form
+  return state; all 65 Account cases, TypeScript, lint and formatting are release
+  gates on the final stacked head.
+- **Rollback:** revert application/tests/docs; no schema or stored-data migration.
+
 ## 2026-10-14 | Actionable authentication feedback
 
 - **Inventory:** AUTH-03.

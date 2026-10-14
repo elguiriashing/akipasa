@@ -537,6 +537,12 @@ container geometry, not MapLibre rendering or authenticated live claiming.
 - `src/lib/suite-email-templates.ts` renders accessible branded EN/ES HTML/plain text, sender `AkiPasa Support <support@akipasa.com>`. Staff claim submissions remain English-only to Alex and Andrew, linked to authenticated moderation. Claimant receives a submission receipt in `venue_claims.claim_locale`, a separate column from private claimant details. All customer-facing booking confirmations now come from Support. Provider acceptance isn't proof of inbox receipt; Cloudflare's RESEND/CLAIM_RESEND secret must be verified.
 - First-login welcome email calls `queue_suite_portal_welcome` only with authenticated verified sessions, with unique account+product keys. AkiPasa established accounts preceding release are excluded; AkiHQ separately queues via `elguiriashing/akihq` after workspace permission verification. User identity and existing product roles remain unchanged.
 - Saved-event reminders require a valid published event occurrence approximately 48h away, account saved-event reference, and explicit opt-in. Saved-stay follow-ups require a persisted `suite_saved_stays` account-backed save at least five days old, no subsequent reservation and opt-in. AkiDuermo's anonymous browser saved list still works, but cannot cause unsolicited email. Prefs available in Account Saved and AkiDuermo Settings, default OFF.
+- Account Saved and Following collections read stable 24-item pages with exact
+  totals and localized stored-name search. Their cards provide explicit
+  pending-aware unsave/unfollow actions with localized outcomes, then refresh the
+  existing account-layout counts. Current catalogue names/slugs, reminder opt-in,
+  exports, reference-table RLS and trusted behavior signals remain authoritative;
+  no collection schema or permission change is introduced.
 - Booking request received and cancellation messages clearly distinguish pending from confirmed; existing booking confirmation email outboxes only activate on confirmed statuses. Cancellation never claims an unsupported refund. The 5-minute Cloudflare cron `dispatchSuiteEmails` revalidates current email verification, save/booking state, and consent before delivery, with bounded retry and no historical backfill.
 - Mirrored `20261011013000_suite_emails.sql` migration must be applied before release. No live old decisions/customer notifications must be resent without verifying delivery and authorisation. Review Cloudflare runtime credentials before claiming production mail delivery.
 

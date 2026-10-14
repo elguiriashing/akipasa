@@ -21,6 +21,7 @@ const mocks = vi.hoisted(() => ({
   refresh: vi.fn(),
   requireUser: vi.fn(),
   reminder: vi.fn(async () => {}),
+  removeItem: vi.fn(async () => {}),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -32,6 +33,9 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/lib/auth", () => ({ requireUser: mocks.requireUser }));
 vi.mock("../src/app/[locale]/account/saved/actions", () => ({
   setSavedEventReminder: mocks.reminder,
+}));
+vi.mock("../src/app/[locale]/account/collection-actions", () => ({
+  removeAccountCollectionItem: mocks.removeItem,
 }));
 vi.mock("next/link", () => ({
   default: ({
@@ -123,6 +127,38 @@ describe("account collections", () => {
     ).toHaveAttribute("href", "/en/events/poesia-malaga");
     expect(screen.queryByText(/Invalid Date/)).not.toBeInTheDocument();
   });
+
+  it("offers bounded search, paging and direct removal for a managed collection", () => {
+    const { container } = render(
+      <AccountItems
+        locale="en"
+        kind="saved"
+        items={[item]}
+        total={50}
+        page={2}
+        pageSize={24}
+        query="poetry"
+        basePath="/en/account/saved"
+        {...emptyCopy}
+      />,
+    );
+    expect(screen.getByRole("searchbox")).toHaveValue("poetry");
+    expect(
+      container.querySelector(".account-collection-meta"),
+    ).toHaveTextContent("50 saved events");
+    expect(screen.getByRole("button", { name: "Remove" })).toBeEnabled();
+    expect(screen.getByRole("link", { name: "Previous" })).toHaveAttribute(
+      "href",
+      "/en/account/saved?q=poetry",
+    );
+    expect(screen.getByRole("link", { name: "Next" })).toHaveAttribute(
+      "href",
+      "/en/account/saved?q=poetry&page=3",
+    );
+    expect(container.querySelector('input[name="returnTo"]')).toHaveValue(
+      "/en/account/saved?q=poetry",
+    );
+  });
 });
 
 function mockCollectionReads({
@@ -137,11 +173,14 @@ function mockCollectionReads({
   const reply = {
     data: readError ? null : [],
     error: readError ? { code: "unavailable" } : null,
+    count: readError ? null : 0,
   };
   const query = {
     select: vi.fn().mockReturnThis(),
     order: vi.fn().mockReturnThis(),
     limit: vi.fn().mockReturnThis(),
+    ilike: vi.fn().mockReturnThis(),
+    range: vi.fn().mockResolvedValue(reply),
     then: (resolve: (value: typeof reply) => unknown) =>
       Promise.resolve(reply).then(resolve),
   };
