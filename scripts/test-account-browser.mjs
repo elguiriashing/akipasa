@@ -97,6 +97,7 @@ const actionNames = [
   "changeAkiSuiteSubscription",
   "prepareAkiSuiteWorkspace",
   "openBillingPortal",
+  "removeAccountCollectionItem",
 ];
 const navigationAdapter = `
 const router={refresh(){window.__accountRefreshes=(window.__accountRefreshes||0)+1},push(href){return window.__accountNavigate(href)},replace(href){return window.__accountNavigate(href)},prefetch(){}};
@@ -139,7 +140,7 @@ const bundle = await build({
           (args) => ({ path: args.path, namespace: "account-fixture" }),
         );
         builder.onResolve(
-          { filter: /(?:^|\/)(?:akisuite-)?actions$/ },
+          { filter: /(?:^|\/)(?:(?:akisuite-)?actions|collection-actions)$/ },
           (args) => {
             if (
               !args.importer.includes("account") &&
