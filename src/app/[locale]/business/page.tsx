@@ -362,7 +362,7 @@ export default async function BusinessPage({
         </p>
       )}
       <section className="dashboard-grid">
-        {view === "events" && (
+        {view === "events" && query.compose !== "1" && (
           <section className="panel catalogue-edit-card dashboard-grid-full">
             <BusinessEventCatalogue
               locale={locale}
@@ -493,7 +493,7 @@ export default async function BusinessPage({
           </details>
         )}
 
-        {view === "events" && platformStaff && (
+        {view === "events" && platformStaff && query.compose !== "1" && (
           <details
             id="create-official-event"
             className="panel catalogue-edit-card dashboard-grid-full"
