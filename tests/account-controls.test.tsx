@@ -379,7 +379,7 @@ describe("Account control disclosure preserves existing workflows", () => {
       .closest("article")!;
     fireEvent.click(screen.getByRole("radio", { name: /Yearly/ }));
     const checkout = within(card)
-      .getByRole("button", { name: "Coming soon" })
+      .getByRole("button", { name: "Covered by your current plan" })
       .closest("form")!;
     expect(Object.fromEntries(new FormData(checkout))).toEqual({
       locale: "en",
@@ -387,8 +387,13 @@ describe("Account control disclosure preserves existing workflows", () => {
       interval: "year",
     });
     expect(
-      within(card).getByRole("button", { name: "Coming soon" }),
+      within(card).getByRole("button", {
+        name: "Covered by your current plan",
+      }),
     ).toBeDisabled();
+    expect(
+      within(card).getByRole("link", { name: "Manage current plan" }),
+    ).toHaveAttribute("href", "/en/account/subscription#billing-management");
     expect(
       within(card).getByRole("button", { name: "View benefits and access" }),
     ).toBeEnabled();

@@ -158,7 +158,8 @@
 .card form {
   display: flex;
 }
-.card button {
+.card button,
+.cardDetails > a {
   width: 100%;
   min-height: 44px;
   padding: 0.7rem 0.5rem;
@@ -169,6 +170,19 @@
   margin: 0;
   color: var(--muted, #8b949e);
   font-size: 0.85rem;
+}
+.blockedReason {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.65rem 0 0;
+  color: var(--muted, #8b949e);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+.blockedReason a {
+  width: fit-content;
+  color: var(--primary-text, var(--primary-strong, currentColor));
+  font-weight: 750;
 }
 @media (max-width: 1050px) {
   .grid {

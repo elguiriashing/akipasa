@@ -6,6 +6,7 @@ import { createSupabasePublicClient } from "@/lib/supabase/public";
 import { WorkspaceShell } from "@/components/WorkspaceShell";
 import { communityCreatorItems } from "./CreatorDirectoryPage";
 import { submitCreatorReview } from "@/app/[locale]/community/creator-actions";
+import { ContributionDraftForm } from "./ContributionDraftForm";
 
 export const dynamic = "force-dynamic";
 
@@ -69,6 +70,10 @@ export async function CommunityCreatorPage({
   }
   if (!creator) notFound();
   const c = creator as any;
+  const recoverReviewDraft =
+    query.review === "invalid" ||
+    query.review === "unavailable" ||
+    query.review === "draft";
   const paths = Array.from(
     new Set(
       (c.events || [])
@@ -158,24 +163,25 @@ export async function CommunityCreatorPage({
       items={communityCreatorItems(locale)}
     >
       <div className="creator-profile creator-profile-v2">
-        {query.review && (
-          <p
-            className="notice"
-            role={query.review === "submitted" ? "status" : "alert"}
-          >
-            {query.review === "submitted"
-              ? es
-                ? "Valoración enviada para revisión."
-                : "Review submitted for moderation."
-              : query.review === "invalid"
+        {query.review &&
+          ["submitted", "invalid", "unavailable"].includes(query.review) && (
+            <p
+              className="notice"
+              role={query.review === "submitted" ? "status" : "alert"}
+            >
+              {query.review === "submitted"
                 ? es
-                  ? "Revisa la valoración y vuelve a enviarla."
-                  : "Check the review and submit it again."
-                : es
-                  ? "No se pudo enviar la valoración. Vuelve a intentarlo."
-                  : "The review could not be submitted. Please try again."}
-          </p>
-        )}
+                  ? "Valoración enviada para revisión."
+                  : "Review submitted for moderation."
+                : query.review === "invalid"
+                  ? es
+                    ? "Revisa la valoración y vuelve a enviarla."
+                    : "Check the review and submit it again."
+                  : es
+                    ? "No se pudo enviar la valoración. Vuelve a intentarlo."
+                    : "The review could not be submitted. Please try again."}
+            </p>
+          )}
         <section
           className={`creator-cover ${c.cover_url ? "has-image" : ""}`}
           style={
@@ -432,11 +438,17 @@ export async function CommunityCreatorPage({
             </div>
           </section>
 
-          <details className="creator-review-form">
+          <details className="creator-review-form" open={recoverReviewDraft}>
             <summary>
               {es ? "Compartir una valoración" : "Share a review"}
             </summary>
-            <form action={submitCreatorReview} className="stack">
+            <ContributionDraftForm
+              action={submitCreatorReview}
+              className="stack"
+              draftKey={`akipasa:creator-review:${c.profile_id}`}
+              recover={recoverReviewDraft}
+              locale={locale}
+            >
               <input type="hidden" name="locale" value={locale} />
               <input
                 type="hidden"
@@ -471,7 +483,7 @@ export async function CommunityCreatorPage({
                   ? "Las valoraciones se revisan antes de publicarse."
                   : "Reviews are moderated before publication."}
               </p>
-            </form>
+            </ContributionDraftForm>
           </details>
 
           <Link className="back-link" href={`/${locale}/community/creators`}>

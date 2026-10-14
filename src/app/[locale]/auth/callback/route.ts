@@ -3,7 +3,10 @@ import { cookies } from "next/headers";
 import { config, isLocale } from "@/lib/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { publicRequestOrigin } from "@/lib/public-request-origin";
-import { safeStayDestination, stayOrigin } from "@/lib/akiduermo-routing";
+import {
+  safeAuthDestinationForOrigin,
+  taskFromAuthCallback,
+} from "@/lib/auth-security";
 
 export async function GET(
   request: Request,
@@ -15,12 +18,11 @@ export async function GET(
   const publicOrigin = publicRequestOrigin(request.headers, url.origin);
   const code = url.searchParams.get("code");
   const requested = url.searchParams.get("next");
-  const next =
-    publicOrigin === stayOrigin
-      ? safeStayDestination(requested ?? undefined)
-      : requested?.startsWith(`/${safeLocale}/`) && !requested.startsWith("//")
-        ? requested
-        : `/${safeLocale}/account`;
+  const next = safeAuthDestinationForOrigin(
+    safeLocale,
+    requested ?? undefined,
+    publicOrigin,
+  );
   if (code) {
     const supabase = await createSupabaseServerClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
@@ -52,6 +54,16 @@ export async function GET(
     }
   }
   return NextResponse.redirect(
-    new URL(`/${safeLocale}/auth?error=callback`, publicOrigin),
+    new URL(
+      `/${safeLocale}/auth?${new URLSearchParams({
+        error: "callback",
+        next: taskFromAuthCallback(
+          safeLocale,
+          requested ?? undefined,
+          publicOrigin,
+        ),
+      })}`,
+      publicOrigin,
+    ),
   );
 }

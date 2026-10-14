@@ -3,6 +3,16 @@
 > Entry point for every human or AI modifying AkiPasa. Established 2026-10-09. **Living engineering contract, not a claim that every production behavior is verified.**
 > Source priority: running code + database schema + production evidence > current tests > these docs > historical handoff notes > chat discussions. If they disagree, investigate; never silently choose the older description.
 
+## 2026-10-14 | Mobile More dialog focus containment
+
+Opening the public mobile More sheet moves focus to its close control, makes every
+background shell sibling inert, locks document scrolling and contains forward and
+reverse Tab navigation within the dialog. Escape, the close control, backdrop and
+route-driven closure all run the same cleanup: previous inert/scroll state is
+restored and focus returns to the specific More opener when it remains mounted.
+Existing authorized workspace links, EN/ES labels, responsive geometry, theme and
+navigation destinations remain unchanged.
+
 ## 2026-10-14 | Event occurrence continuity and honest actions
 
 Discovery and Map event cards include the displayed occurrence ID in their detail
@@ -527,6 +537,24 @@ container geometry, not MapLibre rendering or authenticated live claiming.
 - `src/lib/suite-email-templates.ts` renders accessible branded EN/ES HTML/plain text, sender `AkiPasa Support <support@akipasa.com>`. Staff claim submissions remain English-only to Alex and Andrew, linked to authenticated moderation. Claimant receives a submission receipt in `venue_claims.claim_locale`, a separate column from private claimant details. All customer-facing booking confirmations now come from Support. Provider acceptance isn't proof of inbox receipt; Cloudflare's RESEND/CLAIM_RESEND secret must be verified.
 - First-login welcome email calls `queue_suite_portal_welcome` only with authenticated verified sessions, with unique account+product keys. AkiPasa established accounts preceding release are excluded; AkiHQ separately queues via `elguiriashing/akihq` after workspace permission verification. User identity and existing product roles remain unchanged.
 - Saved-event reminders require a valid published event occurrence approximately 48h away, account saved-event reference, and explicit opt-in. Saved-stay follow-ups require a persisted `suite_saved_stays` account-backed save at least five days old, no subsequent reservation and opt-in. AkiDuermo's anonymous browser saved list still works, but cannot cause unsolicited email. Prefs available in Account Saved and AkiDuermo Settings, default OFF.
+- Account Saved and Following collections read stable 24-item pages with exact
+  totals and localized stored-name search. Their cards provide explicit
+  pending-aware unsave/unfollow actions with localized outcomes, then refresh the
+  existing account-layout counts. Current catalogue names/slugs, reminder opt-in,
+  exports, reference-table RLS and trusted behavior signals remain authoritative;
+  no collection schema or permission change is introduced.
+- An Account personalization withdrawal applies locally before the account sync,
+  so optional behavior stops even if that POST fails. The control stays visibly
+  Off and exposes an account-sync retry that preserves the other local consent
+  choices; an error never restores optional consent.
+- Passport reward-claim and enrollment cards translate stored workflow states in
+  EN/ES and show a localized unknown-state fallback instead of raw backend values.
+  Claim codes and state identifiers stay unchanged; all displayed claim and route
+  deadlines use the shared Europe/Madrid civil-date formatter.
+- Disabled membership actions identify the controlling access-read, included-plan,
+  overlap, catalogue-readiness, workspace or add-on requirement in EN/ES. Links
+  lead to the existing account retry, access, billing, workspace setup or required
+  AkiHQ Pro section; entitlement and checkout gates remain unchanged.
 - Booking request received and cancellation messages clearly distinguish pending from confirmed; existing booking confirmation email outboxes only activate on confirmed statuses. Cancellation never claims an unsupported refund. The 5-minute Cloudflare cron `dispatchSuiteEmails` revalidates current email verification, save/booking state, and consent before delivery, with bounded retry and no historical backfill.
 - Mirrored `20261011013000_suite_emails.sql` migration must be applied before release. No live old decisions/customer notifications must be resent without verifying delivery and authorisation. Review Cloudflare runtime credentials before claiming production mail delivery.
 
@@ -825,3 +853,78 @@ pricing, consent and action boundaries remain as documented in the three
 original recovery entries. No SQL, authorization/payment rollout, customer
 records or email replay is included; drafts #133/#140 stay excluded. Source
 revert rolls back these repairs without rewriting catalogue/media/history.
+
+## 2026-10-14 | Discovery filter recovery
+
+GlobalSearch validates price and date ranges before its existing automatic URL
+replacement. Invalid ranges receive localized visible errors and do not navigate.
+The panel exposes its active discovery filters as named removal controls plus a
+clear-all action, clears stale result pagination after individual changes and
+returns focus to the panel after the routed query update. The public no-results
+state expands only up to 100 km; at that limit it now links to the locale home to
+choose a new area from a clean filter state.
+
+This is PUB-17. Existing filter keys/defaults, list and Map routing, recommendation
+queries, native input constraints and ranking remain unchanged. No API, database,
+authorization, consent, payment or persistent customer data changes. Focused
+validation and empty-state tests pass; current-head checks, CI, Cloudflare release
+and exact live-source verification remain required before this entry is live.
+
+## 2026-10-14 | Recovered demand-driven Passport foil from #103
+
+The retained Passport-only scheduler from draft #103 now stops animation frames and style writes after interpolation settles, pauses while hidden, and wakes on pointer/sensor input, recentering and surface changes. Current theme/layout, motion permission and on-device preference, reduced-motion behavior, rank/stamp data and existing interpolation/sensitivity remain unchanged. No broader navigation/auth/cache/toolbox changes from the old branch are incorporated.
+
+The mandatory subscription test configuration includes scheduler and real PassportBook regressions for EN/ES sensor input, hidden/resumed documents, recentering, unmount, reduced motion, preference revocation, pointer fallback, foil toggling and chapter changes. The unchanged original component fails the new idle-frame regression. Full checks, existing public Passport browser acceptance, current-head CI and deployed-source verification remain release gates. Physical gyro feel, device power consumption and production frame-rate improvements are not established. Rollback is a source revert; no data or migration rollback.
+
+## 2026-10-14 | Public membership account handoff
+
+The public catalogue has no authenticated owned-workspace or entitlement context. Its ready plan CTAs now navigate to the existing same-locale account subscription hub with the allowlisted originating app, rather than posting a workspace checkout without a workspace. Authentication and terms use the existing middleware/account return path; the account still loads authorised workspaces, exposes existing setup and requires a separate final purchase. Public closed gates retain seven disabled Coming soon buttons. Account workspace purchases are disabled until a workspace exists, with EN/ES setup guidance; personal purchases, included/access-error guards and selected-workspace add-on eligibility remain intact.
+
+Dependencies: public/Business/Duermo aliases and HQ origin, shared catalogue, account layout/auth/terms, gated owned-workspace RPC/setup, existing checkout server authorisation and Stripe safeguards. No server billing action, entitlement, readiness flag, price, migration, live service call, analytics or customer-data change. Five new rendered regressions fail against the original grid; all 18 focused rendered/UI/checkout cases pass after the patch. Full check, current-head CI/browser/Cloudflare and authenticated acceptance remain pending. Rollback is a source revert; paid rollout remains blocked by the separate legal/tax/schema/lifecycle gates.
+
+Validation follow-up: full check passed formatting, lint, TypeScript, all application suites (855 tests including AkiSuite 114), database safety and two conflict tests, then stopped because the isolated automation workspace lacked Hono dependencies. After installing that subproject from its lockfile, automation checks/dry-run passed; the production build is being checked separately. The existing account browser workflow now includes eight ready/closed public-handoff cases (EN/ES, both themes, 360/1536px), actual anchor target/text geometry, account navigation with zero checkout actions and disabled closed gates. Its disposable bundle compiles. Local Chrome cannot launch because ProcessSingleton socket() is prohibited; geometry assertions and screenshots must pass hosted CI before acceptance. Scoped anchor CSS shares the existing button dimensions. Independent source review found no functional/security blocker; neither hosted browser execution nor payment acceptance is claimed.
+
+Hosted handoff follow-up: run 38500939403/account job 115647472508 passed the pre-existing matrix but stopped before the new geometry assertions. Expanding a card changed its accessible button name, shrinking the live name-filtered nth locator set and making nth(4) disappear. The harness now iterates stable article containers and explicitly verifies false-to-true aria-expanded per card. All eight cases, CTA geometry and zero-checkout assertions remain unchanged; no production source or timeout change. Fresh hosted execution remains required.
+
+## 2026-10-14 | Recovered lazy owner toolbox (#103)
+
+The owner-only launcher previously imported the full toolbox, achievement scopes and Pals engine before activation. The bounded recovery extracts the current panel intact and dynamically imports it only after a click or Ctrl/Meta+Shift+O. Saved appearance still applies immediately. Concurrent activations share the pending load; an EN/ES busy/retry trigger retains the existing responsive class and accessible name; late completion after unmount is ignored. Once loaded, the panel remains mounted so Escape, outside-close and reopen preserve its existing state. The locale layout's server has_owner_console gate and every owner/award action remain unchanged; lazy delivery grants no authorization.
+
+Eight focused cases cover import deferral, immediate appearance, mouse/keyboard activation, pending deduplication, failed-load retry, unmount and actual panel state across close/reopen in EN/ES. These are component/module-boundary evidence, not live bandwidth or authenticated acceptance. No CSS, auth cache, route, SQL, data, rewards, billing, email or consent changes. Current-head full checks, production/Cloudflare packaging and required CI remain release gates. Rollback restores the original eager component; no data restoration.
+
+## 2026-10-14 | Creator review draft recovery
+
+PUB-09 now retains a creator-review rating and body in tab-local session storage
+before invoking the existing server action. Validation, unavailable-service and
+authentication returns reopen the review disclosure and restore those fields; the
+authentication return carries only a bounded `review=draft` marker. Normal and
+successful profile loads clear stale drafts. Existing Zod limits, requireUser and
+Terms routing, creator_reviews RLS/moderation, pending state and EN/ES outcome copy
+remain unchanged. No automatic resubmission, new endpoint, schema or persistent
+cross-tab storage is added. Focused action/profile/draft tests pass; full CI and
+exact deployed-source verification remain release gates.
+
+## 2026-10-14 | Password recovery task continuity
+
+AUTH-02 carries the sanitized originating task through password-reset request,
+the PKCE callback, the authenticated recovery page, password update, mandatory
+sign-out and the following sign-in. Public paths use the locale allowlist and
+AkiDuermo paths use its host-specific member/stay allowlist. Expired or reused
+callbacks, missing recovery sessions, password-policy failures and provider save
+failures keep that safe destination available for recovery. Nested task parsing
+never serializes a password, recovery code or provider token. Existing password
+rules, callback exchange, Terms enforcement and sign-out behavior remain
+authoritative. Focused action/security tests pass; both host browser journeys,
+current-head CI and exact live-source verification remain release gates.
+
+## 2026-10-14 | Actionable authentication feedback
+
+AUTH-03 maps the existing authentication error categories to localized alerts and
+associates invalid email, password/confirmation and Terms controls with the active
+summary. Credential failures keep the same account-private wording for unknown and
+incorrect accounts. A client boundary stores only the typed email in host-scoped,
+tab-local session storage; it never receives or stores password fields. Submit
+buttons use native React form status to disable repeat submission and announce the
+pending action. Server validation, provider calls, rate limits, Terms enforcement,
+redirects and account-existence privacy remain authoritative. Rendered controls and
+existing inert action tests pass; full CI and live-source verification remain gates.

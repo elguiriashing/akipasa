@@ -1,5 +1,147 @@
 # Change Impact Register
 
+## 2026-10-14 | Membership blocked-action guidance
+
+- **Inventory:** MEMBER-01.
+- **Before:** some disabled cards retained “Choose plan” or add-on language even
+  when access was unreadable, another plan overlapped, no workspace existed or
+  AkiHQ Pro was missing.
+- **After:** every blocked card states the applicable EN/ES reason and uses a
+  matching disabled label. Recoverable states link to the existing account access,
+  billing, retry, workspace setup or AkiHQ Pro section.
+- **Dependencies:** seven-plan visibility, effective/overlapping-plan resolution,
+  checkout readiness, workspace selection, add-on eligibility and Stripe actions
+  remain authoritative and unchanged.
+- **Evidence:** AkiSuite rendering covers included plans, closed checkout, missing
+  workspace, add-on eligibility and failed access reads with their recovery links.
+- **Rollback:** revert component/style/page/tests/docs; no billing or data rollback.
+
+## 2026-10-14 | Passport status localization
+
+- **Inventory:** PASS-03.
+- **Before:** reward and enrollment cards exposed backend state values, and several
+  Spanish notices omitted accents.
+- **After:** ready/redeemed/expired claims and active/completed/redeemed/expired
+  enrollments use explicit EN/ES labels; unexpected values use a localized safe
+  fallback. Spanish Passport copy is corrected throughout the affected page.
+- **Dependencies:** state identifiers, reward/enrollment actions, claim codes and
+  Europe/Madrid deadline formatting remain unchanged.
+- **Evidence:** focused status-map cases cover every stored value and unknown/null
+  fallbacks; Spanish text integrity, Spotlight, TypeScript and lint remain gates.
+- **Rollback:** revert helper/page/tests/docs; no schema or record changes.
+
+## 2026-10-14 | Privacy withdrawal recovery
+
+- **Inventory:** PRIVACY-01.
+- **Before:** a failed account POST left the personalization checkbox visibly On
+  even though local consent and queued optional behavior had already been removed.
+- **After:** withdrawal immediately renders Off locally. A failed account sync says
+  exactly what happened and offers a retry that posts the current local analytics,
+  personalization and marketing choices without re-enabling consent.
+- **Dependencies:** existing consent cookies/version, behavior-queue removal,
+  consent API, account setting and global consent-change event remain unchanged.
+- **Evidence:** component coverage exercises a failed withdrawal, preserved
+  analytics choice, explicit retry and successful recovery.
+- **Rollback:** revert component/test/docs; server and local formats do not change.
+
+## 2026-10-14 | Account collection management
+
+- **Inventory:** ACCOUNT-02.
+- **Before:** saved and followed pages read every reference into one static card
+  grid; people had to open an item detail to remove it.
+- **After:** both collections use exact counts, stable created-at/key ordering,
+  24-item server pages and localized name search. Each card exposes an authorized,
+  pending-aware remove action with localized success/failure feedback; stale page
+  numbers recover to the last available page.
+- **Dependencies:** existing per-profile reference tables/RLS, current catalogue
+  label refresh, reminder opt-in, account overview counts and export reads remain
+  authoritative. Removal records the existing trusted unsave/unfollow behavior.
+- **Evidence:** Account collection rendering covers search, totals, paging and form
+  return state; all 65 Account cases, TypeScript, lint and formatting are release
+  gates on the final stacked head.
+- **Rollback:** revert application/tests/docs; no schema or stored-data migration.
+
+## 2026-10-14 | Actionable authentication feedback
+
+- **Inventory:** AUTH-03.
+- **Before:** every authentication category displayed the same generic notice;
+  affected fields were not associated with it, safe email entry was lost, and
+  submit buttons gave no pending state.
+- **After:** EN/ES alerts explain email format, password policy/mismatch, terms,
+  credential retry and expired-link recovery while retaining account-existence
+  privacy. Email alone is restored from same-tab storage; passwords are never
+  stored. Form-status buttons disable and announce their pending action.
+- **Dependencies:** existing server error taxonomy, Zod/password validation,
+  provider rate limits, Terms controls and redirect allowlists remain unchanged.
+- **Evidence:** rendered auth/control tests cover safe restoration, pending state,
+  error roles and field associations; existing action suites remain green.
+- **Rollback:** revert component/page/tests/docs and clear optional tab storage; no
+  account, provider or database rollback.
+
+## 2026-10-14 | Password recovery task continuity
+
+- **Inventory:** AUTH-02.
+- **Before:** Forgot-password discarded the original membership, claim or stay
+  destination; the reset callback targeted only the recovery form and a completed
+  reset returned to generic sign-in.
+- **After:** one origin-aware allowlist carries the task through the recovery email,
+  callback, update form and required fresh sign-in. Validation, provider, missing
+  session and expired/reused callback paths retain the same safe task.
+- **Dependencies:** public/AkiDuermo host routing, Supabase PKCE callback/session,
+  existing password policy, sign-out-after-reset and Terms guard remain unchanged.
+  Passwords and provider codes are never copied into the task query.
+- **Evidence:** 18 focused auth-action/recovery cases plus public and AkiDuermo
+  nested-destination security cases pass; TypeScript and scoped lint pass.
+- **Rollback:** revert source/tests/docs; no session or database migration rollback.
+
+## 2026-10-14 | Creator review draft recovery
+
+- **Inventory:** completes PUB-09.
+- **Before:** review outcomes and the creator return path were visible, but a failed
+  insert, validation redirect or sign-in handoff discarded the typed review.
+- **After:** the review form records its rating/body in session storage before the
+  server action, returns from sign-in with a bounded recovery marker, reopens the
+  disclosure and restores the draft. A normal or submitted page clears stale data.
+- **Dependencies:** existing review validation, requireUser/Terms handoff,
+  creator_reviews moderation/RLS and result notices remain authoritative. No review
+  is auto-submitted and no persistent cross-tab storage is introduced.
+- **Evidence:** 17 focused action, profile and draft cases pass, including all three
+  failure/auth returns and clearing outside recovery.
+- **Rollback:** revert source/tests/docs; session drafts expire with the tab and no
+  database rollback is needed.
+
+## 2026-10-14 | Discovery filter recovery
+
+- **Inventory:** PUB-17.
+- **Before:** inverted price/date ranges silently produced empty discovery results,
+  selected filters had no direct removal controls, and the 100 km empty-state
+  action linked back to the same ineffective radius.
+- **After:** EN/ES range errors remain beside the filters and block navigation;
+  active filters can be removed individually or together with focus returned to
+  the search panel. At the maximum radius, the empty state offers a clean area
+  and filter reset.
+- **Dependencies:** existing URL filter names, discovery defaults, native field
+  constraints, recommendation queries and list/Map routes remain authoritative.
+  No API, schema, permission, ranking or stored-data change is included.
+- **Evidence:** 59 focused validation, active-filter and public empty-state cases
+  pass. TypeScript, lint, formatting and the full Spotlight suite are final gates.
+- **Rollback:** revert application/helper/tests/docs; no data rollback is needed.
+
+## 2026-10-14 | Mobile More focus containment
+
+- **Inventory:** PUB-16.
+- **Before:** the aria-modal More sheet moved focus only on open; keyboard focus
+  could leave the dialog, the background stayed interactive and closing did not
+  restore the opener.
+- **After:** background shell siblings are inert, forward/reverse Tab cycle through
+  the sheet, and Escape/backdrop/button/route cleanup restores scroll, prior inert
+  state and the mounted opener.
+- **Dependencies:** AppShell destinations, capability gates, localized labels,
+  GlobalSearch, theme and layout CSS remain unchanged.
+- **Evidence:** WorkspaceShell/AppShell passes 15/15 including focus endpoints,
+  background inert state, Escape cleanup and opener restoration; TypeScript passes.
+- **Rollback:** revert source/test/docs; no persisted state or data rollback.
+
 ## 2026-10-14 | Event occurrence and stay handoff
 
 - **Inventory:** PUB-11, PUB-12, PUB-13 and PUB-14.
@@ -1149,3 +1291,29 @@ pricing, consent and action boundaries remain as documented in the three
 original recovery entries. No SQL, authorization/payment rollout, customer
 records or email replay is included; drafts #133/#140 stay excluded. Source
 revert rolls back these repairs without rewriting catalogue/media/history.
+
+## 2026-10-14 | Historical #103 Passport frame recovery
+
+- **Before editing:** current master `8613edbd` PassportBook unconditionally reschedules requestAnimationFrame and writes every foil property while visible, even when idle. Existing draft #103 at `aef15f534ca68051d1bed5828ffddee486614a03` contains a bounded demand-driven helper. Latest coordination issue #131 reserves this scope independently of active Health and billing work.
+- **Dependencies traced:** PassportBook surface refs/page/city effects, pointer handlers, sensor calibration, foilTarget/foilProperties, passport-motion preference/permission events, reduced-motion media listener, visibility lifecycle, CityStamps and existing Passport Playwright suite. EN/ES and all roles share this client surface; data/RPC/awards and server access remain unchanged. Theme/CSS/layout, locale navigation and auth caches are not edited.
+- **Recovered change:** retain original interpolation and optical mapping, stop when target settles, deduplicate pending frames, cancel hidden/unmounted work and wake for input/recenter/new surface. Only the Passport scheduler hunks/helper are recovered; the old draft's NavigationLink and every other feature are excluded. Existing optional motion permission and revocation remain authoritative.
+- **Regression evidence:** deterministic scheduler tests and real-component tests exercise idle settling, both locale sensor controls, hidden input/no frames, visibility recovery, recentering, reduced motion, motion revocation, pointer fallback/leave, foil off/on and chapter changes. New tests run through the existing mandatory subscription suite. Baseline reproduction and final results are recorded in the focused PR. Fixture clocks prove scheduling behavior, not physical frame rate or battery gains.
+- **Release limitations:** full check/build and existing public Passport browser CI must pass on the final candidate; authenticated live and physical gyro acceptance remain separate. No production action, permissions, storage, billing, email, analytics, database or customer data changed. Revert these source/test additions to roll back.
+
+- **Validation checkpoint:** the unchanged master component fails all six new component regressions because one frame remains queued after 100 ticks. Recovered helper/component tests pass 8/8, independently repeated by another reviewer with no blocking findings. Scoped ESLint/Prettier pass. Local full check/build is deferred due simultaneous Health/billing builds; hosted full check, Cloudflare packaging and public Passport browser checks are mandatory before merge.
+
+## 2026-10-14 | Public membership account handoff
+
+The public catalogue has no authenticated owned-workspace or entitlement context. Its ready plan CTAs now navigate to the existing same-locale account subscription hub with the allowlisted originating app, rather than posting a workspace checkout without a workspace. Authentication and terms use the existing middleware/account return path; the account still loads authorised workspaces, exposes existing setup and requires a separate final purchase. Public closed gates retain seven disabled Coming soon buttons. Account workspace purchases are disabled until a workspace exists, with EN/ES setup guidance; personal purchases, included/access-error guards and selected-workspace add-on eligibility remain intact.
+
+Dependencies: public/Business/Duermo aliases and HQ origin, shared catalogue, account layout/auth/terms, gated owned-workspace RPC/setup, existing checkout server authorisation and Stripe safeguards. No server billing action, entitlement, readiness flag, price, migration, live service call, analytics or customer-data change. Five new rendered regressions fail against the original grid; all 18 focused rendered/UI/checkout cases pass after the patch. Full check, current-head CI/browser/Cloudflare and authenticated acceptance remain pending. Rollback is a source revert; paid rollout remains blocked by the separate legal/tax/schema/lifecycle gates.
+
+Validation follow-up: full check passed formatting, lint, TypeScript, all application suites (855 tests including AkiSuite 114), database safety and two conflict tests, then stopped because the isolated automation workspace lacked Hono dependencies. After installing that subproject from its lockfile, automation checks/dry-run passed; the production build is being checked separately. The existing account browser workflow now includes eight ready/closed public-handoff cases (EN/ES, both themes, 360/1536px), actual anchor target/text geometry, account navigation with zero checkout actions and disabled closed gates. Its disposable bundle compiles. Local Chrome cannot launch because ProcessSingleton socket() is prohibited; geometry assertions and screenshots must pass hosted CI before acceptance. Scoped anchor CSS shares the existing button dimensions. Independent source review found no functional/security blocker; neither hosted browser execution nor payment acceptance is claimed.
+
+Hosted handoff follow-up: run 38500939403/account job 115647472508 passed the pre-existing matrix but stopped before the new geometry assertions. Expanding a card changed its accessible button name, shrinking the live name-filtered nth locator set and making nth(4) disappear. The harness now iterates stable article containers and explicitly verifies false-to-true aria-expanded per card. All eight cases, CTA geometry and zero-checkout assertions remain unchanged; no production source or timeout change. Fresh hosted execution remains required.
+
+## 2026-10-14 | Recovered lazy owner toolbox (#103)
+
+The owner-only launcher previously imported the full toolbox, achievement scopes and Pals engine before activation. The bounded recovery extracts the current panel intact and dynamically imports it only after a click or Ctrl/Meta+Shift+O. Saved appearance still applies immediately. Concurrent activations share the pending load; an EN/ES busy/retry trigger retains the existing responsive class and accessible name; late completion after unmount is ignored. Once loaded, the panel remains mounted so Escape, outside-close and reopen preserve its existing state. The locale layout's server has_owner_console gate and every owner/award action remain unchanged; lazy delivery grants no authorization.
+
+Eight focused cases cover import deferral, immediate appearance, mouse/keyboard activation, pending deduplication, failed-load retry, unmount and actual panel state across close/reopen in EN/ES. These are component/module-boundary evidence, not live bandwidth or authenticated acceptance. No CSS, auth cache, route, SQL, data, rewards, billing, email or consent changes. Current-head full checks, production/Cloudflare packaging and required CI remain release gates. Rollback restores the original eager component; no data restoration.

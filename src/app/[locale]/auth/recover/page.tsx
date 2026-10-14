@@ -1,6 +1,9 @@
 import { notFound, redirect } from "next/navigation";
-import { isLocale } from "@/lib/config";
+import { headers } from "next/headers";
+import { config, isLocale } from "@/lib/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { safeAuthDestinationForOrigin } from "@/lib/auth-security";
+import { publicRequestOrigin } from "@/lib/public-request-origin";
 import { updateRecoveredPassword } from "./actions";
 
 export default async function RecoverPasswordPage({
@@ -12,12 +15,21 @@ export default async function RecoverPasswordPage({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const query = await searchParams;
+  const requestHeaders = await headers();
+  const origin = publicRequestOrigin(
+    new Headers(requestHeaders),
+    config.siteUrl,
+  );
+  const next = safeAuthDestinationForOrigin(locale, query.next, origin);
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect(`/${locale}/auth?error=recovery`);
-  const query = await searchParams;
+  if (!user)
+    redirect(
+      `/${locale}/auth?${new URLSearchParams({ error: "recovery", next })}`,
+    );
   const es = locale === "es";
 
   return (
@@ -41,6 +53,7 @@ export default async function RecoverPasswordPage({
         )}
         <form action={updateRecoveredPassword} className="stack">
           <input type="hidden" name="locale" value={locale} />
+          <input type="hidden" name="next" value={next} />
           <label>
             {es ? "Nueva contraseña" : "New password"}
             <input

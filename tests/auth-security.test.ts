@@ -4,7 +4,9 @@ import { publicRequestOrigin } from "../src/lib/public-request-origin";
 import {
   passwordSchema,
   safeAuthDestination,
+  safeAuthDestinationForOrigin,
   safeExternalUrlSchema,
+  taskFromAuthCallback,
 } from "../src/lib/auth-security";
 
 describe("authentication security", () => {
@@ -58,5 +60,33 @@ describe("authentication security", () => {
     expect(publicRequestOrigin(new Headers({ host: "attacker.example" }))).toBe(
       "https://akipasa.com",
     );
+  });
+
+  it("keeps a public task through the nested recovery callback", () => {
+    const recovery =
+      "/en/auth/recover?next=%2Fen%2Faccount%2Fsubscription%3Ffrom%3Dakipasa";
+    expect(
+      safeAuthDestinationForOrigin("en", recovery, "https://akipasa.com"),
+    ).toBe(recovery);
+    expect(taskFromAuthCallback("en", recovery, "https://akipasa.com")).toBe(
+      "/en/account/subscription?from=akipasa",
+    );
+  });
+
+  it("keeps an AkiDuermo task and rejects an external nested destination", () => {
+    expect(
+      taskFromAuthCallback(
+        "es",
+        "/es/auth/recover?next=%2Fbookings%3Fstatus%3Dpending",
+        "https://akiduermo.akipasa.com",
+      ),
+    ).toBe("/bookings?status=pending");
+    expect(
+      taskFromAuthCallback(
+        "en",
+        "/en/auth/recover?next=https%3A%2F%2Fevil.example%2Fsteal",
+        "https://akipasa.com",
+      ),
+    ).toBe("/en/account");
   });
 });

@@ -1,4 +1,5 @@
 import { passportDeadlineLabel } from "@/lib/passport-deadline";
+import { passportStatusLabel } from "@/lib/passport-status";
 import { myPassportCollection } from "@/lib/passport-repository";
 import type { CSSProperties } from "react";
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -185,7 +186,7 @@ export default async function PassportsPage({
                   : "Check-in accepted. Your XP and stamps have been updated."
                 : query.checkin === "cooldown"
                   ? es
-                    ? "Ya hiciste check-in aqui en las ultimas seis horas."
+                    ? "Ya hiciste check-in aquí en las últimas seis horas."
                     : "You already checked in here within six hours."
                   : es
                     ? "No se pudo aceptar el check-in."
@@ -199,10 +200,10 @@ export default async function PassportsPage({
             <p className="notice">
               {query.reward === "ready"
                 ? es
-                  ? "Recompensa lista. Tu codigo aparece en Progreso."
+                  ? "Recompensa lista. Tu código aparece en Progreso."
                   : "Reward ready. Your code appears in Progress."
                 : es
-                  ? "La recompensa no esta disponible o ya existe una solicitud."
+                  ? "La recompensa no está disponible o ya existe una solicitud."
                   : "The reward is unavailable, or a claim already exists."}
             </p>
           )}
@@ -272,7 +273,7 @@ export default async function PassportsPage({
                   {!user && (
                     <p>
                       {es
-                        ? "Inicia sesion para guardar tu progreso."
+                        ? "Inicia sesión para guardar tu progreso."
                         : "Sign in to save your progress."}
                     </p>
                   )}
@@ -317,13 +318,15 @@ export default async function PassportsPage({
                   <h2>{es ? "Recompensas listas" : "Rewards ready"}</h2>
                   <p>
                     {es
-                      ? "Ensenale el codigo al personal. Caduca en la fecha indicada y solo puede canjearse una vez."
+                      ? "Enséñale el código al personal. Caduca en la fecha indicada y solo puede canjearse una vez."
                       : "Show the code to venue staff. It expires on the date shown and can only be redeemed once."}
                   </p>
                   <div className="reward-card-list">
                     {claims.map((claim: any) => (
                       <article className="stamp-card" key={claim.id}>
-                        <span className="status-pill">{claim.status}</span>
+                        <span className="status-pill">
+                          {passportStatusLabel("claim", claim.status, locale)}
+                        </span>
                         <h3>
                           {locale === "en"
                             ? claim.business_rewards?.title_en ||
@@ -413,11 +416,15 @@ export default async function PassportsPage({
                         </span>
                         <span className="status-pill">
                           {passport.completion_window_days}{" "}
-                          {es ? "dias" : "days"}
+                          {es ? "días" : "days"}
                         </span>
                         {!enrollmentsUnavailable && enrollment && (
                           <span className="status-pill">
-                            {enrollment.state}
+                            {passportStatusLabel(
+                              "enrollment",
+                              enrollment.state,
+                              locale,
+                            )}
                           </span>
                         )}
                       </div>
@@ -496,7 +503,7 @@ export default async function PassportsPage({
                           href={`/${locale}/auth?mode=signin&next=${encodeURIComponent(`/${locale}/passports?view=passports`)}`}
                         >
                           {es
-                            ? "Inicia sesion para empezar"
+                            ? "Inicia sesión para empezar"
                             : "Sign in to start"}
                         </Link>
                       ) : enrollmentsUnavailable ? null : !enrollment ? (
@@ -684,7 +691,7 @@ export default async function PassportsPage({
             ) : (
               <p className="empty-state">
                 {es
-                  ? "Los negocios participantes apareceran aqui."
+                  ? "Los negocios participantes aparecerán aquí."
                   : "Participating businesses will appear here."}
               </p>
             )}
@@ -695,7 +702,7 @@ export default async function PassportsPage({
         user ? (
           <section className="console-section">
             <ConsoleSectionHeader
-              label={es ? "Coleccion" : "Collection"}
+              label={es ? "Colección" : "Collection"}
               title={es ? "Insignias del explorador" : "Explorer badges"}
               description={
                 es

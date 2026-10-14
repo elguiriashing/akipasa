@@ -84,6 +84,7 @@ export function AppShell({
   const other = es ? "en" : "es";
   const [sheetOpen, setSheetOpen] = useState(false);
   const [compact, setCompact] = useState(false);
+  const moreButtonRef = useRef<HTMLButtonElement>(null);
   const sheetCloseRef = useRef<HTMLButtonElement>(null);
   const section = pathname.split("/").filter(Boolean)[1];
   const activeWorkspace = ["account", "business", "staff", "admin"].includes(
@@ -192,15 +193,58 @@ export function AppShell({
   useEffect(() => {
     if (!sheetOpen) return;
     const previousOverflow = document.body.style.overflow;
+    const returnFocus = moreButtonRef.current;
+    const sheet = sheetCloseRef.current?.closest<HTMLElement>(".app-sheet");
+    const shell = sheet?.closest<HTMLElement>(".app-shell");
+    const background = shell
+      ? Array.from(shell.children).filter(
+          (element): element is HTMLElement =>
+            element instanceof HTMLElement &&
+            !element.classList.contains("app-sheet-layer"),
+        )
+      : [];
+    const priorInert = background.map((element) => ({
+      element,
+      inert: element.hasAttribute("inert"),
+    }));
+    for (const element of background) element.setAttribute("inert", "");
     document.body.style.overflow = "hidden";
     sheetCloseRef.current?.focus();
-    const onEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setSheetOpen(false);
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setSheetOpen(false);
+        return;
+      }
+      if (event.key !== "Tab" || !sheet) return;
+      const focusable = Array.from(
+        sheet.querySelectorAll<HTMLElement>(
+          'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((element) => !element.hasAttribute("hidden"));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (
+        !event.shiftKey &&
+        (document.activeElement === last ||
+          !sheet.contains(document.activeElement))
+      ) {
+        event.preventDefault();
+        first.focus();
+      }
     };
-    document.addEventListener("keydown", onEscape);
+    document.addEventListener("keydown", onKeyDown);
     return () => {
       document.body.style.overflow = previousOverflow;
-      document.removeEventListener("keydown", onEscape);
+      document.removeEventListener("keydown", onKeyDown);
+      for (const { element, inert } of priorInert) {
+        if (!inert) element.removeAttribute("inert");
+      }
+      if (returnFocus?.isConnected) returnFocus.focus();
     };
   }, [sheetOpen]);
 
@@ -369,6 +413,7 @@ export function AppShell({
           </Suspense>
         ))}
         <button
+          ref={moreButtonRef}
           type="button"
           className={sheetOpen ? "active" : undefined}
           onClick={() => setSheetOpen(true)}

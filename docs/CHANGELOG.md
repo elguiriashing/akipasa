@@ -1,5 +1,74 @@
 # Changelog
 
+## 2026-10-14 — Membership blocked-action guidance
+
+- Replace misleading disabled purchase labels with the actual access, overlap,
+  workspace, eligibility or catalogue reason in EN/ES.
+- Link each recoverable state to account access, billing, retry, workspace setup or
+  the required AkiHQ Pro plan without weakening any purchase gate.
+
+## 2026-10-14 — Passport status localization
+
+- Translate every stored reward-claim and Passport-enrollment state in EN/ES,
+  with a safe localized fallback for unexpected values.
+- Correct remaining Spanish accents while retaining Madrid civil-date deadlines.
+
+## 2026-10-14 — Privacy withdrawal recovery
+
+- Reflect a personalization withdrawal as locally Off before its account sync.
+- Explain a failed account sync and provide an explicit retry that preserves the
+  user's other local privacy choices.
+
+## 2026-10-14 — Account collection management
+
+- Bound saved-event and followed-venue reads to deterministic 24-item pages with
+  localized name search and authoritative totals.
+- Add direct pending-aware unsave/unfollow controls, visible outcomes and account
+  count refresh without requiring a visit to each detail page.
+
+## 2026-10-14 — Actionable authentication feedback
+
+- Replace the generic auth failure notice with localized, account-private guidance
+  for invalid email, password policy, terms, credentials and expired links.
+- Associate affected fields with the alert, retain only the email in tab-local
+  storage, and disable/rename submit buttons while each request is pending.
+
+## 2026-10-14 — Password recovery task continuity
+
+- Carry an allowlisted public or AkiDuermo destination through reset request,
+  callback, password update, sign-out and the next sign-in.
+- Preserve that task across expired/reused callbacks and reset validation or
+  provider failures without placing passwords or tokens in query parameters.
+
+## 2026-10-14 — Creator review draft recovery
+
+- Keep the rating and review text in tab-local storage before submission.
+- Restore and open the review form after validation, service or authentication
+  returns, then clear the saved draft after a normal or successful return.
+
+## 2026-10-14 — Passport, toolbox and membership performance recovery
+
+- Stop idle Passport foil animation frames and resume them only for visible,
+  relevant input or surface changes.
+- Load the owner toolbox on activation with localized pending/retry behavior and
+  preserve its mounted state after first use.
+- Route ready public membership choices through the authenticated account workspace
+  hub while retaining all existing billing and availability gates.
+
+## 2026-10-14 — Discovery filter recovery
+
+- Explain invalid price and date ranges in place and stop invalid automatic
+  navigation.
+- Show removable active filters with a deliberate clear-all action and preserve
+  keyboard focus after URL updates.
+- Replace the maximum-radius no-results loop with a useful area/filter reset.
+
+## 2026-10-14 — Mobile More dialog accessibility
+
+- Contain Tab and Shift+Tab inside the mobile More dialog.
+- Make background shell regions inert while open and restore opener focus, scroll
+  and prior inert state on every close path.
+
 ## 2026-10-14 — Event occurrence continuity
 
 - Carry the card's selected recurrence through detail, auth, booking, calendar,

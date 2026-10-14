@@ -81,6 +81,37 @@ it("retains active discovery filters across desktop and mobile Discover/Map link
   }
 });
 
+it("contains mobile More focus, makes the background inert and restores its opener", () => {
+  navigation.pathname = "/en";
+  const { container } = render(
+    <AppShell locale="en" signedIn={false}>
+      <main>Discovery content</main>
+    </AppShell>,
+  );
+  const opener = screen.getByRole("button", { name: "More options" });
+  opener.focus();
+  fireEvent.click(opener);
+
+  const dialog = screen.getByRole("dialog", { name: "More options" });
+  const close = within(dialog).getByRole("button", { name: "Close" });
+  const focusable = Array.from(
+    dialog.querySelectorAll<HTMLElement>("a[href],button:not([disabled])"),
+  );
+  const last = focusable[focusable.length - 1];
+  expect(document.activeElement).toBe(close);
+  expect(container.querySelector(".app-content")).toHaveAttribute("inert");
+
+  fireEvent.keyDown(document, { key: "Tab", shiftKey: true });
+  expect(document.activeElement).toBe(last);
+  fireEvent.keyDown(document, { key: "Tab" });
+  expect(document.activeElement).toBe(close);
+
+  fireEvent.keyDown(document, { key: "Escape" });
+  expect(screen.queryByRole("dialog", { name: "More options" })).toBeNull();
+  expect(document.activeElement).toBe(opener);
+  expect(container.querySelector(".app-content")).not.toHaveAttribute("inert");
+});
+
 describe("progressive disclosure workspace shell", () => {
   it("keeps crowded desktop workspace navigation horizontally reachable", () => {
     const source = readFileSync(

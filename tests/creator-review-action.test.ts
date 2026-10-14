@@ -44,7 +44,7 @@ it.each(["en", "es"] as const)(
     );
     expect(mocks.requireUser).toHaveBeenCalledWith(
       locale,
-      `/${locale}/community/creators/ana-local`,
+      `/${locale}/community/creators/ana-local?review=draft`,
     );
     expect(mocks.insert).toHaveBeenCalledWith({
       creator_profile_id: "10000000-0000-4000-8000-000000000001",

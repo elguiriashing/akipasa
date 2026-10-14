@@ -200,7 +200,7 @@ describe("authentication journey recovery", () => {
     expect(url.searchParams.get("mode")).toBe("recover");
     expect(url.searchParams.get("recovery")).toBe("sent");
     expect(mocks.resetPasswordForEmail.mock.calls[0][1].redirectTo).toBe(
-      "https://akipasa.com/es/auth/callback?next=%2Fes%2Fauth%2Frecover",
+      "https://akipasa.com/es/auth/callback?next=%2Fes%2Fauth%2Frecover%3Fnext%3D%252Fes%252Faccount",
     );
   });
 });
