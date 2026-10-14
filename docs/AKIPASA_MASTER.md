@@ -825,3 +825,8 @@ pricing, consent and action boundaries remain as documented in the three
 original recovery entries. No SQL, authorization/payment rollout, customer
 records or email replay is included; drafts #133/#140 stay excluded. Source
 revert rolls back these repairs without rewriting catalogue/media/history.
+
+
+## 2026-10-14 | Faster tablet acceptance workflow (PR #169)
+
+Tablet browser acceptance retains its existing route, portal-smoke and layout/Spotlight commands while running them in three independent GitHub Actions jobs. Route suites use two Playwright workers; superseded runs for the same PR are cancelled, and each job uploads distinct evidence artifacts. The existing `tablet-ui` required-check name remains available. This changes CI orchestration only; application behavior and test assertions are unchanged. Full exact-head CI and branch-protection verification remain required before merge. If parallel browser resource pressure causes instability, return route workers to one while retaining job parallelism.
