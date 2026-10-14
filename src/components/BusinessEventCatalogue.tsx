@@ -48,7 +48,7 @@ export function BusinessEventCatalogue({ locale, events, reuseAction }: Props) {
     { value: "all", label: es ? "Todos" : "All", count: events.length },
     {
       value: "current",
-      label: es ? "Próximos" : "Upcoming",
+      label: es ? "Actuales y próximos" : "Current and upcoming",
       count: events.filter((e) => e.group === "current").length,
     },
     {
