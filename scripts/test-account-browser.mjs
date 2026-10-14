@@ -43,6 +43,7 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import AccountLayout from '${accountRoot}/layout';
 import RewardsPage from '${accountRoot}/rewards/page';
+import {AkiSuiteMembershipGrid} from './src/components/AkiSuiteMembershipGrid';
 ${routeImports}
 const pages={${routes.map((route, index) => `${JSON.stringify(route)}:Page${index}`).join(",")},rewards:RewardsPage};
 const root=createRoot(document.getElementById('root'));
@@ -58,10 +59,11 @@ async function renderRoute(){
   document.documentElement.lang=locale;
   window.__accountReady=false;
   try{
-    if(!page)throw new Error('Unknown account fixture route '+route);
+    if(!page&&route!=='membership-handoff')throw new Error('Unknown account fixture route '+route);
     const props={params:Promise.resolve({locale}),searchParams:Promise.resolve(Object.fromEntries(new URLSearchParams(location.search)))};
-    const content=await page(props);
-    const shell=await AccountLayout({...props,children:content});
+    const handoff=route==='membership-handoff';
+    const content=handoff?<main style={{padding:16}}><AkiSuiteMembershipGrid locale={locale} purchaseMode="account" checkoutReady={new URLSearchParams(location.search).get("ready")==="true"} originatingApp="akiduermo" /></main>:await page(props);
+    const shell=handoff?content:await AccountLayout({...props,children:content});
     root.render(React.createElement(React.Fragment,{key:location.href},shell));
     requestAnimationFrame(()=>requestAnimationFrame(()=>{window.__accountReady=true;window.__accountReadiness++}));
   }catch(error){
@@ -900,6 +902,128 @@ try {
     }
     await page.close();
   }
+  // Exercise the pre-activation public handoff with a disposable ready flag only.
+  // No runtime environment flags, authenticated reads or real checkout calls are enabled.
+  for (const locale of ["en", "es"])
+    for (const theme of ["light", "dark"])
+      for (const width of [360, 1536]) {
+        const page = await browser.newPage({
+          viewport: { width, height: 900 },
+          colorScheme: theme,
+        });
+        await page.addInitScript((theme) => {
+          document.addEventListener("DOMContentLoaded", () => {
+            document.documentElement.dataset.theme = theme;
+            document.documentElement.classList.add(`theme-${theme}`);
+          });
+        }, theme);
+        try {
+          await page.goto(
+            `${origin}/${locale}/account/membership-handoff?ready=true`,
+          );
+          await expect
+            .poll(() => page.evaluate(() => window.__accountReady))
+            .toBe(true);
+          if (width === 360) {
+            const cards = page.getByRole("article");
+            await expect(cards).toHaveCount(7);
+            for (const card of await cards.all()) {
+              // Card order stays stable when the button changes its name on expansion.
+              const button = card.locator("button[aria-expanded]");
+              await expect(button).toHaveAttribute("aria-expanded", "false");
+              await button.click();
+              await expect(button).toHaveAttribute("aria-expanded", "true");
+            }
+            await expect(
+              page.locator('article button[aria-expanded="true"]'),
+            ).toHaveCount(7);
+          }
+          const links = page.getByRole("link", {
+            name:
+              locale === "es"
+                ? "Continuar en mi cuenta"
+                : "Continue in my account",
+          });
+          await expect(links).toHaveCount(7);
+          for (const link of await links.all()) {
+            await expect(link).toBeVisible();
+            await expect(link).toHaveAttribute(
+              "href",
+              `/${locale}/account/subscription?from=akiduermo`,
+            );
+            const geometry = await link.evaluate((el) => {
+              const r = el.getBoundingClientRect();
+              const range = document.createRange();
+              range.selectNodeContents(el);
+              return {
+                height: r.height,
+                width: r.width,
+                left: r.left,
+                right: r.right,
+                viewport: innerWidth,
+                text: [...range.getClientRects()].map((t) => ({
+                  left: t.left,
+                  right: t.right,
+                  top: t.top,
+                  bottom: t.bottom,
+                })),
+                top: r.top,
+                bottom: r.bottom,
+                overflow: el.scrollWidth > el.clientWidth,
+              };
+            });
+            expect(geometry.height).toBeGreaterThanOrEqual(44);
+            expect(geometry.width).toBeGreaterThanOrEqual(44);
+            expect(geometry.left).toBeGreaterThanOrEqual(0);
+            expect(geometry.right).toBeLessThanOrEqual(geometry.viewport);
+            expect(geometry.overflow).toBe(false);
+            for (const text of geometry.text) {
+              expect(text.left).toBeGreaterThanOrEqual(geometry.left - 1);
+              expect(text.right).toBeLessThanOrEqual(geometry.right + 1);
+              expect(text.top).toBeGreaterThanOrEqual(geometry.top - 1);
+              expect(text.bottom).toBeLessThanOrEqual(geometry.bottom + 1);
+            }
+          }
+          expect(
+            await page.evaluate(
+              () => document.documentElement.scrollWidth <= innerWidth,
+            ),
+          ).toBe(true);
+          await page.screenshot({
+            path: resolve(
+              directory,
+              `membership-handoff-${locale}-${theme}-${width}.png`,
+            ),
+            fullPage: true,
+          });
+          await links.first().click();
+          await expect
+            .poll(() => new URL(page.url()).pathname)
+            .toBe(`/${locale}/account/subscription`);
+          expect(await page.evaluate(() => window.__accountActions)).toEqual(
+            [],
+          );
+          await page.goto(
+            `${origin}/${locale}/account/membership-handoff?ready=false`,
+          );
+          await expect
+            .poll(() => page.evaluate(() => window.__accountReady))
+            .toBe(true);
+          await expect(page.locator("article a")).toHaveCount(0);
+          await expect(
+            page.locator("article form button:disabled"),
+          ).toHaveCount(7);
+          results.push({
+            route: "membership-handoff",
+            locale,
+            theme,
+            width,
+            pass: true,
+          });
+        } finally {
+          await page.close();
+        }
+      }
   console.log(`Account browser acceptance: ${results.length} cases passed`);
 } finally {
   writeFileSync(

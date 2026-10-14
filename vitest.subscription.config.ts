@@ -8,6 +8,11 @@ export default defineConfig({
     include: [
       "tests/subscription-ui.test.tsx",
       "tests/passport-awards-ui.test.tsx",
+      "tests/passport-animation.test.ts",
+      "tests/passport-animation-ui.test.tsx",
+
+      "tests/owner-toolbox-loading.test.tsx",
+      "tests/owner-toolbox-panel.test.tsx",
     ],
     environment: "jsdom",
   },

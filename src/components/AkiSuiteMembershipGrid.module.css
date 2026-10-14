@@ -158,7 +158,8 @@
 .card form {
   display: flex;
 }
-.card button {
+.card button,
+.cardDetails > a {
   width: 100%;
   min-height: 44px;
   padding: 0.7rem 0.5rem;
