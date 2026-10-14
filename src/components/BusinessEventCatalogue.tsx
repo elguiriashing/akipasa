@@ -53,7 +53,7 @@ export function BusinessEventCatalogue({ locale, events, reuseAction }: Props) {
           <span className="eyebrow">{es ? "Catálogo de eventos" : "Event catalogue"}</span>
           <h2>{es ? "Tus eventos" : "Your events"}</h2>
         </div>
-        <a className="button button-strong" href="#create-event">
+        <a className="button button-strong" href={`/${locale}/business?view=events&compose=1#create-event`}>
           {es ? "Crear evento" : "Create event"}
         </a>
       </div>
