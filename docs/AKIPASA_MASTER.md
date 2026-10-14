@@ -435,6 +435,12 @@ Canonical-key recovery validation: the existing `tests/claim-decision-email.test
 
 The canonical media asset store is `venue_media`, scoped by `venue_id`, with public surface selection in `venue_media_placements`. Venue Profile and all event editors should receive the same signed venue-scoped inventory, regardless of its original upload path. Event-specific associations (`event_bin`) are independent of owning or viewing the asset. Virtual folders are presentation filters; no files are copied or migrated to organise them. Uploading media alone must not publish it. Validate permissions on the server for every mutation.
 
+### 2026-10-13 | Recovered shared-media public placement resolution
+
+Public venue detail and event host lookup resolve explicit venue placements independently of the legacy first-60 ordinary-image gallery. A selected asset can originate from an event upload, lie beyond that gallery window or be legitimately shared from another venue. Only missing IDs from the target venue's explicit public placements are fetched under the existing public-client RLS and signed; unplaced event-bin files remain excluded. Discovery's existing placement resolution and ordinary fallback order remain unchanged. No storage policy, migration, billing flag or customer records change. Regression coverage exercises both slug and ID loaders, no ordinary media, cross-venue exclusion, missing signing and no unnecessary selected reads. Production acceptance remains separate from local validation.
+
+Integration with the merged Health #150 source resolves the selected/fallback union before its existing one-batch signer. Path deduplication, 3600-second expiry, response-path validation, per-row signing denials and no retry fan-out remain intact. Installed-SDK HTTP regressions retain the Health batching suite and exercise selected event/shared assets, the gallery boundary, empty ordinary media, denied reads/signatures and avoiding redundant reads. Fresh combined CI/Cloudflare and authenticated live acceptance remain release gates.
+
 ### 2026-10-12 AkiBusiness catalogue save regression (candidate)
 
 - New catalogue items must have non-empty localized names immediately, because `save_venue_catalogue` validates the entire JSON document on both draft and publish. Empty names used to make all subsequent edits to that document fail with PostgreSQL `Invalid item`, misleadingly shown as a permission error.
@@ -442,6 +448,10 @@ The canonical media asset store is `venue_media`, scoped by `venue_id`, with pub
 - Business save errors now separate invalid items/sections/prices, stale revisions (`PT409`) and lack of access (`42501`) in EN/ES. Allergen publishing checks remain strict.
 - Production read-only evidence: on October 12 multiple `save_venue_catalogue` calls returned HTTP 400; Postgres logs included `Invalid item`; live RPCs existed and revision-conflict SQL used `PT409`. This does not prove every unsuccessful save had the same root cause.
 - Verification pending: full `npm run check`, authenticated end-to-end edit flows and deployment smoke. Not live until confirmed CI and merge.
+
+### Catalogue starter publication recovery (2026-10-13)
+
+New catalogue items retain nonempty bilingual starter names for immediate draft saves but default to hidden. Editors use the existing Visible publicly / Visible al público toggle after preparing the item; editing a name alone does not silently opt into publication. Existing documents, visibility choices, prices including legitimate zero-price items, translations and allergen publishing checks remain unchanged. Public venue and event catalogue consumers already omit hidden items. No database migration or existing-item rewrite is required.
 
 ### Venue profile media selector (2026-10-12)
 
@@ -572,3 +582,54 @@ The shared native MapLibre geolocate button receives an EN/ES name synchronously
 Three virtual-host browser fixtures let compiled /\_next/static/ assets use the browser's ordinary transport instead of redundantly fetching them through Playwright's Node proxy. Actual page/auth/manifest/branding requests retain host forwarding, and stay/map synthetic responses and all acceptance assertions remain. A recorded CSS socket reset is a local test-transport failure; its original server/socket cause is unestablished and no production outage is inferred. No retry, increased timeout or failed-response substitution is added.
 
 Installed native lifecycle cases, actual built-asset byte/header comparisons and focused review are recorded in docs/HEALTH_SHARED_CONTROLS_20261014.md. Full current-head check, hosted public and complete tablet/Spotlight acceptance, clean Cloudflare packaging and exact live-source verification are separate gates. Source reverts suffice; no data rollback. Health #132 owns these new shared fixes; Cleanup #136/#143 retain their original PR ownership.
+
+## 2026-10-14 | Recovered commercial request localization (#112)
+
+Current Admin promotions still displayed raw service/state keys and English
+status options on Spanish pages after #113 replaced #112's layout. Staff also
+labelled `featured_listing` as a venue listing and omitted three accepted
+services. `src/lib/promotion-labels.ts` now supplies display-only EN/ES names
+for the four existing service values and five states. `featured_listing` means
+Featured event / Evento destacado, matching the existing business request
+selector and event-backed scheduling migration `0044`.
+
+Admin summaries, editable status options, localized search terms and its
+status filter use these names. `AdminSearchList` accepts an optional label map
+only for this caller; other queues retain their existing display. The business
+request selector and read-only Staff inbox share the same names. Original
+machine IDs, form values, server actions, role/RLS checks, state groups, query
+limits, message/evidence text and per-caller unknown-value fallbacks remain
+intact. No CSS, route, API, SQL, storage, email, billing, consent, analytics or
+production data changes. Other portals are unaffected. Rollback is a source
+revert with no data restoration.
+
+Ten focused rendered regressions cover EN/ES: real business selectors,
+Admin route summaries and FormData, status filters/localized search, Staff
+search and accepted labels, legacy read-only aliases, plus unknown/prototype-name
+safety. Existing Staff aliases remain display-only; request validation/options
+still admit exactly four service IDs. Business previous-request history retains
+its existing raw service/state presentation outside this focused #112 recovery. Existing
+Admin/Staff suites and full check/Cloudflare/browser CI remain release gates;
+no production deployment or authenticated acceptance is claimed.
+
+## 2026-10-14 | Combined safe historical recovery integration
+
+The recovery candidate starts from merged Health #152 master
+`7311ae9f6550f9dabf96a39c7782287bbacb303c` and incorporates the reviewed
+#143 catalogue starter visibility, #136 explicit public media selection and
+#153 promotion localization/checkpoint scopes. All sixteen scoped application/test/fixture
+blobs are byte-identical to their original candidate heads. Master
+Health control/transport source remains intact; independent shared-document
+entries are preserved. Original heads remain in the candidate ancestry.
+
+Focused combined regressions pass: repository/Admin/Staff 71/71, catalogue
+foundation/rendering 13/13, Spotlight 20/20 and promotion EN/ES 10/10. Full
+check, independent review, fresh complete hosted CI/Cloudflare/browser gates
+and exact deployed-source verification remain required. This candidate does
+not claim a live release or authenticated editing/placement acceptance.
+
+All existing role/RLS, storage signing, machine IDs, explicit visibility,
+pricing, consent and action boundaries remain as documented in the three
+original recovery entries. No SQL, authorization/payment rollout, customer
+records or email replay is included; drafts #133/#140 stay excluded. Source
+revert rolls back these repairs without rewriting catalogue/media/history.

@@ -229,6 +229,8 @@ function publicMediaClient(
     signingRows?: SigningRow[];
     signingFailure?: boolean;
     venueMissing?: boolean;
+    placements?: { media_id: string; placement: string }[];
+    selectedMedia?: ReturnType<typeof publicPhotos>;
   } = {},
 ) {
   const requests: { url: URL; method: string; body: unknown }[] = [];
@@ -265,12 +267,22 @@ function publicMediaClient(
     }
     if (url.pathname === "/rest/v1/venues")
       return response(options.venueMissing ? [] : [publicVenueRow]);
-    if (url.pathname === "/rest/v1/venue_media") return response(media);
+    if (url.pathname === "/rest/v1/venue_media") {
+      const ids = url.searchParams.get("id");
+      if (!ids) return response(media);
+      const requestedIds = ids.slice(4, -1).split(",");
+      return response(
+        (options.selectedMedia || []).filter((item) =>
+          requestedIds.includes(item.id),
+        ),
+      );
+    }
     if (url.pathname === "/rest/v1/venue_media_placements")
       return response(
-        media.length
-          ? [{ media_id: media.at(-1)!.id, placement: "venue_cover" }]
-          : [],
+        options.placements ||
+          (media.length
+            ? [{ media_id: media.at(-1)!.id, placement: "venue_cover" }]
+            : []),
       );
     if (["/rest/v1/offers", "/rest/v1/loyalty_programs"].includes(url.pathname))
       return response([]);
@@ -403,6 +415,177 @@ describe.each(["venueBySlug", "venueById"] as const)(
       expect(venue?.coverImage).toBeUndefined();
       expect(fixture.signingRequests()).toHaveLength(1);
     });
+
+    it("loads explicitly selected event uploads and authorised cross-venue assets by ID", async () => {
+      const media = publicPhotos(1);
+      const selectedMedia = [
+        {
+          id: "selected-event",
+          storage_path: `${publicVenueId}/events/synthetic-event/banner.jpg`,
+          alt_es: "Cartel seleccionado",
+          alt_en: "Selected banner",
+        },
+        {
+          id: "selected-shared",
+          storage_path: "22222222-2222-4222-8222-222222222222/shared.jpg",
+          alt_es: "Imagen compartida",
+          alt_en: "Shared image",
+        },
+        {
+          id: "unplaced-event",
+          storage_path: `${publicVenueId}/events/synthetic-event/private.jpg`,
+          alt_es: "Sin selección",
+          alt_en: null,
+        },
+      ];
+      const fixture = publicMediaClient(media, {
+        placements: [
+          { media_id: "selected-event", placement: "venue_cover" },
+          { media_id: "selected-shared", placement: "venue_profile" },
+          { media_id: "selected-event", placement: "venue_events" },
+          { media_id: "inaccessible-selection", placement: "venue_menu" },
+        ],
+        selectedMedia,
+      });
+      const venue = await load();
+      expect(venue?.coverImage?.id).toBe("selected-event");
+      expect(venue?.logoImage?.id).toBe("selected-shared");
+      expect(venue?.eventsImage?.id).toBe("selected-event");
+      expect(venue?.menuImage?.id).toBe(media[0].id);
+      expect(venue?.media?.map((item) => item.id)).toEqual([
+        "selected-event",
+        media[0].id,
+        "selected-shared",
+      ]);
+      expect(venue?.coverImage?.alt).toEqual({
+        es: "Cartel seleccionado",
+        en: "Selected banner",
+      });
+      const missingReads = fixture.requests.filter(
+        (request) =>
+          request.url.pathname === "/rest/v1/venue_media" &&
+          request.url.searchParams.has("id"),
+      );
+      expect(missingReads).toHaveLength(1);
+      expect(missingReads[0].url.searchParams.get("id")).toBe(
+        "in.(selected-event,selected-shared,inaccessible-selection)",
+      );
+      expect(missingReads[0].url.searchParams.has("venue_id")).toBe(false);
+      expect(missingReads[0].url.searchParams.has("storage_path")).toBe(false);
+      expect(fixture.signingRequests()).toHaveLength(1);
+      expect(fixture.signingRequests()[0].body).toEqual({
+        expiresIn: 3600,
+        paths: [
+          media[0].storage_path,
+          ...selectedMedia.slice(0, 2).map((item) => item.storage_path),
+        ],
+      });
+      const placementRead = fixture.requests.find(
+        (request) => request.url.pathname === "/rest/v1/venue_media_placements",
+      )!;
+      expect(placementRead.url.searchParams.get("venue_id")).toBe(
+        `eq.${publicVenueId}`,
+      );
+      expect(placementRead.url.searchParams.get("target_key")).toBe("eq.");
+    });
+
+    it("resolves selected artwork beyond the ordinary 60-photo gallery", async () => {
+      const media = publicPhotos(60);
+      const selected = publicPhotos(61)[60];
+      const fixture = publicMediaClient(media, {
+        placements: [{ media_id: selected.id, placement: "venue_cover" }],
+        selectedMedia: [selected],
+      });
+      const venue = await load();
+      expect(venue?.coverImage?.id).toBe(selected.id);
+      expect(venue?.media).toHaveLength(61);
+      expect(venue?.media?.[0].id).toBe(selected.id);
+      expect(fixture.signingRequests()).toHaveLength(1);
+      expect(fixture.signingRequests()[0].body).toEqual({
+        expiresIn: 3600,
+        paths: [...media, selected].map((item) => item.storage_path),
+      });
+    });
+
+    it("uses explicitly selected artwork without an ordinary gallery", async () => {
+      const selected = {
+        ...publicPhotos(1)[0],
+        id: "event-only",
+        storage_path: `${publicVenueId}/events/only/image.jpg`,
+      };
+      const fixture = publicMediaClient([], {
+        placements: [{ media_id: selected.id, placement: "venue_cover" }],
+        selectedMedia: [selected],
+      });
+      const venue = await load();
+      expect(venue?.coverImage?.id).toBe(selected.id);
+      expect(venue?.media?.map((item) => item.id)).toEqual([selected.id]);
+      expect(fixture.signingRequests()).toHaveLength(1);
+    });
+
+    it.each(["denied", "omitted"])(
+      "falls back to ordinary artwork when selected signing is %s",
+      async (failure) => {
+        const media = publicPhotos(1);
+        const selected = { ...publicPhotos(2)[1], id: "selected-cover" };
+        const fixture = publicMediaClient(media, {
+          placements: [{ media_id: selected.id, placement: "venue_cover" }],
+          selectedMedia: [selected],
+          signingRows: [
+            {
+              path: media[0].storage_path,
+              signedURL: "/ordinary",
+              error: null,
+            },
+            ...(failure === "denied"
+              ? [
+                  {
+                    path: selected.storage_path,
+                    signedURL: "/denied",
+                    error: "Access denied",
+                  },
+                ]
+              : []),
+          ],
+        });
+        const venue = await load();
+        expect(venue?.media?.map((item) => item.id)).toEqual([media[0].id]);
+        expect(venue?.coverImage?.id).toBe(media[0].id);
+        expect(fixture.signingRequests()).toHaveLength(1);
+      },
+    );
+
+    it("keeps empty fallback for inaccessible selected rows without signing unplaced inventory", async () => {
+      const fixture = publicMediaClient([], {
+        placements: [{ media_id: "inaccessible", placement: "venue_cover" }],
+        selectedMedia: publicPhotos(1),
+      });
+      const venue = await load();
+      expect(venue?.media).toEqual([]);
+      expect(venue?.coverImage).toBeUndefined();
+      expect(fixture.signingRequests()).toHaveLength(0);
+    });
+
+    it.each(["none", "already-loaded"])(
+      "avoids a missing-placement media read when selections are %s",
+      async (selection) => {
+        const media = publicPhotos(1);
+        const fixture = publicMediaClient(media, {
+          placements:
+            selection === "none"
+              ? []
+              : [{ media_id: media[0].id, placement: "venue_cover" }],
+        });
+        const venue = await load();
+        expect(venue?.coverImage?.id).toBe(media[0].id);
+        expect(
+          fixture.requests.filter(
+            (request) => request.url.pathname === "/rest/v1/venue_media",
+          ),
+        ).toHaveLength(1);
+        expect(fixture.signingRequests()).toHaveLength(1);
+      },
+    );
 
     it("does not query or sign media for a missing published venue", async () => {
       const fixture = publicMediaClient(publicPhotos(1), {

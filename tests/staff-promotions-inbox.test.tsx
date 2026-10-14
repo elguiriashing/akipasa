@@ -69,7 +69,7 @@ describe("Staff promotions operational inbox", () => {
       screen.getByRole("heading", { name: "Promotions" }),
     ).toBeInTheDocument();
     expect(visibleCards(container)).toHaveLength(4);
-    expect(screen.getAllByText("Featured listing")).toHaveLength(2);
+    expect(screen.getAllByText("Featured event")).toHaveLength(2);
     expect(screen.getByText("Latest 50 requests loaded")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /To review/ }),
@@ -141,7 +141,7 @@ describe("Staff promotions operational inbox", () => {
     expect(
       screen.getByRole("heading", { name: "Promociones" }),
     ).toBeInTheDocument();
-    expect(screen.getAllByText("Local destacado")).toHaveLength(2);
+    expect(screen.getAllByText("Evento destacado")).toHaveLength(2);
     expect(
       screen.getByRole("searchbox", { name: "Buscar solicitudes" }),
     ).toBeInTheDocument();

@@ -6,7 +6,20 @@ Rapid successive fixes left redundant PRs, stale operational documentation and a
 
 Coordination: [shared issue #131](https://github.com/elguiriashing/akipasa/issues/131). This mission owns historical requirements and abandoned PR implementation. The separate system-health session owns new end-to-end defects. Reserved files and overlaps are recorded in that issue.
 
-## Recovered register
+## Verified continuation checkpoint — 14 October 2026
+
+Current source baseline: AkiPasa `master` at `8613edbd962a978dc3d85f9f7b9aafcc4da54a56`. The initial register below records the reconnaissance state and must be read with this checkpoint. Source integration, connected builds, deployed-source identity and authenticated acceptance remain separate.
+
+- Safe recovery #141 merged at `6714ef499558a679f2050312cec3c6db1f5fa59b`. It incorporated #137/#138, repaired claim-result flow and media picker geometry/focus, added source-stamped release validation and authority notices, and passed final CI/screenshot review. The shared issue records exact-source deployment on all four hosts. Do not repeat those repairs or reopen their consolidated candidates.
+- #142 merged the email-key runbook correction; #127 was superseded by merged #134. Tax registrations and legal/payment acceptance remain separate launch gates.
+- Nine historical PRs are retired with successor evidence: AkiPasa #38/#67/#98/#112/#121/#122/#127/#97 and AkiHQ #20. #112's layout is complete; its retained promotion-label localization is a separate recovery, not a reason to reopen the old layout patch.
+- #136 (`6e1ad97`) and #143 (`6cd78aa`) remain open. Both complete tablet/Spotlight suites passed. Their public-browser suites failed respectively on an unnamed disabled MapLibre geolocate control and AkiDuermo CSS forwarding `route.fetch` socket hang-up. Health owns those diagnoses through issue #131; do not merge or blindly retry around either failure.
+- Draft #133's original head passed full checks, Cloudflare packaging and three replacement regressions. Draft #140's original head also passed hosted full checks and Cloudflare packaging; earlier local timeouts no longer mean CI is pending. Reconciliation and new-head checks, sensitive review and applicable hosted acceptance remain required. Neither has been merged or applied by this checkpoint.
+- AkiHQ #27 merged at `8fd756594341009a1671544a700e912ce30de53a`; source/docs checks passed. Production alias, signed-in support/chat, fiscal and physical printer acceptance remain unproven.
+
+The latest coordination and changing CI evidence are recorded in [issue #131](https://github.com/elguiriashing/akipasa/issues/131). Historical counts below are dated observations of the linked project, not fresh production assertions.
+
+## Initial recovered register
 
 Classification: COMPLETE means the stated implementation is evidenced, not that every live acceptance case ran. FIX, SUPERSEDED, OBSOLETE, BLOCKED and INVESTIGATE preserve uncertainty. Priorities rank user impact, not PR age.
 
@@ -50,21 +63,21 @@ Recovery PRs: [#137](https://github.com/elguiriashing/akipasa/pull/137) document
 
 ## Prioritized next actions (maximum 15)
 
-1. Review draft #140 and arrange explicitly authorized hosted webhook-claim privilege containment and signed-service acceptance.
-2. Health/security owner reviews exposed mutation privileges on PostGIS `spatial_ref_sys` and records compatible containment.
-3. Complete and review canonical #127 tax audit; keep paid checkout gated.
-4. Confirm approved tax registrations/legal invoice identity and tax-code suitability with accountant.
-5. Validate hosted Storage policy DDL permissions and production-schema migration compatibility in disposable environment.
-6. Run sandbox payment/lifecycle, tenant isolation and four-portal authenticated acceptance before paid activation.
-7. Repair claim search positioning and media modal scrolling/focus; run responsive regressions.
-8. Package exact commit stamp and verify production source on every host.
-9. Close verified superseded PRs with successor links and retained acceptance gaps.
-10. Reconcile #103 performance changes with current source and health-session findings.
-11. Implement dashboard login limiter under one security owner with fail-safe tests.
-12. Verify support gateway/mailbox routing and fresh QA notification delivery; do not replay historical mail blindly.
-13. Reconcile #72/#82 booking requirements; split shipped foundations from specialist engines.
-14. Complete legal, restore, Auth recovery-email, Android signing/device and printer acceptance with actual evidence.
-15. Confirm runtime project mapping and populate reviewed Passport achievement categories/eligible participant onboarding; connected project currently has zero category assignments.
+1. Reconcile draft #140, obtain fresh checks/security review, then arrange explicitly authorized hosted privilege containment and signed-service acceptance.
+2. Health/security owner resolves PostGIS `spatial_ref_sys` mutation privileges with provider-owner-compatible containment.
+3. Verify Health #152 deployment after its merged master `7311ae9`; preserve its native geolocation labels and ordinary compiled-asset transport in the combined candidate.
+4. Validate and release the combined #136/#143/#153 safe recovery candidate on merged #152 master, with independent review, fresh complete CI and exact deployed-source checks.
+5. Verify deployed EN/ES promotion labels after the validated combined recovery release; the retained #112 source repair and rendered regressions from #153 are implemented in this tree.
+6. Reconcile draft #133's Pro/add-on guard and obtain billing review plus sandbox lifecycle acceptance; preserve paid activation gates.
+7. Confirm approved tax registrations/legal invoice identity and tax-code suitability with accountant; #127's canonical code/runbook repair is already complete through #134.
+8. Validate hosted Storage policy DDL permissions, full-schema migration compatibility and tenant isolation in a disposable environment.
+9. Complete authenticated four-portal payment/lifecycle acceptance before paid activation.
+10. Reconcile #103 performance hunks against newer source; do not merge the stale broad branch wholesale.
+11. Implement the automation dashboard limiter under one security owner with fail-safe cross-edge tests.
+12. Verify HQ support gateway/production alias, mailbox routing and fresh authorized notification QA; review old blocked notices individually.
+13. Reconcile specialist booking requirements against shipped foundations, retaining deposits/table assignment/ticket/OTA boundaries.
+14. Complete legal, restore, Auth recovery-email, signed-in feature, Android device/signing and fiscal/printer acceptance with actual evidence.
+15. Confirm runtime project mapping, then reviewed Passport category assignment and participating-venue onboarding; do not guess bulk classifications from historical counts.
 
 ## Evidence limits
 
@@ -77,3 +90,19 @@ All accessible open PRs were inventoried; important recent successors and histor
 - Connected Passport aggregate at 17:35 UTC: zero category assignments/classified venues, two city-eligible active check-in venues, zero eligible classified venues. The project is labelled AkiPasa Development; runtime/custom-domain linkage remains a qualification, not assumed production counts.
 - Connected email queues show historical403 blocks alongside subsequent successful provider acceptance (claim, staff, suite and booking). Do not infer that the current sender is broken; do not automatically replay old notices.
 - Local broad checks encountered existing Spanish SQL-test cold-start timeouts, also reproduced on the unchanged-runtime baseline; a map cache local failure did not reproduce in CI. Checks were not weakened. Fresh exact-head CI is authoritative; authenticated production/device acceptance remains separate.
+
+## Combined recovery candidate — 14 October 2026
+
+Health #152 is merged at `7311ae9f6550f9dabf96a39c7782287bbacb303c`.
+The combined safe recovery candidate retains all three original #136/#143/#153
+heads in its ancestry and their scoped source/test blobs byte-for-byte,
+including the Health signing and shared-control/transport fixes. Shared
+contract/impact appends are retained; the next-action list distinguishes
+implemented promotion labels from outstanding deployed acceptance.
+
+Focused combined tests pass 71 repository/Admin/Staff, 13 catalogue,
+20 Spotlight and 10 EN/ES promotion cases. Independent review, full check,
+complete current-head hosted CI/Cloudflare/browser gates, merge and deployed
+source acceptance remain pending. No source merge or test result here implies
+production records, database privileges, billing or authenticated acceptance.
+Draft #133/#140 and production operations remain excluded.

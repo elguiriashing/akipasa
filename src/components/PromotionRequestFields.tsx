@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { Locale } from "@/lib/config";
+import { promotionServiceLabel } from "../lib/promotion-labels";
 
 type PromotionVenue = { id: string; name: string };
 type PromotionEvent = { id: string; venueId: string; title: string };
@@ -50,16 +51,16 @@ export function PromotionRequestFields({
             onChange={(event) => setService(event.target.value)}
           >
             <option value="featured_listing">
-              {es ? "Evento destacado" : "Featured event"}
+              {promotionServiceLabel("featured_listing", locale)}
             </option>
             <option value="social_campaign">
-              {es ? "Campaña en redes sociales" : "Social media campaign"}
+              {promotionServiceLabel("social_campaign", locale)}
             </option>
             <option value="content_package">
-              {es ? "Paquete de contenido VIP" : "VIP content package"}
+              {promotionServiceLabel("content_package", locale)}
             </option>
             <option value="other">
-              {es ? "Otro / Personalizado" : "Other / Custom"}
+              {promotionServiceLabel("other", locale)}
             </option>
           </select>
         </label>

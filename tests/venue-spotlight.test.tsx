@@ -23,6 +23,7 @@ afterEach(cleanup);
 function menu(): VenueCatalogueDocument {
   const burger = {
     ...blankCatalogueItem(),
+    visible: true,
     id: "burger",
     name: { es: "Hamburguesa de la casa", en: "House burger" },
     kind: "food" as const,
@@ -32,6 +33,7 @@ function menu(): VenueCatalogueDocument {
   burger.allergens.states.gluten = "contains";
   const shake = {
     ...blankCatalogueItem(),
+    visible: true,
     id: "shake",
     name: { es: "Batido de vainilla", en: "Vanilla milkshake" },
     kind: "drink" as const,
