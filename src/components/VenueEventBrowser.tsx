@@ -83,6 +83,7 @@ export function VenueEventBrowser({ locale, events, children }: {
       .venue-event-filters button span { opacity: .75; padding-left: 4px; }
       .venue-event-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: start; }
       .venue-event-item { min-width: 0; }
+      .venue-event-item:has(details[open]) { grid-column: 1 / -1; }
       .venue-event-item :global(details[data-event-card]) { margin: 0; }
       .venue-event-pagination { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 16px; }
       .venue-event-pagination > div { display: flex; gap: 12px; align-items: center; }
