@@ -56,6 +56,13 @@ export default async function VenuePage({
       `https://akiduermo.akipasa.com/stays/${encodeURIComponent(venue.slug)}?lang=${locale}`,
     );
   }
+  // Ownership is independent of listing edits or editorial verification.
+  // Fail closed on claim availability when the lookup is unavailable.
+  const { data: ownedFlag, error: ownershipError } = await (await optionalUser()).supabase.rpc(
+    "public_venue_is_claimed",
+    { p_venue: venue.id },
+  );
+  const canClaimVenue = !ownershipError && ownedFlag === false && venue.claimStatus === "unclaimed";
   const events = await repository.eventsForVenue(venue.id);
   const now = Date.now();
   const upcomingEvents = events
@@ -298,7 +305,7 @@ export default async function VenuePage({
             <Icon name="chevron" size={16} />
           </summary>
           <div>
-            {venue.claimStatus === "unclaimed" && (
+            {canClaimVenue && (
               <Link
                 href={`/${locale}/business?view=claims&venueId=${venue.id}`}
               >
@@ -420,7 +427,7 @@ export default async function VenuePage({
               <div className="venue-spotlight-status">
                 {venue.verified ? (
                   <VerifiedBadge locale={locale} />
-                ) : venue.claimStatus === "unclaimed" ? (
+                ) : canClaimVenue ? (
                   <span>{es ? "Local sin reclamar" : "Unclaimed venue"}</span>
                 ) : (
                   <span>{m.community}</span>
