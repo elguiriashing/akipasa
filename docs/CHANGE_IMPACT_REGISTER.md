@@ -1,5 +1,21 @@
 # Change Impact Register
 
+## 2026-10-14 | Creator review draft recovery
+
+- **Inventory:** completes PUB-09.
+- **Before:** review outcomes and the creator return path were visible, but a failed
+  insert, validation redirect or sign-in handoff discarded the typed review.
+- **After:** the review form records its rating/body in session storage before the
+  server action, returns from sign-in with a bounded recovery marker, reopens the
+  disclosure and restores the draft. A normal or submitted page clears stale data.
+- **Dependencies:** existing review validation, requireUser/Terms handoff,
+  creator_reviews moderation/RLS and result notices remain authoritative. No review
+  is auto-submitted and no persistent cross-tab storage is introduced.
+- **Evidence:** 17 focused action, profile and draft cases pass, including all three
+  failure/auth returns and clearing outside recovery.
+- **Rollback:** revert source/tests/docs; session drafts expire with the tab and no
+  database rollback is needed.
+
 ## 2026-10-14 | Discovery filter recovery
 
 - **Inventory:** PUB-17.

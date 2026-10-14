@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-14 — Creator review draft recovery
+
+- Keep the rating and review text in tab-local storage before submission.
+- Restore and open the review form after validation, service or authentication
+  returns, then clear the saved draft after a normal or successful return.
+
 ## 2026-10-14 — Passport, toolbox and membership performance recovery
 
 - Stop idle Passport foil animation frames and resume them only for visible,

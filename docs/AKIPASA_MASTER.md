@@ -873,3 +873,15 @@ Hosted handoff follow-up: run 38500939403/account job 115647472508 passed the pr
 The owner-only launcher previously imported the full toolbox, achievement scopes and Pals engine before activation. The bounded recovery extracts the current panel intact and dynamically imports it only after a click or Ctrl/Meta+Shift+O. Saved appearance still applies immediately. Concurrent activations share the pending load; an EN/ES busy/retry trigger retains the existing responsive class and accessible name; late completion after unmount is ignored. Once loaded, the panel remains mounted so Escape, outside-close and reopen preserve its existing state. The locale layout's server has_owner_console gate and every owner/award action remain unchanged; lazy delivery grants no authorization.
 
 Eight focused cases cover import deferral, immediate appearance, mouse/keyboard activation, pending deduplication, failed-load retry, unmount and actual panel state across close/reopen in EN/ES. These are component/module-boundary evidence, not live bandwidth or authenticated acceptance. No CSS, auth cache, route, SQL, data, rewards, billing, email or consent changes. Current-head full checks, production/Cloudflare packaging and required CI remain release gates. Rollback restores the original eager component; no data restoration.
+
+## 2026-10-14 | Creator review draft recovery
+
+PUB-09 now retains a creator-review rating and body in tab-local session storage
+before invoking the existing server action. Validation, unavailable-service and
+authentication returns reopen the review disclosure and restore those fields; the
+authentication return carries only a bounded `review=draft` marker. Normal and
+successful profile loads clear stale drafts. Existing Zod limits, requireUser and
+Terms routing, creator_reviews RLS/moderation, pending state and EN/ES outcome copy
+remain unchanged. No automatic resubmission, new endpoint, schema or persistent
+cross-tab storage is added. Focused action/profile/draft tests pass; full CI and
+exact deployed-source verification remain release gates.
