@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-14 — Accommodation and Passport read recovery
+
+- Keep healthy accommodation-manager tabs usable while an independently failed
+  settings, inventory, calendar or reservation read shows a localized retry.
+- Render unknown accommodation counts and booking mode truthfully.
+- Separate Passport catalogue, XP, stamps, progress, enrollment and claims errors;
+  withhold dependent actions and preserve confirmed zero values.
+
 ## 2026-10-14 — Operational read recovery
 
 - Clear stale Admin account searches, ignore late responses and provide retry.

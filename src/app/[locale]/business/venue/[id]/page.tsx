@@ -260,19 +260,20 @@ export default async function VenueWorkspace({
   };
   const media: MediaRow[] = sharedMedia.data || ownedMedia || [];
 
-  const { data: accommodationSettings } = isAccommodation
-    ? await supabase
-        .from("accommodation_booking_settings")
-        .select("mode,policy,external_url,notification_email")
-        .eq("venue_id", id)
-        .maybeSingle()
-    : { data: null };
+  const { data: accommodationSettings, error: accommodationSettingsError } =
+    isAccommodation
+      ? await supabase
+          .from("accommodation_booking_settings")
+          .select("mode,policy,external_url,notification_email")
+          .eq("venue_id", id)
+          .maybeSingle()
+      : { data: null, error: null };
   const [
-    { data: accommodationRoomTypes },
-    { data: accommodationUnits },
-    { data: accommodationRates },
-    { data: accommodationReservations },
-    { data: accommodationBlocks },
+    { data: accommodationRoomTypes, error: accommodationRoomTypesError },
+    { data: accommodationUnits, error: accommodationUnitsError },
+    { data: accommodationRates, error: accommodationRatesError },
+    { data: accommodationReservations, error: accommodationReservationsError },
+    { data: accommodationBlocks, error: accommodationBlocksError },
   ] = isAccommodation
     ? await Promise.all([
         supabase
@@ -306,7 +307,13 @@ export default async function VenueWorkspace({
           .eq("venue_id", id)
           .order("start_date"),
       ])
-    : [{ data: [] }, { data: [] }, { data: [] }, { data: [] }, { data: [] }];
+    : [
+        { data: [], error: null },
+        { data: [], error: null },
+        { data: [], error: null },
+        { data: [], error: null },
+        { data: [], error: null },
+      ];
 
   const { data: mediaPlacements } = await supabase
     .from("venue_media_placements")
@@ -1824,6 +1831,14 @@ export default async function VenueWorkspace({
               reservations={accommodationReservations || []}
               blocks={accommodationBlocks || []}
               settings={accommodationSettings || undefined}
+              readErrors={{
+                settings: Boolean(accommodationSettingsError),
+                roomTypes: Boolean(accommodationRoomTypesError),
+                units: Boolean(accommodationUnitsError),
+                rates: Boolean(accommodationRatesError),
+                reservations: Boolean(accommodationReservationsError),
+                blocks: Boolean(accommodationBlocksError),
+              }}
               actions={{
                 createRoomType: createAccommodationRoomType,
                 updateRoomType: updateAccommodationRoomType,

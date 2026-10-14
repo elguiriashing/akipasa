@@ -213,4 +213,59 @@ describe("AkiDuermo business tools", () => {
     fireEvent.click(screen.getByRole("tab", { name: /Bookings/ }));
     expect(screen.getByText("Stay tools")).toBeVisible();
   });
+
+  it("keeps a failed reservation read unknown while other property sections remain usable", () => {
+    const action = async () => {};
+    render(
+      <AccommodationBookingWorkspace
+        locale="en"
+        venueId="example"
+        readErrors={{ reservations: true }}
+        actions={{
+          createRoomType: action,
+          updateRoomType: action,
+          createUnit: action,
+          updateUnit: action,
+          createRate: action,
+          deleteRate: action,
+          createBlock: action,
+          deleteBlock: action,
+        }}
+      />,
+    );
+
+    expect(
+      screen.getByRole("region", { name: "Reservations" }),
+    ).toHaveTextContent("This section could not be loaded");
+    expect(screen.getByLabelText("Property summary")).toHaveTextContent(
+      "Occupied—Pending—",
+    );
+    expect(
+      screen.queryByText("No stay reservations yet."),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /Rooms & units/ }));
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(screen.getByText("+ New type")).toBeVisible();
+  });
+
+  it("does not present an unavailable settings read as paused", () => {
+    render(
+      <AccommodationBookingWorkspace
+        locale="es"
+        venueId="example"
+        initialTab="settings"
+        readErrors={{ settings: true }}
+      />,
+    );
+
+    expect(screen.getByRole("region", { name: "Ajustes" })).toHaveTextContent(
+      "No se pudo cargar esta sección",
+    );
+    expect(screen.getByLabelText("Resumen del alojamiento")).toHaveTextContent(
+      "ReservasNo disponible",
+    );
+    expect(screen.queryByText("Pausadas")).not.toBeInTheDocument();
+    expect(screen.queryByRole("radio")).not.toBeInTheDocument();
+  });
 });

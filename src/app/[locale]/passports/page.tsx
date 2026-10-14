@@ -25,6 +25,26 @@ function progressStyle(value: number): CSSProperties {
   } as CSSProperties;
 }
 
+function ReadUnavailable({
+  locale,
+  view,
+  label,
+}: {
+  locale: "es" | "en";
+  view: string;
+  label: string;
+}) {
+  const es = locale === "es";
+  return (
+    <p className="notice" role="alert">
+      {label}{" "}
+      <Link href={`/${locale}/passports?view=${view}`}>
+        {es ? "Reintentar" : "Retry"}
+      </Link>
+    </p>
+  );
+}
+
 export default async function PassportsPage({
   params,
   searchParams,
@@ -48,13 +68,13 @@ export default async function PassportsPage({
         .catch(() => ({ data: undefined, error: true }))
     : { data: undefined, error: false };
   const [
-    { data: passports },
-    { data: programs },
-    { data: ledger },
-    { data: xp },
-    { data: progress },
-    { data: enrollments },
-    { data: claims },
+    passportsResult,
+    programsResult,
+    ledgerResult,
+    xpResult,
+    progressResult,
+    enrollmentsResult,
+    claimsResult,
   ] = await Promise.all([
     supabase
       .from("passports")
@@ -75,23 +95,23 @@ export default async function PassportsPage({
           .from("loyalty_ledger")
           .select("program_id,delta")
           .eq("profile_id", user.id)
-      : Promise.resolve({ data: [] }),
+      : Promise.resolve({ data: [], error: null }),
     user
       ? supabase.from("xp_ledger").select("delta").eq("profile_id", user.id)
-      : Promise.resolve({ data: [] }),
+      : Promise.resolve({ data: [], error: null }),
     user
       ? supabase
           .from("passport_progress")
           .select("step_id,enrollment_id")
           .eq("profile_id", user.id)
-      : Promise.resolve({ data: [] }),
+      : Promise.resolve({ data: [], error: null }),
     user
       ? supabase
           .from("passport_enrollments")
           .select("id,passport_id,started_at,expires_at,completed_at,state")
           .eq("profile_id", user.id)
           .in("state", ["active", "completed", "redeemed"])
-      : Promise.resolve({ data: [] }),
+      : Promise.resolve({ data: [], error: null }),
     user
       ? supabase
           .from("reward_claims")
@@ -100,8 +120,22 @@ export default async function PassportsPage({
           )
           .eq("profile_id", user.id)
           .order("created_at", { ascending: false })
-      : Promise.resolve({ data: [] }),
+      : Promise.resolve({ data: [], error: null }),
   ]);
+  const { data: passports } = passportsResult;
+  const { data: programs } = programsResult;
+  const { data: ledger } = ledgerResult;
+  const { data: xp } = xpResult;
+  const { data: progress } = progressResult;
+  const { data: enrollments } = enrollmentsResult;
+  const { data: claims } = claimsResult;
+  const passportsUnavailable = Boolean(passportsResult.error);
+  const programsUnavailable = Boolean(programsResult.error);
+  const ledgerUnavailable = Boolean(user && ledgerResult.error);
+  const xpUnavailable = Boolean(user && xpResult.error);
+  const progressUnavailable = Boolean(user && progressResult.error);
+  const enrollmentsUnavailable = Boolean(user && enrollmentsResult.error);
+  const claimsUnavailable = Boolean(user && claimsResult.error);
   const balances = new Map<string, number>();
   ledger?.forEach((entry) =>
     balances.set(
@@ -112,11 +146,12 @@ export default async function PassportsPage({
   const enrollmentByPassport = new Map(
     (enrollments || []).map((entry) => [entry.passport_id, entry]),
   );
-  const totalXp = xp?.reduce((sum, entry) => sum + entry.delta, 0) || 0;
-  const totalStamps = [...balances.values()].reduce(
-    (sum, balance) => sum + balance,
-    0,
-  );
+  const totalXp = xpUnavailable
+    ? null
+    : xp?.reduce((sum, entry) => sum + entry.delta, 0) || 0;
+  const totalStamps = ledgerUnavailable
+    ? null
+    : [...balances.values()].reduce((sum, balance) => sum + balance, 0);
   const completedSteps = new Set(
     (progress || []).map((entry: any) => entry.step_id),
   );
@@ -198,7 +233,7 @@ export default async function PassportsPage({
               />
               <ConsoleMetric
                 label={es ? "Pasaportes" : "Passports"}
-                value={passports?.length || 0}
+                value={passportsUnavailable ? "—" : passports?.length || 0}
                 detail={es ? "Rutas activas" : "Active routes"}
               />
               <ConsoleMetric
@@ -208,7 +243,7 @@ export default async function PassportsPage({
               />
               <ConsoleMetric
                 label={es ? "Pasos" : "Steps"}
-                value={completedSteps.size}
+                value={progressUnavailable ? "—" : completedSteps.size}
                 detail={es ? "Completados" : "Completed"}
               />
             </section>
@@ -242,8 +277,41 @@ export default async function PassportsPage({
                     </p>
                   )}
                 </div>
-                <p className="metric">{totalXp}</p>
+                <p className="metric">{totalXp === null ? "—" : totalXp}</p>
               </section>
+              {xpUnavailable && (
+                <ReadUnavailable
+                  locale={locale}
+                  view="progress"
+                  label={
+                    es
+                      ? "Tu total de XP no está disponible ahora."
+                      : "Your XP total is unavailable right now."
+                  }
+                />
+              )}
+              {progressUnavailable && (
+                <ReadUnavailable
+                  locale={locale}
+                  view="progress"
+                  label={
+                    es
+                      ? "El progreso de tus pasos no está disponible ahora."
+                      : "Your step progress is unavailable right now."
+                  }
+                />
+              )}
+              {claimsUnavailable && (
+                <ReadUnavailable
+                  locale={locale}
+                  view="progress"
+                  label={
+                    es
+                      ? "Tus recompensas no están disponibles ahora."
+                      : "Your rewards are unavailable right now."
+                  }
+                />
+              )}
               {!!claims?.length && (
                 <section className="panel">
                   <h2>{es ? "Recompensas listas" : "Rewards ready"}</h2>
@@ -290,7 +358,17 @@ export default async function PassportsPage({
             icon="PX"
           />
           <div className="panel passport-column">
-            {passports?.length ? (
+            {passportsUnavailable ? (
+              <ReadUnavailable
+                locale={locale}
+                view="passports"
+                label={
+                  es
+                    ? "Los pasaportes no están disponibles ahora."
+                    : "Passports are unavailable right now."
+                }
+              />
+            ) : passports?.length ? (
               <div className="reward-card-list">
                 {passports.map((passport: any) => {
                   const enrollment: any = enrollmentByPassport.get(passport.id);
@@ -337,52 +415,75 @@ export default async function PassportsPage({
                           {passport.completion_window_days}{" "}
                           {es ? "dias" : "days"}
                         </span>
-                        {enrollment && (
+                        {!enrollmentsUnavailable && enrollment && (
                           <span className="status-pill">
                             {enrollment.state}
                           </span>
                         )}
                       </div>
-                      {enrollment?.state === "active" && (
-                        <p>
-                          {es ? "Completa antes del" : "Complete by"}{" "}
-                          <strong>
-                            {passportDeadlineLabel(
-                              enrollment.expires_at,
-                              locale,
-                            )}
-                          </strong>
-                        </p>
-                      )}
-                      <div className="step-list">
-                        {passport.passport_steps.map((step: any) => (
-                          <div className="step-row" key={step.id}>
-                            <span className="status-pill">
-                              {completed.has(step.id)
-                                ? es
-                                  ? "Hecho"
-                                  : "Done"
-                                : es
-                                  ? "Pendiente"
-                                  : "Open"}
-                            </span>
-                            <p>
-                              {locale === "en"
-                                ? step.label_en || step.label_es
-                                : step.label_es}
-                              <span>
-                                {
-                                  (
-                                    step.venues as unknown as {
-                                      name: string;
-                                    } | null
-                                  )?.name
-                                }
+                      {!enrollmentsUnavailable &&
+                        enrollment?.state === "active" && (
+                          <p>
+                            {es ? "Completa antes del" : "Complete by"}{" "}
+                            <strong>
+                              {passportDeadlineLabel(
+                                enrollment.expires_at,
+                                locale,
+                              )}
+                            </strong>
+                          </p>
+                        )}
+                      {enrollmentsUnavailable ? (
+                        <ReadUnavailable
+                          locale={locale}
+                          view="passports"
+                          label={
+                            es
+                              ? "Tus pasaportes iniciados no están disponibles ahora."
+                              : "Your started passports are unavailable right now."
+                          }
+                        />
+                      ) : progressUnavailable ? (
+                        <ReadUnavailable
+                          locale={locale}
+                          view="passports"
+                          label={
+                            es
+                              ? "El progreso de esta ruta no está disponible ahora."
+                              : "This route’s progress is unavailable right now."
+                          }
+                        />
+                      ) : (
+                        <div className="step-list">
+                          {passport.passport_steps.map((step: any) => (
+                            <div className="step-row" key={step.id}>
+                              <span className="status-pill">
+                                {completed.has(step.id)
+                                  ? es
+                                    ? "Hecho"
+                                    : "Done"
+                                  : es
+                                    ? "Pendiente"
+                                    : "Open"}
                               </span>
-                            </p>
-                          </div>
-                        ))}
-                      </div>
+                              <p>
+                                {locale === "en"
+                                  ? step.label_en || step.label_es
+                                  : step.label_es}
+                                <span>
+                                  {
+                                    (
+                                      step.venues as unknown as {
+                                        name: string;
+                                      } | null
+                                    )?.name
+                                  }
+                                </span>
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       <strong className="reward-strip">
                         {es ? "Recompensa:" : "Reward:"}{" "}
                         {locale === "en"
@@ -398,7 +499,7 @@ export default async function PassportsPage({
                             ? "Inicia sesion para empezar"
                             : "Sign in to start"}
                         </Link>
-                      ) : !enrollment ? (
+                      ) : enrollmentsUnavailable ? null : !enrollment ? (
                         <form action={enrollPassport}>
                           <input type="hidden" name="locale" value={locale} />
                           <input
@@ -471,11 +572,26 @@ export default async function PassportsPage({
             icon="ST"
           />
           <div className="panel passport-column">
-            {programs?.length ? (
+            {programsUnavailable ? (
+              <ReadUnavailable
+                locale={locale}
+                view="stamps"
+                label={
+                  es
+                    ? "Las tarjetas de sellos no están disponibles ahora."
+                    : "Stamp cards are unavailable right now."
+                }
+              />
+            ) : programs?.length ? (
               <div className="reward-card-list">
                 {programs.map((program) => {
-                  const balance = balances.get(program.id) || 0;
-                  const percent = (balance / program.stamps_required) * 100;
+                  const balance = ledgerUnavailable
+                    ? null
+                    : balances.get(program.id) || 0;
+                  const percent =
+                    balance === null
+                      ? 0
+                      : (balance / program.stamps_required) * 100;
                   return (
                     <article className="stamp-card" key={program.id}>
                       <div className="card-title-row">
@@ -500,7 +616,8 @@ export default async function PassportsPage({
                       </p>
                       <p>
                         <strong>
-                          {balance} / {program.stamps_required}
+                          {balance === null ? "—" : balance} /{" "}
+                          {program.stamps_required}
                         </strong>{" "}
                         {es ? "sellos" : "stamps"}
                       </p>
@@ -513,10 +630,24 @@ export default async function PassportsPage({
                           ? program.reward_en || program.reward_es
                           : program.reward_es}
                       </p>
-                      {user && balance >= program.stamps_required && (
-                        <div className="reward-choice-grid">
-                          {((program as any).loyalty_program_rewards || []).map(
-                            (item: any) => {
+                      {ledgerUnavailable && (
+                        <ReadUnavailable
+                          locale={locale}
+                          view="stamps"
+                          label={
+                            es
+                              ? "Tu saldo de sellos no está disponible ahora."
+                              : "Your stamp balance is unavailable right now."
+                          }
+                        />
+                      )}
+                      {user &&
+                        balance !== null &&
+                        balance >= program.stamps_required && (
+                          <div className="reward-choice-grid">
+                            {(
+                              (program as any).loyalty_program_rewards || []
+                            ).map((item: any) => {
                               const reward = item.business_rewards;
                               if (!reward) return null;
                               return (
@@ -543,10 +674,9 @@ export default async function PassportsPage({
                                   </button>
                                 </form>
                               );
-                            },
-                          )}
-                        </div>
-                      )}
+                            })}
+                          </div>
+                        )}
                     </article>
                   );
                 })}
@@ -574,7 +704,19 @@ export default async function PassportsPage({
               }
               icon="BD"
             />
-            <BadgeProgress locale={locale} totalXp={totalXp} />
+            {totalXp === null ? (
+              <ReadUnavailable
+                locale={locale}
+                view="badges"
+                label={
+                  es
+                    ? "Tus insignias no están disponibles ahora."
+                    : "Your badges are unavailable right now."
+                }
+              />
+            ) : (
+              <BadgeProgress locale={locale} totalXp={totalXp} />
+            )}
           </section>
         ) : (
           <p className="notice">

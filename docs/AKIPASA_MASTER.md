@@ -3,6 +3,22 @@
 > Entry point for every human or AI modifying AkiPasa. Established 2026-10-09. **Living engineering contract, not a claim that every production behavior is verified.**
 > Source priority: running code + database schema + production evidence > current tests > these docs > historical handoff notes > chat discussions. If they disagree, investigate; never silently choose the older description.
 
+## 2026-10-14 | Accommodation and Passport read recovery
+
+The AkiDuermo property workspace treats settings, room types, units, rates,
+blocks and reservations as separate read dependencies. A failed active-section
+dependency produces a localized retry and withholds only that section's controls;
+other tabs remain usable. Unknown inventory counts render as unknown, and a failed
+settings read never appears as a confirmed paused booking mode. Existing tenant
+authorization, actions, inventory validation and booking transitions are unchanged.
+
+The member Passport separates public passport and stamp-card catalogue reads from
+XP, stamp ledger, route progress, enrollment and reward-claim reads. Failed totals
+render as unknown instead of zero. Dependent start/claim controls, route completion,
+badges and claim codes remain hidden until their source read succeeds, while healthy
+catalogues and sections remain available. Successful empty ledgers still render zero.
+No reward math, enrollment action, RLS policy, schema or stored record changes.
+
 ## 2026-10-14 | Independent read recovery for operations
 
 Admin user search clears prior results as soon as a new query begins, ignores
