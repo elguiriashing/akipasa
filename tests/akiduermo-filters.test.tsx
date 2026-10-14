@@ -153,3 +153,106 @@ it("sends trip dates and guests to live availability search", async () => {
     ).toBeVisible(),
   );
 });
+
+it.each(["en", "es"] as const)(
+  "filters device-saved stays without catalogue requests and retains account sync in %s",
+  async (locale) => {
+    vi.stubGlobal("React", React);
+    const es = locale === "es";
+    const hotel = {
+      id: "00000000-0000-4000-8000-000000000011",
+      slug: "saved-hotel",
+      name: "Saved hotel",
+      address: "Málaga",
+      city: "Málaga",
+      website: null,
+      accommodationType: "hotel",
+    };
+    const apartment = {
+      ...hotel,
+      id: "00000000-0000-4000-8000-000000000012",
+      slug: "saved-apartment",
+      name: "Saved apartment",
+      accommodationType: "apartment",
+    };
+    localStorage.setItem(
+      "akiduermo-saved-v1",
+      JSON.stringify([hotel, apartment]),
+    );
+    const fetchMock = vi.fn(async (url: string) => {
+      if (url === "/api/stays/saved")
+        return Response.json({ authenticated: true, reminders: true });
+      throw new Error("Catalogue unavailable");
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const { unmount } = render(
+      <AkiDuermo initialLocale={locale} initialView="saved" />,
+    );
+    await waitFor(() =>
+      expect(
+        screen.getByRole("checkbox", {
+          name: es ? "Activar emails" : "Email me",
+        }),
+      ).toBeChecked(),
+    );
+    expect(screen.getByRole("heading", { name: hotel.name })).toBeVisible();
+    fireEvent.click(
+      screen.getByRole("button", { name: es ? "Hoteles" : "Hotels" }),
+    );
+    expect(
+      screen.queryByRole("heading", { name: apartment.name }),
+    ).not.toBeInTheDocument();
+    const search = screen.getByRole("searchbox", {
+      name: es ? "Buscar guardados" : "Search saved stays",
+    });
+    fireEvent.change(search, { target: { value: "unmatched" } });
+    expect(screen.queryByRole("heading", { name: hotel.name })).toBeNull();
+    fireEvent.change(search, { target: { value: "malaga" } });
+    expect(screen.getByRole("heading", { name: hotel.name })).toBeVisible();
+    expect(
+      fetchMock.mock.calls.filter(([url]) => url.startsWith("/api/stays?")),
+    ).toHaveLength(0);
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: `${es ? "Dejar de guardar" : "Unsave"} ${hotel.name}`,
+      }),
+    );
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith("/api/stays/saved", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "set-saved",
+          venueId: hotel.id,
+          saved: false,
+          locale,
+        }),
+      }),
+    );
+    expect(JSON.parse(localStorage.getItem("akiduermo-saved-v1")!)).toEqual([
+      apartment,
+    ]);
+    unmount();
+    fetchMock.mockClear();
+    fetchMock.mockImplementation(async (url: string) =>
+      url.startsWith("/api/stays?")
+        ? Response.json({
+            rows: [{ ...hotel, ownerPreview: true }],
+            total: 0,
+          })
+        : Response.json({ authenticated: true, reminders: true }),
+    );
+    render(<AkiDuermo initialLocale={locale} initialView="explore" />);
+    await waitFor(() =>
+      expect(screen.getByRole("heading", { name: hotel.name })).toBeVisible(),
+    );
+    expect(
+      screen.getByText(
+        es ? "Vista privada de propietario" : "Private owner preview",
+      ),
+    ).toBeVisible();
+    expect(
+      fetchMock.mock.calls.filter(([url]) => url.startsWith("/api/stays?")),
+    ).toHaveLength(1);
+  },
+);

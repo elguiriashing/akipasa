@@ -22,6 +22,10 @@ import {
 
 import { stopIneligibleAkiSuiteAddonRenewals } from "./src/lib/akisuite-addon-renewal";
 import { publishScheduledAkiSuiteEvents } from "./src/lib/akisuite-publication";
+import {
+  releaseSourceCommit,
+  type ReleaseAssets,
+} from "./src/lib/release-source";
 
 const worker = {
   async scheduled(
@@ -49,13 +53,14 @@ const worker = {
   },
   async fetch(
     request: Request,
-    env: MapEdgeEnv & ClaimMailEnv,
+    env: MapEdgeEnv & ClaimMailEnv & { ASSETS?: ReleaseAssets },
     ctx: { waitUntil(work: Promise<unknown>): void },
   ) {
     const path = new URL(request.url).pathname;
     if (path === "/api/bookings/release" && request.method === "GET") {
       return Response.json(
         {
+          sourceCommit: await releaseSourceCommit(env.ASSETS, request),
           release: "2026-10-09-booking-ux-r1",
           accountWorkspace: "2026-10-12-account-suite-v1",
           membershipCatalogue: "2026-10-12-akisuite-catalogue-v2",

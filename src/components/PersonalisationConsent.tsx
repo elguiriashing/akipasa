@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import type { Locale } from "@/lib/config";
 import {
   deniedChoices,
@@ -15,9 +15,11 @@ import {
   writeMotionPreference,
   requestPassportMotion,
 } from "../lib/passport-motion";
+import styles from "./PersonalisationConsent.module.css";
 
 export function PersonalisationConsent({ locale }: { locale: Locale }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [privacyHost, setPrivacyHost] = useState<HTMLElement | null>(null);
   const [visible, setVisible] = useState(false);
   const [choices, setChoices] = useState<PrivacyChoices>(deniedChoices);
@@ -25,7 +27,38 @@ export function PersonalisationConsent({ locale }: { locale: Locale }) {
   const [motionDenied, setMotionDenied] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(false);
-  const es = locale === "es";
+  const privacyTrigger = useRef<HTMLButtonElement>(null);
+  const panelId = useId();
+  const [changedLocale, setChangedLocale] = useState<{
+    scope: string;
+    locale: Locale;
+  } | null>(null);
+  // Root layouts persist during client navigation between localized routes.
+  // AkiDuermo changes its language query in place through native history.
+  // Keep the server locale as the fallback when neither route defines one.
+  const queryLocale = searchParams?.get("lang");
+  const localeScope = `${pathname ?? ""}?${queryLocale ?? ""}`;
+  const currentLocale =
+    pathname?.match(/^\/(en|es)(?=\/|$)/)?.[1] ??
+    (changedLocale?.scope === localeScope
+      ? changedLocale.locale
+      : queryLocale === "en" || queryLocale === "es"
+        ? queryLocale
+        : locale);
+  const es = currentLocale === "es";
+  useEffect(() => {
+    // Visiting another route must discard the previous route's override.
+    setChangedLocale(null);
+    // Stay screens retain Next's history markers, so their locale is explicit.
+    const changeLanguage = (event: Event) => {
+      const value = (event as CustomEvent<unknown>).detail;
+      if (value === "en" || value === "es")
+        setChangedLocale({ scope: localeScope, locale: value });
+    };
+    window.addEventListener("akipasa:locale-change", changeLanguage);
+    return () =>
+      window.removeEventListener("akipasa:locale-change", changeLanguage);
+  }, [localeScope]);
   useEffect(() => {
     setPrivacyHost(document.getElementById("passport-privacy-controls"));
   }, [pathname]);
@@ -73,6 +106,12 @@ export function PersonalisationConsent({ locale }: { locale: Locale }) {
     setChoices(next);
     setVisible(false);
   }
+  function dismiss() {
+    if (saving) return;
+    // Closing is not a consent decision. Keep saved permissions and the draft.
+    setVisible(false);
+    privacyTrigger.current?.focus({ preventScroll: true });
+  }
   const privacyControl = (
     <div
       className={
@@ -82,8 +121,11 @@ export function PersonalisationConsent({ locale }: { locale: Locale }) {
       }
     >
       <button
+        ref={privacyTrigger}
         type="button"
         className="button secondary"
+        aria-expanded={visible}
+        aria-controls={panelId}
         onClick={() => setVisible(true)}
       >
         {es ? "Opciones de privacidad" : "Privacy choices"}
@@ -95,15 +137,35 @@ export function PersonalisationConsent({ locale }: { locale: Locale }) {
       {privacyHost ? createPortal(privacyControl, privacyHost) : privacyControl}
       {visible && (
         <aside
+          id={panelId}
           className="personalisation-consent"
           aria-label={es ? "Opciones de privacidad" : "Privacy choices"}
+          onKeyDown={(event) => {
+            if (event.key !== "Escape" || saving) return;
+            event.preventDefault();
+            event.stopPropagation();
+            dismiss();
+          }}
         >
           <div>
-            <strong>
-              {es
-                ? "Tú eliges cómo usamos tus datos"
-                : "Choose how we use your data"}
-            </strong>
+            <div className={styles.heading}>
+              <strong>
+                {es
+                  ? "Tú eliges cómo usamos tus datos"
+                  : "Choose how we use your data"}
+              </strong>
+              <button
+                type="button"
+                className={`button secondary ${styles.close}`}
+                aria-label={
+                  es ? "Cerrar opciones de privacidad" : "Close privacy choices"
+                }
+                disabled={saving}
+                onClick={dismiss}
+              >
+                {es ? "Cerrar" : "Close"}
+              </button>
+            </div>
             <p>
               {es
                 ? "Las funciones esenciales siempre están activas. Elige por separado los usos opcionales; puedes cambiarlos aquí cuando quieras."
