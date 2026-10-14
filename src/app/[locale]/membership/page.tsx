@@ -6,6 +6,7 @@ import { optionalUser } from "@/lib/auth";
 import { akiSuiteApp } from "@/lib/akisuite-catalogue";
 import { akiSuiteCheckoutReady } from "@/lib/akisuite-readiness";
 import { isLocale } from "@/lib/config";
+import "./membership-health.css";
 
 export const generateMetadata = publicPageMetadata("/membership");
 

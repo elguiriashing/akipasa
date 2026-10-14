@@ -10,6 +10,7 @@ import type { AIAgent, AIConversationMessage } from "./types";
 
 const maxOutputTokens = 1200;
 const maxProviderRounds = 16;
+const customerContextVersion = 1;
 
 type RunAgentInput = {
   service: SupabaseClient;
@@ -101,6 +102,12 @@ async function recordActivity(
 export async function runAIAgent(input: RunAgentInput) {
   let agent: AIAgent | null = null;
   let reservationId: string | null = null;
+  const chatMetadata = {
+    audience: input.chatAudience || "operator",
+    ...(input.chatAudience === "customer"
+      ? { customer_context_version: customerContextVersion }
+      : {}),
+  };
 
   try {
     let query = input.service.from("ai_agents").select("*").eq("enabled", true);
@@ -140,7 +147,7 @@ export async function runAIAgent(input: RunAgentInput) {
         actor_id: input.actorId,
         role: "user",
         content: input.message,
-        metadata: { audience: input.chatAudience || "operator" },
+        metadata: chatMetadata,
       });
       assertResult(error);
     }
@@ -158,14 +165,30 @@ export async function runAIAgent(input: RunAgentInput) {
             .limit(12);
     const historyRequest =
       input.requestKind === "chat" && input.actorId
-        ? input.service
-            .from("ai_chat_messages")
-            .select("role,content,created_at")
-            .eq("agent_id", agent.id)
-            .eq("actor_id", input.actorId)
-            .in("role", ["user", "assistant"])
-            .order("created_at", { ascending: false })
-            .limit(20)
+        ? (() => {
+            const query = input.service
+              .from("ai_chat_messages")
+              .select("role,content,created_at")
+              .eq("agent_id", agent.id)
+              .eq("actor_id", input.actorId)
+              .in("role", ["user", "assistant"]);
+            // Untagged history predates customer chat and stays operator-only.
+            const audienceQuery =
+              input.chatAudience === "customer"
+                ? query
+                    .eq("metadata->>audience", "customer")
+                    // Earlier customer replies may contain operator context.
+                    .eq(
+                      "metadata->>customer_context_version",
+                      customerContextVersion,
+                    )
+                : query.or(
+                    "metadata->>audience.eq.operator,metadata->>audience.is.null",
+                  );
+            return audienceQuery
+              .order("created_at", { ascending: false })
+              .limit(20);
+          })()
         : Promise.resolve({ data: [], error: null });
     const [
       { data: memory, error: memoryError },
@@ -195,6 +218,7 @@ export async function runAIAgent(input: RunAgentInput) {
     const tools = availableTools(agent).filter(
       (tool) => !permittedToolNames || permittedToolNames.has(tool.name),
     );
+    const effectiveToolNames = new Set(tools.map((tool) => tool.name));
     const enableWebSearch =
       input.allowWebSearch === true &&
       input.chatAudience !== "customer" &&
@@ -257,14 +281,17 @@ ${input.additionalInstructions || "None."}`;
       safetyIdentifier: await privacySafeIdentifier(
         input.actorId || `schedule:${agent.id}`,
       ),
-      executeTool: (call) =>
-        executeToolCall(call, {
+      executeTool: (call) => {
+        if (!effectiveToolNames.has(call.name))
+          throw new Error("The agent is not permitted to use this tool");
+        return executeToolCall(call, {
           service: input.service,
           agent: agent as AIAgent,
           actorId: input.actorId,
           taskId: input.taskId,
           workspaceId,
-        }),
+        });
+      },
     });
 
     const { error: completionError } = await input.service.rpc(
@@ -289,7 +316,7 @@ ${input.additionalInstructions || "None."}`;
           model: agent.model,
           input_tokens: result.inputTokens,
           output_tokens: result.outputTokens,
-          audience: input.chatAudience || "operator",
+          ...chatMetadata,
         },
       });
       assertResult(error);

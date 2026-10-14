@@ -84,6 +84,9 @@ export function StayProperty({
     const url = new URL(location.href);
     url.searchParams.set("lang", next);
     history.replaceState(history.state, "", url);
+    window.dispatchEvent(
+      new CustomEvent("akipasa:locale-change", { detail: next }),
+    );
   }
   const home = `${stayOrigin}/?lang=${locale}`;
   const type = stayText(

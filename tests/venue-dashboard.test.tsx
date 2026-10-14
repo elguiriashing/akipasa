@@ -233,7 +233,9 @@ describe("shared AkiBusiness media inventory", () => {
 describe("venue media gallery picker", () => {
   it("uses the event gallery modal instead of thumbnail strips", () => {
     const studio = readFileSync("src/components/VenueMediaStudio.tsx", "utf8");
-    expect(studio).toContain('className="event-media-modal"');
+    expect(studio).toContain(
+      'className="event-media-modal venue-media-picker-modal"',
+    );
     expect(studio).toContain('className="event-media-modal-grid"');
     expect(studio).toContain("visiblePickerItems.map");
     expect(studio).toContain("setPickerSearch(event.target.value)");

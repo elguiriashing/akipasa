@@ -918,3 +918,34 @@ Completed the AkiDuermo room-night request candidate: explicit booking modes, re
 ## 2026-10-10
 
 - Fix AkiBusiness access for added venue/accommodation team members, including consumer editors and members of unverified properties, while retaining tenant role and Pro entitlement checks.
+
+## 2026-10-13 — Backlog recovery release verification
+
+- Release smoke now verifies the exact packaged source SHA across public portal hosts instead of accepting only an old feature marker.
+- Cloudflare packaging rejects uncommitted/untracked source and source changes during packaging.
+- Tablet CI runs recovered claim and media picker acceptance harnesses.
+
+## 2026-10-13 — Health privacy first-visit repair (candidate)
+
+- Add localized Close and Escape to the shared privacy panel, with focus restoration and no implied consent decision. Unsaved choices stay drafts; existing consent and motion state are unchanged by dismissal.
+- Exercise actual anonymous initial-panel state before normal AkiDuermo discovery/map interactions. Current-head browser and production acceptance remain pending.
+
+## 2026-10-14
+
+- Measure claim-picker browser geometry in one rendered state after the exact completed search response; retain strict overlap/natural-click acceptance and add held-loading bounds coverage.
+
+## 2026-10-14 — Customer AI boundaries
+
+- Separate customer and operator model history; restart historical customer context safely while retaining stored records.
+- Enforce the request's effective advertised tool set during execution, preserving existing validation, approval, budgets and audit.
+- Add actual gateway/client/provider fixtures and persisted-state regression coverage. Release gates and limitations are recorded in the master contract and impact register.
+
+## 2026-10-14 — Venue media signing
+
+- Batch public venue image signing once per nonempty loader, preserving media order, cover behavior and localized labels.
+- Cover reversed/partial batch responses, denied paths, duplicates, failure and empty-media cases with installed-SDK fixtures. Request-count evidence is recorded separately from latency and Storage-download errors.
+
+## 2026-10-14 — Runtime security dependencies
+
+- Pin focused Next, PostCSS and Sharp fixes; preserve current MapLibre v5 map/worker contracts with the exact upstream attribute snapshot backport.
+- Fail installation/build checks for unknown, partially patched or alternate-entry MapLibre artifacts; retain the version-based npm alert and separate provider trust limitation in the audit.
