@@ -308,6 +308,14 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 
 ### Claim-specific applicant verification fields (2026-10-11)
 
+Claim picker search results stay in normal flow beneath the search input,
+including wrapped EN/ES headings and activity/accommodation controls. A bounded
+results list scrolls without obscuring the input or displacing content over the
+map. `scripts/test-claim-picker-browser.mjs` exercises the real component with
+disposable search responses across locales, themes and responsive widths,
+including selecting a result and clearing the selected venue. It validates map
+container geometry, not MapLibre rendering or authenticated live claiming.
+
 - The EN/ES AkiBusiness claim form `/[locale]/business?view=claims` uses the existing ClaimVenuePicker and now separately collects applicant full name and relationship to the business (required), optional applicant phone, business email, official venue URL and venue phone, plus the existing required evidence text. Mobile and light/dark forms must display these input controls.
 - `submitVenueClaim` performs server-side Zod validation and inserts private `venue_claims.claim_details` (including `submission_locale`) alongside the immutable claim ID, claimant ID and evidence. It must retain the existing transactional staff alert outbox and immediate `dispatchClaimSubmissionAlerts` call. No canonical venue/profile fields may be modified by an unapproved claim.
 - Staff moderation `staff_pending_venue_claims(integer)` includes `claimant.submission` from `claim_details` behind its existing moderator/administrator role check. Submitted applicant/venue contacts are labelled unverified and kept distinct from profile details and public listing. Historical claim rows default to an empty object and still render safely.
@@ -348,6 +356,12 @@ A passing build is only the start. Test routes on `/en` and `/es` for homepage, 
 - Live rejected claim email outbox records reported `provider_403` while a direct test with the connected Resend account and `support@akipasa.com` was delivered. The application previously prioritized an old `CLAIM_RESEND_API_KEY` over `RESEND_API_KEY`, potentially silently shadowing a newly corrected main key.
 - Central `resendSendingKey` now selects trimmed `RESEND_API_KEY` first with `CLAIM_RESEND_API_KEY` retained as legacy fallback; all claim decision, claim staff alert, booking, accommodation and suite outbox dispatchers share this selector. Both Worker cron and server actions use the same preference; no change to sender identity or delivery queue permissions.
 - Selection precedence alone cannot validate a production secret or confirm email delivery. Cloudflare must have a valid sending-enabled Resend key from the intended verified-domain account. Existing blocked outbox items are never automatically replayed. See `docs/CLAIM_EMAIL_403_RECOVERY.md`.
+
+## 2026-10-13 | Canonical Resend recovery instruction
+
+The claim-email recovery runbook inspects production `RESEND_API_KEY` first, matching `resendSendingKey` in `booking-mail-delivery.ts`. Only absent or blank primary keys use legacy `CLAIM_RESEND_API_KEY`; rotating that fallback cannot repair an invalid nonblank primary. No keys, runtime configuration, queue status or messages are changed. Existing key-precedence regression coverage remains authoritative; live credential repair and individually authorized requeues are operational dependencies, not accomplished by this documentation change.
+
+Canonical-key recovery validation: the existing `tests/claim-decision-email.test.ts` suite passed 10/10 cases on 2026-10-13, including trimmed primary-key selection, absent/blank-primary legacy fallback and dispatcher selection. The isolated command retained the existing timeout limits; no credentials or real messages were used. Required exact-head CI remains the merge gate.
 
 ### Sticky mobile workspace menu overlay (2026-10-11 candidate)
 
@@ -463,8 +477,106 @@ Live membership smoke verification found that the parent account layout replaced
 
 2026-10-13 AkiSuite membership width/overlap follow-up: The membership-only shell now uses available desktop/tablet viewport width up to a 1720px bound while keeping responsive gutters. Catalogue cards reflow across wider screens, and the Enterprise card brand/header badge can wrap without label collision. No subscription billing, entitlement, feature flag, migration or checkout change. Validate EN/ES membership layouts on mobile, tablet and desktop.
 
+## 2026-10-13 | Recovered Stripe tax-audit follow-up (#127)
+
+Read-only live revalidation confirms the same approved account `acct_1SVLH2GfzDhsgsQZ` now displays AkiPasa Marketing S.L., all fourteen AkiSuite prices use inclusive tax behaviour, and all seven products have tax codes (AkiPasa Premium `txcd_10103000`, others `txcd_10103001`). Stripe Tax registrations remain absent. Technical classification and account display name do not establish legal identity or VAT approval. `docs/AKISUITE_PRICING_ROLLOUT.md` and the checked-in price audit must describe the same observed state; the obsolete unspecified-tax update instruction is removed.
+
+The linked Supabase project's read-only schema probe found neither `public.akisuite_billing_subscriptions` nor `akisuite_private.launch_settings`. The two new migrations, hosted Storage DDL compatibility, legal registration, isolated payment lifecycle acceptance and authenticated portal validation remain release blockers. No flags, prices, products, registrations, subscriptions, permissions, schema or production data changed. Historic release-test claims remain dated evidence, not new validation. Documentation rollback is a source revert.
+
+## Exact source release evidence (2026-10-13)
+
+Cloudflare packaging stamps `.open-next/assets/release-source.json` with the clean tracked Git HEAD before deployment. Packaging refuses tracked changes; commit source before running `build:cloudflare`. The existing `/api/bookings/release` returns `sourceCommit` from this internal ASSETS binding, preserving feature markers and returning null for legacy/missing/malformed artifacts. The post-push smoke must observe the exact triggering commit on apex/www/Business/Duermo before claiming deployment; a constant feature marker alone is insufficient. This adds no database, billing, permission, locale or secret dependency. Rollback restores older code/assets and accurately loses current-source readiness. Browser/authenticated workflow acceptance remains separate.
+
+Exact-source release verification runs for every master push, including asset, dependency, configuration and documentation changes; there is no deployment-input path filter.
+
+### 2026-10-13 | Recovered venue media picker review defects
+
+Unmerged PRs #121/#122 contained review findings still present after #123: search/folder controls consumed the gallery scroll row, and the modal lacked keyboard focus containment, Escape dismissal, restoration and slot-specific trigger names. VenueMediaStudio now groups controls into one intrinsic row and empty/results into the scroll row, with dedicated CSS preserving the event editor modal. EN/ES triggers identify the image surface; opening resets filters, focuses search, traps keyboard/programmatic focus and closing restores the opener. Existing upload/placement/Auto actions, permission checks, media inventory, accommodation header, event editor, billing and SQL remain unchanged. Rollback is code-only. Component regression tests exercise actual focus wrapping, Escape/close restoration, filter reset and variable-content DOM rows in both locales. Full check, responsive browser/Cloudflare CI and authenticated live owner acceptance remain required before deployment; no live storage/data mutation or deployment is claimed.
+
+The recovered claim and venue-media browser harnesses run in tablet CI with disposable actions; their real-browser results remain separate from component tests and live authenticated acceptance.
+
+## 2026-10-13 | Historical backlog documentation authority
+
+The README entry point now directs engineers to `AGENTS.md` and this contract.
+The July/August AI handoff, project status and TODO files carry explicit
+historical-snapshot notices linking current change evidence and the gated
+AkiSuite billing contract. Their historical content remains intact for backlog
+recovery; an unchecked task is not proof of a current omission, and an old
+acceptance checkbox is not proof of the present deployment. No application,
+workflow, database, entitlement or payment-activation behavior changes.
+
+### 2026-10-13 | Venue picker short-window visual acceptance repair
+
+Actual CI screenshot review of PR #138 at 640×400 caught gallery cards collapsing into thin, unreadable strips even though modal/footer geometry checks passed. Dedicated venue-picker gallery rows now retain a nine-rem minimum and scroll instead of compressing; short-window controls share one row and the footer stays horizontal to reserve a readable first card. Shared event-picker geometry and existing placement/Auto actions remain unchanged. Browser acceptance now requires actual thumbnail and label dimensions, the first label inside the gallery, overflowing short-window results, scrolling to the last selectable thumbnail and successful selection/focus restoration with disposable actions. This repairs a visual acceptance failure; required browser CI and screenshot reinspection remain pending on the amended head. No production data, permissions, SQL or billing changes.
+
+## 2026-10-13 | Count actual media and customer-support request bytes
+
+Both /api/business/venue-media and /api/support-agent/chat trusted Content-Length before parsing. Four isolated streamed-request cases reproduced oversized bodies reaching mocked authenticated adapters. Media now counts binary bytes before forwarding to the multipart parser, with an 11 MiB framing budget and cancellation on overflow; support reuses readBoundedText for its 8000-byte UTF-8 contract. Missing or understated length cannot bypass the limits. Origin checks, existing upload action authorization/file validation/RLS, authenticated support identity and provider/tool boundaries remain unchanged. No schema, data, email, prices, entitlements or consent behavior changes.
+
+Eleven focused cases, TypeScript, scoped lint and formatting passed, including cancellation failures, multibyte chunks, valid binary forms, legitimate support, malformed inputs and authorization/origin denials. The existing AkiSuite test glob includes the new file. Full integrated check, Cloudflare packaging, CI and approved authenticated acceptance remain release gates. Rollback is a source revert; no production writes or provider requests were made.
+
+## 2026-10-13 | AkiDuermo Saved avoids unused catalogue requests
+
+The device-local Saved view filtered only its own inventory but issued /api/stays requests on mount and each filter/search change. The discovery effect now skips the Saved view, preserving the separate authenticated /api/stays/saved preference read and save/unsave synchronization. EN/ES component reproduction measured four catalogue requests before and zero after; Explore still fetches and displays its existing private owner preview. Focused 4/4 and broader AkiDuermo 31/31 tests, scoped lint and formatting passed. No stopwatch/CWV or production speed improvement is claimed. No routes, roles, RLS, persistent save format, booking, paid access or data changed. Full check, browser/CI and live version verification remain release gates; rollback is a source revert. Homepage concurrency overlaps existing PR #103 and was not duplicated.
+
+## 2026-10-13 | Locale navigation and membership control acceptance
+
+The health audit reproduces stale Spanish privacy copy after switching to an English localized route, a membership Manage/Search collision at 1363px, and auth language switching that retains the previous locale in a single local return destination. PersonalisationConsent derives copy from the exact current locale segment, then a valid reactive AkiDuermo lang query, with the existing server fallback; LanguageLink translates one well-formed localized next destination while preserving its suffix/query and the existing server destination sanitizer. Membership imports a narrow stylesheet reserving Search space at the existing 800px breakpoint. Consent choices, auth/session/roles, pricing, checkout gates, API/RLS, media, storage, analytics and production data are unchanged.
+
+Focused privacy 14/14 and language-return/auth 30/30 tests passed; 62 browser cases cover seven widths, both locales/themes, collision geometry, target size, overflow, normal Manage clicks and privacy draft preservation. Browser execution, combined check, Cloudflare packaging, CI and deployed-version/live smoke remain release gates. Source reverts roll back presentation; no data migration or restoration is required.
+
+### Stay privacy controls and property CTA protection (health follow-up)
+
+Production and CI reproduce the AkiDuermo Privacy trigger beneath fixed StayNavigation. Scoped StayAppShell rules place the trigger and bounded, scrollable panel above the dock/safe area. A property-only <=800px offset also preserves its separate planning CTA; wider screens and route departure reset the CSS variable automatically. Membership Manage uses a 46px minimum target while retaining the strict >=44px acceptance assertion. No consent defaults/submission, booking actions, property data, auth/roles, prices or shared global/root/picker styling changes. Sixty-two real-route cases include both locales/themes, seven catalogue widths, stay-host short windows and twelve synthetic property-renderer layouts. Property fixture shapes are layout evidence, not live inventory/RLS proof. Source reverts are sufficient; no migration. Final execution, integrated checks and deployment proof remain release gates.
+
+### In-place stay language acceptance (final Health follow-up)
+
+Actual browser acceptance caught Next retaining the old reactive query because the stay screens preserve history state markers. AkiDuermo and StayProperty now emit a bounded locale notification after their existing in-place language change. Consent validates EN/ES, keeps an exact localized pathname authoritative and clears scoped notifications on navigation, including return to an old route. Existing draft choices, motion, cookie and submission behavior remain. Seventeen component cases pass; the 62-case browser matrix now includes bidirectional property language switches with zero consent POST and no document reload. Current-head browser, CI, clean Cloudflare package and exact live source/smoke remain release gates. The branch includes reviewed #145/#144 prerequisites for ordered integration; no duplicate security migration.
+
+### First-visit privacy panel dismissal (Health CI repair)
+
+Current-head browser CI reproduced four EN/ES × light/dark 390px AkiDuermo guest journeys failing to click Hotels because the initially visible privacy panel intercepted the map filter. The shared nonmodal panel now has an EN/ES Close control (46px minimum height), scoped header styling and Escape dismissal from its controls, restoring focus to the existing Privacy trigger without scrolling the page. Closing changes visibility only: it writes no consent/version cookie, sends no POST, requests no motion permission and does not apply optional choices. Existing saved permissions remain authoritative and the draft remains available when reopened. The prompt still appears on a fresh document until an explicit consent choice is saved. Auth, account settings, consent API/RLS, telemetry permission checks, pricing, booking and production data are unchanged.
+
+Four additional component cases verify denied first visits in both locales, preserved drafts/saved permissions, keyboard focus and pending-save behavior. The existing eight locale/theme/mobile/desktop guest journeys now assert the real initially open panel, denied defaults, normal dismissal, focus restoration and zero consent writes before their ordinary discovery/filter interactions. Focused tests, complete browser/check/Cloudflare CI and exact live-source smoke remain release gates. Rollback is an application source revert; no migration or customer-data restoration.
+
+## 2026-10-14 | Claim picker browser phase sampling
+
+The inherited PR #143 geometry failure mixed two renders: a transient empty results bottom of 383.703125px and a subsequent loading map top of 381.515625px produced the exact -2.1875px report. Actual same-frame snapshots retain a 17px map gap and 13.59375px input gap. The harness now waits for the exact query/vertical response and completed loading state, then reads all bounds in one browser task. Every original strict assertion and 24 EN/ES, light/dark and responsive combinations, both verticals, scrolling and normal last-result selection/clear remain. Held requests additionally verify loading and settled-empty geometry and actual input bounds. No application CSS, API, role, SQL, data, billing, consent, map renderer or claim mutation changes.
+
+Local Chromium 153 acceptance passed 24/24 combinations, 144 atomic snapshots and 48 natural selections/clears; representative screenshots, scoped lint/format and whitespace checks passed. Integrated full checks, Cloudflare/current-head CI and live/authenticated acceptance remain separate gates. Rollback reverts the harness only. Cleanup retains PR #143/#136 ownership; this focused Health repair does not take over those changes.
+
+## 2026-10-14 | Customer AI prompt and tool boundaries
+
+Actual gateway and installed-client fixtures reproduced two boundaries: same-account operator messages entered later customer prompts, including after role demotion, and an unsolicited provider call executed an agent-permitted tool despite the request advertising no tools. History now filters audience before ordering/limiting while retaining actor, agent and user/assistant filters. Untagged legacy history remains operator-only. Customer history additionally requires context version 1 because earlier customer replies could already contain echoed operator context; fresh customer messages and replies carry that version. Historical customer context restarts without rewriting or deleting records. Operator legacy behavior stays compatible. Execution also requires the effective advertised tool set before existing permission, validation, approval and audit checks.
+
+Thirty-two focused cases, TypeScript, scoped ESLint/Prettier and whitespace checks passed. Inert base-to-persisted-state-to-patched replay confirms old customer replies cannot re-enter; fresh multi-turn context, JSON audience/version negatives, latest-message filtering, budgets and allowed-tool approvals remain covered. No real provider request, database migration, role grant, mail, paid activation or production write occurred. Existing admin-authorized dashboard mixed-history display is a separate presentation gap. Full integrated/Cloudflare/browser/current-head CI and exact deployed-source verification remain release gates. Rollback is a source revert; existing stored rows remain intact.
+
+## 2026-10-14 | Batch public venue media signing
+
+Both public venue loaders signed photos one request at a time. A shared signer now deduplicates requested paths and uses one createSignedUrls batch, retaining the 3600-second TTL, original media order/IDs/localized alt text, existing cover selection/fallback and published/venue-only selectors. Only requested, successful batch entries are used; denied, missing and unknown paths cannot become images. Empty media performs no signing request. A failed batch returns the existing missing-media fallback rather than retrying every asset. There is no shared signed-URL cache or permission/bucket change.
+
+Installed-SDK HTTP fixtures pass 44/44 repository cases, including 14 new boundary cases. Each direct loader changes signing calls from 60 to 1 and 12 to 1; empty remains 0. This measures request counts, not field latency or CWV. Historical Storage 400s were signed-object GET downloads, not signing POSTs, so this optimization is not claimed to remediate those errors. Public browser fixtures already support the batch endpoint. Scoped lint/format/diff checks pass; full current-head checks, Spotlight browser acceptance, Cloudflare package and exact deployed-source verification remain required. Rollback is a source revert with no data rollback. Cleanup #136 shares repository.ts selected-media code; reconcile that reviewed change after the serialized Health release, retaining both behaviors.
+
+## 2026-10-14 | Runtime dependency security and MapLibre v5 backport
+
+The runtime audit identified six affected packages. Next and its ESLint configuration are pinned to 15.5.27, PostCSS to 8.5.23 with nanoid 3.3.18/source-map-js 1.2.2, and Sharp to 0.35.5. MapLibre remains exactly 5.12.0 because the fixed major release changes worker/ESM/WebGL contracts; its upstream PR #8189 attribute-removal fix is applied narrowly to DOM source and all four distributed map bundles. Snapshotting attributes prevents adjacent unsafe attributes from being skipped. Existing worker, CSS, license, map API and WebGL behavior remain byte-identical. Patched bundles stop advertising their stale upstream source maps; remaining map files are not valid patched-source debugging evidence.
+
+Postinstall validates exact package version/license/runtime entry and all pristine/patched SHA256 fingerprints before writing, rejects unknown/missing/mixed installs, and is idempotent. Build, Cloudflare build, development and check refuse unpatched artifacts. Twenty-nine inert native AttributionControl/metadata/failure tests pass, covering each bundle, consecutive/nested attributes, safe OSM credits, source metadata updates and package-entry overrides. A clean lifecycle-enabled install applies the backport and full repository checks/build pass; final integrated checks and native browser/Cloudflare/current-head CI remain gates. The runtime audit falls from six package flags to one version-based critical MapLibre flag; npm does not understand the verified local backport. This flag is explicitly retained, not waived or claimed absent. Dev-tool findings are outside this focused runtime repair.
+
+The unchanged upstream sanitizer still permits iframe srcdoc in inert tests. No ordinary user-controlled style/attribution input was found; external configured tile/style providers remain a separate trust/hardening risk, with no production exploit or script execution demonstrated. Independent one-cycle review found no adjacency blocker and identified the runtime-entry guard, which is incorporated and directly regression-tested. No production data, SQL, role, payment, email, analytics or service configuration changes. Source/lockfile revert followed by a clean reinstall is rollback; restoring vulnerable versions requires security review. Physical Android/iOS/WebGL1 acceptance is unperformed.
+
 ## 2026-10-13 | Draft service-only Stripe webhook claim privileges
 
 Read-only production advisor and catalog evidence found anonymous EXECUTE on `public.claim_stripe_webhook_event(text,text)`, whose SECURITY DEFINER body writes the webhook lease/deduplication ledger without caller authorization. The signed `/api/stripe/webhook` route is the only application caller and uses the service client after signature verification. Anonymous direct RPC bypasses that HTTP signature check; no production exploit or RPC mutation was performed.
 
 Draft additive migration `20261013171937_restrict_stripe_webhook_claim_execution.sql`, mirrored in both migration directories, revokes PUBLIC, anon and authenticated EXECUTE while retaining service_role and the existing qualified empty-search-path implementation. It does not rewrite the function, touch subscription/ledger records, change Stripe prices/flags, or apply production DDL. Regression exercises role privileges and the existing lease lifecycle in disposable PGlite. Production application requires explicit approval, fresh privilege/advisor reads and a signed service webhook smoke; merging alone cannot repair the live privilege drift. Do not restore unsafe grants on rollback: preserve service_role or review a compensating migration.
+
+## 2026-10-14 | Reconcile draft webhook privileges with current master
+
+Canonical draft PR #140 is reconciled with master `8613edbd962a978dc3d85f9f7b9aafcc4da54a56`. Both mirrored migration files and `tests/stripe-webhook-privileges.test.ts` retain their exact original `8075a388` Git blobs; the original draft documentation entries are appended after the intact current master documents. The current test command retains every master test and adds the original privilege suite once. No function behavior, application caller, grants, migration order, dependency versions, release gates or billing flags are changed by this integration.
+
+The reconciled focused privilege/signature/lease suite passes 46/46 in disposable PGlite and mocked handlers. This is source integration evidence, not a production privilege repair. Full repository/current-head CI and sensitive security/release review remain required. The PR stays draft; no live SQL, deployment, new payment activation or master merge is performed. Hosted application still requires explicit approval, fresh role/overload privilege reads, service-role signed webhook acceptance and retention checks. Rollback must not restore unsafe anonymous grants.
+
+Historical wording in the preserved October 13 entry refers to the linked Supabase project `vhpbvcfkcteswlsdjrfl`, labelled AkiPasa Development. Its mapping to the public runtime/custom domains is not established by this reconciliation; the observed grant finding is not asserted as newly verified production state.
+
+Reconciliation validation: repository formatting, ESLint and TypeScript pass. `npm run check` then stops in its first Vitest stage with 543 passing tests and the existing Spanish-label PGlite test exceeding its unchanged 5000 ms timeout (65 files: 64 pass, one fails). Later chained suites, database safety, automation and production build are not reached by that command. No timeout, security check or release gate is weakened; current-head CI remains required. Focused webhook/signature/lease acceptance independently passes 46/46. Final appended documentation also passes scoped Prettier.

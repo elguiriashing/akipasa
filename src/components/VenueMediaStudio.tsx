@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- Venue media uses native images with existing layout controls. */
 "use client";
 
-import { useMemo, useRef, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { setMediaFolder } from "@/app/[locale]/business/venue/[id]/premium-actions";
 import { SafeMediaFileInput } from "@/components/SafeMediaFileInput";
 import {
@@ -121,6 +121,55 @@ export function VenueMediaStudio({
   const [status, setStatus] = useState<"idle" | "saved" | "error">("idle");
   const [uploadError, setUploadError] = useState("");
   const uploadFormRef = useRef<HTMLFormElement>(null);
+  const pickerDialogRef = useRef<HTMLElement>(null);
+  const pickerTriggerRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (!pickerSlot) return;
+    const dialog = pickerDialogRef.current;
+    if (!dialog) return;
+    const trigger = pickerTriggerRef.current;
+    const controls = () =>
+      Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          'button:not(:disabled), input:not(:disabled), select:not(:disabled), [tabindex="0"]',
+        ),
+      );
+    dialog.querySelector<HTMLInputElement>('input[type="search"]')?.focus();
+    const keepFocus = (event: FocusEvent) => {
+      if (!dialog.contains(event.target as Node))
+        (controls()[0] || dialog).focus();
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        setPickerSlot(null);
+      } else if (event.key === "Tab") {
+        const focusable = controls();
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (!first) {
+          event.preventDefault();
+          dialog.focus();
+        } else if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    document.addEventListener("keydown", onKeyDown, true);
+    document.addEventListener("focusin", keepFocus);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown, true);
+      document.removeEventListener("focusin", keepFocus);
+      if (trigger?.isConnected) trigger.focus();
+    };
+  }, [pickerSlot]);
+
   const fallback = items.find((item) => item.canDelete !== false) || null;
   const filteredPickerItems = items.filter(
     (item) =>
@@ -495,7 +544,15 @@ export function VenueMediaStudio({
                   className="button"
                   type="button"
                   disabled={busy}
-                  onClick={() => {
+                  aria-label={
+                    es
+                      ? `Elegir imagen: ${slot.es}`
+                      : `Choose image: ${slot.en}`
+                  }
+                  aria-haspopup="dialog"
+                  onClick={(event) => {
+                    pickerTriggerRef.current = event.currentTarget;
+                    setPickerFolder("");
                     setPickerSlot(slot.key);
                     setPickerPage(0);
                     setPickerSearch("");
@@ -771,7 +828,9 @@ export function VenueMediaStudio({
           onMouseDown={() => setPickerSlot(null)}
         >
           <section
-            className="event-media-modal"
+            className="event-media-modal venue-media-picker-modal"
+            ref={pickerDialogRef}
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-label={es ? "Elegir imagen" : "Choose image"}
@@ -797,35 +856,37 @@ export function VenueMediaStudio({
                 ×
               </button>
             </header>
-            <input
-              type="search"
-              aria-label={es ? "Buscar imágenes" : "Search images"}
-              placeholder={es ? "Buscar imágenes…" : "Search images…"}
-              value={pickerSearch}
-              onChange={(event) => {
-                setPickerSearch(event.target.value);
-                setPickerPage(0);
-              }}
-            />
-            {folders.length > 0 && (
-              <label>
-                {es ? "Carpeta" : "Folder"}
-                <select
-                  value={pickerFolder}
-                  onChange={(event) => {
-                    setPickerFolder(event.target.value);
-                    setPickerPage(0);
-                  }}
-                >
-                  <option value="">
-                    {es ? "Todas las carpetas" : "All folders"}
-                  </option>
-                  {folders.map((folder) => (
-                    <option key={folder}>{folder}</option>
-                  ))}
-                </select>
-              </label>
-            )}
+            <div className="venue-media-picker-controls">
+              <input
+                type="search"
+                aria-label={es ? "Buscar imágenes" : "Search images"}
+                placeholder={es ? "Buscar imágenes…" : "Search images…"}
+                value={pickerSearch}
+                onChange={(event) => {
+                  setPickerSearch(event.target.value);
+                  setPickerPage(0);
+                }}
+              />
+              {folders.length > 0 && (
+                <label>
+                  {es ? "Carpeta" : "Folder"}
+                  <select
+                    value={pickerFolder}
+                    onChange={(event) => {
+                      setPickerFolder(event.target.value);
+                      setPickerPage(0);
+                    }}
+                  >
+                    <option value="">
+                      {es ? "Todas las carpetas" : "All folders"}
+                    </option>
+                    {folders.map((folder) => (
+                      <option key={folder}>{folder}</option>
+                    ))}
+                  </select>
+                </label>
+              )}
+            </div>
             <div className="event-media-modal-grid">
               {visiblePickerItems.map((item) => (
                 <button
@@ -845,12 +906,12 @@ export function VenueMediaStudio({
                   <span>{item.alt}</span>
                 </button>
               ))}
+              {!filteredPickerItems.length ? (
+                <p className="muted">
+                  {es ? "No hay imágenes disponibles." : "No images available."}
+                </p>
+              ) : null}
             </div>
-            {!filteredPickerItems.length ? (
-              <p className="muted">
-                {es ? "No hay imágenes disponibles." : "No images available."}
-              </p>
-            ) : null}
             <footer>
               <button
                 type="button"
@@ -867,6 +928,7 @@ export function VenueMediaStudio({
               <div className="event-media-pagination">
                 <button
                   type="button"
+                  aria-label={es ? "Página anterior" : "Previous page"}
                   disabled={safePickerPage === 0}
                   onClick={() => setPickerPage((page) => page - 1)}
                 >
@@ -877,6 +939,7 @@ export function VenueMediaStudio({
                 </span>
                 <button
                   type="button"
+                  aria-label={es ? "Página siguiente" : "Next page"}
                   disabled={safePickerPage >= pickerPageCount - 1}
                   onClick={() => setPickerPage((page) => page + 1)}
                 >

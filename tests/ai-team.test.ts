@@ -1,5 +1,5 @@
 import { runAIAgent } from "../src/lib/ai-team/gateway";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -26,6 +26,581 @@ function agent(permissions: string[]): AIAgent {
     last_error: null,
   };
 }
+
+type FixtureRow = Record<string, unknown>;
+type ProviderInput = {
+  instructions: string;
+  input: Array<{
+    role?: string;
+    content?: string;
+    type?: string;
+    output?: string;
+  }>;
+  tools: Array<{ name?: string }>;
+};
+
+// Use the installed client and provider adapter; every HTTP response is inert.
+function gatewayFixture(
+  rows: FixtureRow[] = [],
+  permissions: string[] = [],
+  providerOutputs: FixtureRow[][] = [],
+) {
+  process.env.OPENAI_API_KEY = "test-key";
+  const support = { ...agent(permissions), agent_key: "support" };
+  const tables: Record<string, FixtureRow[]> = {
+    ai_agents: [support],
+    ai_chat_messages: rows.map((row) => ({ ...row })),
+    ai_activity_log: [],
+    ai_approvals: [],
+    reports: [{ state: "open", details: "inert internal support marker" }],
+  };
+  const databaseRequests: Array<{
+    url: URL;
+    method: string;
+    body: FixtureRow;
+  }> = [];
+  const providerRequests: ProviderInput[] = [];
+  const valueAt = (row: FixtureRow, column: string) => {
+    const [field, key] = column.split("->>");
+    const value = key ? (row[field] as FixtureRow)?.[key] : row[field];
+    if (value == null) return null;
+    // PostgreSQL ->> keeps scalar strings but serializes JSON arrays/objects.
+    return key && typeof value !== "string"
+      ? JSON.stringify(value)
+      : String(value);
+  };
+  const matches = (row: FixtureRow, column: string, filter: string) => {
+    const value = valueAt(row, column);
+    if (filter.startsWith("eq.")) return value === filter.slice(3);
+    if (filter === "is.null") return value === null;
+    if (filter.startsWith("in.("))
+      return filter
+        .slice(4, -1)
+        .split(",")
+        .includes(value || "");
+    throw new Error(`Unsupported fixture filter: ${filter}`);
+  };
+  const service = createClient("https://ai-team-test.invalid", "test-key", {
+    auth: { persistSession: false, autoRefreshToken: false },
+    global: {
+      fetch: async (rawUrl, init) => {
+        const url = new URL(String(rawUrl));
+        if (url.origin !== "https://ai-team-test.invalid")
+          throw new Error("Unexpected database destination");
+        const method = init?.method || "GET";
+        const body = JSON.parse(String(init?.body || "{}")) as FixtureRow;
+        databaseRequests.push({ url, method, body });
+        const table = url.pathname.split("/").at(-1) || "";
+        if (url.pathname.includes("/rpc/")) {
+          if (table === "reserve_ai_budget")
+            return Response.json({ reservation_id: "reservation-test" });
+          if (["complete_ai_budget", "fail_ai_budget"].includes(table))
+            return Response.json(null);
+          throw new Error(`Unexpected fixture RPC: ${table}`);
+        }
+        if (!tables[table])
+          throw new Error(`Unexpected fixture table: ${table}`);
+        if (method === "POST") {
+          const inserted = {
+            id: `fixture-${tables[table].length}`,
+            created_at: new Date(
+              Date.UTC(2099, 0, 1, 0, 0, databaseRequests.length),
+            ).toISOString(),
+            ...(table === "ai_approvals" ? { status: "pending" } : {}),
+            ...body,
+          };
+          tables[table].push(inserted);
+          return new Headers(init?.headers)
+            .get("prefer")
+            ?.includes("representation")
+            ? Response.json(inserted)
+            : new Response(null, { status: 201 });
+        }
+        if (method === "PATCH") return new Response(null, { status: 204 });
+        let selected = tables[table].filter((row) =>
+          [...url.searchParams].every(([column, filter]) => {
+            if (["select", "order", "limit"].includes(column)) return true;
+            if (column === "or")
+              return filter
+                .slice(1, -1)
+                .split(",")
+                .some((expression) => {
+                  const [, name, predicate] =
+                    expression.match(/^(.*?)\.(eq\..*|is\.null)$/) || [];
+                  if (!name)
+                    throw new Error("Unsupported fixture OR expression");
+                  return matches(row, name, predicate);
+                });
+            return matches(row, column, filter);
+          }),
+        );
+        const order = url.searchParams.get("order");
+        if (order) {
+          const [column, direction] = order.split(".");
+          selected = [...selected].sort(
+            (a, b) =>
+              String(a[column]).localeCompare(String(b[column])) *
+              (direction === "desc" ? -1 : 1),
+          );
+        }
+        const count = selected.length;
+        const limit = url.searchParams.get("limit");
+        if (limit) selected = selected.slice(0, Number(limit));
+        if (method === "HEAD")
+          return new Response(null, {
+            headers: { "content-range": `0-0/${count}` },
+          });
+        const single = new Headers(init?.headers)
+          .get("accept")
+          ?.includes("object+json");
+        return Response.json(single ? selected[0] || null : selected);
+      },
+    },
+  });
+  vi.spyOn(globalThis, "fetch").mockImplementation(async (url, init) => {
+    if (String(url) !== "https://api.openai.com/v1/responses")
+      throw new Error("Unexpected provider destination");
+    providerRequests.push(JSON.parse(String(init?.body)) as ProviderInput);
+    return Response.json({
+      id: `response-${providerRequests.length}`,
+      output: providerOutputs[providerRequests.length - 1] || [],
+      output_text: "Inert reply",
+      usage: { input_tokens: 10, output_tokens: 5 },
+    });
+  });
+  return { service, support, tables, databaseRequests, providerRequests };
+}
+
+function chatRow(content: string, metadata: FixtureRow = {}) {
+  return {
+    agent_id: agent([]).id,
+    actor_id: "same-account",
+    role: "assistant",
+    content,
+    metadata,
+    created_at: "2026-01-01T00:00:00Z",
+  };
+}
+
+describe("AI gateway request boundaries", () => {
+  it("restarts customer context without rewriting pre-boundary replies", async () => {
+    // The old gateway could ingest operator context and persist its echo as a
+    // customer-tagged reply. Such a tag alone cannot establish safe provenance.
+    const oldRows = [
+      chatRow("Inert operator marker", { audience: "operator" }),
+      {
+        ...chatRow("Initial customer question", { audience: "customer" }),
+        role: "user",
+      },
+      chatRow("Inert operator marker echoed", { audience: "customer" }),
+    ];
+    const fixture = gatewayFixture(oldRows);
+    const input = {
+      service: fixture.service,
+      actorId: "same-account",
+      agentKey: "support",
+      requestKind: "chat" as const,
+      chatAudience: "customer" as const,
+      allowedToolNames: [],
+      includeMemory: false,
+      message: "Fresh customer question",
+    };
+    await runAIAgent(input);
+    expect(fixture.providerRequests[0].input).toEqual([
+      { role: "user", content: "Fresh customer question" },
+    ]);
+    expect(fixture.tables.ai_chat_messages.slice(0, oldRows.length)).toEqual(
+      oldRows,
+    );
+    expect(
+      fixture.tables.ai_chat_messages.slice(-2).map((row) => row.metadata),
+    ).toEqual([
+      { audience: "customer", customer_context_version: 1 },
+      expect.objectContaining({
+        audience: "customer",
+        customer_context_version: 1,
+      }),
+    ]);
+    await runAIAgent({ ...input, message: "Follow-up customer question" });
+    expect(fixture.providerRequests[1].input).toEqual([
+      { role: "user", content: "Fresh customer question" },
+      { role: "assistant", content: "Inert reply" },
+      { role: "user", content: "Follow-up customer question" },
+    ]);
+    expect(fixture.tables.ai_chat_messages.slice(0, oldRows.length)).toEqual(
+      oldRows,
+    );
+  });
+
+  it.each([
+    ["customer", ["Customer history"]],
+    ["operator", ["Operator history", "Untagged legacy", "Null legacy"]],
+    [undefined, ["Operator history", "Untagged legacy", "Null legacy"]],
+  ] as const)(
+    "filters %s history by audience, actor, agent and role",
+    async (chatAudience, expected) => {
+      const rows = [
+        chatRow("Customer history", {
+          audience: "customer",
+          customer_context_version: 1,
+        }),
+        chatRow("Operator history", { audience: "operator" }),
+        chatRow("Untagged legacy"),
+        chatRow("Null legacy", { audience: null }),
+        chatRow("Unknown audience", { audience: "other" }),
+        chatRow("Invalid audience", { audience: false }),
+        chatRow("Array customer audience", {
+          audience: ["customer"],
+          customer_context_version: 1,
+        }),
+        chatRow("Array operator audience", {
+          audience: ["operator"],
+          customer_context_version: 1,
+        }),
+        chatRow("Object audience", {
+          audience: { value: "customer" },
+          customer_context_version: 1,
+        }),
+        chatRow("Unversioned customer", { audience: "customer" }),
+        ...[0, 2, null, [1], { value: 1 }].map((version) =>
+          chatRow("Invalid context version", {
+            audience: "customer",
+            customer_context_version: version,
+          }),
+        ),
+        {
+          ...chatRow("Other actor", {
+            audience: chatAudience || "operator",
+            customer_context_version: 1,
+          }),
+          actor_id: "other-account",
+        },
+        {
+          ...chatRow("Other agent", {
+            audience: chatAudience || "operator",
+            customer_context_version: 1,
+          }),
+          agent_id: "other-agent",
+        },
+        {
+          ...chatRow("Tool role", {
+            audience: chatAudience || "operator",
+            customer_context_version: 1,
+          }),
+          role: "tool",
+        },
+        {
+          ...chatRow("System role", {
+            audience: chatAudience || "operator",
+            customer_context_version: 1,
+          }),
+          role: "system",
+        },
+      ].map((row, index) => ({
+        ...row,
+        created_at: new Date(Date.UTC(2026, 0, 1, 0, 0, index)).toISOString(),
+      }));
+      const fixture = gatewayFixture(rows);
+      await runAIAgent({
+        service: fixture.service,
+        actorId: "same-account",
+        agentKey: "support",
+        requestKind: "chat",
+        message: "Current question",
+        chatAudience,
+        includeMemory: false,
+      });
+      expect(fixture.providerRequests[0].input).toEqual([
+        ...expected.map((content) => ({ role: "assistant", content })),
+        { role: "user", content: "Current question" },
+      ]);
+      const historyQuery = fixture.databaseRequests.find(
+        ({ url, method }) =>
+          method === "GET" && url.pathname.endsWith("/ai_chat_messages"),
+      )?.url.searchParams;
+      expect(historyQuery?.get("agent_id")).toBe(`eq.${fixture.support.id}`);
+      expect(historyQuery?.get("actor_id")).toBe("eq.same-account");
+      expect(historyQuery?.get("role")).toBe("in.(user,assistant)");
+      if (chatAudience === "customer") {
+        expect(historyQuery?.get("metadata->>audience")).toBe("eq.customer");
+        expect(historyQuery?.get("metadata->>customer_context_version")).toBe(
+          "eq.1",
+        );
+        expect(historyQuery?.has("or")).toBe(false);
+      } else {
+        expect(historyQuery?.has("metadata->>customer_context_version")).toBe(
+          false,
+        );
+        expect(historyQuery?.get("or")).toBe(
+          "(metadata->>audience.eq.operator,metadata->>audience.is.null)",
+        );
+      }
+      expect(
+        fixture.tables.ai_chat_messages
+          .slice(-2)
+          .map((row) => (row.metadata as FixtureRow).audience),
+      ).toEqual([chatAudience || "operator", chatAudience || "operator"]);
+    },
+  );
+
+  it.each(["customer", "operator"] as const)(
+    "takes the latest 20 %s messages after filtering",
+    async (chatAudience) => {
+      const matching = Array.from({ length: 24 }, (_, index) => ({
+        ...chatRow(`Matching ${index}`, {
+          audience: chatAudience,
+          customer_context_version: 1,
+        }),
+        role: index % 2 ? "assistant" : "user",
+        created_at: new Date(Date.UTC(2026, 0, 1, 0, 0, index)).toISOString(),
+      }));
+      const newerOtherAudience = Array.from({ length: 25 }, (_, index) => ({
+        ...chatRow(`Other audience ${index}`, {
+          audience: chatAudience === "customer" ? "operator" : "customer",
+        }),
+        created_at: new Date(Date.UTC(2026, 0, 2, 0, 0, index)).toISOString(),
+      }));
+      const oldCustomerContext =
+        chatAudience === "customer"
+          ? Array.from({ length: 25 }, (_, index) => ({
+              ...chatRow(`Old customer context ${index}`, {
+                audience: "customer",
+              }),
+              created_at: new Date(
+                Date.UTC(2026, 0, 3, 0, 0, index),
+              ).toISOString(),
+            }))
+          : [];
+      const fixture = gatewayFixture([
+        ...matching,
+        ...newerOtherAudience,
+        ...oldCustomerContext,
+      ]);
+      await runAIAgent({
+        service: fixture.service,
+        actorId: "same-account",
+        agentKey: "support",
+        requestKind: "chat",
+        message: "Current question",
+        chatAudience,
+        includeMemory: false,
+      });
+      expect(fixture.providerRequests[0].input).toEqual([
+        ...matching.slice(5).map(({ role, content }) => ({ role, content })),
+        { role: "user", content: "Current question" },
+      ]);
+      const historyQuery = fixture.databaseRequests.find(
+        ({ url, method }) =>
+          method === "GET" && url.pathname.endsWith("/ai_chat_messages"),
+      )?.url.searchParams;
+      expect(historyQuery?.get("order")).toBe("created_at.desc");
+      expect(historyQuery?.get("limit")).toBe("20");
+    },
+  );
+
+  it("keeps same-account operator history out of a later customer prompt", async () => {
+    const fixture = gatewayFixture();
+    await runAIAgent({
+      service: fixture.service,
+      actorId: "same-account",
+      agentKey: "support",
+      requestKind: "chat",
+      message: "Inert operator-only marker",
+      administratorAuthorized: true,
+      includeMemory: false,
+    });
+    await runAIAgent({
+      service: fixture.service,
+      actorId: "same-account",
+      agentKey: "support",
+      requestKind: "chat",
+      message: "Help with my AkiPasa application",
+      chatAudience: "customer",
+      administratorAuthorized: false,
+      allowedToolNames: [],
+      includeMemory: false,
+    });
+    expect(fixture.providerRequests[1].input).toEqual([
+      { role: "user", content: "Help with my AkiPasa application" },
+    ]);
+    expect(
+      fixture.databaseRequests.some(({ url }) =>
+        url.pathname.endsWith("/ai_agent_memory"),
+      ),
+    ).toBe(false);
+  });
+
+  it("rejects an unsolicited customer tool call despite the agent permission", async () => {
+    const fixture = gatewayFixture(
+      [],
+      ["crm:support:read"],
+      [
+        [
+          {
+            type: "function_call",
+            call_id: "unsolicited-call",
+            name: "crm_list_support_queue",
+            arguments: '{"limit":1}',
+          },
+        ],
+      ],
+    );
+    await runAIAgent({
+      service: fixture.service,
+      actorId: "same-account",
+      agentKey: "support",
+      requestKind: "chat",
+      message: "Help with AkiPasa",
+      chatAudience: "customer",
+      allowedToolNames: [],
+      includeMemory: false,
+    });
+    expect(fixture.providerRequests[0].tools).toEqual([]);
+    expect(
+      fixture.databaseRequests.some(({ url }) =>
+        url.pathname.endsWith("/reports"),
+      ),
+    ).toBe(false);
+    expect(fixture.providerRequests[1].input).toContainEqual({
+      type: "function_call_output",
+      call_id: "unsolicited-call",
+      output: JSON.stringify({
+        ok: false,
+        error: "tool_execution_failed",
+        message: "The agent is not permitted to use this tool",
+      }),
+    });
+    expect(
+      fixture.databaseRequests
+        .filter(({ url }) => url.pathname.includes("/rpc/"))
+        .map(({ url }) => url.pathname.split("/").at(-1)),
+    ).toEqual(["reserve_ai_budget", "complete_ai_budget"]);
+    expect(fixture.tables.ai_activity_log.map((row) => row.event_type)).toEqual(
+      ["chat.started", "chat.completed"],
+    );
+  });
+
+  it.each([
+    [undefined, ["crm:support:read"], "crm_list_support_queue", true],
+    [
+      ["crm_list_support_queue"],
+      ["crm:support:read"],
+      "crm_list_support_queue",
+      true,
+    ],
+    [["crm_list_support_queue"], [], "crm_list_support_queue", false],
+    [
+      ["crm_list_catalogue"],
+      ["crm:support:read"],
+      "crm_list_support_queue",
+      false,
+    ],
+    [undefined, ["crm:support:read"], "unknown_tool", false],
+  ] as const)(
+    "enforces the effective advertised tools (%s, %s, %s)",
+    async (allowedToolNames, permissions, name, permitted) => {
+      const fixture = gatewayFixture(
+        [],
+        [...permissions],
+        [
+          [
+            {
+              type: "function_call",
+              call_id: "test-call",
+              name,
+              arguments: '{"limit":1}',
+            },
+          ],
+        ],
+      );
+      await runAIAgent({
+        service: fixture.service,
+        actorId: "same-account",
+        agentKey: "support",
+        requestKind: "task",
+        message: "Inspect the support queue",
+        allowedToolNames: allowedToolNames && [...allowedToolNames],
+        includeMemory: false,
+      });
+      expect(
+        fixture.providerRequests[0].tools.map((tool) => tool.name),
+      ).toEqual(
+        permitted || (!allowedToolNames && permissions.length)
+          ? ["crm_list_support_queue"]
+          : [],
+      );
+      expect(
+        fixture.databaseRequests.some(({ url }) =>
+          url.pathname.endsWith("/reports"),
+        ),
+      ).toBe(permitted);
+      const output = fixture.providerRequests[1].input.find(
+        (item) => item.type === "function_call_output",
+      );
+      expect(JSON.parse(output?.output || "null")).toEqual(
+        permitted
+          ? { reports: fixture.tables.reports }
+          : {
+              ok: false,
+              error: "tool_execution_failed",
+              message: "The agent is not permitted to use this tool",
+            },
+      );
+    },
+  );
+
+  it("preserves approval and audit for an allowed operator tool", async () => {
+    const fixture = gatewayFixture(
+      [],
+      ["crm:catalogue:request_update"],
+      [
+        [
+          {
+            type: "function_call",
+            call_id: "approval-call",
+            name: "crm_request_venue_status_update",
+            arguments: JSON.stringify({
+              venue_id: "b1000000-0000-4000-8000-000000000001",
+              status: "published",
+              reason: "Inert review request",
+            }),
+          },
+        ],
+      ],
+    );
+    const result = await runAIAgent({
+      service: fixture.service,
+      actorId: "same-account",
+      agentKey: "support",
+      requestKind: "chat",
+      message: "Request review",
+      allowedToolNames: ["crm_request_venue_status_update"],
+      includeMemory: false,
+    });
+    expect(result.status).toBe("waiting");
+    expect(fixture.tables.ai_approvals).toHaveLength(1);
+    expect(fixture.tables.ai_approvals[0]).toMatchObject({
+      requested_by_agent_id: fixture.support.id,
+      tool_name: "crm_request_venue_status_update",
+      status: "pending",
+    });
+    expect(fixture.tables.ai_activity_log.map((row) => row.event_type)).toEqual(
+      ["chat.started", "approval.requested", "chat.completed"],
+    );
+    expect(
+      fixture.databaseRequests.some(({ url }) =>
+        url.pathname.endsWith("/venues"),
+      ),
+    ).toBe(false);
+    const output = fixture.providerRequests[1].input.find(
+      (item) => item.type === "function_call_output",
+    );
+    expect(JSON.parse(output?.output || "null")).toMatchObject({
+      approval_required: true,
+      status: "pending",
+    });
+  });
+});
 
 afterEach(() => {
   vi.restoreAllMocks();

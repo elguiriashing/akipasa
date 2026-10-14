@@ -1,7 +1,18 @@
 // @vitest-environment jsdom
 import React from "react";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
+
+vi.mock("../src/app/[locale]/business/venue/[id]/premium-actions", () => ({
+  setMediaFolder: vi.fn(),
+}));
 
 vi.mock("../src/app/[locale]/business/venue/[id]/actions", () => ({
   addStayHeaderPhoto: vi.fn(async () => ({ ok: true })),
@@ -13,6 +24,7 @@ vi.mock("../src/app/[locale]/business/venue/[id]/actions", () => ({
 import { VenueMediaStudio } from "../src/components/VenueMediaStudio";
 
 afterEach(() => {
+  cleanup();
   vi.unstubAllGlobals();
   document.body.innerHTML = "";
 });
@@ -111,4 +123,112 @@ it("keeps the accommodation bin private until a photo is assigned to the header"
     expect(actions.removeStayHeaderPhoto).toHaveBeenCalledOnce(),
   );
   expect(screen.getByText("No public header photos yet.")).toBeTruthy();
+});
+
+it.each(["en", "es"] as const)(
+  "keeps the %s picker keyboard focus inside and restores its specific trigger",
+  (locale) => {
+    render(
+      <VenueMediaStudio
+        locale={locale}
+        venueId="test"
+        media={[
+          {
+            id: "one",
+            url: "https://example.test/one.jpg",
+            alt: "Room",
+            sizeBytes: 1,
+            folder: "Rooms",
+          },
+        ]}
+        placements={{}}
+      />,
+    );
+    const es = locale === "es";
+    const trigger = screen.getByRole("button", {
+      name: es
+        ? "Elegir imagen: Banner del local"
+        : "Choose image: Venue banner",
+    });
+    trigger.focus();
+    fireEvent.click(trigger);
+    const dialog = screen.getByRole("dialog");
+    expect(document.activeElement).toBe(within(dialog).getByRole("searchbox"));
+    const close = within(dialog).getByRole("button", {
+      name: es ? "Cerrar" : "Close",
+    });
+    const automatic = within(dialog).getByRole("button", {
+      name: es ? "Usar automático" : "Use automatic",
+    });
+    automatic.focus();
+    fireEvent.keyDown(automatic, { key: "Tab" });
+    expect(document.activeElement).toBe(close);
+    fireEvent.keyDown(close, { key: "Tab", shiftKey: true });
+    expect(document.activeElement).toBe(automatic);
+    trigger.focus();
+    expect(dialog.contains(document.activeElement)).toBe(true);
+    fireEvent.keyDown(document.activeElement!, { key: "Escape" });
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(document.activeElement).toBe(trigger);
+  },
+);
+
+it("keeps search/folders outside the scrollable results and resets folder between slots", () => {
+  render(
+    <VenueMediaStudio
+      locale="en"
+      venueId="test"
+      media={[
+        {
+          id: "one",
+          url: "https://example.test/one.jpg",
+          alt: "Room",
+          sizeBytes: 1,
+          folder: "Rooms",
+        },
+        {
+          id: "two",
+          url: "https://example.test/two.jpg",
+          alt: "Food",
+          sizeBytes: 1,
+          folder: "Menu",
+        },
+      ]}
+      placements={{}}
+    />,
+  );
+  const trigger = screen.getByRole("button", {
+    name: "Choose image: Venue banner",
+  });
+  fireEvent.click(trigger);
+  let dialog = screen.getByRole("dialog");
+  expect(Array.from(dialog.children).map((child) => child.tagName)).toEqual([
+    "HEADER",
+    "DIV",
+    "DIV",
+    "FOOTER",
+  ]);
+  fireEvent.change(within(dialog).getByRole("combobox"), {
+    target: { value: "Rooms" },
+  });
+  expect(
+    within(dialog).queryByRole("button", { name: "Food Food" }),
+  ).toBeNull();
+  fireEvent.change(within(dialog).getByRole("searchbox"), {
+    target: { value: "nothing" },
+  });
+  expect(
+    within(dialog).getByText("No images available.").parentElement?.className,
+  ).toBe("event-media-modal-grid");
+  fireEvent.click(within(dialog).getByRole("button", { name: "Close" }));
+  expect(document.activeElement).toBe(trigger);
+  fireEvent.click(screen.getByRole("button", { name: "Choose image: Menu" }));
+  dialog = screen.getByRole("dialog");
+  expect(
+    (within(dialog).getByRole("combobox") as HTMLSelectElement).value,
+  ).toBe("");
+  expect(
+    (within(dialog).getByRole("searchbox") as HTMLInputElement).value,
+  ).toBe("");
+  expect(within(dialog).getAllByRole("img")).toHaveLength(2);
 });

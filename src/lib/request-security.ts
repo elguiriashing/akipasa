@@ -69,3 +69,56 @@ export async function readBoundedText(request: Request, maximumBytes: number) {
     );
   }
 }
+
+export async function readBoundedFormData(
+  request: Request,
+  maximumBytes: number,
+) {
+  const declaredLength = Number(request.headers.get("content-length") || 0);
+  if (Number.isFinite(declaredLength) && declaredLength > maximumBytes)
+    throw new RequestSecurityError(
+      "Payload too large",
+      413,
+      "payload_too_large",
+    );
+
+  if (!request.body)
+    throw new RequestSecurityError("Invalid multipart payload", 400);
+  const reader = request.body.getReader();
+  let byteLength = 0;
+  // Count the actual stream before handing each chunk to the multipart parser.
+  // Do not trust a missing/understated length or decode binary image bytes.
+  const boundedBody = new ReadableStream<Uint8Array>({
+    async pull(controller) {
+      try {
+        const { done, value } = await reader.read();
+        if (done) {
+          controller.close();
+          return;
+        }
+        byteLength += value.byteLength;
+        if (byteLength > maximumBytes) {
+          const error = new RequestSecurityError(
+            "Payload too large",
+            413,
+            "payload_too_large",
+          );
+          await reader.cancel().catch(() => {});
+          controller.error(error);
+          return;
+        }
+        controller.enqueue(value);
+      } catch (error) {
+        controller.error(error);
+      }
+    },
+    cancel(reason) {
+      return reader.cancel(reason);
+    },
+  });
+  return new Response(boundedBody, {
+    headers: {
+      "Content-Type": request.headers.get("content-type") || "",
+    },
+  }).formData();
+}
