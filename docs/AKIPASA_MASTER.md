@@ -1,8 +1,8 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
-## 2026-10-14 | AkiConduzco mobility product (implementation candidate)
+## 2026-10-14 | AkiConduzco mobility product (live release)
 
-AkiConduzco is a proposed car-rental discovery and booking-request product on
+AkiConduzco is a car-rental discovery and booking-request product on
 `akiconduzco.akipasa.com`, integrated with AkiPasa trip discovery and the
 AkiBusiness operator portal. It is an independent rental vertical, not a new
 `venues.discovery_vertical`: rental companies, individual vehicles, availability
@@ -20,8 +20,10 @@ return, renter account and own booking history, AkiBusiness operator setup and
 fleet/rates/availability, pending vs published visibility, owner isolation/RLS,
 date overlap behavior, empty/error states, mobile/tablet/desktop, per-host logo,
 manifest, robots/canonical and sitemap behavior, Cloudflare hostname routing.
-Production schema, DNS, provider integrations and deployment remain separate
-approval/release gates. See `docs/CHANGE_IMPACT_REGISTER.md` for current evidence.
+The public application and rental schema are live, and exact-source public-route
+smoke passed. Authenticated login, fleet mutation and booking request acceptance
+were not exercised in that anonymous smoke. See `docs/CHANGE_IMPACT_REGISTER.md`
+for the release evidence and remaining acceptance scope.
 
 ## 2026-10-14 | Per-venue event browsing
 
