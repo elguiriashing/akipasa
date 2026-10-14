@@ -4,7 +4,6 @@
 
 The AkiBusiness individual venue Events workspace offers localized search by title/status, current/past/archived filter counts and nine-event pagination in responsive 3/2/1-column layouts. Existing event management, publication, media, occurrence and deletion forms remain available within expandable event details. Deep links from the main business event catalogue select the correct page and expand the requested event. No database, permission or event-action contract changes.
 
-
 > Entry point for every human or AI modifying AkiPasa. Established 2026-10-09. **Living engineering contract, not a claim that every production behavior is verified.**
 > Source priority: running code + database schema + production evidence > current tests > these docs > historical handoff notes > chat discussions. If they disagree, investigate; never silently choose the older description.
 

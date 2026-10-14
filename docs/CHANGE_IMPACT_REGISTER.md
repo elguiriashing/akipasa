@@ -9,7 +9,6 @@
 - **Validation:** focused UI and formatting checks plus contract gate required before merge; production verification required after merge.
 - **Rollback:** revert component and workspace rendering changes; no data or schema rollback.
 
-
 ## 2026-10-14 | Membership blocked-action guidance
 
 - **Inventory:** MEMBER-01.
