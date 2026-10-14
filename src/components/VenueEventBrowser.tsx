@@ -1,8 +1,16 @@
 "use client";
-import { Children, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  Children,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 
+// prettier-ignore
 type EventSummary = { id: string; title: string; status: string; date: string | null };
 const SIZE = 9;
+// prettier-ignore
 export function VenueEventBrowser({ locale, events, children }: {
   locale: "en" | "es"; events: EventSummary[]; children: ReactNode;
 }) {
