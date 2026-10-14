@@ -68,13 +68,18 @@ export async function submitReport(formData: FormData) {
   });
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const target = formData.get("target");
+  const targetQuery = formData.get("target_q");
   if (!parsed.success)
     redirect(
-      communityWorkflowPath(locale, "report", { target, error: "report" }),
+      communityWorkflowPath(locale, "report", {
+        target,
+        targetQuery,
+        error: "report",
+      }),
     );
   const { supabase } = await requireUser(
     locale,
-    communityWorkflowPath(locale, "report", { target }),
+    communityWorkflowPath(locale, "report", { target, targetQuery }),
   );
   const value = parsed.data;
   const { error } = await supabase.rpc("submit_report", {
@@ -87,6 +92,7 @@ export async function submitReport(formData: FormData) {
     redirect(
       communityWorkflowPath(locale, "report", {
         target,
+        targetQuery,
         error: error.message.includes("rate limit") ? "rate-limit" : "report",
       }),
     );

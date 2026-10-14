@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   defaultFeatureFlags,
+  loadFeatureFlagsState,
   resolveFeatureFlags,
 } from "../src/lib/feature-flags";
 
@@ -27,6 +28,20 @@ describe("operational feature flags", () => {
       social_recommendations: false,
       partner_api: false,
       venue_relevance: false,
+    });
+  });
+
+  it("exposes an unavailable flag read without changing legacy safe defaults", async () => {
+    const query = {
+      select: async () => ({ data: null, error: { message: "unavailable" } }),
+    };
+    const state = await loadFeatureFlagsState({
+      from: () => query,
+    } as never);
+
+    expect(state).toEqual({
+      flags: defaultFeatureFlags,
+      unavailable: true,
     });
   });
 });
