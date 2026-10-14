@@ -1,11 +1,6 @@
 "use client";
-import {
-  Children,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+
+import { Children, useEffect, useMemo, useState, type ReactNode } from "react";
 
 // prettier-ignore
 type EventSummary = { id: string; title: string; status: string; date: string | null };
