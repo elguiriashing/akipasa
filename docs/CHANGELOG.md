@@ -933,3 +933,8 @@ Completed the AkiDuermo room-night request candidate: explicit booking modes, re
 ## 2026-10-14
 
 - Measure claim-picker browser geometry in one rendered state after the exact completed search response; retain strict overlap/natural-click acceptance and add held-loading bounds coverage.
+
+## 2026-10-14 — Draft account export coverage
+
+- Prepare bounded pagination and caller-owned Pals export coverage with private failure behavior.
+- Keep the candidate draft: existing production preference/staff-alert permissions block complete export; own-safe contract and isolated/live acceptance remain required.
