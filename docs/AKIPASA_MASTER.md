@@ -3,6 +3,16 @@
 > Entry point for every human or AI modifying AkiPasa. Established 2026-10-09. **Living engineering contract, not a claim that every production behavior is verified.**
 > Source priority: running code + database schema + production evidence > current tests > these docs > historical handoff notes > chat discussions. If they disagree, investigate; never silently choose the older description.
 
+## 2026-10-14 | Mobile More dialog focus containment
+
+Opening the public mobile More sheet moves focus to its close control, makes every
+background shell sibling inert, locks document scrolling and contains forward and
+reverse Tab navigation within the dialog. Escape, the close control, backdrop and
+route-driven closure all run the same cleanup: previous inert/scroll state is
+restored and focus returns to the specific More opener when it remains mounted.
+Existing authorized workspace links, EN/ES labels, responsive geometry, theme and
+navigation destinations remain unchanged.
+
 ## 2026-10-14 | Event occurrence continuity and honest actions
 
 Discovery and Map event cards include the displayed occurrence ID in their detail

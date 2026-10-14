@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-14 — Mobile More dialog accessibility
+
+- Contain Tab and Shift+Tab inside the mobile More dialog.
+- Make background shell regions inert while open and restore opener focus, scroll
+  and prior inert state on every close path.
+
 ## 2026-10-14 — Event occurrence continuity
 
 - Carry the card's selected recurrence through detail, auth, booking, calendar,

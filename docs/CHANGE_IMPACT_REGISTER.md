@@ -1,5 +1,20 @@
 # Change Impact Register
 
+## 2026-10-14 | Mobile More focus containment
+
+- **Inventory:** PUB-16.
+- **Before:** the aria-modal More sheet moved focus only on open; keyboard focus
+  could leave the dialog, the background stayed interactive and closing did not
+  restore the opener.
+- **After:** background shell siblings are inert, forward/reverse Tab cycle through
+  the sheet, and Escape/backdrop/button/route cleanup restores scroll, prior inert
+  state and the mounted opener.
+- **Dependencies:** AppShell destinations, capability gates, localized labels,
+  GlobalSearch, theme and layout CSS remain unchanged.
+- **Evidence:** WorkspaceShell/AppShell passes 15/15 including focus endpoints,
+  background inert state, Escape cleanup and opener restoration; TypeScript passes.
+- **Rollback:** revert source/test/docs; no persisted state or data rollback.
+
 ## 2026-10-14 | Event occurrence and stay handoff
 
 - **Inventory:** PUB-11, PUB-12, PUB-13 and PUB-14.
