@@ -1,5 +1,24 @@
 # Change Impact Register
 
+## 2026-10-14 | Discover and Map filter continuity
+
+- **Inventory:** PUB-05 and PUB-15.
+- **Before:** primary navigation and the no-results Map action discarded some or
+  all active discovery filters. Map's visible list honored selected filters while
+  initial event pins came from a separate nationwide, unfiltered query.
+- **After:** desktop/mobile switches share one bounded allowlist for location,
+  radius, time, category, price, dates and accessibility; list/pagination state is
+  deliberately reset. Initial pins and list cards use the same filtered result set.
+- **Dependencies:** recommendation ranking and request IDs, map venue tiles,
+  clustering, popups, selected centre, geolocation and ResultPagination remain
+  unchanged. No query is broadened, no permission prompt is added and no stored
+  data changes.
+- **Evidence:** 57 focused discovery cases cover filter URL allowlisting, exact
+  no-results handoff and filtered pin inputs; WorkspaceShell passes 14/14 including
+  desktop/mobile link continuity. TypeScript, scoped lint, formatting and diff
+  checks remain required on the stacked head.
+- **Rollback:** revert application/helper/tests/docs; no data rollback is needed.
+
 ## 2026-10-14 | Community contribution recovery
 
 - **Inventory:** PUB-06, PUB-07 and PUB-08.

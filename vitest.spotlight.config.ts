@@ -11,6 +11,7 @@ export default defineConfig({
       "tests/share-button.test.tsx",
       "tests/public-ui-upgrades.test.tsx",
       "tests/contribution-draft.test.tsx",
+      "tests/discovery-navigation.test.ts",
       "tests/staff-ui-upgrades.test.tsx",
       "tests/auth-ux-upgrades.test.ts",
       "tests/support-dialog-upgrades.test.tsx",

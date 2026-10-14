@@ -29,10 +29,13 @@ class TestPointerEvent extends MouseEvent {
 
 Object.defineProperty(window, "PointerEvent", { value: TestPointerEvent });
 
-const navigation = vi.hoisted(() => ({ pathname: "/en/admin/users" }));
+const navigation = vi.hoisted(() => ({
+  pathname: "/en/admin/users",
+  search: "",
+}));
 vi.mock("next/navigation", () => ({
   usePathname: () => navigation.pathname,
-  useSearchParams: () => new URLSearchParams(),
+  useSearchParams: () => new URLSearchParams(navigation.search),
 }));
 
 // The native search popover and its Next router integration are covered by
@@ -44,12 +47,38 @@ import { WorkspaceShell } from "../src/components/WorkspaceShell";
 
 afterEach(() => {
   navigation.pathname = "/en/admin/users";
+  navigation.search = "";
   cleanup();
   window.localStorage.clear();
   delete document.documentElement.dataset.theme;
   delete document.body.dataset.theme;
   document.documentElement.className = "";
   document.body.className = "";
+});
+
+it("retains active discovery filters across desktop and mobile Discover/Map links", () => {
+  navigation.pathname = "/en/map";
+  navigation.search =
+    "locality=madrid&locationName=Madrid+Centro&latitude=40.4168&longitude=-3.7038&radius=15&time=tonight&category=music&price=paid&accessible=on&eventPage=3&list=1";
+  render(
+    <AppShell locale="en" signedIn={false}>
+      <main>Map content</main>
+    </AppShell>,
+  );
+
+  for (const link of screen.getAllByRole("link", { name: "Discover" })) {
+    const url = new URL(link.getAttribute("href")!, "https://akipasa.com");
+    expect(url.pathname).toBe("/en");
+    expect(url.searchParams.get("category")).toBe("music");
+    expect(url.searchParams.get("locationName")).toBe("Madrid Centro");
+    expect(url.searchParams.get("accessible")).toBe("on");
+    expect(url.searchParams.has("eventPage")).toBe(false);
+    expect(url.searchParams.has("list")).toBe(false);
+  }
+  for (const link of screen.getAllByRole("link", { name: "Map" })) {
+    expect(link).toHaveAttribute("aria-current", "page");
+    expect(link.getAttribute("href")).toContain("category=music");
+  }
 });
 
 describe("progressive disclosure workspace shell", () => {

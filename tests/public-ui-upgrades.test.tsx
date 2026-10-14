@@ -12,6 +12,7 @@ const mocks = vi.hoisted(() => ({
   rpc: vi.fn(),
   query: vi.fn(),
   flagUnavailable: false,
+  mapProps: vi.fn(),
   review: vi.fn(),
   redirect: vi.fn((path: string): never => {
     throw new Error(`redirect:${path}`);
@@ -55,7 +56,12 @@ vi.mock("@/components/CityDiscovery", () => ({ CityDiscovery: () => null }));
 vi.mock("@/components/DiscoveryIntentSignal", () => ({
   DiscoveryIntentSignal: () => null,
 }));
-vi.mock("@/components/ProductionMap", () => ({ ProductionMap: () => null }));
+vi.mock("@/components/ProductionMap", () => ({
+  ProductionMap: (props: unknown) => {
+    mocks.mapProps(props);
+    return null;
+  },
+}));
 vi.mock("@/components/MapResultsDrawer", () => ({
   MapResultsDrawer: ({ children }: { children: ReactNode }) => <>{children}</>,
 }));
@@ -212,6 +218,99 @@ describe("public discovery date parity", () => {
       }
     });
   }
+});
+
+it("uses the filtered recommendation set for map pins", async () => {
+  mocks.recommend.mockResolvedValueOnce({
+    requestId: "filtered-map",
+    items: [
+      {
+        reasonCodes: [],
+        result: {
+          event: {
+            id: "event-filtered",
+            slug: "filtered-event",
+            title: { es: "Evento filtrado", en: "Filtered event" },
+            category: "music",
+            location: null,
+            priceCents: 0,
+            currency: "EUR",
+            priceDisplayMode: "show",
+            source: "official",
+            venueId: "venue-filtered",
+          },
+          venue: {
+            id: "venue-filtered",
+            name: "Filtered venue",
+            latitude: 40.42,
+            longitude: -3.7,
+          },
+          occurrence: {
+            id: "occurrence-filtered",
+            startsAt: new Date("2026-11-01T18:00:00Z"),
+          },
+        },
+      },
+    ],
+  });
+
+  render(
+    await MapPage(
+      pageProps("en", {
+        locality: "madrid",
+        category: "music",
+        price: "free",
+      }),
+    ),
+  );
+
+  expect(mocks.discover).not.toHaveBeenCalled();
+  expect(mocks.mapProps).toHaveBeenCalledWith(
+    expect.objectContaining({
+      points: [
+        expect.objectContaining({
+          id: "event-filtered",
+          href: "/en/events/filtered-event",
+          category: "music",
+        }),
+      ],
+    }),
+  );
+});
+
+it("keeps every active filter in the empty-state Map handoff", async () => {
+  render(
+    await DiscoverPage(
+      pageProps("en", {
+        locality: "madrid",
+        locationName: "Madrid Centro",
+        latitude: "40.4168",
+        longitude: "-3.7038",
+        radius: "15",
+        time: "weekend",
+        category: "music",
+        price: "paid",
+        minPrice: "5",
+        maxPrice: "25",
+        dateFrom: "2026-11-01",
+        dateTo: "2026-11-02",
+        accessible: "on",
+      }),
+    ),
+  );
+
+  const href = screen
+    .getByRole("link", { name: "Explore map" })
+    .getAttribute("href")!;
+  const destination = new URL(href, "https://akipasa.com");
+  expect(destination.pathname).toBe("/en/map");
+  expect(destination.searchParams.get("category")).toBe("music");
+  expect(destination.searchParams.get("price")).toBe("paid");
+  expect(destination.searchParams.get("minPrice")).toBe("5");
+  expect(destination.searchParams.get("maxPrice")).toBe("25");
+  expect(destination.searchParams.get("dateFrom")).toBe("2026-11-01");
+  expect(destination.searchParams.get("dateTo")).toBe("2026-11-02");
+  expect(destination.searchParams.get("accessible")).toBe("on");
 });
 
 describe("truthful homepage venue status", () => {
