@@ -1,5 +1,35 @@
 # Change Impact Register
 
+## 2026-10-14 | Approved workflow continuity batch
+
+- **Inventory:** PUB-10, NAV-01, SUPPORT-03/04, AUTH-04, AS08/09/10/11/13/14/15/33/34,
+  BS-26, PASS-02 and the locale-link part of ACCOUNT-01. Current-title lookup and complete
+  paging/actions remain separately tracked, rather than declared complete.
+- **Before:** cards rounded monetary cents; hidden prices leaked into map popups;
+  stored locale links ignored current language; failed questions required retyping;
+  new replies could be below view; Staff headings clipped/repeated; narrow brand
+  words split; stay reservation spans concatenated; several Admin failures appeared
+  empty and saves had no acknowledgement; AI failures were hidden when agents
+  loaded, zero budget became EUR4, and mixed-author/audience chats were unlabeled.
+- **Trace:** shared event formatter -> card/map/detail; existing collection refs ->
+  canonical local URL rewrite; shared role-gated WorkspaceShell -> localized labels;
+  Staff layout/scoped styles and stay manager styles -> existing controls/actions;
+  Support state -> same-origin chat endpoint/provider; authorized Admin loaders ->
+  independent read outcomes and guarded existing editors; AI metadata/usage reads ->
+  loaded-sample presentation, with authoritative server budget/tool checks retained.
+- **Evidence:** 163 focused cases pass, including 36 new failure/retry, exact-price,
+  locale-link/navigation, zero-budget and independent-read cases. TypeScript passes.
+  Staff/Admin 80, stay-manager 48 and Support 24 real-browser cases pass in EN/ES,
+  both themes and responsive/short windows. Strengthened Staff geometry checks
+  initially found omitted imported route CSS in the harness; the corrected harness
+  uses bundled production styles and preserves the strict padding assertions.
+  Full checks, responsive browser/hosted CI and actual deployed-source verification
+  remain required before release. No timeouts or assertions are relaxed.
+- **Safety/rollback:** code-only; no migrations, RLS/roles, paid activation,
+  automatic provider retries or customer-data changes. Revert source to roll back;
+  preserve existing stored records and provider outcomes. Authenticated/device
+  acceptance remains distinct from component/fixture evidence.
+
 ## 2026-10-14 | Approved GUI and workflow release batch
 
 The user approved all upgrades, implementation and live merging on 14 October.

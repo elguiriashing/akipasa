@@ -30,7 +30,7 @@ export default async function AITeamPage({
     supabase.from("ai_agents").select("*").order("created_at"),
     supabase
       .from("ai_chat_messages")
-      .select("id,agent_id,role,content,created_at")
+      .select("id,agent_id,actor_id,role,content,metadata,created_at")
       .in("role", ["user", "assistant"])
       .order("created_at", { ascending: false })
       .limit(120),
@@ -95,7 +95,17 @@ export default async function AITeamPage({
       <AITeamDashboard
         locale={locale}
         providerConfigured={Boolean(process.env.OPENAI_API_KEY)}
-        setupError={firstError?.message || null}
+        setupError={firstError ? "read_failed" : null}
+        readErrors={{
+          agents: Boolean(agents.error),
+          messages: Boolean(messages.error),
+          tasks: Boolean(tasks.error),
+          approvals: Boolean(approvals.error),
+          activity: Boolean(activity.error),
+          budget: Boolean(budget.error) || !budget.data,
+          usage: Boolean(usage.error),
+          schedules: Boolean(schedules.error),
+        }}
         initial={{
           agents: agents.data || [],
           messages: (messages.data || []).reverse(),

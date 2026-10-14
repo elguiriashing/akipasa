@@ -57,6 +57,7 @@ export default async function StaffVenueRecord({
   return (
     <>
       <WorkspacePageHeader
+        level={1}
         eyebrow={es ? "Registro de catálogo" : "Catalogue record"}
         title={venue.name}
         description={`${venue.slug}`}

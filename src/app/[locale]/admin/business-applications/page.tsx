@@ -1,3 +1,4 @@
+import { AdminReadFailure } from "../AdminReadState";
 import { AdminSearchList } from "../AdminSearchList";
 import { notFound } from "next/navigation";
 import { WorkspacePageHeader } from "@/components/WorkspaceShell";
@@ -19,7 +20,7 @@ export default async function BusinessApplicationsPage({
     locale,
     `/${locale}/admin/business-applications`,
   );
-  const { data: applications } = await supabase
+  const { data: applications, error } = await supabase
     .from("business_applications")
     .select(
       "id,applicant_id,business_name,contact_name,locality,website_url,message,state,payment_state,review_reason,created_at",
@@ -52,122 +53,133 @@ export default async function BusinessApplicationsPage({
               : "The decision could not be saved."}
         </p>
       )}
-      <AdminSearchList
-        locale={locale}
-        label={es ? "Solicitudes de negocio" : "Business applications"}
-        className="admin-list-grid"
-        items={(applications || []).map((application) => ({
-          id: application.id,
-          status: application.state,
-          search: [
-            application.business_name,
-            application.contact_name,
-            application.locality,
-            application.payment_state,
-            application.state,
-            application.message,
-            application.review_reason,
-          ]
-            .filter(Boolean)
-            .join(" "),
-          content: (
-            <article className="panel catalogue-card">
-              <div className="catalogue-card-header">
-                <div>
-                  <h2 className="catalogue-card-title">
-                    {application.business_name}
-                  </h2>
-                  <p className="catalogue-card-sub">
-                    {application.contact_name} · {application.locality}
-                  </p>
+      {error ? (
+        <AdminReadFailure
+          locale={locale}
+          href={`/${locale}/admin/business-applications`}
+        />
+      ) : (
+        <AdminSearchList
+          locale={locale}
+          label={es ? "Solicitudes de negocio" : "Business applications"}
+          className="admin-list-grid"
+          items={(applications || []).map((application) => ({
+            id: application.id,
+            status: application.state,
+            search: [
+              application.business_name,
+              application.contact_name,
+              application.locality,
+              application.payment_state,
+              application.state,
+              application.message,
+              application.review_reason,
+            ]
+              .filter(Boolean)
+              .join(" "),
+            content: (
+              <article className="panel catalogue-card">
+                <div className="catalogue-card-header">
+                  <div>
+                    <h2 className="catalogue-card-title">
+                      {application.business_name}
+                    </h2>
+                    <p className="catalogue-card-sub">
+                      {application.contact_name} · {application.locality}
+                    </p>
+                  </div>
+                  <span className="status-pill">
+                    {application.state.replaceAll("_", " ")}
+                  </span>
                 </div>
-                <span className="status-pill">
-                  {application.state.replaceAll("_", " ")}
-                </span>
-              </div>
-              <p>{application.message}</p>
-              {application.website_url && (
-                <a
-                  href={application.website_url}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {application.website_url}
-                </a>
-              )}
-              <dl className="compact-definition-list">
-                <div>
-                  <dt>{es ? "Pago" : "Payment"}</dt>
-                  <dd>{application.payment_state.replaceAll("_", " ")}</dd>
-                </div>
-                <div>
-                  <dt>{es ? "Recibida" : "Received"}</dt>
-                  <dd>
-                    {new Date(application.created_at).toLocaleString(locale)}
-                  </dd>
-                </div>
-              </dl>
-              {application.review_reason && <p>{application.review_reason}</p>}
-              <details className="settings-disclosure full-width-disclosure">
-                <summary className="button secondary small-btn">
-                  {es ? "Revisar solicitud" : "Review application"}
-                </summary>
-                <form
-                  action={reviewBusinessApplication}
-                  className="stack focused-form"
-                >
-                  <input type="hidden" name="locale" value={locale} />
-                  <input
-                    type="hidden"
-                    name="applicationId"
-                    value={application.id}
-                  />
-                  <input
-                    type="hidden"
-                    name="applicantId"
-                    value={application.applicant_id}
-                  />
-                  <label>
-                    {es ? "Decisión" : "Decision"}
-                    <select name="state" defaultValue="under_review">
-                      <option value="under_review">under review</option>
-                      <option value="awaiting_payment">awaiting payment</option>
-                      <option value="rejected">rejected</option>
-                    </select>
-                  </label>
-                  <label>
-                    {es ? "Acceso sin cobro" : "No-charge access"}
-                    <select name="grantKind" defaultValue="none">
-                      <option value="none">{es ? "Ninguno" : "None"}</option>
-                      <option value="trial_1_month">
-                        {es ? "Prueba de 1 mes" : "1-month trial"}
-                      </option>
-                      <option value="trial_3_month">
-                        {es ? "Prueba de 3 meses" : "3-month trial"}
-                      </option>
-                      <option value="waived">
-                        {es ? "Exención indefinida" : "Indefinite waiver"}
-                      </option>
-                    </select>
-                  </label>
-                  <label>
-                    {es ? "Motivo auditado" : "Audited reason"}
-                    <textarea
-                      name="reason"
-                      required
-                      minLength={10}
-                      maxLength={2000}
+                <p>{application.message}</p>
+                {application.website_url && (
+                  <a
+                    href={application.website_url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {application.website_url}
+                  </a>
+                )}
+                <dl className="compact-definition-list">
+                  <div>
+                    <dt>{es ? "Pago" : "Payment"}</dt>
+                    <dd>{application.payment_state.replaceAll("_", " ")}</dd>
+                  </div>
+                  <div>
+                    <dt>{es ? "Recibida" : "Received"}</dt>
+                    <dd>
+                      {new Date(application.created_at).toLocaleString(locale)}
+                    </dd>
+                  </div>
+                </dl>
+                {application.review_reason && (
+                  <p>{application.review_reason}</p>
+                )}
+                <details className="settings-disclosure full-width-disclosure">
+                  <summary className="button secondary small-btn">
+                    {es ? "Revisar solicitud" : "Review application"}
+                  </summary>
+                  <form
+                    action={reviewBusinessApplication}
+                    className="stack focused-form"
+                  >
+                    <input type="hidden" name="locale" value={locale} />
+                    <input
+                      type="hidden"
+                      name="applicationId"
+                      value={application.id}
                     />
-                  </label>
-                  <button className="button" type="submit">
-                    {es ? "Guardar decisión" : "Save decision"}
-                  </button>
-                </form>
-              </details>
-            </article>
-          ),
-        }))}
-      />
+                    <input
+                      type="hidden"
+                      name="applicantId"
+                      value={application.applicant_id}
+                    />
+                    <label>
+                      {es ? "Decisión" : "Decision"}
+                      <select name="state" defaultValue="under_review">
+                        <option value="under_review">under review</option>
+                        <option value="awaiting_payment">
+                          awaiting payment
+                        </option>
+                        <option value="rejected">rejected</option>
+                      </select>
+                    </label>
+                    <label>
+                      {es ? "Acceso sin cobro" : "No-charge access"}
+                      <select name="grantKind" defaultValue="none">
+                        <option value="none">{es ? "Ninguno" : "None"}</option>
+                        <option value="trial_1_month">
+                          {es ? "Prueba de 1 mes" : "1-month trial"}
+                        </option>
+                        <option value="trial_3_month">
+                          {es ? "Prueba de 3 meses" : "3-month trial"}
+                        </option>
+                        <option value="waived">
+                          {es ? "Exención indefinida" : "Indefinite waiver"}
+                        </option>
+                      </select>
+                    </label>
+                    <label>
+                      {es ? "Motivo auditado" : "Audited reason"}
+                      <textarea
+                        name="reason"
+                        required
+                        minLength={10}
+                        maxLength={2000}
+                      />
+                    </label>
+                    <button className="button" type="submit">
+                      {es ? "Guardar decisión" : "Save decision"}
+                    </button>
+                  </form>
+                </details>
+              </article>
+            ),
+          }))}
+        />
+      )}
     </>
   );
 }

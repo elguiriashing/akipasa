@@ -5,6 +5,7 @@ import { cache } from "react";
 import { localizedMetadata, languageUrls, serializeJsonLd } from "@/lib/seo";
 import Link from "next/link";
 import { isLocale } from "@/lib/config";
+import { eventPriceLabel } from "@/lib/event-price";
 import { msg } from "@/lib/messages";
 import { repository } from "@/lib/repository";
 import { googleMapsDirectionsUrl } from "@/lib/maps";
@@ -266,13 +267,7 @@ export default async function EventPage({
         ? "Todas las edades"
         : "All ages"
       : `${event.minimumAge}+`;
-  const priceLabel = event.priceCents
-    ? new Intl.NumberFormat(locale, {
-        style: "currency",
-        currency: event.currency,
-        maximumFractionDigits: event.priceCents % 100 ? 2 : 0,
-      }).format(event.priceCents / 100)
-    : m.free;
+  const priceLabel = eventPriceLabel(event, locale);
   const saveLabel = saved
     ? es
       ? "Quitar de favoritos"

@@ -1,3 +1,4 @@
+import "./staff-ui.css";
 import { notFound } from "next/navigation";
 import {
   WorkspaceShell,
@@ -62,6 +63,7 @@ export default async function StaffLayout({
           ? "Colas, casos y catálogo. Abre solo la tarea que necesitas."
           : "Queues, cases and catalogue. Open only the task you need."
       }
+      hidePageHeading
       homeHref={base}
       items={items}
     >

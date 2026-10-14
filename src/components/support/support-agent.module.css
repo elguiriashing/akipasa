@@ -126,6 +126,16 @@
   border-top: 1px solid var(--line, #d8d8d8);
 }
 
+.latest {
+  flex: 0 0 auto;
+  min-height: 44px;
+  border: 0;
+  color: inherit;
+  background: var(--surface, #fff);
+  font: inherit;
+  cursor: pointer;
+}
+
 .composer label {
   font-weight: 800;
 }

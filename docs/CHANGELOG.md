@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-14 — Workflow continuity follow-up
+
+- Preserve exact/hidden event prices and current-language collection links.
+- Restore failed Support/AI question drafts and expose new Support replies safely.
+- Localize workspace labels; reduce repeated Staff headings and prevent clipping.
+- Separate stay reservation rows and retain full phone auth portal wordmarks.
+- Distinguish unavailable Admin/AI reads from empty lists, keep zero budgets exact,
+  label loaded usage scopes and conversation audiences, and show save outcomes.
+
 ## 2026-10-13 - Catalogue starter publication
 
 - Keep new catalogue starter items hidden until editors explicitly enable public visibility, preserving immediate draft saves.

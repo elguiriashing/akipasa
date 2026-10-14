@@ -1,3 +1,4 @@
+import { AdminReadFailure, AdminMutationNotice } from "../AdminReadState";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { WorkspacePageHeader } from "@/components/WorkspaceShell";
@@ -77,12 +78,20 @@ export default async function AdminCataloguePage({
           {es ? "Localidades" : "Localities"}
         </Link>
       </nav>
-      <FocusedCatalogue
-        locale={locale}
-        section={section}
-        categories={categories || []}
-        cities={cities || []}
-      />
+      <AdminMutationNotice locale={locale} query={query} />
+      {response.error ? (
+        <AdminReadFailure
+          locale={locale}
+          href={`/${locale}/admin/catalogue?section=${section}`}
+        />
+      ) : (
+        <FocusedCatalogue
+          locale={locale}
+          section={section}
+          categories={categories || []}
+          cities={cities || []}
+        />
+      )}
     </>
   );
 }

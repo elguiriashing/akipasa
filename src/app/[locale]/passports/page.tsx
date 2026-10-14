@@ -1,3 +1,4 @@
+import { passportDeadlineLabel } from "@/lib/passport-deadline";
 import { myPassportCollection } from "@/lib/passport-repository";
 import type { CSSProperties } from "react";
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -174,8 +175,8 @@ export default async function PassportsPage({
             <p className="notice">
               {query.passport === "started"
                 ? es
-                  ? "Pasaporte iniciado. Tienes 30 dias para completar la ruta."
-                  : "Passport started. You have 30 days to complete the route."
+                  ? "Pasaporte iniciado. Consulta la fecha límite de tu ruta en Progreso."
+                  : "Passport started. Check your route’s deadline in Progress."
                 : es
                   ? "No se pudo iniciar este pasaporte."
                   : "This passport could not be started."}
@@ -265,9 +266,7 @@ export default async function PassportsPage({
                         <code className="claim-code">{claim.claim_code}</code>
                         <p>
                           {es ? "Caduca" : "Expires"}{" "}
-                          {new Date(claim.expires_at).toLocaleDateString(
-                            locale,
-                          )}
+                          {passportDeadlineLabel(claim.expires_at, locale)}
                         </p>
                       </article>
                     ))}
@@ -348,7 +347,8 @@ export default async function PassportsPage({
                         <p>
                           {es ? "Completa antes del" : "Complete by"}{" "}
                           <strong>
-                            {new Date(enrollment.expires_at).toLocaleDateString(
+                            {passportDeadlineLabel(
+                              enrollment.expires_at,
                               locale,
                             )}
                           </strong>

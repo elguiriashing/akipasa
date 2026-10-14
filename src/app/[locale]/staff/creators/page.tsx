@@ -26,6 +26,7 @@ export default async function CreatorModerationPage({
   return (
     <>
       <WorkspacePageHeader
+        level={1}
         eyebrow={es ? "Confianza" : "Trust"}
         title={es ? "Verificación de creadores" : "Creator verification"}
         description={

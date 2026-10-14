@@ -86,21 +86,24 @@ const bundle = await build({
     },
   ],
 });
-const css = (
-  await postcss([tailwind()]).process(
-    [
-      "src/app/globals.css",
-      "src/app/compact-app.css",
-      "src/app/brand.css",
-      "src/app/appearance.css",
-      "src/app/[locale]/admin/admin-suite.css",
-      "src/app/[locale]/admin/admin-compact.css",
-    ]
-      .map((path) => readFileSync(path, "utf8"))
-      .join("\n"),
-    { from: resolve("src/app/globals.css") },
-  )
-).css;
+const css =
+  (
+    await postcss([tailwind()]).process(
+      [
+        "src/app/globals.css",
+        "src/app/compact-app.css",
+        "src/app/brand.css",
+        "src/app/appearance.css",
+        "src/app/tablet-responsive.css",
+        "src/app/[locale]/admin/admin-suite.css",
+        "src/app/[locale]/admin/admin-compact.css",
+      ]
+        .map((path) => readFileSync(path, "utf8"))
+        .join("\n"),
+      { from: resolve("src/app/globals.css") },
+    )
+  ).css +
+  (bundle.outputFiles.find((file) => file.path.endsWith(".css"))?.text || "");
 const server = createServer((req, res) => {
   if (req.url === "/bundle.js") {
     res.setHeader("Content-Type", "text/javascript");
@@ -212,6 +215,34 @@ try {
             await expect(page.getByText("Private fixture error")).toHaveCount(
               0,
             );
+          }
+          if (route !== "admin") {
+            await expect(page.locator(".workspace-page-heading")).toHaveCount(
+              0,
+            );
+            await expect(
+              page.locator(".workspace-section-heading h1"),
+            ).toHaveCount(1);
+            const geometry = await page
+              .locator(".workspace-section-heading")
+              .evaluate((header) => {
+                const bounds = header.getBoundingClientRect();
+                return Array.from(header.querySelectorAll("span,h1,p")).map(
+                  (node) => {
+                    const range = document.createRange();
+                    range.selectNodeContents(node);
+                    const text = range.getBoundingClientRect();
+                    return {
+                      left: text.left - bounds.left,
+                      right: bounds.right - text.right,
+                    };
+                  },
+                );
+              });
+            for (const bounds of geometry) {
+              expect(bounds.left).toBeGreaterThanOrEqual(8);
+              expect(bounds.right).toBeGreaterThanOrEqual(8);
+            }
           }
           expect(
             await page.evaluate(

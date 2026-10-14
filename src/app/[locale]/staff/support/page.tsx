@@ -28,6 +28,7 @@ export default async function SupportPage({
   return (
     <>
       <WorkspacePageHeader
+        level={1}
         eyebrow={es ? "Casos" : "Cases"}
         title={es ? "Soporte al cliente" : "Customer support"}
         description={

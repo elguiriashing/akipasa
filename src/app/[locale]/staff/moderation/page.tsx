@@ -101,6 +101,7 @@ export default async function StaffModerationPage({
   return (
     <>
       <WorkspacePageHeader
+        level={1}
         eyebrow={es ? "Confianza" : "Trust"}
         title={es ? "Moderación" : "Moderation"}
         description={

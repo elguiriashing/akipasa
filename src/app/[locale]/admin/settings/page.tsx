@@ -1,3 +1,4 @@
+import { AdminReadFailure, AdminMutationNotice } from "../AdminReadState";
 import { notFound } from "next/navigation";
 import { WorkspacePageHeader } from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
@@ -6,13 +7,16 @@ import { FocusedCatalogue } from "../FocusedCatalogue";
 
 export default async function PlatformSettingsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams?: Promise<Record<string, string | undefined>>;
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const query = (await searchParams) || {};
   const { supabase } = await requireUser(locale, `/${locale}/admin/settings`);
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("feature_flags")
     .select("key,enabled,label_es,label_en,updated_at")
     .order("key");
@@ -28,7 +32,12 @@ export default async function PlatformSettingsPage({
             : "Controls stay collapsed until selected. Every change requires a reason."
         }
       />
-      <FocusedCatalogue locale={locale} section="flags" flags={data || []} />
+      <AdminMutationNotice locale={locale} query={query} />
+      {error ? (
+        <AdminReadFailure locale={locale} href={`/${locale}/admin/settings`} />
+      ) : (
+        <FocusedCatalogue locale={locale} section="flags" flags={data || []} />
+      )}
     </>
   );
 }

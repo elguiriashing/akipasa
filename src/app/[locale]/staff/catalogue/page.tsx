@@ -74,6 +74,7 @@ export default async function StaffCataloguePage({
   return (
     <>
       <WorkspacePageHeader
+        level={1}
         eyebrow={es ? "Inventario" : "Inventory"}
         title={es ? "Locales y eventos" : "Venues and events"}
         description={

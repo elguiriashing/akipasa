@@ -238,7 +238,15 @@ export function WorkspaceShell({
         <button
           className="workspace-collapse"
           type="button"
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-label={
+            collapsed
+              ? spanish
+                ? "Ampliar navegación"
+                : "Expand sidebar"
+              : spanish
+                ? "Contraer navegación"
+                : "Collapse sidebar"
+          }
           onClick={() => setCollapsed((value) => !value)}
         >
           <span aria-hidden="true">{collapsed ? "›" : "‹"}</span>
@@ -246,7 +254,11 @@ export function WorkspaceShell({
       </div>
       <nav
         className="workspace-navigation"
-        aria-label={`${navigationTitle} sections`}
+        aria-label={
+          spanish
+            ? `Secciones de ${navigationTitle}`
+            : `${navigationTitle} sections`
+        }
         ref={mobile ? undefined : desktopNavigationRef}
         onPointerDown={startNavigationDrag}
         onPointerMove={moveNavigationDrag}
@@ -304,7 +316,11 @@ export function WorkspaceShell({
           ref={mobileMenuButtonRef}
           className="workspace-mobile-trigger"
           type="button"
-          aria-label={`${eyebrow} ${navigationTitle} menu`}
+          aria-label={
+            spanish
+              ? `Menú de ${navigationTitle} · ${eyebrow}`
+              : `${eyebrow} ${navigationTitle} menu`
+          }
           aria-expanded={drawerOpen}
           aria-controls="workspace-mobile-drawer"
           onClick={() => setDrawerOpen((value) => !value)}
@@ -325,7 +341,11 @@ export function WorkspaceShell({
           <div className="workspace-drawer-layer" id="workspace-mobile-drawer">
             <aside
               className="workspace-drawer"
-              aria-label={`${navigationTitle} navigation`}
+              aria-label={
+                spanish
+                  ? `Navegación de ${navigationTitle}`
+                  : `${navigationTitle} navigation`
+              }
             >
               {renderNavigation(true)}
             </aside>
@@ -356,17 +376,20 @@ export function WorkspacePageHeader({
   title,
   description,
   actions,
+  level = 2,
 }: {
   eyebrow: string;
   title: string;
   description: string;
   actions?: ReactNode;
+  level?: 1 | 2;
 }) {
+  const Heading = level === 1 ? "h1" : "h2";
   return (
     <header className="workspace-section-heading">
       <div>
         <span>{eyebrow}</span>
-        <h2>{title}</h2>
+        <Heading>{title}</Heading>
         <p>{description}</p>
       </div>
       {actions && <div className="workspace-heading-actions">{actions}</div>}
