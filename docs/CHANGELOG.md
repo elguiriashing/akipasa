@@ -929,3 +929,7 @@ Completed the AkiDuermo room-night request candidate: explicit booking modes, re
 
 - Add localized Close and Escape to the shared privacy panel, with focus restoration and no implied consent decision. Unsaved choices stay drafts; existing consent and motion state are unchanged by dismissal.
 - Exercise actual anonymous initial-panel state before normal AkiDuermo discovery/map interactions. Current-head browser and production acceptance remain pending.
+
+## 2026-10-14
+
+- Measure claim-picker browser geometry in one rendered state after the exact completed search response; retain strict overlap/natural-click acceptance and add held-loading bounds coverage.
