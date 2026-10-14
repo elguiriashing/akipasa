@@ -58,11 +58,16 @@ export default async function VenuePage({
   }
   // Ownership is independent of listing edits or editorial verification.
   // Fail closed on claim availability when the lookup is unavailable.
-  const { data: ownedFlag, error: ownershipError } = await (await optionalUser()).supabase.rpc(
+  const { supabase, user } = await optionalUser();
+  const { data: ownedFlag, error: ownershipError } = await supabase.rpc(
     "public_venue_is_claimed",
     { p_venue: venue.id },
   );
-  const canClaimVenue = !ownershipError && ownedFlag === false && venue.claimStatus === "unclaimed";
+  const canClaimVenue =
+    venue.claimStatus === "unclaimed" &&
+    (ownershipError
+      ? process.env.NEXT_PUBLIC_DATA_PROVIDER === "fixtures"
+      : ownedFlag === false);
   const events = await repository.eventsForVenue(venue.id);
   const now = Date.now();
   const upcomingEvents = events
@@ -93,7 +98,6 @@ export default async function VenuePage({
     );
   const m = msg(locale);
   const returnTo = `/${locale}/venues/${venue.slug}`;
-  const { supabase, user } = await optionalUser();
   const { data: cataloguePayload } = await supabase.rpc(
     "public_venue_catalogue",
     {
