@@ -1,6 +1,10 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import {
+  promotionServiceLabel,
+  promotionStateLabel,
+} from "../../../../lib/promotion-labels";
 import { Icon } from "../../../../components/Icons";
 
 export type StaffPromotion = {
@@ -23,29 +27,22 @@ const knownStates: Record<string, { en: string; es: string; tone: string }> = {
   lost: { en: "Lost", es: "Perdida", tone: "lost" },
 };
 
-const knownServices: Record<string, { en: string; es: string }> = {
-  featured_listing: { en: "Featured listing", es: "Local destacado" },
-  featured_event: { en: "Featured event", es: "Evento destacado" },
-  sponsored_event: { en: "Sponsored event", es: "Evento patrocinado" },
-  sponsored_listing: { en: "Sponsored listing", es: "Local patrocinado" },
-};
-
 function stateLabel(state: string, es: boolean) {
-  return (
-    (es ? knownStates[state]?.es : knownStates[state]?.en) ||
-    state.replaceAll("_", " ")
+  return promotionStateLabel(
+    state,
+    es ? "es" : "en",
+    state.replaceAll("_", " "),
   );
 }
 
 function serviceLabel(service: string, es: boolean) {
-  const known = knownServices[service];
-  if (known) return es ? known.es : known.en;
   const human = service.replaceAll("_", " ").trim();
-  return human
+  const fallback = human
     ? human[0].toUpperCase() + human.slice(1)
     : es
       ? "Servicio"
       : "Service";
+  return promotionServiceLabel(service, es ? "es" : "en", fallback);
 }
 
 function requestDate(value: string, es: boolean) {

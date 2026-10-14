@@ -813,3 +813,32 @@ Postinstall validates exact package version/license/runtime entry and all pristi
 The unchanged upstream sanitizer still permits iframe srcdoc in inert tests. No ordinary user-controlled style/attribution input was found; external configured tile/style providers remain a separate trust/hardening risk, with no production exploit or script execution demonstrated. Independent one-cycle review found no adjacency blocker and identified the runtime-entry guard, which is incorporated and directly regression-tested. No production data, SQL, role, payment, email, analytics or service configuration changes. Source/lockfile revert followed by a clean reinstall is rollback; restoring vulnerable versions requires security review. Physical Android/iOS/WebGL1 acceptance is unperformed.
 
 Dependencies: public Next server/browser build, OpenNext1.20.2 worker packaging, Tailwind/PostCSS compilation, Node image processing, ProductionMap/StayMapPage attribution, npm lifecycle/checks and release-source packaging. OpenNext peer compatibility is declared; successful actual package/dry-run evidence remains separate. Node/image advisory reachability is not inferred as a demonstrated production Cloudflare exploit. Coordination: Health #132 / Cleanup #131, stacked source prerequisites only.
+
+## 2026-10-14 | Recovered commercial request localization (#112)
+
+Current Admin promotions still displayed raw service/state keys and English
+status options on Spanish pages after #113 replaced #112's layout. Staff also
+labelled `featured_listing` as a venue listing and omitted three accepted
+services. `src/lib/promotion-labels.ts` now supplies display-only EN/ES names
+for the four existing service values and five states. `featured_listing` means
+Featured event / Evento destacado, matching the existing business request
+selector and event-backed scheduling migration `0044`.
+
+Admin summaries, editable status options, localized search terms and its
+status filter use these names. `AdminSearchList` accepts an optional label map
+only for this caller; other queues retain their existing display. The business
+request selector and read-only Staff inbox share the same names. Original
+machine IDs, form values, server actions, role/RLS checks, state groups, query
+limits, message/evidence text and per-caller unknown-value fallbacks remain
+intact. No CSS, route, API, SQL, storage, email, billing, consent, analytics or
+production data changes. Other portals are unaffected. Rollback is a source
+revert with no data restoration.
+
+Ten focused rendered regressions cover EN/ES: real business selectors,
+Admin route summaries and FormData, status filters/localized search, Staff
+search and accepted labels, legacy read-only aliases, plus unknown/prototype-name
+safety. Existing Staff aliases remain display-only; request validation/options
+still admit exactly four service IDs. Business previous-request history retains
+its existing raw service/state presentation outside this focused #112 recovery. Existing
+Admin/Staff suites and full check/Cloudflare/browser CI remain release gates;
+no production deployment or authenticated acceptance is claimed.
