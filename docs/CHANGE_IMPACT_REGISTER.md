@@ -1325,3 +1325,7 @@ Eight focused cases cover import deferral, immediate appearance, mouse/keyboard 
 ## 2026-10-14 | Parallel tablet acceptance jobs (#169)
 
 Scope: GitHub Actions tablet workflow only. Existing tablet route, AkiDuermo route, portal smoke and layout/Spotlight tests remain required; route suites run with two workers in a separate job, other suites run concurrently, and stale same-PR workflow runs are cancelled. Evidence artifacts use distinct job names and `tablet-ui` remains the required check. No app, database, permission or test assertion changes. Validation: an initial hosted run failed the contract documentation gate; this entry and the master contract update address that failure. Fresh exact-head checks must pass before merge. Monitor parallel runner pressure; reverting route worker count to one preserves job concurrency.
+
+## 2026-10-14 | Stripe webhook RPC production privilege repair (#140)
+
+Scope: add the service-only RPC migration to both migration directories and its PGlite privilege regression. Applied as migration `20261014183842_restrict_stripe_webhook_claim_execution` to confirmed production Supabase ref `vhpbvcfkcteswlsdjrfl`. Verification confirms `anon` and `authenticated` cannot execute `claim_stripe_webhook_event(text,text)`, `service_role` can, and `search_path` remains empty. No ledger or subscription rows were changed. Signed service webhook acceptance remains pending.
