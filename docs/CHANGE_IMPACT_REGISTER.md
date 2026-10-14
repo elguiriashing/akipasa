@@ -1,5 +1,15 @@
 # Change Impact Register
 
+## 2026-10-14 | Individual venue event search and pagination (PR #172)
+
+- **Scope:** AkiBusiness per-venue Events workspace and new client-side browser.
+- **Before:** every event and its potentially large editing form appeared in an unbounded accordion list.
+- **After:** EN/ES title/status search, current/past/archived filters, counts, nine-per-page pagination, and responsive 3/2/1-column event grid. Expanded editor spans full width; existing deep links reveal the correct event.
+- **Dependencies:** existing Supabase event reads, publish/edit/delete/occurrence actions, venue access, and main events catalogue remain unchanged.
+- **Validation:** focused UI and formatting checks plus contract gate required before merge; production verification required after merge.
+- **Rollback:** revert component and workspace rendering changes; no data or schema rollback.
+
+
 ## 2026-10-14 | Membership blocked-action guidance
 
 - **Inventory:** MEMBER-01.
