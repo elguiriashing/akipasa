@@ -11,6 +11,7 @@ describe("independent AkiSuite installations", () => {
     ["akipasa.com", "AkiPasa", "/es", "/es"],
     ["business.akipasa.com", "AkiBusiness", "/akibusiness", "/es/business"],
     ["akiduermo.akipasa.com", "AkiDuermo", "/akiduermo", "/"],
+    ["akiconduzco.akipasa.com", "AkiConduzco", "/akiconduzco", "/"],
   ])(
     "resolves %s without changing existing AkiPasa identity",
     async (host, name, id, start) => {
@@ -23,14 +24,23 @@ describe("independent AkiSuite installations", () => {
         start_url: start,
         scope: "/",
       });
-      expect(
-        app.icons?.filter((icon) => icon.type === "image/png"),
-      ).toHaveLength(4);
-      expect(
-        app.icons
-          ?.filter((icon) => icon.purpose === "maskable")
-          .map((icon) => icon.sizes),
-      ).toEqual(["192x192", "512x512"]);
+      if (host === "akiconduzco.akipasa.com") {
+        expect(
+          app.icons?.filter((icon) => icon.type === "image/png"),
+        ).toHaveLength(0);
+        expect(
+          app.icons?.some((icon) => icon.src === "/brand/conduzco-icon.svg"),
+        ).toBe(true);
+      } else {
+        expect(
+          app.icons?.filter((icon) => icon.type === "image/png"),
+        ).toHaveLength(4);
+        expect(
+          app.icons
+            ?.filter((icon) => icon.purpose === "maskable")
+            .map((icon) => icon.sizes),
+        ).toEqual(["192x192", "512x512"]);
+      }
     },
   );
   it.each(["/manifest.webmanifest", "/sw.js", "/offline.html"])(

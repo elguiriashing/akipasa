@@ -7,8 +7,16 @@ import { canModerate } from "@/lib/roles";
 import { isLocale } from "@/lib/config";
 import { StaffQueue, type StaffQueueItem } from "../StaffQueue";
 import { setAutomaticModeration } from "../../moderation/actions";
+import { RentalReviewQueue } from "../RentalReviewQueue";
 
-const queues = ["venues", "events", "offers", "community", "claims"] as const;
+const queues = [
+  "venues",
+  "events",
+  "offers",
+  "community",
+  "claims",
+  "rentals",
+] as const;
 type Queue = (typeof queues)[number];
 
 async function loadQueue(
@@ -39,6 +47,12 @@ async function loadQueue(
       .from("event_submissions")
       .select("id,title,venue_name,venue_address,state,created_at")
       .eq("state", "pending")
+      .order("created_at");
+  if (queue === "rentals")
+    return supabase
+      .from("car_rental_companies")
+      .select("id,name,city,address,phone,website_url,submitted_by,created_at")
+      .eq("status", "pending_review")
       .order("created_at");
   return supabase.rpc("staff_pending_venue_claims", { p_offset: claimOffset });
 }
@@ -91,6 +105,7 @@ export default async function StaffModerationPage({
     offers: es ? "Ofertas" : "Offers",
     community: es ? "Comunidad" : "Community",
     claims: es ? "Reclamaciones" : "Claims",
+    rentals: "AkiConduzco",
   };
   const target =
     queue === "venues"
@@ -101,7 +116,9 @@ export default async function StaffModerationPage({
           ? "offer"
           : queue === "community"
             ? "submission"
-            : "venue_claim";
+            : queue === "rentals"
+              ? "rental_company"
+              : "venue_claim";
   return (
     <>
       <WorkspacePageHeader
@@ -231,11 +248,27 @@ export default async function StaffModerationPage({
               ? "No se pudo cargar la cola. Vuelve a intentarlo."
               : "Could not load the queue. Please try again."}
           </p>
+        ) : queue === "rentals" ? (
+          <RentalReviewQueue
+            locale={locale}
+            companies={
+              (data || []) as Parameters<
+                typeof RentalReviewQueue
+              >[0]["companies"]
+            }
+          />
         ) : (
           <StaffQueue
             locale={locale}
             items={(data || []) as StaffQueueItem[]}
-            targetType={target}
+            targetType={
+              target as
+                | "submission"
+                | "venue"
+                | "event"
+                | "offer"
+                | "venue_claim"
+            }
             claimPage={claimPage}
             selectedClaimId={query.claim}
             approve={

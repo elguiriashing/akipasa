@@ -503,3 +503,26 @@ session storage; another device resumes the saved board without those local
 moves. A future public
 competitive mode would need a separately reviewed challenge/competition model;
 the current fixed-reward solo games do not claim anti-cheat competition.
+
+## ADR-031: Keep car rentals independent from claimed venues
+
+**Decision:** Add AkiConduzco as a standalone rental marketplace backed by
+company, vehicle, calendar, request and review records. Let rental operators
+create their own pending company profile in a full-screen AkiBusiness mobility
+workspace. Use explicit staff review and request/confirm booking semantics.
+
+**Reasoning:** Rental companies own vehicle fleets, price schedules and pickup
+availability that do not fit venue ownership or the existing claim model.
+Separating records and access rules avoids treating an address match as proof
+of rental-company ownership and gives the fleet manager a clean permission
+boundary.
+
+**Alternatives considered:** Add car rentals as an AkiPasa venue vertical and
+allow claims; ingest an unverified provider directory; send customers directly
+to an OTA; add dealer sales inventory.
+
+**Trade-offs:** Operators must be reviewed, and booking requests require a
+company response. The first iteration does not take payments, guarantee
+availability across external channels, import provider records or include
+dealership listings. Production schema, custom-domain routing and release still
+require separate verification.

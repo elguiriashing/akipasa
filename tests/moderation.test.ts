@@ -209,11 +209,13 @@ describe("staff homepage moderation counts", () => {
       offers: 2,
       community: 0,
       claims: 1,
+      rentals: 4,
     });
     expect(result).toEqual({
-      pending: 3,
+      pending: 7,
       complete: true,
       claims: 1,
+      rentals: 4,
       venues: 0,
     });
   });
@@ -225,6 +227,7 @@ describe("staff homepage moderation counts", () => {
         offers: 0,
         community: 0,
         claims: 0,
+        rentals: 0,
       }).pending,
     ).toBe(0);
     expect(
@@ -234,6 +237,7 @@ describe("staff homepage moderation counts", () => {
         offers: 0,
         community: 0,
         claims: null,
+        rentals: 0,
       }).pending,
     ).toBeNull();
   });

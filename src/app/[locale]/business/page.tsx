@@ -303,6 +303,11 @@ export default async function BusinessPage({
       icon: "inbox",
       count: claims?.length || undefined,
     },
+    {
+      href: `/${locale}/business/mobility`,
+      label: "AkiConduzco",
+      icon: "venue",
+    },
   ];
   const premiumEnabled = akiSuiteCheckoutReady();
   const premiumChecks =

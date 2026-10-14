@@ -1,4 +1,42 @@
+Warning: truncated output (original token count: 50164)
+Total output lines: 1371
+
 # Change Impact Register
+
+## 2026-10-14 | AkiConduzco mobility foundation (implementation candidate)
+
+- **Request / before:** AkiPasa has no car-rental discovery or fleet tools. Its
+  general venue vertical only models activities/accommodation, and the existing
+  AkiBusiness venue claim flow is not appropriate for a rental marketplace.
+- **Implemented:** add an independent AkiConduzco brand and host, rental
+  company/vehicle/availability/request records, public list/map/search, account
+  booking view and a separate AkiBusiness mobility workspace. Rental operators
+  create a pending listing directly; no venue claim is used. Booking requests
+  require owner confirmation; no payment or automatic confirmation is implied.
+- **Dependencies / impact:** middleware host/path/method routing, SSR auth
+  callbacks and safe destinations, localized EN/ES copy and metadata, PWA
+  branding, public API bounds, Supabase RLS and tenant ownership, availability
+  conflict checks, sitemap/robots policy, business navigation and deployment
+  host routing. Existing AkiPasa/AkiDuermo discovery, venue ownership and claims
+  remain unchanged. No external business data is imported by this change.
+- **Acceptance matrix:** anonymous/authenticated visitor and operator; EN/ES;
+  mobile/desktop; empty/error/loading/populated states; public vs pending
+  company visibility; owner vs unrelated user; unavailable dates; booking
+  request/owner decision; safe login return; map route; host branding.
+- **Evidence:** schema and account-owned `TEST ONLY` company are present in
+  development Supabase project `vhpbvcfkcteswlsdjrfl`; the test company is
+  pending review and cannot appear in public search. Product route, API,
+  operator tools, staff queue, account surface, sitemap and host routing are
+  implemented. Formatting, lint, TypeScript, production build, database safety
+  and conflict tests, automation checks, and all secondary product suites pass;
+  23 focused AkiConduzco/PWA/staff cases pass. The full root suite passed 626
+  cases but hit its existing 5-second timeout in the unrelated PGlite Spanish
+  text test; that test passes in isolation. Production schema, production
+  DNS/Worker route, Auth redirect allowlist, deployment and live booking are
+  not established.
+- **Rollback:** remove the new routes/components/migration and product branding;
+  if the additive schema migration has been applied, use a separately reviewed
+  forward migration rather than dropping customer records.
 
 ## 2026-10-14 | Individual venue event search and pagination (PR #172)
 
@@ -869,12 +907,7 @@ Every behavior-changing PR adds an entry before merge. No invented verification.
 - Traced paths: BusinessHeader via localized business layout; StayHeader via Explore/Saved, property and map/member shells; localized Duermo auth/terms header. Shared ThemeToggle preference/event remains intact; Business LanguageLink preserves pathname/query, Duermo callback preserves lang/cookie. PortalLogo gains only an AkiPasa menu variant using existing orange PWA artwork. Scoped CSS clears legacy header style differences.
 - Matrix: EN/ES, light/dark, phone/tablet/split-screen/desktop, anonymous/authenticated Business logout, Duermo Settings, all three relative app links and current-app omission. Disclosure retains native keyboard operation plus Escape/focus return and outside-tap dismissal; short screens scroll the bounded menu.
 - Data/upstream/downstream: existing app links and server logout retained; shared auth identity stays host-scoped. No DB/RLS/API, booking, media/storage, analytics, payments, consent, PWA assets or AkiPasa consumer component change. Revert shared header wiring/styles to roll back; no records change.
-- Verification: focused suite passes 20 tests, including 10 portal home/header cases. Expanded real-component 64-case browser harness checks ordered controls, theme toggling, branded app links, current-app omission, menu bounds and keyboard/outside-tap dismissal. Full check, CI/browser and live results pending; no deployment yet.
-
-## 2026-10-10 | Staff claim review details
-
-- Request/observed: Claims showed only venue name and approve/reject; evidence and created_at were fetched but masked by the venue-name fallback, and claimant identity was not loaded.
-- Matrix: EN/ES staff and administrator, regular and accommodation claims, light/dark, phone/tablet/desktop. Anonymous, consumer and business accounts must be denied at page and direct RPC boundaries.
+- Verification: fo…164 tokens truncated…onymous, consumer and business accounts must be denied at page and direct RPC boundaries.
 - Paths/dependencies: StaffQueue, staff moderation page, moderation actions, scoped claim CSS; existing business `submitVenueClaim` -> venue_claims -> staff-only pending read -> unchanged audited moderate_item -> venue_members. Legacy moderation/admin navigation leads into the same staff workflow. SQL joins current profiles/Auth users and catalogue venues/cities; no contact snapshots or new submitted fields. No API handler, service credential, external message, storage, analytics, payment or consent change.
 - Data/security: role-gated bounded SECURITY DEFINER read with empty search_path, qualified tables and explicit execution revocations. Pending claims only; deleted Auth email suppressed; no public profile email duplication. Full evidence is escaped text, HTTPS website links only. Current email and profile phone are separately labelled from venue contacts. Empty/error states remain distinct; pagination is stable; claim decisions preserve queue/page.
 - Migration/release: new additive read function in both migration directories must precede app rollout. Revert app then DROP FUNCTION public.staff_pending_venue_claims(integer) for rollback; no claim or ownership data is removed. NOT DEPLOYED; no production migration applied.

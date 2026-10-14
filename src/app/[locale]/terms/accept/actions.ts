@@ -6,14 +6,19 @@ import { safeAuthDestination } from "@/lib/auth-security";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { headers } from "next/headers";
 import { safeStayDestination } from "@/lib/akiduermo-routing";
+import { safeConduzcoDestination } from "@/lib/akiconduzco-routing";
 
 export async function acceptTerms(formData: FormData) {
   const requestedLocale = String(formData.get("locale"));
   const locale = isLocale(requestedLocale) ? requestedLocale : "es";
-  const stayHost = (await headers()).get("x-akipasa-product") === "akiduermo";
+  const product = (await headers()).get("x-akipasa-product");
+  const stayHost = product === "akiduermo";
+  const conduzcoHost = product === "akiconduzco";
   const next = stayHost
     ? safeStayDestination(String(formData.get("next") || ""))
-    : safeAuthDestination(locale, String(formData.get("next") || ""));
+    : conduzcoHost
+      ? safeConduzcoDestination(String(formData.get("next") || ""))
+      : safeAuthDestination(locale, String(formData.get("next") || ""));
   if (formData.get("acceptTerms") !== "accepted")
     redirect(
       `/${locale}/terms/accept?error=required&next=${encodeURIComponent(next)}`,

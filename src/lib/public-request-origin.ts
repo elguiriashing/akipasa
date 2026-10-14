@@ -3,6 +3,7 @@ const productionHosts = new Set([
   "www.akipasa.com",
   "business.akipasa.com",
   "akiduermo.akipasa.com",
+  "akiconduzco.akipasa.com",
   "crm.akipasa.com",
 ]);
 

@@ -27,6 +27,7 @@ export default async function StaffOverview({
     { count: offers, error: offersError },
     { count: submissions, error: submissionsError },
     { data: claimsCount, error: claimsError },
+    { count: rentals, error: rentalsError },
     { count: reports, error: reportsError },
   ] = await Promise.all([
     supabase
@@ -47,6 +48,10 @@ export default async function StaffOverview({
       .eq("state", "pending"),
     supabase.rpc("staff_pending_venue_claim_count"),
     supabase
+      .from("car_rental_companies")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "pending_review"),
+    supabase
       .from("reports")
       .select("*", { count: "exact", head: true })
       .eq("state", "open"),
@@ -58,6 +63,7 @@ export default async function StaffOverview({
     offers: offersError ? null : offers,
     community: submissionsError ? null : submissions,
     claims: claimsError || claimsCount == null ? null : Number(claimsCount),
+    rentals: rentalsError ? null : rentals,
   });
   const pending = summary.pending;
   const displayCount = (value: number | null) =>
@@ -98,6 +104,15 @@ export default async function StaffOverview({
       count: reportsError ? null : reports,
     },
     {
+      href: `/${locale}/staff/moderation?queue=rentals`,
+      icon: "venue",
+      title: "AkiConduzco",
+      detail: es
+        ? "Empresas de alquiler por revisar"
+        : "Rental companies awaiting review",
+      count: summary.rentals,
+    },
+    {
       href: `/${locale}/staff/creators`,
       icon: "users",
       title: es ? "Creadores" : "Creators",
@@ -118,13 +133,15 @@ export default async function StaffOverview({
       detail: es ? "Campañas y solicitudes" : "Campaigns and requests",
     },
   ];
-  const primaryActions = actions.slice(0, 3);
-  const secondaryActions = actions.slice(3);
+  const primaryActions = actions.slice(0, 4);
+  const secondaryActions = actions.slice(4);
   const reportsCount = reportsError ? null : reports;
   const focusHref =
-    (summary.claims ?? 0) > 0
-      ? `/${locale}/staff/moderation?queue=claims`
-      : `/${locale}/staff/moderation`;
+    (summary.rentals ?? 0) > 0
+      ? `/${locale}/staff/moderation?queue=rentals`
+      : (summary.claims ?? 0) > 0
+        ? `/${locale}/staff/moderation?queue=claims`
+        : `/${locale}/staff/moderation`;
   const metrics = [
     {
       label: es ? "Por revisar" : "Awaiting review",
@@ -137,6 +154,12 @@ export default async function StaffOverview({
       count: summary.claims,
       icon: "venue" as IconName,
       href: `/${locale}/staff/moderation?queue=claims`,
+    },
+    {
+      label: "AkiConduzco",
+      count: summary.rentals,
+      icon: "venue" as IconName,
+      href: `/${locale}/staff/moderation?queue=rentals`,
     },
     {
       label: es ? "Casos abiertos" : "Open support cases",

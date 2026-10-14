@@ -20,6 +20,16 @@ body[data-product="akibusiness"] {
   --primary-text: #876000;
   --primary-contrast: #192b48;
 }
+body[data-product="akiconduzco"] {
+  --primary: #f04455;
+  --primary-dark: #d92d3e;
+  --primary-soft: #f044551f;
+  --primary-text: #f04455;
+  --primary-contrast: #08090b;
+  --brand-orange: #f04455;
+  --brand-yellow: #f6f4f1;
+  background: #08090b;
+}
 html[data-theme="dark"] body[data-product="akibusiness"] {
   --primary-text: #ffd447;
 }

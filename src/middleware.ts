@@ -2,6 +2,10 @@ import { NextResponse, type NextRequest } from "next/server";
 import { refreshSession } from "@/lib/supabase/middleware";
 import { stayLocale } from "@/lib/akiduermo-i18n";
 import { stayHostRoute, stayHostMethodAllowed } from "@/lib/akiduermo-routing";
+import {
+  conduzcoHostRoute,
+  conduzcoHostMethodAllowed,
+} from "@/lib/akiconduzco-routing";
 import { shouldNoindex } from "@/lib/seo";
 import { akiSuiteMembershipReturnPath } from "@/lib/akisuite-catalogue";
 
@@ -12,6 +16,7 @@ export async function middleware(request: NextRequest) {
   ).toLowerCase();
   const isAkiBusiness = hostname === "business.akipasa.com";
   const isAkiDuermo = hostname === "akiduermo.akipasa.com";
+  const isAkiConduzco = hostname === "akiconduzco.akipasa.com";
   const isStayPath =
     request.nextUrl.pathname === "/akiduermo" ||
     request.nextUrl.pathname.startsWith("/akiduermo/");
@@ -19,9 +24,11 @@ export async function middleware(request: NextRequest) {
     "x-akipasa-product",
     isAkiBusiness
       ? "akibusiness"
-      : isAkiDuermo || isStayPath
-        ? "akiduermo"
-        : "akipasa",
+      : isAkiConduzco
+        ? "akiconduzco"
+        : isAkiDuermo || isStayPath
+          ? "akiduermo"
+          : "akipasa",
   );
   const membershipAlias = request.nextUrl.pathname.match(
     /^\/(?:(en|es)\/)?(membership|memberships|account\/(?:membership|memberships|subscription))\/?$/,
@@ -136,6 +143,46 @@ export async function middleware(request: NextRequest) {
         response.cookies.set(name, value, options),
       );
     response.headers.set("X-Robots-Tag", "noindex, nofollow");
+    return response;
+  }
+  if (isAkiConduzco) {
+    if (!conduzcoHostMethodAllowed(request.nextUrl.pathname, request.method))
+      return new NextResponse(null, { status: 404 });
+    const route = conduzcoHostRoute(request.nextUrl.pathname);
+    const target = request.nextUrl.clone();
+    target.pathname = route.path;
+    request.headers.set(
+      "x-akipasa-locale",
+      request.nextUrl.searchParams.get("lang") === "en" ||
+        request.cookies.get("akiconduzco_locale")?.value === "en"
+        ? "en"
+        : "es",
+    );
+    if (route.kind === "canonical") return NextResponse.redirect(target, 308);
+    if (route.kind === "primary") {
+      target.hostname = "akipasa.com";
+      target.protocol = "https:";
+      target.port = "";
+      return NextResponse.redirect(target, 307);
+    }
+    if (route.kind === "reject") return new NextResponse(null, { status: 404 });
+    const sessionResponse = await refreshSession(request);
+    const response =
+      route.kind === "rewrite"
+        ? NextResponse.rewrite(target, {
+            request: { headers: request.headers },
+          })
+        : NextResponse.next({ request: { headers: request.headers } });
+    sessionResponse.cookies
+      .getAll()
+      .forEach(({ name, value, ...options }) =>
+        response.cookies.set(name, value, options),
+      );
+    if (
+      /^\/(account|bookings)(?:\/|$)/.test(request.nextUrl.pathname) ||
+      /^\/(en|es)\/auth(?:\/|$)/.test(request.nextUrl.pathname)
+    )
+      response.headers.set("X-Robots-Tag", "noindex, nofollow");
     return response;
   }
   const mainBusinessPath = /^\/(es|en)\/business(?:\/|$)/.test(
