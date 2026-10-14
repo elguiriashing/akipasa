@@ -10,6 +10,8 @@ const mocks = vi.hoisted(() => ({
   discover: vi.fn(),
   requireUser: vi.fn(),
   rpc: vi.fn(),
+  query: vi.fn(),
+  flagUnavailable: false,
   review: vi.fn(),
   redirect: vi.fn((path: string): never => {
     throw new Error(`redirect:${path}`);
@@ -41,7 +43,10 @@ vi.mock("@/lib/repository", () => ({
 vi.mock("@/lib/pals/server", () => ({ mapPreviewPortrait: async () => null }));
 vi.mock("@/lib/auth", () => ({ requireUser: mocks.requireUser }));
 vi.mock("@/lib/feature-flags", () => ({
-  loadFeatureFlags: async () => ({ community_submissions: true }),
+  loadFeatureFlagsState: async () => ({
+    flags: { community_submissions: true },
+    unavailable: mocks.flagUnavailable,
+  }),
 }));
 vi.mock("@/lib/automatic-moderation", () => ({
   reviewPendingCatalogueItem: mocks.review,
@@ -85,9 +90,16 @@ const reads: Record<string, unknown[]> = {
   reports: [],
   categories: [],
 };
+const exactReads: Record<string, unknown> = {
+  venues: { id: targetId, name: "Report target venue" },
+};
+let failedTable = "";
 
 beforeEach(() => {
   vi.clearAllMocks();
+  failedTable = "";
+  mocks.flagUnavailable = false;
+  reads.venues = [{ id: targetId, name: "Report target venue" }];
   mocks.recommend.mockResolvedValue({ items: [], requestId: "inert-request" });
   mocks.nearby.mockResolvedValue({ rows: [], total: 0, page: 1 });
   mocks.discover.mockResolvedValue([]);
@@ -100,11 +112,40 @@ beforeEach(() => {
     supabase: {
       rpc: mocks.rpc,
       from: (table: string) => {
+        const result = () => ({
+          data: reads[table] || [],
+          error:
+            failedTable === table ? { message: "private read failure" } : null,
+        });
         const builder = {
           select: () => builder,
-          eq: () => builder,
-          order: () =>
-            Promise.resolve({ data: reads[table] || [], error: null }),
+          eq: (field: string, value: unknown) => {
+            mocks.query(table, "eq", field, value);
+            return builder;
+          },
+          order: () => builder,
+          limit: (value: number) => {
+            mocks.query(table, "limit", value);
+            return builder;
+          },
+          or: (value: string) => {
+            mocks.query(table, "or", value);
+            return builder;
+          },
+          ilike: (field: string, value: string) => {
+            mocks.query(table, "ilike", field, value);
+            return builder;
+          },
+          maybeSingle: () =>
+            Promise.resolve({
+              ...result(),
+              data:
+                failedTable === table
+                  ? null
+                  : (exactReads[table] ?? reads[table]?.[0] ?? null),
+            }),
+          then: (resolve: (value: unknown) => unknown) =>
+            Promise.resolve(result()).then(resolve),
         };
         return builder;
       },
@@ -116,6 +157,16 @@ afterEach(cleanup);
 function pageProps(
   locale: "en" | "es",
   query: Record<string, string | string[] | undefined> = {},
+) {
+  return {
+    params: Promise.resolve({ locale }),
+    searchParams: Promise.resolve(query),
+  };
+}
+
+function communityProps(
+  locale: "en" | "es",
+  query: Record<string, string | undefined>,
 ) {
   return {
     params: Promise.resolve({ locale }),
@@ -459,4 +510,76 @@ describe("community workflow return paths", () => {
       },
     );
   }
+});
+
+describe("community catalogue recovery", () => {
+  it("withholds suggestions when feature availability cannot be confirmed", async () => {
+    mocks.flagUnavailable = true;
+    render(await CommunityPage(communityProps("en", { view: "suggest" })));
+
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "Suggestion availability cannot be confirmed right now.",
+    );
+    expect(
+      screen.queryByRole("button", { name: "Submit for review" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it.each([
+    ["categories", "suggest", "Categories are unavailable right now."],
+    ["events", "report", "Published report targets are unavailable right now."],
+    [
+      "event_submissions",
+      "suggestions",
+      "Your suggestions are unavailable right now.",
+    ],
+    ["reports", "reports", "Your reports are unavailable right now."],
+  ] as const)(
+    "does not present a failed %s read as empty",
+    async (table, view, message) => {
+      failedTable = table;
+      render(await CommunityPage(communityProps("en", { view })));
+
+      expect(screen.getByRole("alert")).toHaveTextContent(message);
+      expect(
+        screen.queryByText("private read failure"),
+      ).not.toBeInTheDocument();
+      if (table === "categories") {
+        expect(
+          screen.queryByRole("button", { name: "Submit for review" }),
+        ).not.toBeInTheDocument();
+      }
+      if (table === "events") {
+        expect(screen.queryByLabelText("Item")).not.toBeInTheDocument();
+      }
+    },
+  );
+
+  it("bounds and escapes report-target search while loading a linked target exactly", async () => {
+    reads.venues = [];
+    render(
+      await CommunityPage(
+        communityProps("en", {
+          view: "report",
+          target: reportTarget,
+          target_q: 'Café, 100% "central"',
+        }),
+      ),
+    );
+
+    expect(mocks.query).toHaveBeenCalledWith("events", "limit", 50);
+    expect(mocks.query).toHaveBeenCalledWith("venues", "limit", 50);
+    expect(mocks.query).toHaveBeenCalledWith("venues", "eq", "id", targetId);
+    expect(mocks.requireUser).toHaveBeenCalledWith(
+      "en",
+      `/en/community?view=report&target=${encodeURIComponent(reportTarget)}&target_q=Caf%C3%A9%2C+100%25+%22central%22`,
+    );
+    const eventFilter = mocks.query.mock.calls.find(
+      ([table, operation]) => table === "events" && operation === "or",
+    )?.[2] as string;
+    expect(eventFilter).toContain("title_es.ilike");
+    expect(eventFilter).toContain("\\\\%");
+    expect(eventFilter).toContain('\\"central\\"');
+    expect(screen.getByLabelText("Item")).toHaveValue(reportTarget);
+  });
 });

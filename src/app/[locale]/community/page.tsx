@@ -11,12 +11,14 @@ import {
 } from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
-import { loadFeatureFlags } from "@/lib/feature-flags";
+import { loadFeatureFlagsState } from "@/lib/feature-flags";
 import { SpainAddressAutocomplete } from "@/components/SpainAddressAutocomplete";
+import { ContributionDraftForm } from "@/components/community/ContributionDraftForm";
 import { submitCommunityEvent, submitReport } from "./actions";
 import { communityCreatorItems } from "@/components/community/CreatorDirectoryPage";
 import {
   communityWorkflowPath,
+  parseCommunityReportTarget,
   type CommunityView,
 } from "@/lib/community-navigation";
 
@@ -42,27 +44,51 @@ export default async function CommunityPage({
     locale,
     communityWorkflowPath(locale, view as CommunityView, {
       target: query.target,
+      targetQuery: query.target_q,
     }),
   );
-  const flags = await loadFeatureFlags(supabase);
+  const { flags, unavailable: flagsUnavailable } =
+    await loadFeatureFlagsState(supabase);
   const es = locale === "es";
+  const reportSearch = (query.target_q || "").trim().slice(0, 80);
+  const reportPattern = reportSearch.replace(/[\\%_]/g, "\\$&");
+  const reportLiteral = `"%${reportPattern
+    .replaceAll("\\", "\\\\")
+    .replaceAll('"', '\\"')}%"`;
+  let eventsRequest = supabase
+    .from("events")
+    .select("id,title_es,title_en")
+    .eq("status", "published")
+    .order("title_es")
+    .limit(50);
+  let venuesRequest = supabase
+    .from("venues")
+    .select("id,name")
+    .eq("status", "published")
+    .order("name")
+    .limit(50);
+  if (reportSearch) {
+    eventsRequest = eventsRequest.or(
+      `title_es.ilike.${reportLiteral},title_en.ilike.${reportLiteral}`,
+    );
+    venuesRequest = venuesRequest.ilike("name", `%${reportPattern}%`);
+  }
+  const requestedTarget = typeof query.target === "string" ? query.target : "";
+  const parsedRequestedTarget = parseCommunityReportTarget(requestedTarget);
+  const requestedType = parsedRequestedTarget?.targetType;
+  const requestedId = parsedRequestedTarget?.targetId;
+  const validRequestedTarget = Boolean(parsedRequestedTarget);
   const [
-    { data: events },
-    { data: venues },
-    { data: submissions },
-    { data: reports },
-    { data: categories },
+    eventsResult,
+    venuesResult,
+    submissionsResult,
+    reportsResult,
+    categoriesResult,
+    requestedEventResult,
+    requestedVenueResult,
   ] = await Promise.all([
-    supabase
-      .from("events")
-      .select("id,title_es,title_en")
-      .eq("status", "published")
-      .order("title_es"),
-    supabase
-      .from("venues")
-      .select("id,name")
-      .eq("status", "published")
-      .order("name"),
+    eventsRequest,
+    venuesRequest,
     supabase
       .from("event_submissions")
       .select("id,title,state,created_at")
@@ -77,13 +103,52 @@ export default async function CommunityPage({
       .from("categories")
       .select("id,slug,name_es,name_en")
       .order("name_es"),
+    validRequestedTarget && requestedType === "event"
+      ? supabase
+          .from("events")
+          .select("id,title_es,title_en")
+          .eq("status", "published")
+          .eq("id", requestedId)
+          .maybeSingle()
+      : Promise.resolve({ data: null, error: null }),
+    validRequestedTarget && requestedType === "venue"
+      ? supabase
+          .from("venues")
+          .select("id,name")
+          .eq("status", "published")
+          .eq("id", requestedId)
+          .maybeSingle()
+      : Promise.resolve({ data: null, error: null }),
   ]);
+  const events = [...(eventsResult.data || [])];
+  const venues = [...(venuesResult.data || [])];
+  if (
+    requestedEventResult.data &&
+    !events.some((event) => event.id === requestedEventResult.data?.id)
+  )
+    events.unshift(requestedEventResult.data);
+  if (
+    requestedVenueResult.data &&
+    !venues.some((venue) => venue.id === requestedVenueResult.data?.id)
+  )
+    venues.unshift(requestedVenueResult.data);
+  const submissions = submissionsResult.data;
+  const reports = reportsResult.data;
+  const categories = categoriesResult.data;
+  const reportTargetsUnavailable = Boolean(
+    eventsResult.error ||
+      venuesResult.error ||
+      requestedEventResult.error ||
+      requestedVenueResult.error,
+  );
+  const submissionsUnavailable = Boolean(submissionsResult.error);
+  const reportsUnavailable = Boolean(reportsResult.error);
+  const categoriesUnavailable = Boolean(categoriesResult.error);
   const pendingSuggestions =
     submissions?.filter((item) => item.state === "pending").length || 0;
   const openReports =
     reports?.filter((item) => item.state === "open").length || 0;
-  const hasReportableItems = Boolean(events?.length || venues?.length);
-  const requestedTarget = typeof query.target === "string" ? query.target : "";
+  const hasReportableItems = Boolean(events.length || venues.length);
   const base = `/${locale}/community`;
   const items: WorkspaceItem[] = communityCreatorItems(locale, {
     suggestions: submissions?.length || 0,
@@ -242,8 +307,37 @@ export default async function CommunityPage({
                     </p>
                   </div>
                 </div>
-                {flags.community_submissions ? (
-                  <form action={submitCommunityEvent} className="stack">
+                {flagsUnavailable ? (
+                  <CommunityUnavailable
+                    locale={locale}
+                    href={`/${locale}/community?view=suggest`}
+                    label={
+                      es
+                        ? "La disponibilidad de sugerencias no se puede confirmar ahora."
+                        : "Suggestion availability cannot be confirmed right now."
+                    }
+                  />
+                ) : categoriesUnavailable ? (
+                  <CommunityUnavailable
+                    locale={locale}
+                    href={`/${locale}/community?view=suggest`}
+                    label={
+                      es
+                        ? "Las categorías no están disponibles ahora."
+                        : "Categories are unavailable right now."
+                    }
+                  />
+                ) : flags.community_submissions ? (
+                  <ContributionDraftForm
+                    action={submitCommunityEvent}
+                    className="stack"
+                    draftKey={`akipasa:community:${locale}:suggest`}
+                    recover={
+                      query.error === "submission" ||
+                      query.error === "rate-limit"
+                    }
+                    locale={locale}
+                  >
                     <input type="hidden" name="locale" value={locale} />
                     <div className="two-col">
                       <label>
@@ -305,7 +399,7 @@ export default async function CommunityPage({
                     <button className="button" type="submit">
                       {es ? "Enviar a revision" : "Submit for review"}
                     </button>
-                  </form>
+                  </ContributionDraftForm>
                 ) : (
                   <p className="notice">
                     {es
@@ -336,74 +430,126 @@ export default async function CommunityPage({
                     </p>
                   </div>
                 </div>
-                <form action={submitReport} className="stack">
-                  <input type="hidden" name="locale" value={locale} />
-                  <label>
-                    {es ? "Elemento" : "Item"}
-                    <select
+                <form className="stack" action={`/${locale}/community`}>
+                  <input type="hidden" name="view" value="report" />
+                  {validRequestedTarget && (
+                    <input
+                      type="hidden"
                       name="target"
-                      required
-                      defaultValue={requestedTarget}
-                      disabled={!hasReportableItems}
-                    >
-                      <option value="" disabled>
-                        {es
-                          ? "Selecciona un evento o local"
-                          : "Select an event or venue"}
-                      </option>
-                      <optgroup label={es ? "Eventos" : "Events"}>
-                        {events?.map((event) => (
-                          <option key={event.id} value={`event:${event.id}`}>
-                            {locale === "es"
-                              ? event.title_es
-                              : event.title_en || event.title_es}
-                          </option>
-                        ))}
-                      </optgroup>
-                      <optgroup label={es ? "Locales" : "Venues"}>
-                        {venues?.map((venue) => (
-                          <option key={venue.id} value={`venue:${venue.id}`}>
-                            {venue.name}
-                          </option>
-                        ))}
-                      </optgroup>
-                    </select>
-                  </label>
-                  {!hasReportableItems && (
-                    <p className="empty-state">
-                      {es
-                        ? "No hay elementos publicados disponibles para informar."
-                        : "There are no published items available to report."}
-                    </p>
+                      value={requestedTarget}
+                    />
                   )}
                   <label>
-                    {es ? "Motivo" : "Reason"}
-                    <select name="reason" required>
-                      <option value="cancelled">
-                        {es ? "Cancelado" : "Cancelled"}
-                      </option>
-                      <option value="duplicate">
-                        {es ? "Duplicado" : "Duplicate"}
-                      </option>
-                      <option value="incorrect">
-                        {es ? "Datos incorrectos" : "Incorrect details"}
-                      </option>
-                      <option value="scam">Scam</option>
-                      <option value="other">{es ? "Otro" : "Other"}</option>
-                    </select>
+                    {es ? "Buscar evento o local" : "Search events or venues"}
+                    <input
+                      type="search"
+                      name="target_q"
+                      defaultValue={reportSearch}
+                      maxLength={80}
+                    />
                   </label>
-                  <label>
-                    {es ? "Detalles" : "Details"}
-                    <textarea name="details" required minLength={10} />
-                  </label>
-                  <button
-                    className="button"
-                    type="submit"
-                    disabled={!hasReportableItems}
-                  >
-                    {es ? "Enviar aviso" : "Submit report"}
+                  <button className="button secondary" type="submit">
+                    {es ? "Buscar" : "Search"}
                   </button>
                 </form>
+                {reportTargetsUnavailable ? (
+                  <CommunityUnavailable
+                    locale={locale}
+                    href={communityWorkflowPath(locale, "report", {
+                      target: requestedTarget,
+                      targetQuery: reportSearch,
+                    })}
+                    label={
+                      es
+                        ? "Los elementos publicados no están disponibles ahora."
+                        : "Published report targets are unavailable right now."
+                    }
+                  />
+                ) : (
+                  <ContributionDraftForm
+                    action={submitReport}
+                    className="stack"
+                    draftKey={`akipasa:community:${locale}:report`}
+                    recover={
+                      query.error === "report" || query.error === "rate-limit"
+                    }
+                    locale={locale}
+                  >
+                    <input type="hidden" name="locale" value={locale} />
+                    {reportSearch && (
+                      <input
+                        type="hidden"
+                        name="target_q"
+                        value={reportSearch}
+                      />
+                    )}
+                    <label>
+                      {es ? "Elemento" : "Item"}
+                      <select
+                        name="target"
+                        required
+                        defaultValue={requestedTarget}
+                        disabled={!hasReportableItems}
+                      >
+                        <option value="" disabled>
+                          {es
+                            ? "Selecciona un evento o local"
+                            : "Select an event or venue"}
+                        </option>
+                        <optgroup label={es ? "Eventos" : "Events"}>
+                          {events.map((event) => (
+                            <option key={event.id} value={`event:${event.id}`}>
+                              {locale === "es"
+                                ? event.title_es
+                                : event.title_en || event.title_es}
+                            </option>
+                          ))}
+                        </optgroup>
+                        <optgroup label={es ? "Locales" : "Venues"}>
+                          {venues.map((venue) => (
+                            <option key={venue.id} value={`venue:${venue.id}`}>
+                              {venue.name}
+                            </option>
+                          ))}
+                        </optgroup>
+                      </select>
+                    </label>
+                    {!hasReportableItems && (
+                      <p className="empty-state">
+                        {es
+                          ? "No hay elementos publicados disponibles para informar."
+                          : "There are no published items available to report."}
+                      </p>
+                    )}
+                    <label>
+                      {es ? "Motivo" : "Reason"}
+                      <select name="reason" required>
+                        <option value="cancelled">
+                          {es ? "Cancelado" : "Cancelled"}
+                        </option>
+                        <option value="duplicate">
+                          {es ? "Duplicado" : "Duplicate"}
+                        </option>
+                        <option value="incorrect">
+                          {es ? "Datos incorrectos" : "Incorrect details"}
+                        </option>
+                        <option value="scam">Scam</option>
+                        <option value="other">{es ? "Otro" : "Other"}</option>
+                      </select>
+                    </label>
+                    <label>
+                      {es ? "Detalles" : "Details"}
+                      <textarea name="details" required minLength={10} />
+                    </label>
+                    <button
+                      className="button"
+                      type="submit"
+                      disabled={!hasReportableItems}
+                    >
+                      {es ? "Enviar aviso" : "Submit report"}
+                    </button>
+                  </ContributionDraftForm>
+                )}
               </section>
             )}
           </div>
@@ -422,19 +568,31 @@ export default async function CommunityPage({
             }
             icon="EV"
           />
-          <ContributionList
-            empty={
-              es
-                ? "Aun no has enviado sugerencias."
-                : "No suggestions submitted yet."
-            }
-            items={(submissions || []).map((item) => ({
-              id: item.id,
-              title: item.title,
-              detail: new Date(item.created_at).toLocaleDateString(locale),
-              state: item.state,
-            }))}
-          />
+          {submissionsUnavailable ? (
+            <CommunityUnavailable
+              locale={locale}
+              href={`/${locale}/community?view=suggestions`}
+              label={
+                es
+                  ? "Tus sugerencias no están disponibles ahora."
+                  : "Your suggestions are unavailable right now."
+              }
+            />
+          ) : (
+            <ContributionList
+              empty={
+                es
+                  ? "Aun no has enviado sugerencias."
+                  : "No suggestions submitted yet."
+              }
+              items={(submissions || []).map((item) => ({
+                id: item.id,
+                title: item.title,
+                detail: new Date(item.created_at).toLocaleDateString(locale),
+                state: item.state,
+              }))}
+            />
+          )}
         </section>
       )}
 
@@ -450,20 +608,49 @@ export default async function CommunityPage({
             }
             icon="RP"
           />
-          <ContributionList
-            empty={
-              es ? "Aun no has enviado avisos." : "No reports submitted yet."
-            }
-            items={(reports || []).map((item) => ({
-              id: item.id,
-              title: `${item.target_type} / ${item.reason}`,
-              detail: new Date(item.created_at).toLocaleDateString(locale),
-              state: item.state,
-            }))}
-          />
+          {reportsUnavailable ? (
+            <CommunityUnavailable
+              locale={locale}
+              href={`/${locale}/community?view=reports`}
+              label={
+                es
+                  ? "Tus avisos no están disponibles ahora."
+                  : "Your reports are unavailable right now."
+              }
+            />
+          ) : (
+            <ContributionList
+              empty={
+                es ? "Aun no has enviado avisos." : "No reports submitted yet."
+              }
+              items={(reports || []).map((item) => ({
+                id: item.id,
+                title: `${item.target_type} / ${item.reason}`,
+                detail: new Date(item.created_at).toLocaleDateString(locale),
+                state: item.state,
+              }))}
+            />
+          )}
         </section>
       )}
     </WorkspaceShell>
+  );
+}
+
+function CommunityUnavailable({
+  locale,
+  href,
+  label,
+}: {
+  locale: "es" | "en";
+  href: string;
+  label: string;
+}) {
+  return (
+    <p className="notice" role="alert">
+      {label}{" "}
+      <Link href={href}>{locale === "es" ? "Reintentar" : "Retry"}</Link>
+    </p>
   );
 }
 

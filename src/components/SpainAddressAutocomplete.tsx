@@ -23,6 +23,7 @@ export function SpainAddressAutocomplete({
   const id = useId();
   const listId = `${id}-results`;
   const es = locale === "es";
+  const precise = mode === "address";
   const [value, setValue] = useState(defaultValue);
   const [suggestions, setSuggestions] = useState<SpainAddressSuggestion[]>([]);
   const [selected, setSelected] = useState<SpainAddressSuggestion | null>(null);
@@ -31,6 +32,44 @@ export function SpainAddressAutocomplete({
   const [failed, setFailed] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const interactionStarted = useRef(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const form = inputRef.current?.form;
+    if (!form || !precise) return;
+    const restore = (event: Event) => {
+      const values = (event as CustomEvent<Record<string, string>>).detail;
+      const address = values?.[name];
+      const latitude = Number(values?.latitude);
+      const longitude = Number(values?.longitude);
+      if (
+        !address ||
+        !values.addressProviderId ||
+        !values.locality ||
+        !values.province ||
+        !Number.isFinite(latitude) ||
+        !Number.isFinite(longitude)
+      )
+        return;
+      interactionStarted.current = false;
+      setValue(address);
+      setSelected({
+        id: values.addressProviderId,
+        label: address,
+        address,
+        locality: values.locality,
+        province: values.province,
+        postalCode: values.postalCode || "",
+        latitude,
+        longitude,
+        kind: "address",
+        provider: "cartociudad",
+      });
+    };
+    form.addEventListener("akipasa:restore-contribution-draft", restore);
+    return () =>
+      form.removeEventListener("akipasa:restore-contribution-draft", restore);
+  }, [name, precise]);
 
   useEffect(() => {
     if (!interactionStarted.current || value.trim().length < 3 || selected) {
@@ -79,7 +118,6 @@ export function SpainAddressAutocomplete({
     setSuggestions([]);
   }
 
-  const precise = mode === "address";
   const status = loading
     ? es
       ? "Buscando direcciones…"
@@ -109,6 +147,7 @@ export function SpainAddressAutocomplete({
               : "Town or city")}
       </label>
       <input
+        ref={inputRef}
         id={id}
         name={name}
         value={value}

@@ -50,8 +50,17 @@ export function resolveFeatureFlags(
 export async function loadFeatureFlags(
   supabase: SupabaseClient,
 ): Promise<FeatureFlags> {
+  return (await loadFeatureFlagsState(supabase)).flags;
+}
+
+export async function loadFeatureFlagsState(
+  supabase: SupabaseClient,
+): Promise<{ flags: FeatureFlags; unavailable: boolean }> {
   const { data, error } = await supabase
     .from("feature_flags")
     .select("key,enabled");
-  return error ? { ...defaultFeatureFlags } : resolveFeatureFlags(data);
+  return {
+    flags: error ? { ...defaultFeatureFlags } : resolveFeatureFlags(data),
+    unavailable: Boolean(error),
+  };
 }

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-14 — Community contribution recovery
+
+- Restore failed event-suggestion and report drafts within the current browser tab,
+  including validated address coordinates.
+- Add bounded, punctuation-safe report-target search and exact linked-target loads.
+- Distinguish unavailable feature, category, target and contribution-history reads
+  from paused or empty states, withholding only dependent controls.
+
 ## 2026-10-14 — Accommodation and Passport read recovery
 
 - Keep healthy accommodation-manager tabs usable while an independently failed

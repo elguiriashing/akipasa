@@ -1,5 +1,27 @@
 # Change Impact Register
 
+## 2026-10-14 | Community contribution recovery
+
+- **Inventory:** PUB-06, PUB-07 and PUB-08.
+- **Before:** form errors discarded suggestion/report fields; report target selects
+  loaded an unbounded catalogue and could omit a directly linked item; catalogue,
+  history and feature-flag failures appeared paused or empty.
+- **After:** tab-local drafts restore after validation, RPC and rate-limit returns,
+  including the selected precise address. Target search is capped at 50 per type,
+  treats punctuation as literal text and separately loads a valid selected UUID.
+  Search/auth/retry context remains intact. Independent unavailable reads show retry
+  and withhold only forms or histories that require the failed data.
+- **Dependencies:** existing `submit_community_event`/`submit_report` RPCs,
+  Zod/Madrid-time validation, automatic moderation, authenticated access and RLS
+  remain unchanged. Draft data is session storage only; no schema or stored-data
+  change is included.
+- **Evidence:** full Spotlight suite passes 191/191; 55 focused public/draft cases
+  cover all read failures, bounded/escaped exact target search, clean zero/empty
+  paths and precise-address restoration. Feature-flag state tests pass 3/3;
+  TypeScript, scoped lint, formatting and diff checks pass.
+- **Rollback:** revert source/tests/docs. Browser session drafts expire with the tab;
+  no database rollback or provider replay is required.
+
 ## 2026-10-14 | Accommodation and member Passport read recovery
 
 - **Inventory:** BS-05 and PASS-01.

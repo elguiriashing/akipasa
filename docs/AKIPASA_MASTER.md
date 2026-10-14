@@ -3,6 +3,25 @@
 > Entry point for every human or AI modifying AkiPasa. Established 2026-10-09. **Living engineering contract, not a claim that every production behavior is verified.**
 > Source priority: running code + database schema + production evidence > current tests > these docs > historical handoff notes > chat discussions. If they disagree, investigate; never silently choose the older description.
 
+## 2026-10-14 | Community contribution recovery and target search
+
+Event suggestions and reports retain their current tab's text, selections and
+validated CartoCiudad address coordinates before submission. A failed validation,
+RPC or rate-limit return restores that draft; opening a clean form clears stale
+draft data. Drafts remain browser-tab local and are never copied into URLs or a
+shared server record.
+
+Report target discovery is an explicit bounded event/venue search with escaped
+PostgREST literals. A safe linked event or venue ID is loaded exactly even when it
+falls outside the current 50-result search window. Authentication, retry and action
+failure returns preserve the bounded search and validated selected target.
+
+Feature availability, categories, report targets, suggestion history and report
+history each expose localized unavailable states and suppress controls that depend
+on unknown data. Successful empty results retain their normal empty states. Existing
+authenticated RPCs, automatic moderation, RLS, validation and rate limits remain
+authoritative; no schema, policy or submitted record changes.
+
 ## 2026-10-14 | Accommodation and Passport read recovery
 
 The AkiDuermo property workspace treats settings, room types, units, rates,
