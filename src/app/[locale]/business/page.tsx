@@ -369,21 +369,34 @@ export default async function BusinessPage({
               reuseAction={reuseEvent}
               events={businessEvents.map((event) => {
                 const occurrences = [...event.event_occurrences].sort(
-                  (a, b) => new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime(),
+                  (a, b) =>
+                    new Date(a.starts_at).getTime() -
+                    new Date(b.starts_at).getTime(),
                 );
-                const reference = occurrences.find(
-                  (occurrence) => new Date(occurrence.ends_at).getTime() >= now,
-                ) || occurrences.at(-1);
+                const reference =
+                  occurrences.find(
+                    (occurrence) =>
+                      new Date(occurrence.ends_at).getTime() >= now,
+                  ) || occurrences.at(-1);
                 return {
                   id: event.id,
                   venueId: event.venue_id,
                   slug: event.slug,
-                  title: locale === "en" ? event.title_en || event.title_es : event.title_es,
-                  venue: event.source === "akipasa_selection"
-                    ? "Selección AkiPasa"
-                    : venueNames.get(event.venue_id) || (es ? "Local" : "Venue"),
+                  title:
+                    locale === "en"
+                      ? event.title_en || event.title_es
+                      : event.title_es,
+                  venue:
+                    event.source === "akipasa_selection"
+                      ? "Selección AkiPasa"
+                      : venueNames.get(event.venue_id) ||
+                        (es ? "Local" : "Venue"),
                   status: event.status,
-                  group: (archivedEvents.includes(event) ? "archived" : pastEvents.includes(event) ? "past" : "current") as "archived" | "past" | "current",
+                  group: (archivedEvents.includes(event)
+                    ? "archived"
+                    : pastEvents.includes(event)
+                      ? "past"
+                      : "current") as "archived" | "past" | "current",
                   date: reference?.starts_at || null,
                 };
               })}
@@ -617,23 +630,31 @@ export default async function BusinessPage({
 
         {/* Create Event Form */}
         {view === "events" && regularManaged.length > 0 && (
-          <details id="create-event" className="panel catalogue-edit-card dashboard-grid-full" open={query.compose === "1"}>
-            <summary><strong>{es ? "+ Crear evento de local" : "+ Create venue event"}</strong></summary>
-          <BusinessEventComposer
-            locale={locale}
-            venues={regularManaged.flatMap((item) =>
-              item.venues
-                ? [{ id: item.venues.id, name: item.venues.name }]
-                : [],
-            )}
-            categories={(categories || []).map((category) => ({
-              id: category.id,
-              label:
-                (locale === "es" ? category.name_es : category.name_en) ||
-                category.name_es,
-            }))}
-            media={eventComposerMedia}
-          />
+          <details
+            id="create-event"
+            className="panel catalogue-edit-card dashboard-grid-full"
+            open={query.compose === "1"}
+          >
+            <summary>
+              <strong>
+                {es ? "+ Crear evento de local" : "+ Create venue event"}
+              </strong>
+            </summary>
+            <BusinessEventComposer
+              locale={locale}
+              venues={regularManaged.flatMap((item) =>
+                item.venues
+                  ? [{ id: item.venues.id, name: item.venues.name }]
+                  : [],
+              )}
+              categories={(categories || []).map((category) => ({
+                id: category.id,
+                label:
+                  (locale === "es" ? category.name_es : category.name_en) ||
+                  category.name_es,
+              }))}
+              media={eventComposerMedia}
+            />
           </details>
         )}
 
