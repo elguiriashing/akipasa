@@ -1292,6 +1292,10 @@ original recovery entries. No SQL, authorization/payment rollout, customer
 records or email replay is included; drafts #133/#140 stay excluded. Source
 revert rolls back these repairs without rewriting catalogue/media/history.
 
+## 2026-10-14 | AkiBusiness events grid, image dialog and claimed listings (#167)
+
+Scope: AkiBusiness EN/ES event catalogue, desktop/tablet/mobile grid and pagination; image-slot selection and keyboard access; public venue claim gating plus secure claim submission; database `public_venue_is_claimed` function; GitHub build cache. Safeguards: existing roles, event mutations, image storage permissions and claims approval are unchanged; existing ownership records are authoritative without requiring owners to edit listing data. Database deployment prerequisite: apply and verify new RPC migration. Regression evidence: `tests/business-event-workspace.test.ts` covers nine-item pagination/reset, bilingual current-group labels, EN/ES/responsive grid and accessible filter state, plus media-dialog keyboard containment and focus restoration. Local `npm run check` passes on the merged candidate (including format, lint, typecheck, all configured suites, DB safety/conflict checks, automation tests/dry-run and Next production build); exact-head hosted CI, browser acceptance, migration deployment and live-source verification remain release gates. Merge conflict resolution retained both the #167 entry and all newer master entries in this register and contract. Rollback: revert frontend changes after verifying migration compatibility; do not delete approved ownership memberships or claim records.
+
 ## 2026-10-14 | Historical #103 Passport frame recovery
 
 - **Before editing:** current master `8613edbd` PassportBook unconditionally reschedules requestAnimationFrame and writes every foil property while visible, even when idle. Existing draft #103 at `aef15f534ca68051d1bed5828ffddee486614a03` contains a bounded demand-driven helper. Latest coordination issue #131 reserves this scope independently of active Health and billing work.

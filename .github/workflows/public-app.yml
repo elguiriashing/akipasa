@@ -19,4 +19,10 @@ jobs:
       - run: npm ci
       - run: npm ci --prefix automation
       - run: npm run check
+      - uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
       - run: npm run build:cloudflare

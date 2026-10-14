@@ -344,6 +344,8 @@ const server = createServer(async (request, response) => {
         (counts.get(`${method} ${table}`) || 0) + 1,
       );
       const body = method === "POST" ? await readBody(request) : {};
+      if (table === "rpc/public_venue_is_claimed" && method === "POST")
+        return send(response, false);
       if (table === "rpc/public_venue_catalogue" && method === "POST")
         return send(
           response,

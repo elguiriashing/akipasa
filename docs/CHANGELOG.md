@@ -1091,3 +1091,8 @@ Completed the AkiDuermo room-night request candidate: explicit booking modes, re
 
 - Pin focused Next, PostCSS and Sharp fixes; preserve current MapLibre v5 map/worker contracts with the exact upstream attribute snapshot backport.
 - Fail installation/build checks for unknown, partially patched or alternate-entry MapLibre artifacts; retain the version-based npm alert and separate provider trust limitation in the audit.
+
+## 2026-10-14 — AkiBusiness events catalogue follow-up
+
+- Keep the current filter labelled “Current and upcoming” / “Actuales y próximos” to match its included running and undated draft events.
+- Add a bilingual label regression to the event workspace contract test.
