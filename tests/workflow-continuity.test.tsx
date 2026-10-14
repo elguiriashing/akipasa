@@ -81,6 +81,10 @@ it.each(
         ? `${(priceCents / 100).toFixed(2).replace(".", ",")} €`
         : `€${(priceCents / 100).toFixed(2)}`;
   expect(screen.getByText(expected, { exact: true })).toBeVisible();
+  expect(screen.getByRole("link")).toHaveAttribute(
+    "href",
+    `/${locale}/events/${event.slug}?occurrence=${occurrence.id}`,
+  );
   expect(
     eventPriceLabel({ ...event, priceDisplayMode: "hide" }, locale),
   ).toBeNull();

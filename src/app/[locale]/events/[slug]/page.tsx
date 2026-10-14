@@ -20,6 +20,7 @@ import { AnalyticsView, TrackedLink } from "@/components/AnalyticsSignal";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { PublicVenueCatalogue } from "@/components/PublicVenueCatalogue";
 import { parseCatalogueDocument } from "@/lib/venue-catalogue";
+import { occurrenceHref, selectEventOccurrence } from "@/lib/event-occurrence";
 
 const loadEvent = cache((slug: string) => repository.eventBySlug(slug));
 const loadVenue = cache((id: string) => repository.venueById(id));
@@ -44,20 +45,19 @@ export async function generateMetadata({
 
 export default async function EventPage({
   params,
+  searchParams = Promise.resolve({}),
 }: {
   params: Promise<{ locale: string; slug: string }>;
+  searchParams?: Promise<Record<string, string | undefined>>;
 }) {
   const { locale, slug } = await params;
+  const query = await searchParams;
   if (!isLocale(locale)) notFound();
   const event = await loadEvent(slug);
   if (!event?.occurrences.length) notFound();
   const resolvedVenue = await loadVenue(event.venueId);
   if (!resolvedVenue) notFound();
-  const occurrence =
-    event.occurrences.find(
-      (item) =>
-        new Date(item.endsAt) > new Date() && item.status !== "cancelled",
-    ) || event.occurrences[0];
+  const occurrence = selectEventOccurrence(event.occurrences, query.occurrence);
   const bookingUrl = occurrence.bookingUrl || event.bookingUrl;
   const eventPlace = event.location
     ? {
@@ -79,7 +79,10 @@ export default async function EventPage({
       }
     : resolvedVenue;
   const m = msg(locale);
-  const returnTo = `/${locale}/events/${event.slug}`;
+  const returnTo = occurrenceHref(
+    `/${locale}/events/${event.slug}`,
+    occurrence.id,
+  );
   const { supabase, user } = await optionalUser();
   const [{ data: bookingSettings }, { data: publicEngagement }] =
     await Promise.all([
@@ -229,6 +232,9 @@ export default async function EventPage({
   const es = locale === "es";
   const startsAt = new Date(occurrence.startsAt);
   const endsAt = new Date(occurrence.endsAt);
+  const ended = endsAt <= new Date();
+  const canPlanTrip =
+    !ended && ["scheduled", "sold_out"].includes(occurrence.status);
   const dayFormatter = new Intl.DateTimeFormat(locale, {
     day: "numeric",
     timeZone: "Europe/Madrid",
@@ -284,8 +290,8 @@ export default async function EventPage({
         ? "Voy"
         : "Going";
   const canBook =
-    occurrence.status !== "cancelled" &&
-    occurrence.status !== "sold_out" &&
+    !ended &&
+    occurrence.status === "scheduled" &&
     Boolean(bookingUrl || bookingSettings?.mode === "request");
   const authHref = `/${locale}/auth?next=${encodeURIComponent(returnTo)}`;
   const directionsHref = googleMapsDirectionsUrl(directionsPlace);
@@ -317,7 +323,10 @@ export default async function EventPage({
       ) : (
         <Link
           className={bookingClassName(mobile)}
-          href={`/${locale}/events/${event.slug}/book`}
+          href={occurrenceHref(
+            `/${locale}/events/${event.slug}/book`,
+            occurrence.id,
+          )}
         >
           <Icon name="calendar" size={19} />
           {es ? "Solicitar reserva" : "Request booking"}
@@ -457,19 +466,25 @@ export default async function EventPage({
                 </span>
               )}
             </div>
-            {occurrence.status !== "scheduled" && (
+            {(occurrence.status !== "scheduled" || ended) && (
               <p className="notice event-spotlight-status" role="status">
-                {es
-                  ? {
-                      cancelled: "Este evento está cancelado.",
-                      postponed: "Este evento ha sido aplazado.",
-                      sold_out: "Este evento está agotado.",
-                    }[occurrence.status]
-                  : {
-                      cancelled: "This event is cancelled.",
-                      postponed: "This event has been postponed.",
-                      sold_out: "This event is sold out.",
-                    }[occurrence.status]}
+                {ended && occurrence.status === "scheduled"
+                  ? es
+                    ? "Este evento ha terminado."
+                    : "This event has ended."
+                  : es
+                    ? {
+                        scheduled: "",
+                        cancelled: "Este evento está cancelado.",
+                        postponed: "Este evento ha sido aplazado.",
+                        sold_out: "Este evento está agotado.",
+                      }[occurrence.status]
+                    : {
+                        scheduled: "",
+                        cancelled: "This event is cancelled.",
+                        postponed: "This event has been postponed.",
+                        sold_out: "This event is sold out.",
+                      }[occurrence.status]}
               </p>
             )}
             <dl className="event-spotlight-facts">
@@ -763,33 +778,40 @@ export default async function EventPage({
               </form>
             </details>
           ) : null}
-          <a
-            className="button secondary"
-            href={eventStayHref(
-              locale,
-              resolvedVenue.locality,
-              occurrence.startsAt,
-              occurrence.endsAt,
-              {
-                latitude: resolvedVenue.latitude,
-                longitude: resolvedVenue.longitude,
-              },
-            )}
-          >
-            {locale === "es"
-              ? "Buscar alojamiento para este evento"
-              : "Find a stay for this event"}
-          </a>
-          <p className="muted">
-            {locale === "es"
-              ? "AkiDuermo está en vista previa: las fechas son orientativas, sin disponibilidad ni pago de reservas."
-              : "AkiDuermo is a preview: dates are for planning, with no live availability or booking payment."}
-          </p>
+          {canPlanTrip && (
+            <>
+              <a
+                className="button secondary"
+                href={eventStayHref(
+                  locale,
+                  eventPlace.locality,
+                  occurrence.startsAt,
+                  occurrence.endsAt,
+                  {
+                    latitude: eventPlace.latitude,
+                    longitude: eventPlace.longitude,
+                  },
+                )}
+              >
+                {locale === "es"
+                  ? "Buscar alojamiento para este evento"
+                  : "Find a stay for this event"}
+              </a>
+              <p className="muted">
+                {locale === "es"
+                  ? "Los alojamientos participantes pueden aceptar solicitudes de reserva. El alojamiento confirma cada solicitud; AkiDuermo no confirma automáticamente ni cobra online."
+                  : "Participating stays can accept booking requests. The property confirms each request; AkiDuermo does not confirm automatically or take online payment."}
+              </p>
+            </>
+          )}
 
-          {premium ? (
+          {canPlanTrip && premium ? (
             <TrackedLink
               className="button secondary"
-              href={"/" + locale + "/events/" + event.slug + "/calendar"}
+              href={occurrenceHref(
+                "/" + locale + "/events/" + event.slug + "/calendar",
+                occurrence.id,
+              )}
               action="calendar_add"
               venueId={resolvedVenue.id}
               eventId={event.id}
@@ -797,7 +819,7 @@ export default async function EventPage({
             >
               {locale === "es" ? "Añadir al calendario" : "Add to calendar"}
             </TrackedLink>
-          ) : user ? (
+          ) : canPlanTrip && user ? (
             <Link
               className="button secondary"
               href={"/" + locale + "/account/subscription?plan=premium"}

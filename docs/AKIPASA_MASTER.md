@@ -3,6 +3,27 @@
 > Entry point for every human or AI modifying AkiPasa. Established 2026-10-09. **Living engineering contract, not a claim that every production behavior is verified.**
 > Source priority: running code + database schema + production evidence > current tests > these docs > historical handoff notes > chat discussions. If they disagree, investigate; never silently choose the older description.
 
+## 2026-10-14 | Event occurrence continuity and honest actions
+
+Discovery and Map event cards include the displayed occurrence ID in their detail
+destination. Detail selects that exact event-owned occurrence, with a bounded safe
+fallback to the next active occurrence for invalid input. The selected identity is
+retained in authentication, saved/preference return paths, internal booking, booking
+outcomes, premium calendar downloads, sharing through the current URL and stay
+planning. Calendar files use the selected dates and custom event location when set.
+
+Scheduled occurrences whose end time has passed are explicitly marked ended and no
+longer expose booking, stay-planning or calendar actions. Cancelled, postponed and
+sold-out states retain their explicit status; booking is offered only for a future
+scheduled occurrence, while sold-out future events may retain stay planning for
+people who already have access.
+
+Stay planning uses custom event coordinates when present and falls back to the host
+venue. Copy reflects the current request workflow: participating properties accept
+requests, confirm them directly, and AkiDuermo provides neither automatic confirmation
+nor online payment. Booking/RLS, availability slots, external providers, pricing and
+stored engagement remain unchanged.
+
 ## 2026-10-14 | Discover and Map filter continuity
 
 The primary desktop and mobile Discover/Map navigation preserves only the shared

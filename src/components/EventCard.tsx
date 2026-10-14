@@ -12,6 +12,7 @@ import { Icon } from "@/components/Icons";
 import { VerifiedBadge } from "./VerifiedBadge";
 import { trackBehaviour } from "@/lib/personalisation/client";
 import type { RecommendationReason } from "@/lib/personalisation/ranking";
+import { occurrenceHref } from "@/lib/event-occurrence";
 
 type EventCategory =
   | "music"
@@ -201,7 +202,10 @@ export function EventCard({
     <Link
       ref={cardRef}
       className={`card${result.event.sponsored ? "card-featured" : ""}`}
-      href={`/${locale}/events/${result.event.slug}`}
+      href={occurrenceHref(
+        `/${locale}/events/${result.event.slug}`,
+        result.occurrence.id,
+      )}
       onClick={openEvent}
     >
       <div className="card-media">

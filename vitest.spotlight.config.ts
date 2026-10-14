@@ -12,6 +12,8 @@ export default defineConfig({
       "tests/public-ui-upgrades.test.tsx",
       "tests/contribution-draft.test.tsx",
       "tests/discovery-navigation.test.ts",
+      "tests/event-occurrence.test.ts",
+      "tests/event-booking-occurrence.test.ts",
       "tests/staff-ui-upgrades.test.tsx",
       "tests/auth-ux-upgrades.test.ts",
       "tests/support-dialog-upgrades.test.tsx",

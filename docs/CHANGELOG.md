@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-14 — Event occurrence continuity
+
+- Carry the card's selected recurrence through detail, auth, booking, calendar,
+  saved/preference returns, sharing and stay planning.
+- Mark ended occurrences and remove their expired booking/trip/calendar actions.
+- Center stay searches on a custom event site and describe the live request flow
+  without implying automatic confirmation or online payment.
+
 ## 2026-10-14 — Discover and Map continuity
 
 - Preserve the shared allowlisted discovery filters when switching list and Map,

@@ -4,16 +4,22 @@ import { requireUser } from "@/lib/auth";
 import { config, isLocale } from "@/lib/config";
 import { translated } from "@/lib/domain";
 import { repository } from "@/lib/repository";
+import { occurrenceHref, selectEventOccurrence } from "@/lib/event-occurrence";
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ locale: string; slug: string }> },
 ) {
   const { locale, slug } = await params;
   if (!isLocale(locale)) notFound();
+  const requestedOccurrence = new URL(request.url).searchParams.get(
+    "occurrence",
+  );
   const { supabase, user } = await requireUser(
     locale,
-    `/${locale}/events/${slug}`,
+    requestedOccurrence
+      ? occurrenceHref(`/${locale}/events/${slug}`, requestedOccurrence)
+      : `/${locale}/events/${slug}`,
   );
   const { data: premium } = await supabase.rpc("has_active_entitlement", {
     p_profile: user.id,
@@ -26,11 +32,10 @@ export async function GET(
   if (!event) notFound();
   const venue = await repository.venueById(event.venueId);
   if (!venue) notFound();
-  const occurrence =
-    event.occurrences.find(
-      (item) =>
-        item.status !== "cancelled" && new Date(item.endsAt) > new Date(),
-    ) || event.occurrences.find((item) => item.status !== "cancelled");
+  const occurrence = selectEventOccurrence(
+    event.occurrences,
+    requestedOccurrence,
+  );
   if (!occurrence) notFound();
 
   const body = buildCalendar([
@@ -38,10 +43,16 @@ export async function GET(
       uid: `${occurrence.id}@akipasa.com`,
       title: translated(event.title, locale),
       description: translated(event.description, locale),
-      location: `${venue.name}, ${venue.address}`,
+      location:
+        event.location?.directionsAddress ||
+        event.location?.label ||
+        `${venue.name}, ${venue.address}`,
       startsAt: occurrence.startsAt,
       endsAt: occurrence.endsAt,
-      url: `${config.siteUrl}/${locale}/events/${event.slug}`,
+      url: `${config.siteUrl}${occurrenceHref(
+        `/${locale}/events/${event.slug}`,
+        occurrence.id,
+      )}`,
     },
   ]);
   return new Response(body, {

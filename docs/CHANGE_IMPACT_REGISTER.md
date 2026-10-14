@@ -1,5 +1,26 @@
 # Change Impact Register
 
+## 2026-10-14 | Event occurrence and stay handoff
+
+- **Inventory:** PUB-11, PUB-12, PUB-13 and PUB-14.
+- **Before:** a card displayed one occurrence but detail independently chose another;
+  downstream booking/calendar/return routes dropped occurrence identity. Ended
+  scheduled events could still offer booking. Stay search always used the organizer
+  venue coordinates, and copy still described AkiDuermo as a non-booking preview.
+- **After:** a selected event-owned occurrence survives the full public journey;
+  invalid IDs fall back safely. Ended/cancelled/postponed/sold-out states govern
+  actions truthfully. Custom event coordinates drive stays, and request-only,
+  property-confirmed, no-online-payment behavior is explicit.
+- **Dependencies:** existing event/occurrence repository rows, booking settings and
+  slots, booking RPC, entitlement check, calendar builder, engagement actions and
+  AkiDuermo query contract remain authoritative. No schema, RLS, provider, payment
+  or stored-record changes.
+- **Evidence:** 34 focused occurrence, detail, card and booking-action cases pass,
+  including exact/fallback selection, ended actions, custom coordinates and preserved
+  success/error returns. TypeScript passes; full Spotlight, lint, formatting and
+  production build remain final stacked-head gates.
+- **Rollback:** revert application/helper/tests/docs; no data rollback is needed.
+
 ## 2026-10-14 | Discover and Map filter continuity
 
 - **Inventory:** PUB-05 and PUB-15.
