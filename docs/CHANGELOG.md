@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-14 — Privacy withdrawal recovery
+
+- Reflect a personalization withdrawal as locally Off before its account sync.
+- Explain a failed account sync and provide an explicit retry that preserves the
+  user's other local privacy choices.
+
 ## 2026-10-14 — Account collection management
 
 - Bound saved-event and followed-venue reads to deterministic 24-item pages with

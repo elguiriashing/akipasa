@@ -19,11 +19,16 @@ export function PersonalisationSettings({
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">(
     "idle",
   );
+  const [localWithdrawalPending, setLocalWithdrawalPending] = useState(false);
   const es = locale === "es";
   async function save(next: boolean) {
     setStatus("saving");
     const choices = { ...readPrivacyChoices(), personalisation: next };
-    if (!next) writePrivacyChoices(choices);
+    if (!next) {
+      writePrivacyChoices(choices);
+      setEnabled(false);
+      setLocalWithdrawalPending(true);
+    }
     const response = await fetch("/api/v1/personalisation/consent", {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -34,6 +39,7 @@ export function PersonalisationSettings({
     if (!response?.ok) return setStatus("error");
     writePrivacyChoices(choices);
     setEnabled(next);
+    setLocalWithdrawalPending(false);
     setStatus("saved");
   }
   async function reset() {
@@ -56,6 +62,7 @@ export function PersonalisationSettings({
       marketing: false,
     });
     setEnabled(false);
+    setLocalWithdrawalPending(false);
     setStatus("saved");
   }
   return (
@@ -105,9 +112,26 @@ export function PersonalisationSettings({
         </p>
       ) : null}
       {status === "error" ? (
-        <p className="notice" role="alert">
-          {es ? "No se pudo actualizar." : "Could not update preferences."}
-        </p>
+        <div className="notice" role="alert">
+          <p>
+            {localWithdrawalPending
+              ? es
+                ? "La personalización está desactivada en este dispositivo, pero no se pudo sincronizar con tu cuenta."
+                : "Personalisation is off on this device, but it could not be synced with your account."
+              : es
+                ? "No se pudo actualizar."
+                : "Could not update preferences."}
+          </p>
+          {localWithdrawalPending ? (
+            <button
+              className="button secondary"
+              type="button"
+              onClick={() => void save(false)}
+            >
+              {es ? "Reintentar sincronización" : "Retry account sync"}
+            </button>
+          ) : null}
+        </div>
       ) : null}
     </article>
   );

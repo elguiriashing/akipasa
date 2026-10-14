@@ -543,6 +543,10 @@ container geometry, not MapLibre rendering or authenticated live claiming.
   existing account-layout counts. Current catalogue names/slugs, reminder opt-in,
   exports, reference-table RLS and trusted behavior signals remain authoritative;
   no collection schema or permission change is introduced.
+- An Account personalization withdrawal applies locally before the account sync,
+  so optional behavior stops even if that POST fails. The control stays visibly
+  Off and exposes an account-sync retry that preserves the other local consent
+  choices; an error never restores optional consent.
 - Booking request received and cancellation messages clearly distinguish pending from confirmed; existing booking confirmation email outboxes only activate on confirmed statuses. Cancellation never claims an unsupported refund. The 5-minute Cloudflare cron `dispatchSuiteEmails` revalidates current email verification, save/booking state, and consent before delivery, with bounded retry and no historical backfill.
 - Mirrored `20261011013000_suite_emails.sql` migration must be applied before release. No live old decisions/customer notifications must be resent without verifying delivery and authorisation. Review Cloudflare runtime credentials before claiming production mail delivery.
 

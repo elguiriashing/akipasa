@@ -1,5 +1,19 @@
 # Change Impact Register
 
+## 2026-10-14 | Privacy withdrawal recovery
+
+- **Inventory:** PRIVACY-01.
+- **Before:** a failed account POST left the personalization checkbox visibly On
+  even though local consent and queued optional behavior had already been removed.
+- **After:** withdrawal immediately renders Off locally. A failed account sync says
+  exactly what happened and offers a retry that posts the current local analytics,
+  personalization and marketing choices without re-enabling consent.
+- **Dependencies:** existing consent cookies/version, behavior-queue removal,
+  consent API, account setting and global consent-change event remain unchanged.
+- **Evidence:** component coverage exercises a failed withdrawal, preserved
+  analytics choice, explicit retry and successful recovery.
+- **Rollback:** revert component/test/docs; server and local formats do not change.
+
 ## 2026-10-14 | Account collection management
 
 - **Inventory:** ACCOUNT-02.

@@ -16,6 +16,8 @@ import { PersonalisationSettings } from "../src/components/PersonalisationSettin
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
+  for (const cookie of document.cookie.split("; "))
+    document.cookie = `${cookie.split("=")[0]}=; Max-Age=0; Path=/`;
 });
 
 describe("account progressive navigation", () => {
@@ -73,5 +75,40 @@ describe("account advertising consent", () => {
     expect(
       screen.getByText(/measurement and advertising have separate choices/i),
     ).toBeInTheDocument();
+  });
+
+  it("keeps a failed withdrawal visibly off and retries only the account sync", async () => {
+    document.cookie = "ak_analytics=granted; Path=/";
+    document.cookie = "ak_personalisation=granted; Path=/";
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: false })
+      .mockResolvedValueOnce({ ok: true });
+    vi.stubGlobal("fetch", fetchMock);
+    render(<PersonalisationSettings locale="en" initialEnabled />);
+
+    const checkbox = screen.getByRole("checkbox", {
+      name: /personalise recommendations/i,
+    });
+    fireEvent.click(checkbox);
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledOnce());
+    expect(checkbox).not.toBeChecked();
+    expect(document.cookie).toContain("ak_personalisation=denied");
+    expect(document.cookie).toContain("ak_analytics=granted");
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "Personalisation is off on this device",
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Retry account sync" }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+    expect(JSON.parse(fetchMock.mock.calls[1][1].body)).toEqual({
+      analytics: true,
+      personalisation: false,
+      marketing: false,
+    });
+    expect(checkbox).not.toBeChecked();
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Preferences updated",
+    );
   });
 });
