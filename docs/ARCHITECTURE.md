@@ -15,13 +15,17 @@ authenticated booking reads, and exposes only availability dates publicly.
 Bounded RPCs calculate quotes from stored prices, make request submission
 idempotent, reject conflicting dates, and require operators to confirm requests.
 Staff review is explicit and audited. No payment, instant booking, supplier
-import or public display of pending companies is implemented. A private
-development-only `TEST ONLY` company under Alex's development account is marked
-pending review and has no customer-facing address.
+import or public display of pending companies is implemented. A `TEST ONLY`
+company under Alex's account is marked pending review, has no customer-facing
+address, and remains hidden from public search while Alex tests the fleet tools.
 
-Development project `vhpbvcfkcteswlsdjrfl` has the additive rental schema and
-the account-owned test company. This proves that project only; it does not prove
-the production database, deployed Worker, DNS, auth configuration or live route.
+The connected Supabase project `vhpbvcfkcteswlsdjrfl` contains the rental schema
+and Alex's test company; Alex confirmed this is the sole connected project to use
+for release. The post-merge live smoke verified the AkiConduzco release marker
+and exact deployed source commit `8b28cca5685d1bdeed5012ddbe77b4ca48c55515` on
+the product host. Its root, map, robots file and sitemap returned HTTP 200.
+That smoke was anonymous/read-only; authenticated login, fleet edits, rental
+requests and the Supabase Auth redirect flow still need an account-session test.
 
 ## GUI continuity and read-failure states (2026-10-14 approved release candidate)
 
