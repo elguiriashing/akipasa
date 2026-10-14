@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { config, isLocale } from "@/lib/config";
 import { loadFeatureFlags } from "@/lib/feature-flags";
 import { requireUser } from "@/lib/auth";
@@ -1048,13 +1049,27 @@ export default async function BusinessPage({
 
         {/* Analytics View */}
         {view === "analytics" &&
-          analytics.map(({ venue, rows }) => (
+          analytics.map(({ venue, rows, unavailable }) => (
             <section className="panel catalogue-edit-card" key={venue.id}>
               <h2>
                 {venue.name} · {es ? "Últimos 30 días" : "Last 30 days"}
               </h2>
 
-              {rows.length ? (
+              {unavailable ? (
+                <div className="catalogue-empty-card" role="alert">
+                  <p>
+                    {es
+                      ? "No se pudieron cargar las analíticas de este local. No mostramos una actividad vacía hasta confirmar los datos."
+                      : "Analytics for this venue could not be loaded. An empty activity state is hidden until the data can be confirmed."}
+                  </p>
+                  <Link
+                    className="button secondary"
+                    href={`${base}?view=analytics`}
+                  >
+                    {es ? "Reintentar" : "Retry"}
+                  </Link>
+                </div>
+              ) : rows.length ? (
                 <div className="workspace-summary-grid">
                   {rows.map((row) => (
                     <article className="panel workspace-stat" key={row.action}>

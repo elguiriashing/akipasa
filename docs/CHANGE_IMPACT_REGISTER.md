@@ -1,10 +1,49 @@
 # Change Impact Register
 
+## 2026-10-14 | Independent operational read recovery
+
+- **Inventory:** AS-17, AS-19, AS-29, AS-30, BS-06, PUB-18, the remainder of
+  ACCOUNT-01, and the visible
+  outcome/auth-return portion of PUB-09. Review draft retention remains open.
+- **Before:** Admin search retained stale accounts and accepted late responses;
+  failed moderation mode appeared manual; personalisation RPC failure appeared as
+  zero activity plus an unproven migration diagnosis and invented ranking defaults;
+  failed venue analytics appeared empty; Passport campaign and venue failures both
+  silently became empty arrays, leaving creation decisions based on unknown data.
+  Public creator outages appeared as empty directories or missing profiles, and
+  review redirects had no rendered outcome or task-specific auth return.
+- **After:** search clears on each query, rejects superseded responses and exposes
+  explicit retry. Mode, personalisation, per-venue analytics, campaigns and venue
+  choices each expose localized unavailable states and retain independently healthy
+  content. Confirmed zero metrics remain zero. Missing ranking configuration has a
+  distinct truthful state. Passport creation is withheld only when its venue
+  dependency is unavailable. Creator directory/profile outages have retryable
+  states; literal bounded filters survive retry, true missing profiles retain
+  not-found, and review outcome/auth return point to the selected profile.
+  Account collections refresh currently readable localized event titles, venue
+  names and slugs by UUID while retaining stored fallbacks for unavailable or
+  legacy records.
+- **Dependencies:** existing administrator/staff/business access guards, tenant
+  queries, moderation action, `personalisation_admin_metrics`, `venue_analytics`,
+  Passport creation action and server/RLS enforcement remain authoritative. No
+  query scope, action payload, mutation, schema, grant, pricing, payment flag or
+  customer record changes.
+- **Evidence:** focused Admin failure/empty tests pass 24/24, Staff failure and
+  moderation tests 40/40, user-search race/retry tests 4/4, and business-loader
+  analytics tests 6/6. Creator read/outcome tests pass 7/7 and review action
+  return/validation tests 3/3. TypeScript, formatting, the integrated repository check,
+  browser CI, Cloudflare packaging and exact live-source verification remain
+  release gates for the final rebased head.
+- **Rollback:** revert application/tests/docs. No data rollback, replay, provider
+  call or migration is required. Authenticated production-role acceptance remains
+  separate from fixture evidence.
+
 ## 2026-10-14 | Approved workflow continuity batch
 
 - **Inventory:** PUB-10, NAV-01, SUPPORT-03/04, AUTH-04, AS08/09/10/11/13/14/15/33/34,
-  BS-26, PASS-02 and the locale-link part of ACCOUNT-01. Current-title lookup and complete
-  paging/actions remain separately tracked, rather than declared complete.
+  BS-26, PASS-02 and the locale-link part of ACCOUNT-01. Current-title lookup is
+  completed by the next recovery batch; complete paging/actions remain separately
+  tracked.
 - **Before:** cards rounded monetary cents; hidden prices leaked into map popups;
   stored locale links ignored current language; failed questions required retyping;
   new replies could be below view; Staff headings clipped/repeated; narrow brand

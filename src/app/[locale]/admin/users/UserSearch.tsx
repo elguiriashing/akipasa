@@ -8,6 +8,7 @@ import { roleLabel } from "../../../../lib/roles";
 
 export function UserSearch({ locale }: { locale: "es" | "en" }) {
   const [query, setQuery] = useState("");
+  const [retry, setRetry] = useState(0);
   const [users, setUsers] = useState<AdminUserRecord[]>([]);
   const [state, setState] = useState<"idle" | "loading" | "ready" | "error">(
     "idle",
@@ -21,9 +22,11 @@ export function UserSearch({ locale }: { locale: "es" | "en" }) {
       setState("idle");
       return;
     }
+    let active = true;
     const controller = new AbortController();
+    setUsers([]);
+    setState("loading");
     const timer = window.setTimeout(async () => {
-      setState("loading");
       try {
         const response = await fetch(
           `/api/admin/users?q=${encodeURIComponent(value)}`,
@@ -34,17 +37,22 @@ export function UserSearch({ locale }: { locale: "es" | "en" }) {
         );
         if (!response.ok) throw new Error("search-failed");
         const body = (await response.json()) as { users?: AdminUserRecord[] };
+        if (!active) return;
         setUsers(body.users || []);
         setState("ready");
       } catch (error) {
-        if ((error as Error).name !== "AbortError") setState("error");
+        if (active && (error as Error).name !== "AbortError") {
+          setUsers([]);
+          setState("error");
+        }
       }
     }, 350);
     return () => {
+      active = false;
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [query]);
+  }, [query, retry]);
 
   return (
     <section className="user-search-workspace">
@@ -70,7 +78,17 @@ export function UserSearch({ locale }: { locale: "es" | "en" }) {
       </div>
       <div className="search-status" role="status" aria-live="polite">
         {state === "loading" && (es ? "Buscando…" : "Searching…")}
-        {state === "error" && (es ? "No se pudo buscar." : "Search failed.")}
+        {state === "error" && (
+          <>
+            {es ? "No se pudo buscar." : "Search failed."}{" "}
+            <button
+              type="button"
+              onClick={() => setRetry((value) => value + 1)}
+            >
+              {es ? "Reintentar" : "Retry"}
+            </button>
+          </>
+        )}
         {state === "ready" &&
           !users.length &&
           (es ? "No hay coincidencias." : "No matching accounts.")}

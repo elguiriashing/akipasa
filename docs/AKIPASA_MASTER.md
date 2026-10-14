@@ -3,14 +3,50 @@
 > Entry point for every human or AI modifying AkiPasa. Established 2026-10-09. **Living engineering contract, not a claim that every production behavior is verified.**
 > Source priority: running code + database schema + production evidence > current tests > these docs > historical handoff notes > chat discussions. If they disagree, investigate; never silently choose the older description.
 
+## 2026-10-14 | Independent read recovery for operations
+
+Admin user search clears prior results as soon as a new query begins, ignores
+superseded responses even when a transport does not honor abort, and offers an
+explicit retry after failure. Staff moderation treats a failed or missing mode
+record as unknown, keeps the independently loaded queue visible, and withholds
+the mode mutation until the current value is confirmed.
+
+Personalisation renders confirmed zero metrics as zero, but a failed or malformed
+aggregate response hides all metrics and removes the previous guessed migration
+diagnosis. Missing active-ranking configuration is distinguished from malformed
+ranking data. AkiBusiness handles each venue analytics RPC independently and
+never presents a failed venue read as “no activity.” Admin Passport campaign and
+published-venue reads are also independent: campaign history remains usable when
+venues fail, while creation stays hidden until its required first-step venue list
+is known.
+
+Public creator directory/profile read failures are separate from successful empty
+or missing results. Directory retry preserves bounded literal name/area/category
+filters; a successful missing profile still returns not-found. Creator review
+outcomes are visible on the profile and authenticated submission returns to that
+profile. Failed review draft retention remains separately tracked and is not
+claimed by this batch.
+
+Saved, followed and recent Account collections refresh names and slugs from the
+currently readable event/venue catalogue by UUID. Current localized titles and
+routes replace stale stored display snapshots; inaccessible, deleted, legacy-key
+or temporarily unavailable catalogue rows retain the member's stored label/link
+fallback. The existing locale-safe link renderer still rewrites canonical fallback
+routes. Collection storage, export, paging limits and engagement mutations are
+unchanged.
+
+Existing server authorization, tenant/RLS checks, moderation mutations, analytics
+RPC ownership, reward creation action and stored records remain unchanged. No
+schema, role, data, provider, billing or checkout change is included. Retry links
+reload the same bounded view. Source revert is sufficient for rollback.
+
 ## 2026-10-14 | GUI workflow continuity, exact prices and unavailable reads
 
 The user approved implementation and live merging of the complete GUI inventory.
 This follow-up preserves exact event cents and hidden-price choices across cards,
 map popups and details using one currency formatter. Saved/followed/recent links
 rewrite only canonical local event/venue destinations to the current locale,
-preserving query and fragment; existing saved labels are retained pending current
-catalogue-title lookup. Workspace accessible names match EN/ES. Staff uses one
+preserving query and fragment. Workspace accessible names match EN/ES. Staff uses one
 page-specific heading with scoped safe padding, and accommodation reservation
 cards have explicit responsive rows without altering inventory actions. Narrow
 auth portal cards retain complete brand words and touch targets.

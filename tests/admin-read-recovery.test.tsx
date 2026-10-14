@@ -4,11 +4,11 @@ import "@testing-library/jest-dom/vitest";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 
-const state = vi.hoisted(() => ({ failed: "", from: vi.fn() }));
+const state = vi.hoisted(() => ({ failed: "", from: vi.fn(), rpc: vi.fn() }));
 vi.mock("@/lib/auth", () => ({
   requireUser: async () => ({
     user: { id: "operator" },
-    supabase: { from: state.from },
+    supabase: { from: state.from, rpc: state.rpc },
   }),
 }));
 vi.mock("next/navigation", () => ({
@@ -26,6 +26,7 @@ vi.mock("../src/app/[locale]/admin/actions", () => ({
   saveCity: vi.fn(),
   updateFeatureFlag: vi.fn(),
   updateDeletionRequest: vi.fn(),
+  createPassport: vi.fn(),
 }));
 vi.mock("../src/app/[locale]/admin/business-applications/actions", () => ({
   reviewBusinessApplication: vi.fn(),
@@ -36,9 +37,12 @@ import SettingsPage from "../src/app/[locale]/admin/settings/page";
 import PrivacyPage from "../src/app/[locale]/admin/privacy/page";
 import AuditPage from "../src/app/[locale]/admin/audit/page";
 import ApplicationsPage from "../src/app/[locale]/admin/business-applications/page";
+import PersonalisationPage from "../src/app/[locale]/admin/personalisation/page";
+import PassportsPage from "../src/app/[locale]/admin/passports/page";
 
 beforeEach(() => {
   state.failed = "";
+  state.rpc.mockResolvedValue({ data: null, error: null });
   state.from.mockImplementation((table: string) => {
     const result = {
       data: table === "profiles" ? { app_role: "administrator" } : [],
@@ -127,6 +131,125 @@ it.each(["en", "es"] as const)(
         name: locale === "es" ? "Nueva categoría" : "New category",
       }),
     ).toBeEnabled();
+  },
+);
+
+it.each(["en", "es"] as const)(
+  "keeps %s passport creation available when only the campaign list fails",
+  async (locale) => {
+    state.failed = "passports";
+    render(
+      await PassportsPage({
+        params: Promise.resolve({ locale }),
+        searchParams: Promise.resolve({}),
+      }),
+    );
+
+    expect(screen.getByRole("alert")).toBeVisible();
+    expect(
+      screen.getByText(locale === "es" ? "Crear pasaporte" : "Create passport"),
+    ).toBeVisible();
+    expect(
+      screen.queryByText(
+        locale === "es" ? "Campañas de pasaporte" : "Passport campaigns",
+      ),
+    ).not.toBeInTheDocument();
+  },
+);
+
+it.each(["en", "es"] as const)(
+  "hides %s passport creation when published venues cannot be confirmed",
+  async (locale) => {
+    state.failed = "venues";
+    render(
+      await PassportsPage({
+        params: Promise.resolve({ locale }),
+        searchParams: Promise.resolve({}),
+      }),
+    );
+
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      locale === "es" ? "locales publicados" : "Published venues",
+    );
+    expect(
+      screen.queryByText(
+        locale === "es" ? "Crear pasaporte" : "Create passport",
+      ),
+    ).not.toBeInTheDocument();
+    expect(document.querySelector(".admin-search-list")).toHaveAttribute(
+      "aria-label",
+      locale === "es" ? "Campañas de pasaporte" : "Passport campaigns",
+    );
+  },
+);
+
+it.each(["en", "es"] as const)(
+  "does not turn a failed %s personalisation read into zero metrics or a migration diagnosis",
+  async (locale) => {
+    state.rpc.mockResolvedValue({
+      data: null,
+      error: { message: "Private RPC failure" },
+    });
+    render(await PersonalisationPage({ params: Promise.resolve({ locale }) }));
+
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      locale === "es" ? "No se pudieron cargar" : "could not be loaded",
+    );
+    expect(
+      screen.getByRole("link", {
+        name: locale === "es" ? "Reintentar" : "Retry",
+      }),
+    ).toHaveAttribute("href", `/${locale}/admin/personalisation`);
+    expect(
+      screen.queryByText(
+        locale === "es" ? "Perfiles de gusto" : "Taste profiles",
+      ),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/migration|migración/i)).not.toBeInTheDocument();
+    expect(screen.queryByText("Private RPC failure")).not.toBeInTheDocument();
+  },
+);
+
+it.each(["en", "es"] as const)(
+  "keeps confirmed zero %s personalisation metrics and an absent ranking truthful",
+  async (locale) => {
+    state.rpc.mockResolvedValue({
+      error: null,
+      data: {
+        behaviour_events: 0,
+        anonymous_events: 0,
+        preference_profiles: 0,
+        recommendation_requests: 0,
+        average_latency_ms: 0,
+        fallback_requests: 0,
+        impressions: 0,
+        opens: 0,
+        skips: 0,
+        quick_exits: 0,
+        saves: 0,
+        going: 0,
+        directions: 0,
+        verified_check_ins: 0,
+        not_interested: 0,
+        active_ranking: null,
+      },
+    });
+    render(await PersonalisationPage({ params: Promise.resolve({ locale }) }));
+
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(
+      screen.getByText(
+        locale === "es" ? "Perfiles de gusto" : "Taste profiles",
+      ),
+    ).toBeVisible();
+    expect(
+      screen.getByText(
+        locale === "es"
+          ? "No hay una configuración de ranking activa."
+          : "No active ranking configuration.",
+      ),
+    ).toBeVisible();
+    expect(screen.queryByText(/weighted_ranker/)).not.toBeInTheDocument();
   },
 );
 

@@ -7,6 +7,7 @@ import { AccountPageHeader } from "../AccountPageHeader";
 import { AccountItems } from "../AccountItems";
 import { AccountCollectionRefresh } from "../AccountCollectionRefresh";
 import { setSavedEventReminder } from "./actions";
+import { currentEventCollectionItems } from "@/lib/account-collection-catalogue";
 
 export default async function SavedEventsPage({
   params,
@@ -31,6 +32,9 @@ export default async function SavedEventsPage({
     .from("saved_event_refs")
     .select("event_key,title,href,created_at")
     .order("created_at", { ascending: false });
+  const items = error
+    ? []
+    : await currentEventCollectionItems(supabase, data || [], locale);
   const es = locale === "es";
   return (
     <>
@@ -130,10 +134,10 @@ export default async function SavedEventsPage({
         locale={locale}
         kind="saved"
         failed={Boolean(error)}
-        items={(data || []).map((item) => ({
+        items={items.map((item) => ({
           id: item.event_key,
-          label: item.title,
-          href: item.href,
+          label: item.displayLabel,
+          href: item.displayHref,
           date: item.created_at,
         }))}
         emptyTitle={
