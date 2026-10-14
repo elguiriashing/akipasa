@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-13 - Catalogue starter publication
+
+- Keep new catalogue starter items hidden until editors explicitly enable public visibility, preserving immediate draft saves.
+
 ## 2026-10-12 — Account workspace and Spanish accents
 
 - Replace repeated Account banners with compact page headings and fully visible wider-screen navigation; remove the duplicate Progress tab and route old links to Passport.

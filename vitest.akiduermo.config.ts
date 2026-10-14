@@ -13,6 +13,8 @@ export default defineConfig({
       "tests/akiduermo-search-api.test.ts",
       "tests/venue-media-upload.test.ts",
       "tests/venue-media-studio.test.tsx",
+      "tests/venue-catalogue.test.ts",
+      "tests/venue-catalogue-visibility.test.tsx",
     ],
   },
 });

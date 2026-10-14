@@ -15,6 +15,7 @@ export function AdminSearchList({
   items,
   label,
   statuses = [],
+  statusLabels = {},
   className = "",
   limit = 24,
 }: {
@@ -22,6 +23,7 @@ export function AdminSearchList({
   items: AdminSearchItem[];
   label: string;
   statuses?: string[];
+  statusLabels?: Record<string, string>;
   className?: string;
   limit?: number;
 }) {
@@ -88,7 +90,9 @@ export function AdminSearchList({
               </option>
               {statusOptions.map((value) => (
                 <option key={value} value={value}>
-                  {value.replaceAll("_", " ")}
+                  {Object.hasOwn(statusLabels, value)
+                    ? statusLabels[value]
+                    : value.replaceAll("_", " ")}
                 </option>
               ))}
             </select>

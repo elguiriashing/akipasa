@@ -16,6 +16,16 @@
 - **Security and billing:** No checkout enablement, new plans, grants, workspace authorization, Stripe price or database modifications. Business sectors only change marketing previews, never entitlement checks.
 - **Regression:** Membership source tests and rendered subscription test updated to expect the six-option business selector; require format, lint, TypeScript, full checks, Cloudflare packaging and responsive account/public and tablet browser acceptance before merging.
 
+## 2026-10-13 | Backlog #119 public shared-media placement recovery
+
+- **Evidence:** merged PR #119 exposed event-uploaded assets in VenueMediaStudio, but its unresolved review identified `venueBySlug`/`venueById` excluding every `/events/` path before resolving explicit placements. Current master still contained both filters; the UI could save a placement which the public reader replaced with another photo.
+- **Repair:** retain the ordinary gallery query/filter/window and fetch missing explicitly selected venue-slot IDs separately, constrained to IDs from the target venue's public placements. Both public loaders resolve placements from the union. Existing public-client RLS, storage signing and fallback behavior remain authoritative. Discovery already reads selected placements independently; its private event-bin filter is retained.
+- **Matrix:** public venue details EN/ES, event host lookup, legacy ordinary uploads, selected event uploads, media beyond the 60-row fallback window, no own images, missing/deleted/un-signable media, same/cross-venue records. Manager mutation authorization, accommodation media gallery, premium media limits, email, payments and database schema are unchanged.
+- **Tests:** actual public repository loader tests exercise both slug and ID paths, explicit event asset display, unplaced event-bin exclusion, authorized cross-venue sharing and inaccessible-asset fallback, signing failure and avoiding unnecessary extra reads. Full CI/production build and authenticated owner placement/live detail smoke remain required for release. No database operations performed.
+- **Rollback:** revert application/test change; keep stored placement records and files intact. No migration reversal needed.
+
+- **Health integration:** preserve the merged #150 one-batch signer and all installed-SDK HTTP boundary tests; resolve explicit selected IDs first, then sign the union once. Existing TTL, valid response paths, ordering, fallbacks, public clients and RLS remain. Reconcile the reviewed sparse Spotlight fixture without overwriting other Health changes. Final combined checks and exact-head acceptance are required before release.
+
 ## 2026-10-12 | Venue profile media picker usability
 
 - **Request:** Replace the increasingly narrow five-slot image strips with the existing event-style gallery selector in AkiBusiness Profile.
@@ -627,6 +637,14 @@ Canonical-key recovery validation: the existing `tests/claim-decision-email.test
 - Native map interaction follow-up: 44px sizing alone did not catch Privacy intercepting attribution on narrow screens or Support covering it on desktop. Scoped responsive offsets reserve space for all three controls and the short-window geolocation column; the map status caption wraps within its available horizontal space. A deterministic, tileless basemap response supplies attribution to the actual MapLibre control in one added public test: EN/ES, five viewport sizes, native disclosure clicks, control/container bounds, privacy reopening and screenshots. No forced clicks, hidden controls, consent saves or production map-style changes are used. At this checkpoint, before integrating Spotlight, the public suite contains 78 cases. A separate AkiDuermo test race is corrected by waiting for the canvas before marking it and always checking that filtering preserves that same canvas; the previous independent conditional counts could mark nothing and later assert against a newly loaded canvas. Application map lifecycle behavior is unchanged. Final focused, full-suite and CI results remain in the release PR.
 - Latest release integration retains public `master` at `4443b12`, including the Aki Spotlight venue/event layouts and all their test gates. Both the Account and Spotlight component suites remain in `npm test`. Generic public E2E now discovers 106 cases: the 28 Spotlight cases have an explicit separate-fixture gate and run through the mandatory `npm run test:spotlight:browser` command in tablet CI; the existing authenticated-production case retains its credential gate. These separate suites rebuild with different disposable backends and must run sequentially locally. Final combined check, browser and deployment outcomes are recorded in the release PR.
 
+## 2026-10-13 | Recover PR #120 starter catalogue publication review
+
+- Evidence: #120 fixed immediate draft saves by providing nonempty New item / Nuevo elemento names, but blankCatalogueItem also defaulted visible=true and priceCents=0. Publishing unrelated changes could expose unfinished starter rows.
+- Trace: blankCatalogueItem -> VenueCatalogueEditor.addItem -> existing explicit visibility checkbox -> translated draft document -> save_venue_catalogue. SQL validates nonempty names even for hidden drafts; publishing and food-index generation already respect visibility. PublicVenueCatalogue filters hidden rows for venues and event-selected sections.
+- Repair: only newly added rows default hidden. Keep starter names, zero price, variants and unknown-allergen defaults unchanged; no name heuristics, automatic visibility, price restriction or rewrite of existing documents. EN/ES editors can explicitly enable visibility using the existing control.
+- Paths: src/lib/venue-catalogue.ts, focused foundation/public-rendering tests registered in existing AkiDuermo Vitest group. No schema, RLS, auth/venue membership, API, Storage, paid entitlement, email, booking, analytics, consent or live-data change.
+- Validation: foundation and EN/ES rendering tests verify starter exclusion, explicit visibility, preserved existing visibility and legitimate zero/custom prices. Full repository checks/CI and deployment remain required; no authenticated production editing is claimed. Rollback via source revert; no data restoration.
+
 ## 2026-10-12 | AkiBusiness catalogue unable to save
 
 - Reported: multiple editors cannot add/remove catalogue items or categories; the UI returns generic permission guidance.
@@ -823,3 +841,54 @@ Dependencies: public Next server/browser build, OpenNext1.20.2 worker packaging,
 - **Ownership/safety:** separate Health integration branch based on public master 8613edbd. Cleanup #136 selected-media and #143 catalogue deltas remain untouched. No SQL, RLS, grants, linked data, billing activation, provider mail, session cookies, analytics/consent changes or GSC work. Root coordinates docs and exact-head gates.
 - **Verification/status:** see docs/HEALTH_SHARED_CONTROLS_20261014.md for native/HTTP evidence and exact limitations. Hosted public/tablet/Spotlight, full checks and clean Cloudflare packaging remain required before merge; no deployment is implied. Local browser confinement is distinct from application failure. Real account-role/room-night/device/printer acceptance and commercial release holds remain.
 - **Rollback:** revert application helper/call sites and test transport changes. No production data rollback or migration is needed.
+
+## 2026-10-14 | Recovered commercial request localization (#112)
+
+Current Admin promotions still displayed raw service/state keys and English
+status options on Spanish pages after #113 replaced #112's layout. Staff also
+labelled `featured_listing` as a venue listing and omitted three accepted
+services. `src/lib/promotion-labels.ts` now supplies display-only EN/ES names
+for the four existing service values and five states. `featured_listing` means
+Featured event / Evento destacado, matching the existing business request
+selector and event-backed scheduling migration `0044`.
+
+Admin summaries, editable status options, localized search terms and its
+status filter use these names. `AdminSearchList` accepts an optional label map
+only for this caller; other queues retain their existing display. The business
+request selector and read-only Staff inbox share the same names. Original
+machine IDs, form values, server actions, role/RLS checks, state groups, query
+limits, message/evidence text and per-caller unknown-value fallbacks remain
+intact. No CSS, route, API, SQL, storage, email, billing, consent, analytics or
+production data changes. Other portals are unaffected. Rollback is a source
+revert with no data restoration.
+
+Ten focused rendered regressions cover EN/ES: real business selectors,
+Admin route summaries and FormData, status filters/localized search, Staff
+search and accepted labels, legacy read-only aliases, plus unknown/prototype-name
+safety. Existing Staff aliases remain display-only; request validation/options
+still admit exactly four service IDs. Business previous-request history retains
+its existing raw service/state presentation outside this focused #112 recovery. Existing
+Admin/Staff suites and full check/Cloudflare/browser CI remain release gates;
+no production deployment or authenticated acceptance is claimed.
+
+## 2026-10-14 | Combined safe historical recovery integration
+
+The recovery candidate starts from merged Health #152 master
+`7311ae9f6550f9dabf96a39c7782287bbacb303c` and incorporates the reviewed
+#143 catalogue starter visibility, #136 explicit public media selection and
+#153 promotion localization/checkpoint scopes. All sixteen scoped application/test/fixture
+blobs are byte-identical to their original candidate heads. Master
+Health control/transport source remains intact; independent shared-document
+entries are preserved. Original heads remain in the candidate ancestry.
+
+Focused combined regressions pass: repository/Admin/Staff 71/71, catalogue
+foundation/rendering 13/13, Spotlight 20/20 and promotion EN/ES 10/10. Full
+check, independent review, fresh complete hosted CI/Cloudflare/browser gates
+and exact deployed-source verification remain required. This candidate does
+not claim a live release or authenticated editing/placement acceptance.
+
+All existing role/RLS, storage signing, machine IDs, explicit visibility,
+pricing, consent and action boundaries remain as documented in the three
+original recovery entries. No SQL, authorization/payment rollout, customer
+records or email replay is included; drafts #133/#140 stay excluded. Source
+revert rolls back these repairs without rewriting catalogue/media/history.

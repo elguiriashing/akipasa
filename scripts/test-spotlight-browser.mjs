@@ -391,6 +391,7 @@ const server = createServer(async (request, response) => {
           url.searchParams.get("venue_id") === `eq.${uuid(20)}` ? [] : media;
       } else if (table === "venue_media_placements") {
         const eventPlacement = url.searchParams.get("target_key") !== "eq.";
+        const venueId = url.searchParams.get("venue_id");
         rows = eventPlacement
           ? [
               "event_banner",
@@ -403,17 +404,19 @@ const server = createServer(async (request, response) => {
               sort_order: 0,
               venue_media: poster,
             }))
-          : [
-              "venue_profile",
-              "venue_cover",
-              "venue_menu",
-              "venue_events",
-              "venue_explore",
-            ].map((placement) => ({
-              placement,
-              media_id:
-                placement === "venue_profile" ? media[1].id : media[0].id,
-            }));
+          : venueId === `eq.${uuid(20)}`
+            ? []
+            : [
+                "venue_profile",
+                "venue_cover",
+                "venue_menu",
+                "venue_events",
+                "venue_explore",
+              ].map((placement) => ({
+                placement,
+                media_id:
+                  placement === "venue_profile" ? media[1].id : media[0].id,
+              }));
       } else if (table === "offers") {
         rows =
           url.searchParams.get("venue_id") === `eq.${uuid(20)}`

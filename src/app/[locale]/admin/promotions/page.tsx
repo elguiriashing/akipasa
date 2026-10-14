@@ -1,3 +1,8 @@
+import {
+  promotionServiceLabel,
+  promotionStateLabel,
+  promotionStates,
+} from "../../../../lib/promotion-labels";
 import { AdminSearchList } from "../AdminSearchList";
 import { notFound } from "next/navigation";
 import { WorkspacePageHeader } from "@/components/WorkspaceShell";
@@ -187,6 +192,12 @@ export default async function AdminPromotionsPage({
         <AdminSearchList
           locale={locale}
           label={es ? "Solicitudes comerciales" : "Commercial requests"}
+          statusLabels={Object.fromEntries(
+            promotionStates.map((state) => [
+              state,
+              promotionStateLabel(state, locale),
+            ]),
+          )}
           items={(requests || []).map((item) => {
             const venue = item.venues as unknown as {
               name?: string | null;
@@ -206,8 +217,10 @@ export default async function AdminPromotionsPage({
               search: [
                 venue?.name,
                 item.service,
+                promotionServiceLabel(item.service, locale),
                 item.message,
                 item.state,
+                promotionStateLabel(item.state, locale),
                 item.operator_notes,
                 selectedEvent?.title_es,
                 selectedEvent?.title_en,
@@ -223,9 +236,11 @@ export default async function AdminPromotionsPage({
                         ? selectedEvent?.title_es
                         : selectedEvent?.title_en) ||
                         selectedEvent?.title_es ||
-                        item.service}
+                        promotionServiceLabel(item.service, locale)}
                     </span>
-                    <span className="status-pill">{item.state}</span>
+                    <span className="status-pill">
+                      {promotionStateLabel(item.state, locale)}
+                    </span>
                   </summary>
                   <div className="admin-commercial-request-details">
                     <div className="admin-commercial-request-message">
@@ -248,11 +263,11 @@ export default async function AdminPromotionsPage({
                       <label>
                         {es ? "Estado" : "State"}
                         <select name="state" defaultValue={item.state}>
-                          <option value="new">New</option>
-                          <option value="contacted">Contacted</option>
-                          <option value="qualified">Qualified</option>
-                          <option value="won">Won</option>
-                          <option value="lost">Lost</option>
+                          {promotionStates.map((state) => (
+                            <option key={state} value={state}>
+                              {promotionStateLabel(state, locale)}
+                            </option>
+                          ))}
                         </select>
                       </label>
                       {item.service === "featured_listing" ? (
