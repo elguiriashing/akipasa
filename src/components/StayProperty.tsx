@@ -1,5 +1,9 @@
 "use client";
-import { nearbyEventsHref, tripSchema } from "@/lib/trip-links";
+import {
+  nearbyEventsHref,
+  tripSchema,
+  type TripIntent,
+} from "@/lib/trip-links";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,12 +34,17 @@ export function StayProperty({
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState("2");
+  const [bookingTrip, setBookingTrip] = useState<{
+    stayId: string;
+    trip: TripIntent;
+  }>();
   const [plan, setPlan] = useState(false);
   useEffect(() => {
     const trip = tripSchema.safeParse(
       Object.fromEntries(new URLSearchParams(window.location.search)),
     );
     if (trip.success) {
+      setBookingTrip({ stayId: stay.id, trip: trip.data });
       setCheckIn(trip.data.checkIn || "");
       setCheckOut(trip.data.checkOut || "");
       setGuests(String(trip.data.guests));
@@ -247,7 +256,16 @@ export function StayProperty({
             <section id="rooms">
               <h2>{text("Find your room", "Encuentra tu habitación")}</h2>
               {stay.bookingMode === "request" ? (
-                <StayBookingPanel venueId={stay.id} locale={locale} />
+                <StayBookingPanel
+                  key={stay.id}
+                  venueId={stay.id}
+                  locale={locale}
+                  initialTrip={
+                    bookingTrip?.stayId === stay.id
+                      ? bookingTrip.trip
+                      : undefined
+                  }
+                />
               ) : stay.bookingMode === "external" && stay.bookingUrl ? (
                 <a
                   className="button"

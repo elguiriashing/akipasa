@@ -4,6 +4,7 @@ import { requireUser } from "@/lib/auth";
 import { stayLocale } from "@/lib/akiduermo-i18n";
 import { queueSuitePortalWelcome } from "@/lib/suite-welcome";
 import { StayAppShell } from "@/components/StayAppShell";
+import { stayReservationStatusLabel } from "@/lib/stay-reservation-status";
 import { cancelStayRequest } from "./actions";
 import styles from "../member.module.css";
 
@@ -43,7 +44,7 @@ export default async function StayBookingsPage({
   if (tab === "past")
     request = request
       .or(
-        `status.eq.cancelled,status.eq.checked_out,status.eq.no_show,check_out.lte.${today}`,
+        `status.eq.cancelled,status.eq.completed,status.eq.declined,check_out.lte.${today}`,
       )
       .order("check_out", { ascending: false });
   else if (tab === "active")
@@ -127,7 +128,8 @@ export default async function StayBookingsPage({
                 {es ? "huéspedes" : "guests"}
               </span>
               <span>
-                {stay.status} · {money(stay.quoted_total_cents)}
+                {stayReservationStatusLabel(stay.status, locale)} ·{" "}
+                {money(stay.quoted_total_cents)}
               </span>
               <small>{stay.id}</small>
               {["requested", "confirmed"].includes(stay.status) &&

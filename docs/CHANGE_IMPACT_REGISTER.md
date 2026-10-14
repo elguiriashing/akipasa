@@ -1,5 +1,109 @@
 # Change Impact Register
 
+## 2026-10-14 | Approved GUI and workflow release batch
+
+The user approved all upgrades, implementation and live merging on 14 October.
+This batch reconciles prepared code onto master `6fb9fae`; it preserves upstream
+public-media, catalogue visibility and localized commercial labels. Historical
+no-commit limits below describe the preparation stage, not current authorization.
+No schema changes or payment activation are included. Fresh current-head checks,
+CI and exact deployed source must pass before reporting the batch as live.
+
+- **Request:** audit GUIs, user experience and workflows, list concrete upgrades,
+  prepare reviewable improvements, and notify the user before committing anything.
+  Public baseline `8613edbd962a978dc3d85f9f7b9aafcc4da54a56`; separate current
+  AkiHQ and the older CRM branch are identified independently in the audit artifacts.
+- **Before editing:** read mandatory guidance and dependency contracts, inventory
+  routes and controls, inspect existing PRs, and record per-domain before/after
+  traces. The review distinguishes confirmed defects, proposals, validation gates
+  and existing work rather than treating historic release notes as current proof.
+- **Public:** map/discovery date parsing disagreed in winter/DST; homepage claimed
+  venues showed Unclaimed; contribution actions/auth returns landed in creators
+  and lost visible feedback/target. Reuse Madrid validation, render existing
+  claim state and preserve validated workflow URLs. Original RPCs, permissions,
+  automatic review, map rendering and record selection remain intact.
+- **Identity/support:** authentication failures lost safe next/mode. Support's
+  modal lacked keyboard containment/restoration and could crop its composer.
+  Reuse existing host-specific return allowlists; preserve signup/provider/Terms
+  behavior. Add dialog focus/scroll lifecycle and bounded responsive content;
+  provider request payload, transcripts and anonymous email fallback remain intact.
+- **Accommodation:** Past omitted real completed/declined states; room booking
+  discarded validated trip intent; manager/customer statuses exposed raw enums and
+  filtered lists lacked feedback. Correct read predicates, editable per-property
+  defaults and display labels without altering booking status transitions,
+  authorization, capacity, quotes, idempotency, inventory or notification actions.
+- **Staff/Admin:** failed reads masqueraded as empty queues/stable operations;
+  event search omitted English titles and Manage event opened the venue rather
+  than the selected editor. Add explicit localized recovery, safe bilingual
+  search and authorized-record selection. City form omitted coordinate fields
+  while saveCity substituted Madrid, making name/timezone saves destructive.
+  Retain loaded geography coordinates and require explicit validated values;
+  preserve the existing administrator check, RPC, audit reason and timezone.
+- **Matrix/dependencies:** EN/ES, light/dark, phone/tablet/desktop and short
+  windows, authenticated/anonymous/role gates, success/empty/loading/error,
+  keyboard, query punctuation, DST, geography response shapes and real action
+  payloads. AkiHQ modal/form fixes are in its separate local repository; Android,
+  automation and remaining upgrade items have acceptance/dependency plans.
+- **Scope/rollback:** no commit, push, PR, deploy, paid activation, provider send,
+  live customer-data mutation or database migration. Source changes are
+  reversible; stored data and existing server/RLS authorization are preserved.
+  Open PRs #103/#133/#136/#140/#143/#151/#152 and legal #8 retain their ownership.
+- **Verification at preparation:** focused route/action/component regressions,
+  isolated baseline reproductions, peer review and synthetic real-browser
+  matrices run locally. Final integrated results and browser limits are recorded
+  in the generated review artifacts. Required current-head CI, clean Cloudflare
+  packaging, authenticated staging/live acceptance, actual PostgreSQL geography
+  readback and physical devices remain separate gates. No production success is
+  inferred from a fixture, source change or passing local test.
+
+Final local source checks pass: formatting, zero-warning lint, TypeScript,
+1,011 application tests, two database-conflict cases, database safety, 41
+automation tests and the ordinary Next production build. The full command
+initially stopped at Wrangler's unwritable global configuration directory;
+the same automation check (including dry-run) passes with task-local XDG
+configuration/log paths, followed by a successful production build. No timeout
+or assertion was weakened. A stale fixed-CTA source assertion was updated and
+actual EN/ES business-priority behavior is regression-tested.
+
+Focused real-browser matrices pass: Support 24, stay/manager 48, Staff/Admin 80,
+HQ dialogs 16 and portal Home 64 combinations. Independent city geography
+reproduction passes 27 cases. Separate HQ full checks pass 350 cases with one
+existing actual-workbook fixture skip. The broad Account run stopped on a
+navigation timeout; its isolated subscription follow-up passes 34 cases and
+does not establish the complete Account matrix. Exploratory local development
+routes completed 54 of 56 snapshots, with two membership hydration/theme
+failures retained for production-run investigation. Final production E2E,
+current-head CI, actual protected sessions/device behavior and clean Cloudflare
+packaging remain separate evidence. Packaging correctly rejects the uncommitted
+candidate under the user's no-commit instruction.
+
+During final review, upstream PR #152 merged at
+`7311ae9f6550f9dabf96a39c7782287bbacb303c`. The local candidate reconciles onto
+that existing commit without creating a new commit, preserving the map naming
+and normal static-asset transport repairs. Original full checks/browser builds
+are identified by their `8613edbd` baseline in the review evidence; targeted map
+and type checks establish reconciliation compatibility, while current-head CI
+and release acceptance remain required after the user's commit approval.
+
+Final nested-dialog review reproduced Support Escape reaching an outer menu's
+earlier document/window handlers. Its keyboard listener now owns the capture
+phase while open, preventing both menus closing together and preserving the
+outer scroll lock. The failing-before/passing-after regression also proves outer
+Escape handlers resume after Support closes. All 23 auth/support cases and the
+fresh 24-case Support browser matrix pass; payloads and provider calls are unchanged.
+
+Broad production-server acceptance records 143 passed, two local Google-enabled
+fixture-setting failures and 29 intentional separate-suite/credential skips.
+Both auth contract cases pass after rebuilding the reconciled source with the
+intended Google flag. The separate venue/event suite is recorded independently
+in the review artifacts, and protected production acceptance remains unrun.
+
+The separate Spotlight venue/event suite passes 28/28 on the reconciled source,
+including EN/ES, both themes, responsive layouts, real action/menu/SEO contracts
+and strict synthetic-read fixture boundaries. The two corrected auth cases plus
+those 28 cases cover the first broad run's setup failures and separate-suite
+skips; the single credential-gated authenticated production case remains unrun.
+
 ## 2026-10-13 | Recovered claim-picker overlap from PR #97
 
 - Before: `.claim-search-results` used absolute `top: 7.8rem`; additional business-type controls and wrapped headings can place results over the search input. Current master retained the defect despite later claim form releases.

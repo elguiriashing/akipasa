@@ -4,6 +4,23 @@
 
 - Keep new catalogue starter items hidden until editors explicitly enable public visibility, preserving immediate draft saves.
 
+## 2026-10-14 — Approved GUI/workflow release candidate
+
+- Preserve safe auth/contribution return paths and visible submission feedback.
+- Align discovery/map civil dates and show truthful venue claim badges.
+- Improve support dialog keyboard access and short-window composer scrolling.
+- Retain stay trip defaults, real booking-history states and localized statuses.
+- Show Staff/Admin read failures, improve event search/editor continuity, and
+  protect city coordinates from silent Madrid fallback on unrelated saves.
+- Prepare a source-backed upgrade inventory across the portals, AkiHQ, Android
+  and automation. Remaining items are proposals/plans, not completed features.
+
+The user has now approved implementation and live release; release evidence is
+recorded separately from historical preparation evidence.
+Verification boundaries are recorded in `CHANGE_IMPACT_REGISTER.md` and the
+review artifacts; current-head CI and authenticated release acceptance remain
+separate requirements.
+
 ## 2026-10-12 — Account workspace and Spanish accents
 
 - Replace repeated Account banners with compact page headings and fully visible wider-screen navigation; remove the duplicate Progress tab and route old links to Passport.

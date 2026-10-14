@@ -15,6 +15,10 @@ import { loadFeatureFlags } from "@/lib/feature-flags";
 import { SpainAddressAutocomplete } from "@/components/SpainAddressAutocomplete";
 import { submitCommunityEvent, submitReport } from "./actions";
 import { communityCreatorItems } from "@/components/community/CreatorDirectoryPage";
+import {
+  communityWorkflowPath,
+  type CommunityView,
+} from "@/lib/community-navigation";
 
 export default async function CommunityPage({
   params,
@@ -34,7 +38,12 @@ export default async function CommunityPage({
       ? "report"
       : "home";
   if (view === "home") redirect(`/${locale}/community/creators`);
-  const { supabase, user } = await requireUser(locale, `/${locale}/community`);
+  const { supabase, user } = await requireUser(
+    locale,
+    communityWorkflowPath(locale, view as CommunityView, {
+      target: query.target,
+    }),
+  );
   const flags = await loadFeatureFlags(supabase);
   const es = locale === "es";
   const [

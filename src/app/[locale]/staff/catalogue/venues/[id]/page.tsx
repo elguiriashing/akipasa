@@ -233,6 +233,8 @@ export default async function StaffVenueRecord({
               return (
                 <details
                   className="panel catalogue-disclosure-card"
+                  id={`event-${event.id}`}
+                  open={query.event === event.id}
                   key={event.id}
                 >
                   <summary className="catalogue-disclosure-summary">

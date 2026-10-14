@@ -15,6 +15,8 @@ export default defineConfig({
       "tests/venue-media-studio.test.tsx",
       "tests/venue-catalogue.test.ts",
       "tests/venue-catalogue-visibility.test.tsx",
+      "tests/stay-ui-upgrades.test.tsx",
+      "tests/admin-city-integrity.test.tsx",
     ],
   },
 });

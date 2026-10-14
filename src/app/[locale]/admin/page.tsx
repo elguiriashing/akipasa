@@ -27,12 +27,12 @@ export default async function AdminOverview({
   }
   const { supabase } = await requireUser(locale, `/${locale}/admin`);
   const [
-    { count: users },
-    { count: venues },
-    { count: pendingPrivacy },
-    { count: promotions },
-    { count: businessApplications },
-    { data: recent },
+    usersResponse,
+    venuesResponse,
+    privacyResponse,
+    promotionsResponse,
+    applicationsResponse,
+    recentResponse,
   ] = await Promise.all([
     supabase.from("profiles").select("*", { count: "exact", head: true }),
     supabase.from("venues").select("*", { count: "exact", head: true }),
@@ -55,35 +55,62 @@ export default async function AdminOverview({
       .limit(5),
   ]);
   const es = locale === "es";
+  const availableCount = (result: { count: number | null; error: unknown }) =>
+    result.error ? null : result.count;
+  const users = availableCount(usersResponse);
+  const venues = availableCount(venuesResponse);
+  const pendingPrivacy = availableCount(privacyResponse);
+  const promotions = availableCount(promotionsResponse);
+  const businessApplications = availableCount(applicationsResponse);
+  const recent = recentResponse.error ? null : recentResponse.data;
+  const readFailed =
+    [users, venues, pendingPrivacy, promotions, businessApplications].some(
+      (count) => count === null,
+    ) || Boolean(recentResponse.error);
+  const unavailableLabel = es ? "No disponible" : "Unavailable";
   const attention =
-    (pendingPrivacy || 0) + (promotions || 0) + (businessApplications || 0);
+    (pendingPrivacy ?? 0) + (promotions ?? 0) + (businessApplications ?? 0);
+  const priorityPath =
+    (pendingPrivacy ?? 0) > 0
+      ? "privacy"
+      : (businessApplications ?? 0) > 0
+        ? "business-applications"
+        : (promotions ?? 0) > 0
+          ? "promotions"
+          : pendingPrivacy === null
+            ? "privacy"
+            : businessApplications === null
+              ? "business-applications"
+              : promotions === null
+                ? "promotions"
+                : "users";
   const tools: Array<{
     href: string;
     icon: IconName;
     title: string;
     detail: string;
-    count?: number;
+    count?: number | null;
   }> = [
     {
       href: `/${locale}/admin/business-applications`,
       icon: "business",
       title: es ? "Solicitudes de negocio" : "Business applications",
       detail: es ? "Revisión, pagos y pruebas" : "Review, payments and trials",
-      count: businessApplications || 0,
+      count: businessApplications,
     },
     {
       href: `/${locale}/admin/promotions`,
       icon: "megaphone",
       title: es ? "Solicitudes comerciales" : "Commercial requests",
       detail: es ? "Promoción y seguimiento" : "Promotion and follow-up",
-      count: promotions || 0,
+      count: promotions,
     },
     {
       href: `/${locale}/admin/privacy`,
       icon: "lock",
       title: es ? "Privacidad" : "Privacy",
       detail: es ? "Solicitudes y cumplimiento" : "Requests and compliance",
-      count: pendingPrivacy || 0,
+      count: pendingPrivacy,
     },
     {
       href: `/${locale}/admin/users`,
@@ -96,8 +123,8 @@ export default async function AdminOverview({
       icon: "venue",
       title: es ? "Catálogo" : "Catalogue",
       detail: es
-        ? `${venues || 0} locales registrados`
-        : `${venues || 0} registered venues`,
+        ? `${venues ?? "—"} locales registrados`
+        : `${venues ?? "—"} registered venues`,
     },
     {
       href: `/${locale}/admin/ai-team`,
@@ -137,38 +164,78 @@ export default async function AdminOverview({
       <section className="operations-hero">
         <span>{es ? "Estado de plataforma" : "Platform status"}</span>
         <h2>
-          {attention
-            ? es
-              ? `${attention} asuntos requieren atención`
-              : `${attention} items need attention`
-            : es
-              ? "Operación estable"
-              : "Operations are stable"}
+          {readFailed
+            ? attention > 0
+              ? es
+                ? `${attention} asuntos conocidos requieren atención; faltan datos`
+                : `${attention} known items need attention; some data is unavailable`
+              : es
+                ? "Estado operativo no disponible"
+                : "Operational status unavailable"
+            : attention
+              ? es
+                ? `${attention} asuntos requieren atención`
+                : `${attention} items need attention`
+              : es
+                ? "Operación estable"
+                : "Operations are stable"}
         </h2>
         <p>
           {es
-            ? `${users || 0} usuarios · ${venues || 0} locales`
-            : `${users || 0} users · ${venues || 0} venues`}
+            ? `${users ?? "—"} usuarios · ${venues ?? "—"} locales`
+            : `${users ?? "—"} users · ${venues ?? "—"} venues`}
         </p>
-        <Link href={`/${locale}/admin/business-applications`}>
-          {es ? "Atender prioridad" : "Open priority"}
+        <Link href={`/${locale}/admin/${priorityPath}`}>
+          {attention > 0
+            ? es
+              ? "Atender prioridad"
+              : "Open priority"
+            : es
+              ? "Revisar área de trabajo"
+              : "Review work area"}
           <Icon name="arrow-right" />
         </Link>
       </section>
+      {readFailed && (
+        <div className="notice" role="alert">
+          <p>
+            {es
+              ? "Algunos datos de administración no se pudieron cargar. Los recuentos no disponibles se muestran como —."
+              : "Some administration data could not be loaded. Unavailable counts are shown as —."}
+          </p>
+          <Link className="button secondary" href={`/${locale}/admin`}>
+            {es ? "Reintentar" : "Retry"}
+          </Link>
+        </div>
+      )}
       <section
         className="operations-pulse"
         aria-label={es ? "Estado de administración" : "Administration status"}
       >
         <div>
-          <strong>{businessApplications || 0}</strong>
+          <strong
+            aria-label={
+              businessApplications === null ? unavailableLabel : undefined
+            }
+          >
+            {businessApplications ?? "—"}
+          </strong>
           <span>{es ? "negocios" : "businesses"}</span>
         </div>
         <div>
-          <strong>{promotions || 0}</strong>
+          <strong
+            aria-label={promotions === null ? unavailableLabel : undefined}
+          >
+            {promotions ?? "—"}
+          </strong>
           <span>{es ? "comercial" : "commercial"}</span>
         </div>
         <div>
-          <strong>{pendingPrivacy || 0}</strong>
+          <strong
+            aria-label={pendingPrivacy === null ? unavailableLabel : undefined}
+          >
+            {pendingPrivacy ?? "—"}
+          </strong>
           <span>{es ? "privacidad" : "privacy"}</span>
         </div>
       </section>
@@ -187,7 +254,15 @@ export default async function AdminOverview({
                 <strong>{tool.title}</strong>
                 <small>{tool.detail}</small>
               </span>
-              {tool.count !== undefined && <b>{tool.count}</b>}
+              {tool.count !== undefined && (
+                <b
+                  aria-label={
+                    tool.count === null ? unavailableLabel : undefined
+                  }
+                >
+                  {tool.count ?? "—"}
+                </b>
+              )}
               <Icon name="chevron" />
             </Link>
           ))}
@@ -212,10 +287,20 @@ export default async function AdminOverview({
               </time>
             </div>
           ))}
-          {!recent?.length && (
-            <p className="muted">
-              {es ? "Aún no hay cambios recientes." : "No recent changes yet."}
+          {recentResponse.error ? (
+            <p className="notice" role="alert">
+              {es
+                ? "No se pudieron cargar los cambios recientes."
+                : "Could not load recent changes."}
             </p>
+          ) : (
+            !recent?.length && (
+              <p className="muted">
+                {es
+                  ? "Aún no hay cambios recientes."
+                  : "No recent changes yet."}
+              </p>
+            )
           )}
         </div>
       </section>

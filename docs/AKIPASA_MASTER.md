@@ -3,6 +3,55 @@
 > Entry point for every human or AI modifying AkiPasa. Established 2026-10-09. **Living engineering contract, not a claim that every production behavior is verified.**
 > Source priority: running code + database schema + production evidence > current tests > these docs > historical handoff notes > chat discussions. If they disagree, investigate; never silently choose the older description.
 
+## 2026-10-14 | GUI and workflow upgrades (approved release candidate)
+
+The user approved implementation, commits, merges and live release on 14 October.
+This first release batch preserves the complete 147-item upgrade inventory;
+remaining work is tracked separately and is not represented as shipped.
+The audit covers public discovery/community, identity and support, Account and
+rewards, AkiBusiness/AkiDuermo, Staff/Admin, the separate AkiHQ repository, the
+historical CRM branch, Android and the independent automation dashboard.
+Source findings, design proposals, existing PRs and unperformed acceptance are
+separate categories in the review artifacts; planned upgrades are not shipped
+capabilities. The public baseline is `8613edbd962a978dc3d85f9f7b9aafcc4da54a56`.
+
+- Map date filters use the same Europe/Madrid civil-time validation as discovery;
+  inclusive end dates remain inclusive. Homepage venue badges reflect the
+  existing claim state without changing it.
+- Contribution success/errors return to the matching history/form. Auth and
+  Terms returns preserve a validated contribution view and event/venue target.
+  Auth error/notices retain the existing safe destination and the relevant form
+  mode. Full failed-form draft retention and post-reset task continuity remain
+  separate planned upgrades.
+- Support dialogs contain/restore keyboard focus, lock/restore document scroll,
+  have unique labels and retain a reachable scrollable composer in short windows.
+  Existing help payloads, transcript, anonymous email fallback and provider
+  boundaries remain authoritative.
+- AkiDuermo history uses actual `completed`/`declined` reservation states. Valid
+  trip intent supplies editable initial dates/guests without requesting availability
+  automatically; per-property/user edits are retained. Customer and manager status
+  text is localized while raw action/status values remain unchanged. Filtered
+  accommodation inboxes explain no matches.
+- Staff queues distinguish read failure from true empty results; creator decision
+  failures remain visible. Catalogue retries retain filters, event search covers
+  both title languages using escaped PostgREST literals, and Manage event opens
+  only the selected event already present in the authorized venue result.
+- Admin overview never treats a failed required read as stable/zero activity and
+  directs the priority action to a known pending or unavailable work area. City
+  editing retains actual coordinates; `saveCity` requires explicit finite,
+  Spain-bounded values rather than silently substituting Madrid. Center decoding
+  must support the database geography representations as well as GeoJSON.
+
+No schema migration, new permission, RLS/Storage rule, reward calculation,
+booking transition, price, payment activation, consent or outbound-message
+contract changes. Existing server-side role/tenant checks and audited mutations
+remain in place. Verification and limitations are recorded in the impact register;
+local component/browser fixtures do not establish production authentication,
+database acceptance, provider delivery or physical-device behavior. Cloudflare's
+clean-source packaging gate remains intact; packaging follows a clean source commit.
+The batch is reconciled with master `6fb9fae27d56f44b62dcf79bf50f293e5454c1c3`,
+including selected-media and hidden-catalogue-starter recoveries.
+
 ## 2026-10-13 | Responsive AkiSuite membership catalogue and AkiHQ sectors
 
 The shared seven-plan membership catalogue keeps every plan visible regardless of payment activation. It uses the original AkiPasa, AkiBusiness, AkiDuermo and AkiHQ icons; Enterprise shows all four and the conditional AkiHQ Pro business add-on shows the paired business/HQ marks. The legacy business-sector taxonomy from `src/lib/business-packages.ts` powers an informational Standard/Pro tool comparison, not separate checkout packages or sector-specific entitlements. Plans remain VAT-inclusive and checkout remains gated.

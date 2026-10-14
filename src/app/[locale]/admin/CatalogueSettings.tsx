@@ -1,4 +1,5 @@
 import React from "react";
+import { geographyPointCoordinates } from "../../../lib/unclaimed-venues";
 import { saveCategory, saveCity, updateFeatureFlag } from "./actions";
 
 type Category = {
@@ -25,11 +26,57 @@ type Flag = {
   updated_at: string;
 };
 
-function pointCoordinates(value: unknown) {
+export function pointCoordinates(value: unknown) {
+  if (typeof value === "string") {
+    const text = value.trim();
+    if (text.length > 150) return null;
+    const number = "([+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:e[+-]?\\d+)?)";
+    const point = text.match(
+      new RegExp(
+        `^(?:SRID=4326;)?POINT\\s*\\(\\s*${number}\\s+${number}\\s*\\)$`,
+        "i",
+      ),
+    );
+    if (point) {
+      const longitude = Number(point[1]);
+      const latitude = Number(point[2]);
+      return Number.isFinite(longitude) && Number.isFinite(latitude)
+        ? { longitude, latitude }
+        : null;
+    }
+    // PostgREST geography values use a 2D point EWKB with SRID 4326.
+    // Check its bounded shape before reusing the existing geography decoder.
+    if (!/^[0-9a-f]{50}$/i.test(text)) return null;
+    const bytes = Uint8Array.from(text.match(/.{2}/g)!, (byte) =>
+      Number.parseInt(byte, 16),
+    );
+    const view = new DataView(bytes.buffer);
+    const byteOrder = view.getUint8(0);
+    if (byteOrder !== 0 && byteOrder !== 1) return null;
+    const littleEndian = byteOrder === 1;
+    if (
+      view.getUint32(1, littleEndian) !== 0x20000001 ||
+      view.getUint32(5, littleEndian) !== 4326
+    )
+      return null;
+    return geographyPointCoordinates(text);
+  }
   const coordinates = (
     value as { coordinates?: [number, number] } | null | undefined
   )?.coordinates;
-  return Array.isArray(coordinates) && coordinates.length === 2
+  if (
+    value &&
+    typeof value === "object" &&
+    "type" in value &&
+    value.type !== "Point"
+  )
+    return null;
+  return Array.isArray(coordinates) &&
+    coordinates.length === 2 &&
+    coordinates.every(
+      (coordinate) =>
+        typeof coordinate === "number" && Number.isFinite(coordinate),
+    )
     ? { longitude: coordinates[0], latitude: coordinates[1] }
     : null;
 }

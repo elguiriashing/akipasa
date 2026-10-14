@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Icon, type IconName } from "./Icons";
+import { stayReservationStatusLabel } from "../lib/stay-reservation-status";
 
 type Section = "reservations" | "calendar" | "rooms" | "rates" | "settings";
 const sections: { id: Section; icon: IconName; en: string; es: string }[] = [
@@ -143,6 +144,13 @@ export function AccommodationBookingWorkspace({
   const pendingReservations = reservations.filter(
     (reservation) => reservation.status === "requested",
   ).length;
+  const filteredReservations = reservations.filter(
+    (reservation) =>
+      (!status || reservation.status === status) &&
+      `${reservation.contact_name} ${reservation.contact_email} ${reservation.id}`
+        .toLowerCase()
+        .includes(search.toLowerCase()),
+  );
   const occupiedUnits = new Set(
     reservations
       .filter((reservation) =>
@@ -820,80 +828,78 @@ export function AccommodationBookingWorkspace({
                     "declined",
                   ].map((value) => (
                     <option key={value} value={value}>
-                      {value}
+                      {stayReservationStatusLabel(value, locale)}
                     </option>
                   ))}
                 </select>
               </label>
             </div>
             <div className="booking-list">
-              {reservations
-                .filter(
-                  (r) =>
-                    (!status || r.status === status) &&
-                    `${r.contact_name} ${r.contact_email} ${r.id}`
-                      .toLowerCase()
-                      .includes(search.toLowerCase()),
-                )
-                .map((reservation) => (
-                  <article key={reservation.id} className="booking-list-card">
-                    <strong>{reservation.contact_name}</strong>
-                    <span>
-                      {reservation.check_in} - {reservation.check_out}
-                    </span>
-                    <small>
-                      {unitName(reservation.unit_id)} · {reservation.guests}{" "}
-                      {es ? "huéspedes" : "guests"} ·{" "}
-                      {money(reservation.quoted_total_cents)}
-                    </small>
-                    <span className="badge">{reservation.status}</span>
-                    {actions?.changeStatus && (
-                      <form action={actions.changeStatus} className="stack">
-                        <input type="hidden" name="locale" value={locale} />
-                        <input type="hidden" name="venueId" value={venueId} />
-                        <input
-                          type="hidden"
-                          name="reservationId"
-                          value={reservation.id}
-                        />
-                        <div className="button-row">
-                          {(reservation.status === "requested"
-                            ? ["confirmed", "declined", "cancelled"]
-                            : reservation.status === "confirmed"
-                              ? ["checked_in", "cancelled"]
-                              : reservation.status === "checked_in"
-                                ? ["completed"]
-                                : []
-                          ).map((next) => (
-                            <button
-                              className="button secondary"
-                              key={next}
-                              name="status"
-                              value={next}
-                            >
-                              {
-                                (
-                                  {
-                                    confirmed: es ? "Confirmar" : "Confirm",
-                                    declined: es ? "Rechazar" : "Decline",
-                                    cancelled: es ? "Cancelar" : "Cancel",
-                                    checked_in: es ? "Entrada" : "Check in",
-                                    completed: es ? "Salida" : "Check out",
-                                  } as Record<string, string>
-                                )[next]
-                              }
-                            </button>
-                          ))}
-                        </div>
-                      </form>
-                    )}
-                  </article>
-                ))}
-              {!reservations.length && (
-                <p>
-                  {es
-                    ? "Aún no hay reservas de alojamiento."
-                    : "No stay reservations yet."}
+              {filteredReservations.map((reservation) => (
+                <article key={reservation.id} className="booking-list-card">
+                  <strong>{reservation.contact_name}</strong>
+                  <span>
+                    {reservation.check_in} - {reservation.check_out}
+                  </span>
+                  <small>
+                    {unitName(reservation.unit_id)} · {reservation.guests}{" "}
+                    {es ? "huéspedes" : "guests"} ·{" "}
+                    {money(reservation.quoted_total_cents)}
+                  </small>
+                  <span className="badge">
+                    {stayReservationStatusLabel(reservation.status, locale)}
+                  </span>
+                  {actions?.changeStatus && (
+                    <form action={actions.changeStatus} className="stack">
+                      <input type="hidden" name="locale" value={locale} />
+                      <input type="hidden" name="venueId" value={venueId} />
+                      <input
+                        type="hidden"
+                        name="reservationId"
+                        value={reservation.id}
+                      />
+                      <div className="button-row">
+                        {(reservation.status === "requested"
+                          ? ["confirmed", "declined", "cancelled"]
+                          : reservation.status === "confirmed"
+                            ? ["checked_in", "cancelled"]
+                            : reservation.status === "checked_in"
+                              ? ["completed"]
+                              : []
+                        ).map((next) => (
+                          <button
+                            className="button secondary"
+                            key={next}
+                            name="status"
+                            value={next}
+                          >
+                            {
+                              (
+                                {
+                                  confirmed: es ? "Confirmar" : "Confirm",
+                                  declined: es ? "Rechazar" : "Decline",
+                                  cancelled: es ? "Cancelar" : "Cancel",
+                                  checked_in: es ? "Entrada" : "Check in",
+                                  completed: es ? "Salida" : "Check out",
+                                } as Record<string, string>
+                              )[next]
+                            }
+                          </button>
+                        ))}
+                      </div>
+                    </form>
+                  )}
+                </article>
+              ))}
+              {!filteredReservations.length && (
+                <p role="status">
+                  {reservations.length
+                    ? es
+                      ? "Ninguna reserva coincide con estos filtros."
+                      : "No reservations match these filters."
+                    : es
+                      ? "Aún no hay reservas de alojamiento."
+                      : "No stay reservations yet."}
                 </p>
               )}
             </div>
