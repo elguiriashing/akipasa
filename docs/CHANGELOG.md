@@ -9,6 +9,8 @@
 - Separate Passport campaign history from its published-venue creation dependency.
 - Distinguish creator catalogue outages from empty/missing results and show review
   outcomes while returning sign-in to the selected profile.
+- Refresh Account collection labels and slugs from currently readable catalogue
+  rows while preserving stored fallbacks.
 
 ## 2026-10-14 — Workflow continuity follow-up
 

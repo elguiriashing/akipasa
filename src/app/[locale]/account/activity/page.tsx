@@ -5,6 +5,7 @@ import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { AccountItems } from "../AccountItems";
 import { AccountPageHeader } from "../AccountPageHeader";
+import { currentEventCollectionItems } from "@/lib/account-collection-catalogue";
 
 export default async function ActivityPage({
   params,
@@ -19,6 +20,9 @@ export default async function ActivityPage({
     .select("event_key,title,href,viewed_at")
     .order("viewed_at", { ascending: false })
     .limit(25);
+  const items = error
+    ? []
+    : await currentEventCollectionItems(supabase, data || [], locale);
   const es = locale === "es";
   return (
     <>
@@ -41,10 +45,10 @@ export default async function ActivityPage({
         locale={locale}
         kind="activity"
         failed={Boolean(error)}
-        items={(data || []).map((item) => ({
+        items={items.map((item) => ({
           id: `${item.event_key}-${item.viewed_at}`,
-          label: item.title,
-          href: item.href,
+          label: item.displayLabel,
+          href: item.displayHref,
           date: item.viewed_at,
         }))}
         emptyTitle={es ? "Sin actividad reciente" : "No recent activity"}

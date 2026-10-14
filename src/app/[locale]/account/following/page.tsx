@@ -5,6 +5,7 @@ import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { AccountItems } from "../AccountItems";
 import { AccountPageHeader } from "../AccountPageHeader";
+import { currentVenueCollectionItems } from "@/lib/account-collection-catalogue";
 
 export default async function FollowingPage({
   params,
@@ -18,6 +19,9 @@ export default async function FollowingPage({
     .from("followed_venue_refs")
     .select("venue_key,name,href,created_at")
     .order("created_at", { ascending: false });
+  const items = error
+    ? []
+    : await currentVenueCollectionItems(supabase, data || [], locale);
   const es = locale === "es";
   return (
     <>
@@ -40,10 +44,10 @@ export default async function FollowingPage({
         locale={locale}
         kind="following"
         failed={Boolean(error)}
-        items={(data || []).map((item) => ({
+        items={items.map((item) => ({
           id: item.venue_key,
-          label: item.name,
-          href: item.href,
+          label: item.displayLabel,
+          href: item.displayHref,
           date: item.created_at,
         }))}
         emptyTitle={es ? "Aún no sigues locales" : "No followed venues"}

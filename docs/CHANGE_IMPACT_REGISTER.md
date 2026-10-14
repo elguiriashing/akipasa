@@ -2,7 +2,8 @@
 
 ## 2026-10-14 | Independent operational read recovery
 
-- **Inventory:** AS-17, AS-19, AS-29, AS-30, BS-06, PUB-18 and the visible
+- **Inventory:** AS-17, AS-19, AS-29, AS-30, BS-06, PUB-18, the remainder of
+  ACCOUNT-01, and the visible
   outcome/auth-return portion of PUB-09. Review draft retention remains open.
 - **Before:** Admin search retained stale accounts and accepted late responses;
   failed moderation mode appeared manual; personalisation RPC failure appeared as
@@ -19,6 +20,9 @@
   dependency is unavailable. Creator directory/profile outages have retryable
   states; literal bounded filters survive retry, true missing profiles retain
   not-found, and review outcome/auth return point to the selected profile.
+  Account collections refresh currently readable localized event titles, venue
+  names and slugs by UUID while retaining stored fallbacks for unavailable or
+  legacy records.
 - **Dependencies:** existing administrator/staff/business access guards, tenant
   queries, moderation action, `personalisation_admin_metrics`, `venue_analytics`,
   Passport creation action and server/RLS enforcement remain authoritative. No
@@ -37,8 +41,9 @@
 ## 2026-10-14 | Approved workflow continuity batch
 
 - **Inventory:** PUB-10, NAV-01, SUPPORT-03/04, AUTH-04, AS08/09/10/11/13/14/15/33/34,
-  BS-26, PASS-02 and the locale-link part of ACCOUNT-01. Current-title lookup and complete
-  paging/actions remain separately tracked, rather than declared complete.
+  BS-26, PASS-02 and the locale-link part of ACCOUNT-01. Current-title lookup is
+  completed by the next recovery batch; complete paging/actions remain separately
+  tracked.
 - **Before:** cards rounded monetary cents; hidden prices leaked into map popups;
   stored locale links ignored current language; failed questions required retyping;
   new replies could be below view; Staff headings clipped/repeated; narrow brand

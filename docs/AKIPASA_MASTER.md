@@ -27,6 +27,14 @@ outcomes are visible on the profile and authenticated submission returns to that
 profile. Failed review draft retention remains separately tracked and is not
 claimed by this batch.
 
+Saved, followed and recent Account collections refresh names and slugs from the
+currently readable event/venue catalogue by UUID. Current localized titles and
+routes replace stale stored display snapshots; inaccessible, deleted, legacy-key
+or temporarily unavailable catalogue rows retain the member's stored label/link
+fallback. The existing locale-safe link renderer still rewrites canonical fallback
+routes. Collection storage, export, paging limits and engagement mutations are
+unchanged.
+
 Existing server authorization, tenant/RLS checks, moderation mutations, analytics
 RPC ownership, reward creation action and stored records remain unchanged. No
 schema, role, data, provider, billing or checkout change is included. Retry links
@@ -38,8 +46,7 @@ The user approved implementation and live merging of the complete GUI inventory.
 This follow-up preserves exact event cents and hidden-price choices across cards,
 map popups and details using one currency formatter. Saved/followed/recent links
 rewrite only canonical local event/venue destinations to the current locale,
-preserving query and fragment; existing saved labels are retained pending current
-catalogue-title lookup. Workspace accessible names match EN/ES. Staff uses one
+preserving query and fragment. Workspace accessible names match EN/ES. Staff uses one
 page-specific heading with scoped safe padding, and accommodation reservation
 cards have explicit responsive rows without altering inventory actions. Narrow
 auth portal cards retain complete brand words and touch targets.
