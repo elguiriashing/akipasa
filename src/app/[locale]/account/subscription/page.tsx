@@ -195,7 +195,7 @@ export default async function SubscriptionPage({
         </p>
       )}
       {accessUnavailable && (
-        <section className="account-control-card">
+        <section className="account-control-card" id="membership-recovery">
           <h2>{es ? "Membresía no disponible" : "Membership unavailable"}</h2>
           <p className="notice" role="alert">
             {es
@@ -219,6 +219,7 @@ export default async function SubscriptionPage({
           <form
             action={prepareAkiSuiteWorkspace}
             className="account-control-card"
+            id="workspace-setup"
           >
             <input type="hidden" name="locale" value={locale} />
             <p>

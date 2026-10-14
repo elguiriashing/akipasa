@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { requestEventBooking } from "./actions";
+import { occurrenceHref, requestedOccurrenceId } from "@/lib/event-occurrence";
 
 export default async function EventBookingPage({
   params,
@@ -15,20 +16,26 @@ export default async function EventBookingPage({
   const { locale, slug } = await params;
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
+  const requestedOccurrence = requestedOccurrenceId(query.occurrence);
+  const bookingPath = requestedOccurrence
+    ? occurrenceHref(`/${locale}/events/${slug}/book`, requestedOccurrence)
+    : `/${locale}/events/${slug}/book`;
   const es = locale === "es";
-  const { supabase, user } = await requireUser(
-    locale,
-    `/${locale}/events/${slug}/book`,
-  );
+  const { supabase, user } = await requireUser(locale, bookingPath);
   const { data: event } = await supabase
     .from("events")
     .select(
-      "id,title_es,title_en,venue_id,venues(name,venue_booking_settings(mode,requires_deposit,deposit_cents,instructions_es,instructions_en),venue_availability_slots(id,starts_at,ends_at,capacity,active))",
+      "id,title_es,title_en,venue_id,event_occurrences(id),venues(name,venue_booking_settings(mode,requires_deposit,deposit_cents,instructions_es,instructions_en),venue_availability_slots(id,starts_at,ends_at,capacity,active))",
     )
     .eq("slug", slug)
     .eq("status", "published")
     .maybeSingle();
   if (!event) notFound();
+  const selectedOccurrence = (event.event_occurrences || []).some(
+    (occurrence: { id: string }) => occurrence.id === requestedOccurrence,
+  )
+    ? requestedOccurrence
+    : undefined;
   const { data: profile } = await supabase
     .from("profiles")
     .select("display_name,public_email,phone")
@@ -87,6 +94,13 @@ export default async function EventBookingPage({
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="slug" value={slug} />
             <input type="hidden" name="eventId" value={event.id} />
+            {selectedOccurrence && (
+              <input
+                type="hidden"
+                name="occurrence"
+                value={selectedOccurrence}
+              />
+            )}
             <input
               type="hidden"
               name="requestKey"
@@ -158,7 +172,14 @@ export default async function EventBookingPage({
           </p>
         </section>
       )}
-      <Link className="back-link" href={`/${locale}/events/${slug}`}>
+      <Link
+        className="back-link"
+        href={
+          selectedOccurrence
+            ? occurrenceHref(`/${locale}/events/${slug}`, selectedOccurrence)
+            : `/${locale}/events/${slug}`
+        }
+      >
         {es ? "Volver al evento" : "Back to event"}
       </Link>
     </main>

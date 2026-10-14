@@ -2,7 +2,7 @@
 
 import React, { type ComponentProps } from "react";
 import "@testing-library/jest-dom/vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
 const fixture = vi.hoisted(() => ({
@@ -96,6 +96,7 @@ import { CommunityCreatorPage } from "../src/components/community/CreatorProfile
 beforeEach(() => {
   fixture.mode = "directory-error";
   fixture.filters = [];
+  window.sessionStorage.clear();
 });
 afterEach(cleanup);
 
@@ -182,4 +183,57 @@ it.each([
   );
 
   expect(screen.getByRole(role)).toHaveTextContent(copy);
+});
+
+it.each(["invalid", "unavailable", "draft"])(
+  "restores the creator-review draft after a %s return",
+  async (review) => {
+    fixture.mode = "profile-ready";
+    sessionStorage.setItem(
+      "akipasa:creator-review:10000000-0000-4000-8000-000000000001",
+      JSON.stringify({
+        rating: "3",
+        body: "The useful review text from the failed submission.",
+      }),
+    );
+    render(
+      await CommunityCreatorPage({
+        params: Promise.resolve({ locale: "en", slug: "ana-local" }),
+        searchParams: Promise.resolve({ review }),
+      }),
+    );
+
+    expect(await screen.findByText(/restored the details/i)).toBeVisible();
+    expect(screen.getByLabelText("Rating")).toHaveValue("3");
+    expect(screen.getByLabelText("Your experience")).toHaveValue(
+      "The useful review text from the failed submission.",
+    );
+  },
+);
+
+it("remembers a creator review before invoking its server action", async () => {
+  fixture.mode = "profile-ready";
+  render(
+    await CommunityCreatorPage({
+      params: Promise.resolve({ locale: "en", slug: "ana-local" }),
+    }),
+  );
+  fireEvent.change(screen.getByLabelText("Rating"), {
+    target: { value: "4" },
+  });
+  fireEvent.change(screen.getByLabelText("Your experience"), {
+    target: { value: "A detailed review that must survive a failed request." },
+  });
+  fireEvent.submit(screen.getByLabelText("Your experience").closest("form")!);
+
+  expect(
+    JSON.parse(
+      sessionStorage.getItem(
+        "akipasa:creator-review:10000000-0000-4000-8000-000000000001",
+      ) || "{}",
+    ),
+  ).toMatchObject({
+    rating: "4",
+    body: "A detailed review that must survive a failed request.",
+  });
 });

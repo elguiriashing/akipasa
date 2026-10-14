@@ -15,6 +15,8 @@ import { VenueQuickSearch } from "./VenueQuickSearch";
 import { discoveryLocationFromQuery } from "@/lib/discovery-location";
 import { msg } from "@/lib/messages";
 import type { Locale } from "@/lib/config";
+import type { TimeWindow } from "@/lib/domain";
+import { discoveryRangeError } from "@/lib/discovery-filter-validation";
 
 const subscribeToHydration = () => () => {};
 
@@ -31,7 +33,9 @@ export function GlobalSearch({ locale }: { locale: Locale }) {
   const searchParams = useSearchParams();
   const panel = useRef<HTMLDivElement>(null);
   const previousPathname = useRef(pathname);
+  const restoreFilterFocus = useRef(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [filterError, setFilterError] = useState<string | null>(null);
   const es = locale === "es";
   const targetPath = pathname === `/${locale}/map` ? pathname : `/${locale}`;
   // Bind to the actual mounted form, including every keyed replacement.
@@ -49,6 +53,26 @@ export function GlobalSearch({ locale }: { locale: Locale }) {
             if (typeof value === "string" && value !== "")
               params.append(key, value);
           }
+          const error = discoveryRangeError(
+            {
+              minPrice: params.get("minPrice") || undefined,
+              maxPrice: params.get("maxPrice") || undefined,
+              dateFrom: params.get("dateFrom") || undefined,
+              dateTo: params.get("dateTo") || undefined,
+            },
+            locale,
+          );
+          if (!form.checkValidity() || error) {
+            setFilterError(
+              error ||
+                (locale === "es"
+                  ? "Revisa los filtros marcados antes de continuar."
+                  : "Check the marked filters before continuing."),
+            );
+            form.dataset.autoSubmitReady = "true";
+            return;
+          }
+          setFilterError(null);
           startTransition(() =>
             router.replace(`${targetPath}?${params}`, { scroll: false }),
           );
@@ -70,7 +94,7 @@ export function GlobalSearch({ locale }: { locale: Locale }) {
         form.removeEventListener("submit", submit);
       };
     },
-    [router, targetPath],
+    [locale, router, targetPath],
   );
   const query = Object.fromEntries(searchParams);
   const m = msg(locale);
@@ -86,7 +110,7 @@ export function GlobalSearch({ locale }: { locale: Locale }) {
   const time = ["now", "tonight", "tomorrow", "weekend", "all"].includes(
     query.time,
   )
-    ? query.time
+    ? (query.time as TimeWindow)
     : "all";
   const category = query.category;
   const price = query.price;
@@ -97,6 +121,97 @@ export function GlobalSearch({ locale }: { locale: Locale }) {
   const minPriceCents = priceValue(query.minPrice);
   const maxPriceCents = priceValue(query.maxPrice);
   const accessible = query.accessible === "on";
+  const initialRangeError = discoveryRangeError(
+    {
+      minPrice: query.minPrice,
+      maxPrice: query.maxPrice,
+      dateFrom: query.dateFrom,
+      dateTo: query.dateTo,
+    },
+    locale,
+  );
+  useEffect(() => setFilterError(initialRangeError), [initialRangeError]);
+  const queryString = searchParams.toString();
+  useEffect(() => {
+    if (!restoreFilterFocus.current) return;
+    restoreFilterFocus.current = false;
+    panel.current?.focus();
+  }, [queryString]);
+  const activeFilters = [
+    searchParams.has("locality") || searchParams.has("latitude")
+      ? {
+          key: "location",
+          label: `${es ? "Zona" : "Area"}: ${localityName}`,
+          remove: ["locality", "locationName", "latitude", "longitude"],
+        }
+      : null,
+    radius !== 25
+      ? { key: "radius", label: `${radius} km`, remove: ["radius"] }
+      : null,
+    time !== "all" ? { key: "time", label: m[time], remove: ["time"] } : null,
+    category && category !== "any"
+      ? {
+          key: "category",
+          label: `${m.category}: ${category}`,
+          remove: ["category"],
+        }
+      : null,
+    price && price !== "any"
+      ? { key: "price", label: `${m.price}: ${price}`, remove: ["price"] }
+      : null,
+    query.minPrice
+      ? {
+          key: "minPrice",
+          label: `${m.minimumPrice}: ${query.minPrice}`,
+          remove: ["minPrice"],
+        }
+      : null,
+    query.maxPrice
+      ? {
+          key: "maxPrice",
+          label: `${m.maximumPrice}: ${query.maxPrice}`,
+          remove: ["maxPrice"],
+        }
+      : null,
+    query.dateFrom
+      ? {
+          key: "dateFrom",
+          label: `${m.dateFrom}: ${query.dateFrom}`,
+          remove: ["dateFrom"],
+        }
+      : null,
+    query.dateTo
+      ? {
+          key: "dateTo",
+          label: `${m.dateTo}: ${query.dateTo}`,
+          remove: ["dateTo"],
+        }
+      : null,
+    accessible
+      ? {
+          key: "accessible",
+          label: m.accessibleOnly,
+          remove: ["accessible"],
+        }
+      : null,
+  ].filter((item): item is NonNullable<typeof item> => Boolean(item));
+
+  function replaceFilters(remove: string[] | "all") {
+    const next = new URLSearchParams(searchParams.toString());
+    if (remove === "all") {
+      for (const key of Array.from(next.keys())) next.delete(key);
+    } else {
+      for (const key of remove) next.delete(key);
+      next.delete("eventPage");
+      next.delete("venuePage");
+    }
+    restoreFilterFocus.current = true;
+    startTransition(() =>
+      router.replace(next.size ? `${targetPath}?${next}` : targetPath, {
+        scroll: false,
+      }),
+    );
+  }
   useEffect(() => {
     if (previousPathname.current !== pathname) panel.current?.hidePopover();
     previousPathname.current = pathname;
@@ -115,6 +230,7 @@ export function GlobalSearch({ locale }: { locale: Locale }) {
       </button>
       <div
         ref={panel}
+        tabIndex={-1}
         id="site-search-panel"
         className="global-search-panel"
         popover="auto"
@@ -146,6 +262,36 @@ export function GlobalSearch({ locale }: { locale: Locale }) {
             ? "O usa los filtros para descubrir planes por zona, fecha y categoría."
             : "Or use the filters to discover plans by area, date and category."}
         </p>
+        {filterError && (
+          <p className="notice global-search-error" role="alert">
+            {filterError}
+          </p>
+        )}
+        {activeFilters.length > 0 && (
+          <div
+            className="global-active-filters"
+            aria-label={es ? "Filtros activos" : "Active filters"}
+          >
+            {activeFilters.map((filter) => (
+              <button
+                type="button"
+                className="status-pill"
+                key={filter.key}
+                onClick={() => replaceFilters(filter.remove)}
+                aria-label={`${es ? "Quitar" : "Remove"} ${filter.label}`}
+              >
+                {filter.label} ×
+              </button>
+            ))}
+            <button
+              type="button"
+              className="button secondary"
+              onClick={() => replaceFilters("all")}
+            >
+              {es ? "Borrar filtros" : "Clear filters"}
+            </button>
+          </div>
+        )}
         <form
           ref={bindFilters}
           id="global-search-filters"

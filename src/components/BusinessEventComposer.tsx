@@ -51,9 +51,12 @@ export function BusinessEventComposer({
     const dialog = dialogRef.current;
     if (!dialog) return;
     const previousFocus = openerRef.current;
-    const focusable = () => Array.from(
-      dialog.querySelectorAll<HTMLElement>('button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'),
-    );
+    const focusable = () =>
+      Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      );
     focusable()[0]?.focus();
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -61,7 +64,10 @@ export function BusinessEventComposer({
         closeMedia();
       } else if (event.key === "Tab") {
         const controls = focusable();
-        if (!controls.length) { event.preventDefault(); return; }
+        if (!controls.length) {
+          event.preventDefault();
+          return;
+        }
         const first = controls[0];
         const last = controls[controls.length - 1];
         if (event.shiftKey && document.activeElement === first) {
@@ -263,7 +269,10 @@ export function BusinessEventComposer({
                     <button
                       type="button"
                       className="button secondary small-btn"
-                      onClick={(event) => { openerRef.current = event.currentTarget; setActiveMediaSlot(slotKey); }}
+                      onClick={(event) => {
+                        openerRef.current = event.currentTarget;
+                        setActiveMediaSlot(slotKey);
+                      }}
                     >
                       {es ? "Elegir de biblioteca" : "Choose from library"}
                     </button>

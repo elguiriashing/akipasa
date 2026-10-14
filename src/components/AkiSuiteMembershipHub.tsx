@@ -85,7 +85,11 @@ export function AkiSuiteMembershipHub({
     return "Premium";
   };
   return (
-    <section className={styles.root} aria-labelledby="membership-hub-title">
+    <section
+      id="membership-centre"
+      className={styles.root}
+      aria-labelledby="membership-hub-title"
+    >
       <header className={styles.hero}>
         <div className={styles.heroText}>
           <span className={styles.eyebrow}>
@@ -259,7 +263,7 @@ export function AkiSuiteMembershipHub({
               </div>
             </section>
           )}
-          <div className={styles.records}>
+          <div className={styles.records} id="billing-management">
             <div className={styles.sectionHead}>
               <div>
                 <h3>

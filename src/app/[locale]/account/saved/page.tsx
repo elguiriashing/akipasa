@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { Icon } from "@/components/Icons";
 import { requireUser } from "@/lib/auth";
@@ -8,6 +8,11 @@ import { AccountItems } from "../AccountItems";
 import { AccountCollectionRefresh } from "../AccountCollectionRefresh";
 import { setSavedEventReminder } from "./actions";
 import { currentEventCollectionItems } from "@/lib/account-collection-catalogue";
+import {
+  accountCollectionPage,
+  accountCollectionPageSize,
+  accountCollectionQuery,
+} from "@/lib/account-collection-query";
 
 export default async function SavedEventsPage({
   params,
@@ -19,6 +24,9 @@ export default async function SavedEventsPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const query = (await searchParams) || {};
+  const search = accountCollectionQuery(query.q);
+  const page = accountCollectionPage(query.page);
+  const from = (page - 1) * accountCollectionPageSize;
   const { supabase } = await requireUser(locale);
   const { data: emailPreferences, error: preferenceError } = await supabase.rpc(
     "suite_email_reminder_preferences",
@@ -28,10 +36,25 @@ export default async function SavedEventsPage({
     Boolean(preferenceError) ||
     typeof emailPreferences?.event_reminders !== "boolean";
   const eventReminders = emailPreferences?.event_reminders === true;
-  const { data, error } = await supabase
+  let collectionQuery = supabase
     .from("saved_event_refs")
-    .select("event_key,title,href,created_at")
-    .order("created_at", { ascending: false });
+    .select("event_key,title,href,created_at", { count: "exact" })
+    .order("created_at", { ascending: false })
+    .order("event_key", { ascending: true });
+  if (search) collectionQuery = collectionQuery.ilike("title", `%${search}%`);
+  const { data, error, count } = await collectionQuery.range(
+    from,
+    from + accountCollectionPageSize - 1,
+  );
+  if (!error && count && from >= count) {
+    const lastPage = Math.ceil(count / accountCollectionPageSize);
+    const params = new URLSearchParams();
+    if (search) params.set("q", search);
+    if (lastPage > 1) params.set("page", String(lastPage));
+    redirect(
+      `/${locale}/account/saved?${params.toString()}`.replace(/\?$/, ""),
+    );
+  }
   const items = error
     ? []
     : await currentEventCollectionItems(supabase, data || [], locale);
@@ -130,10 +153,29 @@ export default async function SavedEventsPage({
             : "Your reminder preference could not be updated. Please try again."}
         </p>
       )}
+      {query.collection === "removed" && (
+        <p className="notice" role="status">
+          {es
+            ? "Evento quitado de tu colección."
+            : "Event removed from your collection."}
+        </p>
+      )}
+      {query.collection === "error" && (
+        <p className="notice" role="alert">
+          {es
+            ? "No se ha podido quitar el evento. Vuelve a intentarlo."
+            : "The event could not be removed. Please try again."}
+        </p>
+      )}
       <AccountItems
         locale={locale}
         kind="saved"
         failed={Boolean(error)}
+        total={count ?? 0}
+        page={page}
+        pageSize={accountCollectionPageSize}
+        query={search}
+        basePath={`/${locale}/account/saved`}
         items={items.map((item) => ({
           id: item.event_key,
           label: item.displayLabel,

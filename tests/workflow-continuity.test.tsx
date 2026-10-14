@@ -81,6 +81,10 @@ it.each(
         ? `${(priceCents / 100).toFixed(2).replace(".", ",")} €`
         : `€${(priceCents / 100).toFixed(2)}`;
   expect(screen.getByText(expected, { exact: true })).toBeVisible();
+  expect(screen.getByRole("link")).toHaveAttribute(
+    "href",
+    `/${locale}/events/${event.slug}?occurrence=${occurrence.id}`,
+  );
   expect(
     eventPriceLabel({ ...event, priceDisplayMode: "hide" }, locale),
   ).toBeNull();
@@ -271,3 +275,28 @@ it.each([
     );
   },
 );
+
+it("localizes every stored Passport claim and enrollment state", async () => {
+  const { passportStatusLabel } = await import("../src/lib/passport-status");
+  expect(passportStatusLabel("claim", "ready", "en")).toBe("Ready to redeem");
+  expect(passportStatusLabel("claim", "redeemed", "es")).toBe("Canjeada");
+  expect(passportStatusLabel("claim", "expired", "es")).toBe("Caducada");
+  expect(passportStatusLabel("enrollment", "active", "es")).toBe("En curso");
+  expect(passportStatusLabel("enrollment", "completed", "en")).toBe(
+    "Completed",
+  );
+  expect(passportStatusLabel("enrollment", "redeemed", "es")).toBe(
+    "Recompensa solicitada",
+  );
+  expect(passportStatusLabel("enrollment", "expired", "en")).toBe("Expired");
+});
+
+it("does not expose an unexpected Passport backend state", async () => {
+  const { passportStatusLabel } = await import("../src/lib/passport-status");
+  expect(passportStatusLabel("claim", "internal_new_state", "en")).toBe(
+    "Unknown status",
+  );
+  expect(passportStatusLabel("enrollment", null, "es")).toBe(
+    "Estado desconocido",
+  );
+});

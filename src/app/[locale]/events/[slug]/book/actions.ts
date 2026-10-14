@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireUser } from "@/lib/auth";
+import { occurrenceHref, requestedOccurrenceId } from "@/lib/event-occurrence";
 
 export async function requestEventBooking(formData: FormData) {
   const parsed = z
@@ -17,16 +18,18 @@ export async function requestEventBooking(formData: FormData) {
       contactPhone: z.string().trim().max(40),
       notes: z.string().trim().max(1000),
       requestKey: z.string().uuid(),
+      occurrence: z.string().max(100).optional(),
     })
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const slug = String(formData.get("slug") || "");
-  if (!parsed.success)
-    redirect(`/${locale}/events/${slug}/book?error=validation`);
-  const { supabase } = await requireUser(
-    locale,
-    `/${locale}/events/${slug}/book`,
-  );
+  const occurrence = requestedOccurrenceId(formData.get("occurrence"));
+  const bookingPath = occurrence
+    ? occurrenceHref(`/${locale}/events/${slug}/book`, occurrence)
+    : `/${locale}/events/${slug}/book`;
+  const separator = bookingPath.includes("?") ? "&" : "?";
+  if (!parsed.success) redirect(`${bookingPath}${separator}error=validation`);
+  const { supabase } = await requireUser(locale, bookingPath);
   const { error } = await supabase.rpc("request_booking_v2", {
     p_slot: parsed.data.slotId,
     p_event: parsed.data.eventId,
@@ -39,6 +42,6 @@ export async function requestEventBooking(formData: FormData) {
     p_locale: parsed.data.locale,
   });
   redirect(
-    `/${locale}/events/${slug}/book?${error ? "error=unavailable" : "requested=1"}`,
+    `${bookingPath}${separator}${error ? "error=unavailable" : "requested=1"}`,
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { startAkiSuiteCheckout } from "@/app/[locale]/account/subscription/akisuite-actions";
 import {
   akisuitePlans,
@@ -9,6 +10,7 @@ import {
   type AkiSuitePlan,
   type AkiSuiteApp,
   akiSuitePlanApp,
+  akiSuiteApp,
   effectiveAkiSuitePlans,
   businessAddonEligible,
   overlappingAkiSuitePlan,
@@ -194,6 +196,7 @@ const order: AkiSuitePlan[] = [
 export function AkiSuiteMembershipGrid({
   locale,
   checkoutReady = false,
+  purchaseMode = "checkout",
   originatingApp = "akipasa",
   activePlans = [],
   accessUnavailable = false,
@@ -202,6 +205,7 @@ export function AkiSuiteMembershipGrid({
 }: {
   locale: "en" | "es";
   checkoutReady?: boolean;
+  purchaseMode?: "account" | "checkout";
   originatingApp?: AkiSuiteApp;
   activePlans?: AkiSuitePlan[];
   accessUnavailable?: boolean;
@@ -279,9 +283,63 @@ export function AkiSuiteMembershipGrid({
           const current = included.has(key);
           const origin = app === originatingApp;
           const overlap = overlappingAkiSuitePlan(key, selectedPlans);
+          const missingWorkspace = key !== "akipasa_premium" && !workspaceId;
+          const accountHandoff =
+            purchaseMode === "account" && checkoutReady && !accessUnavailable;
           const eligible =
             key !== "akihq_business_addon" ||
             businessAddonEligible(selectedPlans);
+          const blocked = accessUnavailable
+            ? {
+                text: es
+                  ? "No hemos podido comprobar tu acceso actual. Reintenta antes de cambiar de plan."
+                  : "We couldn't verify your current access. Retry before changing plans.",
+                href: `/${locale}/account/subscription#membership-recovery`,
+                action: es ? "Reintentar acceso" : "Retry account access",
+              }
+            : current
+              ? {
+                  text: es
+                    ? "Este plan ya está incluido en tu acceso actual."
+                    : "This plan is already included in your current access.",
+                  href: `/${locale}/account/subscription#membership-centre`,
+                  action: es ? "Ver mi acceso" : "View my access",
+                }
+              : overlap
+                ? {
+                    text: es
+                      ? "Tu plan actual ya cubre estas ventajas. Revisa ese plan antes de sustituirlo."
+                      : "Your current plan already covers these benefits. Review it before replacing it.",
+                    href: `/${locale}/account/subscription#billing-management`,
+                    action: es
+                      ? "Gestionar el plan actual"
+                      : "Manage current plan",
+                  }
+                : !checkoutReady
+                  ? {
+                      text: es
+                        ? "La compra todavía no está disponible para este plan."
+                        : "Purchase is not available for this plan yet.",
+                    }
+                  : missingWorkspace
+                    ? {
+                        text: es
+                          ? "Los planes de negocio necesitan un espacio de trabajo autorizado."
+                          : "Business plans require an authorised workspace.",
+                        href: `/${locale}/account/subscription#workspace-setup`,
+                        action: es
+                          ? "Preparar mi negocio"
+                          : "Prepare my business",
+                      }
+                    : !eligible
+                      ? {
+                          text: es
+                            ? "Este complemento requiere AkiHQ Pro activo en el espacio seleccionado."
+                            : "This add-on requires active AkiHQ Pro in the selected workspace.",
+                          href: `/${locale}/account/subscription#akihq_pro`,
+                          action: es ? "Ver AkiHQ Pro" : "View AkiHQ Pro",
+                        }
+                      : null;
           return (
             <article
               key={key}
@@ -382,47 +440,84 @@ export function AkiSuiteMembershipGrid({
                     ),
                   )}
                 </ul>
-                <form action={startAkiSuiteCheckout}>
-                  <input type="hidden" name="locale" value={locale} />
-                  <input type="hidden" name="plan" value={key} />
-                  <input type="hidden" name="interval" value={interval} />
-                  {key !== "akipasa_premium" && workspaceId && (
-                    <input
-                      type="hidden"
-                      name="workspaceId"
-                      value={workspaceId}
-                    />
-                  )}
-                  <button
-                    type="submit"
+                {accountHandoff ? (
+                  <Link
+                    href={`/${locale}/account/subscription?from=${akiSuiteApp(originatingApp)}`}
                     className={
                       featured ? "button button-strong" : "button secondary"
                     }
-                    disabled={
-                      !checkoutReady ||
-                      current ||
-                      accessUnavailable ||
-                      overlap ||
-                      !eligible
-                    }
                   >
-                    {current
-                      ? es
-                        ? "Plan incluido"
-                        : "Plan included"
-                      : !checkoutReady
+                    {es ? "Continuar en mi cuenta" : "Continue in my account"}
+                  </Link>
+                ) : (
+                  <form action={startAkiSuiteCheckout}>
+                    <input type="hidden" name="locale" value={locale} />
+                    <input type="hidden" name="plan" value={key} />
+                    <input type="hidden" name="interval" value={interval} />
+                    {key !== "akipasa_premium" && workspaceId && (
+                      <input
+                        type="hidden"
+                        name="workspaceId"
+                        value={workspaceId}
+                      />
+                    )}
+                    <button
+                      type="submit"
+                      className={
+                        featured ? "button button-strong" : "button secondary"
+                      }
+                      disabled={
+                        purchaseMode === "account" ||
+                        !checkoutReady ||
+                        missingWorkspace ||
+                        current ||
+                        accessUnavailable ||
+                        overlap ||
+                        !eligible
+                      }
+                    >
+                      {accessUnavailable
                         ? es
-                          ? "Disponible próximamente"
-                          : "Coming soon"
-                        : key === "akihq_business_addon"
+                          ? "Acceso no disponible"
+                          : "Access unavailable"
+                        : current
                           ? es
-                            ? "Añadir a AkiHQ Pro"
-                            : "Add to AkiHQ Pro"
-                          : es
-                            ? "Elegir plan"
-                            : "Choose plan"}
-                  </button>
-                </form>
+                            ? "Plan incluido"
+                            : "Plan included"
+                          : overlap
+                            ? es
+                              ? "Incluido en tu plan actual"
+                              : "Covered by your current plan"
+                            : !checkoutReady
+                              ? es
+                                ? "Disponible próximamente"
+                                : "Coming soon"
+                              : missingWorkspace
+                                ? es
+                                  ? "Prepara un espacio de trabajo"
+                                  : "Prepare a workspace"
+                                : !eligible
+                                  ? es
+                                    ? "Requiere AkiHQ Pro"
+                                    : "Requires AkiHQ Pro"
+                                  : key === "akihq_business_addon"
+                                    ? es
+                                      ? "Añadir a AkiHQ Pro"
+                                      : "Add to AkiHQ Pro"
+                                    : es
+                                      ? "Elegir plan"
+                                      : "Choose plan"}
+                    </button>
+                  </form>
+                )}
+                {!accountHandoff && blocked && (
+                  <p className={styles.blockedReason}>
+                    <span>{blocked.text}</span>
+                    {blocked.href && (
+                      <Link href={blocked.href}>{blocked.action}</Link>
+                    )}
+                  </p>
+                )}
               </div>
             </article>
           );

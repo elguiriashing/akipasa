@@ -313,6 +313,17 @@ it("keeps every active filter in the empty-state Map handoff", async () => {
   expect(destination.searchParams.get("accessible")).toBe("on");
 });
 
+it("offers an area reset instead of a no-op radius action at 100 km", async () => {
+  render(await DiscoverPage(pageProps("en", { radius: "100" })));
+
+  expect(
+    screen.queryByRole("link", { name: "Expand radius" }),
+  ).not.toBeInTheDocument();
+  expect(
+    screen.getByRole("link", { name: "Change area and reset filters" }),
+  ).toHaveAttribute("href", "/en");
+});
+
 describe("truthful homepage venue status", () => {
   it.each(["en", "es"] as const)(
     "keeps claimed and unclaimed rows distinct in %s",
