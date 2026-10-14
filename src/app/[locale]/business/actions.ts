@@ -187,6 +187,15 @@ export async function submitVenueClaim(formData: FormData) {
     locale,
     `/${locale}/business?view=claims&venueId=${parsed.data.venueId}`,
   );
+  // A published listing cannot be reclaimed after an approved claim.
+  // This is a server-side guard in addition to hiding the public CTA.
+  const { data: alreadyClaimed, error: ownershipCheckError } = await supabase.rpc(
+    "public_venue_is_claimed",
+    { p_venue: parsed.data.venueId },
+  );
+  if (ownershipCheckError || alreadyClaimed !== false) {
+    redirect(`/${locale}/business?view=claims&error=already-claimed`);
+  }
   const claimId = crypto.randomUUID();
   const { error } = await supabase.from("venue_claims").insert({
     id: claimId,
