@@ -246,9 +246,6 @@ export default async function BusinessPage({
         (occurrence) => new Date(occurrence.ends_at).getTime() < now,
       ),
   );
-  const currentEvents = businessEvents.filter(
-    (event) => !archivedEvents.includes(event) && !pastEvents.includes(event),
-  );
   const analytics =
     view === "analytics" || view === "growth"
       ? await Promise.all(
