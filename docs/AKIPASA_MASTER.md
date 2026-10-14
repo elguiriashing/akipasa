@@ -965,7 +965,6 @@ existing inert action tests pass; full CI and live-source verification remain ga
 
 Tablet browser acceptance retains its existing route, portal-smoke and layout/Spotlight commands while running them in three independent GitHub Actions jobs. Route suites use two Playwright workers; superseded runs for the same PR are cancelled, and each job uploads distinct evidence artifacts. The existing `tablet-ui` required-check name remains available. This changes CI orchestration only; application behavior and test assertions are unchanged. Full exact-head CI and branch-protection verification remain required before merge. If parallel browser resource pressure causes instability, return route workers to one while retaining job parallelism.
 
-
 ## 2026-10-14 | Gated Cloudflare production deployment
 
 After the `Verify public AkiSuite app` workflow succeeds on `master`, the deployment workflow checks out that exact commit, runs the Cloudflare build, and deploys with `wrangler deploy --keep-vars`. It loads `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` from the existing `automation-production` GitHub environment. Pull-request runs cannot deploy. The existing post-merge live smoke remains the public-route acceptance gate. If the environment blocks the deploy, resolve its access or approval requirement in GitHub; never use a temporary Cloudflare account.

@@ -1370,7 +1370,6 @@ Eight focused cases cover import deferral, immediate appearance, mouse/keyboard 
 
 Scope: GitHub Actions tablet workflow only. Existing tablet route, AkiDuermo route, portal smoke and layout/Spotlight tests remain required; route suites run with two workers in a separate job, other suites run concurrently, and stale same-PR workflow runs are cancelled. Evidence artifacts use distinct job names and `tablet-ui` remains the required check. No app, database, permission or test assertion changes. Validation: an initial hosted run failed the contract documentation gate; this entry and the master contract update address that failure. Fresh exact-head checks must pass before merge. Monitor parallel runner pressure; reverting route worker count to one preserves job concurrency.
 
-
 ## 2026-10-14 | Gated Cloudflare production deploy
 
 Scope: GitHub Actions production deploy workflow. A successful `Verify public AkiSuite app` run on `master` enables a deployment of the triggering commit through the documented Wrangler command, preserving Worker variables. Credentials are sourced from the established `automation-production` environment; pull requests have no deployment access. Existing live smoke is the acceptance gate. No application code, database, auth, schema, or customer data changed. Rollback uses the prior Worker version if a version is published; a failed pre-publication attempt leaves the current Worker unchanged.
