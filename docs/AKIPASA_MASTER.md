@@ -804,3 +804,7 @@ pricing, consent and action boundaries remain as documented in the three
 original recovery entries. No SQL, authorization/payment rollout, customer
 records or email replay is included; drafts #133/#140 stay excluded. Source
 revert rolls back these repairs without rewriting catalogue/media/history.
+
+## 2026-10-14 | AkiBusiness event workspace and ownership signal (PR #167)
+
+Business event listings use a nine-card paginated responsive catalogue, text search, and localized current/past/archived filters. Event creation stays collapsed until requested and uses a media-library dialog with keyboard focus containment, Escape close, and return to its opener. The public claim CTA and claim submission guard depend on the privacy-safe `public_venue_is_claimed` RPC, which checks approved claims and venue membership independently of edited venue content and fails closed. Install the migration before enabling this application version. This change keeps server authorization and event reuse actions unchanged. Focused source contract tests and full hosted CI must pass before merging. Rollback requires restoring old UI with compatible ownership RPC policy and preserving legitimate claim records.
