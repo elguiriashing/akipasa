@@ -26,6 +26,8 @@ for (const locale of ["en", "es"] as const) {
         // Exercise the same Next server through the stay virtual host, without real credentials.
         await page.route(/http:\/\/127\.0\.0\.1:\d+\//, async (route) => {
           const path = new URL(route.request().url()).pathname;
+          // Compiled assets are host-independent; keep their native browser transport.
+          if (path.startsWith("/_next/static/")) return route.continue();
           if (path === "/api/stays") {
             const hasDates = new URL(route.request().url()).searchParams.has(
               "checkIn",

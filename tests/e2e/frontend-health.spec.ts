@@ -123,6 +123,8 @@ for (const locale of ["en", "es"] as const)
         // Use the production stay-host rewrite against the isolated Next server.
         await page.route(/http:\/\/127\.0\.0\.1:\d+\//, async (route) => {
           const path = new URL(route.request().url()).pathname;
+          // Compiled assets are host-independent; keep their native browser transport.
+          if (path.startsWith("/_next/static/")) return route.continue();
           if (path === "/api/stays")
             return route.fulfill({
               json: { rows: [], total: 0, availabilityChecked: false },

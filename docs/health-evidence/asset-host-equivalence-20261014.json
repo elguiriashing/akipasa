@@ -1,0 +1,531 @@
+{
+  "source": "8613edbd962a978dc3d85f9f7b9aafcc4da54a56",
+  "timestamp": "2026-10-14T02:10:27.894Z",
+  "build": "isolated Next15.5.27 production build",
+  "fixture": "anonymous, disposable loopback configuration",
+  "comparisons": [
+    {
+      "path": "/_next/static/css/58790ae5050d8e9b.css",
+      "identical": true,
+      "results": [
+        {
+          "host": "127.0.0.1:3173",
+          "status": 200,
+          "type": "text/css; charset=UTF-8",
+          "bytes": 408129,
+          "sha256": "a29d5b033161c7cc54ff83c50011c57f866e37652b1e3eaaffa852ab3c704710"
+        },
+        {
+          "host": "akiduermo.akipasa.com",
+          "status": 200,
+          "type": "text/css; charset=UTF-8",
+          "bytes": 408129,
+          "sha256": "a29d5b033161c7cc54ff83c50011c57f866e37652b1e3eaaffa852ab3c704710"
+        },
+        {
+          "host": "business.akipasa.com",
+          "status": 200,
+          "type": "text/css; charset=UTF-8",
+          "bytes": 408129,
+          "sha256": "a29d5b033161c7cc54ff83c50011c57f866e37652b1e3eaaffa852ab3c704710"
+        }
+      ]
+    },
+    {
+      "path": "/_next/static/css/367ce8464040c8e8.css",
+      "identical": true,
+      "results": [
+        {
+          "host": "127.0.0.1:3173",
+          "status": 200,
+          "type": "text/css; charset=UTF-8",
+          "bytes": 71138,
+          "sha256": "2aeb7dcbcce76602904452e18ddcb51e115383ee33ac3990b84765911a28b529"
+        },
+        {
+          "host": "akiduermo.akipasa.com",
+          "status": 200,
+          "type": "text/css; charset=UTF-8",
+          "bytes": 71138,
+          "sha256": "2aeb7dcbcce76602904452e18ddcb51e115383ee33ac3990b84765911a28b529"
+        },
+        {
+          "host": "business.akipasa.com",
+          "status": 200,
+          "type": "text/css; charset=UTF-8",
+          "bytes": 71138,
+          "sha256": "2aeb7dcbcce76602904452e18ddcb51e115383ee33ac3990b84765911a28b529"
+        }
+      ]
+    },
+    {
+      "path": "/_next/static/css/40ae9a4c3ab92042.css",
+      "identical": true,
+      "results": [
+        {
+          "host": "127.0.0.1:3173",
+          "status": 200,
+          "type": "text/css; charset=UTF-8",
+          "bytes": 6244,
+          "sha256": "8732e01fe4df89029fb831797853d680e6d137ce89aa0c629307e8d55cc4ef19"
+        },
+        {
+          "host": "akiduermo.akipasa.com",
+          "status": 200,
+          "type": "text/css; charset=UTF-8",
+          "bytes": 6244,
+          "sha256": "8732e01fe4df89029fb831797853d680e6d137ce89aa0c629307e8d55cc4ef19"
+        },
+        {
+          "host": "business.akipasa.com",
+          "status": 200,
+          "type": "text/css; charset=UTF-8",
+          "bytes": 6244,
+          "sha256": "8732e01fe4df89029fb831797853d680e6d137ce89aa0c629307e8d55cc4ef19"
+        }
+      ]
+    },
+    {
+      "path": "/_next/static/css/77c14b6c6392442c.css",
+      "identical": true,
+      "results": [
+        {
+          "host": "127.0.0.1:3173",
+          "status": 200,
+          "type": "text/css; charset=UTF-8",
+          "bytes": 39317,
+          "sha256": "c33a72fac09eda4423091eac21bc53aa23577439942e6bc1f8bb93783b64ee4c"
+        },
+        {
+          "host": "akiduermo.akipasa.com",
+          "status": 200,
+          "type": "text/css; charset=UTF-8",
+          "bytes": 39317,
+          "sha256": "c33a72fac09eda4423091eac21bc53aa23577439942e6bc1f8bb93783b64ee4c"
+        },
+        {
+          "host": "business.akipasa.com",
+          "status": 200,
+          "type": "text/css; charset=UTF-8",
+          "bytes": 39317,
+          "sha256": "c33a72fac09eda4423091eac21bc53aa23577439942e6bc1f8bb93783b64ee4c"
+        }
+      ]
+    },
+    {
+      "path": "/_next/static/chunks/webpack-e341cc3aade73766.js",
+      "identical": true,
+      "results": [
+        {
+          "host": "127.0.0.1:3173",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 5258,
+          "sha256": "8f800b8e51242bdedbe85adf71616bb8f5da06c64cf6633656f9977bd45b87a2"
+        },
+        {
+          "host": "akiduermo.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 5258,
+          "sha256": "8f800b8e51242bdedbe85adf71616bb8f5da06c64cf6633656f9977bd45b87a2"
+        },
+        {
+          "host": "business.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 5258,
+          "sha256": "8f800b8e51242bdedbe85adf71616bb8f5da06c64cf6633656f9977bd45b87a2"
+        }
+      ]
+    },
+    {
+      "path": "/_next/static/chunks/a872aadd-e96b7f02d4182148.js",
+      "identical": true,
+      "results": [
+        {
+          "host": "127.0.0.1:3173",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 173023,
+          "sha256": "d672b54b0bec0e32c6777f9db235fd79686a7f162e27724da938977bd9e02618"
+        },
+        {
+          "host": "akiduermo.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 173023,
+          "sha256": "d672b54b0bec0e32c6777f9db235fd79686a7f162e27724da938977bd9e02618"
+        },
+        {
+          "host": "business.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 173023,
+          "sha256": "d672b54b0bec0e32c6777f9db235fd79686a7f162e27724da938977bd9e02618"
+        }
+      ]
+    },
+    {
+      "path": "/_next/static/chunks/6725-a2cd9dabd88ea34c.js",
+      "identical": true,
+      "results": [
+        {
+          "host": "127.0.0.1:3173",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 174412,
+          "sha256": "732e44aecf60420ba9e01c2de23a9900ae8129433e2355f9b8d45e123b9a2384"
+        },
+        {
+          "host": "akiduermo.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 174412,
+          "sha256": "732e44aecf60420ba9e01c2de23a9900ae8129433e2355f9b8d45e123b9a2384"
+        },
+        {
+          "host": "business.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 174412,
+          "sha256": "732e44aecf60420ba9e01c2de23a9900ae8129433e2355f9b8d45e123b9a2384"
+        }
+      ]
+    },
+    {
+      "path": "/_next/static/chunks/main-app-50b8b29d872911c4.js",
+      "identical": true,
+      "results": [
+        {
+          "host": "127.0.0.1:3173",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 573,
+          "sha256": "ed6461ad5e71ac9621276c07b74fc28cd6d26046d147c11c708b3679070fa136"
+        },
+        {
+          "host": "akiduermo.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 573,
+          "sha256": "ed6461ad5e71ac9621276c07b74fc28cd6d26046d147c11c708b3679070fa136"
+        },
+        {
+          "host": "business.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 573,
+          "sha256": "ed6461ad5e71ac9621276c07b74fc28cd6d26046d147c11c708b3679070fa136"
+        }
+      ]
+    },
+    {
+      "path": "/_next/static/chunks/app/layout-02149e6245c626ea.js",
+      "identical": true,
+      "results": [
+        {
+          "host": "127.0.0.1:3173",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 17095,
+          "sha256": "6b4e0f5637fdd537d5d96fb03a2eefbb610c8e5c09b320ed79eb125588a85312"
+        },
+        {
+          "host": "akiduermo.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 17095,
+          "sha256": "6b4e0f5637fdd537d5d96fb03a2eefbb610c8e5c09b320ed79eb125588a85312"
+        },
+        {
+          "host": "business.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 17095,
+          "sha256": "6b4e0f5637fdd537d5d96fb03a2eefbb610c8e5c09b320ed79eb125588a85312"
+        }
+      ]
+    },
+    {
+      "path": "/_next/static/chunks/9463-09fba314308cca47.js",
+      "identical": true,
+      "results": [
+        {
+          "host": "127.0.0.1:3173",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 8560,
+          "sha256": "b1d40e53dacfabd473d28493d8c08e08c955810d099bc8c4f9b6653cfdffc1dd"
+        },
+        {
+          "host": "akiduermo.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 8560,
+          "sha256": "b1d40e53dacfabd473d28493d8c08e08c955810d099bc8c4f9b6653cfdffc1dd"
+        },
+        {
+          "host": "business.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 8560,
+          "sha256": "b1d40e53dacfabd473d28493d8c08e08c955810d099bc8c4f9b6653cfdffc1dd"
+        }
+      ]
+    },
+    {
+      "path": "/_next/static/chunks/8080-99c39be04aab075d.js",
+      "identical": true,
+      "results": [
+        {
+          "host": "127.0.0.1:3173",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 13664,
+          "sha256": "d8d95d228d4b521c7dce985ad436781bfb050bb1d4c67e7f777b408d8a49ddfe"
+        },
+        {
+          "host": "akiduermo.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 13664,
+          "sha256": "d8d95d228d4b521c7dce985ad436781bfb050bb1d4c67e7f777b408d8a49ddfe"
+        },
+        {
+          "host": "business.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 13664,
+          "sha256": "d8d95d228d4b521c7dce985ad436781bfb050bb1d4c67e7f777b408d8a49ddfe"
+        }
+      ]
+    },
+    {
+      "path": "/_next/static/chunks/7063-f87ed55c43ba4c50.js",
+      "identical": true,
+      "results": [
+        {
+          "host": "127.0.0.1:3173",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 13370,
+          "sha256": "67662f9c754b8f92a222152babc4d0148d930ab41299f1c1570b9eef3088ad56"
+        },
+        {
+          "host": "akiduermo.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 13370,
+          "sha256": "67662f9c754b8f92a222152babc4d0148d930ab41299f1c1570b9eef3088ad56"
+        },
+        {
+          "host": "business.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 13370,
+          "sha256": "67662f9c754b8f92a222152babc4d0148d930ab41299f1c1570b9eef3088ad56"
+        }
+      ]
+    },
+    {
+      "path": "/_next/static/chunks/app/%5Blocale%5D/layout-7f02f7e60a7322cd.js",
+      "identical": true,
+      "results": [
+        {
+          "host": "127.0.0.1:3173",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 77204,
+          "sha256": "16d563faf5736c80833aa185994f49f39ec96a0f91158703c8e2be74bdc816e3"
+        },
+        {
+          "host": "akiduermo.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 77204,
+          "sha256": "16d563faf5736c80833aa185994f49f39ec96a0f91158703c8e2be74bdc816e3"
+        },
+        {
+          "host": "business.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 77204,
+          "sha256": "16d563faf5736c80833aa185994f49f39ec96a0f91158703c8e2be74bdc816e3"
+        }
+      ]
+    },
+    {
+      "path": "/_next/static/chunks/8356-ab823a96e5fdf425.js",
+      "identical": true,
+      "results": [
+        {
+          "host": "127.0.0.1:3173",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 30650,
+          "sha256": "95bac2838cec376d2ba165a549a7523e3b598c9c6dff510b5e767354ab7db973"
+        },
+        {
+          "host": "akiduermo.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 30650,
+          "sha256": "95bac2838cec376d2ba165a549a7523e3b598c9c6dff510b5e767354ab7db973"
+        },
+        {
+          "host": "business.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 30650,
+          "sha256": "95bac2838cec376d2ba165a549a7523e3b598c9c6dff510b5e767354ab7db973"
+        }
+      ]
+    },
+    {
+      "path": "/_next/static/chunks/app/%5Blocale%5D/page-8bf84580a2eab73f.js",
+      "identical": true,
+      "results": [
+        {
+          "host": "127.0.0.1:3173",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 16217,
+          "sha256": "b78d5d10ddf96bdc6358935b3d9b57e647b56ac9b3988fb90d573accdedc1b37"
+        },
+        {
+          "host": "akiduermo.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 16217,
+          "sha256": "b78d5d10ddf96bdc6358935b3d9b57e647b56ac9b3988fb90d573accdedc1b37"
+        },
+        {
+          "host": "business.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 16217,
+          "sha256": "b78d5d10ddf96bdc6358935b3d9b57e647b56ac9b3988fb90d573accdedc1b37"
+        }
+      ]
+    },
+    {
+      "path": "/_next/static/chunks/polyfills-42372ed130431b0a.js",
+      "identical": true,
+      "results": [
+        {
+          "host": "127.0.0.1:3173",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 112594,
+          "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683"
+        },
+        {
+          "host": "akiduermo.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 112594,
+          "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683"
+        },
+        {
+          "host": "business.akipasa.com",
+          "status": 200,
+          "type": "application/javascript; charset=UTF-8",
+          "bytes": 112594,
+          "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683"
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "locale": "en",
+      "host": "127.0.0.1:3173",
+      "status": 200,
+      "product": "akipasa",
+      "assetCount": 17
+    },
+    {
+      "locale": "en",
+      "host": "akiduermo.akipasa.com",
+      "status": 200,
+      "product": "akiduermo",
+      "assetCount": 17
+    },
+    {
+      "locale": "en",
+      "host": "business.akipasa.com",
+      "status": 200,
+      "product": "akibusiness",
+      "assetCount": 17
+    },
+    {
+      "locale": "es",
+      "host": "127.0.0.1:3173",
+      "status": 200,
+      "product": "akipasa",
+      "assetCount": 17
+    },
+    {
+      "locale": "es",
+      "host": "akiduermo.akipasa.com",
+      "status": 200,
+      "product": "akiduermo",
+      "assetCount": 17
+    },
+    {
+      "locale": "es",
+      "host": "business.akipasa.com",
+      "status": 200,
+      "product": "akibusiness",
+      "assetCount": 17
+    }
+  ],
+  "branding": [
+    {
+      "path": "/manifest.webmanifest",
+      "host": "127.0.0.1:3173",
+      "status": 200,
+      "bytes": 719,
+      "sha256": "81a7dedb3dbcc799f0212e42d997cf1a3851e77d672713ecca47299d0d2c81d6",
+      "name": "AkiPasa"
+    },
+    {
+      "path": "/manifest.webmanifest",
+      "host": "akiduermo.akipasa.com",
+      "status": 200,
+      "bytes": 626,
+      "sha256": "01508fe820b79d9915e5ba8225f2c28f38c2e61d8b5e7b21c7648e4afa223145",
+      "name": "AkiDuermo"
+    },
+    {
+      "path": "/manifest.webmanifest",
+      "host": "business.akipasa.com",
+      "status": 200,
+      "bytes": 653,
+      "sha256": "09f0831805fcbe4fd6c2fa4384f6d400c972f1092106d88e9f5ea10bfd44072d",
+      "name": "AkiBusiness"
+    },
+    {
+      "path": "/pwa-icon.svg",
+      "host": "127.0.0.1:3173",
+      "status": 200,
+      "bytes": 415,
+      "sha256": "a81cc0e59ff9cf8dca2849e1c945168e66250bcf42835b3cb5a47886329e5aaf"
+    },
+    {
+      "path": "/pwa-icon.svg",
+      "host": "akiduermo.akipasa.com",
+      "status": 200,
+      "bytes": 415,
+      "sha256": "ea82a08507dbdf582e2302c16faa52a802fb1a2f4f0eefd6010f02e5e791667b"
+    },
+    {
+      "path": "/pwa-icon.svg",
+      "host": "business.akipasa.com",
+      "status": 200,
+      "bytes": 415,
+      "sha256": "6170c0338b8e4090802a0ae152dbcb39fa5a48580d3d4ee26d69dde1fedf04e6"
+    }
+  ]
+}
