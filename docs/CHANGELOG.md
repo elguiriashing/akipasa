@@ -933,3 +933,9 @@ Completed the AkiDuermo room-night request candidate: explicit booking modes, re
 ## 2026-10-14
 
 - Measure claim-picker browser geometry in one rendered state after the exact completed search response; retain strict overlap/natural-click acceptance and add held-loading bounds coverage.
+
+## 2026-10-14 — Customer AI boundaries
+
+- Separate customer and operator model history; restart historical customer context safely while retaining stored records.
+- Enforce the request's effective advertised tool set during execution, preserving existing validation, approval, budgets and audit.
+- Add actual gateway/client/provider fixtures and persisted-state regression coverage. Release gates and limitations are recorded in the master contract and impact register.
