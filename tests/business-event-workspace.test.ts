@@ -13,6 +13,8 @@ describe("AkiBusiness event catalogue and media selection contracts", () => {
   });
   it("supports both languages, responsive grids, and accessible filter state", () => {
     expect(catalogue).toContain('locale === "es"');
+    expect(catalogue).toContain("Current and upcoming");
+    expect(catalogue).toContain("Actuales y próximos");
     expect(catalogue).toContain("aria-pressed={status === filter.value}");
     expect(catalogue).toContain("max-width: 850px");
     expect(catalogue).toContain("max-width: 540px");
