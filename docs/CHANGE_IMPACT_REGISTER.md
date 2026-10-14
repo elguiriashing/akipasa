@@ -1,5 +1,40 @@
 # Change Impact Register
 
+## 2026-10-14 | AkiConduzco mobility foundation (implementation candidate)
+
+- **Request / before:** AkiPasa has no car-rental discovery or fleet tools. Its
+  general venue vertical only models activities/accommodation, and the existing
+  AkiBusiness venue claim flow is not appropriate for a rental marketplace.
+- **Implemented:** add an independent AkiConduzco brand and host, rental
+  company/vehicle/availability/request records, public list/map/search, account
+  booking view and a separate AkiBusiness mobility workspace. Rental operators
+  create a pending listing directly; no venue claim is used. Booking requests
+  require owner confirmation; no payment or automatic confirmation is implied.
+- **Dependencies / impact:** middleware host/path/method routing, SSR auth
+  callbacks and safe destinations, localized EN/ES copy and metadata, PWA
+  branding, public API bounds, Supabase RLS and tenant ownership, availability
+  conflict checks, sitemap/robots policy, business navigation and deployment
+  host routing. Existing AkiPasa/AkiDuermo discovery, venue ownership and claims
+  remain unchanged. No external business data is imported by this change.
+- **Acceptance matrix:** anonymous/authenticated visitor and operator; EN/ES;
+  mobile/desktop; empty/error/loading/populated states; public vs pending
+  company visibility; owner vs unrelated user; unavailable dates; booking
+  request/owner decision; safe login return; map route; host branding.
+- **Evidence:** schema and account-owned `TEST ONLY` company are present in
+  development Supabase project `vhpbvcfkcteswlsdjrfl`; the test company is
+  pending review and cannot appear in public search. Product route, API,
+  operator tools, staff queue, account surface, sitemap and host routing are
+  implemented. Formatting, lint, TypeScript, production build, database safety
+  and conflict tests, automation checks, and all secondary product suites pass;
+  23 focused AkiConduzco/PWA/staff cases pass. The full root suite passed 626
+  cases but hit its existing 5-second timeout in the unrelated PGlite Spanish
+  text test; that test passes in isolation. Production schema, production
+  DNS/Worker route, Auth redirect allowlist, deployment and live booking are
+  not established.
+- **Rollback:** remove the new routes/components/migration and product branding;
+  if the additive schema migration has been applied, use a separately reviewed
+  forward migration rather than dropping customer records.
+
 ## 2026-10-14 | Individual venue event search and pagination (PR #172)
 
 - **Scope:** AkiBusiness per-venue Events workspace and new client-side browser.

@@ -14,7 +14,12 @@ import { headers } from "next/headers";
 import { isLocale } from "@/lib/config";
 import { serializeJsonLd, siteOrigin } from "@/lib/seo";
 
-export const viewport: Viewport = { themeColor: "#14213D" };
+export async function generateViewport(): Promise<Viewport> {
+  const host = (await headers()).get("host")?.split(":")[0]?.toLowerCase();
+  return {
+    themeColor: host === "akiconduzco.akipasa.com" ? "#ed3345" : "#14213D",
+  };
+}
 
 const sharedMetadata: Metadata = {
   metadataBase: new URL("https://akipasa.com"),
@@ -58,13 +63,17 @@ export async function generateMetadata(): Promise<Metadata> {
       ? "business"
       : host === "akiduermo.akipasa.com"
         ? "duermo"
-        : "akipasa";
+        : host === "akiconduzco.akipasa.com"
+          ? "conduzco"
+          : "akipasa";
   const name =
     brand === "business"
       ? "AkiBusiness"
       : brand === "duermo"
         ? "AkiDuermo"
-        : config.productName;
+        : brand === "conduzco"
+          ? "AkiConduzco"
+          : config.productName;
   return {
     ...sharedMetadata,
     applicationName: name,
@@ -74,11 +83,39 @@ export async function generateMetadata(): Promise<Metadata> {
         : { default: name, template: `%s · ${name}` },
     icons: {
       icon: [
-        { url: `/pwa/${brand}-192.png`, type: "image/png", sizes: "192x192" },
+        {
+          url:
+            brand === "conduzco"
+              ? "/brand/conduzco-icon.svg"
+              : `/pwa/${brand}-192.png`,
+          type: brand === "conduzco" ? "image/svg+xml" : "image/png",
+          sizes: "192x192",
+        },
       ],
-      apple: `/pwa/${brand}-192.png`,
-      shortcut: `/pwa/${brand}-192.png`,
+      apple:
+        brand === "conduzco"
+          ? "/brand/conduzco-icon.svg"
+          : `/pwa/${brand}-192.png`,
+      shortcut:
+        brand === "conduzco"
+          ? "/brand/conduzco-icon.svg"
+          : `/pwa/${brand}-192.png`,
     },
+    ...(brand === "conduzco"
+      ? {
+          description:
+            "Discover local rental cars for your events, stays and trips across Spain.",
+          openGraph: {
+            type: "website" as const,
+            siteName: "AkiConduzco",
+            title: "AkiConduzco · Find your way there",
+            url: "https://akiconduzco.akipasa.com",
+            description: "Discover local rental cars for your trip.",
+            locale: "en_GB",
+            alternateLocale: "es_ES",
+          },
+        }
+      : {}),
   };
 }
 
@@ -89,6 +126,7 @@ export default async function RootLayout({
   const product = requestHeaders.get("x-akipasa-product");
   const isAkiDuermo = product === "akiduermo";
   const isAkiBusiness = product === "akibusiness";
+  const isAkiConduzco = product === "akiconduzco";
   const requestLocale = requestHeaders.get("x-akipasa-locale");
   const locale =
     requestLocale && isLocale(requestLocale) ? requestLocale : "es";
@@ -96,7 +134,13 @@ export default async function RootLayout({
     <html lang={locale}>
       <body
         data-product={
-          isAkiDuermo ? "akiduermo" : isAkiBusiness ? "akibusiness" : undefined
+          isAkiDuermo
+            ? "akiduermo"
+            : isAkiBusiness
+              ? "akibusiness"
+              : isAkiConduzco
+                ? "akiconduzco"
+                : undefined
         }
       >
         <script
@@ -106,16 +150,20 @@ export default async function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               "@id": `${siteOrigin}/#website`,
-              name: isAkiDuermo
-                ? "AkiDuermo"
-                : isAkiBusiness
-                  ? "AkiBusiness"
-                  : "AkiPasa",
-              url: isAkiDuermo
-                ? "https://akiduermo.akipasa.com"
-                : isAkiBusiness
-                  ? "https://business.akipasa.com"
-                  : siteOrigin,
+              name: isAkiConduzco
+                ? "AkiConduzco"
+                : isAkiDuermo
+                  ? "AkiDuermo"
+                  : isAkiBusiness
+                    ? "AkiBusiness"
+                    : "AkiPasa",
+              url: isAkiConduzco
+                ? "https://akiconduzco.akipasa.com"
+                : isAkiDuermo
+                  ? "https://akiduermo.akipasa.com"
+                  : isAkiBusiness
+                    ? "https://business.akipasa.com"
+                    : siteOrigin,
               inLanguage: ["es", "en"],
             }),
           }}

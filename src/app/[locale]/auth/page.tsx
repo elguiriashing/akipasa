@@ -9,6 +9,7 @@ import {
   signUpWithPassword,
 } from "./actions";
 import { safeStayDestination } from "@/lib/akiduermo-routing";
+import { safeConduzcoDestination } from "@/lib/akiconduzco-routing";
 import {
   AuthEmailInput,
   AuthSubmitButton,
@@ -28,11 +29,15 @@ export default async function AuthPage({
   const isBusinessHost =
     requestHeaders.get("x-akipasa-product") === "akibusiness";
   const isStayHost = requestHeaders.get("x-akipasa-product") === "akiduermo";
+  const isConduzcoHost =
+    requestHeaders.get("x-akipasa-product") === "akiconduzco";
   const es = locale === "es";
   const next = isStayHost
     ? safeStayDestination(query.next)
-    : query.next ||
-      (isBusinessHost ? `/${locale}/business` : `/${locale}/account`);
+    : isConduzcoHost
+      ? safeConduzcoDestination(query.next)
+      : query.next ||
+        (isBusinessHost ? `/${locale}/business` : `/${locale}/account`);
   const businessIntent = next.startsWith(`/${locale}/business/apply`);
   const mode = ["signup", "magic", "recover"].includes(query.mode ?? "")
     ? query.mode
@@ -79,50 +84,64 @@ export default async function AuthPage({
     query.error === "password-policy" || query.error === "signin";
   return (
     <main
-      className={`auth-page auth-product-theme ${isStayHost ? "auth-theme-stay" : isBusinessHost ? "auth-theme-business" : "auth-theme-akipasa"}`}
+      className={`auth-page auth-product-theme ${isStayHost ? "auth-theme-stay" : isConduzcoHost ? "auth-theme-conduzco" : isBusinessHost ? "auth-theme-business" : "auth-theme-akipasa"}`}
     >
       <section className="auth-intro">
         <div className="auth-intro-copy">
-          {isStayHost && <a href={`/?lang=${locale}`}>← AkiDuermo</a>}
+          {(isStayHost || isConduzcoHost) && (
+            <a href={`/?lang=${locale}`}>
+              ← {isConduzcoHost ? "AkiConduzco" : "AkiDuermo"}
+            </a>
+          )}
           <div className="eyebrow">
-            {isStayHost
-              ? "AkiDuermo"
-              : isBusinessHost
-                ? "AkiBusiness"
-                : businessIntent
-                  ? es
-                    ? "Paso 1 de 3 · Añade tu negocio"
-                    : "Step 1 of 3 · Add your business"
-                  : es
-                    ? "Cuenta"
-                    : "Account"}
+            {isConduzcoHost
+              ? "AkiConduzco"
+              : isStayHost
+                ? "AkiDuermo"
+                : isBusinessHost
+                  ? "AkiBusiness"
+                  : businessIntent
+                    ? es
+                      ? "Paso 1 de 3 · Añade tu negocio"
+                      : "Step 1 of 3 · Add your business"
+                    : es
+                      ? "Cuenta"
+                      : "Account"}
           </div>
           <h1>
-            {isStayHost
+            {isConduzcoHost
               ? es
-                ? "Tu próxima estancia empieza aquí"
-                : "Your next stay starts here"
-              : isBusinessHost
+                ? "Tu cuenta AkiConduzco"
+                : "Your AkiConduzco account"
+              : isStayHost
                 ? es
-                  ? "Gestiona tu negocio"
-                  : "Manage your business"
-                : businessIntent
+                  ? "Tu próxima estancia empieza aquí"
+                  : "Your next stay starts here"
+                : isBusinessHost
                   ? es
-                    ? "Primero, crea tu cuenta gratuita"
-                    : "First, create your free account"
-                  : es
-                    ? "Tu cuenta AkiPasa"
-                    : "Your AkiPasa account"}
+                    ? "Gestiona tu negocio"
+                    : "Manage your business"
+                  : businessIntent
+                    ? es
+                      ? "Primero, crea tu cuenta gratuita"
+                      : "First, create your free account"
+                    : es
+                      ? "Tu cuenta AkiPasa"
+                      : "Your AkiPasa account"}
           </h1>
-          {isStayHost && (
+          {(isStayHost || isConduzcoHost) && (
             <p className="akiduermo-auth-promise">
-              {es
-                ? "Guarda tus favoritos, organiza tus escapadas y vuelve a tus reservas cuando quieras."
-                : "Save your favourites, plan the next escape and find every stay in one place."}
+              {isConduzcoHost
+                ? es
+                  ? "Guarda tus solicitudes de alquiler y vuelve a los detalles de tu viaje cuando quieras."
+                  : "Keep your rental requests and trip details together in one place."
+                : es
+                  ? "Guarda tus favoritos, organiza tus escapadas y vuelve a tus reservas cuando quieras."
+                  : "Save your favourites, plan the next escape and find every stay in one place."}
             </p>
           )}
         </div>
-        {!isStayHost && (
+        {!isStayHost && !isConduzcoHost && (
           <aside className="auth-product-portals">
             <span>{es ? "Elige tu espacio" : "Choose your workspace"}</span>
             <a

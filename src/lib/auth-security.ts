@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { safeStayDestination, stayOrigin } from "./akiduermo-routing";
+import { conduzcoOrigin, safeConduzcoDestination } from "./akiconduzco-routing";
 
 export const passwordSchema = z
   .string()
@@ -28,9 +29,9 @@ export function safeAuthDestinationForOrigin(
   requested: string | undefined,
   origin: string,
 ) {
-  return origin === stayOrigin
-    ? safeStayDestination(requested)
-    : safeAuthDestination(locale, requested);
+  if (origin === stayOrigin) return safeStayDestination(requested);
+  if (origin === conduzcoOrigin) return safeConduzcoDestination(requested);
+  return safeAuthDestination(locale, requested);
 }
 
 export function taskFromAuthCallback(

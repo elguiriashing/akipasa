@@ -8,6 +8,7 @@ export type StaffModerationCounts = {
   offers: number | null;
   community: number | null;
   claims: number | null;
+  rentals: number | null;
 };
 
 export function summarizeStaffModerationCounts(counts: StaffModerationCounts) {
@@ -17,6 +18,7 @@ export function summarizeStaffModerationCounts(counts: StaffModerationCounts) {
     counts.offers,
     counts.community,
     counts.claims,
+    counts.rentals,
   ];
   const complete = values.every(
     (count): count is number =>
@@ -25,5 +27,11 @@ export function summarizeStaffModerationCounts(counts: StaffModerationCounts) {
   const pending = complete
     ? (values as number[]).reduce((total, count) => total + count, 0)
     : null;
-  return { pending, complete, claims: counts.claims, venues: counts.venues };
+  return {
+    pending,
+    complete,
+    claims: counts.claims,
+    venues: counts.venues,
+    rentals: counts.rentals,
+  };
 }

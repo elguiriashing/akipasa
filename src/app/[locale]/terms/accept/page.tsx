@@ -6,6 +6,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { acceptTerms } from "./actions";
 import { headers } from "next/headers";
 import { safeStayDestination } from "@/lib/akiduermo-routing";
+import { safeConduzcoDestination } from "@/lib/akiconduzco-routing";
 
 export default async function TermsAcceptancePage({
   params,
@@ -17,10 +18,14 @@ export default async function TermsAcceptancePage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
-  const stayHost = (await headers()).get("x-akipasa-product") === "akiduermo";
+  const product = (await headers()).get("x-akipasa-product");
+  const stayHost = product === "akiduermo";
+  const conduzcoHost = product === "akiconduzco";
   const next = stayHost
     ? safeStayDestination(query.next)
-    : safeAuthDestination(locale, query.next);
+    : conduzcoHost
+      ? safeConduzcoDestination(query.next)
+      : safeAuthDestination(locale, query.next);
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },

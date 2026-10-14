@@ -1,5 +1,28 @@
 # Architecture
 
+## AkiConduzco rental marketplace and operator desk (2026-10-14)
+
+AkiConduzco is a dedicated Cloudflare custom-domain application at
+`akiconduzco.akipasa.com`, with independent `car_rental_companies`, vehicles,
+calendar blocks, booking requests and review-audit records. The public root,
+map, company pages, account, manifest, robots and sitemap use the product host
+and brand. Operator tools are a full-screen AkiBusiness workspace at
+`/[locale]/business/mobility`, with fleet, prices, date blocks and request
+management; it does not enter the venue-claim flow.
+
+RLS scopes listings and fleet data to owners, keeps renter contact fields in
+authenticated booking reads, and exposes only availability dates publicly.
+Bounded RPCs calculate quotes from stored prices, make request submission
+idempotent, reject conflicting dates, and require operators to confirm requests.
+Staff review is explicit and audited. No payment, instant booking, supplier
+import or public display of pending companies is implemented. A private
+development-only `TEST ONLY` company under Alex's development account is marked
+pending review and has no customer-facing address.
+
+Development project `vhpbvcfkcteswlsdjrfl` has the additive rental schema and
+the account-owned test company. This proves that project only; it does not prove
+the production database, deployed Worker, DNS, auth configuration or live route.
+
 ## GUI continuity and read-failure states (2026-10-14 approved release candidate)
 
 Workflow return URLs reuse the existing authentication/host allowlists. A small
@@ -17,7 +40,7 @@ with existing same-origin API, authenticated provider gateway and email fallback
 The user approved release; source checks and actual deployment evidence remain
 separate from authenticated production acceptance.
 
-Last updated: 2026-07-31.
+Last updated: 2026-10-14.
 
 ## Overall system architecture
 

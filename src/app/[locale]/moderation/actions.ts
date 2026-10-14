@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { z } from "zod";
 import { requireUser } from "@/lib/auth";
 import { dispatchClaimDecisions } from "@/lib/claim-mail-delivery";
 import {
@@ -45,6 +46,30 @@ export async function moderateItem(formData: FormData) {
   redirect(
     `/${locale}/staff/moderation?updated=decision${claimQuery}${mailQuery}`,
   );
+}
+
+export async function reviewRentalCompany(formData: FormData) {
+  const locale = formData.get("locale") === "en" ? "en" : "es";
+  const parsed = z
+    .object({
+      companyId: z.string().uuid(),
+      status: z.enum(["published", "rejected"]),
+      note: z.string().trim().max(1000).optional().default(""),
+    })
+    .safeParse(Object.fromEntries(formData));
+  if (!parsed.success)
+    redirect(`/${locale}/staff/moderation?queue=rentals&error=review`);
+  const { supabase } = await requireUser(
+    locale,
+    `/${locale}/staff/moderation?queue=rentals`,
+  );
+  const { error } = await supabase.rpc("review_car_rental_company", {
+    p_company: parsed.data.companyId,
+    p_status: parsed.data.status,
+    p_note: parsed.data.note || null,
+  });
+  if (error) redirect(`/${locale}/staff/moderation?queue=rentals&error=review`);
+  redirect(`/${locale}/staff/moderation?queue=rentals&updated=review`);
 }
 
 export async function setAutomaticModeration(formData: FormData) {

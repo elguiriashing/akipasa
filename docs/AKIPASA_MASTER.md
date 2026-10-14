@@ -1,5 +1,28 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-14 | AkiConduzco mobility product (implementation candidate)
+
+AkiConduzco is a proposed car-rental discovery and booking-request product on
+`akiconduzco.akipasa.com`, integrated with AkiPasa trip discovery and the
+AkiBusiness operator portal. It is an independent rental vertical, not a new
+`venues.discovery_vertical`: rental companies, individual vehicles, availability
+and booking requests must not leak into ordinary venue/event or AkiDuermo
+catalogues. Operators create their own rental company profile for review; do not
+reuse venue claiming or grant access to a venue. Public rates and availability
+must be explicit, time-bounded, and distinguish requests from confirmed rentals.
+The first release is request-based and does not imply payment, instant booking,
+or live OTA/partner inventory. Public location records must have a lawful,
+traceable source; no open-data import is included until source coverage,
+licence, attribution and update process are verified.
+
+Cross-surface release checks: EN/ES discovery and map, host-scoped login and safe
+return, renter account and own booking history, AkiBusiness operator setup and
+fleet/rates/availability, pending vs published visibility, owner isolation/RLS,
+date overlap behavior, empty/error states, mobile/tablet/desktop, per-host logo,
+manifest, robots/canonical and sitemap behavior, Cloudflare hostname routing.
+Production schema, DNS, provider integrations and deployment remain separate
+approval/release gates. See `docs/CHANGE_IMPACT_REGISTER.md` for current evidence.
+
 ## 2026-10-14 | Per-venue event browsing
 
 The AkiBusiness individual venue Events workspace offers localized search by title/status, current/past/archived filter counts and nine-event pagination in responsive 3/2/1-column layouts. Existing event management, publication, media, occurrence and deletion forms remain available within expandable event details. Deep links from the main business event catalogue select the correct page and expand the requested event. No database, permission or event-action contract changes.
@@ -237,7 +260,7 @@ Database application revision conflicts use SQLSTATE `PT409` (HTTP 409), never
 - On the AkiDuermo host, localized auth and terms pages use an AkiDuermo header and controls without the AkiPasa consumer sidebar; shared Supabase identity and locale routes remain intact.
 - AkiDuermo Explore, Saved, Map, property and member pages share the same five-link navigation order and fixed placement. Saved uses a compact local search instead of the Explore booking search; the map opens its search and type filters from one disclosure button.
 - `src/app`: Next.js 15.5.21 App Router, locale routes, actions, endpoints. `src/components`: UI. `src/lib`: logic/adapters. React 19 / TypeScript / Tailwind.
-- Public runtime: OpenNext + Cloudflare Workers, `wrangler.jsonc` entry `custom-worker.ts`; Cloudflare routes include `akipasa.com`, `www.akipasa.com`, `business.akipasa.com`, `akiduermo.akipasa.com`. **Verify host routing/redirects and whether all hosts use same worker on every release.**
+- Public runtime: OpenNext + Cloudflare Workers, `wrangler.jsonc` entry `custom-worker.ts`; Cloudflare routes include `akipasa.com`, `www.akipasa.com`, `business.akipasa.com`, `akiduermo.akipasa.com`, and AkiConduzco `akiconduzco.akipasa.com`. **Verify host routing/redirects and whether all hosts use same worker on every release.**
 - Public data: Supabase Auth, PostgreSQL/PostGIS with RLS, RPCs, Storage, Cron. Fixture/Hybrid repository modes are for deterministic testing and hybrid reads; do not leak fixtures into claims of validated public venues.
 - Map: MapLibre, OpenFreeMap style, viewport/pagination/snapshot caching; Cloudflare Durable Object `MAP_SNAPSHOTS` appears in worker config.
 - AkiHQ gateway: Cloudflare service binding `AKIHQ_GATEWAY` to `akihq-integration-gateway`. Business suite is separate from the general discovery user journey.
@@ -353,6 +376,7 @@ Each item must be validated against source route discovery before claiming exhau
 - JPEG/PNG/WebP originals up to 50 MB are decoded and downscaled to at most 2560 pixels per side, exported as JPEG below the existing 10 MB server and 11 MB multipart limits, then uploaded one by one. PDFs retain the sanitized JPEG conversion. The server still validates MIME, bounds, auth and RLS; client compression is convenience, not authorization.
 
 - `akiduermo.akipasa.com`: mobile-first accommodation discovery, listing filters, locale, map redirect and eventual booking pages. Approx. 21k accommodation records is a dated conversation estimate, not a verified current count. Review availability/booking claims against implemented backend.
+- `akiconduzco.akipasa.com`: standalone rental car search, map, operator listings and request-only bookings; fleet tools live in AkiBusiness `/[locale]/business/mobility`. Rental companies are independent records with staff review and owner RLS, never claimed venues. No payments or instant confirmations; validate against current migration and release evidence.
 - Candidate PR #82 adds explicit disabled/external/request settings, property-owned room/unit/rate/block inventory, aggregate public availability, authenticated expiring quotes, atomic idempotent room assignment, owner/customer status transitions, audit/outbox, account history/export and bilingual customer/manager UI. Migration `20261009220000_accommodation_inventory_foundation.sql` must run before application rollout. No online payment, OTA sync or automatic confirmation is implied.
 - Release gate: run `scripts/test-accommodation-sql.mjs` on disposable PostgreSQL 16, the full repository and browser suites, Cloudflare packaging, then authenticated EN/ES owner/customer production smoke. A passing static SQL test or merged PR alone is not evidence of live booking.
 - The AkiBusiness accommodation manager is a compact tabbed WebApp rather than a continuous settings document: a summary strip reports active types/units, occupied units, pending requests and booking mode; one bounded work panel is visible at a time; create/edit inventory controls are disclosure panels; and request mode is visually unavailable until an active type, physical unit and rate exist. Preserve every manager action and EN/ES keyboard access at mobile, tablet/split-screen and desktop widths.

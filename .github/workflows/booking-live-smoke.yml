@@ -30,7 +30,7 @@ jobs:
                   return e.code,url,e.read().decode('utf-8','replace')
               except Exception as e:
                   return 0,url,str(e)
-          markers=[origin+'/api/bookings/release' for origin in ['https://akipasa.com','https://www.akipasa.com','https://business.akipasa.com','https://akiduermo.akipasa.com']]
+          markers=[origin+'/api/bookings/release' for origin in ['https://akipasa.com','https://www.akipasa.com','https://business.akipasa.com','https://akiduermo.akipasa.com','https://akiconduzco.akipasa.com']]
           deadline=time.time()+12*60
           ready=False
           while time.time()<deadline:
@@ -45,7 +45,7 @@ jobs:
                   evidence['checks']+=sample; ready=True; break
               time.sleep(30)
           evidence['edge_release_verified']=ready
-          urls=['https://akipasa.com/en','https://akipasa.com/es','https://www.akipasa.com/en','https://akipasa.com/en/venues/beasty-bites-004b87','https://akipasa.com/es/venues/beasty-bites-004b87','https://akipasa.com/en/account/bookings','https://akipasa.com/es/account/bookings','https://akipasa.com/en/venues/beasty-bites-004b87/book','https://akipasa.com/es/venues/beasty-bites-004b87/book','https://business.akipasa.com/en/auth']
+          urls=['https://akipasa.com/en','https://akipasa.com/es','https://www.akipasa.com/en','https://akipasa.com/en/venues/beasty-bites-004b87','https://akipasa.com/es/venues/beasty-bites-004b87','https://akipasa.com/en/account/bookings','https://akipasa.com/es/account/bookings','https://akipasa.com/en/venues/beasty-bites-004b87/book','https://akipasa.com/es/venues/beasty-bites-004b87/book','https://business.akipasa.com/en/auth','https://akiconduzco.akipasa.com/','https://akiconduzco.akipasa.com/map','https://akiconduzco.akipasa.com/robots.txt','https://akiconduzco.akipasa.com/sitemap.xml']
           for url in urls:
               code,final,body=get(url)
               protected='/account/bookings' in url or urllib.parse.urlparse(url).path.endswith('/book')

@@ -1,7 +1,21 @@
 import type { MetadataRoute } from "next";
+import { headers } from "next/headers";
 import { siteOrigin } from "@/lib/seo";
 
-export default function robots(): MetadataRoute.Robots {
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  const host = (await headers()).get("host")?.split(":")[0]?.toLowerCase();
+  if (host === "akiconduzco.akipasa.com") {
+    const origin = "https://akiconduzco.akipasa.com";
+    return {
+      rules: {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/api/", "/account", "/bookings", "/en/auth/", "/es/auth/"],
+      },
+      sitemap: `${origin}/sitemap.xml`,
+      host: origin,
+    };
+  }
   return {
     rules: {
       userAgent: "*",
