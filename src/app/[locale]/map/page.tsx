@@ -14,7 +14,6 @@ import { discoveryLocationFromQuery } from "@/lib/discovery-location";
 import { eventPriceLabel } from "@/lib/event-price";
 import { msg } from "@/lib/messages";
 import { recommendDiscovery } from "@/lib/personalisation/server";
-import { repository } from "@/lib/repository";
 import { nearbyVenuePage } from "@/lib/unclaimed-venues";
 import { madridLocalDateTimeSchema } from "@/lib/time";
 
@@ -106,26 +105,17 @@ export default async function MapPage({
     recommendations.items,
     resultPage(query.eventPage),
   );
-  const [nationwideEvents, venuePage] = await Promise.all([
-    repository.discover({
-      locality,
-      latitude: searchCenter.latitude,
-      longitude: searchCenter.longitude,
-      radiusKm: 5000,
-      time: "all",
-    }),
-    nearbyVenuePage({
-      center: searchCenter,
-      radiusKm: radius,
-      page: resultPage(query.venuePage),
-    })
-      .then((page) => ({ ...page, unavailable: false }))
-      .catch((error: unknown) => {
-        console.error("Map nearby venues unavailable", error);
-        return { rows: [], total: 0, page: 1, unavailable: true };
-      }),
-  ]);
-  const eventPoints = nationwideEvents.map((result) => ({
+  const venuePage = await nearbyVenuePage({
+    center: searchCenter,
+    radiusKm: radius,
+    page: resultPage(query.venuePage),
+  })
+    .then((page) => ({ ...page, unavailable: false }))
+    .catch((error: unknown) => {
+      console.error("Map nearby venues unavailable", error);
+      return { rows: [], total: 0, page: 1, unavailable: true };
+    });
+  const eventPoints = results.map((result) => ({
     id: result.event.id,
     latitude: result.event.location?.latitude ?? result.venue.latitude,
     longitude: result.event.location?.longitude ?? result.venue.longitude,

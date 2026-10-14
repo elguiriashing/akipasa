@@ -3,6 +3,21 @@
 > Entry point for every human or AI modifying AkiPasa. Established 2026-10-09. **Living engineering contract, not a claim that every production behavior is verified.**
 > Source priority: running code + database schema + production evidence > current tests > these docs > historical handoff notes > chat discussions. If they disagree, investigate; never silently choose the older description.
 
+## 2026-10-14 | Discover and Map filter continuity
+
+The primary desktop and mobile Discover/Map navigation preserves only the shared
+discovery filter contract: selected locality/name/coordinates, radius, time,
+category, price range, dates and accessibility. View-only list and pagination
+parameters are cleared on a switch. Other product routes never inherit discovery
+query state. The no-results Map handoff uses the same helper and contract.
+
+Initial event pins on Map now come from the same personalized, location-bounded and
+filtered recommendation result set as the Map list. Category, time, price, date and
+accessibility selections therefore describe both pins and results. Existing map
+viewport venue-tile loading, selected centre, official event metadata, clustering,
+popup behavior and geolocation controls remain unchanged. No ranking, repository,
+location permission or stored-data change is included.
+
 ## 2026-10-14 | Community contribution recovery and target search
 
 Event suggestions and reports retain their current tab's text, selections and

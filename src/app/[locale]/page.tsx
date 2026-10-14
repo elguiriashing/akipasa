@@ -13,6 +13,7 @@ import { EventCard } from "@/components/EventCard";
 import { DiscoveryIntentSignal } from "@/components/DiscoveryIntentSignal";
 import { nearbyVenuePage } from "@/lib/unclaimed-venues";
 import { discoveryLocationFromQuery } from "@/lib/discovery-location";
+import { discoveryViewHref } from "@/lib/discovery-navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -220,7 +221,7 @@ export default async function DiscoverPage({
             </Link>
             <Link
               className="button button-ghost"
-              href={`/${locale}/map?locality=${encodeURIComponent(locality)}&locationName=${encodeURIComponent(localityName)}&latitude=${searchCenter.latitude}&longitude=${searchCenter.longitude}&radius=${radius}&time=${time}`}
+              href={discoveryViewHref(locale, "map", query)}
             >
               {locale === "es" ? "Explorar mapa" : "Explore map"}
             </Link>

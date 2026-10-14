@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-14 — Discover and Map continuity
+
+- Preserve the shared allowlisted discovery filters when switching list and Map,
+  while clearing pagination and drawer-only state.
+- Carry all active filters through the no-results Map action.
+- Source initial Map event pins from the same filtered recommendations as its list.
+
 ## 2026-10-14 — Community contribution recovery
 
 - Restore failed event-suggestion and report drafts within the current browser tab,

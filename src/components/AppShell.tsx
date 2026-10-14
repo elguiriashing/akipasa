@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { BrandLogo } from "./BrandLogo";
 import { GlobalSearch } from "./GlobalSearch";
@@ -12,6 +12,7 @@ import { ConsoleSwitcher, type ConsoleKey } from "./ConsoleSwitcher";
 import { config, type Locale } from "../lib/config";
 import { msg } from "../lib/messages";
 import { roleCapabilities } from "../lib/roles";
+import { discoveryViewHref } from "../lib/discovery-navigation";
 
 type NavItem = {
   href: string;
@@ -22,9 +23,45 @@ type NavItem = {
 const SIDEBAR_KEY = "akipasa.sidebar.collapsed";
 
 function isActive(pathname: string, href: string) {
+  const target = href.split("?")[0];
   return (
-    pathname === href ||
-    (href.split("/").length > 2 && pathname.startsWith(`${href}/`))
+    pathname === target ||
+    (target.split("/").length > 2 && pathname.startsWith(`${target}/`))
+  );
+}
+
+function PrimaryNavLink({
+  item,
+  locale,
+  pathname,
+  compact,
+  mobile = false,
+}: {
+  item: NavItem;
+  locale: Locale;
+  pathname: string;
+  compact: boolean;
+  mobile?: boolean;
+}) {
+  const query = useSearchParams();
+  const onDiscovery =
+    pathname === `/${locale}` || pathname === `/${locale}/map`;
+  const href =
+    onDiscovery && item.href === `/${locale}`
+      ? discoveryViewHref(locale, "discover", query)
+      : onDiscovery && item.href === `/${locale}/map`
+        ? discoveryViewHref(locale, "map", query)
+        : item.href;
+  return (
+    <Link
+      href={href}
+      className={isActive(pathname, item.href) ? "active" : undefined}
+      aria-current={isActive(pathname, item.href) ? "page" : undefined}
+      title={!mobile && compact ? item.label : undefined}
+    >
+      <Icon name={item.icon} />
+      {(mobile || !compact) && <span>{item.label}</span>}
+    </Link>
   );
 }
 
@@ -190,16 +227,22 @@ export function AppShell({
 
         <nav className="app-rail-nav">
           {primaryNav.map((item) => (
-            <Link
+            <Suspense
               key={item.href}
-              href={item.href}
-              className={isActive(pathname, item.href) ? "active" : undefined}
-              aria-current={isActive(pathname, item.href) ? "page" : undefined}
-              title={compact ? item.label : undefined}
+              fallback={
+                <Link href={item.href}>
+                  <Icon name={item.icon} />
+                  {!compact && <span>{item.label}</span>}
+                </Link>
+              }
             >
-              <Icon name={item.icon} />
-              {!compact && <span>{item.label}</span>}
-            </Link>
+              <PrimaryNavLink
+                item={item}
+                locale={locale}
+                pathname={pathname}
+                compact={compact}
+              />
+            </Suspense>
           ))}
           {signedIn && workspaceNav.length > 0 && (
             <>
@@ -307,15 +350,23 @@ export function AppShell({
         aria-label={es ? "Navegación" : "Navigation"}
       >
         {primaryNav.map((item) => (
-          <Link
+          <Suspense
             key={item.href}
-            href={item.href}
-            className={isActive(pathname, item.href) ? "active" : undefined}
-            aria-current={isActive(pathname, item.href) ? "page" : undefined}
+            fallback={
+              <Link href={item.href}>
+                <Icon name={item.icon} />
+                <span>{item.label}</span>
+              </Link>
+            }
           >
-            <Icon name={item.icon} />
-            <span>{item.label}</span>
-          </Link>
+            <PrimaryNavLink
+              item={item}
+              locale={locale}
+              pathname={pathname}
+              compact={compact}
+              mobile
+            />
+          </Suspense>
         ))}
         <button
           type="button"
