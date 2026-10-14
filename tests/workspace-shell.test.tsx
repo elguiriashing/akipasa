@@ -240,8 +240,15 @@ describe("progressive disclosure workspace shell", () => {
         </WorkspaceShell>,
       );
       const menuButton = screen.getByRole("button", {
-        name: `${eyebrow} ${title} menu`,
+        name:
+          homeHref === "/es/staff"
+            ? `Menú de ${title} · ${eyebrow}`
+            : `${eyebrow} ${title} menu`,
       });
+      const drawerName =
+        homeHref === "/es/staff"
+          ? `Navegación de ${title}`
+          : `${title} navigation`;
       const stickyContainer = container.querySelector<HTMLElement>(
         ".workspace-mobile-navigation",
       );
@@ -256,7 +263,7 @@ describe("progressive disclosure workspace shell", () => {
       expect(menuButton).toHaveAttribute("aria-expanded", "true");
       expect(screen.getByText("Content stays in place")).toBeInTheDocument();
       const mobileNavigation = screen.getByRole("complementary", {
-        name: `${title} navigation`,
+        name: drawerName,
       });
 
       fireEvent.pointerDown(document.body);
@@ -266,14 +273,14 @@ describe("progressive disclosure workspace shell", () => {
       fireEvent.click(menuButton);
       fireEvent.keyDown(document, { key: "Escape" });
       expect(
-        screen.queryByRole("complementary", { name: `${title} navigation` }),
+        screen.queryByRole("complementary", { name: drawerName }),
       ).not.toBeInTheDocument();
       expect(menuButton).toHaveFocus();
 
       fireEvent.click(menuButton);
       fireEvent.click(
         within(
-          screen.getByRole("complementary", { name: `${title} navigation` }),
+          screen.getByRole("complementary", { name: drawerName }),
         ).getByRole("link", { name: label }),
       );
       expect(menuButton).toHaveAttribute("aria-expanded", "false");

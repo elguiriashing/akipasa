@@ -258,12 +258,10 @@ it.each(["en", "es"] as const)(
 it("preserves older transcript reading and offers an explicit new-reply jump", async () => {
   vi.stubGlobal(
     "fetch",
-    vi
-      .fn()
-      .mockResolvedValue({
-        ok: true,
-        json: async () => ({ ok: true, text: "New answer" }),
-      }),
+    vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ ok: true, text: "New answer" }),
+    }),
   );
   mount();
   const transcript = screen.getByText(
