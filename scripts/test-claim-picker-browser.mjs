@@ -58,6 +58,45 @@ const server = createServer((req, res) => {
 await new Promise((r) => server.listen(0, "127.0.0.1", r));
 let browser;
 const results = [];
+
+function matchesSearch(request, query, vertical) {
+  const url = new URL(request.url());
+  return (
+    url.pathname === "/api/business/claim-search" &&
+    url.searchParams.get("q") === query &&
+    url.searchParams.get("vertical") === vertical
+  );
+}
+
+async function readGeometry(page) {
+  // Read every box in one browser task: loading/empty copy can change the
+  // panel height between separate protocol calls without any actual overlap.
+  return page.evaluate(() => {
+    const box = (selector) =>
+      document.querySelector(selector).getBoundingClientRect().toJSON();
+    return {
+      label: box(".claim-search-input"),
+      input: box("#claim-venue-search"),
+      results: box(".claim-search-results"),
+      map: box(".claim-map-panel"),
+      scrollWidth: document.documentElement.scrollWidth,
+      resultsText: document.querySelector(".claim-search-results").textContent,
+    };
+  });
+}
+
+function assertGeometry(geometry, width) {
+  expect(geometry.results.y).toBeGreaterThanOrEqual(geometry.label.bottom);
+  expect(geometry.results.y).toBeGreaterThanOrEqual(geometry.input.bottom);
+  expect(geometry.results.x).toBeGreaterThanOrEqual(0);
+  expect(geometry.results.right).toBeLessThanOrEqual(width + 1);
+  expect(geometry.scrollWidth).toBeLessThanOrEqual(width + 1);
+  expect(geometry.map.width).toBeGreaterThan(100);
+  expect(geometry.map.height).toBeGreaterThan(100);
+  if (width <= 900)
+    expect(geometry.map.y).toBeGreaterThanOrEqual(geometry.results.bottom);
+}
+
 try {
   browser = await chromium.launch({
     headless: true,
@@ -80,13 +119,19 @@ try {
           colorScheme: theme,
         });
         const errors = [];
+        const geometryEvidence = [];
         page.on("pageerror", (error) => errors.push(error.message));
-        await page.route("**/api/business/claim-search?**", (route) => {
+        let releaseDelayedSearch;
+        const delayedSearch = new Promise((resolve) => {
+          releaseDelayedSearch = resolve;
+        });
+        await page.route("**/api/business/claim-search?**", async (route) => {
           const query = new URL(route.request().url()).searchParams.get("q");
+          if (query === "delayed") await delayedSearch;
           return route.fulfill({
             json: {
               rows:
-                query === "empty"
+                query === "empty" || query === "delayed"
                   ? []
                   : Array.from({ length: 24 }, (_, i) => ({
                       id: `venue-${i}`,
@@ -113,6 +158,43 @@ try {
         await page.locator(".claim-search-heading").evaluate((element) => {
           element.style.maxWidth = "12rem";
         });
+        const panel = page.locator(".claim-search-results");
+        const spinner = page.locator(".claim-search-input > span");
+        const emptyCopy = locale === "es" ? "No encontramos" : "No unclaimed";
+        // Hold a real request so the short loading copy and the taller settled
+        // empty copy each have their own strict, same-frame geometry proof.
+        await Promise.all([
+          page.waitForRequest((request) =>
+            matchesSearch(request, "delayed", "activities"),
+          ),
+          input.fill("delayed"),
+        ]);
+        await expect(spinner).toBeVisible();
+        await expect(panel).toContainText(
+          locale === "es" ? "Buscando" : "Searching",
+        );
+        const loadingGeometry = await readGeometry(page);
+        assertGeometry(loadingGeometry, width);
+        geometryEvidence.push({ phase: "loading", ...loadingGeometry });
+        await page.screenshot({
+          path: resolve(
+            dir,
+            `${locale}-${theme}-${width}x${height}-loading.png`,
+          ),
+          fullPage: true,
+        });
+        const delayedResponse = page.waitForResponse((response) =>
+          matchesSearch(response.request(), "delayed", "activities"),
+        );
+        releaseDelayedSearch();
+        await delayedResponse;
+        await expect(spinner).toHaveCount(0);
+        await expect(panel).toContainText(emptyCopy);
+        const emptyGeometry = await readGeometry(page);
+        assertGeometry(emptyGeometry, width);
+        expect(emptyGeometry.resultsText).toContain(emptyCopy);
+        geometryEvidence.push({ phase: "settled-empty", ...emptyGeometry });
+        await input.fill("");
         for (const vertical of ["activities", "accommodation"]) {
           await page
             .getByRole("button", {
@@ -128,34 +210,23 @@ try {
             })
             .click();
           for (const query of ["empty", "venues"]) {
-            await input.fill(query);
-            const panel = page.locator(".claim-search-results");
-            if (query === "empty")
-              await expect(panel).toContainText(
-                locale === "es" ? "No encontramos" : "No unclaimed",
-              );
+            // Empty copy briefly renders before the search effect marks the
+            // request pending. Require this exact response and its completed
+            // render rather than accepting that transient no-results state.
+            await Promise.all([
+              page.waitForResponse((response) =>
+                matchesSearch(response.request(), query, vertical),
+              ),
+              input.fill(query),
+            ]);
+            await expect(spinner).toHaveCount(0);
+            if (query === "empty") await expect(panel).toContainText(emptyCopy);
             else await expect(panel.locator("button")).toHaveCount(24);
-            const inputBox = await page
-              .locator(".claim-search-input")
-              .boundingBox();
-            const resultsBox = await panel.boundingBox();
-            expect(resultsBox.y).toBeGreaterThanOrEqual(
-              inputBox.y + inputBox.height,
-            );
-            expect(resultsBox.x).toBeGreaterThanOrEqual(0);
-            expect(resultsBox.x + resultsBox.width).toBeLessThanOrEqual(
-              width + 1,
-            );
-            expect(
-              await page.evaluate(() => document.documentElement.scrollWidth),
-            ).toBeLessThanOrEqual(width + 1);
-            const mapBox = await page.locator(".claim-map-panel").boundingBox();
-            expect(mapBox.width).toBeGreaterThan(100);
-            expect(mapBox.height).toBeGreaterThan(100);
-            if (width <= 900)
-              expect(mapBox.y).toBeGreaterThanOrEqual(
-                resultsBox.y + resultsBox.height,
-              );
+            const geometry = await readGeometry(page);
+            assertGeometry(geometry, width);
+            if (query === "empty")
+              expect(geometry.resultsText).toContain(emptyCopy);
+            geometryEvidence.push({ phase: query, vertical, ...geometry });
             await page.screenshot({
               path: resolve(
                 dir,
@@ -186,16 +257,27 @@ try {
             }
           }
         }
-        await input.fill("empty");
-        await expect(page.locator(".claim-search-results")).toContainText(
-          locale === "es" ? "No encontramos" : "No unclaimed",
-        );
+        await Promise.all([
+          page.waitForResponse((response) =>
+            matchesSearch(response.request(), "empty", "accommodation"),
+          ),
+          input.fill("empty"),
+        ]);
+        await expect(spinner).toHaveCount(0);
+        await expect(panel).toContainText(emptyCopy);
         await page.screenshot({
           path: resolve(dir, `${locale}-${theme}-${width}x${height}.png`),
           fullPage: true,
         });
         expect(errors).toEqual([]);
-        results.push({ locale, theme, width, height, pass: true });
+        results.push({
+          locale,
+          theme,
+          width,
+          height,
+          pass: true,
+          geometry: geometryEvidence,
+        });
         await page.close();
       }
   writeFileSync(resolve(dir, "results.json"), JSON.stringify(results, null, 2));
