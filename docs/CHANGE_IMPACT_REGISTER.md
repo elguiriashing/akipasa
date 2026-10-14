@@ -1,5 +1,19 @@
 # Change Impact Register
 
+## 2026-10-14 | Passport status localization
+
+- **Inventory:** PASS-03.
+- **Before:** reward and enrollment cards exposed backend state values, and several
+  Spanish notices omitted accents.
+- **After:** ready/redeemed/expired claims and active/completed/redeemed/expired
+  enrollments use explicit EN/ES labels; unexpected values use a localized safe
+  fallback. Spanish Passport copy is corrected throughout the affected page.
+- **Dependencies:** state identifiers, reward/enrollment actions, claim codes and
+  Europe/Madrid deadline formatting remain unchanged.
+- **Evidence:** focused status-map cases cover every stored value and unknown/null
+  fallbacks; Spanish text integrity, Spotlight, TypeScript and lint remain gates.
+- **Rollback:** revert helper/page/tests/docs; no schema or record changes.
+
 ## 2026-10-14 | Privacy withdrawal recovery
 
 - **Inventory:** PRIVACY-01.

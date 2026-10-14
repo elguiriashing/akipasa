@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-14 — Passport status localization
+
+- Translate every stored reward-claim and Passport-enrollment state in EN/ES,
+  with a safe localized fallback for unexpected values.
+- Correct remaining Spanish accents while retaining Madrid civil-date deadlines.
+
 ## 2026-10-14 — Privacy withdrawal recovery
 
 - Reflect a personalization withdrawal as locally Off before its account sync.
