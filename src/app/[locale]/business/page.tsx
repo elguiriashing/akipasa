@@ -29,6 +29,7 @@ import {
 import { canModerate } from "@/lib/roles";
 import { GuardedActionForm } from "@/components/GuardedActionForm";
 import { BusinessEventComposer } from "@/components/BusinessEventComposer";
+import { BusinessEventCatalogue } from "@/components/BusinessEventCatalogue";
 
 type ManagedVenue = {
   role: string;
@@ -363,156 +364,30 @@ export default async function BusinessPage({
       <section className="dashboard-grid">
         {view === "events" && (
           <section className="panel catalogue-edit-card dashboard-grid-full">
-            <div className="catalogue-section-header">
-              <div>
-                <span className="eyebrow">
-                  {es ? "Cat\u00e1logo de eventos" : "Event catalogue"}
-                </span>
-                <h2>{es ? "Tus eventos" : "Your events"}</h2>
-                <p className="catalogue-section-sub">
-                  {es
-                    ? "Gestiona los eventos activos, revisa el historial y reutiliza cualquier ficha como borrador."
-                    : "Manage active events, review the history, and reuse any listing as a new draft."}
-                </p>
-              </div>
-              <a
-                className="button button-strong"
-                href={`${base}?view=events#create-event`}
-              >
-                {es ? "Crear evento" : "Create event"}
-              </a>
-            </div>
-
-            {businessEvents.length ? (
-              <div className="stack">
-                {[
-                  {
-                    key: "current",
-                    label: es
-                      ? "Actuales y pr\u00f3ximos"
-                      : "Current and upcoming",
-                    events: currentEvents,
-                  },
-                  {
-                    key: "past",
-                    label: es ? "Anteriores" : "Past",
-                    events: pastEvents,
-                  },
-                  {
-                    key: "archived",
-                    label: es ? "Archivados" : "Archived",
-                    events: archivedEvents,
-                  },
-                ].map((group) => (
-                  <section key={group.key}>
-                    <div className="section-head">
-                      <h3>{group.label}</h3>
-                      <span className="count">{group.events.length}</span>
-                    </div>
-                    {group.events.length ? (
-                      <div className="catalogue-grid">
-                        {group.events.map((event) => {
-                          const occurrences = [...event.event_occurrences].sort(
-                            (a, b) =>
-                              new Date(a.starts_at).getTime() -
-                              new Date(b.starts_at).getTime(),
-                          );
-                          const referenceOccurrence =
-                            occurrences.find(
-                              (occurrence) =>
-                                new Date(occurrence.ends_at).getTime() >= now,
-                            ) || occurrences.at(-1);
-                          return (
-                            <article className="catalogue-card" key={event.id}>
-                              <div>
-                                <div className="catalogue-card-header">
-                                  <div>
-                                    <h4 className="catalogue-card-title">
-                                      {locale === "en"
-                                        ? event.title_en || event.title_es
-                                        : event.title_es}
-                                    </h4>
-                                    <p className="catalogue-card-sub">
-                                      {event.source === "akipasa_selection"
-                                        ? "Selección AkiPasa"
-                                        : venueNames.get(event.venue_id) ||
-                                          (es ? "Local" : "Venue")}
-                                    </p>
-                                  </div>
-                                  <span
-                                    className={`status-pill ${event.status === "published" ? "badge-success" : event.status === "archived" ? "badge-neutral" : "badge-warning"}`}
-                                  >
-                                    {event.status}
-                                  </span>
-                                </div>
-                                <p className="muted">
-                                  {referenceOccurrence
-                                    ? new Intl.DateTimeFormat(locale, {
-                                        dateStyle: "medium",
-                                        timeStyle: "short",
-                                        timeZone: "Europe/Madrid",
-                                      }).format(
-                                        new Date(referenceOccurrence.starts_at),
-                                      )
-                                    : es
-                                      ? "Sin fecha programada"
-                                      : "No date scheduled"}
-                                </p>
-                              </div>
-                              <div className="catalogue-card-actions form-actions">
-                                <a
-                                  className="button secondary small-btn"
-                                  href={`/${locale}/business/venue/${event.venue_id}?section=events#event-${event.id}`}
-                                >
-                                  {es ? "Gestionar" : "Manage"}
-                                </a>
-                                <form action={reuseEvent}>
-                                  <input
-                                    type="hidden"
-                                    name="locale"
-                                    value={locale}
-                                  />
-                                  <input
-                                    type="hidden"
-                                    name="eventId"
-                                    value={event.id}
-                                  />
-                                  <input
-                                    type="hidden"
-                                    name="sourceSlug"
-                                    value={event.slug}
-                                  />
-                                  <button
-                                    className="button small-btn"
-                                    type="submit"
-                                  >
-                                    {es ? "Reutilizar" : "Reuse"}
-                                  </button>
-                                </form>
-                              </div>
-                            </article>
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      <p className="catalogue-empty-card">
-                        {es
-                          ? "No hay eventos en esta secci\u00f3n."
-                          : "No events in this section."}
-                      </p>
-                    )}
-                  </section>
-                ))}
-              </div>
-            ) : (
-              <div className="catalogue-empty-card">
-                <p>
-                  {es
-                    ? "Todav\u00eda no hay eventos. Crea el primero y aparecer\u00e1 aqu\u00ed."
-                    : "No events yet. Create the first one and it will appear here."}
-                </p>
-              </div>
-            )}
+            <BusinessEventCatalogue
+              locale={locale}
+              reuseAction={reuseEvent}
+              events={businessEvents.map((event) => {
+                const occurrences = [...event.event_occurrences].sort(
+                  (a, b) => new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime(),
+                );
+                const reference = occurrences.find(
+                  (occurrence) => new Date(occurrence.ends_at).getTime() >= now,
+                ) || occurrences.at(-1);
+                return {
+                  id: event.id,
+                  venueId: event.venue_id,
+                  slug: event.slug,
+                  title: locale === "en" ? event.title_en || event.title_es : event.title_es,
+                  venue: event.source === "akipasa_selection"
+                    ? "Selección AkiPasa"
+                    : venueNames.get(event.venue_id) || (es ? "Local" : "Venue"),
+                  status: event.status,
+                  group: (archivedEvents.includes(event) ? "archived" : pastEvents.includes(event) ? "past" : "current") as "archived" | "past" | "current",
+                  date: reference?.starts_at || null,
+                };
+              })}
+            />
           </section>
         )}
 
