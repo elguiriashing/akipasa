@@ -64,10 +64,9 @@ export default async function VenuePage({
     { p_venue: venue.id },
   );
   const canClaimVenue =
-    venue.claimStatus === "unclaimed" &&
-    (ownershipError
-      ? process.env.NEXT_PUBLIC_DATA_PROVIDER === "fixtures"
-      : ownedFlag === false);
+    !ownershipError &&
+    ownedFlag === false &&
+    venue.claimStatus === "unclaimed";
   const events = await repository.eventsForVenue(venue.id);
   const now = Date.now();
   const upcomingEvents = events
