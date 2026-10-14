@@ -7,6 +7,7 @@ type Fixture = {
     id: string;
     slug: string;
     title: Record<Locale, string>;
+    occurrenceId: string;
     startsAt: string;
     endsAt: string;
   };
@@ -451,6 +452,7 @@ test.describe("Spotlight public route acceptance", () => {
           await fitsViewport(page, venue, viewport.width);
 
           const eventPath = `/${locale}/events/${fixture.event.slug}`;
+          const selectedEventPath = `${eventPath}?occurrence=${fixture.event.occurrenceId}`;
           const eventResponse = await page.goto(eventPath, {
             waitUntil: "domcontentloaded",
           });
@@ -467,7 +469,10 @@ test.describe("Spotlight public route acceptance", () => {
           await capture(page, locale, theme, viewport, "event");
           await expect(
             event.locator(".event-spotlight-primary-action a"),
-          ).toHaveAttribute("href", `${eventPath}/book`);
+          ).toHaveAttribute(
+            "href",
+            `${eventPath}/book?occurrence=${fixture.event.occurrenceId}`,
+          );
           await touchAction(event.locator(".event-spotlight-primary-action a"));
           await expect(event.locator(".event-spotlight-host")).toHaveAttribute(
             "href",
@@ -475,13 +480,13 @@ test.describe("Spotlight public route acceptance", () => {
           );
           await expect(event.locator(".event-spotlight-save")).toHaveAttribute(
             "href",
-            `/${locale}/auth?next=${encodeURIComponent(eventPath)}`,
+            `/${locale}/auth?next=${encodeURIComponent(selectedEventPath)}`,
           );
           await expect(
             event.locator(".event-spotlight-social .event-spotlight-going"),
           ).toHaveAttribute(
             "href",
-            `/${locale}/auth?next=${encodeURIComponent(eventPath)}`,
+            `/${locale}/auth?next=${encodeURIComponent(selectedEventPath)}`,
           );
           await expect(
             event.locator(".event-spotlight-facts time").first(),

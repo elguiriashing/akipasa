@@ -270,6 +270,7 @@ const fixture = {
     id: baseEvent.id,
     slug: baseEvent.slug,
     title: { es: baseEvent.title_es, en: baseEvent.title_en },
+    occurrenceId: uuid(302),
     startsAt,
     endsAt,
   },
