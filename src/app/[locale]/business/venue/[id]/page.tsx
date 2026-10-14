@@ -810,6 +810,7 @@ export default async function VenueWorkspace({
                 <Icon name="arrow-right" />
               </Link>
               {events?.length ? (
+                // prettier-ignore
                 <VenueEventBrowser locale={locale} events={events.map(event => ({
                   id: event.id,
                   title: locale === "en" ? event.title_en || event.title_es : event.title_es,
