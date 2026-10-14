@@ -932,3 +932,7 @@ buttons use native React form status to disable repeat submission and announce t
 pending action. Server validation, provider calls, rate limits, Terms enforcement,
 redirects and account-existence privacy remain authoritative. Rendered controls and
 existing inert action tests pass; full CI and live-source verification remain gates.
+
+## 2026-10-14 | Faster tablet acceptance workflow (PR #169)
+
+Tablet browser acceptance retains its existing route, portal-smoke and layout/Spotlight commands while running them in three independent GitHub Actions jobs. Route suites use two Playwright workers; superseded runs for the same PR are cancelled, and each job uploads distinct evidence artifacts. The existing `tablet-ui` required-check name remains available. This changes CI orchestration only; application behavior and test assertions are unchanged. Full exact-head CI and branch-protection verification remain required before merge. If parallel browser resource pressure causes instability, return route workers to one while retaining job parallelism.

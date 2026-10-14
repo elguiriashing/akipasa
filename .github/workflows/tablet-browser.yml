@@ -3,17 +3,43 @@ on:
   pull_request:
     branches: [master]
   workflow_dispatch:
+concurrency:
+  group: tablet-acceptance-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
+
+env:
+  PW_TEST_SCREENSHOT_NO_FONTS_READY: "1"
+  NEXT_PUBLIC_DATA_PROVIDER: fixtures
+  NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:3999
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: tablet-local-disposable
+
 jobs:
   tablet-ui:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    env:
-      PW_TEST_SCREENSHOT_NO_FONTS_READY: "1"
-      NEXT_PUBLIC_DATA_PROVIDER: fixtures
-      NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:3999
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: tablet-local-disposable
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npx playwright test tests/e2e/tablet-suite.spec.ts --workers=2 --output=test-results/tablet-routes
+      - run: npx playwright test tests/e2e/akiduermo-consumer.spec.ts --workers=2 --output=test-results/stay-routes
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tablet-route-evidence
+          path: test-results
+          retention-days: 7
+
+  tablet-portal-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,6 +52,7 @@ jobs:
       - run: node scripts/test-venue-media-picker-browser.mjs
       - run: node scripts/test-claim-email-browser.mjs
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: claim-email-previews
           path: test-results/claim-emails
@@ -35,19 +62,30 @@ jobs:
       - run: node scripts/test-stay-ui-upgrades-browser.mjs
       - run: node scripts/test-support-ui-upgrades-browser.mjs
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: staff-claims-evidence
           path: test-results/staff-claims
           retention-days: 7
       - run: node scripts/test-portal-home-browser.mjs
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: portal-home-evidence
           path: test-results/portal-home
           retention-days: 7
-      - run: npm run build
-      - run: npx playwright test tests/e2e/tablet-suite.spec.ts --workers=1 --output=test-results/tablet-routes
-      - run: npx playwright test tests/e2e/akiduermo-consumer.spec.ts --workers=1 --output=test-results/stay-routes
+
+  tablet-layout-and-spotlight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium chrome
       - run: node scripts/test-tablet-browser.mjs
       - run: npm run test:spotlight:browser
       - uses: actions/upload-artifact@v4
