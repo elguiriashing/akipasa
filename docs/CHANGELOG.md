@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-14 — Passport, toolbox and membership performance recovery
+
+- Stop idle Passport foil animation frames and resume them only for visible,
+  relevant input or surface changes.
+- Load the owner toolbox on activation with localized pending/retry behavior and
+  preserve its mounted state after first use.
+- Route ready public membership choices through the authenticated account workspace
+  hub while retaining all existing billing and availability gates.
+
 ## 2026-10-14 — Discovery filter recovery
 
 - Explain invalid price and date ranges in place and stop invalid automatic
