@@ -19,6 +19,7 @@ import {
 } from "@/components/AkiSuiteVenueTools";
 import { VenueMediaStudio } from "@/components/VenueMediaStudio";
 import { BusinessEventEditPanel } from "@/components/BusinessEventEditPanel";
+import { VenueEventBrowser } from "@/components/VenueEventBrowser";
 import { getVenueDashboardSection } from "@/lib/venue-dashboard";
 import {
   parseCatalogueDocument,
@@ -809,7 +810,13 @@ export default async function VenueWorkspace({
                 <Icon name="arrow-right" />
               </Link>
               {events?.length ? (
-                events.map((event) => (
+                <VenueEventBrowser locale={locale} events={events.map(event => ({
+                  id: event.id,
+                  title: locale === "en" ? event.title_en || event.title_es : event.title_es,
+                  status: event.status,
+                  date: event.event_occurrences?.[0]?.starts_at || null,
+                }))}>
+                  {events.map((event) => (
                   <details
                     id={`event-${event.id}`}
                     className="panel"
@@ -1274,7 +1281,8 @@ export default async function VenueWorkspace({
                       </details>
                     </div>
                   </details>
-                ))
+                  ))}
+                </VenueEventBrowser>
               ) : (
                 <p className="notice">
                   {es
