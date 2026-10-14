@@ -159,7 +159,7 @@ const bundle = await build({
                 : args.path.endsWith("navigation")
                   ? navigationAdapter
                   : args.path.endsWith("headers")
-                    ? "export async function headers(){return new Headers()}"
+                    ? "export async function headers(){return new Headers()} export async function cookies(){return {get(){return undefined}}}"
                     : args.path.endsWith("image")
                       ? `import React from 'react';export default function Image({fill,priority,sizes,...props}){return <img {...props}/>}`
                       : linkAdapter,
