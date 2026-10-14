@@ -851,3 +851,9 @@ queries, native input constraints and ranking remain unchanged. No API, database
 authorization, consent, payment or persistent customer data changes. Focused
 validation and empty-state tests pass; current-head checks, CI, Cloudflare release
 and exact live-source verification remain required before this entry is live.
+
+## 2026-10-14 | Recovered demand-driven Passport foil from #103
+
+The retained Passport-only scheduler from draft #103 now stops animation frames and style writes after interpolation settles, pauses while hidden, and wakes on pointer/sensor input, recentering and surface changes. Current theme/layout, motion permission and on-device preference, reduced-motion behavior, rank/stamp data and existing interpolation/sensitivity remain unchanged. No broader navigation/auth/cache/toolbox changes from the old branch are incorporated.
+
+The mandatory subscription test configuration includes scheduler and real PassportBook regressions for EN/ES sensor input, hidden/resumed documents, recentering, unmount, reduced motion, preference revocation, pointer fallback, foil toggling and chapter changes. The unchanged original component fails the new idle-frame regression. Full checks, existing public Passport browser acceptance, current-head CI and deployed-source verification remain release gates. Physical gyro feel, device power consumption and production frame-rate improvements are not established. Rollback is a source revert; no data or migration rollback.
