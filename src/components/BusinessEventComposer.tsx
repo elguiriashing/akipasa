@@ -38,6 +38,8 @@ export function BusinessEventComposer({
     map: "",
   });
 
+  const [activeMediaSlot, setActiveMediaSlot] = useState<keyof typeof slots | null>(null);
+
   const venueMedia = useMemo(
     () => media.filter((item) => item.venueId === venueId),
     [media, venueId],
@@ -218,41 +220,13 @@ export function BusinessEventComposer({
                           : "If you leave it empty, the venue's first image is used."}
                       </small>
                     </div>
-                    <div className="media-five-picker">
-                      {venueMedia.map((item) => (
-                        <button
-                          type="button"
-                          key={item.id}
-                          className={
-                            selectedId === item.id
-                              ? "media-mini-tile selected"
-                              : "media-mini-tile"
-                          }
-                          onClick={() =>
-                            setSlots((current) => ({
-                              ...current,
-                              [slotKey]: item.id,
-                            }))
-                          }
-                        >
-                          <img src={item.url} alt="" />
-                        </button>
-                      ))}
-                      {selectedId ? (
-                        <button
-                          type="button"
-                          className="media-auto-button"
-                          onClick={() =>
-                            setSlots((current) => ({
-                              ...current,
-                              [slotKey]: "",
-                            }))
-                          }
-                        >
-                          {es ? "Auto" : "Auto"}
-                        </button>
-                      ) : null}
-                    </div>
+                    <button
+                      type="button"
+                      className="button secondary small-btn"
+                      onClick={() => setActiveMediaSlot(slotKey)}
+                    >
+                      {es ? "Elegir de biblioteca" : "Choose from library"}
+                    </button>
                   </article>
                 );
               })}
@@ -270,6 +244,48 @@ export function BusinessEventComposer({
                   ? "Puedes crear el evento igualmente. AkiPasa usará la imagen principal del local cuando exista."
                   : "You can still create the event. AkiPasa will use the venue's primary image when available."}
               </p>
+            </div>
+          )}
+
+          {activeMediaSlot !== null && (
+            <div
+              role="presentation"
+              onClick={() => setActiveMediaSlot(null)}
+              style={{ position: "fixed", inset: 0, zIndex: 1000, background: "rgba(5,12,28,.82)", display: "grid", placeItems: "center", padding: 16 }}
+            >
+              <div
+                role="dialog"
+                aria-modal="true"
+                aria-label={es ? "Biblioteca de imágenes" : "Image library"}
+                onClick={(event) => event.stopPropagation()}
+                style={{ background: "#1b2946", color: "#fff", border: "1px solid #526080", borderRadius: 18, padding: 20, width: "min(850px, 100%)", maxHeight: "85vh", overflow: "auto" }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                  <h3 style={{ margin: 0 }}>{es ? "Selecciona una imagen" : "Select an image"}</h3>
+                  <button type="button" className="button secondary small-btn" onClick={() => setActiveMediaSlot(null)} aria-label={es ? "Cerrar" : "Close"}>✕</button>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))", gap: 10 }}>
+                  {venueMedia.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      aria-label={item.alt || (es ? "Elegir imagen" : "Choose image")}
+                      aria-pressed={slots[activeMediaSlot] === item.id}
+                      onClick={() => {
+                        setSlots((current) => ({ ...current, [activeMediaSlot]: item.id }));
+                        setActiveMediaSlot(null);
+                      }}
+                      style={{ padding: 5, borderRadius: 12, border: slots[activeMediaSlot] === item.id ? "3px solid #ffd84d" : "1px solid #526080", background: "#111e37", cursor: "pointer" }}
+                    >
+                      <img src={item.url} alt={item.alt} style={{ display: "block", width: "100%", aspectRatio: "1", objectFit: "cover", borderRadius: 8 }} />
+                    </button>
+                  ))}
+                </div>
+                <button type="button" className="button secondary small-btn" style={{ marginTop: 14 }} onClick={() => {
+                  setSlots((current) => ({ ...current, [activeMediaSlot]: "" }));
+                  setActiveMediaSlot(null);
+                }}>{es ? "Usar imagen automática" : "Use automatic image"}</button>
+              </div>
             </div>
           )}
         </section>
