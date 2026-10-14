@@ -4,6 +4,10 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Locale } from "@/lib/config";
 import { mapVenueDetailSchema } from "@/lib/map-snapshot";
+import {
+  createMapGeolocateControl,
+  mapGeolocationLocale,
+} from "@/lib/map-geolocation";
 import { Icon } from "@/components/Icons";
 
 type ClaimVenue = {
@@ -205,6 +209,7 @@ export function ClaimVenuePicker({
         center: [-4.624, 36.539],
         zoom: 11,
         attributionControl: false,
+        locale: mapGeolocationLocale(locale),
         renderWorldCopies: false,
       });
       mapRef.current = map;
@@ -227,10 +232,7 @@ export function ClaimVenuePicker({
         "top-right",
       );
       map.addControl(
-        new maplibregl.GeolocateControl({
-          positionOptions: { enableHighAccuracy: false },
-          trackUserLocation: false,
-        }),
+        createMapGeolocateControl(maplibregl.GeolocateControl, locale),
         "top-right",
       );
 
@@ -407,7 +409,7 @@ export function ClaimVenuePicker({
       disposed = true;
       cleanup();
     };
-  }, [es, previewVenue, styleUrl, vertical]);
+  }, [es, locale, previewVenue, styleUrl, vertical]);
 
   function chooseSearchResult(venue: ClaimVenue) {
     chooseVenue(venue);

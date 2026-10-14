@@ -16,6 +16,10 @@ import {
 } from "@/lib/accommodation";
 import { stayHref } from "@/lib/akiduermo-routing";
 import { applyMapTheme, readMapTheme } from "@/lib/map-theme";
+import {
+  createMapGeolocateControl,
+  mapGeolocationLocale,
+} from "@/lib/map-geolocation";
 import { MapTileLoader } from "@/lib/map-tiles";
 import type { Locale } from "@/lib/config";
 import { trackBehaviour } from "@/lib/personalisation/client";
@@ -281,6 +285,7 @@ export function ProductionMap({
           maxPitch: 48,
           cooperativeGestures: !fullScreen,
           locale: {
+            ...mapGeolocationLocale(locale),
             "Popup.Close": locale === "es" ? "Cerrar tarjeta" : "Close card",
           },
           renderWorldCopies: false,
@@ -327,10 +332,7 @@ export function ProductionMap({
             { enableHighAccuracy: false, maximumAge: 300_000, timeout: 5_000 },
           );
         map.addControl(
-          new maplibregl.GeolocateControl({
-            positionOptions: { enableHighAccuracy: false },
-            trackUserLocation: false,
-          }),
+          createMapGeolocateControl(maplibregl.GeolocateControl, locale),
           "top-right",
         );
         map.addControl(new maplibregl.ScaleControl({ unit: "metric" }));
