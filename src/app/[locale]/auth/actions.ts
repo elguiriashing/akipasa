@@ -22,7 +22,24 @@ function authDestination(
     : safeAuthDestination(locale, requested);
 }
 
+async function authReturnUrl(
+  locale: "es" | "en",
+  mode: "signin" | "signup" | "magic" | "recover",
+  formData: FormData,
+  notice: Record<string, string>,
+) {
+  const requested = formData.get("next");
+  const next = authDestination(
+    locale,
+    typeof requested === "string" ? requested : undefined,
+    requestOrigin(await headers()),
+  );
+  const query = new URLSearchParams({ mode, ...notice, next });
+  return `/${locale}/auth?${query.toString()}`;
+}
+
 export async function requestMagicLink(formData: FormData) {
+  const fallbackLocale = formData.get("locale") === "en" ? "en" : "es";
   const parsed = z
     .object({
       email: z.string().email(),
@@ -31,7 +48,11 @@ export async function requestMagicLink(formData: FormData) {
     })
     .safeParse(Object.fromEntries(formData));
   if (!parsed.success || !isLocale(parsed.data.locale))
-    redirect("/es/auth?error=invalid");
+    redirect(
+      await authReturnUrl(fallbackLocale, "magic", formData, {
+        error: "invalid",
+      }),
+    );
   const locale = parsed.data.locale;
   const headerStore = await headers();
   const origin = requestOrigin(headerStore);
@@ -44,8 +65,9 @@ export async function requestMagicLink(formData: FormData) {
       shouldCreateUser: false,
     },
   });
-  if (error) redirect(`/${locale}/auth?error=send`);
-  redirect(`/${locale}/auth?sent=1`);
+  if (error)
+    redirect(await authReturnUrl(locale, "magic", formData, { error: "send" }));
+  redirect(await authReturnUrl(locale, "magic", formData, { sent: "1" }));
 }
 
 export async function requestPasswordReset(formData: FormData) {
@@ -56,7 +78,10 @@ export async function requestPasswordReset(formData: FormData) {
     })
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
-  if (!parsed.success) redirect(`/${locale}/auth?error=invalid`);
+  if (!parsed.success)
+    redirect(
+      await authReturnUrl(locale, "recover", formData, { error: "invalid" }),
+    );
   const origin = requestOrigin(await headers());
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.resetPasswordForEmail(
@@ -65,8 +90,13 @@ export async function requestPasswordReset(formData: FormData) {
       redirectTo: `${origin}/${locale}/auth/callback?next=${encodeURIComponent(`/${locale}/auth/recover`)}`,
     },
   );
-  if (error) redirect(`/${locale}/auth?error=send`);
-  redirect(`/${locale}/auth?recovery=sent`);
+  if (error)
+    redirect(
+      await authReturnUrl(locale, "recover", formData, { error: "send" }),
+    );
+  redirect(
+    await authReturnUrl(locale, "recover", formData, { recovery: "sent" }),
+  );
 }
 
 export async function signUpWithPassword(formData: FormData) {
@@ -84,7 +114,12 @@ export async function signUpWithPassword(formData: FormData) {
     })
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
-  if (!parsed.success) redirect(`/${locale}/auth?error=password-policy`);
+  if (!parsed.success)
+    redirect(
+      await authReturnUrl(locale, "signup", formData, {
+        error: "password-policy",
+      }),
+    );
   const origin = requestOrigin(await headers());
   const next = authDestination(locale, parsed.data.next, origin);
   const supabase = await createSupabaseServerClient();
@@ -99,9 +134,14 @@ export async function signUpWithPassword(formData: FormData) {
       },
     },
   });
-  if (error) redirect(`/${locale}/auth?error=signup`);
+  if (error)
+    redirect(
+      await authReturnUrl(locale, "signup", formData, { error: "signup" }),
+    );
   if (data.session) redirect(next);
-  redirect(`/${locale}/auth?registered=1`);
+  redirect(
+    await authReturnUrl(locale, "signup", formData, { registered: "1" }),
+  );
 }
 
 export async function signInWithPassword(formData: FormData) {
@@ -114,7 +154,10 @@ export async function signInWithPassword(formData: FormData) {
     })
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
-  if (!parsed.success) redirect(`/${locale}/auth?error=signin`);
+  if (!parsed.success)
+    redirect(
+      await authReturnUrl(locale, "signin", formData, { error: "signin" }),
+    );
   const next = authDestination(
     locale,
     parsed.data.next,
@@ -125,14 +168,19 @@ export async function signInWithPassword(formData: FormData) {
     email: parsed.data.email,
     password: parsed.data.password,
   });
-  if (error) redirect(`/${locale}/auth?error=signin`);
+  if (error)
+    redirect(
+      await authReturnUrl(locale, "signin", formData, { error: "signin" }),
+    );
   redirect(next);
 }
 
 export async function signInWithGoogle(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
   if (formData.get("acceptTerms") !== "accepted")
-    redirect(`/${locale}/auth?error=terms`);
+    redirect(
+      await authReturnUrl(locale, "signin", formData, { error: "terms" }),
+    );
   const origin = requestOrigin(await headers());
   const next = authDestination(
     locale,
@@ -155,7 +203,10 @@ export async function signInWithGoogle(formData: FormData) {
       queryParams: { access_type: "offline", prompt: "consent" },
     },
   });
-  if (error || !data.url) redirect(`/${locale}/auth?error=google`);
+  if (error || !data.url)
+    redirect(
+      await authReturnUrl(locale, "signin", formData, { error: "google" }),
+    );
   redirect(data.url);
 }
 

@@ -9,6 +9,10 @@ export default defineConfig({
       "tests/venue-spotlight.test.tsx",
       "tests/event-spotlight.test.tsx",
       "tests/share-button.test.tsx",
+      "tests/public-ui-upgrades.test.tsx",
+      "tests/staff-ui-upgrades.test.tsx",
+      "tests/auth-ux-upgrades.test.ts",
+      "tests/support-dialog-upgrades.test.tsx",
     ],
   },
 });

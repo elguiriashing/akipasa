@@ -15,6 +15,7 @@ import { msg } from "@/lib/messages";
 import { recommendDiscovery } from "@/lib/personalisation/server";
 import { repository } from "@/lib/repository";
 import { nearbyVenuePage } from "@/lib/unclaimed-venues";
+import { madridLocalDateTimeSchema } from "@/lib/time";
 
 export const dynamic = "force-dynamic";
 
@@ -29,8 +30,12 @@ function parsePrice(value: string | string[] | undefined) {
 function parseDate(value: string | string[] | undefined, end = false) {
   if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value))
     return undefined;
-  const date = new Date(`${value}T${end ? "23:59:59.999" : "00:00:00"}+02:00`);
-  return Number.isNaN(date.getTime()) ? undefined : date;
+  const parsed = madridLocalDateTimeSchema.safeParse(
+    `${value}T${end ? "23:59" : "00:00"}`,
+  );
+  return parsed.success
+    ? new Date(parsed.data.getTime() + (end ? 59999 : 0))
+    : undefined;
 }
 
 export default async function MapPage({

@@ -1,4 +1,5 @@
 import { AdminWorkbench } from "./AdminWorkbench";
+import { pointCoordinates } from "./CatalogueSettings";
 import { saveCategory, saveCity, updateFeatureFlag } from "./actions";
 
 type Category = { id: string; slug: string; name_es: string; name_en: string };
@@ -75,6 +76,7 @@ function CategoryForm({
 
 function CityForm({ locale, city }: { locale: "es" | "en"; city?: City }) {
   const es = locale === "es";
+  const point = pointCoordinates(city?.center);
   return (
     <form action={saveCity} className="stack">
       <input type="hidden" name="locale" value={locale} />
@@ -116,6 +118,32 @@ function CityForm({ locale, city }: { locale: "es" | "en"; city?: City }) {
           <option value="Atlantic/Canary">Atlantic/Canary</option>
         </select>
       </label>
+      <div className="form-grid-two">
+        <label>
+          {es ? "Latitud" : "Latitude"}
+          <input
+            name="latitude"
+            type="number"
+            step="any"
+            min="27"
+            max="44.5"
+            defaultValue={point?.latitude}
+            required
+          />
+        </label>
+        <label>
+          {es ? "Longitud" : "Longitude"}
+          <input
+            name="longitude"
+            type="number"
+            step="any"
+            min="-19"
+            max="5"
+            defaultValue={point?.longitude}
+            required
+          />
+        </label>
+      </div>
       <label>
         {es ? "Motivo del cambio" : "Change reason"}
         <textarea name="reason" required minLength={10} />

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   WorkspacePageHeader,
@@ -18,7 +19,7 @@ export default async function SupportPage({
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
   const { supabase } = await requireUser(locale, `/${locale}/staff/support`);
-  const { data } = await supabase
+  const { data, error: loadError } = await supabase
     .from("reports")
     .select("id,target_type,target_id,reason,details,state,created_at")
     .eq("state", "open")
@@ -46,7 +47,18 @@ export default async function SupportPage({
               : "Update failed."}
         </p>
       )}
-      {data?.length ? (
+      {loadError ? (
+        <div className="notice" role="alert">
+          <p>
+            {es
+              ? "No se pudieron cargar los casos de soporte. Vuelve a intentarlo."
+              : "Could not load support cases. Please try again."}
+          </p>
+          <Link className="button secondary" href={`/${locale}/staff/support`}>
+            {es ? "Reintentar" : "Retry"}
+          </Link>
+        </div>
+      ) : data?.length ? (
         <div className="queue-list">
           {data.map((item) => (
             <article className="panel queue-card" key={item.id}>

@@ -260,7 +260,13 @@ export default async function DiscoverPage({
                   <div className="card-media-scrim" aria-hidden />
                   <div className="card-media-badges">
                     <span className="pill card-pill-date">
-                      {locale === "es" ? "No reclamado" : "Unclaimed"}
+                      {venue.claimStatus === "claimed"
+                        ? locale === "es"
+                          ? "Local"
+                          : "Venue"
+                        : locale === "es"
+                          ? "No reclamado"
+                          : "Unclaimed"}
                     </span>
                   </div>
                 </div>

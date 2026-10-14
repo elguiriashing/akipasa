@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import styles from "./support-agent.module.css";
 
 type SupportSurface = "business_application" | "site_contact";
@@ -45,6 +45,9 @@ export function SupportAgentLauncher({
   const [messages, setMessages] = useState<Message[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const dialogId = useId();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const mailSubject = es ? "Ayuda con AkiPasa" : "Help with AkiPasa";
   const mailHref =
@@ -68,14 +71,63 @@ export function SupportAgentLauncher({
   );
 
   useEffect(() => {
-    if (!open) return;
-    textareaRef.current?.focus();
-    function closeOnEscape(event: KeyboardEvent) {
-      if (event.key === "Escape") setOpen(false);
+    if (!signedIn && open) {
+      setOpen(false);
+      return;
     }
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [open]);
+    if (!open) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const opener = triggerRef.current;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    textareaRef.current?.focus();
+    function focusableControls() {
+      return Array.from(
+        dialog!.querySelectorAll<HTMLElement>(
+          'a[href], button:not(:disabled), textarea:not(:disabled), input:not(:disabled), select:not(:disabled), [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter(
+        (element) =>
+          !element.closest("[hidden], [inert]") &&
+          getComputedStyle(element).display !== "none" &&
+          getComputedStyle(element).visibility !== "hidden",
+      );
+    }
+    function containKeyboardFocus(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        setOpen(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const controls = focusableControls();
+      const first = controls[0];
+      const last = controls.at(-1);
+      if (!first || !last) return;
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+    function containProgrammaticFocus(event: FocusEvent) {
+      if (event.target instanceof Node && !dialog!.contains(event.target)) {
+        textareaRef.current?.focus();
+      }
+    }
+    document.addEventListener("keydown", containKeyboardFocus, true);
+    document.addEventListener("focusin", containProgrammaticFocus);
+    return () => {
+      document.removeEventListener("keydown", containKeyboardFocus, true);
+      document.removeEventListener("focusin", containProgrammaticFocus);
+      document.body.style.overflow = previousOverflow;
+      if (opener?.isConnected) opener.focus({ preventScroll: true });
+    };
+  }, [open, signedIn]);
 
   async function send(event: FormEvent) {
     event.preventDefault();
@@ -138,19 +190,25 @@ export function SupportAgentLauncher({
   return (
     <>
       <button
+        ref={triggerRef}
         type="button"
         className={[styles.trigger, className].filter(Boolean).join(" ")}
         onClick={() => setOpen(true)}
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        aria-controls={open ? dialogId : undefined}
       >
         {triggerContent}
       </button>
       {open && (
         <div className={styles.backdrop} onMouseDown={() => setOpen(false)}>
           <section
+            ref={dialogRef}
+            id={dialogId}
             className={styles.dialog}
             role="dialog"
             aria-modal="true"
-            aria-labelledby="support-agent-title"
+            aria-labelledby={`${dialogId}-title`}
             onMouseDown={(event) => event.stopPropagation()}
           >
             <header>
@@ -158,7 +216,7 @@ export function SupportAgentLauncher({
                 <span className={styles.badge}>
                   {es ? "Asistente con IA" : "AI assistant"}
                 </span>
-                <h2 id="support-agent-title">
+                <h2 id={`${dialogId}-title`}>
                   {es ? "Habla con Soporte" : "Chat with Support"}
                 </h2>
                 <p>
@@ -218,12 +276,12 @@ export function SupportAgentLauncher({
             </div>
 
             <form className={styles.composer} onSubmit={send}>
-              <label htmlFor={"support-question-" + surface}>
+              <label htmlFor={`${dialogId}-question`}>
                 {es ? "Tu pregunta" : "Your question"}
               </label>
               <textarea
                 ref={textareaRef}
-                id={"support-question-" + surface}
+                id={`${dialogId}-question`}
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
                 maxLength={2000}

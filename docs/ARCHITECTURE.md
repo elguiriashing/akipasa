@@ -1,5 +1,22 @@
 # Architecture
 
+## GUI continuity and read-failure states (2026-10-14 approved release candidate)
+
+Workflow return URLs reuse the existing authentication/host allowlists. A small
+community URL helper validates only the existing report target contract and
+selects an existing form/history; it does not grant access or submit a report.
+Stay trip intent is an editable client default, while availability/quotes and
+reservation outcomes remain server-owned. Localized reservation labels never
+change the values submitted to the existing actions.
+
+Staff/Admin pages retain independently failed reads as unavailable and preserve
+authorized query/action boundaries. The city form submits the loaded center's
+coordinates explicitly; missing coordinates cannot become a new Madrid center.
+Support modal focus/scroll behavior stays in its client presentation component,
+with existing same-origin API, authenticated provider gateway and email fallback.
+The user approved release; source checks and actual deployment evidence remain
+separate from authenticated production acceptance.
+
 Last updated: 2026-07-31.
 
 ## Overall system architecture

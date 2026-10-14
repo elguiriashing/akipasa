@@ -4,14 +4,19 @@ import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { communitySubmissionSchema, reportSchema } from "@/lib/moderation";
 import { reviewPendingCatalogueItem } from "@/lib/automatic-moderation";
+import { communityWorkflowPath } from "@/lib/community-navigation";
 
 export async function submitCommunityEvent(formData: FormData) {
   const parsed = communitySubmissionSchema.safeParse(
     Object.fromEntries(formData),
   );
   const locale = formData.get("locale") === "en" ? "en" : "es";
-  if (!parsed.success) redirect(`/${locale}/community?error=submission`);
-  const { supabase, user } = await requireUser(locale, `/${locale}/community`);
+  if (!parsed.success)
+    redirect(communityWorkflowPath(locale, "suggest", { error: "submission" }));
+  const { supabase, user } = await requireUser(
+    locale,
+    communityWorkflowPath(locale, "suggest"),
+  );
   const value = parsed.data;
   const { data: submissionId, error } = await supabase.rpc(
     "submit_community_event",
@@ -34,9 +39,11 @@ export async function submitCommunityEvent(formData: FormData) {
   );
   if (error)
     redirect(
-      `/${locale}/community?error=${
-        error.message.includes("rate limit") ? "rate-limit" : "submission"
-      }`,
+      communityWorkflowPath(locale, "suggest", {
+        error: error.message.includes("rate limit")
+          ? "rate-limit"
+          : "submission",
+      }),
     );
   if (typeof submissionId === "string") {
     await reviewPendingCatalogueItem({
@@ -45,7 +52,9 @@ export async function submitCommunityEvent(formData: FormData) {
       requesterId: user.id,
     });
   }
-  redirect(`/${locale}/community?created=submission`);
+  redirect(
+    communityWorkflowPath(locale, "suggestions", { created: "submission" }),
+  );
 }
 
 export async function submitReport(formData: FormData) {
@@ -58,8 +67,15 @@ export async function submitReport(formData: FormData) {
     targetId,
   });
   const locale = formData.get("locale") === "en" ? "en" : "es";
-  if (!parsed.success) redirect(`/${locale}/community?error=report`);
-  const { supabase } = await requireUser(locale, `/${locale}/community`);
+  const target = formData.get("target");
+  if (!parsed.success)
+    redirect(
+      communityWorkflowPath(locale, "report", { target, error: "report" }),
+    );
+  const { supabase } = await requireUser(
+    locale,
+    communityWorkflowPath(locale, "report", { target }),
+  );
   const value = parsed.data;
   const { error } = await supabase.rpc("submit_report", {
     target_type: value.targetType,
@@ -69,9 +85,10 @@ export async function submitReport(formData: FormData) {
   });
   if (error)
     redirect(
-      `/${locale}/community?error=${
-        error.message.includes("rate limit") ? "rate-limit" : "report"
-      }`,
+      communityWorkflowPath(locale, "report", {
+        target,
+        error: error.message.includes("rate limit") ? "rate-limit" : "report",
+      }),
     );
-  redirect(`/${locale}/community?created=report`);
+  redirect(communityWorkflowPath(locale, "reports", { created: "report" }));
 }

@@ -1,19 +1,46 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { StayQuote, StayRoomQuote } from "../lib/accommodation-booking";
+import type { TripIntent } from "../lib/trip-links";
 
 export function StayBookingPanel({
   venueId,
   locale,
+  initialTrip,
 }: {
   venueId: string;
   locale: "en" | "es";
+  initialTrip?: TripIntent;
 }) {
   const es = locale === "es";
   const text = (en: string, spanish: string) => (es ? spanish : en);
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState(2);
+  const tripDefaultsApplied = useRef(false);
+  useEffect(() => {
+    if (!initialTrip || tripDefaultsApplied.current) return;
+    tripDefaultsApplied.current = true;
+    const validDate = (value?: string) => {
+      if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return "";
+      const date = new Date(`${value}T12:00:00Z`);
+      return Number.isFinite(date.getTime()) &&
+        date.toISOString().slice(0, 10) === value
+        ? value
+        : "";
+    };
+    const arrival = validDate(initialTrip.checkIn);
+    const departure = validDate(initialTrip.checkOut);
+    setCheckIn(arrival);
+    setCheckOut(arrival && departure > arrival ? departure : "");
+    setGuests(
+      Number.isInteger(initialTrip.guests) &&
+        initialTrip.guests >= 1 &&
+        initialTrip.guests <= 20
+        ? initialTrip.guests
+        : 2,
+    );
+  }, [initialTrip]);
   const [rooms, setRooms] = useState<StayRoomQuote[] | null>(null);
   const [quote, setQuote] = useState<StayQuote | null>(null);
   const [key, setKey] = useState("");
@@ -138,6 +165,7 @@ export function StayBookingPanel({
                   value={checkIn}
                   disabled={busy}
                   onChange={(e) => {
+                    tripDefaultsApplied.current = true;
                     setCheckIn(e.target.value);
                     reset();
                   }}
@@ -152,6 +180,7 @@ export function StayBookingPanel({
                   value={checkOut}
                   disabled={busy}
                   onChange={(e) => {
+                    tripDefaultsApplied.current = true;
                     setCheckOut(e.target.value);
                     reset();
                   }}
@@ -167,6 +196,7 @@ export function StayBookingPanel({
                   value={guests}
                   disabled={busy}
                   onChange={(e) => {
+                    tripDefaultsApplied.current = true;
                     setGuests(Number(e.target.value));
                     reset();
                   }}

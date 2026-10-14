@@ -6,6 +6,7 @@ import {
 } from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
+import { escapeVenueSearchPattern } from "@/lib/venue-search";
 import { reviewBusinessApplication } from "./actions";
 
 const statuses = ["draft", "pending", "published", "rejected", "archived"];
@@ -46,7 +47,13 @@ export default async function StaffCataloguePage({
       .select("id,venue_id,title_es,title_en,status,created_at,venues(id,name)")
       .order("created_at", { ascending: false })
       .limit(100);
-    if (search) request = request.ilike("title_es", `%${search}%`);
+    if (search) {
+      const pattern = escapeVenueSearchPattern(search);
+      const literal = `"%${pattern.replaceAll("\\", "\\\\").replaceAll('"', '\\"')}%"`;
+      request = request.or(
+        `title_es.ilike.${literal},title_en.ilike.${literal}`,
+      );
+    }
     if (status) request = request.eq("status", status);
     response = await request;
   } else {
@@ -148,7 +155,21 @@ export default async function StaffCataloguePage({
           {es ? "Aplicar" : "Apply"}
         </button>
       </form>
-      {rows.length ? (
+      {response.error ? (
+        <div className="notice" role="alert">
+          <p>
+            {es
+              ? "No se pudo cargar el catálogo. Vuelve a intentarlo."
+              : "Could not load the catalogue. Please try again."}
+          </p>
+          <Link
+            className="button secondary"
+            href={`/${locale}/staff/catalogue?${new URLSearchParams({ kind, ...(search ? { q: search } : {}), ...(status ? { status } : {}) }).toString()}`}
+          >
+            {es ? "Reintentar" : "Retry"}
+          </Link>
+        </div>
+      ) : rows.length ? (
         <div className="catalogue-grid">
           {rows.map((item) => {
             const statusStr = String(item.status || item.state || "draft");
@@ -202,7 +223,7 @@ export default async function StaffCataloguePage({
                   {kind === "events" && (
                     <Link
                       className="button primary small-btn"
-                      href={`/${locale}/staff/catalogue/venues/${String(item.venue_id)}`}
+                      href={`/${locale}/staff/catalogue/venues/${String(item.venue_id)}?event=${encodeURIComponent(String(item.id))}#event-${String(item.id)}`}
                     >
                       {es ? "Gestionar evento" : "Manage event"} →
                     </Link>
