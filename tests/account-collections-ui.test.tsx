@@ -120,7 +120,7 @@ describe("account collections", () => {
     );
     expect(
       screen.getByRole("link", { name: `View event: ${item.label}` }),
-    ).toHaveAttribute("href", item.href);
+    ).toHaveAttribute("href", "/en/events/poesia-malaga");
     expect(screen.queryByText(/Invalid Date/)).not.toBeInTheDocument();
   });
 });
