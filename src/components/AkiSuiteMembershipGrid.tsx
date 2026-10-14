@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { startAkiSuiteCheckout } from "@/app/[locale]/account/subscription/akisuite-actions";
 import {
   akisuitePlans,
@@ -9,6 +10,7 @@ import {
   type AkiSuitePlan,
   type AkiSuiteApp,
   akiSuitePlanApp,
+  akiSuiteApp,
   effectiveAkiSuitePlans,
   businessAddonEligible,
   overlappingAkiSuitePlan,
@@ -194,6 +196,7 @@ const order: AkiSuitePlan[] = [
 export function AkiSuiteMembershipGrid({
   locale,
   checkoutReady = false,
+  purchaseMode = "checkout",
   originatingApp = "akipasa",
   activePlans = [],
   accessUnavailable = false,
@@ -202,6 +205,7 @@ export function AkiSuiteMembershipGrid({
 }: {
   locale: "en" | "es";
   checkoutReady?: boolean;
+  purchaseMode?: "account" | "checkout";
   originatingApp?: AkiSuiteApp;
   activePlans?: AkiSuitePlan[];
   accessUnavailable?: boolean;
@@ -279,6 +283,9 @@ export function AkiSuiteMembershipGrid({
           const current = included.has(key);
           const origin = app === originatingApp;
           const overlap = overlappingAkiSuitePlan(key, selectedPlans);
+          const missingWorkspace = key !== "akipasa_premium" && !workspaceId;
+          const accountHandoff =
+            purchaseMode === "account" && checkoutReady && !accessUnavailable;
           const eligible =
             key !== "akihq_business_addon" ||
             businessAddonEligible(selectedPlans);
@@ -382,47 +389,64 @@ export function AkiSuiteMembershipGrid({
                     ),
                   )}
                 </ul>
-                <form action={startAkiSuiteCheckout}>
-                  <input type="hidden" name="locale" value={locale} />
-                  <input type="hidden" name="plan" value={key} />
-                  <input type="hidden" name="interval" value={interval} />
-                  {key !== "akipasa_premium" && workspaceId && (
-                    <input
-                      type="hidden"
-                      name="workspaceId"
-                      value={workspaceId}
-                    />
-                  )}
-                  <button
-                    type="submit"
+                {accountHandoff ? (
+                  <Link
+                    href={`/${locale}/account/subscription?from=${akiSuiteApp(originatingApp)}`}
                     className={
                       featured ? "button button-strong" : "button secondary"
                     }
-                    disabled={
-                      !checkoutReady ||
-                      current ||
-                      accessUnavailable ||
-                      overlap ||
-                      !eligible
-                    }
                   >
-                    {current
-                      ? es
-                        ? "Plan incluido"
-                        : "Plan included"
-                      : !checkoutReady
+                    {es ? "Continuar en mi cuenta" : "Continue in my account"}
+                  </Link>
+                ) : (
+                  <form action={startAkiSuiteCheckout}>
+                    <input type="hidden" name="locale" value={locale} />
+                    <input type="hidden" name="plan" value={key} />
+                    <input type="hidden" name="interval" value={interval} />
+                    {key !== "akipasa_premium" && workspaceId && (
+                      <input
+                        type="hidden"
+                        name="workspaceId"
+                        value={workspaceId}
+                      />
+                    )}
+                    <button
+                      type="submit"
+                      className={
+                        featured ? "button button-strong" : "button secondary"
+                      }
+                      disabled={
+                        purchaseMode === "account" ||
+                        !checkoutReady ||
+                        missingWorkspace ||
+                        current ||
+                        accessUnavailable ||
+                        overlap ||
+                        !eligible
+                      }
+                    >
+                      {current
                         ? es
-                          ? "Disponible próximamente"
-                          : "Coming soon"
-                        : key === "akihq_business_addon"
+                          ? "Plan incluido"
+                          : "Plan included"
+                        : !checkoutReady
                           ? es
-                            ? "Añadir a AkiHQ Pro"
-                            : "Add to AkiHQ Pro"
-                          : es
-                            ? "Elegir plan"
-                            : "Choose plan"}
-                  </button>
-                </form>
+                            ? "Disponible próximamente"
+                            : "Coming soon"
+                          : missingWorkspace
+                            ? es
+                              ? "Prepara un espacio de trabajo"
+                              : "Prepare a workspace"
+                            : key === "akihq_business_addon"
+                              ? es
+                                ? "Añadir a AkiHQ Pro"
+                                : "Add to AkiHQ Pro"
+                              : es
+                                ? "Elegir plan"
+                                : "Choose plan"}
+                    </button>
+                  </form>
+                )}
               </div>
             </article>
           );

@@ -42,6 +42,7 @@ export default async function MembershipPage({
       <AkiSuiteMembershipGrid
         locale={locale}
         checkoutReady={suiteCatalogueReady}
+        purchaseMode="account"
         originatingApp={akiSuiteApp(query.from)}
       />
       <div className="membership-free-row">

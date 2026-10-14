@@ -61,6 +61,8 @@ describe("AkiSuite localized membership catalogue", () => {
       expect(source).toContain("akiSuiteCheckoutReady()");
       expect(source).not.toContain("MembershipPicker");
     }
+    expect(publicPage).toContain('purchaseMode="account"');
+    expect(accountPage).not.toContain('purchaseMode="account"');
     expect(publicPage).not.toContain("membership-details");
     expect(accountPage).not.toContain("Previous-plan access details");
   });
