@@ -924,14 +924,20 @@ try {
           await expect
             .poll(() => page.evaluate(() => window.__accountReady))
             .toBe(true);
-          const expand = page.getByRole("button", {
-            name:
-              locale === "es"
-                ? "Ver ventajas y acceso"
-                : "View benefits and access",
-          });
-          if (width === 360)
-            for (const button of await expand.all()) await button.click();
+          if (width === 360) {
+            const cards = page.getByRole("article");
+            await expect(cards).toHaveCount(7);
+            for (const card of await cards.all()) {
+              // Card order stays stable when the button changes its name on expansion.
+              const button = card.locator("button[aria-expanded]");
+              await expect(button).toHaveAttribute("aria-expanded", "false");
+              await button.click();
+              await expect(button).toHaveAttribute("aria-expanded", "true");
+            }
+            await expect(
+              page.locator('article button[aria-expanded="true"]'),
+            ).toHaveCount(7);
+          }
           const links = page.getByRole("link", {
             name:
               locale === "es"
