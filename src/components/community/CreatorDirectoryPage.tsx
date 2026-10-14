@@ -5,6 +5,10 @@ import { unstable_cache } from "next/cache";
 import { isLocale } from "@/lib/config";
 import { createSupabasePublicClient } from "@/lib/supabase/public";
 import {
+  escapeVenueSearchPattern,
+  normalizeVenueSearch,
+} from "@/lib/venue-search";
+import {
   WorkspaceShell,
   type WorkspaceItem,
 } from "@/components/WorkspaceShell";
@@ -21,12 +25,14 @@ const getCreators = unstable_cache(
       .order("updated_at", { ascending: false });
 
     if (q) {
+      const literal = `"%${q.replaceAll("\\", "\\\\").replaceAll('"', '\\"')}%"`;
       request = request.or(
-        `display_name.ilike.%${q}%,headline_es.ilike.%${q}%,headline_en.ilike.%${q}%`,
+        `display_name.ilike.${literal},headline_es.ilike.${literal},headline_en.ilike.${literal}`,
       );
     }
     if (locality) request = request.ilike("locality", locality);
-    const { data } = await request;
+    const { data, error } = await request;
+    if (error) throw new Error("creator-directory-unavailable");
     return (data || []) as any[];
   },
   ["creator-directory-v1"],
@@ -88,10 +94,59 @@ export async function CreatorDirectoryPage({
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
   const es = locale === "es";
-  const q = (query.q || "").trim();
-  const locality = (query.locality || "").trim();
-  const category = (query.category || "").trim();
-  const allCreators = await getCreators(q, locality);
+  const q = normalizeVenueSearch(query.q || "");
+  const locality = normalizeVenueSearch(query.locality || "");
+  const category = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(query.category || "")
+    ? query.category!
+    : "";
+  let allCreators: any[] | null = null;
+  try {
+    allCreators = await getCreators(
+      escapeVenueSearchPattern(q),
+      escapeVenueSearchPattern(locality),
+    );
+  } catch {
+    allCreators = null;
+  }
+  if (!allCreators) {
+    const retry = new URLSearchParams();
+    if (q) retry.set("q", q);
+    if (locality) retry.set("locality", locality);
+    if (category) retry.set("category", category);
+    return (
+      <WorkspaceShell
+        title={es ? "Creadores" : "Creators"}
+        eyebrow={es ? "Hecho por la comunidad" : "Community made"}
+        description={
+          es
+            ? "Conoce a las personas detrás de los planes, experiencias y encuentros de AkiPasa."
+            : "Meet the people behind AkiPasa’s events, experiences and local gatherings."
+        }
+        navigationTitle={es ? "Comunidad" : "Community"}
+        homeHref={`/${locale}/community`}
+        items={communityCreatorItems(locale)}
+      >
+        <section className="panel stack" role="alert">
+          <strong>
+            {es
+              ? "No se pudo cargar el directorio de creadores"
+              : "The creator directory could not be loaded"}
+          </strong>
+          <p>
+            {es
+              ? "No mostramos un directorio vacío hasta poder confirmar los datos publicados."
+              : "An empty directory is hidden until the published data can be confirmed."}
+          </p>
+          <Link
+            className="button secondary"
+            href={`/${locale}/community/creators${retry.size ? `?${retry.toString()}` : ""}`}
+          >
+            {es ? "Reintentar" : "Retry"}
+          </Link>
+        </section>
+      </WorkspaceShell>
+    );
+  }
   const categories = Array.from(
     new Map(
       allCreators

@@ -11,14 +11,19 @@ export const dynamic = "force-dynamic";
 
 type CreatorPageProps = {
   params: Promise<{ locale: string; slug: string }>;
+  searchParams?: Promise<Record<string, string | undefined>>;
 };
 
-export async function CommunityCreatorPage({ params }: CreatorPageProps) {
+export async function CommunityCreatorPage({
+  params,
+  searchParams,
+}: CreatorPageProps) {
   const { locale, slug } = await params;
   if (!isLocale(locale)) notFound();
+  const query = searchParams ? await searchParams : {};
   const es = locale === "es";
   const supabase = createSupabasePublicClient();
-  const { data: creator } = await supabase
+  const { data: creator, error: creatorError } = await supabase
     .from("creator_profiles")
     .select(
       "profile_id,slug,display_name,headline_es,headline_en,bio_es,bio_en,locality,province,avatar_url,cover_url,website_url,instagram_url,youtube_url,verification_state,updated_at,creator_categories(categories(slug,name_es,name_en)),creator_reviews(rating,body,created_at),events(id,slug,title_es,title_en,description_es,description_en,status,event_occurrences!event_occurrences_event_id_fkey(starts_at,ends_at),venues(name,venue_media(storage_path,alt_es,alt_en)))",
@@ -27,6 +32,41 @@ export async function CommunityCreatorPage({ params }: CreatorPageProps) {
     .eq("state", "published")
     .maybeSingle();
 
+  if (creatorError) {
+    return (
+      <WorkspaceShell
+        title={es ? "Perfil de creador" : "Creator profile"}
+        eyebrow={es ? "Comunidad" : "Community"}
+        description={
+          es
+            ? "El perfil publicado no está disponible temporalmente."
+            : "The published profile is temporarily unavailable."
+        }
+        navigationTitle={es ? "Comunidad" : "Community"}
+        homeHref={`/${locale}/community`}
+        items={communityCreatorItems(locale)}
+      >
+        <section className="panel stack" role="alert">
+          <strong>
+            {es
+              ? "No se pudo cargar este perfil"
+              : "This creator profile could not be loaded"}
+          </strong>
+          <p>
+            {es
+              ? "Vuelve a intentarlo antes de asumir que el perfil ya no existe."
+              : "Retry before assuming that the profile no longer exists."}
+          </p>
+          <Link
+            className="button secondary"
+            href={`/${locale}/community/creators/${encodeURIComponent(slug)}`}
+          >
+            {es ? "Reintentar" : "Retry"}
+          </Link>
+        </section>
+      </WorkspaceShell>
+    );
+  }
   if (!creator) notFound();
   const c = creator as any;
   const paths = Array.from(
@@ -118,6 +158,24 @@ export async function CommunityCreatorPage({ params }: CreatorPageProps) {
       items={communityCreatorItems(locale)}
     >
       <div className="creator-profile creator-profile-v2">
+        {query.review && (
+          <p
+            className="notice"
+            role={query.review === "submitted" ? "status" : "alert"}
+          >
+            {query.review === "submitted"
+              ? es
+                ? "Valoración enviada para revisión."
+                : "Review submitted for moderation."
+              : query.review === "invalid"
+                ? es
+                  ? "Revisa la valoración y vuelve a enviarla."
+                  : "Check the review and submit it again."
+                : es
+                  ? "No se pudo enviar la valoración. Vuelve a intentarlo."
+                  : "The review could not be submitted. Please try again."}
+          </p>
+        )}
         <section
           className={`creator-cover ${c.cover_url ? "has-image" : ""}`}
           style={

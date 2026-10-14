@@ -126,7 +126,10 @@ export async function submitCreatorReview(formData: FormData) {
     redirect(
       `/${locale}/community/creators/${encodeURIComponent(slug)}?review=invalid`,
     );
-  const { supabase, user } = await requireUser(locale);
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/community/creators/${encodeURIComponent(parsed.data.creatorSlug)}`,
+  );
   const { error } = await supabase.from("creator_reviews").insert({
     creator_profile_id: parsed.data.creatorProfileId,
     reviewer_id: user.id,

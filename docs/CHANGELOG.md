@@ -7,6 +7,8 @@
 - Hide failed personalisation and venue-analytics reads instead of showing zeros
   or empty activity; preserve confirmed zero values and independent venue panels.
 - Separate Passport campaign history from its published-venue creation dependency.
+- Distinguish creator catalogue outages from empty/missing results and show review
+  outcomes while returning sign-in to the selected profile.
 
 ## 2026-10-14 — Workflow continuity follow-up
 

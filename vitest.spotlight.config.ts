@@ -15,6 +15,8 @@ export default defineConfig({
       "tests/support-dialog-upgrades.test.tsx",
       "tests/admin-read-recovery.test.tsx",
       "tests/workflow-continuity.test.tsx",
+      "tests/creator-read-recovery.test.tsx",
+      "tests/creator-review-action.test.ts",
     ],
   },
 });

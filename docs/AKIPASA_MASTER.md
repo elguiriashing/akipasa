@@ -20,6 +20,13 @@ published-venue reads are also independent: campaign history remains usable when
 venues fail, while creation stays hidden until its required first-step venue list
 is known.
 
+Public creator directory/profile read failures are separate from successful empty
+or missing results. Directory retry preserves bounded literal name/area/category
+filters; a successful missing profile still returns not-found. Creator review
+outcomes are visible on the profile and authenticated submission returns to that
+profile. Failed review draft retention remains separately tracked and is not
+claimed by this batch.
+
 Existing server authorization, tenant/RLS checks, moderation mutations, analytics
 RPC ownership, reward creation action and stored records remain unchanged. No
 schema, role, data, provider, billing or checkout change is included. Retry links
