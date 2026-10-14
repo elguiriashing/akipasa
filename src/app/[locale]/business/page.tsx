@@ -617,6 +617,8 @@ export default async function BusinessPage({
 
         {/* Create Event Form */}
         {view === "events" && regularManaged.length > 0 && (
+          <details id="create-event" className="panel catalogue-edit-card dashboard-grid-full" open={query.compose === "1"}>
+            <summary><strong>{es ? "+ Crear evento de local" : "+ Create venue event"}</strong></summary>
           <BusinessEventComposer
             locale={locale}
             venues={regularManaged.flatMap((item) =>
@@ -632,6 +634,7 @@ export default async function BusinessPage({
             }))}
             media={eventComposerMedia}
           />
+          </details>
         )}
 
         {/* Loyalty & Stamps View */}
