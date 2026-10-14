@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-14 — Password recovery task continuity
+
+- Carry an allowlisted public or AkiDuermo destination through reset request,
+  callback, password update, sign-out and the next sign-in.
+- Preserve that task across expired/reused callbacks and reset validation or
+  provider failures without placing passwords or tokens in query parameters.
+
 ## 2026-10-14 — Creator review draft recovery
 
 - Keep the rating and review text in tab-local storage before submission.

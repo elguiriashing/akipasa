@@ -341,6 +341,7 @@ export default async function AuthPage({
         {mode === "recover" && (
           <form action={requestPasswordReset} className="stack">
             <input type="hidden" name="locale" value={locale} />
+            <input type="hidden" name="next" value={next} />
             <label htmlFor="recovery-email">Email</label>
             <input
               id="recovery-email"

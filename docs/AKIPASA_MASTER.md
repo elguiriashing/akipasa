@@ -885,3 +885,16 @@ Terms routing, creator_reviews RLS/moderation, pending state and EN/ES outcome c
 remain unchanged. No automatic resubmission, new endpoint, schema or persistent
 cross-tab storage is added. Focused action/profile/draft tests pass; full CI and
 exact deployed-source verification remain release gates.
+
+## 2026-10-14 | Password recovery task continuity
+
+AUTH-02 carries the sanitized originating task through password-reset request,
+the PKCE callback, the authenticated recovery page, password update, mandatory
+sign-out and the following sign-in. Public paths use the locale allowlist and
+AkiDuermo paths use its host-specific member/stay allowlist. Expired or reused
+callbacks, missing recovery sessions, password-policy failures and provider save
+failures keep that safe destination available for recovery. Nested task parsing
+never serializes a password, recovery code or provider token. Existing password
+rules, callback exchange, Terms enforcement and sign-out behavior remain
+authoritative. Focused action/security tests pass; both host browser journeys,
+current-head CI and exact live-source verification remain release gates.

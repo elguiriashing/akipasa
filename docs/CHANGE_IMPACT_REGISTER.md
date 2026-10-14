@@ -1,5 +1,21 @@
 # Change Impact Register
 
+## 2026-10-14 | Password recovery task continuity
+
+- **Inventory:** AUTH-02.
+- **Before:** Forgot-password discarded the original membership, claim or stay
+  destination; the reset callback targeted only the recovery form and a completed
+  reset returned to generic sign-in.
+- **After:** one origin-aware allowlist carries the task through the recovery email,
+  callback, update form and required fresh sign-in. Validation, provider, missing
+  session and expired/reused callback paths retain the same safe task.
+- **Dependencies:** public/AkiDuermo host routing, Supabase PKCE callback/session,
+  existing password policy, sign-out-after-reset and Terms guard remain unchanged.
+  Passwords and provider codes are never copied into the task query.
+- **Evidence:** 18 focused auth-action/recovery cases plus public and AkiDuermo
+  nested-destination security cases pass; TypeScript and scoped lint pass.
+- **Rollback:** revert source/tests/docs; no session or database migration rollback.
+
 ## 2026-10-14 | Creator review draft recovery
 
 - **Inventory:** completes PUB-09.

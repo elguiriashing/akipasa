@@ -5,9 +5,11 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { config, isLocale } from "@/lib/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { passwordSchema, safeAuthDestination } from "@/lib/auth-security";
+import {
+  passwordSchema,
+  safeAuthDestinationForOrigin,
+} from "@/lib/auth-security";
 import { publicRequestOrigin } from "@/lib/public-request-origin";
-import { safeStayDestination, stayOrigin } from "@/lib/akiduermo-routing";
 
 function requestOrigin(headerStore: Awaited<ReturnType<typeof headers>>) {
   return publicRequestOrigin(new Headers(headerStore), config.siteUrl);
@@ -17,9 +19,7 @@ function authDestination(
   requested: string | undefined,
   origin: string,
 ) {
-  return origin === stayOrigin
-    ? safeStayDestination(requested)
-    : safeAuthDestination(locale, requested);
+  return safeAuthDestinationForOrigin(locale, requested, origin);
 }
 
 async function authReturnUrl(
@@ -75,6 +75,7 @@ export async function requestPasswordReset(formData: FormData) {
     .object({
       email: z.string().email(),
       locale: z.enum(["es", "en"]),
+      next: z.string().optional(),
     })
     .safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
@@ -83,11 +84,13 @@ export async function requestPasswordReset(formData: FormData) {
       await authReturnUrl(locale, "recover", formData, { error: "invalid" }),
     );
   const origin = requestOrigin(await headers());
+  const next = authDestination(locale, parsed.data.next, origin);
+  const recover = `/${locale}/auth/recover?${new URLSearchParams({ next })}`;
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.resetPasswordForEmail(
     parsed.data.email,
     {
-      redirectTo: `${origin}/${locale}/auth/callback?next=${encodeURIComponent(`/${locale}/auth/recover`)}`,
+      redirectTo: `${origin}/${locale}/auth/callback?next=${encodeURIComponent(recover)}`,
     },
   );
   if (error)
