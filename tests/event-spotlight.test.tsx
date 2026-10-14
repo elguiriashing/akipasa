@@ -175,9 +175,10 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-async function page(locale: "en" | "es" = "en") {
+async function page(locale: "en" | "es" = "en", occurrence?: string) {
   return EventPage({
     params: Promise.resolve({ locale, slug: event.slug }),
+    searchParams: Promise.resolve({ occurrence }),
   });
 }
 
@@ -221,7 +222,7 @@ describe("Aki Spotlight event detail", () => {
       expect(actions).toHaveLength(2);
       for (const action of actions)
         expect(action.getAttribute("href")).toBe(
-          `/${locale}/events/${event.slug}/book`,
+          `/${locale}/events/${event.slug}/book?occurrence=${event.occurrences[0].id}`,
         );
       expect(recentView).not.toHaveBeenCalled();
     },
@@ -276,6 +277,68 @@ describe("Aki Spotlight event detail", () => {
     expect(schema.eventStatus).toBe("https://schema.org/EventScheduled");
   });
 
+  it("keeps a selected recurrence through booking, calendar, saved state and stay planning", async () => {
+    event.occurrences.push({
+      id: "chosen-occurrence",
+      startsAt: "2026-11-07T18:00:00Z",
+      endsAt: "2026-11-07T22:00:00Z",
+      status: "scheduled",
+    });
+    event.location = {
+      label: "Custom event site",
+      latitude: 40.4168,
+      longitude: -3.7038,
+    };
+    user = { id: userId };
+    rpcRows.has_active_entitlement = true;
+    const { container } = render(await page("en", "chosen-occurrence"));
+
+    for (const action of container.querySelectorAll(".event-spotlight-booking"))
+      expect(action.getAttribute("href")).toBe(
+        "/en/events/almuerzo-local/book?occurrence=chosen-occurrence",
+      );
+    expect(
+      container.querySelector(
+        'a[href="/en/events/almuerzo-local/calendar?occurrence=chosen-occurrence"]',
+      ),
+    ).not.toBeNull();
+    expect(
+      formValues(
+        screen.getByRole("button", { name: "Save event" }).closest("form")!,
+      ).returnTo,
+    ).toBe("/en/events/almuerzo-local?occurrence=chosen-occurrence");
+    const stay = screen.getByRole("link", {
+      name: "Find a stay for this event",
+    });
+    const stayUrl = new URL(stay.getAttribute("href")!);
+    expect(stayUrl.searchParams.get("latitude")).toBe("40.4168");
+    expect(stayUrl.searchParams.get("longitude")).toBe("-3.7038");
+    expect(container.querySelector("#event-jsonld")?.textContent).toContain(
+      "2026-11-07T18:00:00Z",
+    );
+  });
+
+  it("falls back safely for an invalid occurrence and removes expired actions", async () => {
+    event.occurrences[0] = {
+      ...event.occurrences[0],
+      startsAt: "2026-10-10T10:00:00Z",
+      endsAt: "2026-10-10T12:00:00Z",
+      status: "scheduled",
+    };
+    user = { id: userId };
+    rpcRows.has_active_entitlement = true;
+    const { container } = render(await page("en", "unknown-occurrence"));
+
+    expect(screen.getByRole("status").textContent).toContain(
+      "This event has ended.",
+    );
+    expect(container.querySelector(".event-spotlight-booking")).toBeNull();
+    expect(
+      screen.queryByRole("link", { name: "Find a stay for this event" }),
+    ).toBeNull();
+    expect(screen.queryByRole("link", { name: "Add to calendar" })).toBeNull();
+  });
+
   it("keeps hidden pricing, no-media fallback, disabled booking and official locations honest", async () => {
     event.priceDisplayMode = "hide";
     event.bannerImage = undefined;
@@ -323,13 +386,13 @@ describe("Aki Spotlight event detail", () => {
       locale: "en",
       key: eventId,
       intent: "remove",
-      returnTo: `/en/events/${event.slug}`,
+      returnTo: `/en/events/${event.slug}?occurrence=${event.occurrences[0].id}`,
     });
     expect(formValues(going.closest("form")!)).toMatchObject({
       locale: "en",
       eventId,
       state: "clear",
-      returnTo: `/en/events/${event.slug}`,
+      returnTo: `/en/events/${event.slug}?occurrence=${event.occurrences[0].id}`,
     });
     expect(
       container.querySelector(
@@ -337,7 +400,9 @@ describe("Aki Spotlight event detail", () => {
       ),
     ).not.toBeNull();
     expect(
-      container.querySelector(`a[href="/en/events/${event.slug}/calendar"]`),
+      container.querySelector(
+        `a[href="/en/events/${event.slug}/calendar?occurrence=${event.occurrences[0].id}"]`,
+      ),
     ).not.toBeNull();
     expect(recentView).toHaveBeenCalledWith(
       expect.objectContaining({ profile_id: userId, event_key: eventId }),

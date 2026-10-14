@@ -23,7 +23,13 @@ export default defineConfig({
       use: {
         ...devices["Pixel 7"],
         browserName: "chromium",
-        channel: "chrome",
+        ...(process.env.BOOKING_BROWSER_PATH
+          ? {
+              launchOptions: {
+                executablePath: process.env.BOOKING_BROWSER_PATH,
+              },
+            }
+          : { channel: "chrome" }),
       },
     },
   ],
