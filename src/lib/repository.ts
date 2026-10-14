@@ -273,6 +273,40 @@ const venueFields =
 const eventFields =
   "id,venue_id,slug,title_es,title_en,description_es,description_en,price_cents,price_display_mode,currency,source,sponsored,booking_url,minimum_age,accessibility_notes_es,accessibility_notes_en,location,location_label,directions_address,categories(slug),event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status,booking_url),feature_slots(starts_at,ends_at)";
 
+async function signVenueMedia(
+  supabase: ReturnType<typeof createSupabasePublicClient>,
+  media: DbRecord[],
+): Promise<NonNullable<Venue["media"]>> {
+  const paths = new Set(media.map((item) => String(item.storage_path)));
+  if (!paths.size) return [];
+  const { data: signedRows } = await supabase.storage
+    .from("event-media")
+    .createSignedUrls([...paths], 3600);
+  const signedUrls = new Map(
+    (signedRows || []).flatMap((item) =>
+      item.path && paths.has(item.path) && !item.error && item.signedUrl
+        ? [[item.path, item.signedUrl] as const]
+        : [],
+    ),
+  );
+  // Storage may omit denied assets or return rows in a different order.
+  return media.flatMap((item) => {
+    const url = signedUrls.get(String(item.storage_path));
+    return url
+      ? [
+          {
+            id: String(item.id),
+            url,
+            alt: {
+              es: String(item.alt_es),
+              ...(item.alt_en ? { en: String(item.alt_en) } : {}),
+            },
+          },
+        ]
+      : [];
+  });
+}
+
 export class SupabaseDiscoveryRepository implements DiscoveryRepository {
   async discover(query: DiscoveryQuery) {
     const supabase = createSupabasePublicClient();
@@ -742,26 +776,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       reward: { es: item.reward_es, en: item.reward_en || undefined },
       stampsRequired: item.stamps_required,
     }));
-    const signedMedia = await Promise.all(
-      (media || []).map(async (item) => {
-        const { data: signed } = await supabase.storage
-          .from("event-media")
-          .createSignedUrl(item.storage_path, 3600);
-        if (!signed?.signedUrl) return null;
-        return {
-          id: String(item.id),
-          url: signed.signedUrl,
-          alt: {
-            es: String(item.alt_es),
-            ...(item.alt_en ? { en: String(item.alt_en) } : {}),
-          },
-        };
-      }),
-    );
-    venue.media = signedMedia.filter(
-      (item): item is NonNullable<(typeof signedMedia)[number]> =>
-        item !== null,
-    );
+    venue.media = await signVenueMedia(supabase, media || []);
     const { data: visualPlacements } = await supabase
       .from("venue_media_placements")
       .select("media_id,placement")
@@ -820,26 +835,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       .not("storage_path", "like", "%/events/%")
       .order("sort_order")
       .limit(60);
-    const signedMedia = await Promise.all(
-      (media || []).map(async (item) => {
-        const { data: signed } = await supabase.storage
-          .from("event-media")
-          .createSignedUrl(item.storage_path, 3600);
-        if (!signed?.signedUrl) return null;
-        return {
-          id: String(item.id),
-          url: signed.signedUrl,
-          alt: {
-            es: String(item.alt_es),
-            ...(item.alt_en ? { en: String(item.alt_en) } : {}),
-          },
-        };
-      }),
-    );
-    venue.media = signedMedia.filter(
-      (item): item is NonNullable<(typeof signedMedia)[number]> =>
-        item !== null,
-    );
+    venue.media = await signVenueMedia(supabase, media || []);
     const { data: visualPlacements } = await supabase
       .from("venue_media_placements")
       .select("media_id,placement")
