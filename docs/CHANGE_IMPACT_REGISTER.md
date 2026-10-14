@@ -1,5 +1,22 @@
 # Change Impact Register
 
+## 2026-10-14 | Discovery filter recovery
+
+- **Inventory:** PUB-17.
+- **Before:** inverted price/date ranges silently produced empty discovery results,
+  selected filters had no direct removal controls, and the 100 km empty-state
+  action linked back to the same ineffective radius.
+- **After:** EN/ES range errors remain beside the filters and block navigation;
+  active filters can be removed individually or together with focus returned to
+  the search panel. At the maximum radius, the empty state offers a clean area
+  and filter reset.
+- **Dependencies:** existing URL filter names, discovery defaults, native field
+  constraints, recommendation queries and list/Map routes remain authoritative.
+  No API, schema, permission, ranking or stored-data change is included.
+- **Evidence:** 59 focused validation, active-filter and public empty-state cases
+  pass. TypeScript, lint, formatting and the full Spotlight suite are final gates.
+- **Rollback:** revert application/helper/tests/docs; no data rollback is needed.
+
 ## 2026-10-14 | Mobile More focus containment
 
 - **Inventory:** PUB-16.

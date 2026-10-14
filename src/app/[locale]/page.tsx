@@ -204,15 +204,23 @@ export default async function DiscoverPage({
             <p>{m.noResults}</p>
           </div>
           <div className="discovery-empty-actions">
-            <Link
-              className="button button-strong"
-              href={formatTimeFilterUrl("all").replace(
-                `radius=${radius}`,
-                `radius=${Math.min(100, radius < 25 ? 25 : radius < 50 ? 50 : 100)}`,
-              )}
-            >
-              {locale === "es" ? "Ampliar radio" : "Expand radius"}
-            </Link>
+            {radius < 100 ? (
+              <Link
+                className="button button-strong"
+                href={formatTimeFilterUrl("all").replace(
+                  `radius=${radius}`,
+                  `radius=${radius < 25 ? 25 : radius < 50 ? 50 : 100}`,
+                )}
+              >
+                {locale === "es" ? "Ampliar radio" : "Expand radius"}
+              </Link>
+            ) : (
+              <Link className="button button-strong" href={`/${locale}`}>
+                {locale === "es"
+                  ? "Cambiar zona y borrar filtros"
+                  : "Change area and reset filters"}
+              </Link>
+            )}
             <Link
               className="button button-ghost"
               href={formatTimeFilterUrl("tomorrow")}

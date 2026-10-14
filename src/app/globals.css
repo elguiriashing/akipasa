@@ -2998,6 +2998,23 @@ html[data-theme="dark"] .filter-group:hover {
   justify-content: flex-start;
 }
 
+.global-active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.global-active-filters .status-pill,
+.global-active-filters .button {
+  min-height: 2.75rem;
+}
+
+.global-search-error {
+  margin-bottom: 0.8rem;
+}
+
 .section-head {
   display: flex;
   justify-content: space-between;

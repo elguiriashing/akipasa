@@ -14,6 +14,8 @@ export default defineConfig({
       "tests/discovery-navigation.test.ts",
       "tests/event-occurrence.test.ts",
       "tests/event-booking-occurrence.test.ts",
+      "tests/global-search-validation.test.tsx",
+      "tests/discovery-filter-validation.test.ts",
       "tests/staff-ui-upgrades.test.tsx",
       "tests/auth-ux-upgrades.test.ts",
       "tests/support-dialog-upgrades.test.tsx",

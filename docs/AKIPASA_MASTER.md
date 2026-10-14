@@ -835,3 +835,19 @@ pricing, consent and action boundaries remain as documented in the three
 original recovery entries. No SQL, authorization/payment rollout, customer
 records or email replay is included; drafts #133/#140 stay excluded. Source
 revert rolls back these repairs without rewriting catalogue/media/history.
+
+## 2026-10-14 | Discovery filter recovery
+
+GlobalSearch validates price and date ranges before its existing automatic URL
+replacement. Invalid ranges receive localized visible errors and do not navigate.
+The panel exposes its active discovery filters as named removal controls plus a
+clear-all action, clears stale result pagination after individual changes and
+returns focus to the panel after the routed query update. The public no-results
+state expands only up to 100 km; at that limit it now links to the locale home to
+choose a new area from a clean filter state.
+
+This is PUB-17. Existing filter keys/defaults, list and Map routing, recommendation
+queries, native input constraints and ranking remain unchanged. No API, database,
+authorization, consent, payment or persistent customer data changes. Focused
+validation and empty-state tests pass; current-head checks, CI, Cloudflare release
+and exact live-source verification remain required before this entry is live.

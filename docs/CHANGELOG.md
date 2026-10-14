@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-14 — Discovery filter recovery
+
+- Explain invalid price and date ranges in place and stop invalid automatic
+  navigation.
+- Show removable active filters with a deliberate clear-all action and preserve
+  keyboard focus after URL updates.
+- Replace the maximum-radius no-results loop with a useful area/filter reset.
+
 ## 2026-10-14 — Mobile More dialog accessibility
 
 - Contain Tab and Shift+Tab inside the mobile More dialog.
