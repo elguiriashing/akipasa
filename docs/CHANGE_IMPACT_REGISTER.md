@@ -1149,3 +1149,8 @@ pricing, consent and action boundaries remain as documented in the three
 original recovery entries. No SQL, authorization/payment rollout, customer
 records or email replay is included; drafts #133/#140 stay excluded. Source
 revert rolls back these repairs without rewriting catalogue/media/history.
+
+
+## 2026-10-14 | Parallel tablet acceptance jobs (#169)
+
+Scope: GitHub Actions tablet workflow only. Existing tablet route, AkiDuermo route, portal smoke and layout/Spotlight tests remain required; route suites run with two workers in a separate job, other suites run concurrently, and stale same-PR workflow runs are cancelled. Evidence artifacts use distinct job names and `tablet-ui` remains the required check. No app, database, permission or test assertion changes. Validation: current-head hosted runs must pass each job; initial run failed the contract documentation gate, which this entry and the master contract update address. Monitor parallel runner pressure; reverting route worker count to one preserves job concurrency. Merge only after fresh exact-head checks pass.
