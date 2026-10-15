@@ -8,6 +8,7 @@ import React, { type SVGProps } from "react";
  */
 export type IconName =
   | "bed"
+  | "car"
   | "discover"
   | "map"
   | "community"
@@ -48,6 +49,13 @@ export type IconName =
   | "trash";
 
 const paths: Record<IconName, React.ReactNode> = {
+  car: (
+    <>
+      <path d="M5 16h14l-1.5-6H6.5L5 16Zm1.5-6 1-3h9l1 3M5 16v2m14-2v2M7.5 13h.01M16.5 13h.01" />
+      <circle cx="7.5" cy="17" r="1" />
+      <circle cx="16.5" cy="17" r="1" />
+    </>
+  ),
   share: (
     <>
       <path d="M12 15V3m-4 4 4-4 4 4M6 11H4v10h16V11h-2" />
