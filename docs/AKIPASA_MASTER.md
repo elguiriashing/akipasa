@@ -1066,3 +1066,29 @@ selected legacy cover imported, the existing booking count preserved, the old
 authenticated link RPC disabled and anonymous email activation denied. Security
 advisors flag the intentional deny-all legacy audit and explicitly guarded
 definer RPCs; no new public booking/contact access is granted.
+
+## 2026-10-16 | Rental media upload policy repair
+
+The shared rental-media Storage INSERT/DELETE policy used an unqualified `name`
+inside a company subquery. PostgreSQL resolved it to the company's display name,
+so valid owner/manager image uploads were denied. The forward migration explicitly
+uses `objects.name` for the branch UUID folder. Manager SELECT access also covers
+their own folder before a media row exists, allowing failed-save cleanup; anonymous
+and unrelated-user reads remain limited to selected, published media.
+
+Impacts: independent AkiBusiness multipart uploads and cleanup, AkiCoches selected
+cover signing, shared Storage RLS and the eventual AkiHQ management handoff. No
+UI, locale, role membership, booking, billing, media content or analytics change.
+Regression must execute Storage INSERT/SELECT/DELETE under authenticated and anon
+roles, including cross-folder/bucket denial and UUID-shaped branch display names.
+Rollback is a reviewed forward policy migration; do not delete or rewrite files.
+Production logs confirm three rental uploads denied by RLS. Release evidence is
+recorded in the PR; this entry alone does not establish live acceptance.
+
+Migration `20261015232311_fix_rental_storage_object_policies` is applied on the
+confirmed shared project. The new Storage RLS regression fails on the original
+policy and passes after the correction. A rollback-only production owner-role
+probe confirms own-folder INSERT/SELECT and foreign-folder denial, leaving no
+objects behind. Production direct SQL DELETE is protected by Supabase's storage
+API-only guard; that guard was retained, with DELETE policy behavior tested locally.
+No real customer image, profile, booking, email or subscription was mutated.

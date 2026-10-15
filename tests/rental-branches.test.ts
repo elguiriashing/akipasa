@@ -34,6 +34,7 @@ it("separates branches, keeps manager access, enforces contacts and queues both-
       `insert into car_rental_companies(id,name,slug,city,address,latitude,longitude,submitted_by,venue_id) values('${branch}','Fixture Branch','fixture-branch','Fuengirola','Calle Fixture',36.5,-4.6,'${owner}','${venue}');update car_rental_companies set status='published';insert into car_rental_vehicles(id,company_id,name,category,transmission,fuel,seats,luggage,daily_price_cents,deposit_cents,active) values('${vehicle}','${branch}','Fixture Car','economy','manual','petrol',5,2,5000,10000,true);`,
     );
     await db.exec(sql("20261015220302_independent_rental_branches.sql"));
+    await db.exec(sql("20261015232311_fix_rental_storage_object_policies.sql"));
     expect(
       (await db.query(`select venue_id from car_rental_companies`)).rows,
     ).toEqual([{ venue_id: null }]);
@@ -108,6 +109,62 @@ it("separates branches, keeps manager access, enforces contacts and queues both-
     await db.exec(
       `set request.jwt.claim.sub='${other}';grant usage on schema auth,storage to authenticated,anon;grant select on storage.objects to authenticated,anon;grant insert,delete on storage.objects to authenticated;set role authenticated;`,
     );
+    // Exercise Storage RLS itself, not only the application media table.
+    const object = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
+    const orphan = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
+    const objectName = `${branch}/own.webp`;
+    await db.exec(
+      `insert into storage.objects(id,bucket_id,name) values('${object}','rental-media','${objectName}');`,
+    );
+    expect((await db.query(`select id from storage.objects`)).rows).toEqual([
+      { id: object },
+    ]);
+    await db.exec(
+      `insert into storage.objects(id,bucket_id,name) values('${orphan}','rental-media','${branch}/orphan.webp');`,
+    );
+    expect(
+      (
+        await db.query(
+          `delete from storage.objects where id='${orphan}' returning id`,
+        )
+      ).rows,
+    ).toEqual([{ id: orphan }]);
+    await db.exec(
+      `update car_rental_companies set name='${branch}' where id='${branch}'`,
+    );
+    for (const [bucket, path] of [
+      ["rental-media", `${renter}/cross-branch.webp`],
+      ["event-media", `${branch}/wrong-bucket.webp`],
+    ]) {
+      await expect(
+        db.exec(
+          `insert into storage.objects(id,bucket_id,name) values(gen_random_uuid(),'${bucket}','${path}')`,
+        ),
+      ).rejects.toThrow(/row-level security/);
+    }
+    await db.exec(
+      `reset role;set request.jwt.claim.sub='${renter}';set role authenticated;`,
+    );
+    expect((await db.query(`select id from storage.objects`)).rows).toEqual([]);
+    await expect(
+      db.exec(
+        `insert into storage.objects(id,bucket_id,name) values(gen_random_uuid(),'rental-media','${branch}/foreign.webp')`,
+      ),
+    ).rejects.toThrow(/row-level security/);
+    expect(
+      (await db.query(`delete from storage.objects returning id`)).rows,
+    ).toEqual([]);
+    await db.exec(`reset role;set request.jwt.claim.sub='';set role anon;`);
+    expect((await db.query(`select id from storage.objects`)).rows).toEqual([]);
+    await db.exec(
+      `reset role;set request.jwt.claim.sub='${owner}';set role authenticated;`,
+    );
+    expect((await db.query(`select id from storage.objects`)).rows).toEqual([
+      { id: object },
+    ]);
+    await db.exec(
+      `reset role;set request.jwt.claim.sub='${other}';set role authenticated;`,
+    );
     const media = "88888888-8888-4888-8888-888888888888";
     await db.exec(
       `insert into car_rental_media(id,company_id,storage_path,alt) values('${media}','${branch}','${branch}/own.webp','Branch car');`,
@@ -137,6 +194,19 @@ it("separates branches, keeps manager access, enforces contacts and queues both-
     expect((await db.query(`select id from car_rental_media`)).rows).toEqual([
       { id: media },
     ]);
+    expect((await db.query(`select id from storage.objects`)).rows).toEqual([
+      { id: object },
+    ]);
+    await db.exec(
+      `reset role;set request.jwt.claim.sub='${other}';set role authenticated;`,
+    );
+    expect(
+      (
+        await db.query(
+          `delete from storage.objects where id='${object}' returning id`,
+        )
+      ).rows,
+    ).toEqual([{ id: object }]);
     await db.exec(`reset role;`);
   } finally {
     await db.close();
