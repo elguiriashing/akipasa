@@ -1,5 +1,19 @@
 # Change Impact Register
 
+## 2026-10-15 | AkiCoches venue data contract
+
+- **Before:** company owners had one unlinked rental listing, and managers could
+  not operate a venue fleet or choose its media for vehicle covers.
+- **After:** nullable venue/cover keys, one company per venue, scoped company/fleet/
+  availability/request access for venue owners/managers, and a same-venue cover
+  trigger. The legacy owner policies, existing rows, and pending-review gate remain.
+- **Dependencies:** AkiBusiness venue editor, AkiCoches public signed covers,
+  shared Supabase RLS and Storage, and the booking status RPC's existing lock and
+  state transitions. No payments, scheduled jobs or email ownership changes.
+- **Verification:** mirrored SQL, function/policy readback, both independent app
+  CI/builds, owner-vs-other-tenant acceptance and live-domain smoke. Rollback is a
+  reviewed forward schema change; never drop customer records.
+
 ## 2026-10-14 | AkiConduzco mobility foundation (implementation candidate)
 
 - **Request / before:** AkiPasa has no car-rental discovery or fleet tools. Its
