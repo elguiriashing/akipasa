@@ -13,7 +13,8 @@ export type ManagedPlace = {
   slug: string;
   status: string;
   role: string;
-  product: "venue" | "stay";
+  product: "venue" | "stay" | "rental";
+  venueId?: string | null;
 };
 const pageSize = 8;
 const normalize = (value: string) =>
@@ -192,6 +193,7 @@ export function BusinessHome({
               ["all", es ? "Todos" : "All"],
               ["venue", es ? "Locales" : "Venues"],
               ["stay", es ? "Alojamientos" : "Stays"],
+              ["rental", es ? "Coches" : "Rentals"],
             ] as const
           ).map(([value, label]) => (
             <button
@@ -248,12 +250,22 @@ export function BusinessHome({
                 <div className={styles.placeHead}>
                   <span className={styles.glyph}>
                     <Icon
-                      name={place.product === "stay" ? "bed" : "venue"}
+                      name={
+                        place.product === "stay"
+                          ? "bed"
+                          : place.product === "rental"
+                            ? "car"
+                            : "venue"
+                      }
                       size={24}
                     />
                   </span>
                   <span className={styles.product}>
-                    {place.product === "stay" ? "AkiDuermo" : "AkiPasa"}
+                    {place.product === "stay"
+                      ? "AkiDuermo"
+                      : place.product === "rental"
+                        ? "AkiCoches"
+                        : "AkiPasa"}
                   </span>
                   <span className={styles.status}>
                     {labels[place.status] || place.status}
@@ -263,21 +275,32 @@ export function BusinessHome({
                 <p>{labels[place.role] || place.role}</p>
                 <div className={styles.actions}>
                   <Link
-                    href={`${base}/venue/${place.id}`}
+                    href={
+                      place.product === "rental"
+                        ? place.venueId
+                          ? `${base}/venue/${place.venueId}?section=fleet`
+                          : `${base}/mobility`
+                        : `${base}/venue/${place.id}`
+                    }
                     aria-label={`${es ? "Gestionar" : "Manage"} ${place.name}`}
                   >
                     <span>
-                      {place.product === "stay"
+                      {place.product === "rental"
                         ? es
-                          ? "Gestionar alojamiento"
-                          : "Manage stay"
-                        : es
-                          ? "Gestionar local"
-                          : "Manage venue"}
+                          ? "Gestionar flota"
+                          : "Manage fleet"
+                        : place.product === "stay"
+                          ? es
+                            ? "Gestionar alojamiento"
+                            : "Manage stay"
+                          : es
+                            ? "Gestionar local"
+                            : "Manage venue"}
                     </span>
                     <Icon name="arrow-right" size={18} />
                   </Link>
-                  {place.role === "owner" &&
+                  {place.product !== "rental" &&
+                    place.role === "owner" &&
                     place.slug !== "akipasa-editorial" && (
                       <details className={styles.more}>
                         <summary
