@@ -1,5 +1,16 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-15 | Rental company cards in the legacy Business portal
+
+The AkiPasa-hosted Business home lists rental companies submitted by the signed-in
+operator beside their venues and stays. AkiCoches has its own car glyph and scarlet
+accent, rental filter and fleet management action. A linked company opens its venue
+fleet section; an existing unlinked company opens the mobility editor. The
+AkiConduzco top-level tab is removed. The read is scoped by `submitted_by` and
+does not attach an existing company to an unrelated venue. Venue ownership and
+rental authorization remain enforced by their existing policies. The standalone
+AkiBusiness portal mirrors this presentation.
+
 ## 2026-10-15 | AkiCoches venue data contract
 
 AkiBusiness now owns venue-scoped rental management and AkiCoches remains the
