@@ -129,7 +129,11 @@ acceptance is separately recorded by its dedicated nine-case PGlite suite.
 4. Keep new property public activation disabled until independent management,
    customer discovery/booking/history/media and auth are exercised end to end with
    controlled test accounts. No real customer email/payment/public fake listing.
-5. Revert application release first if needed. Retain new identities/inventory and
+5. Before any independent production writes, the previous application can be
+   restored. After independent records exist, roll back public exposure/new
+   creation first while retaining the compatible management, history and
+   cancellation routes; a venue-only application is not a safe complete rollback.
+   Retain new identities/inventory and
    the compatible SQL functions; never drop the new columns/tables after writes,
    delete histories, clear CRM source links or restore old venue-only booking
    functions over independent records. Disable new creation via reviewed forward
