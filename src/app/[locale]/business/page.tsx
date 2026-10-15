@@ -163,6 +163,14 @@ export default async function BusinessPage({
       ? [{ role: "editor", venues: editorialVenue }]
       : []),
   ];
+  const { data: rentalCompanies, error: rentalCompaniesError } =
+    view === "venues"
+      ? await supabase
+          .from("car_rental_companies")
+          .select("id,name,slug,status,venue_id")
+          .eq("submitted_by", user.id)
+          .order("created_at", { ascending: true })
+      : { data: [], error: null };
   const managedVenueIds = managed.flatMap((item) =>
     item.venues ? [item.venues.id] : [],
   );
@@ -303,11 +311,6 @@ export default async function BusinessPage({
       icon: "inbox",
       count: claims?.length || undefined,
     },
-    {
-      href: `/${locale}/business/mobility`,
-      label: "AkiConduzco",
-      icon: "venue",
-    },
   ];
   const premiumEnabled = akiSuiteCheckoutReady();
   const premiumChecks =
@@ -411,24 +414,35 @@ export default async function BusinessPage({
         {view === "venues" && (
           <BusinessHome
             locale={locale}
-            readError={Boolean(membersError)}
-            places={managed.flatMap((item) =>
-              item.venues
-                ? [
-                    {
-                      id: item.venues.id,
-                      name: item.venues.name,
-                      slug: item.venues.slug,
-                      status: item.venues.status,
-                      role: item.role,
-                      product:
-                        item.venues.discovery_vertical === "accommodation"
-                          ? ("stay" as const)
-                          : ("venue" as const),
-                    },
-                  ]
-                : [],
-            )}
+            readError={Boolean(membersError || rentalCompaniesError)}
+            places={[
+              ...managed.flatMap((item) =>
+                item.venues
+                  ? [
+                      {
+                        id: item.venues.id,
+                        name: item.venues.name,
+                        slug: item.venues.slug,
+                        status: item.venues.status,
+                        role: item.role,
+                        product:
+                          item.venues.discovery_vertical === "accommodation"
+                            ? ("stay" as const)
+                            : ("venue" as const),
+                      },
+                    ]
+                  : [],
+              ),
+              ...(rentalCompanies || []).map((company) => ({
+                id: company.id,
+                name: company.name,
+                slug: company.slug,
+                status: company.status,
+                role: "owner",
+                product: "rental" as const,
+                venueId: company.venue_id,
+              })),
+            ]}
             deleteAction={deleteManagedVenue}
           />
         )}
