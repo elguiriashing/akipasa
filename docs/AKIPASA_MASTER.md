@@ -1,5 +1,16 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-15 | AkiCoches venue data contract
+
+AkiBusiness now owns venue-scoped rental management and AkiCoches remains the
+public catalogue. The mirrored migration adds nullable company venue linkage,
+vehicle cover selection, venue-team RLS and manager booking decisions. It keeps
+legacy unlinked companies and requests, and allows a manager of multiple venues
+to operate separate fleets. The cover trigger prevents cross-venue media links.
+No booking/payment records are rewritten. Independent app releases and actual
+owner/other-tenant acceptance are tracked in their repositories; this schema
+change alone does not certify a production UI.
+
 ## 2026-10-14 | AkiConduzco mobility product (live release)
 
 AkiConduzco is a car-rental discovery and booking-request product on
