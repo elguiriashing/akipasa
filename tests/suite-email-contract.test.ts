@@ -81,17 +81,20 @@ it("preserves existing confirmation hooks and offers new request/cancellation em
   expect(source("src/app/[locale]/events/[slug]/book/actions.ts")).toContain(
     'rpc("request_booking_v2"',
   );
-  const confirmation = renderBookingConfirmation({
-    bookingId: "booking",
-    venueId: "venue",
-    venueName: "Legacy stay",
-    customerName: "Guest",
-    customerEmail: "guest@example.invalid",
-    guestCount: 1,
-    bookingStart: "2026-10-20T10:00:00Z",
-    locale: "en",
-    product: "accommodation",
-  });
+  const confirmation = renderBookingConfirmation(
+    {
+      bookingId: "booking",
+      venueId: "venue",
+      venueName: "Legacy stay",
+      customerName: "Guest",
+      customerEmail: "guest@example.invalid",
+      guestCount: 1,
+      bookingStart: "2026-10-20T10:00:00Z",
+      locale: "en",
+      product: "accommodation",
+    },
+    "customer",
+  );
   expect(confirmation.html).toContain(
     `${productRoles.swapped ? "https://akiduermo.com" : "https://akiduermo.akipasa.com"}/bookings?lang=en`,
   );
