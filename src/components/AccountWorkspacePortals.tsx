@@ -47,7 +47,11 @@ export function AccountWorkspacePortals({
         <section className="workspace-portal-section account-operations-link">
           <header className="account-utility-heading">
             <span>{es ? "Equipo" : "Team"}</span>
-            <h2>{es ? "Operaciones AkiHQ" : "AkiHQ operations"}</h2>
+            <h2>
+              {es
+                ? `Operaciones ${config.operationsName}`
+                : `${config.operationsName} operations`}
+            </h2>
           </header>
           <a
             className="workspace-portal-link account-more-link"
@@ -56,7 +60,11 @@ export function AccountWorkspacePortals({
             rel="noopener noreferrer"
           >
             <Icon name="business" />
-            <strong>{es ? "Abrir AkiHQ" : "Open AkiHQ"}</strong>
+            <strong>
+              {es
+                ? `Abrir ${config.operationsName}`
+                : `Open ${config.operationsName}`}
+            </strong>
             <Icon name="arrow-right" />
           </a>
         </section>

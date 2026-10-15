@@ -26,10 +26,12 @@ export async function GET() {
         headers: { "Cache-Control": "private, no-store" },
       },
     );
+  const independent =
+    process.env.AKISUITE_INDEPENDENT_ACCOMMODATION_ENABLED === "true";
   const [{ data: saved }, { data: pref }] = await Promise.all([
     supabase
       .from("suite_saved_stays")
-      .select("venue_id")
+      .select(independent ? "property_id" : "venue_id")
       .eq("profile_id", auth.user.id),
     supabase.rpc("suite_email_reminder_preferences", {
       p_event: null,
@@ -40,7 +42,10 @@ export async function GET() {
     {
       authenticated: true,
       reminders: pref?.stay_reminders === true,
-      savedIds: (saved || []).map((s) => s.venue_id),
+      savedIds: (saved || []).map((s) => {
+        const row = s as unknown as { property_id?: string; venue_id?: string };
+        return independent ? row.property_id : row.venue_id;
+      }),
     },
     { headers: { "Cache-Control": "private, no-store" } },
   );

@@ -1,3 +1,4 @@
+import { productRoles } from "./product-roles";
 import type { BookingMailOutcome } from "./booking-confirmation-email";
 
 export type ClaimDecision = {
@@ -36,20 +37,20 @@ export function renderClaimDecision(data: ClaimDecision) {
       : "Hello,";
   const intro = approved
     ? es
-      ? `Hemos aprobado tu reclamación de ${data.venueName}. Ya tienes acceso como propietario para gestionar su ficha en AkiBusiness.`
-      : `We have approved your claim for ${data.venueName}. You now have owner access to manage its listing in AkiBusiness.`
+      ? `Hemos aprobado tu reclamación de ${data.venueName}. Ya tienes acceso como propietario para gestionar su ficha en ${productRoles.managementName}.`
+      : `We have approved your claim for ${data.venueName}. You now have owner access to manage its listing in ${productRoles.managementName}.`
     : es
       ? `No hemos aprobado tu reclamación de ${data.venueName} con la información presentada. Puedes corregirla y enviar una nueva solicitud para que la revisemos.`
       : `We have not approved your claim for ${data.venueName} based on the information submitted. You can address the feedback and submit a new claim for review.`;
   const steps = approved
     ? es
       ? [
-          "Inicia sesión en AkiBusiness con la misma cuenta que usaste para reclamar el local.",
+          `Inicia sesión en ${productRoles.managementName} con la misma cuenta que usaste para reclamar el local.`,
           "Comprueba el nombre, la dirección y los datos de contacto de la ficha.",
           "Añade fotos y mantén actualizada la información que verán tus visitantes.",
         ]
       : [
-          "Sign in to AkiBusiness with the same account you used to claim the venue.",
+          `Sign in to ${productRoles.managementName} with the same account you used to claim the venue.`,
           "Check the listing name, address and contact details.",
           "Add photos and keep the information visitors see up to date.",
         ]
@@ -58,17 +59,17 @@ export function renderClaimDecision(data: ClaimDecision) {
           "Revisa el motivo de la decisión y corrige los puntos indicados.",
           "Completa tu nombre y tus datos de contacto en tu cuenta para que podamos identificarte.",
           "Prepara pruebas de que eres propietario o estás autorizado para gestionar el negocio: web oficial, email corporativo, teléfono del local y una explicación de tu relación con el negocio.",
-          "Abre Reclamaciones en AkiBusiness, selecciona el mismo local y envía una nueva solicitud con las pruebas actualizadas. No incluyas contraseñas, datos bancarios ni documentos de identidad completos.",
+          `Abre Reclamaciones en ${productRoles.managementName}, selecciona el mismo local y envía una nueva solicitud con las pruebas actualizadas. No incluyas contraseñas, datos bancarios ni documentos de identidad completos.`,
         ]
       : [
           "Read the decision reason and address the points raised.",
           "Complete your name and contact details in your account so we can identify you.",
           "Provide evidence that you own or are authorized to manage the business: its official website, company email, venue phone number and an explanation of your role.",
-          "Open Claims in AkiBusiness, select the same venue and submit a new claim with the updated evidence. Do not include passwords, bank details or full identity documents.",
+          `Open Claims in ${productRoles.managementName}, select the same venue and submit a new claim with the updated evidence. Do not include passwords, bank details or full identity documents.`,
         ];
   const href = approved
-    ? `https://business.akipasa.com/${data.locale}/business/venue/${encodeURIComponent(data.venueId)}`
-    : `https://business.akipasa.com/${data.locale}/business?view=claims&venueId=${encodeURIComponent(data.venueId)}`;
+    ? `${productRoles.managementUrl}/${data.locale}/business/venue/${encodeURIComponent(data.venueId)}`
+    : `${productRoles.managementUrl}/${data.locale}/business?view=claims&venueId=${encodeURIComponent(data.venueId)}`;
   const cta = approved
     ? es
       ? "Gestionar mi local"

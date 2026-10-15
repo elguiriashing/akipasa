@@ -5,7 +5,7 @@ import { AkiSuiteMembershipGrid } from "@/components/AkiSuiteMembershipGrid";
 import { optionalUser } from "@/lib/auth";
 import { akiSuiteApp } from "@/lib/akisuite-catalogue";
 import { akiSuiteCheckoutReady } from "@/lib/akisuite-readiness";
-import { isLocale } from "@/lib/config";
+import { config, isLocale } from "@/lib/config";
 import "./membership-health.css";
 
 export const generateMetadata = publicPageMetadata("/membership");
@@ -39,6 +39,15 @@ export default async function MembershipPage({
           {es ? "Gestionar" : "Manage"}
         </Link>
       </header>
+      {config.roleSwap && (
+        <p>
+          <Link href={`/${locale}/offers`}>
+            {es
+              ? "Ver la nueva estructura de productos y las ofertas previstas"
+              : "View the new product structure and planned offers"}
+          </Link>
+        </p>
+      )}
       <AkiSuiteMembershipGrid
         locale={locale}
         checkoutReady={suiteCatalogueReady}

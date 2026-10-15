@@ -20,7 +20,9 @@ export async function GET(request: Request) {
     const { data, error } = await db
       .from("accommodation_reservations")
       .select(
-        "id,venue_id,check_in,check_out,guests,status,quoted_total_cents,quote_snapshot",
+        process.env.AKISUITE_INDEPENDENT_ACCOMMODATION_ENABLED === "true"
+          ? "id,property_id,venue_id,check_in,check_out,guests,status,quoted_total_cents,quote_snapshot"
+          : "id,venue_id,check_in,check_out,guests,status,quoted_total_cents,quote_snapshot",
       )
       .eq("profile_id", user.id)
       .order("created_at", { ascending: false })

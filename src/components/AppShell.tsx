@@ -133,7 +133,7 @@ export function AppShell({
       ? [
           {
             href: `${config.businessUrl}/${locale}/business`,
-            label: "AkiBusiness",
+            label: config.managementName,
             icon: "business" as const,
           },
         ]

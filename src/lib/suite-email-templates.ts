@@ -1,3 +1,5 @@
+import { productRoles } from "./product-roles";
+
 export const suiteEmailFrom = "AkiPasa Support <support@akipasa.com>";
 
 export const suiteEmailKinds = [
@@ -45,14 +47,20 @@ const value = (payload: SuiteEmailPayload, key: string, fallback = "") =>
   clean(payload[key], 220) || fallback;
 const appUrl = (product: string, locale: SuiteEmailLocale) =>
   product === "akiduermo"
-    ? "https://akiduermo.akipasa.com/"
+    ? productRoles.swapped
+      ? "https://akiduermo.com/"
+      : "https://akiduermo.akipasa.com/"
     : product === "akibusiness"
-      ? "https://business.akipasa.com/" + locale + "/business"
+      ? productRoles.managementUrl + "/" + locale + "/business"
       : product === "akihq"
-        ? "https://crm.akipasa.com/"
+        ? productRoles.operationsUrl + "/"
         : "https://akipasa.com/" + locale;
-const stayBookingsUrl = (locale: SuiteEmailLocale) =>
-  "https://akiduermo.akipasa.com/bookings?lang=" + locale;
+const stayBookingsUrl = (locale: SuiteEmailLocale, independent: boolean) =>
+  (independent || productRoles.swapped
+    ? "https://akiduermo.com"
+    : "https://akiduermo.akipasa.com") +
+  "/bookings?lang=" +
+  locale;
 const eventBookingsUrl = (locale: SuiteEmailLocale) =>
   "https://akipasa.com/" + locale + "/account/bookings";
 const formatTime = (input: unknown, locale: SuiteEmailLocale) => {
@@ -114,7 +122,10 @@ export function suiteEmailCopy(
           [es ? "Salida" : "Check-out", value(payload, "checkOut", "-")],
         ]
       : [];
-  const stayHref = stayBookingsUrl(locale);
+  const stayHref = stayBookingsUrl(
+    locale,
+    payload.independentProperty === true,
+  );
   const baseFooter = es
     ? "Este mensaje es informativo. Para obtener ayuda, responde a este correo. AkiPasa no solicita contraseñas por email."
     : "This message is informational. For help, reply to this email. AkiPasa never asks for passwords by email.";
@@ -177,7 +188,10 @@ export function suiteEmailCopy(
             ? "Ver mis reservas"
             : "View my bookings",
         href: operator
-          ? "https://akibusiness.com/" +
+          ? (productRoles.swapped
+              ? productRoles.managementUrl
+              : "https://akibusiness.com") +
+            "/" +
             locale +
             "/business/mobility?company=" +
             encodeURIComponent(value(payload, "companyId"))
@@ -188,7 +202,7 @@ export function suiteEmailCopy(
 
     case "claim_received":
       return {
-        product: "akibusiness",
+        product: productRoles.swapped ? "akihq" : "akibusiness",
         subject:
           (es
             ? "Hemos recibido tu reclamación"
@@ -214,7 +228,7 @@ export function suiteEmailCopy(
             ? "Te informaremos de la decisión o solicitaremos información adicional."
             : "We'll contact you with a decision or if more information is needed.",
         ],
-        button: es ? "Abrir AkiBusiness" : "Open AkiBusiness",
+        button: (es ? "Abrir " : "Open ") + productRoles.managementName,
         href: appUrl("akibusiness", locale) + "?view=claims",
         footer: baseFooter,
       };
@@ -272,14 +286,19 @@ export function suiteEmailCopy(
       };
     case "welcome_akibusiness":
       return {
-        product: "akibusiness",
-        subject: es ? "¡Bienvenido a AkiBusiness!" : "Welcome to AkiBusiness!",
+        product: productRoles.swapped ? "akihq" : "akibusiness",
+        subject:
+          (es ? "¡Bienvenido a " : "Welcome to ") +
+          productRoles.managementName +
+          "!",
         heading: es
           ? "Haz que tu negocio destaque"
           : "Put your business on the map",
         intro: es
-          ? "AkiBusiness te ayuda a reclamar y administrar tus locales y alojamientos, editar sus datos, gestionar eventos y reservas y mejorar su visibilidad."
-          : "AkiBusiness helps you claim and manage venues or accommodation listings, edit details, handle events and bookings, and improve visibility.",
+          ? productRoles.managementName +
+            " te ayuda a reclamar y administrar tus locales y alojamientos, editar sus datos, gestionar eventos y reservas y mejorar su visibilidad."
+          : productRoles.managementName +
+            " helps you claim and manage venues or accommodation listings, edit details, handle events and bookings, and improve visibility.",
         facts: [],
         steps: [
           es
@@ -298,14 +317,19 @@ export function suiteEmailCopy(
       };
     case "welcome_akihq":
       return {
-        product: "akihq",
-        subject: es ? "¡Bienvenido a AkiHQ!" : "Welcome to AkiHQ!",
+        product: productRoles.swapped ? "akibusiness" : "akihq",
+        subject:
+          (es ? "¡Bienvenido a " : "Welcome to ") +
+          productRoles.operationsName +
+          "!",
         heading: es
           ? "Tu negocio, organizado en un solo lugar"
           : "Your business, organised in one place",
         intro: es
-          ? "AkiHQ reúne herramientas de gestión: CRM, inventario, punto de venta, soporte, tareas, equipo y seguimiento de ventas."
-          : "AkiHQ brings your business tools together: CRM, inventory, point of sale, support, tasks, team collaboration and sales tracking.",
+          ? productRoles.operationsName +
+            " reúne herramientas de gestión: CRM, inventario, punto de venta, soporte, tareas, equipo y seguimiento de ventas."
+          : productRoles.operationsName +
+            " brings your business tools together: CRM, inventory, point of sale, support, tasks, team collaboration and sales tracking.",
         facts: [],
         steps: [
           es
@@ -318,7 +342,7 @@ export function suiteEmailCopy(
             ? "Consulta pedidos y ventas, tareas, soporte y clientes desde el panel."
             : "Review orders, sales, tasks, customer support and CRM from the dashboard.",
         ],
-        button: es ? "Entrar en AkiHQ" : "Open AkiHQ",
+        button: (es ? "Entrar en " : "Open ") + productRoles.operationsName,
         href: appUrl("akihq", locale),
         footer: baseFooter,
       };
@@ -469,7 +493,9 @@ export function suiteEmailCopy(
         ],
         button: es ? "Volver al alojamiento" : "Explore the stay",
         href:
-          "https://akiduermo.akipasa.com/stays/" +
+          (payload.independentProperty === true || productRoles.swapped
+            ? "https://akiduermo.com/stays/"
+            : "https://akiduermo.akipasa.com/stays/") +
           encodeURIComponent(
             value(payload, "venueSlug") || value(payload, "venueId"),
           ),

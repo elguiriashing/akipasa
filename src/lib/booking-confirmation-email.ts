@@ -1,6 +1,9 @@
+import { productRoles } from "./product-roles";
 export type BookingConfirmation = {
   bookingId: string;
   venueId: string;
+  propertyId?: string;
+  independentProperty?: boolean;
   venueName: string;
   venueSlug?: string;
   address?: string | null;
@@ -94,9 +97,11 @@ export function renderBookingConfirmation(
   const href =
     audience === "customer"
       ? stay
-        ? `https://akiduermo.akipasa.com/bookings?lang=${data.locale}`
+        ? `${data.independentProperty || productRoles.swapped ? "https://akiduermo.com" : "https://akiduermo.akipasa.com"}/bookings?lang=${data.locale}`
         : `https://akipasa.com/${data.locale}/account/bookings`
-      : `https://business.akipasa.com/${data.locale}/business/venue/${encodeURIComponent(data.venueId)}?section=bookings&${stay ? "accommodationTab=reservations" : "bookingTab=inbox"}`;
+      : data.independentProperty && data.propertyId
+        ? `${productRoles.managementUrl}/${data.locale}/business/accommodations?property=${encodeURIComponent(data.propertyId)}`
+        : `${productRoles.managementUrl}/${data.locale}/business/venue/${encodeURIComponent(data.venueId)}?section=bookings&${stay ? "accommodationTab=reservations" : "bookingTab=inbox"}`;
   const cta =
     audience === "customer"
       ? es

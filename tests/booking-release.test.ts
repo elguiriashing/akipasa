@@ -189,4 +189,21 @@ describe("booking release boundaries", () => {
       "akiduermo-booking-",
     );
   });
+  it("links independent confirmations to the property workbench and retains canonical consumer bookings", () => {
+    const stay = {
+      ...booking,
+      product: "accommodation" as const,
+      propertyId: booking.venueId,
+      independentProperty: true,
+    };
+    expect(renderBookingConfirmation(stay, "venue").text).toContain(
+      `/business/accommodations?property=${booking.venueId}`,
+    );
+    expect(renderBookingConfirmation(stay, "venue").text).not.toContain(
+      "/business/venue/",
+    );
+    expect(renderBookingConfirmation(stay, "customer").text).toContain(
+      "https://akiduermo.com/bookings",
+    );
+  });
 });

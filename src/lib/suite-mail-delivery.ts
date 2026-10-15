@@ -194,12 +194,21 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
       if (publishedEvent?.status !== "published")
         return "event_no_longer_published";
     } else {
-      const venueId = readable(row.payload.venueId);
+      const propertyId = readable(row.payload.propertyId);
+      const venueId = propertyId || readable(row.payload.venueId);
+      const ownershipColumn = propertyId ? "property_id" : "venue_id";
+      if (propertyId) {
+        const visible = await db.rpc("accommodation_property_public", {
+          p_property: propertyId,
+        });
+        if (visible.error) throw new Error("stay_property_lookup_failed");
+        if (!visible.data) return "stay_no_longer_published";
+      }
       const { data: saved, error: savedError } = await db
         .from("suite_saved_stays")
         .select("saved_at")
         .eq("profile_id", row.profile_id)
-        .eq("venue_id", venueId)
+        .eq(ownershipColumn, venueId)
         .maybeSingle();
       if (savedError) throw new Error("saved_stay_lookup_failed");
       const savedStay = saved as unknown as { saved_at: string } | null;
@@ -213,7 +222,7 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
         .from("accommodation_reservations")
         .select("id")
         .eq("profile_id", row.profile_id)
-        .eq("venue_id", venueId)
+        .eq(ownershipColumn, venueId)
         .gte("created_at", savedStay.saved_at)
         .in("status", ["requested", "confirmed", "checked_in"])
         .limit(1);

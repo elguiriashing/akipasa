@@ -1,4 +1,5 @@
 import { spainLocations } from "./locations";
+import { productRoles } from "./product-roles";
 
 export const config = {
   productName: process.env.NEXT_PUBLIC_PRODUCT_NAME || "AkiPasa",
@@ -6,9 +7,13 @@ export const config = {
   handle: "akipasa",
   domain: "akipasa.com",
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://akipasa.com",
-  crmUrl: process.env.NEXT_PUBLIC_CRM_URL || "https://crm.akipasa.com",
-  businessUrl:
-    process.env.NEXT_PUBLIC_BUSINESS_URL || "https://business.akipasa.com",
+  crmUrl: productRoles.operationsUrl,
+  businessUrl: productRoles.managementUrl,
+  managementName: productRoles.managementName,
+  operationsName: productRoles.operationsName,
+  managementLogo: productRoles.managementLogo,
+  operationsLogo: productRoles.operationsLogo,
+  roleSwap: productRoles.swapped,
   tagline: { es: "Sal. Explora. Disfruta.", en: "Go out. Explore. Enjoy." },
   dataProvider: process.env.NEXT_PUBLIC_DATA_PROVIDER || "fixtures",
   mapStyleUrl:

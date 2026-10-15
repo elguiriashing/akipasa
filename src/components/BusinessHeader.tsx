@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { config } from "../lib/config";
 import { PortalLogo } from "./PortalLogo";
 import { PortalHeaderTools } from "./PortalHeaderTools";
 
@@ -15,10 +16,10 @@ export function BusinessHeader({
     <header className="akibusiness-topbar">
       <Link
         className="akibusiness-brand"
-        aria-label="AkiBusiness"
+        aria-label={config.managementName}
         href={`/${locale}/business`}
       >
-        <PortalLogo product="business" />
+        <PortalLogo product={config.managementLogo} />
       </Link>
       <PortalHeaderTools locale={locale} product="business">
         {signedIn && (

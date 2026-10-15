@@ -248,9 +248,10 @@ export default async function OwnerConsolePage({
               </span>
             </Link>
             <a href={config.crmUrl} target="_blank" rel="noreferrer">
-              <strong>HQ</strong>
+              <strong>{config.roleSwap ? "AB" : "HQ"}</strong>
               <span>
-                AkiHQ<small>CRM + operations -&gt;</small>
+                {config.operationsName}
+                <small>CRM + operations -&gt;</small>
               </span>
             </a>
           </div>
