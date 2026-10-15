@@ -56,7 +56,7 @@ it("separates branches, keeps manager access, enforces contacts and queues both-
     await db.exec(`set request.jwt.claim.sub='${renter}'`);
     const request = (phone: string, email = "renter@example.test") =>
       db.query<{ id: string }>(
-        `select request_car_rental_booking('${vehicle}',current_date+1,current_date+3,'Fixture Renter','${email}','${phone}','Child seat please','77777777-7777-4777-8777-777777777777','en') as id`,
+        `select request_car_rental_booking('${vehicle}',(now() at time zone 'Europe/Madrid')::date+2,(now() at time zone 'Europe/Madrid')::date+4,'Fixture Renter','${email}','${phone}','Child seat please','77777777-7777-4777-8777-777777777777','en') as id`,
       );
     await expect(request("")).rejects.toThrow(/invalid contact/);
     await expect(
