@@ -1149,3 +1149,18 @@ probe confirms own-folder INSERT/SELECT and foreign-folder denial, leaving no
 objects behind. Production direct SQL DELETE is protected by Supabase's storage
 API-only guard; that guard was retained, with DELETE policy behavior tested locally.
 No real customer image, profile, booking, email or subscription was mutated.
+
+### Independent property teams and bounded pagination follow-up
+
+Migration `20261016050000_accommodation_property_team` completes explicit manager
+assignment/revocation for independent properties. Only the verified canonical
+owner can assign an existing verified profile UUID; owners cannot replace their
+own canonical role, managers cannot invite peers, and legacy venue teams remain
+unchanged. Private audit history records changes; owner/self metadata RLS and
+immediate revoked-member inventory denial are covered by actual PostgreSQL.
+No invitation email, inferred ownership, company permission inheritance or paid
+entitlement is created. Additive deterministic property pagination preserves the
+old no-argument RPC and bounds pages; management inventory pages use one-row
+lookahead. The independent SQL suite now has nine groups after the original eleven.
+Confirmation footers match their canonical independent destination. Full hosted
+schema, authenticated acceptance and provider cutover remain release gates.

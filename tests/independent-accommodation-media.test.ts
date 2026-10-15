@@ -1,4 +1,4 @@
-import { beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 const terms = vi.hoisted(() => vi.fn());
 vi.mock("../src/lib/accommodation-api-terms", () => ({
   accommodationApiTerms: terms,
@@ -68,8 +68,10 @@ function upload(
     body: form,
   });
 }
+afterEach(() => vi.unstubAllEnvs());
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.stubEnv("AKISUITE_ACCOMMODATION_READY", "true");
   terms.mockResolvedValue(null);
   mock.db.auth.getUser.mockResolvedValue({ data: { user: { id: "owner" } } });
   mock.db.rpc.mockResolvedValue({ data: true, error: null });

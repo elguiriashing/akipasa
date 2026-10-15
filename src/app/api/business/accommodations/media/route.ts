@@ -49,6 +49,8 @@ async function access(property: string) {
   return { db };
 }
 export async function GET(request: Request) {
+  if (process.env.AKISUITE_ACCOMMODATION_READY !== "true")
+    return reply({ error: "unavailable" }, 503);
   const property = accommodationPropertyId.safeParse(
     new URL(request.url).searchParams.get("property"),
   );
@@ -86,6 +88,8 @@ export async function GET(request: Request) {
   });
 }
 export async function POST(request: Request) {
+  if (process.env.AKISUITE_ACCOMMODATION_READY !== "true")
+    return reply({ error: "unavailable" }, 503);
   if (request.headers.get("origin") !== new URL(request.url).origin)
     return reply({ error: "origin" }, 403);
   try {

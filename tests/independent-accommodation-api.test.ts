@@ -1,4 +1,4 @@
-import { beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 const terms = vi.hoisted(() => vi.fn());
 vi.mock("../src/lib/accommodation-api-terms", () => ({
   accommodationApiTerms: terms,
@@ -34,6 +34,7 @@ function query(data: unknown = [{ id }], error: unknown = null) {
     "eq",
     "order",
     "limit",
+    "range",
   ])
     q[method] = vi.fn(() => q);
   q.then = (resolve: (v: unknown) => unknown) =>
@@ -44,8 +45,10 @@ function query(data: unknown = [{ id }], error: unknown = null) {
   }));
   return q;
 }
+afterEach(() => vi.unstubAllEnvs());
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.stubEnv("AKISUITE_ACCOMMODATION_READY", "true");
   terms.mockResolvedValue(null);
   db.auth.getUser.mockResolvedValue({ data: { user: { id: "owner" } } });
   db.rpc.mockResolvedValue({ data: true, error: null });
@@ -217,4 +220,69 @@ it("denies missing current terms before inventory or media access", async () => 
   );
   expect(response.status).toBe(403);
   expect(await response.json()).toEqual({ error: "terms_required" });
+});
+
+it("keeps independent API unavailable until migration gate is ready", async () => {
+  vi.stubEnv("AKISUITE_ACCOMMODATION_READY", "false");
+  expect(
+    (await GET(new Request("https://akihq.app/api/business/accommodations")))
+      .status,
+  ).toBe(503);
+  expect(db.auth.getUser).not.toHaveBeenCalled();
+});
+
+it("delegates explicit member grants to owner-only RPC without broad manager bypass", async () => {
+  const response = await call({
+    action: "member",
+    property,
+    profile: id,
+    role: "manager",
+  });
+  expect(response.status).toBe(200);
+  expect(db.rpc).toHaveBeenCalledWith("set_accommodation_property_member", {
+    p_property: property,
+    p_profile: id,
+    p_role: "manager",
+  });
+  expect(db.rpc).not.toHaveBeenCalledWith(
+    "can_manage_accommodation_property",
+    expect.anything(),
+  );
+  db.rpc.mockResolvedValue({ data: null, error: { code: "42501" } });
+  expect(
+    (await call({ action: "member", property, profile: id, role: null }))
+      .status,
+  ).toBe(403);
+  expect(
+    (await call({ action: "member", property, profile: id, role: "owner" }))
+      .status,
+  ).toBe(400);
+});
+it("bounds pagination and rejects arbitrary section tables", async () => {
+  expect(
+    (
+      await GET(
+        new Request(
+          `https://akihq.app/api/business/accommodations?property=${property}&section=profiles`,
+        ),
+      )
+    ).status,
+  ).toBe(400);
+  expect(
+    (
+      await GET(
+        new Request(`https://akihq.app/api/business/accommodations?page=101`),
+      )
+    ).status,
+  ).toBe(400);
+  const q = query(Array.from({ length: 101 }, () => ({ id })));
+  db.from.mockReturnValue(q);
+  const result = await GET(
+    new Request(
+      `https://akihq.app/api/business/accommodations?property=${property}&section=units&page=2`,
+    ),
+  );
+  expect(q.range).toHaveBeenCalledWith(200, 300);
+  expect(q.order).toHaveBeenCalledWith("id");
+  expect((await result.json()).units).toMatchObject({ page: 2, hasMore: true });
 });

@@ -44,8 +44,8 @@ current Terms acceptance and management on every inventory request, and uses cal
 key. Strict operation schemas expose property creation, room/unit editing, rate
 and block creation/removal, settings and valid reservation transitions. Reads
 report individual dependency failures instead of false empty inventories. Read
-windows are bounded to 100 rows per section; full paginated management remains
-required for larger properties. No input accepts ownership or publication fields.
+windows are bounded to 100 rows per section with explicit page navigation and
+one-row lookahead; managed-property pages use a deterministic name/ID order. No input accepts ownership or publication fields.
 
 New private media lives in `accommodation-media`, with property-scoped metadata,
 12 explicit ordered public placements and private Storage policies. The real media
@@ -77,25 +77,37 @@ No automatic ownership transfer or inferred replacement owner exists.
 
 The extracted management and discovery applications consume these contracts in
 coordinated candidate branches. `AKISUITE_INDEPENDENT_ACCOMMODATION_ENABLED` must be
-exactly `true` to expose the new consumer paths/staff queue. Keep it false until
+exactly `true` to expose the new consumer paths/staff queue. Management JSON/media
+endpoints separately require `AKISUITE_ACCOMMODATION_READY=true`; this is a release
+operator gate, not evidence that migrations or provider acceptance have passed. Keep it false until
 migrations, provider configuration and authenticated acceptance pass. Old reports
 remain venue-scoped. A complete hosted schema/Storage rehearsal, owner/team
 assignment acceptance and actual production journeys remain release gates.
+
+`20261016050000_accommodation_property_team` adds explicit team assignment by the
+verified canonical owner of an independent property. A verified profile UUID can
+receive the existing manager role or be revoked; legacy teams keep their original
+venue workflow. No owner transfer, invitation email, organisation inheritance or
+paid capability is added. Changes serialize on the property and enter a private
+audit; managers cannot grant peers, metadata reads are owner/self only, and
+revocation immediately removes inventory access. Ownerless recovery still requires
+an explicitly reviewed ownership-recovery procedure. Managed property pagination
+is additive and preserves the old no-argument RPC.
 
 ## Evidence
 
 Disposable PostgreSQL 16 executes the existing complete booking foundation suite
 (11 groups including concurrent occupancy, quote expiry, last-unit races, status
 permissions and mail leases), then the additive migration with real legacy history.
-Eight new groups verify deterministic mappings and unchanged reservation values,
+Nine new groups verify deterministic mappings and unchanged reservation values,
 private ownership/workspace access, inventory composite constraints and immediate
 revocation, independent last-unit requests/confirmation/cancellation/outbox,
-private/public selected media, legacy-client writes/upserts, reviewed public discovery, saved reminders and retention-safe account erasure. This uses exact
+private/public selected media, legacy-client writes/upserts, reviewed public discovery, saved reminders explicit owner-only team grants/revocation and retention-safe account erasure. This uses exact
 accommodation migrations with minimal external CRM/Storage/Auth table fixtures;
 it does not certify compatibility with the entire hosted schema or Storage DDL
 ownership. The isolated database accepts only loopback `/accommodation_test`.
 
-Twenty-three actual API-handler/render/action/terms tests cover origin/body bounds, anonymous denial, strict
+Twenty-six actual API-handler/render/action/terms tests cover origin/body bounds, anonymous denial, strict
 creation contract, membership/read failures, property-scoped insert/update/delete,
 reservation scope and per-section read recovery. Private operating location SQL
 acceptance is separately recorded by its dedicated nine-case PGlite suite.
@@ -110,7 +122,7 @@ acceptance is separately recorded by its dedicated nine-case PGlite suite.
    schema-compatible clone. Preserve historical references even when a venue changed vertical; deterministic
    backfill includes every existing accommodation inventory/history reference.
 3. Run complete current-head checks, both SQL suites and hosted browser/Cloudflare
-   acceptance. Review mirrored migrations. Apply additive migrations 003000, 010000 and 020000 in order,
+   acceptance. Review mirrored migrations. Apply additive migrations 003000, 010000 and 020000 in order, then team/pagination migration 050000,
    verify exact backfill counts and every retained legacy ID before app promotion.
 4. Keep new property public activation disabled until independent management,
    customer discovery/booking/history/media and auth are exercised end to end with

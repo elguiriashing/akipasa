@@ -27,6 +27,14 @@ const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 export const accommodationOperation = z.discriminatedUnion("action", [
   z
     .object({
+      action: z.literal("member"),
+      property: uuid,
+      profile: uuid,
+      role: z.literal("manager").nullable(),
+    })
+    .strict(),
+  z
+    .object({
       action: z.literal("profile"),
       property: uuid,
       profile: accommodationProfile,

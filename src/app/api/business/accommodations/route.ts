@@ -12,6 +12,8 @@ const reply = (body: unknown, status = 200) =>
     headers: { "Cache-Control": "private, no-store" },
   });
 export async function GET(request: Request) {
+  if (process.env.AKISUITE_ACCOMMODATION_READY !== "true")
+    return reply({ error: "unavailable" }, 503);
   const db = await createSupabaseServerClient();
   const {
     data: { user },
@@ -20,12 +22,25 @@ export async function GET(request: Request) {
   const terms = await accommodationApiTerms(db, user.id);
   if (terms)
     return reply({ error: terms }, terms === "unavailable" ? 503 : 403);
-  const raw = new URL(request.url).searchParams.get("property");
+  const params = new URL(request.url).searchParams;
+  const pageText = params.get("page") ?? "0";
+  if (!/^(0|[1-9]\d{0,2}|1000)$/.test(pageText) || Number(pageText) > 100)
+    return reply({ error: "invalid" }, 400);
+  const page = Number(pageText);
+  const section = params.get("section");
+  const raw = params.get("property");
   if (!raw) {
-    const { data, error } = await db.rpc("managed_accommodation_properties");
+    const { data, error } = await db.rpc(
+      "managed_accommodation_properties_page",
+      { p_limit: 101, p_offset: page * 100 },
+    );
     return error
       ? reply({ error: "unavailable" }, 503)
-      : reply({ properties: data });
+      : reply({
+          properties: (data ?? []).slice(0, 100),
+          page,
+          hasMore: (data ?? []).length > 100,
+        });
   }
   const parsed = accommodationPropertyId.safeParse(raw);
   if (!parsed.success) return reply({ error: "invalid" }, 400);
@@ -35,6 +50,45 @@ export async function GET(request: Request) {
   );
   if (accessError) return reply({ error: "unavailable" }, 503);
   if (allowed !== true) return reply({ error: "forbidden" }, 403);
+  if (section === "team") {
+    const team = await db.rpc("accommodation_property_team", {
+      p_property: parsed.data,
+      p_limit: 100,
+      p_offset: page * 100,
+    });
+    return team.error
+      ? reply(
+          { error: team.error.code === "42501" ? "forbidden" : "unavailable" },
+          team.error.code === "42501" ? 403 : 503,
+        )
+      : reply(team.data);
+  }
+  const pageable = [
+    "room_types",
+    "units",
+    "nightly_rates",
+    "unit_blocks",
+    "reservations",
+    "property_media",
+  ];
+  if (section) {
+    if (!pageable.includes(section)) return reply({ error: "invalid" }, 400);
+    const result = await db
+      .from(`accommodation_${section}`)
+      .select("*")
+      .eq("property_id", parsed.data)
+      .order("id")
+      .range(page * 100, page * 100 + 100);
+    return result.error
+      ? reply({ error: "unavailable" }, 503)
+      : reply({
+          [section]: {
+            rows: (result.data ?? []).slice(0, 100),
+            page,
+            hasMore: (result.data ?? []).length > 100,
+          },
+        });
+  }
   const profile = await db
     .from("accommodation_properties")
     .select(
@@ -57,7 +111,8 @@ export async function GET(request: Request) {
         .from(`accommodation_${section}`)
         .select("*")
         .eq("property_id", parsed.data)
-        .limit(100),
+        .order(section === "booking_settings" ? "property_id" : "id")
+        .limit(101),
     ),
   );
   // Each section exposes its read failure; unknown inventory must never appear empty.
@@ -70,12 +125,18 @@ export async function GET(request: Request) {
         section,
         rows[index].error
           ? { error: "unavailable" }
-          : { rows: rows[index].data },
+          : {
+              rows: (rows[index].data ?? []).slice(0, 100),
+              page: 0,
+              hasMore: (rows[index].data ?? []).length > 100,
+            },
       ]),
     ),
   });
 }
 export async function POST(request: Request) {
+  if (process.env.AKISUITE_ACCOMMODATION_READY !== "true")
+    return reply({ error: "unavailable" }, 503);
   if (request.headers.get("origin") !== new URL(request.url).origin)
     return reply({ error: "origin" }, 403);
   let body: unknown;
@@ -106,6 +167,21 @@ export async function POST(request: Request) {
     return result.error
       ? reply({ error: "unavailable" }, 409)
       : reply({ property: result.data }, 201);
+  }
+  if (p.action === "member") {
+    const result = await db.rpc("set_accommodation_property_member", {
+      p_property: p.property,
+      p_profile: p.profile,
+      p_role: p.role,
+    });
+    return result.error
+      ? reply(
+          {
+            error: result.error.code === "42501" ? "forbidden" : "unavailable",
+          },
+          result.error.code === "42501" ? 403 : 409,
+        )
+      : reply({ ok: true });
   }
   if (p.action === "review") {
     const reviewed = await db.rpc("review_accommodation_property", {

@@ -608,6 +608,186 @@ try {
   check(
     "staff-reviewed independent profile, unified prefix discovery/map/detail, saved ownership and edit re-review",
   );
+  const teamMigration = readFileSync(
+    "supabase/migrations/20261016050000_accommodation_property_team.sql",
+    "utf8",
+  );
+  assert.equal(
+    teamMigration,
+    readFileSync(
+      "database/migrations/20261016050000_accommodation_property_team.sql",
+      "utf8",
+    ),
+  );
+  const teamMigrator = postgres(connection, { max: 1, onnotice: () => {} });
+  try {
+    await teamMigrator.unsafe(teamMigration).simple();
+  } finally {
+    await teamMigrator.end();
+  }
+  const member = (actor, who, role, place = property) =>
+    auth(
+      actor,
+      (tx) =>
+        tx`select public.set_accommodation_property_member(${place},${who},${role}) changed`,
+    );
+  await denied(() =>
+    publicRead(
+      (tx) =>
+        tx`select public.set_accommodation_property_member(${property},${other},'manager')`,
+    ),
+  );
+  await denied(() => member(other, guest, "manager"));
+  await denied(() => member(owner, owner, "manager"));
+  await denied(() => member(owner, other, "owner"));
+  await denied(() => member(owner, other, "editor"));
+  await denied(() => member(owner, other, "manager", legacy));
+  await sql`update auth.users set email_confirmed_at=null where id=${other}`;
+  await denied(() => member(owner, other, "manager"));
+  await sql`update auth.users set email_confirmed_at=now(),deleted_at=now() where id=${other}`;
+  await denied(() => member(owner, other, "manager"));
+  await sql`update auth.users set deleted_at=null where id=${other}`;
+  assert.equal((await member(owner, other, "manager"))[0].changed, true);
+  assert.equal((await member(owner, other, "manager"))[0].changed, false);
+  assert.equal(
+    (
+      await auth(
+        other,
+        (tx) => tx`select * from public.accommodation_units where id=${unit}`,
+      )
+    ).length,
+    1,
+  );
+  await auth(
+    other,
+    (tx) =>
+      tx`update public.accommodation_units set name='Manager edit' where id=${unit}`,
+  );
+  assert.equal(
+    (await sql`select name from public.accommodation_units where id=${unit}`)[0]
+      .name,
+    "Manager edit",
+  );
+  await denied(() => member(other, guest, "manager"));
+  await member(owner, guest, "manager");
+  assert.equal(
+    (
+      await auth(
+        other,
+        (tx) =>
+          tx`select * from public.accommodation_property_members where property_id=${property}`,
+      )
+    ).length,
+    1,
+  );
+  const ownTeam = (
+    await auth(
+      owner,
+      (tx) =>
+        tx`select public.accommodation_property_team(${property},1,0) team`,
+    )
+  )[0].team;
+  assert.equal(ownTeam.canManageTeam, true);
+  assert.equal(ownTeam.ownerProfileId, owner);
+  assert.deepEqual(ownTeam.members, [{ profile_id: other, role: "manager" }]);
+  assert.equal(ownTeam.total, 2);
+  const managerTeam = (
+    await auth(
+      other,
+      (tx) => tx`select public.accommodation_property_team(${property}) team`,
+    )
+  )[0].team;
+  assert.equal(managerTeam.canManageTeam, false);
+  assert.deepEqual(managerTeam.members, ownTeam.members);
+  await denied(() =>
+    auth(
+      editor,
+      (tx) => tx`select public.accommodation_property_team(${property})`,
+    ),
+  );
+  await denied(() =>
+    auth(
+      owner,
+      (tx) => tx`select public.accommodation_property_team(${property},101,0)`,
+    ),
+  );
+  await denied(() =>
+    auth(
+      other,
+      (tx) =>
+        tx`insert into public.accommodation_property_members values(${property},${guest},'manager')`,
+    ),
+  );
+  await member(owner, guest, null);
+  assert.equal((await member(owner, other, null))[0].changed, true);
+  assert.equal(
+    (
+      await auth(
+        other,
+        (tx) => tx`select * from public.accommodation_units where id=${unit}`,
+      )
+    ).length,
+    0,
+  );
+  await denied(() =>
+    auth(
+      other,
+      (tx) => tx`select public.accommodation_property_team(${property})`,
+    ),
+  );
+  assert.equal(
+    (
+      await sql`select count(*)::int n from public.accommodation_property_member_audit where property_id=${property}`
+    )[0].n,
+    4,
+  );
+  await denied(() =>
+    auth(
+      owner,
+      (tx) => tx`select * from public.accommodation_property_member_audit`,
+    ),
+  );
+  check(
+    "verified explicit owner-only team assignment, scoped metadata, immediate revocation and private audit",
+  );
+
+  await auth(
+    owner,
+    (tx) =>
+      tx`select public.create_accommodation_property('Pagination fixture',null)`,
+  );
+  const pageOne = await auth(
+    owner,
+    (tx) =>
+      tx`select id from public.managed_accommodation_properties_page(1,0)`,
+  );
+  const pageTwo = await auth(
+    owner,
+    (tx) =>
+      tx`select id from public.managed_accommodation_properties_page(1,1)`,
+  );
+  assert.equal(pageOne.length, 1);
+  assert.equal(pageTwo.length, 1);
+  assert.notEqual(pageOne[0].id, pageTwo[0].id);
+  await denied(() =>
+    auth(
+      owner,
+      (tx) =>
+        tx`select * from public.managed_accommodation_properties_page(102,0)`,
+    ),
+  );
+  await denied(() =>
+    auth(
+      owner,
+      (tx) =>
+        tx`select * from public.managed_accommodation_properties_page(1,10001)`,
+    ),
+  );
+  await denied(() =>
+    publicRead(
+      (tx) => tx`select * from public.managed_accommodation_properties_page()`,
+    ),
+  );
   const historyCount = (
     await sql`select count(*)::int n from public.accommodation_reservations where property_id=${property}`
   )[0].n;

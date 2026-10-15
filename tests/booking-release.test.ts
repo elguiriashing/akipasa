@@ -205,5 +205,11 @@ describe("booking release boundaries", () => {
     expect(renderBookingConfirmation(stay, "customer").text).toContain(
       "https://akiduermo.com/bookings",
     );
+    expect(renderBookingConfirmation(stay, "customer").html).toContain(
+      "AkiDuermo · akiduermo.com",
+    );
+    expect(renderBookingConfirmation(stay, "customer").html).not.toContain(
+      "akiduermo.akipasa.com",
+    );
   });
 });
