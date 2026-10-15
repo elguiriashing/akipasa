@@ -175,11 +175,18 @@
   background: #2fc2a51a;
   color: #08735e;
 }
+.place[data-product="rental"] .glyph {
+  background: #f0445520;
+  color: #c0253b;
+}
 :global(html[data-theme="dark"]) .glyph {
   color: #ff994f;
 }
 :global(html[data-theme="dark"]) .place[data-product="stay"] .glyph {
   color: #6be1c8;
+}
+:global(html[data-theme="dark"]) .place[data-product="rental"] .glyph {
+  color: #ff7889;
 }
 .product {
   font-size: 12px;
