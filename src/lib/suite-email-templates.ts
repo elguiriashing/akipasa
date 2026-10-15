@@ -1,6 +1,7 @@
 export const suiteEmailFrom = "AkiPasa Support <support@akipasa.com>";
 
 export const suiteEmailKinds = [
+  "rental_booking_update",
   "claim_received",
   "welcome_akipasa",
   "welcome_akiduermo",
@@ -66,7 +67,7 @@ const formatTime = (input: unknown, locale: SuiteEmailLocale) => {
 };
 
 type MailCopy = {
-  product: "akipasa" | "akiduermo" | "akibusiness" | "akihq";
+  product: "akipasa" | "akiduermo" | "akibusiness" | "akihq" | "akicoches";
   subject: string;
   heading: string;
   intro: string;
@@ -124,6 +125,67 @@ export function suiteEmailCopy(
     ? "Recibes este recordatorio porque lo activaste en tu cuenta. Puedes desactivarlo en Guardados o Ajustes."
     : "You receive this reminder because you enabled it. You can turn it off in Saved items or Settings.";
   switch (kind) {
+    case "rental_booking_update": {
+      const state = value(payload, "status");
+      const states: Record<string, string> = {
+        requested: es ? "Solicitud recibida" : "Request received",
+        confirmed: es ? "Alquiler confirmado" : "Rental confirmed",
+        cancelled: es ? "Alquiler cancelado" : "Rental cancelled",
+        declined: es ? "Solicitud rechazada" : "Request declined",
+        completed: es ? "Alquiler completado" : "Rental completed",
+      };
+      const operator = payload.audience === "operator";
+      const label =
+        states[state] || (es ? "Reserva actualizada" : "Booking updated");
+      return {
+        product: "akicoches",
+        subject: label + " · AkiCoches",
+        heading: label,
+        intro:
+          state === "requested"
+            ? es
+              ? "La solicitud está pendiente de confirmación por la sucursal."
+              : "The request is awaiting confirmation by the rental branch."
+            : es
+              ? "El estado de la reserva ha cambiado."
+              : "The booking status has changed.",
+        facts: [
+          ...ref,
+          [es ? "Sucursal" : "Branch", value(payload, "companyName")],
+          [es ? "Coche" : "Car", value(payload, "vehicleName")],
+          [es ? "Recogida" : "Pick-up", value(payload, "start")],
+          [es ? "Devolución" : "Drop-off", value(payload, "end")],
+          ["EUR", (Number(payload.totalCents || 0) / 100).toFixed(2)],
+          [es ? "Cliente" : "Customer", value(payload, "customerName")],
+          ["Email", value(payload, "customerEmail")],
+          [es ? "Teléfono" : "Phone", value(payload, "customerPhone")],
+          [
+            es ? "Mensaje" : "Message",
+            String(payload.note || "").slice(0, 1000),
+          ],
+        ],
+        steps: [
+          es
+            ? "No se ha realizado ningún pago a través de este email."
+            : "No payment has been taken through this email.",
+        ],
+        button: operator
+          ? es
+            ? "Abrir panel de reservas"
+            : "Open bookings desk"
+          : es
+            ? "Ver mis reservas"
+            : "View my bookings",
+        href: operator
+          ? "https://akibusiness.com/" +
+            locale +
+            "/business/mobility?company=" +
+            encodeURIComponent(value(payload, "companyId"))
+          : "https://akicoches.com/account?lang=" + locale,
+        footer: baseFooter,
+      };
+    }
+
     case "claim_received":
       return {
         product: "akibusiness",
@@ -417,6 +479,7 @@ export function suiteEmailCopy(
 }
 
 const palette = {
+  akicoches: { primary: "#e9324b", accent: "#fa586d", label: "AkiCoches" },
   akipasa: { primary: "#ed7021", accent: "#f5aa40", label: "AkiPasa" },
   akiduermo: { primary: "#21876b", accent: "#50bb94", label: "AkiDuermo" },
   akibusiness: { primary: "#b27b00", accent: "#f5be3f", label: "AkiBusiness" },

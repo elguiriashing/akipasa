@@ -1,3 +1,4 @@
+import { migrateRentalCoverMedia } from "./rental-media-migration";
 import { createClient } from "@supabase/supabase-js";
 import { resendSendingKey } from "./booking-mail-delivery";
 import {
@@ -51,6 +52,34 @@ async function validateSuiteEmail(row: SuiteEmailRow, db: SuiteMailDb) {
   )
     return "verified_account_email_changed_or_deleted";
 
+  if (row.kind === "rental_booking_update") {
+    const { data: booking, error } = await db
+      .from("car_rental_bookings")
+      .select("status,renter_id,vehicle:car_rental_vehicles!inner(company_id)")
+      .eq("id", readable(row.payload.bookingId))
+      .maybeSingle();
+    if (error) throw new Error("rental_booking_recheck_failed");
+    if (!booking || booking.status !== row.payload.status)
+      return "rental_booking_status_changed";
+    const vehicle = Array.isArray(booking.vehicle)
+      ? booking.vehicle[0]
+      : booking.vehicle;
+    if (vehicle?.company_id !== row.payload.companyId)
+      return "rental_branch_changed";
+    if (row.payload.audience === "customer") {
+      if (booking.renter_id !== row.profile_id)
+        return "rental_customer_changed";
+    } else if (row.payload.audience === "operator") {
+      const { data: company, error: branchError } = await db
+        .from("car_rental_companies")
+        .select("submitted_by")
+        .eq("id", vehicle.company_id)
+        .maybeSingle();
+      if (branchError) throw new Error("rental_branch_recheck_failed");
+      if (company?.submitted_by !== row.profile_id)
+        return "rental_operator_changed";
+    } else return "rental_audience_invalid";
+  }
   if (row.kind === "claim_received") {
     const { data, error } = await db
       .from("venue_claims")
@@ -201,6 +230,12 @@ export async function dispatchSuiteEmails(
   if (!suiteMailSenderConfigured(env))
     return { sent: 0, failed: 0, skipped: 0, configured: false };
   const db = suiteDatabase(env);
+  await migrateRentalCoverMedia(db);
+  const { error: activationError } = await db.rpc(
+    "activate_rental_booking_emails",
+  );
+  if (activationError && activationError.code !== "42883")
+    console.error("rental_email_activation_pending", activationError.code);
   const { error: schedulingError } = await db.rpc("queue_due_suite_reminders");
   if (schedulingError)
     console.error("suite_reminder_schedule_unavailable", schedulingError.code);

@@ -118,3 +118,58 @@ it("blocks a queued notification if the account changed address", async () => {
     }),
   );
 });
+
+it("blocks rental updates after a state or operator identity change", async () => {
+  adminGetUserById.mockResolvedValue({
+    data: {
+      user: { email: "account@example.test", email_confirmed_at: "2098-01-01" },
+    },
+    error: null,
+  });
+  const rental = {
+    ...row,
+    kind: "rental_booking_update",
+    payload: {
+      bookingId: "booking",
+      companyId: "branch",
+      status: "confirmed",
+      audience: "operator",
+    },
+  };
+  rpc.mockImplementation(async (name: string) => ({
+    data: name === "claim_due_suite_emails" ? [rental] : true,
+    error: null,
+  }));
+  const q = {
+    select: () => q,
+    eq: () => q,
+    maybeSingle: vi.fn().mockResolvedValue({
+      data: {
+        status: "cancelled",
+        renter_id: "renter",
+        vehicle: { company_id: "branch" },
+      },
+      error: null,
+    }),
+  };
+  from.mockReturnValue(q);
+  const sender = vi.fn();
+  vi.stubGlobal("fetch", sender);
+  expect(await dispatchSuiteEmails(env)).toMatchObject({ sent: 0, skipped: 1 });
+  expect(sender).not.toHaveBeenCalled();
+  q.maybeSingle
+    .mockResolvedValueOnce({
+      data: {
+        status: "confirmed",
+        renter_id: "renter",
+        vehicle: { company_id: "branch" },
+      },
+      error: null,
+    })
+    .mockResolvedValueOnce({
+      data: { submitted_by: "new-owner" },
+      error: null,
+    });
+  expect(await dispatchSuiteEmails(env)).toMatchObject({ sent: 0, skipped: 1 });
+  expect(sender).not.toHaveBeenCalled();
+});
