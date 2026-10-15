@@ -106,7 +106,20 @@ describe("team member's real business page loader", () => {
             }),
             then: (resolve: (value: unknown) => unknown) =>
               Promise.resolve({
-                data: table === "venue_members" ? members : [],
+                data:
+                  table === "venue_members"
+                    ? members
+                    : table === "car_rental_companies"
+                      ? [
+                          {
+                            id: "rental",
+                            name: "AkiCoches",
+                            slug: "akicoches",
+                            status: "published",
+                            venue_id: null,
+                          },
+                        ]
+                      : [],
                 error: null,
               }).then(resolve),
           };
@@ -141,10 +154,24 @@ describe("team member's real business page loader", () => {
           role: "editor",
           product: "stay",
         },
+        {
+          id: "rental",
+          name: "AkiCoches",
+          slug: "akicoches",
+          status: "published",
+          role: "owner",
+          product: "rental",
+          venueId: null,
+        },
       ]);
       expect(reads).toContainEqual([
         "venue_members",
         "profile_id",
+        "team-user",
+      ]);
+      expect(reads).toContainEqual([
+        "car_rental_companies",
+        "submitted_by",
         "team-user",
       ]);
       expect(mocks.redirect).not.toHaveBeenCalled();
