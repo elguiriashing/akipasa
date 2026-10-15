@@ -96,7 +96,7 @@ This is already a five-repository deployment; do not create another repository s
 
 ## Execution update — 2026-10-16
 
-- Alex confirmed `vhpbvcfkcteswlsdjrfl` is the production Supabase project; its display name does not change that classification. No production database migration has been applied.
+- Alex confirmed `vhpbvcfkcteswlsdjrfl` is the production Supabase project; its display name does not change that classification. No additional production database migration was applied during this read-only inspection; rental migration `20261015220302_independent_rental_branches` was already applied.
 - AkiCoches PR [#7](https://github.com/elguiriashing/AkiCoches/pull/7) merged as `6f482ee6da03d35db6cadca5714464064a870c8b`. Cloudflare production build `73dc0b85-f077-4c12-b199-476ab9f9e09c` built that exact `main` commit; deployment `c15d06c9-8c0c-4d28-bf43-f359196cc906` serves version `b93bc733-324b-41aa-938e-e7068d8afb91` at 100%. CI run #41 passed application checks, browser acceptance, and Cloudflare dry-run. `https://akicoches.com/map` returned HTTP 200.
 - Cloudflare production smoke checks returned 200 for AkiPasa, AkiDuermo, AkiCoches, and AkiHQ home routes. AkiBusiness redirects to `/es/business`; AkiCoches `/es/map` redirects to an AkiPasa URL and needs separate route review.
 
