@@ -143,16 +143,14 @@ it("blocks rental updates after a state or operator identity change", async () =
   const q = {
     select: () => q,
     eq: () => q,
-    maybeSingle: vi
-      .fn()
-      .mockResolvedValue({
-        data: {
-          status: "cancelled",
-          renter_id: "renter",
-          vehicle: { company_id: "branch" },
-        },
-        error: null,
-      }),
+    maybeSingle: vi.fn().mockResolvedValue({
+      data: {
+        status: "cancelled",
+        renter_id: "renter",
+        vehicle: { company_id: "branch" },
+      },
+      error: null,
+    }),
   };
   from.mockReturnValue(q);
   const sender = vi.fn();
