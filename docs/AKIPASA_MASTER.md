@@ -992,3 +992,39 @@ Tablet browser acceptance retains its existing route, portal-smoke and layout/Sp
 ## 2026-10-14 | Connected Cloudflare release evidence
 
 The connected production release smoke published and verified AkiPasa master commit `31c643a6ecf8bd618b5e7f86ebb178da9102ab3e`. Its `booking-live-evidence.json` confirms HTTP 200 and the exact source commit on `akipasa.com`, `www`, `business`, `akiduermo`, and `akiconduzco`; the AkiConduzco home, map, robots file and sitemap also returned 200. The smoke is anonymous/read-only and did not test authenticated operator actions. The available GitHub environment has no Wrangler API token, so the unsupported redundant deployment workflow was removed. Continue using the connected Cloudflare release and require exact-commit live smoke evidence.
+
+## 2026-10-15 | Fullscreen rental company apps
+
+The independent AkiCoches company page prioritizes company identity, paginated
+fleet discovery, a selected-car photo/specification view, blocked-date calendar
+and a separate authenticated request step. The date-filtered catalogue no longer
+removes company identity or the rest of its fleet. Public calendar reads select
+only vehicle/date fields under existing anonymous RLS; failed/truncated reads
+never imply known free dates. Final range availability and request pricing remain
+authoritative server contracts; requests are not confirmations or payments.
+
+The independent AkiBusiness uses a shared fullscreen rental desk for linked venue
+fleets and existing unlinked companies: fleet search/selection, add/rate/cover/
+visibility editing, availability, pending/confirmed/history requests and a
+dedicated existing venue media studio. Native mutations retain server validation
+and RLS. Read errors disable dependent management. Mobile uses bounded panels;
+short viewports and media retain internal overflow for reachability.
+
+The new link_owned_rental_company_venue RPC is an explicit one-time attachment:
+authenticated company owner AND venue owner/manager are required. It locks both
+records, rejects accommodation/occupied venues and reassignment, permits an
+idempotent same-venue retry, preserves company/fleet/booking rows and does not
+grant direct venue_id updates. Migration 20261015163602 is applied on shared
+project vhpbvcfkcteswlsdjrfl; anon execution and direct venue reassignment remain
+denied. The SQL regression covers absent identity, unrelated venue member, wrong
+company owner, success/retry and reassignment. Authenticated owner/media/booking
+production UI acceptance remains separate. No customer records were edited.
+
+Validation: both independent Next builds, lint/types and the first full product
+suites passed (Coches 102 plus 65 redirect cases; Business 170). Follow-up UI/error
+changes require final checks. The local Chromium download is truncated by the
+environment, so no responsive browser/screenshot acceptance is claimed. Hosted
+CI, clean Cloudflare packaging and authenticated preview acceptance are required
+before release. Rollback: revert app code; keep the compatible additive RPC, or
+revoke/drop that function in a reviewed forward migration. Never unlink records
+or drop customer data as rollback.
