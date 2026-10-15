@@ -82,6 +82,8 @@ try {
   await sql`insert into public.crm_workspace_members values('location-one',${owner},'owner','active'),('private-two',${other},'owner','active')`;
   await sql`insert into public.accommodation_room_types(venue_id,name,max_guests) values(${id(11)},'Historical stay',2)`;
   await sql`update public.venues set discovery_vertical='activities',name=${"L".repeat(200)} where id=${id(11)}`;
+  await sql`insert into public.venues(id,discovery_vertical,status,name) values(${id(12)},'activities','published','Reclassified saved stay')`;
+  await sql`insert into public.suite_saved_stays(profile_id,venue_id,locale,saved_at) values(${owner},${id(12)},'en','2026-01-01T00:00:00Z')`;
   const before =
     await sql`select id,venue_id,unit_id,status,quote_snapshot from public.accommodation_reservations order by id`;
   const migration = readFileSync(
@@ -171,7 +173,7 @@ try {
         tx`select public.create_accommodation_property('Other stay','private-two') id`,
     )
   )[0].id;
-  assert.equal((await sql`select count(*)::int n from public.venues`)[0].n, 2);
+  assert.equal((await sql`select count(*)::int n from public.venues`)[0].n, 3);
   assert.equal(
     (
       await sql`select legacy_venue_id from public.accommodation_properties where id=${property}`
@@ -546,6 +548,20 @@ try {
       (tx) =>
         tx`select public.accommodation_public_properties('', 'all',999,0)`,
     ),
+  );
+  const retainedSaved = (
+    await sql`select * from public.suite_saved_stays where profile_id=${owner} and venue_id=${id(12)}`
+  )[0];
+  assert.equal(retainedSaved.property_id, id(12));
+  assert.equal(
+    retainedSaved.saved_at.toISOString(),
+    "2026-01-01T00:00:00.000Z",
+  );
+  assert.equal(
+    (
+      await sql`select status from public.accommodation_properties where id=${id(12)}`
+    )[0].status,
+    "private",
   );
   const map = (
     await publicRead(

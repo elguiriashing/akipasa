@@ -19,7 +19,8 @@ insert into public.accommodation_properties(id,legacy_venue_id,workspace_id,name
   select venue_id from public.accommodation_room_types union select venue_id from public.accommodation_units
   union select venue_id from public.accommodation_nightly_rates union select venue_id from public.accommodation_reservations
   union select venue_id from public.accommodation_unit_blocks union select venue_id from public.accommodation_booking_settings
-  union select venue_id from public.accommodation_quotes union select venue_id from public.accommodation_confirmation_emails);
+  union select venue_id from public.accommodation_quotes union select venue_id from public.accommodation_confirmation_emails
+  union select venue_id from public.suite_saved_stays);
 create table public.accommodation_property_members (
  property_id uuid not null references public.accommodation_properties(id) on delete restrict,
  profile_id uuid not null references public.profiles(id) on delete cascade,

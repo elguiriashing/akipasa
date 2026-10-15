@@ -63,6 +63,8 @@ actual relevance-flag visibility. Hidden legacy properties remain visible only t
 their existing authenticated owner/manager; anonymous calls do not gain access.
 
 Saved stays gain a canonical property ID while preserving legacy keys and dates.
+Backfill includes exact saved venue references even if a venue was reclassified
+and has no inventory; those retained properties stay private.
 The saved reminder queue and sender recheck canonical property state, explicit
 reminder opt-in and current verified recipients; dedupe and original scheduling
 remain. Confirmation operator URLs target the independent property workbench;
