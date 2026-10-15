@@ -1,5 +1,20 @@
 # Change Impact Register
 
+## 2026-10-15 | Rental company cards on legacy Business home
+
+- **Before:** the AkiPasa-hosted portal exposed a top-level AkiConduzco tab,
+  while the owner's rental company was absent from managed places.
+- **After:** the home reads the signed-in operator's companies by `submitted_by`,
+  displays each as an AkiCoches card and rental filter, and routes to the venue
+  fleet section when linked or the existing mobility editor otherwise. The
+  top-level tab is removed.
+- **Dependencies:** Supabase rental company RLS, the standalone AkiBusiness home,
+  legacy mobility editor, and host routing. No schema, booking, payment, venue
+  membership or unrelated customer data is changed.
+- **Verification:** focused owner-scoped loader assertion, type/lint/build and
+  hosted CI, then exact-source live smoke of the legacy Business host. Rollback
+  restores the previous navigation/card code; no data restoration is needed.
+
 ## 2026-10-15 | AkiCoches venue data contract
 
 - **Before:** company owners had one unlinked rental listing, and managers could
