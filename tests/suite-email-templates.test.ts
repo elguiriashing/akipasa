@@ -25,7 +25,7 @@ const sample = {
 afterEach(() => vi.unstubAllGlobals());
 
 it("ships every requested suite transactional and opt-in template in both locales", () => {
-  expect(suiteEmailKinds).toHaveLength(11);
+  expect(suiteEmailKinds).toHaveLength(12);
   for (const kind of suiteEmailKinds)
     for (const locale of ["en", "es"] as const) {
       const email = renderSuiteEmail(kind, locale, sample);
@@ -141,4 +141,34 @@ it("fails safely with absent credentials, ambiguous failure or denied provider s
       retryable: status >= 500 || status === 429 || status === 409,
     });
   }
+});
+
+it("rental updates distinguish pending from confirmed and include both-party contact details", () => {
+  const payload = {
+    bookingId: "fixture",
+    companyName: "Branch <script>",
+    companyId: "branch",
+    vehicleName: "Compact",
+    status: "requested",
+    audience: "operator",
+    start: "2099-01-01",
+    end: "2099-01-03",
+    customerEmail: "guest@example.test",
+    customerPhone: "+34 600 123 456",
+    note: "Bring child seat <img>",
+  };
+  const pending = renderSuiteEmail("rental_booking_update", "en", payload);
+  expect(pending.text).toContain("awaiting confirmation");
+  expect(pending.text).toContain(payload.customerEmail);
+  expect(pending.text).toContain(payload.customerPhone);
+  expect(pending.text).toContain("business/mobility?company=branch");
+  expect(pending.html).not.toContain("<script>");
+  expect(pending.html).toContain("&lt;img&gt;");
+  const confirmed = renderSuiteEmail("rental_booking_update", "es", {
+    ...payload,
+    status: "confirmed",
+    audience: "customer",
+  });
+  expect(confirmed.subject).toContain("confirmado");
+  expect(confirmed.text).toContain("akicoches.com/account");
 });

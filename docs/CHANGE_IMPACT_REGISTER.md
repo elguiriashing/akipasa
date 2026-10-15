@@ -1438,3 +1438,41 @@ CI, clean Cloudflare packaging and authenticated preview acceptance are required
 before release. Rollback: revert app code; keep the compatible additive RPC, or
 revoke/drop that function in a reviewed forward migration. Never unlink records
 or drop customer data as rollback.
+
+## 2026-10-15 | Independent AkiCoches branches and booking operations
+
+Rental locations are independent Branches / Sucursales with their own profile,
+coordinates and private rental-media library. Existing company/fleet/booking IDs
+remain stable. The one-time migration snapshots current venue owner/manager grants
+as independent branch memberships, clears the historical venue link, disables the
+old link RPC and imports only previously selected covers into branch media rows.
+The authenticated branch workspace copies those legacy files into rental-media;
+failed copies remain visible with a retry notice and never delete source files.
+New uploads and selected covers/profile/hero media must belong to the same branch.
+Public media reads are restricted to published branch profile or active-car covers.
+
+Customer requests require name, valid phone and the verified account email, checked
+in the UI, API and authoritative SQL RPC. Existing historical incomplete contacts
+are retained. Booking details include email, phone, message, dates, car, status and
+quote. The operator overview reports current rentals, pending requests, today pick-
+ups and returns in Europe/Madrid; a separate scoped API pages live/upcoming/pending/
+historical bookings and rechecks manager authorization on every request. Requests
+are distinct from confirmations; no payment or instant availability is fabricated.
+
+Rental lifecycle email uses the existing AkiPasa suite outbox and five-minute sender,
+not a scheduler in either extracted product. Request/confirmation/decline/cancel/
+completion changes enqueue deduplicated customer and verified branch-owner emails.
+The dispatcher rechecks current verified addresses, branch owner, renter and status
+before sending. No historical email backfill or test email to real customers.
+New email rows remain blocked for the compatible sender during rollout; its service-only activation RPC releases only those new rental messages. The existing sender also copies selected legacy covers in bounded batches, preserving original files.
+
+Rollback uses a reviewed forward migration and app version rollback; do not drop
+branch media, re-link companies, rewrite bookings or reapply migration history.
+Owner-session production mutations remain a separate acceptance check.
+
+Migration `20261015220302_independent_rental_branches` is applied to confirmed
+shared project `vhpbvcfkcteswlsdjrfl`. Readback: zero linked rental branches, one
+selected legacy cover imported, the existing booking count preserved, the old
+authenticated link RPC disabled and anonymous email activation denied. Security
+advisors flag the intentional deny-all legacy audit and explicitly guarded
+definer RPCs; no new public booking/contact access is granted.
