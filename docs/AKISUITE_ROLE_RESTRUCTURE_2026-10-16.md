@@ -5,14 +5,14 @@
 
 ## Current verified map
 
-| Product/domain | Repository or deploy source | Current observed role | Production attachment observed |
-|---|---|---|---|
-| AkiPasa — `akipasa.com` | `elguiriashing/akipasa`, default `master` | Consumer discovery plus claims/owner tools | Worker `akipasa`; `akipasa.com`, `www.akipasa.com` |
-| AkiDuermo — `akiduermo.com` | `elguiriashing/AkiDuermo`, default `main` | Independent accommodation application candidate | Worker `akiduermo`; production domain is attached. Draft PR #1 explicitly says keep draft pending hosted auth/booking acceptance. |
-| AkiCoches — `akicoches.com` | `elguiriashing/AkiCoches`, default `main` | Rental discovery and booking | Worker `akicoches`; production domain is attached |
-| AkiHQ — `akihq.app` | `elguiriashing/akihq`, default `main` | Current operational app (CRM, PoS/stock and related tools) | Pages project `akihq`; domains `akihq.app`, `crm.akipasa.com`; production branch `main` |
-| AkiBusiness — `akibusiness.com` | `elguiriashing/AkiBusiness`, default `main` | Current listing/business management app (venue, accommodation and rental workspaces) | Worker `akibusiness-preview` is attached to production domain `akibusiness.com` |
-| Auth/API gateway | `elguiriashing/akihq` integration gateway plus existing AkiPasa services | Existing shared backend and application handoffs | Worker `akihq-integration-gateway`; keep its schedules and bindings intact during the app swap |
+| Product/domain                  | Repository or deploy source                                              | Current observed role                                                                | Production attachment observed                                                                                                    |
+| ------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| AkiPasa — `akipasa.com`         | `elguiriashing/akipasa`, default `master`                                | Consumer discovery plus claims/owner tools                                           | Worker `akipasa`; `akipasa.com`, `www.akipasa.com`                                                                                |
+| AkiDuermo — `akiduermo.com`     | `elguiriashing/AkiDuermo`, default `main`                                | Independent accommodation application candidate                                      | Worker `akiduermo`; production domain is attached. Draft PR #1 explicitly says keep draft pending hosted auth/booking acceptance. |
+| AkiCoches — `akicoches.com`     | `elguiriashing/AkiCoches`, default `main`                                | Rental discovery and booking                                                         | Worker `akicoches`; production domain is attached                                                                                 |
+| AkiHQ — `akihq.app`             | `elguiriashing/akihq`, default `main`                                    | Current operational app (CRM, PoS/stock and related tools)                           | Pages project `akihq`; domains `akihq.app`, `crm.akipasa.com`; production branch `main`                                           |
+| AkiBusiness — `akibusiness.com` | `elguiriashing/AkiBusiness`, default `main`                              | Current listing/business management app (venue, accommodation and rental workspaces) | Worker `akibusiness-preview` is attached to production domain `akibusiness.com`                                                   |
+| Auth/API gateway                | `elguiriashing/akihq` integration gateway plus existing AkiPasa services | Existing shared backend and application handoffs                                     | Worker `akihq-integration-gateway`; keep its schedules and bindings intact during the app swap                                    |
 
 This is already a five-repository deployment; do not create another repository split. Repository names and internal database identifiers are not public product semantics. The requested destination is a **role and domain swap**: the current management app becomes AkiHQ, and the current operations app becomes AkiBusiness. The swap must be staged so that each custom domain always points to a compatible app.
 
@@ -41,55 +41,63 @@ This is already a five-repository deployment; do not create another repository s
 ## Implementation sequence and acceptance gates
 
 ### 1. Complete inventory and contracts
+
 - Record each app's actual routes, auth callbacks, product branding, env bindings, CI, deployment source and Worker/Pages build IDs.
 - Read the exact rental/accommodation migrations and relevant RLS, storage, claims, booking, billing and webhook code.
 - Complete paginated inventory of Stripe products/prices/subscriptions and reconcile them to database entitlements.
 - Produce a route/legacy-alias matrix and rollback map.
 
 ### 2. Data and permission compatibility
+
 - Reuse `crm_workspaces`, membership, venue ownership and vertical-specific records where possible.
 - Define organisation/location/product-listing relationship and stable IDs before creating new canonical entities.
 - Backfill only via verified claim/member/foreign-key relationships. Record row counts and mapping IDs; make batches idempotent and resumable.
 - Ensure organization/location membership and capability grants are server enforced in RLS, APIs, storage and jobs. Keep billing entitlements distinct from user permission.
 
 ### 3. Shared management hub (AkiHQ)
+
 - Rebrand and route the current AkiBusiness management app to AkiHQ.
 - Preserve independent venue, stay and rental management, media isolation, current reservation records and claim validation.
 - Resolve company/location routing: zero businesses -> claim/add; one location -> direct workspace; multiple -> company overview and switcher.
 - Keep public listings optional and AkiHQ free.
 
 ### 4. Operations app (AkiBusiness)
+
 - Rebrand and route the current AkiHQ operational app to AkiBusiness.
 - Keep PoS, tables/orders, inventory, staff, CRM, reporting and existing working modules; do not advertise blocked fiscal issuance.
 - Support private businesses with no discovery listing; scope staff to their permitted workspace/location.
 - Link shared profile, team and billing management back to AkiHQ rather than fork those systems.
 
 ### 5. Offers and billing
+
 - Publish a central versioned feature/offer matrix with exact scope and readiness.
 - Map old offer IDs to old entitlements explicitly. New listing upgrades scope to one listing; operations plans scope to one location; personal Premium never grants business access.
 - Keep checkout disabled per offer where benefits, scope, VAT display or approved tax policy are unresolved.
 - Activate paid grants only from verified, idempotent server webhook processing.
 
 ### 6. Staged routing and production acceptance
+
 - Deploy compatible previews first, then cut domains in a coordinated window.
 - Keep AkiHQ and AkiBusiness domains independently served; preserve `crm.akipasa.com` as a deliberate legacy destination until retired.
 - Test Google and email auth, reset/invites, return context, English/Spanish, mobile, permissions, claims, bookings and core PoS without real external side effects.
 - Confirm the deployed commit/build identifier for each domain. Retain old Worker/Pages versions and bindings until smoke tests pass.
 
 ### 7. Cleanup and handoff
+
 - Remove old route compatibility only in a later release after access logs and acceptance confirm it is unused.
 - Report migration SQL/backfill counts, plan mappings, checks, deploy IDs, production smoke results and rollback instructions.
 
 ## Current blockers and next evidence
 
 - Complete Stripe pagination and reconcile the complete legacy catalogue to the database before changing checkout. Any new offer whose approved tax treatment or functional benefits are unresolved must remain disabled.
-- The Pages/Worker bindings are confirmed, but current live build IDs and per-domain smoke behavior still need inspection.
-- The independent rental schema exists, but reservation contact-field completeness and ownership/branch RLS are not established by row counts.
+- Current production build IDs and route responses have been inspected; the AkiHQ/AkiBusiness role swap is not deployed.
+- Accommodation inventory and reservations still require `venue_id`; independent accommodation needs coordinated application and database work. Rental branches already have independent memberships, media, and RLS under migration `20261015220302`.
 - AkiDuermo PR #1 and AkiHQ PR #30 describe their own draft acceptance gates. Re-evaluate each against current source and deployed builds before merging.
-
 
 ## Execution update — 2026-10-16
 
 - Alex confirmed `vhpbvcfkcteswlsdjrfl` is the production Supabase project; its display name does not change that classification. No production database migration has been applied.
-- AkiCoches PR [#7](https://github.com/elguiriashing/AkiCoches/pull/7) merged as `6f482ee6da03d35db6cadca5714464064a870c8b`. Its CI run #41 passed application checks, browser acceptance, and Cloudflare dry-run.
-- The `akicoches` Worker still reports the earlier Wrangler deployment (`d397d8cc-5641-4e03-b160-867f33d318c6`, 2026-10-15 22:18 UTC) as current after the merge. Repository CI validates a dry-run; it does not deploy production. Wrangler credentials are not available in this environment. The map fix is merged but not production-deployed or live-verified.
+- AkiCoches PR [#7](https://github.com/elguiriashing/AkiCoches/pull/7) merged as `6f482ee6da03d35db6cadca5714464064a870c8b`. Cloudflare production build `73dc0b85-f077-4c12-b199-476ab9f9e09c` built that exact `main` commit; deployment `c15d06c9-8c0c-4d28-bf43-f359196cc906` serves version `b93bc733-324b-41aa-938e-e7068d8afb91` at 100%. CI run #41 passed application checks, browser acceptance, and Cloudflare dry-run. `https://akicoches.com/map` returned HTTP 200.
+- Cloudflare production smoke checks returned 200 for AkiPasa, AkiDuermo, AkiCoches, and AkiHQ home routes. AkiBusiness redirects to `/es/business`; AkiCoches `/es/map` redirects to an AkiPasa URL and needs separate route review.
+
+- AkiDuermo’s active Cloudflare build trigger watches the draft `migration/five-product-duermo` branch and runs `wrangler deploy` against `akiduermo`, which is attached to production `akiduermo.com`. Its latest deployed source was `8ff6943108ced3936f7c178113e94a4b0de9b9b3`. The preview workflow’s domain-isolation guard is not part of that Cloudflare build command. Validate the deployed branch and cutover intent before relying on it for the final product role.
