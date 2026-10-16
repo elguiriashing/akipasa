@@ -19,3 +19,24 @@ order by p.proname;
 -- Execute the existing exact table-count query documented in
 -- docs/INDEPENDENT_ACCOMMODATION_RELEASE.md separately before and after migration.
 -- IMPORTANT: confirm backup/PITR restore point and schema-compatible rehearsal out of band.
+
+-- Exact counts are essential. pg_stat_user_tables estimates are NOT migration invariants.
+select 'accommodation_room_types' as relation,count(*)::bigint as exact_rows from public.accommodation_room_types
+union all select 'accommodation_units',count(*) from public.accommodation_units
+union all select 'accommodation_nightly_rates',count(*) from public.accommodation_nightly_rates
+union all select 'accommodation_unit_blocks',count(*) from public.accommodation_unit_blocks
+union all select 'accommodation_quotes',count(*) from public.accommodation_quotes
+union all select 'accommodation_reservations',count(*) from public.accommodation_reservations
+union all select 'accommodation_confirmation_emails',count(*) from public.accommodation_confirmation_emails
+union all select 'crm_workspaces',count(*) from public.crm_workspaces
+union all select 'crm_workspace_members',count(*) from public.crm_workspace_members
+union all select 'car_rental_companies',count(*) from public.car_rental_companies
+union all select 'car_rental_bookings',count(*) from public.car_rental_bookings
+order by relation;
+-- Expected bucket/policy names must be absent before first migration.
+select id,public,file_size_limit from storage.buckets where id='accommodation-media';
+select schemaname,tablename,policyname from pg_policies
+where (schemaname='storage' and policyname in
+ ('accommodation_objects_read','accommodation_objects_insert','accommodation_objects_delete'))
+or (schemaname='public' and tablename like 'accommodation_property%')
+order by schemaname,tablename,policyname;
