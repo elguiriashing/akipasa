@@ -141,3 +141,9 @@ acceptance is separately recorded by its dedicated nine-case PGlite suite.
    only for explicitly selected affected property IDs. Preserve existing booking
    management and cancellation. Restoration requires the recorded backup plus a
    reviewed forward repair, not destructive down migration.
+
+## Connected production preflight, 2026-10-16
+
+Connected project `vhpbvcfkcteswlsdjrfl` currently records `20261016092914_private_operating_location`, `20261016093118_operating_organisations`, and `20261016093336_rental_operating_location`. The three files in this branch with original timestamps `20261016003000`, `20261016030000`, and `20261016040000` are **not** safe to replay against this live schema without a complete body/schema/grant/trigger comparison, explicit migration-history reconciliation and updated exact-head tests. `public.accommodation_properties` is absent; accommodation 010000, 020000 and 050000 are not recorded. Live statistics estimated six room types, six units, six nightly rates and no reservations, but estimates are not a backup or exact invariant. The connected project has no Supabase development branches.
+
+**Release operator hold:** obtain a recoverable backup and sanitized full-schema rehearsal; establish exact counts/IDs of units, rates, blocks, reservations, quotes, outbox, legacy venue links and CRM memberships. Verify Storage owner and SQL policy compatibility, then apply only non-applied additive accommodation migrations in dependency order. Keep readiness flags false until tenant-isolated authenticated acceptance and independent cancellation/history, media and email checks. Do not alter billing or deploy a role-swapped canonical domain before cross-product cutover passes. The three already-live private organisation/location migrations must be treated as existing production state rather than pending migrations.
