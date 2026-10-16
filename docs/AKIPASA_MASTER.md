@@ -1067,6 +1067,63 @@ authenticated link RPC disabled and anonymous email activation denied. Security
 advisors flag the intentional deny-all legacy audit and explicitly guarded
 definer RPCs; no new public booking/contact access is granted.
 
+## 2026-10-16 | Independent property identity and private operating locations (candidate)
+
+Additive migrations preserve existing CRM workspace/source links and memberships,
+legacy accommodation IDs, inventory, reservations and mail history. Explicit
+private workspace onboarding creates no venue or paid capability. Independent
+properties use a canonical property ID with optional verified workspace linkage;
+legacy property IDs equal venue IDs and existing membership remains authoritative.
+Inventory/RPC/outbox compatibility and property-scoped media/RLS permit a property
+without a dummy venue. New authenticated inventory API checks property permissions
+on every request; errors never appear as confirmed empty inventory.
+
+Local PostgreSQL acceptance covers actual legacy history plus independent
+inventory/booking/concurrency/mail/media permissions; API handler tests cover
+server boundaries. This is a candidate foundation, not completed discovery or
+production migration. Independent public listing metadata/loaders, management
+UI, saved history/media integration and real authenticated acceptance still gate
+activation. No customer email, billing mutation, CRM detachment or production SQL
+was performed. Contract, exact tests, compatibility and non-destructive recovery:
+`docs/INDEPENDENT_ACCOMMODATION_RELEASE.md`.
+
+### Candidate completion: reviewed independent public stays
+
+Independent profiles now include location, bilingual descriptions and a private to
+pending-review to published workflow. Existing Staff roles review a bounded queue
+with explicit reason and optimistic revision checks. A unified public catalogue,
+detail and compact viewport RPC preserves legacy IDs and exact visibility rules;
+saved state, reminder queue and confirmation links use canonical property IDs.
+Private media upload/signing/placement/removal has a real authenticated endpoint.
+New independent requests require the verified account email. Owner account erasure
+holds public visibility while preserving business history; reviewer references are
+anonymized without deleting audit. Independent consumer/staff activation remains
+behind the exact-true schema flag and production acceptance gates.
+
+### Candidate company groups and private rental/location links
+
+Explicit company groups use `operating_organisations`/members and immutable owned
+CRM-workspace associations. Verified company owner/admin metadata authority never
+grants location or paid rights. Creation is idempotent; attachment requires the
+canonical location owner and active owner membership. Optional rental branch maps
+stay in a private RLS table and require actual branch owner plus location owner.
+Branch/booking/media IDs remain intact. No inferred historical companies or physical
+site normalization occurs; existing aggregated workspaces/source links require
+live inventory before reconciliation. See `OPERATING_ORGANISATIONS.md`.
+
+### Candidate role presentation and scoped offer information
+
+`NEXT_PUBLIC_AKISUITE_ROLE_SWAP` exact-true changes management URLs/names/icons to
+AkiHQ and operations URLs/names/icons to AkiBusiness. False retains legacy defaults;
+explicit preview origins remain. Session callbacks, permissions and historical
+billing identifiers are unchanged. The readonly noindex `/[locale]/offers` surface
+is off by default and uses version `akisuite-roles-v1` with ten distinct new offer
+IDs (three personal, three listing, free HQ, three operations). Nine paid offers
+remain individually blocked on unresolved tax, entitlement/lifecycle or feature,
+scope and pricing gates; annual prices remain unapproved. Existing live checkout,
+subscriptions and old catalogue actions are untouched. This source does not prove
+a domain cutover, payment readiness or authenticated production acceptance.
+
 ## 2026-10-16 | Rental media upload policy repair
 
 The shared rental-media Storage INSERT/DELETE policy used an unqualified `name`
@@ -1092,3 +1149,18 @@ probe confirms own-folder INSERT/SELECT and foreign-folder denial, leaving no
 objects behind. Production direct SQL DELETE is protected by Supabase's storage
 API-only guard; that guard was retained, with DELETE policy behavior tested locally.
 No real customer image, profile, booking, email or subscription was mutated.
+
+### Independent property teams and bounded pagination follow-up
+
+Migration `20261016050000_accommodation_property_team` completes explicit manager
+assignment/revocation for independent properties. Only the verified canonical
+owner can assign an existing verified profile UUID; owners cannot replace their
+own canonical role, managers cannot invite peers, and legacy venue teams remain
+unchanged. Private audit history records changes; owner/self metadata RLS and
+immediate revoked-member inventory denial are covered by actual PostgreSQL.
+No invitation email, inferred ownership, company permission inheritance or paid
+entitlement is created. Additive deterministic property pagination preserves the
+old no-argument RPC and bounds pages; management inventory pages use one-row
+lookahead. The independent SQL suite now has nine groups after the original eleven.
+Confirmation footers match their canonical independent destination. Full hosted
+schema, authenticated acceptance and provider cutover remain release gates.

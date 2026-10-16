@@ -24,20 +24,28 @@ export function PortalHeaderTools({
   const apps = [
     {
       product: "pasa",
+      logo: "pasa",
       name: "AkiPasa",
       href: `${config.siteUrl.replace(/\/$/, "")}/${locale}`,
     },
     {
       product: "business",
-      name: "AkiBusiness",
-      href: `https://business.akipasa.com/${locale}/business`,
+      logo: config.managementLogo,
+      name: config.managementName,
+      href: `${config.businessUrl}/${locale}/business`,
     },
     {
       product: "duermo",
+      logo: "duermo",
       name: "AkiDuermo",
       href: `https://akiduermo.akipasa.com/?lang=${locale}`,
     },
-    { product: "hq", name: "AkiHQ", href: config.crmUrl },
+    {
+      product: "hq",
+      logo: config.operationsLogo,
+      name: config.operationsName,
+      href: config.crmUrl,
+    },
   ] as const;
 
   useEffect(() => {
@@ -94,7 +102,7 @@ export function PortalHeaderTools({
             .filter((app) => app.product !== product)
             .map((app) => (
               <a key={app.product} href={app.href} aria-label={app.name}>
-                <PortalLogo product={app.product} />
+                <PortalLogo product={app.logo} />
               </a>
             ))}
           {children && <div className="portal-product-actions">{children}</div>}

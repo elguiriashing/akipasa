@@ -577,3 +577,14 @@ Actual browser acceptance caught Next retaining the old reactive query because t
 Current-head browser CI reproduced four EN/ES × light/dark 390px AkiDuermo guest journeys failing to click Hotels because the initially visible privacy panel intercepted the map filter. The shared nonmodal panel now has an EN/ES Close control (46px minimum height), scoped header styling and Escape dismissal from its controls, restoring focus to the existing Privacy trigger without scrolling the page. Closing changes visibility only: it writes no consent/version cookie, sends no POST, requests no motion permission and does not apply optional choices. Existing saved permissions remain authoritative and the draft remains available when reopened. The prompt still appears on a fresh document until an explicit consent choice is saved. Auth, account settings, consent API/RLS, telemetry permission checks, pricing, booking and production data are unchanged.
 
 Four additional component cases verify denied first visits in both locales, preserved drafts/saved permissions, keyboard focus and pending-save behavior. The existing eight locale/theme/mobile/desktop guest journeys now assert the real initially open panel, denied defaults, normal dismissal, focus restoration and zero consent writes before their ordinary discovery/filter interactions. Focused tests, complete browser/check/Cloudflare CI and exact live-source smoke remain release gates. Rollback is an application source revert; no migration or customer-data restoration.
+
+## Independent accommodation identity (candidate, 2026-10-16)
+
+Accommodation gains a canonical property identity alongside preserved legacy venue
+references. Inventory ownership, booking locks and outbox relationships use that
+identity; existing RPC signatures and venue-backed clients remain compatible.
+Private property media is separately scoped. CRM workspace identity stays the
+operations/location boundary, with no inferred organisation-wide permissions.
+Explicit private location creation uses existing workspaces/members and grants no
+billing capability. See `INDEPENDENT_ACCOMMODATION_RELEASE.md`; independent public
+application activation and hosted migration remain pending.

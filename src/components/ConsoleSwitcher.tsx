@@ -85,7 +85,13 @@ export function ConsoleSwitcher({
           onClick={onNavigate}
         >
           <Icon name={entry.icon} />
-          <span>{es ? entry.es : entry.en}</span>
+          <span>
+            {entry.key === "business" && config.roleSwap
+              ? config.managementName
+              : es
+                ? entry.es
+                : entry.en}
+          </span>
         </Link>
       ))}
     </nav>

@@ -6,6 +6,10 @@ export default defineConfig({
   resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
   test: {
     include: [
+      "tests/independent-accommodation-review.test.tsx",
+      "tests/independent-accommodation-media.test.ts",
+      "tests/independent-accommodation-api.test.ts",
+      "tests/independent-accommodation-terms.test.ts",
       "tests/portal-home.test.tsx",
       "tests/business-team-home.test.tsx",
       "tests/business-team-refresh.test.tsx",

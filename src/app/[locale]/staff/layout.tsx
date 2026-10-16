@@ -27,6 +27,15 @@ export default async function StaffLayout({
   const es = locale === "es";
   const base = `/${locale}/staff`;
   const items: WorkspaceItem[] = [
+    ...(process.env.AKISUITE_INDEPENDENT_ACCOMMODATION_ENABLED === "true"
+      ? [
+          {
+            href: `${base}/accommodations`,
+            label: es ? "Alojamientos" : "Stays",
+            icon: "venue" as const,
+          },
+        ]
+      : []),
     { href: base, label: es ? "Operaciones" : "Operations", icon: "home" },
     {
       href: `${base}/support`,

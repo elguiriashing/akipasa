@@ -526,3 +526,14 @@ company response. The first iteration does not take payments, guarantee
 availability across external channels, import provider records or include
 dealership listings. Production schema, custom-domain routing and release still
 require separate verification.
+
+## ADR-032: Preserve legacy identity while introducing independent stays
+
+Use additive property IDs equal to existing accommodation venue IDs, retain legacy
+venue columns and fill them through compatibility triggers. New properties have
+no venue. Existing booking IDs/locks/quote snapshots/outboxes remain canonical;
+there is no parallel reservation model. Explicit CRM links never detach existing
+workspaces or infer organisations. Trade-off: every extracted app must complete
+property-aware discovery/history/media before new public properties can activate.
+Recovery keeps the additive schema and new records; source rollback alone cannot
+replace independent booking functions with venue-only versions.

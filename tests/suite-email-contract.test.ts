@@ -1,5 +1,7 @@
 import { readFileSync } from "node:fs";
 import { expect, it } from "vitest";
+import { renderBookingConfirmation } from "../src/lib/booking-confirmation-email";
+import { productRoles } from "../src/lib/product-roles";
 
 const source = (path: string) => readFileSync(path, "utf8");
 it("uses private, leased email deliveries without backfilling historical records", () => {
@@ -79,8 +81,22 @@ it("preserves existing confirmation hooks and offers new request/cancellation em
   expect(source("src/app/[locale]/events/[slug]/book/actions.ts")).toContain(
     'rpc("request_booking_v2"',
   );
-  expect(source("src/lib/booking-confirmation-email.ts")).toContain(
-    "akiduermo.akipasa.com/bookings",
+  const confirmation = renderBookingConfirmation(
+    {
+      bookingId: "booking",
+      venueId: "venue",
+      venueName: "Legacy stay",
+      customerName: "Guest",
+      customerEmail: "guest@example.invalid",
+      guestCount: 1,
+      bookingStart: "2026-10-20T10:00:00Z",
+      locale: "en",
+      product: "accommodation",
+    },
+    "customer",
+  );
+  expect(confirmation.html).toContain(
+    `${productRoles.swapped ? "https://akiduermo.com" : "https://akiduermo.akipasa.com"}/bookings?lang=en`,
   );
 });
 

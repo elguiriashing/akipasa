@@ -1477,6 +1477,53 @@ authenticated link RPC disabled and anonymous email activation denied. Security
 advisors flag the intentional deny-all legacy audit and explicitly guarded
 definer RPCs; no new public booking/contact access is granted.
 
+## 2026-10-16 | Independent accommodation and private operating location foundation
+
+Before: all eight accommodation inventory/booking/outbox ownership columns require
+a venue; private CRM source links exist but no safe explicit per-location creation.
+After: canonical property identity, nullable legacy venue links, deterministic
+ID-preserving backfill, old-client identity triggers, composite tenant constraints,
+property RLS, compatible booking/status/quote/outbox functions, independent private
+media and bounded authenticated inventory API. Separate explicit private workspace
+onboarding uses a caller/request ledger and grants no paid capability or listing.
+
+Cross-surface impact: AkiPasa owns migrations and the sole existing email sender;
+AkiHQ management and AkiDuermo discovery require coordinated frontend integration.
+EN/ES error codes remain presentation-neutral; public activation stays unavailable
+for new private properties. Legacy venue claims/team permission revocation and CRM
+source links remain authoritative. No owner inference or company-wide grants.
+
+Evidence: PostgreSQL16 original11 and independent8 acceptance groups pass, including
+legacy row identity/snapshots, cross-tenant/RLS denial, concurrency, private media,
+confirmation/cancellation outbox and old-client upsert compatibility; API8 cases
+pass. Private location9 actual PGlite cases pass separately. Full repository check,
+current-head CI, full hosted schema compatibility, browser/auth/provider acceptance
+remain mandatory and separately reported. No production migration or provider send.
+Rollback retains all data and compatible functions; disable new creation through
+reviewed forward grants, revert apps, never detach CRM or drop new records. See
+`docs/INDEPENDENT_ACCOMMODATION_RELEASE.md` for exact boundaries and remaining work.
+
+Candidate integration follow-up: independent listing profile/review lifecycle,
+staff queue/action with revision conflict protection, combined public catalogue and
+viewport, saved/reminder compatibility, independent confirmation destinations and
+real private media endpoint are implemented. PostgreSQL acceptance now has 11
+legacy plus 8 independent groups, including account-erasure retention; 23 focused
+handler/render/action cases and 21 mail cases pass. Full hosted schema/Storage,
+frontend browser and actual authenticated production checks remain distinct.
+
+Explicit organisation/location grouping adds verified company authority without
+inheriting location permissions. Private rental/location attachment preserves all
+existing branch IDs and requires both canonical owners. Eleven organisation and
+six rental PGlite cases plus six real PostgreSQL concurrency groups passed;
+there is no inferred backfill, paid grant, billing mutation, email or public listing
+creation. Recovery disables new gates/write RPCs and preserves all recorded rows.
+
+The shared role flag changes only product presentation/destinations at exact true;
+six new plus 64 existing presentation/auth/account checks passed. Separate readonly
+versioned offers retain all old billing identifiers and checkout actions, expose no
+payment handler and leave nine paid target offers blocked. Final combined checks
+and CI are required; no source flag is evidence that domains were swapped live.
+
 ## 2026-10-16 | Rental media upload policy repair
 
 The shared rental-media Storage INSERT/DELETE policy used an unqualified `name`
@@ -1502,3 +1549,18 @@ probe confirms own-folder INSERT/SELECT and foreign-folder denial, leaving no
 objects behind. Production direct SQL DELETE is protected by Supabase's storage
 API-only guard; that guard was retained, with DELETE policy behavior tested locally.
 No real customer image, profile, booking, email or subscription was mutated.
+
+### Independent property teams and bounded pagination follow-up
+
+Migration `20261016050000_accommodation_property_team` completes explicit manager
+assignment/revocation for independent properties. Only the verified canonical
+owner can assign an existing verified profile UUID; owners cannot replace their
+own canonical role, managers cannot invite peers, and legacy venue teams remain
+unchanged. Private audit history records changes; owner/self metadata RLS and
+immediate revoked-member inventory denial are covered by actual PostgreSQL.
+No invitation email, inferred ownership, company permission inheritance or paid
+entitlement is created. Additive deterministic property pagination preserves the
+old no-argument RPC and bounds pages; management inventory pages use one-row
+lookahead. The independent SQL suite now has nine groups after the original eleven.
+Confirmation footers match their canonical independent destination. Full hosted
+schema, authenticated acceptance and provider cutover remain release gates.

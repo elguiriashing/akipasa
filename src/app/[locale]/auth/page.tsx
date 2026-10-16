@@ -99,7 +99,7 @@ export default async function AuthPage({
               : isStayHost
                 ? "AkiDuermo"
                 : isBusinessHost
-                  ? "AkiBusiness"
+                  ? config.managementName
                   : businessIntent
                     ? es
                       ? "Paso 1 de 3 · Añade tu negocio"
@@ -161,20 +161,20 @@ export default async function AuthPage({
               href={`${config.businessUrl}/${locale}/auth?next=/${locale}/business`}
             >
               <i
-                className="auth-product-dot auth-product-dot-business"
+                className={`auth-product-dot auth-product-dot-${config.managementLogo}`}
                 aria-hidden="true"
               />
               <span>
-                <strong>AkiBusiness</strong>
+                <strong>{config.managementName}</strong>
               </span>
             </a>
             <a className="auth-product-card" href={config.crmUrl}>
               <i
-                className="auth-product-dot auth-product-dot-hq"
+                className={`auth-product-dot auth-product-dot-${config.operationsLogo}`}
                 aria-hidden="true"
               />
               <span>
-                <strong>AkiHQ</strong>
+                <strong>{config.operationsName}</strong>
               </span>
             </a>
           </aside>
@@ -283,8 +283,8 @@ export default async function AuthPage({
                       : "Sign in to AkiDuermo"
                     : isBusinessHost
                       ? es
-                        ? "Entra en AkiBusiness"
-                        : "Sign in to AkiBusiness"
+                        ? `Entra en ${config.managementName}`
+                        : `Sign in to ${config.managementName}`
                       : es
                         ? "Entra en AkiPasa"
                         : "Sign in to AkiPasa"}

@@ -1,10 +1,17 @@
-name: Accommodation PostgreSQL integration
+name: AkiSuite PostgreSQL integration
 on:
   pull_request:
     branches: [master]
     paths:
       - "supabase/migrations/*accommodation*.sql"
       - "scripts/test-accommodation-sql.mjs"
+      - "scripts/test-independent-accommodation-sql.mjs"
+      - "scripts/test-operating-organisations-sql.mjs"
+      - "supabase/migrations/*operating*.sql"
+      - "database/migrations/*operating*.sql"
+      - "src/app/api/business/accommodations/**"
+      - "src/lib/independent-accommodation.ts"
+      - "tests/independent-accommodation*"
       - ".github/workflows/accommodation-sql.yml"
   workflow_dispatch:
 permissions:
@@ -26,4 +33,10 @@ jobs:
           sudo systemctl start postgresql
           sudo -u postgres psql -v ON_ERROR_STOP=1 -c "alter user postgres password 'postgres'"
           sudo -u postgres createdb accommodation_test
-      - run: node scripts/test-accommodation-sql.mjs
+      - run: node scripts/test-independent-accommodation-sql.mjs
+      - name: Create isolated company integration database
+        run: sudo -u postgres createdb operating_organisations_test
+      - name: Verify company membership and concurrent location attachment
+        env:
+          TEST_OPERATING_ORGANISATIONS_DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/operating_organisations_test
+        run: node scripts/test-operating-organisations-sql.mjs

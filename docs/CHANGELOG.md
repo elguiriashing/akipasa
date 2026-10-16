@@ -1096,3 +1096,16 @@ Completed the AkiDuermo room-night request candidate: explicit booking modes, re
 
 - Keep the current filter labelled “Current and upcoming” / “Actuales y próximos” to match its included running and undated draft events.
 - Add a bilingual label regression to the event workspace contract test.
+
+## Candidate: independent accommodation/private location foundation
+
+Added property-scoped identity, compatible legacy inventory/booking/outbox SQL,
+private media permissions, authenticated inventory API and explicit private CRM
+location onboarding. Disposable PostgreSQL/RLS and handler acceptance pass; hosted
+migration, extracted frontend integration and production acceptance remain gated.
+
+Candidate integration adds explicit company/location grouping, private rental
+location associations, reviewed independent stay profiles and canonical public
+reads/saved reminders, a real private media endpoint, role-gated presentation and
+a readonly versioned target-offer catalogue. All production activation remains
+subject to migration, domain/auth, browser and provider acceptance.
