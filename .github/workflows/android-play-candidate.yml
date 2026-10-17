@@ -1,0 +1,42 @@
+name: Android Play candidate build
+on:
+  pull_request:
+    paths:
+      - "Android/**"
+      - "mobile/**"
+      - ".github/workflows/android-play-candidate.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  android-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+      - name: Install Android API 36 SDK
+        run: sdkmanager --install "platforms;android-36" "build-tools;36.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Verify immutable package and Android API target
+        run: |
+          grep -q 'applicationId = "com.akipasa"' Android/app/build.gradle.kts
+          grep -q 'targetSdk = 36' Android/app/build.gradle.kts
+          node mobile/validate-store-release.mjs
+      - name: Run native Android checks and produce unsigned candidate
+        working-directory: Android
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon test lint bundleRelease
+      - name: Upload candidate Android AAB (NOT SIGNED)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: akipasa-android-unsigned-candidate
+          path: Android/app/build/outputs/bundle/release/*.aab
+          if-no-files-found: error
+          retention-days: 7
