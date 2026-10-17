@@ -1,5 +1,19 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-17 | AkiSuite cross-product navigation contract
+
+The AkiPasa consumer rail and mobile More sheet expose a five-product launcher
+without displacing Discover, Map, Community, Account or signed-in workspaces.
+The AkiDuermo/legacy portal header provides the same five destinations.
+Canonical target origins are akipasa.com, akiduermo.com, akicoches.com,
+akihq.app (free management) and akibusiness.com (paid operations). Each entry
+uses the approved corresponding icon: orange AkiPasa, teal AkiDuermo, red
+pin/black star AkiCoches, black pin/gold star AkiHQ, violet AB AkiBusiness.
+AkiBusiness AB artwork must not be redesigned. EN/ES is retained for
+consumer/stays/car destinations; cross-domain auth is not shared by cookie.
+The menus add only navigation; they do not alter permissions, booking, billing,
+map state, privacy consent, SEO metadata, or database records.
+
 ## 2026-10-15 | Rental company cards in the legacy Business portal
 
 The AkiPasa-hosted Business home lists rental companies submitted by the signed-in

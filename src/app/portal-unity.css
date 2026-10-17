@@ -214,3 +214,17 @@ html[data-theme="dark"] body[data-product="akibusiness"] {
   display: inline-flex;
   line-height: 1;
 }
+
+/* Shared five-product navigation uses the current icon identity of each site. */
+.portal-apps-heading {
+  color: var(--muted); font-size: 11px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .12em; padding: 4px 6px;
+}
+.portal-product-popover { width: 280px; }
+.portal-product-popover a { position: relative; border: 1px solid transparent !important; }
+.portal-product-popover a:hover, .portal-product-popover a:focus-visible {
+  border-color: var(--app-accent) !important;
+  background: color-mix(in srgb, var(--app-accent) 12%, var(--surface-alt)) !important;
+}
+.portal-product-popover a[aria-current="page"] { border-color: var(--app-accent) !important; }
+.portal-product-popover .portal-current-app { color: var(--muted); font-size: 10px; font-weight: 750; margin-left: auto; }
