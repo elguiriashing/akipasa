@@ -9,6 +9,7 @@ import { Icon, type IconName } from "./Icons";
 import { LanguageLink } from "./LanguageLink";
 import { ThemeToggle } from "./ThemeModeControls";
 import { ConsoleSwitcher, type ConsoleKey } from "./ConsoleSwitcher";
+import { AkiSuitePortalMenu } from "./AkiSuitePortalMenu";
 import { config, type Locale } from "../lib/config";
 import { msg } from "../lib/messages";
 import { roleCapabilities } from "../lib/roles";
@@ -342,6 +343,7 @@ export function AppShell({
           <div className="app-rail-tools">
             <ThemeToggle locale={locale} />
             <LanguageLink locale={other} compact={compact} />
+            <AkiSuitePortalMenu locale={locale} compact={compact} />
           </div>
           <button
             type="button"
@@ -488,6 +490,7 @@ export function AppShell({
                 </Link>
               ))}
             </nav>
+            <AkiSuitePortalMenu locale={locale} expanded />
             <div className="app-sheet-tools">
               {!signedIn && (
                 <Link
