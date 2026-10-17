@@ -604,7 +604,6 @@ export function AppShell({
             >
               <Icon name="close" />
             </button>
-            <div className="app-sheet-account-actions">{suiteActions}</div>
             {signedIn && hasMultipleWorkspaces && (
               <section className="app-sheet-workspaces">
                 <span className="app-sheet-section-label">
@@ -636,6 +635,7 @@ export function AppShell({
                 </Link>
               ))}
             </nav>
+            <div className="app-sheet-account-actions">{suiteActions}</div>
             <div className="app-sheet-tools">
               <ThemeToggle locale={locale} />
               <LanguageLink locale={other} />
