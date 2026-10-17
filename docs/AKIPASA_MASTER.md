@@ -14,7 +14,6 @@ consumer/stays/car destinations; cross-domain auth is not shared by cookie.
 The menus add only navigation; they do not alter permissions, booking, billing,
 map state, privacy consent, SEO metadata, or database records.
 
-
 ## 2026-10-15 | Rental company cards in the legacy Business portal
 
 The AkiPasa-hosted Business home lists rental companies submitted by the signed-in

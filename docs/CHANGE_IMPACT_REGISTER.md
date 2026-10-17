@@ -16,7 +16,6 @@
   deployment. Code commits/PR do not establish a released hostname.
 - **Rollback:** revert navigation components, links and CSS; no data migration.
 
-
 ## 2026-10-15 | Rental company cards on legacy Business home
 
 - **Before:** the AkiPasa-hosted portal exposed a top-level AkiConduzco tab,
