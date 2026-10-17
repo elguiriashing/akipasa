@@ -4,7 +4,7 @@ import { PortalLogo } from "./PortalLogo";
 import { PortalHeaderTools } from "./PortalHeaderTools";
 import type { StayLocale } from "@/lib/akiduermo-i18n";
 import styles from "./StayAppShell.module.css";
-import { signOutStay } from "@/app/akiduermo/account/actions";
+import { signOutStay } from "../app/akiduermo/account/actions";
 
 export function StayHeader({
   locale,
