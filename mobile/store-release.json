@@ -43,10 +43,7 @@
   "delivery": {
     "android": "Android App Bundle (.aab) signed for Play App Signing, not generated",
     "ios": "Signed .ipa archive and TestFlight build, not generated",
-    "intendedTracks": [
-      "Play internal testing",
-      "TestFlight internal testing"
-    ]
+    "intendedTracks": ["Play internal testing", "TestFlight internal testing"]
   },
   "notes": [
     "Do not insert app signing keys, provisioning profiles, personal details, reviewer passwords or store API keys in Git.",

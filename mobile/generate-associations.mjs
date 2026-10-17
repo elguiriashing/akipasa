@@ -12,26 +12,57 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-const config = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), "store-release.json"), "utf8"));
+const config = JSON.parse(
+  readFileSync(
+    join(dirname(fileURLToPath(import.meta.url)), "store-release.json"),
+    "utf8",
+  ),
+);
 const raw = process.env.ANDROID_APP_SIGNING_SHA256 || "";
 const fingerprint = raw.toUpperCase().replaceAll(":", "");
 const team = (process.env.APPLE_TEAM_ID || "").toUpperCase();
 if (!new RegExp("^[0-9A-F]{64}$").test(fingerprint)) {
-  console.error("Set ANDROID_APP_SIGNING_SHA256 to the real 32-byte Play App Signing SHA-256 fingerprint.");
+  console.error(
+    "Set ANDROID_APP_SIGNING_SHA256 to the real 32-byte Play App Signing SHA-256 fingerprint.",
+  );
   process.exit(1);
 }
 if (!new RegExp("^[A-Z0-9]{10}$").test(team)) {
-  console.error("Set APPLE_TEAM_ID to the actual 10-character Apple Developer Team ID.");
+  console.error(
+    "Set APPLE_TEAM_ID to the actual 10-character Apple Developer Team ID.",
+  );
   process.exit(1);
 }
 const certificate = fingerprint.match(/.{2}/g).join(":");
-const android = [{
-  relation: ["delegate_permission/common.handle_all_urls"],
-  target: { namespace: "android_app", package_name: config.proposedIdentifiers.androidApplicationId, sha256_cert_fingerprints: [certificate] }
-}];
-const apple = { applinks: { apps: [], details: [{ appID: team + "." + config.proposedIdentifiers.iosBundleId, paths: ["*"] }] } };
+const android = [
+  {
+    relation: ["delegate_permission/common.handle_all_urls"],
+    target: {
+      namespace: "android_app",
+      package_name: config.proposedIdentifiers.androidApplicationId,
+      sha256_cert_fingerprints: [certificate],
+    },
+  },
+];
+const apple = {
+  applinks: {
+    apps: [],
+    details: [
+      {
+        appID: team + "." + config.proposedIdentifiers.iosBundleId,
+        paths: ["*"],
+      },
+    ],
+  },
+};
 console.log("# " + config.webOrigin + "/.well-known/assetlinks.json");
 console.log(JSON.stringify(android, null, 2));
-console.log("# " + config.webOrigin + "/.well-known/apple-app-site-association (application/json, no redirect)");
+console.log(
+  "# " +
+    config.webOrigin +
+    "/.well-known/apple-app-site-association (application/json, no redirect)",
+);
 console.log(JSON.stringify(apple, null, 2));
-console.log("# Verify with devices and platform tools before publishing. Proposed IDs must first be finalized.");
+console.log(
+  "# Verify with devices and platform tools before publishing. Proposed IDs must first be finalized.",
+);
