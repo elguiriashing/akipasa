@@ -22,11 +22,13 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npx prettier --write mobile/store-release.json mobile/validate-store-release.mjs mobile/generate-associations.mjs .github/workflows/mobile-store-preflight.yml
+      - name: Inspect workflow formatting patch
+        run: git diff -- .github/workflows/mobile-store-preflight.yml
       - name: Commit formatting only
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add mobile/store-release.json mobile/validate-store-release.mjs mobile/generate-associations.mjs .github/workflows/mobile-store-preflight.yml
+          git add mobile/store-release.json mobile/validate-store-release.mjs mobile/generate-associations.mjs
           if ! git diff --cached --quiet; then
             git commit -m 'style(mobile): apply repository Prettier formatting'
             git push origin HEAD:feature/mobile-store-release-preparation-20261017
