@@ -12,7 +12,6 @@ The new workflow validates metadata consistency, never implies a native build,
 and explicit release gates start false; production behavior is unchanged.
 The role swap must be verified before branding AkiHQ/AkiBusiness app binaries.
 
-
 ## 2026-10-15 | Rental company cards in the legacy Business portal
 
 The AkiPasa-hosted Business home lists rental companies submitted by the signed-in

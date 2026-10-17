@@ -19,7 +19,6 @@
 - **Rollback:** revert workflow and `mobile/` documents/scripts only; no data
   migration or production rollback required.
 
-
 ## 2026-10-15 | Rental company cards on legacy Business home
 
 - **Before:** the AkiPasa-hosted portal exposed a top-level AkiConduzco tab,
