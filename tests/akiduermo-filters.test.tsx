@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 // @vitest-environment jsdom
 import React from "react";
 import "@testing-library/jest-dom/vitest";
@@ -259,3 +261,23 @@ it.each(["en", "es"] as const)(
     ).toHaveLength(1);
   },
 );
+
+it("presents a scoped real-data AkiDuermo account overview without inventing saved counts", () => {
+  const account = readFileSync(
+    join(process.cwd(), "src/app/akiduermo/account/page.tsx"),
+    "utf8",
+  );
+  const style = readFileSync(
+    join(process.cwd(), "src/app/akiduermo/account/account.module.css"),
+    "utf8",
+  );
+  expect(account).toContain('requireUser(locale, "/account")');
+  expect(account).toContain('.eq("profile_id", user.id)');
+  expect(account).toContain('.select("id", { count: "exact", head: true })');
+  expect(account).toContain("stayReservationStatusLabel(stay.status, locale)");
+  expect(account).toContain("signOutStay");
+  expect(account).toContain("Favourites on this device");
+  expect(account).not.toContain("saved.count");
+  expect(style).toContain("@media (max-width: 620px)");
+  expect(style).toContain(':global(html[data-theme="light"])');
+});

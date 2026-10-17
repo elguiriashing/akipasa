@@ -1,5 +1,40 @@
 # Change Impact Register
 
+## 2026-10-17 | Next.js and React October security backports
+
+- **Before:** Next.js/eslint-config-next 15.5.27 and React/React DOM 19.1.0
+  remained in the deployment lockfile after the October 14 advisories.
+- **After:** deterministic Next.js/eslint-config-next 15.5.28, React/React
+  DOM 19.1.10 and matching @next compiler binaries. Existing Sharp 0.35.5
+  override remains fixed.
+- **Impact:** closes known upstream exposure including App Router Server
+  Actions denial of service. No intended user-visible, business, schema,
+  session, access, payment or configuration changes.
+- **Verification:** security branch lockfile regenerated on GitHub Actions,
+  deterministic npm ci, full PR CI/Cloudflare build, post-merge production
+  version and route smoke. Unverified gates must not be described as passed.
+- **Rollback:** revert the two dependency/lockfile edits if regressions are
+  found, with a new follow-up patch because rollback restores upstream risk.
+
+## 2026-10-17 | AkiDuermo personal account redesign (candidate)
+
+- **Before:** generic three-link card row and large logout panel with little
+  visibility of real reservations or their confirmation status.
+- **After:** compact responsive account header, actual scoped booking counters,
+  next three eligible stays, device-saved and bookings shortcuts, existing
+  security/profile links and sign-out. Both languages and theme modes are styled.
+- **Dependencies:** AkiDuermo routes /account, /bookings, /saved, /settings;
+  accommodation_reservations.profile_id, Supabase session/RLS, StayAppShell
+  navigation; AkiPasa shared profile across root domains.
+- **Data / permissions:** no mutation, migrations, payments, or change of
+  permissions. Four read-only queries on the signed-in user's reservations.
+  Failed queries show an error rather than manufactured zeros.
+- **Verification required:** format, lint, typecheck, account-focused Vitest,
+  full CI/build, authenticated real-account EN/ES on desktop/tablet/mobile
+  and empty/error/populated states, cross-host sign-in and logout. Do not
+  merge or deploy before these pass. Rollback reverts account page/styles/tests
+  without touching customer data.
+
 ## 2026-10-15 | Rental company cards on legacy Business home
 
 - **Before:** the AkiPasa-hosted portal exposed a top-level AkiConduzco tab,

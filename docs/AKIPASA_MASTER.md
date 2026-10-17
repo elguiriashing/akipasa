@@ -1,5 +1,31 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-17 | October upstream dependency security patch
+
+AkiPasa pins Next.js and eslint-config-next to 15.5.28 and React/React DOM
+to 19.1.10. The npm lockfile must resolve these exact releases, including
+the matching Next.js compiler packages. Keep the existing Sharp 0.35.5
+override. This patch addresses the October 14 upstream Server Actions
+denial-of-service and image-optimization advisories without changing
+application routes, auth, ownership, payments, or database schemas.
+Production deployment requires passing CI and exact-source Cloudflare
+verification; dependency edits alone do not certify a live release.
+
+## 2026-10-17 | AkiDuermo consumer account dashboard (isolated PR)
+
+The account page now shows upcoming/current reservation counts, pending confirmation
+counts and all-time booking count, alongside up to three upcoming/current stay cards.
+All reads are performed with the signed-in user's normal Supabase session and are
+explicitly constrained by accommodation_reservations.profile_id; existing RLS
+continues to apply. Statuses remain request/confirmation based, with no new
+payment or cancellation endpoints. The existing /bookings, /saved, /settings,
+privacy and sign-out flows remain in place. Saved stays are device-local, so
+the account page links to them but does not claim a server-side count.
+Cross-domain profile links may require a separate host-scoped login.
+Responsive EN/ES markup uses product-specific mint styling. No database, shared
+auth, analytics, middleware, worker or production deployment change.
+This is an unmerged candidate until checks, preview and authenticated acceptance.
+
 ## 2026-10-15 | Rental company cards in the legacy Business portal
 
 The AkiPasa-hosted Business home lists rental companies submitted by the signed-in
