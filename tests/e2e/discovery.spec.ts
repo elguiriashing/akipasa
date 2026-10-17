@@ -310,9 +310,7 @@ test("mobile AkiSuite and internal More stay separate without overlapping search
     const searchBox = await search.boundingBox();
     expect(suiteBox).not.toBeNull();
     expect(searchBox).not.toBeNull();
-    expect(suiteBox!.x + suiteBox!.width).toBeLessThanOrEqual(
-      searchBox!.x + 1,
-    );
+    expect(suiteBox!.x + suiteBox!.width).toBeLessThanOrEqual(searchBox!.x + 1);
 
     await trigger.click();
     const apps = page.getByRole("dialog", { name: "AkiSuite apps" });
@@ -333,11 +331,19 @@ test("mobile AkiSuite and internal More stay separate without overlapping search
 
     await page.getByRole("button", { name: "More options" }).click();
     const internal = page.getByRole("dialog", { name: "More options" });
-    await expect(internal.getByRole("link", { name: "Membership" })).toBeVisible();
-    await expect(internal.getByRole("link", { name: "Passports" })).toBeVisible();
+    await expect(
+      internal.getByRole("link", { name: "Membership" }),
+    ).toBeVisible();
+    await expect(
+      internal.getByRole("link", { name: "Passports" }),
+    ).toBeVisible();
     await expect(internal.getByRole("link", { name: "Sign in" })).toBeVisible();
-    await expect(internal.getByRole("link", { name: "AkiCoches" })).toHaveCount(0);
-    await expect(internal.getByRole("link", { name: "AkiDuermo" })).toHaveCount(0);
+    await expect(internal.getByRole("link", { name: "AkiCoches" })).toHaveCount(
+      0,
+    );
+    await expect(internal.getByRole("link", { name: "AkiDuermo" })).toHaveCount(
+      0,
+    );
     await internal.getByRole("button", { name: "Close" }).click();
   }
 });
