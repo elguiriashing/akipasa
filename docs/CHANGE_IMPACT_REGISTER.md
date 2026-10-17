@@ -1534,3 +1534,10 @@ No real customer image, profile, booking, email or subscription was mutated.
 - **Observed failure:** The new AkiPasa production branding deployment workflow failed at `npm run check` because its installation step omitted the separate `automation` workspace, triggering TypeScript missing-dependency errors.
 - **Fix:** Install `automation` with `npm ci --prefix automation` before the exact-source test/build gate, matching the existing public CI workflow.
 - **Impact:** CI only; no change to branding artwork, production data, credentials, feature flags, API paths, or active Worker until a verified deployment succeeds.
+
+## 2026-10-17 | AkiSuite launcher discovery and account controls
+
+- **Before:** the AkiPasa consumer shell lacked a visible cross-product launcher while the other sites exposed inconsistent Settings/Sign out actions.
+- **After:** AkiPasa shows the five canonical apps in the desktop rail and mobile/tablet sheet; the mobile header also provides a labelled entry point. AkiDuermo adds sign-out next to Settings; the management, rentals and operations apps have matching actions in their respective repos.
+- **Bounds:** navigation and presentation only; existing authentication server actions, privacy, permissions, subscriptions, and PWA identities are preserved. Anonymous AkiPasa visitors see Sign in instead of Sign out.
+- **Verification:** full Next/Cloudflare CI, authenticated logout flow, keyboard and focus, desktop compact rail, mobile/tablet sheet, and five-app URL/icon inspection. Revert these UI changes independently if needed; no data migration.
