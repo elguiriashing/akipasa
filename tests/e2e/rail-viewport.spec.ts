@@ -22,11 +22,15 @@ test("AkiSuite rail keeps its controls reachable on short desktop windows", asyn
 
     await rail.locator(".app-suite-trigger").click();
     const popover = rail.locator(".app-suite-popover");
-    await expect(popover.getByRole("link", { name: "AkiBusiness" })).toBeVisible();
+    await expect(
+      popover.getByRole("link", { name: "AkiBusiness" }),
+    ).toBeVisible();
     const popoverRect = await popover.boundingBox();
     expect(popoverRect).not.toBeNull();
     expect(popoverRect!.y).toBeGreaterThanOrEqual(0);
-    expect(popoverRect!.y + popoverRect!.height).toBeLessThanOrEqual(height + 1);
+    expect(popoverRect!.y + popoverRect!.height).toBeLessThanOrEqual(
+      height + 1,
+    );
     await rail.locator(".app-suite-trigger").click();
 
     await rail.getByRole("button", { name: "Collapse sidebar" }).click();
