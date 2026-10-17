@@ -31,10 +31,7 @@
     "test:pals:browser": "node scripts/test-pals-browser.mjs",
     "test:spotlight:browser": "node scripts/test-spotlight-browser.mjs",
     "test:akisuite": "vitest run --config vitest.akisuite.config.ts",
-    "postinstall": "node scripts/maplibre-attribution-patch.mjs",
-    "predev": "node scripts/generate-suite-nav-icons.mjs",
-    "prebuild": "node scripts/generate-suite-nav-icons.mjs",
-    "prebuild:cloudflare": "node scripts/generate-suite-nav-icons.mjs"
+    "postinstall": "node scripts/maplibre-attribution-patch.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "0.7.0",
