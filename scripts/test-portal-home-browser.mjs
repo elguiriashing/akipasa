@@ -90,8 +90,8 @@ const server = createServer((req, res) => {
   ) {
     try {
       const path = new URL(req.url, "http://localhost").pathname;
-      const allowed = /^\/(brand|pwa|images\/cities)\/[a-z0-9-]+\.(png|webp|svg)$/;
-      if (!allowed.test(path)) throw new Error("invalid");
+      const ok = /^\/(brand|pwa|images\/cities)\/[a-z0-9-]+\.(png|webp|svg)$/;
+      if (!ok.test(path)) throw new Error("invalid");
       let mimeType = "image/webp";
       if (path.endsWith(".png")) mimeType = "image/png";
       if (path.endsWith(".svg")) mimeType = "image/svg+xml";
