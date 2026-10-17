@@ -161,7 +161,10 @@ export function AppShell({
           href={app.href}
           aria-current={app.name === "AkiPasa" ? "page" : undefined}
           style={{ "--suite-accent": app.accent } as React.CSSProperties}
-          onClick={() => setSheetOpen(false)}
+          onClick={() => {
+            setSheetOpen(false);
+            setSuiteOpen(false);
+          }}
         >
           <Image src={app.icon} width={36} height={36} alt="" unoptimized />
           <span>{app.name}</span>
@@ -489,7 +492,13 @@ export function AppShell({
           aria-label={
             es ? "Cambiar aplicación AkiSuite" : "Switch AkiSuite app"
           }
-          onClick={() => setSuiteOpen(true)}
+          aria-haspopup="dialog"
+          aria-expanded={suiteOpen}
+          aria-controls="app-suite-sheet"
+          onClick={() => {
+            setSheetOpen(false);
+            setSuiteOpen(true);
+          }}
         >
           <Icon name="more" />
           <span>AkiSuite</span>
@@ -544,11 +553,11 @@ export function AppShell({
             aria-label={es ? "Cerrar" : "Close"}
             onClick={() => setSuiteOpen(false)}
           />
-          <div className="app-sheet app-suite-sheet" role="dialog" aria-modal="true" aria-label={es ? "Aplicaciones AkiSuite" : "AkiSuite apps"}>
+          <div id="app-suite-sheet" className="app-sheet app-suite-sheet" role="dialog" aria-modal="true" aria-label={es ? "Aplicaciones AkiSuite" : "AkiSuite apps"}>
             <div className="app-sheet-handle" aria-hidden="true" />
             <div className="app-sheet-heading"><span>AkiSuite</span><strong>{es ? "Cambiar aplicación" : "Switch application"}</strong></div>
             <button ref={suiteCloseRef} type="button" className="app-sheet-close" onClick={() => setSuiteOpen(false)} aria-label={es ? "Cerrar" : "Close"}><Icon name="close" /></button>
-            <section className="app-sheet-suite">{suiteLinks}{suiteActions}</section>
+            <section className="app-sheet-suite">{suiteLinks}</section>
           </div>
         </div>
       )}
@@ -615,6 +624,23 @@ export function AppShell({
               ))}
             </nav>
             <div className="app-sheet-tools">
+              {!signedIn && (
+                <Link
+                  className="button button-strong"
+                  href={`/${locale}/auth`}
+                  onClick={() => setSheetOpen(false)}
+                >
+                  {es ? "Entrar" : "Sign in"}
+                </Link>
+              )}
+              {signedIn && (
+                <Link
+                  href={`/${locale}/account/settings`}
+                  onClick={() => setSheetOpen(false)}
+                >
+                  {es ? "Ajustes" : "Settings"}
+                </Link>
+              )}
               <ThemeToggle locale={locale} />
               <LanguageLink locale={other} />
             </div>
