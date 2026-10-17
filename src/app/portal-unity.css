@@ -515,7 +515,6 @@ html[data-theme="dark"] body[data-product="akibusiness"] {
   }
 }
 
-
 /* Mobile AkiSuite is an independent switcher, not the internal More menu. */
 @media (max-width: 850px) {
   .app-topbar-mobile {

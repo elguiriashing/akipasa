@@ -278,8 +278,12 @@ export function AppShell({
   useEffect(() => {
     if (!sheetOpen && !suiteOpen) return;
     const previousOverflow = document.body.style.overflow;
-    const returnFocus = suiteOpen ? suiteButtonRef.current : moreButtonRef.current;
-    const sheet = document.querySelector<HTMLElement>(suiteOpen ? ".app-suite-sheet" : ".app-sheet");
+    const returnFocus = suiteOpen
+      ? suiteButtonRef.current
+      : moreButtonRef.current;
+    const sheet = document.querySelector<HTMLElement>(
+      suiteOpen ? ".app-suite-sheet" : ".app-sheet",
+    );
     const shell = sheet?.closest<HTMLElement>(".app-shell");
     const background = shell
       ? Array.from(shell.children).filter(
@@ -553,10 +557,29 @@ export function AppShell({
             aria-label={es ? "Cerrar" : "Close"}
             onClick={() => setSuiteOpen(false)}
           />
-          <div id="app-suite-sheet" className="app-sheet app-suite-sheet" role="dialog" aria-modal="true" aria-label={es ? "Aplicaciones AkiSuite" : "AkiSuite apps"}>
+          <div
+            id="app-suite-sheet"
+            className="app-sheet app-suite-sheet"
+            role="dialog"
+            aria-modal="true"
+            aria-label={es ? "Aplicaciones AkiSuite" : "AkiSuite apps"}
+          >
             <div className="app-sheet-handle" aria-hidden="true" />
-            <div className="app-sheet-heading"><span>AkiSuite</span><strong>{es ? "Cambiar aplicación" : "Switch application"}</strong></div>
-            <button ref={suiteCloseRef} type="button" className="app-sheet-close" onClick={() => setSuiteOpen(false)} aria-label={es ? "Cerrar" : "Close"}><Icon name="close" /></button>
+            <div className="app-sheet-heading">
+              <span>AkiSuite</span>
+              <strong>
+                {es ? "Cambiar aplicación" : "Switch application"}
+              </strong>
+            </div>
+            <button
+              ref={suiteCloseRef}
+              type="button"
+              className="app-sheet-close"
+              onClick={() => setSuiteOpen(false)}
+              aria-label={es ? "Cerrar" : "Close"}
+            >
+              <Icon name="close" />
+            </button>
             <section className="app-sheet-suite">{suiteLinks}</section>
           </div>
         </div>
