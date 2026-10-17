@@ -648,7 +648,10 @@ export function AppShell({
             </nav>
             <div className="app-sheet-account">
               {!signedIn ? (
-                <Link href={`/${locale}/auth`} onClick={() => setSheetOpen(false)}>
+                <Link
+                  href={`/${locale}/auth`}
+                  onClick={() => setSheetOpen(false)}
+                >
                   {es ? "Entrar" : "Sign in"}
                 </Link>
               ) : (
