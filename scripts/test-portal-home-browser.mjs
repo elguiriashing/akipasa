@@ -90,11 +90,15 @@ const server = createServer((req, res) => {
   ) {
     try {
       const path = new URL(req.url, "http://localhost").pathname;
-      if (!/^\/(brand|pwa|images\/cities)\/[a-z0-9-]+\.(png|webp)$/.test(path))
+      if (!/^\/(brand|pwa|images\/cities)\/[a-z0-9-]+\.(png|webp|svg)$/.test(path))
         throw new Error("invalid");
       res.setHeader(
         "Content-Type",
-        path.endsWith(".png") ? "image/png" : "image/webp",
+        path.endsWith(".png")
+          ? "image/png"
+          : path.endsWith(".svg")
+            ? "image/svg+xml"
+            : "image/webp",
       );
       res.end(readFileSync(`public${path}`));
     } catch {
