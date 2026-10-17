@@ -31,7 +31,7 @@ test("mobile AkiSuite launcher and AkiPasa More menu are independent", async ({
 
   const consent = page.locator(".personalisation-consent");
   if (await consent.isVisible()) {
-    await consent.getByRole("button", { name: "Reject optional" }).click();
+    await consent.getByRole("button", { name: "Close privacy choices" }).click();
     await expect(consent).toBeHidden();
   }
 
