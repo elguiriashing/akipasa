@@ -8,8 +8,10 @@ repository PRs. Each product requires its own native build, approved canonical
 role/source, unique bundle/package ID, real-device auth and deep-link tests,
 privacy/deletion review, store-compliant subscription treatment and signing.
 This is **metadata, validation and planning only**, not a shipping Android/iOS app.
-The new workflow validates metadata consistency, never implies a native build,
-and explicit release gates start false; production behavior is unchanged.
+The metadata workflow never implies a native build, and all release gates start
+false. A separate CI workflow builds/tests the existing native `Android/`
+client with immutable package `com.akipasa` targeting API 36; its unsigned AAB
+is never a store submission. Production behavior remains unchanged.
 The role swap must be verified before branding AkiHQ/AkiBusiness app binaries.
 
 ## 2026-10-15 | Rental company cards in the legacy Business portal
