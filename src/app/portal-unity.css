@@ -458,6 +458,10 @@ html[data-theme="dark"] body[data-product="akibusiness"] {
     flex: 0 0 44px;
   }
 
+  .app-shell > .app-rail:has(.app-suite-menu[open]) {
+    z-index: 70;
+  }
+
   /* Popover opens above its pinned trigger, never behind the scrollable nav. */
   .app-suite-popover {
     max-height: min(465px, calc(100dvh - 155px));
