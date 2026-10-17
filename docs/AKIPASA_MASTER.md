@@ -1092,3 +1092,19 @@ probe confirms own-folder INSERT/SELECT and foreign-folder denial, leaving no
 objects behind. Production direct SQL DELETE is protected by Supabase's storage
 API-only guard; that guard was retained, with DELETE policy behavior tested locally.
 No real customer image, profile, booking, email or subscription was mutated.
+
+## 2026-10-17 | AkiSuite shared brand icon family
+
+The public AkiPasa logo and AkiDuermo teal mark remain unchanged. The legacy
+AkiConduzco host now points to the red-pin/black-star/white AkiCoches SVG, and
+its maskable manifest icon has a dedicated safe-zone SVG. The shared product
+switcher resolves the AkiHQ image to a black-pin/gold-star/white SVG rather than
+the old blue icon PNG. Icon geometry uses the existing AkiPasa mark shape and a
+128x128 canvas with 29px corner radius. AkiBusiness AB artwork is preserved in
+the distinct operations release. No PWA identity, deep links, users, billing,
+roles, event/venue records, Map, or Supabase contract changes.
+
+Verification: compare the four suite icons at launcher scale and in portal
+switcher, check metadata/manifest for the legacy hostname, run the existing
+Next/Cloudflare and tablet CI. Rolling back restores the previous SVG and
+component paths, without any data restoration.

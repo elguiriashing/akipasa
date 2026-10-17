@@ -90,12 +90,12 @@ const server = createServer((req, res) => {
   ) {
     try {
       const path = new URL(req.url, "http://localhost").pathname;
-      if (!/^\/(brand|pwa|images\/cities)\/[a-z0-9-]+\.(png|webp)$/.test(path))
-        throw new Error("invalid");
-      res.setHeader(
-        "Content-Type",
-        path.endsWith(".png") ? "image/png" : "image/webp",
-      );
+      const ok = /^\/(brand|pwa|images\/cities)\/[a-z0-9-]+\.(png|webp|svg)$/;
+      if (!ok.test(path)) throw new Error("invalid");
+      let mimeType = "image/webp";
+      if (path.endsWith(".png")) mimeType = "image/png";
+      if (path.endsWith(".svg")) mimeType = "image/svg+xml";
+      res.setHeader("Content-Type", mimeType);
       res.end(readFileSync(`public${path}`));
     } catch {
       res.statusCode = 404;
@@ -168,7 +168,7 @@ try {
             await page.evaluate(() => document.documentElement.scrollWidth),
           ).toBeLessThanOrEqual(width + 1);
           const icon = page.locator(
-            `header img[src="/brand/${product === "stay" ? "duermo" : "business"}-icon.png"]`,
+            `header img[src="/brand/${product === "stay" ? "duermo-icon.png" : "business-mark.svg"}"]`,
           );
           await expect(icon).toBeVisible();
           expect(

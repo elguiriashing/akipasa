@@ -20,7 +20,11 @@ export function PortalLogo({
         src={
           product === "pasa"
             ? "/pwa/akipasa-512.png"
-            : `/brand/${product}-icon.png`
+            : product === "hq"
+              ? "/brand/hq-mark.svg"
+              : product === "business"
+                ? "/brand/business-mark.svg"
+                : `/brand/${product}-icon.png`
         }
         alt=""
         width={40}

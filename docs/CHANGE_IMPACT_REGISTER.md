@@ -1502,3 +1502,17 @@ probe confirms own-folder INSERT/SELECT and foreign-folder denial, leaving no
 objects behind. Production direct SQL DELETE is protected by Supabase's storage
 API-only guard; that guard was retained, with DELETE policy behavior tested locally.
 No real customer image, profile, booking, email or subscription was mutated.
+
+## 2026-10-17 | AkiSuite shared icon identity alignment
+
+- **Before:** AkiConduzco legacy navigation had a car illustration, and the
+  shared product switcher could show a stale blue AkiHQ PNG.
+- **After:** both use the same pin-and-spark geometry as the existing consumer
+  AkiPasa mark, with hot-red/black/white for AkiCoches and black/gold/white
+  for AkiHQ. AkiPasa, AkiDuermo, and the AkiBusiness purple AB are unchanged.
+- **Scope:** public SVGs, legacy AkiConduzco manifest/theme colour, and the
+  shared portal switcher's AkiHQ SVG reference. No PWA IDs, financial flows,
+  auth permissions, schema, events, venues or booking behaviour change.
+- **Checks:** CI typecheck, tests, browser and tablet acceptance, installed
+  icon visuals, and release-source fingerprint checks. Rollback is a source
+  reversion with no customer data action.
