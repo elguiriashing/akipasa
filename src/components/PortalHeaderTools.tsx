@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
-import { config } from "../lib/config";
 import { Icon } from "./Icons";
 import { LanguageLink } from "./LanguageLink";
 import { PortalLogo } from "./PortalLogo";
@@ -22,22 +21,11 @@ export function PortalHeaderTools({
   const menu = useRef<HTMLDetailsElement>(null);
   const nextLocale = locale === "es" ? "en" : "es";
   const apps = [
-    {
-      product: "pasa",
-      name: "AkiPasa",
-      href: `${config.siteUrl.replace(/\/$/, "")}/${locale}`,
-    },
-    {
-      product: "business",
-      name: "AkiBusiness",
-      href: `https://business.akipasa.com/${locale}/business`,
-    },
-    {
-      product: "duermo",
-      name: "AkiDuermo",
-      href: `https://akiduermo.akipasa.com/?lang=${locale}`,
-    },
-    { product: "hq", name: "AkiHQ", href: config.crmUrl },
+    { product: "pasa", name: "AkiPasa", href: `https://akipasa.com/${locale}` },
+    { product: "duermo", name: "AkiDuermo", href: `https://akiduermo.com/?lang=${locale}` },
+    { product: "coches", name: "AkiCoches", href: `https://akicoches.com/?lang=${locale}` },
+    { product: "hq", name: "AkiHQ", href: "https://akihq.app" },
+    { product: "business", name: "AkiBusiness", href: "https://akibusiness.com" },
   ] as const;
 
   useEffect(() => {
