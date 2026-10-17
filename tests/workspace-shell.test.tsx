@@ -478,8 +478,8 @@ it("keeps authorized workspaces in the persistent desktop navigation", () => {
   expect(
     within(rail)
       .getAllByRole("link", { name: "AkiBusiness" })
-      .some((link) => link.getAttribute("href") === "https://business.akipasa.com/en/business"),
-  ).toBe(true);
+      .map((link) => link.getAttribute("href")),
+  ).toContain("https://business.akipasa.com/en/business");
   expect(within(rail).getByRole("link", { name: "Staff" })).toHaveAttribute(
     "href",
     "/en/staff",
