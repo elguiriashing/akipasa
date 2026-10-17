@@ -34,7 +34,11 @@ test("mobile AkiSuite launcher and AkiPasa More menu are independent", async ({
   const internal = page.getByRole("dialog", { name: "More options" });
   await expect(internal).toBeVisible();
   await expect(internal.getByRole("link", { name: "Passports" })).toBeVisible();
-  await expect(internal.getByRole("link", { name: "Membership" })).toBeVisible();
+  await expect(
+    internal.getByRole("link", { name: "Membership" }),
+  ).toBeVisible();
   await expect(internal.locator(".app-suite-links")).toHaveCount(0);
-  await expect(internal.getByRole("link", { name: "AkiCoches" })).toHaveCount(0);
+  await expect(internal.getByRole("link", { name: "AkiCoches" })).toHaveCount(
+    0,
+  );
 });

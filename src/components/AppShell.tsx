@@ -179,7 +179,11 @@ export function AppShell({
       {suiteApps
         .filter((app) => app.name !== "AkiPasa")
         .map((app) => (
-          <Link key={app.name} href={app.href} style={{ "--suite-accent": app.accent } as React.CSSProperties}>
+          <Link
+            key={app.name}
+            href={app.href}
+            style={{ "--suite-accent": app.accent } as React.CSSProperties}
+          >
             <Image src={app.icon} width={36} height={36} alt="" unoptimized />
             <span>{app.name}</span>
           </Link>
@@ -262,7 +266,10 @@ export function AppShell({
 
   useEffect(() => {
     function closeSuiteOutside(event: PointerEvent) {
-      if (event.target instanceof Node && !mobileSuiteRef.current?.contains(event.target)) {
+      if (
+        event.target instanceof Node &&
+        !mobileSuiteRef.current?.contains(event.target)
+      ) {
         mobileSuiteRef.current?.removeAttribute("open");
       }
     }
@@ -520,7 +527,9 @@ export function AppShell({
         <details ref={mobileSuiteRef} className="app-suite-mobile-menu">
           <summary
             className="app-suite-mobile-trigger"
-            aria-label={es ? "Otras aplicaciones AkiSuite" : "Other AkiSuite apps"}
+            aria-label={
+              es ? "Otras aplicaciones AkiSuite" : "Other AkiSuite apps"
+            }
             title="AkiSuite"
           >
             <Icon name="more" />

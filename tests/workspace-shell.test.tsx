@@ -137,9 +137,13 @@ it("keeps the mobile suite launcher separate from internal navigation", () => {
   fireEvent.click(screen.getByRole("button", { name: "More options" }));
   const dialog = screen.getByRole("dialog", { name: "More options" });
   expect(within(dialog).getByRole("link", { name: "Passports" })).toBeVisible();
-  expect(within(dialog).getByRole("link", { name: "Membership" })).toBeVisible();
+  expect(
+    within(dialog).getByRole("link", { name: "Membership" }),
+  ).toBeVisible();
   expect(dialog.querySelector(".app-suite-links")).toBeNull();
-  expect(dialog.querySelector("a[href='https://akicoches.com/?lang=en']")).toBeNull();
+  expect(
+    dialog.querySelector("a[href='https://akicoches.com/?lang=en']"),
+  ).toBeNull();
 });
 
 describe("progressive disclosure workspace shell", () => {
