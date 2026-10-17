@@ -1,0 +1,34 @@
+.menu { position: relative; }
+.menu > summary {
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  list-style: none; min-height: 43px; border: 1px solid var(--line);
+  background: var(--surface-alt); color: var(--ink); padding: 8px 12px;
+  border-radius: 14px; font: inherit; font-weight: 750; font-size: 13px;
+}
+.menu > summary::-webkit-details-marker { display: none; }
+.menu[open] > summary { border-color: var(--primary); }
+.menu > summary:focus-visible, .appLink:focus-visible {
+  outline: 2px solid var(--primary); outline-offset: 2px;
+}
+.popover {
+  position: absolute; bottom: calc(100% + 10px); left: 0; z-index: 180;
+  width: min(270px, calc(100vw - 24px)); max-height: 70dvh; overflow-y: auto;
+  padding: 11px; display: grid; gap: 5px; border: 1px solid var(--line);
+  border-radius: 18px; background: var(--surface); box-shadow: 0 20px 56px #0008;
+}
+.heading { display: block; font-size: 11px; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding: 8px 8px 10px; }
+.appLink {
+  display: flex; align-items: center; gap: 10px; min-height: 51px;
+  border: 1px solid transparent; padding: 6px 9px; border-radius: 12px;
+  color: var(--ink); background: var(--surface-alt); text-decoration: none;
+  font-size: 14px; font-weight: 780;
+}
+.appLink img { width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0; object-fit: contain; }
+.appLink[aria-current="page"] { border-color: var(--suite-accent); }
+.appLink:hover, .appLink:focus-visible { border-color: var(--suite-accent); background: color-mix(in srgb, var(--suite-accent) 12%, var(--surface-alt)); }
+.appLink small { margin-left: auto; font-size: 10px; color: var(--muted); }
+.expanded { margin-top: 12px; padding-top: 6px; border-top: 1px solid var(--line); }
+.mobileChoices { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; }
+.mobileChoices .appLink { min-width: 0; flex-wrap: wrap; gap: 7px; padding: 8px; font-size: 13px; }
+.mobileChoices .appLink small { display: none; }
+@media (max-width: 360px) { .mobileChoices { grid-template-columns: 1fr; } }
