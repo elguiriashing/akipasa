@@ -168,7 +168,7 @@ try {
             await page.evaluate(() => document.documentElement.scrollWidth),
           ).toBeLessThanOrEqual(width + 1);
           const icon = page.locator(
-            `header img[src="/brand/${product === "stay" ? "duermo" : "business"}-icon.png"]`,
+            `header img[src="/brand/${product === "stay" ? "duermo-icon.png" : "business-mark.svg"}"]`,
           );
           await expect(icon).toBeVisible();
           expect(
