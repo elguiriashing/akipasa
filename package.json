@@ -38,11 +38,11 @@
     "@supabase/supabase-js": "2.110.8",
     "clsx": "2.1.1",
     "maplibre-gl": "5.12.0",
-    "next": "15.5.27",
+    "next": "15.5.28",
     "pdfjs-dist": "5.4.296",
     "qrcode": "1.5.4",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "react": "19.1.10",
+    "react-dom": "19.1.10",
     "zod": "3.25.28"
   },
   "devDependencies": {
@@ -57,7 +57,7 @@
     "@types/react": "19.1.5",
     "@types/react-dom": "19.1.5",
     "eslint": "9.27.0",
-    "eslint-config-next": "15.5.27",
+    "eslint-config-next": "15.5.28",
     "fake-indexeddb": "^6.2.5",
     "jsdom": "26.1.0",
     "postgres": "^3.4.7",

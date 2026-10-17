@@ -1,5 +1,16 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-17 | October upstream dependency security patch
+
+AkiPasa pins Next.js and eslint-config-next to 15.5.28 and React/React DOM
+to 19.1.10. The npm lockfile must resolve these exact releases, including
+the matching Next.js compiler packages. Keep the existing Sharp 0.35.5
+override. This patch addresses the October 14 upstream Server Actions
+denial-of-service and image-optimization advisories without changing
+application routes, auth, ownership, payments, or database schemas.
+Production deployment requires passing CI and exact-source Cloudflare
+verification; dependency edits alone do not certify a live release.
+
 ## 2026-10-17 | AkiDuermo consumer account dashboard (isolated PR)
 
 The account page now shows upcoming/current reservation counts, pending confirmation
