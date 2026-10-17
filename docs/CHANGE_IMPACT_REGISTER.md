@@ -1516,3 +1516,15 @@ No real customer image, profile, booking, email or subscription was mutated.
 - **Checks:** CI typecheck, tests, browser and tablet acceptance, installed
   icon visuals, and release-source fingerprint checks. Rollback is a source
   reversion with no customer data action.
+
+## 2026-10-17 | AkiPasa production brand release gate
+
+- **Before:** merging cross-suite branding did not advance the live AkiPasa Worker.
+- **After:** the `master` push workflow verifies tests and exact-source builds,
+  requires matching existing Cloudflare Worker/domain bindings, and verifies
+  deployed release fingerprint and shared SVG colors over HTTPS.
+- **Scope:** GitHub Actions and deploy validation script only; no public AB logo
+  changes, business logic, schema migrations, customer data changes or feature
+  flag changes. Existing production variables and secrets are preserved.
+- **Rollback:** redeploy the previous Worker version. A missing GitHub Cloudflare
+  token, missing expected binding, or failing test must stop release.
