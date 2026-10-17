@@ -14,11 +14,11 @@
 
 **Important:** Do not infer product identity from GitHub repository name. Cross-product role swap is a real production mapping, not a desired future change. Do not package AkiHQ from the old static AkiHQ README or AkiBusiness from the old Next.js management default.
 
-## Proposed immutable IDs (do not register until verified)
+## Package IDs (AkiPasa Android fixed; other IDs proposed until verified)
 
 | Product     | Android applicationId / iOS bundle ID |
 | ----------- | ------------------------------------- |
-| AkiPasa     | `com.akipasa.app`                     |
+| AkiPasa     | Android: `com.akipasa` (fixed); iOS: `com.akipasa.app` (proposed) |
 | AkiDuermo   | `com.akipasa.duermo`                  |
 | AkiCoches   | `com.akipasa.coches`                  |
 | AkiHQ       | `com.akipasa.hq`                      |
