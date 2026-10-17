@@ -514,3 +514,43 @@ html[data-theme="dark"] body[data-product="akibusiness"] {
     margin-block: 0.1rem;
   }
 }
+
+
+/* Mobile AkiSuite is an independent switcher, not the internal More menu. */
+@media (max-width: 850px) {
+  .app-topbar-mobile {
+    padding-right: 58px;
+  }
+  .app-suite-mobile-trigger {
+    flex: 0 1 auto;
+    width: auto;
+    max-width: min(42vw, 170px);
+    min-width: 0;
+    padding: 7px 10px;
+    margin-left: auto;
+    margin-right: 4px;
+    white-space: nowrap;
+  }
+  .app-suite-mobile-trigger span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .app-suite-layer {
+    z-index: 30;
+  }
+  .app-suite-sheet {
+    max-height: min(78dvh, 650px);
+    overflow-y: auto;
+  }
+  .app-suite-sheet .app-sheet-suite {
+    margin: 0;
+  }
+}
+@media (max-width: 430px) {
+  .app-suite-mobile-trigger {
+    max-width: 52px;
+  }
+  .app-suite-mobile-trigger span {
+    display: none;
+  }
+}
