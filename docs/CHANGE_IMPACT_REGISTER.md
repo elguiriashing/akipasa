@@ -1528,3 +1528,9 @@ No real customer image, profile, booking, email or subscription was mutated.
   flag changes. Existing production variables and secrets are preserved.
 - **Rollback:** redeploy the previous Worker version. A missing GitHub Cloudflare
   token, missing expected binding, or failing test must stop release.
+
+## 2026-10-17 | Production branding CI dependency fix
+
+- **Observed failure:** The new AkiPasa production branding deployment workflow failed at `npm run check` because its installation step omitted the separate `automation` workspace, triggering TypeScript missing-dependency errors.
+- **Fix:** Install `automation` with `npm ci --prefix automation` before the exact-source test/build gate, matching the existing public CI workflow.
+- **Impact:** CI only; no change to branding artwork, production data, credentials, feature flags, API paths, or active Worker until a verified deployment succeeds.
