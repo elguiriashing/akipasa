@@ -35,14 +35,14 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     start_url: business ? "/es/business" : stay || conduzco ? "/" : "/es",
     display: "standalone",
     background_color: conduzco
-      ? "#08090b"
+      ? "#FFFFFF"
       : business
         ? "#192b48"
         : stay
           ? "#143c43"
           : "#14213d",
     theme_color: conduzco
-      ? "#ed3345"
+      ? "#FF3047"
       : business
         ? "#ffd447"
         : stay
@@ -67,7 +67,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
               purpose: "any" as const,
             },
             {
-              src: "/brand/conduzco-icon.svg",
+              src: "/brand/conduzco-maskable.svg",
               sizes: "any",
               type: "image/svg+xml",
               purpose: "maskable" as const,

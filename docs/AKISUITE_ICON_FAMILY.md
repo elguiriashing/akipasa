@@ -1,0 +1,3 @@
+# AkiSuite brand icon reference
+
+Pin/star proportions match the existing AkiPasa favicon. AkiPasa keeps orange/gold/navy, AkiDuermo keeps teal, AkiCoches has hot red (#FF3047) pin/black (#111111) star/white tile, AkiHQ has black pin/gold (#FFC533) star/white tile. AkiBusiness purple AB monogram remains unchanged in `elguiriashing/akihq` `release/akibusiness-operations-brand-v1`. All sibling icons use 128x128 coordinate space, 29-unit rounding and matching silhouette scale. `public/brand/hq-icon.png` is regenerated before builds from `public/brand/hq-mark.svg`. Do not overwrite the consumer AkiPasa or AkiDuermo app icons or the AB monogram.
