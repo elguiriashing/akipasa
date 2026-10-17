@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - "Android/**"
-      - "mobile/**"
+      - "mobile/store-release.json"
       - ".github/workflows/android-play-candidate.yml"
   workflow_dispatch:
 permissions:
