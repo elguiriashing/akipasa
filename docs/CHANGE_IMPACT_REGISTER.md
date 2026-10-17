@@ -1,5 +1,22 @@
 # Change Impact Register
 
+## 2026-10-17 | AkiSuite five-site launcher (implementation candidate)
+
+- **Before:** AkiPasa had no persistent desktop suite launcher; the mobile
+  More sheet omitted the product family; AkiDuermo portal switches omitted
+  AkiCoches and used obsolete management/origin paths.
+- **After:** AkiPasa desktop rail, mobile More dialog and AkiDuermo header
+  expose the five canonical products with local brand assets, current-product
+  indication, EN/ES target URLs and accessible keyboard-labelled controls.
+- **Dependencies:** independently deployed AkiHQ (AkiBusiness repo release
+  branch), AkiBusiness (akihq repo release branch), AkiCoches (own repo main),
+  AkiDuermo canonical Worker and its pending repository extraction.
+- **Verification still required:** formatting, lint, typechecking, unit/UI,
+  tablet and mobile viewport, focus/scroll, preview CI and each canonical live
+  deployment. Code commits/PR do not establish a released hostname.
+- **Rollback:** revert navigation components, links and CSS; no data migration.
+
+
 ## 2026-10-15 | Rental company cards on legacy Business home
 
 - **Before:** the AkiPasa-hosted portal exposed a top-level AkiConduzco tab,
