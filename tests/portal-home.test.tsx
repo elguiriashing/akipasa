@@ -128,7 +128,7 @@ it.each(["en", "es"] as const)(
         within(popover)
           .getByRole("link", { name: "AkiHQ" })
           .querySelector("img"),
-      ).toHaveAttribute("src", "/brand/hq-icon.png");
+      ).toHaveAttribute("src", "/brand/hq-mark.svg");
       const other = within(popover).getByRole("link", {
         name: product === "business" ? "AkiDuermo" : "AkiBusiness",
       });
