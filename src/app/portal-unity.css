@@ -294,11 +294,7 @@ html[data-theme="dark"] body[data-product="akibusiness"] {
 }
 .app-suite-links a:where(:hover, :focus-visible, [aria-current="page"]) {
   border-color: var(--suite-accent);
-  background: color-mix(
-    in srgb,
-    var(--suite-accent) 12%,
-    var(--surface-alt)
-  );
+  background: color-mix(in srgb, var(--suite-accent) 12%, var(--surface-alt));
 }
 .app-suite-links img {
   display: block;

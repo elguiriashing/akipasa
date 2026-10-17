@@ -162,9 +162,7 @@ export function AppShell({
         >
           <Image src={app.icon} width={36} height={36} alt="" unoptimized />
           <span>{app.name}</span>
-          {app.name === "AkiPasa" && (
-            <small>{es ? "Actual" : "Current"}</small>
-          )}
+          {app.name === "AkiPasa" && <small>{es ? "Actual" : "Current"}</small>}
         </Link>
       ))}
     </nav>
@@ -482,7 +480,9 @@ export function AppShell({
         <button
           type="button"
           className="app-suite-mobile-trigger"
-          aria-label={es ? "Cambiar aplicación AkiSuite" : "Switch AkiSuite app"}
+          aria-label={
+            es ? "Cambiar aplicación AkiSuite" : "Switch AkiSuite app"
+          }
           onClick={() => setSheetOpen(true)}
         >
           <Icon name="more" />
