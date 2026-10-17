@@ -85,8 +85,11 @@ export function AppShell({
   const es = locale === "es";
   const other = es ? "en" : "es";
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [suiteOpen, setSuiteOpen] = useState(false);
   const [compact, setCompact] = useState(false);
   const moreButtonRef = useRef<HTMLButtonElement>(null);
+  const suiteButtonRef = useRef<HTMLButtonElement>(null);
+  const suiteCloseRef = useRef<HTMLButtonElement>(null);
   const sheetCloseRef = useRef<HTMLButtonElement>(null);
   const section = pathname.split("/").filter(Boolean)[1];
   const activeWorkspace = ["account", "business", "staff", "admin"].includes(
@@ -158,7 +161,10 @@ export function AppShell({
           href={app.href}
           aria-current={app.name === "AkiPasa" ? "page" : undefined}
           style={{ "--suite-accent": app.accent } as React.CSSProperties}
-          onClick={() => setSheetOpen(false)}
+          onClick={() => {
+            setSheetOpen(false);
+            setSuiteOpen(false);
+          }}
         >
           <Image src={app.icon} width={36} height={36} alt="" unoptimized />
           <span>{app.name}</span>
@@ -238,6 +244,7 @@ export function AppShell({
 
   useEffect(() => {
     setSheetOpen(false);
+    setSuiteOpen(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -269,10 +276,14 @@ export function AppShell({
   }
 
   useEffect(() => {
-    if (!sheetOpen) return;
+    if (!sheetOpen && !suiteOpen) return;
     const previousOverflow = document.body.style.overflow;
-    const returnFocus = moreButtonRef.current;
-    const sheet = sheetCloseRef.current?.closest<HTMLElement>(".app-sheet");
+    const returnFocus = suiteOpen
+      ? suiteButtonRef.current
+      : moreButtonRef.current;
+    const sheet = document.querySelector<HTMLElement>(
+      suiteOpen ? ".app-suite-sheet" : ".app-sheet",
+    );
     const shell = sheet?.closest<HTMLElement>(".app-shell");
     const background = shell
       ? Array.from(shell.children).filter(
@@ -287,11 +298,12 @@ export function AppShell({
     }));
     for (const element of background) element.setAttribute("inert", "");
     document.body.style.overflow = "hidden";
-    sheetCloseRef.current?.focus();
+    (suiteOpen ? suiteCloseRef.current : sheetCloseRef.current)?.focus();
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
         setSheetOpen(false);
+        setSuiteOpen(false);
         return;
       }
       if (event.key !== "Tab" || !sheet) return;
@@ -324,7 +336,7 @@ export function AppShell({
       }
       if (returnFocus?.isConnected) returnFocus.focus();
     };
-  }, [sheetOpen]);
+  }, [sheetOpen, suiteOpen]);
 
   return (
     <div
@@ -479,11 +491,18 @@ export function AppShell({
         </Link>
         <button
           type="button"
+          ref={suiteButtonRef}
           className="app-suite-mobile-trigger"
           aria-label={
             es ? "Cambiar aplicación AkiSuite" : "Switch AkiSuite app"
           }
-          onClick={() => setSheetOpen(true)}
+          aria-haspopup="dialog"
+          aria-expanded={suiteOpen}
+          aria-controls="app-suite-sheet"
+          onClick={() => {
+            setSheetOpen(false);
+            setSuiteOpen(true);
+          }}
         >
           <Icon name="more" />
           <span>AkiSuite</span>
@@ -531,6 +550,41 @@ export function AppShell({
         </button>
       </nav>
 
+      {suiteOpen && (
+        <div className="app-sheet-layer app-suite-layer">
+          <button
+            className="app-sheet-backdrop"
+            aria-label={es ? "Cerrar" : "Close"}
+            onClick={() => setSuiteOpen(false)}
+          />
+          <div
+            id="app-suite-sheet"
+            className="app-sheet app-suite-sheet"
+            role="dialog"
+            aria-modal="true"
+            aria-label={es ? "Aplicaciones AkiSuite" : "AkiSuite apps"}
+          >
+            <div className="app-sheet-handle" aria-hidden="true" />
+            <div className="app-sheet-heading">
+              <span>AkiSuite</span>
+              <strong>
+                {es ? "Cambiar aplicación" : "Switch application"}
+              </strong>
+            </div>
+            <button
+              ref={suiteCloseRef}
+              type="button"
+              className="app-sheet-close"
+              onClick={() => setSuiteOpen(false)}
+              aria-label={es ? "Cerrar" : "Close"}
+            >
+              <Icon name="close" />
+            </button>
+            <section className="app-sheet-suite">{suiteLinks}</section>
+          </div>
+        </div>
+      )}
+
       {sheetOpen && (
         <div className="app-sheet-layer">
           <button
@@ -561,10 +615,6 @@ export function AppShell({
             >
               <Icon name="close" />
             </button>
-            <section className="app-sheet-suite">
-              {suiteLinks}
-              {suiteActions}
-            </section>
             {signedIn && hasMultipleWorkspaces && (
               <section className="app-sheet-workspaces">
                 <span className="app-sheet-section-label">
@@ -596,6 +646,31 @@ export function AppShell({
                 </Link>
               ))}
             </nav>
+            <div className="app-sheet-account">
+              {!signedIn ? (
+                <Link
+                  href={`/${locale}/auth`}
+                  onClick={() => setSheetOpen(false)}
+                >
+                  {es ? "Entrar" : "Sign in"}
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href={`/${locale}/account/settings`}
+                    onClick={() => setSheetOpen(false)}
+                  >
+                    {es ? "Ajustes" : "Settings"}
+                  </Link>
+                  <form action={signOut}>
+                    <input type="hidden" name="locale" value={locale} />
+                    <button type="submit">
+                      {es ? "Cerrar sesión" : "Sign out"}
+                    </button>
+                  </form>
+                </>
+              )}
+            </div>
             <div className="app-sheet-tools">
               <ThemeToggle locale={locale} />
               <LanguageLink locale={other} />
