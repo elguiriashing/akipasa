@@ -295,6 +295,53 @@ test("primary navigation, footer and document language are correct", async ({
   );
 });
 
+test("mobile AkiSuite and internal More stay separate without overlapping search", async ({
+  page,
+}) => {
+  for (const width of [390, 768, 820]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/en");
+    const trigger = page.getByRole("button", { name: "Switch AkiSuite app" });
+    const search = page.locator(".global-search-trigger");
+    await expect(trigger).toBeVisible();
+    await expect(search).toBeVisible();
+
+    const suiteBox = await trigger.boundingBox();
+    const searchBox = await search.boundingBox();
+    expect(suiteBox).not.toBeNull();
+    expect(searchBox).not.toBeNull();
+    expect(suiteBox!.x + suiteBox!.width).toBeLessThanOrEqual(
+      searchBox!.x + 1,
+    );
+
+    await trigger.click();
+    const apps = page.getByRole("dialog", { name: "AkiSuite apps" });
+    await expect(apps).toBeVisible();
+    for (const name of [
+      "AkiPasa",
+      "AkiDuermo",
+      "AkiCoches",
+      "AkiHQ",
+      "AkiBusiness",
+    ]) {
+      await expect(apps.getByRole("link", { name })).toBeVisible();
+    }
+    await expect(apps.getByRole("link", { name: "Membership" })).toHaveCount(0);
+    await expect(apps.getByRole("link", { name: "Passports" })).toHaveCount(0);
+    await apps.getByRole("button", { name: "Close" }).click();
+    await expect(apps).toHaveCount(0);
+
+    await page.getByRole("button", { name: "More options" }).click();
+    const internal = page.getByRole("dialog", { name: "More options" });
+    await expect(internal.getByRole("link", { name: "Membership" })).toBeVisible();
+    await expect(internal.getByRole("link", { name: "Passports" })).toBeVisible();
+    await expect(internal.getByRole("link", { name: "Sign in" })).toBeVisible();
+    await expect(internal.getByRole("link", { name: "AkiCoches" })).toHaveCount(0);
+    await expect(internal.getByRole("link", { name: "AkiDuermo" })).toHaveCount(0);
+    await internal.getByRole("button", { name: "Close" }).click();
+  }
+});
+
 test("location is requested only after a user action and reduced to an area", async ({
   page,
   context,
