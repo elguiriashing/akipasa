@@ -1541,3 +1541,10 @@ No real customer image, profile, booking, email or subscription was mutated.
 - **After:** AkiPasa shows the five canonical apps in the desktop rail and mobile/tablet sheet; the mobile header also provides a labelled entry point. AkiDuermo adds sign-out next to Settings; the management, rentals and operations apps have matching actions in their respective repos.
 - **Bounds:** navigation and presentation only; existing authentication server actions, privacy, permissions, subscriptions, and PWA identities are preserved. Anonymous AkiPasa visitors see Sign in instead of Sign out.
 - **Verification:** full Next/Cloudflare CI, authenticated logout flow, keyboard and focus, desktop compact rail, mobile/tablet sheet, and five-app URL/icon inspection. Revert these UI changes independently if needed; no data migration.
+
+## 2026-10-17 | AkiPasa sidebar utility dock visibility and density
+
+- **Before:** long signed-in navigation pushed the AkiSuite, theme, language, and collapse controls below the visible window, particularly with the compact rail and desktop taskbars.
+- **After:** on desktop a viewport-height rail reserves a fixed footer for AkiSuite and preferences, allows only the central navigation list to scroll if absolutely necessary, and tightens navigation spacing for shorter windows. The suite menu remains an above-footer overlay. Desktop expanded, compact, and map routes share the same fix.
+- **Bounds:** sidebar presentation, menu layout and acceptance checks only. No change to user roles, permissions, business app destinations, PWA/icons, production data, booking, auth, or billing.
+- **Verification:** CI including desktop/mobile/tablet UI; 740px and 900px desktop rail/footer and suite overlay containment; no regressions at mobile breakpoint. Revert CSS only if needed.
