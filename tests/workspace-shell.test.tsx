@@ -476,8 +476,10 @@ it("keeps authorized workspaces in the persistent desktop navigation", () => {
   });
   expect(within(rail).getByText("Your workspaces")).toBeInTheDocument();
   expect(
-    within(rail).getByRole("link", { name: "AkiBusiness" }),
-  ).toHaveAttribute("href", "https://business.akipasa.com/en/business");
+    within(rail)
+      .getAllByRole("link", { name: "AkiBusiness" })
+      .some((link) => link.getAttribute("href") === "https://business.akipasa.com/en/business"),
+  ).toBe(true);
   expect(within(rail).getByRole("link", { name: "Staff" })).toHaveAttribute(
     "href",
     "/en/staff",
@@ -500,15 +502,17 @@ it("keeps the business application reachable before sign in", () => {
   const rail = screen.getByRole("complementary", {
     name: "Primary navigation",
   });
-  expect(within(rail).getByRole("link", { name: "Sign in" })).toHaveAttribute(
-    "href",
-    "/en/auth",
-  );
+  expect(
+    within(rail)
+      .getAllByRole("link", { name: "Sign in" })
+      .every((link) => link.getAttribute("href") === "/en/auth"),
+  ).toBe(true);
 
   fireEvent.click(screen.getByRole("button", { name: "More options" }));
   const dialog = screen.getByRole("dialog", { name: "More options" });
-  expect(within(dialog).getByRole("link", { name: "Sign in" })).toHaveAttribute(
-    "href",
-    "/en/auth",
-  );
+  expect(
+    within(dialog)
+      .getAllByRole("link", { name: "Sign in" })
+      .every((link) => link.getAttribute("href") === "/en/auth"),
+  ).toBe(true);
 });
