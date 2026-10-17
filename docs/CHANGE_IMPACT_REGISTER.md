@@ -1573,3 +1573,5 @@ No real customer image, profile, booking, email or subscription was mutated.
 - Problem: AkiSuite and More opened the same sheet and the top trigger collided with search.
 - Fix: separate suite and internal sheets, with independently controlled focus and mobile header spacing.
 - Scope: consumer navigation CSS and markup only, no changes to data, billing or branding.
+
+- **Acceptance refinement:** guest Sign in is restored within bottom More and mobile top AkiSuite is product-only. Verify two distinct dialogs and no overlap with the global search button at 390px/768px/820px, including keyboard/focus return.
