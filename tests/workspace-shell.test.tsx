@@ -38,6 +38,8 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(navigation.search),
 }));
 
+vi.mock("../src/app/[locale]/auth/actions", () => ({ signOut: vi.fn() }));
+
 // The native search popover and its Next router integration are covered by
 // city-discovery.spec.ts in a real browser; these tests isolate navigation.
 vi.mock("../src/components/GlobalSearch", () => ({ GlobalSearch: () => null }));
