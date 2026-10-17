@@ -113,29 +113,68 @@ export function AppShell({
   ];
 
   const suiteApps = [
-    { name: "AkiPasa", href: `/${locale}`, icon: "/pwa/akipasa-512.png", accent: "#F26B1D" },
-    { name: "AkiDuermo", href: `https://akiduermo.com/?lang=${locale}`, icon: "/brand/duermo-icon.png", accent: "#2FC2A5" },
-    { name: "AkiCoches", href: `https://akicoches.com/?lang=${locale}`, icon: "/brand/conduzco-icon.svg", accent: "#FF3047" },
-    { name: "AkiHQ", href: "https://akihq.app", icon: "/brand/hq-mark.svg", accent: "#FFC533" },
-    { name: "AkiBusiness", href: "https://akibusiness.com", icon: "/brand/business-mark.svg", accent: "#8958FF" },
+    {
+      name: "AkiPasa",
+      href: `/${locale}`,
+      icon: "/pwa/akipasa-512.png",
+      accent: "#F26B1D",
+    },
+    {
+      name: "AkiDuermo",
+      href: `https://akiduermo.com/?lang=${locale}`,
+      icon: "/brand/duermo-icon.png",
+      accent: "#2FC2A5",
+    },
+    {
+      name: "AkiCoches",
+      href: `https://akicoches.com/?lang=${locale}`,
+      icon: "/brand/conduzco-icon.svg",
+      accent: "#FF3047",
+    },
+    {
+      name: "AkiHQ",
+      href: "https://akihq.app",
+      icon: "/brand/hq-mark.svg",
+      accent: "#FFC533",
+    },
+    {
+      name: "AkiBusiness",
+      href: "https://akibusiness.com",
+      icon: "/brand/business-mark.svg",
+      accent: "#8958FF",
+    },
   ] as const;
   const suiteLinks = (
-    <nav className="app-suite-links" aria-label={es ? "Aplicaciones AkiSuite" : "AkiSuite apps"}>
-      <span className="app-suite-heading">{es ? "Aplicaciones AkiSuite" : "AkiSuite apps"}</span>
+    <nav
+      className="app-suite-links"
+      aria-label={es ? "Aplicaciones AkiSuite" : "AkiSuite apps"}
+    >
+      <span className="app-suite-heading">
+        {es ? "Aplicaciones AkiSuite" : "AkiSuite apps"}
+      </span>
       {suiteApps.map((app) => (
-        <Link key={app.name} href={app.href} aria-current={app.name === "AkiPasa" ? "page" : undefined}
+        <Link
+          key={app.name}
+          href={app.href}
+          aria-current={app.name === "AkiPasa" ? "page" : undefined}
           style={{ "--suite-accent": app.accent } as React.CSSProperties}
-          onClick={() => setSheetOpen(false)}>
+          onClick={() => setSheetOpen(false)}
+        >
           <Image src={app.icon} width={36} height={36} alt="" unoptimized />
           <span>{app.name}</span>
-          {app.name === "AkiPasa" && <small>{es ? "Actual" : "Current"}</small>}
+          {app.name === "AkiPasa" && (
+            <small>{es ? "Actual" : "Current"}</small>
+          )}
         </Link>
       ))}
     </nav>
   );
   const suiteActions = (
     <div className="app-suite-actions">
-      <Link href={`/${locale}/account/settings`} onClick={() => setSheetOpen(false)}>
+      <Link
+        href={`/${locale}/account/settings`}
+        onClick={() => setSheetOpen(false)}
+      >
         {es ? "Ajustes" : "Settings"}
       </Link>
       {signedIn ? (
@@ -372,7 +411,12 @@ export function AppShell({
 
         <div className="app-rail-bottom">
           <details className="app-suite-menu">
-            <summary className="app-suite-trigger" aria-label={es ? "Cambiar aplicación AkiSuite" : "Switch AkiSuite app"}>
+            <summary
+              className="app-suite-trigger"
+              aria-label={
+                es ? "Cambiar aplicación AkiSuite" : "Switch AkiSuite app"
+              }
+            >
               <Icon name="more" />
               <span>AkiSuite</span>
             </summary>
@@ -435,9 +479,12 @@ export function AppShell({
         >
           <BrandLogo />
         </Link>
-        <button type="button" className="app-suite-mobile-trigger"
+        <button
+          type="button"
+          className="app-suite-mobile-trigger"
           aria-label={es ? "Cambiar aplicación AkiSuite" : "Switch AkiSuite app"}
-          onClick={() => setSheetOpen(true)}>
+          onClick={() => setSheetOpen(true)}
+        >
           <Icon name="more" />
           <span>AkiSuite</span>
         </button>
