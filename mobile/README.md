@@ -4,7 +4,7 @@
 
 ## Confirmed source and product-specific review
 
-Consumer events, venue search, map, passport, personal account, save/follow, bookings. Test logged-out discovery and nearby/map permission fallback. Do not bundle AkiDuermo or AkiCoches views as separate installable apps in this app. Current src/app/manifest.ts still supports legacy host brands; check canonical domain.
+Consumer events, venue search, map, passport, personal account, save/follow, bookings. Native Android application ALREADY EXISTS at `Android/`, with `applicationId=com.akipasa`, minSdk 26 and targetSdk 36. Preserve existing package and check internal test builds; app uses platform WebView with native integrations. iOS native project is NOT verified. Do not bundle AkiDuermo or AkiCoches views as separate installable apps. Current src/app/manifest.ts supports legacy host brands; check canonical domain.
 
 ## Native packaging and release sequence
 
