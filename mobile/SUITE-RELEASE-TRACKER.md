@@ -4,25 +4,25 @@
 
 ## Verified production-to-repository map
 
-| Product shown to user | Production domain | Cloudflare delivery | GitHub source / release branch | Release prep PR |
-| --- | --- | --- | --- | --- |
-| AkiPasa | https://akipasa.com | Worker `akipasa` | `elguiriashing/akipasa`, `master` | [#193](https://github.com/elguiriashing/akipasa/pull/193) |
-| AkiDuermo | https://akiduermo.com | Worker `akiduermo` | `elguiriashing/AkiDuermo` extraction; **default `main` README is placeholder**, reconcile live Worker source with PRs #1/#2/#6 | [#5](https://github.com/elguiriashing/AkiDuermo/pull/5) |
-| AkiCoches | https://akicoches.com | Worker `akicoches` | `elguiriashing/AkiCoches`, verify live SHA | [#17](https://github.com/elguiriashing/AkiCoches/pull/17) |
-| AkiHQ, free management hub | https://akihq.app | Worker `akihq-management-preview` | **`elguiriashing/AkiBusiness` (historical repo name)** with role swap; verify exact live SHA | [#18](https://github.com/elguiriashing/AkiBusiness/pull/18) |
-| AkiBusiness, paid operations suite | https://akibusiness.com | Cloudflare DNS CNAME `akibusiness-operations-preview.pages.dev` | **`elguiriashing/akihq` (historical repo name)**, Cloudflare Pages source branch `release/akibusiness-operations-brand-v1` | [#37](https://github.com/elguiriashing/akihq/pull/37) |
+| Product shown to user              | Production domain       | Cloudflare delivery                                             | GitHub source / release branch                                                                                                 | Release prep PR                                             |
+| ---------------------------------- | ----------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| AkiPasa                            | https://akipasa.com     | Worker `akipasa`                                                | `elguiriashing/akipasa`, `master`                                                                                              | [#193](https://github.com/elguiriashing/akipasa/pull/193)   |
+| AkiDuermo                          | https://akiduermo.com   | Worker `akiduermo`                                              | `elguiriashing/AkiDuermo` extraction; **default `main` README is placeholder**, reconcile live Worker source with PRs #1/#2/#6 | [#5](https://github.com/elguiriashing/AkiDuermo/pull/5)     |
+| AkiCoches                          | https://akicoches.com   | Worker `akicoches`                                              | `elguiriashing/AkiCoches`, verify live SHA                                                                                     | [#17](https://github.com/elguiriashing/AkiCoches/pull/17)   |
+| AkiHQ, free management hub         | https://akihq.app       | Worker `akihq-management-preview`                               | **`elguiriashing/AkiBusiness` (historical repo name)** with role swap; verify exact live SHA                                   | [#18](https://github.com/elguiriashing/AkiBusiness/pull/18) |
+| AkiBusiness, paid operations suite | https://akibusiness.com | Cloudflare DNS CNAME `akibusiness-operations-preview.pages.dev` | **`elguiriashing/akihq` (historical repo name)**, Cloudflare Pages source branch `release/akibusiness-operations-brand-v1`     | [#37](https://github.com/elguiriashing/akihq/pull/37)       |
 
 **Important:** Do not infer product identity from GitHub repository name. Cross-product role swap is a real production mapping, not a desired future change. Do not package AkiHQ from the old static AkiHQ README or AkiBusiness from the old Next.js management default.
 
 ## Proposed immutable IDs (do not register until verified)
 
-| Product | Android applicationId / iOS bundle ID |
-| --- | --- |
-| AkiPasa | `com.akipasa.app` |
-| AkiDuermo | `com.akipasa.duermo` |
-| AkiCoches | `com.akipasa.coches` |
-| AkiHQ | `com.akipasa.hq` |
-| AkiBusiness | `com.akipasa.business` |
+| Product     | Android applicationId / iOS bundle ID |
+| ----------- | ------------------------------------- |
+| AkiPasa     | `com.akipasa.app`                     |
+| AkiDuermo   | `com.akipasa.duermo`                  |
+| AkiCoches   | `com.akipasa.coches`                  |
+| AkiHQ       | `com.akipasa.hq`                      |
+| AkiBusiness | `com.akipasa.business`                |
 
 ## Independent paths
 
@@ -38,7 +38,7 @@ In every repo `node mobile/validate-store-release.mjs` validates the document **
 
 ## Pending human/account actions
 
-1. Verify that AkiPasa Marketing S.L. is the correct *legal seller* in Google and Apple accounts, with accepted incorporation and D-U-N-S.
+1. Verify that AkiPasa Marketing S.L. is the correct _legal seller_ in Google and Apple accounts, with accepted incorporation and D-U-N-S.
 2. Complete Apple Developer Program **organisation** enrolment; Google organisation verification does not do this automatically.
 3. Provide/authorize signing and portal access through secure secrets, not chat or GitHub commits.
 4. Finalize business/policy contacts, public privacy and deletion URLs, real review-account credentials and subscription behavior for native apps.
