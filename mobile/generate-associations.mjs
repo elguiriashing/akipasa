@@ -33,6 +33,26 @@ if (!new RegExp("^[A-Z0-9]{10}$").test(team)) {
   );
   process.exit(1);
 }
+const universalLinks = (process.env.APPLE_UNIVERSAL_LINK_PATHS || "")
+  .split(",")
+  .map((path) => path.trim())
+  .filter(Boolean);
+if (
+  universalLinks.length === 0 ||
+  universalLinks.some(
+    (path) =>
+      path === "*" ||
+      path === "/*" ||
+      !path.startsWith("/") ||
+      path.includes("..") ||
+      path.includes("?"),
+  )
+) {
+  console.error(
+    "Set APPLE_UNIVERSAL_LINK_PATHS to reviewed, scoped routes. Catch-all links are forbidden.",
+  );
+  process.exit(1);
+}
 const certificate = fingerprint.match(/.{2}/g).join(":");
 const android = [
   {
@@ -50,7 +70,7 @@ const apple = {
     details: [
       {
         appID: team + "." + config.proposedIdentifiers.iosBundleId,
-        paths: ["*"],
+        paths: universalLinks,
       },
     ],
   },
