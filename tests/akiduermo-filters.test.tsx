@@ -262,10 +262,15 @@ it.each(["en", "es"] as const)(
   },
 );
 
-
 it("presents a scoped real-data AkiDuermo account overview without inventing saved counts", () => {
-  const account = readFileSync(join(process.cwd(), "src/app/akiduermo/account/page.tsx"), "utf8");
-  const style = readFileSync(join(process.cwd(), "src/app/akiduermo/account/account.module.css"), "utf8");
+  const account = readFileSync(
+    join(process.cwd(), "src/app/akiduermo/account/page.tsx"),
+    "utf8",
+  );
+  const style = readFileSync(
+    join(process.cwd(), "src/app/akiduermo/account/account.module.css"),
+    "utf8",
+  );
   expect(account).toContain('requireUser(locale, "/account")');
   expect(account).toContain('.eq("profile_id", user.id)');
   expect(account).toContain('.select("id", { count: "exact", head: true })');
