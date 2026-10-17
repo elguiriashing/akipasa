@@ -1567,3 +1567,9 @@ No real customer image, profile, booking, email or subscription was mutated.
 - **After:** on desktop a viewport-height rail reserves a fixed footer for AkiSuite and preferences, allows only the central navigation list to scroll if absolutely necessary, and tightens navigation spacing for shorter windows. The suite menu remains an above-footer overlay. Desktop expanded, compact, and map routes share the same fix.
 - **Bounds:** sidebar presentation, menu layout and acceptance checks only. No change to user roles, permissions, business app destinations, PWA/icons, production data, booking, auth, or billing.
 - **Verification:** CI including desktop/mobile/tablet UI; 740px and 900px desktop rail/footer and suite overlay containment; no regressions at mobile breakpoint. Revert CSS only if needed.
+
+## 2026-10-17 | Mobile navigation separation
+
+- Problem: AkiSuite and More opened the same sheet and the top trigger collided with search.
+- Fix: separate suite and internal sheets, with independently controlled focus and mobile header spacing.
+- Scope: consumer navigation CSS and markup only, no changes to data, billing or branding.
