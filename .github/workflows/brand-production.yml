@@ -27,6 +27,7 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci --no-audit --no-fund
+      - run: npm ci --prefix automation --no-audit --no-fund
       - name: Verify code and tests before production
         run: npm run check
       - name: Load existing production bindings and check destination

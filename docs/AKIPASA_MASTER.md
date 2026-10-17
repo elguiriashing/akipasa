@@ -1122,3 +1122,14 @@ suite SVG. Failed checks block deployment. Cloudflare API credentials must be
 configured as a scoped GitHub Actions `CLOUDFLARE_API_TOKEN` secret; a missing
 secret blocks the workflow rather than silently deploying. Existing Worker
 version history remains the rollback path.
+
+## 2026-10-17 | Production branding CI automation dependencies
+
+The AkiPasa brand-release workflow must run `npm ci --prefix automation` after
+root dependencies and before `npm run check`. This matches the existing public
+AkiSuite CI workflow and prevents the separately scoped automation TypeScript
+build from failing due to missing packages. This is deployment pipeline hygiene
+only, not an application, role, schema, artwork, data, Stripe or billing change.
+Cloudflare deployment still requires existing Worker/domain preflight, an
+explicit GitHub Actions `CLOUDFLARE_API_TOKEN` secret, and successful
+exact-source/HTTPS verification before it can be called live.
