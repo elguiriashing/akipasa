@@ -4,6 +4,7 @@ import { PortalLogo } from "./PortalLogo";
 import { PortalHeaderTools } from "./PortalHeaderTools";
 import type { StayLocale } from "@/lib/akiduermo-i18n";
 import styles from "./StayAppShell.module.css";
+import { signOutStay } from "@/app/akiduermo/account/actions";
 
 export function StayHeader({
   locale,
@@ -41,6 +42,9 @@ export function StayHeader({
         >
           {es ? "Ajustes" : "Settings"}
         </Link>
+        <form action={signOutStay}>
+          <button type="submit">{es ? "Cerrar sesión" : "Sign out"}</button>
+        </form>
       </PortalHeaderTools>
     </header>
   );
