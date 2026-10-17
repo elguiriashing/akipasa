@@ -90,13 +90,12 @@ const server = createServer((req, res) => {
   ) {
     try {
       const path = new URL(req.url, "http://localhost").pathname;
-      if (!/^\/(brand|pwa|images\/cities)\/[a-z0-9-]+\.(png|webp|svg)$/.test(path))
-        throw new Error("invalid");
-      const extension = path.split(".").pop();
-      res.setHeader(
-        "Content-Type",
-        extension === "svg" ? "image/svg+xml" : `image/${extension}`,
-      );
+      const allowed = /^\/(brand|pwa|images\/cities)\/[a-z0-9-]+\.(png|webp|svg)$/;
+      if (!allowed.test(path)) throw new Error("invalid");
+      let mimeType = "image/webp";
+      if (path.endsWith(".png")) mimeType = "image/png";
+      if (path.endsWith(".svg")) mimeType = "image/svg+xml";
+      res.setHeader("Content-Type", mimeType);
       res.end(readFileSync(`public${path}`));
     } catch {
       res.statusCode = 404;
