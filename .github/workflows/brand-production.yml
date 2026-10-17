@@ -1,0 +1,48 @@
+name: Deploy verified AkiPasa brand
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: akisuite-pasa-production
+  cancel-in-progress: false
+jobs:
+  production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      AKISUITE_RELEASE_KIND: pasa
+      CLOUDFLARE_ACCOUNT_ID: 501bc9434d8ae555a6ac984a26dd2725
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      NEXT_TELEMETRY_DISABLED: "1"
+      WRANGLER_SEND_METRICS: "false"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Verify code and tests before production
+        run: npm run check
+      - name: Load existing production bindings and check destination
+        run: node scripts/brand-production-release.mjs prepare
+      - uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: brand-pasa-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          restore-keys: brand-pasa-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+      - name: Build exact production source with existing public configuration
+        run: npm run build:cloudflare
+      - name: Validate deploy target, source stamp and bundle
+        run: |
+          node scripts/brand-production-release.mjs config
+          npx wrangler deploy --config .wrangler/brand-production.json --dry-run --outdir .wrangler/brand-dry-run
+      - name: Publish to existing Worker, preserving secrets and other variables
+        run: npx wrangler deploy --config .wrangler/brand-production.json --keep-vars
+      - name: Verify deployed source and brand icons over HTTPS
+        run: node scripts/brand-production-release.mjs verify

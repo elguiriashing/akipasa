@@ -1108,3 +1108,17 @@ Verification: compare the four suite icons at launcher scale and in portal
 switcher, check metadata/manifest for the legacy hostname, run the existing
 Next/Cloudflare and tablet CI. Rolling back restores the previous SVG and
 component paths, without any data restoration.
+
+## 2026-10-17 | Verified brand production deployment automation
+
+AkiPasa now has a reviewed production workflow proposal for `master` that runs
+source checks, builds the Cloudflare worker with the existing public environment,
+compares the exact release-source stamp and uploads only to the existing
+`akipasa` Worker. It reads live Worker bindings before release and keeps existing
+feature gates, service bindings, domain routes and secrets; the pipeline does
+not apply Supabase migrations or enable billing. Post-deploy acceptance checks
+`/release-source.json`, AkiHQ's black/gold suite SVG and AkiCoches' red/black
+suite SVG. Failed checks block deployment. Cloudflare API credentials must be
+configured as a scoped GitHub Actions `CLOUDFLARE_API_TOKEN` secret; a missing
+secret blocks the workflow rather than silently deploying. Existing Worker
+version history remains the rollback path.
