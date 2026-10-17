@@ -554,7 +554,6 @@ html[data-theme="dark"] body[data-product="akibusiness"] {
   }
 }
 
-
 /* Account controls live under AkiPasa's internal More menu on mobile. */
 @media (max-width: 850px) {
   .app-sheet-account {
