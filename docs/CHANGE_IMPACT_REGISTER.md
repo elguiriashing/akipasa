@@ -1,5 +1,25 @@
 # Change Impact Register
 
+## 2026-10-17 | Five-product app-store prep and metadata preflight
+
+- **Before:** no dedicated versioned store-submission identity, policy-target
+  register or fail-closed native release checklist for the AkiPasa product.
+- **After:** non-production `mobile/store-release.json` holds tentative platform
+  IDs, EN/ES starter descriptions and 12 explicit unmet gates;
+  `mobile/validate-store-release.mjs` enforces document structure and a stricter
+  `--ship` check; `mobile/generate-associations.mjs` only prints association
+  payloads after genuine certificate/team values are provided; the added Actions
+  workflow runs **metadata validation only** on `mobile/**` changes.
+- **Impact:** no customer feature change, no route/DNS/Worker/Supabase alteration,
+  no payment modification, native build, signing or store-console action. Five
+  product repositories have separate preparatory draft PRs.
+- **Acceptance:** versioned config contains API 36 / Xcode 26 minima; metadata
+  workflow passes; strict `--ship` intentionally fails until evidenced approval.
+  Real Android/iOS packaging and device reviews remain separate work.
+- **Rollback:** revert workflow and `mobile/` documents/scripts only; no data
+  migration or production rollback required.
+
+
 ## 2026-10-15 | Rental company cards on legacy Business home
 
 - **Before:** the AkiPasa-hosted portal exposed a top-level AkiConduzco tab,
