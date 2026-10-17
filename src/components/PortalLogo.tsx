@@ -22,7 +22,9 @@ export function PortalLogo({
             ? "/pwa/akipasa-512.png"
             : product === "hq"
               ? "/brand/hq-mark.svg"
-              : `/brand/${product}-icon.png`
+              : product === "business"
+                ? "/brand/business-mark.svg"
+                : `/brand/${product}-icon.png`
         }
         alt=""
         width={40}
