@@ -11,6 +11,7 @@ import {
 import { afterEach, expect, it, vi } from "vitest";
 import { AkiDuermo } from "../src/components/AkiDuermo";
 vi.mock("next/navigation", () => ({ usePathname: () => "/saved" }));
+vi.mock("../src/app/akiduermo/account/actions", () => ({ signOutStay: vi.fn() }));
 vi.mock("next/dynamic", () => ({
   default: () =>
     function TestMap({
