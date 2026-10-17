@@ -9,7 +9,10 @@
   `mobile/validate-store-release.mjs` enforces document structure and a stricter
   `--ship` check; `mobile/generate-associations.mjs` only prints association
   payloads after genuine certificate/team values are provided; the added Actions
-  workflow runs **metadata validation only** on `mobile/**` changes.
+  preflight workflow runs **metadata validation only** on `mobile/**` changes.
+  The separate `android-play-candidate.yml` runs test/lint/bundleRelease against
+  the existing `Android/` client (`com.akipasa`, targetSdk 36) and uploads an
+  **unsigned** candidate only when its tests and build pass.
 - **Impact:** no customer feature change, no route/DNS/Worker/Supabase alteration,
   no payment modification, native build, signing or store-console action. Five
   product repositories have separate preparatory draft PRs.
