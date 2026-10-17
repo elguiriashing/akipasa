@@ -1,5 +1,21 @@
 # Change Impact Register
 
+## 2026-10-17 | Next.js and React October security backports
+
+- **Before:** Next.js/eslint-config-next 15.5.27 and React/React DOM 19.1.0
+  remained in the deployment lockfile after the October 14 advisories.
+- **After:** deterministic Next.js/eslint-config-next 15.5.28, React/React
+  DOM 19.1.10 and matching @next compiler binaries. Existing Sharp 0.35.5
+  override remains fixed.
+- **Impact:** closes known upstream exposure including App Router Server
+  Actions denial of service. No intended user-visible, business, schema,
+  session, access, payment or configuration changes.
+- **Verification:** security branch lockfile regenerated on GitHub Actions,
+  deterministic npm ci, full PR CI/Cloudflare build, post-merge production
+  version and route smoke. Unverified gates must not be described as passed.
+- **Rollback:** revert the two dependency/lockfile edits if regressions are
+  found, with a new follow-up patch because rollback restores upstream risk.
+
 ## 2026-10-17 | AkiDuermo personal account redesign (candidate)
 
 - **Before:** generic three-link card row and large logout panel with little
