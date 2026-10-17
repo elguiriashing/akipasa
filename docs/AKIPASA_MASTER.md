@@ -11,7 +11,6 @@ application routes, auth, ownership, payments, or database schemas.
 Production deployment requires successful CI and exact-source Cloudflare
 verification; dependency edits alone do not certify a live release.
 
-
 ## 2026-10-15 | Rental company cards in the legacy Business portal
 
 The AkiPasa-hosted Business home lists rental companies submitted by the signed-in
