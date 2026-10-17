@@ -114,6 +114,34 @@ it("contains mobile More focus, makes the background inert and restores its open
   expect(container.querySelector(".app-content")).not.toHaveAttribute("inert");
 });
 
+it("keeps the mobile suite launcher separate from internal navigation", () => {
+  const { container } = render(
+    <AppShell locale="en" signedIn={false}>
+      <main>Discovery content</main>
+    </AppShell>,
+  );
+  const suite = container.querySelector(".app-suite-mobile-menu");
+  expect(suite).not.toBeNull();
+  const destinations = Array.from(
+    suite!.querySelectorAll<HTMLAnchorElement>("nav a"),
+  );
+  expect(destinations.map((link) => link.textContent)).toEqual([
+    "AkiDuermo",
+    "AkiCoches",
+    "AkiHQ",
+    "AkiBusiness",
+  ]);
+  expect(suite!.querySelector("a[href='/en/passports']")).toBeNull();
+  expect(suite!.querySelector("a[href='/en/membership']")).toBeNull();
+
+  fireEvent.click(screen.getByRole("button", { name: "More options" }));
+  const dialog = screen.getByRole("dialog", { name: "More options" });
+  expect(within(dialog).getByRole("link", { name: "Passports" })).toBeVisible();
+  expect(within(dialog).getByRole("link", { name: "Membership" })).toBeVisible();
+  expect(dialog.querySelector(".app-suite-links")).toBeNull();
+  expect(dialog.querySelector("a[href='https://akicoches.com/?lang=en']")).toBeNull();
+});
+
 describe("progressive disclosure workspace shell", () => {
   it("keeps crowded desktop workspace navigation horizontally reachable", () => {
     const source = readFileSync(
