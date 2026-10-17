@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "status": "PREPARATION_ONLY_NOT_SUBMITTABLE",
+  "product": "AkiPasa",
+  "webOrigin": "https://akipasa.com",
+  "startPath": "/es",
+  "proposedIdentifiers": {
+    "androidApplicationId": "com.akipasa.app",
+    "iosBundleId": "com.akipasa.app",
+    "warning": "PROPOSALS ONLY. Confirm identifiers before first store app creation/signing."
+  },
+  "platformRequirements": {
+    "googlePlayTargetApiMinimum": 36,
+    "iosBuildWithXcodeMajorMinimum": 26
+  },
+  "listingDraft": {
+    "primaryLocale": "es-ES",
+    "secondaryLocale": "en-GB",
+    "categoryCandidate": "Lifestyle",
+    "shortDescriptionEs": "Descubre planes, eventos y locales cerca de ti.",
+    "shortDescriptionEn": "Discover events, venues and things to do nearby.",
+    "fullDescriptionEs": "",
+    "fullDescriptionEn": "",
+    "privacyPolicyUrl": "",
+    "supportUrl": "",
+    "marketingUrl": "https://akipasa.com"
+  },
+  "sourceObservation": "Next.js web/PWA; legacy host-aware manifest in src/app/manifest.ts",
+  "gates": {
+    "sourceAndLiveProductMappingVerified": false,
+    "nativeAndroidBuildVerified": false,
+    "nativeIosBuildVerified": false,
+    "realDeviceAuthAndDeepLinksPassed": false,
+    "nativeAppExperienceReviewed": false,
+    "appAccountDeletionPassed": false,
+    "privacyDataSafetyDeclared": false,
+    "storeBillingCompliant": false,
+    "appIconsAndScreenshotsReviewed": false,
+    "reviewerDemoCredentialsPrepared": false,
+    "signingAndStoreAccountsConfigured": false,
+    "ageRatingAndContentDeclarationsComplete": false
+  },
+  "delivery": {
+    "android": "Android App Bundle (.aab) signed for Play App Signing, not generated",
+    "ios": "Signed .ipa archive and TestFlight build, not generated",
+    "intendedTracks": [
+      "Play internal testing",
+      "TestFlight internal testing"
+    ]
+  },
+  "notes": [
+    "Do not insert app signing keys, provisioning profiles, personal details, reviewer passwords or store API keys in Git.",
+    "Do not publish android/.well-known/assetlinks.json or apple-app-site-association with guessed fingerprints/team IDs.",
+    "Respect AkiSuite cross-domain OAuth callback and application deep linking; each product must survive login, logout and password recovery.",
+    "No automatic purchase-flow enabling: review mobile digital subscription rules and local availability before release."
+  ]
+}
