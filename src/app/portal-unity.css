@@ -514,3 +514,83 @@ html[data-theme="dark"] body[data-product="akibusiness"] {
     margin-block: 0.1rem;
   }
 }
+
+/* Mobile has two independent menus: app family in the header, local tools below. */
+@media (max-width: 850px) {
+  .app-shell > .app-topbar-mobile {
+    gap: 8px;
+    padding-right: calc(64px + env(safe-area-inset-right, 0px));
+  }
+
+  .app-topbar-mobile > .app-rail-brand {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .app-suite-mobile-menu {
+    position: relative;
+    display: block;
+    flex: 0 0 auto;
+    min-width: 0;
+  }
+
+  .app-suite-mobile-menu > .app-suite-mobile-trigger {
+    display: flex;
+    width: auto;
+    min-width: 44px;
+    min-height: 44px;
+    gap: 7px;
+    padding: 9px;
+    list-style: none;
+    white-space: nowrap;
+  }
+
+  .app-suite-mobile-menu > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .app-topbar-mobile:has(.app-suite-mobile-menu[open]) {
+    z-index: 100;
+  }
+
+  .app-suite-mobile-menu[open] > .app-suite-mobile-trigger {
+    border-color: var(--primary);
+  }
+
+  .app-suite-mobile-popover {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: min(292px, calc(100vw - 24px));
+    max-height: min(440px, calc(100dvh - 110px));
+    overflow-y: auto;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--surface);
+    box-shadow: var(--shadow-strong);
+    overscroll-behavior: contain;
+    z-index: 101;
+  }
+
+  .app-sheet-account-actions {
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+  }
+
+  .app-sheet-account-actions .app-suite-actions {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .app-suite-mobile-trigger > span {
+    display: none;
+  }
+
+  .app-suite-mobile-popover {
+    right: -2px;
+  }
+}

@@ -1583,3 +1583,10 @@ No real customer image, profile, booking, email or subscription was mutated.
 - **After:** on desktop a viewport-height rail reserves a fixed footer for AkiSuite and preferences, allows only the central navigation list to scroll if absolutely necessary, and tightens navigation spacing for shorter windows. The suite menu remains an above-footer overlay. Desktop expanded, compact, and map routes share the same fix.
 - **Bounds:** sidebar presentation, menu layout and acceptance checks only. No change to user roles, permissions, business app destinations, PWA/icons, production data, booking, auth, or billing.
 - **Verification:** CI including desktop/mobile/tablet UI; 740px and 900px desktop rail/footer and suite overlay containment; no regressions at mobile breakpoint. Revert CSS only if needed.
+
+## 2026-10-17 | Split cross-app mobile switcher from local navigation
+
+- **Observed issue:** top AkiSuite button opened the same bottom sheet as More, mixing five external app links with local controls, and its oversized pill overlapped search on narrow screens.
+- **Change:** top header uses its own compact app-only popup linking to other Aki domains; bottom More retains only internal AkiPasa navigation and account actions, separate from the suite list. Search clearance uses reserved header width.
+- **Scope:** mobile/tablet consumer header, sheets and tests; desktop app sidebar and login/session logic unchanged.
+- **Acceptance:** suite popup contains four external app links and no local navigation; More contains passports/membership/workspaces and no suite links; trigger and search hit targets do not overlap in 390px mobile; all GitHub browser, tablet and build gates green. CSS/component rollback requires no data migration.

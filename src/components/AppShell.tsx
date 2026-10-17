@@ -87,6 +87,7 @@ export function AppShell({
   const [sheetOpen, setSheetOpen] = useState(false);
   const [compact, setCompact] = useState(false);
   const moreButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileSuiteRef = useRef<HTMLDetailsElement>(null);
   const sheetCloseRef = useRef<HTMLButtonElement>(null);
   const section = pathname.split("/").filter(Boolean)[1];
   const activeWorkspace = ["account", "business", "staff", "admin"].includes(
@@ -167,6 +168,28 @@ export function AppShell({
       ))}
     </nav>
   );
+  const externalSuiteLinks = (
+    <nav
+      className="app-suite-links"
+      aria-label={es ? "Otros sitios AkiSuite" : "Other AkiSuite sites"}
+    >
+      <span className="app-suite-heading">
+        {es ? "Otras aplicaciones AkiSuite" : "Other AkiSuite apps"}
+      </span>
+      {suiteApps
+        .filter((app) => app.name !== "AkiPasa")
+        .map((app) => (
+          <Link
+            key={app.name}
+            href={app.href}
+            style={{ "--suite-accent": app.accent } as React.CSSProperties}
+          >
+            <Image src={app.icon} width={36} height={36} alt="" unoptimized />
+            <span>{app.name}</span>
+          </Link>
+        ))}
+    </nav>
+  );
   const suiteActions = (
     <div className="app-suite-actions">
       <Link
@@ -238,7 +261,31 @@ export function AppShell({
 
   useEffect(() => {
     setSheetOpen(false);
+    mobileSuiteRef.current?.removeAttribute("open");
   }, [pathname]);
+
+  useEffect(() => {
+    function closeSuiteOutside(event: PointerEvent) {
+      if (
+        event.target instanceof Node &&
+        !mobileSuiteRef.current?.contains(event.target)
+      ) {
+        mobileSuiteRef.current?.removeAttribute("open");
+      }
+    }
+    function closeSuiteWithEscape(event: KeyboardEvent) {
+      if (event.key === "Escape" && mobileSuiteRef.current?.open) {
+        mobileSuiteRef.current.removeAttribute("open");
+        mobileSuiteRef.current.querySelector("summary")?.focus();
+      }
+    }
+    document.addEventListener("pointerdown", closeSuiteOutside);
+    document.addEventListener("keydown", closeSuiteWithEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeSuiteOutside);
+      document.removeEventListener("keydown", closeSuiteWithEscape);
+    };
+  }, []);
 
   useEffect(() => {
     try {
@@ -477,17 +524,19 @@ export function AppShell({
         >
           <BrandLogo />
         </Link>
-        <button
-          type="button"
-          className="app-suite-mobile-trigger"
-          aria-label={
-            es ? "Cambiar aplicación AkiSuite" : "Switch AkiSuite app"
-          }
-          onClick={() => setSheetOpen(true)}
-        >
-          <Icon name="more" />
-          <span>AkiSuite</span>
-        </button>
+        <details ref={mobileSuiteRef} className="app-suite-mobile-menu">
+          <summary
+            className="app-suite-mobile-trigger"
+            aria-label={
+              es ? "Otras aplicaciones AkiSuite" : "Other AkiSuite apps"
+            }
+            title="AkiSuite"
+          >
+            <Icon name="more" />
+            <span>AkiSuite</span>
+          </summary>
+          <div className="app-suite-mobile-popover">{externalSuiteLinks}</div>
+        </details>
       </header>
 
       <div className="app-content">{children}</div>
@@ -520,7 +569,10 @@ export function AppShell({
           ref={moreButtonRef}
           type="button"
           className={sheetOpen ? "active" : undefined}
-          onClick={() => setSheetOpen(true)}
+          onClick={() => {
+            mobileSuiteRef.current?.removeAttribute("open");
+            setSheetOpen(true);
+          }}
           aria-haspopup="dialog"
           aria-expanded={sheetOpen}
           aria-controls="app-more-sheet"
@@ -561,10 +613,6 @@ export function AppShell({
             >
               <Icon name="close" />
             </button>
-            <section className="app-sheet-suite">
-              {suiteLinks}
-              {suiteActions}
-            </section>
             {signedIn && hasMultipleWorkspaces && (
               <section className="app-sheet-workspaces">
                 <span className="app-sheet-section-label">
@@ -596,6 +644,7 @@ export function AppShell({
                 </Link>
               ))}
             </nav>
+            <div className="app-sheet-account-actions">{suiteActions}</div>
             <div className="app-sheet-tools">
               <ThemeToggle locale={locale} />
               <LanguageLink locale={other} />
