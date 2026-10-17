@@ -1156,3 +1156,7 @@ The consumer AkiPasa shell now exposes the same five-product launcher as AkiDuer
 ## 2026-10-17 | Viewport-fitted AkiPasa sidebar / AkiSuite dock
 
 The desktop AkiPasa sidebar now separates the independently scrolling navigation list from a pinned utility dock (AkiSuite product switcher, language, appearance and expand/collapse). On desktop viewports up to 980px tall, vertical gaps and item padding are reduced; at unusually small heights only the list can scroll, never the footer controls or whole page. The expanded footer places the theme/language controls alongside the collapse action, and the compact rail keeps its icon-only controls. The AkiSuite popup remains reachable above the dock with a viewport-constrained internal scroll region. Phone/tablet bottom navigation and standalone map layout are not altered. Validation: desktop viewport heights (740/900px), compact and expanded rail, guest and admin navigation groups, click/focus of product switcher, keyboard access and tablet CI. Rollback is CSS-only, no database or auth changes.
+
+## 2026-10-17 | Separate mobile AkiSuite and internal More navigation
+
+The header AkiSuite button opens only the five product links plus Settings/account action. Bottom More retains internal navigation, workspaces, passports, membership, appearance and language. Independent sheet state, Escape handling and focus return. Header reserves search space. No auth or data changes.
