@@ -16,13 +16,13 @@
 
 ## Package IDs (AkiPasa Android fixed; other IDs proposed until verified)
 
-| Product     | Android applicationId / iOS bundle ID |
-| ----------- | ------------------------------------- |
+| Product     | Android applicationId / iOS bundle ID                             |
+| ----------- | ----------------------------------------------------------------- |
 | AkiPasa     | Android: `com.akipasa` (fixed); iOS: `com.akipasa.app` (proposed) |
-| AkiDuermo   | `com.akipasa.duermo`                  |
-| AkiCoches   | `com.akipasa.coches`                  |
-| AkiHQ       | `com.akipasa.hq`                      |
-| AkiBusiness | `com.akipasa.business`                |
+| AkiDuermo   | `com.akipasa.duermo`                                              |
+| AkiCoches   | `com.akipasa.coches`                                              |
+| AkiHQ       | `com.akipasa.hq`                                                  |
+| AkiBusiness | `com.akipasa.business`                                            |
 
 ## Independent paths
 
