@@ -1,5 +1,24 @@
 # Change Impact Register
 
+## 2026-10-17 | AkiDuermo personal account redesign (candidate)
+
+- **Before:** generic three-link card row and large logout panel with little
+  visibility of real reservations or their confirmation status.
+- **After:** compact responsive account header, actual scoped booking counters,
+  next three eligible stays, device-saved and bookings shortcuts, existing
+  security/profile links and sign-out. Both languages and theme modes are styled.
+- **Dependencies:** AkiDuermo routes /account, /bookings, /saved, /settings;
+  accommodation_reservations.profile_id, Supabase session/RLS, StayAppShell
+  navigation; AkiPasa shared profile across root domains.
+- **Data / permissions:** no mutation, migrations, payments, or change of
+  permissions. Four read-only queries on the signed-in user's reservations.
+  Failed queries show an error rather than manufactured zeros.
+- **Verification required:** format, lint, typecheck, account-focused Vitest,
+  full CI/build, authenticated real-account EN/ES on desktop/tablet/mobile
+  and empty/error/populated states, cross-host sign-in and logout. Do not
+  merge or deploy before these pass. Rollback reverts account page/styles/tests
+  without touching customer data.
+
 ## 2026-10-15 | Rental company cards on legacy Business home
 
 - **Before:** the AkiPasa-hosted portal exposed a top-level AkiConduzco tab,
