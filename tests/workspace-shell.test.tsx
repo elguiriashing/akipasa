@@ -38,6 +38,8 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(navigation.search),
 }));
 
+vi.mock("../src/app/[locale]/auth/actions", () => ({ signOut: vi.fn() }));
+
 // The native search popover and its Next router integration are covered by
 // city-discovery.spec.ts in a real browser; these tests isolate navigation.
 vi.mock("../src/components/GlobalSearch", () => ({ GlobalSearch: () => null }));
@@ -474,8 +476,10 @@ it("keeps authorized workspaces in the persistent desktop navigation", () => {
   });
   expect(within(rail).getByText("Your workspaces")).toBeInTheDocument();
   expect(
-    within(rail).getByRole("link", { name: "AkiBusiness" }),
-  ).toHaveAttribute("href", "https://business.akipasa.com/en/business");
+    within(rail)
+      .getAllByRole("link", { name: "AkiBusiness" })
+      .map((link) => link.getAttribute("href")),
+  ).toContain("https://business.akipasa.com/en/business");
   expect(within(rail).getByRole("link", { name: "Staff" })).toHaveAttribute(
     "href",
     "/en/staff",
@@ -498,15 +502,17 @@ it("keeps the business application reachable before sign in", () => {
   const rail = screen.getByRole("complementary", {
     name: "Primary navigation",
   });
-  expect(within(rail).getByRole("link", { name: "Sign in" })).toHaveAttribute(
-    "href",
-    "/en/auth",
-  );
+  expect(
+    within(rail)
+      .getAllByRole("link", { name: "Sign in" })
+      .every((link) => link.getAttribute("href") === "/en/auth"),
+  ).toBe(true);
 
   fireEvent.click(screen.getByRole("button", { name: "More options" }));
   const dialog = screen.getByRole("dialog", { name: "More options" });
-  expect(within(dialog).getByRole("link", { name: "Sign in" })).toHaveAttribute(
-    "href",
-    "/en/auth",
-  );
+  expect(
+    within(dialog)
+      .getAllByRole("link", { name: "Sign in" })
+      .every((link) => link.getAttribute("href") === "/en/auth"),
+  ).toBe(true);
 });

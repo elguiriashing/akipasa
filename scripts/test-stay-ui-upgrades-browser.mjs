@@ -30,6 +30,18 @@ const bundle = await build({
     {
       name: "next-adapters",
       setup(b) {
+        // Browser fixtures have no Next server-action runtime.
+        b.onResolve(
+          {
+            filter: /\/app\/(?:akiduermo\/account|\[locale\]\/auth)\/actions$/,
+          },
+          () => ({ path: "sign-out", namespace: "test-auth" }),
+        );
+        b.onLoad({ filter: /.*/, namespace: "test-auth" }, () => ({
+          contents:
+            "export function signOutStay() {} export function signOut() {}",
+          loader: "js",
+        }));
         b.onResolve({ filter: /^next\/(link|image|navigation)$/ }, (args) => ({
           path: args.path,
           namespace: "test",

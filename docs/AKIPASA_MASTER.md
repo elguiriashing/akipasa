@@ -1133,3 +1133,7 @@ only, not an application, role, schema, artwork, data, Stripe or billing change.
 Cloudflare deployment still requires existing Worker/domain preflight, an
 explicit GitHub Actions `CLOUDFLARE_API_TOKEN` secret, and successful
 exact-source/HTTPS verification before it can be called live.
+
+## 2026-10-17 | Five-product navigation and account actions
+
+The consumer AkiPasa shell now exposes the same five-product launcher as AkiDuermo, AkiCoches, AkiHQ, and AkiBusiness: desktop sidebar button and mobile/tablet header button plus the More bottom sheet. The launcher preserves each product's canonical URL, logo, accent colour, current-app indication, and English/Spanish labels. Consumer account settings and the existing server-side sign-out action are included; guests receive a sign-in link instead of a misleading sign-out action. Legacy AkiDuermo header navigation also offers Settings and sign-out. No product identity, subscription, auth policy, claims or Supabase schema changes. Verify keyboard/Escape behaviour, small viewport scrolling, contrast, and sign-out scope across products before deployment.
