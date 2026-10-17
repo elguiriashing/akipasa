@@ -19,7 +19,6 @@
   merge or deploy before these pass. Rollback reverts account page/styles/tests
   without touching customer data.
 
-
 ## 2026-10-15 | Rental company cards on legacy Business home
 
 - **Before:** the AkiPasa-hosted portal exposed a top-level AkiConduzco tab,

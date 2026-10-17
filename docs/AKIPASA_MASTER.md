@@ -15,7 +15,6 @@ Responsive EN/ES markup uses product-specific mint styling. No database, shared
 auth, analytics, middleware, worker or production deployment change.
 This is an unmerged candidate until checks, preview and authenticated acceptance.
 
-
 ## 2026-10-15 | Rental company cards in the legacy Business portal
 
 The AkiPasa-hosted Business home lists rental companies submitted by the signed-in
