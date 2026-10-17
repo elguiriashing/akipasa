@@ -1160,3 +1160,5 @@ The desktop AkiPasa sidebar now separates the independently scrolling navigation
 ## 2026-10-17 | Separate mobile AkiSuite and internal More navigation
 
 The header AkiSuite button opens only the five product links plus Settings/account action. Bottom More retains internal navigation, workspaces, passports, membership, appearance and language. Independent sheet state, Escape handling and focus return. Header reserves search space. No auth or data changes.
+
+**Final mobile split:** the top-header AkiSuite sheet contains only the five Aki product destinations and current-product marker. Personal account actions belong to the internal bottom More sheet; guests see Sign in there. The top sheet does not contain Passports, Membership, workspaces, Settings or Sign out. The desktop rail's original suite menu remains unchanged.
