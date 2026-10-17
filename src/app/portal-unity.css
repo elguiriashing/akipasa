@@ -553,3 +553,39 @@ html[data-theme="dark"] body[data-product="akibusiness"] {
     display: none;
   }
 }
+
+
+/* Account controls live under AkiPasa's internal More menu on mobile. */
+@media (max-width: 850px) {
+  .app-sheet-account {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+  }
+  .app-sheet-account > a,
+  .app-sheet-account form button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface-alt);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 750;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .app-sheet-account > a:only-child {
+    grid-column: 1 / -1;
+  }
+  .app-sheet-account > a:hover,
+  .app-sheet-account form button:hover {
+    background: var(--primary-soft);
+  }
+}
