@@ -14,8 +14,9 @@
   the existing `Android/` client (`com.akipasa`, targetSdk 36) and uploads an
   **unsigned** candidate only when its tests and build pass.
 - **Impact:** no customer feature change, no route/DNS/Worker/Supabase alteration,
-  no payment modification, native build, signing or store-console action. Five
-  product repositories have separate preparatory draft PRs.
+  no payment modification, signing or store-console action. Native Android
+  candidate CI may build an unsigned bundle but cannot publish it. Five product
+  repositories have separate preparatory draft PRs.
 - **Acceptance:** versioned config contains API 36 / Xcode 26 minima; metadata
   workflow passes; strict `--ship` intentionally fails until evidenced approval.
   Real Android/iOS packaging and device reviews remain separate work.
