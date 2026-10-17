@@ -1,0 +1,27 @@
+name: Format brand-release PR
+on:
+  push:
+    branches: [fix/brand-production-release-20261017]
+permissions:
+  contents: write
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Format only the new production release files
+        run: |
+          npx prettier --write scripts/brand-production-release.mjs .github/workflows/brand-production.yml
+          git add scripts/brand-production-release.mjs .github/workflows/brand-production.yml
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "style: format production release guard and workflow"
+          git push origin HEAD:fix/brand-production-release-20261017
