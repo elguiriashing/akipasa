@@ -9,7 +9,7 @@ import { GlobalSearch } from "./GlobalSearch";
 import { Icon, type IconName } from "./Icons";
 import { LanguageLink } from "./LanguageLink";
 import { ThemeToggle } from "./ThemeModeControls";
-import { signOut } from "@/app/[locale]/auth/actions";
+import { signOut } from "../app/[locale]/auth/actions";
 import { ConsoleSwitcher, type ConsoleKey } from "./ConsoleSwitcher";
 import { config, type Locale } from "../lib/config";
 import { msg } from "../lib/messages";
