@@ -5,9 +5,9 @@
   "webOrigin": "https://akipasa.com",
   "startPath": "/es",
   "proposedIdentifiers": {
-    "androidApplicationId": "com.akipasa.app",
+    "androidApplicationId": "com.akipasa",
     "iosBundleId": "com.akipasa.app",
-    "warning": "PROPOSALS ONLY. Confirm identifiers before first store app creation/signing."
+    "warning": "Android com.akipasa is ALREADY SET in Android/app/build.gradle.kts and referenced by Play listing documentation: do not change. iOS com.akipasa.app remains proposed only."
   },
   "platformRequirements": {
     "googlePlayTargetApiMinimum": 36,
@@ -25,7 +25,7 @@
     "supportUrl": "",
     "marketingUrl": "https://akipasa.com"
   },
-  "sourceObservation": "Next.js web/PWA; legacy host-aware manifest in src/app/manifest.ts",
+  "sourceObservation": "Existing native Android/ Gradle application, applicationId com.akipasa, compile/targetSdk 36, minSdk 26, native WebView integration; iOS packaging not found. Play Console listing ownership/status must be checked in console.",
   "gates": {
     "sourceAndLiveProductMappingVerified": false,
     "nativeAndroidBuildVerified": false,
