@@ -646,24 +646,29 @@ export function AppShell({
                 </Link>
               ))}
             </nav>
-            <div className="app-sheet-tools">
-              {!signedIn && (
-                <Link
-                  className="button button-strong"
-                  href={`/${locale}/auth`}
-                  onClick={() => setSheetOpen(false)}
-                >
+            <div className="app-sheet-account">
+              {!signedIn ? (
+                <Link href={`/${locale}/auth`} onClick={() => setSheetOpen(false)}>
                   {es ? "Entrar" : "Sign in"}
                 </Link>
+              ) : (
+                <>
+                  <Link
+                    href={`/${locale}/account/settings`}
+                    onClick={() => setSheetOpen(false)}
+                  >
+                    {es ? "Ajustes" : "Settings"}
+                  </Link>
+                  <form action={signOut}>
+                    <input type="hidden" name="locale" value={locale} />
+                    <button type="submit">
+                      {es ? "Cerrar sesión" : "Sign out"}
+                    </button>
+                  </form>
+                </>
               )}
-              {signedIn && (
-                <Link
-                  href={`/${locale}/account/settings`}
-                  onClick={() => setSheetOpen(false)}
-                >
-                  {es ? "Ajustes" : "Settings"}
-                </Link>
-              )}
+            </div>
+            <div className="app-sheet-tools">
               <ThemeToggle locale={locale} />
               <LanguageLink locale={other} />
             </div>
