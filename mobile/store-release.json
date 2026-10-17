@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "status": "PREPARATION_ONLY_NOT_SUBMITTABLE",
+  "product": "AkiPasa",
+  "webOrigin": "https://akipasa.com",
+  "startPath": "/es",
+  "proposedIdentifiers": {
+    "androidApplicationId": "com.akipasa",
+    "iosBundleId": "com.akipasa.app",
+    "warning": "Android com.akipasa is ALREADY SET in Android/app/build.gradle.kts and referenced by Play listing documentation: do not change. iOS com.akipasa.app remains proposed only."
+  },
+  "platformRequirements": {
+    "googlePlayTargetApiMinimum": 36,
+    "iosBuildWithXcodeMajorMinimum": 26
+  },
+  "listingDraft": {
+    "primaryLocale": "es-ES",
+    "secondaryLocale": "en-GB",
+    "categoryCandidate": "Lifestyle",
+    "shortDescriptionEs": "Descubre planes, eventos y locales cerca de ti.",
+    "shortDescriptionEn": "Discover events, venues and things to do nearby.",
+    "fullDescriptionEs": "AkiPasa te ayuda a descubrir eventos, locales y planes en España. Explora propuestas cerca de ti, busca por ciudad y descubre lugares en el mapa. Guarda tus favoritos y consulta los detalles de cada evento o establecimiento. La disponibilidad y las reservas dependen de cada oferta o negocio.",
+    "fullDescriptionEn": "Explore events, venues and things to do around Spain with AkiPasa. Search by city, discover nearby places on the map and save your favourites. Find useful information about local events and businesses. Availability and bookings depend on the event or venue.",
+    "privacyPolicyUrl": "",
+    "supportUrl": "",
+    "marketingUrl": "https://akipasa.com"
+  },
+  "sourceObservation": "Existing native Android/ Gradle application, applicationId com.akipasa, compile/targetSdk 36, minSdk 26, native WebView integration; iOS packaging not found. Play Console listing ownership/status must be checked in console.",
+  "gates": {
+    "sourceAndLiveProductMappingVerified": false,
+    "nativeAndroidBuildVerified": false,
+    "nativeIosBuildVerified": false,
+    "realDeviceAuthAndDeepLinksPassed": false,
+    "nativeAppExperienceReviewed": false,
+    "appAccountDeletionPassed": false,
+    "privacyDataSafetyDeclared": false,
+    "storeBillingCompliant": false,
+    "appIconsAndScreenshotsReviewed": false,
+    "reviewerDemoCredentialsPrepared": false,
+    "signingAndStoreAccountsConfigured": false,
+    "ageRatingAndContentDeclarationsComplete": false
+  },
+  "delivery": {
+    "android": "Android App Bundle (.aab) signed for Play App Signing, not generated",
+    "ios": "Signed .ipa archive and TestFlight build, not generated",
+    "intendedTracks": ["Play internal testing", "TestFlight internal testing"]
+  },
+  "notes": [
+    "Do not insert app signing keys, provisioning profiles, personal details, reviewer passwords or store API keys in Git.",
+    "Do not publish android/.well-known/assetlinks.json or apple-app-site-association with guessed fingerprints/team IDs.",
+    "Respect AkiSuite cross-domain OAuth callback and application deep linking; each product must survive login, logout and password recovery.",
+    "No automatic purchase-flow enabling: review mobile digital subscription rules and local availability before release."
+  ]
+}

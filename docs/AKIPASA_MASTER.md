@@ -1,5 +1,17 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-17 | Five-product mobile store preparation (non-release)
+
+Mobile store-release preparation for AkiPasa is tracked under `mobile/` and
+cross-referenced with separate AkiDuermo, AkiCoches, AkiHQ and AkiBusiness
+repository PRs. Each product requires its own native build, approved canonical
+role/source, unique bundle/package ID, real-device auth and deep-link tests,
+privacy/deletion review, store-compliant subscription treatment and signing.
+This is **metadata, validation and planning only**, not a shipping Android/iOS app.
+The new workflow validates metadata consistency, never implies a native build,
+and explicit release gates start false; production behavior is unchanged.
+The role swap must be verified before branding AkiHQ/AkiBusiness app binaries.
+
 ## 2026-10-15 | Rental company cards in the legacy Business portal
 
 The AkiPasa-hosted Business home lists rental companies submitted by the signed-in
