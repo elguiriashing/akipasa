@@ -18,7 +18,7 @@ for (const locale of ["en", "es"] as const) {
     [1024, 768],
     [1440, 1000],
   ]) {
-    test(`all seven AkiSuite plans: ${locale}, ${width}px`, async ({
+    test(`scoped AkiSuite plans: ${locale}, ${width}px`, async ({
       page,
     }) => {
       const errors: string[] = [];
@@ -31,7 +31,7 @@ for (const locale of ["en", "es"] as const) {
       const catalogue = page.locator(
         'section[aria-labelledby="akisuite-catalogue-title"]',
       );
-      await expect(catalogue.locator("article")).toHaveCount(7);
+      await expect(catalogue.locator("article")).toHaveCount(4);
       await expect(
         catalogue.locator("article").first().getByRole("heading"),
       ).toHaveText("Aki Enterprise");
@@ -41,7 +41,7 @@ for (const locale of ["en", "es"] as const) {
       await expect(catalogue.locator("#akisuite-sector")).toHaveCount(1);
       await expect(
         catalogue.locator("article button[type=submit]"),
-      ).toHaveCount(7);
+      ).toHaveCount(4);
       for (const button of await catalogue
         .locator("article button[type=submit]")
         .all())
@@ -50,12 +50,8 @@ for (const locale of ["en", "es"] as const) {
       await expect(catalogue.locator("#aki_enterprise")).toContainText(
         locale === "es" ? "767,90" : "767.90",
       );
-      await expect(catalogue.locator("#akipasa_premium")).toContainText(
-        locale === "es" ? "19,10" : "19.10",
-      );
-      await expect(catalogue.locator("#akihq_business_addon")).toContainText(
-        locale === "es" ? "76,70" : "76.70",
-      );
+      await expect(catalogue.locator("#akipasa_premium")).toHaveCount(0);
+      await expect(catalogue.locator("#akihq_business_addon")).toHaveCount(0);
       await catalogue.getByRole("radio").nth(0).check();
       await expect(catalogue.locator("#aki_enterprise")).toContainText(
         locale === "es" ? "79,99" : "79.99",
