@@ -14,7 +14,6 @@ AkiDuermo/AkiCoches business products, native pages and spreadsheet ingestion
 remain out of scope for this first candidate. Never expose an unverified price.
 Validate contract, format, tests and live checkout separation before merging.
 
-
 ## 2026-10-17 | October upstream dependency security patch
 
 AkiPasa pins Next.js and eslint-config-next to 15.5.28 and React/React DOM

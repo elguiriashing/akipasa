@@ -22,7 +22,6 @@
 - **Release:** keep draft and do not merge to production before all checks
   and end-to-end launch criteria pass.
 
-
 ## 2026-10-17 | Next.js and React October security backports
 
 - **Before:** Next.js/eslint-config-next 15.5.27 and React/React DOM 19.1.0
