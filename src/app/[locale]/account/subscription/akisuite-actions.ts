@@ -1,5 +1,6 @@
 "use server";
 import { redirect } from "next/navigation";
+import { personalPremiumLaunchOpen } from "@/lib/akisuite-premium-launch";
 import { z } from "zod";
 import { requireUser } from "@/lib/auth";
 import { config } from "@/lib/config";
@@ -51,6 +52,8 @@ export async function startAkiSuiteCheckout(formData: FormData) {
   )
     failed("checkout_unavailable");
   const { plan, interval, workspaceId } = parsed.data;
+  if (plan === "akipasa_premium" && !personalPremiumLaunchOpen())
+    failed("checkout_unavailable");
   const workspace = plan === "akipasa_premium" ? null : workspaceId;
   if (plan !== "akipasa_premium" && !workspace) failed("workspace_required");
   const { supabase, user } = await requireUser(

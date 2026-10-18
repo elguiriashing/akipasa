@@ -199,7 +199,7 @@ test("membership offer is reachable before sign in", async ({ page }) => {
   const catalogue = page.locator(
     'section[aria-labelledby="akisuite-catalogue-title"]',
   );
-  await expect(catalogue.locator("article")).toHaveCount(7);
+  await expect(catalogue.locator("article")).toHaveCount(4);
   await expect(
     catalogue.locator("article button[type=submit]").first(),
   ).toBeDisabled();

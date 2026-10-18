@@ -1,3 +1,4 @@
+import { personalPremiumLaunchOpen } from "@/lib/akisuite-premium-launch";
 import { SubscriptionRefresh } from "@/components/SubscriptionRefresh";
 import { PremiumAdsConversion } from "@/components/PremiumAdsConversion";
 import { notFound } from "next/navigation";
@@ -247,6 +248,7 @@ export default async function SubscriptionPage({
           suiteCatalogueReady && !accessUnavailable && !suiteRows.error
         }
         originatingApp={akiSuiteApp(query.from)}
+        personalPremiumUnlocked={personalPremiumLaunchOpen()}
         workspaces={workspaceResult.data || []}
         activePlans={personalPlans}
         workspacePlans={workspacePlans}

@@ -1,5 +1,19 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-18 | Membership rollout gate and scoped catalogue (candidate PR #201)
+
+Personal AkiPasa Premium is absent from public/account offer grids until a
+server-controlled adoption threshold is reached. The gate requires explicit
+activation, finite earned-points input and a positive threshold; it defaults
+closed and supports a force-off switch. The checkout server action also rejects
+AkiPasa Premium purchases while closed. Current subscriptions/entitlements
+remain untouched. The offer grid uses the origin app to hide irrelevant legacy
+consumer products, while retaining Enterprise and business operations plans.
+The old AkiHQ Stripe catalogue keys have **not** been rebranded or migrated.
+AkiDuermo/AkiCoches business products, native pages and spreadsheet ingestion
+remain out of scope for this first candidate. Never expose an unverified price.
+Validate contract, format, tests and live checkout separation before merging.
+
 ## 2026-10-17 | October upstream dependency security patch
 
 AkiPasa pins Next.js and eslint-config-next to 15.5.28 and React/React DOM
