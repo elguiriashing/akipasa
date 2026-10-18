@@ -18,9 +18,7 @@ for (const locale of ["en", "es"] as const) {
     [1024, 768],
     [1440, 1000],
   ]) {
-    test(`scoped AkiSuite plans: ${locale}, ${width}px`, async ({
-      page,
-    }) => {
+    test(`scoped AkiSuite plans: ${locale}, ${width}px`, async ({ page }) => {
       const errors: string[] = [];
       page.on("pageerror", (error) => errors.push(error.message));
       await page.setViewportSize({ width, height });
