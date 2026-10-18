@@ -9,6 +9,7 @@ describe("AkiDuermo membership landing", () => {
     expect(page).toContain("AkiBusiness Standard");
     expect(page).toContain("AkiBusiness Pro");
     expect(page).toContain("AkiEnterprise");
+    expect(page).toContain("StayAppShell");
     expect(page).not.toContain("startAkiSuiteCheckout");
     expect(page).toContain("<StayAppShell locale={locale}>");
   });
