@@ -310,7 +310,11 @@ export function SuitePricingExperience({
     },
     listing: {
       name:
-        product === "akihq" ? (es ? "Premium para empresas" : "Premium for businesses") : `${app.name} Premium ${es ? "para empresas" : "for Businesses"}`,
+        product === "akihq"
+          ? es
+            ? "Premium para empresas"
+            : "Premium for businesses"
+          : `${app.name} Premium ${es ? "para empresas" : "for Businesses"}`,
       label: es ? "Para empresas" : "For businesses",
       benefits: es ? app.listingEs : app.listingEn,
     },
