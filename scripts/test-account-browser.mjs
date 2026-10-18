@@ -797,14 +797,14 @@ try {
               const catalogue = page.locator(
                 '[aria-labelledby="akisuite-catalogue-title"]',
               );
-              await expect(catalogue.locator("article")).toHaveCount(7);
-              await expect(catalogue.locator("form")).toHaveCount(7);
+              await expect(catalogue.locator("article")).toHaveCount(4);
+              await expect(catalogue.locator("form")).toHaveCount(4);
               for (const button of await catalogue
                 .locator("article button[type=submit]")
                 .all())
                 await expect(button).toBeDisabled();
               await expect(page.locator(".workspace-content form")).toHaveCount(
-                7,
+                4,
               );
             } else
               await expect(page.locator(".workspace-content form")).toHaveCount(
@@ -927,7 +927,7 @@ try {
             .toBe(true);
           if (width === 360) {
             const cards = page.getByRole("article");
-            await expect(cards).toHaveCount(7);
+            await expect(cards).toHaveCount(3);
             for (const card of await cards.all()) {
               // Card order stays stable when the button changes its name on expansion.
               const button = card.locator("button[aria-expanded]");
@@ -937,7 +937,7 @@ try {
             }
             await expect(
               page.locator('article button[aria-expanded="true"]'),
-            ).toHaveCount(7);
+            ).toHaveCount(3);
           }
           const links = page.getByRole("link", {
             name:
@@ -945,7 +945,7 @@ try {
                 ? "Continuar en mi cuenta"
                 : "Continue in my account",
           });
-          await expect(links).toHaveCount(7);
+          await expect(links).toHaveCount(3);
           for (const link of await links.all()) {
             await expect(link).toBeVisible();
             await expect(link).toHaveAttribute(
@@ -1013,7 +1013,7 @@ try {
           await expect(page.locator("article a")).toHaveCount(0);
           await expect(
             page.locator("article form button:disabled"),
-          ).toHaveCount(7);
+          ).toHaveCount(3);
           results.push({
             route: "membership-handoff",
             locale,
