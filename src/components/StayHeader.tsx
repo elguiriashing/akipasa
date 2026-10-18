@@ -36,6 +36,9 @@ export function StayHeader({
         product="duermo"
         onLanguageChange={changeLanguage}
       >
+        <Link href={`/membership?lang=${locale}`}>
+          {es ? "Membresías" : "Membership"}
+        </Link>
         <Link
           href={`/settings?lang=${locale}`}
           aria-label={es ? "Ajustes" : "Settings"}
