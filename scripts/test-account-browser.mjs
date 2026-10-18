@@ -504,7 +504,7 @@ async function interactions(page, route, locale) {
     const catalogue = page.locator(
       '[aria-labelledby="akisuite-catalogue-title"]',
     );
-    await expect(catalogue.locator("article")).toHaveCount(7);
+    await expect(catalogue.locator("article")).toHaveCount(4);
     await catalogue
       .getByRole("radio", { name: es ? /Anual/ : /Yearly/ })
       .check();
