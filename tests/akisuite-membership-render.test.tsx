@@ -104,7 +104,9 @@ describe("membership account handoff", () => {
               ? "Continuar en mi cuenta"
               : "Continue in my account",
         });
-        expect(links).toHaveLength(app === "akipasa" || app === "akibusiness" ? 4 : 3);
+        expect(links).toHaveLength(
+          app === "akipasa" || app === "akibusiness" ? 4 : 3,
+        );
         for (const link of links)
           expect(link.getAttribute("href")).toBe(
             `/${locale}/account/subscription?from=${app}`,
