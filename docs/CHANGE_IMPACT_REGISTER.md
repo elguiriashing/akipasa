@@ -1,5 +1,32 @@
 # Change Impact Register
 
+## 2026-10-18 | Local AkiSuite membership catalogue and Premium adoption gate (candidate)
+
+- **Before:** all seven legacy plans appeared in a mixed catalogue on AkiPasa;
+  Duermo/Coches redirected membership visitors away from their own domains.
+  The sector picker was disconnected from the operations cards. Existing
+  personal checkout could be invoked through an old server action.
+- **After:** a product-coloured, responsive membership studio with billing
+  toggle and sector-aware Standard/Pro cards on AkiPasa, AkiDuermo, AkiCoches,
+  and the free AkiHQ management app. The business listing upgrade stays visible;
+  personal Premium disappears while the flag is false. AkiPasa account retains
+  billing history and cross-product access rather than selling other apps' plans.
+- **Dependencies/impact:** independent product route middleware/host allowlists,
+  Supabase public read-only feature_flags, old Stripe checkout Server Actions,
+  legacy customer entitlements, shared auth, EN/ES and product PWA logos.
+  Migration is additive and defaults the key to false; not yet applied.
+- **Safety:** new v2 Stripe prices/products are staged/inactive. Public CTAs
+  are email enquiries, not payments. Never replace with old Enterprise charges.
+  No existing subscriptions, permissions, invoices or media are modified.
+- **Acceptance:** four PR CI suites, exact-source Cloudflare build, local and
+  legacy billing redirect/credential scrub, disabled/error/enabled gate, login
+  continuity, responsive mobile/tablet/desktop, EN/ES, dark/light navigation.
+  Do not merge or deploy if checks fail or the worker cannot be verified.
+- **Rollback:** revert these pages/components/routing and leave historic
+  subscriptions untouched. Keep personal Premium flag false until the approved
+  adoption trigger and verified paid catalogue are ready.
+
+
 ## 2026-10-17 | Next.js and React October security backports
 
 - **Before:** Next.js/eslint-config-next 15.5.27 and React/React DOM 19.1.0
