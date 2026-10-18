@@ -184,7 +184,7 @@ for (const locale of ["en", "es"] as const) {
   );
 }
 
-it("retains plan selection after successful reads with no billing records", async () => {
+it("keeps locked personal Premium hidden after successful billing reads", async () => {
   fixture.tables.profiles = { membership_tier: "free" };
   fixture.tables.billing_subscriptions = [];
   fixture.tables.billing_customers = null;
@@ -196,15 +196,18 @@ it("retains plan selection after successful reads with no billing records", asyn
   );
   expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+  expect(
+    screen.queryByRole("heading", { name: "AkiPasa Premium" }),
+  ).not.toBeInTheDocument();
   const card = screen
-    .getByRole("heading", { name: "AkiPasa Premium" })
+    .getByRole("heading", { name: "AkiBusiness Premium" })
     .closest("article")!;
   const form = within(card)
     .getByRole("button", { name: "Coming soon" })
     .closest("form")!;
   expect(Object.fromEntries(new FormData(form))).toEqual({
     locale: "en",
-    plan: "akipasa_premium",
+    plan: "akibusiness_premium",
     interval: "month",
   });
   expect(startSubscriptionCheckout).not.toHaveBeenCalled();
