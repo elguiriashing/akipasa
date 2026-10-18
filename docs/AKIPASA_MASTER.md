@@ -1,5 +1,9 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-18 | AkiDuermo membership navigation fix
+
+The accommodation header settings menu now provides a direct on-product `/membership` link in EN/ES. The existing accommodation-host route handles `/membership` locally and no checkout behavior changes. Do not infer production availability from the master merge: the `akiduermo` Cloudflare Worker is built and deployed separately and must be refreshed from exact verified source, then smoke-tested at `https://akiduermo.com/membership`. Rollback is a header-link revert.
+
 ## 2026-10-18 | Membership rollout gate and scoped catalogue (candidate PR #201)
 
 Personal AkiPasa Premium is absent from public/account offer grids until a
