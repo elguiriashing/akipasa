@@ -1,5 +1,28 @@
 # Change Impact Register
 
+## 2026-10-18 | Origin-scoped membership offers and personal Premium lock (candidate PR #201)
+
+- **Before:** central membership grid exposed the complete old suite catalogue
+  regardless of originating product and allowed personal Premium checkout whenever
+  the generic Stripe checkout readiness flag was enabled.
+- **After:** origin-scoped legacy grid and explicit fail-closed Premium launch gate
+  in the page and the checkout server action. Env controls:
+  `AKISUITE_PERSONAL_PREMIUM_ENABLED=true`,
+  `AKISUITE_ADOPTION_EARNED_POINTS`, `AKISUITE_ADOPTION_UNLOCK_THRESHOLD`;
+  `AKISUITE_PERSONAL_PREMIUM_FORCE_OFF=true` overrides all.
+  All are unset by default; no spreadsheet polling is enabled.
+- **Access and billing:** current subscribers unchanged. No database migration,
+  Stripe price changes, webhooks, or domain cutover. Existing operations plan
+  identifiers remain legacy AkiHQ names until the verified billing migration.
+- **Risks:** unfinished AkiDuermo/AkiCoches storefront integration and business
+  listings; host-specific query context; inconsistent catalogue naming.
+- **Verification:** unit launch tests, UI source regression, CI format/contract,
+  manual logged-in/out testing, Stripe reconciliation and each Cloudflare host.
+- **Rollback:** revert the PR; gate remains disabled until independently activated.
+- **Release:** keep draft and do not merge to production before all checks
+  and end-to-end launch criteria pass.
+
+
 ## 2026-10-17 | Next.js and React October security backports
 
 - **Before:** Next.js/eslint-config-next 15.5.27 and React/React DOM 19.1.0
