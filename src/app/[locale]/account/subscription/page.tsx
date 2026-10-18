@@ -4,8 +4,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { AkiSuiteMembershipHub } from "@/components/AkiSuiteMembershipHub";
 import { requireUser } from "@/lib/auth";
-import { resolveMembershipHub } from "@/lib/akisuite-membership";
-import { type AkiSuitePlan, akiSuiteApp } from "@/lib/akisuite-catalogue";
+import { akiSuiteApp } from "@/lib/akisuite-catalogue";
 import { akiSuiteCheckoutReady } from "@/lib/akisuite-readiness";
 import { isLocale } from "@/lib/config";
 import { prepareAkiSuiteWorkspace } from "./akisuite-actions";
@@ -72,34 +71,6 @@ export default async function SubscriptionPage({
     process.env.AKISUITE_SUBSCRIPTIONS_READY === "true"
       ? await supabase.rpc("akisuite_accessible_workspace_plans")
       : { data: [], error: null };
-  const access = resolveMembershipHub(
-    subscriptions || [],
-    (suiteRows.data || []).filter(
-      (row) =>
-        row.plan_code === "akipasa_premium" ||
-        row.plan_code === "aki_enterprise",
-    ),
-    grants || [],
-    Date.now(),
-  );
-  const workspacePlans: Record<string, AkiSuitePlan[]> = {};
-  for (const workspace of workspaceResult.data || []) {
-    workspacePlans[workspace.id] = resolveMembershipHub(
-      [],
-      (suiteRows.data || []).filter((row) => row.workspace_id === workspace.id),
-      [],
-      Date.now(),
-    ).activePlans;
-  }
-  // Enterprise's personal benefit follows the payer; its business benefits follow its workspace.
-  const personalPlans = access.activePlans.filter(
-    (plan) => plan !== "aki_enterprise",
-  );
-  if (
-    access.activePlans.includes("aki_enterprise") &&
-    !personalPlans.includes("akipasa_premium")
-  )
-    personalPlans.push("akipasa_premium");
   const es = locale === "es";
   const suiteCatalogueReady = akiSuiteCheckoutReady();
   const accessUnavailable = Boolean(
