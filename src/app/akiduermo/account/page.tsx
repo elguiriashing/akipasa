@@ -83,6 +83,7 @@ export default async function StayAccountPage() {
                 : "Your upcoming stays, favourite places and account details in one place."}
             </p>
             <div className={styles.heroActions}>
+              <Link href="/akiduermo/membership" className={styles.secondaryButton}>{es ? "Membresías" : "Membership"}</Link>
               <Link href={"/?lang=" + locale} className={styles.primaryButton}>
                 {es ? "Explorar alojamientos" : "Explore stays"}{" "}
                 <span aria-hidden="true">↗</span>
