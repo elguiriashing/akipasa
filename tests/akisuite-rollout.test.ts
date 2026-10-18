@@ -31,15 +31,24 @@ describe("personal Premium adoption milestone", () => {
     expect(await personalPremiumVisible()).toBe(false);
   });
   it("stays hidden on a disabled feature flag", async () => {
-    mocked.maybeSingle.mockResolvedValue({ data: { enabled: false }, error: null });
+    mocked.maybeSingle.mockResolvedValue({
+      data: { enabled: false },
+      error: null,
+    });
     expect(await personalPremiumVisible()).toBe(false);
   });
   it("only appears after the authoritative flag is enabled", async () => {
-    mocked.maybeSingle.mockResolvedValue({ data: { enabled: true }, error: null });
+    mocked.maybeSingle.mockResolvedValue({
+      data: { enabled: true },
+      error: null,
+    });
     expect(await personalPremiumVisible()).toBe(true);
   });
   it("fails closed on database error or network interruption", async () => {
-    mocked.maybeSingle.mockResolvedValueOnce({ data: { enabled: true }, error: { message: "Database unavailable" } });
+    mocked.maybeSingle.mockResolvedValueOnce({
+      data: { enabled: true },
+      error: { message: "Database unavailable" },
+    });
     expect(await personalPremiumVisible()).toBe(false);
     mocked.maybeSingle.mockRejectedValueOnce(new Error("Offline"));
     expect(await personalPremiumVisible()).toBe(false);
