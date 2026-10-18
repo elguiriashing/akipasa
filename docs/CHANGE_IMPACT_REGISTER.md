@@ -1,5 +1,12 @@
 # Change Impact Register
 
+## 2026-10-18 | AkiDuermo membership discoverability
+
+- Before: native `/membership` page existed in merged source but was absent from the accommodation header's menu; separate `akiduermo` Worker production was stale.
+- After: add a localized membership header entry targeting the same origin; no payments, RLS, or database changes.
+- Verification: typecheck, UI check, membership navigation, exact-source dedicated Worker deployment and live domain response checks.
+- Rollback: revert the header entry; do not redirect users to the wrong product as a workaround.
+
 ## 2026-10-18 | Origin-scoped membership offers and personal Premium lock (candidate PR #201)
 
 - **Before:** central membership grid exposed the complete old suite catalogue
