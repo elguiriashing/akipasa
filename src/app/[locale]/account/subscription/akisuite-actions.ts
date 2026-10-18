@@ -299,8 +299,12 @@ export async function changeAkiSuiteSubscription(formData: FormData) {
     return failed("existing_subscription");
   // Existing personal subscribers may manage their billing interval. Do not
   // allow a new purchase through plan replacement while rollout is locked.
-  if (plan === "akipasa_premium" && source.plan_code !== "akipasa_premium" &&
-      !(await personalPremiumVisible())) failed("checkout_unavailable");
+  if (
+    plan === "akipasa_premium" &&
+    source.plan_code !== "akipasa_premium" &&
+    !(await personalPremiumVisible())
+  )
+    failed("checkout_unavailable");
   const { data: launch, error: launchError } = await supabase.rpc(
     "akisuite_launch_ready",
   );

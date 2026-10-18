@@ -214,15 +214,28 @@ export default async function SubscriptionPage({
         )}
       <section className="account-control-card" id="product-memberships">
         <h2>{es ? "Membresías de AkiPasa" : "AkiPasa memberships"}</h2>
-        <p>{es
-          ? "Cada producto muestra sus propios planes. Aquí puedes gestionar las suscripciones que ya tienes."
-          : "Each AkiSuite product now displays its own plans. Continue managing your existing subscriptions here."}</p>
+        <p>
+          {es
+            ? "Cada producto muestra sus propios planes. Aquí puedes gestionar las suscripciones que ya tienes."
+            : "Each AkiSuite product now displays its own plans. Continue managing your existing subscriptions here."}
+        </p>
         <Link className="button button-strong" href={`/${locale}/membership`}>
           {es ? "Ver planes de AkiPasa" : "Explore AkiPasa plans"} →
         </Link>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: ".75rem", marginTop: "1rem" }}>
-          <a href="https://akiduermo.com/membership">{es ? "Planes AkiDuermo ↗" : "AkiDuermo plans ↗"}</a>
-          <a href="https://akicoches.com/membership">{es ? "Planes AkiCoches ↗" : "AkiCoches plans ↗"}</a>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: ".75rem",
+            marginTop: "1rem",
+          }}
+        >
+          <a href="https://akiduermo.com/membership">
+            {es ? "Planes AkiDuermo ↗" : "AkiDuermo plans ↗"}
+          </a>
+          <a href="https://akicoches.com/membership">
+            {es ? "Planes AkiCoches ↗" : "AkiCoches plans ↗"}
+          </a>
         </div>
       </section>
       <p className="subscription-note">
