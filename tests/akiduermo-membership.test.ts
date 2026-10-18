@@ -10,6 +10,7 @@ describe("AkiDuermo membership landing", () => {
     expect(page).toContain("AkiBusiness Pro");
     expect(page).toContain("AkiEnterprise");
     expect(page).not.toContain("startAkiSuiteCheckout");
+    expect(page).toContain("<StayAppShell locale={locale}>");
   });
   it("connects the accommodation account to the new local page", () => {
     expect(account).toContain('href="/akiduermo/membership"');
