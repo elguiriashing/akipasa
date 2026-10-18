@@ -198,6 +198,7 @@ export function AkiSuiteMembershipGrid({
   checkoutReady = false,
   purchaseMode = "checkout",
   originatingApp = "akipasa",
+  personalPremiumUnlocked = false,
   activePlans = [],
   accessUnavailable = false,
   workspaces = [],
@@ -207,6 +208,7 @@ export function AkiSuiteMembershipGrid({
   checkoutReady?: boolean;
   purchaseMode?: "account" | "checkout";
   originatingApp?: AkiSuiteApp;
+  personalPremiumUnlocked?: boolean;
   activePlans?: AkiSuitePlan[];
   accessUnavailable?: boolean;
   workspaces?: Array<{ id: string; name: string }>;
@@ -274,7 +276,15 @@ export function AkiSuiteMembershipGrid({
         </fieldset>
       )}
       <div className={styles.grid}>
-        {order.map((key) => {
+        {order.filter((key) => {
+          // The legacy Stripe catalogue uses AkiHQ keys for the operations suite.
+          // Keep those purchase IDs until the Stripe migration has been verified.
+          if (key === "akipasa_premium") return originatingApp === "akipasa" && personalPremiumUnlocked;
+          if (key === "akiduermo_premium") return originatingApp === "akiduermo" && personalPremiumUnlocked;
+          if (key === "akibusiness_premium") return originatingApp === "akipasa" || originatingApp === "akibusiness";
+          if (key === "akihq_business_addon") return false;
+          return key === "aki_enterprise" || key === "akihq_standard" || key === "akihq_pro";
+        }).map((key) => {
           const item = akisuitePlans[key];
           const details = descriptions[key];
           const cents = akisuitePriceCents(key, interval);
