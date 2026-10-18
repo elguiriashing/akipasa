@@ -42,7 +42,12 @@ describe("shared EN/ES membership host aliases", () => {
             new NextRequest(`https://${host}/${locale}/${path}`),
           );
           const location = response.headers.get("location");
-          if (host === "akipasa.com" && path === "membership")
+          if (host === "akiduermo.akipasa.com" && path === "membership") {
+            const target = new URL(location!);
+            expect(target.hostname).toBe(host);
+            expect(target.pathname).toBe("/membership");
+            expect(target.searchParams.get("lang")).toBe(locale);
+          } else if (host === "akipasa.com" && path === "membership")
             expect(location).toBeNull();
           else {
             const target = new URL(location!);
