@@ -11,6 +11,7 @@ import {
   akiSuiteRelevantSubscription,
 } from "@/lib/akisuite-catalogue";
 import { verifiedAkiSuitePriceId } from "@/lib/akisuite-stripe";
+import { personalPremiumVisible } from "@/lib/akisuite-rollout";
 import { stripeRequest, stripeRetrieve } from "@/lib/stripe";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 const planSchema = z.object({
@@ -51,6 +52,9 @@ export async function startAkiSuiteCheckout(formData: FormData) {
   )
     failed("checkout_unavailable");
   const { plan, interval, workspaceId } = parsed.data;
+  // The milestone is enforced on the server, not merely by hiding its card.
+  if (plan === "akipasa_premium" && !(await personalPremiumVisible()))
+    failed("checkout_unavailable");
   const workspace = plan === "akipasa_premium" ? null : workspaceId;
   if (plan !== "akipasa_premium" && !workspace) failed("workspace_required");
   const { supabase, user } = await requireUser(
@@ -293,6 +297,10 @@ export async function changeAkiSuiteSubscription(formData: FormData) {
   );
   if (error || !source || !["active", "trialing"].includes(source.status))
     return failed("existing_subscription");
+  // Existing personal subscribers may manage their billing interval. Do not
+  // allow a new purchase through plan replacement while rollout is locked.
+  if (plan === "akipasa_premium" && source.plan_code !== "akipasa_premium" &&
+      !(await personalPremiumVisible())) failed("checkout_unavailable");
   const { data: launch, error: launchError } = await supabase.rpc(
     "akisuite_launch_ready",
   );
