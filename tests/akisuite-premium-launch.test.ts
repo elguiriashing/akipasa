@@ -7,7 +7,7 @@ const keys = [
   "AKISUITE_ADOPTION_EARNED_POINTS",
   "AKISUITE_ADOPTION_UNLOCK_THRESHOLD",
 ] as const;
-const original = Object.fromEntries(keys.map(key => [key, process.env[key]]));
+const original = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
 afterEach(() => {
   for (const key of keys) {
     const value = original[key];
