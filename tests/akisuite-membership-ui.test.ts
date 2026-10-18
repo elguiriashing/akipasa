@@ -32,12 +32,12 @@ describe("AkiSuite localized membership catalogue", () => {
     expect(grid).toContain("startAkiSuiteCheckout");
   });
 
-  it("keeps seven plans visible and restores sector-specific AkiHQ tool previews", () => {
+  it("scopes offers and retains sector-specific operations previews", () => {
     expect(grid).toContain("businessCategories.map");
     expect(grid).toContain("getBusinessPackageHighlights");
     expect(grid).toContain("businessPackageTools[sectorTier]");
     expect(grid).toContain("aria-expanded={expandedPlans.includes(key)}");
-    expect(grid).toContain("order.filter");
+    expect(grid).toContain(".filter((key) => {");
   });
 
   it("uses original AkiSuite app marks for every plan including bundles", () => {
