@@ -163,11 +163,7 @@ describe("membership account handoff", () => {
       ).toHaveLength(4);
       for (const button of workspaceButtons)
         expect((button as HTMLButtonElement).disabled).toBe(true);
-      expect(
-        document.querySelector<HTMLButtonElement>(
-          "#akipasa_premium form button",
-        )?.disabled,
-      ).toBe(false);
+      expect(document.querySelector("#akipasa_premium")).toBeNull();
     },
   );
   it("keeps final account purchases scoped to the selected owned workspace and its access", () => {
