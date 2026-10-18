@@ -33,7 +33,7 @@ export async function middleware(request: NextRequest) {
   const membershipAlias = request.nextUrl.pathname.match(
     /^\/(?:(en|es)\/)?(membership|memberships|account\/(?:membership|memberships|subscription))\/?$/,
   );
-  if (membershipAlias) {
+  if (membershipAlias && !(isAkiDuermo && membershipAlias[2] === "membership")) {
     const target = request.nextUrl.clone();
     const locale =
       membershipAlias[1] ||
