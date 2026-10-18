@@ -27,6 +27,9 @@ export function stayHref(slug: string, locale: StayLocale) {
   return `${stayOrigin}/stays/${encodeURIComponent(slug)}?lang=${locale}`;
 }
 export function stayHostRoute(pathname: string) {
+  const localizedMembership = pathname.match(/^\/(en|es)\/membership\/?$/);
+  if (localizedMembership)
+    return { kind: "legacy" as const, path: "/membership", locale: localizedMembership[1] };
   if (/^\/(?:en|es)\/duermo\/memberships\/?$/.test(pathname))
     return { kind: "public" as const, path: pathname };
   const legacy = pathname.match(/^\/(en|es)\/venues\/([^/]+)\/?$/);
