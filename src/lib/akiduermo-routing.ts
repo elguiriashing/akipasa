@@ -6,6 +6,7 @@ export const stayMemberPaths = [
   "/account",
   "/bookings",
   "/settings",
+  "/membership",
 ];
 export function safeStayDestination(requested?: string) {
   if (!requested || requested.startsWith("//") || /[\\\r\n]/.test(requested))
