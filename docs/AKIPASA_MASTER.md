@@ -1,5 +1,28 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-18 | Product-scoped AkiSuite membership studios (candidate)
+
+AkiPasa, AkiDuermo and AkiCoches now stage independent membership pages
+showing only that product's Personal Premium (only once the server-owned
+adoption flag is unlocked), business listing Premium, AkiBusiness Standard,
+AkiBusiness Pro and AkiEnterprise. Free AkiHQ has a business-plan overview.
+The old AkiPasa public multi-product catalogue is removed, but its account
+subscription history and existing entitlement/billing management remain.
+AkiBusiness is the paid operations product and is advertised from discovery
+apps rather than made an unauthenticated operations portal.
+
+The authoritative feature flag is `feature_flags.personal_premium_unlocked`
+(default false on missing/error). Do not set a threshold until the future
+city-population-weighted points workbook is connected and approved.
+Legacy AkiPasa personal checkout is gated at the server as well. Stripe v2
+products are inactive, including personal €1.99, business listing €14.99,
+AkiBusiness Standard €24.99, Plus €44.99 and Pro €64.99. No new checkout
+or v2 Enterprise entitlement is enabled; existing live prices and customers
+must not be silently remapped. Enterprise is enquiry-only until approved.
+See `docs/AKISUITE_MEMBERSHIP_STUDIO_20261018.md` for routes, pricing,
+dependencies, acceptance and release hold.
+
+
 ## 2026-10-17 | October upstream dependency security patch
 
 AkiPasa pins Next.js and eslint-config-next to 15.5.28 and React/React DOM
