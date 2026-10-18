@@ -12,12 +12,12 @@ afterEach(cleanup);
 
 describe("real AkiSuite catalogue interactions", () => {
   it.each(["en", "es"] as const)(
-    "keeps seven packages visible and toggles the approved annual amounts in %s",
+    "keeps scoped packages visible and toggles annual amounts in %s",
     (locale) => {
       render(
         <AkiSuiteMembershipGrid locale={locale} originatingApp="akiduermo" />,
       );
-      expect(screen.getAllByRole("article")).toHaveLength(7);
+      expect(screen.getAllByRole("article")).toHaveLength(3);
       expect(screen.getAllByRole("article")[0].textContent).toContain(
         "Aki Enterprise",
       );
@@ -28,10 +28,8 @@ describe("real AkiSuite catalogue interactions", () => {
       expect(document.getElementById("aki_enterprise")?.textContent).toContain(
         locale === "es" ? "767,90" : "767.90",
       );
-      expect(document.getElementById("akipasa_premium")?.textContent).toContain(
-        locale === "es" ? "19,10" : "19.10",
-      );
-      expect(document.querySelectorAll('[data-origin="true"]')).toHaveLength(1);
+      expect(document.getElementById("akipasa_premium")).toBeNull();
+      expect(document.querySelectorAll('[data-origin="true"]')).toHaveLength(0);
       expect(document.querySelector("#akisuite-sector")).not.toBeNull();
     },
   );
@@ -43,14 +41,14 @@ describe("real AkiSuite catalogue interactions", () => {
         activePlans={["aki_enterprise"]}
       />,
     );
-    expect(screen.getAllByText("Plan included")).toHaveLength(6);
+    expect(screen.getAllByText("Plan included")).toHaveLength(4);
     const personalCheckout = document.querySelector<HTMLButtonElement>(
       "#akipasa_premium form button",
     );
-    expect(personalCheckout?.disabled).toBe(true);
+    expect(personalCheckout).toBeNull();
     expect(
       screen.getAllByRole("link", { name: "View my access" }),
-    ).toHaveLength(6);
+    ).toHaveLength(4);
   });
   it("distinguishes staff access and excludes future grants and delinquent subscriptions", () => {
     const now = Date.parse("2026-10-12T12:00:00Z");
@@ -106,7 +104,7 @@ describe("membership account handoff", () => {
               ? "Continuar en mi cuenta"
               : "Continue in my account",
         });
-        expect(links).toHaveLength(7);
+        expect(links).toHaveLength(app === "akipasa" || app === "akibusiness" ? 4 : 3);
         for (const link of links)
           expect(link.getAttribute("href")).toBe(
             `/${locale}/account/subscription?from=${app}`,
@@ -142,7 +140,7 @@ describe("membership account handoff", () => {
         screen.getAllByRole("button", {
           name: locale === "es" ? "Disponible próximamente" : "Coming soon",
         }),
-      ).toHaveLength(7);
+      ).toHaveLength(4);
       for (const button of document.querySelectorAll<HTMLButtonElement>(
         "article form button",
       ))
@@ -155,12 +153,12 @@ describe("membership account handoff", () => {
             ? "Prepara un espacio de trabajo"
             : "Prepare a workspace",
       });
-      expect(workspaceButtons).toHaveLength(6);
+      expect(workspaceButtons).toHaveLength(4);
       expect(
         screen.getAllByRole("link", {
           name: locale === "es" ? "Preparar mi negocio" : "Prepare my business",
         }),
-      ).toHaveLength(6);
+      ).toHaveLength(4);
       for (const button of workspaceButtons)
         expect((button as HTMLButtonElement).disabled).toBe(true);
       expect(
@@ -182,30 +180,12 @@ describe("membership account handoff", () => {
         workspacePlans={{ one: ["akihq_pro"] }}
       />,
     );
+    expect(document.querySelector("#akihq_business_addon")).toBeNull();
     expect(
-      document.querySelector<HTMLButtonElement>(
-        "#akihq_business_addon form button",
-      )?.disabled,
-    ).toBe(false);
-    expect(
-      document.querySelector<HTMLInputElement>(
-        "#akihq_business_addon input[name=workspaceId]",
-      )?.value,
-    ).toBe("one");
-    fireEvent.click(screen.getByRole("radio", { name: "Two" }));
-    expect(
-      document.querySelector<HTMLButtonElement>(
-        "#akihq_business_addon form button",
-      )?.disabled,
+      document.querySelector<HTMLButtonElement>("#akihq_pro form button")
+        ?.disabled,
     ).toBe(true);
-    expect(
-      document.querySelector<HTMLButtonElement>(
-        "#akihq_business_addon form button",
-      )?.textContent,
-    ).toContain("Requires AkiHQ Pro");
-    expect(
-      screen.getByRole("link", { name: "View AkiHQ Pro" }).getAttribute("href"),
-    ).toBe("/en/account/subscription#akihq_pro");
+    fireEvent.click(screen.getByRole("radio", { name: "Two" }));
     expect(
       document.querySelector<HTMLButtonElement>("#akihq_pro form button")
         ?.disabled,
@@ -234,10 +214,10 @@ describe("membership account handoff", () => {
       expect(button.disabled).toBe(true);
     expect(
       screen.getAllByText(/couldn't verify your current access/i),
-    ).toHaveLength(7);
+    ).toHaveLength(4);
     expect(
       screen.getAllByRole("link", { name: "Retry account access" }),
-    ).toHaveLength(7);
+    ).toHaveLength(4);
     view.unmount();
     render(
       <AkiSuiteMembershipGrid
