@@ -22,7 +22,6 @@ must not be silently remapped. Enterprise is enquiry-only until approved.
 See `docs/AKISUITE_MEMBERSHIP_STUDIO_20261018.md` for routes, pricing,
 dependencies, acceptance and release hold.
 
-
 ## 2026-10-17 | October upstream dependency security patch
 
 AkiPasa pins Next.js and eslint-config-next to 15.5.28 and React/React DOM

@@ -26,7 +26,6 @@
   subscriptions untouched. Keep personal Premium flag false until the approved
   adoption trigger and verified paid catalogue are ready.
 
-
 ## 2026-10-17 | Next.js and React October security backports
 
 - **Before:** Next.js/eslint-config-next 15.5.27 and React/React DOM 19.1.0
