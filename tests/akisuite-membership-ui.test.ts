@@ -80,11 +80,21 @@ describe("AkiSuite localized membership catalogue", () => {
 
 describe("Personal Premium launch is server-controlled", () => {
   it("keeps the catalogue scoped to its origin and the locked plans out of checkout", () => {
-    const grid = readFileSync("src/components/AkiSuiteMembershipGrid.tsx", "utf8");
-    const actions = readFileSync("src/app/[locale]/account/subscription/akisuite-actions.ts", "utf8");
-    expect(grid).toContain('personalPremiumUnlocked = false');
-    expect(grid).toContain('originatingApp === "akipasa" && personalPremiumUnlocked');
-    expect(grid).toContain('originatingApp === "akiduermo" && personalPremiumUnlocked');
-    expect(actions).toContain('!personalPremiumLaunchOpen()');
+    const grid = readFileSync(
+      "src/components/AkiSuiteMembershipGrid.tsx",
+      "utf8",
+    );
+    const actions = readFileSync(
+      "src/app/[locale]/account/subscription/akisuite-actions.ts",
+      "utf8",
+    );
+    expect(grid).toContain("personalPremiumUnlocked = false");
+    expect(grid).toContain(
+      'originatingApp === "akipasa" && personalPremiumUnlocked',
+    );
+    expect(grid).toContain(
+      'originatingApp === "akiduermo" && personalPremiumUnlocked',
+    );
+    expect(actions).toContain("!personalPremiumLaunchOpen()");
   });
 });

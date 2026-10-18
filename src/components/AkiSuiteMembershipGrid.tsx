@@ -276,262 +276,273 @@ export function AkiSuiteMembershipGrid({
         </fieldset>
       )}
       <div className={styles.grid}>
-        {order.filter((key) => {
-          // The legacy Stripe catalogue uses AkiHQ keys for the operations suite.
-          // Keep those purchase IDs until the Stripe migration has been verified.
-          if (key === "akipasa_premium") return originatingApp === "akipasa" && personalPremiumUnlocked;
-          if (key === "akiduermo_premium") return originatingApp === "akiduermo" && personalPremiumUnlocked;
-          if (key === "akibusiness_premium") return originatingApp === "akipasa" || originatingApp === "akibusiness";
-          if (key === "akihq_business_addon") return false;
-          return key === "aki_enterprise" || key === "akihq_standard" || key === "akihq_pro";
-        }).map((key) => {
-          const item = akisuitePlans[key];
-          const details = descriptions[key];
-          const cents = akisuitePriceCents(key, interval);
-          const featured = key === "aki_enterprise";
-          const app = akiSuitePlanApp(key);
-          const current = included.has(key);
-          const origin = app === originatingApp;
-          const overlap = overlappingAkiSuitePlan(key, selectedPlans);
-          const missingWorkspace = key !== "akipasa_premium" && !workspaceId;
-          const accountHandoff =
-            purchaseMode === "account" && checkoutReady && !accessUnavailable;
-          const eligible =
-            key !== "akihq_business_addon" ||
-            businessAddonEligible(selectedPlans);
-          const blocked = accessUnavailable
-            ? {
-                text: es
-                  ? "No hemos podido comprobar tu acceso actual. Reintenta antes de cambiar de plan."
-                  : "We couldn't verify your current access. Retry before changing plans.",
-                href: `/${locale}/account/subscription#membership-recovery`,
-                action: es ? "Reintentar acceso" : "Retry account access",
-              }
-            : current
+        {order
+          .filter((key) => {
+            // The legacy Stripe catalogue uses AkiHQ keys for the operations suite.
+            // Keep those purchase IDs until the Stripe migration has been verified.
+            if (key === "akipasa_premium")
+              return originatingApp === "akipasa" && personalPremiumUnlocked;
+            if (key === "akiduermo_premium")
+              return originatingApp === "akiduermo" && personalPremiumUnlocked;
+            if (key === "akibusiness_premium")
+              return (
+                originatingApp === "akipasa" || originatingApp === "akibusiness"
+              );
+            if (key === "akihq_business_addon") return false;
+            return (
+              key === "aki_enterprise" ||
+              key === "akihq_standard" ||
+              key === "akihq_pro"
+            );
+          })
+          .map((key) => {
+            const item = akisuitePlans[key];
+            const details = descriptions[key];
+            const cents = akisuitePriceCents(key, interval);
+            const featured = key === "aki_enterprise";
+            const app = akiSuitePlanApp(key);
+            const current = included.has(key);
+            const origin = app === originatingApp;
+            const overlap = overlappingAkiSuitePlan(key, selectedPlans);
+            const missingWorkspace = key !== "akipasa_premium" && !workspaceId;
+            const accountHandoff =
+              purchaseMode === "account" && checkoutReady && !accessUnavailable;
+            const eligible =
+              key !== "akihq_business_addon" ||
+              businessAddonEligible(selectedPlans);
+            const blocked = accessUnavailable
               ? {
                   text: es
-                    ? "Este plan ya está incluido en tu acceso actual."
-                    : "This plan is already included in your current access.",
-                  href: `/${locale}/account/subscription#membership-centre`,
-                  action: es ? "Ver mi acceso" : "View my access",
+                    ? "No hemos podido comprobar tu acceso actual. Reintenta antes de cambiar de plan."
+                    : "We couldn't verify your current access. Retry before changing plans.",
+                  href: `/${locale}/account/subscription#membership-recovery`,
+                  action: es ? "Reintentar acceso" : "Retry account access",
                 }
-              : overlap
+              : current
                 ? {
                     text: es
-                      ? "Tu plan actual ya cubre estas ventajas. Revisa ese plan antes de sustituirlo."
-                      : "Your current plan already covers these benefits. Review it before replacing it.",
-                    href: `/${locale}/account/subscription#billing-management`,
-                    action: es
-                      ? "Gestionar el plan actual"
-                      : "Manage current plan",
+                      ? "Este plan ya está incluido en tu acceso actual."
+                      : "This plan is already included in your current access.",
+                    href: `/${locale}/account/subscription#membership-centre`,
+                    action: es ? "Ver mi acceso" : "View my access",
                   }
-                : !checkoutReady
+                : overlap
                   ? {
                       text: es
-                        ? "La compra todavía no está disponible para este plan."
-                        : "Purchase is not available for this plan yet.",
+                        ? "Tu plan actual ya cubre estas ventajas. Revisa ese plan antes de sustituirlo."
+                        : "Your current plan already covers these benefits. Review it before replacing it.",
+                      href: `/${locale}/account/subscription#billing-management`,
+                      action: es
+                        ? "Gestionar el plan actual"
+                        : "Manage current plan",
                     }
-                  : missingWorkspace
+                  : !checkoutReady
                     ? {
                         text: es
-                          ? "Los planes de negocio necesitan un espacio de trabajo autorizado."
-                          : "Business plans require an authorised workspace.",
-                        href: `/${locale}/account/subscription#workspace-setup`,
-                        action: es
-                          ? "Preparar mi negocio"
-                          : "Prepare my business",
+                          ? "La compra todavía no está disponible para este plan."
+                          : "Purchase is not available for this plan yet.",
                       }
-                    : !eligible
+                    : missingWorkspace
                       ? {
                           text: es
-                            ? "Este complemento requiere AkiHQ Pro activo en el espacio seleccionado."
-                            : "This add-on requires active AkiHQ Pro in the selected workspace.",
-                          href: `/${locale}/account/subscription#akihq_pro`,
-                          action: es ? "Ver AkiHQ Pro" : "View AkiHQ Pro",
+                            ? "Los planes de negocio necesitan un espacio de trabajo autorizado."
+                            : "Business plans require an authorised workspace.",
+                          href: `/${locale}/account/subscription#workspace-setup`,
+                          action: es
+                            ? "Preparar mi negocio"
+                            : "Prepare my business",
                         }
-                      : null;
-          return (
-            <article
-              key={key}
-              id={key}
-              data-product={app}
-              data-origin={origin || undefined}
-              data-expanded={expandedPlans.includes(key) || undefined}
-              className={[styles.card, featured ? styles.featured : ""].join(
-                " ",
-              )}
-            >
-              <div className={styles.cardHeader}>
-                <div className={styles.brandIdentity}>
-                  <PlanBrandLogos plan={key} />
-                  <span className={styles.eyebrow}>
-                    {app === "akisuite"
-                      ? "AkiSuite"
-                      : app === "akihq"
-                        ? "AkiHQ"
-                        : app === "akibusiness"
-                          ? "AkiBusiness"
-                          : app === "akiduermo"
-                            ? "AkiDuermo"
-                            : "AkiPasa"}
-                  </span>
+                      : !eligible
+                        ? {
+                            text: es
+                              ? "Este complemento requiere AkiHQ Pro activo en el espacio seleccionado."
+                              : "This add-on requires active AkiHQ Pro in the selected workspace.",
+                            href: `/${locale}/account/subscription#akihq_pro`,
+                            action: es ? "Ver AkiHQ Pro" : "View AkiHQ Pro",
+                          }
+                        : null;
+            return (
+              <article
+                key={key}
+                id={key}
+                data-product={app}
+                data-origin={origin || undefined}
+                data-expanded={expandedPlans.includes(key) || undefined}
+                className={[styles.card, featured ? styles.featured : ""].join(
+                  " ",
+                )}
+              >
+                <div className={styles.cardHeader}>
+                  <div className={styles.brandIdentity}>
+                    <PlanBrandLogos plan={key} />
+                    <span className={styles.eyebrow}>
+                      {app === "akisuite"
+                        ? "AkiSuite"
+                        : app === "akihq"
+                          ? "AkiHQ"
+                          : app === "akibusiness"
+                            ? "AkiBusiness"
+                            : app === "akiduermo"
+                              ? "AkiDuermo"
+                              : "AkiPasa"}
+                    </span>
+                  </div>
+                  {featured && (
+                    <span className={styles.pill}>
+                      {es ? "Pack completo" : "Complete bundle"}
+                    </span>
+                  )}
                 </div>
-                {featured && (
-                  <span className={styles.pill}>
-                    {es ? "Pack completo" : "Complete bundle"}
+                {origin && (
+                  <span className={styles.origin}>
+                    {es ? "Tu aplicación" : "Your app"}
                   </span>
                 )}
-              </div>
-              {origin && (
-                <span className={styles.origin}>
-                  {es ? "Tu aplicación" : "Your app"}
-                </span>
-              )}
-              {current && (
-                <span className={styles.pill}>
-                  {es ? "Incluido en tu acceso" : "Included in your access"}
-                </span>
-              )}
-              <h3>
-                {es && key === "akihq_business_addon"
-                  ? "AkiBusiness Premium para AkiHQ Pro"
-                  : item.label}
-              </h3>
-              <p className={styles.description}>{details[locale]}</p>
-              <div className={styles.price}>
-                <strong>{currency.format(cents / 100)}</strong>
-                <span>
-                  /
-                  {interval === "month"
+                {current && (
+                  <span className={styles.pill}>
+                    {es ? "Incluido en tu acceso" : "Included in your access"}
+                  </span>
+                )}
+                <h3>
+                  {es && key === "akihq_business_addon"
+                    ? "AkiBusiness Premium para AkiHQ Pro"
+                    : item.label}
+                </h3>
+                <p className={styles.description}>{details[locale]}</p>
+                <div className={styles.price}>
+                  <strong>{currency.format(cents / 100)}</strong>
+                  <span>
+                    /
+                    {interval === "month"
+                      ? es
+                        ? "mes"
+                        : "month"
+                      : es
+                        ? "año"
+                        : "year"}
+                  </span>
+                </div>
+                {interval === "year" && (
+                  <p className={styles.saving}>
+                    {es
+                      ? `Ahorras ${currency.format((item.monthlyCents * 12 - cents) / 100)} al año · 20 %`
+                      : `Save ${currency.format((item.monthlyCents * 12 - cents) / 100)} per year · 20%`}
+                  </p>
+                )}
+                <button
+                  type="button"
+                  className={styles.mobileExpand}
+                  aria-expanded={expandedPlans.includes(key)}
+                  aria-controls={`plan-benefits-${key}`}
+                  onClick={() =>
+                    setExpandedPlans((plans) =>
+                      plans.includes(key)
+                        ? plans.filter((plan) => plan !== key)
+                        : [...plans, key],
+                    )
+                  }
+                >
+                  {expandedPlans.includes(key)
                     ? es
-                      ? "mes"
-                      : "month"
+                      ? "Menos detalles"
+                      : "Less detail"
                     : es
-                      ? "año"
-                      : "year"}
-                </span>
-              </div>
-              {interval === "year" && (
-                <p className={styles.saving}>
-                  {es
-                    ? `Ahorras ${currency.format((item.monthlyCents * 12 - cents) / 100)} al año · 20 %`
-                    : `Save ${currency.format((item.monthlyCents * 12 - cents) / 100)} per year · 20%`}
-                </p>
-              )}
-              <button
-                type="button"
-                className={styles.mobileExpand}
-                aria-expanded={expandedPlans.includes(key)}
-                aria-controls={`plan-benefits-${key}`}
-                onClick={() =>
-                  setExpandedPlans((plans) =>
-                    plans.includes(key)
-                      ? plans.filter((plan) => plan !== key)
-                      : [...plans, key],
-                  )
-                }
-              >
-                {expandedPlans.includes(key)
-                  ? es
-                    ? "Menos detalles"
-                    : "Less detail"
-                  : es
-                    ? "Ver ventajas y acceso"
-                    : "View benefits and access"}
-                <span aria-hidden="true">
-                  {expandedPlans.includes(key) ? "−" : "+"}
-                </span>
-              </button>
-              <div id={`plan-benefits-${key}`} className={styles.cardDetails}>
-                <ul className={styles.benefits}>
-                  {(es ? details.benefitsEs : details.benefitsEn).map(
-                    (benefit) => (
-                      <li key={benefit}>{benefit}</li>
-                    ),
-                  )}
-                </ul>
-                {accountHandoff ? (
-                  <Link
-                    href={`/${locale}/account/subscription?from=${akiSuiteApp(originatingApp)}`}
-                    className={
-                      featured ? "button button-strong" : "button secondary"
-                    }
-                  >
-                    {es ? "Continuar en mi cuenta" : "Continue in my account"}
-                  </Link>
-                ) : (
-                  <form action={startAkiSuiteCheckout}>
-                    <input type="hidden" name="locale" value={locale} />
-                    <input type="hidden" name="plan" value={key} />
-                    <input type="hidden" name="interval" value={interval} />
-                    {key !== "akipasa_premium" && workspaceId && (
-                      <input
-                        type="hidden"
-                        name="workspaceId"
-                        value={workspaceId}
-                      />
+                      ? "Ver ventajas y acceso"
+                      : "View benefits and access"}
+                  <span aria-hidden="true">
+                    {expandedPlans.includes(key) ? "−" : "+"}
+                  </span>
+                </button>
+                <div id={`plan-benefits-${key}`} className={styles.cardDetails}>
+                  <ul className={styles.benefits}>
+                    {(es ? details.benefitsEs : details.benefitsEn).map(
+                      (benefit) => (
+                        <li key={benefit}>{benefit}</li>
+                      ),
                     )}
-                    <button
-                      type="submit"
+                  </ul>
+                  {accountHandoff ? (
+                    <Link
+                      href={`/${locale}/account/subscription?from=${akiSuiteApp(originatingApp)}`}
                       className={
                         featured ? "button button-strong" : "button secondary"
                       }
-                      disabled={
-                        purchaseMode === "account" ||
-                        !checkoutReady ||
-                        missingWorkspace ||
-                        current ||
-                        accessUnavailable ||
-                        overlap ||
-                        !eligible
-                      }
                     >
-                      {accessUnavailable
-                        ? es
-                          ? "Acceso no disponible"
-                          : "Access unavailable"
-                        : current
+                      {es ? "Continuar en mi cuenta" : "Continue in my account"}
+                    </Link>
+                  ) : (
+                    <form action={startAkiSuiteCheckout}>
+                      <input type="hidden" name="locale" value={locale} />
+                      <input type="hidden" name="plan" value={key} />
+                      <input type="hidden" name="interval" value={interval} />
+                      {key !== "akipasa_premium" && workspaceId && (
+                        <input
+                          type="hidden"
+                          name="workspaceId"
+                          value={workspaceId}
+                        />
+                      )}
+                      <button
+                        type="submit"
+                        className={
+                          featured ? "button button-strong" : "button secondary"
+                        }
+                        disabled={
+                          purchaseMode === "account" ||
+                          !checkoutReady ||
+                          missingWorkspace ||
+                          current ||
+                          accessUnavailable ||
+                          overlap ||
+                          !eligible
+                        }
+                      >
+                        {accessUnavailable
                           ? es
-                            ? "Plan incluido"
-                            : "Plan included"
-                          : overlap
+                            ? "Acceso no disponible"
+                            : "Access unavailable"
+                          : current
                             ? es
-                              ? "Incluido en tu plan actual"
-                              : "Covered by your current plan"
-                            : !checkoutReady
+                              ? "Plan incluido"
+                              : "Plan included"
+                            : overlap
                               ? es
-                                ? "Disponible próximamente"
-                                : "Coming soon"
-                              : missingWorkspace
+                                ? "Incluido en tu plan actual"
+                                : "Covered by your current plan"
+                              : !checkoutReady
                                 ? es
-                                  ? "Prepara un espacio de trabajo"
-                                  : "Prepare a workspace"
-                                : !eligible
+                                  ? "Disponible próximamente"
+                                  : "Coming soon"
+                                : missingWorkspace
                                   ? es
-                                    ? "Requiere AkiHQ Pro"
-                                    : "Requires AkiHQ Pro"
-                                  : key === "akihq_business_addon"
+                                    ? "Prepara un espacio de trabajo"
+                                    : "Prepare a workspace"
+                                  : !eligible
                                     ? es
-                                      ? "Añadir a AkiHQ Pro"
-                                      : "Add to AkiHQ Pro"
-                                    : es
-                                      ? "Elegir plan"
-                                      : "Choose plan"}
-                    </button>
-                  </form>
-                )}
-                {!accountHandoff && blocked && (
-                  <p className={styles.blockedReason}>
-                    <span>{blocked.text}</span>
-                    {blocked.href && (
-                      <Link href={blocked.href}>{blocked.action}</Link>
-                    )}
-                  </p>
-                )}
-              </div>
-            </article>
-          );
-        })}
+                                      ? "Requiere AkiHQ Pro"
+                                      : "Requires AkiHQ Pro"
+                                    : key === "akihq_business_addon"
+                                      ? es
+                                        ? "Añadir a AkiHQ Pro"
+                                        : "Add to AkiHQ Pro"
+                                      : es
+                                        ? "Elegir plan"
+                                        : "Choose plan"}
+                      </button>
+                    </form>
+                  )}
+                  {!accountHandoff && blocked && (
+                    <p className={styles.blockedReason}>
+                      <span>{blocked.text}</span>
+                      {blocked.href && (
+                        <Link href={blocked.href}>{blocked.action}</Link>
+                      )}
+                    </p>
+                  )}
+                </div>
+              </article>
+            );
+          })}
       </div>
       <fieldset className={styles.interval}>
         <legend>{es ? "Periodo de facturación" : "Billing interval"}</legend>
