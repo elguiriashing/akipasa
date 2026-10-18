@@ -1,3 +1,4 @@
+import { personalPremiumLaunchOpen } from "@/lib/akisuite-premium-launch";
 import { publicPageMetadata } from "@/lib/page-metadata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -44,6 +45,7 @@ export default async function MembershipPage({
         checkoutReady={suiteCatalogueReady}
         purchaseMode="account"
         originatingApp={akiSuiteApp(query.from)}
+        personalPremiumUnlocked={personalPremiumLaunchOpen()}
       />
       <div className="membership-free-row">
         <span>
