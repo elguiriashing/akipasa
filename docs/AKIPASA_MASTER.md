@@ -1,5 +1,31 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-19 | Backlog security, export and Android release candidate
+
+The AkiPasa-only recovery candidate preserves the five-repository product split.
+It adds Android version code 2 for the existing `com.akipasa` identity and an
+unsigned validation workflow; signing material remains outside GitHub and the
+replacement upload key must not be used before 21 October 2026 at 17:05
+Europe/Madrid. No Play submission or paid rollout is implied.
+
+New migration work must declare table privileges and RLS explicitly. A changed-
+migration audit runs in CI. The current audit found the rental review table was
+missing an explicit authenticated `SELECT` grant despite an owner/staff policy;
+the forward migration grants only `SELECT` and retains RLS. The Stripe webhook
+lease RPC is explicitly executable only by `service_role`, with an empty search
+path; signed HTTP verification still precedes creation of the service client.
+
+Account exports page deterministically with exact counts, bounded requests and
+no partial attachment on failure. Caller-owned Pals records are included, while
+command/analytics and administrator AI tables remain excluded. Two private
+email tables gain caller-only `SELECT` policies solely for data portability;
+their delivery mutations remain service-only. The AkiHQ Pro subscription cannot
+be replaced by its dependent add-on. Existing subscriptions, prices,
+entitlements, tax settings and all personal-Premium launch flags are unchanged.
+
+Apply only the additive migrations after hosted preflight. Do not replay email,
+activate staged products, publish the legal draft or upload an unsigned bundle.
+
 ## 2026-10-18 | Membership rollout gate and scoped catalogue (candidate PR #201)
 
 Personal AkiPasa Premium is absent from public/account offer grids until a

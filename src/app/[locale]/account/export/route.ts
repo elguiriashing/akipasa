@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import {
   currentAccountExportTables,
+  createAccountExportReader,
   exportableAuthentication,
+  readAccountRecommendationItems,
 } from "@/lib/account-export";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -15,14 +17,11 @@ export async function GET() {
       { error: "Authentication required" },
       { status: 401 },
     );
+  const read = createAccountExportReader(supabase);
   const entries = await Promise.all(
-    currentAccountExportTables().map(async ([table, column]) => {
-      const { data, error } = await supabase
-        .from(table)
-        .select("*")
-        .eq(column, user.id);
-      return { table, data: data || [], failed: Boolean(error) };
-    }),
+    currentAccountExportTables().map(([table, column]) =>
+      read(table, column, user.id),
+    ),
   );
   const preferenceProfile = entries.find(
     (entry) => entry.table === "preference_profiles",
@@ -33,13 +32,9 @@ export async function GET() {
           "user_preference_signals",
           "recommendation_requests",
           "experiment_assignments",
-        ].map(async (table) => {
-          const { data, error } = await supabase
-            .from(table)
-            .select("*")
-            .eq("preference_profile_id", preferenceProfile.id!);
-          return { table, data: data || [], failed: Boolean(error) };
-        }),
+        ].map((table) =>
+          read(table, "preference_profile_id", preferenceProfile.id!),
+        ),
       )
     : [];
   const recommendationIds = (
@@ -48,17 +43,9 @@ export async function GET() {
   )
     .map((row) => (row as { id?: string }).id)
     .filter((id): id is string => Boolean(id));
-  const recommendationItems = recommendationIds.length
-    ? await supabase
-        .from("recommendation_items")
-        .select("*")
-        .in("recommendation_request_id", recommendationIds)
-    : { data: [], error: null };
-  derivedEntries.push({
-    table: "recommendation_items",
-    data: recommendationItems.data || [],
-    failed: Boolean(recommendationItems.error),
-  });
+  derivedEntries.push(
+    await readAccountRecommendationItems(read, recommendationIds),
+  );
   const bookingEmails = await supabase.rpc("my_booking_email_export");
   derivedEntries.push({
     table: "booking_confirmation_emails",
