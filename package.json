@@ -12,7 +12,7 @@
     "test:watch": "vitest --environment node tests/discovery.test.ts",
     "test:db-safety": "node scripts/test-local-database-safety.mjs",
     "test:db-conflicts": "vitest run --environment node tests/database-conflict.test.ts",
-    "test:security": "vitest run --environment node tests/stripe-webhook-privileges.test.ts tests/akisuite-plan-change.test.ts tests/account-export-permissions.test.ts",
+    "test:security": "vitest run --environment node tests/stripe-webhook-privileges.test.ts tests/akisuite-plan-change.test.ts tests/account-export-permissions.test.ts tests/security-definer-execution.test.ts",
     "db:seed:local": "node scripts/local-database.mjs seed",
     "db:reset:local": "node scripts/local-database.mjs reset",
     "test:e2e": "npm run build && node scripts/run-e2e.mjs",
