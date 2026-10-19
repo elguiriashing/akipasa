@@ -54,7 +54,9 @@ For the Play artifact:
 ```
 
 The unsigned/minified bundle is written beneath
-`app/build/outputs/bundle/release`. Release signing must use the private upload
+`app/build/outputs/bundle/release`. GitHub Actions also produces an unsigned
+`akipasa-v2-unsigned-aab` artifact when the Android validation workflow passes.
+Do not upload this unsigned CI artifact to Play Console. Release signing must use the private upload
 key managed outside this repository. Do not commit a keystore, password,
 `local.properties`, or generated bundle.
 
@@ -112,7 +114,7 @@ an AkiPasa link and the Google/Stripe return path is not release-ready.
 
 - Start URL: `https://akipasa.com/es` (`BuildConfig.APP_URL`).
 - Application ID: `com.akipasa`.
-- Version: code `1`, name `1.0.0`.
+- Version: code `2`, name `1.0.1` (prepared in PR #205).
 - Minimum Android: 8.0/API 26.
 - Target Android: 16/API 36, matching the Play requirement that begins on
   31 August 2026.
@@ -120,3 +122,11 @@ an AkiPasa link and the Google/Stripe return path is not release-ready.
 Changing the start URL for a non-production build should use a build variant,
 not cleartext traffic or a committed secret. Changing the package ID after a
 Play upload creates a different Play app.
+
+## 2026-10-19 upload-key reset handoff
+
+- Play Console reports the replacement **upload** key becomes valid on **21 October 2026 at 17:05** (as shown in the account UI). Do not attempt to upload a bundle signed with the replacement key before then.
+- Keep the private keystore and password in an encrypted vault outside the repository and CI logs; never commit, attach to a PR, or publish these credentials as artifacts.
+- After activation, verify the upload certificate SHA-256 against Play Console before signing release code 2. The upload-key certificate is different from the Google-managed **app-signing** certificate used for Digital Asset Links.
+- To produce the Play bundle locally, configure signing with the private upload keystore outside the repository and build `bundleRelease`; verify the signature and version code, then test on Internal testing before promoting to Closed testing.
+- The key reset does not itself reverse the existing Play policy rejection or grant production access. Review App content and submit through Publishing overview.
