@@ -1613,3 +1613,40 @@ No real customer image, profile, booking, email or subscription was mutated.
 - Scope: consumer navigation CSS and markup only, no changes to data, billing or branding.
 
 - **Acceptance refinement:** guest Sign in is restored within bottom More and mobile top AkiSuite is product-only. Verify two distinct dialogs and no overlap with the global search button at 390px/768px/820px, including keyboard/focus return.
+
+# 2026-10-19 | AkiPasa backlog recovery release candidate
+
+- **Requested:** account for every open AkiPasa PR/issue, preserve independent
+  product ownership, repair actionable security/export/Android work and deploy
+  only an exact, tested AkiPasa source.
+- **Source:** `master` at `0edb7ed931610dfe38d195920379961b4b1a3465`.
+  #199/#194/#188 are superseded by merged #201/#198/#186/#190. #202 belongs to
+  the independent AkiDuermo repository. The full #184 product application and
+  stale #103 branch are not restored into AkiPasa.
+- **Billing:** the recovered #133 guard rejects Pro-to-dependent-add-on
+  replacement before any Stripe update. No price, subscriber, proration,
+  entitlement, tax registration or readiness flag changes.
+- **Webhook:** mirrored forward migration
+  `20261014183842_restrict_stripe_webhook_claim_execution.sql` revokes RPC
+  execution from `PUBLIC`, `anon` and `authenticated`, retains `service_role`
+  and fixes the search path. The ledger is preserved.
+- **Export:** bounded exact-count pagination and 100-ID recommendation batches
+  fail closed rather than attaching incomplete data. Caller-owned Pals rows are
+  included. `20261019231000_account_export_owner_reads.sql` grants authenticated
+  `SELECT` only under owner RLS for preferences and the claimant's alert row;
+  delivery writes and leases remain service-only.
+- **Migration audit:** new CI checks changed table-creating migrations for an
+  explicit privilege statement and RLS. The audit found the existing rental
+  review policy lacked a matching table grant; the forward fix grants only
+  authenticated `SELECT` and preserves owner/staff RLS.
+- **Android:** package `com.akipasa`, production origin and signing boundary are
+  unchanged. Version becomes 2 / 1.0.1 and CI produces an unsigned validation
+  artifact only. Upload-key activation and real-device/internal-track acceptance
+  remain external gates.
+- **Rollback:** use the prior Worker version for application rollback. Keep
+  additive security policies/grants unless a reviewed forward migration proves
+  incompatibility. Never delete ledger, export, billing or email history.
+- **Verification required:** formatter, lint, TypeScript, focused SQL/RLS and
+  billing tests, full repository check, Android test/lint/bundle, Cloudflare
+  package, exact-head CI, hosted Supabase advisors/preflight, then anonymous and
+  authenticated production smoke. Record pass/fail/blocked honestly.
