@@ -56,8 +56,8 @@ open until the release manager resolves their final disposition.
 ## Verification and activation
 
 After #220, the expanded onboarding suite passes 45 cases, including two added
-canonical Passport resume regressions. Types pass; the production build is
-rechecked because the first combined source had no completion-resume route.
+canonical Passport resume regressions. Types and the final production Next build pass after adding the new
+completion-resume route.
 
 Integrated check: format, lint, types, security (33), database safety/conflicts
 (2), automation checks/41 tests/Worker dry-run, and production Next build passed.
@@ -86,3 +86,23 @@ Rollback before activation is a source revert while preserving additive schema
 and customer records. After paid billing or cohort activation, retain authoritative
 entitlement/eligibility enforcement and follow the relevant forward recovery
 runbook; do not erase ledgers, addresses, media, progress or ownership.
+
+## Hosted audit follow-up
+
+The first integration SQL audit rejected schema-wide table ACL syntax. The
+canonical toolbox migration now names its exact four tables for browser-role
+revocation and service-role SELECT, preserving intended privileges while avoiding
+incidental grants over other tables in the private schema. Both migration copies
+remain identical. The changed-migration audit and all eight executed SQL
+lifecycle/role cases pass before the next publication. Independent Business uses
+the same canonical migration.
+
+Release-manager update: the original 312-line toolbox migration was already
+applied to the shared project with zero enrolled workspaces before this equivalent
+ACL syntax change. Original SHA256:
+`b6b92500771ac1796a0056df53cd720ce6dd42fb5515b523432664b3930931e6`.
+The explicit-table candidate SHA256 is
+`ca7dda82db66e8507ad278e17659f3eab8bcc367397a22f2cafae86fd33f484f`.
+Do not replay the table-creating migration. Preserve its applied history; if a
+hosted ACL reconciliation is needed, use a separate reviewed additive ACL-only
+followup. This integration change does not mutate the live schema or enrol users.

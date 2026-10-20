@@ -1951,3 +1951,11 @@ The gated central completion flow now resumes allowlisted tasks across all five
 products using fixed canonical origins and the shared EN/ES navigation contract.
 Identity and onboarding state remain server-authoritative; no credentials cross
 domains. See `ACCOUNT_TASK_RESUME_V1.md` for tests, safety boundaries and rollout.
+
+### Integration SQL audit follow-up
+
+The gated toolbox migration declares browser-role revocation and service SELECT
+against its exact four private tables rather than schema-wide table statements.
+This preserves intended ACLs, narrows cross-feature coupling and passes the
+changed-migration permission audit. Mirrored SQL remains identical; executed
+owner/service lifecycle tests are rerun. No production migration is implied.

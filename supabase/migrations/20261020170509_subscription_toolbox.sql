@@ -80,8 +80,10 @@ alter table akibusiness_private.toolboxes enable row level security;
 alter table akibusiness_private.toolbox_history enable row level security;
 alter table akibusiness_private.toolbox_notifications enable row level security;
 alter table akibusiness_private.member_tool_limits enable row level security;
-revoke all on all tables in schema akibusiness_private from public,anon,authenticated;
-grant select on all tables in schema akibusiness_private to service_role;
+revoke all on table akibusiness_private.toolboxes, akibusiness_private.toolbox_history,
+ akibusiness_private.toolbox_notifications, akibusiness_private.member_tool_limits from public,anon,authenticated;
+grant select on table akibusiness_private.toolboxes, akibusiness_private.toolbox_history,
+ akibusiness_private.toolbox_notifications, akibusiness_private.member_tool_limits to service_role;
 
 create function akibusiness_private.owner(p_workspace text) returns boolean
 language sql stable security definer set search_path='' as $$
