@@ -210,6 +210,9 @@ begin
   if tg_op='UPDATE' and new.event_id is distinct from old.event_id then
    raise exception 'Occurrence event is immutable' using errcode='42501';
   end if;
+  -- Cancelling a retained legacy date and editing its metadata cannot expand discovery.
+  if new.status='cancelled' then return new; end if;
+  if tg_op='UPDATE' and new.starts_at is not distinct from old.starts_at and new.ends_at is not distinct from old.ends_at and old.status<>'cancelled' then return new; end if;
   perform akisuite_listing_private.enforce_listing_event(new.event_id);
  end if;
  return new;

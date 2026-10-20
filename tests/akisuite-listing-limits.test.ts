@@ -146,6 +146,18 @@ describe("database listing limits", () => {
     ).toHaveLength(1);
     await expect(
       db.query(
+        "update events set title_es='Updated retained title',status='published' where id=$1",
+        [id],
+      ),
+    ).resolves.toBeTruthy();
+    await expect(
+      db.query(
+        "update event_occurrences set status='cancelled' where event_id=$1",
+        [id],
+      ),
+    ).resolves.toBeTruthy();
+    await expect(
+      db.query(
         "select public.set_owned_event_recurrence($1,'2030-08-01','2030-08-02','weekly',1,2)",
         [id],
       ),
