@@ -1,8 +1,9 @@
+import { suiteHref } from "@/lib/suite-navigation";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { OwnerAppearanceForm } from "@/components/owner/OwnerAppearanceForm";
 import { WorkspacePageHeader } from "@/components/WorkspaceShell";
-import { config, isLocale } from "@/lib/config";
+import { isLocale } from "@/lib/config";
 import {
   defaultOwnerPreferences,
   requireOwnerConsole,
@@ -247,10 +248,14 @@ export default async function OwnerConsolePage({
                 <small>{es ? "Historial sensible" : "Sensitive history"}</small>
               </span>
             </Link>
-            <a href={config.crmUrl} target="_blank" rel="noreferrer">
+            <a
+              href={suiteHref("business", locale)}
+              target="_blank"
+              rel="noreferrer"
+            >
               <strong>HQ</strong>
               <span>
-                AkiHQ<small>CRM + operations -&gt;</small>
+                AkiBusiness<small>CRM + operations -&gt;</small>
               </span>
             </a>
           </div>

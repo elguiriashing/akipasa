@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element -- Venue media uses native images with existing layout controls. */
+import { BusinessPathway } from "@/components/BusinessPathway";
 import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
 import { localizedMetadata, languageUrls, serializeJsonLd } from "@/lib/seo";
@@ -306,14 +307,6 @@ export default async function VenuePage({
             <Icon name="chevron" size={16} />
           </summary>
           <div>
-            {canClaimVenue && (
-              <Link
-                href={`/${locale}/business?view=claims&venueId=${venue.id}`}
-              >
-                {es ? "Reclamar este local" : "Claim this venue"}
-                <Icon name="arrow-right" size={16} />
-              </Link>
-            )}
             <Link href={`/${locale}/community?target=venue:${venue.id}`}>
               {es ? "Informar de un problema" : "Report a problem"}
               <Icon name="arrow-right" size={16} />
@@ -581,6 +574,11 @@ export default async function VenuePage({
             }
           />
         </article>
+        <BusinessPathway
+          locale={locale}
+          chooseCategory
+          claimVenueId={canClaimVenue ? venue.id : undefined}
+        />
       </main>
     </>
   );

@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { ReferralInvitation } from "@/components/ReferralInvitation";
 import { notFound } from "next/navigation";
 import "../stay-auth.css";
 import Link from "next/link";
@@ -133,6 +135,11 @@ export default async function LocaleLayout({
         role={profileResult.data?.app_role || "consumer"}
         ownerConsole={ownerConsole}
       >
+        {process.env.AKISUITE_REFERRALS_READY === "true" && (
+          <Suspense fallback={null}>
+            <ReferralInvitation locale={locale} />
+          </Suspense>
+        )}
         {children}
         <footer className="shell footer">
           <span>

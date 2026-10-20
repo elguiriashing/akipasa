@@ -33,25 +33,24 @@ describe("account progressive navigation", () => {
       screen.getByRole("link", { name: /Privacy and data/ }),
     ).toHaveAttribute("href", "/en/account/privacy");
     expect(
-      screen.queryByRole("link", { name: /Open AkiHQ/ }),
+      screen.queryByRole("link", { name: /Open AkiBusiness/ }),
     ).not.toBeInTheDocument();
   });
 
   it("offers the operations workspace only to staff", () => {
     render(<AccountWorkspacePortals locale="en" role="moderator" />);
-    expect(screen.getByRole("link", { name: /Open AkiHQ/ })).toHaveAttribute(
-      "href",
-      "https://crm.akipasa.com",
-    );
+    expect(
+      screen.getByRole("link", { name: /Open AkiBusiness/ }),
+    ).toHaveAttribute("href", "https://akibusiness.com/?locale=en");
   });
 
   it("offers the operations workspace to administrators", () => {
     render(<AccountWorkspacePortals locale="en" role="administrator" />);
     expect(
-      screen.getByRole("heading", { name: "AkiHQ operations" }),
+      screen.getByRole("heading", { name: "AkiBusiness operations" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: /Open AkiHQ/ }),
+      screen.getByRole("link", { name: /Open AkiBusiness/ }),
     ).toBeInTheDocument();
   });
 });

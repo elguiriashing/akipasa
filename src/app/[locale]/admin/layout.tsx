@@ -32,7 +32,21 @@ export default async function AdminLayout({
   const es = locale === "es";
   const base = `/${locale}/admin`;
   const items: WorkspaceItem[] = [
+    ...(process.env.AKISUITE_REFERRALS_READY === "true"
+      ? [
+          {
+            href: `/${locale}/admin/referrals`,
+            label: es ? "Recomendaciones" : "Referrals",
+            icon: "users" as const,
+          },
+        ]
+      : []),
     { href: base, label: es ? "Resumen" : "Overview", icon: "home" },
+    {
+      href: `${base}/listing-review`,
+      label: es ? "Revisión de eventos" : "Event review signals",
+      icon: "venue",
+    },
     {
       href: `${base}/promotions`,
       label: es ? "Solicitudes comerciales" : "Commercial requests",

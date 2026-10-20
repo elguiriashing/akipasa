@@ -131,6 +131,7 @@ export async function stripeRequest<T>(
   path: string,
   parameters: URLSearchParams,
   idempotencyKey?: string,
+  apiVersion?: string,
 ): Promise<T> {
   const secret = process.env.STRIPE_SECRET_KEY;
   if (!secret) throw new Error("STRIPE_SECRET_KEY is not configured");
@@ -139,6 +140,7 @@ export async function stripeRequest<T>(
     headers: {
       Authorization: `Bearer ${secret}`,
       "Content-Type": "application/x-www-form-urlencoded",
+      ...(apiVersion ? { "Stripe-Version": apiVersion } : {}),
       ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}),
     },
     body: parameters,
@@ -151,11 +153,17 @@ export async function stripeRequest<T>(
   return result;
 }
 
-export async function stripeRetrieve<T>(path: string): Promise<T> {
+export async function stripeRetrieve<T>(
+  path: string,
+  apiVersion?: string,
+): Promise<T> {
   const secret = process.env.STRIPE_SECRET_KEY;
   if (!secret) throw new Error("STRIPE_SECRET_KEY is not configured");
   const response = await fetch(`https://api.stripe.com/v1${path}`, {
-    headers: { Authorization: `Bearer ${secret}` },
+    headers: {
+      Authorization: `Bearer ${secret}`,
+      ...(apiVersion ? { "Stripe-Version": apiVersion } : {}),
+    },
   });
   const result = (await response.json()) as T & {
     error?: { message?: string };

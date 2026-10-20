@@ -11,9 +11,11 @@ import { LanguageLink } from "./LanguageLink";
 import { ThemeToggle } from "./ThemeModeControls";
 import { signOut } from "../app/[locale]/auth/actions";
 import { ConsoleSwitcher, type ConsoleKey } from "./ConsoleSwitcher";
-import { config, type Locale } from "../lib/config";
+import { type Locale } from "../lib/config";
 import { msg } from "../lib/messages";
 import { roleCapabilities } from "../lib/roles";
+import { useSuiteReferral } from "./useSuiteReferral";
+import { suiteHref } from "../lib/suite-navigation";
 import { discoveryViewHref } from "../lib/discovery-navigation";
 
 type NavItem = {
@@ -80,6 +82,7 @@ export function AppShell({
   ownerConsole?: boolean;
   children: React.ReactNode;
 }) {
+  const referralCode = useSuiteReferral();
   const pathname = usePathname();
   const m = msg(locale);
   const es = locale === "es";
@@ -124,25 +127,25 @@ export function AppShell({
     },
     {
       name: "AkiDuermo",
-      href: `https://akiduermo.com/?lang=${locale}`,
+      href: suiteHref("duermo", locale, { referralCode }),
       icon: "/brand/duermo-icon.png",
       accent: "#2FC2A5",
     },
     {
       name: "AkiCoches",
-      href: `https://akicoches.com/?lang=${locale}`,
+      href: suiteHref("coches", locale, { referralCode }),
       icon: "/brand/conduzco-icon.svg",
       accent: "#FF3047",
     },
     {
       name: "AkiHQ",
-      href: "https://akihq.app",
+      href: suiteHref("hq", locale, { referralCode }),
       icon: "/brand/hq-mark.svg",
       accent: "#FFC533",
     },
     {
       name: "AkiBusiness",
-      href: "https://akibusiness.com",
+      href: suiteHref("business", locale, { referralCode }),
       icon: "/brand/business-mark.svg",
       accent: "#8958FF",
     },
@@ -216,8 +219,8 @@ export function AppShell({
     ...(capabilities.manageOwnedVenues
       ? [
           {
-            href: `${config.businessUrl}/${locale}/business`,
-            label: "AkiBusiness",
+            href: suiteHref("hq", locale),
+            label: "AkiHQ",
             icon: "business" as const,
           },
         ]

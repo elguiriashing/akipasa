@@ -455,7 +455,7 @@ it("puts every authorized workspace in the main mobile menu", () => {
   ).toHaveAttribute("href", "/en/account");
   expect(
     within(workspaces).getByRole("link", { name: "Business" }),
-  ).toHaveAttribute("href", "https://business.akipasa.com/en/business");
+  ).toHaveAttribute("href", "https://akihq.app/en/business");
   expect(
     within(workspaces).getByRole("link", { name: "Staff" }),
   ).toHaveAttribute("href", "/en/staff");
@@ -477,9 +477,9 @@ it("keeps authorized workspaces in the persistent desktop navigation", () => {
   expect(within(rail).getByText("Your workspaces")).toBeInTheDocument();
   expect(
     within(rail)
-      .getAllByRole("link", { name: "AkiBusiness" })
+      .getAllByRole("link", { name: "AkiHQ" })
       .map((link) => link.getAttribute("href")),
-  ).toContain("https://business.akipasa.com/en/business");
+  ).toContain("https://akihq.app/en/business");
   expect(within(rail).getByRole("link", { name: "Staff" })).toHaveAttribute(
     "href",
     "/en/staff",
@@ -516,3 +516,24 @@ it("keeps the business application reachable before sign in", () => {
       .every((link) => link.getAttribute("href") === "/en/auth"),
   ).toBe(true);
 });
+
+for (const locale of ["en", "es"] as const) {
+  it(`keeps all product languages in the actual ${locale} suite launcher`, () => {
+    navigation.pathname = `/${locale}`;
+    const { container } = render(
+      <AppShell locale={locale} signedIn={false}>
+        <main>Discovery</main>
+      </AppShell>,
+    );
+    const hrefs = Array.from(container.querySelectorAll("a")).map((link) =>
+      link.getAttribute("href"),
+    );
+    for (const expected of [
+      `https://akiduermo.com/?lang=${locale}`,
+      `https://akicoches.com/?lang=${locale}`,
+      `https://akihq.app/${locale}/business`,
+      `https://akibusiness.com/?locale=${locale}`,
+    ])
+      expect(hrefs).toContain(expected);
+  });
+}

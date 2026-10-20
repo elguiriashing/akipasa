@@ -1,3 +1,4 @@
+import { prestigeEnabled } from "@/lib/passport-prestige";
 import { passportDeadlineLabel } from "@/lib/passport-deadline";
 import { passportStatusLabel } from "@/lib/passport-status";
 import { myPassportCollection } from "@/lib/passport-repository";
@@ -178,6 +179,11 @@ export default async function PassportsPage({
       totalStamps={totalStamps}
       notices={
         <>
+          {user && prestigeEnabled() && (
+            <Link href={`/${locale}/passports/prestige`}>
+              {es ? "Prestigio AkiPasa" : "AkiPasa Prestige"}
+            </Link>
+          )}
           {query.checkin && (
             <p className="notice">
               {query.checkin === "accepted"

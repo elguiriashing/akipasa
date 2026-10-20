@@ -35,6 +35,15 @@ export default async function AccountLayout({
   const es = locale === "es";
   const base = `/${locale}/account`;
   const items: WorkspaceItem[] = [
+    ...(process.env.AKISUITE_REFERRALS_READY === "true"
+      ? [
+          {
+            href: `/${locale}/account/referrals`,
+            label: es ? "Recomendaciones" : "Referrals",
+            icon: "gift" as const,
+          },
+        ]
+      : []),
     { href: base, label: es ? "Resumen" : "Overview", icon: "home" },
     { href: `${base}/saved`, label: es ? "Guardados" : "Saved", icon: "saved" },
     {

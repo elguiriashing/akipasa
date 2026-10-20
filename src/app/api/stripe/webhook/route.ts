@@ -1,3 +1,8 @@
+import { syncOperationsBilling } from "@/lib/operations-billing";
+import {
+  recordVerifiedReferralInvoice,
+  recordVerifiedReferralHold,
+} from "@/lib/referral-billing";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import { matchConfiguredAkiSuitePriceId } from "@/lib/akisuite-stripe";
 import {
@@ -50,6 +55,7 @@ function unixDate(value: unknown) {
 }
 
 async function processEvent(event: StripeEvent) {
+  const operationsRevision = Date.now();
   let object = event.data.object;
   const supabase = createSupabaseServiceClient();
 
@@ -67,6 +73,24 @@ async function processEvent(event: StripeEvent) {
     return;
   const relatedSubscription = stripeEventSubscriptionId(event.type, object);
   if (!relatedSubscription) return; // One-off payments on this shared Stripe account.
+  const operations = await syncOperationsBilling(
+    relatedSubscription,
+    event.id,
+    operationsRevision,
+  );
+  if (operations) {
+    if (event.type === "invoice.paid")
+      await recordVerifiedReferralInvoice({
+        eventId: event.id,
+        created: event.created,
+        profileId: operations.profileId,
+        customerId: operations.customerId,
+        subscriptionId: relatedSubscription,
+        productCode: operations.productCode,
+        invoice: event.data.object,
+      });
+    return;
+  }
   // Retrieve current state: a delayed invoice/Checkout event must not restore
   // access after a subsequent cancellation or downgrade.
   object = await stripeRetrieve<Record<string, unknown>>(
@@ -213,6 +237,17 @@ async function processEvent(event: StripeEvent) {
     },
   );
   if (error) throw error;
+  if (event.type === "invoice.paid") {
+    await recordVerifiedReferralInvoice({
+      eventId: event.id,
+      created: event.created,
+      profileId,
+      customerId,
+      subscriptionId,
+      productCode: planCode,
+      invoice: event.data.object,
+    });
+  }
 }
 
 export async function POST(request: Request) {
@@ -259,6 +294,7 @@ export async function POST(request: Request) {
 
   try {
     await processEvent(event);
+    await recordVerifiedReferralHold(event);
     const { error: completionError } = await supabase
       .from("stripe_webhook_events")
       .update({

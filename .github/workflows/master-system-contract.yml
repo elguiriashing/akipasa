@@ -15,6 +15,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Verify authoritative contract integrity
+        run: node --test scripts/contract-document-integrity.test.mjs && node scripts/check-contract-document-integrity.mjs
       - name: Source inventory summary
         run: node scripts/generate-system-inventory.mjs --summary > source-inventory.json
       - name: Check impact documentation for application changes

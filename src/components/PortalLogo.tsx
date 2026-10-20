@@ -4,7 +4,7 @@ import styles from "./PortalLogo.module.css";
 export function PortalLogo({
   product,
 }: {
-  product: "pasa" | "business" | "duermo" | "hq";
+  product: "pasa" | "business" | "duermo" | "hq" | "coches";
 }) {
   const suffix =
     product === "business"
@@ -13,7 +13,9 @@ export function PortalLogo({
         ? "Pasa"
         : product === "duermo"
           ? "Duermo"
-          : "HQ";
+          : product === "coches"
+            ? "Coches"
+            : "HQ";
   return (
     <span className={`${styles.logo} ${styles[product]}`} aria-hidden="true">
       <Image
@@ -22,9 +24,11 @@ export function PortalLogo({
             ? "/pwa/akipasa-512.png"
             : product === "hq"
               ? "/brand/hq-mark.svg"
-              : product === "business"
-                ? "/brand/business-mark.svg"
-                : `/brand/${product}-icon.png`
+              : product === "coches"
+                ? "/brand/conduzco-icon.svg"
+                : product === "business"
+                  ? "/brand/business-mark.svg"
+                  : `/brand/${product}-icon.png`
         }
         alt=""
         width={40}

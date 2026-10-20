@@ -1,3 +1,4 @@
+import { prestigeEnabled } from "@/lib/passport-prestige";
 import { RewardsTabs } from "../../RewardsTabs";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -38,6 +39,11 @@ export default async function AwardsPage({
         }
       />
       <nav className="action-row">
+        {prestigeEnabled() && (
+          <Link href={`/${locale}/admin/passports/prestige`}>
+            {locale === "es" ? "Estudio de prestigio" : "Prestige studio"}
+          </Link>
+        )}
         <Link href={`/${locale}/admin/achievements/venues`}>
           {locale === "es" ? "Clasificar locales" : "Classify venues"}
         </Link>
