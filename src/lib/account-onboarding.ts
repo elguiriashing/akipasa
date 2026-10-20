@@ -30,5 +30,16 @@ export function onboardingDestination(locale: Locale, requested?: string) {
   }
 }
 export function onboardingUrl(locale: Locale, requested?: string) {
+  // Auth may return to the completion page itself. Preserve its one local task
+  // envelope instead of losing the original cross-product destination.
+  if (requested?.startsWith(`/${locale}/onboarding?`)) {
+    try {
+      const incoming = new URL(requested, "https://akipasa.com");
+      if (incoming.pathname === `/${locale}/onboarding`)
+        requested = incoming.searchParams.get("next") || undefined;
+    } catch {
+      requested = undefined;
+    }
+  }
   return `/${locale}/onboarding?${new URLSearchParams({ next: onboardingDestination(locale, requested) })}`;
 }

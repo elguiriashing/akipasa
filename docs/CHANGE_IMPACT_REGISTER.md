@@ -1269,3 +1269,11 @@ No real customer image, profile, booking, email or subscription was mutated.
   guard before cohort activation. Legal policy, retention and appeal handling
   require approval. Before activation source revert is sufficient; after it,
   retain guards and stop only new enrolment while investigating. Preserve all data.
+
+
+## 2026-10-20 | Safe cross-product task resume
+
+The gated central completion flow now resumes allowlisted tasks across all five
+products using fixed canonical origins and the shared EN/ES navigation contract.
+Identity and onboarding state remain server-authoritative; no credentials cross
+domains. See `ACCOUNT_TASK_RESUME_V1.md` for tests, safety boundaries and rollout.

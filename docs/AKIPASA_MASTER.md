@@ -1069,3 +1069,11 @@ PostgreSQL concurrent acceptance, responsive browser acceptance and legal review
 remain activation gates. Source/schema flags remain off and no historic account
 is backfilled. A source-only rollback after activation must retain eligibility
 checks; never erase the cohort or user data to recover.
+
+
+## 2026-10-20 | Safe cross-product task resume
+
+The gated central completion flow now resumes allowlisted tasks across all five
+products using fixed canonical origins and the shared EN/ES navigation contract.
+Identity and onboarding state remain server-authoritative; no credentials cross
+domains. See `ACCOUNT_TASK_RESUME_V1.md` for tests, safety boundaries and rollout.
