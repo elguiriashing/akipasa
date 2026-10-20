@@ -1534,3 +1534,11 @@ Signals and ad-personalisation signals in GA4 configuration. Both original contr
 entries and all restored historical content are retained. No measurement IDs,
 provider destinations, account cohort settings, billing source or schema are changed
 by this merge. Exact-head CI remains a release gate.
+
+## Listing schema-reader source configuration
+
+Adds server-only LIMITS_READY and UPLOADS_READY runtime vars after the standalone
+shared schema is installed. Database count/strict gates remain independently off;
+strictfalse retains legacy authenticated upload. No customer, billing, global old
+feature flag or library activation changes. See LISTING_SCHEMA_READINESS.md for
+actual owner paths, native-property dependency, acceptance and coordinated rollback.
