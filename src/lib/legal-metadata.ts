@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { LEGAL_REVIEW_APPROVED, legalDocuments, legalDocumentPath, type LegalLocale } from "./legal-documents";
+import {
+  LEGAL_REVIEW_APPROVED,
+  legalDocuments,
+  legalDocumentPath,
+  type LegalLocale,
+} from "./legal-documents";
 
 export function legalMetadata(locale: LegalLocale, key: string): Metadata {
   const path = legalDocumentPath(locale, key);
