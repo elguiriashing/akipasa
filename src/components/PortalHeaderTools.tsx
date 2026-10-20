@@ -30,7 +30,7 @@ export function PortalHeaderTools({
       href: suiteHref("pasa", locale, { referralCode }),
     },
     {
-      product: "business",
+      product: "hq",
       name: "AkiHQ",
       href: suiteHref("hq", locale, { referralCode }),
     },
@@ -40,9 +40,14 @@ export function PortalHeaderTools({
       href: suiteHref("duermo", locale, { referralCode }),
     },
     {
-      product: "hq",
+      product: "business",
       name: "AkiBusiness",
       href: suiteHref("business", locale, { referralCode }),
+    },
+    {
+      product: "coches",
+      name: "AkiCoches",
+      href: suiteHref("coches", locale, { referralCode }),
     },
   ] as const;
 
@@ -96,13 +101,20 @@ export function PortalHeaderTools({
           <Icon name="more" size={20} />
         </summary>
         <div className="portal-product-popover">
-          {apps
-            .filter((app) => app.product !== product)
-            .map((app) => (
-              <a key={app.product} href={app.href} aria-label={app.name}>
-                <PortalLogo product={app.product} />
-              </a>
-            ))}
+          {apps.map((app) => (
+            <a
+              key={app.product}
+              href={app.href}
+              aria-label={app.name}
+              aria-current={
+                app.product === (product === "business" ? "hq" : product)
+                  ? "page"
+                  : undefined
+              }
+            >
+              <PortalLogo product={app.product} />
+            </a>
+          ))}
           {children && <div className="portal-product-actions">{children}</div>}
         </div>
       </details>

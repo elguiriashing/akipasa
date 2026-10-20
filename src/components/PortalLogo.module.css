@@ -43,3 +43,8 @@
 :global(html[data-theme="dark"]) .duermo .wordmark i {
   color: #6be1c8;
 }
+
+.coches .wordmark span,
+.coches .wordmark i {
+  color: #ff3047;
+}

@@ -38,3 +38,26 @@ origin OAuth callback behavior.
 Before release: run each repository's complete checks/build, CI at the exact
 commit, responsive keyboard/browser acceptance and authenticated canonical-domain
 smoke. Rollback is a source/deployment revert; no data rollback is required.
+
+Browser follow-up: an inert fixture bundles the actual AppShell and production
+CSS for 16 Chromium cases (EN/ES, both saved themes, phone, tablet portrait/
+landscape and desktop). All destinations and referral codes match; links fit
+inside each viewport. Mobile Escape restores the opener; the desktop native
+summary toggles by keyboard Space. The legacy PortalHeaderTools now also has all
+five semantic product entries and matching AkiCoches/HQ/Business logos; its real
+EN/ES renderer is covered. Focused navigation/account/referral tests pass 28/28,
+plus the 23 contract tests. This is UI acceptance with an inert backend, not
+proof of cross-domain provider login or production deployment.
+
+## Reactive invitation navigation correction
+
+The public referral hook revalidates after successful History push/replace and
+browser popstate, so a persistent locale layout cannot forward an earlier
+invitation. It observes the existing same-origin URL only; it creates no cookie,
+identity handoff or automatic attribution. Original History methods are restored
+when the last observer unmounts, without overwriting newer router wrappers.
+Six hook tests cover validation, same-layout navigation, history and cleanup;
+real selector render tests pass in both languages. Sixteen inert Chromium cases
+cover EN/ES, both saved themes, mobile/tablet/desktop, SPA invitation replacement
+and browser-back restoration. Types pass. Full exact-head CI and production
+verification remain required before calling the correction live.
