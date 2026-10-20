@@ -1,6 +1,5 @@
 import { optionalUser } from "@/lib/auth";
-import { onboardingEnabled } from "@/lib/account-onboarding";
-import { readOnboardingStatus } from "@/lib/account-onboarding-server";
+import { accountTrackingAllowed } from "@/lib/account-onboarding-server";
 import "./globals.css";
 import "./compact-app.css";
 import "./brand.css";
@@ -126,16 +125,11 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   let trackingAllowed = true;
-  if (onboardingEnabled()) {
-    try {
-      const { supabase, user } = await optionalUser();
-      if (user) {
-        const status = await readOnboardingStatus(supabase);
-        trackingAllowed = status === "complete" || status === "exempt";
-      }
-    } catch {
-      trackingAllowed = false;
-    }
+  try {
+    const { supabase, user } = await optionalUser();
+    if (user) trackingAllowed = await accountTrackingAllowed(supabase, user.id);
+  } catch {
+    trackingAllowed = false;
   }
   const requestHeaders = await headers();
   const product = requestHeaders.get("x-akipasa-product");

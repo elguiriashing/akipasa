@@ -47,7 +47,7 @@ schema readiness is enabled.
 
 ## Status
 
-Implemented candidate. The dedicated onboarding suite passes 25 tests: pure
+Implemented candidate. The dedicated onboarding suite passes 26 tests: pure
 validation/redirects, server guards and email/OAuth callbacks, rendered EN/ES
 controls, denied Google consent signals, direct analytics refusal and PGlite
 private ACL/legacy-definer mutation protection. Existing auth-security (7) and
@@ -78,3 +78,8 @@ configuration changed.
 The restricted privacy page also links to the independent prestige privacy route
 when its schema-ready flag is enabled; address/export/withdrawal controls must
 remain outside the guarded account workspace layout.
+
+Existing profiles with a birth year that unambiguously indicates under 18 are
+excluded from optional tracking even before new-cohort activation. This is a
+tracking-only check: historical account and paid-tool access remains untouched,
+no new demographic is collected, and a year is never described as verified age.

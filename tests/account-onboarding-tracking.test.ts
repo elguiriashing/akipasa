@@ -20,7 +20,8 @@ vi.mock("@/lib/supabase/service", () => ({
   createSupabaseServiceClient: state.service,
 }));
 vi.mock("@/lib/account-onboarding-server", () => ({
-  readOnboardingStatus: async () => state.status,
+  accountTrackingAllowed: async () =>
+    !["pending", "underage"].includes(state.status),
 }));
 import { POST } from "../src/app/api/analytics/route";
 function request() {

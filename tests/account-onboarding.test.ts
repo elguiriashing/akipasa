@@ -4,7 +4,10 @@ import {
   onboardingSchema,
   onboardingUrl,
 } from "../src/lib/account-onboarding";
-import { readOnboardingStatus } from "../src/lib/account-onboarding-server";
+import {
+  accountTrackingAllowed,
+  readOnboardingStatus,
+} from "../src/lib/account-onboarding-server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 afterEach(() => vi.unstubAllEnvs());
 describe("onboarding flow contract", () => {
@@ -66,4 +69,27 @@ describe("onboarding flow contract", () => {
         } as unknown as SupabaseClient),
       ).rejects.toThrow(/unavailable/);
   });
+});
+
+it("uses existing underage demographics only to suppress tracking, not account access", async () => {
+  vi.stubEnv("AKISUITE_ONBOARDING_SCHEMA_READY", "false");
+  const db = (birth_year: number | null) =>
+    ({
+      from: () => ({
+        select: () => ({
+          eq: () => ({
+            maybeSingle: async () => ({ data: { birth_year }, error: null }),
+          }),
+        }),
+      }),
+    }) as unknown as SupabaseClient;
+  expect(
+    await accountTrackingAllowed(db(new Date().getUTCFullYear() - 12), "self"),
+  ).toBe(false);
+  expect(
+    await accountTrackingAllowed(db(new Date().getUTCFullYear() - 26), "self"),
+  ).toBe(true);
+  expect(await readOnboardingStatus(db(new Date().getUTCFullYear() - 12))).toBe(
+    "exempt",
+  );
 });

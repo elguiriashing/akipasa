@@ -1,4 +1,4 @@
-import { readOnboardingStatus } from "@/lib/account-onboarding-server";
+import { accountTrackingAllowed } from "@/lib/account-onboarding-server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { z } from "zod";
@@ -26,8 +26,10 @@ export async function POST(request: Request) {
     const supabase = await createSupabaseServerClient();
     const { data: auth } = await supabase.auth.getUser();
     if (auth.user) {
-      const status = await readOnboardingStatus(supabase);
-      const restricted = status === "pending" || status === "underage";
+      const restricted = !(await accountTrackingAllowed(
+        supabase,
+        auth.user.id,
+      ));
       const { error } = await supabase.from("personalisation_settings").upsert({
         profile_id: auth.user.id,
         analytics_enabled: !restricted && parsed.data.analytics,

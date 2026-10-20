@@ -84,3 +84,8 @@ migration lists covered mutation tables rather than claiming universal coverage.
 Do not turn on enrolment until that coverage and all independent app guards are
 accepted. No monetary incentive, paid service or live legal acceptance change is
 part of this candidate.
+
+Existing optional birth-year data also suppresses tracking where the year alone
+unambiguously indicates under 18. It does not change legacy account/paid access
+or transmit that year to analytics. A self-edited demographic remains unreliable
+for age verification; the terminal negative-declaration state is independent.

@@ -1,4 +1,4 @@
-import { readOnboardingStatus } from "@/lib/account-onboarding-server";
+import { accountTrackingAllowed } from "@/lib/account-onboarding-server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createHmac } from "node:crypto";
@@ -62,8 +62,7 @@ export async function POST(request: Request) {
     const supabase = await createSupabaseServerClient();
     const { data: auth } = await supabase.auth.getUser();
     if (auth.user) {
-      const status = await readOnboardingStatus(supabase);
-      if (status === "pending" || status === "underage")
+      if (!(await accountTrackingAllowed(supabase, auth.user.id)))
         return new NextResponse(null, { status: 204 });
     }
     const service = createSupabaseServiceClient();
