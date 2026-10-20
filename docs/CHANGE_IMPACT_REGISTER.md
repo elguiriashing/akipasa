@@ -3,6 +3,17 @@ Total output lines: 1673
 
 # Change Impact Register
 
+## 2026-10-20 | Historical-branch formatter compatibility
+
+- **Before:** the formatter failed before checking a clean historical legal
+  branch because its hard-coded list included files added later on `master`.
+- **After:** unmatched later paths are skipped and only existing tracked files
+  are staged. Existing files still use the same Prettier rules.
+- **Evidence:** legal PR #8 run `39407569046`, job `118577111911`, failed only
+  with unmatched-path errors after its 16 legal files had been formatted.
+- **Rollback:** revert this workflow change. No application, database, billing,
+  legal content or production runtime changes.
+
 ## 2026-10-20 | Reconcile unavailable GitHub production credential
 
 - **Before:** every `master` push started the production deployment workflow;
