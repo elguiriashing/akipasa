@@ -808,6 +808,25 @@ export default async function VenueWorkspace({
                 </p>
               )}
               <VenueMediaStudio
+                key={id}
+                ownedMediaIds={(ownedMedia || []).map((item) => item.id)}
+                otherPlacedMediaIds={(mediaPlacements || [])
+                  .filter(
+                    (item) =>
+                      !(
+                        (item.target_key === "" &&
+                          [
+                            "venue_profile",
+                            "venue_cover",
+                            "venue_menu",
+                            "venue_events",
+                            "venue_explore",
+                          ].includes(item.placement)) ||
+                        (item.placement === "venue_gallery" &&
+                          item.target_key === "stay_header")
+                      ),
+                  )
+                  .map((item) => item.media_id)}
                 locale={locale}
                 venueId={id}
                 media={mediaStudioItems}

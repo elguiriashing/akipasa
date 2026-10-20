@@ -1553,3 +1553,10 @@ Fresh drafts and ordinary edits remain protected by original RLS/account guards;
 no history or customer row is rewritten. No application/script event upsert was
 found. Direct INSERT of retained UUIDs, including upsert attempts, must fail.
 See LISTING_EVENT_IDENTITY.md for exact regression and non-destructive rollout.
+
+### Workspace picker versus listing quota usage
+
+The library picker may list many authorized organisation assets. Listing upload
+usage counts only this venue's owned media and actual slot/header/event uses,
+including retained references without preview URLs. The available picker size is
+not a quota count. Server reservation and final mutation guards remain authoritative.

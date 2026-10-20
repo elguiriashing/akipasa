@@ -2125,3 +2125,13 @@ checks blocked resurrection/upsert/PK changes, foreign actor denial, Premium,
 private execution and pending/complete onboarding intersection using the actual
 cohort guard SQL. See LISTING_EVENT_IDENTITY.md; hosted CI and production schema
 acceptance remain separate gates. Large hosted rollback tool hangs are not passes.
+
+## Listing library usage presentation refinement
+
+The initial library consumer counted all pickable organisation assets in its
+upload allowance. The follow-up counts owned media IDs plus actual local slots,
+header and other event placements, deduplicated by asset. This preserves uploads
+at locations with small licensed collections even when the shared library is large;
+retained assets without preview URLs still count. Changing venues resets the media
+component. SQL/API quota and entitlement guards are unchanged. Focused usage and
+EN/ES template tests, owner regressions and TypeScript accompany the amendment.
