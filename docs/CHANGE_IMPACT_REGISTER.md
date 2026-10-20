@@ -2029,3 +2029,16 @@ Verification: all 64 combinations pass in Chromium 143 on the exact component
 source. Phone light and tablet dark menu screenshots were inspected; scoped
 ESLint, formatting, contract integrity and whitespace checks pass. Hosted full
 CI must pass on the replacement commit before merge.
+
+## 2026-10-20 | Narrow referral audit identity-sequence ACL repair
+
+Before: the hosted public-schema default sequence ACL would grant anon,
+authenticated and service_role sequence capabilities on the new referral audit
+identity sequence, despite protected audit rows. After: additive185822 revokes
+only that sequence, without editing170421/180654 or global defaults. Owner-run
+configuration audit still appends. Private review sequence, billing permissions,
+RLS, programme checks and all other legacy sequence privileges are unchanged.
+Six executed PGlite cases cover inherited grants, raw nextval/setval/read denial,
+administrator audit appends, unrelated/review ACLs, financial gates and repeat
+execution/mirror identity; existing referral suites are rerun. Source-only install
+packet records dependencies and hosted acceptance gates. No production write.

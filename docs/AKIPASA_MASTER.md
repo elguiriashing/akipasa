@@ -1471,3 +1471,14 @@ Verification: all 64 combinations pass in Chromium 143 on the exact component
 source. Phone light and tablet dark menu screenshots were inspected; scoped
 ESLint, formatting, contract integrity and whitespace checks pass. Hosted full
 CI must pass on the replacement commit before merge.
+
+## 2026-10-20 | Referral audit sequence least privilege
+
+Actual hosted default ACL metadata grants client/service capabilities to new
+public identity sequences. A forward-only mirrored185822 migration revokes only
+suite_referral_audit_id_seq, retaining owner-executed append-only audit triggers,
+all financial false constraints and unrelated legacy sequence ACLs. Fresh-schema
+role tests reproduce the inherited grants and prove denial plus valid audit appends.
+Read REFERRAL_INSTALL_READINESS_20261020.md for ordered installation, final account
+coverage, expected empty shape, ACL probes and retained-history rollback. No
+production write, programme seeding or monetary/workflow activation is performed.
