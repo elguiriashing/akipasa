@@ -74,6 +74,7 @@ function setup(
     badCustomer?: boolean;
     providerFailure?: boolean;
     legacy?: boolean;
+    detached?: boolean;
   } = {},
 ) {
   const calls: Array<{
@@ -113,13 +114,34 @@ function setup(
         if (options.unpaid) s.latest_invoice.status = "open";
         if (options.legacy) s.items.data[0].price.id = "legacy";
       } else if (url.endsWith("crm_operations_binding"))
-        result = { ...binding, token: options.checkout ? "token" : null };
+        result = {
+          ...binding,
+          profileId: options.detached ? null : binding.profileId,
+          token: options.checkout ? "token" : null,
+        };
       return Response.json(result);
     },
   );
   return { fetcher, calls };
 }
 describe("central operations recovery", () => {
+  it("in-flight detached identity is acknowledged without applying or rotating tools", async () => {
+    const { fetcher, calls } = setup({ detached: true });
+    expect(await recoverOperationsBilling(env, fetcher)).toMatchObject({
+      applied: 0,
+      failed: 0,
+      deferred: 1,
+    });
+    expect(
+      calls.some(
+        (c) =>
+          c.url.endsWith("apply_crm_operations_billing") ||
+          c.url.endsWith("crm_toolbox_rotate"),
+      ),
+    ).toBe(false);
+    expect(calls.at(-1)?.body?.p_ok).toBe(true);
+  });
+
   it("gate off has no outbound traffic", async () => {
     const f = vi.fn();
     expect((await recoverOperationsBilling({}, f)).enabled).toBe(false);

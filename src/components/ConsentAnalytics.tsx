@@ -34,8 +34,10 @@ export function ConsentAnalytics({
       w.dataLayer = w.dataLayer || [];
       w.gtag =
         w.gtag ||
-        function (...args: unknown[]) {
-          w.dataLayer!.push(args);
+        function () {
+          // Google tags require the native arguments object, not an array.
+          // eslint-disable-next-line prefer-rest-params
+          w.dataLayer!.push(arguments);
         };
 
       // Consent must be set before configuring either destination.

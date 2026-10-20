@@ -241,3 +241,44 @@ Verification: all 64 combinations pass in Chromium 143 on the exact component
 source. Phone light and tablet dark menu screenshots were inspected; scoped
 ESLint, formatting, contract integrity and whitespace checks pass. Hosted full
 CI must pass on the replacement commit before merge.
+
+## 2026-10-20 | Spotlight claim acceptance follows AkiHQ
+
+The sparse-venue browser case retained the retired local claim label and URL after
+the approved BusinessPathway conversion integration. It now opens the contextual
+business prompt and verifies the exact AkiHQ Spanish claim URL with the synthetic
+venue identifier. Existing assertions for useful listing information, missing
+media, absence of fabricated opening hours/booking and mobile containment remain.
+Application behavior, claim authorization, analytics and production data are
+unchanged. This is an isolated acceptance amendment after the frozen mission
+candidate; final hosted CI remains required before release.
+
+Validation: the real-route fixture production Next build and all 28 Chromium
+Spotlight cases pass, including the exact Spanish HQ claim destination. Scoped
+ESLint, contract integrity, formatting and whitespace checks pass. Fixtures remain
+loopback-only, with no real external requests or production data mutations.
+
+The isolated Spotlight amendment also preserves immutable privacy follow-up
+#226 (`d9f90673c7135534da73804ec70c53e894ed488b`) as ancestry. The combined
+source differs from that privacy candidate only in this acceptance spec and
+verification notes. Operations 32 Node and 42 adapter cases, TypeScript and
+contract checks pass after combination. Exact-head hosted build/browser gates
+remain required; neither frozen source branch was changed.
+
+## 2026-10-20 | Preserve current-master consent-aware Google queue repair
+
+The final mission candidate merges current master `cd600e8254d26c73cb6c8c879e4a5c8b24d79803`
+and preserves the complete #230 native-arguments Google command fix and its
+regression. The combined component still intersects analytics/marketing choices
+with server-derived tracking eligibility, leaves every consent signal denied for
+restricted accounts, loads optional tags only with permission and disables Google
+Signals and ad-personalisation signals in GA4 configuration. Both original contract
+entries and all restored historical content are retained. No measurement IDs,
+provider destinations, account cohort settings, billing source or schema are changed
+by this merge. Exact-head CI remains a release gate.
+
+Combined-master validation: privacy/analytics 22, onboarding 70, operations
+32 Node plus 42 adapters pass. TypeScript, scoped ESLint, contract integrity and
+whitespace checks pass. PR #230 test content is byte-identical to current master;
+the only component delta from master is the mission tracking-eligibility
+intersection. No acceptance assertion or timeout was relaxed.

@@ -22,6 +22,16 @@ export function evaluateOperationsSubscription(
     subscription.items?.data?.length !== 1
   )
     throw Error("Operations subscription binding mismatch");
+  // Only an authoritative, durable binding may identify a deleted account.
+  // Stripe metadata must never reattach it or grant the replacement owner access.
+  if (binding.profileId === null) {
+    if (
+      subscription.metadata?.workspace_id &&
+      subscription.metadata.workspace_id !== binding.workspaceId
+    )
+      throw Error("Operations scope metadata mismatch");
+    return { action: "detached", subscriptionId: subscription.id };
+  }
   if (
     subscription.metadata?.workspace_id !== binding.workspaceId ||
     subscription.metadata?.profile_id !== binding.profileId

@@ -21,6 +21,31 @@
 - Rollback: revert the guard independently if needed; keep history-backed recovered
   text. Do not reintroduce corrupted contracts when rolling back application code.
 
+## 2026-10-20 | GA4 consent command queue repair (PR #230)
+
+- **Before:** after 8 October's GDPR tag gating, the `gtag` shim pushed arrays
+  instead of native `arguments` objects; Google loaded but ignored consent and
+  configuration commands. Event/page-view reporting fell effectively to zero.
+- **After:** preserve the loader's opt-in requirement and queue each command as
+  a native `arguments` object. Correctly consenting browsers can once again
+  initialize and transmit GA4 events.
+- **Dependencies and risk:** `ConsentAnalytics`, existing consent cookies,
+  `PersonalisationConsent`, same-origin consent API, GA4 stream
+  `G-PW8547QDGD`, Ads destination. No server, RLS, personalisation, Stripe,
+  billing, SEO, domain, spend or campaign setting changes.
+- **Evidence:** live isolated browser: valid analytics cookie plus current code
+  produced `usedDefault=false`, `usedUpdate=false` and no
+  `google-analytics.com/g/collect`. Injecting native `arguments` commands
+  changed both flags to `true` and produced one GA4 collection request.
+  Anonymous consent POST returned HTTP 204.
+- **Verification:** native-arguments regression test, denied-consent test,
+  lint, typecheck, full required CI, then exact-source Cloudflare deployment
+  and live Realtime/collection smoke under granted consent. Denied consent must
+  still prevent optional tags from loading.
+- **Rollback:** restore the previous verified GDPR-safe deployment only if
+  regression warrants; do not reintroduce unconsented analytics. GA4 data lost
+  during the incident cannot be retroactively recovered.
+
 ## 2026-10-20 | Historical-branch formatter compatibility
 
 - **Before:** the formatter failed before checking a clean historical legal
@@ -2029,6 +2054,45 @@ Verification: all 64 combinations pass in Chromium 143 on the exact component
 source. Phone light and tablet dark menu screenshots were inspected; scoped
 ESLint, formatting, contract integrity and whitespace checks pass. Hosted full
 CI must pass on the replacement commit before merge.
+
+## 2026-10-20 | Spotlight claim acceptance follows AkiHQ
+
+The sparse-venue browser case retained the retired local claim label and URL after
+the approved BusinessPathway conversion integration. It now opens the contextual
+business prompt and verifies the exact AkiHQ Spanish claim URL with the synthetic
+venue identifier. Existing assertions for useful listing information, missing
+media, absence of fabricated opening hours/booking and mobile containment remain.
+Application behavior, claim authorization, analytics and production data are
+unchanged. This is an isolated acceptance amendment after the frozen mission
+candidate; final hosted CI remains required before release.
+
+Validation: the real-route fixture production Next build and all 28 Chromium
+Spotlight cases pass, including the exact Spanish HQ claim destination. Scoped
+ESLint, contract integrity, formatting and whitespace checks pass. Fixtures remain
+loopback-only, with no real external requests or production data mutations.
+
+## 2026-10-20 | Operating identity deletion compatibility
+
+New billing profile links previously blocked identity deletion. Mirrored additive
+20261020185200 makes those links nullable with SET NULL, and clears obsolete
+individual tool limits with their deleted membership. It preserves business and
+financial records, prevents detached grants/rebinding, excludes detached recovery
+and handles signed webhooks without referral attribution or legacy fallback.
+No production identities, billing state or retention rules were changed.
+See OPERATIONS_IDENTITY_DELETION.md for actual fixture evidence, deployment
+ordering and existing operator-reviewed deletion/financial retention dependencies.
+
+## 2026-10-20 | Preserve current-master consent-aware Google queue repair
+
+The final mission candidate merges current master `cd600e8254d26c73cb6c8c879e4a5c8b24d79803`
+and preserves the complete #230 native-arguments Google command fix and its
+regression. The combined component still intersects analytics/marketing choices
+with server-derived tracking eligibility, leaves every consent signal denied for
+restricted accounts, loads optional tags only with permission and disables Google
+Signals and ad-personalisation signals in GA4 configuration. Both original contract
+entries and all restored historical content are retained. No measurement IDs,
+provider destinations, account cohort settings, billing source or schema are changed
+by this merge. Exact-head CI remains a release gate.
 
 ## 2026-10-20 | Narrow referral audit identity-sequence ACL repair
 

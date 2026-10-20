@@ -542,10 +542,19 @@ test.describe("Spotlight public route acceptance", () => {
     await expect(venue.locator(".venue-spotlight-book")).toHaveCount(0);
     await expect(venue.locator(".venue-spotlight-art img")).toHaveCount(0);
     await expect(venue.getByText(/Abierto ahora|Open now/)).toHaveCount(0);
-    await venue.locator(".venue-spotlight-more summary").click();
+    const businessPrompt = venue.locator("details").filter({
+      has: page.locator("summary", { hasText: "¿Gestionas un negocio?" }),
+    });
+    await businessPrompt.locator("summary").click();
     await expect(
-      venue.getByRole("link", { name: /Reclamar este local/ }),
-    ).toHaveAttribute("href", /\/es\/business\?view=claims&venueId=/);
+      businessPrompt.getByRole("link", {
+        name: "Reclamar con AkiHQ",
+        exact: true,
+      }),
+    ).toHaveAttribute(
+      "href",
+      "https://akihq.app/es/business?view=claims&venueId=00000000-0000-4000-8000-000000000020",
+    );
     await fitsViewport(page, venue, 390);
   });
 

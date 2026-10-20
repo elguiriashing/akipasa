@@ -135,7 +135,7 @@ export async function recoverOperationsBilling(
       )
         throw Error("Recovery binding mismatch");
       const state = evaluateOperationsSubscription(subscription, binding);
-      if (state.action === "awaiting_payment") {
+      if (state.action === "awaiting_payment" || state.action === "detached") {
         deferred++;
         ok = true;
         continue;
