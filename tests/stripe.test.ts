@@ -1,3 +1,6 @@
+vi.mock("@/lib/operations-billing", () => ({
+  syncOperationsBilling: async () => false,
+}));
 import { readFileSync } from "node:fs";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { buildCalendar } from "../src/lib/calendar";

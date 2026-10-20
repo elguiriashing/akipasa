@@ -1,3 +1,4 @@
+import { operationsPrice } from "./operations-billing/operations-contract.mjs";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import { matchConfiguredAkiSuitePriceId } from "@/lib/akisuite-stripe";
 import {
@@ -48,6 +49,7 @@ export async function recordVerifiedReferralInvoice(
       stripeObjectId(line.pricing?.price_details?.price) ||
       stripeObjectId(line.price);
     return (
+      (operationsPrice(id) ? `akibusiness_${operationsPrice(id)}` : null) ||
       stripeBillingPlanForPrice(id)?.plan ||
       matchConfiguredAkiSuitePriceId(id)?.plan ||
       null

@@ -1,3 +1,4 @@
+import { syncOperationsBilling } from "@/lib/operations-billing";
 import {
   recordVerifiedReferralInvoice,
   recordVerifiedReferralHold,
@@ -54,6 +55,7 @@ function unixDate(value: unknown) {
 }
 
 async function processEvent(event: StripeEvent) {
+  const operationsRevision = Date.now();
   let object = event.data.object;
   const supabase = createSupabaseServiceClient();
 
@@ -71,6 +73,24 @@ async function processEvent(event: StripeEvent) {
     return;
   const relatedSubscription = stripeEventSubscriptionId(event.type, object);
   if (!relatedSubscription) return; // One-off payments on this shared Stripe account.
+  const operations = await syncOperationsBilling(
+    relatedSubscription,
+    event.id,
+    operationsRevision,
+  );
+  if (operations) {
+    if (event.type === "invoice.paid")
+      await recordVerifiedReferralInvoice({
+        eventId: event.id,
+        created: event.created,
+        profileId: operations.profileId,
+        customerId: operations.customerId,
+        subscriptionId: relatedSubscription,
+        productCode: operations.productCode,
+        invoice: event.data.object,
+      });
+    return;
+  }
   // Retrieve current state: a delayed invoice/Checkout event must not restore
   // access after a subsequent cancellation or downgrade.
   object = await stripeRetrieve<Record<string, unknown>>(

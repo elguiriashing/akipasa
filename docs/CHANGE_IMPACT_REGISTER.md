@@ -1271,3 +1271,7 @@ case review are implemented with reporter-isolated reads, administrator-only
 resolution, append-only audit and deduplicated automatic refund/dispute cases.
 Case resolution cannot modify attribution or authorize money. No financial
 approval, incentive activation, customer migration or production write occurred.
+
+## 2026-10-20 | Operations billing and renewal migration
+
+Adds EN/ES owner location checkout, confirmed paid upgrade adapter, same-subscription scheduled downgrades, explicit private legacy migration scopes and one-time owner initial selection. Cross-app handoff carries only locale/workspace; sole AkiPasa webhook and referral invoice/hold processing are preserved. SQL uses private RLS tables, owner/account eligibility and service-only atomic ledger writes. Existing personal Premium is untouched; legacy business retires only on the verified replacement invoice. Tests cover failed payments, duplicate leases/events, private scope and owner isolation, schedule retries and annual paid expiry. Release remains gated pending hosted migration/CI, merchant tax/price readiness, sandbox and browser acceptance. Rollback/recovery details: `OPERATIONS_BILLING_RELEASE.md`.

@@ -1065,3 +1065,7 @@ no tracking cookie or cross-domain identity token is introduced. RLS, explicit
 grants, account export, admin evidence export and audit accompany the schema.
 See `docs/REFERRAL_ENGINE_20261020.md` for paths, checks, rollback and exact gaps.
 No production release or authenticated acceptance is implied by this entry.
+
+## 2026-10-20 | Location-owned AkiBusiness operations billing
+
+The `/[locale]/account/subscription/operations` route is the sole owner-authorised operations checkout handoff. The signed Stripe webhook reuses current subscription retrieval and an atomic private toolbox binding; listing/personal plans remain separate. Read `docs/OPERATIONS_BILLING_RELEASE.md` for exact price IDs, gate/merchant/tax checks, migration sequence, scheduled renewal downgrades and recovery. No checkout return grants access and no migration deletes retained data.
