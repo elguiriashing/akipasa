@@ -34,11 +34,11 @@ test("public discovery, map and legal routes are functional", async ({
   await expect(page.getByRole("heading", { name: "Map" })).toBeVisible();
   await page.goto("/en/privacy");
   await expect(
-    page.getByRole("heading", { name: "Your information, under control" }),
+    page.getByRole("heading", { name: "Privacy policy" }),
   ).toBeVisible();
   await page.goto("/en/terms", { waitUntil: "domcontentloaded" });
   await expect(
-    page.getByRole("heading", { name: "Using AkiPasa responsibly" }),
+    page.getByRole("heading", { name: "Terms of use" }),
   ).toBeVisible();
 });
 
