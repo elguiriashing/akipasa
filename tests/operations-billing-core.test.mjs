@@ -1,5 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { mkdtempSync, writeFileSync, existsSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+import { spawnSync } from "node:child_process";
 import { buildMigrationManifest } from "../src/lib/operations-billing/migration-manifest.mjs";
 import { evaluateOperationsSubscription } from "../src/lib/operations-billing/operations-lifecycle.mjs";
 import {
@@ -277,3 +281,48 @@ test("renewal preview replaces the existing item only at expiry and preserves cu
     ),
   );
 });
+
+for (const tamper of [false, true]) {
+  test(`offline command preparation ${tamper ? "rejects modified rows retaining the claimed seal" : "accepts a key-reordered intact seal before enforcing receipt eligibility"}`, () => {
+    const dir = mkdtempSync(join(tmpdir(), "operations-command-seal-"));
+    try {
+      const input = fixture();
+      const built = buildMigrationManifest(input);
+      const manifest = Object.fromEntries(Object.entries(built).reverse());
+      if (tamper) manifest.rows[0].customerId = "cus_altered";
+      for (const [name, value] of Object.entries({
+        manifest,
+        receipts: { manifestSha256: built.manifestSha256, calls: [] },
+        snapshots: { input },
+      }))
+        writeFileSync(join(dir, `${name}.json`), JSON.stringify(value));
+      const output = join(dir, "commands.json");
+      const result = spawnSync(
+        process.execPath,
+        [
+          "--experimental-strip-types",
+          resolve("scripts/prepare-operations-migration-commands.mjs"),
+          "--manifest",
+          join(dir, "manifest.json"),
+          "--receipts",
+          join(dir, "receipts.json"),
+          "--snapshots",
+          join(dir, "snapshots.json"),
+          "--output",
+          output,
+        ],
+        { encoding: "utf8" },
+      );
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        tamper
+          ? /Sealed review evidence mismatch/
+          : /Exactly three approved migrations required/,
+      );
+      assert.equal(existsSync(output), false);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+}

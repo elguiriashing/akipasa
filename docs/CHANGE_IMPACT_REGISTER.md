@@ -2010,3 +2010,7 @@ Actual-membership and direct-RPC SQL regressions intersect restricted callers
 while preserving grandfathered users. Task resume retains bounded vehicle/dates
 and booking page keys in both languages. The final scoped suites pass 70 account
 and 41 referral cases; exact integrated hosted CI remains mandatory before merge.
+
+## 2026-10-20 | Service-enqueued legacy renewal schedules
+
+Adds private immutable reviewed migration commands and explicit service RPCs; no browser endpoint or credentials. Central cron uses the existing billing key and bounded leases. It checks unchanged source/binding, creates from_subscription only, preserves full current phase/defaults, saves future plan before writing, requires provider future invoice preview with existing discount and exact paid-expiry period, then verifies schedule/current subscription readback. Source changes, unrelated schedules, nonzero invoices, unknown fields and expired ambiguous attempts fail closed. Retains legacy access until actual new-price payment reconciliation and leaves personal plans untouched. See OPERATIONS_RENEWAL_COMMANDS.md for gates and rollback.

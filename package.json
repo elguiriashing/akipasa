@@ -35,7 +35,7 @@
     "postinstall": "node scripts/maplibre-attribution-patch.mjs",
     "test:onboarding:browser": "node scripts/test-onboarding-browser.mjs",
     "test:suite-navigation": "node --experimental-strip-types --test tests/suite-navigation.test.mjs",
-    "test:operations-billing": "node --test tests/operations-billing-core.test.mjs tests/operations-billing-db.test.mjs && vitest run --config vitest.akisuite.config.ts tests/akisuite-operations-checkout.test.ts tests/akisuite-operations-schedule.test.ts tests/akisuite-operations-recovery.test.ts"
+    "test:operations-billing": "node --test tests/operations-billing-core.test.mjs tests/operations-billing-db.test.mjs && vitest run --config vitest.akisuite.config.ts tests/akisuite-operations-checkout.test.ts tests/akisuite-operations-schedule.test.ts tests/akisuite-operations-recovery.test.ts tests/akisuite-operations-migration-command.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "0.7.0",

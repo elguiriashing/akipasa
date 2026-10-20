@@ -1452,3 +1452,7 @@ Actual-membership and direct-RPC SQL regressions intersect restricted callers
 while preserving grandfathered users. Task resume retains bounded vehicle/dates
 and booking page keys in both languages. The final scoped suites pass 70 account
 and 41 referral cases; exact integrated hosted CI remains mandatory before merge.
+
+## 2026-10-20 | Explicit reviewed renewal command queue
+
+A separate service-only durable command queue allows an operator to enqueue the three approved legacy migrations after verified private provisioning/binding. The existing central worker/key can then create schedules from those SAME subscriptions, preview exact future zero invoices with inherited discounts/tax, preserve current paid periods and verify actual readback. No command is automatic; the separate migration gate defaults off. Read `docs/OPERATIONS_RENEWAL_COMMANDS.md` for the immutable snapshot, idempotency, rollback and operator evidence contract.

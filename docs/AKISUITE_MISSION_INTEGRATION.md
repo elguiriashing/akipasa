@@ -25,6 +25,7 @@ Base master: `a272f2a0edbd49e30676d30fef87d72f2248793f`.
 | #221 | `1d96b30e7c04d06d7087877b62bb5a7ddb6c43b6` | Gated admin referral eligibility/payout approval audit; no disbursement     |
 | #223 | `3395b4a7a0e63f2166d7e309c3c339f165206ff3` | Central first-invoice recovery and strict merchant/tax defaults             |
 | #224 | `0a01ed40e84a0916cdf2c5147e946e1c7a42ffb6` | Direct RPC, permission predicate, mutation and Storage onboarding guards    |
+| #225 | `1f4c47218e74e9a34e60fa532a0898253dc6a4cc` | Empty service-only reviewed renewal command queue; dual gates off           |
 
 Local sequential merge commits preserve every included source head as ancestry.
 Publication must retain those heads as commit parents/ancestors and compare the
@@ -191,3 +192,37 @@ actual copied snapshot predicates and direct guards), referrals 41/41, operation
 frozen after #221/#223/#224 and these integration corrections. Exact final hosted
 CI, Cloudflare packaging and authenticated acceptance remain release gates.
 No further feature source is added while this candidate is awaiting those gates.
+
+## Reviewed renewal-command execution
+
+Included #225 supplies the private, default-disabled execution infrastructure for
+three separately sealed operator-reviewed migrations, using the existing central
+Stripe credential. The queue is empty until explicitly service-enqueued; browser
+roles cannot read/write it. Two flags, actual merchant/immutable binding checks,
+unchanged paid source snapshot, stable idempotency keys, exact existing discount,
+zero-amount future invoice preview and unchanged provider readback are required.
+Only same-subscription schedule creation and future-phase updates are implemented;
+there is no charge, invoice-finalization, payout or duplicate-subscription path.
+
+Independent review added subscription+full-schedule rereads just before the phase
+write to refuse changes made during preview. Exact-phase reread and source
+assertions follow the write. There is no provider atomic compare-and-swap; keep a
+controlled operator window and inspect actual payloads/readbacks before activation.
+Neither this integration nor its tests enqueue commands or call live Stripe.
+The release manager reviews the three exact sealed payloads after tested deployment
+before considering the separate command flag. No general-purpose editor is exposed.
+
+The independent command review also corrected offline seal verification: complete
+manifest content must equal its deterministic reconstruction, so an altered row
+cannot reuse a claimed hash. Two actual CLI subprocess regressions reject tampered
+rows and accept semantically identical JSON key ordering before receipt validation.
+No private real snapshots are used in tests or committed.
+
+Final #225 integration verification: operations 29 Node cases (including actual
+SQL roles/command queue and two real offline CLI subprocess regressions) plus
+35 adapters pass. Types, affected-file ESLint, full-repository format, contract
+integrity, exact historical-line preservation and 24-file migration permission
+audit all pass. The application source is frozen for final hosted CI/Worker
+packaging. The earlier full application/96-case component browser evidence remains
+recorded above; the new command paths require separate operator activation and
+provider readback, and are not claimed as already executed against customers.
