@@ -1471,3 +1471,19 @@ Verification: all 64 combinations pass in Chromium 143 on the exact component
 source. Phone light and tablet dark menu screenshots were inspected; scoped
 ESLint, formatting, contract integrity and whitespace checks pass. Hosted full
 CI must pass on the replacement commit before merge.
+
+## 2026-10-20 | Spotlight claim acceptance follows AkiHQ
+
+The sparse-venue browser case retained the retired local claim label and URL after
+the approved BusinessPathway conversion integration. It now opens the contextual
+business prompt and verifies the exact AkiHQ Spanish claim URL with the synthetic
+venue identifier. Existing assertions for useful listing information, missing
+media, absence of fabricated opening hours/booking and mobile containment remain.
+Application behavior, claim authorization, analytics and production data are
+unchanged. This is an isolated acceptance amendment after the frozen mission
+candidate; final hosted CI remains required before release.
+
+Validation: the real-route fixture production Next build and all 28 Chromium
+Spotlight cases pass, including the exact Spanish HQ claim destination. Scoped
+ESLint, contract integrity, formatting and whitespace checks pass. Fixtures remain
+loopback-only, with no real external requests or production data mutations.
