@@ -2110,3 +2110,23 @@ authorization behavior. This corrects the still-unapplied migration; do not
 blindly rerun its table/policy creation in a database where it is already recorded.
 No live QA transactions, enrollment activation or production writes were made
 for this repair. The successful production retry remains a separate release gate.
+
+## 2026-10-20 | Operating referral eligibility and private representative evidence
+
+- Before: capture checked historical public subscriptions but omitted the real
+  private operating ledger; representatives saw only aggregate conversion activity.
+- After: existing bound operating customers cannot make a late new-customer claim.
+  Approved representatives receive bounded owned subscription/invoice proposal and
+  safe administrative review history, with dynamic holds and no payable/paid state.
+- Dependencies: installed foundation170421/review180654/corrected coverage180946,
+  shared identity, existing code-owner immutability and review audit, optional private
+  operating ledger, account/referrals EN/ES, normal authenticated RLS and a new off
+  schema-ready presentation gate. Shared cross-app task-resume is untouched.
+- Security: guarded capture body/owner/ACL retained, shared helper private/denied,
+  all caller guards precede reads, suspended/foreign reps excluded; no customer,
+  Stripe or internal review identity/document/note leaks. No cash flag/rate selected.
+- Evidence:58 focused SQL/page cases and16 real-component Chromium cases pass;
+  corrected real coverage wrappers compile; TypeScript/scoped lint/SQL audit pass.
+  Full exact-head hosted checks and actual production acceptance remain required.
+- Rollback: disable new presentation readiness; retain customer exclusion, guarded
+  shared evaluator, immutable financial/attribution history and existing ACLs.

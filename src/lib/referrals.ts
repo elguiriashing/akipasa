@@ -95,3 +95,52 @@ export function referralReviewLabel(kind: string, locale: "en" | "es") {
       ? "Revisión necesaria"
       : "Review required";
 }
+
+const representativeInvoiceSchema = z.object({
+  reference: z.string().regex(/^[a-f0-9]{32}$/),
+  code: referralCodeSchema,
+  product: z.string().nullable(),
+  recorded_at: z.string(),
+  currency: z
+    .string()
+    .regex(/^[a-z]{3}$/)
+    .nullable(),
+  proposed_cents: z.number().int().nonnegative().nullable(),
+  terms_version: z.string().nullable(),
+  blockers: z.array(z.string()),
+  review_state: z.enum(["eligible", "approved", "held", "rejected"]).nullable(),
+  effective_approval: z.boolean(),
+  status: z.enum(["pending", "approved", "held", "rejected"]),
+  reviews: z
+    .array(
+      z.object({
+        state: z.enum(["eligible", "approved", "held", "rejected"]),
+        reviewed_at: z.string(),
+      }),
+    )
+    .max(10),
+  reviews_truncated: z.boolean(),
+  payable: z.literal(false),
+  payouts_enabled: z.literal(false),
+});
+export const representativeEvidenceSchema = z.object({
+  days: z.union([z.literal(30), z.literal(90), z.literal(365)]),
+  since: z.string(),
+  subscriptions: z
+    .array(
+      z.object({
+        reference: z.string().regex(/^[a-f0-9]{32}$/),
+        latest_evidence_at: z.string(),
+        invoice_count: z.number().int().nonnegative(),
+        invoices_truncated: z.boolean(),
+        invoices: z.array(representativeInvoiceSchema).max(10),
+      }),
+    )
+    .max(50),
+  subscriptions_truncated: z.boolean(),
+  payable: z.literal(false),
+  payouts_enabled: z.literal(false),
+});
+export type RepresentativeEvidence = z.infer<
+  typeof representativeEvidenceSchema
+>;

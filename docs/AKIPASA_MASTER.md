@@ -1551,3 +1551,19 @@ authorization behavior. This corrects the still-unapplied migration; do not
 blindly rerun its table/policy creation in a database where it is already recorded.
 No live QA transactions, enrollment activation or production writes were made
 for this repair. The successful production retry remains a separate release gate.
+
+## 2026-10-20 | Operating referral eligibility and private representative evidence
+
+The guarded immutable capture RPC excludes existing bindings in the optional actual
+private operating-subscription ledger, alongside its original public-billing check.
+The deployed account wrapper/body/owner/ACL are preserved using an exact source
+anchor; the migration refuses an unguarded or unexpected source. Admin and approved
+representative invoice projections share one non-callable private eligibility
+helper. Representatives receive only their own bounded opaque subscription/invoice
+references, frozen proposals, safe review states/dates and current holds. Customer
+and provider identities, internal review notes/references and snapshots stay private.
+The existing account dashboard adds an EN/ES responsive panel behind the separate
+AKISUITE_REFERRAL_REP_EVIDENCE_READY schema flag, default off. There is no paid
+state, payable balance, incentive activation or production mutation in this patch.
+See REFERRAL_REPRESENTATIVE_EVIDENCE.md for dependencies, limits, rollback and
+executed SQL/page/16-case browser evidence. Full hosted exact-head CI remains required.
