@@ -140,7 +140,7 @@ begin
    if auth.uid() is not null and not public.account_features_allowed() then
     raise exception ''account completion required [coverage-v1]'' using errcode=''42501'';
    end if;
-  '||rtrim(body)||case when right(rtrim(body),1)=';' then '' else ';' end||'
+  '||body||case when body ~ ';[[:space:]]*$' then '' else E'\n;' end||'
   end;';
   if length(original)-length(replace(original,body,''))<>length(body) then raise exception 'Ambiguous account RPC source: %',signature; end if;
   execute replace(original,body,guarded);

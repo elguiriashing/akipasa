@@ -1534,3 +1534,20 @@ Signals and ad-personalisation signals in GA4 configuration. Both original contr
 entries and all restored historical content are retained. No measurement IDs,
 provider destinations, account cohort settings, billing source or schema are changed
 by this merge. Exact-head CI remains a release gate.
+
+## 2026-10-20 | Account wrapper terminator repair
+
+The production attempt to install un-applied coverage migration 180946 rolled
+back with SQLSTATE 42601: PostgreSQL rtrim removes spaces, so a real function
+ending END; followed by LF/CRLF received a second standalone semicolon. Both
+canonical migration copies now preserve the complete original body and detect
+its final semicolon using POSIX whitespace before appending a missing terminator.
+No existing routine logic, ACL, owner or attributes are rewritten beyond the
+original account guard. A disposable PostgreSQL regression loads complete real
+referral foundation/review migrations and the real venue-invite routine,
+reproduces the original syntax failure, then compiles the corrected complete
+wrappers and verifies retained bodies/attributes, pending denial and legacy
+authorization behavior. This corrects the still-unapplied migration; do not
+blindly rerun its table/policy creation in a database where it is already recorded.
+No live QA transactions, enrollment activation or production writes were made
+for this repair. The successful production retry remains a separate release gate.
