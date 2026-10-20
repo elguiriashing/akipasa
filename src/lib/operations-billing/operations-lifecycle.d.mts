@@ -1,7 +1,7 @@
 export type OperationsBinding = {
   subscriptionId: string;
   customerId: string;
-  profileId: string;
+  profileId: string | null;
   workspaceId: string;
   token?: string | null;
   tier: string | null;
@@ -12,6 +12,7 @@ export type OperationsBinding = {
   nextTools: string[] | null;
 };
 export type OperationsDecision =
+  | { action: "detached"; subscriptionId: string }
   | { action: "awaiting_payment"; subscriptionId: string }
   | {
       action: "sync";

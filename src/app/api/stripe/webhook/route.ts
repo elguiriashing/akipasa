@@ -79,7 +79,7 @@ async function processEvent(event: StripeEvent) {
     operationsRevision,
   );
   if (operations) {
-    if (event.type === "invoice.paid")
+    if (event.type === "invoice.paid" && operations.profileId)
       await recordVerifiedReferralInvoice({
         eventId: event.id,
         created: event.created,

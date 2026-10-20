@@ -257,3 +257,10 @@ Validation: the real-route fixture production Next build and all 28 Chromium
 Spotlight cases pass, including the exact Spanish HQ claim destination. Scoped
 ESLint, contract integrity, formatting and whitespace checks pass. Fixtures remain
 loopback-only, with no real external requests or production data mutations.
+
+The isolated Spotlight amendment also preserves immutable privacy follow-up
+#226 (`d9f90673c7135534da73804ec70c53e894ed488b`) as ancestry. The combined
+source differs from that privacy candidate only in this acceptance spec and
+verification notes. Operations 32 Node and 42 adapter cases, TypeScript and
+contract checks pass after combination. Exact-head hosted build/browser gates
+remain required; neither frozen source branch was changed.

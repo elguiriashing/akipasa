@@ -2045,3 +2045,14 @@ Validation: the real-route fixture production Next build and all 28 Chromium
 Spotlight cases pass, including the exact Spanish HQ claim destination. Scoped
 ESLint, contract integrity, formatting and whitespace checks pass. Fixtures remain
 loopback-only, with no real external requests or production data mutations.
+
+## 2026-10-20 | Operating identity deletion compatibility
+
+New billing profile links previously blocked identity deletion. Mirrored additive
+20261020185200 makes those links nullable with SET NULL, and clears obsolete
+individual tool limits with their deleted membership. It preserves business and
+financial records, prevents detached grants/rebinding, excludes detached recovery
+and handles signed webhooks without referral attribution or legacy fallback.
+No production identities, billing state or retention rules were changed.
+See OPERATIONS_IDENTITY_DELETION.md for actual fixture evidence, deployment
+ordering and existing operator-reviewed deletion/financial retention dependencies.
