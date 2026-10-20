@@ -1270,7 +1270,6 @@ No real customer image, profile, booking, email or subscription was mutated.
   require approval. Before activation source revert is sufficient; after it,
   retain guards and stop only new enrolment while investigating. Preserve all data.
 
-
 ## 2026-10-20 | Safe cross-product task resume
 
 The gated central completion flow now resumes allowlisted tasks across all five
