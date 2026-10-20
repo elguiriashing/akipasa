@@ -1534,3 +1534,21 @@ Signals and ad-personalisation signals in GA4 configuration. Both original contr
 entries and all restored historical content are retained. No measurement IDs,
 provider destinations, account cohort settings, billing source or schema are changed
 by this merge. Exact-head CI remains a release gate.
+
+## 2026-10-20 | Validated referral task completion
+
+Account completion preserves a single public referral code matching the existing
+uppercase alphanumeric 8–24 character navigation bound. The canonical public
+`/{locale}/referrals?ref=CODE` task returns to AkiPasa's explicit confirmation page;
+other allowed product tasks retain their validated code and EN/ES choice through
+the same fixed-origin resume envelope. Duplicate, URL-shaped, lowercase and
+out-of-range codes are discarded. Direct unprefixed AkiPasa referral completion
+uses this same sanitizer rather than falling back to Account.
+
+This changes navigation only: pending/underage restrictions, legal and tracking
+choices, first-attribution immutability and the explicit confirmation action remain
+authoritative. No automatic attribution, referral cookie, identity transfer, schema,
+financial incentive or production write is introduced. Shared contract copies and
+role-controller regressions cover all five products and both languages. Hosted CI
+and exact-source release checks remain required; unit fixtures do not establish
+authenticated production browser acceptance.
