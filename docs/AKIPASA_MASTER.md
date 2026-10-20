@@ -3,6 +3,14 @@ Total output lines: 1231
 
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-20 | Historical-branch formatter compatibility
+
+The pull-request formatter may check a branch created before newer contract and
+membership files existed. Missing later paths are not formatting failures. The
+workflow formats every listed path that exists and stages only tracked changes;
+the merge-candidate contract, full checks and reviews remain mandatory. This
+does not relax Prettier rules or create absent files on an old branch.
+
 ## 2026-10-20 | Manually gated production workflow
 
 The `Deploy verified AkiPasa brand` workflow no longer runs on every push to
