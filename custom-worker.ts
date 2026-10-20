@@ -27,6 +27,10 @@ import {
   type ReleaseAssets,
 } from "./src/lib/release-source";
 
+import { recoverOperationsBilling } from "./src/lib/operations-recovery";
+
+import { processOperationsMigrationCommand } from "./src/lib/operations-migration-command";
+
 const worker = {
   async scheduled(
     _event: unknown,
@@ -36,9 +40,21 @@ const worker = {
       AKISUITE_BILLING_VERIFIED?: string;
       AKISUITE_STRIPE_ACCOUNT_ID?: string;
       STRIPE_SECRET_KEY?: string;
+      AKIBUSINESS_OPERATIONS_BILLING_READY?: string;
+      AKIBUSINESS_OPERATIONS_MIGRATIONS_READY?: string;
     },
     ctx: { waitUntil(work: Promise<unknown>): void },
   ) {
+    ctx.waitUntil(
+      recoverOperationsBilling(env).catch(() =>
+        console.error("operations_billing_recovery_retry"),
+      ),
+    );
+    ctx.waitUntil(
+      processOperationsMigrationCommand(env).catch(() =>
+        console.error("operations_migration_retry"),
+      ),
+    );
     ctx.waitUntil(dispatchBookingConfirmations(env));
     ctx.waitUntil(dispatchAccommodationConfirmations(env));
     ctx.waitUntil(dispatchClaimDecisions(env));

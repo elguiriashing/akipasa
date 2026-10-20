@@ -1,0 +1,124 @@
+.workspace {
+  min-height: 80dvh;
+  padding: clamp(1rem, 3vw, 3rem);
+  max-width: 1500px;
+  margin: auto;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+.panel {
+  padding: 1.25rem;
+  border: 1px solid var(--border, #7796aa);
+  border-radius: 1rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  background: var(--surface);
+}
+.panel form {
+  display: grid;
+  gap: 0.8rem;
+  margin-block: 1rem;
+}
+.panel input:not([type="checkbox"]),
+.panel textarea,
+.panel select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.6rem;
+  border: 1px solid currentColor;
+  border-radius: 0.5rem;
+  background: var(--surface);
+  color: inherit;
+}
+.panel label {
+  display: grid;
+  gap: 0.35rem;
+}
+.panel label:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 44px;
+}
+.workspace button,
+.workspace a {
+  min-height: 44px;
+  padding: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.6rem;
+}
+.panel progress {
+  width: 100%;
+  accent-color: #29a9be;
+}
+.trophy {
+  border: 2px solid #8fbbd1;
+  border-radius: 1.5rem;
+  text-align: center;
+  padding: 2rem 1rem;
+  overflow-wrap: anywhere;
+  background: linear-gradient(130deg, #09263b, #223750, #343350, #09263b);
+  color: #eefaff;
+  box-shadow: inset 0 0 35px #a6d7ff25;
+  position: relative;
+  isolation: isolate;
+}
+.emblem {
+  width: 120px;
+  height: 120px;
+  color: #b9f3e8;
+  filter: drop-shadow(0 0 15px #6cdff488);
+  animation: prestigeGlow 6s ease-in-out infinite alternate;
+}
+.alias {
+  font-size: 1.5rem;
+  color: #d4defc;
+}
+@keyframes prestigeGlow {
+  from {
+    transform: rotateY(-12deg);
+    color: #b9f3e8;
+  }
+  to {
+    transform: rotateY(12deg);
+    color: #f1caed;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .emblem {
+    animation: none;
+  }
+}
+@media print {
+  .trophy {
+    break-inside: avoid;
+    print-color-adjust: exact;
+  }
+}
+
+.trophy h2 {
+  color: #eefaff;
+}
+.emblem {
+  display: block;
+  margin: 0 auto 0.8rem;
+}
+
+.panel fieldset {
+  min-width: 0;
+  display: grid;
+  gap: 0.8rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border, #7796aa);
+  border-radius: 0.6rem;
+}
+.panel legend {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}

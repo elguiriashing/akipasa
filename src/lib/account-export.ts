@@ -47,6 +47,10 @@ export const accountExportTables = [
 ] as const;
 
 const accountExportOrder: Record<string, readonly string[]> = {
+  suite_referral_codes: ["code"],
+  suite_referral_attributions: ["profile_id"],
+  suite_referral_representatives: ["profile_id"],
+  suite_referral_billing_events: ["stripe_event_id"],
   pals_preview_access: ["user_id"],
   pals_states: ["user_id"],
   saved_events: ["profile_id", "event_id"],
@@ -154,12 +158,22 @@ export async function readAccountRecommendationItems(
 }
 
 export function currentAccountExportTables() {
-  return process.env.AKISUITE_SUBSCRIPTIONS_READY === "true"
-    ? [
-        ...accountExportTables,
-        ["akisuite_billing_subscriptions", "profile_id"] as const,
-      ]
-    : [...accountExportTables];
+  return [
+    ...accountExportTables,
+    ...(process.env.AKISUITE_SUBSCRIPTIONS_READY === "true"
+      ? [["akisuite_billing_subscriptions", "profile_id"] as const]
+      : []),
+    ...(process.env.AKISUITE_REFERRALS_READY === "true"
+      ? [
+          ["suite_referral_codes", "owner_profile_id"] as const,
+          ["suite_referral_attributions", "profile_id"] as const,
+          ["suite_referral_representatives", "profile_id"] as const,
+          ["suite_referral_leads", "representative_id"] as const,
+          ["suite_referral_cases", "reporter_id"] as const,
+          ["suite_referral_billing_events", "profile_id"] as const,
+        ]
+      : []),
+  ];
 }
 
 export function exportableAuthentication(user: {

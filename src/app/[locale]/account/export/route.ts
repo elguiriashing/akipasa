@@ -1,3 +1,4 @@
+import { onboardingEnabled } from "@/lib/account-onboarding";
 import { NextResponse } from "next/server";
 import {
   currentAccountExportTables,
@@ -52,6 +53,25 @@ export async function GET() {
     data: bookingEmails.data || [],
     failed: Boolean(bookingEmails.error),
   });
+  if (onboardingEnabled()) {
+    const receipt = await supabase.rpc("my_account_onboarding");
+    derivedEntries.push({
+      table: "account_onboarding",
+      data: receipt.data ? [receipt.data] : [],
+      failed: Boolean(receipt.error),
+    });
+  }
+  // Data portability remains available when the separate prestige launch gate is closed.
+  if (process.env.AKIPASA_PRESTIGE_SCHEMA_READY === "true") {
+    const prestige = await supabase.rpc("prestige_member", {
+      p_action: "export",
+    });
+    derivedEntries.push({
+      table: "passport_prestige",
+      data: prestige.data ? [prestige.data] : [],
+      failed: Boolean(prestige.error),
+    });
+  }
   const failedTables = [...entries, ...derivedEntries]
     .filter((entry) => entry.failed)
     .map((entry) => entry.table);

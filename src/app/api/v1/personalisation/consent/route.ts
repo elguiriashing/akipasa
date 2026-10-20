@@ -1,3 +1,4 @@
+import { accountTrackingAllowed } from "@/lib/account-onboarding-server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { z } from "zod";
@@ -25,11 +26,15 @@ export async function POST(request: Request) {
     const supabase = await createSupabaseServerClient();
     const { data: auth } = await supabase.auth.getUser();
     if (auth.user) {
+      const restricted = !(await accountTrackingAllowed(
+        supabase,
+        auth.user.id,
+      ));
       const { error } = await supabase.from("personalisation_settings").upsert({
         profile_id: auth.user.id,
-        analytics_enabled: parsed.data.analytics,
-        personalisation_enabled: parsed.data.personalisation,
-        marketing_enabled: parsed.data.marketing,
+        analytics_enabled: !restricted && parsed.data.analytics,
+        personalisation_enabled: !restricted && parsed.data.personalisation,
+        marketing_enabled: !restricted && parsed.data.marketing,
         updated_at: new Date().toISOString(),
       });
       if (error)

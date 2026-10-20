@@ -5,7 +5,7 @@ export const suiteOther = "10000000-0000-4000-8000-000000000002";
 export const suiteVenue = "20000000-0000-4000-8000-000000000001";
 export const suiteVenueTwo = "20000000-0000-4000-8000-000000000002";
 export const suiteEvent = "30000000-0000-4000-8000-000000000001";
-export async function premiumDatabase() {
+export async function premiumDatabase(includeSuite = true) {
   const db = new PGlite();
   await db.exec(`
  create role anon;create role authenticated;create role service_role bypassrls;
@@ -64,6 +64,10 @@ export async function premiumDatabase() {
   await db.exec(
     readFileSync("database/migrations/0014_owned_event_recurrence.sql", "utf8"),
   );
+  if (!includeSuite) {
+    await db.exec(`select set_config('test.uid','${suiteOwner}',false)`);
+    return db;
+  }
   await db.exec(
     readFileSync(
       "database/migrations/20261012180000_akisuite_subscription_entitlements.sql",

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
-import { config } from "../lib/config";
+import { useSuiteReferral } from "./useSuiteReferral";
+import { suiteHref } from "../lib/suite-navigation";
 import { Icon } from "./Icons";
 import { LanguageLink } from "./LanguageLink";
 import { PortalLogo } from "./PortalLogo";
@@ -19,25 +20,35 @@ export function PortalHeaderTools({
   onLanguageChange?: () => void;
   children?: ReactNode;
 }) {
+  const referralCode = useSuiteReferral();
   const menu = useRef<HTMLDetailsElement>(null);
   const nextLocale = locale === "es" ? "en" : "es";
   const apps = [
     {
       product: "pasa",
       name: "AkiPasa",
-      href: `${config.siteUrl.replace(/\/$/, "")}/${locale}`,
+      href: suiteHref("pasa", locale, { referralCode }),
     },
     {
-      product: "business",
-      name: "AkiBusiness",
-      href: `https://business.akipasa.com/${locale}/business`,
+      product: "hq",
+      name: "AkiHQ",
+      href: suiteHref("hq", locale, { referralCode }),
     },
     {
       product: "duermo",
       name: "AkiDuermo",
-      href: `https://akiduermo.akipasa.com/?lang=${locale}`,
+      href: suiteHref("duermo", locale, { referralCode }),
     },
-    { product: "hq", name: "AkiHQ", href: config.crmUrl },
+    {
+      product: "business",
+      name: "AkiBusiness",
+      href: suiteHref("business", locale, { referralCode }),
+    },
+    {
+      product: "coches",
+      name: "AkiCoches",
+      href: suiteHref("coches", locale, { referralCode }),
+    },
   ] as const;
 
   useEffect(() => {
@@ -90,13 +101,20 @@ export function PortalHeaderTools({
           <Icon name="more" size={20} />
         </summary>
         <div className="portal-product-popover">
-          {apps
-            .filter((app) => app.product !== product)
-            .map((app) => (
-              <a key={app.product} href={app.href} aria-label={app.name}>
-                <PortalLogo product={app.product} />
-              </a>
-            ))}
+          {apps.map((app) => (
+            <a
+              key={app.product}
+              href={app.href}
+              aria-label={app.name}
+              aria-current={
+                app.product === (product === "business" ? "hq" : product)
+                  ? "page"
+                  : undefined
+              }
+            >
+              <PortalLogo product={app.product} />
+            </a>
+          ))}
           {children && <div className="portal-product-actions">{children}</div>}
         </div>
       </details>

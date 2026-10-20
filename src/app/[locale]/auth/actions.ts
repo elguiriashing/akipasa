@@ -1,5 +1,7 @@
 "use server";
 
+import { readOnboardingStatus } from "@/lib/account-onboarding-server";
+import { onboardingUrl } from "@/lib/account-onboarding";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -141,7 +143,12 @@ export async function signUpWithPassword(formData: FormData) {
     redirect(
       await authReturnUrl(locale, "signup", formData, { error: "signup" }),
     );
-  if (data.session) redirect(next);
+  if (data.session) {
+    const status = await readOnboardingStatus(supabase);
+    if (status === "pending" || status === "underage")
+      redirect(onboardingUrl(locale, next));
+    redirect(next);
+  }
   redirect(
     await authReturnUrl(locale, "signup", formData, { registered: "1" }),
   );
@@ -175,6 +182,9 @@ export async function signInWithPassword(formData: FormData) {
     redirect(
       await authReturnUrl(locale, "signin", formData, { error: "signin" }),
     );
+  const status = await readOnboardingStatus(supabase);
+  if (status === "pending" || status === "underage")
+    redirect(onboardingUrl(locale, next));
   redirect(next);
 }
 

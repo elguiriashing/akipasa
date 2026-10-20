@@ -1,0 +1,38 @@
+.account-completion {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+}
+.account-completion-card {
+  width: min(100%, 42rem);
+  border: 1px solid var(--line);
+  border-radius: 1.5rem;
+  padding: clamp(1rem, 4vw, 2.5rem);
+  background: var(--surface);
+}
+.account-completion-card h1 {
+  font-size: clamp(1.9rem, 5vw, 2.75rem);
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+.account-completion-card input:not([type="radio"]):not([type="checkbox"]),
+.account-completion-card textarea {
+  width: 100%;
+  min-width: 0;
+}
+.account-completion-card fieldset {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+}
+.account-completion-card nav {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-block: 1.5rem;
+}
+.account-completion-card small {
+  display: block;
+}

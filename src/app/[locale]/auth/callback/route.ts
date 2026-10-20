@@ -1,3 +1,5 @@
+import { readOnboardingStatus } from "@/lib/account-onboarding-server";
+import { onboardingUrl } from "@/lib/account-onboarding";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { config, isLocale } from "@/lib/config";
@@ -49,6 +51,14 @@ export async function GET(
             );
         }
         cookieStore.delete("akipasa_terms_ack");
+      }
+      // Password recovery must remain accessible even while account features are locked.
+      if (!/^\/(en|es)\/auth\/recover(?:\?|$)/.test(next)) {
+        const status = await readOnboardingStatus(supabase);
+        if (status === "pending" || status === "underage")
+          return NextResponse.redirect(
+            new URL(onboardingUrl(safeLocale, next), publicOrigin),
+          );
       }
       return NextResponse.redirect(new URL(next, publicOrigin));
     }

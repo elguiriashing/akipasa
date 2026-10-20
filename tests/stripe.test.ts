@@ -1,3 +1,6 @@
+vi.mock("@/lib/operations-billing", () => ({
+  syncOperationsBilling: async () => false,
+}));
 import { readFileSync } from "node:fs";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { buildCalendar } from "../src/lib/calendar";
@@ -250,6 +253,10 @@ vi.mock("@/lib/supabase/service", () => ({
   createSupabaseServiceClient: () => webhookDb,
 }));
 vi.mock("@/lib/stripe", async () => await import("../src/lib/stripe"));
+vi.mock(
+  "@/lib/referral-billing",
+  async () => await import("../src/lib/referral-billing"),
+);
 vi.mock(
   "@/lib/akisuite-stripe",
   async () => await import("../src/lib/akisuite-stripe"),

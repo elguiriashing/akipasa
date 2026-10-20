@@ -1,0 +1,36 @@
+name: Passport prestige acceptance
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - "src/**/prestige/**"
+      - "src/**/PassportPrestige*"
+      - "src/**/passport-prestige*"
+      - "tests/passport-prestige*"
+      - "database/migrations/*passport_prestige*"
+      - "supabase/migrations/*passport_prestige*"
+      - "vitest.prestige.config.ts"
+      - "scripts/test-prestige-browser.mjs"
+      - ".github/workflows/passport-prestige.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  prestige:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx vitest run --config vitest.prestige.config.ts
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/test-prestige-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: passport-prestige-acceptance
+          path: test-results/prestige

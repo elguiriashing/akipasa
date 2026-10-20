@@ -1,3 +1,5 @@
+import { readOnboardingStatus } from "./account-onboarding-server";
+import { onboardingUrl } from "./account-onboarding";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { config, type Locale } from "./config";
@@ -18,12 +20,23 @@ export async function optionalUser() {
   return { supabase, user };
 }
 
-export async function requireUser(locale: Locale, next = `/${locale}/account`) {
+export async function requireIdentity(
+  locale: Locale,
+  next = `/${locale}/account`,
+) {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect(`/${locale}/auth?next=${encodeURIComponent(next)}`);
+  return { supabase, user };
+}
+
+export async function requireUser(locale: Locale, next = `/${locale}/account`) {
+  const { supabase, user } = await requireIdentity(locale, next);
+  const eligibility = await readOnboardingStatus(supabase);
+  if (eligibility === "pending" || eligibility === "underage")
+    redirect(onboardingUrl(locale, next));
   const { data: profile } = await supabase
     .from("profiles")
     .select("terms_version")

@@ -2,6 +2,15 @@
 /** PR gate: behavior changes need a reviewed master update and impact entry. */
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
+import {
+  contractDocumentProblems,
+  reportContractDocumentProblems,
+} from "./check-contract-document-integrity.mjs";
+const integrityProblems = contractDocumentProblems();
+if (integrityProblems.length) {
+  reportContractDocumentProblems(integrityProblems);
+  process.exit(1);
+}
 const base =
   process.env.AKIPASA_BASE_SHA ||
   process.env.GITHUB_BASE_SHA ||
