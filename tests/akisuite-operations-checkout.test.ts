@@ -1,3 +1,4 @@
+import { operationsReleaseVars } from "./helpers/operations-release-config";
 import { beforeEach, afterEach, describe, it, expect, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
   requireUser: vi.fn(),
@@ -144,6 +145,35 @@ beforeEach(() => {
 });
 afterEach(() => vi.unstubAllEnvs());
 describe("location-owned operating checkout", () => {
+  it.each([false, true])(
+    "release config keeps checkout closed, including when only tax blocks it (%s)",
+    async (openCheckout) => {
+      expect(operationsReleaseVars).toMatchObject({
+        AKIBUSINESS_OPERATIONS_BILLING_READY: "true",
+        AKIBUSINESS_OPERATIONS_MIGRATIONS_READY: "true",
+        AKIBUSINESS_OPERATIONS_CHECKOUT_READY: "false",
+        AKIBUSINESS_OPERATIONS_TAX_READY: "false",
+        AKISUITE_CHECKOUT_ENABLED: "false",
+        AKISUITE_TAX_READY: "false",
+      });
+      for (const key of [
+        "AKIBUSINESS_OPERATIONS_BILLING_READY",
+        "AKIBUSINESS_OPERATIONS_CHECKOUT_READY",
+        "AKIBUSINESS_OPERATIONS_TAX_READY",
+      ])
+        vi.stubEnv(key, operationsReleaseVars[key]);
+      if (openCheckout)
+        vi.stubEnv("AKIBUSINESS_OPERATIONS_CHECKOUT_READY", "true");
+      await expect(startOperationsCheckout(form())).rejects.toMatchObject({
+        url: expect.stringContaining("error=unavailable"),
+      });
+      expect(mocks.request).not.toHaveBeenCalled();
+      expect(mocks.retrieve).not.toHaveBeenCalled();
+      expect(mocks.serviceRpc).not.toHaveBeenCalled();
+      expect(mocks.rpc).not.toHaveBeenCalled();
+    },
+  );
+
   it("is closed before release acceptance and performs no provider action", async () => {
     vi.stubEnv("AKIBUSINESS_OPERATIONS_CHECKOUT_READY", "false");
     await expect(startOperationsCheckout(form())).rejects.toMatchObject({

@@ -1,3 +1,4 @@
+import { operationsReleaseVars } from "./helpers/operations-release-config";
 import { describe, it, expect, vi } from "vitest";
 import {
   operationsMigrationSnapshot,
@@ -265,6 +266,43 @@ function setup(
   };
 }
 describe("reviewed same-subscription renewal migration commands", () => {
+  it("enabled release configuration with an empty command queue performs no Stripe writes or grants", async () => {
+    const calls: Array<{ url: string; method: string }> = [];
+    const fetcher = vi.fn(
+      async (input: RequestInfo | URL, init?: RequestInit) => {
+        const url = String(input),
+          method = init?.method || "GET";
+        calls.push({ url, method });
+        if (url === "https://api.stripe.com/v1/account" && method === "GET")
+          return Response.json({ id: "acct_1SVLH2GfzDhsgsQZ" });
+        if (
+          url ===
+            "https://supabase.test/rest/v1/rpc/claim_crm_operations_migration" &&
+          method === "POST"
+        )
+          return Response.json(null);
+        throw Error("Unexpected empty-queue operation");
+      },
+    );
+    expect(
+      await processOperationsMigrationCommand(
+        {
+          ...env,
+          ...operationsReleaseVars,
+          NEXT_PUBLIC_SUPABASE_URL: "https://supabase.test",
+        },
+        fetcher,
+      ),
+    ).toEqual({ enabled: true, scheduled: 0 });
+    expect(calls).toEqual([
+      { url: "https://api.stripe.com/v1/account", method: "GET" },
+      {
+        url: "https://supabase.test/rest/v1/rpc/claim_crm_operations_migration",
+        method: "POST",
+      },
+    ]);
+  });
+
   it("both gates are required before any provider or database access", async () => {
     const f = vi.fn();
     expect((await processOperationsMigrationCommand({}, f)).enabled).toBe(
