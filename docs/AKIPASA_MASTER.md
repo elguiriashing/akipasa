@@ -1545,6 +1545,7 @@ retained shared placements survive downgrade, and reused assets count with own
 uploads/reservations toward8/250 under one lock. Templates create drafts only.
 See LISTING_PREMIUM_LIBRARY.md for compatibility, acceptance and rollback. Native
 independent-property schema remains absent and its uploader stays separately gated.
+
 ### Listing quota UUID resurrection guard (forward fix)
 
 Additive233905 closes same-UUID deletion/recreation of a previously published

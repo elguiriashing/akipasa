@@ -2111,6 +2111,7 @@ consumer. SQL/role/UI tests accompany the change; actual provider/concurrency an
 authenticated responsive acceptance remain release gates. Large hosted rollback
 attempts returned no evidence and are not claimed as passing. Runbook and retained-
 data rollback: LISTING_PREMIUM_LIBRARY.md.
+
 ## Forward listing event identity guard
 
 Verified gap: deleting then re-inserting the same event UUID reused170415's
