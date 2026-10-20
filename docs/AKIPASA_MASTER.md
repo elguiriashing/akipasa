@@ -1482,3 +1482,15 @@ and handles signed webhooks without referral attribution or legacy fallback.
 No production identities, billing state or retention rules were changed.
 See OPERATIONS_IDENTITY_DELETION.md for actual fixture evidence, deployment
 ordering and existing operator-reviewed deletion/financial retention dependencies.
+
+## 2026-10-20 | Deleted identity eligibility guard
+
+A still-valid JWT must not turn a deleted profile into an un-enrolled legacy
+account. Additive mirrored migration 20261020190818 requires an existing profile
+in account_features_allowed while preserving valid legacy and completed profiles.
+It changes no cohort/terms configuration, service bypass, billing or data. A real
+PostgreSQL fixture reproduces the previous helper result after Auth deletion,
+verifies denial with the same JWT subject after the fix, and rolls deletion back.
+Pending profiles remain denied; legacy/complete profiles and SQL grants retain
+their prior behavior. This is an account eligibility safeguard, not revocation of
+all existing stateless JWTs or a claim of complete provider-side erasure.
