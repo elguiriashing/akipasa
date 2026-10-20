@@ -1,3 +1,7 @@
+import {
+  recordVerifiedReferralInvoice,
+  recordVerifiedReferralHold,
+} from "@/lib/referral-billing";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import { matchConfiguredAkiSuitePriceId } from "@/lib/akisuite-stripe";
 import {
@@ -213,6 +217,17 @@ async function processEvent(event: StripeEvent) {
     },
   );
   if (error) throw error;
+  if (event.type === "invoice.paid") {
+    await recordVerifiedReferralInvoice({
+      eventId: event.id,
+      created: event.created,
+      profileId,
+      customerId,
+      subscriptionId,
+      productCode: planCode,
+      invoice: event.data.object,
+    });
+  }
 }
 
 export async function POST(request: Request) {
@@ -259,6 +274,7 @@ export async function POST(request: Request) {
 
   try {
     await processEvent(event);
+    await recordVerifiedReferralHold(event);
     const { error: completionError } = await supabase
       .from("stripe_webhook_events")
       .update({

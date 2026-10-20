@@ -1240,3 +1240,28 @@ No real customer image, profile, booking, email or subscription was mutated.
   billing tests, full repository check, Android test/lint/bundle, Cloudflare
   package, exact-head CI, hosted Supabase advisors/preflight, then anonymous and
   authenticated production smoke. Record pass/fail/blocked honestly.
+
+## 2026-10-20 | Shared referral foundation (gated candidate)
+
+Before: current source had no referral/representative commission infrastructure.
+After: shared-account one-time capture and public enrolment RPCs, programme/code/
+representative admin studio, account/lead dashboard, append-only invoice/hold
+ledger and config audit. No active monetary incentives or disbursement are added;
+SQL requires both monetary flags to remain false. Existing subscription products,
+customer access, profile roles, cookie consent and checkout are unchanged.
+
+Dependencies traced: existing requireUser/Terms/password/OAuth next contract,
+account/admin layouts, shared profiles and billing customer/subscription mapping,
+Stripe signed leased webhook/price reconciliation, Supabase RLS/explicit execute
+and table privileges, bounded export, EN/ES navigation and responsive forms.
+Runtime gate defaults off; other independent apps can carry the allowlisted ref
+code and reuse shared account attribution without identity cookies or service keys.
+
+Tests: disposable PostgreSQL/PGlite role execution exercises immutable capture,
+usage/self/existing-subscriber denial, service-only billing writes, event/invoice
+idempotency, failed amounts, private aggregate reads, representative isolation and
+suspension, admin config checks and irreversible-money gate. Adapter tests cover
+paid/customer validation, database retry failures and retrieved refund/dispute
+holds. Final full check/browser/hosted migration/advisors/Stripe sandbox and
+production evidence are separate gates recorded in the feature checkpoint.
+Rollback disables gate and reverts source, retaining historical schema/evidence.

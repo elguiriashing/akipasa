@@ -1096,3 +1096,10 @@ Completed the AkiDuermo room-night request candidate: explicit booking modes, re
 
 - Keep the current filter labelled “Current and upcoming” / “Actuales y próximos” to match its included running and undated draft events.
 - Add a bilingual label regression to the event workspace contract test.
+
+## 2026-10-20
+
+- Added a gated shared-account referral and representative foundation with
+  administrator configuration, private dashboards, verified invoice evidence and
+  refund/dispute holds. Discounts and disbursements remain disabled pending
+  approved commercial terms and release acceptance.

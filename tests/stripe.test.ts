@@ -251,6 +251,10 @@ vi.mock("@/lib/supabase/service", () => ({
 }));
 vi.mock("@/lib/stripe", async () => await import("../src/lib/stripe"));
 vi.mock(
+  "@/lib/referral-billing",
+  async () => await import("../src/lib/referral-billing"),
+);
+vi.mock(
   "@/lib/akisuite-stripe",
   async () => await import("../src/lib/akisuite-stripe"),
 );

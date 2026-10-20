@@ -1,0 +1,70 @@
+.referral-workspace {
+  max-width: 80rem;
+  margin: auto;
+  padding: clamp(1rem, 3vw, 2.5rem);
+  display: grid;
+  gap: 1.25rem;
+}
+.referral-workspace header p {
+  max-width: 65ch;
+}
+.referral-workspace form,
+.referral-workspace article {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1.2rem;
+  border: 1px solid var(--border, #727a8880);
+  border-radius: 1rem;
+  min-width: 0;
+}
+.referral-workspace label {
+  display: grid;
+  gap: 0.4rem;
+}
+.referral-workspace input,
+.referral-workspace select,
+.referral-workspace textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  border: 1px solid var(--border, #727a8880);
+  border-radius: 0.5rem;
+  padding: 0.6rem;
+  background: var(--surface, #fff);
+  color: var(--text, #172130);
+}
+.referral-workspace button {
+  min-height: 2.75rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.6rem;
+  background: #f17a24;
+  color: #151d2d;
+  font-weight: 700;
+  cursor: pointer;
+}
+.referral-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+.referral-metrics strong {
+  font-size: 2rem;
+}
+.referral-workspace input:focus-visible,
+.referral-workspace button:focus-visible,
+.referral-workspace select:focus-visible,
+.referral-workspace textarea:focus-visible {
+  outline: 3px solid #397dff;
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .referral-metrics {
+    grid-template-columns: 1fr;
+  }
+}
+[data-theme="dark"] .referral-workspace input,
+[data-theme="dark"] .referral-workspace select,
+[data-theme="dark"] .referral-workspace textarea {
+  background: #111c30;
+  color: #eef4ff;
+}

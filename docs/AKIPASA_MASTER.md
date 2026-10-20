@@ -1050,3 +1050,18 @@ The desktop AkiPasa sidebar now separates the independently scrolling navigation
 The header AkiSuite button opens only the five product links plus Settings/account action. Bottom More retains internal navigation, workspaces, passports, membership, appearance and language. Independent sheet state, Escape handling and focus return. Header reserves search space. No auth or data changes.
 
 **Final mobile split:** the top-header AkiSuite sheet contains only the five Aki product destinations and current-product marker. Personal account actions belong to the internal bottom More sheet; guests see Sign in there. The top sheet does not contain Passports, Membership, workspaces, Settings or Sign out. The desktop rail's original suite menu remains unchanged.
+
+## 2026-10-20 | Shared referral attribution candidate
+
+The additive referral foundation uses immutable shared-account attribution,
+owner-scoped representative leads and privacy-safe aggregate dashboards.
+`AKISUITE_REFERRALS_READY` defaults off. Signed/reconciled paid invoices produce
+service-only append-only evidence; event/invoice deduplication and conservative
+refund/dispute holds prevent duplicate or failed-payment rewards. Programme rules
+are prospective only. SQL constraints keep discounts and payouts disabled even
+for application administrators. No existing subscriptions/prices are migrated.
+Public EN/ES referral landings preserve authentication/Terms return destinations;
+no tracking cookie or cross-domain identity token is introduced. RLS, explicit
+grants, account export, admin evidence export and audit accompany the schema.
+See `docs/REFERRAL_ENGINE_20261020.md` for paths, checks, rollback and exact gaps.
+No production release or authenticated acceptance is implied by this entry.
