@@ -1240,3 +1240,66 @@ No real customer image, profile, booking, email or subscription was mutated.
   billing tests, full repository check, Android test/lint/bundle, Cloudflare
   package, exact-head CI, hosted Supabase advisors/preflight, then anonymous and
   authenticated production smoke. Record pass/fail/blocked honestly.
+
+## 2026-10-20 | Passport prestige candidate — implementation, not production release
+
+- Before editing: traced `private.achievement_counts`, natural unlocks, manual/test
+  grants, Passport collection, admin awards, private RPC wrappers, shared Auth,
+  EN/ES layout, existing SQL fixtures and public-source deployment requirements.
+- Adds private deny-all settings/programmes/awards/physical-interest/audit tables;
+  explicitly granted invoker wrappers call guarded private helpers. No browser-role
+  table writes, purchase/order/provider calls or analytics. Shipping fields are strict-private
+  and separately disabled until approved retention/purge readiness and intake settings.
+  No billing changes or existing-progress rewrites occur. The server flag and DB launch gate
+  both default off; no arbitrary prestige threshold is seeded.
+- Natural requirements are snapshotted at programme creation. Catalogue definition
+  drift closes claims until a new reviewed programme is configured. Member locks and
+  unique `(profile_id, programme_key)` make retries atomic/idempotent. Manual/test
+  recognition cannot substitute for accepted activity; fraud revocation preserves
+  history and cannot be undone through a repeat claim.
+- EN/ES member trophies, minimal privacy controls, printable certificate, downloaded
+  share card, voluntary paged Hall, and admin configuration/review/revoke studio.
+  Reduced-motion styling, both themes and responsive grid are scoped to this feature.
+- Read-only hosted coverage: only 2 currently credential-eligible venues in one city,
+  zero classified eligible category/city families, zero complete holographic cities.
+  This blocks an honest City Master launch and does not describe total venue inventory.
+- Rollback: close gates/revert app source; retain additive records. Do not reset XP,
+  erase stamps or replay reward claims. No live mutation, order or fulfilment occurred.
+- Verification checkpoint: focused disposable PostgreSQL role/ownership/launch,
+  natural/manual/test provenance, retries, definition-drift, visibility withdrawal,
+  physical-disabled and revoke tests pass. EN/ES UI/privacy/SVG tests and TypeScript
+  pass. Full current-head check/build, hosted schema/advisors, responsive browser
+  acceptance, exact-head CI and deployment/activation remain separate gates.
+
+Prestige validation follow-up: the full local `npm run check` completed successfully,
+including the production build. The final focused suite passes 28/28; scoped lint,
+TypeScript and formatting also pass. Hosted browser acceptance is explicitly pending
+because local Playwright's CDN archive was truncated. Account data portability adds
+a separate schema-ready-only caller export while launch is off; account deletion
+cascades private awards/interest and clears audit actor references. No live schema,
+flags, awards, shipping PII or fulfilment changed.
+
+Prestige shipping infrastructure follow-up: completed the gated private address path,
+owner-only intake/read/delete/export, explicit expiry, service-only bounded purge,
+purpose-audited single-address admin reads and manual optimistic delivery transitions.
+Review/intake/preparation/dispatch recheck accepted-source eligibility; test/manual
+awards and stale role assumptions cannot authorise a shipment state. There is no order
+or provider call. Independent shipping/delivery flags default false; retention defaults
+NULL and purge readiness false. No production PII was collected or processed.
+
+The independent privacy surface `/[locale]/privacy/prestige` reuses verified optional
+identity, with no terms/account-feature lock; data export/delete/withdraw survive closed
+launch. Reward/intake actions conditionally call the shared `account_features_allowed()`
+helper when installed. Tests cover that migration ordering and restricted accounts.
+Forty focused tests and sixty-four real Chromium component combinations now pass,
+including EN/ES, themes, phone/tablets/desktop, actual PNG output, private intake/deletion
+and admin read/hide/status controls. Inspected screenshots exposed and corrected a
+light-theme trophy heading contrast defect; the new regression checks its actual color.
+Full final shipping check and exact-head hosted CI remain release gates until recorded.
+
+Final local shipping verification: 40 focused tests, TypeScript, scoped lint/format and
+64 real Chromium component cases pass. The broad final local check encountered six
+timeouts in unchanged catalogue/map/rental/Spanish SQL tests during resource contention;
+all six pass unchanged when rerun in focused groups (32 cases across seven files).
+The initial digital candidate passed the full check/build. Exact final hosted CI is
+required; no test timeouts/assertions were weakened and no production action occurred.

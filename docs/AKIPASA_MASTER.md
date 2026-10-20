@@ -1050,3 +1050,28 @@ The desktop AkiPasa sidebar now separates the independently scrolling navigation
 The header AkiSuite button opens only the five product links plus Settings/account action. Bottom More retains internal navigation, workspaces, passports, membership, appearance and language. Independent sheet state, Escape handling and focus return. Header reserves search space. No auth or data changes.
 
 **Final mobile split:** the top-header AkiSuite sheet contains only the five Aki product destinations and current-product marker. Personal account actions belong to the internal bottom More sheet; guests see Sign in there. The top sheet does not contain Passports, Membership, workspaces, Settings or Sign out. The desktop rail's original suite menu remains unchanged.
+
+## 2026-10-20 | Gated Passport prestige candidate
+
+`/[locale]/passports/prestige` and the administrator prestige studio add configurable,
+versioned recognition against the existing natural achievement engine. Both server
+`AKIPASA_PRESTIGE_ENABLED=true` and the private database launch setting are required;
+new migration defaults closed and seeds no milestone. Claims recompute accepted
+activity, reject marked test accounts and manual-only awards, freeze requirement
+definitions, serialize by member and issue one immutable serial/evidence snapshot.
+Existing stamps, XP, loyalty and manual awards are unchanged.
+
+Awards are private by default. A separate alias and sharing opt-in expose only the
+certificate projection; voluntary Hall participation requires sharing. Public outputs
+exclude account identifiers, email, activity evidence and physical requests. Withdrawal
+and fraud revocation stop future public reads; downloadable cards are no-store SVGs.
+Physical interest and admin review create no order. A separate strict-private shipping
+intake supports owner read/delete/export, expiry, audited single-record admin reads and
+manual concurrency-safe delivery states. Intake/delivery settings default false; approved
+retention remains unset and purge readiness false. No UI/RPC enables these settings or
+calls a provider. Budget, milestones, retention and a tested service purge schedule gate
+activation. `/[locale]/privacy/prestige` bypasses terms/onboarding feature locks for data
+rights; claim/intake/interest actions intersect the shared account-features helper when
+installed, preserving independent migration ordering. See `docs/PASSPORT_PRESTIGE.md` for source tracing,
+read-only coverage, tests and remaining acceptance. No production migration or launch
+is implied by this candidate.
