@@ -1265,3 +1265,9 @@ paid/customer validation, database retry failures and retrieved refund/dispute
 holds. Final full check/browser/hosted migration/advisors/Stripe sandbox and
 production evidence are separate gates recorded in the feature checkpoint.
 Rollback disables gate and reverts source, retaining historical schema/evidence.
+
+Referral review follow-up: customer reports and private administrator fraud/dispute
+case review are implemented with reporter-isolated reads, administrator-only
+resolution, append-only audit and deduplicated automatic refund/dispute cases.
+Case resolution cannot modify attribution or authorize money. No financial
+approval, incentive activation, customer migration or production write occurred.

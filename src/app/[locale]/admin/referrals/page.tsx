@@ -1,9 +1,11 @@
+import { referralCaseLabel, referralEvidenceLabel } from "@/lib/referrals";
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { isAdministrator } from "@/lib/roles";
 import {
   assignReferralCode,
+  reviewReferralCase,
   revokeReferralCode,
   saveReferralProgramme,
   setReferralProgrammeState,
@@ -32,7 +34,7 @@ export default async function ReferralStudio({
   if (!isAdministrator(profile.data?.app_role || "")) notFound();
   const query = await searchParams;
   const ready = process.env.AKISUITE_REFERRALS_READY === "true";
-  const [programmes, codes, events] = ready
+  const [programmes, codes, events, cases] = ready
     ? await Promise.all([
         supabase
           .from("suite_referral_programmes")
@@ -49,8 +51,14 @@ export default async function ReferralStudio({
           .select("stripe_event_id,event_kind,eligibility,recorded_at")
           .order("recorded_at", { ascending: false })
           .limit(50),
+        supabase
+          .from("suite_referral_cases")
+          .select("id,code,case_type,detail,state,resolution,created_at")
+          .order("created_at", { ascending: false })
+          .limit(50),
       ])
     : [
+        { data: null, error: null },
         { data: null, error: null },
         { data: null, error: null },
         { data: null, error: null },
@@ -279,6 +287,55 @@ export default async function ReferralStudio({
               </form>
             ))
           )}
+          <h2>
+            {es
+              ? "Disputas y revisión de fraude (últimos 50)"
+              : "Disputes and fraud review (latest 50)"}
+          </h2>
+          {cases.error ? (
+            <p role="alert">
+              {es
+                ? "No se pueden cargar los casos."
+                : "Cases could not be loaded."}
+            </p>
+          ) : (
+            cases.data?.map((item) => (
+              <form action={reviewReferralCase} key={item.id}>
+                {hidden}
+                <input type="hidden" name="id" value={item.id} />
+                <strong>
+                  {item.code} · {referralCaseLabel(item.case_type, locale)}
+                </strong>
+                <p>{item.detail}</p>
+                <label>
+                  {es ? "Estado de revisión" : "Review state"}
+                  <select name="state" defaultValue={item.state}>
+                    <option value="open">{es ? "Abierto" : "Open"}</option>
+                    <option value="reviewing">
+                      {es ? "En revisión" : "Reviewing"}
+                    </option>
+                    <option value="resolved">
+                      {es ? "Resuelto" : "Resolved"}
+                    </option>
+                    <option value="rejected">
+                      {es ? "Rechazado" : "Rejected"}
+                    </option>
+                  </select>
+                </label>
+                <label>
+                  {es
+                    ? "Resolución visible para el solicitante (sin autorizar pagos)"
+                    : "Resolution shared with reporter (does not authorize payouts)"}
+                  <textarea
+                    name="resolution"
+                    maxLength={2000}
+                    defaultValue={item.resolution}
+                  />
+                </label>
+                <button>{es ? "Guardar revisión" : "Save review"}</button>
+              </form>
+            ))
+          )}
           <a href={`/${locale}/admin/referrals/export`}>
             {es
               ? "Exportar evidencia de auditoría (JSON)"
@@ -296,7 +353,8 @@ export default async function ReferralStudio({
               <article key={e.stripe_event_id}>
                 <code>{e.stripe_event_id}</code>
                 <span>
-                  {e.event_kind} · {e.eligibility}
+                  {referralEvidenceLabel(e.event_kind, locale)} ·{" "}
+                  {es ? "Pendiente de aprobación" : "Held pending approval"}
                 </span>
                 <time>{e.recorded_at}</time>
               </article>

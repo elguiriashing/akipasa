@@ -3,11 +3,13 @@ import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import {
   referralCode,
+  referralCaseLabel,
   referralDashboardSchema,
   referralShareUrl,
 } from "@/lib/referrals";
 import {
   captureReferral,
+  reportReferralCase,
   joinReferralProgramme,
   saveReferralLead,
   updateReferralLead,
@@ -30,7 +32,7 @@ export default async function Referrals({
     `/${locale}/account/referrals${code ? `?ref=${code}` : ""}`,
   );
   const ready = process.env.AKISUITE_REFERRALS_READY === "true";
-  const [overview, rep, leads] = ready
+  const [overview, rep, leads, cases] = ready
     ? await Promise.all([
         supabase.rpc("suite_referral_dashboard"),
         supabase
@@ -44,8 +46,15 @@ export default async function Referrals({
           .eq("representative_id", user.id)
           .order("created_at", { ascending: false })
           .limit(50),
+        supabase
+          .from("suite_referral_cases")
+          .select("id,case_type,state,resolution,created_at")
+          .eq("reporter_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(50),
       ])
     : [
+        { data: null, error: null },
         { data: null, error: null },
         { data: null, error: null },
         { data: null, error: null },
@@ -190,6 +199,73 @@ export default async function Referrals({
               {es ? "Aplicar a mi cuenta" : "Apply to my account"}
             </button>
           </form>
+          <form action={reportReferralCase}>
+            <input type="hidden" name="locale" value={locale} />
+            <h2>{es ? "Solicitar revisión" : "Request review"}</h2>
+            <p>
+              {es
+                ? "Usa tu código o el que aplicaste a tu cuenta. No incluyas datos privados de otros clientes."
+                : "Use your code or the code applied to your account. Do not include private details of other customers."}
+            </p>
+            <label>
+              {es ? "Código" : "Code"}
+              <input name="code" pattern="[A-Z0-9]{8,24}" required />
+            </label>
+            <label>
+              {es ? "Motivo" : "Reason"}
+              <select name="kind">
+                <option value="attribution_dispute">
+                  {es ? "Disputa de atribución" : "Attribution dispute"}
+                </option>
+                <option value="fraud">
+                  {es ? "Posible fraude" : "Possible fraud"}
+                </option>
+                <option value="refund">{es ? "Reembolso" : "Refund"}</option>
+                <option value="other">{es ? "Otro" : "Other"}</option>
+              </select>
+            </label>
+            <label>
+              {es ? "Detalles" : "Details"}
+              <textarea name="detail" minLength={5} maxLength={2000} required />
+            </label>
+            <button>{es ? "Enviar a revisión" : "Submit for review"}</button>
+          </form>
+          <h2>
+            {es ? "Tus revisiones (últimas 50)" : "Your reviews (latest 50)"}
+          </h2>
+          {cases.error ? (
+            <p>{es ? "No se pueden cargar." : "Could not load reviews."}</p>
+          ) : (
+            cases.data?.map((item) => (
+              <article key={item.id}>
+                <span>{referralCaseLabel(item.case_type, locale)}</span>
+                <strong>
+                  {
+                    (es
+                      ? {
+                          open: "Abierta",
+                          reviewing: "En revisión",
+                          resolved: "Resuelta",
+                          rejected: "Rechazada",
+                        }
+                      : {
+                          open: "Open",
+                          reviewing: "Reviewing",
+                          resolved: "Resolved",
+                          rejected: "Rejected",
+                        })[
+                      item.state as
+                        | "open"
+                        | "reviewing"
+                        | "resolved"
+                        | "rejected"
+                    ]
+                  }
+                </strong>
+                <p>{item.resolution}</p>
+              </article>
+            ))
+          )}
           {rep.data?.state === "approved" && (
             <>
               <form action={saveReferralLead}>

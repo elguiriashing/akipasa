@@ -169,6 +169,7 @@ export function currentAccountExportTables() {
           ["suite_referral_attributions", "profile_id"] as const,
           ["suite_referral_representatives", "profile_id"] as const,
           ["suite_referral_leads", "representative_id"] as const,
+          ["suite_referral_cases", "reporter_id"] as const,
           ["suite_referral_billing_events", "profile_id"] as const,
         ]
       : []),

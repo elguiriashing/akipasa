@@ -275,6 +275,50 @@ describe("shared referral RLS and evidence", () => {
       ),
     ).rejects.toThrow(/Customer mismatch/);
   });
+
+  it("isolates review reports, denies representative self-resolution, and opens refund/dispute cases once", async () => {
+    const cases = await db.query(
+      "select source_event_id,state from suite_referral_cases where source_event_id is not null order by source_event_id",
+    );
+    expect(cases.rows).toEqual([
+      { source_event_id: "evt_dispute", state: "open" },
+      { source_event_id: "evt_refund", state: "open" },
+    ]);
+    await as(
+      "authenticated",
+      owner,
+      `insert into suite_referral_cases(code,reporter_id,case_type,detail) values('AKIREFER01','${owner}','attribution_dispute','Please review attribution')`,
+    );
+    expect(
+      (await as("authenticated", other, "select * from suite_referral_cases"))
+        .rows,
+    ).toEqual([]);
+    expect(
+      (
+        await as(
+          "authenticated",
+          owner,
+          "update suite_referral_cases set state='resolved' returning id",
+        )
+      ).rows,
+    ).toEqual([]);
+    await expect(
+      as(
+        "authenticated",
+        other,
+        `insert into suite_referral_cases(code,reporter_id,case_type,detail) values('AKIREFER01','${other}','fraud','Unrelated report')`,
+      ),
+    ).rejects.toThrow(/row-level security/);
+    expect(
+      (
+        await as(
+          "authenticated",
+          admin,
+          "update suite_referral_cases set state='reviewing' where source_event_id='evt_refund' returning state",
+        )
+      ).rows,
+    ).toEqual([{ state: "reviewing" }]);
+  });
   it("audit and billing evidence have no browser mutation grants; mirror matches", async () => {
     await expect(
       as("authenticated", admin, "delete from suite_referral_audit"),

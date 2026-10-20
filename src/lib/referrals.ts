@@ -39,3 +39,27 @@ export const referralDashboardSchema = z.object({
   held: z.literal(true),
   payouts_enabled: z.literal(false),
 });
+
+export function referralCaseLabel(kind: string, locale: "en" | "es") {
+  const labels: Record<string, [string, string]> = {
+    attribution_dispute: ["Attribution dispute", "Disputa de atribución"],
+    fraud: ["Possible fraud", "Posible fraude"],
+    refund: ["Refund", "Reembolso"],
+    other: ["Other", "Otro"],
+  };
+  return Object.hasOwn(labels, kind)
+    ? labels[kind][locale === "es" ? 1 : 0]
+    : labels.other[locale === "es" ? 1 : 0];
+}
+export function referralEvidenceLabel(kind: string, locale: "en" | "es") {
+  const labels: Record<string, [string, string]> = {
+    paid: ["Verified paid invoice", "Factura pagada verificada"],
+    refund_hold: ["Refund hold", "Retención por reembolso"],
+    dispute_hold: ["Dispute hold", "Retención por disputa"],
+  };
+  return Object.hasOwn(labels, kind)
+    ? labels[kind][locale === "es" ? 1 : 0]
+    : locale === "es"
+      ? "Revisión pendiente"
+      : "Review pending";
+}

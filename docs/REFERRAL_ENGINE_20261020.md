@@ -42,7 +42,9 @@ attribution after the initial acquisition window.
 Programmes can store prospective percentage/fixed discounts and commission rules,
 terms versions, currency, start/end timestamps, attribution window and eligible
 product IDs. Commission frequency must be explicitly selected (initial invoice or
-each invoice), otherwise no calculation occurs. Each qualifying invoice freezes
+each invoice), otherwise no calculation occurs. Only invoice-priced lines are used, including current and legacy Stripe price
+shapes; mixed/unknown/truncated invoices require manual reconciliation. Initial-
+invoice rules use Stripe billing_reason, not webhook arrival order. Each qualifying invoice freezes
 its proposed rule and amount, rounded down to whole cents and capped at payment.
 These are proposed calculations, **not approved earnings or liabilities**.
 `monetary_enabled=false` and `payouts_enabled=false` are SQL CHECK constraints:
@@ -52,12 +54,13 @@ grants. Code owner/programme assignments cannot be rewritten after creation.
 
 ## Deployment and verification state
 
+- Pull request: https://github.com/elguiriashing/akipasa/pull/213 (draft; not merged).
 - Source: isolated branch `feature/shared-referral-foundation` in AkiPasa master.
 - Migration: `20261020170421_shared_referral_foundation.sql`, generated using
   Supabase CLI and mirrored byte-for-byte under database/supabase migrations.
 - Rollout gate: `AKISUITE_REFERRALS_READY=true`; defaults off. Navigation, writes,
   reads and webhook referral processing stay inactive until acceptance.
-- Local tests: 22 domain/billing and PGlite role/RLS tests passed at the first
+- Local tests: 31 domain/billing, bilingual rendered and PGlite role/RLS tests passed at the latest
   candidate; final command evidence below supersedes this intermediate count.
 - No live migration, programme activation, billing change, message or payout.
 
@@ -77,9 +80,11 @@ grants. Code owner/programme assignments cannot be rewritten after creation.
    can unlock incentives: rates, recurring arrangements, thresholds, schedules,
    Spanish invoicing/tax/employment/contractor classification, programme terms,
    refund rules and retention. This candidate intentionally does not decide them.
-6. Admin attribution dispute resolution and fraud-case workflows are a remaining
-   extension: immutable evidence/holds and code revocation are implemented;
-   automated fraud adjudication, payout approval and disbursement are not.
+6. Admin attribution-dispute/fraud case review and customer review requests are
+   implemented with own-reporter isolation and immutable audit. Refund/dispute
+   holds create deduplicated review cases. Resolving a case does not rewrite an
+   attribution or approve a payment. Automated fraud adjudication, audited
+   attribution reassignment, payout approval and disbursement are not enabled.
 7. Financial evidence retains Stripe references with the profile UUID nulled on
    account erasure; programme/code ownership is nulled, leads cascade. Confirm
    lawful retention and deletion/anonymisation procedures before activation.

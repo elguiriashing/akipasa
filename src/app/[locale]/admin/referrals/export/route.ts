@@ -21,6 +21,7 @@ export async function GET() {
     ["suite_referral_codes", "code"],
     ["suite_referral_billing_events", "stripe_event_id"],
     ["suite_referral_audit", "id"],
+    ["suite_referral_cases", "id"],
   ]) {
     const rows: unknown[] = [];
     let expectedCount: number | null = null;

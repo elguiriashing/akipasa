@@ -155,3 +155,25 @@ export async function setRepresentative(form: FormData) {
     });
   redirect(`${base}?result=${error ? "unavailable" : "saved"}`);
 }
+
+export async function reviewReferralCase(form: FormData) {
+  const { base, supabase, user } = await context(form);
+  const parsed = z
+    .object({
+      id: z.string().uuid(),
+      state: z.enum(["open", "reviewing", "resolved", "rejected"]),
+      resolution: z.string().trim().max(2000),
+    })
+    .safeParse(Object.fromEntries(form));
+  if (!parsed.success) redirect(`${base}?result=invalid`);
+  const { error } = await supabase
+    .from("suite_referral_cases")
+    .update({
+      state: parsed.data.state,
+      resolution: parsed.data.resolution,
+      reviewed_by: user.id,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", parsed.data.id);
+  redirect(`${base}?result=${error ? "unavailable" : "saved"}`);
+}

@@ -80,6 +80,30 @@ create table public.suite_referral_audit (
  before_value jsonb, after_value jsonb, occurred_at timestamptz not null default now()
 );
 
+create table public.suite_referral_cases (
+ id uuid primary key default gen_random_uuid(),
+ code text not null references public.suite_referral_codes(code),
+ reporter_id uuid references public.profiles(id) on delete set null,
+ source_event_id text unique references public.suite_referral_billing_events(stripe_event_id),
+ case_type text not null check (case_type in ('attribution_dispute','fraud','refund','other')),
+ detail text not null check(length(detail) between 5 and 2000),
+ state text not null default 'open' check(state in ('open','reviewing','resolved','rejected')),
+ resolution text not null default '' check(length(resolution)<=2000),
+ reviewed_by uuid references public.profiles(id) on delete set null,
+ created_at timestamptz not null default now(), updated_at timestamptz not null default now()
+);
+create index suite_referral_cases_owner on public.suite_referral_cases(reporter_id,created_at desc);
+alter table public.suite_referral_cases enable row level security;
+revoke all on public.suite_referral_cases from public,anon,authenticated,service_role;
+grant select,insert,update on public.suite_referral_cases to authenticated;
+create policy referral_cases_read on public.suite_referral_cases for select to authenticated
+ using(reporter_id=(select auth.uid()) or public.current_app_role()='administrator');
+create policy referral_cases_report on public.suite_referral_cases for insert to authenticated
+ with check(reporter_id=(select auth.uid()) and source_event_id is null and state='open' and resolution='' and reviewed_by is null and
+ (exists(select 1 from public.suite_referral_codes c where c.code=suite_referral_cases.code and c.owner_profile_id=auth.uid()) or exists(select 1 from public.suite_referral_attributions a where a.code=suite_referral_cases.code and a.profile_id=auth.uid())));
+create policy referral_cases_admin_update on public.suite_referral_cases for update to authenticated
+ using(public.current_app_role()='administrator') with check(public.current_app_role()='administrator');
+
 alter table public.suite_referral_programmes enable row level security;
 alter table public.suite_referral_representatives enable row level security;
 alter table public.suite_referral_codes enable row level security;
@@ -125,13 +149,15 @@ create policy referral_audit_admin_read on public.suite_referral_audit for selec
 create function public.suite_referral_config_audit() returns trigger language plpgsql security definer set search_path='' as $$
 begin
  insert into public.suite_referral_audit(actor_id,action,entity_type,entity_id,before_value,after_value)
- values(auth.uid(),TG_OP,TG_TABLE_NAME,coalesce(to_jsonb(new)->>'code',to_jsonb(new)->>'id',to_jsonb(new)->>'profile_id'),case when TG_OP='UPDATE' then to_jsonb(old) end,to_jsonb(new));
+ values(auth.uid(),TG_OP,TG_TABLE_NAME,coalesce(to_jsonb(new)->>'id',to_jsonb(new)->>'code',to_jsonb(new)->>'profile_id'),case when TG_OP='UPDATE' then to_jsonb(old) end,to_jsonb(new));
  return new;
 end $$;
 revoke all on function public.suite_referral_config_audit() from public,anon,authenticated;
 create trigger referral_programme_audit after insert or update on public.suite_referral_programmes for each row execute function public.suite_referral_config_audit();
 create trigger referral_codes_audit after insert or update on public.suite_referral_codes for each row execute function public.suite_referral_config_audit();
 create trigger referral_reps_audit after insert or update on public.suite_referral_representatives for each row execute function public.suite_referral_config_audit();
+
+create trigger referral_cases_audit after insert or update on public.suite_referral_cases for each row execute function public.suite_referral_config_audit();
 
 create function public.suite_capture_referral(p_code text,p_product text) returns boolean
  language plpgsql security definer set search_path='' as $$
@@ -203,7 +229,13 @@ begin
  insert into public.suite_referral_billing_events(stripe_event_id,event_kind,profile_id,code,stripe_customer_id,stripe_subscription_id,stripe_invoice_id,product_code,amount_paid_cents,currency,stripe_created_at,proposed_commission_cents,rule_snapshot)
  values(p_event,p_kind,p_profile,a.code,p_customer,p_subscription,p_invoice,p_product,p_amount,p_currency,p_created,proposed,jsonb_build_object('terms_version',p.terms_version,'commission_basis',p.commission_basis,'percent',p.commission_percent,'fixed_cents',p.commission_fixed_cents,'approved',false))
  on conflict do nothing;
- return found;
+ if not found then return false; end if;
+ if p_kind<>'paid' then
+   insert into public.suite_referral_cases(code,reporter_id,source_event_id,case_type,detail)
+   values(a.code,p_profile,p_event,case when p_kind='refund_hold' then 'refund' else 'fraud' end,'Verified Stripe billing hold requires administrator review')
+   on conflict(source_event_id) do nothing;
+ end if;
+ return true;
 end $$;
 revoke all on function public.suite_record_referral_billing(text,text,uuid,text,text,text,text,bigint,text,timestamptz,boolean) from public,anon,authenticated;
 grant execute on function public.suite_record_referral_billing(text,text,uuid,text,text,text,text,bigint,text,timestamptz,boolean) to service_role;

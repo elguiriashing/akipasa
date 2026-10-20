@@ -17,6 +17,7 @@ vi.mock("next/navigation", () => ({
 vi.mock("../src/lib/auth", () => ({ requireUser: mocks.require }));
 vi.mock("../src/app/[locale]/account/referrals/actions", () => ({
   captureReferral: vi.fn(),
+  reportReferralCase: vi.fn(),
   joinReferralProgramme: vi.fn(),
   saveReferralLead: vi.fn(),
   updateReferralLead: vi.fn(),

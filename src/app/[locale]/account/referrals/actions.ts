@@ -84,3 +84,26 @@ export async function joinReferralProgramme(form: FormData) {
   });
   redirect(`${base}?result=${error ? "unavailable" : "saved"}`);
 }
+
+export async function reportReferralCase(form: FormData) {
+  const locale = form.get("locale") === "en" ? "en" : "es";
+  const base = `/${locale}/account/referrals`;
+  if (process.env.AKISUITE_REFERRALS_READY !== "true")
+    redirect(`${base}?result=unavailable`);
+  const parsed = z
+    .object({
+      code: referralCodeSchema,
+      kind: z.enum(["attribution_dispute", "fraud", "refund", "other"]),
+      detail: z.string().trim().min(5).max(2000),
+    })
+    .safeParse(Object.fromEntries(form));
+  if (!parsed.success) redirect(`${base}?result=invalid`);
+  const { supabase, user } = await requireUser(locale, base);
+  const { error } = await supabase.from("suite_referral_cases").insert({
+    reporter_id: user.id,
+    code: parsed.data.code,
+    case_type: parsed.data.kind,
+    detail: parsed.data.detail,
+  });
+  redirect(`${base}?result=${error ? "unavailable" : "saved"}`);
+}
