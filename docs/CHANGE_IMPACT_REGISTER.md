@@ -2014,3 +2014,18 @@ and 41 referral cases; exact integrated hosted CI remains mandatory before merge
 ## 2026-10-20 | Service-enqueued legacy renewal schedules
 
 Adds private immutable reviewed migration commands and explicit service RPCs; no browser endpoint or credentials. Central cron uses the existing billing key and bounded leases. It checks unchanged source/binding, creates from_subscription only, preserves full current phase/defaults, saves future plan before writing, requires provider future invoice preview with existing discount and exact paid-expiry period, then verifies schedule/current subscription readback. Source changes, unrelated schedules, nonzero invoices, unknown fields and expired ambiguous attempts fail closed. Retains legacy access until actual new-price payment reconciliation and leaves personal plans untouched. See OPERATIONS_RENEWAL_COMMANDS.md for gates and rollback.
+
+## 2026-10-20 | Portal browser selector compatibility
+
+The integrated tablet portal smoke exposed an ambiguous logo selector after the
+five-product suite menu began retaining the current product. The browser harness
+now scopes the logo to the primary brand link and verifies the single current-role
+marker plus all five exact language-preserving destination URLs. Application,
+billing, canonical schema and authorization source remain unchanged. Existing
+layout, image-loading, keyboard, theme, catalogue and navigation assertions remain
+in the full 64-case EN/ES, light/dark, phone/tablet/desktop matrix.
+
+Verification: all 64 combinations pass in Chromium 143 on the exact component
+source. Phone light and tablet dark menu screenshots were inspected; scoped
+ESLint, formatting, contract integrity and whitespace checks pass. Hosted full
+CI must pass on the replacement commit before merge.

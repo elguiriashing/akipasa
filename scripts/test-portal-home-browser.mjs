@@ -179,8 +179,18 @@ try {
           expect(
             await page.evaluate(() => document.documentElement.scrollWidth),
           ).toBeLessThanOrEqual(width + 1);
-          const icon = page.locator(
-            `header img[src="/brand/${product === "stay" ? "duermo-icon.png" : "business-mark.svg"}"]`,
+          const header = page.locator("header").first();
+          const brand = header.getByRole("link", {
+            name:
+              product === "business"
+                ? "AkiBusiness"
+                : locale === "es"
+                  ? "Inicio de AkiDuermo"
+                  : "AkiDuermo home",
+            exact: true,
+          });
+          const icon = brand.locator(
+            `img[src="/brand/${product === "stay" ? "duermo-icon.png" : "business-mark.svg"}"]`,
           );
           await expect(icon).toBeVisible();
           expect(
@@ -225,18 +235,26 @@ try {
           await page.keyboard.press("Enter");
           const popover = tools.locator(".portal-product-popover");
           await expect(popover).toBeVisible();
-          const currentApp =
-            product === "business" ? "AkiBusiness" : "AkiDuermo";
+          // The legacy business portal is the free management surface; the
+          // suite selector retains all five products and marks its current role.
+          const currentApp = product === "business" ? "AkiHQ" : "AkiDuermo";
+          await expect(popover.locator('a[aria-current="page"]')).toHaveCount(
+            1,
+          );
           await expect(
             popover.getByRole("link", { name: currentApp, exact: true }),
-          ).toHaveCount(0);
-          for (const app of [
-            "AkiPasa",
-            "AkiHQ",
-            product === "business" ? "AkiDuermo" : "AkiBusiness",
-          ]) {
+          ).toHaveAttribute("aria-current", "page");
+          const destinations = {
+            AkiPasa: `https://akipasa.com/${locale}`,
+            AkiHQ: `https://akihq.app/${locale}/business`,
+            AkiDuermo: `https://akiduermo.com/?lang=${locale}`,
+            AkiBusiness: `https://akibusiness.com/?locale=${locale}`,
+            AkiCoches: `https://akicoches.com/?lang=${locale}`,
+          };
+          for (const [app, href] of Object.entries(destinations)) {
             const link = popover.getByRole("link", { name: app, exact: true });
             await expect(link).toBeVisible();
+            await expect(link).toHaveAttribute("href", href);
             await expect(link.locator("img")).toBeVisible();
             expect(
               await link

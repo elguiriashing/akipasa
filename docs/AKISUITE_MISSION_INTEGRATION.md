@@ -226,3 +226,18 @@ audit all pass. The application source is frozen for final hosted CI/Worker
 packaging. The earlier full application/96-case component browser evidence remains
 recorded above; the new command paths require separate operator activation and
 provider readback, and are not claimed as already executed against customers.
+
+## 2026-10-20 | Portal browser selector compatibility
+
+The integrated tablet portal smoke exposed an ambiguous logo selector after the
+five-product suite menu began retaining the current product. The browser harness
+now scopes the logo to the primary brand link and verifies the single current-role
+marker plus all five exact language-preserving destination URLs. Application,
+billing, canonical schema and authorization source remain unchanged. Existing
+layout, image-loading, keyboard, theme, catalogue and navigation assertions remain
+in the full 64-case EN/ES, light/dark, phone/tablet/desktop matrix.
+
+Verification: all 64 combinations pass in Chromium 143 on the exact component
+source. Phone light and tablet dark menu screenshots were inspected; scoped
+ESLint, formatting, contract integrity and whitespace checks pass. Hosted full
+CI must pass on the replacement commit before merge.
