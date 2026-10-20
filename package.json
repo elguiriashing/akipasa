@@ -33,7 +33,7 @@
     "test:spotlight:browser": "node scripts/test-spotlight-browser.mjs",
     "test:akisuite": "vitest run --config vitest.akisuite.config.ts",
     "postinstall": "node scripts/maplibre-attribution-patch.mjs",
-    "test:operations-billing": "node --test tests/operations-billing-core.test.mjs tests/operations-billing-db.test.mjs && vitest run --config vitest.akisuite.config.ts tests/akisuite-operations-checkout.test.ts tests/akisuite-operations-schedule.test.ts"
+    "test:operations-billing": "node --test tests/operations-billing-core.test.mjs tests/operations-billing-db.test.mjs && vitest run --config vitest.akisuite.config.ts tests/akisuite-operations-checkout.test.ts tests/akisuite-operations-schedule.test.ts tests/akisuite-operations-recovery.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "0.7.0",

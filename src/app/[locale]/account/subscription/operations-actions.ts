@@ -59,7 +59,9 @@ export async function startOperationsCheckout(form: FormData) {
         tax_behavior: string;
         recurring: { interval: string; interval_count: number };
       }>(`/prices/${offer.id}`),
-      stripeRetrieve<{ status: string }>("/tax/settings"),
+      stripeRetrieve<{ status: string; defaults?: { tax_behavior?: string } }>(
+        "/tax/settings",
+      ),
       stripeRetrieve<{
         status: string;
         country: string;
@@ -68,6 +70,10 @@ export async function startOperationsCheckout(form: FormData) {
       }>(`/tax/registrations/${encodeURIComponent(registrationId)}`),
     ]);
     const now = Math.floor(Date.now() / 1000);
+    const effectiveTaxBehavior =
+      price.tax_behavior === "unspecified"
+        ? tax.defaults?.tax_behavior
+        : price.tax_behavior;
     if (
       account.id !== "acct_1SVLH2GfzDhsgsQZ" ||
       price.id !== offer.id ||
@@ -76,7 +82,7 @@ export async function startOperationsCheckout(form: FormData) {
       price.unit_amount !== offer.amount ||
       price.recurring.interval !== "month" ||
       price.recurring.interval_count !== 1 ||
-      !["inclusive", "exclusive"].includes(price.tax_behavior) ||
+      !["inclusive", "exclusive"].includes(effectiveTaxBehavior || "") ||
       tax.status !== "active" ||
       registration.status !== "active" ||
       registration.country !== "ES" ||

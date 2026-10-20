@@ -32,6 +32,7 @@ grant usage on schema public to anon,authenticated,service_role;`);
   for (const name of [
     "20261020170509_subscription_toolbox.sql",
     "20261020172801_operations_checkout_lifecycle.sql",
+    "20261020180734_operations_first_invoice_recovery.sql",
   ])
     await db.exec(
       await readFile(
@@ -359,5 +360,120 @@ test("downgrade reservations keep one future change and block racing upgrade cho
       all.slice(0, 8),
     ]),
     /Existing scheduled change/,
+  );
+});
+test("central recovery sees migration binding before first toolbox and leases/retries it", async () => {
+  await assert.rejects(
+    scalar("select public.claim_crm_operations_recovery(5)"),
+    /permission denied/,
+  );
+  await db.exec("reset role");
+  await db.query(
+    "insert into public.billing_subscriptions values('sub_missed',$1,'cus_test','business','active',now())",
+    [owner],
+  );
+  await login(owner, "service_role");
+  await scalar("select public.bind_crm_operations_migration($1,$2,$3,$4)", [
+    "sub_missed",
+    "private-test",
+    tools,
+    "sha256:reviewed-manifest-evidence",
+  ]);
+  assert.equal(
+    await scalar("select count(*) from akibusiness_private.toolboxes"),
+    0,
+  );
+  const queue = await scalar("select public.claim_crm_operations_recovery(5)");
+  assert.equal(queue.length, 1);
+  assert.equal(queue[0].subscription_id, "sub_missed");
+  assert.deepEqual(
+    await scalar("select public.claim_crm_operations_recovery(5)"),
+    [],
+  );
+  await assert.rejects(
+    scalar("select public.finish_crm_operations_recovery($1,$2,$3,$4)", [
+      "subscription",
+      "sub_missed",
+      "00000000-0000-4000-8000-000000000000",
+      true,
+    ]),
+    /lease changed/,
+  );
+  await scalar("select public.finish_crm_operations_recovery($1,$2,$3,$4)", [
+    "subscription",
+    "sub_missed",
+    queue[0].lease,
+    false,
+  ]);
+  assert.equal(
+    await scalar(
+      "select recovery_failures from akibusiness_private.operations_subscriptions",
+    ),
+    1,
+  );
+  assert.deepEqual(
+    await scalar("select public.claim_crm_operations_recovery(5)"),
+    [],
+  );
+  await db.exec(
+    "update akibusiness_private.operations_subscriptions set recovery_after=now()-interval '1 minute'",
+  );
+  const retry = (
+    await scalar("select public.claim_crm_operations_recovery(5)")
+  )[0];
+  assert.notEqual(retry.lease, queue[0].lease);
+  await scalar("select public.finish_crm_operations_recovery($1,$2,$3,$4)", [
+    "subscription",
+    "sub_missed",
+    retry.lease,
+    true,
+  ]);
+  assert.equal(
+    await scalar(
+      "select recovery_failures from akibusiness_private.operations_subscriptions",
+    ),
+    0,
+  );
+  assert.equal(
+    await scalar(
+      "select recovery_after>now()+interval '29 minutes' from akibusiness_private.operations_subscriptions",
+    ),
+    true,
+  );
+});
+test("central recovery sees reserved checkout session before any subscription binding", async () => {
+  const c = await reserve();
+  await login(owner, "service_role");
+  assert.deepEqual(
+    await scalar("select public.claim_crm_operations_recovery(5)"),
+    [],
+  );
+  await scalar("select public.record_crm_operations_checkout_session($1,$2)", [
+    c.token,
+    "cs_test_paid",
+  ]);
+  const queue = await scalar("select public.claim_crm_operations_recovery(5)");
+  assert.equal(queue.length, 1);
+  assert.equal(queue[0].kind, "checkout");
+  assert.equal(queue[0].session_id, "cs_test_paid");
+  assert.equal(
+    await scalar(
+      "select count(*) from akibusiness_private.operations_subscriptions",
+    ),
+    0,
+  );
+  await db.exec(
+    "update akibusiness_private.operations_checkouts set recovery_leased_until=now()-interval '1 minute'",
+  );
+  const retry = (
+    await scalar("select public.claim_crm_operations_recovery(5)")
+  )[0];
+  assert.notEqual(retry.lease, queue[0].lease);
+  await db.exec(
+    "update akibusiness_private.operations_checkouts set state='completed',recovery_leased_until=null",
+  );
+  assert.deepEqual(
+    await scalar("select public.claim_crm_operations_recovery(5)"),
+    [],
   );
 });
