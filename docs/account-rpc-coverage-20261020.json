@@ -1,0 +1,1626 @@
+{
+  "reviewed_at": "2026-10-20",
+  "project_ref": "vhpbvcfkcteswlsdjrfl",
+  "metadata_only": true,
+  "total_authenticated_public_callables": 1114,
+  "public_security_definers": 153,
+  "functions": [
+    {
+      "signature": "accept_current_terms(text,text)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "accommodation_available_rooms(uuid,date,date,integer)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "accommodation_change_status(uuid,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "accommodation_create_quote(uuid,date,date,integer)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "accommodation_public_settings(uuid)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "accommodation_request_booking(uuid,uuid,text,text,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "add_owned_event_occurrence(uuid,timestamp with time zone,timestamp with time zone)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "add_venue_member(uuid,uuid,venue_member_role)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "add_venue_member_by_email(uuid,text,venue_member_role)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "admin_search_users(text,integer)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "admin_user_record(uuid)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "approve_booking_and_queue_emails(uuid,uuid)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "attach_operating_location(uuid,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "attach_rental_operating_location(uuid,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "booking_available_slots(uuid)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "can_manage_operating_organisation(uuid)",
+      "classification": "SQL permission intersection"
+    },
+    {
+      "signature": "can_manage_rental_company(uuid)",
+      "classification": "SQL permission intersection"
+    },
+    {
+      "signature": "can_read_rental_operating_link(uuid,text)",
+      "classification": "SQL permission intersection"
+    },
+    {
+      "signature": "check_in_by_token(uuid,uuid,double precision,double precision,integer)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "claim_passport_reward(uuid,uuid)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "claim_stamp_reward(uuid,uuid)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "claimable_accommodation_cards_in_bounds(double precision,double precision,double precision,double precision,integer)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "claimable_venue_cards_in_bounds(double precision,double precision,double precision,double precision,integer)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "claimable_venues_in_bounds(double precision,double precision,double precision,double precision,integer)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "confirm_reward_redemption(uuid)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "create_akipasa_selection_event_v2(uuid,text,text,text,text,text,integer,text,timestamp with time zone,timestamp with time zone,text,text,double precision,double precision)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "create_event_with_occurrence(uuid,uuid,text,text,text,text,text,integer,text,timestamp with time zone,timestamp with time zone)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "create_operating_organisation(uuid,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "create_owned_venue(uuid,text,text,text,text,text,double precision,double precision)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "create_owned_venue_in_spain(text,text,text,text,text,text,text,double precision,double precision)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "create_private_operating_location(uuid,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "creator_verification_eligibility(uuid)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "crm_adjust_tip_balance(text,uuid,integer,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_advertising_profile_overview(timestamp with time zone)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_analytics_overview(timestamp with time zone)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_can_access_workspace(text)",
+      "classification": "SQL permission intersection"
+    },
+    {
+      "signature": "crm_can_administer_people(text)",
+      "classification": "SQL permission intersection"
+    },
+    {
+      "signature": "crm_can_manage_workspace(text)",
+      "classification": "SQL permission intersection"
+    },
+    {
+      "signature": "crm_can_manage_workspace_chat(text)",
+      "classification": "SQL permission intersection"
+    },
+    {
+      "signature": "crm_can_operate_workspace(text)",
+      "classification": "SQL permission intersection"
+    },
+    {
+      "signature": "crm_company_access(boolean)",
+      "classification": "SQL permission intersection"
+    },
+    {
+      "signature": "crm_company_backup_create(text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_company_backup_restore(uuid,bigint)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_company_history()",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_company_import_batch(uuid,integer,jsonb)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_company_import_start(text,text,text,jsonb,integer)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_company_import_undo(uuid)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_company_list(text,text,integer)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_company_publish_claim(boolean)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_company_publish_finish(text,uuid,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_company_save(text,integer,jsonb,boolean)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_course_command(text,uuid,jsonb)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_has_tool(text,text)",
+      "classification": "SQL permission intersection"
+    },
+    {
+      "signature": "crm_hospitality_command(text,uuid,jsonb)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_hospitality_export(text,timestamp with time zone,timestamp with time zone)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_hospitality_overview(text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_inventory_recommendations(text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_is_workspace_chat_member(text)",
+      "classification": "SQL permission intersection"
+    },
+    {
+      "signature": "crm_kds_command(text,uuid,jsonb)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_kds_overview(text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_member_has_tool(text,text)",
+      "classification": "SQL permission intersection"
+    },
+    {
+      "signature": "crm_pos_cash_command(text,uuid,jsonb)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_pos_cash_overview(text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_pos_ledger(text,jsonb)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_pos_trading_day(text,text,uuid,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_printer_manage(text,text,jsonb)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_printer_next(uuid,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_printer_report(uuid,text,uuid,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_privacy_access(text)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "crm_provision_workspace_for_venue(uuid)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_record_pos_sale(text,text,text,integer,text,uuid,jsonb)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_save_role_template(text,uuid,text,text,text[])",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_set_pos_sale_tip(text,uuid,uuid,integer)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_shares_workspace(uuid)",
+      "classification": "SQL permission intersection"
+    },
+    {
+      "signature": "crm_staff_business_overview()",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_staff_set_business_pro(uuid,boolean,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_staff_set_workspace_tool(text,text,boolean,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "crm_support_access(text)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "crm_user_analytics_search(text,timestamp with time zone,integer)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "current_app_role()",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "delete_owned_event(uuid,text,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "delete_owned_venue(uuid,text,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "duplicate_owned_event(uuid,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "enroll_in_passport(uuid)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "event_public_engagement(uuid)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "expire_finished_events(timestamp with time zone)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "grant_staff_billing_access(uuid,text,text,text,uuid)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "has_active_entitlement(uuid,text)",
+      "classification": "SQL permission intersection"
+    },
+    {
+      "signature": "has_free_business_access(uuid)",
+      "classification": "SQL permission intersection"
+    },
+    {
+      "signature": "has_owner_console()",
+      "classification": "SQL permission intersection"
+    },
+    {
+      "signature": "has_platform_role(app_role[])",
+      "classification": "SQL permission intersection"
+    },
+    {
+      "signature": "is_venue_member(uuid,venue_member_role[])",
+      "classification": "SQL permission intersection"
+    },
+    {
+      "signature": "list_managed_operating_locations(integer,integer)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "list_operating_organisation_locations(uuid,integer,integer)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "list_operating_organisations(integer,integer)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "moderate_creator_profile(uuid,text,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "moderate_item(text,uuid,text,text,uuid)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "my_booking_email_export()",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "my_booking_history(text,integer)",
+      "classification": "SQL JSON access gate"
+    },
+    {
+      "signature": "operator_delete_catalogue_item(text,uuid,text,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "operator_update_event(uuid,text,text,text,text,integer,text,content_status,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "operator_update_venue(uuid,text,text,text,text,content_status,boolean,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "personalisation_admin_metrics(timestamp with time zone)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "public_venue_catalogue(uuid)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "public_venue_is_claimed(uuid)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "publish_crm_lead_as_unclaimed_venue(text,text,text,text,text,text,text,double precision,double precision)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "queue_suite_portal_welcome(text,text)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "record_analytics(analytics_action,uuid,uuid,jsonb)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "redeem_reward_claim(uuid)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "request_booking(uuid,uuid,integer,text,text,text,text)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "request_booking_v2(uuid,uuid,integer,text,text,text,text,uuid,text,uuid)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "request_car_rental_booking(uuid,date,date,text,text,text,text,uuid,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "request_creator_verification()",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "request_reward_redemption(uuid)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "reset_personalisation_data()",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "resolve_promotion_request(uuid,promotion_state,text,uuid,timestamp with time zone,timestamp with time zone)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "resolve_report(uuid,report_state,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "retry_booking_confirmation(uuid,uuid)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "review_business_application(uuid,text,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "review_car_rental_company(uuid,text,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "save_venue_catalogue(uuid,integer,jsonb,boolean)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "search_claimable_accommodations(text,integer)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "search_claimable_venues(text,integer)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "set_automatic_moderation(boolean)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "set_car_rental_booking_status(uuid,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "set_feature_flag(text,boolean,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "set_operating_organisation_admin(uuid,uuid,boolean)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "set_owned_event_recurrence(uuid,timestamp with time zone,timestamp with time zone,text,integer,integer)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "set_owner_background_image(text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "set_platform_role(uuid,app_role,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "st_estimatedextent(text,text)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "st_estimatedextent(text,text,text,boolean)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "st_estimatedextent(text,text,text)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "staff_pending_venue_claim_count()",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "staff_pending_venue_claims(integer)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "submit_business_application(text,text,text,text,text,text,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "submit_community_event(text,text,text,text,text,text,double precision,double precision,uuid,text,text,timestamp with time zone,timestamp with time zone,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "submit_report(text,uuid,report_reason,text)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "suite_email_reminder_preferences(boolean,boolean)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "suite_save_stay(uuid,boolean,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "unclaim_owned_venue(uuid,text,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "undo_event_preference_signal(uuid)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "unpublish_venue_catalogue(uuid,integer)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "update_business_application_package(text,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "update_deletion_request(uuid,deletion_request_state,text,boolean)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "update_own_profile(text,text)",
+      "classification": "explicit exception or guarded delegation"
+    },
+    {
+      "signature": "update_owner_console_preferences(text,text,boolean,boolean)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "update_venue_location_in_spain(uuid,text,text,text,double precision,double precision)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "upsert_catalog_category(uuid,text,text,text,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "upsert_catalog_city(uuid,text,text,text,double precision,double precision,text,text)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "venue_analytics(uuid,timestamp with time zone)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "venue_event_audience_summary(uuid)",
+      "classification": "outer PL/pgSQL account gate"
+    },
+    {
+      "signature": "venue_owner_results(uuid)",
+      "classification": "outer PL/pgSQL account gate"
+    }
+  ],
+  "nonextension_invokers": [
+    {
+      "signature": "accommodation_guard_occupancy()",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "admin_passport_awards(text,jsonb)",
+      "classification": "SQL JSON account gate"
+    },
+    {
+      "signature": "clear_car_rental_review_metadata()",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "create_recurring_booking_slots(uuid,date,date,integer[],time without time zone,integer,integer,uuid,uuid)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_add_workspace_member(text,text,uuid)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_add_workspace_member(text,text,text)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_company_review_retry(boolean,bigint,bigint)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_fiscal_access(text)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_fiscal_assign_tax(text,uuid,integer,text,text)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_fiscal_checkout(text,uuid,jsonb)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_fiscal_export_ledger(text,date,date,timestamp with time zone,uuid,integer)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_fiscal_issue_document(text,uuid,jsonb)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_fiscal_lock_period(text,date)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_fiscal_overview(text)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_fiscal_reverse_document(text,uuid,uuid,jsonb)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_fiscal_save_profile(text,jsonb)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_inventory_location_create(text,text,text)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_inventory_operation(text,text,jsonb)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_inventory_reconcile_operation(text,text,jsonb)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_inventory_valuation(text,timestamp with time zone)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_pos_catalogue(text)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_read_workspace_snapshot(text)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_record_export_event(text,text,integer,date,date)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_release_readiness()",
+      "classification": "public discovery/config"
+    },
+    {
+      "signature": "crm_remove_workspace_member(text,uuid)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_workspace_access(text)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_workspace_directory(text)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "crm_write_workspace_snapshot(text,jsonb,timestamp with time zone)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "guard_car_rental_company_review_state()",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "managed_rental_branches()",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "my_achievement_progress()",
+      "classification": "own/export or public progression read; frontend/account guard retained"
+    },
+    {
+      "signature": "passport_collection(uuid)",
+      "classification": "own/export or public progression read; frontend/account guard retained"
+    },
+    {
+      "signature": "passport_places(text,text)",
+      "classification": "own/export or public progression read; frontend/account guard retained"
+    },
+    {
+      "signature": "preserve_venue_media_creator()",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "protect_membership_tier()",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "public_map_marker_snapshot()",
+      "classification": "public discovery/config"
+    },
+    {
+      "signature": "public_map_marker_snapshot_v2()",
+      "classification": "public discovery/config"
+    },
+    {
+      "signature": "public_map_venue_page(double precision,double precision,double precision,double precision,uuid)",
+      "classification": "public discovery/config"
+    },
+    {
+      "signature": "public_map_venue_window(double precision,double precision,double precision,double precision)",
+      "classification": "public discovery/config"
+    },
+    {
+      "signature": "public_nearby_venue_page(double precision,double precision,double precision,integer,boolean)",
+      "classification": "public discovery/config"
+    },
+    {
+      "signature": "public_stay_viewport(double precision,double precision,double precision,double precision,text,text)",
+      "classification": "public discovery/config"
+    },
+    {
+      "signature": "rental_branch_booking_summary(uuid)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "request_car_rental_booking(uuid,date,date,text,text,text,text,uuid)",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "search_car_rentals(text,text,text,date,date,integer,integer,double precision[],integer,integer)",
+      "classification": "public discovery/config"
+    },
+    {
+      "signature": "search_public_venues(text,integer,integer)",
+      "classification": "public discovery/config"
+    },
+    {
+      "signature": "set_updated_at()",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "set_venue_achievement_categories(uuid,text[],text[])",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "validate_booking_slot_offering()",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "validate_booking_slot_resource()",
+      "classification": "existing RLS / permission-helper / private-wrapper / statement-trigger intersection"
+    },
+    {
+      "signature": "venue_relevance_enabled()",
+      "classification": "public discovery/config"
+    },
+    {
+      "signature": "venue_search_normalize(text)",
+      "classification": "public discovery/config"
+    }
+  ],
+  "additional_predicates": [
+    "fiscal_private.allowed(text,text)",
+    "akihq_security.can_tool(text,text)",
+    "akihq_security.can_administer(text)",
+    "akihq_security.can_export(text,text)"
+  ],
+  "mutation_tables": [
+    "accommodation_booking_settings",
+    "accommodation_nightly_rates",
+    "accommodation_quotes",
+    "accommodation_room_types",
+    "accommodation_unit_blocks",
+    "accommodation_units",
+    "ai_agents",
+    "ai_approvals",
+    "ai_chat_messages",
+    "ai_handoffs",
+    "ai_schedules",
+    "ai_tasks",
+    "business_applications",
+    "business_rewards",
+    "calendar_preferences",
+    "car_rental_bookings",
+    "car_rental_calendar_blocks",
+    "car_rental_companies",
+    "car_rental_company_members",
+    "car_rental_company_reviews",
+    "car_rental_media",
+    "car_rental_vehicles",
+    "creator_profiles",
+    "crm_catalogue_venues",
+    "crm_company_backup_rows",
+    "crm_company_backups",
+    "crm_company_import_batches",
+    "crm_company_import_issues",
+    "crm_company_imports",
+    "crm_company_records",
+    "crm_demand_signals",
+    "crm_fiscal_document_lines",
+    "crm_fiscal_documents",
+    "crm_fiscal_events",
+    "crm_fiscal_item_taxes",
+    "crm_fiscal_outbox",
+    "crm_fiscal_period_locks",
+    "crm_fiscal_profiles",
+    "crm_fiscal_releases",
+    "crm_fiscal_series",
+    "crm_inventory_items",
+    "crm_inventory_location_balances",
+    "crm_inventory_locations",
+    "crm_inventory_movements",
+    "crm_inventory_operation_cancellations",
+    "crm_inventory_operations",
+    "crm_inventory_value_events",
+    "crm_module_snapshots",
+    "crm_pos_sale_lines",
+    "crm_pos_sales",
+    "crm_role_template_tools",
+    "crm_role_templates",
+    "crm_team_channels",
+    "crm_team_messages",
+    "crm_tip_adjustments",
+    "crm_workspace_entitlements",
+    "crm_workspace_members",
+    "crm_workspace_records",
+    "crm_workspace_venues",
+    "crm_workspaces",
+    "event_occurrences",
+    "event_submissions",
+    "events",
+    "feature_slots",
+    "loyalty_program_rewards",
+    "loyalty_programs",
+    "offers",
+    "operating_organisation_locations",
+    "operating_organisation_members",
+    "operating_organisations",
+    "owner_console_preferences",
+    "pals_states",
+    "passport_enrollments",
+    "promotion_requests",
+    "recurrence_rules",
+    "rental_operating_location_links",
+    "reward_claims",
+    "suite_saved_stays",
+    "venue_availability_slots",
+    "venue_booking_settings",
+    "venue_catalogue_food_index",
+    "venue_catalogue_history",
+    "venue_catalogues",
+    "venue_checkin_credentials",
+    "venue_media",
+    "venue_media_placements",
+    "venue_members",
+    "venues",
+    "premium_appearance_preferences",
+    "booking_notification_settings",
+    "booking_offerings",
+    "booking_resources",
+    "workspace_snapshots"
+  ],
+  "private_mutation_schemas": ["akihq_hospitality", "fiscal_private"],
+  "authenticated_table_write_metadata": [
+    {
+      "schema": "public",
+      "table_name": "accommodation_booking_settings",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "accommodation_nightly_rates",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "accommodation_room_types",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "accommodation_unit_blocks",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "accommodation_units",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "account_deletion_requests",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "achievements",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "advertising_profiles",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "ai_activity_log",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "ai_agent_memory",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "ai_agents",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "ai_approvals",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "ai_budget_settings",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "ai_chat_messages",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "ai_handoffs",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "ai_model_pricing",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "ai_schedules",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "ai_tasks",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "ai_usage_ledger",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "automatic_moderation_reviews",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "automatic_moderation_settings",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "billing_customers",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "billing_subscriptions",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "booking_notification_settings",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": false
+    },
+    {
+      "schema": "public",
+      "table_name": "booking_offerings",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "booking_requests",
+      "can_insert": true,
+      "can_update": false,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "booking_resources",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "business_applications",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "business_rewards",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "calendar_preferences",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "car_rental_bookings",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "car_rental_calendar_blocks",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "car_rental_companies",
+      "can_insert": true,
+      "can_update": false,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "car_rental_media",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "car_rental_vehicles",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "categories",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "check_ins",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "cities",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "creator_categories",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "creator_profiles",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "creator_reviews",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "creator_verification_settings",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "crm_business_categories",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "crm_demand_signals",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "crm_inventory_items",
+      "can_insert": false,
+      "can_update": false,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "crm_module_snapshots",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": false
+    },
+    {
+      "schema": "public",
+      "table_name": "crm_package_tools",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "crm_team_channels",
+      "can_insert": true,
+      "can_update": false,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "crm_team_messages",
+      "can_insert": true,
+      "can_update": false,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "crm_workspace_records",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "event_occurrences",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "event_submissions",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "events",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "feature_flags",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "feature_slots",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "followed_venue_refs",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "followed_venues",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "loyalty_ledger",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "loyalty_program_rewards",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "loyalty_programs",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "moderation_actions",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "offers",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "owner_console_entitlements",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "owner_console_preferences",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "passport_enrollments",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "passport_progress",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "passport_rewards",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "passport_steps",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "passports",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "personalisation_settings",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "premium_appearance_preferences",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "profiles",
+      "can_insert": true,
+      "can_update": false,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "promotion_requests",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "recent_event_view_refs",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "recent_event_views",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "recurrence_rules",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "reports",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "reward_claims",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "reward_redemptions",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "saved_event_refs",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "saved_events",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "spatial_ref_sys",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "staff_billing_grants",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "stripe_webhook_events",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "user_event_preferences",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "venue_achievement_categories",
+      "can_insert": true,
+      "can_update": false,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "venue_availability_slots",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "venue_booking_settings",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "venue_checkin_credentials",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "venue_claims",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "venue_media",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "venue_media_placements",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "venue_members",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "venues",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "public",
+      "table_name": "xp_ledger",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "storage",
+      "table_name": "buckets",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "storage",
+      "table_name": "buckets_analytics",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    },
+    {
+      "schema": "storage",
+      "table_name": "objects",
+      "can_insert": true,
+      "can_update": true,
+      "can_delete": true
+    }
+  ],
+  "generic_state_licence_audit": {
+    "raw_snapshot_authenticated_select_insert_update": false,
+    "raw_snapshot_anonymous_select": false,
+    "collections": 19,
+    "canonical_tools": 12,
+    "actual_sql_fixture": "tests/fixtures/account-tool-snapshot.sql",
+    "test_cases": 14,
+    "result": "No generic-state licence bypass found in reviewed deployed definitions, ACLs and policies; no live write probes"
+  }
+}

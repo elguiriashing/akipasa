@@ -84,10 +84,18 @@ excluded from optional tracking even before new-cohort activation. This is a
 tracking-only check: historical account and paid-tool access remains untouched,
 no new demographic is collected, and a year is never described as verified age.
 
-
 ## 2026-10-20 | Safe cross-product task resume
 
 The gated central completion flow now resumes allowlisted tasks across all five
 products using fixed canonical origins and the shared EN/ES navigation contract.
 Identity and onboarding state remain server-authoritative; no credentials cross
 domains. See `ACCOUNT_TASK_RESUME_V1.md` for tests, safety boundaries and rollout.
+
+## 2026-10-20 | Additive database account-lock coverage
+
+Read-only metadata identified direct RPC/mutation paths beyond the initial
+account guard. The disabled-cohort coverage candidate adds permission/RPC/table
+intersections without enrollment, customer backfill, billing or data changes.
+See ACCOUNT_DATABASE_COVERAGE.md and the recorded metadata manifest. Representative
+PGlite coverage and the complete generic-snapshot tool matrix pass; exact-schema
+staging, advisors and authenticated privacy/provider acceptance remain gates.

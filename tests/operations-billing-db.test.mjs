@@ -25,13 +25,15 @@ before(async () => {
   await db.exec(`create role anon;create role authenticated;create role service_role bypassrls;create schema auth;create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;grant usage on schema auth to authenticated,anon,service_role;grant execute on function auth.uid() to authenticated,anon,service_role;
 create table auth.users(id uuid primary key,email_confirmed_at timestamptz,deleted_at timestamptz);create table public.profiles(id uuid primary key,app_role text,display_name text,username text);
 create table public.crm_workspaces(id text primary key,name text,slug text,owner_profile_id uuid,source_venue_id uuid,plan text,status text,seat_limit int);
-create table public.crm_workspace_members(workspace_id text,profile_id uuid,status text,role text,role_template_id uuid,primary key(workspace_id,profile_id));create table public.crm_role_templates(id uuid primary key,workspace_id text);create table public.crm_role_template_tools(template_id uuid,tool_key text);create table public.crm_tool_catalog(tool_key text primary key,active boolean);create table public.crm_workspace_entitlements(workspace_id text,tool_key text,active boolean,source text,starts_at timestamptz,ends_at timestamptz,primary key(workspace_id,tool_key));create table public.billing_customers(profile_id uuid primary key,stripe_customer_id text unique);create table public.billing_subscriptions(stripe_subscription_id text primary key,profile_id uuid,stripe_customer_id text,plan_code text,status text,updated_at timestamptz);
+create table public.crm_workspace_members(workspace_id text,profile_id uuid,status text,role text,role_template_id uuid,primary key(workspace_id,profile_id));create table public.crm_role_templates(id uuid primary key,workspace_id text);create table public.crm_role_template_tools(template_id uuid,tool_key text);create table public.crm_tool_catalog(tool_key text primary key,active boolean);create table public.crm_workspace_entitlements(workspace_id text,tool_key text,active boolean,source text check(source in ('plan','trial','purchase','manual','platform')),starts_at timestamptz,ends_at timestamptz,primary key(workspace_id,tool_key));create table public.billing_customers(profile_id uuid primary key,stripe_customer_id text unique);create table public.billing_subscriptions(stripe_subscription_id text primary key,profile_id uuid,stripe_customer_id text,plan_code text,status text,updated_at timestamptz);
 create table public.private_operating_location_requests(profile_id uuid,request_id uuid,workspace_id text,requested_name text,primary key(profile_id,request_id));
 create function public.has_active_entitlement(uuid,text) returns boolean language sql stable as $$select true$$;create function public.crm_can_access_workspace(text) returns boolean language sql stable as $$select true$$;create function public.crm_has_tool(text,text) returns boolean language sql stable as $$select true$$;create function public.reconcile_profile_entitlements(uuid) returns void language sql as $$select$$;
 grant usage on schema public to anon,authenticated,service_role;`);
   for (const name of [
     "20261020170509_subscription_toolbox.sql",
     "20261020172801_operations_checkout_lifecycle.sql",
+    "20261020180734_operations_first_invoice_recovery.sql",
+    "20261020181726_toolbox_entitlement_source_compatibility.sql",
   ])
     await db.exec(
       await readFile(
@@ -43,7 +45,7 @@ grant usage on schema public to anon,authenticated,service_role;`);
 after(() => db.close());
 beforeEach(async () => {
   await db.exec(
-    "reset role;truncate akibusiness_private.operations_billing_events,akibusiness_private.operations_subscriptions,akibusiness_private.operations_checkouts,akibusiness_private.toolbox_notifications,akibusiness_private.toolbox_history,akibusiness_private.toolboxes,public.private_operating_location_requests,public.billing_subscriptions,public.billing_customers,public.crm_workspace_members,public.crm_workspaces,public.profiles,auth.users cascade;",
+    "reset role;truncate akibusiness_private.operations_billing_events,akibusiness_private.operations_subscriptions,akibusiness_private.operations_checkouts,akibusiness_private.toolbox_notifications,akibusiness_private.toolbox_history,akibusiness_private.toolboxes,public.private_operating_location_requests,public.billing_subscriptions,public.billing_customers,public.crm_workspace_entitlements,public.crm_workspace_members,public.crm_workspaces,public.profiles,auth.users cascade;",
   );
   await db.query("insert into public.profiles(id) values($1),($2)", [
     owner,
@@ -65,7 +67,19 @@ beforeEach(async () => {
     owner,
     "cus_test",
   ]);
+  await db.exec(
+    "insert into public.crm_tool_catalog(tool_key,active) select unnest(akibusiness_private.catalogue()),true on conflict(tool_key) do update set active=true",
+  );
   await login();
+});
+test("historical entitlement provenance constraint rejects unsupported source values", async () => {
+  await db.exec("reset role");
+  await assert.rejects(
+    db.exec(
+      "insert into public.crm_workspace_entitlements values('private-test','crm',true,'toolbox',now(),now()+interval '1 day')",
+    ),
+    /source_check|check constraint/,
+  );
 });
 test("same checkout selection reuses durable reservation; another selection cannot race", async () => {
   const a = await reserve();
@@ -148,6 +162,23 @@ test("atomic paid application binds once, deduplicates replay and blocks workspa
     (await scalar("select public.crm_operations_binding('sub_test',null)"))
       .tier,
     "basico",
+  );
+  await db.exec("reset role");
+  assert.equal(
+    Number(
+      await scalar(
+        "select count(*) from public.crm_workspace_entitlements where workspace_id='private-test' and source='purchase' and active",
+      ),
+    ),
+    12,
+  );
+  assert.equal(
+    Number(
+      await scalar(
+        "select count(*) from public.crm_workspace_entitlements where source not in ('plan','trial','purchase','manual','platform')",
+      ),
+    ),
+    0,
   );
   await login();
   await assert.rejects(reserve(), /Existing subscription/);
@@ -359,5 +390,120 @@ test("downgrade reservations keep one future change and block racing upgrade cho
       all.slice(0, 8),
     ]),
     /Existing scheduled change/,
+  );
+});
+test("central recovery sees migration binding before first toolbox and leases/retries it", async () => {
+  await assert.rejects(
+    scalar("select public.claim_crm_operations_recovery(5)"),
+    /permission denied/,
+  );
+  await db.exec("reset role");
+  await db.query(
+    "insert into public.billing_subscriptions values('sub_missed',$1,'cus_test','business','active',now())",
+    [owner],
+  );
+  await login(owner, "service_role");
+  await scalar("select public.bind_crm_operations_migration($1,$2,$3,$4)", [
+    "sub_missed",
+    "private-test",
+    tools,
+    "sha256:reviewed-manifest-evidence",
+  ]);
+  assert.equal(
+    await scalar("select count(*) from akibusiness_private.toolboxes"),
+    0,
+  );
+  const queue = await scalar("select public.claim_crm_operations_recovery(5)");
+  assert.equal(queue.length, 1);
+  assert.equal(queue[0].subscription_id, "sub_missed");
+  assert.deepEqual(
+    await scalar("select public.claim_crm_operations_recovery(5)"),
+    [],
+  );
+  await assert.rejects(
+    scalar("select public.finish_crm_operations_recovery($1,$2,$3,$4)", [
+      "subscription",
+      "sub_missed",
+      "00000000-0000-4000-8000-000000000000",
+      true,
+    ]),
+    /lease changed/,
+  );
+  await scalar("select public.finish_crm_operations_recovery($1,$2,$3,$4)", [
+    "subscription",
+    "sub_missed",
+    queue[0].lease,
+    false,
+  ]);
+  assert.equal(
+    await scalar(
+      "select recovery_failures from akibusiness_private.operations_subscriptions",
+    ),
+    1,
+  );
+  assert.deepEqual(
+    await scalar("select public.claim_crm_operations_recovery(5)"),
+    [],
+  );
+  await db.exec(
+    "update akibusiness_private.operations_subscriptions set recovery_after=now()-interval '1 minute'",
+  );
+  const retry = (
+    await scalar("select public.claim_crm_operations_recovery(5)")
+  )[0];
+  assert.notEqual(retry.lease, queue[0].lease);
+  await scalar("select public.finish_crm_operations_recovery($1,$2,$3,$4)", [
+    "subscription",
+    "sub_missed",
+    retry.lease,
+    true,
+  ]);
+  assert.equal(
+    await scalar(
+      "select recovery_failures from akibusiness_private.operations_subscriptions",
+    ),
+    0,
+  );
+  assert.equal(
+    await scalar(
+      "select recovery_after>now()+interval '29 minutes' from akibusiness_private.operations_subscriptions",
+    ),
+    true,
+  );
+});
+test("central recovery sees reserved checkout session before any subscription binding", async () => {
+  const c = await reserve();
+  await login(owner, "service_role");
+  assert.deepEqual(
+    await scalar("select public.claim_crm_operations_recovery(5)"),
+    [],
+  );
+  await scalar("select public.record_crm_operations_checkout_session($1,$2)", [
+    c.token,
+    "cs_test_paid",
+  ]);
+  const queue = await scalar("select public.claim_crm_operations_recovery(5)");
+  assert.equal(queue.length, 1);
+  assert.equal(queue[0].kind, "checkout");
+  assert.equal(queue[0].session_id, "cs_test_paid");
+  assert.equal(
+    await scalar(
+      "select count(*) from akibusiness_private.operations_subscriptions",
+    ),
+    0,
+  );
+  await db.exec(
+    "update akibusiness_private.operations_checkouts set recovery_leased_until=now()-interval '1 minute'",
+  );
+  const retry = (
+    await scalar("select public.claim_crm_operations_recovery(5)")
+  )[0];
+  assert.notEqual(retry.lease, queue[0].lease);
+  await db.exec(
+    "update akibusiness_private.operations_checkouts set state='completed',recovery_leased_until=null",
+  );
+  assert.deepEqual(
+    await scalar("select public.claim_crm_operations_recovery(5)"),
+    [],
   );
 });

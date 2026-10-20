@@ -63,3 +63,35 @@ export function referralEvidenceLabel(kind: string, locale: "en" | "es") {
       ? "Revisión pendiente"
       : "Review pending";
 }
+
+export function referralReviewLabel(kind: string, locale: "en" | "es") {
+  const labels: Record<string, [string, string]> = {
+    eligible: ["Eligibility recorded", "Elegibilidad registrada"],
+    approved: ["Administratively approved", "Aprobación administrativa"],
+    held: ["Held", "Retenida"],
+    rejected: ["Rejected", "Rechazada"],
+    unapproved_or_missing_rule: [
+      "Missing prospective terms or commission rule",
+      "Faltan condiciones o reglas prospectivas de comisión",
+    ],
+    invalid_recipient: ["Invalid recipient", "Destinatario no válido"],
+    inactive_programme_or_code: [
+      "Inactive programme or code",
+      "Programa o código inactivo",
+    ],
+    representative_not_approved: [
+      "Representative not approved",
+      "Representante no aprobado",
+    ],
+    billing_hold: [
+      "Verified refund or dispute hold",
+      "Retención por reembolso o disputa verificada",
+    ],
+    open_review_case: ["Unresolved review case", "Caso de revisión pendiente"],
+  };
+  return Object.hasOwn(labels, kind)
+    ? labels[kind][locale === "es" ? 1 : 0]
+    : locale === "es"
+      ? "Revisión necesaria"
+      : "Review required";
+}

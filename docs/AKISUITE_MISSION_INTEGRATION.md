@@ -22,6 +22,9 @@ Base master: `a272f2a0edbd49e30676d30fef87d72f2248793f`.
 | #218 | `fdb8446ff1ae31926f2cd4ee907b959ac8d0e433` | Exact-history contract recovery and narrow integrity gate                   |
 | #219 | `22c4d35de6cfee085cd61b9c978defffc8a3b3e9` | Authoritative operations checkout, billing lifecycle and toolbox schema     |
 | #220 | `72d4ed5a2ab5d45cf0da60d73674636745c9d778` | Safe cross-product account task resume and locale envelope                  |
+| #221 | `1d96b30e7c04d06d7087877b62bb5a7ddb6c43b6` | Gated admin referral eligibility/payout approval audit; no disbursement     |
+| #223 | `3395b4a7a0e63f2166d7e309c3c339f165206ff3` | Central first-invoice recovery and strict merchant/tax defaults             |
+| #224 | `0a01ed40e84a0916cdf2c5147e946e1c7a42ffb6` | Direct RPC, permission predicate, mutation and Storage onboarding guards    |
 
 Local sequential merge commits preserve every included source head as ancestry.
 Publication must retain those heads as commit parents/ancestors and compare the
@@ -101,8 +104,90 @@ Release-manager update: the original 312-line toolbox migration was already
 applied to the shared project with zero enrolled workspaces before this equivalent
 ACL syntax change. Original SHA256:
 `b6b92500771ac1796a0056df53cd720ce6dd42fb5515b523432664b3930931e6`.
-The explicit-table candidate SHA256 is
+The initial explicit-table-only candidate SHA256 was
 `ca7dda82db66e8507ad278e17659f3eab8bcc367397a22f2cafae86fd33f484f`.
 Do not replay the table-creating migration. Preserve its applied history; if a
 hosted ACL reconciliation is needed, use a separate reviewed additive ACL-only
 followup. This integration change does not mutate the live schema or enrol users.
+
+## Central first-invoice recovery
+
+Included #223 adds a bounded leased central billing recovery queue before the
+first toolbox exists, through the existing AkiPasa scheduled Worker and Stripe
+credential. It only reads Stripe; verified invoice/customer/workspace binding and
+atomic entitlement application remain authoritative. Failures retry, missing
+payment defers, and duplicate provider snapshots do not double-apply. Merchant
+checks and optional automatic-tax defaults are explicit. No new provider secret,
+customer subscription migration, live charge or flag activation is performed by
+this integration. Its additive migration preserves the applied toolbox history.
+
+## Hosted source-constraint correction
+
+A release-manager rollback-only test against the actual schema found that the
+historical entitlement provenance CHECK permits plan/trial/purchase/manual/platform,
+so the old toolbox INSERT source was invalid. The canonical migration now maps
+Stripe to purchase, trial to trial and approved other grants to manual. Final
+canonical SHA256: `51ddae16c3f3d3b56c67356f6dd8c89fe48b27d927c300d867e3dc6bd69d4755`.
+Forward-only migration `20261020181726_toolbox_entitlement_source_compatibility.sql`
+replaces only the guarded sync function; SHA256:
+`d3127457ef5bb01e0aa6d28d47ba85a6b4a727c4cb0b6190f68b161ca33e7d46`.
+It retains the function execution boundary. Preserve the original applied migration;
+never replay table creation to obtain this fix.
+
+The release manager reports this forward correction applied successfully, then a
+rollback-only actual-owner test verified Basic CRM allowed, Inventory/PoS denied,
+owner rotation denied and underlying Inventory RLS returned no unauthorized rows.
+The rollback left zero enrolled toolboxes and the three prepared bindings, with
+legacy paid access unchanged. This is bounded database acceptance, not live UI,
+provider checkout or full subscription migration acceptance.
+
+The Pasa SQL fixture now includes the actual source CHECK and twelve catalogue
+rows, rather than an empty catalogue that skipped the invalid INSERT. Paid
+application asserts twelve active purchase entitlements; invalid provenance fails.
+The canonical plus forward migration execute in the fixture. Current operations
+suite passes 26 Node cases (15 pure plus 11 SQL role/lifecycle cases) and 20 adapter
+cases; types pass. Full format and changed-migration audit are rerun for publication.
+The copied Business canonical/forward source has identical hashes.
+
+## Referral review studio
+
+Included #221 was reviewed by the release manager after all seven hosted source
+workflows passed. It adds strict administrator eligibility and payout-review
+records, source-event/configuration snapshots, suspension/revocation checks,
+idempotent decisions, audit/export, and bilingual review forms. Cash payouts
+remain disabled and no bank/provider transfer is implemented. No commission
+percentage or payout threshold is activated by this integration. Its 41 focused
+SQL/page cases are rerun on the combined source before publication.
+
+## Account coverage and task preservation
+
+Included #224 retains exact deployed function bodies/owners/ACLs while adding the
+account eligibility intersection to inventoried direct RPCs, permission predicates,
+mutations and nonessential uploads. Its own portability, deletion, consent and
+profile-rectification paths remain available; enrollment/backfill is disabled.
+The original predicate/definition backups and full-schema staging manifest must
+be reviewed before cohort activation. No existing account is backfilled.
+
+The completion task allowlist now preserves only four additional bounded actual
+route keys: vehicle/start/end for car selection and dates, and page for stay
+booking history. EN/ES regressions reject duplicate vehicle keys, credentials and
+URL-shaped values while preserving valid task state; destinations still validate
+booking data independently. All origins remain fixed by product identity.
+
+## Final integrated coverage freeze
+
+The integration additionally covers the new private toolbox owner predicate, six
+new referral RPCs and nine referral mutation tables. These exact additions were
+reviewed with the onboarding implementer. Pending/negative users cannot bypass
+the soft lock through toolbox snapshot/configuration, referral join/capture,
+representative lead writes or administrative payout review; exempt users retain
+the original function bodies/ACLs and service-only verified billing stays ungated.
+Own privacy exports/deletion remain separate safety paths. Two actual-membership
+SQL cases and two six-RPC/direct-lead cases verify the extra intersections.
+
+Final scoped evidence: onboarding 70/70 (including original-task EN/ES preservation,
+actual copied snapshot predicates and direct guards), referrals 41/41, operations
+26 Node plus 20 adapters; TypeScript and affected-file ESLint pass. The source is
+frozen after #221/#223/#224 and these integration corrections. Exact final hosted
+CI, Cloudflare packaging and authenticated acceptance remain release gates.
+No further feature source is added while this candidate is awaiting those gates.

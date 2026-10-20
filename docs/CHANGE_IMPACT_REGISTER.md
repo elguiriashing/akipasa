@@ -1959,3 +1959,54 @@ against its exact four private tables rather than schema-wide table statements.
 This preserves intended ACLs, narrows cross-feature coupling and passes the
 changed-migration permission audit. Mirrored SQL remains identical; executed
 owner/service lifecycle tests are rerun. No production migration is implied.
+
+## 2026-10-20 | Recover operations before the first toolbox exists
+
+Adds additive recovery lease/backoff columns and service-only claim/finish RPCs to operations bindings and checkout reservations. Central cron handles missing first webhook, validates customer/workspace/token and actual paid price lines, then applies idempotent billing and catches up rotation. Foreign owner/browser calls are denied; pre-renewal legacy prices defer without activating new tools. Tests execute10SQLrole/lease scenarios and7adapter scenarios; typecheck/scopedlint are required at handoff. Gate defaults off pending integration/provider acceptance. Existing email and event cron work remains independent.
+
+### Hosted entitlement provenance compatibility
+
+The canonical toolbox sync respects the existing entitlement source CHECK by
+mapping Stripe to purchase, trial to trial and approved other grants to manual.
+A forward-only function replacement preserves applied table migration history.
+The fixture now includes the actual CHECK and nonempty twelve-tool catalogue;
+paid activation asserts purchase provenance. The release manager's rollback-only
+actual-schema acceptance preserves zero toolbox enrolment and legacy paid access.
+Exact hashes, bounded acceptance and no-replay instructions are recorded in
+`docs/AKISUITE_MISSION_INTEGRATION.md`.
+
+## 2026-10-20 | Referral administrative eligibility and approval
+
+Before: invoice evidence was always held_unapproved and had no administrator
+approval-review history. Existing fraud/dispute cases and RLS were already present.
+After: separate default-disabled review settings and immutable admin-only decision
+ledger; paid evidence eligibility, prior-review/document-backed approval, retry
+idempotency, current hold/suspension revalidation, bounded EN/ES queue and existing
+JSON export inclusion. Frozen invoice evidence and its held eligibility do not
+change; actual payouts and monetary incentives remain hard disabled.
+
+Dependencies: shared170421 foundation, profiles/admin roles, signed Stripe billing
+evidence and customer identity, code/representative membership, existing case/audit
+RLS, schema readiness, owner versus admin routes, EN/ES forms and bounded exports.
+Role/SQL and rendered UI/export tests accompany mirrored180654. No live migration,
+programme/Stripe value, legal assertion, accounting instruction or disbursement.
+Read REFERRAL_PAYOUT_REVIEW.md before deployment or either readiness/gate change.
+
+## 2026-10-20 | Additive database account-lock coverage
+
+Read-only metadata identified direct RPC/mutation paths beyond the initial
+account guard. The disabled-cohort coverage candidate adds permission/RPC/table
+intersections without enrollment, customer backfill, billing or data changes.
+See ACCOUNT_DATABASE_COVERAGE.md and the recorded metadata manifest. Representative
+PGlite coverage and the complete generic-snapshot tool matrix pass; exact-schema
+staging, advisors and authenticated privacy/provider acceptance remain gates.
+
+### Final integrated account and referral coverage
+
+The coverage manifest includes the new private toolbox owner predicate, six
+authenticated referral RPCs and nine referral mutation tables. It preserves
+service-only verified billing and existing portability/deletion exceptions.
+Actual-membership and direct-RPC SQL regressions intersect restricted callers
+while preserving grandfathered users. Task resume retains bounded vehicle/dates
+and booking page keys in both languages. The final scoped suites pass 70 account
+and 41 referral cases; exact integrated hosted CI remains mandatory before merge.

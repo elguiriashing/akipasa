@@ -1408,3 +1408,47 @@ against its exact four private tables rather than schema-wide table statements.
 This preserves intended ACLs, narrows cross-feature coupling and passes the
 changed-migration permission audit. Mirrored SQL remains identical; executed
 owner/service lifecycle tests are rerun. No production migration is implied.
+
+## 2026-10-20 | First-invoice operations recovery
+
+The existing five-minute central AkiPasa scheduled worker now polls a bounded, service-only leased queue of explicit operations bindings AND reserved hosted checkout sessions. It retrieves Stripe state using the existing server key and applies the same verified invoice/toolbox evaluator, so missing the first webhook cannot leave paid customers permanently unenrolled. No second webhook, new Stripe key or provider mutation is introduced. The existing operations billing readiness flag controls it. See `docs/OPERATIONS_FIRST_INVOICE_RECOVERY.md`.
+
+### Hosted entitlement provenance compatibility
+
+The canonical toolbox sync respects the existing entitlement source CHECK by
+mapping Stripe to purchase, trial to trial and approved other grants to manual.
+A forward-only function replacement preserves applied table migration history.
+The fixture now includes the actual CHECK and nonempty twelve-tool catalogue;
+paid activation asserts purchase provenance. The release manager's rollback-only
+actual-schema acceptance preserves zero toolbox enrolment and legacy paid access.
+Exact hashes, bounded acceptance and no-replay instructions are recorded in
+`docs/AKISUITE_MISSION_INTEGRATION.md`.
+
+### Referral administrative approval amendment (2026-10-20)
+
+The standalone180654 amendment adds a gated administrator-only eligibility and
+review-approval ledger, not a payable balance or cash operation. Verified Stripe
+holds, unresolved disputes, recipient/rule and representative status dynamically
+block effective approval; immutable snapshots and the existing audit/export retain
+all decisions. Monetary/payout false constraints remain. See
+REFERRAL_PAYOUT_REVIEW.md for the independent schema/workflow gates, acceptance
+and retention-safe rollback. No programme rate or financial approval is invented.
+
+## 2026-10-20 | Additive database account-lock coverage
+
+Read-only metadata identified direct RPC/mutation paths beyond the initial
+account guard. The disabled-cohort coverage candidate adds permission/RPC/table
+intersections without enrollment, customer backfill, billing or data changes.
+See ACCOUNT_DATABASE_COVERAGE.md and the recorded metadata manifest. Representative
+PGlite coverage and the complete generic-snapshot tool matrix pass; exact-schema
+staging, advisors and authenticated privacy/provider acceptance remain gates.
+
+### Final integrated account and referral coverage
+
+The coverage manifest includes the new private toolbox owner predicate, six
+authenticated referral RPCs and nine referral mutation tables. It preserves
+service-only verified billing and existing portability/deletion exceptions.
+Actual-membership and direct-RPC SQL regressions intersect restricted callers
+while preserving grandfathered users. Task resume retains bounded vehicle/dates
+and booking page keys in both languages. The final scoped suites pass 70 account
+and 41 referral cases; exact integrated hosted CI remains mandatory before merge.

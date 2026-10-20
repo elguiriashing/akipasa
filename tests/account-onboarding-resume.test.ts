@@ -139,3 +139,28 @@ it.each(["complete", "exempt"])(
     expect(state.identity).toHaveBeenCalled();
   },
 );
+
+it.each(["en", "es"] as const)(
+  "retains the bounded %s vehicle, dates and booking page task",
+  (locale) => {
+    expect(
+      accountTaskResume(
+        "coches",
+        locale,
+        "/rentals/example?vehicle=vehicle_1&start=2026-11-01&end=2026-11-04",
+      )?.url,
+    ).toBe(
+      `https://akicoches.com/rentals/example?lang=${locale}&vehicle=vehicle_1&start=2026-11-01&end=2026-11-04`,
+    );
+    expect(accountTaskResume("duermo", locale, "/bookings?page=3")?.url).toBe(
+      `https://akiduermo.com/bookings?lang=${locale}&page=3`,
+    );
+    expect(
+      accountTaskResume(
+        "coches",
+        locale,
+        "/rentals/example?vehicle=one&vehicle=two&start=valid&end=https://evil.test&token=secret",
+      )?.url,
+    ).toBe(`https://akicoches.com/rentals/example?lang=${locale}&start=valid`);
+  },
+);

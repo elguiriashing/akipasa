@@ -1,0 +1,13 @@
+# First-invoice recovery — 2026-10-20
+
+The existing AkiPasa five-minute cron uses its existing Stripe secret for GET requests only. It claims at most five explicitly bound subscriptions or reserved hosted checkout sessions, independently of whether a toolbox already exists. This fixes missing-first-webhook recovery for migrated subscriptions and new checkout customers.
+
+Apply `20261020180734_operations_first_invoice_recovery.sql` after the toolbox and operations checkout lifecycle migrations. No customer is enrolled merely by schema application. Private tables remain deny-all to browser roles. Only service role can claim/finish queue work. Five-minute leases prevent overlapping cron runs from repeatedly processing the same binding; expired leases recover after crashes. Success defers30minutes; failures back off from5minutes to6hours. Claim ordering is oldest due first and bounded. No subscription/customer identifiers or payment data are logged.
+
+The same existing `AKIBUSINESS_OPERATIONS_BILLING_READY` flag controls both webhook and recovery. It defaults off until migration, integrated CI, deployment and provider acceptance. No extra provider credential is needed. The merchant is checked before processing. Checkout sessions must match the stored customer and actual subscription checkout token; subscription/workspace/profile/customer/price/payment matches then use the shared evaluator. Unknown legacy prices wait for the already-reviewed future migration. Failed first invoices grant no access. Current canceled/unpaid states reconcile via the authoritative evaluator. After atomic application, rotation catches up missed boundaries; retries use stable state-derived event IDs and the existing database deduplication.
+
+The recovery does not fabricate a Stripe event or create referral commission evidence. If financial referral processing requires a missing invoice event, reconcile that independently using verified original invoice/event evidence. It never creates invoices, charges, prices, tax registrations or subscriptions. Existing first-webhook handling remains the normal path.
+
+Rollback disables the operations billing flag and retains all private bindings/evidence/data; do not delete an enrolled toolbox or restore broad feature grants. A stale checkout reservation still needs provider reconciliation before releasing it for a new checkout.
+
+Checkout validation also resolves an unspecified price tax behavior from the active merchant tax settings defaults, only when that authoritative default explicitly says inclusive or exclusive. It does not create or alter tax registrations, prices or tax settings; active Spanish registration and existing readiness flags remain mandatory. Missing/default-ambiguous behavior fails closed.

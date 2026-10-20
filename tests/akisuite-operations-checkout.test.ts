@@ -7,6 +7,8 @@ const mocks = vi.hoisted(() => ({
   owner: true,
   legacy: false,
   activePrice: true,
+  priceTax: "inclusive",
+  defaultTax: "inclusive" as string | null,
   mapping: true,
   customer: "cus_test",
   serviceRpc: vi.fn(),
@@ -40,6 +42,8 @@ function form() {
   return f;
 }
 beforeEach(() => {
+  mocks.priceTax = "inclusive";
+  mocks.defaultTax = "inclusive";
   vi.clearAllMocks();
   mocks.owner = true;
   mocks.legacy = false;
@@ -91,10 +95,11 @@ beforeEach(() => {
         active: mocks.activePrice,
         currency: "eur",
         unit_amount: 2499,
-        tax_behavior: "inclusive",
+        tax_behavior: mocks.priceTax,
         recurring: { interval: "month", interval_count: 1 },
       };
-    if (path === "/tax/settings") return { status: "active" };
+    if (path === "/tax/settings")
+      return { status: "active", defaults: { tax_behavior: mocks.defaultTax } };
     if (path.startsWith("/tax/registrations/"))
       return {
         status: "active",
@@ -157,6 +162,25 @@ describe("location-owned operating checkout", () => {
     await expect(startOperationsCheckout(f)).rejects.toMatchObject({
       url: expect.stringContaining("error=selection"),
     });
+  });
+  it("resolves unspecified price behavior from verified merchant default without changing tax settings", async () => {
+    mocks.priceTax = "unspecified";
+    await expect(startOperationsCheckout(form())).rejects.toMatchObject({
+      url: expect.stringContaining("checkout.stripe.com"),
+    });
+    expect(
+      mocks.request.mock.calls.some(([path]) =>
+        String(path).startsWith("/tax/"),
+      ),
+    ).toBe(false);
+  });
+  it("keeps checkout closed when neither price nor merchant declares a resolved tax behavior", async () => {
+    mocks.priceTax = "unspecified";
+    mocks.defaultTax = null;
+    await expect(startOperationsCheckout(form())).rejects.toMatchObject({
+      url: expect.stringContaining("error=unavailable"),
+    });
+    expect(mocks.request).not.toHaveBeenCalled();
   });
   it("never sells inactive or unverified prices", async () => {
     mocks.activePrice = false;

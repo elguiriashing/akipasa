@@ -26,6 +26,10 @@ const taskKeys = new Set([
   "companyId",
   "organisationId",
   "workspace",
+  "vehicle",
+  "start",
+  "end",
+  "page",
 ]);
 
 export function accountTaskResume(
