@@ -3,6 +3,22 @@ Total output lines: 1673
 
 # Change Impact Register
 
+## 2026-10-20 | Reconcile unavailable GitHub production credential
+
+- **Before:** every `master` push started the production deployment workflow;
+  all repository checks passed, then the preflight failed because the scoped
+  `CLOUDFLARE_API_TOKEN` secret was empty. The connected Cloudflare release path
+  separately deployed the same commit, leaving a permanently red duplicate job.
+- **After:** production publication from GitHub is manual-only and requires the
+  exact `DEPLOY_AKIPASA` confirmation input. Missing credentials still block the
+  preflight, but no normal push is reported as a failed deployment.
+- **Evidence:** run `39337824257`, job `118351640032`, failed only at `Load
+existing production bindings and check destination`; live
+  `/release-source.json` served `1305e6696379b81af8c81247fcc614ae6375b18b`.
+- **Rollback:** restore the `push` trigger only after a least-privilege Worker
+  deployment token is configured and a manual exact-source release succeeds.
+  No application or data rollback is involved.
+
 ## 2026-10-19 | SECURITY DEFINER execution hardening (PR #208)
 
 - **Before:** 44 `SECURITY DEFINER` functions owned by the application or PostGIS
