@@ -114,6 +114,7 @@ language plpgsql security definer set search_path='' as $$
 begin
  if not akibusiness_private.operations_owner(p_workspace) then raise exception 'Location owner required' using errcode='42501'; end if;
  if not akibusiness_private.valid_tools(p_tier,p_tools) then raise exception 'Invalid target toolbox'; end if;
+ perform pg_advisory_xact_lock(hashtextextended(p_workspace,7723));
  if not exists(select 1 from akibusiness_private.toolboxes where workspace_id=p_workspace) then raise exception 'Use initial configuration before activation'; end if;
  if exists(select 1 from akibusiness_private.operations_plan_changes where workspace_id=p_workspace and state<>'completed') then raise exception 'Scheduled change requires reconciliation' using errcode='PT409'; end if;
  update akibusiness_private.operations_subscriptions set next_tier=p_tier,next_tools=p_tools where workspace_id=p_workspace;
