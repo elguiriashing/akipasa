@@ -2094,6 +2094,23 @@ entries and all restored historical content are retained. No measurement IDs,
 provider destinations, account cohort settings, billing source or schema are changed
 by this merge. Exact-head CI remains a release gate.
 
+## Standalone listing Premium template and media library candidate
+
+Before: canonical template/folder/shared-media source depended on the broad old
+unapplied suite subscription migration. After: standalone233027 adds separately
+gated schema/RPCs and focused EN/ES draft template UI, reuses folder/share controls,
+validates active CRM plus both venue scopes, and preserves exact licensed placement
+uses on downgrade. Upload reservations and final media/placement writes account for
+shared assets under the existing quota lock. No operating subscription, price,
+Stripe value, existing customer/media/event row or production activation changed.
+
+Dependencies traced: actual CRM ownership/member links, listing entitlement
+resolver170415, verified byte reservation173552, existing media placement and
+Storage paths, event snapshots/draft status, owner forms, EN/ES and independent HQ
+consumer. SQL/role/UI tests accompany the change; actual provider/concurrency and
+authenticated responsive acceptance remain release gates. Large hosted rollback
+attempts returned no evidence and are not claimed as passing. Runbook and retained-
+data rollback: LISTING_PREMIUM_LIBRARY.md.
 ## Forward listing event identity guard
 
 Verified gap: deleting then re-inserting the same event UUID reused170415's

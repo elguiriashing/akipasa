@@ -1,3 +1,4 @@
+import { ListingTemplateLibrary } from "@/components/ListingTemplateLibrary";
 import { AccommodationBookingWorkspace } from "@/components/AccommodationBookingWorkspace";
 import { bookingEmailConfigured } from "@/lib/booking-mail-delivery";
 import {
@@ -232,32 +233,41 @@ export default async function VenueWorkspace({
     : { data: false, error: null };
   const venuePremium = premiumResult.data === true;
   const listingLimitResult =
-    process.env.AKISUITE_LISTING_LIMITS_READY === "true"
+    process.env.AKISUITE_LISTING_LIMITS_READY === "true" ||
+    process.env.AKISUITE_LISTING_LIBRARY_READY === "true"
       ? await supabase.rpc("listing_limits_info", { p_venue: id })
       : { data: null, error: null };
   const listingLimitsEnabled =
     !listingLimitResult.error && listingLimitResult.data?.enabled === true;
   const listingPremium = listingLimitResult.data?.premium === true;
+  const libraryReady =
+    process.env.AKISUITE_LISTING_LIBRARY_READY === "true" &&
+    !listingLimitResult.error &&
+    listingLimitResult.data?.library_enabled === true;
   const listingAutomationLocked =
     (listingLimitsEnabled || suiteToolsReady) &&
     !(listingLimitsEnabled ? listingPremium : venuePremium);
-  const [sharedMedia, growthReport, stayReport, templates] = suiteToolsReady
-    ? await Promise.all([
-        supabase.rpc("akisuite_media_library", { p_venue: id }),
-        venuePremium
-          ? supabase.rpc("akisuite_growth_report", { p_venue: id, p_days: 28 })
-          : Promise.resolve({ data: null, error: null }),
-        venuePremium && isAccommodation
-          ? supabase.rpc("akisuite_stay_report", { p_venue: id, p_days: 28 })
-          : Promise.resolve({ data: null, error: null }),
-        supabase.rpc("akisuite_templates_for_venue", { p_venue: id }),
-      ])
-    : [
-        { data: null, error: null },
-        { data: null, error: null },
-        { data: null, error: null },
-        { data: [], error: null },
-      ];
+  const [sharedMedia, growthReport, stayReport, templates] =
+    suiteToolsReady || libraryReady
+      ? await Promise.all([
+          supabase.rpc("akisuite_media_library", { p_venue: id }),
+          suiteToolsReady && venuePremium
+            ? supabase.rpc("akisuite_growth_report", {
+                p_venue: id,
+                p_days: 28,
+              })
+            : Promise.resolve({ data: null, error: null }),
+          suiteToolsReady && venuePremium && isAccommodation
+            ? supabase.rpc("akisuite_stay_report", { p_venue: id, p_days: 28 })
+            : Promise.resolve({ data: null, error: null }),
+          supabase.rpc("akisuite_templates_for_venue", { p_venue: id }),
+        ])
+      : [
+          { data: null, error: null },
+          { data: null, error: null },
+          { data: null, error: null },
+          { data: [], error: null },
+        ];
   type MediaRow = {
     id: string;
     venue_id?: string;
@@ -810,12 +820,27 @@ export default async function VenueWorkspace({
                     : suiteToolsReady && venuePremium
                 }
                 listingLimits={listingLimitsEnabled}
+                enhancedLibrary={suiteToolsReady || libraryReady}
               />
             </section>
           </>
         ),
         events: (
           <>
+            {libraryReady && !suiteToolsReady && (
+              <ListingTemplateLibrary
+                locale={locale}
+                venueId={id}
+                premium={listingPremium}
+                accommodation={isAccommodation}
+                templates={templates.error ? null : templates.data || []}
+                events={(events || []).map((e) => ({
+                  id: e.id,
+                  title:
+                    locale === "en" ? e.title_en || e.title_es : e.title_es,
+                }))}
+              />
+            )}
             <div>
               <Link
                 className="button event-create-action"

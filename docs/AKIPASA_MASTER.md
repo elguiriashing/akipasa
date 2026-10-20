@@ -1535,6 +1535,16 @@ entries and all restored historical content are retained. No measurement IDs,
 provider destinations, account cohort settings, billing source or schema are changed
 by this merge. Exact-head CI remains a release gate.
 
+### Standalone listing templates and enhanced media (candidate)
+
+Migration233027 extracts canonical listing template/folder/shared-library contracts
+from the unapplied historical suite bundle, atop170415/173552. Default-false library
+and server readiness gates preserve current deployments. Current CRM AND source/
+target venue memberships intersect with authoritative listing Premium; exact
+retained shared placements survive downgrade, and reused assets count with own
+uploads/reservations toward8/250 under one lock. Templates create drafts only.
+See LISTING_PREMIUM_LIBRARY.md for compatibility, acceptance and rollback. Native
+independent-property schema remains absent and its uploader stays separately gated.
 ### Listing quota UUID resurrection guard (forward fix)
 
 Additive233905 closes same-UUID deletion/recreation of a previously published

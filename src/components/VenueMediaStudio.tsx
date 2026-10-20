@@ -86,6 +86,7 @@ export function VenueMediaStudio({
   accommodation = false,
   stayHeaderIds = [],
   premium = false,
+  enhancedLibrary = false,
   listingLimits = false,
 }: {
   locale: "es" | "en";
@@ -95,6 +96,7 @@ export function VenueMediaStudio({
   accommodation?: boolean;
   stayHeaderIds?: string[];
   premium?: boolean;
+  enhancedLibrary?: boolean;
   listingLimits?: boolean;
 }) {
   const es = locale === "es";
@@ -797,7 +799,7 @@ export function VenueMediaStudio({
                     : ""}
                 </small>
               </div>
-              {premium && item.canDelete !== false && (
+              {premium && enhancedLibrary && item.canDelete !== false && (
                 <form
                   className="media-upload-form"
                   onSubmit={(event) => {
