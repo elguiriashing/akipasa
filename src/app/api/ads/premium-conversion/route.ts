@@ -1,3 +1,4 @@
+import { readOnboardingStatus } from "@/lib/account-onboarding-server";
 import { NextResponse } from "next/server";
 import { optionalUser } from "@/lib/auth";
 import {
@@ -20,6 +21,9 @@ export async function GET(request: Request) {
   const { supabase, user } = await optionalUser();
   if (!user) return NextResponse.json({ ready: false }, { status: 401 });
   try {
+    const status = await readOnboardingStatus(supabase);
+    if (status === "pending" || status === "underage")
+      return new NextResponse(null, { status: 204 });
     const session = await stripeRetrieve<{
       id: string;
       mode?: string;

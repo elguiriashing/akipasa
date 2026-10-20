@@ -1,3 +1,4 @@
+import { onboardingEnabled } from "@/lib/account-onboarding";
 import { NextResponse } from "next/server";
 import {
   currentAccountExportTables,
@@ -52,6 +53,14 @@ export async function GET() {
     data: bookingEmails.data || [],
     failed: Boolean(bookingEmails.error),
   });
+  if (onboardingEnabled()) {
+    const receipt = await supabase.rpc("my_account_onboarding");
+    derivedEntries.push({
+      table: "account_onboarding",
+      data: receipt.data ? [receipt.data] : [],
+      failed: Boolean(receipt.error),
+    });
+  }
   const failedTables = [...entries, ...derivedEntries]
     .filter((entry) => entry.failed)
     .map((entry) => entry.table);

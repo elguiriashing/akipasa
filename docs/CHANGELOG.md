@@ -1096,3 +1096,12 @@ Completed the AkiDuermo room-night request candidate: explicit booking modes, re
 
 - Keep the current filter labelled “Current and upcoming” / “Actuales y próximos” to match its included running and undated draft events.
 - Add a bilingual label regression to the event workspace contract test.
+
+## 2026-10-20 — Gated account completion candidate
+
+- Add minimal bilingual profile completion with private authoritative eligibility,
+  atomic completion, optional existing profile-media upload and activity guards.
+- Keep privacy, export, deletion request, recovery and sign-out available; suppress
+  optional tracking for restricted accounts and preserve existing users.
+- Rollout remains disabled pending five-product, hosted/security, browser and legal
+  acceptance; see the release checkpoint and legal memo.

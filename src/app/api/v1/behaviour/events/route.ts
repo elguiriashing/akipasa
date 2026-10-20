@@ -1,3 +1,4 @@
+import { readOnboardingStatus } from "@/lib/account-onboarding-server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { behaviourBatchSchema } from "@/lib/personalisation/schema";
@@ -43,6 +44,11 @@ export async function POST(request: Request) {
 
     const supabase = await createSupabaseServerClient();
     const { data: auth } = await supabase.auth.getUser();
+    if (auth.user) {
+      const status = await readOnboardingStatus(supabase);
+      if (status === "pending" || status === "underage")
+        return new NextResponse(null, { status: 204 });
+    }
     const user = auth.user;
     let allowed = cookieStore.get("ak_personalisation")?.value === "granted";
     if (user) {

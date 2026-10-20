@@ -1,3 +1,4 @@
+import { readOnboardingStatus } from "@/lib/account-onboarding-server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createHmac } from "node:crypto";
@@ -48,7 +49,10 @@ export async function POST(request: Request) {
     if (!parsed.success)
       return NextResponse.json({ error: "invalid" }, { status: 400 });
 
-    const sessionId = (await cookies()).get("ak_session_id")?.value;
+    const cookieStore = await cookies();
+    if (cookieStore.get("ak_analytics")?.value !== "granted")
+      return new NextResponse(null, { status: 204 });
+    const sessionId = cookieStore.get("ak_session_id")?.value;
     if (!sessionId || !z.string().uuid().safeParse(sessionId).success)
       return NextResponse.json(
         { error: "tracking_session_missing" },
@@ -57,6 +61,11 @@ export async function POST(request: Request) {
 
     const supabase = await createSupabaseServerClient();
     const { data: auth } = await supabase.auth.getUser();
+    if (auth.user) {
+      const status = await readOnboardingStatus(supabase);
+      if (status === "pending" || status === "underage")
+        return new NextResponse(null, { status: 204 });
+    }
     const service = createSupabaseServiceClient();
     const { error } = await service.rpc("record_analytics_limited", {
       p_action: parsed.data.action,

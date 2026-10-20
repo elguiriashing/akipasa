@@ -1240,3 +1240,32 @@ No real customer image, profile, booking, email or subscription was mutated.
   billing tests, full repository check, Android test/lint/bundle, Cloudflare
   package, exact-head CI, hosted Supabase advisors/preflight, then anonymous and
   authenticated production smoke. Record pass/fail/blocked honestly.
+
+## 2026-10-20 | Account completion and age declaration candidate
+
+- Scope: AkiPasa email/password and Google signup/session callbacks, `requireUser`,
+  private onboarding state and caller-only RPCs, selected legacy activity-table
+  mutation triggers, protected privacy/export/deletion flow, avatar reuse and
+  Google/behaviour/conversion suppression. EN/ES completion routes are responsive
+  and use existing theme/form controls. Shared identity, existing profile data,
+  approved terms version, Stripe and ownership are preserved.
+- Rollout: private enrolment start/approved terms default null; application schema
+  flag default false. Existing users are exempt, not age verified. New users are
+  cohort-enrolled only by trusted database configuration. Existing admin/staff
+  access is not backfilled or revoked. No live migration/configuration applied.
+- Dependencies: profile username uniqueness/RLS, existing uploadProfileMedia and
+  profile-media Storage, Auth PKCE/cookies, requireUser consumers, terms RPC,
+  privacy/consent/settings/deletion/export, analytics root and server ingestion.
+  Negative declarations are not sent to analytics. Separate safety pages avoid
+  recursive account-layout guards; password recovery stays accessible.
+- Verification: focused unit/action/rendered and PGlite SQL role tests exercise
+  terminal state, legacy definer mutation bypass, private ACL denial, existing
+  account preservation, safe redirects, minimal bilingual controls and tag denial.
+  Exact counts/full checks are recorded in the release checkpoint. Live OAuth,
+  hosted RLS/advisors, cross-connection concurrency, five-app acceptance and
+  mobile/tablet browser acceptance remain gates, not claimed successes.
+- Limits/rollback: explicit mutation-table inventory is not universal API coverage;
+  independent apps and remaining privileged reads/mutations must adopt the shared
+  guard before cohort activation. Legal policy, retention and appeal handling
+  require approval. Before activation source revert is sufficient; after it,
+  retain guards and stop only new enrolment while investigating. Preserve all data.

@@ -1050,3 +1050,22 @@ The desktop AkiPasa sidebar now separates the independently scrolling navigation
 The header AkiSuite button opens only the five product links plus Settings/account action. Bottom More retains internal navigation, workspaces, passports, membership, appearance and language. Independent sheet state, Escape handling and focus return. Header reserves search space. No auth or data changes.
 
 **Final mobile split:** the top-header AkiSuite sheet contains only the five Aki product destinations and current-product marker. Personal account actions belong to the internal bottom More sheet; guests see Sign in there. The top sheet does not contain Passports, Membership, workspaces, Settings or Sign out. The desktop rail's original suite menu remains unchanged.
+
+## 2026-10-20 | Gated account completion and age declaration candidate
+
+The shared eligibility contract uses a private, disabled-by-default signup cohort,
+atomic caller-only completion and a terminal negative declaration. Existing users
+remain exempt without being described as age verified. AkiPasa's server account
+guard, password/Google callback paths, protected activity-table mutations and
+optional tracking adapters consume this state; privacy/export/deletion, legal
+notices, password recovery and sign-out remain available through safety routes.
+Username and terms are required for an affirmative declaration; photo/bio are
+optional and reuse current profile storage. Neither editable metadata nor a
+client-side toggle unlocks the account. Existing legal text/version is unchanged.
+
+See `docs/ACCOUNT_COMPLETION_RELEASE.md` and the dated legal memo. Independent
+five-app adoption, complete privileged endpoint coverage, disposable hosted/real
+PostgreSQL concurrent acceptance, responsive browser acceptance and legal review
+remain activation gates. Source/schema flags remain off and no historic account
+is backfilled. A source-only rollback after activation must retain eligibility
+checks; never erase the cohort or user data to recover.
