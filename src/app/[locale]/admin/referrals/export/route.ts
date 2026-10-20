@@ -22,6 +22,9 @@ export async function GET() {
     ["suite_referral_billing_events", "stripe_event_id"],
     ["suite_referral_audit", "id"],
     ["suite_referral_cases", "id"],
+    ...(process.env.AKISUITE_REFERRAL_APPROVAL_SCHEMA_READY === "true"
+      ? [["suite_referral_payout_reviews", "revision"]]
+      : []),
   ]) {
     const rows: unknown[] = [];
     let expectedCount: number | null = null;

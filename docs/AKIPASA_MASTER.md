@@ -1065,3 +1065,13 @@ no tracking cookie or cross-domain identity token is introduced. RLS, explicit
 grants, account export, admin evidence export and audit accompany the schema.
 See `docs/REFERRAL_ENGINE_20261020.md` for paths, checks, rollback and exact gaps.
 No production release or authenticated acceptance is implied by this entry.
+
+### Referral administrative approval amendment (2026-10-20)
+
+The standalone180654 amendment adds a gated administrator-only eligibility and
+review-approval ledger, not a payable balance or cash operation. Verified Stripe
+holds, unresolved disputes, recipient/rule and representative status dynamically
+block effective approval; immutable snapshots and the existing audit/export retain
+all decisions. Monetary/payout false constraints remain. See
+REFERRAL_PAYOUT_REVIEW.md for the independent schema/workflow gates, acceptance
+and retention-safe rollback. No programme rate or financial approval is invented.

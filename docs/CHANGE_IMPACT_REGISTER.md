@@ -1271,3 +1271,20 @@ case review are implemented with reporter-isolated reads, administrator-only
 resolution, append-only audit and deduplicated automatic refund/dispute cases.
 Case resolution cannot modify attribution or authorize money. No financial
 approval, incentive activation, customer migration or production write occurred.
+
+## 2026-10-20 | Referral administrative eligibility and approval
+
+Before: invoice evidence was always held_unapproved and had no administrator
+approval-review history. Existing fraud/dispute cases and RLS were already present.
+After: separate default-disabled review settings and immutable admin-only decision
+ledger; paid evidence eligibility, prior-review/document-backed approval, retry
+idempotency, current hold/suspension revalidation, bounded EN/ES queue and existing
+JSON export inclusion. Frozen invoice evidence and its held eligibility do not
+change; actual payouts and monetary incentives remain hard disabled.
+
+Dependencies: shared170421 foundation, profiles/admin roles, signed Stripe billing
+evidence and customer identity, code/representative membership, existing case/audit
+RLS, schema readiness, owner versus admin routes, EN/ES forms and bounded exports.
+Role/SQL and rendered UI/export tests accompany mirrored180654. No live migration,
+programme/Stripe value, legal assertion, accounting instruction or disbursement.
+Read REFERRAL_PAYOUT_REVIEW.md before deployment or either readiness/gate change.

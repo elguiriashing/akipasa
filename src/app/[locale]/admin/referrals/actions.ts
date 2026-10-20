@@ -177,3 +177,30 @@ export async function reviewReferralCase(form: FormData) {
     .eq("id", parsed.data.id);
   redirect(`${base}?result=${error ? "unavailable" : "saved"}`);
 }
+
+export async function reviewReferralPayout(form: FormData) {
+  const { base, supabase } = await context(form);
+  if (process.env.AKISUITE_REFERRAL_APPROVAL_SCHEMA_READY !== "true")
+    redirect(`${base}?result=unavailable`);
+  const parsed = z
+    .object({
+      event: z
+        .string()
+        .regex(/^evt_[A-Za-z0-9]+$/)
+        .max(255),
+      state: z.enum(["eligible", "approved", "held", "rejected"]),
+      reason: z.string().trim().min(5).max(2000),
+      reference: z.string().trim().max(200),
+      request: z.string().uuid(),
+    })
+    .safeParse(Object.fromEntries(form));
+  if (!parsed.success) redirect(`${base}?result=invalid`);
+  const { error } = await supabase.rpc("suite_review_referral_payout", {
+    p_event: parsed.data.event,
+    p_state: parsed.data.state,
+    p_reason: parsed.data.reason,
+    p_reference: parsed.data.reference || null,
+    p_request: parsed.data.request,
+  });
+  redirect(`${base}?result=${error ? "unavailable" : "saved"}`);
+}

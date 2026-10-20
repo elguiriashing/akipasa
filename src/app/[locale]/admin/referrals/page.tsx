@@ -1,4 +1,8 @@
-import { referralCaseLabel, referralEvidenceLabel } from "@/lib/referrals";
+import {
+  referralCaseLabel,
+  referralEvidenceLabel,
+  referralReviewLabel,
+} from "@/lib/referrals";
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
@@ -6,6 +10,7 @@ import { isAdministrator } from "@/lib/roles";
 import {
   assignReferralCode,
   reviewReferralCase,
+  reviewReferralPayout,
   revokeReferralCode,
   saveReferralProgramme,
   setReferralProgrammeState,
@@ -63,6 +68,25 @@ export default async function ReferralStudio({
         { data: null, error: null },
         { data: null, error: null },
       ];
+  const approvalSchemaReady =
+    ready && process.env.AKISUITE_REFERRAL_APPROVAL_SCHEMA_READY === "true";
+  const reviewQueue = approvalSchemaReady
+    ? await supabase.rpc("suite_referral_payout_review_queue")
+    : { data: null, error: null };
+  type ReviewRow = {
+    event_id: string;
+    code: string;
+    currency: string;
+    proposed_cents: number | null;
+    blockers: string[];
+    eligible: boolean;
+    latest_state: string | null;
+    effective_approval: boolean;
+    reviews_enabled: boolean;
+  };
+  const reviews = Array.isArray(reviewQueue.data)
+    ? (reviewQueue.data as ReviewRow[])
+    : [];
   const hidden = <input type="hidden" name="locale" value={locale} />;
   return (
     <section className="referral-workspace">
@@ -335,6 +359,125 @@ export default async function ReferralStudio({
                 <button>{es ? "Guardar revisión" : "Save review"}</button>
               </form>
             ))
+          )}
+          {approvalSchemaReady && (
+            <section
+              aria-label={
+                es ? "Revisión de elegibilidad" : "Eligibility review"
+              }
+            >
+              <h2>
+                {es
+                  ? "Elegibilidad y aprobación administrativa"
+                  : "Eligibility and administrative approval"}
+              </h2>
+              <p>
+                {es
+                  ? "Registro interno para revisión futura. Incluso una aprobación mantiene los pagos desactivados y no crea un saldo pagadero."
+                  : "Internal record for future review. Approval keeps disbursement disabled and creates no payable balance."}
+              </p>
+              {reviewQueue.error ? (
+                <p role="alert">
+                  {es
+                    ? "No se puede cargar la elegibilidad."
+                    : "Eligibility could not be loaded."}
+                </p>
+              ) : (
+                reviews.map((row) => (
+                  <article key={row.event_id}>
+                    <strong>
+                      {row.code} · {row.event_id}
+                    </strong>
+                    <p>
+                      {es ? "Estado registrado" : "Recorded state"}:{" "}
+                      {row.latest_state ||
+                        (es ? "Sin revisión" : "Not reviewed")}
+                      . {es ? "Aprobación efectiva" : "Effective approval"}:{" "}
+                      {row.effective_approval
+                        ? es
+                          ? "Sí, solo revisión"
+                          : "Yes, review only"
+                        : es
+                          ? "No"
+                          : "No"}
+                      .
+                    </p>
+                    {row.blockers.length > 0 && (
+                      <p>
+                        {es ? "Bloqueos" : "Blockers"}:{" "}
+                        {row.blockers
+                          .map((b) => referralReviewLabel(b, locale))
+                          .join(", ")}
+                      </p>
+                    )}
+                    <form action={reviewReferralPayout}>
+                      {hidden}
+                      <input type="hidden" name="event" value={row.event_id} />
+                      <input
+                        type="hidden"
+                        name="request"
+                        value={crypto.randomUUID()}
+                      />
+                      <label>
+                        {es ? "Decisión" : "Decision"}
+                        <select
+                          name="state"
+                          defaultValue="held"
+                          disabled={!row.reviews_enabled}
+                        >
+                          <option value="held">
+                            {es ? "Mantener retenida" : "Hold"}
+                          </option>
+                          <option value="rejected">
+                            {es ? "Rechazar" : "Reject"}
+                          </option>
+                          <option value="eligible" disabled={!row.eligible}>
+                            {es
+                              ? "Registrar elegibilidad"
+                              : "Record eligibility"}
+                          </option>
+                          <option
+                            value="approved"
+                            disabled={
+                              !row.eligible || row.latest_state !== "eligible"
+                            }
+                          >
+                            {es
+                              ? "Aprobar revisión administrativa"
+                              : "Approve administrative review"}
+                          </option>
+                        </select>
+                      </label>
+                      <label>
+                        {es ? "Motivo" : "Reason"}
+                        <textarea
+                          name="reason"
+                          required
+                          minLength={5}
+                          maxLength={2000}
+                          disabled={!row.reviews_enabled}
+                        />
+                      </label>
+                      <label>
+                        {es
+                          ? "Referencia documental (obligatoria al aprobar)"
+                          : "Document reference (required for approval)"}
+                        <input
+                          name="reference"
+                          maxLength={200}
+                          disabled={!row.reviews_enabled}
+                        />
+                      </label>
+                      <button disabled={!row.reviews_enabled}>
+                        {es
+                          ? "Guardar decisión sin desembolso"
+                          : "Save decision without disbursement"}
+                      </button>
+                    </form>
+                  </article>
+                ))
+              )}
+            </section>
           )}
           <a href={`/${locale}/admin/referrals/export`}>
             {es
