@@ -453,3 +453,45 @@ it("withdraws locally and shows a retry error when saving fails", async () => {
     marketing: false,
   });
 });
+
+it("queues native gtag arguments for consent updates and GA4 configuration", async () => {
+  vi.stubGlobal("React", React);
+  const w = window as unknown as {
+    dataLayer?: unknown[];
+    gtag?: (...args: unknown[]) => void;
+  };
+  const previousLayer = w.dataLayer;
+  const previousGtag = w.gtag;
+  try {
+    w.dataLayer = [];
+    w.gtag = undefined;
+    document.cookie = "ak_analytics=granted; Path=/";
+    render(<ConsentAnalytics />);
+    await waitFor(() =>
+      expect(document.getElementById("ak-consented-ga")).not.toBeNull(),
+    );
+
+    const commands = w.dataLayer as IArguments[];
+    const defaultCommand = commands.find(
+      (command) => command[0] === "consent" && command[1] === "default",
+    );
+    const updateCommand = commands.find(
+      (command) => command[0] === "consent" && command[1] === "update",
+    );
+    const configCommand = commands.find(
+      (command) => command[0] === "config" && command[1] === "G-PW8547QDGD",
+    );
+    expect(defaultCommand).toBeDefined();
+    expect(updateCommand?.[2]).toMatchObject({
+      analytics_storage: "granted",
+      ad_storage: "denied",
+    });
+    expect(configCommand).toBeDefined();
+    for (const command of [defaultCommand, updateCommand, configCommand]) {
+      expect(Array.isArray(command)).toBe(false);
+    }
+  } finally {
+    w.dataLayer = previousLayer;
+    w.gtag = previousGtag;
+  }
+});
