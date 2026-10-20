@@ -13,13 +13,14 @@ export async function syncOperationsBilling(
 ): Promise<
   | false
   | {
-      profileId: string;
+      profileId: string | null;
       customerId: string;
       subscriptionId: string;
       productCode: string;
     }
 > {
-  if (process.env.AKIBUSINESS_OPERATIONS_BILLING_READY !== "true") return false;
+  const billingEnabled =
+    process.env.AKIBUSINESS_OPERATIONS_BILLING_READY === "true";
   const subscription = await stripeRetrieve<Record<string, unknown>>(
     `/subscriptions/${encodeURIComponent(subscriptionId)}?expand[]=latest_invoice.lines`,
     "2026-08-26.dahlia",
@@ -27,9 +28,11 @@ export async function syncOperationsBilling(
   const items = subscription.items as
     | { data?: Array<{ price?: { id?: string } }> }
     | undefined;
-  if (!operationsPrice(items?.data?.[0]?.price?.id)) return false;
+  const operatingPrice = operationsPrice(items?.data?.[0]?.price?.id);
   const metadata = subscription.metadata as Record<string, string> | undefined;
-  const token = metadata?.operations_checkout_token;
+  const token = operatingPrice
+    ? metadata?.operations_checkout_token
+    : undefined;
   if (
     token &&
     !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(
@@ -42,12 +45,31 @@ export async function syncOperationsBilling(
     p_subscription: subscriptionId,
     p_token: token || null,
   });
-  if (error || !binding)
+  if (error) {
+    // Old schemas cannot contain detached operating bindings. Keep their legacy path.
+    if (!billingEnabled && ["PGRST202", "42883"].includes(error.code))
+      return false;
     throw Error("Operating subscription binding unavailable");
+  }
+  if (!binding) {
+    if (!billingEnabled || !operatingPrice) return false;
+    throw Error("Operating subscription binding unavailable");
+  }
+  // A deleted legacy customer can have a binding before the approved-price renewal.
+  // Resolve that tombstone before allowing the generic legacy billing fallback.
+  if ((!billingEnabled || !operatingPrice) && binding.profileId !== null)
+    return false;
   const state = evaluateOperationsSubscription(
     subscription,
     binding as OperationsBinding,
   );
+  if (state.action === "detached")
+    return {
+      profileId: null,
+      customerId: binding.customerId,
+      subscriptionId,
+      productCode: "akibusiness_detached",
+    };
   if (state.action === "awaiting_payment")
     return {
       profileId: binding.profileId,
