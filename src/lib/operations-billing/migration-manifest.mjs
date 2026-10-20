@@ -329,6 +329,8 @@ export function buildRenewalSchedulePreview(subscription, schedule, row) {
     profile_id: row.profileId,
     workspace_id: row.scope.workspaceId,
     operations_tier: row.target.tier || "basico",
+    plan_code: `akibusiness_${row.target.tier || "basico"}`,
+    billing_interval: "month",
     operations_migration_manifest: "REPLACE_WITH_REVIEWED_MANIFEST_SHA256",
   };
   phase.proration_behavior = "none";
