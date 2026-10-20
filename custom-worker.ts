@@ -27,7 +27,7 @@ import {
   type ReleaseAssets,
 } from "./src/lib/release-source";
 
-import { recoverOperationsBilling } from "./src/lib/operations-recovery";
+import { recoverOperationsBillingWithNotifications } from "./src/lib/operations-recovery";
 
 import { processOperationsMigrationCommand } from "./src/lib/operations-migration-command";
 
@@ -46,7 +46,7 @@ const worker = {
     ctx: { waitUntil(work: Promise<unknown>): void },
   ) {
     ctx.waitUntil(
-      recoverOperationsBilling(env).catch(() =>
+      recoverOperationsBillingWithNotifications(env).catch(() =>
         console.error("operations_billing_recovery_retry"),
       ),
     );

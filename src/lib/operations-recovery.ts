@@ -179,3 +179,35 @@ export async function recoverOperationsBilling(
   }
   return { enabled: true, applied, failed, deferred };
 }
+
+/** Retry owner inbox delivery independently of billing/rotation success. The database
+ * notification setting remains the authority; this never enables delivery itself. */
+export async function recoverOperationsBillingWithNotifications(
+  env: OperationsRecoveryEnv,
+  fetcher: typeof fetch = fetch,
+) {
+  const delivery = (async () => {
+    if (env.AKIBUSINESS_OPERATIONS_BILLING_READY !== "true") return;
+    if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY)
+      throw Error("Toolbox notification bindings unavailable");
+    const response = await fetcher(
+      `${env.NEXT_PUBLIC_SUPABASE_URL.replace(/\/$/, "")}/rest/v1/rpc/crm_toolbox_deliver_notifications`,
+      {
+        method: "POST",
+        headers: {
+          apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+          Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ p_limit: 100 }),
+        signal: AbortSignal.timeout(10_000),
+      },
+    );
+    if (!response.ok) throw Error("Toolbox notification delivery retry");
+  })().catch(() => console.error("operations_toolbox_notifications_retry"));
+  try {
+    return await recoverOperationsBilling(env, fetcher);
+  } finally {
+    await delivery;
+  }
+}
