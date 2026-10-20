@@ -1,8 +1,11 @@
 name: Deploy verified AkiPasa brand
 on:
-  push:
-    branches: [master]
   workflow_dispatch:
+    inputs:
+      confirm_production:
+        description: "Type DEPLOY_AKIPASA to publish the tested master commit"
+        required: true
+        type: string
 permissions:
   contents: read
 concurrency:
@@ -10,6 +13,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   production:
+    if: ${{ inputs.confirm_production == 'DEPLOY_AKIPASA' }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:

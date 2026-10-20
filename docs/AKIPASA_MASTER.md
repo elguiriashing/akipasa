@@ -3,6 +3,20 @@ Total output lines: 1231
 
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-20 | Manually gated production workflow
+
+The `Deploy verified AkiPasa brand` workflow no longer runs on every push to
+`master`. GitHub has no configured `CLOUDFLARE_API_TOKEN`, while the connected
+Cloudflare release path already owns production publication; automatic runs
+therefore completed the full test suite and then failed before packaging or
+deployment. The workflow remains available as an explicit manual rollback-safe
+release path and now requires the confirmation text `DEPLOY_AKIPASA`. It still
+fails closed when the scoped Cloudflare credential is unavailable. Ordinary
+push validation and the exact-source live smoke remain separate workflows.
+
+This changes release orchestration only. It does not alter Worker code,
+bindings, routes, secrets, Supabase, Stripe, or customer data.
+
 ## 2026-10-19 | SECURITY DEFINER least-privilege execution
 
 Privileged functions in the exposed `public` schema must not rely on PostgreSQL's
