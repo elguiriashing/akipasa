@@ -11,6 +11,30 @@ commits, blob IDs, source ranges and preservation checks are recorded in
 transport markers in these two authoritative files, including documentation-only PRs.
 Other documents and ordinary descriptions of partial API reads are not forbidden.
 
+## 2026-10-20 | Restore consent-aware GA4 command delivery (PR #230)
+
+AkiPasa's 8 October privacy-gating change accidentally broke the Google tag
+command queue: the client-side `gtag` shim pushed rest-argument arrays into
+`dataLayer` instead of native JavaScript `arguments` objects. The tag script
+loaded, but Google did not process consent-default, consent-update or GA4 config
+commands, and GA4 traffic dropped close to zero. Only the command envelope
+changes: `ConsentAnalytics` must push native `arguments` objects, with the
+existing GDPR consent checks left intact. No tag may load for a visitor who
+has declined optional analytics and marketing. Existing consent withdrawal,
+measurement ID `G-PW8547QDGD`, Ads destination, cookie expiry, privacy choices
+and consent API are unchanged.
+
+Isolated live-browser reproduction: with an analytics-consent cookie, gtag.js
+loaded but reported `usedDefault=false` and `usedUpdate=false`, with no GA4
+collection request. Injecting correctly formatted native-arguments commands
+activated consent and produced a `g/collect` request. The anonymous consent API
+returned HTTP 204. The regression test asserts native arguments for consent
+and configuration. Deploy only after required CI and release verification;
+confirm that opted-in visitors produce GA4 requests and opted-out visitors do
+not load optional tags. Rollback must preserve denied-by-default GDPR gating
+rather than restoring the old unconditional Google loader. No SQL, user data,
+billing, Ads campaign spend, or other AkiSuite product is modified.
+
 ## 2026-10-20 | Historical-branch formatter compatibility
 
 The pull-request formatter may check a branch created before newer contract and
@@ -1498,3 +1522,15 @@ and handles signed webhooks without referral attribution or legacy fallback.
 No production identities, billing state or retention rules were changed.
 See OPERATIONS_IDENTITY_DELETION.md for actual fixture evidence, deployment
 ordering and existing operator-reviewed deletion/financial retention dependencies.
+
+## 2026-10-20 | Preserve current-master consent-aware Google queue repair
+
+The final mission candidate merges current master `cd600e8254d26c73cb6c8c879e4a5c8b24d79803`
+and preserves the complete #230 native-arguments Google command fix and its
+regression. The combined component still intersects analytics/marketing choices
+with server-derived tracking eligibility, leaves every consent signal denied for
+restricted accounts, loads optional tags only with permission and disables Google
+Signals and ad-personalisation signals in GA4 configuration. Both original contract
+entries and all restored historical content are retained. No measurement IDs,
+provider destinations, account cohort settings, billing source or schema are changed
+by this merge. Exact-head CI remains a release gate.

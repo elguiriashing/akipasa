@@ -264,3 +264,21 @@ source differs from that privacy candidate only in this acceptance spec and
 verification notes. Operations 32 Node and 42 adapter cases, TypeScript and
 contract checks pass after combination. Exact-head hosted build/browser gates
 remain required; neither frozen source branch was changed.
+
+## 2026-10-20 | Preserve current-master consent-aware Google queue repair
+
+The final mission candidate merges current master `cd600e8254d26c73cb6c8c879e4a5c8b24d79803`
+and preserves the complete #230 native-arguments Google command fix and its
+regression. The combined component still intersects analytics/marketing choices
+with server-derived tracking eligibility, leaves every consent signal denied for
+restricted accounts, loads optional tags only with permission and disables Google
+Signals and ad-personalisation signals in GA4 configuration. Both original contract
+entries and all restored historical content are retained. No measurement IDs,
+provider destinations, account cohort settings, billing source or schema are changed
+by this merge. Exact-head CI remains a release gate.
+
+Combined-master validation: privacy/analytics 22, onboarding 70, operations
+32 Node plus 42 adapters pass. TypeScript, scoped ESLint, contract integrity and
+whitespace checks pass. PR #230 test content is byte-identical to current master;
+the only component delta from master is the mission tracking-eligibility
+intersection. No acceptance assertion or timeout was relaxed.
