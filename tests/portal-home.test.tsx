@@ -89,7 +89,7 @@ it.each(["en", "es"] as const)(
   },
 );
 it.each(["en", "es"] as const)(
-  "shares ordered controls and branded app destinations while excluding the current app in %s",
+  "shares ordered controls and five canonical branded app destinations in %s",
   (locale) => {
     for (const product of ["business", "duermo"] as const) {
       const { container, unmount } = render(
@@ -112,10 +112,16 @@ it.each(["en", "es"] as const)(
         ".portal-product-popover",
       )! as HTMLElement;
       expect(
-        within(popover).queryByRole("link", {
-          name: product === "business" ? "AkiBusiness" : "AkiDuermo",
+        within(popover).getByRole("link", {
+          name: product === "business" ? "AkiHQ" : "AkiDuermo",
         }),
-      ).toBeNull();
+      ).toHaveAttribute("aria-current", "page");
+      expect(
+        within(popover).getByRole("link", { name: "AkiCoches" }),
+      ).toHaveAttribute("href", `https://akicoches.com/?lang=${locale}`);
+      expect(
+        within(popover).getByRole("link", { name: "AkiBusiness" }),
+      ).toHaveAttribute("href", `https://akibusiness.com/?locale=${locale}`);
       const pasa = within(popover).getByRole("link", {
         name: "AkiPasa",
       });
@@ -130,13 +136,13 @@ it.each(["en", "es"] as const)(
           .querySelector("img"),
       ).toHaveAttribute("src", "/brand/hq-mark.svg");
       const other = within(popover).getByRole("link", {
-        name: product === "business" ? "AkiDuermo" : "AkiBusiness",
+        name: product === "business" ? "AkiDuermo" : "AkiHQ",
       });
       expect(other).toHaveAttribute(
         "href",
         product === "business"
-          ? `https://akiduermo.akipasa.com/?lang=${locale}`
-          : `https://business.akipasa.com/${locale}/business`,
+          ? `https://akiduermo.com/?lang=${locale}`
+          : `https://akihq.app/${locale}/business`,
       );
       fireEvent.keyDown(document, { key: "Escape" });
       expect(menu).not.toHaveAttribute("open");
