@@ -25,8 +25,13 @@ vi.mock("next/navigation", () => ({
 }));
 vi.mock("@/app/[locale]/onboarding/actions", () => ({
   completeAccount: vi.fn(),
+  requestRestrictedDeletion: vi.fn(),
 }));
 vi.mock("@/app/[locale]/auth/actions", () => ({ signOut: vi.fn() }));
+vi.mock("@/components/PersonalisationSettings", () => ({
+  PersonalisationSettings: () => <div>Privacy controls</div>,
+}));
+import RestrictedPrivacy from "../src/app/[locale]/onboarding/privacy/page";
 import OnboardingPage from "../src/app/[locale]/onboarding/page";
 import { ConsentAnalytics } from "../src/components/ConsentAnalytics";
 afterEach(() => {
@@ -36,6 +41,7 @@ afterEach(() => {
     document.cookie = c.split("=")[0] + "=; Max-Age=0; Path=/";
   document.getElementById("ak-consented-ga")?.remove();
   vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
 });
 it.each(["en", "es"] as const)(
   "renders minimal labelled %s completion and safe rights paths",
@@ -93,4 +99,24 @@ it("keeps all Google consent signals denied for restricted accounts despite cook
     ad_personalization: "denied",
   });
   expect(document.getElementById("ak-consented-ga")).toBeNull();
+});
+
+it("keeps award/address privacy reachable outside the locked account layout", async () => {
+  vi.stubEnv("AKIPASA_PRESTIGE_SCHEMA_READY", "true");
+  render(
+    await RestrictedPrivacy({
+      params: Promise.resolve({ locale: "en" }),
+      searchParams: Promise.resolve({}),
+    }),
+  );
+  expect(
+    screen.getByRole("link", { name: "Award and shipping privacy" }),
+  ).toHaveAttribute("href", "/en/privacy/prestige");
+  expect(screen.getByRole("link", { name: "Export my data" })).toHaveAttribute(
+    "href",
+    "/en/account/export",
+  );
+  expect(
+    screen.getByRole("button", { name: "Request deletion" }),
+  ).toBeInTheDocument();
 });

@@ -40,6 +40,13 @@ export default async function RestrictedPrivacy({
             ? "Política de privacidad y contacto"
             : "Privacy policy and contact"}
         </Link>
+        {process.env.AKIPASA_PRESTIGE_SCHEMA_READY === "true" && (
+          <Link href={`/${locale}/privacy/prestige`}>
+            {es
+              ? "Privacidad de premios y envíos"
+              : "Award and shipping privacy"}
+          </Link>
+        )}
         {query.error && (
           <p role="alert">
             {es

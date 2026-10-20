@@ -47,7 +47,7 @@ schema readiness is enabled.
 
 ## Status
 
-Implemented candidate. The dedicated onboarding suite passes 24 tests: pure
+Implemented candidate. The dedicated onboarding suite passes 25 tests: pure
 validation/redirects, server guards and email/OAuth callbacks, rendered EN/ES
 controls, denied Google consent signals, direct analytics refusal and PGlite
 private ACL/legacy-definer mutation protection. Existing auth-security (7) and
@@ -74,3 +74,7 @@ still exceeded five seconds. No timeout or test contract was relaxed.
 
 Not applied, merged, production verified or activated. No live data or
 configuration changed.
+
+The restricted privacy page also links to the independent prestige privacy route
+when its schema-ready flag is enabled; address/export/withdrawal controls must
+remain outside the guarded account workspace layout.
