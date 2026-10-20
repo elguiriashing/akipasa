@@ -58,8 +58,19 @@ lint and TypeScript before entering the broad application suite. The run was
 stopped to avoid contention with simultaneous mission checks after an existing
 Spanish-integrity case exceeded its five-second timeout under load; this is not
 a full passing check. Rerun with bounded resources/hosted CI on the final head.
-`playwright install chromium` failed with truncated ZIP downloads; a usable local
-browser was not obtained, so no responsive visual acceptance is claimed.
+The initial `playwright install chromium` downloads were truncated. A subsequently
+available local Chromium binary ran 32 actual-component/CSS responsive fixture
+cases: EN/ES, pending/restricted, light/dark and 360×800, 800×1280, 1280×800,
+1440×900. Horizontal overflow, declaration visibility, reachable sign-out and
+keyboard focus passed; phone/desktop screenshots were inspected. Identity and
+actions are explicitly disposable adapters, so this is presentation evidence,
+not live signup/OAuth, provider delivery or full-shell acceptance. Hosted CI now
+runs the same reproducible fixture and uploads screenshots/evidence.
+
+Broad core suite results were 633/635 passing with two existing five-second
+cases timing out under simultaneous mission load (map IndexedDB and Spanish
+integrity). A bounded retry passed all 10 map cases; the Spanish PGlite case
+still exceeded five seconds. No timeout or test contract was relaxed.
 
 Not applied, merged, production verified or activated. No live data or
 configuration changed.

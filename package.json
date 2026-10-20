@@ -32,7 +32,8 @@
     "test:pals:browser": "node scripts/test-pals-browser.mjs",
     "test:spotlight:browser": "node scripts/test-spotlight-browser.mjs",
     "test:akisuite": "vitest run --config vitest.akisuite.config.ts",
-    "postinstall": "node scripts/maplibre-attribution-patch.mjs"
+    "postinstall": "node scripts/maplibre-attribution-patch.mjs",
+    "test:onboarding:browser": "node scripts/test-onboarding-browser.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "0.7.0",
