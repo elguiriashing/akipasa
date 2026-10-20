@@ -1240,3 +1240,43 @@ No real customer image, profile, booking, email or subscription was mutated.
   billing tests, full repository check, Android test/lint/bundle, Cloudflare
   package, exact-head CI, hosted Supabase advisors/preflight, then anonymous and
   authenticated production smoke. Record pass/fail/blocked honestly.
+
+## 2026-10-20 | Standalone listing media and event allowances
+
+Owner venue/accommodation uploads, event creation and recurrence/duplication,
+Storage INSERT/UPDATE, direct table writes, publication scheduler, subscription
+lookup and administrative review dependencies were traced before implementation.
+Live read-only inspection confirms the two historical October12 Premium migrations
+are absent. They must NOT be replayed to deploy this bounded feature.
+
+Migration 20261020170415 installs standalone in akisuite_listing_private with an
+independent default-closed gate. Per-listing media is 8/250; existing media remains.
+Free published events consume four distinct IDs per Madrid calendar month and a
+five-inclusive-date envelope. Retained private event-month history survives
+unpublication/deletion; title hashes permit recreation review without copying old
+content. Publication and media advisory locks serialize scope consumption. Existing
+published history is backfilled without rewriting events. Same-status content
+edits remain possible after downgrade. Recurrence/duplicate legacy RPCs and direct
+API paths are guarded. Caller-independent authoritative entitlement protects
+service publication; browser mutations retain normal authorization and RLS.
+
+A bounded admin-only review RPC/page explains repeated-title, multi-day and generic
+opening-hours signals without automatically blocking legitimate festivals. Event
+composer returns inline quota errors and controlled fields preserve drafts on quota
+or provider failures. Owner media shows EN/ES counts/upgrade links when the new
+listing gate is confirmed. Recurrence/duplicate controls explain listing Premium.
+Image header validation and browser1920/.8 versus3840/.9 preparation are groundwork,
+with the server action separately gated: direct authenticated Storage can bypass
+resolution, so do not enable/claim complete resolution enforcement.
+
+Validation:8 actual PGlite migration cases cover both legacy-only and optional old
+suite schemas,8/250 Storage limits, per-listing scope, Madrid dates, month crossing,
+delete/recreate resistance, direct edits, admin isolation, downgrade retention and
+caller-independent service access.4 header policy cases and3 EN/ES draft retention
+cases pass. Full pre-follow-up AkiSuite136 tests passed. Full check passed format,
+lint, typecheck and634/635 first-suite tests, with unrelated Spanish PGlite5s startup
+timeout; isolated retry2/2 passes. Current expanded-head scoped tests/TypeScript,
+SQL privilege audit and lint pass. Hosted CI/build/browser, real multi-connection
+and owner acceptance remain required. No production mutation was performed.
+
+Read docs/LISTING_LIMITS_RELEASE.md for exact independent activation and rollback.

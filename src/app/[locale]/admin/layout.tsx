@@ -34,6 +34,11 @@ export default async function AdminLayout({
   const items: WorkspaceItem[] = [
     { href: base, label: es ? "Resumen" : "Overview", icon: "home" },
     {
+      href: `${base}/listing-review`,
+      label: es ? "Revisión de eventos" : "Event review signals",
+      icon: "venue",
+    },
+    {
       href: `${base}/promotions`,
       label: es ? "Solicitudes comerciales" : "Commercial requests",
       icon: "megaphone",

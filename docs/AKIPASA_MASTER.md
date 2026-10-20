@@ -1050,3 +1050,17 @@ The desktop AkiPasa sidebar now separates the independently scrolling navigation
 The header AkiSuite button opens only the five product links plus Settings/account action. Bottom More retains internal navigation, workspaces, passports, membership, appearance and language. Independent sheet state, Escape handling and focus return. Header reserves search space. No auth or data changes.
 
 **Final mobile split:** the top-header AkiSuite sheet contains only the five Aki product destinations and current-product marker. Personal account actions belong to the internal bottom More sheet; guests see Sign in there. The top sheet does not contain Passports, Membership, workspaces, Settings or Sign out. The desktop rail's original suite menu remains unchanged.
+
+## 2026-10-20 | Standalone listing allowance candidate
+
+Migration20261020170415 installs independent akisuite_listing_private controls;
+no historical Premium migration is required or activated. Free/Premium media8/250
+is per listing and retains old assets. Free published events consume four IDs per
+Europe/Madrid month and at most five inclusive dates; private retained publication
+history stops unpublish/delete/recreate recovery. Legacy recurrence/duplication and
+direct writes share guards. Admin review is bounded and advisory. Event creation
+preserves controlled drafts on failure. The independent database gate defaults
+closed; owner quota UI additionally requires AKISUITE_LISTING_LIMITS_READY.
+Resolution groundwork uses a separate AKISUITE_LISTING_RESOLUTION_READY gate,
+which stays off until direct-Storage bypass and true server processing are solved.
+See LISTING_LIMITS_RELEASE.md and impact register for evidence/acceptance holds.
