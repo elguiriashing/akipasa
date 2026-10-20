@@ -1549,3 +1549,7 @@ confirm explicit vars are supplied even with keep-vars. Read
 verification and rollback. No source is deployed, provider write made or customer
 configuration mutated by preparation; only the release manager may merge and
 verify the actual production source before enqueueing three reviewed commands.
+
+## 2026-10-20 | Owner-visible verified renewal migration status
+
+The read-only `crm_operations_migration_status` RPC projects only tier, effective date and scheduling state after service-recorded provider readback, matching sealed manifest/schedule/target price/zero invoice preview and audit evidence. It requires the current active owner membership and the bound payer identity, private operating location and approved legacy business cohort. Queued, prepared, blocked, foreign, detached, personal or already activated migrations produce no confirmation. The central operations page shows this separately from ordinary scheduled downgrades, explicitly distinguishing a scheduled renewal from confirmed renewal payment and tool activation. A sole owned location is selected without inventing a scope; multiple locations still require explicit selection. Both initial configuration and checkout use the same twelve EN/ES labels as the AkiBusiness toolbox, retaining existing keys. No provider writes, queue changes, entitlement grants or production flags accompany this read-only feature.

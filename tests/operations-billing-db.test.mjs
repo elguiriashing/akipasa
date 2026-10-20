@@ -35,6 +35,7 @@ grant usage on schema public to anon,authenticated,service_role;`);
     "20261020180734_operations_first_invoice_recovery.sql",
     "20261020181726_toolbox_entitlement_source_compatibility.sql",
     "20261020181614_operations_renewal_command_queue.sql",
+    "20261020235342_operations_owner_migration_status.sql",
   ])
     await db.exec(
       await readFile(
@@ -659,5 +660,241 @@ test("migration commands require explicit service binding, seal immutable source
       "select status from public.billing_subscriptions where stripe_subscription_id='sub_migrate'",
     ),
     "active",
+  );
+});
+
+const migrationStatus = () =>
+  scalar("select public.crm_operations_migration_status('private-test')");
+async function confirmedMigration() {
+  await db.exec("reset role");
+  await db.query(
+    "insert into public.billing_subscriptions values('sub_migrate',$1,'cus_test','business','active',now())",
+    [owner],
+  );
+  await login(owner, "service_role");
+  await scalar("select public.bind_crm_operations_migration($1,$2,$3,$4)", [
+    "sub_migrate",
+    "private-test",
+    tools,
+    "sha256:reviewed-manifest-evidence",
+  ]);
+  const periodEnd = Math.floor(Date.now() / 1000) + 30 * 86400;
+  const snapshot = {
+    id: "sub_migrate",
+    customer: "cus_test",
+    profileId: owner,
+    status: "active",
+    quantity: 1,
+    invoiceStatus: "paid",
+    periodEnd,
+  };
+  const id = await scalar(
+    "select public.enqueue_crm_operations_migration($1,$2,$3,$4)",
+    ["sub_migrate", "private-test", "a".repeat(64), snapshot],
+  );
+  const command = await scalar(
+    "select public.claim_crm_operations_migration()",
+  );
+  await scalar("select public.prepare_crm_operations_migration($1,$2,$3,$4)", [
+    id,
+    command.lease,
+    "sub_sched_test",
+    { phases: [{}, {}] },
+  ]);
+  const evidence = {
+    verified: true,
+    scheduleId: "sub_sched_test",
+    invoicePreviewId: "upcoming_preview",
+    amountDue: 0,
+    currency: "eur",
+    targetPrice: price,
+    effectiveAt: periodEnd,
+    currentStatus: "active",
+    manifestSha256: "a".repeat(64),
+  };
+  await scalar("select public.finish_crm_operations_migration($1,$2,$3,$4)", [
+    id,
+    command.lease,
+    "scheduled",
+    evidence,
+  ]);
+  await login();
+  return { periodEnd, evidence };
+}
+test("owner sees only tier/date/state for verified scheduled private migration before activation", async () => {
+  const { periodEnd } = await confirmedMigration();
+  const status = await migrationStatus();
+  assert.deepEqual(Object.keys(status).sort(), [
+    "effective_at",
+    "state",
+    "tier",
+  ]);
+  assert.equal(status.tier, "basico");
+  assert.equal(status.state, "scheduled");
+  assert.equal(Date.parse(status.effective_at), periodEnd * 1000);
+  await db.exec("reset role");
+  assert.equal(
+    await scalar("select count(*) from akibusiness_private.toolboxes"),
+    0,
+  );
+  // The read does not update queue, paid ledger or tool entitlements.
+  await db.exec("reset role");
+  assert.equal(
+    await scalar("select status from public.billing_subscriptions"),
+    "active",
+  );
+  assert.equal(
+    await scalar("select count(*) from public.crm_workspace_entitlements"),
+    0,
+  );
+});
+test("migration status rejects foreign, anonymous and removed owner access", async () => {
+  await confirmedMigration();
+  await login(other);
+  await assert.rejects(migrationStatus(), /owner/);
+  await login(owner, "anon");
+  await assert.rejects(migrationStatus(), /permission denied/);
+  await db.exec(
+    "reset role;update public.crm_workspace_members set status='removed'",
+  );
+  await login();
+  await assert.rejects(migrationStatus(), /owner/);
+});
+for (const [name, sql] of [
+  [
+    "queued",
+    "update akibusiness_private.operations_migration_commands set state='queued'",
+  ],
+  [
+    "prepared",
+    "update akibusiness_private.operations_migration_commands set state='prepared'",
+  ],
+  [
+    "blocked",
+    "update akibusiness_private.operations_migration_commands set state='blocked'",
+  ],
+  [
+    "missing readback",
+    "update akibusiness_private.operations_migration_commands set preview_evidence=null",
+  ],
+  [
+    "unverified readback",
+    "update akibusiness_private.operations_migration_commands set preview_evidence=preview_evidence||'{\"verified\":false}'",
+  ],
+  [
+    "string rather than verified boolean",
+    'update akibusiness_private.operations_migration_commands set preview_evidence=preview_evidence||\'{"verified":"true"}\'',
+  ],
+  [
+    "changed schedule",
+    'update akibusiness_private.operations_migration_commands set preview_evidence=preview_evidence||\'{"scheduleId":"sub_sched_foreign"}\'',
+  ],
+  [
+    "changed cohort seal",
+    'update akibusiness_private.operations_migration_commands set preview_evidence=preview_evidence||\'{"manifestSha256":"other"}\'',
+  ],
+  [
+    "different target price",
+    'update akibusiness_private.operations_migration_commands set preview_evidence=preview_evidence||\'{"targetPrice":"price_unapproved"}\'',
+  ],
+  [
+    "nonzero future invoice",
+    "update akibusiness_private.operations_migration_commands set preview_evidence=preview_evidence||'{\"amountDue\":2499}'",
+  ],
+  [
+    "different effective date",
+    "update akibusiness_private.operations_migration_commands set preview_evidence=preview_evidence||'{\"effectiveAt\":1}'",
+  ],
+  [
+    "missing audit",
+    "delete from akibusiness_private.operations_billing_events where event_id like 'migration-scheduled:%'",
+  ],
+  [
+    "foreign bound identity",
+    `update akibusiness_private.operations_subscriptions set profile_id='${other}'`,
+  ],
+  [
+    "foreign source identity",
+    `update akibusiness_private.operations_migration_commands set source_snapshot=source_snapshot||'{"profileId":"${other}"}'`,
+  ],
+  [
+    "personal cohort",
+    "update public.billing_subscriptions set plan_code='premium'",
+  ],
+  [
+    "cancelled source",
+    "update public.billing_subscriptions set status='canceled'",
+  ],
+  [
+    "public venue cohort",
+    "update public.crm_workspaces set source_venue_id='33333333-3333-4333-8333-333333333333'",
+  ],
+  [
+    "ordinary checkout binding",
+    "update akibusiness_private.operations_subscriptions set source_token=gen_random_uuid()",
+  ],
+])
+  test(`no confirmed migration status for ${name}`, async () => {
+    await confirmedMigration();
+    await db.exec("reset role");
+    await db.exec(sql);
+    await login();
+    assert.equal(await migrationStatus(), null);
+  });
+test("transferred location cannot reveal original payer migration to the new owner", async () => {
+  await confirmedMigration();
+  await db.exec("reset role");
+  await db.query("update public.crm_workspaces set owner_profile_id=$1", [
+    other,
+  ]);
+  await db.query(
+    "insert into public.crm_workspace_members(workspace_id,profile_id,status,role) values('private-test',$1,'active','owner')",
+    [other],
+  );
+  await login(other);
+  assert.equal(await migrationStatus(), null);
+});
+test("both approved legacy business cohorts can see their own verified schedule", async () => {
+  await confirmedMigration();
+  await db.exec(
+    "reset role;update public.billing_subscriptions set plan_code='business_pro'",
+  );
+  await login();
+  assert.equal((await migrationStatus()).tier, "basico");
+});
+test("activated migration stops advertising a pending renewal without altering its audit", async () => {
+  await confirmedMigration();
+  await login(owner, "service_role");
+  const now = Date.now();
+  await scalar(
+    "select public.apply_crm_operations_billing($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)",
+    [
+      "evt_migration_paid",
+      "sub_migrate",
+      null,
+      owner,
+      "cus_test",
+      "private-test",
+      "basico",
+      tools,
+      new Date(now).toISOString(),
+      new Date(now + 31 * 86400000).toISOString(),
+      "active",
+      now,
+      "stripe-invoice:in_migration_paid",
+    ],
+  );
+  await login();
+  assert.equal(await migrationStatus(), null);
+  await db.exec("reset role");
+  assert.equal(
+    await scalar(
+      "select state from akibusiness_private.operations_migration_commands",
+    ),
+    "scheduled",
+  );
+  assert.equal(
+    await scalar("select count(*) from akibusiness_private.toolboxes"),
+    1,
   );
 });

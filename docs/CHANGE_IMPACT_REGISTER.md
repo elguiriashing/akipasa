@@ -2108,3 +2108,7 @@ confirm explicit vars are supplied even with keep-vars. Read
 verification and rollback. No source is deployed, provider write made or customer
 configuration mutated by preparation; only the release manager may merge and
 verify the actual production source before enqueueing three reviewed commands.
+
+## 2026-10-20 | Verified owner migration status and bilingual initial tools
+
+Additive authenticated owner-only read projection and central operations UI, with matching migrations in both source directories. Private queue and provider identifiers are never returned. Checks bind the current owner and original payer, sealed service evidence, approved business/business_pro cohort and zero upcoming invoice; scheduling never implies a payment or licensed tools. Existing ordinary downgrade display remains intact; all twelve initial tool keys render friendly EN/ES labels reused by checkout. SQL acceptance covers positive cohorts, foreign/removed/transferred owners, anonymous access, queued/prepared/blocked state and mismatched/missing evidence. Rollback: revert UI/module and drop only `public.crm_operations_migration_status(text)`; retain all financial and customer data. Live migration/application, exact-head full CI and production acceptance remain release-manager gates.
