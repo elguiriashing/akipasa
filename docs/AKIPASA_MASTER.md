@@ -1534,3 +1534,16 @@ Signals and ad-personalisation signals in GA4 configuration. Both original contr
 entries and all restored historical content are retained. No measurement IDs,
 provider destinations, account cohort settings, billing source or schema are changed
 by this merge. Exact-head CI remains a release gate.
+
+## 2026-10-20 | Mission source merged; production gates remain explicit
+
+PR #229 tested head `136e2657585472c95e4e17665e018a8d10a4d89f` merged into
+master `8390836b8f8a03b213e873ae3c4e84ef68fe2f23` at 23:25:38 UTC with exact
+tree `47f461f544f13de57ffb0a0bd624778cc9be2b8d`, preserving #226 deletion safety
+and current-master #230 consent-aware GA4 changes. Required exact-head CI passed.
+The integration checkpoint now distinguishes merged/tested source from pending
+Cloudflare master deployment, activation and customer migration. It records the
+release manager's zero-toolbox/zero-command rollback result and an aborted,
+unverified notification SQL check. This is a documentation-only status update;
+no source/runtime/schema/financial action occurs and no production success is
+inferred from the merge or the aborted check.

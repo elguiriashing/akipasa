@@ -1,6 +1,6 @@
 # Passport prestige delivery checkpoint
 
-Status: Implemented and locally tested; release gates remain open. Source master a272f2a. No production writes, reward grants or fulfilment.
+Status: Implemented, tested and merged through PR #229 into master `8390836b8f8a03b213e873ae3c4e84ef68fe2f23` (tested tree `47f461f544f13de57ffb0a0bd624778cc9be2b8d`). Required exact-head CI passed. Production deployment/activation verification remains open; no live reward grants or physical fulfilment are claimed. See `docs/AKISUITE_MISSION_INTEGRATION.md` for the dated release checkpoint.
 
 ## Dependency and impact trace before edits
 

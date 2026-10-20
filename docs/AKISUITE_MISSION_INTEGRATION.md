@@ -1,10 +1,56 @@
 # AkiPasa mission integration checkpoint — 20 October 2026
 
-This candidate combines independently reviewed source branches without changing the
-five-product deployment split. AkiHQ is the free management hub; AkiBusiness owns
-paid operations. This branch has not been merged or deployed. No production
-migration, flag activation, subscription mutation, charge, payout, address intake
-or physical order was performed.
+The coherent AkiPasa mission source is **merged into master**, preserving the
+five-product deployment split: AkiHQ is the free management hub and AkiBusiness
+owns paid operations. Production activation and customer migration remain separate
+release gates.
+
+## Merged release checkpoint — 20 October 2026, 23:25 UTC
+
+- Release PR: [#229](https://github.com/elguiriashing/akipasa/pull/229).
+- Tested source head: `136e2657585472c95e4e17665e018a8d10a4d89f`.
+- Master merge: `8390836b8f8a03b213e873ae3c4e84ef68fe2f23`, recorded by GitHub
+  at `2026-10-20T23:25:38Z`.
+- Exact tested and merged tree: `47f461f544f13de57ffb0a0bd624778cc9be2b8d`.
+- Current-master GA4 repair #230 (`cd600e8254d26c73cb6c8c879e4a5c8b24d79803`)
+  and immutable identity-deletion follow-up #226
+  (`d9f90673c7135534da73804ec70c53e894ed488b`) are preserved as ancestry, along
+  with the original mission source heads below. No historical role reversal was
+  reintroduced.
+- The release manager verified all required exact-head CI checks green before
+  merging, including the full public build, all three tablet jobs, booking,
+  account/public/onboarding, Passport prestige, AkiPals, contract and SQL gates.
+  The existing conditional site check remains conditional; no test was skipped or
+  assertion/timeout weakened by this integration. Independent review covered the
+  final deletion-safety and combined age/consent/GA4 changes.
+
+| Deliverable group                                                      | Source | Test/merge evidence          | Production status at this checkpoint                                    |
+| ---------------------------------------------------------------------- | ------ | ---------------------------- | ----------------------------------------------------------------------- |
+| Subscription toolbox, staff delegation, billing/recovery/renewal queue | Merged | Required exact-head CI green | Runtime/deployment and explicit customer migration verification pending |
+| Listing quotas and strict retained-media-safe uploads                  | Merged | Required exact-head CI green | Activation acceptance remains separate                                  |
+| Referrals, conversion prompts and five-product language contract       | Merged | Required exact-head CI green | Cross-domain live acceptance remains separate                           |
+| Account completion, direct-RPC coverage and deletion compatibility     | Merged | Required exact-head CI green | Cohort/schema/runtime verification remains separate                     |
+| Passport prestige and private physical-reward infrastructure           | Merged | Required exact-head CI green | No reward/fulfilment activation claimed                                 |
+
+Cloudflare master-build verification is pending at this checkpoint. A successful
+source merge or branch preview is not evidence that the merged source is serving
+production traffic. Verify the actual master deployment/version, domains,
+navigation/authentication and gated paid/free journeys before recording production
+completion.
+
+The release manager's latest rollback verification reported **zero enrolled
+toolboxes, zero migration commands and twelve retained workspace memberships**.
+No renewal commands have been enqueued. A later rollback-only notification SQL
+check hung despite its database timeout and was aborted without a returned result;
+it is **unverified**, not a passing check. The release manager will not repeat that
+large transaction. Do not infer a committed mutation, enqueue commands, or mark
+customer migration complete from the aborted check. Any further verification must
+be independently bounded and authorized by the release manager.
+
+This checkpoint changes documentation only. It does not deploy, apply migrations,
+activate flags, enroll accounts, enqueue commands, change subscriptions, charge,
+pay commissions, collect shipping addresses or fulfil rewards. Preserve the exact
+release/rollback safeguards recorded below while completing remaining gates.
 
 ## Included source
 
