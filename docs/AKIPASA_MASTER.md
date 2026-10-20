@@ -1534,3 +1534,12 @@ Signals and ad-personalisation signals in GA4 configuration. Both original contr
 entries and all restored historical content are retained. No measurement IDs,
 provider destinations, account cohort settings, billing source or schema are changed
 by this merge. Exact-head CI remains a release gate.
+
+### Listing quota UUID resurrection guard (forward fix)
+
+Additive233905 closes same-UUID deletion/recreation of a previously published
+event, and prohibits event primary-key changes while listing enforcement is on.
+Fresh drafts and ordinary edits remain protected by original RLS/account guards;
+no history or customer row is rewritten. No application/script event upsert was
+found. Direct INSERT of retained UUIDs, including upsert attempts, must fail.
+See LISTING_EVENT_IDENTITY.md for exact regression and non-destructive rollout.

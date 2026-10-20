@@ -2093,3 +2093,18 @@ Signals and ad-personalisation signals in GA4 configuration. Both original contr
 entries and all restored historical content are retained. No measurement IDs,
 provider destinations, account cohort settings, billing source or schema are changed
 by this merge. Exact-head CI remains a release gate.
+
+## Forward listing event identity guard
+
+Verified gap: deleting then re-inserting the same event UUID reused170415's
+retained monthly slot. Additive233905 rejects INSERT of any retained event UUID,
+including another venue/tier, and rejects primary-key UPDATE while enforcement
+is enabled. It retains the applied migration, RLS, fresh draft/ordinary edit,
+account-completion statement guards and all publication history. No entitlement,
+flag, customer/event/media data or production schema changed by this patch.
+
+Actual-role SQL regression reproduces the original bypass before migration and
+checks blocked resurrection/upsert/PK changes, foreign actor denial, Premium,
+private execution and pending/complete onboarding intersection using the actual
+cohort guard SQL. See LISTING_EVENT_IDENTITY.md; hosted CI and production schema
+acceptance remain separate gates. Large hosted rollback tool hangs are not passes.
