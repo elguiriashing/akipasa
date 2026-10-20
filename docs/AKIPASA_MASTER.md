@@ -1073,3 +1073,7 @@ The `/[locale]/account/subscription/operations` route is the sole owner-authoris
 ## 2026-10-20 | First-invoice operations recovery
 
 The existing five-minute central AkiPasa scheduled worker now polls a bounded, service-only leased queue of explicit operations bindings AND reserved hosted checkout sessions. It retrieves Stripe state using the existing server key and applies the same verified invoice/toolbox evaluator, so missing the first webhook cannot leave paid customers permanently unenrolled. No second webhook, new Stripe key or provider mutation is introduced. The existing operations billing readiness flag controls it. See `docs/OPERATIONS_FIRST_INVOICE_RECOVERY.md`.
+
+## 2026-10-20 | Explicit reviewed renewal command queue
+
+A separate service-only durable command queue allows an operator to enqueue the three approved legacy migrations after verified private provisioning/binding. The existing central worker/key can then create schedules from those SAME subscriptions, preview exact future zero invoices with inherited discounts/tax, preserve current paid periods and verify actual readback. No command is automatic; the separate migration gate defaults off. Read `docs/OPERATIONS_RENEWAL_COMMANDS.md` for the immutable snapshot, idempotency, rollback and operator evidence contract.

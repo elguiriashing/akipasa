@@ -33,6 +33,7 @@ grant usage on schema public to anon,authenticated,service_role;`);
     "20261020170509_subscription_toolbox.sql",
     "20261020172801_operations_checkout_lifecycle.sql",
     "20261020180734_operations_first_invoice_recovery.sql",
+    "20261020181614_operations_renewal_command_queue.sql",
   ])
     await db.exec(
       await readFile(
@@ -475,5 +476,158 @@ test("central recovery sees reserved checkout session before any subscription bi
   assert.deepEqual(
     await scalar("select public.claim_crm_operations_recovery(5)"),
     [],
+  );
+});
+test("migration commands require explicit service binding, seal immutable source and durable schedule plan", async () => {
+  await assert.rejects(
+    scalar("select public.claim_crm_operations_migration()"),
+    /permission denied/,
+  );
+  await assert.rejects(
+    scalar("select public.enqueue_crm_operations_migration($1,$2,$3,$4)", [
+      "sub_migrate",
+      "private-test",
+      "a".repeat(64),
+      {},
+    ]),
+    /permission denied/,
+  );
+  await db.exec("reset role");
+  await db.query(
+    "insert into public.billing_subscriptions values('sub_migrate',$1,'cus_test','business','active',now())",
+    [owner],
+  );
+  await login(owner, "service_role");
+  const snapshot = {
+    id: "sub_migrate",
+    customer: "cus_test",
+    profileId: owner,
+    status: "active",
+    quantity: 1,
+    invoiceStatus: "paid",
+    periodEnd: Math.floor(Date.now() / 1000) + 30 * 86400,
+  };
+  const enqueue = () =>
+    scalar("select public.enqueue_crm_operations_migration($1,$2,$3,$4)", [
+      "sub_migrate",
+      "private-test",
+      "a".repeat(64),
+      snapshot,
+    ]);
+  await assert.rejects(enqueue(), /binding required/);
+  await scalar("select public.bind_crm_operations_migration($1,$2,$3,$4)", [
+    "sub_migrate",
+    "private-test",
+    tools,
+    "sha256:reviewed-manifest-evidence",
+  ]);
+  const id = await enqueue();
+  assert.equal(await enqueue(), id);
+  await assert.rejects(
+    scalar("select public.enqueue_crm_operations_migration($1,$2,$3,$4)", [
+      "sub_migrate",
+      "private-test",
+      "b".repeat(64),
+      snapshot,
+    ]),
+    /Immutable/,
+  );
+  await assert.rejects(
+    db.exec(
+      "update akibusiness_private.operations_migration_commands set state='scheduled'",
+    ),
+    /permission denied/,
+  );
+  const command = await scalar(
+    "select public.claim_crm_operations_migration()",
+  );
+  assert.equal(command.command_id, id);
+  assert.equal(
+    (
+      await scalar("select public.crm_operations_migration_scope($1,$2)", [
+        id,
+        command.lease,
+      ])
+    ).workspaceId,
+    "private-test",
+  );
+  await db.exec("reset role");
+  await db.query(
+    "update public.crm_workspaces set owner_profile_id=$1 where id='private-test'",
+    [other],
+  );
+  await login(owner, "service_role");
+  await assert.rejects(
+    scalar("select public.crm_operations_migration_scope($1,$2)", [
+      id,
+      command.lease,
+    ]),
+    /ownership/,
+  );
+  await db.exec("reset role");
+  await db.query(
+    "update public.crm_workspaces set owner_profile_id=$1 where id='private-test'",
+    [owner],
+  );
+  await login(owner, "service_role");
+  assert.equal(
+    await scalar("select public.claim_crm_operations_migration()"),
+    null,
+  );
+  const plan = {
+    end_behavior: "release",
+    proration_behavior: "none",
+    phases: [{ start_date: 1, end_date: 2 }],
+  };
+  await scalar("select public.prepare_crm_operations_migration($1,$2,$3,$4)", [
+    id,
+    command.lease,
+    "sub_sched_test",
+    plan,
+  ]);
+  await assert.rejects(
+    scalar("select public.prepare_crm_operations_migration($1,$2,$3,$4)", [
+      id,
+      command.lease,
+      "sub_sched_test",
+      { proration_behavior: "always_invoice" },
+    ]),
+    /changed/,
+  );
+  await assert.rejects(
+    scalar("select public.finish_crm_operations_migration($1,$2,$3,$4)", [
+      id,
+      command.lease,
+      "scheduled",
+      { verified: false },
+    ]),
+    /Verified/,
+  );
+  await scalar("select public.finish_crm_operations_migration($1,$2,$3,$4)", [
+    id,
+    command.lease,
+    "scheduled",
+    { verified: true, amountDue: 0 },
+  ]);
+  assert.equal(
+    await scalar(
+      "select state from akibusiness_private.operations_migration_commands",
+    ),
+    "scheduled",
+  );
+  assert.equal(
+    await scalar("select public.claim_crm_operations_migration()"),
+    null,
+  );
+  assert.equal(
+    await scalar("select count(*) from akibusiness_private.toolboxes"),
+    0,
+  );
+  await db.exec("reset role");
+  assert.equal(
+    await scalar(
+      "select status from public.billing_subscriptions where stripe_subscription_id='sub_migrate'",
+    ),
+    "active",
   );
 });
