@@ -2093,3 +2093,9 @@ Signals and ad-personalisation signals in GA4 configuration. Both original contr
 entries and all restored historical content are retained. No measurement IDs,
 provider destinations, account cohort settings, billing source or schema are changed
 by this merge. Exact-head CI remains a release gate.
+
+## 2026-10-21 | Remove historical paid-HQ acquisition and preserve operations login intent
+
+Replaces current membership acquisition cards with free HQ and canonical monthly paid Business tiers, independent listing/personal Premium and accurate category workflows. Existing legacy billing catalogue, subscription resolver, portal/cancellation and stored records are preserved. No annual operations prices are derived. Middleware overwrites client-supplied return headers, forwards only exact EN/ES operations destinations and validated single workspace, and AccountLayout uses its existing trusted contract. Regression evidence includes rendered ownership/readiness and history-preservation checks, EN/ES account-layout/middleware tests, malicious redirect cases and browser route/layout coverage. No production writes.
+
+New checkout server actions explicitly reject retired AkiHQ Standard/Pro, Business add-on and Enterprise acquisition even with all checkout gates enabled. Historical identifiers, subscription renewal synchronisation, customer access, billing portal and cancellation remain supported. Personal and listing Premium retain their existing authenticated checkout safeguards.

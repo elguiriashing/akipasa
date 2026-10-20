@@ -1534,3 +1534,9 @@ Signals and ad-personalisation signals in GA4 configuration. Both original contr
 entries and all restored historical content are retained. No measurement IDs,
 provider destinations, account cohort settings, billing source or schema are changed
 by this merge. Exact-head CI remains a release gate.
+
+## 2026-10-21 | Canonical free hub and operating acquisition
+
+The membership grid presents free AkiHQ and the existing approved monthly AkiBusiness Básico/Standard/Pro per-location catalogue (4/8/12 tools,1/2/unrestricted replacement allowances), read from OPERATION_PRICES. Historical paid HQ/Enterprise products remain in backend records/resolvers and billing controls, but are not advertised as current acquisition. Listing and personal Premium remain distinct and retain server readiness/ownership checks. Operating handoffs carry only locale and an explicitly validated location. The trusted membership-return header also allowlists the exact same-locale operations route and a single valid workspace, preserving sign-in intent while stripping arbitrary redirects. No billing IDs, prices, schemas, paid records or production flags changed.
+
+New checkout server actions explicitly reject retired AkiHQ Standard/Pro, Business add-on and Enterprise acquisition even with all checkout gates enabled. Historical identifiers, subscription renewal synchronisation, customer access, billing portal and cancellation remain supported. Personal and listing Premium retain their existing authenticated checkout safeguards.
