@@ -1280,3 +1280,14 @@ SQL privilege audit and lint pass. Hosted CI/build/browser, real multi-connectio
 and owner acceptance remain required. No production mutation was performed.
 
 Read docs/LISTING_LIMITS_RELEASE.md for exact independent activation and rollback.
+
+## 2026-10-20: Reserved server image uploads (gated follow-up)
+
+Venue and event image actions now share server-owned byte inspection, SHA-256,
+member-owned quota reservation, identical service Storage write and readback,
+service-only verification and one-use owner receipt. Migration173552 depends only
+on standalone170415, defaults strictfalse, and denies direct authenticated
+Storage INSERT/UPDATE after explicit activation. Existing read/delete/data remain.
+Free/Premium maximum image dimensions1920/3840, browserJPEG .8/.9. See
+ENFORCED_LISTING_UPLOADS.md for atomic two-product rollout, rollback and actual
+provider acceptance still required. No live change performed.

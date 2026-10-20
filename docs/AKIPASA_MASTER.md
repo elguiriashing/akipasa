@@ -1064,3 +1064,12 @@ closed; owner quota UI additionally requires AKISUITE_LISTING_LIMITS_READY.
 Resolution groundwork uses a separate AKISUITE_LISTING_RESOLUTION_READY gate,
 which stays off until direct-Storage bypass and true server processing are solved.
 See LISTING_LIMITS_RELEASE.md and impact register for evidence/acceptance holds.
+
+### Reserved listing upload boundary (2026-10-20)
+
+The gated follow-up in docs/ENFORCED_LISTING_UPLOADS.md replaces venue/event direct
+browser-authenticated writes with server-inspected bytes, quota reservations and
+service Storage/readback plus one-use owner receipts. Migration173552 defaults
+strictfalse. Both AkiPasa and AkiHQ must be deployed and actual Supabase Storage
+acceptance completed before strict activation. Existing media are retained;
+independent property schema remains absent and its uploader must remain gated.
