@@ -3,6 +3,31 @@ Total output lines: 1673
 
 # Change Impact Register
 
+## 2026-10-20 | GA4 consent command queue repair (PR #230)
+
+- **Before:** after 8 October's GDPR tag gating, the `gtag` shim pushed arrays
+  instead of native `arguments` objects; Google loaded but ignored consent and
+  configuration commands. Event/page-view reporting fell effectively to zero.
+- **After:** preserve the loader's opt-in requirement and queue each command as
+  a native `arguments` object. Correctly consenting browsers can once again
+  initialize and transmit GA4 events.
+- **Dependencies and risk:** `ConsentAnalytics`, existing consent cookies,
+  `PersonalisationConsent`, same-origin consent API, GA4 stream
+  `G-PW8547QDGD`, Ads destination. No server, RLS, personalisation, Stripe,
+  billing, SEO, domain, spend or campaign setting changes.
+- **Evidence:** live isolated browser: valid analytics cookie plus current code
+  produced `usedDefault=false`, `usedUpdate=false` and no
+  `google-analytics.com/g/collect`. Injecting native `arguments` commands
+  changed both flags to `true` and produced one GA4 collection request.
+  Anonymous consent POST returned HTTP 204.
+- **Verification:** native-arguments regression test, denied-consent test,
+  lint, typecheck, full required CI, then exact-source Cloudflare deployment
+  and live Realtime/collection smoke under granted consent. Denied consent must
+  still prevent optional tags from loading.
+- **Rollback:** restore the previous verified GDPR-safe deployment only if
+  regression warrants; do not reintroduce unconsented analytics. GA4 data lost
+  during the incident cannot be retroactively recovered.
+
 ## 2026-10-20 | Historical-branch formatter compatibility
 
 - **Before:** the formatter failed before checking a clean historical legal
