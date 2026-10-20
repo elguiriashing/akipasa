@@ -1,6 +1,7 @@
-import { listingMediaUsage } from "@/lib/listing-media-usage";
 /* eslint-disable @next/next/no-img-element -- Venue media uses native images with existing layout controls. */
-("use client");
+"use client";
+
+import { listingMediaUsage } from "@/lib/listing-media-usage";
 
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { setMediaFolder } from "@/app/[locale]/business/venue/[id]/premium-actions";
