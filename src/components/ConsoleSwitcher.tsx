@@ -1,7 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import { Icon } from "./Icons";
-import { config, type Locale } from "../lib/config";
+import { type Locale } from "../lib/config";
+import { suiteHref } from "../lib/suite-navigation";
 import { roleCapabilities } from "../lib/roles";
 
 export type ConsoleKey = "account" | "business" | "staff" | "admin";
@@ -77,7 +78,7 @@ export function ConsoleSwitcher({
           key={entry.key}
           href={
             entry.key === "business"
-              ? `${config.businessUrl}/${locale}/business`
+              ? suiteHref("hq", locale)
               : `/${locale}/${entry.path}`
           }
           className={entry.key === active ? "active" : undefined}

@@ -1050,3 +1050,15 @@ The desktop AkiPasa sidebar now separates the independently scrolling navigation
 The header AkiSuite button opens only the five product links plus Settings/account action. Bottom More retains internal navigation, workspaces, passports, membership, appearance and language. Independent sheet state, Escape handling and focus return. Header reserves search space. No auth or data changes.
 
 **Final mobile split:** the top-header AkiSuite sheet contains only the five Aki product destinations and current-product marker. Personal account actions belong to the internal bottom More sheet; guests see Sign in there. The top sheet does not contain Passports, Membership, workspaces, Settings or Sign out. The desktop rail's original suite menu remains unchanged.
+
+## 2026-10-20 | Explicit cross-product language contract
+
+AkiSuite selectors and management/operations handoffs now retain EN/ES using
+canonical product-specific route formats. AkiHQ remains free management;
+AkiBusiness remains paid operations. The synchronized suite-navigation v1
+contract rejects external/query/fragment/path-traversal destinations and can
+carry only bounded explicit workspace identity and a validated public referral
+code. No auth token or account identity crosses domains in links. Existing
+server membership checks remain authoritative. Focused tests pass; complete
+CI/build and canonical authenticated acceptance remain release gates. See
+`docs/SUITE_NAVIGATION_V1.md`. No schema, billing or customer data changes.

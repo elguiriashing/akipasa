@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
-import { config } from "../lib/config";
+import { useSuiteReferral } from "./useSuiteReferral";
+import { suiteHref } from "../lib/suite-navigation";
 import { Icon } from "./Icons";
 import { LanguageLink } from "./LanguageLink";
 import { PortalLogo } from "./PortalLogo";
@@ -19,25 +20,30 @@ export function PortalHeaderTools({
   onLanguageChange?: () => void;
   children?: ReactNode;
 }) {
+  const referralCode = useSuiteReferral();
   const menu = useRef<HTMLDetailsElement>(null);
   const nextLocale = locale === "es" ? "en" : "es";
   const apps = [
     {
       product: "pasa",
       name: "AkiPasa",
-      href: `${config.siteUrl.replace(/\/$/, "")}/${locale}`,
+      href: suiteHref("pasa", locale, { referralCode }),
     },
     {
       product: "business",
-      name: "AkiBusiness",
-      href: `https://business.akipasa.com/${locale}/business`,
+      name: "AkiHQ",
+      href: suiteHref("hq", locale, { referralCode }),
     },
     {
       product: "duermo",
       name: "AkiDuermo",
-      href: `https://akiduermo.akipasa.com/?lang=${locale}`,
+      href: suiteHref("duermo", locale, { referralCode }),
     },
-    { product: "hq", name: "AkiHQ", href: config.crmUrl },
+    {
+      product: "hq",
+      name: "AkiBusiness",
+      href: suiteHref("business", locale, { referralCode }),
+    },
   ] as const;
 
   useEffect(() => {

@@ -1240,3 +1240,17 @@ No real customer image, profile, booking, email or subscription was mutated.
   billing tests, full repository check, Android test/lint/bundle, Cloudflare
   package, exact-head CI, hosted Supabase advisors/preflight, then anonymous and
   authenticated production smoke. Record pass/fail/blocked honestly.
+
+## 2026-10-20 | Suite language and canonical handoffs
+
+- Before: management/operations selector destinations omitted language; operations
+  ignored incoming locale and could reload a workspace's previous language.
+- After: fixed-origin suite-navigation v1 preserves the current EN/ES across all
+  five products. Canonical free-management and paid-operations roles are retained.
+- Dependencies: desktop/mobile selectors, locale headers, static workspace cache,
+  membership back links, auth portal links and explicit location handoffs. Public
+  referral codes are bounded; callback/redirect wrappers and credentials are not
+  forwarded. No DB/API/RLS, subscription, consent or analytics behavior changes.
+- Verification: fixed-origin/security matrix and actual selector EN/ES rendering;
+  complete CI/build, responsive browsers and canonical authenticated journeys
+  remain required. Source/deployment rollback preserves all stored data.
