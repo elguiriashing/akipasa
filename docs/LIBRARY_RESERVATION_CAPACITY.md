@@ -1,0 +1,9 @@
+# Enhanced library and pending-upload capacity
+
+The enhanced library previously counted owned and placed media IDs when admitting a shared image, excluding live upload reservations and orphaned stored files. A free owner with eight pending uploads could reattach an eligible historical shared image as a ninth path; a Premium owner could similarly exceed 250. This is separate from the library-disabled baseline bypass addressed by190000.
+
+The additive193000 migration requires181500 and190000. It adds a private capacity assertion immediately after the existing library placement revision-row claim. The existing membership, source/target workspace, exact retained reuse tuple, subscription, source identity and legacy count checks remain intact. New paths compete with all currently owned/shared/stored/reserved paths and the existing byte allowance. Repeating an already-counted asset adds no capacity and remains available even for historical over-quota listings. No history, media, reservations, billing or feature gates are changed.
+
+Five actual-role regressions reproduce the pre-fix bypass, verify retained free reuse cannot become a ninth path, permit an eighth and repeated placements, reject Premium251 while250 uploads are pending, and enforce the existing1GiB Premium byte allowance. They also verify installed function metadata and private helper grants. The isolated PostgreSQL workflow adds two competing retained-reuse admission scenarios under READ COMMITTED and REPEATABLE READ, retaining all prior ten quota cases. Exact-head hosted evidence is required before merge/application.
+
+This source remains gated with the enhanced library. Root must review this amendment after181500/190000 before enabling library reuse. Actual provider Storage byte acceptance remains required before strict upload or enhanced-library activation; no test here establishes that external acceptance.

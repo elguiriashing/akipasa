@@ -1,0 +1,1009 @@
+{
+  "version": 1,
+  "function_names": [
+    "accommodation_property_private.append_only",
+    "accommodation_property_private.guard_media",
+    "accommodation_property_private.guard_object",
+    "accommodation_property_private.inventory_identity",
+    "accommodation_property_private.inventory_occupancy_guard",
+    "accommodation_property_private.inventory_rate_guard",
+    "accommodation_property_private.orphan_property",
+    "accommodation_property_private.premium",
+    "accommodation_property_private.property_access",
+    "accommodation_property_private.ready",
+    "public.accommodation_listing_info",
+    "public.accommodation_property_change_status",
+    "public.accommodation_property_review_page",
+    "public.accommodation_property_team",
+    "public.accommodation_storage_allowed",
+    "public.can_manage_accommodation_inventory",
+    "public.can_manage_accommodation_property",
+    "public.cancel_accommodation_upload",
+    "public.complete_accommodation_upload",
+    "public.create_accommodation_property",
+    "public.managed_accommodation_properties_page",
+    "public.reserve_accommodation_upload",
+    "public.review_accommodation_property",
+    "public.save_accommodation_property_profile",
+    "public.set_accommodation_listing_grant",
+    "public.set_accommodation_property_member"
+  ],
+  "table_names": [
+    "accommodation_property_private.audit",
+    "accommodation_property_private.launch_settings",
+    "accommodation_property_private.property_entitlements",
+    "accommodation_property_private.upload_reservations",
+    "public.accommodation_properties",
+    "public.accommodation_property_booking_settings",
+    "public.accommodation_property_media",
+    "public.accommodation_property_members",
+    "public.accommodation_property_nightly_rates",
+    "public.accommodation_property_reservations",
+    "public.accommodation_property_room_types",
+    "public.accommodation_property_unit_blocks",
+    "public.accommodation_property_units"
+  ],
+  "source_commit": "bea895b3ed1544d62aab92fa107a34aea42d45fb",
+  "purpose": "Fresh disabled native property install; no canonical migration replay or activation",
+  "sources": [
+    {
+      "path": "database/migrations/20261021001000_native_accommodation_listing_foundation.sql",
+      "sha256": "58618402b44d6f7feb183275514422a91741772eb77737d0423e862348a7c43a"
+    },
+    {
+      "path": "database/migrations/20261021002500_native_accommodation_inventory.sql",
+      "sha256": "f4646aa11d0136e194beffb1f8b387f998fbb39c85696b25347304045391556f"
+    },
+    {
+      "path": "database/migrations/20261021005500_native_accommodation_review_queue.sql",
+      "sha256": "e97bfa130e5ade157c308fe48ffe4516341f509a9e7bcb0ac2bd8131ddeb7170"
+    }
+  ],
+  "lock_timeout_ms": 2000,
+  "statement_timeout_ms": 8000,
+  "idle_transaction_timeout_ms": 15000,
+  "phases": [
+    {
+      "id": "00",
+      "file": "00-native.sql",
+      "migration_name": "native_20261021_p00_e1af4238e8a1",
+      "depends_on": [],
+      "bytes": 3178,
+      "sha256": "e1af4238e8a1739621c6c280ab0dc18419b45f351150dd3c639a977efe2b8b22",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 2,
+          "sha256": "e784c386797f6a2756e3de972e700c87d85b4f835526530a02d6e3ee4e1634c3"
+        }
+      ]
+    },
+    {
+      "id": "01",
+      "file": "01-native.sql",
+      "migration_name": "native_20261021_p01_62684aa406e9",
+      "depends_on": ["00"],
+      "bytes": 4881,
+      "sha256": "62684aa406e9ecb32cead91fbe619069f230d938ec4c77c02e188405603a7032",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 3,
+          "sha256": "78f378942323a183d83b66b77a494cc7dda55232b14c8ebd5564ef5b3d4938a7"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 4,
+          "sha256": "860362149f2e209f1cb376adca33e00f2078e627d2bb4f45bbb24cbce6bb1d96"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 5,
+          "sha256": "252600dc2ab7603d5c3964d1d9b4af1855056eb704ab13a4255dc4f0ad4f929b"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 6,
+          "sha256": "4629d2ce67317111ec8e54b2931f017c2daa43783f62d23f40d10058645e165e"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 7,
+          "sha256": "2b97d66cfdc37e98bd8cae69dfbe9894bf88c2f320daa6e5f09240ac16cab489"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 8,
+          "sha256": "94c209e8cf10759902761a6557ed153f36ac0f4f4fa657181de54a11f12569d2"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 9,
+          "sha256": "8fffc0ab63d65d153c1a6b4408dfc3c3dc00eee40306d0ad3794e661143ce25e"
+        }
+      ]
+    },
+    {
+      "id": "02",
+      "file": "02-native.sql",
+      "migration_name": "native_20261021_p02_5e82d3bf38f7",
+      "depends_on": ["01"],
+      "bytes": 4967,
+      "sha256": "5e82d3bf38f7ad79b72df50136c4a674392793f488856b089815aa48e5156275",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 10,
+          "sha256": "f5e58b339e830c16b14a267383c5bf502670ccd39763d2e72fe10358deb9f274"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 11,
+          "sha256": "025336c1bb1541f8b8ebc635b5186d1c780e78b3234a875b1681b6ac7563385b"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 12,
+          "sha256": "8a610ebb7d517e324bf06a96aee47c009004c81b7de4993f0e3e0271998d5bdf"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 13,
+          "sha256": "ea69c9dfbdd3dea99d5cdc839236a3f38e7a2609ba5aff79bd27eece7ed3cea4"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 14,
+          "sha256": "3a5368402db0a0e01fc8f35c6f7354eb678402475b3ee9b36eef23e341ce4b90"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 15,
+          "sha256": "b2535d5d1e83ac2ddd958e792ddf74553d7be086e393d69f95cafd4c4940a0a6"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 16,
+          "sha256": "d6500b7d3757ea79961bbb5a7651899599c335d21db548d4729f4b6597e923fc"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 17,
+          "sha256": "efe79d6a5647a4dbbc76c56e7ea279cfa2fb24697f7f731f43485a07b409abb0"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 18,
+          "sha256": "52e11ccfcc3e07f9ea7f5f6ea97b0b044adcfd69ad104658b9caa0345bf48ff4"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 19,
+          "sha256": "4dda6addb5a771d06f182d817e99e9dbb9a1389de002546764595777411485a4"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 20,
+          "sha256": "7843bd9544389e8aa6aecb9c42591ef90961c06b7a44103fe6709cb03c1f9547"
+        }
+      ]
+    },
+    {
+      "id": "03",
+      "file": "03-native.sql",
+      "migration_name": "native_20261021_p03_8503e7e351ed",
+      "depends_on": ["02"],
+      "bytes": 4971,
+      "sha256": "8503e7e351edfb11a7d73a77c39a76e97112a6b48db136c0651d6cd4fb552062",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 21,
+          "sha256": "6cccead2aaf12091bae611916997d68ef1eaa305957de8672305cbd11f0941e6"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 22,
+          "sha256": "4c4e884ac480a34fd58f83772583fcc2948814fd687b1f2a85546de0e812b78c"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 23,
+          "sha256": "f4dd48ba570d333d58672db663f68172a05e0809e176fb7fdc14ceda818a1e74"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 24,
+          "sha256": "e4b50fcfd6e283e81130e8eea95b8bad1515effa2bffd584b5c3cdaa51f4b2d0"
+        }
+      ]
+    },
+    {
+      "id": "04",
+      "file": "04-native.sql",
+      "migration_name": "native_20261021_p04_ee865c8559ec",
+      "depends_on": ["03"],
+      "bytes": 4466,
+      "sha256": "ee865c8559ec0105d68056e96bc4eb8c0fd41d767fa673b618aa887248130753",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 25,
+          "sha256": "9bccba8a5c5dd23313d509532fa4677fa4179cc653c1863f0ac32837634a986a"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 26,
+          "sha256": "4ee2dfc1499462b27d9ee72f46a0f31d3f42ad9e313e571a02abc1bb7f219656"
+        }
+      ]
+    },
+    {
+      "id": "05",
+      "file": "05-native.sql",
+      "migration_name": "native_20261021_p05_c43b4fa946cf",
+      "depends_on": ["04"],
+      "bytes": 4705,
+      "sha256": "c43b4fa946cfcb0e7d749a79c2fa1a611be4b43bf9867e026e0fa3f92996b753",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 27,
+          "sha256": "40fd7603a5d7634500349a4399f588b61782b0d474477e05d2b04650fb6c12f3"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 28,
+          "sha256": "7de1232b395474d67cb3ad223dc35fa50d78244d6f06ef259fd4ce9ec295afc6"
+        }
+      ]
+    },
+    {
+      "id": "06",
+      "file": "06-native.sql",
+      "migration_name": "native_20261021_p06_4a04237ccfe3",
+      "depends_on": ["05"],
+      "bytes": 4951,
+      "sha256": "4a04237ccfe32c2e09fb87f217372792a2fd29d8b61c8edd97e775b7c7c3c9b5",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 29,
+          "sha256": "bb0966697ef8d3828102e1c49abd3c155365fae37c5f95313e269811e2e93862"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 30,
+          "sha256": "29f8d6ab4b988370bff895df8b3dd32f59f8b052431e93ff3155b5b00006a7d1"
+        }
+      ]
+    },
+    {
+      "id": "07",
+      "file": "07-native.sql",
+      "migration_name": "native_20261021_p07_d4c718eaae4a",
+      "depends_on": ["06"],
+      "bytes": 4929,
+      "sha256": "d4c718eaae4a27067d99f90844ef7fa325cbf5674866bf1087286b82d0481623",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 31,
+          "sha256": "6c435a53d35d9d8cf571dff63cd1f089dd376439b56ead8a1bd2f2c1e815157c"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 32,
+          "sha256": "092bd20aa4f895e101fe574464f2e2ec0af40754ca15043445b7bfabc217cdfd"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 33,
+          "sha256": "604eced099f850d2ab087254e041dd636e9141f63b7cf71136578e03600a7eaf"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 34,
+          "sha256": "9940ecc0837058ffa2bee7aa60553acf5b02f03218ff415d73f701bc953d3b63"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 35,
+          "sha256": "db0246c63f4f05cd2888abef730dcb5cb47ad48ec7bdad6f850b1f7ad2513457"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 36,
+          "sha256": "6fea0bbf351f8a1234e5bcc08a507111b9a64bdb5633c9f53e9b906664cce266"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 37,
+          "sha256": "ae28cfd7b37ba909ad85d2f6ffb0443bb3959e7699beee3e47f9277a65ac4224"
+        }
+      ]
+    },
+    {
+      "id": "08",
+      "file": "08-native.sql",
+      "migration_name": "native_20261021_p08_f6318b01c235",
+      "depends_on": ["07"],
+      "bytes": 4310,
+      "sha256": "f6318b01c2357f344a6b588865ae1ff0a236fb61c441720f4c3b8ba6f80895d0",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 38,
+          "sha256": "d4afabf10cb3c3e236a21c3f07b89ca32665ec19adcc501dd11249fe12f8d42a"
+        }
+      ]
+    },
+    {
+      "id": "09",
+      "file": "09-native.sql",
+      "migration_name": "native_20261021_p09_d0a3bf07805e",
+      "depends_on": ["08"],
+      "bytes": 4617,
+      "sha256": "d0a3bf07805eb796f5819b195df83c8a9e65a8008554fbe0656f978a3032d39d",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 39,
+          "sha256": "61711252541bc93772d19191b50d7e9a98a3cb50ca735b3b77c9c06a14d3f562"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 40,
+          "sha256": "187f33d64e7d1b371e15eb0d616ef250caa9d8b0403e7fc9dc87795d762333ee"
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "file": "10-native.sql",
+      "migration_name": "native_20261021_p10_136f674a9b3f",
+      "depends_on": ["09"],
+      "bytes": 4726,
+      "sha256": "136f674a9b3f6282cf446807373a92f4dc1e06e221d98ba7fe63895c1c606c29",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 41,
+          "sha256": "30d76a02b81b4c3ecbc88a6f45ae0cdaf721526dbf2d17c1446c6c2e4e6486df"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 42,
+          "sha256": "6dd9b586263e2fa9d73aed3a2309ca2c25037f4941603675f22dfb5e88d680d8"
+        }
+      ]
+    },
+    {
+      "id": "11",
+      "file": "11-native.sql",
+      "migration_name": "native_20261021_p11_159a0cb42672",
+      "depends_on": ["10"],
+      "bytes": 4099,
+      "sha256": "159a0cb42672f2812e9318260f7296fbb75398faa405d8421863f549d6af8f12",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 43,
+          "sha256": "3e6b5bedc4c4796ef003a80b13d77e1e8c8ee456df3ed38f920e5437bb7071ea"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 44,
+          "sha256": "e9329e38202401b3742cb7f1a9cd1217d67ef798c2aad995a01407de399fe979"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 45,
+          "sha256": "ecb6278c6ba1ad38711a0bdc6ad4401d0648539c92c9acb6153bab0ee847b0d2"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 46,
+          "sha256": "475d72dae04d8c32bbcdbca71c60f76a849ade3364f18a5c3414fc495489133c"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 47,
+          "sha256": "88c0e61474d5c1903d97e541ba3fb143bcc97f091c458cea0ada185511024462"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 48,
+          "sha256": "a4c9352723d8ff0ec8262faf7daab64d0c15b2d554c3e75235c70b350afbb899"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 49,
+          "sha256": "14ffa94d4c50bf3d8346e21a2e3ea7fd01c9f6e1f867aa0f57ab3584d504aa0f"
+        }
+      ]
+    },
+    {
+      "id": "12",
+      "file": "12-native.sql",
+      "migration_name": "native_20261021_p12_05e0faa58b01",
+      "depends_on": ["11"],
+      "bytes": 4911,
+      "sha256": "05e0faa58b019e1d4f47dc2c098e244af910e1603d59c3564be5a576a7931ad7",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 50,
+          "sha256": "d3321fa5063cae4b3d4725aa430ab945082b199679d4c6ee93aca4f7a6490111"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 51,
+          "sha256": "dbe665256790860326c83487ba31f6ffd3e30542f38fba24b32be9d4114942a5"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 52,
+          "sha256": "62e931d99c82217f4823e62e0be378c93a5f3c350b47996d346f05610f6d0556"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 53,
+          "sha256": "ffcd37f232346fc866cb98a97ddd011449738e20141b16b8c8f40be4d9b8512a"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 54,
+          "sha256": "90e37c9b522aff666ddbe94f9f5555135b778019323ff99959370784ffcd17bd"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 55,
+          "sha256": "ea8e1b3948310124e9d3771ac3bcb228d9a8efba85f517461b46dcdefdf926b8"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 56,
+          "sha256": "c5fe4c3c053277dc97ab6c79dfb3e1e17d8af1cfbd5c6cecc128573f1acc0269"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 57,
+          "sha256": "b5fbe44b595dcd74d80fd6289889020243ee5af333b3583f76f7e8b14d4d8741"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 58,
+          "sha256": "8865515f6bf1ba95d728295ddbe354d9ed580b69a1707efdd3ebd06ffbf518d5"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 59,
+          "sha256": "dd1945b5645a303da660fca8cf6b944217bebde5c788704011b3a51c820a808b"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 60,
+          "sha256": "83749b5d502fd578c1b87595ef3083444374a4085baff822d5f3f7ce25a2e3a4"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 61,
+          "sha256": "3dce053376ae57a3abdec1321a4699d25dd63a2a9f33815f61e6c3ccf8e4a82f"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 62,
+          "sha256": "b33a246c76e75eddd607f5bc3102fac684d260a37367a91fdac305203b2a4e90"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 63,
+          "sha256": "e6e087c1f28fc75b33b4666efe882b469aa46046d12d3d7abec745ee97c65af9"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 64,
+          "sha256": "76ca9aa5a36ff198d4fe0b8f28740feb7c67e21fc00f4971570bb8ff6a324799"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 65,
+          "sha256": "d74c0f44d95412b9a701e2e8eb617d0c04c7a49841f3460fae653127b901f69c"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 66,
+          "sha256": "adaecff706d96573ef1478479a5da860f613739446cdb22986b4f6057abf151c"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 67,
+          "sha256": "706802cd7cd33e874e5ef57157f67cc9faaa775cdddf23336e3d404284bce5af"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 68,
+          "sha256": "b675b52381c2d155caf33ee3b9bacd8b2ff0f38524141c3d6f68d50e17fac9bd"
+        }
+      ]
+    },
+    {
+      "id": "13",
+      "file": "13-native.sql",
+      "migration_name": "native_20261021_p13_c72119b54939",
+      "depends_on": ["12"],
+      "bytes": 4915,
+      "sha256": "c72119b54939d995656a94dc97bcebbbab2a5db1d16d14316fed92dcf490bf90",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 69,
+          "sha256": "7d29f264940b6e07f94630e03eb66e6c7b379791d96e82ba39e11ff80142e295"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 70,
+          "sha256": "f5e17d9ede5ecf5b07cc73f55b300648ccb9452ac7451fa3b58200d59d76cd32"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 71,
+          "sha256": "e507e7829bd720ebf013dff1e8448ca54b48ceb09b665c27199e18b96782ba59"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 72,
+          "sha256": "94c2d106ab042eedafda16b872d176af7268778001bb8d0ad28e1d79341c32b4"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 73,
+          "sha256": "bfa4b6defef3dcd79702cc0914af8940576936fe88f770ac30e3277369aa0c6a"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 74,
+          "sha256": "572856f5a38c80ce9f7397fea8603453dc2e66d61f87077c077c832aaa4bf7ce"
+        },
+        {
+          "migration": "20261021001000_native_accommodation_listing_foundation.sql",
+          "statement": 75,
+          "sha256": "beae8e6f16857473db571b80b8d55f26d7f8b1fcf2c134cc8904a9b4f71d3fe4"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 2,
+          "sha256": "430fd665ab6703a0ed5b3c82f6175191a19d5ed50312a4b225005500f2642ac3"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 3,
+          "sha256": "7332acadaf968d69a93bdc37efbaca049811b2be48db88960c975b20f7fa385c"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 4,
+          "sha256": "4c969992b76298bcb5e6080cac0c7dd6a280b75be3c9ebe0918ea2b2d7d9c98a"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 5,
+          "sha256": "188d80f7e12dcc843bc60e5cdaafd618082650a70c50dcdb1bee3858b4ad5a12"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 6,
+          "sha256": "997a7422115f6a974c918c044a4b87238f3d655bec7677863c47c56c545d33bd"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 7,
+          "sha256": "32987a3b01a92e63ac480d7983238516882d23691ead6272cc1a24053b0131a3"
+        }
+      ]
+    },
+    {
+      "id": "14",
+      "file": "14-native.sql",
+      "migration_name": "native_20261021_p14_5ccba0eb53ec",
+      "depends_on": ["13"],
+      "bytes": 4776,
+      "sha256": "5ccba0eb53ecd0cd3c7ee2f45efecf568f8e4115b333760d40c2dad592018bd2",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 8,
+          "sha256": "4a7726c07964d882353378070dacae97601475e9f51a5121d5dfe5fcf4f0f6b9"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 9,
+          "sha256": "76a41de85e91ca191c6214cae7f14cab45d22b7eb88bc075508efa02e2c9759e"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 10,
+          "sha256": "109f4959ec1bed8b2957b996fe46b9d9ae1f6bba4012342a95405e4d4f49a515"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 11,
+          "sha256": "269189342b9a7e4cbd2e029a93822e774f2e0fe38f3f2d536a6694d79451b251"
+        }
+      ]
+    },
+    {
+      "id": "15",
+      "file": "15-native.sql",
+      "migration_name": "native_20261021_p15_14e06162ebc0",
+      "depends_on": ["14"],
+      "bytes": 4575,
+      "sha256": "14e06162ebc0968530adbe00ec5d950c6701e52686873620a97e90c38ea41b49",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 12,
+          "sha256": "ac2d411ecd646c649c72429c9d91552e330054c48175c573d3fb8002e652c698"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 13,
+          "sha256": "9f1b47f91216bc74a60fe50bb648cca5082ae7520a2198aaa7196fd9fedde1b9"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 14,
+          "sha256": "23350a53a3b714e08f33118a2cee55385770dcfadb14d9994245174c9a6b9758"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 15,
+          "sha256": "f63f2e03b825373fe75a15b4b39da9d1bb3aacba965cded4786850f36ae4614c"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 16,
+          "sha256": "f86c29b67773fc053f815a93868b7436cec4aabfafa972a807a9bc40fe743e8e"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 17,
+          "sha256": "22b6e8a18e252c97d98b73f623c853a3be6f72d76437939ed7908e0f69c4fa6a"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 18,
+          "sha256": "ee46e908381ba75ee48275a862c00a21518c67e7cd13fb618af7529d69f8b876"
+        }
+      ]
+    },
+    {
+      "id": "16",
+      "file": "16-native.sql",
+      "migration_name": "native_20261021_p16_f2ffdd26e10a",
+      "depends_on": ["15"],
+      "bytes": 3032,
+      "sha256": "f2ffdd26e10afb3e7f10e4476fb3f76ec7ad336678c466c3409ebbb6ed2de474",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 19,
+          "sha256": "11c91e5841772ea25a3546e211f3e02dc38fdcf781536931b1e25510f136a828"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 20,
+          "sha256": "a9a19fff77f83d93f1c9b545be02b903f40362aa26395ba919b75f17d8b09d76"
+        }
+      ]
+    },
+    {
+      "id": "17",
+      "file": "17-native.sql",
+      "migration_name": "native_20261021_p17_f42cd3b90da0",
+      "depends_on": ["16"],
+      "bytes": 4883,
+      "sha256": "f42cd3b90da0397c58291cc093cdf1782c941183e6067f018beef788b925957b",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 21,
+          "sha256": "61f19c0a513699066c6587b3484f3f490cd4c816754cf168914506245ffbbf8b"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 22,
+          "sha256": "a5329b64c146deb85c12f2dccc2a2d365f0f3683a3f7b67c9e115026f572cc04"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 23,
+          "sha256": "b6ee6cd9ff62565e55580bb27e29e287564c2e273f296a9a4f43c83c7fb1a695"
+        }
+      ]
+    },
+    {
+      "id": "18",
+      "file": "18-native.sql",
+      "migration_name": "native_20261021_p18_50866146b13b",
+      "depends_on": ["17"],
+      "bytes": 4879,
+      "sha256": "50866146b13bcbcf04a93f34fd3675d5ba81536b81192f1d8f7989bcb38f3017",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 24,
+          "sha256": "a3f412826ef156ea380f6380c0bb2fc453b7412a036cc239e2c69cf97b925831"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 25,
+          "sha256": "e92020068fad5579b8eb15fa9ab1ed5b96cac1d82331dfb94aeb6e0c5cfc35c6"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 26,
+          "sha256": "d89513eba5ddd4ecd40dfed1e549caaba3cc71dc3a596fb30bdd754d64902218"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 27,
+          "sha256": "f219b81533cc57434b9954eb7fd6a0ce2359ea5ca64dc5c7dcdfc67c746226c2"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 28,
+          "sha256": "6dc3bba7ca349d101d2e7f8c73035fa341c5cf199dd51156faf5da7a634d4b1c"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 29,
+          "sha256": "70d3eb4328104e9963200ea16d41d14b2830415c757aee080cb9998ccd73d906"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 30,
+          "sha256": "bfe501ba1901df2ff60015d41a4fc8da6350b08b0183b16fc4101f4d4a0c0a1e"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 31,
+          "sha256": "fe559d85db60897e3179acb712a50967854e9be373c717ed38df69a050707692"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 32,
+          "sha256": "7c89220b4b27721abcc7aa8b4c35b4567f17d2ccfccb24af115466caef0f9d8c"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 33,
+          "sha256": "e3b1e12cd891386c5a817954199d07f0ff565b17d7cb5ae5c23f4fbcd66a6fd4"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 34,
+          "sha256": "46b34f8b437714eda1c6b7d6a7f7aa075054a472fde9277bba5c1089bc8a55f3"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 35,
+          "sha256": "d7a28e8ce9e447c0da2dc5e80b7a30450836524c0634065e696dcb06ee61d62d"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 36,
+          "sha256": "4faa4359876b57c40c82fa0b3ba18b2ef40be830e9fb7ba50c7dc4f3a0c50c9f"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 37,
+          "sha256": "08742dd38516a92b405641027889c8d87d99e21f2ef5fa912035d45f2ab3f24d"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 38,
+          "sha256": "2757a506922ba691079c566aeeb1ae22209988a7612b901dca12b4079cd4e010"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 39,
+          "sha256": "707d1b9cbb20ec0f9f1c44cae477d37988d8b75484fe1e57ee9b26a6c7b1c5bb"
+        }
+      ]
+    },
+    {
+      "id": "19",
+      "file": "19-native.sql",
+      "migration_name": "native_20261021_p19_925c884ac8bb",
+      "depends_on": ["18"],
+      "bytes": 4640,
+      "sha256": "925c884ac8bb0fb0d9d65280ce6c67b2bf94130524160f6fa9d75e20f7570757",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 40,
+          "sha256": "b36145f7ce152cdef1e3e15f12dc9cdb9f65b511c066646697dd9e3208b9a9cf"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 41,
+          "sha256": "7decf714b2c77fc24aa7f3544a42a52bc707b793b3561bf529a7e95963b8c338"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 42,
+          "sha256": "05dbfd68c7f07fae50775b4241dc608e2328d4e5803975e09b9cb77979fb1827"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 43,
+          "sha256": "9877ed2c60e3f2f428d2b512d9c4a5882c3f83dd81c3b664ba3c38a9d1094d2f"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 44,
+          "sha256": "eef15a76d0d9dfa93f7cba82a75ea9ad9607e2006f67e7e5a08a1bda001e3d80"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 45,
+          "sha256": "4454c934551662ac2d8a740f675bb50b9c92c19a48a359e652f0ed768b933945"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 46,
+          "sha256": "18c4a5e85646870ebdaffab069b2705f6523ea3ca8bc46e1ca2c264ff79314f8"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 47,
+          "sha256": "ca7867ce02507e4f38662a4eb0f804bb687642ea3c9ec59418e850e9d2289e26"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 48,
+          "sha256": "0e32f81cd2e281fc23ae346e70f3f8239eee315735c3abc3470bc19dbd5d9e98"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 49,
+          "sha256": "d7a6bdbdda5cb60a5960d2cfaf6990cf0022764c74d4d40e57cca4e87d038908"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 50,
+          "sha256": "4f8232a02be2941c84379c088d88074c8c1652778aca0413a61d44f8b0f4bfda"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 51,
+          "sha256": "71585b232669913b4f5fd82df04cf0282833bcaeab41c16c30b650ad49d04179"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 52,
+          "sha256": "58aa204f0f448d6ecd67d8a9be4d845151d823288f3b86a0ae13474d7964c2ab"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 53,
+          "sha256": "2b7a8e11abc11d396dc3baa02afcf44adb86d89d6231326e076f3b52c82df690"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 54,
+          "sha256": "399522a1450ddc0c90b1815ac14d9d0d0c9f94610f2a826327afa13c93fca328"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 55,
+          "sha256": "9396aa2ea4571dfe5706533d6bb76447eadde5f86af5858a6af15834fffd8fe9"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 56,
+          "sha256": "22e8fdd2ce1e902739249e4a3f817f86c04c46c86e1924928b23136a298408ce"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 57,
+          "sha256": "62a8122f44794d04a8a5e2da7b816b1ac89264d48cc3de8d90286d75613b8eaf"
+        },
+        {
+          "migration": "20261021002500_native_accommodation_inventory.sql",
+          "statement": 58,
+          "sha256": "beae8e6f16857473db571b80b8d55f26d7f8b1fcf2c134cc8904a9b4f71d3fe4"
+        },
+        {
+          "migration": "20261021005500_native_accommodation_review_queue.sql",
+          "statement": 2,
+          "sha256": "3174a92e1dd2d14672d49c5ec9a7c43aeb810aa472cc99d0d3ee48725b08763a"
+        }
+      ]
+    },
+    {
+      "id": "20",
+      "file": "20-native.sql",
+      "migration_name": "native_20261021_p20_e11351783c23",
+      "depends_on": ["19"],
+      "bytes": 4282,
+      "sha256": "e11351783c232c9495de8b26772d25560f1ad086266489ec01d06f0553e11abd",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021005500_native_accommodation_review_queue.sql",
+          "statement": 3,
+          "sha256": "572899357e9205ac4ddf6fabff854c036b6c88c4d57e30e7850d74fc618ea17e"
+        },
+        {
+          "migration": "20261021005500_native_accommodation_review_queue.sql",
+          "statement": 4,
+          "sha256": "f1712343e13b5ccd552e323580556e929a9c5e0a40f99c34b6db7d865e989e69"
+        },
+        {
+          "migration": "20261021005500_native_accommodation_review_queue.sql",
+          "statement": 5,
+          "sha256": "c76d10beae665f7b5b5da50a49c78abb8d246a873ca94d27096b4e0ece37b4fb"
+        },
+        {
+          "migration": "20261021005500_native_accommodation_review_queue.sql",
+          "statement": 6,
+          "sha256": "35a6a3e0f4b5b6d6701f96c9073cb01fd9b32b9636cb324b986d3aa22d6c5dbe"
+        }
+      ]
+    },
+    {
+      "id": "21",
+      "file": "21-native.sql",
+      "migration_name": "native_20261021_p21_46359197c0e2",
+      "depends_on": ["20"],
+      "bytes": 3090,
+      "sha256": "46359197c0e238cdb7eb49ec775dd87a1c46d050b676c7a7d77df72225d49f6b",
+      "oversize_reason": null,
+      "source_statements": [
+        {
+          "migration": "20261021005500_native_accommodation_review_queue.sql",
+          "statement": 7,
+          "sha256": "82d55f9018b1e8e18819a7f55e84c77489f93825d01cc045b40f962dace8bf85"
+        },
+        {
+          "migration": "20261021005500_native_accommodation_review_queue.sql",
+          "statement": 8,
+          "sha256": "beae8e6f16857473db571b80b8d55f26d7f8b1fcf2c134cc8904a9b4f71d3fe4"
+        }
+      ]
+    },
+    {
+      "id": "22",
+      "file": "22-native.sql",
+      "migration_name": "native_20261021_p22_b2a5e77705f6",
+      "depends_on": ["21"],
+      "bytes": 2721,
+      "sha256": "b2a5e77705f6e9bdb04dcde24c5eff8da552002519f07fdb852b5fe60815acaa",
+      "oversize_reason": null,
+      "source_statements": []
+    }
+  ]
+}

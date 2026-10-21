@@ -1808,6 +1808,29 @@ the authenticated, workspace-scoped AkiBusiness operating screen. This keeps the
 public sales journey compact and consistent across products without changing price
 IDs, entitlement keys, active subscriptions or checkout readiness.
 
+## 2026-10-21 | Atomic disabled funnel deployment recovery
+
+Preserves canonical242/243 SQL unchanged while generating12 short dependency-ordered
+apply_migration phases with canonical/hash IDs, transaction-local timeouts, immediate
+private ACL closure and disabledNULL-state assertions. The reported enum-only live
+baseline resumes at verifiedphase01; no large request is replayed. Full SQL catalogue
+parity, hostile-default permissions, phase rollback and all capture/privacy cases are
+covered locally. No provider write, activation, retention approval or history repair
+is performed. See TRUSTED_BUSINESS_FUNNEL_PHASED_DEPLOYMENT.md for receipt archival,
+readback, interruption handling and the separate operator history-reconciliation gate.
+
+## 2026-10-21 | Installed disabled funnel schema and privacy readiness
+
+Release-manager apply_migration receipts for phases01–11 are archived with the
+frozen manifest/phase hashes; enum00 was already present. Independently read-only
+history/readback confirms disabled collection, NULL retention/approval/start, zero
+optional rows,13 triggers and intended RPC/private grants. Source
+AKISUITE_FUNNEL_READY=true now opens only installed identity-export readers and
+bounded maintenance; it cannot activate collection or set retention. Focused SQL/
+adapter tests preserve inactive reporting and restricted own-data export. No agent
+production write, financial configuration or migration-history repair occurs.
+Worker deployment and actual runtime acceptance remain separate release gates.
+
 ## 2026-10-21 | Independent property listing foundation (gated)
 
 Native accommodation uses real property UUID ownership and CRM intersection,
@@ -1868,6 +1891,20 @@ copies must not be used. Forty scoped native/review/deletion cases pass locally;
 hosted exact-head checks and provider/role acceptance remain release gates.
 No live schema, customer row, flag, payment or primary branch changed here.
 
+## 2026-10-21 | Atomic disabled native property deployment representation
+
+New deterministic deployment files represent the unchanged corrected001000/002500/005500 canonical SQL as23 bounded transactions (≤4971bytes), each with2s lock/8s statement/15s idle transaction timeouts and disabled/empty postconditions. Table RLS/client ACL and function execution controls accompany creation atomically. A restrictive native Storage hold precedes bucket creation and is removed only after all permanent policies and the evidence trigger exist. Hostile-default-grant intermediate actual-role tests and normal/hostile final catalogue parity preserve legacy accommodation_private, existing bookings and other buckets. No application, locale, analytics, identity, billing, existing data or feature flag changes. The release owner subsequently applied all23 reviewed phases with all activation gates false; exact history/readback receipts and the phase21 provider-history collision recovery are archived. See NATIVE_ACCOMMODATION_ATOMIC_DEPLOYMENT.md for hashes, ordered receipts, uncertainty recovery and separate provider/activation gates.
+
+## 2026-10-21 | Listing quota snapshot serialization
+
+Forward181500 adds private per-venue/channel revision writes before existing
+quota reads, preserving advisory keys2/17. Exact installed function anchors retain
+all authorization, owner/OID/ACL/config and package/date/grandfather semantics;
+unknown bodies fail atomically. No existing venue row is touched or history
+backfilled. Local quota/metadata/receipt/isolation regressions pass; a dedicated
+actual PostgreSQL RC/RR event/reservation/legacy Storage race job gates release.
+All flags remain unchanged. See LISTING_QUOTA_SERIALIZATION.md.
+
 ## 2026-10-21 — Private merchant-stage classification
 
 Observes existing billing/migration merchant GET without changing request, fixed
@@ -1880,6 +1917,63 @@ preserved. Focused86 tests and SQL permission audit pass; full exact CI and live
 installation/deployment remain release-owner gates. See
 OPERATIONS_MERCHANT_DIAGNOSTICS.md for categories, interpretation and rollback.
 No production, primary, provider, customer, configuration or financial writes.
+
+## 2026-10-21 | Standalone library public artwork and reference deletion
+
+Additive175000 exposes only explicitly selected published destination artwork
+from shared private-source media. Draft events, bins and unrelated images stay
+private. Database triggers block direct referenced media/object deletion; reference
+writes lock media plus Storage rows to close concurrent deletion races. Existing
+intentional whole-venue deletion remains compatible without Storage cleanup or
+ownership transfer. Seven new actual-role cases and the existing21 pass locally;
+four independent PostgreSQL race scenarios are a separate exact-head hosted gate.
+All library/strict flags remain unchanged. See LISTING_LIBRARY_REFERENCE_BOUNDARIES.md.
+
+## 2026-10-21 | Repeatable-read shared media deletion safety
+
+Corrects the still-unapplied175000 descendant: reference writes touch unchanged
+media and Storage row metadata so old repeatable-read snapshots cannot miss a
+committed placement after waiting. Bytes/paths remain unchanged; no security guard
+is weakened. The real PostgreSQL matrix covers both isolation levels and both
+orderings, while the full strict receipt flow runs all installed guards together.
+Apply only the tested corrected child; frozen262 is not the production SQL source.
+No live migration, activation or data mutation was performed here.
+
+## 2026-10-21 | Reconciled master mission delivery ledger
+
+The docs-only delivery ledger indexes all mission phases against source, exact-head
+CI, applied SQL, runtime gates and manager-observed production identity. It preserves
+historical integration records and links them to the current ledger. Queued customer
+commands are not schedules; configured bindings are not merchant verification; a
+merge is not a production marker. Native/funnel/Storage acceptance and the deliberate
+Standard/Plus/Pro versus mission naming conflict remain explicit. No application,
+price, customer, permission, database, primary branch or provider setting changes.
+See AKISUITE_MISSION_DELIVERY_STATUS_20261021.md; refresh moving heads before release.
+
+### Delivery-ledger review amendment
+
+Record the approved EUR 24.99/44.99/64.99 per-location monthly amounts against stable
+basico/standard/pro keys and current Standard/Plus/Pro label conflict. Preserve the
+three valid 100%-forever coupons, paid-through dates and Personal subscriptions; no
+immediate invoice/proration/new subscription. Include unresolved Supabase-owned
+spatial_ref_sys write/TRUNCATE exposure (HQ59 actual 42501 rollback), Cloudflare
+MCP-32603 deployment/pin blocker, live HQ e249 at 14:02 UTC and disabled-funnel owner/
+foreign/privacy role acceptance at 13:59 UTC. PR261 new 6d6 head CI and PR262 guard
+repair remain pending; neither is claimed installed/observed. Documentation only.
+
+## 2026-10-21 | Coherent phased-readiness and library protection release
+
+Integration preserves f1e99 primary plus frozen PR264 df012, PR265 9e1 and PR263 8a1 ancestry and reviewed immutable SQL/utilities. Master/impact append entries from all parents are retained. Schema-only funnel readiness is declared against the installed disabled schema; billing/migration true and checkout/tax false remain unchanged. No production or provider writes, quota181500 changes or premature migration closure. Delivery status distinguishes merged diagnostic source from unverified deployment, native foundation installed with gates off, HQ e249 live and funnel collection off. Exact combined CI remains required; release manager owns merge and activation.
+
+## 2026-10-21 | Stay browser host-proxy transport cleanup
+
+The existing isolated AkiDuermo guest-route browser spec now uses the same bounded GET-only connection-reset retry and wait-for-in-flight-route teardown as the previously reviewed frontend-health host proxy. This addresses two hosted socket-reset failures on local branding/image requests without changing any route, locale, privacy, keyboard, layout or consent assertion. HTTP errors and non-GET requests are never retried; intercepted errors are not ignored during cleanup. Application, provider, data, feature flags and canonical SQL are unchanged. Full exact-head browser CI remains the acceptance gate.
+
+Baseline media quota accounting is independent of the enhanced-library feature gate: owned images, historical shared placements, stored objects and active upload reservations share one path-deduplicated allowance. New cross-listing placement is unavailable until the scoped enhanced library is enabled; historical associations remain retained. See [baseline media quota integrity](BASELINE_MEDIA_QUOTA_INTEGRITY.md); additive190000 requires the RR-safe181500 quota scope migration and changes no launch flags.
+
+Enhanced-library placement admission also shares the complete Storage/reservation allowance, under the same RR-safe quota scope. Additive193000 builds on181500/190000 without changing membership, Premium reuse or historical retention rules. See [library reservation capacity](LIBRARY_RESERVATION_CAPACITY.md).
+
+Listing upload namespace admission requires a canonical lowercase venue UUID prefix when base limits are active; historical case-variant object paths are retained and counted. See [listing Storage canonical prefix](LISTING_STORAGE_CANONICAL_PREFIX.md), additive200000 after190000; no flags are activated.
 
 ## 2026-10-21 | Event artwork tenant-target integrity
 
