@@ -200,7 +200,7 @@ it("keeps locked personal Premium hidden after successful billing reads", async 
     screen.queryByRole("heading", { name: "AkiPasa Premium" }),
   ).not.toBeInTheDocument();
   const card = screen
-    .getByRole("heading", { name: "AkiBusiness Premium" })
+    .getByRole("heading", { name: "AkiPasa Listing Premium" })
     .closest("article")!;
   const form = within(card)
     .getByRole("button", { name: "Coming soon" })

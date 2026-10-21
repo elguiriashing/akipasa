@@ -83,21 +83,21 @@ for (const locale of ["en", "es"]) {
           console.log(`${locale} ${theme} ${viewport.width} ${route}`);
           await page.goto(route, { waitUntil: "domcontentloaded" });
           await expect(page.locator("main")).toBeVisible();
+          const restored = await page.evaluate(() => ({
+            origin: location.origin,
+            version: document.cookie
+              .split("; ")
+              .includes("ak_consent_version=2"),
+            denied: ["analytics", "personalisation", "marketing"].every(
+              (name) =>
+                document.cookie.split("; ").includes(`ak_${name}=denied`),
+            ),
+          }));
+          console.log("Synthetic consent restore", { route, ...restored });
+          expect(restored.origin).toBe(localBase.origin);
+          expect(restored.version, `Consent version after ${route}`).toBe(true);
+          expect(restored.denied, `Opt-out after ${route}`).toBe(true);
           if (route === `/${locale}`) {
-            const restored = await page.evaluate(() => ({
-              origin: location.origin,
-              version: document.cookie
-                .split("; ")
-                .includes("ak_consent_version=2"),
-              denied: ["analytics", "personalisation", "marketing"].every(
-                (name) =>
-                  document.cookie.split("; ").includes(`ak_${name}=denied`),
-              ),
-            }));
-            console.log("Synthetic consent restore", restored);
-            expect(restored.origin).toBe(localBase.origin);
-            expect(restored.version).toBe(true);
-            expect(restored.denied).toBe(true);
             await expect(privacy).toBeHidden();
             const more = page.getByRole("button", {
               name: locale === "es" ? "Más opciones" : "More options",

@@ -374,30 +374,27 @@ describe("Account control disclosure preserves existing workflows", () => {
       .getByRole("button", { name: "Manage billing" })
       .closest("form")!;
     expect(screen.queryByRole("tabpanel")).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "AkiHQ Pro" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("radio", { name: /Yearly/ }),
+    ).not.toBeInTheDocument();
     const card = screen
-      .getByRole("heading", { name: "AkiHQ Pro" })
+      .getByRole("heading", { name: "AkiPasa Listing Premium" })
       .closest("article")!;
-    fireEvent.click(screen.getByRole("radio", { name: /Yearly/ }));
-    const checkout = within(card)
-      .getByRole("button", { name: "Covered by your current plan" })
-      .closest("form")!;
-    expect(Object.fromEntries(new FormData(checkout))).toEqual({
-      locale: "en",
-      plan: "akihq_pro",
-      interval: "year",
-    });
     expect(
-      within(card).getByRole("button", {
-        name: "Covered by your current plan",
-      }),
-    ).toBeDisabled();
+      within(card).getByRole("link", { name: "View my access" }),
+    ).toHaveAttribute("href", "/en/account/subscription");
+    expect(card.querySelector("form")).toBeNull();
+    const operating = screen
+      .getByRole("heading", { name: "Pro" })
+      .closest("article")!;
     expect(
-      within(card).getByRole("link", { name: "Manage current plan" }),
-    ).toHaveAttribute("href", "/en/account/subscription#billing-management");
-    expect(
-      within(card).getByRole("button", { name: "View benefits and access" }),
-    ).toBeEnabled();
-    expect(manage).not.toBe(checkout);
+      within(operating).getByRole("link", { name: "Manage operating tools" }),
+    ).toHaveAttribute("href", "/en/account/subscription/operations");
+    expect(operating.querySelector("form")).toBeNull();
+    expect(screen.getByText("AkiPasa Premium (legacy)")).toBeInTheDocument();
     expect(Object.fromEntries(new FormData(manage))).toEqual({ locale: "en" });
     fireEvent.submit(manage);
     await waitFor(() => expect(openBillingPortal).toHaveBeenCalledOnce());

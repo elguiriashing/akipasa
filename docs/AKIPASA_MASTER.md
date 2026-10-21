@@ -1755,3 +1755,23 @@ The account membership hub now distinguishes five products: AkiPasa/AkiDuermo/Ak
 ## 2026-10-21 | Installed identity privacy reader and canonical membership acceptance
 
 After release-manager installation/readback of001138, the server-only private identity export reader is declared ready without enabling referral/reward programmes or changing paid access. Integrated256 renders all five canonical product roles, preserves historical billing/portal/cancellation, and treats a checkout-return query as pending confirmation. Existing acquisition acceptance cases now assert freeHQ,4/8/12 operating tools and independent disabled listing checkout instead of retired newEnterprise/HQ offers; all route/theme/viewport/security coverage remains. Final exact-head CI and production verification remain required.
+
+## 2026-10-21 — Account acceptance and persisted-consent route evidence
+
+Updated the remaining account-control assertions to the approved five-product
+catalogue: listing access and neutral operating-tool handoffs replace retired
+new-purchase AkiHQ assertions, while the actual legacy billing portal submission
+and its payload remain tested. All 65 account tests pass. The existing public UI
+loopback host proxy now retries one connection reset for GET only and drains its
+in-flight handlers before browser teardown; HTTP errors and consent assertions
+remain authoritative. All 20 EN/ES, light/dark AkiDuermo privacy viewport cases
+pass locally on Chromium 153. The tablet sweep now checks persisted version and
+all three denied choices after every route, preserving all seven viewports and
+navigation/layout checks. Its English/light 63-route sweep passes locally; the
+full hosted matrix remains required because the prior candidate lost cookies at
+the second viewport in hosted Chromium. No consent, authentication, billing,
+feature activation or provider behavior changes in this amendment. Fresh Next16
+production build passes. The separately tested diagnostic #247 final head
+9e5a05e is now primary merge39f50a3, and its ancestry is retained by this candidate.
+Optional funnel schema is not installed per the release manager's readback;
+FUNNEL_READY remains unset. No completed customer migration receipt is asserted.
