@@ -2157,3 +2157,14 @@ Three new actual-role cases exercise these transitions and the real SQL owner
 reservation→service receipt→media/placement flow with all guards active. This
 is not provider Storage acceptance; library activation remains blocked until
 actual byte-path acceptance. No live SQL or runtime flags changed.
+
+## 2026-10-21 | Listing library deletion compatibility
+
+Forward migration014000 retains template/folder snapshots with nullable SET NULL
+venue/workspace links, while existing membership checks keep archived rows private.
+It removes upload-receipt deletion blockers without deleting business images or
+Storage objects. Original0060 owner/operator RPCs retain their authorization and
+confirmation/reason contract. Seven actual-role regressions cover both venue paths,
+event removal, workspace detachment and profile erasure; original14 library/guard
+cases remain passing. Financial retention and live Storage acceptance are separate.
+See LISTING_LIBRARY_DELETION_COMPATIBILITY.md. No live flags or data changed.
