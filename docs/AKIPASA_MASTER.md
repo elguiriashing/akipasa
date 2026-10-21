@@ -1549,3 +1549,14 @@ confirm explicit vars are supplied even with keep-vars. Read
 verification and rollback. No source is deployed, provider write made or customer
 configuration mutated by preparation; only the release manager may merge and
 verify the actual production source before enqueueing three reviewed commands.
+
+## 2026-10-21 | Independent property listing foundation (gated)
+
+Native accommodation uses real property UUID ownership and CRM intersection,
+separate property listing entitlements and verified service-upload reservations.
+Free/Premium media quotas are8/250 with1920/3840 dimensions; retained old media
+survive downgrade. New property schema refuses ambiguous historical/native data
+for explicit reconciliation. No legacy venue inventory or billing state changes.
+See NATIVE_ACCOMMODATION_FOUNDATION.md for roles, evidence and rollout gates.
+This is implemented/tested source, not merged or production verified; native
+inventory adapter compatibility remains a separately tracked follow-on.
