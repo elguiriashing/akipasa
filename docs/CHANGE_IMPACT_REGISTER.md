@@ -2472,3 +2472,13 @@ preserved. Focused86 tests and SQL permission audit pass; full exact CI and live
 installation/deployment remain release-owner gates. See
 OPERATIONS_MERCHANT_DIAGNOSTICS.md for categories, interpretation and rollback.
 No production, primary, provider, customer, configuration or financial writes.
+
+## 2026-10-21 | Event artwork tenant-target integrity
+
+Confirmed an ordinary-owner placement could name another venue's public event,
+and discovery trusted target*key without its per-event venue. Forward184000
+validates new/edited event*\* associations while preserving valid draft bins and
+member/staff access. Discovery intersects each placement with its specific event's
+venue, hiding historical mismatches without deleting data. Five actual-policy SQL
+and two real SDK regressions plus60 repository cases pass. No Premium flag, paid
+access, ownership or live data changed. See EVENT_MEDIA_TARGET_SCOPE.md.
