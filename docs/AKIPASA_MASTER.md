@@ -1570,3 +1570,13 @@ retained properties private/orphaned for review; member/actor references cascade
 on account deletion without deleting business media or assigning ownership.
 11 actual-role privacy/foundation cases pass; see NATIVE_ACCOMMODATION_FOUNDATION.md.
 Earlier244head is not an approved migration source. No live SQL or activation.
+
+## 2026-10-21 | Native property inventory compatibility (gated)
+
+Additive002500 uses distinct accommodation*property*\* inventory with immutable
+property scope, RLS, composite identity FKs, non-overlapping rates/occupancy and
+audited manager reservation status changes. AkiHQ maps native sections explicitly
+and never falls back to existing venue tables. Native runtime/database inventory
+gates default off; no customer booking/quote or payment path is enabled.
+See NATIVE_ACCOMMODATION_INVENTORY.md for tests, corrected001000 prerequisite,
+privacy preservation and actual-provider/concurrent acceptance requirements.
