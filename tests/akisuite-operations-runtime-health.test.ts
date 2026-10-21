@@ -4,6 +4,7 @@ import {
   recordOperationsCronTick,
   recordOperationsRuntimeHealth,
 } from "../src/lib/operations-runtime-health";
+import { recoverOperationsBillingWithNotifications } from "../src/lib/operations-recovery";
 import { processOperationsMigrationCommand } from "../src/lib/operations-migration-command";
 const env = {
   AKIBUSINESS_OPERATIONS_BILLING_READY: "true",
@@ -215,3 +216,69 @@ it("telemetry needs service bindings and treats disabled or invalid responses as
     await recordOperationsRuntimeHealth(env, "cron", "started", "running", f),
   ).toBe(false);
 });
+
+it.each([false, true])(
+  "concurrent actual owner notification delivery cannot overwrite billing failure stage (missing Stripe: %s)",
+  async (missingStripe) => {
+    const runtime = missingStripe
+      ? { ...env, STRIPE_SECRET_KEY: undefined }
+      : env;
+    const records: unknown[] = [];
+    const requests: string[] = [];
+    let deliveryFinished = false;
+    const fetcher = vi.fn(
+      async (input: RequestInfo | URL, init?: RequestInit) => {
+        const url = String(input);
+        requests.push(url);
+        if (url === healthUrl) {
+          records.push(JSON.parse(String(init?.body)));
+          return Response.json(true);
+        }
+        if (url.endsWith("/crm_toolbox_deliver_notifications")) {
+          await Promise.resolve();
+          deliveryFinished = true;
+          return Response.json(0);
+        }
+        if (url === "https://api.stripe.com/v1/account")
+          return new Response(null, { status: 401 });
+        throw Error("Unexpected fixture request");
+      },
+    );
+    await expect(
+      observeOperationsRuntimeTask(
+        runtime,
+        "billing",
+        (f) => recoverOperationsBillingWithNotifications(runtime, f),
+        fetcher,
+      ),
+    ).rejects.toThrow(
+      missingStripe
+        ? "Operations recovery bindings unavailable"
+        : "Operations recovery provider unavailable",
+    );
+    expect(deliveryFinished).toBe(true);
+    expect(records.at(-1)).toEqual({
+      p_task: "billing",
+      p_stage: missingStripe ? "bindings" : "merchant",
+      p_outcome: "failed",
+    });
+    expect(records).not.toContainEqual({
+      p_task: "billing",
+      p_stage: "work",
+      p_outcome: "running",
+    });
+    expect(
+      requests.filter(
+        (url) =>
+          ![
+            healthUrl,
+            "https://db.test/rest/v1/rpc/crm_toolbox_deliver_notifications",
+            "https://api.stripe.com/v1/account",
+          ].includes(url),
+      ),
+    ).toEqual([]);
+    expect(requests.filter((url) => url.endsWith("/account"))).toHaveLength(
+      missingStripe ? 0 : 1,
+    );
+  },
+);

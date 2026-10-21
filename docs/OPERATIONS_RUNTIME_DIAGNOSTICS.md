@@ -24,4 +24,4 @@ Rollback can disable the private singleton immediately; reverting this additive 
 
 ## Evidence
 
-Twenty focused tests cover the actual worker release endpoint/scheduler, existing migration engine observation, health failure isolation and real PostgreSQL-role simulation. Five SQL cases exercise default-off behavior, enum validation, singleton locking, task isolation, service restrictions and browser denial. Supported dependency packaging and hosted CI must pass against the exact published commit before merge. Production execution and customer schedule completion remain operator verification gates.
+Twenty-two focused tests cover the actual worker release endpoint/scheduler, existing migration engine observation, health failure isolation and real PostgreSQL-role simulation. Five SQL cases exercise default-off behavior, enum validation, singleton locking, task isolation, service restrictions and browser denial. Supported dependency packaging and hosted CI must pass against the exact published commit before merge. Production execution and customer schedule completion remain operator verification gates.

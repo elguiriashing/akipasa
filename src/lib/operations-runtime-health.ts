@@ -97,6 +97,10 @@ export async function observeOperationsRuntimeTask<T>(
     } catch {
       /* Fixed stage fallback, never record the URL. */
     }
+    // The owner-notification drain runs concurrently with billing. Its requests
+    // must not replace the stage of the billing task being diagnosed.
+    if (url?.pathname === "/rest/v1/rpc/crm_toolbox_deliver_notifications")
+      return fetcher(input, init);
     stage =
       url?.origin === "https://api.stripe.com" && url.pathname === "/v1/account"
         ? "merchant"
