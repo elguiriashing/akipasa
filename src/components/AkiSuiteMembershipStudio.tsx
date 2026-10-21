@@ -42,7 +42,7 @@ type MembershipStudioProps = {
   footnotes?: ReactNode;
 };
 
-function OfferCard({ offer }: { offer: MembershipOffer }) {
+function OfferCard({ offer, locale }: { offer: MembershipOffer; locale: "en" | "es" }) {
   return (
     <article
       id={offer.id}
@@ -50,7 +50,7 @@ function OfferCard({ offer }: { offer: MembershipOffer }) {
       data-featured={offer.featured || undefined}
       data-offer={offer.id}
     >
-      <div className={styles.cardType}>{offer.label}</div>
+      <div className={styles.cardType}>{offer.label}{offer.featured && <span className={styles.recommended}>{locale === "es" ? "8 herramientas" : "8 tools"}</span>}</div>
       <h3>{offer.name}</h3>
       <p className={styles.description}>{offer.description}</p>
       <div className={styles.price}>
@@ -114,7 +114,7 @@ export function AkiSuiteMembershipStudio({
               <span className={styles.businessWordmark}>Aki<span>Business.</span></span>
             </div>
           </div>
-          {offers.map((offer) => <OfferCard offer={offer} key={offer.id} />)}
+          {offers.map((offer) => <OfferCard offer={offer} locale={locale} key={offer.id} />)}
         </div>
       </div>
       {afterOffers}
