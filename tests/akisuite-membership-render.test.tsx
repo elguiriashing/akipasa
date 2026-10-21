@@ -97,7 +97,7 @@ describe("canonical free hub and monthly operating catalogue", () => {
     ).toBe("private-one");
     expect(document.querySelector("#operations-basico form")).toBeNull();
   });
-  it("keeps personal launch and failed access closed; sector examples contain no invented metrics", () => {
+  it("keeps personal launch and failed access closed without a public tool selector", () => {
     render(
       <AkiSuiteMembershipGrid locale="en" checkoutReady accessUnavailable />,
     );
@@ -107,12 +107,10 @@ describe("canonical free hub and monthly operating catalogue", () => {
         .getByRole("button", { name: "Access unavailable" })
         .hasAttribute("disabled"),
     ).toBe(true);
-    fireEvent.change(screen.getByRole("combobox", { name: "Business type" }), {
-      target: { value: "retail" },
-    });
-    expect(document.body.textContent).toContain(
-      "Connect point of sale, inventory and customer relationships.",
-    );
+    expect(
+      screen.queryByRole("combobox", { name: "Business type" }),
+    ).toBeNull();
+    expect(document.body.textContent).not.toContain("Tools for your business");
   });
   it("distinguishes staff access and excludes future grants and delinquent subscriptions", () => {
     const now = Date.parse("2026-10-12T12:00:00Z");

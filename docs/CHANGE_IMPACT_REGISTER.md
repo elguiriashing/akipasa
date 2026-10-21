@@ -2385,3 +2385,17 @@ readback confirmed owner `postgres`, the fixed search path and grants, and a
 synthetic nonexistent profile was denied. Rollback restores the preceding function
 body only if the stale-JWT risk is consciously reaccepted; no table or customer row
 was changed.
+
+## 2026-10-21 — Remove the public membership tool selector
+
+**Scope:** AkiPasa public membership catalogue only.
+
+Removed the business-type example selector from the shared public catalogue. Public
+cards retain AkiHQ Free, applicable product Premium, and AkiBusiness Standard/Plus/Pro
+with the approved 4/8/12 allowances. Actual tool selection remains available only in
+the authenticated workspace-scoped AkiBusiness operating flow. Added a rendering
+regression that asserts the public combobox and selector heading are absent.
+
+**Risk/rollback:** Presentation-only and additive test coverage; no database, Stripe,
+price, entitlement, subscription, feature flag or route mutation. Roll back this
+single source commit if the public layout regresses.
