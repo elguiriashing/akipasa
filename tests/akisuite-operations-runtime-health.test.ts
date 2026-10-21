@@ -234,6 +234,8 @@ it.each([false, true])(
           records.push(JSON.parse(String(init?.body)));
           return Response.json(true);
         }
+        if (url.endsWith("/record_operations_merchant_health"))
+          return Response.json(true);
         if (url.endsWith("/crm_toolbox_deliver_notifications")) {
           await Promise.resolve();
           deliveryFinished = true;
@@ -272,6 +274,7 @@ it.each([false, true])(
         (url) =>
           ![
             healthUrl,
+            "https://db.test/rest/v1/rpc/record_operations_merchant_health",
             "https://db.test/rest/v1/rpc/crm_toolbox_deliver_notifications",
             "https://api.stripe.com/v1/account",
           ].includes(url),

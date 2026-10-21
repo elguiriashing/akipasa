@@ -1807,3 +1807,16 @@ business-type or tool selector. AkiBusiness Standard, Plus and Pro still state t
 the authenticated, workspace-scoped AkiBusiness operating screen. This keeps the
 public sales journey compact and consistent across products without changing price
 IDs, entitlement keys, active subscriptions or checkout readiness.
+
+## 2026-10-21 — Private merchant-stage classification
+
+Observes existing billing/migration merchant GET without changing request, fixed
+version, account verification or financial flow. New forward133839 adds only
+nullable private per-task HTTP status/category/timestamp fields and a separate
+service-only RPC using the existing enabled singleton gate. Bounded error-copy
+inspection emits fixed classifications only; no raw messages, keys, IDs or provider
+payloads enter telemetry. Original results/errors and customer/queue fixtures are
+preserved. Focused86 tests and SQL permission audit pass; full exact CI and live
+installation/deployment remain release-owner gates. See
+OPERATIONS_MERCHANT_DIAGNOSTICS.md for categories, interpretation and rollback.
+No production, primary, provider, customer, configuration or financial writes.

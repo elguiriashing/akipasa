@@ -2399,3 +2399,16 @@ regression that asserts the public combobox and selector heading are absent.
 **Risk/rollback:** Presentation-only and additive test coverage; no database, Stripe,
 price, entitlement, subscription, feature flag or route mutation. Roll back this
 single source commit if the public layout regresses.
+
+## 2026-10-21 — Private merchant-stage classification
+
+Observes existing billing/migration merchant GET without changing request, fixed
+version, account verification or financial flow. New forward133839 adds only
+nullable private per-task HTTP status/category/timestamp fields and a separate
+service-only RPC using the existing enabled singleton gate. Bounded error-copy
+inspection emits fixed classifications only; no raw messages, keys, IDs or provider
+payloads enter telemetry. Original results/errors and customer/queue fixtures are
+preserved. Focused86 tests and SQL permission audit pass; full exact CI and live
+installation/deployment remain release-owner gates. See
+OPERATIONS_MERCHANT_DIAGNOSTICS.md for categories, interpretation and rollback.
+No production, primary, provider, customer, configuration or financial writes.
