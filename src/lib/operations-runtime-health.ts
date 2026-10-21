@@ -1,4 +1,8 @@
 import type { OperationsRecoveryEnv } from "./operations-recovery";
+import {
+  classifyMerchantResponse,
+  recordOperationsMerchantHealth,
+} from "./operations-merchant-health";
 
 type HealthEnv = OperationsRecoveryEnv & {
   AKIBUSINESS_OPERATIONS_MIGRATIONS_READY?: string;
@@ -67,6 +71,9 @@ export async function observeOperationsRuntimeTask<T>(
   fetcher: typeof fetch = fetch,
 ): Promise<T> {
   let stage: OperationsHealthStage = "started";
+  let merchantStatus: number | null = null;
+  // Fetch callbacks update the stage asynchronously; read it at catch time.
+  const currentStage = (): OperationsHealthStage => stage;
   const record = (outcome: OperationsHealthOutcome) =>
     recordOperationsRuntimeHealth(env, task, stage, outcome, fetcher);
   await record("running");
@@ -110,6 +117,35 @@ export async function observeOperationsRuntimeTask<T>(
           ? "claim"
           : "work";
     await record("running");
+    const method =
+      init?.method ?? (input instanceof Request ? input.method : "GET");
+    if (stage === "merchant" && method.toUpperCase() === "GET") {
+      merchantStatus = null;
+      let response: Response;
+      try {
+        response = await fetcher(input, init);
+      } catch (error) {
+        await recordOperationsMerchantHealth(
+          env,
+          task,
+          null,
+          "network",
+          fetcher,
+        );
+        throw error;
+      }
+      merchantStatus = response.status;
+      await recordOperationsMerchantHealth(
+        env,
+        task,
+        merchantStatus,
+        await classifyMerchantResponse(response).catch(
+          () => "rejected" as const,
+        ),
+        fetcher,
+      );
+      return response;
+    }
     return fetcher(input, init);
   };
   try {
@@ -130,6 +166,27 @@ export async function observeOperationsRuntimeTask<T>(
     );
     return result;
   } catch (error) {
+    if (
+      currentStage() === "merchant" &&
+      merchantStatus !== null &&
+      merchantStatus < 300
+    ) {
+      await recordOperationsMerchantHealth(
+        env,
+        task,
+        merchantStatus,
+        error instanceof Error &&
+          [
+            "migration_merchant_mismatch",
+            "Operations recovery merchant mismatch",
+          ].includes(error.message)
+          ? "account_mismatch"
+          : error instanceof SyntaxError
+            ? "invalid_response"
+            : "validation",
+        fetcher,
+      );
+    }
     await record("failed");
     throw error;
   }

@@ -2459,3 +2459,16 @@ New001000/002500/005500 remain unapplied and gated; historical244/249/251/253
 copies must not be used. Forty scoped native/review/deletion cases pass locally;
 hosted exact-head checks and provider/role acceptance remain release gates.
 No live schema, customer row, flag, payment or primary branch changed here.
+
+## 2026-10-21 — Private merchant-stage classification
+
+Observes existing billing/migration merchant GET without changing request, fixed
+version, account verification or financial flow. New forward133839 adds only
+nullable private per-task HTTP status/category/timestamp fields and a separate
+service-only RPC using the existing enabled singleton gate. Bounded error-copy
+inspection emits fixed classifications only; no raw messages, keys, IDs or provider
+payloads enter telemetry. Original results/errors and customer/queue fixtures are
+preserved. Focused86 tests and SQL permission audit pass; full exact CI and live
+installation/deployment remain release-owner gates. See
+OPERATIONS_MERCHANT_DIAGNOSTICS.md for categories, interpretation and rollback.
+No production, primary, provider, customer, configuration or financial writes.
