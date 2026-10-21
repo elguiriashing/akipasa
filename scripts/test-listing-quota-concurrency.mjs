@@ -120,7 +120,7 @@ try {
       } else if (kind.startsWith("shared-")) {
         await admin
           .unsafe(
-            "update akisuite_listing_private.launch_settings set enabled=false",
+            "update akisuite_listing_private.launch_settings set enabled=false,uploads_enforced=false",
           )
           .simple();
         const source = id(++sequence);
@@ -134,7 +134,7 @@ try {
         }
         await admin
           .unsafe(
-            "update akisuite_listing_private.launch_settings set enabled=true",
+            "update akisuite_listing_private.launch_settings set enabled=true,uploads_enforced=true",
           )
           .simple();
       } else if (kind === "reservations") {
