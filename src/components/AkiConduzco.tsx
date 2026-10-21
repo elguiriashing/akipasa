@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styles from "./AkiConduzco.module.css";
 import {
@@ -443,6 +444,7 @@ export function RentalDetail({
   initialStart?: string;
   initialEnd?: string;
 }) {
+  const router = useRouter();
   const [start, setStart] = useState(initialStart);
   const [end, setEnd] = useState(initialEnd);
   const [name, setName] = useState("");
@@ -482,7 +484,7 @@ export function RentalDetail({
         }),
       });
       if (response.status === 401) {
-        location.assign(
+        router.push(
           `/${locale}/auth?next=${encodeURIComponent(`/rentals/${slug}?vehicle=${vehicleId}&start=${start}&end=${end}`)}`,
         );
         return;
