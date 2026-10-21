@@ -98,6 +98,7 @@ try {
     "shared-reservations",
     "shared-storage",
     "library-placement",
+    "case-storage",
   ]) {
     for (const isolation of ["READ COMMITTED", "REPEATABLE READ"]) {
       const venue = id(++sequence);
@@ -169,7 +170,7 @@ try {
           await as(a, (client) => reserve(client, venue));
       } else {
         for (let n = 0; n < 7; n++)
-          await admin`insert into storage.objects(bucket_id,name,metadata) values('event-media',${`${venue}/${n}.png`},'{"size":100}')`;
+          await admin`insert into storage.objects(bucket_id,name,metadata) values('event-media',${`${kind === "case-storage" ? venue.toUpperCase() : venue}/${n}.png`},'{"size":100}')`;
       }
       cases.push(scenario);
     }
@@ -207,6 +208,15 @@ try {
     )
     .simple();
   assert.deepEqual(await metadata(), before);
+  await admin
+    .unsafe(
+      readFileSync(
+        "database/migrations/20261021200000_listing_storage_canonical_prefix.sql",
+        "utf8",
+      ),
+    )
+    .simple();
+  assert.deepEqual(await metadata(), before);
   assert.equal(
     (
       await admin`select count(*)::int n from akisuite_listing_private.quota_scopes`
@@ -215,7 +225,11 @@ try {
   );
   const [{ pid }] = await b`select pg_backend_pid() pid`;
   for (const c of cases) {
-    const isStorage = ["legacy-storage", "shared-storage"].includes(c.kind);
+    const isStorage = [
+      "legacy-storage",
+      "shared-storage",
+      "case-storage",
+    ].includes(c.kind);
     await admin
       .unsafe(
         `update akisuite_listing_private.launch_settings set uploads_enforced=${!isStorage},library_enabled=${c.kind === "library-placement"}`,
@@ -253,6 +267,19 @@ try {
         (await admin`select status from events where id=${c.events[4]}`)[0]
           .status,
         "draft",
+      );
+    } else if (c.kind === "case-storage") {
+      assert.equal(
+        (
+          await admin`select photos::int n from akisuite_listing_private.media_usage(${c.venue},null)`
+        )[0].n,
+        8,
+      );
+      assert.equal(
+        (
+          await admin`select count(*)::int n from storage.objects where lower(split_part(name,'/',1))=${c.venue}`
+        )[0].n,
+        8,
       );
     } else if (c.kind === "library-placement") {
       assert.equal(

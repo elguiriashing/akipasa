@@ -6,6 +6,7 @@ on:
       - "supabase/migrations/*listing_quota_scope*.sql"
       - "supabase/migrations/*baseline_media_quota*.sql"
       - "supabase/migrations/*library_reservation_capacity*.sql"
+      - "supabase/migrations/*listing_storage_canonical_prefix*.sql"
       - "scripts/test-listing-quota-concurrency.mjs"
       - "tests/fixtures/akisuite-premium-sql.ts"
       - ".github/workflows/listing-quota-sql.yml"

@@ -2496,3 +2496,10 @@ No production, primary, provider, customer, configuration or financial writes.
 - Added a private candidate-capacity assertion after the existing RR-safe scope claim; kept all source/target, membership, Premium, grandfather tuple and metadata rules. Existing paths and historical over-quota associations remain retained; new unique paths respect8/250 and existing byte limits.
 - Cross-portal impact: shared Pasa/HQ listing library and verified uploads. No UI/locale, monetary model, tracking, flags, data or provider changes.
 - Evidence: five focused actual-role SQL cases, including250 pending Premium reservations and byte-capacity rejection; isolated PG workflow expanded to twelve RC/RR quota races. Exact-head hosted CI and root source review required before application. Actual provider upload acceptance remains blocked independently.
+
+## 2026-10-21 — Canonical Storage quota namespace
+
+- Reproduced a target owner uploading nine uppercase-UUID-prefix orphan objects while the case-sensitive count remained zero. Media registration already rejected those paths, but direct-upload quota enforcement did not.
+- Added guarded exact patches to normalize historical Storage prefix accounting and reject new noncanonical prefixes during base enforcement. Existing objects, authorization, owner/grants/configuration, other buckets and disabled cohorts are preserved.
+- Impact: shared listing Storage and reservation backend across Pasa/HQ; no UI/locales, billing, tracking, flags, object mutation or provider configuration changes.
+- Evidence: four focused role-level SQL regressions and metadata preservation. Isolated PostgreSQL quota workflow expanded to fourteen RC/RR cases. Exact hosted checks and root review required before application; strict provider acceptance remains separate.
