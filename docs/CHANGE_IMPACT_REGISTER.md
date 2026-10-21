@@ -2482,3 +2482,10 @@ preserved. Focused86 tests and SQL permission audit pass; full exact CI and live
 installation/deployment remain release-owner gates. See
 OPERATIONS_MERCHANT_DIAGNOSTICS.md for categories, interpretation and rollback.
 No production, primary, provider, customer, configuration or financial writes.
+
+## 2026-10-21 — Baseline shared-media quota integrity
+
+- Reproduced a legitimate target member attaching nine foreign public images with library disabled and zero owned images. The free base allowance therefore required an independent guard before activation.
+- Added private path-deduplicated accounting across owned/shared media, Storage and active reservations; guarded exact patches preserve installed authorization/owner/grants and reuse181500 serialization. New cross-listing associations require the enhanced library while historical associations and ordinary same-listing use remain intact.
+- Cross-portal scope: shared Pasa/HQ listing backend, accommodation listing media, strict upload rollback, Premium library and direct Storage/placement APIs. No financial values, locale/UI text, analytics, flags, data or provider configuration changed.
+- Evidence: eight focused actual-role SQL cases; extended isolated PostgreSQL RC/RR shared-reference/reservation/Storage races. Hosted CI and root review required before merge/application. Strict provider upload acceptance remains a separate launch gate.

@@ -4,6 +4,7 @@ on:
     branches: [master]
     paths:
       - "supabase/migrations/*listing_quota_scope*.sql"
+      - "supabase/migrations/*baseline_media_quota*.sql"
       - "scripts/test-listing-quota-concurrency.mjs"
       - "tests/fixtures/akisuite-premium-sql.ts"
       - ".github/workflows/listing-quota-sql.yml"

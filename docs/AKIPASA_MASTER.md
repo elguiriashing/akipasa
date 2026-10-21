@@ -1890,3 +1890,5 @@ preserved. Focused86 tests and SQL permission audit pass; full exact CI and live
 installation/deployment remain release-owner gates. See
 OPERATIONS_MERCHANT_DIAGNOSTICS.md for categories, interpretation and rollback.
 No production, primary, provider, customer, configuration or financial writes.
+
+Baseline media quota accounting is independent of the enhanced-library feature gate: owned images, historical shared placements, stored objects and active upload reservations share one path-deduplicated allowance. New cross-listing placement is unavailable until the scoped enhanced library is enabled; historical associations remain retained. See [baseline media quota integrity](BASELINE_MEDIA_QUOTA_INTEGRITY.md); additive190000 requires the RR-safe181500 quota scope migration and changes no launch flags.

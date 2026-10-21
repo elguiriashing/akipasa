@@ -91,7 +91,13 @@ try {
   let sequence = 100;
   // Seed real legacy data BEFORE the forward helper exists: each race therefore
   // exercises first scope INSERT against an older RR snapshot, without backfill.
-  for (const kind of ["events", "reservations", "legacy-storage"]) {
+  for (const kind of [
+    "events",
+    "reservations",
+    "legacy-storage",
+    "shared-reservations",
+    "shared-storage",
+  ]) {
     for (const isolation of ["READ COMMITTED", "REPEATABLE READ"]) {
       const venue = id(++sequence);
       await admin`insert into venues(id,name) values(${venue},'Disposable quota fixture')`;
@@ -111,6 +117,26 @@ try {
                 client`update events set status='published' where id=${event}`,
             );
         }
+      } else if (kind.startsWith("shared-")) {
+        await admin
+          .unsafe(
+            "update akisuite_listing_private.launch_settings set enabled=false",
+          )
+          .simple();
+        const source = id(++sequence);
+        await admin`insert into venues(id,name) values(${source},'Disposable foreign library source')`;
+        for (let n = 0; n < 7; n++) {
+          const media = id(++sequence),
+            path = `${source}/${n}.png`;
+          await admin`insert into storage.objects(bucket_id,name,metadata) values('event-media',${path},'{"size":100}')`;
+          await admin`insert into venue_media(id,venue_id,storage_path,mime_type,size_bytes) values(${media},${source},${path},'image/png',100)`;
+          await admin`insert into venue_media_placements(venue_id,media_id,placement,target_key) values(${venue},${media},'venue_gallery','stay_header')`;
+        }
+        await admin
+          .unsafe(
+            "update akisuite_listing_private.launch_settings set enabled=true",
+          )
+          .simple();
       } else if (kind === "reservations") {
         for (let n = 0; n < 7; n++)
           await as(a, (client) => reserve(client, venue));
@@ -136,6 +162,15 @@ try {
     )
     .simple();
   assert.deepEqual(await metadata(), before);
+  await admin
+    .unsafe(
+      readFileSync(
+        "database/migrations/20261021190000_baseline_media_quota_integrity.sql",
+        "utf8",
+      ),
+    )
+    .simple();
+  assert.deepEqual(await metadata(), before);
   assert.equal(
     (
       await admin`select count(*)::int n from akisuite_listing_private.quota_scopes`
@@ -144,16 +179,16 @@ try {
   );
   const [{ pid }] = await b`select pg_backend_pid() pid`;
   for (const c of cases) {
-    if (c.kind === "legacy-storage")
-      await admin
-        .unsafe(
-          "update akisuite_listing_private.launch_settings set uploads_enforced=false",
-        )
-        .simple();
+    const isStorage = ["legacy-storage", "shared-storage"].includes(c.kind);
+    await admin
+      .unsafe(
+        `update akisuite_listing_private.launch_settings set uploads_enforced=${!isStorage}`,
+      )
+      .simple();
     const operation = (client, n) =>
       c.kind === "events"
         ? client`update events set status='published' where id=${c.events[n + 3]}`
-        : c.kind === "reservations"
+        : ["reservations", "shared-reservations"].includes(c.kind)
           ? reserve(client, c.venue)
           : client`insert into storage.objects(bucket_id,name,metadata) values('event-media',${`${c.venue}/${n + 7}.png`},'{"size":100}')`;
     await begin(a, c.isolation);
@@ -163,7 +198,7 @@ try {
     await blocked(pid);
     await a`commit`;
     const result = await competing;
-    const quotaError = c.kind === "legacy-storage" ? "42501" : "PT402";
+    const quotaError = isStorage ? "42501" : "PT402";
     assert.equal(
       result.error?.code,
       c.isolation === "REPEATABLE READ" ? "40001" : quotaError,
@@ -180,6 +215,19 @@ try {
         (await admin`select status from events where id=${c.events[4]}`)[0]
           .status,
         "draft",
+      );
+    } else if (c.kind.startsWith("shared-")) {
+      assert.equal(
+        (
+          await admin`select photos::int n from akisuite_listing_private.media_usage(${c.venue},null)`
+        )[0].n,
+        8,
+      );
+      assert.equal(
+        (
+          await admin`select count(*)::int n from venue_media_placements where venue_id=${c.venue}`
+        )[0].n,
+        7,
       );
     } else if (c.kind === "reservations")
       assert.equal(
