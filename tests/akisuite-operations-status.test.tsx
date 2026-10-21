@@ -80,7 +80,7 @@ describe("owner operations renewal status and canonical tool labels", () => {
         state: "scheduled",
       });
       expect(html).toContain('data-migration-status="scheduled"');
-      expect(html).toContain("Básico");
+      expect(html).toContain("Standard");
       expect(html).toContain(
         locale === "es"
           ? "solo tras confirmar el pago de renovación"

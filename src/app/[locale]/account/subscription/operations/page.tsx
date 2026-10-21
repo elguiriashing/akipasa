@@ -123,7 +123,7 @@ export default async function OperationsSubscriptionPage({
             {es
               ? "Migración programada para la renovación:"
               : "Migration scheduled at renewal:"}{" "}
-            Básico ·{" "}
+            Standard ·{" "}
             {new Date(migration.effective_at).toLocaleString(locale, {
               timeZone: "Europe/Madrid",
             })}
@@ -147,8 +147,8 @@ export default async function OperationsSubscriptionPage({
             <fieldset>
               <legend>
                 {es
-                  ? "Elige tus cuatro herramientas iniciales de Básico"
-                  : "Choose your four initial Básico tools"}
+                  ? "Elige tus cuatro herramientas iniciales de Standard"
+                  : "Choose your four initial Standard tools"}
               </legend>
               <p>
                 {es
@@ -205,9 +205,9 @@ export default async function OperationsSubscriptionPage({
                 {Object.entries(OPERATION_PRICES).map(([tier, offer]) => (
                   <option key={tier} value={tier}>
                     {tier === "basico"
-                      ? "Básico"
+                      ? "Standard"
                       : tier === "standard"
-                        ? "Standard"
+                        ? "Plus"
                         : "Pro"}{" "}
                     ·{" "}
                     {(offer.amount / 100).toLocaleString(locale, {
@@ -222,8 +222,8 @@ export default async function OperationsSubscriptionPage({
             <fieldset>
               <legend>
                 {es
-                  ? "Elige exactamente 4 herramientas para Básico u 8 para Standard. Pro incluye las 12 automáticamente"
-                  : "Choose exactly 4 tools for Básico or 8 for Standard. Pro includes all 12 automatically"}
+                  ? "Elige exactamente 4 herramientas para Standard u 8 para Plus. Pro incluye las 12 automáticamente"
+                  : "Choose exactly 4 tools for Standard or 8 for Plus. Pro includes all 12 automatically"}
               </legend>
               <div className="form-grid-two">
                 {TOOL_KEYS.map((tool) => (

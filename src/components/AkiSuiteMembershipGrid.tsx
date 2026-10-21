@@ -195,9 +195,9 @@ export function AkiSuiteMembershipGrid({
               </div>
               <h3>
                 {tier === "basico"
-                  ? "Básico"
+                  ? "Standard"
                   : tier === "standard"
-                    ? "Standard"
+                    ? "Plus"
                     : "Pro"}
               </h3>
               <div className={styles.price}>

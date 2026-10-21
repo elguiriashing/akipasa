@@ -47,8 +47,8 @@ it("shows free management and the canonical operating packages without retired n
       .getAttribute("href"),
   ).toBe("https://akihq.app/en/business");
   for (const [name, count] of [
-    ["Básico", 4],
-    ["Standard", 8],
+    ["Standard", 4],
+    ["Plus", 8],
     ["Pro", 12],
   ] as const) {
     const card = screen.getByRole("heading", { name }).closest("article")!;
