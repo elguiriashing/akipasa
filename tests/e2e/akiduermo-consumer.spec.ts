@@ -55,6 +55,8 @@ for (const locale of ["en", "es"] as const) {
           if (path === "/api/map/stays")
             return route.fulfill({ json: { ids: [], total: 0 } });
           const response = await route.fetch({
+            // Retry one transport reset on GET only; HTTP failures still fail normally.
+            maxRetries: route.request().method() === "GET" ? 1 : 0,
             headers: {
               ...route.request().headers(),
               host: "akiduermo.akipasa.com",
@@ -245,7 +247,7 @@ for (const locale of ["en", "es"] as const) {
         await page.screenshot({
           path: `test-results/duermo-${locale}-${theme}-${viewport.width}.png`,
         });
-        await page.unrouteAll({ behavior: "ignoreErrors" });
+        await page.unrouteAll({ behavior: "wait" });
       });
     }
   }
