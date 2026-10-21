@@ -2422,3 +2422,63 @@ bounded maintenance; it cannot activate collection or set retention. Focused SQL
 adapter tests preserve inactive reporting and restricted own-data export. No agent
 production write, financial configuration or migration-history repair occurs.
 Worker deployment and actual runtime acceptance remain separate release gates.
+
+## 2026-10-21 | Independent property listing foundation (gated)
+
+Native accommodation uses real property UUID ownership and CRM intersection,
+separate property listing entitlements and verified service-upload reservations.
+Free/Premium media quotas are8/250 with1920/3840 dimensions; retained old media
+survive downgrade. New property schema refuses ambiguous historical/native data
+for explicit reconciliation. No legacy venue inventory or billing state changes.
+See NATIVE_ACCOMMODATION_FOUNDATION.md for roles, evidence and rollout gates.
+This is implemented/tested source, not merged or production verified; native
+inventory adapter compatibility remains a separately tracked follow-on.
+
+## 2026-10-21 | Native property privacy before application
+
+The still-unapplied001000 base is corrected in this descendant before release:
+native Storage fails closed when disabled; anonymous/authenticated direct object
+writes always fail, including broad old policies. Nullable SETNULL owners mark
+retained properties private/orphaned for review; member/actor references cascade
+on account deletion without deleting business media or assigning ownership.
+11 actual-role privacy/foundation cases pass; see NATIVE_ACCOMMODATION_FOUNDATION.md.
+Earlier244head is not an approved migration source. No live SQL or activation.
+
+## 2026-10-21 | Native property inventory compatibility (gated)
+
+Additive002500 uses distinct accommodation*property*\* inventory with immutable
+property scope, RLS, composite identity FKs, non-overlapping rates/occupancy and
+audited manager reservation status changes. AkiHQ maps native sections explicitly
+and never falls back to existing venue tables. Native runtime/database inventory
+gates default off; no customer booking/quote or payment path is enabled.
+See NATIVE_ACCOMMODATION_INVENTORY.md for tests, corrected001000 prerequisite,
+privacy preservation and actual-provider/concurrent acceptance requirements.
+
+## 2026-10-21 | Native property review workspace (gated)
+
+Forward005500 and bilingual admin/accommodation-review provide a bounded admin
+queue for submitted revisions and orphaned properties, exact-revision decisions
+with audit and preserved typed reasons, plus explicitNULL pagination hardening
+for native owner/team readers. Private unsubmitted drafts are not queued; no
+ownership transfer, financial approval, runtime flag or production data changes.
+12 focused SQL/action/UI cases pass; see NATIVE_ACCOMMODATION_REVIEW.md.
+
+## 2026-10-21 | Native private namespace compatibility
+
+Production catalog confirms legacy accommodation_private exists and native
+properties do not. The still-unapplied001000/002500/005500 sources now use
+accommodation_property_private exclusively, preserving legacy functions/tables
+and ACLs. Public property contracts remain stable.25 actual-role SQL cases,
+including explicit existing legacy service grants, pass;3 migration audits0.
+Earlier249/251/253 SQL snapshots must not be applied. No live DDL or activation.
+
+## 2026-10-21 | Recover gated native property foundation on current Next 16 source
+
+Reconciles immutable native255 into current master99feec0d without replacing the
+current account eligibility, public membership boundaries, consent, referral,
+library deletion compatibility or supported Next16 runtime. All native schema
+uses accommodation_property_private, preserving existing accommodation_private.
+New001000/002500/005500 remain unapplied and gated; historical244/249/251/253
+copies must not be used. Forty scoped native/review/deletion cases pass locally;
+hosted exact-head checks and provider/role acceptance remain release gates.
+No live schema, customer row, flag, payment or primary branch changed here.
