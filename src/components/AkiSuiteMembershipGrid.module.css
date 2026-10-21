@@ -61,7 +61,7 @@
   overflow-wrap: anywhere;
   scroll-snap-align: start;
 }
-.card[data-product="akibusiness"]:nth-child(4) {
+.card[data-product="akibusiness"]:nth-child(3) {
   border-color: #ff822d92;
   background: linear-gradient(160deg, #ff822d1c, #ffffff05);
 }
