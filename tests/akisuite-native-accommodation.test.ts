@@ -89,12 +89,12 @@ it("keeps all native gates off and fails closed before native creation", async (
   expect(
     (
       await db.query(
-        "select enabled,uploads_enforced from accommodation_private.launch_settings",
+        "select enabled,uploads_enforced from accommodation_property_private.launch_settings",
       )
     ).rows,
   ).toEqual([{ enabled: false, uploads_enforced: false }]);
   await db.exec(
-    "update accommodation_private.launch_settings set enabled=true,uploads_enforced=true",
+    "update accommodation_property_private.launch_settings set enabled=true,uploads_enforced=true",
   );
 });
 it("creates genuine private properties owned by caller, intersects CRM ownership, denies foreign namespaces", async () => {
@@ -135,7 +135,10 @@ it("creates genuine private properties owned by caller, intersects CRM ownership
     ),
   ).rejects.toThrow(/permission denied/);
   await expect(
-    as(suiteOwner, "select * from accommodation_private.property_entitlements"),
+    as(
+      suiteOwner,
+      "select * from accommodation_property_private.property_entitlements",
+    ),
   ).rejects.toThrow(/permission denied/);
 });
 it("intersects per-property delegation and active CRM membership with immediate revoke", async () => {
@@ -239,7 +242,7 @@ it("accounts eight pending upload reservations under lock, rejects unverified/di
 });
 it("separates native paid grants, permits 250 at higher resolution, retains all metadata after downgrade", async () => {
   await db.exec(
-    `insert into accommodation_private.property_entitlements(property_id,source,reference) values('${paid}','admin_override','reviewed test evidence')`,
+    `insert into accommodation_property_private.property_entitlements(property_id,source,reference) values('${paid}','admin_override','reviewed test evidence')`,
   );
   for (let i = 0; i < 250; i++) await reserve(paid, 3840);
   await expect(reserve(paid, 3840)).rejects.toThrow(/allowance exceeded/);
@@ -248,13 +251,13 @@ it("separates native paid grants, permits 250 at higher resolution, retains all 
       .rows[0].info,
   ).toMatchObject({ premium: false, photos: 8 });
   await db.exec(
-    `update accommodation_private.property_entitlements set revoked_at=now() where property_id='${paid}'`,
+    `update accommodation_property_private.property_entitlements set revoked_at=now() where property_id='${paid}'`,
   );
   await expect(reserve(paid)).rejects.toThrow(/allowance exceeded/);
   expect(
     (
       await db.query(
-        `select count(*)::int n from accommodation_private.upload_reservations where property_id='${paid}'`,
+        `select count(*)::int n from accommodation_property_private.upload_reservations where property_id='${paid}'`,
       )
     ).rows,
   ).toEqual([{ n: 250 }]);
@@ -304,10 +307,10 @@ it("denies pending/underage accounts, service receipt after revoke, and immutabl
     `delete from account_private.onboarding where profile_id='${suiteOwner}'`,
   );
   await expect(
-    db.exec("delete from accommodation_private.audit"),
+    db.exec("delete from accommodation_property_private.audit"),
   ).rejects.toThrow(/Immutable/);
   await expect(
-    as(suiteOther, "select * from accommodation_private.audit"),
+    as(suiteOther, "select * from accommodation_property_private.audit"),
   ).rejects.toThrow(/permission denied/);
 });
 it("requires admin review for property publication and manual listing grants; private storage stays private", async () => {

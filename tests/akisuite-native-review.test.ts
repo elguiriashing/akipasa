@@ -40,7 +40,7 @@ beforeAll(async () => {
   ])
     await db.exec(readFileSync(`database/migrations/${file}`, "utf8"));
   await db.exec(
-    "update accommodation_private.launch_settings set enabled=true",
+    "update accommodation_property_private.launch_settings set enabled=true",
   );
   pending = await create(suiteOther, "Submitted stay");
   privateId = await create(suiteOther, "Private draft stay");
@@ -161,13 +161,13 @@ it("rejects stale publication, preserves the current draft and reason boundary, 
 });
 it("denies disabled queue and restricted administrators with no empty-success fallback", async () => {
   await db.exec(
-    "update accommodation_private.launch_settings set enabled=false",
+    "update accommodation_property_private.launch_settings set enabled=false",
   );
   await expect(
     as(suiteOwner, "select * from accommodation_property_review_page(101,0)"),
   ).rejects.toThrow(/Administrator required/);
   await db.exec(
-    `update accommodation_private.launch_settings set enabled=true;insert into account_private.onboarding(profile_id) values('${suiteOwner}')`,
+    `update accommodation_property_private.launch_settings set enabled=true;insert into account_private.onboarding(profile_id) values('${suiteOwner}')`,
   );
   await expect(
     as(suiteOwner, "select * from accommodation_property_review_page(101,0)"),

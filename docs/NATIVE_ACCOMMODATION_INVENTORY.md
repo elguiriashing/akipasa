@@ -51,3 +51,17 @@ and run controlled owner/foreign/revoked-property and actual concurrent occupanc
 acceptance. Keep customer discovery/booking gated until its separate integration
 is complete. Rollback disables native flags before reverting consumer adapters;
 retain all property IDs, inventory, grants, receipts, media and audit history.
+
+## 2026-10-21 | Preserve the existing legacy private namespace
+
+A minimal read-only production catalog check confirmed that the legacy
+accommodation_private schema already exists, while native accommodation_properties
+does not. All new native objects therefore use accommodation_property_private.
+This corrected descendant updates the still-unapplied001000/002500/005500 copies
+before first application. Do not apply the earlier249/251/253 SQL snapshots.
+Public property table/RPC contracts remain unchanged; existing legacy private
+functions, tables, schemas and ACLs are never altered by the native grant loop.
+An actual-role fixture installs a legacy private table/helper with explicit
+service grants, applies the full native foundation, and verifies both records
+and privileges remain intact. All25 native SQL cases and3 permission audits pass.
+No production DDL/DML or flag change was performed for this correction.

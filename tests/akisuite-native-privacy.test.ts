@@ -47,6 +47,11 @@ beforeAll(async () => {
       )
     ).rows,
   ).toEqual([{ name: orphanPath }]);
+  await db.exec(`create schema accommodation_private;grant usage on schema accommodation_private to service_role;
+  create table accommodation_private.legacy_booking_marker(id integer primary key,label text);insert into accommodation_private.legacy_booking_marker values(1,'Retained legacy booking');
+  grant select on accommodation_private.legacy_booking_marker to service_role;
+  create function accommodation_private.snapshot() returns text language sql as $$select 'retained legacy helper'::text$$;
+  revoke all on function accommodation_private.snapshot() from public;grant execute on function accommodation_private.snapshot() to service_role;`);
   for (const name of [
     "20261020170448_account_completion_age_declaration.sql",
     "20261021001000_native_accommodation_listing_foundation.sql",
@@ -109,7 +114,7 @@ it("default-off native storage is private against broad legacy SELECT/DELETE and
 });
 it("allows only current property owner/member reads/deletes when enabled; outsiders and disabled gates remain denied", async () => {
   await db.exec(
-    "update accommodation_private.launch_settings set enabled=true,uploads_enforced=true",
+    "update accommodation_property_private.launch_settings set enabled=true,uploads_enforced=true",
   );
   property = await create(suiteOwner, "Owned private property");
   ownedByOther = await create(suiteOther, "Other property");
@@ -178,7 +183,7 @@ it("allows only current property owner/member reads/deletes when enabled; outsid
     ).rows,
   ).toHaveLength(0);
   await db.exec(
-    "update accommodation_private.launch_settings set enabled=false,uploads_enforced=false",
+    "update accommodation_property_private.launch_settings set enabled=false,uploads_enforced=false",
   );
   expect(
     (
@@ -197,7 +202,7 @@ it("allows only current property owner/member reads/deletes when enabled; outsid
     ).rows,
   ).toHaveLength(0);
   await db.exec(
-    "update accommodation_private.launch_settings set enabled=true,uploads_enforced=true",
+    "update accommodation_property_private.launch_settings set enabled=true,uploads_enforced=true",
   );
 });
 it("profile deletion detaches ownership for review and cascades memberships/receipts without deleting retained business media", async () => {
@@ -237,7 +242,7 @@ it("profile deletion detaches ownership for review and cascades memberships/rece
   expect(
     (
       await db.query(
-        `select count(*)::int n from accommodation_private.upload_reservations where actor='${suiteOwner}'`,
+        `select count(*)::int n from accommodation_property_private.upload_reservations where actor='${suiteOwner}'`,
       )
     ).rows,
   ).toEqual([{ n: 0 }]);
@@ -260,8 +265,42 @@ it("profile deletion detaches ownership for review and cascades memberships/rece
   expect(
     (
       await db.query<{ n: number }>(
-        `select count(*)::int n from accommodation_private.audit where property_id='${property}'`,
+        `select count(*)::int n from accommodation_property_private.audit where property_id='${property}'`,
       )
     ).rows[0].n,
   ).toBeGreaterThan(0);
+});
+
+it("coexists with real legacy accommodation private objects without changing their records or grants", async () => {
+  expect(
+    (
+      await as(
+        "",
+        "select accommodation_private.snapshot() value",
+        "service_role",
+      )
+    ).rows,
+  ).toEqual([{ value: "retained legacy helper" }]);
+  expect(
+    (
+      await as(
+        "",
+        "select * from accommodation_private.legacy_booking_marker",
+        "service_role",
+      )
+    ).rows,
+  ).toEqual([{ id: 1, label: "Retained legacy booking" }]);
+  expect(
+    (
+      await db.query(
+        "select has_schema_privilege('service_role','accommodation_private','USAGE') allowed",
+      )
+    ).rows,
+  ).toEqual([{ allowed: true }]);
+  await expect(
+    as(
+      suiteOther,
+      "select * from accommodation_property_private.property_entitlements",
+    ),
+  ).rejects.toThrow(/permission denied/);
 });

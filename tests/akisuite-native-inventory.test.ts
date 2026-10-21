@@ -40,7 +40,7 @@ beforeAll(async () => {
   ])
     await db.exec(readFileSync(`database/migrations/${name}`, "utf8"));
   await db.exec(
-    "update accommodation_private.launch_settings set enabled=true",
+    "update accommodation_property_private.launch_settings set enabled=true",
   );
   property = String(
     (
@@ -65,7 +65,7 @@ it("requires its own default-off inventory gate before authoritative writes", as
     /row-level security/,
   );
   await db.exec(
-    "update accommodation_private.launch_settings set inventory_enabled=true",
+    "update accommodation_property_private.launch_settings set inventory_enabled=true",
   );
   await as(suiteOwner, createRoom());
   await as(suiteOther, createRoom(otherRoom, foreign));
@@ -173,7 +173,7 @@ it("allows only valid owner reservation transitions, idempotent retries and immu
   expect(
     (
       await db.query(
-        `select count(*)::int n from accommodation_private.audit where property_id='${property}' and action='reservation_status'`,
+        `select count(*)::int n from accommodation_property_private.audit where property_id='${property}' and action='reservation_status'`,
       )
     ).rows,
   ).toEqual([{ n: 3 }]);

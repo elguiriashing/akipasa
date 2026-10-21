@@ -2148,3 +2148,12 @@ with audit and preserved typed reasons, plus explicitNULL pagination hardening
 for native owner/team readers. Private unsubmitted drafts are not queued; no
 ownership transfer, financial approval, runtime flag or production data changes.
 12 focused SQL/action/UI cases pass; see NATIVE_ACCOMMODATION_REVIEW.md.
+
+## 2026-10-21 | Native private namespace compatibility
+
+Production catalog confirms legacy accommodation_private exists and native
+properties do not. The still-unapplied001000/002500/005500 sources now use
+accommodation_property_private exclusively, preserving legacy functions/tables
+and ACLs. Public property contracts remain stable.25 actual-role SQL cases,
+including explicit existing legacy service grants, pass;3 migration audits0.
+Earlier249/251/253 SQL snapshots must not be applied. No live DDL or activation.
