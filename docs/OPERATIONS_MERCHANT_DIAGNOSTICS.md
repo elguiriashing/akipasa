@@ -15,6 +15,15 @@ failures before claim, with three queued commands at zero attempts. These are
 operator reports, not evidence supplied by this source change. No actual failure
 category, successful schedule or deployment is asserted here.
 
+The subsequent merge preserves reviewed native-property primarybea895b3 ancestry;
+only the two appended contract documents conflicted and both entries were retained.
+Merchant diagnostic source and SQL bytes are unchanged. Separately, Stripe
+CLI1.54.1 retrieved the official customer-session changelog below, whose API
+reference links explicitly specify2026-08-26.dahlia. That validates the historical
+version identifier, not actual runtime request acceptance. Current GA docs name
+2026-09-30.endive; preview versions are a distinct channel. No version is changed.
+https://docs.stripe.com/changelog/dahlia/2026-08-26/customer-session-improvements
+
 ## Private additive contract
 
 CLI-generated forward20261021133839 adds only six nullable fields to the existing
