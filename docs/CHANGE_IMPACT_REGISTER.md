@@ -2400,6 +2400,29 @@ regression that asserts the public combobox and selector heading are absent.
 price, entitlement, subscription, feature flag or route mutation. Roll back this
 single source commit if the public layout regresses.
 
+## 2026-10-21 | Atomic disabled funnel deployment recovery
+
+Preserves canonical242/243 SQL unchanged while generating12 short dependency-ordered
+apply_migration phases with canonical/hash IDs, transaction-local timeouts, immediate
+private ACL closure and disabledNULL-state assertions. The reported enum-only live
+baseline resumes at verifiedphase01; no large request is replayed. Full SQL catalogue
+parity, hostile-default permissions, phase rollback and all capture/privacy cases are
+covered locally. No provider write, activation, retention approval or history repair
+is performed. See TRUSTED_BUSINESS_FUNNEL_PHASED_DEPLOYMENT.md for receipt archival,
+readback, interruption handling and the separate operator history-reconciliation gate.
+
+## 2026-10-21 | Installed disabled funnel schema and privacy readiness
+
+Release-manager apply_migration receipts for phases01–11 are archived with the
+frozen manifest/phase hashes; enum00 was already present. Independently read-only
+history/readback confirms disabled collection, NULL retention/approval/start, zero
+optional rows,13 triggers and intended RPC/private grants. Source
+AKISUITE_FUNNEL_READY=true now opens only installed identity-export readers and
+bounded maintenance; it cannot activate collection or set retention. Focused SQL/
+adapter tests preserve inactive reporting and restricted own-data export. No agent
+production write, financial configuration or migration-history repair occurs.
+Worker deployment and actual runtime acceptance remain separate release gates.
+
 ## 2026-10-21 | Independent property listing foundation (gated)
 
 Native accommodation uses real property UUID ownership and CRM intersection,
@@ -2476,6 +2499,57 @@ preserved. Focused86 tests and SQL permission audit pass; full exact CI and live
 installation/deployment remain release-owner gates. See
 OPERATIONS_MERCHANT_DIAGNOSTICS.md for categories, interpretation and rollback.
 No production, primary, provider, customer, configuration or financial writes.
+
+## 2026-10-21 | Standalone library public artwork and reference deletion
+
+Additive175000 exposes only explicitly selected published destination artwork
+from shared private-source media. Draft events, bins and unrelated images stay
+private. Database triggers block direct referenced media/object deletion; reference
+writes lock media plus Storage rows to close concurrent deletion races. Existing
+intentional whole-venue deletion remains compatible without Storage cleanup or
+ownership transfer. Seven new actual-role cases and the existing21 pass locally;
+four independent PostgreSQL race scenarios are a separate exact-head hosted gate.
+All library/strict flags remain unchanged. See LISTING_LIBRARY_REFERENCE_BOUNDARIES.md.
+
+## 2026-10-21 | Repeatable-read shared media deletion safety
+
+Corrects the still-unapplied175000 descendant: reference writes touch unchanged
+media and Storage row metadata so old repeatable-read snapshots cannot miss a
+committed placement after waiting. Bytes/paths remain unchanged; no security guard
+is weakened. The real PostgreSQL matrix covers both isolation levels and both
+orderings, while the full strict receipt flow runs all installed guards together.
+Apply only the tested corrected child; frozen262 is not the production SQL source.
+No live migration, activation or data mutation was performed here.
+
+## 2026-10-21 | Reconciled master mission delivery ledger
+
+- Scope: documentation only, fresh current-master branch. Add A–I delivery/status
+  matrix and link the preserved historical integration document to it.
+- Evidence: direct GitHub head/PR/CI reads plus attributed manager production/SQL
+  observations. Includes newly applied 014000 and phased, disabled funnel schema;
+  three queued zero-attempt merchant-blocked commands, Duermo's stale live source,
+  and new Pasa260/HQ72/73 merges awaiting production markers. Current deliberate tier naming conflict stays open.
+- Safety: no application behavior, SQL, financial/customer data, primary refs or
+  provider state changed; no private IDs, sealed payloads or secrets published.
+- Validation: documentation formatting, authoritative-contract integrity and
+  whitespace checks; hosted results belong to their exact feature/report heads.
+- Rollback: revert only this documentation patch; preserve all historical records
+  and current engineering work. This ledger does not authorise operational replay.
+
+### Delivery-ledger review amendment
+
+Record the approved EUR 24.99/44.99/64.99 per-location monthly amounts against stable
+basico/standard/pro keys and current Standard/Plus/Pro label conflict. Preserve the
+three valid 100%-forever coupons, paid-through dates and Personal subscriptions; no
+immediate invoice/proration/new subscription. Include unresolved Supabase-owned
+spatial_ref_sys write/TRUNCATE exposure (HQ59 actual 42501 rollback), Cloudflare
+MCP-32603 deployment/pin blocker, live HQ e249 at 14:02 UTC and disabled-funnel owner/
+foreign/privacy role acceptance at 13:59 UTC. PR261 new 6d6 head CI and PR262 guard
+repair remain pending; neither is claimed installed/observed. Documentation only.
+
+## 2026-10-21 | Coherent phased-readiness and library protection release
+
+Integration preserves f1e99 primary plus frozen PR264 df012, PR265 9e1 and PR263 8a1 ancestry and reviewed immutable SQL/utilities. Master/impact append entries from all parents are retained. Schema-only funnel readiness is declared against the installed disabled schema; billing/migration true and checkout/tax false remain unchanged. No production or provider writes, quota181500 changes or premature migration closure. Delivery status distinguishes merged diagnostic source from unverified deployment, native foundation installed with gates off, HQ e249 live and funnel collection off. Exact combined CI remains required; release manager owns merge and activation.
 
 ## 2026-10-21 | Stay browser host-proxy transport cleanup
 
