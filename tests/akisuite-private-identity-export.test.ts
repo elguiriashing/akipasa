@@ -43,9 +43,16 @@ it("collects all1201caller rows across deterministic pages without sending an id
   expect(
     result.find((x) => x.table === "suite_referral_audit")?.data,
   ).toHaveLength(1201);
-  expect(rpc).toHaveBeenCalledTimes(14);
+  expect(rpc).toHaveBeenCalledTimes(privateIdentityExportSections.length + 2);
   for (const call of rpc.mock.calls) {
-    expect(call[0]).toBe("suite_private_identity_export_page");
+    expect(call[0]).toBe(
+      [
+        "akipulse_rental_workspace_links",
+        "akipulse_rental_link_audit",
+      ].includes(call[1].p_section)
+        ? "my_pulse_management_export_page"
+        : "suite_private_identity_export_page",
+    );
     expect(Object.keys(call[1]).sort()).toEqual([
       "p_after",
       "p_limit",
@@ -154,7 +161,9 @@ it("treats provider/transport failures as unavailable rather than an empty succe
     rpc: vi.fn().mockRejectedValue(new Error("Transport")),
   } as unknown as SupabaseClient;
   const result = await readPrivateIdentityExports(db);
-  expect(result.filter((x) => x.failed)).toHaveLength(12);
+  expect(result.filter((x) => x.failed)).toHaveLength(
+    privateIdentityExportSections.length,
+  );
   expect(
     result.every(
       (x) =>
@@ -162,3 +171,56 @@ it("treats provider/transport failures as unavailable rather than an empty succe
     ),
   ).toBe(true);
 });
+
+it.each(["akipulse_rental_workspace_links", "akipulse_rental_link_audit"])(
+  "exports all1003 own %s records using only the management privacy RPC",
+  async (section) => {
+    const { rpc, db } = client((requested, after) => {
+      if (requested !== section) return empty(requested);
+      const start = after ? Number(after) : 0,
+        end = Math.min(start + 500, 1003);
+      return {
+        section,
+        total: 1003,
+        rows: Array.from({ length: end - start }, (_, index) => ({
+          key: key(start + index + 1),
+          data: { reference: `own-${start + index + 1}`, actor_is_you: true },
+        })),
+        next_cursor: end < 1003 ? key(end) : null,
+      };
+    });
+    const result = await readPrivateIdentityExports(db);
+    expect(result.find((entry) => entry.table === section)).toMatchObject({
+      failed: false,
+      data: expect.any(Array),
+    });
+    expect(result.find((entry) => entry.table === section)?.data).toHaveLength(
+      1003,
+    );
+    const calls = rpc.mock.calls.filter(
+      (call) => call[1].p_section === section,
+    );
+    expect(calls).toHaveLength(3);
+    for (const call of calls) {
+      expect(call[0]).toBe("my_pulse_management_export_page");
+      expect(Object.keys(call[1]).sort()).toEqual([
+        "p_after",
+        "p_limit",
+        "p_section",
+      ]);
+    }
+  },
+);
+it.each(["akipulse_rental_workspace_links", "akipulse_rental_link_audit"])(
+  "fails closed when %s does not match its requested section",
+  async (section) => {
+    const { db } = client((requested) =>
+      requested === section ? empty("suite_referral_audit") : empty(requested),
+    );
+    expect(
+      (await readPrivateIdentityExports(db)).find(
+        (entry) => entry.table === section,
+      ),
+    ).toEqual({ table: section, data: [], failed: true });
+  },
+);

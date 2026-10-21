@@ -29,6 +29,9 @@ beforeEach(() => {
   vi.stubEnv("AKISUITE_REFERRALS_READY", "false");
   vi.stubEnv("AKISUITE_FUNNEL_READY", "false");
   vi.stubEnv("AKISUITE_ONBOARDING_SCHEMA_READY", "true");
+  vi.stubEnv("AKIPULSE_EXPLICIT_SCOPE_ADAPTERS_READY", "false");
+  vi.stubEnv("AKIPULSE_NATIVE_PROPERTIES_READY", "false");
+  vi.stubEnv("AKIPULSE_SCOPED_BOOKINGS_READY", "false");
   mocks.user.mockResolvedValue({
     data: { user: { id: "member", email: "member@example.test" } },
   });
@@ -42,11 +45,14 @@ it.each(["pending", "underage"])(
         data:
           name === "my_account_onboarding"
             ? { status }
-            : name === "suite_private_identity_export_page"
+            : name === "suite_private_identity_export_page" ||
+                name === "my_pulse_management_export_page"
               ? {
                   section: args!.p_section,
                   total:
-                    args!.p_section === "passport_prestige_shipping_addresses"
+                    args!.p_section ===
+                      "passport_prestige_shipping_addresses" ||
+                    name === "my_pulse_management_export_page"
                       ? 1
                       : 0,
                   rows:
@@ -60,7 +66,22 @@ it.each(["pending", "underage"])(
                             },
                           },
                         ]
-                      : [],
+                      : name === "my_pulse_management_export_page"
+                        ? [
+                            {
+                              key: "00000000-0000-4000-8000-000000000002",
+                              data: {
+                                company_id:
+                                  "00000000-0000-4000-8000-000000000002",
+                                workspace_id: "own-workspace",
+                                ...(args!.p_section ===
+                                "akipulse_rental_workspace_links"
+                                  ? { linked_by_you: true }
+                                  : { actor_is_you: true }),
+                              },
+                            },
+                          ]
+                        : [],
                   next_cursor: null,
                 }
               : [],
@@ -74,6 +95,26 @@ it.each(["pending", "underage"])(
     const body = await response.json();
     expect(body.data.account_onboarding).toEqual([{ status }]);
     expect(body.data.passport_prestige_shipping_addresses).toHaveLength(1);
+    expect(body.data.akipulse_rental_workspace_links).toEqual([
+      {
+        company_id: "00000000-0000-4000-8000-000000000002",
+        workspace_id: "own-workspace",
+        linked_by_you: true,
+      },
+    ]);
+    expect(body.data.akipulse_rental_link_audit).toEqual([
+      {
+        company_id: "00000000-0000-4000-8000-000000000002",
+        workspace_id: "own-workspace",
+        actor_is_you: true,
+      },
+    ]);
+    expect(
+      mocks.rpc.mock.calls.filter(
+        (call) => call[0] === "my_pulse_management_export_page",
+      ),
+    ).toHaveLength(2);
+
     expect(body.data).not.toHaveProperty("passport_prestige");
     expect(mocks.rpc).not.toHaveBeenCalledWith(
       "prestige_member",
@@ -84,12 +125,14 @@ it.each(["pending", "underage"])(
 it("returns no partial export if any private section fails", async () => {
   mocks.rpc.mockImplementation(
     async (name: string, args?: { p_section: string }) =>
-      name === "suite_private_identity_export_page" &&
+      (name === "suite_private_identity_export_page" ||
+        name === "my_pulse_management_export_page") &&
       args!.p_section === "suite_referral_payout_reviews"
         ? { data: null, error: { message: "Unavailable" } }
         : {
             data:
-              name === "suite_private_identity_export_page"
+              name === "suite_private_identity_export_page" ||
+              name === "my_pulse_management_export_page"
                 ? {
                     section: args!.p_section,
                     total: 0,
@@ -113,3 +156,41 @@ it("never invokes privacy RPC without validated authentication", async () => {
   expect(response.status).toBe(401);
   expect(mocks.rpc).not.toHaveBeenCalled();
 });
+
+it.each(["akipulse_rental_workspace_links", "akipulse_rental_link_audit"])(
+  "returns complete-export503 when %s schema is unavailable",
+  async (section) => {
+    mocks.rpc.mockImplementation(
+      async (name: string, args?: { p_section: string }) => {
+        if (
+          name === "my_pulse_management_export_page" &&
+          args?.p_section === section
+        )
+          return {
+            data: null,
+            error: { code: "PGRST202", message: "Schema unavailable" },
+          };
+        if (
+          name === "suite_private_identity_export_page" ||
+          name === "my_pulse_management_export_page"
+        )
+          return {
+            data: {
+              section: args!.p_section,
+              total: 0,
+              rows: [],
+              next_cursor: null,
+            },
+            error: null,
+          };
+        return { data: [], error: null };
+      },
+    );
+    const response = await GET(),
+      body = await response.json();
+    expect(response.status).toBe(503);
+    expect(response.headers.get("cache-control")).toBe("private, no-store");
+    expect(body).not.toHaveProperty("data");
+    expect(body.unavailable_tables).toContain(section);
+  },
+);

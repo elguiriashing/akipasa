@@ -112,3 +112,51 @@ private/funnel cases,6 legacy prestige-export cases and10 account-export/permiss
 cases; these counts overlap and are not summed as independent suites.
 TypeScript/scoped ESLint, mirrored SQL audit and contract integrity pass. Final
 hosted full checks/build and integrated release/provider acceptance remain required.
+
+## Own AkiPulse management history
+
+Two additional sections extend the existing caller-only pager:
+`akipulse_rental_workspace_links` and `akipulse_rental_link_audit`. Only these two
+allowlisted sections dispatch to `my_pulse_management_export_page`; the original
+referral/prestige sections retain `suite_private_identity_export_page`. No identity,
+workspace, company or role parameter is supplied by the central adapter. Both RPCs
+retain the same section/total/rows[{key,data}]/next_cursor protocol and the existing
+500-row pages,100-read global budget,10,000-row per-section guard, stable totals,
+strict cursor ordering and complete-export503/no-store behavior. No partial export
+is labelled complete after a missing page, changed count or provider error.
+
+The management RPC projects only records whose linked_by/actor equals auth.uid():
+owned linkage facts and the caller's own link-change history, with own-action
+booleans rather than another person's identity. It excludes other actors, lead
+contacts/free text, raw audit snapshots and provider/financial data. The authoritative
+SQL lives in AkiHQ migration20261021145321_akipulse_management_privacy_export; the
+central application does not duplicate its RLS or source tables. HQ's backend tests
+are separate evidence; this adapter does not claim to enforce ownership in the UI.
+
+**Deployment dependency:** install and accept that HQ migration/RPC before deploying
+this central adapter. Existing AKISUITE_PRIVATE_IDENTITY_EXPORTS_READY remains the
+privacy readiness gate; no new flag is added and it is not tied to
+AKIPULSE_EXPLICIT_SCOPE_ADAPTERS_READY, AKIPULSE_NATIVE_PROPERTIES_READY or analytics
+reader gates. Those features may remain off while retained own activity is exported.
+If the new privacy schema is unavailable, the whole account export deliberately
+returns503 rather than hiding a section. Do not disable shared privacy readiness to
+mask that dependency or hide older referral/prestige data. Keep a compatible reader
+while retained own management history exists, including after membership loss or a
+feature pause. Privacy remains accessible to pending/underage identities; this read
+never grants business access, staff permissions, financial rights or tracking consent.
+
+No canonical SQL, schema, production data, feature flag, consent choice or financial
+configuration is modified by this central change. The release manager owns the
+companion schema installation, exact-head CI, merge and authenticated provider smoke.
+Before any rollback, preserve compatible access to retained own management history;
+review missing-schema failures instead of presenting an incomplete successful file.
+
+Central verification checkpoint:28 cases pass (15 reader,6 authenticated HTTP and7
+existing private-identity database cases). Both new sections collect1003 synthetic
+rows over three pages, dispatch only the management privacy RPC with the original
+three paging arguments, and reject mismatched sections. HTTP tests preserve own
+link/history data for pending/underage accounts with all HQ gates off and return
+whole-export503 if either new section/RPC is unavailable. Typecheck, scoped lint,
+formatting and contract integrity pass. Companion authoritative SQL/role tests are
+tracked separately in AkiHQ PR77; no central test imports another repository or
+claims provider acceptance from a mock.

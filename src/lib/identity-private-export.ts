@@ -15,10 +15,17 @@ export const privateIdentityExportSections = [
   "passport_prestige_shipping_addresses",
   "passport_prestige_physical_requests",
   "passport_prestige_audit",
+  "akipulse_rental_workspace_links",
+  "akipulse_rental_link_audit",
 ] as const;
 export function privateIdentityExportsReady() {
   return process.env.AKISUITE_PRIVATE_IDENTITY_EXPORTS_READY === "true";
 }
+// This is the same caller-only pagination protocol over a separate management
+// privacy RPC. Keep these readers independent of commercial analytics/linking gates.
+const pulsePrivacySections = new Set<
+  (typeof privateIdentityExportSections)[number]
+>(["akipulse_rental_workspace_links", "akipulse_rental_link_audit"]);
 const pageSize = 500;
 const rowLimit = 10_000;
 const readLimit = 100;
@@ -50,7 +57,9 @@ export async function readPrivateIdentityExports(
       while (remainingReads > 0) {
         remainingReads -= 1;
         const response = await supabase.rpc(
-          "suite_private_identity_export_page",
+          pulsePrivacySections.has(section)
+            ? "my_pulse_management_export_page"
+            : "suite_private_identity_export_page",
           {
             p_section: section,
             p_after: after,

@@ -1880,3 +1880,15 @@ preserved. Focused86 tests and SQL permission audit pass; full exact CI and live
 installation/deployment remain release-owner gates. See
 OPERATIONS_MERCHANT_DIAGNOSTICS.md for categories, interpretation and rollback.
 No production, primary, provider, customer, configuration or financial writes.
+
+## 2026-10-21 | Complete own AkiPulse management privacy export
+
+Extends central identity-only export with two allowlisted rental-link/history
+sections using the separate authenticated my_pulse_management_export_page RPC.
+Existing referral/prestige paging, completeness budgets,503/no-store response and
+pending/underage privacy exception remain intact; no other-person data, business
+authorization, marketing consent or analytics activation is added. Companion HQ
+20261021145321 must be installed before this adapter deploys. Existing privacy
+readiness stays independent of all HQ feature gates. See PRIVATE_IDENTITY_EXPORT.md
+for exact dependency, projection, regression evidence and rollback constraints.
+No source SQL, live data/configuration, financial or primary-branch mutation.
