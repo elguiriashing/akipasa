@@ -128,106 +128,30 @@ export function AkiSuiteMembershipGrid({
       <div className={styles.grid}>
         <article id="akihq-free" className={styles.card} data-product="akihq">
           <div className={styles.brandIdentity}>
-            <Image src="/brand/hq-icon.png" width={44} height={44} alt="" />
+            <Image
+              src="/brand/hq-mark.svg"
+              width={46}
+              height={46}
+              alt=""
+              unoptimized
+            />
             <span className={styles.eyebrow}>AkiHQ</span>
           </div>
           <h3>{es ? "Gestión gratuita" : "Free management"}</h3>
-          <div className={styles.price}>
-            <strong>{money(0)}</strong>
-          </div>
           <p>
             {es
               ? "Organizaciones, ubicaciones, listados, titularidad y permisos esenciales."
               : "Organisations, locations, listings, ownership and essential permissions."}
           </p>
+          <div className={styles.price}>
+            <strong>{money(0)}</strong>
+          </div>
           <Link className="button secondary" href={suiteHref("hq", locale)}>
             {es ? "Abrir AkiHQ gratis" : "Open free AkiHQ"}
           </Link>
         </article>
-        {(
-          Object.keys(OPERATION_PRICES) as Array<keyof typeof OPERATION_PRICES>
-        ).map((tier) => {
-          const offer = OPERATION_PRICES[tier],
-            swaps = tier === "basico" ? 1 : tier === "standard" ? 2 : null;
-          return (
-            <article
-              id={`operations-${tier}`}
-              key={tier}
-              className={styles.card}
-              data-product="akibusiness"
-            >
-              <div className={styles.brandIdentity}>
-                <Image
-                  src="/brand/business-icon.png"
-                  width={44}
-                  height={44}
-                  alt=""
-                />
-                <span className={styles.eyebrow}>AkiBusiness</span>
-              </div>
-              <h3>
-                {tier === "basico"
-                  ? "Standard"
-                  : tier === "standard"
-                    ? "Plus"
-                    : "Pro"}
-              </h3>
-              <div className={styles.price}>
-                <strong>{money(offer.amount)}</strong>
-                <span>/{es ? "mes por ubicación" : "month per location"}</span>
-              </div>
-              <ul className={styles.benefits}>
-                <li>
-                  {es
-                    ? `${offer.tools} de 12 herramientas activas`
-                    : `${offer.tools} of 12 active tools`}
-                </li>
-                <li>
-                  {swaps === null
-                    ? es
-                      ? "Todas las herramientas, sin selección ni límite de sustituciones"
-                      : "All tools, no selection or replacement limit"
-                    : es
-                      ? `${swaps} ${swaps === 1 ? "sustitución mensual" : "sustituciones mensuales"}`
-                      : `${swaps} monthly ${swaps === 1 ? "replacement" : "replacements"}`}
-                </li>
-                <li>
-                  {es
-                    ? "Delegación al equipo inmediata dentro de las herramientas activas"
-                    : "Instant staff delegation within active tools"}
-                </li>
-              </ul>
-              <p>
-                {tier === "pro"
-                  ? es
-                    ? "Pro habilita las doce herramientas; no necesita selección."
-                    : "Pro enables all twelve tools and needs no selection."
-                  : es
-                    ? "Las selecciones guardadas se activan en la próxima rotación mensual."
-                    : "Saved selections activate at the next monthly rotation."}
-              </p>
-              <Link className="button secondary" href={operations}>
-                {es
-                  ? "Gestionar herramientas de operaciones"
-                  : "Manage operating tools"}
-              </Link>
-            </article>
-          );
-        })}
-      </div>
-      {listingPlans.length > 0 && (
-        <section aria-labelledby="listing-premium-title">
-          <h3 id="listing-premium-title">
-            {es
-              ? "Premium de listados y personal"
-              : "Listing and personal Premium"}
-          </h3>
-          <p>
-            {es
-              ? "Son suscripciones independientes de las herramientas de operaciones de AkiBusiness."
-              : "These subscriptions are separate from AkiBusiness operating tools."}
-          </p>
-          <div className={styles.grid}>
+        {listingPlans.length > 0 && (
+          <>
             {listingPlans.map((plan) => {
               const info = listingCopy[plan],
                 current = included.has(plan),
@@ -309,9 +233,86 @@ export function AkiSuiteMembershipGrid({
                 </article>
               );
             })}
-          </div>
-        </section>
-      )}
+          </>
+        )}
+        {(
+          Object.keys(OPERATION_PRICES) as Array<keyof typeof OPERATION_PRICES>
+        ).map((tier) => {
+          const offer = OPERATION_PRICES[tier],
+            swaps = tier === "basico" ? 1 : tier === "standard" ? 2 : null;
+          return (
+            <article
+              id={`operations-${tier}`}
+              key={tier}
+              className={styles.card}
+              data-product="akibusiness"
+            >
+              <div className={styles.brandIdentity}>
+                <Image
+                  src="/brand/business-mark.svg"
+                  width={46}
+                  height={46}
+                  alt=""
+                  unoptimized
+                />
+                <span className={styles.eyebrow}>AkiBusiness</span>
+              </div>
+              <h3>
+                {tier === "basico"
+                  ? "Standard"
+                  : tier === "standard"
+                    ? "Plus"
+                    : "Pro"}
+              </h3>
+              <p>
+                {tier === "pro"
+                  ? es
+                    ? "Pro habilita las doce herramientas; no necesita selección."
+                    : "Pro enables all twelve tools and needs no selection."
+                  : es
+                    ? "Las selecciones guardadas se activan en la próxima rotación mensual."
+                    : "Saved selections activate at the next monthly rotation."}
+              </p>
+              <div className={styles.price}>
+                <strong>{money(offer.amount)}</strong>
+                <span>/{es ? "mes por ubicación" : "month per location"}</span>
+              </div>
+              <ul className={styles.benefits}>
+                <li>
+                  {es
+                    ? `${offer.tools} de 12 herramientas activas`
+                    : `${offer.tools} of 12 active tools`}
+                </li>
+                <li>
+                  {swaps === null
+                    ? es
+                      ? "Todas las herramientas, sin selección ni límite de sustituciones"
+                      : "All tools, no selection or replacement limit"
+                    : es
+                      ? `${swaps} ${swaps === 1 ? "sustitución mensual" : "sustituciones mensuales"}`
+                      : `${swaps} monthly ${swaps === 1 ? "replacement" : "replacements"}`}
+                </li>
+                <li>
+                  {es
+                    ? "Delegación al equipo inmediata dentro de las herramientas activas"
+                    : "Instant staff delegation within active tools"}
+                </li>
+              </ul>
+
+              <Link className="button secondary" href={operations}>
+                {es
+                  ? "Gestionar herramientas de operaciones"
+                  : "Manage operating tools"}
+              </Link>
+            </article>
+          );
+        })}
+      </div>
+      <p className={styles.footnote}>
+        {es
+          ? "Listing Premium y las herramientas operativas son suscripciones independientes."
+          : "Listing Premium and operating tools are independent subscriptions."}
+      </p>
       <p className={styles.footnote}>
         {es
           ? "La titularidad de un listado es independiente de Premium. Los importes e impuestos se confirman antes del pago. Ninguna devolución del checkout activa funciones por sí sola."

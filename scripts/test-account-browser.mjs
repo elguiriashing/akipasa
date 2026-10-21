@@ -306,10 +306,36 @@ async function checkBounds(page, context) {
     )) {
       if (!visible(control)) continue;
       const rect = control.getBoundingClientRect();
-      if (rect.left < -1 || rect.right > width + 1)
-        failures.push(
-          `Control outside viewport: ${(control.textContent || control.getAttribute("name") || control.tagName).trim().slice(0, 80)}`,
-        );
+      if (rect.left < -1 || rect.right > width + 1) {
+        // Off-screen controls are valid only within a genuinely scrollable
+        // horizontal comparison row, and must become visible when scrolled.
+        let reachable = false;
+        for (
+          let ancestor = control.parentElement;
+          ancestor && ancestor !== document.body;
+          ancestor = ancestor.parentElement
+        ) {
+          const style = getComputedStyle(ancestor);
+          if (
+            !/auto|scroll/.test(style.overflowX) ||
+            ancestor.scrollWidth <= ancestor.clientWidth + 1
+          )
+            continue;
+          const previous = ancestor.scrollLeft;
+          const parentBox = ancestor.getBoundingClientRect();
+          ancestor.scrollLeft += rect.left - parentBox.left;
+          const reached = control.getBoundingClientRect();
+          reachable =
+            reached.left >= Math.max(-1, parentBox.left - 1) &&
+            reached.right <= Math.min(width + 1, parentBox.right + 1);
+          ancestor.scrollLeft = previous;
+          if (reachable) break;
+        }
+        if (!reachable)
+          failures.push(
+            `Control outside viewport: ${(control.textContent || control.getAttribute("name") || control.tagName).trim().slice(0, 80)}`,
+          );
+      }
     }
     // Header text rectangles catch the original rounded clipping defect even when
     // document.scrollWidth is entirely normal. We inspect real text, not CSS rules.
@@ -974,6 +1000,9 @@ try {
               "href",
               `/${locale}/account/subscription?from=akiduermo`,
             );
+            // The canonical one-row membership carousel makes every CTA
+            // scroll-reachable, even when it is not initially in the viewport.
+            await link.scrollIntoViewIfNeeded();
             const geometry = await link.evaluate((el) => {
               const r = el.getBoundingClientRect();
               const range = document.createRange();

@@ -28,11 +28,18 @@ describe("AkiSuite localized membership catalogue", () => {
     expect(grid).not.toContain("setInterval");
     for (const logo of [
       "/pwa/akipasa-192.png",
-      "/brand/business-icon.png",
+      "/brand/business-mark.svg",
       "/brand/duermo-icon.png",
-      "/brand/hq-icon.png",
+      "/brand/hq-mark.svg",
     ])
       expect(grid).toContain(logo);
+    const css = readFileSync(
+      "src/components/AkiSuiteMembershipGrid.module.css",
+      "utf8",
+    );
+    expect(css).toContain("grid-auto-flow: column");
+    expect(css).toContain("scroll-snap-type: x proximity");
+    expect(grid).not.toContain('id="listing-premium-title"');
   });
   it("renders the full catalogue regardless of checkout activation", () => {
     for (const source of [publicPage, accountPage]) {

@@ -1,5 +1,24 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-21 | Discovery membership studio layout contract (PR #275)
+
+The AkiPasa public and account membership catalogue must use the same modern,
+single-row five-offer visual hierarchy as the native AkiCoches and AkiDuermo
+storefronts: AkiHQ free, AkiBusiness Standard/Plus/Pro and the origin-scoped
+Listing Premium offer. Cards are equally spaced on wide screens and remain a
+single, horizontally scrollable, keyboard-accessible row on narrow screens.
+Original in-repository AkiHQ and AkiBusiness SVG brand marks appear above their
+respective plan titles. Personal Premium remains separately feature-gated, and
+may add a sixth card without removing available options.
+
+This is presentation and catalogue ordering only. Keep the approved monthly
+prices, checkout-readiness safeguards, existing subscription and Stripe logic,
+workspace scope, team delegation, role checks, personal-launch gate and bilingual
+links unchanged. Do not create artwork, enable checkout or alter entitlements.
+Acceptance requires updated membership UI tests, exact-head lint/typecheck,
+visual review at desktop/tablet/mobile sizes and full required PR CI. Production
+merges and release verification remain gated on successful checks.
+
 ## 2026-10-20 | Authoritative contract recovery and integrity gate
 
 The complete source-history contract text is restored from the last intact parent
