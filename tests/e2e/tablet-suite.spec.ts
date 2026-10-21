@@ -21,54 +21,57 @@ const viewports = [
 
 for (const locale of ["en", "es"]) {
   for (const theme of ["light", "dark"]) {
-    test(`tablet routes ${locale} ${theme}`, async ({ page }) => {
-      test.setTimeout(180_000);
-      page.setDefaultTimeout(15_000);
-      await page.addInitScript((theme) => {
-        localStorage.setItem("akipasa.theme", theme);
-      }, theme);
-      await page.route(/^https?:\/\//, (route) => {
-        if (
-          ["127.0.0.1", "localhost"].includes(
-            new URL(route.request().url()).hostname,
+    for (const viewport of viewports) {
+      test(`tablet routes ${locale} ${theme} ${viewport.width}`, async ({
+        page,
+      }) => {
+        test.setTimeout(180_000);
+        page.setDefaultTimeout(15_000);
+        await page.setViewportSize(viewport);
+        await page.addInitScript((theme) => {
+          localStorage.setItem("akipasa.theme", theme);
+        }, theme);
+        await page.route(/^https?:\/\//, (route) => {
+          if (
+            ["127.0.0.1", "localhost"].includes(
+              new URL(route.request().url()).hostname,
+            )
           )
-        )
-          return route.continue();
-        return route.abort();
-      });
-      // Make the real opt-out decision before testing navigation. A cookie seed
-      // or a non-waiting visibility check can race client hydration.
-      await page.goto(`/${locale}`, { waitUntil: "domcontentloaded" });
-      const privacy = page.locator(".personalisation-consent");
-      await expect(privacy).toBeVisible();
-      const consentResponse = page.waitForResponse(
-        (response) =>
-          new URL(response.url()).pathname ===
-            "/api/v1/personalisation/consent" &&
-          response.request().method() === "POST",
-      );
-      await privacy
-        .getByRole("button", {
-          name: locale === "es" ? "Rechazar opcionales" : "Reject optional",
-          exact: true,
-        })
-        .click();
-      expect((await consentResponse).status()).toBe(204);
-      await expect(privacy).toBeHidden();
-      expect(
-        await page.evaluate(() =>
-          document.cookie.split("; ").includes("ak_consent_version=2"),
-        ),
-      ).toBe(true);
-      for (const cookie of ["analytics", "personalisation", "marketing"])
+            return route.continue();
+          return route.abort();
+        });
+        // Make the real opt-out decision before testing navigation. A cookie seed
+        // or a non-waiting visibility check can race client hydration.
+        await page.goto(`/${locale}`, { waitUntil: "domcontentloaded" });
+        const privacy = page.locator(".personalisation-consent");
+        await expect(privacy).toBeVisible();
+        const consentResponse = page.waitForResponse(
+          (response) =>
+            new URL(response.url()).pathname ===
+              "/api/v1/personalisation/consent" &&
+            response.request().method() === "POST",
+        );
+        await privacy
+          .getByRole("button", {
+            name: locale === "es" ? "Rechazar opcionales" : "Reject optional",
+            exact: true,
+          })
+          .click();
+        expect((await consentResponse).status()).toBe(204);
+        await expect(privacy).toBeHidden();
         expect(
-          await page.evaluate(
-            (name) => document.cookie.split("; ").includes(`ak_${name}=denied`),
-            cookie,
+          await page.evaluate(() =>
+            document.cookie.split("; ").includes("ak_consent_version=2"),
           ),
         ).toBe(true);
-      for (const viewport of viewports) {
-        await page.setViewportSize(viewport);
+        for (const cookie of ["analytics", "personalisation", "marketing"])
+          expect(
+            await page.evaluate(
+              (name) =>
+                document.cookie.split("; ").includes(`ak_${name}=denied`),
+              cookie,
+            ),
+          ).toBe(true);
         for (const route of [
           `/${locale}`,
           `/${locale}/auth`,
@@ -124,8 +127,8 @@ for (const locale of ["en", "es"]) {
           path: `test-results/tablet-${locale}-${theme}-${viewport.width}.png`,
           fullPage: true,
         });
-      }
-    });
+      });
+    }
   }
 }
 
