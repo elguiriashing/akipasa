@@ -2460,6 +2460,16 @@ copies must not be used. Forty scoped native/review/deletion cases pass locally;
 hosted exact-head checks and provider/role acceptance remain release gates.
 No live schema, customer row, flag, payment or primary branch changed here.
 
+## 2026-10-21 | Listing quota snapshot serialization
+
+Forward181500 adds private per-venue/channel revision writes before existing
+quota reads, preserving advisory keys2/17. Exact installed function anchors retain
+all authorization, owner/OID/ACL/config and package/date/grandfather semantics;
+unknown bodies fail atomically. No existing venue row is touched or history
+backfilled. Local quota/metadata/receipt/isolation regressions pass; a dedicated
+actual PostgreSQL RC/RR event/reservation/legacy Storage race job gates release.
+All flags remain unchanged. See LISTING_QUOTA_SERIALIZATION.md.
+
 ## 2026-10-21 — Private merchant-stage classification
 
 Observes existing billing/migration merchant GET without changing request, fixed

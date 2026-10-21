@@ -5,8 +5,11 @@ export const suiteOther = "10000000-0000-4000-8000-000000000002";
 export const suiteVenue = "20000000-0000-4000-8000-000000000001";
 export const suiteVenueTwo = "20000000-0000-4000-8000-000000000002";
 export const suiteEvent = "30000000-0000-4000-8000-000000000001";
-export async function premiumDatabase(includeSuite = true) {
-  const db = new PGlite();
+export async function premiumDatabase(
+  includeSuite = true,
+  providedDatabase?: PGlite,
+) {
+  const db = providedDatabase ?? new PGlite();
   await db.exec(`
  create role anon;create role authenticated;create role service_role bypassrls;
  create schema auth;create schema storage;
