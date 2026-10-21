@@ -1545,6 +1545,7 @@ retained shared placements survive downgrade, and reused assets count with own
 uploads/reservations toward8/250 under one lock. Templates create drafts only.
 See LISTING_PREMIUM_LIBRARY.md for compatibility, acceptance and rollback. Native
 independent-property schema remains absent and its uploader stays separately gated.
+
 ### Listing quota UUID resurrection guard (forward fix)
 
 Additive233905 closes same-UUID deletion/recreation of a previously published
@@ -1560,3 +1561,13 @@ The library picker may list many authorized organisation assets. Listing upload
 usage counts only this venue's owned media and actual slot/header/event uses,
 including retained references without preview URLs. The available picker size is
 not a quota count. Server reservation and final mutation guards remain authoritative.
+
+## 2026-10-21 | Retained shared media identity (gated forward repair)
+
+An actual-role owner regression reproduced reuse of a deleted retained media UUID
+with a replacement image after downgrade. New forward guard003500 rejects media
+primary-key updates and retained-ID resurrection/upsert while preserving existing
+assets, exact old reuse and normal metadata edits. Strict owner Storage overwrite
+and a valid new receipt cannot bypass the guard. See LISTING_MEDIA_IDENTITY.md.
+11 focused SQL cases pass, permission audit0 findings; hosted builds/provider
+acceptance remain separate gates. No live application or activation performed.

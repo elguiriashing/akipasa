@@ -2111,6 +2111,7 @@ consumer. SQL/role/UI tests accompany the change; actual provider/concurrency an
 authenticated responsive acceptance remain release gates. Large hosted rollback
 attempts returned no evidence and are not claimed as passing. Runbook and retained-
 data rollback: LISTING_PREMIUM_LIBRARY.md.
+
 ## Forward listing event identity guard
 
 Verified gap: deleting then re-inserting the same event UUID reused170415's
@@ -2135,3 +2136,13 @@ at locations with small licensed collections even when the shared library is lar
 retained assets without preview URLs still count. Changing venues resets the media
 component. SQL/API quota and entitlement guards are unchanged. Focused usage and
 EN/ES template tests, owner regressions and TypeScript accompany the amendment.
+
+## 2026-10-21 | Retained shared media identity (gated forward repair)
+
+An actual-role owner regression reproduced reuse of a deleted retained media UUID
+with a replacement image after downgrade. New forward guard003500 rejects media
+primary-key updates and retained-ID resurrection/upsert while preserving existing
+assets, exact old reuse and normal metadata edits. Strict owner Storage overwrite
+and a valid new receipt cannot bypass the guard. See LISTING_MEDIA_IDENTITY.md.
+11 focused SQL cases pass, permission audit0 findings; hosted builds/provider
+acceptance remain separate gates. No live application or activation performed.
