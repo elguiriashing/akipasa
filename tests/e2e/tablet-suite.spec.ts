@@ -1,6 +1,11 @@
 import { expect, test } from "@playwright/test";
 
 test.describe.configure({ mode: "parallel" });
+// Next's local Node adapter canonicalizes the request authority to localhost.
+// Use that same browser origin so the real CSRF-protected consent POST is valid.
+test.use({
+  baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3100",
+});
 
 const viewports = [
   { width: 390, height: 844 },
@@ -17,23 +22,37 @@ for (const locale of ["en", "es"]) {
     test(`tablet routes ${locale} ${theme}`, async ({ page }) => {
       test.setTimeout(180_000);
       page.setDefaultTimeout(15_000);
-      // Navigation acceptance uses an existing consent-version cookie; optional
-      // privacy choices retain their default false values. No consent backend is mocked.
-      await page.context().addCookies([
-        {
-          name: "ak_consent_version",
-          value: "2",
-          url: process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:3100",
-        },
-      ]);
       await page.addInitScript((theme) => {
         localStorage.setItem("akipasa.theme", theme);
       }, theme);
       await page.route(/^https?:\/\//, (route) => {
-        if (new URL(route.request().url()).hostname === "127.0.0.1")
+        if (
+          ["127.0.0.1", "localhost"].includes(
+            new URL(route.request().url()).hostname,
+          )
+        )
           return route.continue();
         return route.abort();
       });
+      // Make the real opt-out decision before testing navigation. A cookie seed
+      // or a non-waiting visibility check can race client hydration.
+      await page.goto(`/${locale}`, { waitUntil: "domcontentloaded" });
+      const privacy = page.locator(".personalisation-consent");
+      await expect(privacy).toBeVisible();
+      await privacy
+        .getByRole("button", {
+          name: locale === "es" ? "Rechazar opcionales" : "Reject optional",
+          exact: true,
+        })
+        .click();
+      await expect(privacy).toBeHidden();
+      for (const cookie of ["analytics", "personalisation", "marketing"])
+        expect(
+          await page.evaluate(
+            (name) => document.cookie.split("; ").includes(`ak_${name}=denied`),
+            cookie,
+          ),
+        ).toBe(true);
       for (const viewport of viewports) {
         await page.setViewportSize(viewport);
         for (const route of [
@@ -51,11 +70,6 @@ for (const locale of ["en", "es"]) {
           await page.goto(route, { waitUntil: "domcontentloaded" });
           await expect(page.locator("main")).toBeVisible();
           if (route === `/${locale}`) {
-            const reject = page.getByRole("button", {
-              name: locale === "es" ? "Rechazar opcionales" : "Reject optional",
-              exact: true,
-            });
-            if (await reject.isVisible()) await reject.click();
             const more = page.getByRole("button", {
               name: locale === "es" ? "Más opciones" : "More options",
               exact: true,
@@ -127,15 +141,18 @@ test("AkiBusiness login and modes fit tablets and split windows", async ({
 }) => {
   test.setTimeout(240_000);
   // Forward the real virtual-host request through the local Next server.
-  await page.route(/http:\/\/127\.0\.0\.1:\d+\//, async (route) => {
-    // Compiled assets are host-independent; keep their native browser transport.
-    if (new URL(route.request().url()).pathname.startsWith("/_next/static/"))
-      return route.continue();
-    const response = await route.fetch({
-      headers: { ...route.request().headers(), host: "business.akipasa.com" },
-    });
-    await route.fulfill({ response });
-  });
+  await page.route(
+    /http:\/\/(?:127\.0\.0\.1|localhost):\d+\//,
+    async (route) => {
+      // Compiled assets are host-independent; keep their native browser transport.
+      if (new URL(route.request().url()).pathname.startsWith("/_next/static/"))
+        return route.continue();
+      const response = await route.fetch({
+        headers: { ...route.request().headers(), host: "business.akipasa.com" },
+      });
+      await route.fulfill({ response });
+    },
+  );
   for (const locale of ["en", "es"])
     for (const theme of ["dark", "light"]) {
       await page.addInitScript(

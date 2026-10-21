@@ -25,3 +25,17 @@ Rollback can disable the private singleton immediately; reverting this additive 
 ## Evidence
 
 Twenty-two focused tests cover the actual worker release endpoint/scheduler, existing migration engine observation, health failure isolation and real PostgreSQL-role simulation. Five SQL cases exercise default-off behavior, enum validation, singleton locking, task isolation, service restrictions and browser denial. Supported dependency packaging and hosted CI must pass against the exact published commit before merge. Production execution and customer schedule completion remain operator verification gates.
+
+## Supported runtime browser acceptance
+
+The Spotlight fixture explicitly uses the same webpack compiler as the application
+build. Tablet tests use the local adapter's canonical localhost browser origin,
+make a real optional-tracking rejection and assert all three cookies denied before
+opening navigation. Local reproduction confirmed matching localhost consent POST
+returns204 while mismatched origins return403; production CSRF source is unchanged.
+The virtual business-host adapter recognizes only localhost/127.0.0.1, and the root
+redirect assertion verifies the exact requested-origin destination while the API
+test helper retains its canonical local request origin. These changes preserve
+all route, viewport, mode and security assertions. The four complete locale/theme
+route sweeps (252 navigations) passed locally; final complete exact-head CI remains
+the release gate, including the isolated business-host regression and Spotlight.
