@@ -2483,6 +2483,10 @@ copies must not be used. Forty scoped native/review/deletion cases pass locally;
 hosted exact-head checks and provider/role acceptance remain release gates.
 No live schema, customer row, flag, payment or primary branch changed here.
 
+## 2026-10-21 | Atomic disabled native property deployment representation
+
+New deterministic deployment files represent the unchanged corrected001000/002500/005500 canonical SQL as23 bounded transactions (≤4971bytes), each with2s lock/8s statement/15s idle transaction timeouts and disabled/empty postconditions. Table RLS/client ACL and function execution controls accompany creation atomically. A restrictive native Storage hold precedes bucket creation and is removed only after all permanent policies and the evidence trigger exist. Hostile-default-grant intermediate actual-role tests and normal/hostile final catalogue parity preserve legacy accommodation_private, existing bookings and other buckets. No application, locale, analytics, identity, billing, existing data or feature flag changes. The release owner subsequently applied all23 reviewed phases with all activation gates false; exact history/readback receipts and the phase21 provider-history collision recovery are archived. See NATIVE_ACCOMMODATION_ATOMIC_DEPLOYMENT.md for hashes, ordered receipts, uncertainty recovery and separate provider/activation gates.
+
 ## 2026-10-21 — Private merchant-stage classification
 
 Observes existing billing/migration merchant GET without changing request, fixed
@@ -2546,3 +2550,7 @@ repair remain pending; neither is claimed installed/observed. Documentation only
 ## 2026-10-21 | Coherent phased-readiness and library protection release
 
 Integration preserves f1e99 primary plus frozen PR264 df012, PR265 9e1 and PR263 8a1 ancestry and reviewed immutable SQL/utilities. Master/impact append entries from all parents are retained. Schema-only funnel readiness is declared against the installed disabled schema; billing/migration true and checkout/tax false remain unchanged. No production or provider writes, quota181500 changes or premature migration closure. Delivery status distinguishes merged diagnostic source from unverified deployment, native foundation installed with gates off, HQ e249 live and funnel collection off. Exact combined CI remains required; release manager owns merge and activation.
+
+## 2026-10-21 | Stay browser host-proxy transport cleanup
+
+The existing isolated AkiDuermo guest-route browser spec now uses the same bounded GET-only connection-reset retry and wait-for-in-flight-route teardown as the previously reviewed frontend-health host proxy. This addresses two hosted socket-reset failures on local branding/image requests without changing any route, locale, privacy, keyboard, layout or consent assertion. HTTP errors and non-GET requests are never retried; intercepted errors are not ignored during cleanup. Application, provider, data, feature flags and canonical SQL are unchanged. Full exact-head browser CI remains the acceptance gate.
