@@ -1,0 +1,434 @@
+{
+  "version": 1,
+  "source_commit": "99feec0dc532598bb16f7a8b2afe8dad4752ef26",
+  "purpose": "Fresh disabled install of canonical funnel and own-identity export; not a new activation",
+  "sources": [
+    {
+      "path": "supabase/migrations/20261020234414_trusted_business_funnel.sql",
+      "sha256": "e6b6f1c00999a63a21b5aa9587b7c6d3f63f463824f92aadf78085a1ffa55a5e"
+    },
+    {
+      "path": "supabase/migrations/20261021000745_trusted_funnel_privacy_export.sql",
+      "sha256": "170007836256272cfb08b06285e73fe74e3175c4e527aa0470cf5d2340e7343f"
+    }
+  ],
+  "lock_timeout_ms": 2000,
+  "statement_timeout_ms": 8000,
+  "idle_transaction_timeout_ms": 15000,
+  "phases": [
+    {
+      "id": "00",
+      "name": "enum-prerequisite",
+      "file": "00-enum-prerequisite.sql",
+      "migration_name": "funnel_20261020234414_p00_7b600469fefc",
+      "depends_on": [],
+      "bytes": 371,
+      "sha256": "7b600469fefc4c5c49971d027af5901b43e4b822a8b97e3e5704342000e3c5de",
+      "source_statements": [
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 2,
+          "sha256": "aea51299fd353f99c7fa9139de0225f34d1e2456051c30a9a03d3f5794de2726"
+        }
+      ]
+    },
+    {
+      "id": "01",
+      "name": "private-tables",
+      "file": "01-private-tables.sql",
+      "migration_name": "funnel_20261020234414_p01_943336a2f52d",
+      "depends_on": ["00"],
+      "bytes": 4735,
+      "sha256": "943336a2f52dc23021a109d251d4c922d66736322630580d820558dee7f46521",
+      "source_statements": [
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 3,
+          "sha256": "f9fac4e495b2de1e957ed0b5922493c63bd442ca0544db9cec50a6a101a74249"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 4,
+          "sha256": "a9df1866567be430d6c055fb78705659da8ec44aa26df56a724389a741de4870"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 5,
+          "sha256": "922342a22b16502e6854e814b08efd8929e518086f288b301650fb07a8aa0e47"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 6,
+          "sha256": "25ea11b6cb177a563d9918511659688cb58fafc5e4c51977e68e435f0de740dd"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 7,
+          "sha256": "e094d15216cae969a6c417529d89868c1e8d7f7ba0e6e1059b3868329dfe7656"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 8,
+          "sha256": "f1da0e5d6f0c2e69407eb8bf4af7016f8f033f67c562c7e6a9eccb054f6987ef"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 14,
+          "sha256": "f14d6099fa13ab2ac50cb13997baa5fad36dd0dde35a46a637b080e6f0668cea"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 15,
+          "sha256": "cd5f6bf6a22bc8472e761715a3a55b676e1253c118d2ed662b8c294f90d41a73"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 16,
+          "sha256": "2b7be3c10605005dac227d9a66ec87464fdcce89588bf92a6975c6999b82ea0f"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 17,
+          "sha256": "fb2ee40699beecdf85cb1d048794184b557759f8a8c39514f666da31a813cf3d"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 18,
+          "sha256": "a605722ed26acab2961e30ad7d5db408241b85b794be92af0203307e36a3aba9"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 19,
+          "sha256": "f6d990b242f7f912bdc0add342f266be1e5f5606bf3802b5a13729448cf9f465"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 20,
+          "sha256": "38c7bd433c65bcffb6e41fbb2ad3a5cdd8f51ccafaaa8c6524adae1b682dc924"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 25,
+          "sha256": "32d4cbb0beb4fd93bbd83066310a254ab829ed49afe9f7c9b4e2ff9763500fd4"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 26,
+          "sha256": "fed4baf1f83521e75b5e37ddb9d96ac2975ee62bd4cb4e637003b409b51d2a75"
+        }
+      ]
+    },
+    {
+      "id": "02",
+      "name": "ledger-indexes",
+      "file": "02-ledger-indexes.sql",
+      "migration_name": "funnel_20261020234414_p02_d05c31e73ac4",
+      "depends_on": ["01"],
+      "bytes": 2549,
+      "sha256": "d05c31e73ac4a1f77cb127a37a51ec8fabe68bccca905b9460bb4ff2304f692b",
+      "source_statements": [
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 9,
+          "sha256": "1d8993cc5421e257c7e5ff6084782c3f1fb50b10d0e523ac67aaf4d01abdb73b"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 10,
+          "sha256": "ca0cc9d1a607f01ac2957c59cc68a6071c0122767a3192f9331877ca23e381e4"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 11,
+          "sha256": "76036b0859614b92f3f3b178e475c3767ffe44a09d3f27260ed46e8626382f52"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 12,
+          "sha256": "4a9dde46d7723da36ab241df9eb672b19eddf619e493863e29034e6627a4ca6d"
+        }
+      ]
+    },
+    {
+      "id": "03",
+      "name": "billing-evidence-index",
+      "file": "03-billing-evidence-index.sql",
+      "migration_name": "funnel_20261020234414_p03_573484d2c6a7",
+      "depends_on": ["02"],
+      "bytes": 2444,
+      "sha256": "573484d2c6a7799efd88c4d0186db6c3eb8bc34b182b66f06cd1a8bca8aad4ed",
+      "source_statements": [
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 13,
+          "sha256": "ed6b4c93af07ea960101dfcf56598ea15ed38fcd014c95eb94bf4e36f171f6be"
+        }
+      ]
+    },
+    {
+      "id": "04",
+      "name": "capture-helpers",
+      "file": "04-capture-helpers.sql",
+      "migration_name": "funnel_20261020234414_p04_df93ac04ac61",
+      "depends_on": ["03"],
+      "bytes": 4947,
+      "sha256": "df93ac04ac61de863a37a438a73251c0c0aa4b03d516699bafe3cbc2095a1af4",
+      "source_statements": [
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 21,
+          "sha256": "e9c41d54b007a79406b37b17a0e52960fa49ed91b572f7aa5166d66d97931585"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 23,
+          "sha256": "2051e90d3f7da049c3b9892d1c1739773689c63fca1036f2a6e9e3b8a6487ead"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 24,
+          "sha256": "102254d141812bf69a205736d08153b65d80fd49495db758a6e88e6343762d3a"
+        }
+      ]
+    },
+    {
+      "id": "05",
+      "name": "privacy-helpers",
+      "file": "05-privacy-helpers.sql",
+      "migration_name": "funnel_20261020234414_p05_cfcf5d50c697",
+      "depends_on": ["04"],
+      "bytes": 3770,
+      "sha256": "cfcf5d50c69770b92ee3467570d156009783c08de26165de6772b7eb55814c05",
+      "source_statements": [
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 27,
+          "sha256": "33fc464909ebca318225726bd9e96826a98a4e5766441fbeacffe98dc00efc0e"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 29,
+          "sha256": "3cf49cab2007ee1e60067b125656bc9c380259074f0f7283b7d24790c45fe72c"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 33,
+          "sha256": "648c5b496d107266329bf3916fafc1f95b56c1035d6deebe037ae404aaa481fa"
+        }
+      ]
+    },
+    {
+      "id": "06",
+      "name": "claim-workspace-checkout-functions",
+      "file": "06-claim-workspace-checkout-functions.sql",
+      "migration_name": "funnel_20261020234414_p06_117a8e681bf4",
+      "depends_on": ["05"],
+      "bytes": 4705,
+      "sha256": "117a8e681bf4812bdda4a1dd133d115c02613ae3b7ae0654d51b23181e869407",
+      "source_statements": [
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 37,
+          "sha256": "378a9743c675a5ffb84a8c725c45294b5a2772e3e052e27b755126f977795843"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 39,
+          "sha256": "d8877ef2be016adb38a9ec6428e7e9efd340af255cf1eca8499ec01897ff0f12"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 41,
+          "sha256": "2f954245abbd65c06c22106daad8f7f19fd24924dc8bec66a341f28777122d3a"
+        }
+      ]
+    },
+    {
+      "id": "07",
+      "name": "billing-function",
+      "file": "07-billing-function.sql",
+      "migration_name": "funnel_20261020234414_p07_60b79021a836",
+      "depends_on": ["06"],
+      "bytes": 4352,
+      "sha256": "60b79021a836703a8e7eebc12ef532c4f6b2260bae9dd4249358eebb9350b24a",
+      "source_statements": [
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 43,
+          "sha256": "aeb974cd98c7fb62462f06df1e93377618fe5d778d350b38a3b796fa4a18e577"
+        }
+      ]
+    },
+    {
+      "id": "08",
+      "name": "privacy-and-integrity-triggers",
+      "file": "08-privacy-and-integrity-triggers.sql",
+      "migration_name": "funnel_20261020234414_p08_16cf3c9c8778",
+      "depends_on": ["07"],
+      "bytes": 3556,
+      "sha256": "16cf3c9c877867c8935d0897d606986a4687bc68ab7f67c0b7e81e19294f267d",
+      "source_statements": [
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 22,
+          "sha256": "40e348c06c5ea76a81430e979e17ed230bee6b957c666ffc457215cbb9e43298"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 28,
+          "sha256": "67972cb379871671ca1b66980bcc020458f8a912bd4a442931bf23aeb34440ee"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 30,
+          "sha256": "0c065c6c85418452b4a1e2ea2b28a8272e0c3cdec0c4d3d02958af1ccd06c351"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 31,
+          "sha256": "55f4ef286bc99c11f7b0bf8af225b35efa5c9ce5796770469725ce420945f343"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 32,
+          "sha256": "ffa54b1344dff91976f93c6c9be3dede615339997f453903fc794d9c6fe6bbc3"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 34,
+          "sha256": "d7a2c38ef46d8b51ff6e0f5df549475cd8958b5d8792045f89b3d95c3ac77ffc"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 35,
+          "sha256": "74fed9176e5dc75e82cb42e135325a27a072349cff0f1f5860921a67d58cf2d7"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 36,
+          "sha256": "2709147a0ae03a9684070e64519cc5ba291c6f1b9b981e104d241671ce7ac73f"
+        }
+      ]
+    },
+    {
+      "id": "09",
+      "name": "trusted-source-triggers",
+      "file": "09-trusted-source-triggers.sql",
+      "migration_name": "funnel_20261020234414_p09_9ad265e83601",
+      "depends_on": ["08"],
+      "bytes": 3016,
+      "sha256": "9ad265e8360123e6f83c31473024a3241762635447d8ae9bacf80fcec8c5c11f",
+      "source_statements": [
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 38,
+          "sha256": "76c80b76b51fa5790b7eaf011709f32ec7978c82ae4e9639d74c329dc86b103e"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 40,
+          "sha256": "57d7eee1da8ce4a29e7ccb34dc95803ca657715e457347b6c6d19aaa2989bb8a"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 42,
+          "sha256": "40114f2ba4039dc574ed60aac74ba158b5bc4ec2ca0b33a4b96bdafac6534271"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 44,
+          "sha256": "3ebbdd56069ad6f806eee98755e2c5110b57ddd79041418fcc3085177f890c3d"
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "name": "manager-and-maintenance-rpcs",
+      "file": "10-manager-and-maintenance-rpcs.sql",
+      "migration_name": "funnel_20261020234414_p10_57aa6bb1910d",
+      "depends_on": ["09"],
+      "bytes": 5552,
+      "sha256": "57aa6bb1910daba9ccb942436499d26c0766dc1b3908f4488e6685765cca55f6",
+      "source_statements": [
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 45,
+          "sha256": "cf454c6d1cb154297bc41450f636f69f8b5caafc07401a548b01f676b23b9109"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 46,
+          "sha256": "7d900693bcd275c53c9443a8b5886d6fd2ec9791d61818fd41da49c11dcb6709"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 47,
+          "sha256": "b54a1f1ade787e32f63cd73a7f32cf51c0766383ef9321fd2ca0e46835d4f2d5"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 48,
+          "sha256": "de0d9765ac024fcc0906f43c2324a830eb5d3c85304c80cca7903fed2d259f81"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 49,
+          "sha256": "58765d3d7e0fbfc37663be07e6eeac279a375e42c8ddee0e12362405ed6439c0"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 50,
+          "sha256": "3ecac972135cad49eb6aa58f5368e99dd67cc855b6d970b09dd669ea6ce264ee"
+        },
+        {
+          "migration": "20261020234414_trusted_business_funnel.sql",
+          "statement": 51,
+          "sha256": "d74a21eae0e72a7f8a4b70d80be27d4aad615e4fbb6a38cb63d2e85978afc674"
+        }
+      ]
+    },
+    {
+      "id": "11",
+      "name": "own-identity-export",
+      "file": "11-own-identity-export.sql",
+      "migration_name": "funnel_20261021000745_p11_8f69a3a0edca",
+      "depends_on": ["10"],
+      "bytes": 4282,
+      "sha256": "8f69a3a0edca0562b21ad54e1e340bdf16a8ec4cd542ad0454efc0e9fbcef67e",
+      "source_statements": [
+        {
+          "migration": "20261021000745_trusted_funnel_privacy_export.sql",
+          "statement": 2,
+          "sha256": "7fcc2b2d53c52d71ceb5621376a71edeee788750782a0a76818263c050678948"
+        },
+        {
+          "migration": "20261021000745_trusted_funnel_privacy_export.sql",
+          "statement": 3,
+          "sha256": "e52cc3793bd866f530cbf2a41f744dd7c47086ee48a2091cb8a767a8b5600d72"
+        },
+        {
+          "migration": "20261021000745_trusted_funnel_privacy_export.sql",
+          "statement": 4,
+          "sha256": "1d798df501b4013c7a5c7b0a76bed8d4c68ce5b96a7cfbebb65b0cde1817984d"
+        },
+        {
+          "migration": "20261021000745_trusted_funnel_privacy_export.sql",
+          "statement": 5,
+          "sha256": "a624e06c88d5c0307d27c518d8eabb5d5837f8ed05a2fdb907ec5006c5e95608"
+        }
+      ]
+    }
+  ],
+  "auxiliary": [
+    {
+      "file": "preflight.sql",
+      "bytes": 1408,
+      "sha256": "1b1836032e49dcf8fb486f179cda059cc3d6319e5bb46479cb5476390d756eed"
+    },
+    {
+      "file": "readback.sql",
+      "bytes": 1667,
+      "sha256": "c9b57ac477134a3b7ec9ba0b37796b164b87acb34917d2e26adfb1ee16896b65"
+    }
+  ]
+}

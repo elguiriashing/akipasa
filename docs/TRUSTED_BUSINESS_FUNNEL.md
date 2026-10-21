@@ -123,3 +123,25 @@ known-minor privacy access, denies anonymous/raw-table access and malformed curs
 and verifies identity-deletion cascade with rollback. Malformed/partial responses,
 changed totals, repeated cursors and budget exhaustion fail without partial data.
 Typecheck, scoped lint, migration permission audit and contract integrity pass.
+
+## 2026-10-21 disabled-install recovery
+
+The release manager reported that the large canonical install requests stalled and
+that only the standalone enum prerequisite exists. Do not replay those full requests.
+See TRUSTED_BUSINESS_FUNNEL_PHASED_DEPLOYMENT.md and the generated, hash-bound
+database/deployments/trusted-business-funnel plan for short ordered apply_migration
+transactions. Canonical source migrations remain unchanged; collection stays off,
+retention/approval NULL and runtime readiness false. Actual provider receipts and
+any migration-history reconciliation remain release-manager gates.
+
+## Installed disabled schema checkpoint
+
+The release manager successfully installed the11 remaining frozen atomic phases;
+the enum prerequisite was already present. Actual provider versions/names and full
+phase hashes are archived in the phased deployment installation receipt. Independent
+read-only history/readback confirms zero optional rows, disabled collection, NULL
+retention/approval/start and closed private-function/browser grants. The source now
+marks AKISUITE_FUNNEL_READY=true solely for installed own-data readers and bounded
+cleanup. This does not activate collection, approve retention or claim the source
+configuration is already deployed. See the phased runbook for exact evidence and
+remaining history/deployment/activation gates.

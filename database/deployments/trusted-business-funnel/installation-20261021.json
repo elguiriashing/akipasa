@@ -1,0 +1,139 @@
+{
+  "version": 1,
+  "project_id": "vhpbvcfkcteswlsdjrfl",
+  "status": "installed_collection_disabled",
+  "manifest_sha256": "dcbb383a45745cbb5996674b28ed1c2f128aadafc9f90d111149f7f38d84f658",
+  "installation_actor": "release_manager",
+  "agent_production_writes": false,
+  "enum_phase": {
+    "id": "00",
+    "status": "skipped_preexisting_verified_enum",
+    "new_apply": false
+  },
+  "phases": [
+    {
+      "id": "01",
+      "file": "01-private-tables.sql",
+      "migration_name": "funnel_20261020234414_p01_943336a2f52d",
+      "phase_sha256": "943336a2f52dc23021a109d251d4c922d66736322630580d820558dee7f46521",
+      "actual_provider_version": "20261021135519",
+      "status": "applied",
+      "evidence": "Release-manager apply_migration success; actual history name/version independently confirmed read-only"
+    },
+    {
+      "id": "02",
+      "file": "02-ledger-indexes.sql",
+      "migration_name": "funnel_20261020234414_p02_d05c31e73ac4",
+      "phase_sha256": "d05c31e73ac4a1f77cb127a37a51ec8fabe68bccca905b9460bb4ff2304f692b",
+      "actual_provider_version": "20261021135527",
+      "status": "applied",
+      "evidence": "Release-manager apply_migration success; actual history name/version independently confirmed read-only"
+    },
+    {
+      "id": "03",
+      "file": "03-billing-evidence-index.sql",
+      "migration_name": "funnel_20261020234414_p03_573484d2c6a7",
+      "phase_sha256": "573484d2c6a7799efd88c4d0186db6c3eb8bc34b182b66f06cd1a8bca8aad4ed",
+      "actual_provider_version": "20261021135533",
+      "status": "applied",
+      "evidence": "Release-manager apply_migration success; actual history name/version independently confirmed read-only"
+    },
+    {
+      "id": "04",
+      "file": "04-capture-helpers.sql",
+      "migration_name": "funnel_20261020234414_p04_df93ac04ac61",
+      "phase_sha256": "df93ac04ac61de863a37a438a73251c0c0aa4b03d516699bafe3cbc2095a1af4",
+      "actual_provider_version": "20261021135539",
+      "status": "applied",
+      "evidence": "Release-manager apply_migration success; actual history name/version independently confirmed read-only"
+    },
+    {
+      "id": "05",
+      "file": "05-privacy-helpers.sql",
+      "migration_name": "funnel_20261020234414_p05_cfcf5d50c697",
+      "phase_sha256": "cfcf5d50c69770b92ee3467570d156009783c08de26165de6772b7eb55814c05",
+      "actual_provider_version": "20261021135544",
+      "status": "applied",
+      "evidence": "Release-manager apply_migration success; actual history name/version independently confirmed read-only"
+    },
+    {
+      "id": "06",
+      "file": "06-claim-workspace-checkout-functions.sql",
+      "migration_name": "funnel_20261020234414_p06_117a8e681bf4",
+      "phase_sha256": "117a8e681bf4812bdda4a1dd133d115c02613ae3b7ae0654d51b23181e869407",
+      "actual_provider_version": "20261021135552",
+      "status": "applied",
+      "evidence": "Release-manager apply_migration success; actual history name/version independently confirmed read-only"
+    },
+    {
+      "id": "07",
+      "file": "07-billing-function.sql",
+      "migration_name": "funnel_20261020234414_p07_60b79021a836",
+      "phase_sha256": "60b79021a836703a8e7eebc12ef532c4f6b2260bae9dd4249358eebb9350b24a",
+      "actual_provider_version": "20261021135557",
+      "status": "applied",
+      "evidence": "Release-manager apply_migration success; actual history name/version independently confirmed read-only"
+    },
+    {
+      "id": "08",
+      "file": "08-privacy-and-integrity-triggers.sql",
+      "migration_name": "funnel_20261020234414_p08_16cf3c9c8778",
+      "phase_sha256": "16cf3c9c877867c8935d0897d606986a4687bc68ab7f67c0b7e81e19294f267d",
+      "actual_provider_version": "20261021135603",
+      "status": "applied",
+      "evidence": "Release-manager apply_migration success; actual history name/version independently confirmed read-only"
+    },
+    {
+      "id": "09",
+      "file": "09-trusted-source-triggers.sql",
+      "migration_name": "funnel_20261020234414_p09_9ad265e83601",
+      "phase_sha256": "9ad265e8360123e6f83c31473024a3241762635447d8ae9bacf80fcec8c5c11f",
+      "actual_provider_version": "20261021135609",
+      "status": "applied",
+      "evidence": "Release-manager apply_migration success; actual history name/version independently confirmed read-only"
+    },
+    {
+      "id": "10",
+      "file": "10-manager-and-maintenance-rpcs.sql",
+      "migration_name": "funnel_20261020234414_p10_57aa6bb1910d",
+      "phase_sha256": "57aa6bb1910daba9ccb942436499d26c0766dc1b3908f4488e6685765cca55f6",
+      "actual_provider_version": "20261021135705",
+      "status": "applied",
+      "evidence": "Release-manager apply_migration success; actual history name/version independently confirmed read-only"
+    },
+    {
+      "id": "11",
+      "file": "11-own-identity-export.sql",
+      "migration_name": "funnel_20261021000745_p11_8f69a3a0edca",
+      "phase_sha256": "8f69a3a0edca0562b21ad54e1e340bdf16a8ec4cd542ad0454efc0e9fbcef67e",
+      "actual_provider_version": "20261021135715",
+      "status": "applied",
+      "evidence": "Release-manager apply_migration success; actual history name/version independently confirmed read-only"
+    }
+  ],
+  "readback": {
+    "settings": {
+      "enabled": false,
+      "enabled_since": null,
+      "retention_days": null,
+      "retention_approval_ref": null
+    },
+    "optional_rows": 0,
+    "trigger_count": 13,
+    "manager_anon_execute": false,
+    "privacy_anon_execute": false,
+    "maintenance_service_execute": true,
+    "manager_authenticated_execute": true,
+    "privacy_authenticated_execute": true,
+    "private_client_execute_grants": 0,
+    "maintenance_authenticated_execute": false
+  },
+  "evidence": {
+    "readback": "Read-only execution of frozen readback.sql after release-manager installation",
+    "actual_role_qa": "Release manager reported read-only rollback QA: active owner sees not_activated and empty own export; foreign workspace rejected42501",
+    "transport_duration": "Release manager reported phase10 approximately45seconds, others1–2seconds; these are provider transport observations, not server statement durations"
+  },
+  "history_reconciled": false,
+  "collection_activated": false,
+  "retention_approved": false
+}
