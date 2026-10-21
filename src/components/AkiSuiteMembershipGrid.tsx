@@ -132,14 +132,14 @@ export function AkiSuiteMembershipGrid({
             <span className={styles.eyebrow}>AkiHQ</span>
           </div>
           <h3>{es ? "Gestión gratuita" : "Free management"}</h3>
-          <div className={styles.price}>
-            <strong>{money(0)}</strong>
-          </div>
           <p>
             {es
               ? "Organizaciones, ubicaciones, listados, titularidad y permisos esenciales."
               : "Organisations, locations, listings, ownership and essential permissions."}
           </p>
+          <div className={styles.price}>
+            <strong>{money(0)}</strong>
+          </div>
           <Link className="button secondary" href={suiteHref("hq", locale)}>
             {es ? "Abrir AkiHQ gratis" : "Open free AkiHQ"}
           </Link>
@@ -173,6 +173,15 @@ export function AkiSuiteMembershipGrid({
                     ? "Plus"
                     : "Pro"}
               </h3>
+              <p>
+                {tier === "pro"
+                  ? es
+                    ? "Pro habilita las doce herramientas; no necesita selección."
+                    : "Pro enables all twelve tools and needs no selection."
+                  : es
+                    ? "Las selecciones guardadas se activan en la próxima rotación mensual."
+                    : "Saved selections activate at the next monthly rotation."}
+              </p>
               <div className={styles.price}>
                 <strong>{money(offer.amount)}</strong>
                 <span>/{es ? "mes por ubicación" : "month per location"}</span>
@@ -198,15 +207,7 @@ export function AkiSuiteMembershipGrid({
                     : "Instant staff delegation within active tools"}
                 </li>
               </ul>
-              <p>
-                {tier === "pro"
-                  ? es
-                    ? "Pro habilita las doce herramientas; no necesita selección."
-                    : "Pro enables all twelve tools and needs no selection."
-                  : es
-                    ? "Las selecciones guardadas se activan en la próxima rotación mensual."
-                    : "Saved selections activate at the next monthly rotation."}
-              </p>
+
               <Link className="button secondary" href={operations}>
                 {es
                   ? "Gestionar herramientas de operaciones"
