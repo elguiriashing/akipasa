@@ -1534,3 +1534,14 @@ Signals and ad-personalisation signals in GA4 configuration. Both original contr
 entries and all restored historical content are retained. No measurement IDs,
 provider destinations, account cohort settings, billing source or schema are changed
 by this merge. Exact-head CI remains a release gate.
+
+## 2026-10-20 | Consent-gated trusted commercial stage ledger
+
+Adds disabled-by-default future-only verified claim/workspace/checkout/invoice/
+upgrade/cancellation observations using existing analytics_events and private proof
+links. Approval-referenced retention is NULL until operator review; no monetary,
+consent, rollout or production configuration is assumed. Manager queries are bounded
+and explicitly exclude causal conversion rates/sitewide attribution. Consent/age/
+onboarding withdrawal and profile deletion remove only new linked optional rows;
+financial history and unrelated analytics remain. See TRUSTED_BUSINESS_FUNNEL.md
+for exact source evidence, unsupported adapters, tests and activation/rollback gates.
