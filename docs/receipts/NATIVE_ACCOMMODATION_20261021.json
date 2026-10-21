@@ -1,0 +1,215 @@
+{
+  "version": 1,
+  "project_ref": "vhpbvcfkcteswlsdjrfl",
+  "source_commit": "bea895b3ed1544d62aab92fa107a34aea42d45fb",
+  "canonical_sources": [
+    {
+      "path": "database/migrations/20261021001000_native_accommodation_listing_foundation.sql",
+      "sha256": "58618402b44d6f7feb183275514422a91741772eb77737d0423e862348a7c43a"
+    },
+    {
+      "path": "database/migrations/20261021002500_native_accommodation_inventory.sql",
+      "sha256": "f4646aa11d0136e194beffb1f8b387f998fbb39c85696b25347304045391556f"
+    },
+    {
+      "path": "database/migrations/20261021005500_native_accommodation_review_queue.sql",
+      "sha256": "e97bfa130e5ade157c308fe48ffe4516341f509a9e7bcb0ac2bd8131ddeb7170"
+    }
+  ],
+  "manifest_sha256": "d20d42ff9a1eeb86bb965fc2ce12520c7db7e5bec791c10225e8bfb0e0a3cb11",
+  "history": [
+    {
+      "phase": "00",
+      "sql_sha256": "e1af4238e8a1739621c6c280ab0dc18419b45f351150dd3c639a977efe2b8b22",
+      "migration_name": "native_20261021_p00_e1af4238e8a1",
+      "provider_version": "20261021141859"
+    },
+    {
+      "phase": "01",
+      "sql_sha256": "62684aa406e9ecb32cead91fbe619069f230d938ec4c77c02e188405603a7032",
+      "migration_name": "native_20261021_p01_62684aa406e9",
+      "provider_version": "20261021141901"
+    },
+    {
+      "phase": "02",
+      "sql_sha256": "5e82d3bf38f7ad79b72df50136c4a674392793f488856b089815aa48e5156275",
+      "migration_name": "native_20261021_p02_5e82d3bf38f7",
+      "provider_version": "20261021141903"
+    },
+    {
+      "phase": "03",
+      "sql_sha256": "8503e7e351edfb11a7d73a77c39a76e97112a6b48db136c0651d6cd4fb552062",
+      "migration_name": "native_20261021_p03_8503e7e351ed",
+      "provider_version": "20261021141905"
+    },
+    {
+      "phase": "04",
+      "sql_sha256": "ee865c8559ec0105d68056e96bc4eb8c0fd41d767fa673b618aa887248130753",
+      "migration_name": "native_20261021_p04_ee865c8559ec",
+      "provider_version": "20261021141913"
+    },
+    {
+      "phase": "05",
+      "sql_sha256": "c43b4fa946cfcb0e7d749a79c2fa1a611be4b43bf9867e026e0fa3f92996b753",
+      "migration_name": "native_20261021_p05_c43b4fa946cf",
+      "provider_version": "20261021141915"
+    },
+    {
+      "phase": "06",
+      "sql_sha256": "4a04237ccfe32c2e09fb87f217372792a2fd29d8b61c8edd97e775b7c7c3c9b5",
+      "migration_name": "native_20261021_p06_4a04237ccfe3",
+      "provider_version": "20261021141916"
+    },
+    {
+      "phase": "07",
+      "sql_sha256": "d4c718eaae4a27067d99f90844ef7fa325cbf5674866bf1087286b82d0481623",
+      "migration_name": "native_20261021_p07_d4c718eaae4a",
+      "provider_version": "20261021141918"
+    },
+    {
+      "phase": "08",
+      "sql_sha256": "f6318b01c2357f344a6b588865ae1ff0a236fb61c441720f4c3b8ba6f80895d0",
+      "migration_name": "native_20261021_p08_f6318b01c235",
+      "provider_version": "20261021141924"
+    },
+    {
+      "phase": "09",
+      "sql_sha256": "d0a3bf07805eb796f5819b195df83c8a9e65a8008554fbe0656f978a3032d39d",
+      "migration_name": "native_20261021_p09_d0a3bf07805e",
+      "provider_version": "20261021141926"
+    },
+    {
+      "phase": "10",
+      "sql_sha256": "136f674a9b3f6282cf446807373a92f4dc1e06e221d98ba7fe63895c1c606c29",
+      "migration_name": "native_20261021_p10_136f674a9b3f",
+      "provider_version": "20261021141927"
+    },
+    {
+      "phase": "11",
+      "sql_sha256": "159a0cb42672f2812e9318260f7296fbb75398faa405d8421863f549d6af8f12",
+      "migration_name": "native_20261021_p11_159a0cb42672",
+      "provider_version": "20261021141928"
+    },
+    {
+      "phase": "12",
+      "sql_sha256": "05e0faa58b019e1d4f47dc2c098e244af910e1603d59c3564be5a576a7931ad7",
+      "migration_name": "native_20261021_p12_05e0faa58b01",
+      "provider_version": "20261021141937"
+    },
+    {
+      "phase": "13",
+      "sql_sha256": "c72119b54939d995656a94dc97bcebbbab2a5db1d16d14316fed92dcf490bf90",
+      "migration_name": "native_20261021_p13_c72119b54939",
+      "provider_version": "20261021141938"
+    },
+    {
+      "phase": "14",
+      "sql_sha256": "5ccba0eb53ecd0cd3c7ee2f45efecf568f8e4115b333760d40c2dad592018bd2",
+      "migration_name": "native_20261021_p14_5ccba0eb53ec",
+      "provider_version": "20261021141940"
+    },
+    {
+      "phase": "15",
+      "sql_sha256": "14e06162ebc0968530adbe00ec5d950c6701e52686873620a97e90c38ea41b49",
+      "migration_name": "native_20261021_p15_14e06162ebc0",
+      "provider_version": "20261021141941"
+    },
+    {
+      "phase": "16",
+      "sql_sha256": "f2ffdd26e10afb3e7f10e4476fb3f76ec7ad336678c466c3409ebbb6ed2de474",
+      "migration_name": "native_20261021_p16_f2ffdd26e10a",
+      "provider_version": "20261021141948"
+    },
+    {
+      "phase": "17",
+      "sql_sha256": "f42cd3b90da0397c58291cc093cdf1782c941183e6067f018beef788b925957b",
+      "migration_name": "native_20261021_p17_f42cd3b90da0",
+      "provider_version": "20261021141949"
+    },
+    {
+      "phase": "18",
+      "sql_sha256": "50866146b13bcbcf04a93f34fd3675d5ba81536b81192f1d8f7989bcb38f3017",
+      "migration_name": "native_20261021_p18_50866146b13b",
+      "provider_version": "20261021141950"
+    },
+    {
+      "phase": "19",
+      "sql_sha256": "925c884ac8bb0fb0d9d65280ce6c67b2bf94130524160f6fa9d75e20f7570757",
+      "migration_name": "native_20261021_p19_925c884ac8bb",
+      "provider_version": "20261021141952"
+    },
+    {
+      "phase": "20",
+      "sql_sha256": "e11351783c232c9495de8b26772d25560f1ad086266489ec01d06f0553e11abd",
+      "migration_name": "native_20261021_p20_e11351783c23",
+      "provider_version": "20261021142003"
+    },
+    {
+      "phase": "21",
+      "sql_sha256": "46359197c0e238cdb7eb49ec775dd87a1c46d050b676c7a7d77df72225d49f6b",
+      "migration_name": "native_20261021_p21_46359197c0e2",
+      "provider_version": "20261021142045"
+    },
+    {
+      "phase": "22",
+      "sql_sha256": "b2a5e77705f6e9bdb04dcde24c5eff8da552002519f07fdb852b5fe60815acaa",
+      "migration_name": "native_20261021_p22_b2a5e77705f6",
+      "provider_version": "20261021142249"
+    }
+  ],
+  "independently_queried_final_readback": {
+    "gates": {
+      "enabled": false,
+      "singleton": true,
+      "uploads_enforced": false,
+      "inventory_enabled": false
+    },
+    "bucket": {
+      "id": "accommodation-media",
+      "public": false,
+      "file_size_limit": 10485760,
+      "allowed_mime_types": ["image/jpeg", "image/png", "image/webp"]
+    },
+    "table_rows": {
+      "public.accommodation_properties": 0,
+      "public.accommodation_property_media": 0,
+      "public.accommodation_property_units": 0,
+      "accommodation_property_private.audit": 0,
+      "public.accommodation_property_members": 0,
+      "public.accommodation_property_room_types": 0,
+      "public.accommodation_property_unit_blocks": 0,
+      "public.accommodation_property_reservations": 0,
+      "public.accommodation_property_nightly_rates": 0,
+      "public.accommodation_property_booking_settings": 0,
+      "accommodation_property_private.upload_reservations": 0,
+      "accommodation_property_private.property_entitlements": 0
+    },
+    "temporary_hold": 0,
+    "native_functions": 26,
+    "legacy_schema_present": true,
+    "native_storage_objects": 0
+  },
+  "release_owner_reported_evidence": {
+    "legacy_accommodation_private_fingerprint_before": "3f2166f56e06801c2e16b94ba54d8af5",
+    "legacy_accommodation_private_fingerprint_after": "3f2166f56e06801c2e16b94ba54d8af5",
+    "retained_media_rows": 44,
+    "retained_event_rows": 9,
+    "retained_legacy_reservation_rows": 0,
+    "private_client_execute_grants": 0,
+    "create_property_anon_execute": false,
+    "create_property_authenticated_execute": true,
+    "complete_upload_authenticated_execute": false,
+    "complete_upload_service_execute": true
+  },
+  "exception": {
+    "phase": "21",
+    "provider_sqlstate": "23505",
+    "colliding_auto_history_version": "20261021142003",
+    "sql_body_committed_before_history_error": true,
+    "body_readback_proof": "Explicit p_limit IS NULL / p_offset IS NULL pagination guards present",
+    "recovery": "Release owner reviewed phase21 as idempotent and replayed it after time advanced",
+    "replay_provider_version": "20261021142045",
+    "no_history_table_edits": true
+  },
+  "status": "Schema installed with native runtime/database activation gates still off; no production feature acceptance or customer migration asserted"
+}

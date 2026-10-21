@@ -2460,6 +2460,10 @@ copies must not be used. Forty scoped native/review/deletion cases pass locally;
 hosted exact-head checks and provider/role acceptance remain release gates.
 No live schema, customer row, flag, payment or primary branch changed here.
 
+## 2026-10-21 | Atomic disabled native property deployment representation
+
+New deterministic deployment files represent the unchanged corrected001000/002500/005500 canonical SQL as23 bounded transactions (≤4971bytes), each with2s lock/8s statement/15s idle transaction timeouts and disabled/empty postconditions. Table RLS/client ACL and function execution controls accompany creation atomically. A restrictive native Storage hold precedes bucket creation and is removed only after all permanent policies and the evidence trigger exist. Hostile-default-grant intermediate actual-role tests and normal/hostile final catalogue parity preserve legacy accommodation_private, existing bookings and other buckets. No application, locale, analytics, identity, billing, existing data or feature flag changes. The release owner subsequently applied all23 reviewed phases with all activation gates false; exact history/readback receipts and the phase21 provider-history collision recovery are archived. See NATIVE_ACCOMMODATION_ATOMIC_DEPLOYMENT.md for hashes, ordered receipts, uncertainty recovery and separate provider/activation gates.
+
 ## 2026-10-21 — Private merchant-stage classification
 
 Observes existing billing/migration merchant GET without changing request, fixed
