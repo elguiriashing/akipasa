@@ -1798,3 +1798,12 @@ Pending/underage identities remain denied. The additive mirrored migration prese
 negative authorization and SQL permission tests pass; live readback on the authorised
 shared project confirms a nonexistent profile is denied. No table, customer row,
 billing object or feature flag changed.
+
+## 2026-10-21 — Public membership choice boundary
+
+Customer-facing membership pages present the fixed commercial catalogue without a
+business-type or tool selector. AkiBusiness Standard, Plus and Pro still state their
+4/8/12-tool allowances and monthly replacement rules, but tool choice remains inside
+the authenticated, workspace-scoped AkiBusiness operating screen. This keeps the
+public sales journey compact and consistent across products without changing price
+IDs, entitlement keys, active subscriptions or checkout readiness.

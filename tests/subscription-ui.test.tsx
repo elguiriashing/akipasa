@@ -63,10 +63,6 @@ it("shows free management and the canonical operating packages without retired n
   for (const name of ["Aki Enterprise", "AkiHQ Standard", "AkiHQ Pro"])
     expect(screen.queryByRole("heading", { name })).toBeNull();
   expect(screen.queryByRole("radio", { name: /Yearly/ })).toBeNull();
-  const sector = screen.getByRole("combobox", { name: "Business type" });
-  expect(
-    within(sector)
-      .getAllByRole("option")
-      .map((option) => option.textContent),
-  ).toEqual(["Hospitality", "Accommodation", "Services", "Retail"]);
+  expect(screen.queryByRole("combobox", { name: "Business type" })).toBeNull();
+  expect(document.body.textContent).not.toContain("Tools for your business");
 });

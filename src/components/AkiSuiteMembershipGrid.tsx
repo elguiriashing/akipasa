@@ -43,33 +43,6 @@ const listingCopy = {
     es: "Contenido multimedia y análisis para tu listado de alojamiento Premium.",
   },
 } as const;
-const examples = {
-  hospitality: {
-    en: "Hospitality",
-    es: "Hostelería",
-    enDetail: "Coordinate point of sale, inventory, team tasks and sales.",
-    esDetail: "Coordina TPV, inventario, tareas del equipo y ventas.",
-  },
-  accommodation: {
-    en: "Accommodation",
-    es: "Alojamiento",
-    enDetail: "Coordinate calendars, team tasks and customer relationships.",
-    esDetail:
-      "Coordina calendarios, tareas del equipo y relaciones con clientes.",
-  },
-  services: {
-    en: "Services",
-    es: "Servicios",
-    enDetail: "Organise customer relationships, calendars and your team.",
-    esDetail: "Organiza clientes, calendarios y tu equipo.",
-  },
-  retail: {
-    en: "Retail",
-    es: "Comercio",
-    enDetail: "Connect point of sale, inventory and customer relationships.",
-    esDetail: "Conecta TPV, inventario y relaciones con clientes.",
-  },
-} as const;
 export function AkiSuiteMembershipGrid({
   locale,
   checkoutReady = false,
@@ -86,7 +59,6 @@ export function AkiSuiteMembershipGrid({
   const [workspaceId, setWorkspaceId] = useState(
     workspaces.length === 1 ? workspaces[0].id : "",
   );
-  const [sector, setSector] = useState<keyof typeof examples>("hospitality");
   const validWorkspace = /^[a-z0-9][a-z0-9_-]{2,79}$/.test(workspaceId)
     ? workspaceId
     : "";
@@ -243,46 +215,6 @@ export function AkiSuiteMembershipGrid({
           );
         })}
       </div>
-      <section
-        className={styles.sectorPanel}
-        aria-labelledby="akisuite-sector-title"
-      >
-        <div>
-          <span className={styles.eyebrow}>AkiBusiness</span>
-          <h3 id="akisuite-sector-title">
-            {es ? "Herramientas para tu actividad" : "Tools for your business"}
-          </h3>
-          <label htmlFor="akisuite-sector">
-            {es ? "Tipo de negocio" : "Business type"}
-          </label>
-          <select
-            id="akisuite-sector"
-            value={sector}
-            onChange={(e) => setSector(e.target.value as keyof typeof examples)}
-          >
-            {Object.entries(examples).map(([key, value]) => (
-              <option key={key} value={key}>
-                {value[locale]}
-              </option>
-            ))}
-          </select>
-          <p aria-live="polite">
-            {es ? examples[sector].esDetail : examples[sector].enDetail}
-          </p>
-          <p>
-            {es
-              ? "Ejemplos de flujo de trabajo. El acceso depende de tus herramientas activas y permisos."
-              : "Workflow examples. Access depends on your active tools and permissions."}
-          </p>
-          <Link
-            href={suiteHref("business", locale, {
-              workspaceId: validWorkspace || undefined,
-            })}
-          >
-            {es ? "Explorar AkiBusiness" : "Explore AkiBusiness"}
-          </Link>
-        </div>
-      </section>
       {listingPlans.length > 0 && (
         <section aria-labelledby="listing-premium-title">
           <h3 id="listing-premium-title">
