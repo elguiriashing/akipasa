@@ -1580,3 +1580,12 @@ and never falls back to existing venue tables. Native runtime/database inventory
 gates default off; no customer booking/quote or payment path is enabled.
 See NATIVE_ACCOMMODATION_INVENTORY.md for tests, corrected001000 prerequisite,
 privacy preservation and actual-provider/concurrent acceptance requirements.
+
+## 2026-10-21 | Native property review workspace (gated)
+
+Forward005500 and bilingual admin/accommodation-review provide a bounded admin
+queue for submitted revisions and orphaned properties, exact-revision decisions
+with audit and preserved typed reasons, plus explicitNULL pagination hardening
+for native owner/team readers. Private unsubmitted drafts are not queued; no
+ownership transfer, financial approval, runtime flag or production data changes.
+12 focused SQL/action/UI cases pass; see NATIVE_ACCOMMODATION_REVIEW.md.
