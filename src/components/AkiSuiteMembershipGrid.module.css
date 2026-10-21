@@ -1,126 +1,223 @@
+/* Single-row membership studio, intentionally shared visually with AkiCoches and AkiDuermo. */
 .root {
+  --studio-accent: #ff822d;
   display: grid;
-  gap: 1.5rem;
+  gap: 1rem;
   min-width: 0;
+  max-width: 1540px;
+  padding: clamp(18px, 2.5vw, 32px);
+  border: 1px solid #bfd4f922;
+  border-radius: 23px;
+  background: radial-gradient(ellipse at 7% 0%, #1b467a65, transparent 45%),
+    linear-gradient(138deg, #0a1530, #071124 70%, #0c1120);
+  color: #f6f8fc;
+  box-sizing: border-box;
+}
+.root * { box-sizing: border-box; }
+.heading {
+  padding-bottom: clamp(15px, 2vw, 25px);
+  border-bottom: 1px solid #ffffff24;
 }
 .heading h2 {
-  margin: 0.25rem 0 0.5rem;
-  font-size: clamp(1.5rem, 2.8vw, 2.3rem);
+  margin: 8px 0 10px;
+  color: #fff;
+  font-size: clamp(28px, 3vw, 43px);
+  font-weight: 850;
+  line-height: 1.1;
+  letter-spacing: -0.055em;
 }
-.heading p,
-.footnote {
-  color: var(--muted);
-  line-height: 1.5;
+.heading p {
+  max-width: 70ch;
+  margin: 0;
+  color: #b7c5dd;
+  line-height: 1.55;
+  font-size: clamp(14px, 1.2vw, 17px);
 }
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(210px, 1fr);
+  gap: 12px;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  padding-bottom: 9px;
 }
 .card {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   min-width: 0;
-  gap: 0.8rem;
-  padding: 1.25rem;
-  border: 1px solid var(--line);
-  border-radius: 1.1rem;
-  background: var(--panel, transparent);
+  gap: 0.6rem;
+  padding: clamp(14px, 1.25vw, 21px);
+  border: 1px solid #bfd4f92b;
+  border-radius: 18px;
+  background: linear-gradient(165deg, #ffffff12, #ffffff06);
+  box-shadow: 0 20px 60px #01091d26;
   overflow-wrap: anywhere;
+  scroll-snap-align: start;
 }
-.card h3,
-.card p {
+.card[data-product="akibusiness"]:nth-child(4) {
+  border-color: #ff822d92;
+  background: linear-gradient(160deg, #ff822d1c, #ffffff05);
+}
+.card h3 {
+  min-height: 2.2em;
   margin: 0;
+  font-size: clamp(18px, 1.35vw, 23px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+  color: #fff;
 }
-.card p,
-.benefits {
-  font-size: 0.9rem;
+.card > p {
+  min-height: 5.5em;
+  margin: 0;
+  color: #afbdd2;
+  font-size: 12.5px;
   line-height: 1.5;
 }
-.card > a,
-.card > form {
-  margin-top: auto;
-}
-.card a,
-.card button {
-  min-height: 44px;
-  white-space: normal;
-  text-align: center;
-}
-.card form button {
-  width: 100%;
+.card > ul {
+  flex: 1;
 }
 .brandIdentity {
   display: flex;
-  gap: 0.6rem;
-  align-items: center;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+  min-height: 88px;
 }
-.brandIdentity img {
-  border-radius: 0.7rem;
+.brandIdentity img, .card > img {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  object-fit: contain;
+}
+.card > img {
+  display: block;
+  margin-bottom: 33px;
 }
 .eyebrow {
-  color: var(--muted);
-  font-weight: 700;
-  font-size: 0.85rem;
+  color: #a8bad0;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 .price {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.3rem;
+  gap: 0.25rem;
+  margin: 4px 0 8px;
+  min-width: 0;
 }
 .price strong {
-  font-size: clamp(1.5rem, 2vw, 2rem);
+  color: #fff;
+  font-size: clamp(25px, 2vw, 33px);
+  font-weight: 850;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.055em;
 }
 .price span {
-  font-size: 0.8rem;
-  color: var(--muted);
+  color: #bdc8de;
+  font-size: 11px;
+  line-height: 1.4;
 }
 .benefits {
   display: grid;
-  gap: 0.5rem;
-  padding-left: 1.2rem;
-  margin: 0;
+  align-content: start;
+  gap: 9px;
+  padding: 14px 0 0;
+  margin: 0 0 12px;
+  border-top: 1px solid #ffffff24;
+  list-style: none;
+  color: #d7e0ef;
+  font-size: 12px;
+  line-height: 1.45;
 }
+.benefits li {
+  display: grid;
+  grid-template-columns: 15px minmax(0, 1fr);
+  gap: 7px;
+}
+.benefits li::before {
+  content: "✓";
+  color: var(--studio-accent);
+  font-weight: 900;
+}
+.card > a,
+.card > button,
+.card > form {
+  margin-top: auto;
+}
+.card > a,
+.card > button,
+.card form button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ffffff42;
+  border-radius: 12px;
+  background: #ffffff12;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.4;
+  text-decoration: none;
+  white-space: normal;
+  text-align: center;
+  cursor: pointer;
+}
+.card > a:hover, .card form button:hover:not(:disabled) {
+  border-color: var(--studio-accent);
+  background: #ffffff20;
+}
+.card a:focus-visible, .card button:focus-visible, .workspaceChoice select:focus-visible {
+  outline: 3px solid var(--studio-accent);
+  outline-offset: 3px;
+}
+.card button:disabled { opacity: 0.55; cursor: not-allowed; }
+.card form button { width: 100%; }
 .workspaceChoice {
   display: grid;
   gap: 0.5rem;
   max-width: 32rem;
+  color: #d7e0ef;
 }
-.workspaceChoice select,
-.sectorPanel select {
+.workspaceChoice select {
   width: 100%;
   min-height: 44px;
-  margin: 0.5rem 0;
-}
-.sectorPanel {
-  padding: 1.25rem;
-  border: 1px solid var(--line);
-  border-radius: 1rem;
-}
-.sectorPanel > div {
-  max-width: 48rem;
-}
-.sectorPanel label {
-  display: block;
+  padding: 8px;
+  border-radius: 12px;
+  background: #1b2943;
+  color: #fff;
+  border: 1px solid #ffffff40;
 }
 .footnote {
-  font-size: 0.85rem;
+  margin: 0;
+  color: #a6b9d2;
+  font-size: 12px;
+  line-height: 1.6;
 }
 @media (max-width: 1100px) {
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  .grid { grid-auto-columns: minmax(235px, min(78vw, 320px)); }
+  .card > p, .card h3 { min-height: 0; }
 }
 @media (max-width: 600px) {
-  .grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .root {
-    gap: 1rem;
-  }
-  .card {
-    padding: 1rem;
-  }
+  .root { padding: 16px 13px; gap: 0.85rem; border-radius: 18px; }
+  .grid { grid-auto-columns: minmax(235px, 84vw); }
+  .card { padding: 16px; }
+  .card > img { margin-bottom: 26px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .grid { scroll-behavior: auto; }
 }
