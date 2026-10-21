@@ -1895,6 +1895,16 @@ No live schema, customer row, flag, payment or primary branch changed here.
 
 New deterministic deployment files represent the unchanged corrected001000/002500/005500 canonical SQL as23 bounded transactions (≤4971bytes), each with2s lock/8s statement/15s idle transaction timeouts and disabled/empty postconditions. Table RLS/client ACL and function execution controls accompany creation atomically. A restrictive native Storage hold precedes bucket creation and is removed only after all permanent policies and the evidence trigger exist. Hostile-default-grant intermediate actual-role tests and normal/hostile final catalogue parity preserve legacy accommodation_private, existing bookings and other buckets. No application, locale, analytics, identity, billing, existing data or feature flag changes. The release owner subsequently applied all23 reviewed phases with all activation gates false; exact history/readback receipts and the phase21 provider-history collision recovery are archived. See NATIVE_ACCOMMODATION_ATOMIC_DEPLOYMENT.md for hashes, ordered receipts, uncertainty recovery and separate provider/activation gates.
 
+## 2026-10-21 | Listing quota snapshot serialization
+
+Forward181500 adds private per-venue/channel revision writes before existing
+quota reads, preserving advisory keys2/17. Exact installed function anchors retain
+all authorization, owner/OID/ACL/config and package/date/grandfather semantics;
+unknown bodies fail atomically. No existing venue row is touched or history
+backfilled. Local quota/metadata/receipt/isolation regressions pass; a dedicated
+actual PostgreSQL RC/RR event/reservation/legacy Storage race job gates release.
+All flags remain unchanged. See LISTING_QUOTA_SERIALIZATION.md.
+
 ## 2026-10-21 — Private merchant-stage classification
 
 Observes existing billing/migration merchant GET without changing request, fixed
@@ -1958,3 +1968,9 @@ Integration preserves f1e99 primary plus frozen PR264 df012, PR265 9e1 and PR263
 ## 2026-10-21 | Stay browser host-proxy transport cleanup
 
 The existing isolated AkiDuermo guest-route browser spec now uses the same bounded GET-only connection-reset retry and wait-for-in-flight-route teardown as the previously reviewed frontend-health host proxy. This addresses two hosted socket-reset failures on local branding/image requests without changing any route, locale, privacy, keyboard, layout or consent assertion. HTTP errors and non-GET requests are never retried; intercepted errors are not ignored during cleanup. Application, provider, data, feature flags and canonical SQL are unchanged. Full exact-head browser CI remains the acceptance gate.
+
+Baseline media quota accounting is independent of the enhanced-library feature gate: owned images, historical shared placements, stored objects and active upload reservations share one path-deduplicated allowance. New cross-listing placement is unavailable until the scoped enhanced library is enabled; historical associations remain retained. See [baseline media quota integrity](BASELINE_MEDIA_QUOTA_INTEGRITY.md); additive190000 requires the RR-safe181500 quota scope migration and changes no launch flags.
+
+Enhanced-library placement admission also shares the complete Storage/reservation allowance, under the same RR-safe quota scope. Additive193000 builds on181500/190000 without changing membership, Premium reuse or historical retention rules. See [library reservation capacity](LIBRARY_RESERVATION_CAPACITY.md).
+
+Listing upload namespace admission requires a canonical lowercase venue UUID prefix when base limits are active; historical case-variant object paths are retained and counted. See [listing Storage canonical prefix](LISTING_STORAGE_CANONICAL_PREFIX.md), additive200000 after190000; no flags are activated.

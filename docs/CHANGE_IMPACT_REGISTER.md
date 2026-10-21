@@ -2487,6 +2487,16 @@ No live schema, customer row, flag, payment or primary branch changed here.
 
 New deterministic deployment files represent the unchanged corrected001000/002500/005500 canonical SQL as23 bounded transactions (≤4971bytes), each with2s lock/8s statement/15s idle transaction timeouts and disabled/empty postconditions. Table RLS/client ACL and function execution controls accompany creation atomically. A restrictive native Storage hold precedes bucket creation and is removed only after all permanent policies and the evidence trigger exist. Hostile-default-grant intermediate actual-role tests and normal/hostile final catalogue parity preserve legacy accommodation_private, existing bookings and other buckets. No application, locale, analytics, identity, billing, existing data or feature flag changes. The release owner subsequently applied all23 reviewed phases with all activation gates false; exact history/readback receipts and the phase21 provider-history collision recovery are archived. See NATIVE_ACCOMMODATION_ATOMIC_DEPLOYMENT.md for hashes, ordered receipts, uncertainty recovery and separate provider/activation gates.
 
+## 2026-10-21 | Listing quota snapshot serialization
+
+Forward181500 adds private per-venue/channel revision writes before existing
+quota reads, preserving advisory keys2/17. Exact installed function anchors retain
+all authorization, owner/OID/ACL/config and package/date/grandfather semantics;
+unknown bodies fail atomically. No existing venue row is touched or history
+backfilled. Local quota/metadata/receipt/isolation regressions pass; a dedicated
+actual PostgreSQL RC/RR event/reservation/legacy Storage race job gates release.
+All flags remain unchanged. See LISTING_QUOTA_SERIALIZATION.md.
+
 ## 2026-10-21 — Private merchant-stage classification
 
 Observes existing billing/migration merchant GET without changing request, fixed
@@ -2554,3 +2564,24 @@ Integration preserves f1e99 primary plus frozen PR264 df012, PR265 9e1 and PR263
 ## 2026-10-21 | Stay browser host-proxy transport cleanup
 
 The existing isolated AkiDuermo guest-route browser spec now uses the same bounded GET-only connection-reset retry and wait-for-in-flight-route teardown as the previously reviewed frontend-health host proxy. This addresses two hosted socket-reset failures on local branding/image requests without changing any route, locale, privacy, keyboard, layout or consent assertion. HTTP errors and non-GET requests are never retried; intercepted errors are not ignored during cleanup. Application, provider, data, feature flags and canonical SQL are unchanged. Full exact-head browser CI remains the acceptance gate.
+
+## 2026-10-21 — Baseline shared-media quota integrity
+
+- Reproduced a legitimate target member attaching nine foreign public images with library disabled and zero owned images. The free base allowance therefore required an independent guard before activation.
+- Added private path-deduplicated accounting across owned/shared media, Storage and active reservations; guarded exact patches preserve installed authorization/owner/grants and reuse181500 serialization. New cross-listing associations require the enhanced library while historical associations and ordinary same-listing use remain intact.
+- Cross-portal scope: shared Pasa/HQ listing backend, accommodation listing media, strict upload rollback, Premium library and direct Storage/placement APIs. No financial values, locale/UI text, analytics, flags, data or provider configuration changed.
+- Evidence: eight focused actual-role SQL cases; extended isolated PostgreSQL RC/RR shared-reference/reservation/Storage races. Hosted CI and root review required before merge/application. Strict provider upload acceptance remains a separate launch gate.
+
+## 2026-10-21 — Enhanced library competes with pending uploads
+
+- Reproduced a retained free shared image becoming a ninth path while eight uploads were pending. The existing library-only media-ID counter excluded pending reservations and stored objects.
+- Added a private candidate-capacity assertion after the existing RR-safe scope claim; kept all source/target, membership, Premium, grandfather tuple and metadata rules. Existing paths and historical over-quota associations remain retained; new unique paths respect8/250 and existing byte limits.
+- Cross-portal impact: shared Pasa/HQ listing library and verified uploads. No UI/locale, monetary model, tracking, flags, data or provider changes.
+- Evidence: five focused actual-role SQL cases, including250 pending Premium reservations and byte-capacity rejection; isolated PG workflow expanded to twelve RC/RR quota races. Exact-head hosted CI and root source review required before application. Actual provider upload acceptance remains blocked independently.
+
+## 2026-10-21 — Canonical Storage quota namespace
+
+- Reproduced a target owner uploading nine uppercase-UUID-prefix orphan objects while the case-sensitive count remained zero. Media registration already rejected those paths, but direct-upload quota enforcement did not.
+- Added guarded exact patches to normalize historical Storage prefix accounting and reject new noncanonical prefixes during base enforcement. Existing objects, authorization, owner/grants/configuration, other buckets and disabled cohorts are preserved.
+- Impact: shared listing Storage and reservation backend across Pasa/HQ; no UI/locales, billing, tracking, flags, object mutation or provider configuration changes.
+- Evidence: four focused role-level SQL regressions and metadata preservation. Isolated PostgreSQL quota workflow expanded to fourteen RC/RR cases. Exact hosted checks and root review required before application; strict provider acceptance remains separate.
