@@ -1878,3 +1878,13 @@ intentional whole-venue deletion remains compatible without Storage cleanup or
 ownership transfer. Seven new actual-role cases and the existing21 pass locally;
 four independent PostgreSQL race scenarios are a separate exact-head hosted gate.
 All library/strict flags remain unchanged. See LISTING_LIBRARY_REFERENCE_BOUNDARIES.md.
+
+## 2026-10-21 | Repeatable-read shared media deletion safety
+
+Corrects the still-unapplied175000 descendant: reference writes touch unchanged
+media and Storage row metadata so old repeatable-read snapshots cannot miss a
+committed placement after waiting. Bytes/paths remain unchanged; no security guard
+is weakened. The real PostgreSQL matrix covers both isolation levels and both
+orderings, while the full strict receipt flow runs all installed guards together.
+Apply only the tested corrected child; frozen262 is not the production SQL source.
+No live migration, activation or data mutation was performed here.

@@ -26,12 +26,12 @@ language plpgsql security definer set search_path='' as $$
 declare path text;
 begin
  if not (select library_enabled from akisuite_listing_private.launch_settings where singleton) then return new;end if;
- -- FK/media and Storage row locks serialize both direct deletion races. A delete
- -- that won first makes the reference fail; a reference that won blocks deletion
- -- until its committed placement is visible to the delete trigger.
- select storage_path into path from public.venue_media where id=new.media_id for key share;
+ -- Touch unchanged metadata to serialize RC deletion and invalidate older RR
+ -- snapshots. KEY SHARE alone does not change the row version, so an RR delete
+ -- could wait then miss the newly committed placement. Bytes/paths stay intact.
+ update public.venue_media set sort_order=sort_order where id=new.media_id returning storage_path into path;
  if not found then raise exception 'Media asset no longer exists' using errcode='23503';end if;
- perform 1 from storage.objects where bucket_id='event-media' and name=path for key share;
+ update storage.objects set name=name where bucket_id='event-media' and name=path;
  if not found then raise exception 'Stored media no longer exists' using errcode='23503';end if;
  return new;
 end$$;
