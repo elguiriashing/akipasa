@@ -51,7 +51,15 @@ for (const locale of ["en", "es"] as const) {
       await expect(catalogue.locator("#operations-pro")).toContainText(
         locale === "es" ? "64,99" : "64.99",
       );
-      await expect(catalogue.locator("#akisuite-sector")).toHaveCount(1);
+      await expect(catalogue.locator("#akisuite-sector")).toHaveCount(0);
+      await expect(
+        catalogue.getByRole("heading", {
+          name:
+            locale === "es"
+              ? "Herramientas para tu actividad"
+              : "Tools for your business",
+        }),
+      ).toHaveCount(0);
       await expect(
         catalogue.locator(
           "#aki_enterprise, #akihq_pro, #akihq_standard, #akihq_business_addon",
