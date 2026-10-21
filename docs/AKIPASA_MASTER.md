@@ -1560,3 +1560,13 @@ for explicit reconciliation. No legacy venue inventory or billing state changes.
 See NATIVE_ACCOMMODATION_FOUNDATION.md for roles, evidence and rollout gates.
 This is implemented/tested source, not merged or production verified; native
 inventory adapter compatibility remains a separately tracked follow-on.
+
+## 2026-10-21 | Native property privacy before application
+
+The still-unapplied001000 base is corrected in this descendant before release:
+native Storage fails closed when disabled; anonymous/authenticated direct object
+writes always fail, including broad old policies. Nullable SETNULL owners mark
+retained properties private/orphaned for review; member/actor references cascade
+on account deletion without deleting business media or assigning ownership.
+11 actual-role privacy/foundation cases pass; see NATIVE_ACCOMMODATION_FOUNDATION.md.
+Earlier244head is not an approved migration source. No live SQL or activation.

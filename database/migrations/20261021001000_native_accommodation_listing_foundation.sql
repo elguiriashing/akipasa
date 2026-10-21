@@ -18,7 +18,7 @@ revoke all on schema accommodation_private from public,anon,authenticated;
 create table accommodation_private.launch_settings(singleton boolean primary key default true check(singleton),enabled boolean not null default false,uploads_enforced boolean not null default false,check(not uploads_enforced or enabled));
 insert into accommodation_private.launch_settings default values;
 create table public.accommodation_properties(
- id uuid primary key default gen_random_uuid(),owner_profile_id uuid not null references public.profiles(id),
+ id uuid primary key default gen_random_uuid(),owner_profile_id uuid references public.profiles(id) on delete set null,orphaned_at timestamptz,
  workspace_id text references public.crm_workspaces(id),legacy_venue_id uuid unique references public.venues(id),
  name text not null check(char_length(btrim(name)) between 2 and 120),slug text unique,
  status text not null default 'private' check(status in ('private','pending','published','rejected')),
@@ -29,9 +29,15 @@ create table public.accommodation_properties(
  description_es text not null default '' check(char_length(description_es)<=6000),description_en text not null default '' check(char_length(description_en)<=6000),
  revision_id uuid not null default gen_random_uuid(),created_at timestamptz not null default now(),updated_at timestamptz not null default now()
 );
+create function accommodation_private.orphan_property() returns trigger language plpgsql set search_path='' as $$
+begin
+ if old.owner_profile_id is not null and new.owner_profile_id is null then new.orphaned_at:=now();new.status:='private';end if;
+ return new;
+end $$;
+create trigger native_accommodation_orphan_review before update of owner_profile_id on public.accommodation_properties for each row execute function accommodation_private.orphan_property();
 create index accommodation_properties_owner on public.accommodation_properties(owner_profile_id,id);
 create index accommodation_properties_workspace on public.accommodation_properties(workspace_id,id) where workspace_id is not null;
-create table public.accommodation_property_members(property_id uuid not null references public.accommodation_properties(id),profile_id uuid not null references public.profiles(id),role text not null check(role='manager'),created_at timestamptz not null default now(),primary key(property_id,profile_id));
+create table public.accommodation_property_members(property_id uuid not null references public.accommodation_properties(id),profile_id uuid not null references public.profiles(id) on delete cascade,role text not null check(role='manager'),created_at timestamptz not null default now(),primary key(property_id,profile_id));
 create index accommodation_property_members_profile on public.accommodation_property_members(profile_id,property_id);
 create table accommodation_private.property_entitlements(
  id uuid primary key default gen_random_uuid(),property_id uuid not null references public.accommodation_properties(id),
@@ -47,7 +53,7 @@ create trigger accommodation_audit_immutable before update or delete on accommod
 create function accommodation_private.ready() returns boolean language sql stable security definer set search_path='' as $$select enabled from accommodation_private.launch_settings where singleton$$;
 create function accommodation_private.property_access(p_property uuid,p_owner boolean default false) returns boolean language sql stable security definer set search_path='' as $$
  select auth.uid() is not null and public.account_features_allowed() and exists(
-  select 1 from public.accommodation_properties p where p.id=p_property and
+  select 1 from public.accommodation_properties p where p.id=p_property and p.owner_profile_id is not null and
   (p.owner_profile_id=auth.uid() or (not p_owner and exists(select 1 from public.accommodation_property_members m where m.property_id=p.id and m.profile_id=auth.uid())))
   and (p.workspace_id is null or exists(select 1 from public.crm_workspaces w join public.crm_workspace_members m on m.workspace_id=w.id
     where w.id=p.workspace_id and w.id<>'ws_akipasa' and w.owner_profile_id=p.owner_profile_id and w.status in ('active','trial') and m.profile_id=auth.uid() and m.status='active' and m.role in ('owner','admin','manager','staff'))))
@@ -132,7 +138,7 @@ create table public.accommodation_property_media(
 );
 create index accommodation_media_property on public.accommodation_property_media(property_id,created_at desc,id);
 create table accommodation_private.upload_reservations(
- id uuid primary key default gen_random_uuid(),property_id uuid not null references public.accommodation_properties(id),actor uuid not null references public.profiles(id),storage_path text not null unique,
+ id uuid primary key default gen_random_uuid(),property_id uuid not null references public.accommodation_properties(id),actor uuid not null references public.profiles(id) on delete cascade,storage_path text not null unique,
  digest text not null check(digest ~ '^[0-9a-f]{64}$'),mime_type text not null check(mime_type in ('image/jpeg','image/png','image/webp')),size_bytes integer not null check(size_bytes between 1 and 10485760),width integer not null check(width between 1 and 3840),height integer not null check(height between 1 and 3840),
  state text not null default 'pending' check(state in ('pending','uploaded','committed','failed')),media_id uuid unique,expires_at timestamptz not null default now()+interval '15 minutes',created_at timestamptz not null default now()
 );
@@ -169,7 +175,7 @@ begin
  select * into r from accommodation_private.upload_reservations where id=p_reservation for update;
  if not found or r.state not in ('pending','uploaded') or r.expires_at<=now() or p_digest is distinct from r.digest then raise exception 'Invalid receipt';end if;
  -- Check the actor, not the service identity issuing this receipt.
- if not exists(select 1 from public.accommodation_properties p where p.id=r.property_id and
+ if not exists(select 1 from public.accommodation_properties p where p.id=r.property_id and p.owner_profile_id is not null and
  (p.owner_profile_id=r.actor or exists(select 1 from public.accommodation_property_members m where m.property_id=p.id and m.profile_id=r.actor)) and
  (p.workspace_id is null or exists(select 1 from public.crm_workspaces w join public.crm_workspace_members m on m.workspace_id=w.id where w.id=p.workspace_id and w.owner_profile_id=p.owner_profile_id and w.status in ('active','trial') and m.profile_id=r.actor and m.status='active' and m.role in ('owner','admin','manager','staff')))) then raise exception 'Membership revoked' using errcode='42501';end if;
  if exists(select 1 from account_private.onboarding where profile_id=r.actor and status<>'complete') then raise exception 'Account completion required' using errcode='42501';end if;
@@ -204,28 +210,27 @@ begin
  update accommodation_private.upload_reservations set state='committed',media_id=new.id where id=r.id;return new;
 end $$;
 create trigger accommodation_verified_media before insert or update or delete on public.accommodation_property_media for each row execute function accommodation_private.guard_media();
-create function public.accommodation_uploads_enforced() returns boolean language sql stable security definer set search_path='' as $$select enabled and uploads_enforced from accommodation_private.launch_settings where singleton$$;
-revoke all on function public.accommodation_uploads_enforced() from public;grant execute on function public.accommodation_uploads_enforced() to anon,authenticated;
 -- Restrictive policies intersect every existing broad Storage policy.
 create function public.accommodation_storage_allowed(p_bucket text,p_path text,p_write boolean default false) returns boolean language plpgsql stable security definer set search_path='' as $$
 declare p_id uuid;
 begin
- if p_bucket<>'accommodation-media' or not accommodation_private.ready() then return true;end if;
+ if p_bucket<>'accommodation-media' then return true;end if;
+ if not accommodation_private.ready() then return false;end if;
  if split_part(p_path,'/',1) !~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' then return false;end if;
  p_id:=split_part(p_path,'/',1)::uuid;
  if p_write then return public.can_manage_accommodation_property(p_id);end if;
- return public.can_manage_accommodation_property(p_id) or (accommodation_private.ready() and exists(select 1 from public.accommodation_property_media m join public.accommodation_properties p on p.id=m.property_id where m.storage_path=p_path and m.property_id=p_id and m.public_position is not null and p.status='published'));
+ return public.can_manage_accommodation_property(p_id) or (accommodation_private.ready() and exists(select 1 from public.accommodation_property_media m join public.accommodation_properties p on p.id=m.property_id where m.storage_path=p_path and m.property_id=p_id and m.public_position is not null and p.status='published' and p.owner_profile_id is not null));
 end $$;
 create policy accommodation_native_bucket_read on storage.objects for select to anon,authenticated using(bucket_id='accommodation-media' and public.accommodation_storage_allowed(bucket_id,name));
 create policy accommodation_native_bucket_delete on storage.objects for delete to authenticated using(bucket_id='accommodation-media' and public.accommodation_storage_allowed(bucket_id,name,true));
 create policy accommodation_storage_read on storage.objects as restrictive for select to anon,authenticated using(public.accommodation_storage_allowed(bucket_id,name));
-create policy accommodation_storage_delete on storage.objects as restrictive for delete to authenticated using(public.accommodation_storage_allowed(bucket_id,name,true));
-create policy accommodation_storage_no_insert on storage.objects as restrictive for insert to anon,authenticated with check(bucket_id<>'accommodation-media' or not public.accommodation_uploads_enforced());
-create policy accommodation_storage_no_update on storage.objects as restrictive for update to anon,authenticated using(bucket_id<>'accommodation-media' or not public.accommodation_uploads_enforced()) with check(bucket_id<>'accommodation-media' or not public.accommodation_uploads_enforced());
+create policy accommodation_storage_delete on storage.objects as restrictive for delete to anon,authenticated using(public.accommodation_storage_allowed(bucket_id,name,true));
+create policy accommodation_storage_no_insert on storage.objects as restrictive for insert to anon,authenticated with check(bucket_id<>'accommodation-media');
+create policy accommodation_storage_no_update on storage.objects as restrictive for update to anon,authenticated using(bucket_id<>'accommodation-media') with check(bucket_id<>'accommodation-media');
 -- Service storage creates require a current, unconsumed server reservation too.
 create function accommodation_private.guard_object() returns trigger language plpgsql security definer set search_path='' as $$
 begin
- if new.bucket_id<>'accommodation-media' or not public.accommodation_uploads_enforced() then return new;end if;
+ if new.bucket_id<>'accommodation-media' then return new;end if;
  if tg_op='UPDATE' then raise exception 'Native accommodation objects immutable' using errcode='42501';end if;
  if current_setting('role',true)<>'service_role' or not exists(select 1 from accommodation_private.upload_reservations r where r.storage_path=new.name and r.state='pending' and r.expires_at>now() and r.id::text=new.user_metadata->>'accommodation_upload_id' and r.digest=new.user_metadata->>'sha256' and r.size_bytes::text=new.metadata->>'size' and r.mime_type=new.metadata->>'mimetype') then raise exception 'Approved service upload reservation required' using errcode='42501';end if;
  return new;

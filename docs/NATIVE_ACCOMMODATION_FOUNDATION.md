@@ -44,8 +44,10 @@ allowance while retained old positions survive a downgrade.
 The browser prepares files through the existing safe image control at approved
 quality .8/.9. The server parses actual static PNG/JPEG/WebP bytes, hashes them,
 reserves the computed dimensions, uploads identical bytes with service credentials,
-downloads and checks the digest, then issues a service-only receipt. Authenticated
-Storage INSERT/UPDATE is denied once strict mode is active. The Storage trigger
+downloads and checks the digest, then issues a service-only receipt. Authenticated and anonymous
+Storage INSERT/UPDATE are always denied for the native bucket, including while
+the feature is disabled. Native reads/deletes also fail closed while disabled;
+restrictive policies intersect pre-existing broad grants and policies. The Storage trigger
 requires an unconsumed approved reservation even for a service write; metadata
 INSERT consumes a matching authenticated owner receipt. No authenticated upload
 fallback exists for the new native feature. Committed-media cleanup is protected
@@ -77,3 +79,27 @@ The staged native inventory API currently expects property_id under those old na
 A separate native inventory namespace and adapter follow-on is required before the
 whole independent accommodation manager can be advertised as available. No native
 booking or production property journey is considered live in this foundation.
+
+## 2026-10-21 | Pre-application privacy correction
+
+The original candidate001000 has not been applied. This descendant corrects both
+base SQL copies before first application; the immutable earlier PR244 head must
+not be applied. No unsafe base-then-repair exposure window is required. Native
+bucket access fails closed while disabled, browser INSERT/UPDATE is always
+denied, and restrictive DELETE covers anonymous and authenticated roles even
+when older permissive policies are broad. Other bucket behavior is unchanged.
+
+Property owners become NULL on profile deletion. The property is retained, made
+private and marked orphaned_at for ownership review; remaining delegates cannot
+manage the orphan and ownership is never assigned automatically. Memberships
+and actor-bound upload receipts cascade with profile deletion, while retained
+business media/grants and immutable pseudonymous audit records remain. This
+avoids adding a new block to the existing account-deletion path; it does not
+invent a financial/business retention schedule.
+
+Three new actual-role cases combine broad legacy anonymous ALL policies with
+disabled native storage and prove read/delete/update/insert denial, enabled
+foreign-owner isolation and public-gallery anonymous deletion denial, plus
+profile deletion with owned properties, delegated properties, pending uploads
+and committed retained media. All11 privacy/foundation cases pass; provider
+authentication/Storage acceptance remains required before activation.
