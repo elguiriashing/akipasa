@@ -130,6 +130,8 @@ for (const locale of ["en", "es"] as const)
               json: { rows: [], total: 0, availabilityChecked: false },
             });
           const response = await route.fetch({
+            // Retry one reset on this loopback GET proxy, never an HTTP error.
+            maxRetries: route.request().method() === "GET" ? 1 : 0,
             headers: {
               ...route.request().headers(),
               host: "akiduermo.akipasa.com",
@@ -213,6 +215,9 @@ for (const locale of ["en", "es"] as const)
           path: `test-results/frontend-duermo-privacy-${locale}-${theme}-${width}x${height}-actions-after.png`,
         });
         expect(consentRequests).toEqual([]);
+        // Drain this loopback host proxy before Playwright closes its context.
+        // Every intercepted request still completes normally or fails the test.
+        await page.unrouteAll({ behavior: "wait" });
       });
     }
 

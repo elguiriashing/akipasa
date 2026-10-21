@@ -65,3 +65,19 @@ describe("shared EN/ES membership host aliases", () => {
     }
   }
 });
+describe("trusted operating account destination", () => {
+  for (const locale of ["en", "es"])
+    it(`overwrites spoofed headers and preserves only validated ${locale} workspace`, async () => {
+      const response = await middleware(
+        new NextRequest(
+          `https://akipasa.com/${locale}/account/subscription/operations?workspace=private-owner&next=https://evil.invalid`,
+          { headers: { "x-akipasa-membership-next": "https://evil.invalid" } },
+        ),
+      );
+      expect(
+        response.headers.get("x-middleware-request-x-akipasa-membership-next"),
+      ).toBe(
+        `/${locale}/account/subscription/operations?workspace=private-owner`,
+      );
+    });
+});

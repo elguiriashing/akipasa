@@ -6,193 +6,70 @@ import Link from "next/link";
 import { startAkiSuiteCheckout } from "@/app/[locale]/account/subscription/akisuite-actions";
 import {
   akisuitePlans,
-  akisuitePriceCents,
-  type AkiSuitePlan,
-  type AkiSuiteApp,
-  akiSuitePlanApp,
   akiSuiteApp,
   effectiveAkiSuitePlans,
-  businessAddonEligible,
-  overlappingAkiSuitePlan,
+  type AkiSuitePlan,
+  type AkiSuiteApp,
 } from "@/lib/akisuite-catalogue";
+import { OPERATION_PRICES } from "@/lib/operations-billing/operations-contract.mjs";
+import { suiteHref } from "@/lib/suite-navigation";
 import styles from "./AkiSuiteMembershipGrid.module.css";
-import {
-  businessCategories,
-  businessPackageTools,
-  getBusinessPackageHighlights,
-  type BusinessTool,
-} from "@/lib/business-packages";
 
-const descriptions: Record<
-  AkiSuitePlan,
-  { en: string; es: string; benefitsEn: string[]; benefitsEs: string[] }
-> = {
+type Props = {
+  locale: "en" | "es";
+  checkoutReady?: boolean;
+  purchaseMode?: "account" | "checkout";
+  originatingApp?: AkiSuiteApp;
+  personalPremiumUnlocked?: boolean;
+  activePlans?: AkiSuitePlan[];
+  accessUnavailable?: boolean;
+  workspaces?: Array<{ id: string; name: string }>;
+  workspacePlans?: Record<string, AkiSuitePlan[]>;
+};
+const listingCopy = {
   akipasa_premium: {
-    en: "More rewards from the places and events you discover.",
-    es: "Más ventajas en los locales y eventos que descubres.",
-    benefitsEn: [
-      "Member-only offers",
-      "Double check-in XP",
-      "Save and export plans",
-    ],
-    benefitsEs: [
-      "Ofertas exclusivas",
-      "Doble XP en check-ins",
-      "Guardar y exportar planes",
-    ],
+    label: "AkiPasa Premium",
+    en: "Personal discovery rewards and benefits.",
+    es: "Ventajas y recompensas personales al descubrir.",
   },
   akibusiness_premium: {
-    en: "Marketing and event automation for local venues.",
-    es: "Marketing y automatización de eventos para negocios locales.",
-    benefitsEn: [
-      "Recurring events and reusable templates",
-      "Expanded shared media library",
-      "Advanced visibility insights",
-    ],
-    benefitsEs: [
-      "Eventos recurrentes y plantillas",
-      "Biblioteca multimedia ampliada",
-      "Análisis avanzados de visibilidad",
-    ],
+    label: "AkiPasa Listing Premium",
+    en: "Premium venue listing: expanded media, recurring events and reusable templates.",
+    es: "Listado Premium: más contenido multimedia, eventos recurrentes y plantillas reutilizables.",
   },
   akiduermo_premium: {
-    en: "Extra marketing tools for accommodation hosts.",
-    es: "Herramientas de marketing para alojamientos.",
-    benefitsEn: [
-      "Confirmed-night and booking comparisons",
-      "Exportable property reports",
-      "Expanded shared media and folders",
-    ],
-    benefitsEs: [
-      "Comparaciones de noches y reservas",
-      "Informes exportables del alojamiento",
-      "Biblioteca ampliada con carpetas",
-    ],
+    label: "AkiDuermo Listing Premium",
+    en: "Premium accommodation listing media and insights.",
+    es: "Contenido multimedia y análisis para tu listado de alojamiento Premium.",
   },
-  akihq_standard: {
-    en: "Day-to-day business operations and team essentials.",
-    es: "Operaciones diarias y herramientas para equipos.",
-    benefitsEn: [
-      "Business operations dashboard",
-      "Tasks and team basics",
-      "Workspace management",
-    ],
-    benefitsEs: [
-      "Panel de operaciones",
-      "Tareas y equipo",
-      "Gestión del espacio de trabajo",
-    ],
-  },
-  akihq_pro: {
-    en: "Advanced operations, inventory and point of sale.",
-    es: "Operaciones avanzadas, inventario y punto de venta.",
-    benefitsEn: [
-      "Advanced AkiHQ suite",
-      "POS and inventory",
-      "Team collaboration",
-    ],
-    benefitsEs: [
-      "Suite AkiHQ avanzada",
-      "TPV e inventario",
-      "Colaboración del equipo",
-    ],
-  },
-  akihq_business_addon: {
-    en: "Add Premium marketing when you already have AkiHQ Pro.",
-    es: "Añade marketing Premium si ya tienes AkiHQ Pro.",
-    benefitsEn: [
-      "Requires active AkiHQ Pro",
-      "AkiBusiness Premium included",
-      "Reduced additional fee",
-    ],
-    benefitsEs: [
-      "Requiere AkiHQ Pro activo",
-      "Incluye AkiBusiness Premium",
-      "Precio adicional reducido",
-    ],
-  },
-  aki_enterprise: {
-    en: "The complete AkiSuite in one combined subscription.",
-    es: "La AkiSuite completa en una sola suscripción.",
-    benefitsEn: [
-      "AkiHQ Pro and AkiBusiness Premium",
-      "AkiDuermo Premium",
-      "AkiPasa Premium",
-    ],
-    benefitsEs: [
-      "AkiHQ Pro y AkiBusiness Premium",
-      "AkiDuermo Premium",
-      "AkiPasa Premium",
-    ],
-  },
-};
-
-const toolLabels: Record<BusinessTool, { en: string; es: string }> = {
-  crm: { en: "Customer management", es: "Gestión de clientes" },
-  "crm-social": { en: "Social media (pilot)", es: "Redes sociales (piloto)" },
-  employees: { en: "Team management", es: "Gestión de equipo" },
-  dashboard: { en: "Dashboard", es: "Panel de control" },
-  tasks: { en: "Tasks", es: "Tareas" },
-  calendar: { en: "Calendar", es: "Calendario" },
-  sales: { en: "Invoices", es: "Facturas" },
-  knowledge: { en: "Knowledge base", es: "Base de conocimiento" },
-  inventory: { en: "Inventory", es: "Inventario" },
-  inbox: { en: "Inbox (pilot)", es: "Bandeja (piloto)" },
-  pos: { en: "Point of sale", es: "TPV" },
-  collaboration: { en: "Team chat", es: "Chat de equipo" },
-};
-
-const brandLogos = {
-  akipasa: { src: "/pwa/akipasa-192.png", name: "AkiPasa" },
-  akibusiness: { src: "/brand/business-icon.png", name: "AkiBusiness" },
-  akiduermo: { src: "/brand/duermo-icon.png", name: "AkiDuermo" },
-  akihq: { src: "/brand/hq-icon.png", name: "AkiHQ" },
 } as const;
-
-function PlanBrandLogos({ plan }: { plan: AkiSuitePlan }) {
-  const apps: Array<keyof typeof brandLogos> =
-    plan === "aki_enterprise"
-      ? ["akipasa", "akibusiness", "akiduermo", "akihq"]
-      : plan === "akihq_business_addon"
-        ? ["akihq", "akibusiness"]
-        : plan === "akipasa_premium"
-          ? ["akipasa"]
-          : plan === "akibusiness_premium"
-            ? ["akibusiness"]
-            : plan === "akiduermo_premium"
-              ? ["akiduermo"]
-              : ["akihq"];
-  return (
-    <span
-      className={styles.brandLogos}
-      aria-label={apps.map((app) => brandLogos[app].name).join(" + ")}
-    >
-      {apps.map((app) => (
-        <Image
-          key={app}
-          src={brandLogos[app].src}
-          alt=""
-          aria-hidden="true"
-          className={styles.brandLogo}
-          width={44}
-          height={44}
-          sizes="44px"
-        />
-      ))}
-    </span>
-  );
-}
-
-const order: AkiSuitePlan[] = [
-  "aki_enterprise",
-  "akipasa_premium",
-  "akibusiness_premium",
-  "akiduermo_premium",
-  "akihq_standard",
-  "akihq_pro",
-  "akihq_business_addon",
-];
-
+const examples = {
+  hospitality: {
+    en: "Hospitality",
+    es: "Hostelería",
+    enDetail: "Coordinate point of sale, inventory, team tasks and sales.",
+    esDetail: "Coordina TPV, inventario, tareas del equipo y ventas.",
+  },
+  accommodation: {
+    en: "Accommodation",
+    es: "Alojamiento",
+    enDetail: "Coordinate calendars, team tasks and customer relationships.",
+    esDetail:
+      "Coordina calendarios, tareas del equipo y relaciones con clientes.",
+  },
+  services: {
+    en: "Services",
+    es: "Servicios",
+    enDetail: "Organise customer relationships, calendars and your team.",
+    esDetail: "Organiza clientes, calendarios y tu equipo.",
+  },
+  retail: {
+    en: "Retail",
+    es: "Comercio",
+    enDetail: "Connect point of sale, inventory and customer relationships.",
+    esDetail: "Conecta TPV, inventario y relaciones con clientes.",
+  },
+} as const;
 export function AkiSuiteMembershipGrid({
   locale,
   checkoutReady = false,
@@ -203,448 +80,310 @@ export function AkiSuiteMembershipGrid({
   accessUnavailable = false,
   workspaces = [],
   workspacePlans = {},
-}: {
-  locale: "en" | "es";
-  checkoutReady?: boolean;
-  purchaseMode?: "account" | "checkout";
-  originatingApp?: AkiSuiteApp;
-  personalPremiumUnlocked?: boolean;
-  activePlans?: AkiSuitePlan[];
-  accessUnavailable?: boolean;
-  workspaces?: Array<{ id: string; name: string }>;
-  workspacePlans?: Record<string, AkiSuitePlan[]>;
-}) {
-  const [interval, setInterval] = useState<"month" | "year">("month");
-  const [sector, setSector] =
-    useState<(typeof businessCategories)[number]["key"]>("food");
-  const [sectorTier, setSectorTier] = useState<"business" | "business_pro">(
-    "business",
+}: Props) {
+  const es = locale === "es",
+    origin = akiSuiteApp(originatingApp);
+  const [workspaceId, setWorkspaceId] = useState(
+    workspaces.length === 1 ? workspaces[0].id : "",
   );
-  const [expandedPlans, setExpandedPlans] = useState<AkiSuitePlan[]>([]);
-  const selectedSector =
-    businessCategories.find((category) => category.key === sector) ??
-    businessCategories[0];
-  const highlightedTools = getBusinessPackageHighlights(
-    selectedSector,
-    sectorTier,
-  );
-  const [workspaceId, setWorkspaceId] = useState(workspaces[0]?.id || "");
-  const es = locale === "es";
-  const selectedPlans = [
+  const [sector, setSector] = useState<keyof typeof examples>("hospitality");
+  const validWorkspace = /^[a-z0-9][a-z0-9_-]{2,79}$/.test(workspaceId)
+    ? workspaceId
+    : "";
+  const operations = `/${locale}/account/subscription/operations${validWorkspace ? `?workspace=${encodeURIComponent(validWorkspace)}` : ""}`;
+  const included = effectiveAkiSuitePlans([
     ...activePlans,
-    ...(workspacePlans[workspaceId] || []),
-  ];
-  const included = effectiveAkiSuitePlans(selectedPlans);
-  const currency = new Intl.NumberFormat(es ? "es-ES" : "en-IE", {
-    style: "currency",
-    currency: "EUR",
-  });
+    ...(workspacePlans[validWorkspace] || []),
+  ]);
+  const money = (cents: number) =>
+    new Intl.NumberFormat(es ? "es-ES" : "en-IE", {
+      style: "currency",
+      currency: "EUR",
+    }).format(cents / 100);
+  const listingPlans: Array<keyof typeof listingCopy> =
+    origin === "akiduermo"
+      ? ["akiduermo_premium"]
+      : origin === "akipasa" || origin === "akibusiness"
+        ? ["akibusiness_premium"]
+        : [];
+  if (origin === "akipasa" && personalPremiumUnlocked)
+    listingPlans.unshift("akipasa_premium");
   return (
     <section className={styles.root} aria-labelledby="akisuite-catalogue-title">
       <header className={styles.heading}>
         <div>
           <span className="eyebrow">AkiSuite</span>
           <h2 id="akisuite-catalogue-title">
-            {es ? "Una suite, tus herramientas" : "One suite, your tools"}
+            {es
+              ? "Gestiona gratis. Elige tus herramientas."
+              : "Manage for free. Choose your tools."}
           </h2>
           <p>
             {es
-              ? "Elige lo que necesitas para descubrir, promocionar o gestionar."
-              : "Choose the tools you need to discover, promote or operate."}
+              ? "AkiHQ es tu centro gratuito. AkiBusiness es la suite de operaciones de pago por ubicación."
+              : "AkiHQ is your free management hub. AkiBusiness is the paid operating suite per location."}
           </p>
         </div>
       </header>
       {workspaces.length > 1 && (
-        <fieldset className={styles.workspaces}>
-          <legend>
-            {es
-              ? "Negocio que recibirá las ventajas"
-              : "Business receiving the benefits"}
-          </legend>
-          {workspaces.map((workspace) => (
-            <label key={workspace.id}>
-              <input
-                type="radio"
-                name="akisuite-workspace"
-                value={workspace.id}
-                checked={workspaceId === workspace.id}
-                onChange={() => setWorkspaceId(workspace.id)}
-              />
-              {workspace.name}
-            </label>
-          ))}
-        </fieldset>
+        <label className={styles.workspaceChoice}>
+          {es ? "Ubicación de operaciones" : "Operating location"}
+          <select
+            value={workspaceId}
+            onChange={(e) => setWorkspaceId(e.target.value)}
+          >
+            <option value="">
+              {es ? "Elegir ubicación" : "Choose a location"}
+            </option>
+            {workspaces.map((w) => (
+              <option key={w.id} value={w.id}>
+                {w.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
+      {accessUnavailable && (
+        <p role="status">
+          {es
+            ? "No pudimos verificar tu acceso actual. Revisa tu cuenta antes de cambiar suscripciones."
+            : "We couldn't verify your current access. Review your account before changing subscriptions."}{" "}
+          <Link href={`/${locale}/account/subscription`}>
+            {es ? "Reintentar acceso" : "Retry account access"}
+          </Link>
+        </p>
       )}
       <div className={styles.grid}>
-        {order
-          .filter((key) => {
-            // The legacy Stripe catalogue uses AkiHQ keys for the operations suite.
-            // Keep those purchase IDs until the Stripe migration has been verified.
-            if (key === "akipasa_premium")
-              return originatingApp === "akipasa" && personalPremiumUnlocked;
-            if (key === "akiduermo_premium")
-              return originatingApp === "akiduermo" && personalPremiumUnlocked;
-            if (key === "akibusiness_premium")
-              return (
-                originatingApp === "akipasa" || originatingApp === "akibusiness"
-              );
-            if (key === "akihq_business_addon") return false;
-            return (
-              key === "aki_enterprise" ||
-              key === "akihq_standard" ||
-              key === "akihq_pro"
-            );
-          })
-          .map((key) => {
-            const item = akisuitePlans[key];
-            const details = descriptions[key];
-            const cents = akisuitePriceCents(key, interval);
-            const featured = key === "aki_enterprise";
-            const app = akiSuitePlanApp(key);
-            const current = included.has(key);
-            const origin = app === originatingApp;
-            const overlap = overlappingAkiSuitePlan(key, selectedPlans);
-            const missingWorkspace = key !== "akipasa_premium" && !workspaceId;
-            const accountHandoff =
-              purchaseMode === "account" && checkoutReady && !accessUnavailable;
-            const eligible =
-              key !== "akihq_business_addon" ||
-              businessAddonEligible(selectedPlans);
-            const blocked = accessUnavailable
-              ? {
-                  text: es
-                    ? "No hemos podido comprobar tu acceso actual. Reintenta antes de cambiar de plan."
-                    : "We couldn't verify your current access. Retry before changing plans.",
-                  href: `/${locale}/account/subscription#membership-recovery`,
-                  action: es ? "Reintentar acceso" : "Retry account access",
-                }
-              : current
-                ? {
-                    text: es
-                      ? "Este plan ya está incluido en tu acceso actual."
-                      : "This plan is already included in your current access.",
-                    href: `/${locale}/account/subscription#membership-centre`,
-                    action: es ? "Ver mi acceso" : "View my access",
-                  }
-                : overlap
-                  ? {
-                      text: es
-                        ? "Tu plan actual ya cubre estas ventajas. Revisa ese plan antes de sustituirlo."
-                        : "Your current plan already covers these benefits. Review it before replacing it.",
-                      href: `/${locale}/account/subscription#billing-management`,
-                      action: es
-                        ? "Gestionar el plan actual"
-                        : "Manage current plan",
-                    }
-                  : !checkoutReady
-                    ? {
-                        text: es
-                          ? "La compra todavía no está disponible para este plan."
-                          : "Purchase is not available for this plan yet.",
-                      }
-                    : missingWorkspace
-                      ? {
-                          text: es
-                            ? "Los planes de negocio necesitan un espacio de trabajo autorizado."
-                            : "Business plans require an authorised workspace.",
-                          href: `/${locale}/account/subscription#workspace-setup`,
-                          action: es
-                            ? "Preparar mi negocio"
-                            : "Prepare my business",
-                        }
-                      : !eligible
-                        ? {
-                            text: es
-                              ? "Este complemento requiere AkiHQ Pro activo en el espacio seleccionado."
-                              : "This add-on requires active AkiHQ Pro in the selected workspace.",
-                            href: `/${locale}/account/subscription#akihq_pro`,
-                            action: es ? "Ver AkiHQ Pro" : "View AkiHQ Pro",
-                          }
-                        : null;
-            return (
-              <article
-                key={key}
-                id={key}
-                data-product={app}
-                data-origin={origin || undefined}
-                data-expanded={expandedPlans.includes(key) || undefined}
-                className={[styles.card, featured ? styles.featured : ""].join(
-                  " ",
-                )}
-              >
-                <div className={styles.cardHeader}>
-                  <div className={styles.brandIdentity}>
-                    <PlanBrandLogos plan={key} />
-                    <span className={styles.eyebrow}>
-                      {app === "akisuite"
-                        ? "AkiSuite"
-                        : app === "akihq"
-                          ? "AkiHQ"
-                          : app === "akibusiness"
-                            ? "AkiBusiness"
-                            : app === "akiduermo"
-                              ? "AkiDuermo"
-                              : "AkiPasa"}
-                    </span>
-                  </div>
-                  {featured && (
-                    <span className={styles.pill}>
-                      {es ? "Pack completo" : "Complete bundle"}
-                    </span>
-                  )}
-                </div>
-                {origin && (
-                  <span className={styles.origin}>
-                    {es ? "Tu aplicación" : "Your app"}
-                  </span>
-                )}
-                {current && (
-                  <span className={styles.pill}>
-                    {es ? "Incluido en tu acceso" : "Included in your access"}
-                  </span>
-                )}
-                <h3>
-                  {es && key === "akihq_business_addon"
-                    ? "AkiBusiness Premium para AkiHQ Pro"
-                    : item.label}
-                </h3>
-                <p className={styles.description}>{details[locale]}</p>
-                <div className={styles.price}>
-                  <strong>{currency.format(cents / 100)}</strong>
-                  <span>
-                    /
-                    {interval === "month"
-                      ? es
-                        ? "mes"
-                        : "month"
-                      : es
-                        ? "año"
-                        : "year"}
-                  </span>
-                </div>
-                {interval === "year" && (
-                  <p className={styles.saving}>
-                    {es
-                      ? `Ahorras ${currency.format((item.monthlyCents * 12 - cents) / 100)} al año · 20 %`
-                      : `Save ${currency.format((item.monthlyCents * 12 - cents) / 100)} per year · 20%`}
-                  </p>
-                )}
-                <button
-                  type="button"
-                  className={styles.mobileExpand}
-                  aria-expanded={expandedPlans.includes(key)}
-                  aria-controls={`plan-benefits-${key}`}
-                  onClick={() =>
-                    setExpandedPlans((plans) =>
-                      plans.includes(key)
-                        ? plans.filter((plan) => plan !== key)
-                        : [...plans, key],
-                    )
-                  }
-                >
-                  {expandedPlans.includes(key)
+        <article id="akihq-free" className={styles.card} data-product="akihq">
+          <div className={styles.brandIdentity}>
+            <Image src="/brand/hq-icon.png" width={44} height={44} alt="" />
+            <span className={styles.eyebrow}>AkiHQ</span>
+          </div>
+          <h3>{es ? "Gestión gratuita" : "Free management"}</h3>
+          <div className={styles.price}>
+            <strong>{money(0)}</strong>
+          </div>
+          <p>
+            {es
+              ? "Organizaciones, ubicaciones, listados, titularidad y permisos esenciales."
+              : "Organisations, locations, listings, ownership and essential permissions."}
+          </p>
+          <Link className="button secondary" href={suiteHref("hq", locale)}>
+            {es ? "Abrir AkiHQ gratis" : "Open free AkiHQ"}
+          </Link>
+        </article>
+        {(
+          Object.keys(OPERATION_PRICES) as Array<keyof typeof OPERATION_PRICES>
+        ).map((tier) => {
+          const offer = OPERATION_PRICES[tier],
+            swaps = tier === "basico" ? 1 : tier === "standard" ? 2 : null;
+          return (
+            <article
+              id={`operations-${tier}`}
+              key={tier}
+              className={styles.card}
+              data-product="akibusiness"
+            >
+              <div className={styles.brandIdentity}>
+                <Image
+                  src="/brand/business-icon.png"
+                  width={44}
+                  height={44}
+                  alt=""
+                />
+                <span className={styles.eyebrow}>AkiBusiness</span>
+              </div>
+              <h3>
+                {tier === "basico"
+                  ? "Standard"
+                  : tier === "standard"
+                    ? "Plus"
+                    : "Pro"}
+              </h3>
+              <div className={styles.price}>
+                <strong>{money(offer.amount)}</strong>
+                <span>/{es ? "mes por ubicación" : "month per location"}</span>
+              </div>
+              <ul className={styles.benefits}>
+                <li>
+                  {es
+                    ? `${offer.tools} de 12 herramientas activas`
+                    : `${offer.tools} of 12 active tools`}
+                </li>
+                <li>
+                  {swaps === null
                     ? es
-                      ? "Menos detalles"
-                      : "Less detail"
+                      ? "Todas las herramientas, sin selección ni límite de sustituciones"
+                      : "All tools, no selection or replacement limit"
                     : es
-                      ? "Ver ventajas y acceso"
-                      : "View benefits and access"}
-                  <span aria-hidden="true">
-                    {expandedPlans.includes(key) ? "−" : "+"}
-                  </span>
-                </button>
-                <div id={`plan-benefits-${key}`} className={styles.cardDetails}>
-                  <ul className={styles.benefits}>
-                    {(es ? details.benefitsEs : details.benefitsEn).map(
-                      (benefit) => (
-                        <li key={benefit}>{benefit}</li>
-                      ),
-                    )}
-                  </ul>
-                  {accountHandoff ? (
-                    <Link
-                      href={`/${locale}/account/subscription?from=${akiSuiteApp(originatingApp)}`}
-                      className={
-                        featured ? "button button-strong" : "button secondary"
-                      }
-                    >
-                      {es ? "Continuar en mi cuenta" : "Continue in my account"}
-                    </Link>
-                  ) : (
-                    <form action={startAkiSuiteCheckout}>
-                      <input type="hidden" name="locale" value={locale} />
-                      <input type="hidden" name="plan" value={key} />
-                      <input type="hidden" name="interval" value={interval} />
-                      {key !== "akipasa_premium" && workspaceId && (
-                        <input
-                          type="hidden"
-                          name="workspaceId"
-                          value={workspaceId}
-                        />
-                      )}
-                      <button
-                        type="submit"
-                        className={
-                          featured ? "button button-strong" : "button secondary"
-                        }
-                        disabled={
-                          purchaseMode === "account" ||
-                          !checkoutReady ||
-                          missingWorkspace ||
-                          current ||
-                          accessUnavailable ||
-                          overlap ||
-                          !eligible
-                        }
-                      >
-                        {accessUnavailable
-                          ? es
-                            ? "Acceso no disponible"
-                            : "Access unavailable"
-                          : current
-                            ? es
-                              ? "Plan incluido"
-                              : "Plan included"
-                            : overlap
-                              ? es
-                                ? "Incluido en tu plan actual"
-                                : "Covered by your current plan"
-                              : !checkoutReady
-                                ? es
-                                  ? "Disponible próximamente"
-                                  : "Coming soon"
-                                : missingWorkspace
-                                  ? es
-                                    ? "Prepara un espacio de trabajo"
-                                    : "Prepare a workspace"
-                                  : !eligible
-                                    ? es
-                                      ? "Requiere AkiHQ Pro"
-                                      : "Requires AkiHQ Pro"
-                                    : key === "akihq_business_addon"
-                                      ? es
-                                        ? "Añadir a AkiHQ Pro"
-                                        : "Add to AkiHQ Pro"
-                                      : es
-                                        ? "Elegir plan"
-                                        : "Choose plan"}
-                      </button>
-                    </form>
-                  )}
-                  {!accountHandoff && blocked && (
-                    <p className={styles.blockedReason}>
-                      <span>{blocked.text}</span>
-                      {blocked.href && (
-                        <Link href={blocked.href}>{blocked.action}</Link>
-                      )}
-                    </p>
-                  )}
-                </div>
-              </article>
-            );
-          })}
+                      ? `${swaps} ${swaps === 1 ? "sustitución mensual" : "sustituciones mensuales"}`
+                      : `${swaps} monthly ${swaps === 1 ? "replacement" : "replacements"}`}
+                </li>
+                <li>
+                  {es
+                    ? "Delegación al equipo inmediata dentro de las herramientas activas"
+                    : "Instant staff delegation within active tools"}
+                </li>
+              </ul>
+              <p>
+                {tier === "pro"
+                  ? es
+                    ? "Pro habilita las doce herramientas; no necesita selección."
+                    : "Pro enables all twelve tools and needs no selection."
+                  : es
+                    ? "Las selecciones guardadas se activan en la próxima rotación mensual."
+                    : "Saved selections activate at the next monthly rotation."}
+              </p>
+              <Link className="button secondary" href={operations}>
+                {es
+                  ? "Gestionar herramientas de operaciones"
+                  : "Manage operating tools"}
+              </Link>
+            </article>
+          );
+        })}
       </div>
-      <fieldset className={styles.interval}>
-        <legend>{es ? "Periodo de facturación" : "Billing interval"}</legend>
-        <label className={interval === "month" ? styles.selected : ""}>
-          <input
-            type="radio"
-            checked={interval === "month"}
-            onChange={() => setInterval("month")}
-            name="akisuite-interval"
-          />
-          {es ? "Mensual" : "Monthly"}
-        </label>
-        <label className={interval === "year" ? styles.selected : ""}>
-          <input
-            type="radio"
-            checked={interval === "year"}
-            onChange={() => setInterval("year")}
-            name="akisuite-interval"
-          />
-          {es ? "Anual · -20 %" : "Yearly · -20%"}
-        </label>
-      </fieldset>
       <section
         className={styles.sectorPanel}
         aria-labelledby="akisuite-sector-title"
       >
-        <div className={styles.sectorIntro}>
-          <span className={styles.eyebrow}>
-            AkiHQ · {es ? "Herramientas por sector" : "Tools by sector"}
-          </span>
+        <div>
+          <span className={styles.eyebrow}>AkiBusiness</span>
           <h3 id="akisuite-sector-title">
-            {es ? "Tu negocio, tus herramientas" : "Your business, your tools"}
+            {es ? "Herramientas para tu actividad" : "Tools for your business"}
           </h3>
-          <p>
-            {es
-              ? "Explora qué herramientas destacan para tu actividad. Los permisos dependen del plan, no del sector."
-              : "Explore tools relevant to your business. Plan permissions do not change with your sector."}
-          </p>
-        </div>
-        <div className={styles.sectorChoices}>
           <label htmlFor="akisuite-sector">
             {es ? "Tipo de negocio" : "Business type"}
           </label>
           <select
             id="akisuite-sector"
             value={sector}
-            onChange={(event) => setSector(event.target.value as typeof sector)}
+            onChange={(e) => setSector(e.target.value as keyof typeof examples)}
           >
-            {businessCategories.map((category) => (
-              <option value={category.key} key={category.key}>
-                {category[locale]}
+            {Object.entries(examples).map(([key, value]) => (
+              <option key={key} value={key}>
+                {value[locale]}
               </option>
             ))}
           </select>
-          <div
-            className={styles.sectorSwitch}
-            role="group"
-            aria-label={es ? "Plan AkiHQ" : "AkiHQ plan"}
+          <p aria-live="polite">
+            {es ? examples[sector].esDetail : examples[sector].enDetail}
+          </p>
+          <p>
+            {es
+              ? "Ejemplos de flujo de trabajo. El acceso depende de tus herramientas activas y permisos."
+              : "Workflow examples. Access depends on your active tools and permissions."}
+          </p>
+          <Link
+            href={suiteHref("business", locale, {
+              workspaceId: validWorkspace || undefined,
+            })}
           >
-            <button
-              type="button"
-              aria-pressed={sectorTier === "business"}
-              onClick={() => setSectorTier("business")}
-            >
-              Standard · 20 €
-            </button>
-            <button
-              type="button"
-              aria-pressed={sectorTier === "business_pro"}
-              onClick={() => setSectorTier("business_pro")}
-            >
-              Pro · 60 €
-            </button>
-          </div>
-        </div>
-        <div className={styles.sectorResults} aria-live="polite">
-          <strong>
-            {es ? "Destacadas para tu sector" : "Highlights for your sector"}
-          </strong>
-          <ul>
-            {highlightedTools.map((tool) => (
-              <li key={tool}>{toolLabels[tool][locale]}</li>
-            ))}
-          </ul>
-          <details className={styles.toolDisclosure}>
-            <summary>
-              {es
-                ? `Ver las ${businessPackageTools[sectorTier].length} herramientas incluidas`
-                : `See all ${businessPackageTools[sectorTier].length} included tools`}
-            </summary>
-            <div className={styles.toolChips}>
-              {businessPackageTools[sectorTier].map((tool) => (
-                <span key={tool}>{toolLabels[tool][locale]}</span>
-              ))}
-            </div>
-          </details>
+            {es ? "Explorar AkiBusiness" : "Explore AkiBusiness"}
+          </Link>
         </div>
       </section>
+      {listingPlans.length > 0 && (
+        <section aria-labelledby="listing-premium-title">
+          <h3 id="listing-premium-title">
+            {es
+              ? "Premium de listados y personal"
+              : "Listing and personal Premium"}
+          </h3>
+          <p>
+            {es
+              ? "Son suscripciones independientes de las herramientas de operaciones de AkiBusiness."
+              : "These subscriptions are separate from AkiBusiness operating tools."}
+          </p>
+          <div className={styles.grid}>
+            {listingPlans.map((plan) => {
+              const info = listingCopy[plan],
+                current = included.has(plan),
+                personal = plan === "akipasa_premium",
+                planReady =
+                  checkoutReady &&
+                  (plan !== "akiduermo_premium" || personalPremiumUnlocked),
+                blocked =
+                  accessUnavailable ||
+                  !planReady ||
+                  current ||
+                  (!personal && !validWorkspace);
+              return (
+                <article
+                  key={plan}
+                  id={plan}
+                  className={styles.card}
+                  data-product={
+                    plan === "akiduermo_premium" ? "akiduermo" : "akipasa"
+                  }
+                >
+                  <Image
+                    src={
+                      plan === "akiduermo_premium"
+                        ? "/brand/duermo-icon.png"
+                        : "/pwa/akipasa-192.png"
+                    }
+                    width={44}
+                    height={44}
+                    alt=""
+                  />
+                  <h3>{info.label}</h3>
+                  <p>{info[locale]}</p>
+                  <div className={styles.price}>
+                    <strong>{money(akisuitePlans[plan].monthlyCents)}</strong>
+                    <span>/{es ? "mes" : "month"}</span>
+                  </div>
+                  {accessUnavailable ? (
+                    <button type="button" disabled>
+                      {es ? "Acceso no disponible" : "Access unavailable"}
+                    </button>
+                  ) : current ? (
+                    <Link href={`/${locale}/account/subscription`}>
+                      {es ? "Ver mi acceso" : "View my access"}
+                    </Link>
+                  ) : purchaseMode === "account" ? (
+                    <Link
+                      href={`/${locale}/account/subscription?from=${origin}`}
+                    >
+                      {es ? "Continuar en mi cuenta" : "Continue in my account"}
+                    </Link>
+                  ) : (
+                    <form action={startAkiSuiteCheckout}>
+                      <input type="hidden" name="locale" value={locale} />
+                      <input type="hidden" name="plan" value={plan} />
+                      <input type="hidden" name="interval" value="month" />
+                      {!personal && validWorkspace && (
+                        <input
+                          type="hidden"
+                          name="workspaceId"
+                          value={validWorkspace}
+                        />
+                      )}
+                      <button
+                        type="submit"
+                        className="button secondary"
+                        disabled={blocked}
+                      >
+                        {!planReady
+                          ? es
+                            ? "Disponible próximamente"
+                            : "Coming soon"
+                          : es
+                            ? "Revisar Premium"
+                            : "Review Premium"}
+                      </button>
+                    </form>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      )}
       <p className={styles.footnote}>
         {es
-          ? "La verificación de titularidad de un local es independiente de Premium. El total y los impuestos aplicables se muestran antes de confirmar el pago. Las funciones se activan tras la confirmación de Stripe."
-          : "Verified venue ownership is independent of Premium. Final totals and applicable taxes appear before payment confirmation. Features activate only after Stripe confirmation."}
+          ? "La titularidad de un listado es independiente de Premium. Los importes e impuestos se confirman antes del pago. Ninguna devolución del checkout activa funciones por sí sola."
+          : "Listing ownership is independent of Premium. Amounts and taxes are confirmed before payment. Returning from checkout alone never activates features."}
       </p>
     </section>
   );

@@ -1,4 +1,3 @@
-import { operationsReleaseVars } from "./helpers/operations-release-config";
 import { describe, it, expect, vi } from "vitest";
 import {
   operationsMigrationSnapshot,
@@ -266,7 +265,7 @@ function setup(
   };
 }
 describe("reviewed same-subscription renewal migration commands", () => {
-  it("enabled release configuration with an empty command queue performs no Stripe writes or grants", async () => {
+  it("explicitly enabled engine with an empty command queue performs no Stripe writes or grants", async () => {
     const calls: Array<{ url: string; method: string }> = [];
     const fetcher = vi.fn(
       async (input: RequestInfo | URL, init?: RequestInit) => {
@@ -288,7 +287,6 @@ describe("reviewed same-subscription renewal migration commands", () => {
       await processOperationsMigrationCommand(
         {
           ...env,
-          ...operationsReleaseVars,
           NEXT_PUBLIC_SUPABASE_URL: "https://supabase.test",
         },
         fetcher,

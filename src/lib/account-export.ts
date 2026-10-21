@@ -163,7 +163,8 @@ export function currentAccountExportTables() {
     ...(process.env.AKISUITE_SUBSCRIPTIONS_READY === "true"
       ? [["akisuite_billing_subscriptions", "profile_id"] as const]
       : []),
-    ...(process.env.AKISUITE_REFERRALS_READY === "true"
+    ...(process.env.AKISUITE_REFERRALS_READY === "true" &&
+    process.env.AKISUITE_PRIVATE_IDENTITY_EXPORTS_READY !== "true"
       ? [
           ["suite_referral_codes", "owner_profile_id"] as const,
           ["suite_referral_attributions", "profile_id"] as const,

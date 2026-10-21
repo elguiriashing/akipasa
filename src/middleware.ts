@@ -30,6 +30,18 @@ export async function middleware(request: NextRequest) {
           ? "akiduermo"
           : "akipasa",
   );
+  const operationsLocale = request.nextUrl.pathname.match(
+    /^\/(en|es)\/account\/subscription\/operations\/?$/,
+  )?.[1];
+  if (operationsLocale) {
+    request.headers.set(
+      "x-akipasa-membership-next",
+      akiSuiteMembershipReturnPath(
+        operationsLocale === "en" ? "en" : "es",
+        request.nextUrl.pathname.replace(/\/$/, "") + request.nextUrl.search,
+      ),
+    );
+  }
   const membershipAlias = request.nextUrl.pathname.match(
     /^\/(?:(en|es)\/)?(membership|memberships|account\/(?:membership|memberships|subscription))\/?$/,
   );

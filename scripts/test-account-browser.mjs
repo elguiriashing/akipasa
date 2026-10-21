@@ -500,20 +500,37 @@ async function interactions(page, route, locale) {
     ).toHaveCount(1);
   } else if (route === "subscription") {
     await expect(page.getByRole("tablist")).toHaveCount(0);
-    await expect(page.locator('[id="aki_enterprise"]')).toBeVisible();
     const catalogue = page.locator(
       '[aria-labelledby="akisuite-catalogue-title"]',
     );
-    await expect(catalogue.locator("article")).toHaveCount(4);
-    await catalogue
-      .getByRole("radio", { name: es ? /Anual/ : /Yearly/ })
-      .check();
-    const card = catalogue.locator("#akihq_pro");
-    await expect(card).toContainText(es ? "576,00" : "576.00");
-    const payload = await card
-      .locator("form")
-      .evaluate((form) => Object.fromEntries(new FormData(form)));
-    expect(payload).toEqual({ locale, plan: "akihq_pro", interval: "year" });
+    await expect(catalogue.locator("#akihq-free")).toBeVisible();
+    await expect(catalogue.locator("#akihq-free a")).toHaveAttribute(
+      "href",
+      `https://akihq.app/${locale}/business`,
+    );
+    for (const [tier, count] of [
+      ["basico", 4],
+      ["standard", 8],
+      ["pro", 12],
+    ]) {
+      const card = catalogue.locator(`#operations-${tier}`);
+      await expect(card).toBeVisible();
+      await expect(card).toContainText(
+        es
+          ? `${count} de 12 herramientas activas`
+          : `${count} of 12 active tools`,
+      );
+      await expect(card.locator("a")).toHaveAttribute(
+        "href",
+        `/${locale}/account/subscription/operations`,
+      );
+      await expect(card.locator("form")).toHaveCount(0);
+    }
+    await expect(
+      catalogue.getByRole("radio", { name: es ? /Anual/ : /Yearly/ }),
+    ).toHaveCount(0);
+    for (const id of ["aki_enterprise", "akihq_pro", "akihq_standard"])
+      await expect(catalogue.locator(`#${id}`)).toHaveCount(0);
     for (const button of await catalogue
       .locator("article form button[type=submit]")
       .all())
@@ -797,14 +814,20 @@ try {
               const catalogue = page.locator(
                 '[aria-labelledby="akisuite-catalogue-title"]',
               );
-              await expect(catalogue.locator("article")).toHaveCount(4);
-              await expect(catalogue.locator("form")).toHaveCount(4);
-              for (const button of await catalogue
-                .locator("article button[type=submit]")
-                .all())
-                await expect(button).toBeDisabled();
+              await expect(catalogue.locator("article")).toHaveCount(5);
+              for (const id of [
+                "akihq-free",
+                "operations-basico",
+                "operations-standard",
+                "operations-pro",
+              ])
+                await expect(catalogue.locator(`#${id} form`)).toHaveCount(0);
+              await expect(
+                catalogue.locator("#akibusiness_premium button"),
+              ).toBeDisabled();
+              await expect(catalogue.locator("form")).toHaveCount(0);
               await expect(page.locator(".workspace-content form")).toHaveCount(
-                4,
+                0,
               );
             } else
               await expect(page.locator(".workspace-content form")).toHaveCount(
@@ -925,27 +948,26 @@ try {
           await expect
             .poll(() => page.evaluate(() => window.__accountReady))
             .toBe(true);
-          if (width === 360) {
-            const cards = page.getByRole("article");
-            await expect(cards).toHaveCount(3);
-            for (const card of await cards.all()) {
-              // Card order stays stable when the button changes its name on expansion.
-              const button = card.locator("button[aria-expanded]");
-              await expect(button).toHaveAttribute("aria-expanded", "false");
-              await button.click();
-              await expect(button).toHaveAttribute("aria-expanded", "true");
-            }
-            await expect(
-              page.locator('article button[aria-expanded="true"]'),
-            ).toHaveCount(3);
-          }
+          await expect(page.getByRole("article")).toHaveCount(5);
+          for (const id of [
+            "akihq-free",
+            "operations-basico",
+            "operations-standard",
+            "operations-pro",
+          ])
+            await expect(page.locator(`#${id} form`)).toHaveCount(0);
+          await expect(page.locator("#akihq-free a")).toHaveAttribute(
+            "href",
+            `https://akihq.app/${locale}/business`,
+          );
+          await expect(page.locator('[id^="operations-"] a')).toHaveCount(3);
           const links = page.getByRole("link", {
             name:
               locale === "es"
                 ? "Continuar en mi cuenta"
                 : "Continue in my account",
           });
-          await expect(links).toHaveCount(3);
+          await expect(links).toHaveCount(1);
           for (const link of await links.all()) {
             await expect(link).toBeVisible();
             await expect(link).toHaveAttribute(
@@ -1010,10 +1032,21 @@ try {
           await expect
             .poll(() => page.evaluate(() => window.__accountReady))
             .toBe(true);
-          await expect(page.locator("article a")).toHaveCount(0);
+          // Readiness never suppresses free management or an account-only review
+          // handoff; it must not create checkout forms or financial actions.
+          await expect(page.locator("article form")).toHaveCount(0);
           await expect(
-            page.locator("article form button:disabled"),
-          ).toHaveCount(3);
+            page.getByRole("link", {
+              name:
+                locale === "es"
+                  ? "Continuar en mi cuenta"
+                  : "Continue in my account",
+            }),
+          ).toHaveCount(1);
+          await expect(page.locator('[id^="operations-"] a')).toHaveCount(3);
+          expect(await page.evaluate(() => window.__accountActions)).toEqual(
+            [],
+          );
           results.push({
             route: "membership-handoff",
             locale,

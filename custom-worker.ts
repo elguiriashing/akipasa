@@ -27,6 +27,8 @@ import {
   type ReleaseAssets,
 } from "./src/lib/release-source";
 
+import { purgeBusinessFunnel } from "./src/lib/business-funnel-maintenance";
+
 import {
   recoverOperationsBillingWithNotifications,
   type OperationsRecoveryEnv,
@@ -49,11 +51,17 @@ const worker = {
       AKISUITE_STRIPE_ACCOUNT_ID?: string;
       STRIPE_SECRET_KEY?: string;
       AKIBUSINESS_OPERATIONS_BILLING_READY?: string;
+      AKISUITE_FUNNEL_READY?: string;
       AKIBUSINESS_OPERATIONS_MIGRATIONS_READY?: string;
     },
     ctx: { waitUntil(work: Promise<unknown>): void },
   ) {
     await recordOperationsCronTick(env);
+    ctx.waitUntil(
+      purgeBusinessFunnel(env).catch(() =>
+        console.error("business_funnel_retention_retry"),
+      ),
+    );
     ctx.waitUntil(
       observeOperationsRuntimeTask(env, "billing", (observedFetch) =>
         recoverOperationsBillingWithNotifications(env, observedFetch),

@@ -4,6 +4,7 @@ import { changeAkiSuiteSubscription } from "@/app/[locale]/account/subscription/
 import { openBillingPortal } from "@/app/[locale]/account/subscription/actions";
 import { akisuitePlans, type AkiSuitePlan } from "@/lib/akisuite-catalogue";
 import styles from "./AkiSuiteMembershipHub.module.css";
+import { suiteHref } from "@/lib/suite-navigation";
 
 import {
   resolveMembershipHub,
@@ -15,32 +16,51 @@ const apps = [
   {
     key: "akipasa",
     name: "AkiPasa",
-    initial: "A",
     hue: "orange",
-    plans: ["akipasa_premium"],
-  },
-  {
-    key: "akibusiness",
-    name: "AkiBusiness",
-    initial: "B",
-    hue: "yellow",
-    plans: ["akibusiness_premium"],
+    icon: "/pwa/akipasa-512.png",
   },
   {
     key: "akiduermo",
     name: "AkiDuermo",
-    initial: "D",
     hue: "green",
-    plans: ["akiduermo_premium"],
+    icon: "/brand/duermo-icon.png",
   },
   {
-    key: "akihq",
-    name: "AkiHQ",
-    initial: "HQ",
-    hue: "purple",
-    plans: ["akihq_standard", "akihq_pro"],
+    key: "akicoches",
+    name: "AkiCoches",
+    hue: "orange",
+    icon: "/brand/conduzco-icon.svg",
+  },
+  { key: "akihq", name: "AkiHQ", hue: "purple", icon: "/brand/hq-icon.png" },
+  {
+    key: "akibusiness",
+    name: "AkiBusiness",
+    hue: "yellow",
+    icon: "/brand/business-icon.png",
   },
 ] as const;
+const currentListingPlans = [
+  "akipasa_premium",
+  "akibusiness_premium",
+  "akiduermo_premium",
+];
+function recordLabel(code: string, es: boolean) {
+  if (code === "akibusiness_premium") return "AkiPasa Listing Premium";
+  if (code === "akiduermo_premium") return "AkiDuermo Listing Premium";
+  const historical: Record<string, string> = {
+    business: "Business",
+    business_pro: "Business Pro",
+    akihq_standard: "AkiHQ Standard",
+    akihq_pro: "AkiHQ Pro",
+    akihq_business_addon: "AkiHQ business add-on",
+    aki_enterprise: "Aki Enterprise",
+  };
+  if (historical[code])
+    return `${historical[code]} (${es ? "anterior" : "legacy"})`;
+  if (code === "premium")
+    return `AkiPasa Premium (${es ? "anterior" : "legacy"})`;
+  return akisuitePlans[code as AkiSuitePlan]?.label || code;
+}
 
 export function AkiSuiteMembershipHub({
   locale,
@@ -70,19 +90,74 @@ export function AkiSuiteMembershipHub({
       dateStyle: "medium",
       timeZone: "Europe/Madrid",
     }).format(new Date(value));
-  const status = (key: (typeof apps)[number]["key"]) =>
-    key === "akihq" ? membership.apps.akihq !== "free" : membership.apps[key];
-  const plan = (key: (typeof apps)[number]["key"]) => {
-    if (key === "akihq")
-      return membership.apps.akihq === "pro"
-        ? "Pro"
-        : membership.apps.akihq === "standard"
-          ? "Standard"
-          : es
-            ? "Gratis"
-            : "Free";
-    if (!status(key)) return es ? "Gratis" : "Free";
-    return "Premium";
+  // Listing and historical billing benefits never establish operating-tool access.
+  const personal = membership.apps.akipasa;
+  const accommodationListing = membership.apps.akiduermo;
+  const productCopy = {
+    akipasa: {
+      badge: personal ? "Premium" : es ? "Descubrimiento" : "Discovery",
+      detail: personal
+        ? es
+          ? "Premium personal"
+          : "Personal Premium"
+        : es
+          ? "Descubre lugares y eventos"
+          : "Discover places and events",
+      href: personal
+        ? "#billing-management"
+        : `/${locale}/membership?from=akipasa`,
+      action: personal
+        ? es
+          ? "Ver facturación"
+          : "View billing"
+        : es
+          ? "Ver membresías"
+          : "View memberships",
+    },
+    akiduermo: {
+      badge: accommodationListing
+        ? "Premium"
+        : es
+          ? "Descubrimiento"
+          : "Discovery",
+      detail: accommodationListing
+        ? "Listing Premium"
+        : es
+          ? "Descubre alojamientos"
+          : "Discover accommodation",
+      href: accommodationListing
+        ? "#billing-management"
+        : `/${locale}/membership?from=akiduermo`,
+      action: accommodationListing
+        ? es
+          ? "Ver facturación"
+          : "View billing"
+        : es
+          ? "Ver opciones del listado"
+          : "View listing options",
+    },
+    akicoches: {
+      badge: es ? "Descubrimiento" : "Discovery",
+      detail: es
+        ? "Descubre alquileres de vehículos"
+        : "Discover vehicle rentals",
+      href: suiteHref("coches", locale),
+      action: es ? "Abrir AkiCoches" : "Open AkiCoches",
+    },
+    akihq: {
+      badge: es ? "Gratis" : "Free",
+      detail: es ? "Centro gratuito de gestión" : "Free management hub",
+      href: suiteHref("hq", locale),
+      action: es ? "Abrir AkiHQ gratis" : "Open free AkiHQ",
+    },
+    akibusiness: {
+      badge: es ? "Por ubicación" : "Per location",
+      detail: es ? "Herramientas operativas de pago" : "Paid operating tools",
+      href: `/${locale}/account/subscription/operations`,
+      action: es
+        ? "Gestionar herramientas operativas"
+        : "Manage operating tools",
+    },
   };
   return (
     <section
@@ -102,8 +177,8 @@ export function AkiSuiteMembershipHub({
           </h2>
           <p>
             {es
-              ? "Consulta tu acceso a los cuatro sistemas, revisa tus planes y gestiona la facturación sin perderte entre aplicaciones."
-              : "Your access to all four systems, plans and billing, without hunting through four separate settings pages."}
+              ? "Cinco aplicaciones conectadas: descubre, gestiona gratis y consulta tus suscripciones por separado."
+              : "Five connected applications: discover, manage for free and review your subscriptions separately."}
           </p>
         </div>
         <div className={styles.heroActions}>
@@ -131,14 +206,16 @@ export function AkiSuiteMembershipHub({
           <div className={styles.layout}>
             <div className={styles.overview}>
               <div className={styles.sectionHead}>
-                <h3>{es ? "Tus cuatro aplicaciones" : "Your four apps"}</h3>
+                <h3>{es ? "Tus cinco aplicaciones" : "Your five apps"}</h3>
                 {membership.enterprise && (
-                  <span className={styles.enterprise}>Enterprise</span>
+                  <span className={styles.enterprise}>
+                    {es ? "Paquete anterior" : "Historical package"}
+                  </span>
                 )}
               </div>
               <div className={styles.appGrid}>
                 {apps.map((app) => {
-                  const enabled = status(app.key);
+                  const copy = productCopy[app.key];
                   return (
                     <article
                       key={app.key}
@@ -151,41 +228,28 @@ export function AkiSuiteMembershipHub({
                           data-hue={app.hue}
                           aria-hidden="true"
                         >
-                          <Image
-                            src={
-                              app.key === "akipasa"
-                                ? "/pwa/akipasa-512.png"
-                                : `/brand/${app.key === "akibusiness" ? "business" : app.key === "akiduermo" ? "duermo" : "hq"}-icon.png`
-                            }
-                            alt=""
-                            width={40}
-                            height={40}
-                          />
+                          <Image src={app.icon} alt="" width={40} height={40} />
                         </span>
-                        <span className={enabled ? styles.active : styles.free}>
-                          {enabled
-                            ? es
-                              ? "Activo"
-                              : "Active"
-                            : es
-                              ? "Gratis"
-                              : "Free"}
-                        </span>
+                        <span className={styles.free}>{copy.badge}</span>
                       </div>
                       <strong className={styles.appName}>{app.name}</strong>
-                      <span className={styles.appPlan}>{plan(app.key)}</span>
-                      <Link
-                        className={styles.appLink}
-                        href={`/${locale}/membership?from=${app.key}#${app.plans[0]}`}
-                      >
-                        {enabled
-                          ? es
-                            ? "Ver opciones"
-                            : "View options"
-                          : es
-                            ? "Descubrir Premium"
-                            : "Discover Premium"}{" "}
-                        <span aria-hidden="true">↗</span>
+                      <span className={styles.appPlan}>{copy.detail}</span>
+                      {app.key === "akipasa" && membership.apps.akibusiness && (
+                        <span className={styles.appPlan}>
+                          {es
+                            ? "Ventajas de Listado Premium en ubicaciones autorizadas"
+                            : "Listing Premium benefits in authorised locations"}
+                        </span>
+                      )}
+                      {app.key === "akibusiness" && (
+                        <span className={styles.appPlan}>
+                          {es
+                            ? "El acceso se comprueba para cada ubicación; Listado Premium es independiente."
+                            : "Access is checked for each location; Listing Premium is separate."}
+                        </span>
+                      )}
+                      <Link className={styles.appLink} href={copy.href}>
+                        {copy.action} <span aria-hidden="true">↗</span>
                       </Link>
                     </article>
                   );
@@ -196,27 +260,21 @@ export function AkiSuiteMembershipHub({
               <span className={styles.eyebrow}>
                 {es ? "Resumen de acceso" : "Access overview"}
               </span>
-              <h3>
-                {membership.enterprise
-                  ? "Aki Enterprise"
-                  : es
-                    ? "Tus membresías"
-                    : "Your memberships"}
-              </h3>
+              <h3>{es ? "Tus membresías" : "Your memberships"}</h3>
               <div className={styles.bigStat}>
-                {apps.filter((app) => status(app.key)).length}
-                <span> / 4</span>
+                {apps.length}
+                <span> {es ? "productos" : "products"}</span>
               </div>
               <p>
                 {es
-                  ? "Aplicaciones con herramientas ampliadas"
-                  : "Apps with upgraded tools"}
+                  ? "Una identidad compartida. Permisos y herramientas según cada ubicación."
+                  : "One shared identity. Permissions and operating tools depend on each location."}
               </p>
               {membership.enterprise && (
                 <p className={styles.enterpriseText}>
                   {es
-                    ? "Enterprise incluye Premium para AkiPasa, AkiBusiness y AkiDuermo, y AkiHQ Pro."
-                    : "Enterprise includes AkiPasa, AkiBusiness and AkiDuermo Premium, plus AkiHQ Pro."}
+                    ? "Las condiciones de tu paquete histórico se conservan en los registros de facturación."
+                    : "Your historical package terms are retained in the billing records."}
                 </p>
               )}
               <Link
@@ -231,13 +289,13 @@ export function AkiSuiteMembershipHub({
             <section className={styles.records}>
               <h3>
                 {es
-                  ? "Acceso de tus espacios de trabajo"
-                  : "Your workspace access"}
+                  ? "Ventajas de listados y planes históricos por espacio"
+                  : "Listing and historical plan benefits by workspace"}
               </h3>
               <p>
                 {es
-                  ? "Las ventajas de negocio se aplican a estos espacios autorizados. El Premium personal corresponde a la persona suscrita."
-                  : "Business benefits apply to these authorised workspaces. Personal Premium belongs to the subscriber."}
+                  ? "Estas ventajas de listados y planes históricos corresponden a espacios autorizados. Las herramientas operativas de AkiBusiness se comprueban por separado. El Premium personal pertenece a la persona suscrita."
+                  : "These listing and historical plan benefits apply to authorised workspaces. AkiBusiness operating tools are checked separately. Personal Premium belongs to the subscriber."}
               </p>
               <div className={styles.recordGrid}>
                 {workspaceAccess.map((workspace) => (
@@ -251,7 +309,7 @@ export function AkiSuiteMembershipHub({
                                 plan !== "akihq_standard" ||
                                 !workspace.plans.includes("akihq_pro"),
                             )
-                            .map((plan) => akisuitePlans[plan]?.label)
+                            .map((plan) => recordLabel(plan, es))
                             .filter(Boolean)
                             .join(" · ")
                         : es
@@ -271,16 +329,16 @@ export function AkiSuiteMembershipHub({
                 </h3>
                 <p>
                   {es
-                    ? "Muestra las suscripciones vinculadas a tu cuenta. Las suscripciones anteriores mantienen sus condiciones; Enterprise no genera cargos separados por sus ventajas incluidas."
-                    : "Subscriptions linked to this account. Existing subscriptions keep their current billing terms; Enterprise's included benefits don't create separate charges."}
+                    ? "Estos registros corresponden a Premium personal, listados y planes históricos. Las suscripciones operativas de AkiBusiness se consultan por ubicación. La facturación conserva los registros y los cambios de renovación acordados."
+                    : "These records cover personal Premium, listings and historical plans. AkiBusiness operating subscriptions are reviewed per location. Billing retains the records and agreed renewal changes."}
                 </p>
               </div>
             </div>
             {membership.paid.length === 0 ? (
               <p className={styles.empty}>
                 {es
-                  ? "No tienes suscripciones de pago activas en esta cuenta."
-                  : "No active paid subscriptions on this account."}
+                  ? "No hay registros activos de Premium personal, listados o planes históricos en este registro. Consulta las suscripciones operativas por ubicación."
+                  : "No active personal Premium, listing or historical plan records in this ledger. Review operating subscriptions by location."}
               </p>
             ) : (
               <div className={styles.recordGrid}>
@@ -289,23 +347,13 @@ export function AkiSuiteMembershipHub({
                     record.plan_code in akisuitePlans
                       ? akisuitePlans[record.plan_code as AkiSuitePlan]
                       : null;
-                  const oldName =
-                    record.plan_code === "premium"
-                      ? es
-                        ? "AkiPasa Premium (anterior)"
-                        : "AkiPasa Premium (legacy)"
-                      : record.plan_code === "business"
-                        ? "AkiHQ Standard (legacy)"
-                        : record.plan_code === "business_pro"
-                          ? "AkiHQ Pro (legacy)"
-                          : record.plan_code;
                   return (
                     <article
                       className={styles.record}
                       key={record.plan_code + record.billing_interval + i}
                     >
                       <div className={styles.recordTop}>
-                        <strong>{catalogue?.label || oldName}</strong>
+                        <strong>{recordLabel(record.plan_code, es)}</strong>
                         <span className={styles.active}>
                           {record.status === "trialing"
                             ? es
@@ -318,6 +366,7 @@ export function AkiSuiteMembershipHub({
                       </div>
                       {planChangesReady &&
                         catalogue &&
+                        currentListingPlans.includes(record.plan_code) &&
                         record.stripe_subscription_id && (
                           <details>
                             <summary>
@@ -343,15 +392,10 @@ export function AkiSuiteMembershipHub({
                                   {(
                                     Object.keys(akisuitePlans) as AkiSuitePlan[]
                                   )
-                                    .filter(
-                                      (key) =>
-                                        (key === "akipasa_premium") ===
-                                        (record.plan_code ===
-                                          "akipasa_premium"),
-                                    )
+                                    .filter((key) => key === record.plan_code)
                                     .map((key) => (
                                       <option key={key} value={key}>
-                                        {akisuitePlans[key].label}
+                                        {recordLabel(key, es)}
                                       </option>
                                     ))}
                                 </select>

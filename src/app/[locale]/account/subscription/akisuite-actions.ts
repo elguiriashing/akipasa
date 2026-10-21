@@ -46,6 +46,15 @@ export async function startAkiSuiteCheckout(formData: FormData) {
   if (!akiSuiteCheckoutReady()) failed("checkout_unavailable");
   const parsed = planSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return failed("plan");
+  // Historical plan identifiers remain valid for billing records and renewals,
+  // but only personal and listing Premium are sold through this action now.
+  // Operating subscriptions have their own location-authorised checkout.
+  if (
+    !["akipasa_premium", "akibusiness_premium", "akiduermo_premium"].includes(
+      parsed.data.plan,
+    )
+  )
+    return failed("plan");
   if (
     !process.env.STRIPE_AKISUITE_MANAGEMENT_CONFIGURATION_ID ||
     !process.env.STRIPE_AKISUITE_PORTAL_CONFIGURATION_ID

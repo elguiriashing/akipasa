@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { accountTaskResume } from "./account-task-resume";
 import { safeAuthDestination } from "./auth-security";
 import type { Locale } from "./config";
 
@@ -16,6 +17,12 @@ export function onboardingEnabled() {
   return process.env.AKISUITE_ONBOARDING_SCHEMA_READY === "true";
 }
 export function onboardingDestination(locale: Locale, requested?: string) {
+  // Referral confirmation is a public local task. Keep only the validated code,
+  // including callers that supply its unprefixed path before email/OAuth signup.
+  if (requested && /^\/(?:(?:en|es)\/)?referrals(?:\?|$)/.test(requested)) {
+    const task = accountTaskResume("pasa", locale, requested);
+    return `/${locale}${task?.path || "/account"}`;
+  }
   const safe = safeAuthDestination(locale, requested);
   // This flow always resumes a local product task, never itself or auth/legal loops.
   try {

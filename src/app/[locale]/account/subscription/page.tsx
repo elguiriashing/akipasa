@@ -132,8 +132,8 @@ export default async function SubscriptionPage({
               : "You need an active Business plan to open those tools."
             : query.error === "business_pro_required"
               ? es
-                ? "Necesitas Business Pro para acceder a AkiHQ CRM."
-                : "You need Business Pro to access AkiHQ CRM."
+                ? "Revisa la suscripción operativa de AkiBusiness para esta ubicación."
+                : "Review the AkiBusiness operating subscription for this location."
               : es
                 ? "No se pudo iniciar la operación de facturación."
                 : "The billing operation could not be started.";
@@ -179,8 +179,8 @@ export default async function SubscriptionPage({
       {query.checkout === "success" && (
         <p className="notice" role="status">
           {es
-            ? "Pago completado. La membresía se actualiza automáticamente al recibir la confirmación de Stripe."
-            : "Checkout completed. Membership updates automatically when confirmation arrives from Stripe."}
+            ? "Has vuelto del pago. La membresía solo se actualiza cuando Stripe confirma el pago."
+            : "You returned from checkout. Membership updates only after Stripe confirms payment."}
         </p>
       )}
       {query.upgrade === "pending" && (

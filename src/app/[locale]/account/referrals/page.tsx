@@ -5,6 +5,7 @@ import {
   referralCode,
   referralCaseLabel,
   referralDashboardSchema,
+  representativeEvidenceSchema,
   referralShareUrl,
 } from "@/lib/referrals";
 import {
@@ -15,12 +16,13 @@ import {
   updateReferralLead,
 } from "./actions";
 import "./referrals.css";
+import RepresentativeEvidence from "./RepresentativeEvidence";
 export default async function Referrals({
   params,
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ ref?: string; result?: string }>;
+  searchParams: Promise<{ ref?: string; result?: string; period?: string }>;
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
@@ -59,6 +61,18 @@ export default async function Referrals({
         { data: null, error: null },
         { data: null, error: null },
       ];
+  const days = query.period === "30" ? 30 : query.period === "365" ? 365 : 90;
+  const representativeEvidence =
+    ready &&
+    rep.data?.state === "approved" &&
+    process.env.AKISUITE_REFERRAL_REP_EVIDENCE_READY === "true"
+      ? await supabase.rpc("suite_referral_representative_evidence", {
+          p_days: days,
+        })
+      : { data: null, error: null };
+  const evidence = representativeEvidenceSchema.safeParse(
+    representativeEvidence.data,
+  );
   const parsed = referralDashboardSchema.safeParse(overview.data);
   const data = parsed.success ? parsed.data : null;
   const messages: Record<string, string> = {
@@ -268,6 +282,15 @@ export default async function Referrals({
           )}
           {rep.data?.state === "approved" && (
             <>
+              <RepresentativeEvidence
+                locale={locale}
+                days={days}
+                data={
+                  !representativeEvidence.error && evidence.success
+                    ? evidence.data
+                    : null
+                }
+              />
               <form action={saveReferralLead}>
                 <h2>{es ? "Registrar oportunidad" : "Register lead"}</h2>
                 <input type="hidden" name="locale" value={locale} />

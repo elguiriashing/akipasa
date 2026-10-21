@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { operationToolLabel } from "@/lib/operations-billing/tool-labels";
 import { isLocale } from "@/lib/config";
 import { requireUser } from "@/lib/auth";
 import {
@@ -38,7 +39,9 @@ export default async function OperationsSubscriptionPage({
   const query = await searchParams;
   const initialWorkspace = workspaces?.some((w) => w.id === query.workspace)
     ? query.workspace
-    : null;
+    : !query.workspace && workspaces?.length === 1
+      ? workspaces[0].id
+      : null;
   const initialResult = initialWorkspace
     ? await supabase.rpc("crm_operations_initial_state", {
         p_workspace: initialWorkspace,
@@ -59,6 +62,18 @@ export default async function OperationsSubscriptionPage({
   const scheduled = scheduledResult.error
     ? null
     : (scheduledResult.data as {
+        tier: string;
+        effective_at: string;
+        state: string;
+      } | null);
+  const migrationResult = initialWorkspace
+    ? await supabase.rpc("crm_operations_migration_status", {
+        p_workspace: initialWorkspace,
+      })
+    : { data: null, error: null };
+  const migration = migrationResult.error
+    ? null
+    : (migrationResult.data as {
         tier: string;
         effective_at: string;
         state: string;
@@ -103,6 +118,21 @@ export default async function OperationsSubscriptionPage({
               : "Your current tools remain available until that date."}
           </p>
         )}
+        {migration?.state === "scheduled" && migration.tier === "basico" && (
+          <p role="status" data-migration-status="scheduled">
+            {es
+              ? "Migración programada para la renovación:"
+              : "Migration scheduled at renewal:"}{" "}
+            Standard ·{" "}
+            {new Date(migration.effective_at).toLocaleString(locale, {
+              timeZone: "Europe/Madrid",
+            })}
+            .{" "}
+            {es
+              ? "La suscripción actual se mantiene hasta esa fecha. Las herramientas operativas se activan solo tras confirmar el pago de renovación."
+              : "Your current subscription remains until that date. Operating tools activate only after confirmed renewal payment."}
+          </p>
+        )}
         {query.saved === "initial" && (
           <p role="status">
             {es
@@ -117,8 +147,8 @@ export default async function OperationsSubscriptionPage({
             <fieldset>
               <legend>
                 {es
-                  ? "Elige tus cuatro herramientas iniciales de Básico"
-                  : "Choose your four initial Básico tools"}
+                  ? "Elige tus cuatro herramientas iniciales de Standard"
+                  : "Choose your four initial Standard tools"}
               </legend>
               <p>
                 {es
@@ -133,7 +163,7 @@ export default async function OperationsSubscriptionPage({
                     value={tool}
                     defaultChecked={initial.tools?.includes(tool)}
                   />
-                  {tool}
+                  {operationToolLabel(tool, locale)}
                 </label>
               ))}
             </fieldset>
@@ -156,11 +186,7 @@ export default async function OperationsSubscriptionPage({
               {es ? "Ubicación" : "Location"}
               <select
                 name="workspace"
-                defaultValue={
-                  workspaces?.some((w) => w.id === query.workspace)
-                    ? query.workspace
-                    : ""
-                }
+                defaultValue={initialWorkspace || ""}
                 required
               >
                 <option value="" disabled>
@@ -179,9 +205,9 @@ export default async function OperationsSubscriptionPage({
                 {Object.entries(OPERATION_PRICES).map(([tier, offer]) => (
                   <option key={tier} value={tier}>
                     {tier === "basico"
-                      ? "Básico"
+                      ? "Standard"
                       : tier === "standard"
-                        ? "Standard"
+                        ? "Plus"
                         : "Pro"}{" "}
                     ·{" "}
                     {(offer.amount / 100).toLocaleString(locale, {
@@ -196,37 +222,14 @@ export default async function OperationsSubscriptionPage({
             <fieldset>
               <legend>
                 {es
-                  ? "Elige exactamente 4 herramientas para Básico u 8 para Standard. Pro incluye las 12 automáticamente"
-                  : "Choose exactly 4 tools for Básico or 8 for Standard. Pro includes all 12 automatically"}
+                  ? "Elige exactamente 4 herramientas para Standard u 8 para Plus. Pro incluye las 12 automáticamente"
+                  : "Choose exactly 4 tools for Standard or 8 for Plus. Pro includes all 12 automatically"}
               </legend>
               <div className="form-grid-two">
                 {TOOL_KEYS.map((tool) => (
                   <label key={tool}>
                     <input type="checkbox" name="tools" value={tool} />
-                    {
-                      (
-                        {
-                          crm: es ? "Clientes / CRM" : "Customers / CRM",
-                          inbox: es ? "Bandeja y soporte" : "Inbox and support",
-                          tasks: es
-                            ? "Tareas y proyectos"
-                            : "Tasks and projects",
-                          calendar: es ? "Calendario" : "Calendar",
-                          inventory: es ? "Inventario" : "Inventory",
-                          pos: es ? "Punto de venta" : "Point of sale",
-                          sales: es
-                            ? "Ventas y facturación"
-                            : "Sales and billing",
-                          marketing: es
-                            ? "Marketing y webs"
-                            : "Marketing and sites",
-                          automation: es ? "Automatización" : "Automation",
-                          collaboration: es ? "Chat del equipo" : "Team chat",
-                          employees: es ? "Personal" : "Staff",
-                          knowledge: es ? "Conocimiento" : "Knowledge",
-                        } as Record<string, string>
-                      )[tool]
-                    }
+                    {operationToolLabel(tool, locale)}
                   </label>
                 ))}
               </div>

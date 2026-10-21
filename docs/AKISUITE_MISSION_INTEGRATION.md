@@ -6,6 +6,16 @@ paid operations. This branch has not been merged or deployed. No production
 migration, flag activation, subscription mutation, charge, payout, address intake
 or physical order was performed.
 
+## Current primary and separate follow-up hold
+
+The original mission candidate is merged through #229 master8390836; reviewed
+runtime #233 is primary `a974c449ae573e859a4207a51cfe2a3196a4ada0`. The initial
+candidate preparation statement above describes that earlier work, not current
+merge status. The next isolated integration is documented in
+`docs/AKISUITE_POST_MIGRATION_INTEGRATION.md`; it must remain unmerged until the
+release manager verifies the three actual schedules and all exact-head CI. No
+completed customer receipt or production activation is claimed by that candidate.
+
 ## Included source
 
 Base master: `a272f2a0edbd49e30676d30fef87d72f2248793f`.
