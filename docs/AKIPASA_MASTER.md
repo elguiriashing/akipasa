@@ -1878,3 +1878,14 @@ merge is not a production marker. Native/funnel/Storage acceptance and the delib
 Standard/Plus/Pro versus mission naming conflict remain explicit. No application,
 price, customer, permission, database, primary branch or provider setting changes.
 See AKISUITE_MISSION_DELIVERY_STATUS_20261021.md; refresh moving heads before release.
+
+### Delivery-ledger review amendment
+
+Record the approved EUR 24.99/44.99/64.99 per-location monthly amounts against stable
+basico/standard/pro keys and current Standard/Plus/Pro label conflict. Preserve the
+three valid 100%-forever coupons, paid-through dates and Personal subscriptions; no
+immediate invoice/proration/new subscription. Include unresolved Supabase-owned
+spatial_ref_sys write/TRUNCATE exposure (HQ59 actual 42501 rollback), Cloudflare
+MCP-32603 deployment/pin blocker, live HQ e249 at 14:02 UTC and disabled-funnel owner/
+foreign/privacy role acceptance at 13:59 UTC. PR261 new 6d6 head CI and PR262 guard
+repair remain pending; neither is claimed installed/observed. Documentation only.

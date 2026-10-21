@@ -2474,3 +2474,14 @@ No live schema, customer row, flag, payment or primary branch changed here.
   whitespace checks; hosted results belong to their exact feature/report heads.
 - Rollback: revert only this documentation patch; preserve all historical records
   and current engineering work. This ledger does not authorise operational replay.
+
+### Delivery-ledger review amendment
+
+Record the approved EUR 24.99/44.99/64.99 per-location monthly amounts against stable
+basico/standard/pro keys and current Standard/Plus/Pro label conflict. Preserve the
+three valid 100%-forever coupons, paid-through dates and Personal subscriptions; no
+immediate invoice/proration/new subscription. Include unresolved Supabase-owned
+spatial_ref_sys write/TRUNCATE exposure (HQ59 actual 42501 rollback), Cloudflare
+MCP-32603 deployment/pin blocker, live HQ e249 at 14:02 UTC and disabled-funnel owner/
+foreign/privacy role acceptance at 13:59 UTC. PR261 new 6d6 head CI and PR262 guard
+repair remain pending; neither is claimed installed/observed. Documentation only.
