@@ -84,3 +84,42 @@ bounded retention and preservation of unrelated historical analytics. Typecheck,
 scoped lint and SQL permission audit are required. Multi-connection live concurrency,
 provider sandbox event replay, actual consent journey and production activation remain
 release acceptance gates; local fixtures do not prove them.
+
+## Own-identity privacy export amendment
+
+Migration 20261021000745 adds my_business_funnel_export(text,text,integer), a
+caller-only projection with no profile-id argument and no onboarding, age, paid
+entitlement or collection gate. It works for pending/restricted identities and
+cannot expose another account's observations. Anonymous callers cannot execute it;
+removed identities have no retained optional rows after the existing cascade.
+The raw private table remains inaccessible to authenticated clients.
+
+The account export includes stage, analytics reference, workspace/venue scope,
+observation timestamp and the captured consent timestamp. Internal proof_key values
+(raw provider invoice/session/event integrity references) are deliberately omitted:
+they add no user-facing activity meaning and must not be confused with a claim of
+payment proof in exported analytics. Billing records remain available through the
+existing billing export/portal; no financial ledger is changed or purged here.
+
+Pages have at most 500 rows in the application (RPC maximum1000). Decimal-string
+cursors avoid JavaScript bigint precision loss. The first page pins an upper
+watermark; later inserts are excluded. Every page repeats the fixed total and upper
+watermark. Changed counts, cursor regression, transport/parser errors or an exhausted
+80-request budget reject the entire export with the existing503/no-store failure
+contract; no partial file is presented as complete. All successful pages are combined.
+The RPC permits explicit safe continuation through p_after and p_until; it accepts
+only bounded decimal identifiers. It never accepts another identity or workspace.
+
+The existing AKISUITE_FUNNEL_READY schema/maintenance readiness flag also includes
+this privacy schema. Apply both additive migrations before enabling that flag, and
+keep readiness on while optional rows remain, even if database collection is off.
+The identity-only RPC remains callable directly regardless of that runtime flag.
+This amendment activates no collection and changes no production configuration.
+
+Privacy amendment verification: six focused tests plus all nine capture/retention
+regressions pass. The actual PostgreSQL fixture exports1201 own rows over three
+pages, excludes foreign rows/later inserts/raw proof identifiers, permits pending/
+known-minor privacy access, denies anonymous/raw-table access and malformed cursors,
+and verifies identity-deletion cascade with rollback. Malformed/partial responses,
+changed totals, repeated cursors and budget exhaustion fail without partial data.
+Typecheck, scoped lint, migration permission audit and contract integrity pass.

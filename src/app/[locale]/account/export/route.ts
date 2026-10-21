@@ -1,3 +1,4 @@
+import { readBusinessFunnelExport } from "@/lib/business-funnel-export";
 import { onboardingEnabled } from "@/lib/account-onboarding";
 import { NextResponse } from "next/server";
 import {
@@ -71,6 +72,11 @@ export async function GET() {
       data: prestige.data ? [prestige.data] : [],
       failed: Boolean(prestige.error),
     });
+  }
+  // Schema readiness stays enabled while retained optional rows exist, independently
+  // of database collection activation and account feature/onboarding restrictions.
+  if (process.env.AKISUITE_FUNNEL_READY === "true") {
+    derivedEntries.push(await readBusinessFunnelExport(supabase));
   }
   const failedTables = [...entries, ...derivedEntries]
     .filter((entry) => entry.failed)

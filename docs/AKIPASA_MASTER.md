@@ -1545,3 +1545,13 @@ and explicitly exclude causal conversion rates/sitewide attribution. Consent/age
 onboarding withdrawal and profile deletion remove only new linked optional rows;
 financial history and unrelated analytics remain. See TRUSTED_BUSINESS_FUNNEL.md
 for exact source evidence, unsupported adapters, tests and activation/rollback gates.
+
+## 2026-10-21 | Own-identity optional commercial-stage export
+
+Adds caller-only bounded privacy projection and complete account-export pagination
+for new commercial observations/consent timestamps. It intentionally bypasses feature,
+age and onboarding locks while retaining identity isolation. Raw provider integrity
+references remain private; actual financial/billing exports are unchanged. Fixed
+watermark/count checks fail the whole file on partial results or exhausted budget.
+Readiness depends on both new funnel migrations; collection remains disabled and no
+production data/configuration changes occur. See TRUSTED_BUSINESS_FUNNEL.md.
