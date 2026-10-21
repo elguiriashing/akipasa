@@ -1,5 +1,28 @@
 # Change Impact Register
 
+## 2026-10-21 | Membership design parity: AkiPasa, AkiDuermo, AkiCoches
+
+- **Before:** AkiPasa displayed four operational plans and a detached listing
+  card; AkiDuermo used taller, differently styled cards; AkiCoches hid most
+  plans behind narrow-viewport tabs. The product marks were inconsistent.
+- **After:** all three storefronts use a dark, consistent, five-card
+  single-row comparison with equally spaced headings, prices, descriptions,
+  benefits and CTAs. Narrow devices scroll horizontally. Original checked-in
+  HQ and Business marks are used; no generated logos or new assets are added.
+- **AkiPasa code touched:** `AkiSuiteMembershipGrid`, its stylesheet, and
+  catalogue source assertions. The public and account views share that grid.
+- **Preserved boundaries:** AkiHQ stays free, AkiBusiness Standard/Plus/Pro
+  remain location-scoped and €24.99/€44.99/€64.99 per month; listing Premium
+  remains independently scoped at €14.99. Personal Premium is feature-gated.
+  No backend, Stripe, SQL, RLS, customer, flag or tracking changes.
+- **Regression / dependencies:** verify existing render/checkout gating tests,
+  horizontal-scroll keyboard navigation, actual image loading, English/Spanish
+  and responsive widths. The other two repositories release independently.
+  Exact PR #275 CI and production smoke remain prerequisites, not assumed.
+- **Rollback:** revert the presentation commits without changing live
+  subscriptions or the billing/identity source of truth.
+
+
 ## 2026-10-20 | Restore authoritative contracts from intact Git blobs
 
 - Exact corrupting commit: `1305e6696379b81af8c81247fcc614ae6375b18b` (#208).
