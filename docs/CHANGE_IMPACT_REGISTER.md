@@ -2370,3 +2370,18 @@ confirmation/reason contract. Seven actual-role regressions cover both venue pat
 event removal, workspace detachment and profile erasure; original14 library/guard
 cases remain passing. Financial retention and live Storage acceptance are separate.
 See LISTING_LIBRARY_DELETION_COMPATIBILITY.md. No live flags or data changed.
+
+## 2026-10-21 | Reject stale account JWT after profile deletion
+
+The shared `account_features_allowed()` guard now requires the authenticated UUID
+to retain a `public.profiles` row. A still-valid JWT therefore cannot keep gated
+account access after identity/profile deletion. Existing profiles without an
+onboarding row remain compatible; pending/underage profiles remain denied and
+completed profiles remain allowed. The function stays `SECURITY DEFINER` with an
+empty search path, anonymous execution revoked and authenticated execution retained.
+The mirrored additive migration passed its PGlite negative-authorization cases and
+the SQL permission audit. The authorised shared project applied the same migration;
+readback confirmed owner `postgres`, the fixed search path and grants, and a
+synthetic nonexistent profile was denied. Rollback restores the preceding function
+body only if the stale-JWT risk is consciously reaccepted; no table or customer row
+was changed.

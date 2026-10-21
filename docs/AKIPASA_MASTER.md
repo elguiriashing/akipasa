@@ -1786,3 +1786,15 @@ confirmation/reason contract. Seven actual-role regressions cover both venue pat
 event removal, workspace detachment and profile erasure; original14 library/guard
 cases remain passing. Financial retention and live Storage acceptance are separate.
 See LISTING_LIBRARY_DELETION_COMPATIBILITY.md. No live flags or data changed.
+
+## 2026-10-21 — Stale identity access guard
+
+The canonical `account_features_allowed()` function now requires the caller's
+`auth.uid()` to retain a matching `public.profiles` row. This closes the window
+where a still-valid JWT could pass account-completion checks after profile deletion,
+while preserving legacy profiles without an onboarding record and completed profiles.
+Pending/underage identities remain denied. The additive mirrored migration preserves
+`SECURITY DEFINER`, the empty search path and authenticated-only execution. Focused
+negative authorization and SQL permission tests pass; live readback on the authorised
+shared project confirms a nonexistent profile is denied. No table, customer row,
+billing object or feature flag changed.
