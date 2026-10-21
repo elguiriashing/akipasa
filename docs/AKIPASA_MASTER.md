@@ -19,7 +19,6 @@ Acceptance requires updated membership UI tests, exact-head lint/typecheck,
 visual review at desktop/tablet/mobile sizes and full required PR CI. Production
 merges and release verification remain gated on successful checks.
 
-
 ## 2026-10-20 | Authoritative contract recovery and integrity gate
 
 The complete source-history contract text is restored from the last intact parent

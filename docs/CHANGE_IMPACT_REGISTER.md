@@ -22,7 +22,6 @@
 - **Rollback:** revert the presentation commits without changing live
   subscriptions or the billing/identity source of truth.
 
-
 ## 2026-10-20 | Restore authoritative contracts from intact Git blobs
 
 - Exact corrupting commit: `1305e6696379b81af8c81247fcc614ae6375b18b` (#208).
