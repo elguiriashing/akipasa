@@ -30,3 +30,14 @@ guard, then complete controlled actual Storage/owner acceptance before enabling
 the library. Keep count and strict upload acceptance requirements independent.
 Rollback disables the library flag before consumer rollback and preserves the
 ledger, media and guard. Never resurrect deleted UUIDs or delete historical data.
+
+## 2026-10-21 | Library requires verified uploads
+
+Forward migration004500 enforces library_enabled implies uploads_enforced in
+the database. Activation with legacy byte overwrite fails atomically; disabling
+strict uploads while the library is active also fails. Safe rollback disables
+the library and strict uploads together, preserving media/placements/grants.
+Three new actual-role cases exercise these transitions and the real SQL owner
+reservation→service receipt→media/placement flow with all guards active. This
+is not provider Storage acceptance; library activation remains blocked until
+actual byte-path acceptance. No live SQL or runtime flags changed.

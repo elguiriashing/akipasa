@@ -2146,3 +2146,14 @@ assets, exact old reuse and normal metadata edits. Strict owner Storage overwrit
 and a valid new receipt cannot bypass the guard. See LISTING_MEDIA_IDENTITY.md.
 11 focused SQL cases pass, permission audit0 findings; hosted builds/provider
 acceptance remain separate gates. No live application or activation performed.
+
+## 2026-10-21 | Library requires verified uploads
+
+Forward migration004500 enforces library_enabled implies uploads_enforced in
+the database. Activation with legacy byte overwrite fails atomically; disabling
+strict uploads while the library is active also fails. Safe rollback disables
+the library and strict uploads together, preserving media/placements/grants.
+Three new actual-role cases exercise these transitions and the real SQL owner
+reservation→service receipt→media/placement flow with all guards active. This
+is not provider Storage acceptance; library activation remains blocked until
+actual byte-path acceptance. No live SQL or runtime flags changed.
