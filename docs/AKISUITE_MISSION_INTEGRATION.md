@@ -1,3 +1,9 @@
+> **Current delivery ledger (21 October 2026):** see
+> [AkiSuite mission delivery status](AKISUITE_MISSION_DELIVERY_STATUS_20261021.md).
+> The candidate-era statements below preserve historical preparation evidence;
+> they do not override later verified merges, applied migrations, gates or live
+> source markers. Consult the current ledger before any operational action.
+
 # AkiPasa mission integration checkpoint — 20 October 2026
 
 This candidate combines independently reviewed source branches without changing the

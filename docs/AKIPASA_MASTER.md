@@ -1867,3 +1867,14 @@ New001000/002500/005500 remain unapplied and gated; historical244/249/251/253
 copies must not be used. Forty scoped native/review/deletion cases pass locally;
 hosted exact-head checks and provider/role acceptance remain release gates.
 No live schema, customer row, flag, payment or primary branch changed here.
+
+## 2026-10-21 | Reconciled master mission delivery ledger
+
+The docs-only delivery ledger indexes all mission phases against source, exact-head
+CI, applied SQL, runtime gates and manager-observed production identity. It preserves
+historical integration records and links them to the current ledger. Queued customer
+commands are not schedules; configured bindings are not merchant verification; a
+merge is not a production marker. Native/funnel/Storage acceptance and the deliberate
+Standard/Plus/Pro versus mission naming conflict remain explicit. No application,
+price, customer, permission, database, primary branch or provider setting changes.
+See AKISUITE_MISSION_DELIVERY_STATUS_20261021.md; refresh moving heads before release.

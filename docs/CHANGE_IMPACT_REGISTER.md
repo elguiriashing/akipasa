@@ -2459,3 +2459,18 @@ New001000/002500/005500 remain unapplied and gated; historical244/249/251/253
 copies must not be used. Forty scoped native/review/deletion cases pass locally;
 hosted exact-head checks and provider/role acceptance remain release gates.
 No live schema, customer row, flag, payment or primary branch changed here.
+
+## 2026-10-21 | Reconciled master mission delivery ledger
+
+- Scope: documentation only, fresh current-master branch. Add A–I delivery/status
+  matrix and link the preserved historical integration document to it.
+- Evidence: direct GitHub head/PR/CI reads plus attributed manager production/SQL
+  observations. Includes newly applied 014000 and phased, disabled funnel schema;
+  three queued zero-attempt merchant-blocked commands, Duermo's stale live source,
+  and new Pasa260/HQ72/73 merges awaiting production markers. Current deliberate tier naming conflict stays open.
+- Safety: no application behavior, SQL, financial/customer data, primary refs or
+  provider state changed; no private IDs, sealed payloads or secrets published.
+- Validation: documentation formatting, authoritative-contract integrity and
+  whitespace checks; hosted results belong to their exact feature/report heads.
+- Rollback: revert only this documentation patch; preserve all historical records
+  and current engineering work. This ledger does not authorise operational replay.
