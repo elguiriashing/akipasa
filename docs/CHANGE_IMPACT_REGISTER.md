@@ -2476,3 +2476,7 @@ preserved. Focused86 tests and SQL permission audit pass; full exact CI and live
 installation/deployment remain release-owner gates. See
 OPERATIONS_MERCHANT_DIAGNOSTICS.md for categories, interpretation and rollback.
 No production, primary, provider, customer, configuration or financial writes.
+
+## 2026-10-21 | Stay browser host-proxy transport cleanup
+
+The existing isolated AkiDuermo guest-route browser spec now uses the same bounded GET-only connection-reset retry and wait-for-in-flight-route teardown as the previously reviewed frontend-health host proxy. This addresses two hosted socket-reset failures on local branding/image requests without changing any route, locale, privacy, keyboard, layout or consent assertion. HTTP errors and non-GET requests are never retried; intercepted errors are not ignored during cleanup. Application, provider, data, feature flags and canonical SQL are unchanged. Full exact-head browser CI remains the acceptance gate.
