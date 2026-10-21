@@ -128,7 +128,7 @@ export function AkiSuiteMembershipGrid({
       <div className={styles.grid}>
         <article id="akihq-free" className={styles.card} data-product="akihq">
           <div className={styles.brandIdentity}>
-            <Image src="/brand/hq-icon.png" width={44} height={44} alt="" />
+            <Image src="/brand/hq-mark.svg" width={46} height={46} alt="" unoptimized />
             <span className={styles.eyebrow}>AkiHQ</span>
           </div>
           <h3>{es ? "Gestión gratuita" : "Free management"}</h3>
@@ -158,10 +158,11 @@ export function AkiSuiteMembershipGrid({
             >
               <div className={styles.brandIdentity}>
                 <Image
-                  src="/brand/business-icon.png"
-                  width={44}
-                  height={44}
+                  src="/brand/business-mark.svg"
+                  width={46}
+                  height={46}
                   alt=""
+                  unoptimized
                 />
                 <span className={styles.eyebrow}>AkiBusiness</span>
               </div>
@@ -214,20 +215,8 @@ export function AkiSuiteMembershipGrid({
             </article>
           );
         })}
-      </div>
-      {listingPlans.length > 0 && (
-        <section aria-labelledby="listing-premium-title">
-          <h3 id="listing-premium-title">
-            {es
-              ? "Premium de listados y personal"
-              : "Listing and personal Premium"}
-          </h3>
-          <p>
-            {es
-              ? "Son suscripciones independientes de las herramientas de operaciones de AkiBusiness."
-              : "These subscriptions are separate from AkiBusiness operating tools."}
-          </p>
-          <div className={styles.grid}>
+        {listingPlans.length > 0 && (
+          <>
             {listingPlans.map((plan) => {
               const info = listingCopy[plan],
                 current = included.has(plan),
@@ -309,9 +298,14 @@ export function AkiSuiteMembershipGrid({
                 </article>
               );
             })}
-          </div>
-        </section>
-      )}
+          </>
+        )}
+      </div>
+      <p className={styles.footnote}>
+        {es
+          ? "Listing Premium y las herramientas operativas son suscripciones independientes."
+          : "Listing Premium and operating tools are independent subscriptions."}
+      </p>
       <p className={styles.footnote}>
         {es
           ? "La titularidad de un listado es independiente de Premium. Los importes e impuestos se confirman antes del pago. Ninguna devolución del checkout activa funciones por sí sola."
