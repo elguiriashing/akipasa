@@ -1000,6 +1000,9 @@ try {
               "href",
               `/${locale}/account/subscription?from=akiduermo`,
             );
+            // The canonical one-row membership carousel makes every CTA
+            // scroll-reachable, even when it is not initially in the viewport.
+            await link.scrollIntoViewIfNeeded();
             const geometry = await link.evaluate((el) => {
               const r = el.getBoundingClientRect();
               const range = document.createRange();
