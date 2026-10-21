@@ -12,9 +12,7 @@ const request = z
     locale: z.enum(["en", "es"]),
   })
   .strict();
-export async function reviewNativeAccommodation(
-  input: unknown,
-): Promise<{
+export async function reviewNativeAccommodation(input: unknown): Promise<{
   ok: boolean;
   error?: "invalid" | "unavailable" | "forbidden" | "stale";
 }> {
