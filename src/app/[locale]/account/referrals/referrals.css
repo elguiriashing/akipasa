@@ -68,3 +68,35 @@
   background: #111c30;
   color: #eef4ff;
 }
+.referral-evidence {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.referral-invoices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 1rem;
+  min-width: 0;
+}
+.referral-evidence dl,
+.referral-evidence dd {
+  margin: 0;
+}
+.referral-evidence dl {
+  display: grid;
+  gap: 0.6rem;
+}
+.referral-evidence dt {
+  font-weight: 600;
+}
+.referral-evidence summary {
+  cursor: pointer;
+  min-height: 2.75rem;
+  padding-block: 0.75rem;
+}
+.referral-evidence summary:focus-visible {
+  outline: 3px solid #397dff;
+  outline-offset: 3px;
+}

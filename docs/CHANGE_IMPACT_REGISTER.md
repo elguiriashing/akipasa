@@ -2109,6 +2109,169 @@ verification and rollback. No source is deployed, provider write made or custome
 configuration mutated by preparation; only the release manager may merge and
 verify the actual production source before enqueueing three reviewed commands.
 
+## 2026-10-20 | Narrow referral audit identity-sequence ACL repair
+
+Before: the hosted public-schema default sequence ACL would grant anon,
+authenticated and service_role sequence capabilities on the new referral audit
+identity sequence, despite protected audit rows. After: additive185822 revokes
+only that sequence, without editing170421/180654 or global defaults. Owner-run
+configuration audit still appends. Private review sequence, billing permissions,
+RLS, programme checks and all other legacy sequence privileges are unchanged.
+Six executed PGlite cases cover inherited grants, raw nextval/setval/read denial,
+administrator audit appends, unrelated/review ACLs, financial gates and repeat
+execution/mirror identity; existing referral suites are rerun. Source-only install
+packet records dependencies and hosted acceptance gates. No production write.
+
+## 2026-10-20 | Account wrapper terminator repair
+
+The production attempt to install un-applied coverage migration 180946 rolled
+back with SQLSTATE 42601: PostgreSQL rtrim removes spaces, so a real function
+ending END; followed by LF/CRLF received a second standalone semicolon. Both
+canonical migration copies now preserve the complete original body and detect
+its final semicolon using POSIX whitespace before appending a missing terminator.
+No existing routine logic, ACL, owner or attributes are rewritten beyond the
+original account guard. A disposable PostgreSQL regression loads complete real
+referral foundation/review migrations and the real venue-invite routine,
+reproduces the original syntax failure, then compiles the corrected complete
+wrappers and verifies retained bodies/attributes, pending denial and legacy
+authorization behavior. This corrects the still-unapplied migration; do not
+blindly rerun its table/policy creation in a database where it is already recorded.
+No live QA transactions, enrollment activation or production writes were made
+for this repair. The successful production retry remains a separate release gate.
+
+## Standalone listing Premium template and media library candidate
+
+Before: canonical template/folder/shared-media source depended on the broad old
+unapplied suite subscription migration. After: standalone233027 adds separately
+gated schema/RPCs and focused EN/ES draft template UI, reuses folder/share controls,
+validates active CRM plus both venue scopes, and preserves exact licensed placement
+uses on downgrade. Upload reservations and final media/placement writes account for
+shared assets under the existing quota lock. No operating subscription, price,
+Stripe value, existing customer/media/event row or production activation changed.
+
+Dependencies traced: actual CRM ownership/member links, listing entitlement
+resolver170415, verified byte reservation173552, existing media placement and
+Storage paths, event snapshots/draft status, owner forms, EN/ES and independent HQ
+consumer. SQL/role/UI tests accompany the change; actual provider/concurrency and
+authenticated responsive acceptance remain release gates. Large hosted rollback
+attempts returned no evidence and are not claimed as passing. Runbook and retained-
+data rollback: LISTING_PREMIUM_LIBRARY.md.
+
+## Forward listing event identity guard
+
+Verified gap: deleting then re-inserting the same event UUID reused170415's
+retained monthly slot. Additive233905 rejects INSERT of any retained event UUID,
+including another venue/tier, and rejects primary-key UPDATE while enforcement
+is enabled. It retains the applied migration, RLS, fresh draft/ordinary edit,
+account-completion statement guards and all publication history. No entitlement,
+flag, customer/event/media data or production schema changed by this patch.
+
+Actual-role SQL regression reproduces the original bypass before migration and
+checks blocked resurrection/upsert/PK changes, foreign actor denial, Premium,
+private execution and pending/complete onboarding intersection using the actual
+cohort guard SQL. See LISTING_EVENT_IDENTITY.md; hosted CI and production schema
+acceptance remain separate gates. Large hosted rollback tool hangs are not passes.
+
+## 2026-10-21 | Remove historical paid-HQ acquisition and preserve operations login intent
+
+Replaces current membership acquisition cards with free HQ and canonical monthly paid Business tiers, independent listing/personal Premium and accurate category workflows. Existing legacy billing catalogue, subscription resolver, portal/cancellation and stored records are preserved. No annual operations prices are derived. Middleware overwrites client-supplied return headers, forwards only exact EN/ES operations destinations and validated single workspace, and AccountLayout uses its existing trusted contract. Regression evidence includes rendered ownership/readiness and history-preservation checks, EN/ES account-layout/middleware tests, malicious redirect cases and browser route/layout coverage. No production writes.
+
+New checkout server actions explicitly reject retired AkiHQ Standard/Pro, Business add-on and Enterprise acquisition even with all checkout gates enabled. Historical identifiers, subscription renewal synchronisation, customer access, billing portal and cancellation remain supported. Personal and listing Premium retain their existing authenticated checkout safeguards.
+
+## 2026-10-20 | Operating referral eligibility and private representative evidence
+
+- Before: capture checked historical public subscriptions but omitted the real
+  private operating ledger; representatives saw only aggregate conversion activity.
+- After: existing bound operating customers cannot make a late new-customer claim.
+  Approved representatives receive bounded owned subscription/invoice proposal and
+  safe administrative review history, with dynamic holds and no payable/paid state.
+- Dependencies: installed foundation170421/review180654/corrected coverage180946,
+  shared identity, existing code-owner immutability and review audit, optional private
+  operating ledger, account/referrals EN/ES, normal authenticated RLS and a new off
+  schema-ready presentation gate. Shared cross-app task-resume is untouched.
+- Security: guarded capture body/owner/ACL retained, shared helper private/denied,
+  all caller guards precede reads, suspended/foreign reps excluded; no customer,
+  Stripe or internal review identity/document/note leaks. No cash flag/rate selected.
+- Evidence:58 focused SQL/page cases and16 real-component Chromium cases pass;
+  corrected real coverage wrappers compile; TypeScript/scoped lint/SQL audit pass.
+  Full exact-head hosted checks and actual production acceptance remain required.
+- Rollback: disable new presentation readiness; retain customer exclusion, guarded
+  shared evaluator, immutable financial/attribution history and existing ACLs.
+
+## Listing schema-reader source configuration
+
+Adds server-only LIMITS_READY and UPLOADS_READY runtime vars after the standalone
+shared schema is installed. Database count/strict gates remain independently off;
+strictfalse retains legacy authenticated upload. No customer, billing, global old
+feature flag or library activation changes. See LISTING_SCHEMA_READINESS.md for
+actual owner paths, native-property dependency, acceptance and coordinated rollback.
+
+## Listing library usage presentation refinement
+
+The initial library consumer counted all pickable organisation assets in its
+upload allowance. The follow-up counts owned media IDs plus actual local slots,
+header and other event placements, deduplicated by asset. This preserves uploads
+at locations with small licensed collections even when the shared library is large;
+retained assets without preview URLs still count. Changing venues resets the media
+component. SQL/API quota and entitlement guards are unchanged. Focused usage and
+EN/ES template tests, owner regressions and TypeScript accompany the amendment.
+
+## 2026-10-20 | Validated referral task completion
+
+Account completion preserves a single public referral code matching the existing
+uppercase alphanumeric 8–24 character navigation bound. The canonical public
+`/{locale}/referrals?ref=CODE` task returns to AkiPasa's explicit confirmation page;
+other allowed product tasks retain their validated code and EN/ES choice through
+the same fixed-origin resume envelope. Duplicate, URL-shaped, lowercase and
+out-of-range codes are discarded. Direct unprefixed AkiPasa referral completion
+uses this same sanitizer rather than falling back to Account.
+
+This changes navigation only: pending/underage restrictions, legal and tracking
+choices, first-attribution immutability and the explicit confirmation action remain
+authoritative. No automatic attribution, referral cookie, identity transfer, schema,
+financial incentive or production write is introduced. Shared contract copies and
+role-controller regressions cover all five products and both languages. Hosted CI
+and exact-source release checks remain required; unit fixtures do not establish
+authenticated production browser acceptance.
+
+## 2026-10-20 | Post-batch candidate with explicit operator hold
+
+A separate integration based on primarya974c449 preserves reviewed227/232/234–242
+source ancestry, corrected media client boundary and all contract entries. It
+proposes closing only the migration worker batch gate after the release manager
+verifies all three actual customer schedules; billing remains true and checkout/tax
+remain false. No success receipt is fabricated and no primary/provider/SQL write
+occurs during preparation. Exact source heads, staged versus already-applied SQL,
+independent listing/referral activation gates, tests and rollback are recorded in
+`docs/AKISUITE_POST_MIGRATION_INTEGRATION.md`. The config test refuses all provider
+and database requests with the closed batch; existing engine cases stay explicitly
+enabled. Required exact-head CI and the operator hold must both pass before merge.
+
+## 2026-10-20 | Verified owner migration status and bilingual initial tools
+
+Additive authenticated owner-only read projection and central operations UI, with matching migrations in both source directories. Private queue and provider identifiers are never returned. Checks bind the current owner and original payer, sealed service evidence, approved business/business_pro cohort and zero upcoming invoice; scheduling never implies a payment or licensed tools. Existing ordinary downgrade display remains intact; all twelve initial tool keys render friendly EN/ES labels reused by checkout. SQL acceptance covers positive cohorts, foreign/removed/transferred owners, anonymous access, queued/prepared/blocked state and mismatched/missing evidence. Rollback: revert UI/module and drop only `public.crm_operations_migration_status(text)`; retain all financial and customer data. Live migration/application, exact-head full CI and production acceptance remain release-manager gates.
+
+## 2026-10-20 | Consent-gated trusted commercial stage ledger
+
+Adds disabled-by-default future-only verified claim/workspace/checkout/invoice/
+upgrade/cancellation observations using existing analytics_events and private proof
+links. Approval-referenced retention is NULL until operator review; no monetary,
+consent, rollout or production configuration is assumed. Manager queries are bounded
+and explicitly exclude causal conversion rates/sitewide attribution. Consent/age/
+onboarding withdrawal and profile deletion remove only new linked optional rows;
+financial history and unrelated analytics remain. See TRUSTED_BUSINESS_FUNNEL.md
+for exact source evidence, unsupported adapters, tests and activation/rollback gates.
+
+## 2026-10-21 | Own-identity optional commercial-stage export
+
+Adds caller-only bounded privacy projection and complete account-export pagination
+for new commercial observations/consent timestamps. It intentionally bypasses feature,
+age and onboarding locks while retaining identity isolation. Raw provider integrity
+references remain private; actual financial/billing exports are unchanged. Fixed
+watermark/count checks fail the whole file on partial results or exhausted budget.
+Readiness depends on both new funnel migrations; collection remains disabled and no
+production data/configuration changes occur. See TRUSTED_BUSINESS_FUNNEL.md.
+
 ## 2026-10-21 | Supported Next16 runtime for AkiPasa
 
 Next/eslint-config-next16.4.2, OpenNext1.20.12 and Wrangler4.151.3 replace the expired major support window without a bypass. Existing React, security overrides, edge middleware, tenant/authentication rules and one-minute image cache policy remain intact. Explicit Webpack and native flat lint preserve build behavior. Documented new compiler recommendations are deferred while compiler is disabled; original hooks/security/a11y rules remain. New internal-navigation findings use the Next router with regression evidence. See docs/NEXT16_RUNTIME_UPGRADE.md for primary sources, migration choices, verification and rollback. No billing, schemas, product roles, provider or production mutations are part of this dependency branch.
@@ -2116,3 +2279,51 @@ Next/eslint-config-next16.4.2, OpenNext1.20.12 and Wrangler4.151.3 replace the e
 ## 2026-10-21 — Add bounded private operating runtime diagnostics
 
 The existing release endpoint adds three configuration-presence booleans only, without database/provider calls. Scheduled billing/migration work emits service-only fixed-enum private health behind a disabled-by-default SQL singleton; original results and failures are preserved. Migration processing remains enabled pending verified actual schedule receipts; checkout/tax remain closed. See [OPERATIONS_RUNTIME_DIAGNOSTICS.md](OPERATIONS_RUNTIME_DIAGNOSTICS.md) for exact dependency ancestry, 22 focused cases, separate operator gates and rollback. No production SQL or provider actions were performed by this source change.
+
+## 2026-10-21 | Bounded own referral and prestige privacy export
+
+- Before: raw referral exports leaked approver/reviewer IDs, suspended representatives
+  lost authored records, own audit/reviews were omitted, and prestige export was
+  unbounded and omitted still-retained expired addresses. Reviewer FK blocked profile deletion.
+- After: caller-only twelve-section keyset projection, bounded complete reader and
+  503/no-store on partial/changed/oversized/unavailable data. Own payer/referrer facts
+  are separated; other people, raw audit content and internal review notes stay private.
+- Dependencies: existing referral/review/prestige schema,243 funnel export and actual
+  a974 notification recovery preserved; new schema-readiness flag off until applied.
+  It remains separate from optional acquisition/gameplay, cohort and cash activation.
+- Identity deletion: drop only blocking review-actor FK; retain actor UUID and all
+  financial evidence. UUID is pseudonymous; no invented legal retention/anonymity claim.
+- Evidence:22 new database/reader/HTTP cases pass;37 overlapping private/funnel plus
+  6 legacy prestige and10 account-export cases pass. Type/lint/SQL/contract checks pass.
+- Rollback: keep compatible privacy readiness/readers while retained rows exist;
+  preserve historical audits and correct shipping cascades, never delete financial
+  records or restore a blocking FK to make an older consumer pass.
+
+## 2026-10-21 | Supported independent mission feature integration
+
+Combines reviewed immutable provider heads227/232/234–243/245/247/248 with full ancestry, retaining migration processing true and checkout/tax false. Actual scheduler regressions preserve first-tick private health, independent notification/billing recovery and optional funnel cleanup. The shared-library client boundary and owned/placed usage counts are corrected; account-only funnel/referral/prestige exports remain available to restricted identities with pagination completeness checks. Final false migration closure is isolated until actual operator-verified schedule receipts; no independent feature waits on those receipts. See AKISUITE_POST_MIGRATION_INTEGRATION.md for exact heads, applied-versus-staged SQL, gates and verification. No production/provider actions accompany this integration.
+
+## 2026-10-21 | Retained shared media identity (gated forward repair)
+
+An actual-role owner regression reproduced reuse of a deleted retained media UUID
+with a replacement image after downgrade. New forward guard003500 rejects media
+primary-key updates and retained-ID resurrection/upsert while preserving existing
+assets, exact old reuse and normal metadata edits. Strict owner Storage overwrite
+and a valid new receipt cannot bypass the guard. See LISTING_MEDIA_IDENTITY.md.
+11 focused SQL cases pass, permission audit0 findings; hosted builds/provider
+acceptance remain separate gates. No live application or activation performed.
+
+## 2026-10-21 | Library requires verified uploads
+
+Forward migration004500 enforces library_enabled implies uploads_enforced in
+the database. Activation with legacy byte overwrite fails atomically; disabling
+strict uploads while the library is active also fails. Safe rollback disables
+the library and strict uploads together, preserving media/placements/grants.
+Three new actual-role cases exercise these transitions and the real SQL owner
+reservation→service receipt→media/placement flow with all guards active. This
+is not provider Storage acceptance; library activation remains blocked until
+actual byte-path acceptance. No live SQL or runtime flags changed.
+
+## 2026-10-21 | Preserve management scope through shared account completion
+
+The canonical bounded account-task contract now retains the actual property/company/organisation query names consumed by management destinations, alongside existing IDs. EN/ES cross-product envelopes reject duplicate, external, traversal and overlong values; real central pending→complete redirects preserve selected scopes. No destination origin or authorisation is supplied by this context; destination permissions remain authoritative. Integration preserves246 media identity and250 strict-library invariant ancestry; activation and actual Storage acceptance remain separate operator gates.

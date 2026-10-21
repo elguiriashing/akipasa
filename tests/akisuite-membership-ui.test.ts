@@ -19,41 +19,21 @@ describe("AkiSuite localized membership catalogue", () => {
     "utf8",
   );
 
-  it("covers all products with bilingual copy and approved yearly pricing", () => {
-    for (const key of Object.keys(
-      akisuitePlans,
-    ) as (keyof typeof akisuitePlans)[]) {
-      expect(grid).toContain(key);
-      expect(akisuitePriceCents(key, "year")).toBe(
-        Math.round(akisuitePlans[key].monthlyCents * 9.6),
-      );
-    }
-    expect(grid).toContain('locale === "es"');
-    expect(grid).toContain("startAkiSuiteCheckout");
+  it("keeps historic billing definitions while acquiring only canonical monthly operations", () => {
+    expect(akisuitePlans.akihq_pro.monthlyCents).toBe(6000);
+    expect(akisuitePriceCents("akihq_pro", "year")).toBe(57600);
+    expect(grid).toContain("OPERATION_PRICES");
+    expect(grid).not.toContain("akihq_standard");
+    expect(grid).not.toContain("aki_enterprise");
+    expect(grid).not.toContain("setInterval");
+    for (const logo of [
+      "/pwa/akipasa-192.png",
+      "/brand/business-icon.png",
+      "/brand/duermo-icon.png",
+      "/brand/hq-icon.png",
+    ])
+      expect(grid).toContain(logo);
   });
-
-  it("scopes offers and retains sector-specific operations previews", () => {
-    expect(grid).toContain("businessCategories.map");
-    expect(grid).toContain("getBusinessPackageHighlights");
-    expect(grid).toContain("businessPackageTools[sectorTier]");
-    expect(grid).toContain("aria-expanded={expandedPlans.includes(key)}");
-    expect(grid).toContain(".filter((key) => {");
-  });
-
-  it("uses original AkiSuite app marks for every plan including bundles", () => {
-    expect(grid).toContain('"/pwa/akipasa-192.png"');
-    expect(grid).toContain('"/brand/business-icon.png"');
-    expect(grid).toContain('"/brand/duermo-icon.png"');
-    expect(grid).toContain('"/brand/hq-icon.png"');
-    expect(grid).toContain('plan === "aki_enterprise"');
-    expect(grid).toContain('plan === "akihq_business_addon"');
-    expect(grid).toContain("<PlanBrandLogos plan={key} />");
-    expect(grid).toContain("brandLogos");
-    expect(grid.indexOf("<PlanBrandLogos plan={key} />")).toBeLessThan(
-      grid.indexOf("className={styles.mobileExpand}"),
-    );
-  });
-
   it("renders the full catalogue regardless of checkout activation", () => {
     for (const source of [publicPage, accountPage]) {
       expect(source).toContain("AkiSuiteMembershipGrid");
@@ -89,12 +69,7 @@ describe("Personal Premium launch is server-controlled", () => {
       "utf8",
     );
     expect(grid).toContain("personalPremiumUnlocked = false");
-    expect(grid).toContain(
-      'originatingApp === "akipasa" && personalPremiumUnlocked',
-    );
-    expect(grid).toContain(
-      'originatingApp === "akiduermo" && personalPremiumUnlocked',
-    );
+    expect(grid).toContain('origin === "akipasa" && personalPremiumUnlocked');
     expect(actions).toContain("!personalPremiumLaunchOpen()");
   });
 });

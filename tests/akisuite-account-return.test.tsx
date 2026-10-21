@@ -42,3 +42,43 @@ describe("membership authentication return path", () => {
       expect(akiSuiteMembershipReturnPath("en", candidate)).toBe("/en/account");
   });
 });
+describe("operating subscription return scope", () => {
+  for (const locale of ["en", "es"] as const)
+    it(`retains ${locale} operations workspace through parent layout`, async () => {
+      fixture.next = `/${locale}/account/subscription/operations?workspace=private-owner`;
+      await expect(
+        AccountLayout({ children: null, params: Promise.resolve({ locale }) }),
+      ).rejects.toThrow("sign in required");
+      expect(fixture.requireUser).toHaveBeenLastCalledWith(
+        locale,
+        fixture.next,
+      );
+    });
+  it("drops unknown redirects, malformed and duplicate scopes without escaping allowed operations path", () => {
+    for (const query of [
+      "workspace=https://evil.invalid",
+      "workspace=../evil",
+      "workspace=one&workspace=two",
+      "next=https://evil.invalid",
+      "workspace=%2F%2Fevil.invalid",
+    ])
+      expect(
+        akiSuiteMembershipReturnPath(
+          "en",
+          `/en/account/subscription/operations?${query}`,
+        ),
+      ).toBe("/en/account/subscription/operations");
+    expect(
+      akiSuiteMembershipReturnPath(
+        "en",
+        "https://evil.invalid/en/account/subscription/operations?workspace=private-owner",
+      ),
+    ).toBe("/en/account");
+    expect(
+      akiSuiteMembershipReturnPath(
+        "en",
+        "/es/account/subscription/operations?workspace=private-owner",
+      ),
+    ).toBe("/en/account");
+  });
+});

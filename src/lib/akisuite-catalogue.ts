@@ -30,9 +30,20 @@ export function akiSuiteMembershipReturnPath(
     const url = new URL(candidate, "https://akipasa.com");
     if (
       url.origin !== "https://akipasa.com" ||
-      url.pathname !== `/${locale}/account/subscription`
+      ![
+        `/${locale}/account/subscription`,
+        `/${locale}/account/subscription/operations`,
+      ].includes(url.pathname)
     )
       return fallback;
+    if (url.pathname.endsWith("/operations")) {
+      const ids = url.searchParams.getAll("workspace");
+      const workspace =
+        ids.length === 1 && /^[a-z0-9][a-z0-9_-]{2,79}$/.test(ids[0])
+          ? ids[0]
+          : null;
+      return `${url.pathname}${workspace ? `?workspace=${encodeURIComponent(workspace)}` : ""}`;
+    }
     const from = url.searchParams.get("from");
     return `${url.pathname}${from ? `?from=${akiSuiteApp(from)}` : ""}`;
   } catch {

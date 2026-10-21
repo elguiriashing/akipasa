@@ -1,3 +1,8 @@
+import {
+  privateIdentityExportsReady,
+  readPrivateIdentityExports,
+} from "@/lib/identity-private-export";
+import { readBusinessFunnelExport } from "@/lib/business-funnel-export";
 import { onboardingEnabled } from "@/lib/account-onboarding";
 import { NextResponse } from "next/server";
 import {
@@ -62,7 +67,10 @@ export async function GET() {
     });
   }
   // Data portability remains available when the separate prestige launch gate is closed.
-  if (process.env.AKIPASA_PRESTIGE_SCHEMA_READY === "true") {
+  if (
+    !privateIdentityExportsReady() &&
+    process.env.AKIPASA_PRESTIGE_SCHEMA_READY === "true"
+  ) {
     const prestige = await supabase.rpc("prestige_member", {
       p_action: "export",
     });
@@ -71,6 +79,14 @@ export async function GET() {
       data: prestige.data ? [prestige.data] : [],
       failed: Boolean(prestige.error),
     });
+  }
+  // Schema readiness stays enabled while retained optional rows exist, independently
+  // of database collection activation and account feature/onboarding restrictions.
+  if (process.env.AKISUITE_FUNNEL_READY === "true") {
+    derivedEntries.push(await readBusinessFunnelExport(supabase));
+  }
+  if (privateIdentityExportsReady()) {
+    derivedEntries.push(...(await readPrivateIdentityExports(supabase)));
   }
   const failedTables = [...entries, ...derivedEntries]
     .filter((entry) => entry.failed)
