@@ -1892,3 +1892,5 @@ OPERATIONS_MERCHANT_DIAGNOSTICS.md for categories, interpretation and rollback.
 No production, primary, provider, customer, configuration or financial writes.
 
 Baseline media quota accounting is independent of the enhanced-library feature gate: owned images, historical shared placements, stored objects and active upload reservations share one path-deduplicated allowance. New cross-listing placement is unavailable until the scoped enhanced library is enabled; historical associations remain retained. See [baseline media quota integrity](BASELINE_MEDIA_QUOTA_INTEGRITY.md); additive190000 requires the RR-safe181500 quota scope migration and changes no launch flags.
+
+Enhanced-library placement admission also shares the complete Storage/reservation allowance, under the same RR-safe quota scope. Additive193000 builds on181500/190000 without changing membership, Premium reuse or historical retention rules. See [library reservation capacity](LIBRARY_RESERVATION_CAPACITY.md).

@@ -69,7 +69,7 @@ try {
   await premiumDatabase(false, facade);
   await admin
     .unsafe(
-      "alter table storage.objects add column user_metadata jsonb;grant select,insert,update,delete on events,event_occurrences to authenticated;alter table events enable row level security;alter table event_occurrences enable row level security;create policy fixture_event_owner on events to authenticated using(is_venue_member(venue_id)) with check(is_venue_member(venue_id));create policy fixture_occurrence_owner on event_occurrences to authenticated using(exists(select 1 from events where id=event_id and is_venue_member(venue_id))) with check(exists(select 1 from events where id=event_id and is_venue_member(venue_id)))",
+      "alter table storage.objects add column user_metadata jsonb;grant select,insert,update,delete on events,event_occurrences,venue_media_placements to authenticated;alter table venue_media_placements enable row level security;create policy fixture_placement_owner on venue_media_placements to authenticated using(is_venue_member(venue_id)) with check(is_venue_member(venue_id));alter table events enable row level security;alter table event_occurrences enable row level security;create policy fixture_event_owner on events to authenticated using(is_venue_member(venue_id)) with check(is_venue_member(venue_id));create policy fixture_occurrence_owner on event_occurrences to authenticated using(exists(select 1 from events where id=event_id and is_venue_member(venue_id))) with check(exists(select 1 from events where id=event_id and is_venue_member(venue_id)))",
     )
     .simple();
   for (const file of [
@@ -97,6 +97,7 @@ try {
     "legacy-storage",
     "shared-reservations",
     "shared-storage",
+    "library-placement",
   ]) {
     for (const isolation of ["READ COMMITTED", "REPEATABLE READ"]) {
       const venue = id(++sequence);
@@ -117,6 +118,32 @@ try {
                 client`update events set status='published' where id=${event}`,
             );
         }
+      } else if (kind === "library-placement") {
+        scenario.media = [];
+        for (let n = 0; n < 7; n++)
+          await as(a, (client) => reserve(client, venue));
+        await admin
+          .unsafe(
+            "update akisuite_listing_private.launch_settings set enabled=false,uploads_enforced=false",
+          )
+          .simple();
+        const source = id(++sequence);
+        await admin`insert into venues(id,name) values(${source},'Disposable authorized library source')`;
+        await admin`insert into venue_members values(${source},${suiteOwner},'owner')`;
+        await admin`insert into crm_workspace_venues values('ws_one',${source}),('ws_one',${venue})`;
+        for (let n = 0; n < 2; n++) {
+          const media = id(++sequence),
+            path = `${source}/${n}.png`;
+          scenario.media.push(media);
+          await admin`insert into storage.objects(bucket_id,name,metadata) values('event-media',${path},'{"size":100}')`;
+          await admin`insert into venue_media(id,venue_id,storage_path,mime_type,size_bytes) values(${media},${source},${path},'image/png',100)`;
+          await admin`insert into akisuite_listing_private.retained_media_reuse values(${venue},${media},'venue_gallery','stay_header')`;
+        }
+        await admin
+          .unsafe(
+            "update akisuite_listing_private.launch_settings set enabled=true,uploads_enforced=true",
+          )
+          .simple();
       } else if (kind.startsWith("shared-")) {
         await admin
           .unsafe(
@@ -171,6 +198,15 @@ try {
     )
     .simple();
   assert.deepEqual(await metadata(), before);
+  await admin
+    .unsafe(
+      readFileSync(
+        "database/migrations/20261021193000_library_reservation_capacity.sql",
+        "utf8",
+      ),
+    )
+    .simple();
+  assert.deepEqual(await metadata(), before);
   assert.equal(
     (
       await admin`select count(*)::int n from akisuite_listing_private.quota_scopes`
@@ -182,15 +218,17 @@ try {
     const isStorage = ["legacy-storage", "shared-storage"].includes(c.kind);
     await admin
       .unsafe(
-        `update akisuite_listing_private.launch_settings set uploads_enforced=${!isStorage}`,
+        `update akisuite_listing_private.launch_settings set uploads_enforced=${!isStorage},library_enabled=${c.kind === "library-placement"}`,
       )
       .simple();
     const operation = (client, n) =>
       c.kind === "events"
         ? client`update events set status='published' where id=${c.events[n + 3]}`
-        : ["reservations", "shared-reservations"].includes(c.kind)
-          ? reserve(client, c.venue)
-          : client`insert into storage.objects(bucket_id,name,metadata) values('event-media',${`${c.venue}/${n + 7}.png`},'{"size":100}')`;
+        : c.kind === "library-placement"
+          ? client`insert into venue_media_placements(venue_id,media_id,placement,target_key) values(${c.venue},${c.media[n]},'venue_gallery','stay_header')`
+          : ["reservations", "shared-reservations"].includes(c.kind)
+            ? reserve(client, c.venue)
+            : client`insert into storage.objects(bucket_id,name,metadata) values('event-media',${`${c.venue}/${n + 7}.png`},'{"size":100}')`;
     await begin(a, c.isolation);
     await begin(b, c.isolation);
     await operation(a, 0);
@@ -215,6 +253,25 @@ try {
         (await admin`select status from events where id=${c.events[4]}`)[0]
           .status,
         "draft",
+      );
+    } else if (c.kind === "library-placement") {
+      assert.equal(
+        (
+          await admin`select photos::int n from akisuite_listing_private.media_usage(${c.venue},null)`
+        )[0].n,
+        8,
+      );
+      assert.equal(
+        (
+          await admin`select count(*)::int n from venue_media_placements where venue_id=${c.venue}`
+        )[0].n,
+        1,
+      );
+      assert.equal(
+        (
+          await admin`select count(*)::int n from akisuite_listing_private.upload_reservations where venue_id=${c.venue}`
+        )[0].n,
+        7,
       );
     } else if (c.kind.startsWith("shared-")) {
       assert.equal(

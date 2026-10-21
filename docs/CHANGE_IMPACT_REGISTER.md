@@ -2489,3 +2489,10 @@ No production, primary, provider, customer, configuration or financial writes.
 - Added private path-deduplicated accounting across owned/shared media, Storage and active reservations; guarded exact patches preserve installed authorization/owner/grants and reuse181500 serialization. New cross-listing associations require the enhanced library while historical associations and ordinary same-listing use remain intact.
 - Cross-portal scope: shared Pasa/HQ listing backend, accommodation listing media, strict upload rollback, Premium library and direct Storage/placement APIs. No financial values, locale/UI text, analytics, flags, data or provider configuration changed.
 - Evidence: eight focused actual-role SQL cases; extended isolated PostgreSQL RC/RR shared-reference/reservation/Storage races. Hosted CI and root review required before merge/application. Strict provider upload acceptance remains a separate launch gate.
+
+## 2026-10-21 — Enhanced library competes with pending uploads
+
+- Reproduced a retained free shared image becoming a ninth path while eight uploads were pending. The existing library-only media-ID counter excluded pending reservations and stored objects.
+- Added a private candidate-capacity assertion after the existing RR-safe scope claim; kept all source/target, membership, Premium, grandfather tuple and metadata rules. Existing paths and historical over-quota associations remain retained; new unique paths respect8/250 and existing byte limits.
+- Cross-portal impact: shared Pasa/HQ listing library and verified uploads. No UI/locale, monetary model, tracking, flags, data or provider changes.
+- Evidence: five focused actual-role SQL cases, including250 pending Premium reservations and byte-capacity rejection; isolated PG workflow expanded to twelve RC/RR quota races. Exact-head hosted CI and root source review required before application. Actual provider upload acceptance remains blocked independently.

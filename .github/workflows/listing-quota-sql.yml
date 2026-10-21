@@ -5,6 +5,7 @@ on:
     paths:
       - "supabase/migrations/*listing_quota_scope*.sql"
       - "supabase/migrations/*baseline_media_quota*.sql"
+      - "supabase/migrations/*library_reservation_capacity*.sql"
       - "scripts/test-listing-quota-concurrency.mjs"
       - "tests/fixtures/akisuite-premium-sql.ts"
       - ".github/workflows/listing-quota-sql.yml"
