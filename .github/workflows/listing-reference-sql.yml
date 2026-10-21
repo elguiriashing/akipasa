@@ -1,0 +1,29 @@
+name: Listing reference PostgreSQL races
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - "supabase/migrations/*listing_library_reference*.sql"
+      - "scripts/test-listing-reference-concurrency.mjs"
+      - ".github/workflows/listing-reference-sql.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  listing-reference-races:
+    runs-on: ubuntu-latest
+    env:
+      TEST_LISTING_DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/listing_reference_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Start isolated PostgreSQL
+        run: |
+          sudo systemctl start postgresql
+          sudo -u postgres psql -v ON_ERROR_STOP=1 -c "alter user postgres password 'postgres'"
+          sudo -u postgres createdb listing_reference_test
+      - run: node scripts/test-listing-reference-concurrency.mjs

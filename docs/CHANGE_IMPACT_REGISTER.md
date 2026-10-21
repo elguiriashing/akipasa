@@ -2459,3 +2459,14 @@ New001000/002500/005500 remain unapplied and gated; historical244/249/251/253
 copies must not be used. Forty scoped native/review/deletion cases pass locally;
 hosted exact-head checks and provider/role acceptance remain release gates.
 No live schema, customer row, flag, payment or primary branch changed here.
+
+## 2026-10-21 | Standalone library public artwork and reference deletion
+
+Additive175000 exposes only explicitly selected published destination artwork
+from shared private-source media. Draft events, bins and unrelated images stay
+private. Database triggers block direct referenced media/object deletion; reference
+writes lock media plus Storage rows to close concurrent deletion races. Existing
+intentional whole-venue deletion remains compatible without Storage cleanup or
+ownership transfer. Seven new actual-role cases and the existing21 pass locally;
+four independent PostgreSQL race scenarios are a separate exact-head hosted gate.
+All library/strict flags remain unchanged. See LISTING_LIBRARY_REFERENCE_BOUNDARIES.md.
