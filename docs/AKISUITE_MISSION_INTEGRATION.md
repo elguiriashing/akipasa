@@ -282,3 +282,18 @@ Combined-master validation: privacy/analytics 22, onboarding 70, operations
 whitespace checks pass. PR #230 test content is byte-identical to current master;
 the only component delta from master is the mission tracking-eligibility
 intersection. No acceptance assertion or timeout was relaxed.
+
+## 2026-10-20 | Reviewed operations runtime release configuration
+
+A separate post-#229 release PR declares billing/migration worker gates true while
+keeping operating checkout/tax and all existing suite acquisition gates false.
+No commands are enqueued; legacy-price recovery remains deferred. Central billing
+cron also independently retries the existing service-only owner notification
+outbox, bounded to 100 rows and ten seconds, without changing billing outcomes
+on delivery failure. The DB notification launch setting remains independently
+closed. Installed Wrangler 4.113 upload metadata and primary configuration docs
+confirm explicit vars are supplied even with keep-vars. Read
+`docs/OPERATIONS_REVIEWED_RUNTIME_ROLLOUT.md` for exact settings, dependencies,
+verification and rollback. No source is deployed, provider write made or customer
+configuration mutated by preparation; only the release manager may merge and
+verify the actual production source before enqueueing three reviewed commands.

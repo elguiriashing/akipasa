@@ -106,7 +106,7 @@ it("denies anonymous access and malformed continuations, with deletion retaining
     ["9999", "1", 1],
     ["0", null, 1001],
   ] as const)
-    await expect(query(...args)).rejects.toThrow();
+    await expect(query(args[0], args[1], args[2])).rejects.toThrow();
   await db.exec(`reset role;begin;delete from profiles where id='${owner}';`);
   await db.query("select set_config('test.uid',$1,false)", [owner]);
   expect(await query()).toEqual({ until: "0", total: 0, rows: [] });

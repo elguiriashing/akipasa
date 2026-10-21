@@ -1,5 +1,9 @@
+import { operationsReleaseVars } from "./helpers/operations-release-config";
 import { describe, it, expect, vi } from "vitest";
-import { recoverOperationsBilling } from "../src/lib/operations-recovery";
+import {
+  recoverOperationsBilling,
+  recoverOperationsBillingWithNotifications,
+} from "../src/lib/operations-recovery";
 import { OPERATION_PRICES } from "../src/lib/operations-billing/operations-contract.mjs";
 const env = {
   AKIBUSINESS_OPERATIONS_BILLING_READY: "true",
@@ -197,9 +201,93 @@ describe("central operations recovery", () => {
   });
   it("bound legacy price waits for reviewed future migration rather than enrolling early", async () => {
     const { fetcher, calls } = setup({ legacy: true });
-    expect((await recoverOperationsBilling(env, fetcher)).deferred).toBe(1);
+    expect(
+      (
+        await recoverOperationsBilling(
+          {
+            ...env,
+            ...operationsReleaseVars,
+            NEXT_PUBLIC_SUPABASE_URL: "https://supabase.test",
+          },
+          fetcher,
+        )
+      ).deferred,
+    ).toBe(1);
+    expect(
+      calls
+        .filter((c) => c.url.startsWith("https://api.stripe.com/"))
+        .every((c) => c.method === "GET"),
+    ).toBe(true);
     expect(
       calls.some((c) => c.url.endsWith("apply_crm_operations_billing")),
     ).toBe(false);
+  });
+});
+
+describe("central billing cron owner notification retry", () => {
+  it.each([200, 503])(
+    "bounded delivery is isolated from committed billing and rotation (HTTP %s)",
+    async (status) => {
+      const t = setup();
+      const notificationCalls: Array<{ url: string; init?: RequestInit }> = [];
+      const log = vi.spyOn(console, "error").mockImplementation(() => {});
+      try {
+        const fetcher: typeof fetch = async (input, init) => {
+          const url = String(input);
+          if (url.endsWith("/rpc/crm_toolbox_deliver_notifications")) {
+            notificationCalls.push({ url, init });
+            return new Response(null, { status });
+          }
+          return t.fetcher(input, init);
+        };
+        expect(
+          await recoverOperationsBillingWithNotifications(
+            {
+              ...env,
+              ...operationsReleaseVars,
+              NEXT_PUBLIC_SUPABASE_URL: "https://supabase.test",
+            },
+            fetcher,
+          ),
+        ).toMatchObject({ enabled: true, applied: 1, failed: 0 });
+        expect(notificationCalls).toHaveLength(1);
+        expect(notificationCalls[0].url).toBe(
+          "https://supabase.test/rest/v1/rpc/crm_toolbox_deliver_notifications",
+        );
+        expect(notificationCalls[0].init?.method).toBe("POST");
+        expect(notificationCalls[0].init?.signal).toBeInstanceOf(AbortSignal);
+        expect(JSON.parse(String(notificationCalls[0].init?.body))).toEqual({
+          p_limit: 100,
+        });
+        expect(notificationCalls[0].init?.headers).toMatchObject({
+          apikey: "private-service",
+          Authorization: "Bearer private-service",
+        });
+        expect(
+          t.calls.some((c) => c.url.endsWith("/apply_crm_operations_billing")),
+        ).toBe(true);
+        expect(t.calls.some((c) => c.url.endsWith("/crm_toolbox_rotate"))).toBe(
+          true,
+        );
+        expect(t.calls.at(-1)?.body?.p_ok).toBe(true);
+        if (status === 503)
+          expect(log).toHaveBeenCalledWith(
+            "operations_toolbox_notifications_retry",
+          );
+        else expect(log).not.toHaveBeenCalled();
+      } finally {
+        log.mockRestore();
+      }
+    },
+  );
+  it("a closed billing gate performs neither recovery nor notification access", async () => {
+    const fetcher = vi.fn();
+    expect(
+      await recoverOperationsBillingWithNotifications(
+        { ...env, AKIBUSINESS_OPERATIONS_BILLING_READY: "false" },
+        fetcher,
+      ),
+    ).toEqual({ enabled: false, applied: 0, failed: 0, deferred: 0 });
+    expect(fetcher).not.toHaveBeenCalled();
   });
 });

@@ -2094,6 +2094,21 @@ entries and all restored historical content are retained. No measurement IDs,
 provider destinations, account cohort settings, billing source or schema are changed
 by this merge. Exact-head CI remains a release gate.
 
+## 2026-10-20 | Reviewed operations runtime release configuration
+
+A separate post-#229 release PR declares billing/migration worker gates true while
+keeping operating checkout/tax and all existing suite acquisition gates false.
+No commands are enqueued; legacy-price recovery remains deferred. Central billing
+cron also independently retries the existing service-only owner notification
+outbox, bounded to 100 rows and ten seconds, without changing billing outcomes
+on delivery failure. The DB notification launch setting remains independently
+closed. Installed Wrangler 4.113 upload metadata and primary configuration docs
+confirm explicit vars are supplied even with keep-vars. Read
+`docs/OPERATIONS_REVIEWED_RUNTIME_ROLLOUT.md` for exact settings, dependencies,
+verification and rollback. No source is deployed, provider write made or customer
+configuration mutated by preparation; only the release manager may merge and
+verify the actual production source before enqueueing three reviewed commands.
+
 ## 2026-10-20 | Consent-gated trusted commercial stage ledger
 
 Adds disabled-by-default future-only verified claim/workspace/checkout/invoice/
@@ -2114,3 +2129,22 @@ references remain private; actual financial/billing exports are unchanged. Fixed
 watermark/count checks fail the whole file on partial results or exhausted budget.
 Readiness depends on both new funnel migrations; collection remains disabled and no
 production data/configuration changes occur. See TRUSTED_BUSINESS_FUNNEL.md.
+
+## 2026-10-21 | Bounded own referral and prestige privacy export
+
+- Before: raw referral exports leaked approver/reviewer IDs, suspended representatives
+  lost authored records, own audit/reviews were omitted, and prestige export was
+  unbounded and omitted still-retained expired addresses. Reviewer FK blocked profile deletion.
+- After: caller-only twelve-section keyset projection, bounded complete reader and
+  503/no-store on partial/changed/oversized/unavailable data. Own payer/referrer facts
+  are separated; other people, raw audit content and internal review notes stay private.
+- Dependencies: existing referral/review/prestige schema,243 funnel export and actual
+  a974 notification recovery preserved; new schema-readiness flag off until applied.
+  It remains separate from optional acquisition/gameplay, cohort and cash activation.
+- Identity deletion: drop only blocking review-actor FK; retain actor UUID and all
+  financial evidence. UUID is pseudonymous; no invented legal retention/anonymity claim.
+- Evidence:22 new database/reader/HTTP cases pass;37 overlapping private/funnel plus
+  6 legacy prestige and10 account-export cases pass. Type/lint/SQL/contract checks pass.
+- Rollback: keep compatible privacy readiness/readers while retained rows exist;
+  preserve historical audits and correct shipping cascades, never delete financial
+  records or restore a blocking FK to make an older consumer pass.

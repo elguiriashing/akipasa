@@ -1535,6 +1535,21 @@ entries and all restored historical content are retained. No measurement IDs,
 provider destinations, account cohort settings, billing source or schema are changed
 by this merge. Exact-head CI remains a release gate.
 
+## 2026-10-20 | Reviewed operations runtime release configuration
+
+A separate post-#229 release PR declares billing/migration worker gates true while
+keeping operating checkout/tax and all existing suite acquisition gates false.
+No commands are enqueued; legacy-price recovery remains deferred. Central billing
+cron also independently retries the existing service-only owner notification
+outbox, bounded to 100 rows and ten seconds, without changing billing outcomes
+on delivery failure. The DB notification launch setting remains independently
+closed. Installed Wrangler 4.113 upload metadata and primary configuration docs
+confirm explicit vars are supplied even with keep-vars. Read
+`docs/OPERATIONS_REVIEWED_RUNTIME_ROLLOUT.md` for exact settings, dependencies,
+verification and rollback. No source is deployed, provider write made or customer
+configuration mutated by preparation; only the release manager may merge and
+verify the actual production source before enqueueing three reviewed commands.
+
 ## 2026-10-20 | Consent-gated trusted commercial stage ledger
 
 Adds disabled-by-default future-only verified claim/workspace/checkout/invoice/
@@ -1555,3 +1570,19 @@ references remain private; actual financial/billing exports are unchanged. Fixed
 watermark/count checks fail the whole file on partial results or exhausted budget.
 Readiness depends on both new funnel migrations; collection remains disabled and no
 production data/configuration changes occur. See TRUSTED_BUSINESS_FUNNEL.md.
+
+## 2026-10-21 | Bounded own referral and prestige privacy export
+
+A caller-only paged privacy RPC and bounded complete reader cover twelve explicit
+referral/prestige sections independently of product, representative and onboarding
+locks. Old raw referral exports and the unbounded prestige aggregate are replaced
+only after separate private-export schema readiness. Payer/referrer projections
+separate own invoice and proposed commission facts; customer/reviewer identities,
+third-party contacts/free text, internal notes and snapshots stay private. Retained
+expired own shipping remains exportable until actual purge. No new table grant,
+financial record deletion, programme, intake or payout is introduced. The narrow
+reviewer-FK removal preserves immutable historical actor UUIDs while allowing profile
+deletion; those UUIDs are pseudonymous, not anonymous. Existing own shipping cascade,
+authentication, no-store/fail-closed export and funnel privacy hook remain intact.
+See PRIVATE_IDENTITY_EXPORT.md for limits, evidence, rollout and retention-review
+boundaries. Exact integrated CI/deployment and actual-role acceptance remain required.
