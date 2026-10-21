@@ -2399,3 +2399,14 @@ regression that asserts the public combobox and selector heading are absent.
 **Risk/rollback:** Presentation-only and additive test coverage; no database, Stripe,
 price, entitlement, subscription, feature flag or route mutation. Roll back this
 single source commit if the public layout regresses.
+
+## 2026-10-21 | Atomic disabled funnel deployment recovery
+
+Preserves canonical242/243 SQL unchanged while generating12 short dependency-ordered
+apply_migration phases with canonical/hash IDs, transaction-local timeouts, immediate
+private ACL closure and disabledNULL-state assertions. The reported enum-only live
+baseline resumes at verifiedphase01; no large request is replayed. Full SQL catalogue
+parity, hostile-default permissions, phase rollback and all capture/privacy cases are
+covered locally. No provider write, activation, retention approval or history repair
+is performed. See TRUSTED_BUSINESS_FUNNEL_PHASED_DEPLOYMENT.md for receipt archival,
+readback, interruption handling and the separate operator history-reconciliation gate.

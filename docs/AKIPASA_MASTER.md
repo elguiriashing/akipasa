@@ -1807,3 +1807,14 @@ business-type or tool selector. AkiBusiness Standard, Plus and Pro still state t
 the authenticated, workspace-scoped AkiBusiness operating screen. This keeps the
 public sales journey compact and consistent across products without changing price
 IDs, entitlement keys, active subscriptions or checkout readiness.
+
+## 2026-10-21 | Atomic disabled funnel deployment recovery
+
+Preserves canonical242/243 SQL unchanged while generating12 short dependency-ordered
+apply_migration phases with canonical/hash IDs, transaction-local timeouts, immediate
+private ACL closure and disabledNULL-state assertions. The reported enum-only live
+baseline resumes at verifiedphase01; no large request is replayed. Full SQL catalogue
+parity, hostile-default permissions, phase rollback and all capture/privacy cases are
+covered locally. No provider write, activation, retention approval or history repair
+is performed. See TRUSTED_BUSINESS_FUNNEL_PHASED_DEPLOYMENT.md for receipt archival,
+readback, interruption handling and the separate operator history-reconciliation gate.
