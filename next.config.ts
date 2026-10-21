@@ -25,6 +25,8 @@ const nextConfig: NextConfig = {
     return webpackConfig;
   },
   images: {
+    // Preserve the pre-upgrade one-minute image-cache minimum.
+    minimumCacheTTL: 60,
     remotePatterns: [
       {
         protocol: "https",

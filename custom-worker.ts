@@ -27,9 +27,17 @@ import {
   type ReleaseAssets,
 } from "./src/lib/release-source";
 
-import { recoverOperationsBillingWithNotifications } from "./src/lib/operations-recovery";
+import {
+  recoverOperationsBillingWithNotifications,
+  type OperationsRecoveryEnv,
+} from "./src/lib/operations-recovery";
 
 import { processOperationsMigrationCommand } from "./src/lib/operations-migration-command";
+
+import {
+  observeOperationsRuntimeTask,
+  recordOperationsCronTick,
+} from "./src/lib/operations-runtime-health";
 
 const worker = {
   async scheduled(
@@ -45,15 +53,16 @@ const worker = {
     },
     ctx: { waitUntil(work: Promise<unknown>): void },
   ) {
+    await recordOperationsCronTick(env);
     ctx.waitUntil(
-      recoverOperationsBillingWithNotifications(env).catch(() =>
-        console.error("operations_billing_recovery_retry"),
-      ),
+      observeOperationsRuntimeTask(env, "billing", (observedFetch) =>
+        recoverOperationsBillingWithNotifications(env, observedFetch),
+      ).catch(() => console.error("operations_billing_recovery_retry")),
     );
     ctx.waitUntil(
-      processOperationsMigrationCommand(env).catch(() =>
-        console.error("operations_migration_retry"),
-      ),
+      observeOperationsRuntimeTask(env, "migration", (observedFetch) =>
+        processOperationsMigrationCommand(env, observedFetch),
+      ).catch(() => console.error("operations_migration_retry")),
     );
     ctx.waitUntil(dispatchBookingConfirmations(env));
     ctx.waitUntil(dispatchAccommodationConfirmations(env));
@@ -69,7 +78,12 @@ const worker = {
   },
   async fetch(
     request: Request,
-    env: MapEdgeEnv & ClaimMailEnv & { ASSETS?: ReleaseAssets },
+    env: MapEdgeEnv &
+      ClaimMailEnv &
+      OperationsRecoveryEnv & {
+        ASSETS?: ReleaseAssets;
+        AKIBUSINESS_OPERATIONS_MIGRATIONS_READY?: string;
+      },
     ctx: { waitUntil(work: Promise<unknown>): void },
   ) {
     const path = new URL(request.url).pathname;
@@ -78,6 +92,16 @@ const worker = {
         {
           sourceCommit: await releaseSourceCommit(env.ASSETS, request),
           release: "2026-10-09-booking-ux-r1",
+          operations: {
+            billingReady: env.AKIBUSINESS_OPERATIONS_BILLING_READY === "true",
+            migrationsReady:
+              env.AKIBUSINESS_OPERATIONS_MIGRATIONS_READY === "true",
+            configured: Boolean(
+              env.NEXT_PUBLIC_SUPABASE_URL &&
+                env.SUPABASE_SERVICE_ROLE_KEY &&
+                env.STRIPE_SECRET_KEY,
+            ),
+          },
           accountWorkspace: "2026-10-12-account-suite-v1",
           membershipCatalogue: "2026-10-12-akisuite-catalogue-v2",
           claimNotifications: {

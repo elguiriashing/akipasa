@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 /** Mounted by the map's server page only for an authorised, opted-in preview account. */
 export function MapCompanion({ portrait }: { portrait: string }) {
+  const router = useRouter();
   useEffect(() => {
     const imageUrl = URL.createObjectURL(
       new Blob([portrait], { type: "image/svg+xml" }),
@@ -40,7 +42,7 @@ export function MapCompanion({ portrait }: { portrait: string }) {
           button.appendChild(image);
           button.addEventListener("click", (event) => {
             event.stopPropagation();
-            window.location.assign("/pals");
+            router.push("/pals");
           });
           dot.appendChild(button);
         });
@@ -57,6 +59,6 @@ export function MapCompanion({ portrait }: { portrait: string }) {
       style.remove();
       URL.revokeObjectURL(imageUrl);
     };
-  }, [portrait]);
+  }, [portrait, router]);
   return null;
 }

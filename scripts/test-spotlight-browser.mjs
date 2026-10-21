@@ -510,7 +510,7 @@ try {
     server.listen(fixturePort, "127.0.0.1", resolveListen);
   });
   await run(["scripts/assert-current-site.mjs"]);
-  await run(["node_modules/next/dist/bin/next", "build"]);
+  await run(["node_modules/next/dist/bin/next", "build", "--webpack"]);
   nextServer = spawn(
     process.execPath,
     [

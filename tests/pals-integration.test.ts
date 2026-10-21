@@ -1,11 +1,13 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createElement } from "react";
-import { cleanup, render, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { safeAuthDestination } from "../src/lib/auth-security";
 import { publicPagePaths, shouldNoindex } from "../src/lib/seo";
 import { MapCompanion } from "../src/components/pals/MapCompanion";
 
+const navigation = vi.hoisted(() => ({ push: vi.fn() }));
+vi.mock("next/navigation", () => ({ useRouter: () => navigation }));
 beforeEach(() => {
   const NativeURL = URL;
   vi.stubGlobal(
@@ -58,6 +60,8 @@ describe("Private preview integration", () => {
       "Your AkiPal location",
     );
     expect(dot.querySelectorAll("button")).toHaveLength(1);
+    fireEvent.click(dot.querySelector("button")!);
+    expect(navigation.push).toHaveBeenCalledWith("/pals");
     expect(dot.style.transform).toBe("translate(123px, 456px)");
     expect(accuracy.style.width).toBe("90px");
     expect(accuracy.children).toHaveLength(0);

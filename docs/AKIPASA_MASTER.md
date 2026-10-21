@@ -1549,3 +1549,15 @@ confirm explicit vars are supplied even with keep-vars. Read
 verification and rollback. No source is deployed, provider write made or customer
 configuration mutated by preparation; only the release manager may merge and
 verify the actual production source before enqueueing three reviewed commands.
+
+## 2026-10-21 | Supported Next16 runtime for AkiPasa
+
+Next/eslint-config-next16.4.2, OpenNext1.20.12 and Wrangler4.151.3 replace the expired major support window without a bypass. Existing React, security overrides, edge middleware, tenant/authentication rules and one-minute image cache policy remain intact. Explicit Webpack and native flat lint preserve build behavior. Documented new compiler recommendations are deferred while compiler is disabled; original hooks/security/a11y rules remain. New internal-navigation findings use the Next router with regression evidence. See docs/NEXT16_RUNTIME_UPGRADE.md for primary sources, migration choices, verification and rollback. No billing, schemas, product roles, provider or production mutations are part of this dependency branch.
+
+### Operating runtime diagnostics (2026-10-21)
+
+The existing release endpoint adds three configuration-presence booleans only, without database/provider calls. Scheduled billing/migration work emits service-only fixed-enum private health behind a disabled-by-default SQL singleton; original results and failures are preserved. Migration processing remains enabled pending verified actual schedule receipts; checkout/tax remain closed. See [OPERATIONS_RUNTIME_DIAGNOSTICS.md](OPERATIONS_RUNTIME_DIAGNOSTICS.md) for exact dependency ancestry, 22 focused cases, separate operator gates and rollback. No production SQL or provider actions were performed by this source change.
+
+## 2026-10-21 | Supported browser acceptance and real consent opt-out
+
+Next16 browser acceptance uses the same explicit webpack compiler as the supported application build. Tablet navigation makes and verifies a real optional-tracking rejection before navigating, waiting for the actual privacy panel lifecycle rather than racing hydration or seeding a consent-version cookie. All three optional cookies must remain denied; no product consent behavior, feature assertions or test cases are disabled. Exact browser matrix and hosted CI remain required.
