@@ -1818,3 +1818,15 @@ parity, hostile-default permissions, phase rollback and all capture/privacy case
 covered locally. No provider write, activation, retention approval or history repair
 is performed. See TRUSTED_BUSINESS_FUNNEL_PHASED_DEPLOYMENT.md for receipt archival,
 readback, interruption handling and the separate operator history-reconciliation gate.
+
+## 2026-10-21 | Installed disabled funnel schema and privacy readiness
+
+Release-manager apply_migration receipts for phases01–11 are archived with the
+frozen manifest/phase hashes; enum00 was already present. Independently read-only
+history/readback confirms disabled collection, NULL retention/approval/start, zero
+optional rows,13 triggers and intended RPC/private grants. Source
+AKISUITE_FUNNEL_READY=true now opens only installed identity-export readers and
+bounded maintenance; it cannot activate collection or set retention. Focused SQL/
+adapter tests preserve inactive reporting and restricted own-data export. No agent
+production write, financial configuration or migration-history repair occurs.
+Worker deployment and actual runtime acceptance remain separate release gates.

@@ -45,3 +45,27 @@ test("SQL splitting preserves quoted semicolons, dollar function bodies and nest
   ])
     assert.throws(() => splitSql(invalid));
 });
+
+test("archived installation receipts match frozen phase names and payload digests", async () => {
+  const { files, manifest } = await buildDeployment();
+  const receipt = JSON.parse(
+    fs.readFileSync(
+      `${deploymentDirectory}/installation-20261021.json`,
+      "utf8",
+    ),
+  );
+  assert.equal(receipt.manifest_sha256, digest(files["manifest.json"]));
+  assert.equal(receipt.collection_activated, false);
+  assert.equal(receipt.retention_approved, false);
+  assert.equal(receipt.agent_production_writes, false);
+  assert.equal(receipt.phases.length, 11);
+  for (const row of receipt.phases) {
+    const phase = manifest.phases.find((phase) => phase.id === row.id);
+    assert(phase);
+    assert.equal(row.phase_sha256, phase.sha256);
+    assert.equal(row.migration_name, phase.migration_name);
+    assert.match(row.actual_provider_version, /^\d{14}$/);
+  }
+  assert.equal(receipt.readback.optional_rows, 0);
+  assert.equal(receipt.readback.settings.enabled, false);
+});

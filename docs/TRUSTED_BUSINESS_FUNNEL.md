@@ -133,3 +133,15 @@ database/deployments/trusted-business-funnel plan for short ordered apply_migrat
 transactions. Canonical source migrations remain unchanged; collection stays off,
 retention/approval NULL and runtime readiness false. Actual provider receipts and
 any migration-history reconciliation remain release-manager gates.
+
+## Installed disabled schema checkpoint
+
+The release manager successfully installed the11 remaining frozen atomic phases;
+the enum prerequisite was already present. Actual provider versions/names and full
+phase hashes are archived in the phased deployment installation receipt. Independent
+read-only history/readback confirms zero optional rows, disabled collection, NULL
+retention/approval/start and closed private-function/browser grants. The source now
+marks AKISUITE_FUNNEL_READY=true solely for installed own-data readers and bounded
+cleanup. This does not activate collection, approve retention or claim the source
+configuration is already deployed. See the phased runbook for exact evidence and
+remaining history/deployment/activation gates.

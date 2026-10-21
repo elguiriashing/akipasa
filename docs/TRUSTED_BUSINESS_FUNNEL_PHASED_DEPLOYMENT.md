@@ -1,7 +1,10 @@
 # Disabled funnel installation in atomic phases
 
-Status: implementation and local SQL verification; production installation is not
-asserted. Source baseline is master99feec0dc532598bb16f7a8b2afe8dad4752ef26.
+Status: the release manager installed phases01–11 on the authorised shared project;
+collection remains disabled. Source baseline is master
+99feec0dc532598bb16f7a8b2afe8dad4752ef26. Installation receipts and independently
+confirmed history/readback are archived in
+`database/deployments/trusted-business-funnel/installation-20261021.json`.
 The release manager reported two stalled canonical requests (59minutes and12hours,
 then user-aborted), no surviving old transaction, no private settings table, and
 only the standalone `suite_business_stage` enum prerequisite installed. This is a
@@ -44,7 +47,7 @@ records, reset schemas, move extensions, grant browser access or enable collecti
 4. Confirm the previously stalled request has no unresolved backend transaction.
    If a request is still ambiguous, stop. A tool timeout does not prove rollback.
    Do not cancel unrelated sessions or run large DML/rollback QA against production.
-5. Keep `AKISUITE_FUNNEL_READY` unset/false in all products, collection disabled,
+5. During any future installation keep `AKISUITE_FUNNEL_READY` unset/false, collection disabled,
    retention_days/retention_approval_ref NULL. No financial or legal configuration
    is supplied by this plan. Do not open a capture/marketing gate to test install.
 
@@ -135,3 +138,31 @@ missing dependency rejection, forced phase rollback and transaction-local settin
 reset. The final catalogue comparison includes exact function definitions and ACLs,
 all constraints/indexes/triggers/RLS/policies. Live lock cancellation/control-plane
 behaviour and production installation are not claimed by local tests.
+
+## Verified installation checkpoint
+
+The release manager applied phases01–11 strictly sequentially with the frozen
+manifest SHA256dcbb383a45745cbb5996674b28ed1c2f128aadafc9f90d111149f7f38d84f658.
+Phase00 was skipped because its enum label was already installed. Each actual
+provider version/name was independently confirmed by a read-only history query;
+the JSON receipt maps those records to the full payload hash. Phase10 took about
+45seconds at the provider boundary; other calls were reported around1–2seconds.
+These are observed transport durations, not measured SQL execution times.
+
+A separate read-only execution of the frozen readback confirmed collectionfalse,
+NULL retention/approval/start, zero optional rows,13 triggers, zero private client
+execution grants and the intended authenticated/service/anonymous RPC grants.
+The release manager's read-only actual-role rollback checks returned not_activated
+for an active owner, empty own privacy export, and42501 for a foreign workspace.
+No production subject, billing state, capture setting or migration history was
+changed by this agent. History reconciliation remains separately unperformed.
+
+Because all shared schema/privacy dependencies now exist, this PR sets only the
+AkiPasa **source** `AKISUITE_FUNNEL_READY=true`. Its consumers are the own-identity
+export reader and bounded maintenance RPC; it cannot set collection or retention.
+The source readiness change is not proof of production Worker deployment. A focused
+real-SQL/adapter regression proves readinesstrue still returns inactive reporting,
+empty restricted-identity export, cleanup0 and unchanged disabled/NULL settings.
+Other commercial/tax/checkout gates remain as before. Runtime readiness and provider
+smoke acceptance after release still require verification; collection has no
+approved retention period and remains off.
