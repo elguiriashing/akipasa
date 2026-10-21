@@ -3,9 +3,11 @@ import { expect, test } from "@playwright/test";
 test.describe.configure({ mode: "parallel" });
 // Next's local Node adapter canonicalizes the request authority to localhost.
 // Use that same browser origin so the real CSRF-protected consent POST is valid.
-test.use({
-  baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3100",
-});
+const localBase = new URL(
+  process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3100",
+);
+if (localBase.hostname === "127.0.0.1") localBase.hostname = "localhost";
+test.use({ baseURL: localBase.origin });
 
 const viewports = [
   { width: 390, height: 844 },
@@ -39,13 +41,25 @@ for (const locale of ["en", "es"]) {
       await page.goto(`/${locale}`, { waitUntil: "domcontentloaded" });
       const privacy = page.locator(".personalisation-consent");
       await expect(privacy).toBeVisible();
+      const consentResponse = page.waitForResponse(
+        (response) =>
+          new URL(response.url()).pathname ===
+            "/api/v1/personalisation/consent" &&
+          response.request().method() === "POST",
+      );
       await privacy
         .getByRole("button", {
           name: locale === "es" ? "Rechazar opcionales" : "Reject optional",
           exact: true,
         })
         .click();
+      expect((await consentResponse).status()).toBe(204);
       await expect(privacy).toBeHidden();
+      expect(
+        await page.evaluate(() =>
+          document.cookie.split("; ").includes("ak_consent_version=2"),
+        ),
+      ).toBe(true);
       for (const cookie of ["analytics", "personalisation", "marketing"])
         expect(
           await page.evaluate(
@@ -70,6 +84,21 @@ for (const locale of ["en", "es"]) {
           await page.goto(route, { waitUntil: "domcontentloaded" });
           await expect(page.locator("main")).toBeVisible();
           if (route === `/${locale}`) {
+            const restored = await page.evaluate(() => ({
+              origin: location.origin,
+              version: document.cookie
+                .split("; ")
+                .includes("ak_consent_version=2"),
+              denied: ["analytics", "personalisation", "marketing"].every(
+                (name) =>
+                  document.cookie.split("; ").includes(`ak_${name}=denied`),
+              ),
+            }));
+            console.log("Synthetic consent restore", restored);
+            expect(restored.origin).toBe(localBase.origin);
+            expect(restored.version).toBe(true);
+            expect(restored.denied).toBe(true);
+            await expect(privacy).toBeHidden();
             const more = page.getByRole("button", {
               name: locale === "es" ? "Más opciones" : "More options",
               exact: true,
