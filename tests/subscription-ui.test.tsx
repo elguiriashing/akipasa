@@ -1,12 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, expect, it, vi } from "vitest";
-import {
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-  within,
-} from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 vi.mock("@/lib/auth", () => ({
   requireUser: async () => ({
     user: { id: "test" },
@@ -34,7 +28,7 @@ vi.mock("../src/app/[locale]/account/subscription/actions", () => ({
 }));
 import SubscriptionPage from "../src/app/[locale]/account/subscription/page";
 afterEach(cleanup);
-it("shows the entire catalogue and submits only the selected plan and interval", async () => {
+it("shows free management and the canonical operating packages without retired new purchases", async () => {
   render(
     await SubscriptionPage({
       params: Promise.resolve({ locale: "en" }),
@@ -42,25 +36,37 @@ it("shows the entire catalogue and submits only the selected plan and interval",
     }),
   );
   expect(screen.queryByRole("tab")).toBeNull();
-  expect(screen.getByRole("heading", { name: "Aki Enterprise" })).toBeTruthy();
-  const card = screen
-    .getByRole("heading", { name: "AkiHQ Pro" })
-    .closest("article")!;
-  const form = within(card)
-    .getByRole("button", { name: "Coming soon" })
-    .closest("form")!;
-  expect(Object.fromEntries(new FormData(form))).toEqual({
-    locale: "en",
-    plan: "akihq_pro",
-    interval: "month",
-  });
-  fireEvent.click(screen.getByRole("radio", { name: /Yearly/ }));
-  expect(Object.fromEntries(new FormData(form))).toEqual({
-    locale: "en",
-    plan: "akihq_pro",
-    interval: "year",
-  });
-  expect(within(card).getByText("€576.00")).toBeTruthy();
+  expect(screen.getByRole("heading", { name: "Free management" })).toBeTruthy();
+  expect(
+    within(
+      screen
+        .getByRole("heading", { name: "Free management" })
+        .closest("article")!,
+    )
+      .getByRole("link", { name: "Open free AkiHQ" })
+      .getAttribute("href"),
+  ).toBe("https://akihq.app/en/business");
+  for (const [name, count] of [
+    ["Básico", 4],
+    ["Standard", 8],
+    ["Pro", 12],
+  ] as const) {
+    const card = screen.getByRole("heading", { name }).closest("article")!;
+    expect(card.textContent).toContain(`${count} of 12 active tools`);
+    expect(
+      within(card)
+        .getByRole("link", { name: "Manage operating tools" })
+        .getAttribute("href"),
+    ).toBe("/en/account/subscription/operations");
+    expect(card.querySelector("form")).toBeNull();
+  }
+  for (const name of ["Aki Enterprise", "AkiHQ Standard", "AkiHQ Pro"])
+    expect(screen.queryByRole("heading", { name })).toBeNull();
+  expect(screen.queryByRole("radio", { name: /Yearly/ })).toBeNull();
   const sector = screen.getByRole("combobox", { name: "Business type" });
-  expect(within(sector).getAllByRole("option")).toHaveLength(6);
+  expect(
+    within(sector)
+      .getAllByRole("option")
+      .map((option) => option.textContent),
+  ).toEqual(["Hospitality", "Accommodation", "Services", "Retail"]);
 });

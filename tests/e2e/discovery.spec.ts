@@ -191,18 +191,36 @@ test("membership offer is reachable before sign in", async ({ page }) => {
     }),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "Aki Enterprise" }),
+    page.getByRole("heading", { name: "Free management", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "AkiBusiness Premium", exact: true }),
-  ).toBeVisible();
-  const catalogue = page.locator(
-    'section[aria-labelledby="akisuite-catalogue-title"]',
-  );
-  await expect(catalogue.locator("article")).toHaveCount(4);
+    page.getByRole("link", { name: "Open free AkiHQ", exact: true }),
+  ).toHaveAttribute("href", "https://akihq.app/en/business");
+  for (const [tier, count] of [
+    ["basico", 4],
+    ["standard", 8],
+    ["pro", 12],
+  ] as const) {
+    const card = page.locator(`#operations-${tier}`);
+    await expect(card).toBeVisible();
+    await expect(card).toContainText(`${count} of 12 active tools`);
+    await expect(
+      card.getByRole("link", { name: "Manage operating tools" }),
+    ).toHaveAttribute("href", "/en/account/subscription/operations");
+    await expect(card.locator("form")).toHaveCount(0);
+  }
   await expect(
-    catalogue.locator("article button[type=submit]").first(),
-  ).toBeDisabled();
+    page.getByRole("heading", { name: "AkiPasa Listing Premium", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page
+      .locator("#akibusiness_premium")
+      .getByRole("link", { name: "Continue in my account", exact: true }),
+  ).toHaveAttribute("href", "/en/account/subscription?from=akipasa");
+  await expect(page.locator("#akibusiness_premium form")).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: "Aki Enterprise", exact: true }),
+  ).toHaveCount(0);
 });
 
 test("business intent survives account creation", async ({ page }) => {

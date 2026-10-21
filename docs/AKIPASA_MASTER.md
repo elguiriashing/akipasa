@@ -1743,3 +1743,15 @@ actual byte-path acceptance. No live SQL or runtime flags changed.
 ## 2026-10-21 | Preserve management scope through shared account completion
 
 The canonical bounded account-task contract now retains the actual property/company/organisation query names consumed by management destinations, alongside existing IDs. EN/ES cross-product envelopes reject duplicate, external, traversal and overlong values; real central pending→complete redirects preserve selected scopes. No destination origin or authorisation is supplied by this context; destination permissions remain authoritative. Integration preserves246 media identity and250 strict-library invariant ancestry; activation and actual Storage acceptance remain separate operator gates.
+
+## 2026-10-21 | Supported browser acceptance and real consent opt-out
+
+Next16 browser acceptance uses the same explicit webpack compiler as the supported application build. Tablet navigation makes and verifies a real optional-tracking rejection before navigating, waiting for the actual privacy panel lifecycle rather than racing hydration or seeding a consent-version cookie. All three optional cookies must remain denied; no product consent behavior, feature assertions or test cases are disabled. Exact browser matrix and hosted CI remain required.
+
+## 2026-10-21 | Canonical five-product account membership summary
+
+The account membership hub now distinguishes five products: AkiPasa/AkiDuermo/AkiCoches discovery, free AkiHQ management and paid AkiBusiness operating tools per location. Historical listing or HQ billing identifiers do not imply an operating licence. Business uses a neutral authoritative operations-page handoff; HQ and Coches use canonical language-preserving links. Existing paid records, expiry/cancellation dates and billing portal remain visible; historical labels are explicit and current listing/personal interval controls cannot advertise retired HQ/Enterprise products. Listing Premium is separate from personal Premium and operating access. An untrusted checkout-success query now explains pending Stripe confirmation rather than claiming completed payment. Backend resolver, entitlement, subscription and billing-provider state are unchanged. Focused render tests cover both languages, exact links, historical records and false payment claims; integration CI/build/browser acceptance remains a release gate.
+
+## 2026-10-21 | Installed identity privacy reader and canonical membership acceptance
+
+After release-manager installation/readback of001138, the server-only private identity export reader is declared ready without enabling referral/reward programmes or changing paid access. Integrated256 renders all five canonical product roles, preserves historical billing/portal/cancellation, and treats a checkout-return query as pending confirmation. Existing acquisition acceptance cases now assert freeHQ,4/8/12 operating tools and independent disabled listing checkout instead of retired newEnterprise/HQ offers; all route/theme/viewport/security coverage remains. Final exact-head CI and production verification remain required.

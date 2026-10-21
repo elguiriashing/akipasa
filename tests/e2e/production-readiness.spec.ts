@@ -31,7 +31,7 @@ test("root, invalid content and all guest gates resolve safely", async ({
   const root = await page.request.get("/", { maxRedirects: 0 });
   expect(root.status()).toBe(308);
   expect(new URL(root.headers().location, root.url()).href).toBe(
-    canonicalServerUrl("/es", root.url()).href,
+    new URL("/es", root.url()).href,
   );
 
   for (const route of [

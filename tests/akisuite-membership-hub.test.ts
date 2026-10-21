@@ -21,8 +21,14 @@ describe("responsive cross-suite membership centre", () => {
     "utf8",
   );
 
-  it("shows four distinct systems and never grants a disconnected addon", () => {
-    for (const app of ["AkiPasa", "AkiBusiness", "AkiDuermo", "AkiHQ"])
+  it("shows five canonical systems while retaining historical billing semantics", () => {
+    for (const app of [
+      "AkiPasa",
+      "AkiBusiness",
+      "AkiDuermo",
+      "AkiCoches",
+      "AkiHQ",
+    ])
       expect(hub).toContain(app);
     expect(resolver).toContain("effectiveAkiSuitePlans(activePlans)");
     expect(resolver).toContain('codes.has("business_pro")');
@@ -44,13 +50,13 @@ describe("responsive cross-suite membership centre", () => {
   it("keeps the full catalogue visible with checkout disabled before launch", () => {
     expect(publicPage).toContain("AkiSuiteMembershipGrid");
     expect(picker).toContain("disabled={");
-    expect(picker).toContain("Coming soon");
+    expect(picker).toContain("Open free AkiHQ");
     expect(publicPage).not.toContain("MembershipPicker");
   });
 
   it("adapts across phone, portrait tablet, landscape tablet and desktop", () => {
     expect(styles.replace(/\s/g, "")).toContain(
-      "grid-template-columns:repeat(4",
+      "grid-template-columns:repeat(3",
     );
     expect(styles.replace(/\s/g, "")).toContain("@media(max-width:1080px)");
     expect(styles.replace(/\s/g, "")).toContain("@media(max-width:740px)");

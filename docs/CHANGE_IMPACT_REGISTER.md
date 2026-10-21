@@ -2327,3 +2327,15 @@ actual byte-path acceptance. No live SQL or runtime flags changed.
 ## 2026-10-21 | Preserve management scope through shared account completion
 
 The canonical bounded account-task contract now retains the actual property/company/organisation query names consumed by management destinations, alongside existing IDs. EN/ES cross-product envelopes reject duplicate, external, traversal and overlong values; real central pending→complete redirects preserve selected scopes. No destination origin or authorisation is supplied by this context; destination permissions remain authoritative. Integration preserves246 media identity and250 strict-library invariant ancestry; activation and actual Storage acceptance remain separate operator gates.
+
+## 2026-10-21 | Supported browser acceptance and real consent opt-out
+
+Next16 browser acceptance uses the same explicit webpack compiler as the supported application build. Tablet navigation makes and verifies a real optional-tracking rejection before navigating, waiting for the actual privacy panel lifecycle rather than racing hydration or seeding a consent-version cookie. All three optional cookies must remain denied; no product consent behavior, feature assertions or test cases are disabled. Exact browser matrix and hosted CI remain required.
+
+## 2026-10-21 | Membership hub product-role and return-status correction
+
+Replace the historical four-product upgrade summary with five canonical roles, add AkiCoches and remove paid HQ acquisition links. Do not infer operating entitlement from the legacy listing SKU or count it as an upgraded operating application. Preserve existing billing history, annual records, end dates, portal and cancellation semantics; label legacy records explicitly. Current listing/personal interval controls retain their same-product backend identifiers. Account checkout returns display pending authoritative confirmation. No schema, provider, price, runtime flag or access-grant mutation occurs. Rollback: revert the component/CSS/page copy; preserve all existing customer records. Focused EN/ES component and query-return regressions pass; final combined full CI/deployment verification remains the release manager's gate.
+
+## 2026-10-21 | Installed identity privacy reader and canonical membership acceptance
+
+After release-manager installation/readback of001138, the server-only private identity export reader is declared ready without enabling referral/reward programmes or changing paid access. Integrated256 renders all five canonical product roles, preserves historical billing/portal/cancellation, and treats a checkout-return query as pending confirmation. Existing acquisition acceptance cases now assert freeHQ,4/8/12 operating tools and independent disabled listing checkout instead of retired newEnterprise/HQ offers; all route/theme/viewport/security coverage remains. Final exact-head CI and production verification remain required.

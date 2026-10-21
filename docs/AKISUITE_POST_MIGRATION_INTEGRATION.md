@@ -38,12 +38,14 @@ or delete evidence to satisfy that gate. Keep billing enabled for invoice recove
 
 | #243 | `7fd774694d5d9f809843fceafb08f17fdac814d7` | Caller-only complete paginated optional funnel privacy export |
 | #245 | `6f478ac7b9d7e9fa0d19e12e86bb11d112e14370` | Supported Next16/OpenNext runtime; no unsupported bypass |
-| #247 | `f86dcf083512e5c4f8073beb594618ed7f30d5b8` | Three release booleans and default-off private enum runtime health |
+| #247 | `9e5a05e4692587fcfbf815b471ee3ff5046097e5` | Three release booleans and default-off private enum runtime health |
 
 | #248 | `6f67b1dfa897cf95cee736ec1ae9bad859ec84bd` | Bounded caller-only referral and prestige privacy projections |
 
 | #246 | `55cedf9921dc43ecf9bc64f39645724348a4608d` | Retained media identity and primary-key mutation protection |
 | #250 | `7bdaa00bb4bcc8428581ec076a509c2cac8cf1a8` | Database invariant: library requires enforced verified uploads |
+
+| #256 | `23b3c21d7b6a5f11db1e1a3f7d02137d372b5e44` | Five-product membership roles, retained legacy billing and pending checkout confirmation |
 
 Every listed source head is retained as ancestry, including #239's earlier60ce
 ancestor and #237's corrected232 dependency. No sibling source branch is modified.
@@ -127,7 +129,7 @@ verified; leave this immutable candidate unchanged while checks run.
 ## Final combined source evidence
 
 The supported combined source passed 367 AkiSuite cases, 87 onboarding cases,
-35 Node billing cases, 48 billing adapter cases, 33 security cases and 23 suite
+55 Node billing cases, 48 billing adapter cases, 33 security cases and 23 suite
 navigation cases before the final bounded management-scope correction. That
 correction copies the canonical helper byte-for-byte (SHA256 f68f42070cb29be96643436f75d05cda1522ccbf7b0db2f23f15c4b2f34c26fb),
 preserving property/company/organisation aliases through completion; the final 94-case onboarding suite
@@ -137,3 +139,34 @@ format and contract integrity passed; final exact-head hosted CI remains require
 No local build/support bypass is used. Native accommodation249 and follow-on
 inventory remain a separately reviewed additive foundation, not part of this
 candidate.
+
+## Installed identity reader and acceptance amendment
+
+The release manager reports #248001138 installed and verified with an own-code
+projection returning zero rows, authenticated execute enabled and anonymous
+execute denied. This candidate therefore declares only the server-side
+AKISUITE_PRIVATE_IDENTITY_EXPORTS_READY reader true. Historical privacy records
+remain exportable when programme/physical launch gates are closed; no programme,
+reward, consent grant or financial acquisition is enabled. Funnel readiness stays
+unset pending separate verified installation; its database collection remains off.
+
+#256 corrects all five product summary roles without deriving operating access
+from a listing SKU. Historical billed records, approved included benefits, portal
+and cancellation behavior remain; a checkout-return query says confirmation is
+pending, not that payment succeeded. Stale account/discovery/subscription browser
+assertions now verify free HQ, 4/8/12 operating tools and separately gated listing
+checkout rather than retired new HQ/Enterprise offers. All prior cases are retained.
+The supported-runtime browser amendment preserves actual consent rejection and
+CSRF checks; see OPERATIONS_RUNTIME_DIAGNOSTICS.md. Exact combined CI is mandatory.
+
+The final account fixture covers the current four management/operating cards plus
+the relevant listing card. Billing-read errors render no checkout forms and a
+disabled listing control; account-only public handoffs remain available with
+checkout readiness false and never invoke a financial action. Twelve EN/ES
+phone/desktop error/handoff cases pass; the normal 24 subscription viewport cases
+also passed before the isolated boundary-assertion correction.
+
+Runtime diagnostics are intentionally fail-soft: configured means binding
+presence only. A NULL last_tick_at can mean no invocation, a closed diagnostic
+gate, invalid recording credentials or transport failure; it alone cannot prove
+cron absence. Recorded stages and independent provider receipts remain necessary.
