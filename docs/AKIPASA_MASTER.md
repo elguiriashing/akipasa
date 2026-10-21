@@ -1775,3 +1775,14 @@ production build passes. The separately tested diagnostic #247 final head
 9e5a05e is now primary merge39f50a3, and its ancestry is retained by this candidate.
 Optional funnel schema is not installed per the release manager's readback;
 FUNNEL_READY remains unset. No completed customer migration receipt is asserted.
+
+## 2026-10-21 | Listing library deletion compatibility
+
+Forward migration014000 retains template/folder snapshots with nullable SET NULL
+venue/workspace links, while existing membership checks keep archived rows private.
+It removes upload-receipt deletion blockers without deleting business images or
+Storage objects. Original0060 owner/operator RPCs retain their authorization and
+confirmation/reason contract. Seven actual-role regressions cover both venue paths,
+event removal, workspace detachment and profile erasure; original14 library/guard
+cases remain passing. Financial retention and live Storage acceptance are separate.
+See LISTING_LIBRARY_DELETION_COMPATIBILITY.md. No live flags or data changed.
