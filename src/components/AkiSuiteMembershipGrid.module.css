@@ -8,12 +8,15 @@
   padding: clamp(18px, 2.5vw, 32px);
   border: 1px solid #bfd4f922;
   border-radius: 23px;
-  background: radial-gradient(ellipse at 7% 0%, #1b467a65, transparent 45%),
+  background:
+    radial-gradient(ellipse at 7% 0%, #1b467a65, transparent 45%),
     linear-gradient(138deg, #0a1530, #071124 70%, #0c1120);
   color: #f6f8fc;
   box-sizing: border-box;
 }
-.root * { box-sizing: border-box; }
+.root * {
+  box-sizing: border-box;
+}
 .heading {
   padding-bottom: clamp(15px, 2vw, 25px);
   border-bottom: 1px solid #ffffff24;
@@ -91,7 +94,8 @@
   gap: 0.45rem;
   min-height: 88px;
 }
-.brandIdentity img, .card > img {
+.brandIdentity img,
+.card > img {
   width: 46px;
   height: 46px;
   border-radius: 10px;
@@ -177,16 +181,24 @@
   text-align: center;
   cursor: pointer;
 }
-.card > a:hover, .card form button:hover:not(:disabled) {
+.card > a:hover,
+.card form button:hover:not(:disabled) {
   border-color: var(--studio-accent);
   background: #ffffff20;
 }
-.card a:focus-visible, .card button:focus-visible, .workspaceChoice select:focus-visible {
+.card a:focus-visible,
+.card button:focus-visible,
+.workspaceChoice select:focus-visible {
   outline: 3px solid var(--studio-accent);
   outline-offset: 3px;
 }
-.card button:disabled { opacity: 0.55; cursor: not-allowed; }
-.card form button { width: 100%; }
+.card button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.card form button {
+  width: 100%;
+}
 .workspaceChoice {
   display: grid;
   gap: 0.5rem;
@@ -209,15 +221,32 @@
   line-height: 1.6;
 }
 @media (max-width: 1100px) {
-  .grid { grid-auto-columns: minmax(235px, min(78vw, 320px)); }
-  .card > p, .card h3 { min-height: 0; }
+  .grid {
+    grid-auto-columns: minmax(235px, min(78vw, 320px));
+  }
+  .card > p,
+  .card h3 {
+    min-height: 0;
+  }
 }
 @media (max-width: 600px) {
-  .root { padding: 16px 13px; gap: 0.85rem; border-radius: 18px; }
-  .grid { grid-auto-columns: minmax(235px, 84vw); }
-  .card { padding: 16px; }
-  .card > img { margin-bottom: 26px; }
+  .root {
+    padding: 16px 13px;
+    gap: 0.85rem;
+    border-radius: 18px;
+  }
+  .grid {
+    grid-auto-columns: minmax(235px, 84vw);
+  }
+  .card {
+    padding: 16px;
+  }
+  .card > img {
+    margin-bottom: 26px;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .grid { scroll-behavior: auto; }
+  .grid {
+    scroll-behavior: auto;
+  }
 }

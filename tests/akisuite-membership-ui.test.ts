@@ -33,7 +33,10 @@ describe("AkiSuite localized membership catalogue", () => {
       "/brand/hq-mark.svg",
     ])
       expect(grid).toContain(logo);
-    const css = readFileSync("src/components/AkiSuiteMembershipGrid.module.css", "utf8");
+    const css = readFileSync(
+      "src/components/AkiSuiteMembershipGrid.module.css",
+      "utf8",
+    );
     expect(css).toContain("grid-auto-flow: column");
     expect(css).toContain("scroll-snap-type: x proximity");
     expect(grid).not.toContain('id="listing-premium-title"');

@@ -128,7 +128,13 @@ export function AkiSuiteMembershipGrid({
       <div className={styles.grid}>
         <article id="akihq-free" className={styles.card} data-product="akihq">
           <div className={styles.brandIdentity}>
-            <Image src="/brand/hq-mark.svg" width={46} height={46} alt="" unoptimized />
+            <Image
+              src="/brand/hq-mark.svg"
+              width={46}
+              height={46}
+              alt=""
+              unoptimized
+            />
             <span className={styles.eyebrow}>AkiHQ</span>
           </div>
           <h3>{es ? "Gestión gratuita" : "Free management"}</h3>
