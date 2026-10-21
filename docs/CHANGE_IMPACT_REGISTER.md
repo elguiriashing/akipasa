@@ -2585,3 +2585,13 @@ The existing isolated AkiDuermo guest-route browser spec now uses the same bound
 - Added guarded exact patches to normalize historical Storage prefix accounting and reject new noncanonical prefixes during base enforcement. Existing objects, authorization, owner/grants/configuration, other buckets and disabled cohorts are preserved.
 - Impact: shared listing Storage and reservation backend across Pasa/HQ; no UI/locales, billing, tracking, flags, object mutation or provider configuration changes.
 - Evidence: four focused role-level SQL regressions and metadata preservation. Isolated PostgreSQL quota workflow expanded to fourteen RC/RR cases. Exact hosted checks and root review required before application; strict provider acceptance remains separate.
+
+## 2026-10-21 | Event artwork tenant-target integrity
+
+Confirmed an ordinary-owner placement could name another venue's public event,
+and discovery trusted target*key without its per-event venue. Forward184000
+validates new/edited event*\* associations while preserving valid draft bins and
+member/staff access. Discovery intersects each placement with its specific event's
+venue, hiding historical mismatches without deleting data. Five actual-policy SQL
+and two real SDK regressions plus60 repository cases pass. No Premium flag, paid
+access, ownership or live data changed. See EVENT_MEDIA_TARGET_SCOPE.md.

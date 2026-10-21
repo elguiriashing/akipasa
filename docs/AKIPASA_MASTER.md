@@ -1974,3 +1974,13 @@ Baseline media quota accounting is independent of the enhanced-library feature g
 Enhanced-library placement admission also shares the complete Storage/reservation allowance, under the same RR-safe quota scope. Additive193000 builds on181500/190000 without changing membership, Premium reuse or historical retention rules. See [library reservation capacity](LIBRARY_RESERVATION_CAPACITY.md).
 
 Listing upload namespace admission requires a canonical lowercase venue UUID prefix when base limits are active; historical case-variant object paths are retained and counted. See [listing Storage canonical prefix](LISTING_STORAGE_CANONICAL_PREFIX.md), additive200000 after190000; no flags are activated.
+
+## 2026-10-21 | Event artwork tenant-target integrity
+
+Confirmed an ordinary-owner placement could name another venue's public event,
+and discovery trusted target*key without its per-event venue. Forward184000
+validates new/edited event*\* associations while preserving valid draft bins and
+member/staff access. Discovery intersects each placement with its specific event's
+venue, hiding historical mismatches without deleting data. Five actual-policy SQL
+and two real SDK regressions plus60 repository cases pass. No Premium flag, paid
+access, ownership or live data changed. See EVENT_MEDIA_TARGET_SCOPE.md.
