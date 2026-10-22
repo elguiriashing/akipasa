@@ -23,7 +23,6 @@
 - **Rollback:** revert presentation adapters and shared studio sources without
   changing checkout data or access grants.
 
-
 ## 2026-10-21 | Membership design parity: AkiPasa, AkiDuermo, AkiCoches
 
 - **Before:** AkiPasa displayed four operational plans and a detached listing

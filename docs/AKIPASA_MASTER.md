@@ -25,7 +25,6 @@ Acceptance: exact-source consistency across the three shared template files,
 membership rendering and access tests, account browser/mobile accessibility,
 full CI, and production verification. Merge only when required gates pass.
 
-
 ## 2026-10-21 | Discovery membership studio layout contract (PR #275)
 
 The AkiPasa public and account membership catalogue must use the same modern,

@@ -18,7 +18,10 @@
   color: #fff;
   font: inherit;
 }
-.workspaceChoice select:focus-visible { outline: 2px solid #ff822d; outline-offset: 3px; }
+.workspaceChoice select:focus-visible {
+  outline: 2px solid #ff822d;
+  outline-offset: 3px;
+}
 .personal {
   display: grid;
   gap: 12px;
@@ -29,9 +32,16 @@
   background: #ffffff0b;
   color: #f6f8fc;
 }
-.personal h3, .personal p { margin: 0; }
-.personal p { color: #b7c5dd; font-size: 13px; }
-.personal a, .personal button {
+.personal h3,
+.personal p {
+  margin: 0;
+}
+.personal p {
+  color: #b7c5dd;
+  font-size: 13px;
+}
+.personal a,
+.personal button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -47,6 +57,13 @@
   font-weight: 700;
   text-decoration: none;
 }
-.personal button:disabled { opacity: .55; }
-.personal form { margin: 0; }
-.personal :is(a, button):focus-visible { outline: 2px solid #ff822d; outline-offset: 3px; }
+.personal button:disabled {
+  opacity: 0.55;
+}
+.personal form {
+  margin: 0;
+}
+.personal :is(a, button):focus-visible {
+  outline: 2px solid #ff822d;
+  outline-offset: 3px;
+}

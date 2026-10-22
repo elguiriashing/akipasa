@@ -26,11 +26,11 @@ describe("AkiSuite localized membership catalogue", () => {
     expect(grid).not.toContain("akihq_standard");
     expect(grid).not.toContain("aki_enterprise");
     expect(grid).not.toContain("setInterval");
-    const studio = readFileSync("src/components/AkiSuiteMembershipStudio.tsx", "utf8");
-    for (const logo of [
-      "/brand/business-mark.svg",
-      "/brand/hq-mark.svg",
-    ])
+    const studio = readFileSync(
+      "src/components/AkiSuiteMembershipStudio.tsx",
+      "utf8",
+    );
+    for (const logo of ["/brand/business-mark.svg", "/brand/hq-mark.svg"])
       expect(studio).toContain(logo);
     const css = readFileSync(
       "src/components/AkiSuiteMembershipStudio.module.css",
