@@ -28,6 +28,13 @@ describe("canonical free hub and monthly operating catalogue", () => {
       expect(document.body.textContent).not.toMatch(
         /AkiHQ Standard|AkiHQ Pro|Aki Enterprise|Yearly|Anual|767[.,]90/,
       );
+      expect(document.querySelectorAll('[data-offer]')).toHaveLength(5);
+      expect(document.querySelector("#akihq-free")?.textContent).toContain(
+        locale === "es" ? "gratis tu ficha de AkiPasa" : "free AkiPasa listing",
+      );
+      expect(document.querySelector("#akibusiness_premium")?.textContent).toContain(
+        locale === "es" ? "PARA AKIHQ" : "FOR AKIHQ",
+      );
       expect(
         screen
           .getByRole("link", {
