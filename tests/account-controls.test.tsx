@@ -388,7 +388,7 @@ describe("Account control disclosure preserves existing workflows", () => {
     ).toHaveAttribute("href", "/en/account/subscription");
     expect(card.querySelector("form")).toBeNull();
     const operating = screen
-      .getByRole("heading", { name: "Pro" })
+      .getByRole("heading", { name: "AkiBusiness Pro" })
       .closest("article")!;
     expect(
       within(operating).getByRole("link", { name: "Manage operating tools" }),
