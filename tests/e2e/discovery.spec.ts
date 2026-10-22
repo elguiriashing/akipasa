@@ -191,7 +191,9 @@ test("membership offer is reachable before sign in", async ({ page }) => {
     }),
   ).toBeVisible();
   const catalogue = page.locator('section[data-product="AkiPasa"]');
-  await expect(catalogue.getByRole("tablist", { name: "Membership type" })).toBeVisible();
+  await expect(
+    catalogue.getByRole("tablist", { name: "Membership type" }),
+  ).toBeVisible();
   await expect(catalogue.locator("[data-offer]")).toHaveCount(2);
   await expect(catalogue.locator("#personal-free")).toBeVisible();
   await expect(catalogue.locator("#akipasa_premium button")).toBeDisabled();
@@ -213,7 +215,6 @@ test("membership offer is reachable before sign in", async ({ page }) => {
   await expect(catalogue.locator("#akibusiness_premium form")).toHaveCount(0);
   await expect(catalogue.locator('a[href*="akibusiness.com"]')).toHaveCount(1);
   await expect(catalogue.locator('[id^="operations-"]')).toHaveCount(0);
-
 });
 
 test("business intent survives account creation", async ({ page }) => {
