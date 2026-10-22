@@ -2553,3 +2553,17 @@ body:has(.subscription-app) > .privacy-preferences {
   cursor: pointer;
   padding: 0.8rem 0;
 }
+
+/* AkiSuite five-card membership catalogue: retire the old 620px plan-picker cap. */
+.membership-app.membership-page,
+.account-controls-page.subscription-app {
+  width: min(100%, 1580px);
+  max-width: 1580px;
+}
+.account-workspace:has(.subscription-app) .workspace-content {
+  width: 100%;
+  max-width: 1580px;
+}
+.app-content:has(> .membership-app) > .footer {
+  max-width: 1580px;
+}
