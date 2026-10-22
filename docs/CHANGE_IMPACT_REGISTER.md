@@ -2626,7 +2626,10 @@ access, ownership or live data changed. See EVENT_MEDIA_TARGET_SCOPE.md.
   showed large bars and a browser account picker.
 - After: use the existing AkiPasa maskable pin/star icon and orange/navy/cream
   palette, apply explicit system insets only to edge-to-edge Android 15+ windows,
-  compact mobile shell heights while retaining touch targets. Android OAuth
+  compact mobile shell heights while retaining touch targets. The native user
+  agent marks the web body, which suppresses duplicate CSS safe-area padding
+  only in the Android shell; regular browser/PWA layouts keep their safe areas.
+  Android OAuth
   sends its code through an explicit custom-scheme return link (or verified
   HTTPS link) into the original WebView callback; browser does not exchange it.
 - Scope: Android launch/insets/intent handling, existing AkiPasa auth action and

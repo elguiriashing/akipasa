@@ -9,6 +9,10 @@ limited to Android 15+ edge-to-edge windows. Mobile app header and navigation
 heights are 48/60 CSS pixels with 44+ pixel touch controls. Physical-device
 visual acceptance across gesture/three-button navigation and light/dark remains
 required.
+The server marks only the native WebView's AkiPasa user agent; that shell uses
+the native system-bar insets and suppresses duplicate CSS safe-area padding in
+its header, bottom navigation and search trigger. Browser/PWA safe areas remain
+unchanged. The native window still reserves the real status and navigation bars.
 
 Google OAuth continues in a trusted external browser. An Android-originated
 server action marks the existing HTTPS callback; the browser renders a no-store,
