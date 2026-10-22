@@ -40,6 +40,14 @@ describe("canonical free hub and monthly operating catalogue", () => {
       ).toContain("Listing Premium");
     },
   );
+  it("renders two shared group marks above five offers, never on a card", () => {
+    render(<AkiSuiteMembershipGrid locale="es" purchaseMode="account" />);
+    const cards = document.querySelectorAll("article[data-offer]");
+    expect(cards).toHaveLength(5);
+    expect(document.querySelectorAll('[aria-label="AkiHQ"] img')).toHaveLength(1);
+    expect(document.querySelectorAll('[aria-label="AkiBusiness"] img')).toHaveLength(1);
+    for (const card of cards) expect(card.querySelector("img")).toBeNull();
+  });
   it("requires an explicit scope choice when there are multiple locations and retains it in handoff", () => {
     render(
       <AkiSuiteMembershipGrid
