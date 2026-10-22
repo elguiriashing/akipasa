@@ -47,7 +47,7 @@ describe("AkiSuite membership audience contract", () => {
     expect(source).toContain('role="tablist"');
     expect(source).toContain("aria-selected={audience === key}");
     expect(source).toContain('"ArrowRight"');
-    expect(source).toContain('"AkiBusiness"');
+    expect(source).toContain("AkiBusiness");
     expect(css).toContain("grid-template-columns:repeat(2,minmax(0,1fr))");
     expect(css).toContain("@media(max-width:680px)");
     for (const [path, sha] of [
