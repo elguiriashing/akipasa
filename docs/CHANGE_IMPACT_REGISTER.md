@@ -2667,4 +2667,3 @@ assembleDebug --offline` could not fetch Gradle 9.5 (network unreachable).
 - Verification: GitHub Android and contract checks plus local-device notification
   smoke test; public Play release still requires signed build and device
   acceptance. Roll back Android resource/builder lines if needed.
-
