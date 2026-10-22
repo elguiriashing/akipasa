@@ -1,5 +1,29 @@
 # Change Impact Register
 
+## 2026-10-22 | Shared membership grouping corrections
+
+- **User-specified change:** prior implementation showed a different logo in
+  each card. New layout uses ONE HQ header spanning Free and Listing Premium,
+  ONE AkiBusiness header spanning Standard/Plus/Pro, and a subtle 1px grey
+  vertical dividing line. These group headings scroll with their cards.
+- **Implementation:** canonical \`AkiSuiteMembershipStudio.tsx\` and
+  \`AkiSuiteMembershipStudio.module.css\` are byte-for-byte equivalent across
+  AkiPasa, AkiDuermo and AkiCoches, with application-specific configuration
+  and actions passed as data. No logo is inserted in a plan card.
+- **AkiPasa adapter:** \`AkiSuiteMembershipGrid\` preserves workspace selection,
+  price sources, existing entitlements, server checkout guards and the separate
+  gated personal Premium surface. AkiHQ stays free and location-scoped
+  operational tools keep their original navigation.
+- **Pricing:** unchanged canonical operations €24.99/€44.99/€64.99/month,
+  listing €14.99/month; consumer personal launch remains feature gated.
+- **Risks and tests:** check EN/ES, 360px/tablet/desktop widths, actual
+  brand assets, keyboard reachability, scoped workspace choices, current-plan
+  state, failed access and checkout no-charge status. Required full browser,
+  account and contract CI; rollout independently to the three app domains.
+- **Rollback:** revert presentation adapters and shared studio sources without
+  changing checkout data or access grants.
+
+
 ## 2026-10-21 | Membership design parity: AkiPasa, AkiDuermo, AkiCoches
 
 - **Before:** AkiPasa displayed four operational plans and a detached listing
