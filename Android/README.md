@@ -17,6 +17,10 @@ current product safely.
 
 - Installable Android app with package ID `com.akipasa`.
 - API 36 target and API 26 minimum.
+- Immersive AkiPasa screen (versionCode 3 / 1.0.2): swipe from the top or
+  bottom edge to reveal the system bars temporarily; Android's normal Back/Home
+  gestures and buttons remain available. The camera cutout stays clear of
+  controls. Test the keyboard and both navigation modes on a real device.
 - Persistent first-party WebView cookies for the existing Supabase session.
 - Exact-host HTTPS navigation policy; untrusted schemes stay blocked.
 - System-browser handoff for Google OAuth, Stripe, booking, phone, email, map,
@@ -96,6 +100,8 @@ the live site before trying Google sign-in; older deployed code cannot display
 the new return button. After Google consent, tap Return to AkiPasa, then verify
 you are signed in inside the app. The Play upload remains gated on a signed
 internal-track test of the complete flow.
+Web layout changes load from the site after a refresh, but immersive system-bar
+handling is native; pull the latest branch and reinstall version 1.0.2 to see it.
 
 ## Play Console release checklist
 

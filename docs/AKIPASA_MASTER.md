@@ -3,16 +3,19 @@
 ## 2026-10-22 | Android release UI and OAuth return candidate
 
 The `com.akipasa` Android shell uses the current AkiPasa orange pin/star raster
-launcher identity and navy/cream system chrome. On pre-Android 15 windows, the
-decor already fits content inside system bars; explicit root inset padding is
-limited to Android 15+ edge-to-edge windows. Mobile app header and navigation
-heights are 48/60 CSS pixels with 44+ pixel touch controls. Physical-device
-visual acceptance across gesture/three-button navigation and light/dark remains
-required.
+launcher identity and navy/cream system chrome. Its immersive window hides the
+status and navigation bars on API 26+, lets an edge swipe reveal them briefly,
+and restores immersive mode on focus return. It draws to the physical edges,
+while the native root keeps WebView controls outside display cutouts and passes
+keyboard insets through. Mobile app header and navigation heights are 48/60 CSS
+pixels with 44+ pixel touch controls. Physical-device visual acceptance across
+cutouts, keyboard, gesture/three-button navigation and light/dark remains required.
 The server marks only the native WebView's AkiPasa user agent; that shell uses
 the native system-bar insets and suppresses duplicate CSS safe-area padding in
 its header, bottom navigation and search trigger. Browser/PWA safe areas remain
-unchanged. The native window still reserves the real status and navigation bars.
+unchanged. The Android wrapper is now versionCode 3 / 1.0.2; this native change
+requires a new installed build and signed bundle, whereas web CSS updates load
+from the live site on refresh.
 
 Google OAuth continues in a trusted external browser. An Android-originated
 server action marks the existing HTTPS callback; the browser renders a no-store,

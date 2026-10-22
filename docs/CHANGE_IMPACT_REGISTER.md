@@ -2625,8 +2625,10 @@ access, ownership or live data changed. See EVENT_MEDIA_TARGET_SCOPE.md.
   separate browser lacking the WebView's PKCE verifier/cookies. Screenshots
   showed large bars and a browser account picker.
 - After: use the existing AkiPasa maskable pin/star icon and orange/navy/cream
-  palette, apply explicit system insets only to edge-to-edge Android 15+ windows,
-  compact mobile shell heights while retaining touch targets. The native user
+  palette. The Android window uses transient-swipe immersive system bars,
+  protects display cutouts natively, and passes keyboard insets to WebView;
+  versionCode 3 / 1.0.2 needs an installed update. Compact mobile shell heights
+  retain touch targets. The native user
   agent marks the web body, which suppresses duplicate CSS safe-area padding
   only in the Android shell; regular browser/PWA layouts keep their safe areas.
   Android OAuth
@@ -2646,6 +2648,6 @@ access, ownership or live data changed. See EVENT_MEDIA_TARGET_SCOPE.md.
   the worker bundle/project metadata to Cloudflare. Android `gradlew test lint
 assembleDebug --offline` could not fetch Gradle 9.5 (network unreachable).
   Physical debug and Play-signed OAuth return, App Link
-  association, light/dark locale/gesture/three-button geometry, hosted browser
+  association, cutout/keyboard/light/dark locale/gesture/three-button geometry, hosted browser
   and authenticated production smoke remain unperformed until device testing.
   No release/deployment is claimed.
