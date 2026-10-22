@@ -322,6 +322,10 @@ async function checkBounds(page, context) {
           )
             continue;
           const previous = ancestor.scrollLeft;
+          // Snap alignment can move a programmatic reachability probe
+          // backwards before the target control is measured.
+          const previousSnapType = ancestor.style.scrollSnapType;
+          ancestor.style.scrollSnapType = "none";
           const parentBox = ancestor.getBoundingClientRect();
           ancestor.scrollLeft += rect.left - parentBox.left;
           const reached = control.getBoundingClientRect();
@@ -329,6 +333,7 @@ async function checkBounds(page, context) {
             reached.left >= Math.max(-1, parentBox.left - 1) &&
             reached.right <= Math.min(width + 1, parentBox.right + 1);
           ancestor.scrollLeft = previous;
+          ancestor.style.scrollSnapType = previousSnapType;
           if (reachable) break;
         }
         if (!reachable)
