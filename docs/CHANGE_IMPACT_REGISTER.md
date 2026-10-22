@@ -19,7 +19,6 @@
 - **Acceptance:** CI and browser/release gates are mandatory; an open PR or
   passing fixture test is not proof of production. Roll back source only.
 
-
 ## 2026-10-22 | AkiPasa membership parity with independent discovery products
 
 - **Before:** AkiPasa had its own per-card logo layout and card geometry, while

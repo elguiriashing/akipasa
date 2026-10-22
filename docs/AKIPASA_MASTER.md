@@ -23,7 +23,6 @@ AkiBusiness software subscription. No SQL, customer, Stripe or Cloudflare
 configuration change. Release only after EN/ES, browser/device, CI and
 deployed-SHA evidence; source rollback has no database impact.
 
-
 ## 2026-10-22 | Public and account membership source parity and product clarity
 
 The public and account AkiPasa membership pages now reuse the exact five-card
