@@ -249,13 +249,9 @@ export function AkiSuiteMembershipGrid({
           ? "Acceso sujeto a verificación"
           : "Access subject to verification",
     },
-    ...operationsOffers,
-  ] as [
-    MembershipOffer,
-    MembershipOffer,
-    MembershipOffer,
-    MembershipOffer,
-    MembershipOffer,
+    operationsOffers[0],
+    operationsOffers[1],
+    operationsOffers[2],
   ];
 
   return (
