@@ -163,10 +163,10 @@ export function AkiSuiteMembershipGrid({
         id: `operations-${tier}`,
         name:
           tier === "basico"
-            ? "AkiBusiness Standard"
+            ? "Standard"
             : tier === "standard"
-              ? "AkiBusiness Plus"
-              : "AkiBusiness Pro",
+              ? "Plus"
+              : "Pro",
         label:
           tier === "basico"
             ? es
