@@ -47,6 +47,22 @@ describe("canonical free hub and monthly operating catalogue", () => {
       ).toContain("Listing Premium");
     },
   );
+  it("never presents legacy stay personal Premium as a property listing subscription", () => {
+    render(
+      <AkiSuiteMembershipGrid
+        locale="en"
+        originatingApp="akiduermo"
+        purchaseMode="account"
+      />,
+    );
+    const property = document.querySelector("#akiduermo-listing-premium")!;
+    expect(property.textContent).toContain("€14.99");
+    expect(property.textContent).toContain("Separate from legacy €5.99");
+    expect(property.querySelector("form")).toBeNull();
+    expect(property.querySelector("a")?.getAttribute("href")).toBe(
+      "https://akiduermo.com/membership?lang=en",
+    );
+  });
   it("requires an explicit scope choice when there are multiple locations and retains it in handoff", () => {
     render(
       <AkiSuiteMembershipGrid
