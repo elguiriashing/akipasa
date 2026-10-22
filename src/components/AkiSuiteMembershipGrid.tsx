@@ -219,7 +219,7 @@ export function AkiSuiteMembershipGrid({
       actionNote: es ? "Siempre disponible" : "Always available",
     },
     {
-      id: listingPlan,
+      id: fromDuermo ? "akiduermo-listing-premium" : listingPlan,
       name: `${discoveryName} Listing Premium`,
       label: es
         ? "PARA AKIHQ · MÁS VISIBILIDAD"
@@ -227,7 +227,7 @@ export function AkiSuiteMembershipGrid({
       description: es
         ? `Mejora tu presencia y accede a las herramientas Premium de ${discoveryName} para gestionar tu ficha desde AkiHQ.`
         : `Upgrade your presence and unlock the deluxe suite of ${discoveryName} listing tools in AkiHQ.`,
-      price: money(akisuitePlans[listingPlan].monthlyCents),
+      price: fromDuermo ? money(1499) : money(akisuitePlans[listingPlan].monthlyCents),
       period: es ? "/ mes por ubicación" : "/ month per location",
       benefits: es
         ? [
@@ -240,8 +240,15 @@ export function AkiSuiteMembershipGrid({
             "Enhanced media and visibility",
             "Manage your upgraded listing in AkiHQ",
           ],
-      action: planAction(listingPlan),
-      actionNote: !listingReady
+      action: fromDuermo ? (
+        <Link href={suiteHref("duermo", locale, { path: "/membership" })}>
+          {es ? "Ver Premium para alojamientos" : "View property Premium"}
+          <span aria-hidden="true">↗</span>
+        </Link>
+      ) : planAction(listingPlan),
+      actionNote: fromDuermo
+        ? (es ? "La membresía personal de 5,99 € es independiente" : "Separate from legacy €5.99 personal Premium")
+        : !listingReady
         ? es
           ? "Activación pendiente"
           : "Activation pending"
