@@ -82,7 +82,7 @@ export function AkiSuiteMembershipStudio({
   afterOffers,
   footnotes,
 }: MembershipStudioProps) {
-  const headingId = "akisuite-membership-heading";
+  const headingId = "akisuite-catalogue-title";
   const heading = headingLevel === 1
     ? <h1 id={headingId}>{title}</h1>
     : <h2 id={headingId}>{title}</h2>;
