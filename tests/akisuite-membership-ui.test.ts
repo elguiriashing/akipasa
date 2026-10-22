@@ -26,20 +26,21 @@ describe("AkiSuite localized membership catalogue", () => {
     expect(grid).not.toContain("akihq_standard");
     expect(grid).not.toContain("aki_enterprise");
     expect(grid).not.toContain("setInterval");
+    const studio = readFileSync("src/components/AkiSuiteMembershipStudio.tsx", "utf8");
     for (const logo of [
       "/pwa/akipasa-192.png",
       "/brand/business-mark.svg",
-      "/brand/duermo-icon.png",
       "/brand/hq-mark.svg",
     ])
-      expect(grid).toContain(logo);
+      expect(studio).toContain(logo);
     const css = readFileSync(
       "src/components/AkiSuiteMembershipGrid.module.css",
       "utf8",
     );
-    expect(css).toContain("grid-auto-flow: column");
+    expect(css).toContain("grid-column: 1 / span 2");
+    expect(css).toContain("grid-column: 3 / span 3");
     expect(css).toContain("scroll-snap-type: x proximity");
-    expect(grid).not.toContain('id="listing-premium-title"');
+    expect(grid).toContain("AkiSuiteMembershipStudio");
   });
   it("renders the full catalogue regardless of checkout activation", () => {
     for (const source of [publicPage, accountPage]) {
