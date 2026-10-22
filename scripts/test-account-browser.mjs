@@ -976,17 +976,14 @@ try {
             1,
           );
           const links = page.getByRole("link", {
-            name:
-              locale === "es"
-                ? "Continuar en mi cuenta"
-                : "Continue in my account",
+            name: locale === "es" ? /^Explorar Premium/ : /^Explore listing Premium/,
           });
           await expect(links).toHaveCount(1);
           for (const link of await links.all()) {
             await expect(link).toBeVisible();
             await expect(link).toHaveAttribute(
               "href",
-              `/${locale}/account/subscription?from=akiduermo`,
+              `https://akiduermo.com/membership?lang=${locale}`,
             );
             // Every audience CTA remains scroll-reachable without horizontal clipping.
             await link.scrollIntoViewIfNeeded();
@@ -1035,10 +1032,8 @@ try {
             ),
             fullPage: true,
           });
-          await links.first().click();
-          await expect
-            .poll(() => new URL(page.url()).pathname)
-            .toBe(`/${locale}/account/subscription`);
+          // External AkiDuermo handoff is a no-payment navigation: verify the
+          // destination, but do not leave the local fixture to follow it.
           expect(await page.evaluate(() => window.__accountActions)).toEqual(
             [],
           );
@@ -1058,10 +1053,7 @@ try {
             .click();
           await expect(
             page.getByRole("link", {
-              name:
-                locale === "es"
-                  ? "Continuar en mi cuenta"
-                  : "Continue in my account",
+              name: locale === "es" ? /^Explorar Premium/ : /^Explore listing Premium/,
             }),
           ).toHaveCount(1);
           await expect(page.locator('[id^="operations-"] a')).toHaveCount(0);
