@@ -9,6 +9,12 @@ the final three under the single AkiBusiness logo with one hairline divider.
 Product branding is shown only in the group headings, never repeated on cards.
 Cards retain one desktop row with horizontal scrolling on smaller screens.
 
+The legacy AkiDuermo personal €5.99 plan is not renamed or repurposed: when an
+older AkiPasa account link originates at AkiDuermo, the comparison shows the
+€14.99 property listing offer and routes to the native AkiDuermo storefront
+without initiating the historical €5.99 checkout. The two entitlements remain
+separate.
+
 AkiHQ explains free AkiPasa listing management; AkiPasa Listing Premium is
 explicitly an AkiHQ listing upgrade and **does not** bundle AkiBusiness tools.
 Standard/Plus/Pro remain independently priced per operating location, with
