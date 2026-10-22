@@ -530,16 +530,21 @@ async function interactions(page, route, locale) {
       page.locator(`a[href="/${locale}/account/export"]`),
     ).toHaveCount(1);
   } else if (route === "subscription") {
-    await expect(page.getByRole("tablist", { name: es ? "Tipo de membresía" : "Membership type" })).toHaveCount(1);
+    await expect(
+      page.getByRole("tablist", {
+        name: es ? "Tipo de membresía" : "Membership type",
+      }),
+    ).toHaveCount(1);
     await expect(page.locator("#personal-free")).toBeVisible();
     await expect(page.locator("#akipasa_premium button")).toBeDisabled();
     await page.getByRole("tab", { name: es ? "Negocios" : "Business" }).click();
     await expect(page.locator("#akihq-free")).toBeVisible();
     await expect(page.locator("#akihq-free a")).toHaveAttribute(
-      "href", `https://akihq.app/${locale}/business`,
+      "href",
+      `https://akihq.app/${locale}/business`,
     );
     await expect(page.locator("#akibusiness_premium")).toBeVisible();
-    await expect(page.locator('[data-offer]')).toHaveCount(2);
+    await expect(page.locator("[data-offer]")).toHaveCount(2);
     await expect(page.locator('a[href*="akibusiness.com"]')).toHaveCount(1);
     await expect(page.locator('[id^="operations-"]')).toHaveCount(0);
     expect(await page.evaluate(() => window.__accountActions)).toEqual([]);
@@ -819,11 +824,21 @@ try {
               await expect(alert).toBeVisible();
             if (fixture === "billing-error") {
               await expect(page.getByRole("tablist")).toHaveCount(1);
-              await page.getByRole("tab", {name: locale === "es" ? "Negocios" : "Business"}).click();
-              await expect(page.locator('[data-offer]')).toHaveCount(2);
-              await expect(page.locator("#akibusiness_premium button")).toBeDisabled();
-              await expect(page.locator("#akibusiness_premium form")).toHaveCount(0);
-              await expect(page.locator(".workspace-content form")).toHaveCount(0);
+              await page
+                .getByRole("tab", {
+                  name: locale === "es" ? "Negocios" : "Business",
+                })
+                .click();
+              await expect(page.locator("[data-offer]")).toHaveCount(2);
+              await expect(
+                page.locator("#akibusiness_premium button"),
+              ).toBeDisabled();
+              await expect(
+                page.locator("#akibusiness_premium form"),
+              ).toHaveCount(0);
+              await expect(page.locator(".workspace-content form")).toHaveCount(
+                0,
+              );
             } else
               await expect(page.locator(".workspace-content form")).toHaveCount(
                 0,
@@ -839,7 +854,9 @@ try {
                 }),
               ).toHaveAttribute("href", `/${locale}/account/export`);
             } else {
-              await expect(page.getByRole("tablist")).toHaveCount(fixture === "billing-error" ? 1 : 0);
+              await expect(page.getByRole("tablist")).toHaveCount(
+                fixture === "billing-error" ? 1 : 0,
+              );
             }
             await page
               .getByRole("button", {
@@ -944,13 +961,20 @@ try {
             .poll(() => page.evaluate(() => window.__accountReady))
             .toBe(true);
           await expect(page.locator("[data-offer]")).toHaveCount(2);
-          await page.getByRole("tab", {name: locale === "es" ? "Negocios" : "Business"}).click();
+          await page
+            .getByRole("tab", {
+              name: locale === "es" ? "Negocios" : "Business",
+            })
+            .click();
           await expect(page.locator("[data-offer]")).toHaveCount(2);
           await expect(page.locator("#akihq-free a")).toHaveAttribute(
-            "href", `https://akihq.app/${locale}/business`,
+            "href",
+            `https://akihq.app/${locale}/business`,
           );
           await expect(page.locator('[id^="operations-"]')).toHaveCount(0);
-          await expect(page.locator('a[href*="akibusiness.com"]')).toHaveCount(1);
+          await expect(page.locator('a[href*="akibusiness.com"]')).toHaveCount(
+            1,
+          );
           const links = page.getByRole("link", {
             name:
               locale === "es"
@@ -1027,7 +1051,11 @@ try {
           // Readiness never suppresses free management or an account-only review
           // handoff; it must not create checkout forms or financial actions.
           await expect(page.locator("article form")).toHaveCount(0);
-          await page.getByRole("tab", {name: locale === "es" ? "Negocios" : "Business"}).click();
+          await page
+            .getByRole("tab", {
+              name: locale === "es" ? "Negocios" : "Business",
+            })
+            .click();
           await expect(
             page.getByRole("link", {
               name:
