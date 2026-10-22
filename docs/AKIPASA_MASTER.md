@@ -1,3 +1,5 @@
+# AKIPASA MASTER SYSTEM CONTRACT
+
 ## 2026-10-22 | Android native notification branding
 
 The Android shell's locally-triggered debug notification now uses a monochrome 24dp
@@ -14,8 +16,6 @@ server token storage, or notification dispatch. Verify the notification's
 legibility in the Xiaomi status bar and notification shade after installing a
 fresh Android debug build. A native Android rebuild/store bundle is required;
 deploying the website alone does not change the notification icon.
-
-# AKIPASA MASTER SYSTEM CONTRACT
 
 ## 2026-10-22 | Android release UI and OAuth return candidate
 
