@@ -162,11 +162,7 @@ export function AkiSuiteMembershipGrid({
       return {
         id: `operations-${tier}`,
         name:
-          tier === "basico"
-            ? "Standard"
-            : tier === "standard"
-              ? "Plus"
-              : "Pro",
+          tier === "basico" ? "Standard" : tier === "standard" ? "Plus" : "Pro",
         label:
           tier === "basico"
             ? es
