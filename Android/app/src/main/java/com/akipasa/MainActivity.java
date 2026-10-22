@@ -63,8 +63,7 @@ public final class MainActivity extends Activity {
             attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
             getWindow().setAttributes(attributes);
         }
-        hideSystemBars();
-
+        // DecorView is not installed until setContentView; don't request insets yet.
         FrameLayout root = buildLayout();
         if (Build.VERSION.SDK_INT >= 28) {
             root.setOnApplyWindowInsetsListener((view, insets) -> {
@@ -80,6 +79,8 @@ public final class MainActivity extends Activity {
             });
         }
         setContentView(root);
+        // Apply immersive mode only after the view is attached to a window.
+        root.post(this::hideSystemBars);
         configureWebView();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
@@ -96,7 +97,8 @@ public final class MainActivity extends Activity {
     private void hideSystemBars() {
         if (Build.VERSION.SDK_INT >= 30) {
             getWindow().setDecorFitsSystemWindows(false);
-            WindowInsetsController controller = getWindow().getInsetsController();
+            View decorView = getWindow().getDecorView();
+            WindowInsetsController controller = decorView.getWindowInsetsController();
             if (controller != null) {
                 controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
                 controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
