@@ -560,7 +560,10 @@ export function ProductionMap({
             activePopup = popup;
             popup.on("close", () => controller.abort());
             if (point.kind !== "venue") {
-              popup.setDOMContent(popupContent(point, locale, (href) => router.push(href))).addTo(map);
+              const content = popupContent(point, locale, (href) =>
+                router.push(href),
+              );
+              popup.setDOMContent(content).addTo(map);
             } else {
               const loading = document.createElement("p");
               loading.textContent =
