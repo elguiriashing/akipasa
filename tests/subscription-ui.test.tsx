@@ -38,11 +38,7 @@ it("shows free management and the canonical operating packages without retired n
   expect(screen.queryByRole("tab")).toBeNull();
   expect(screen.getByRole("heading", { name: "AkiHQ" })).toBeTruthy();
   expect(
-    within(
-      screen
-        .getByRole("heading", { name: "AkiHQ" })
-        .closest("article")!,
-    )
+    within(screen.getByRole("heading", { name: "AkiHQ" }).closest("article")!)
       .getByRole("link", { name: "Open free AkiHQ" })
       .getAttribute("href"),
   ).toBe("https://akihq.app/en/business");
@@ -51,7 +47,9 @@ it("shows free management and the canonical operating packages without retired n
     ["Plus", 8],
     ["Pro", 12],
   ] as const) {
-    const card = screen.getByRole("heading", { name: `AkiBusiness ${name}` }).closest("article")!;
+    const card = screen
+      .getByRole("heading", { name: `AkiBusiness ${name}` })
+      .closest("article")!;
     expect(card.textContent).toContain(`${count} of 12 active tools`);
     expect(
       within(card)
