@@ -44,10 +44,20 @@
   background: #ffffff08;
   color: #f6f8fc;
 }
-.personalPromo strong { font-weight: 800; }
-.personalPromo p { margin: 5px 0; font-size: 12px; color: #b6c4dc; }
-.personalPromo span { font-size: 13px; }
-.personalAction { min-width: min(240px, 100%); }
+.personalPromo strong {
+  font-weight: 800;
+}
+.personalPromo p {
+  margin: 5px 0;
+  font-size: 12px;
+  color: #b6c4dc;
+}
+.personalPromo span {
+  font-size: 13px;
+}
+.personalAction {
+  min-width: min(240px, 100%);
+}
 .personalAction :is(a, button) {
   display: block;
   width: 100%;
@@ -61,5 +71,10 @@
   font-weight: 800;
   font-size: 12px;
 }
-.personalAction form { margin: 0; }
-.personalAction button:disabled { opacity: .55; cursor: not-allowed; }
+.personalAction form {
+  margin: 0;
+}
+.personalAction button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

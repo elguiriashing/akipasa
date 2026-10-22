@@ -22,7 +22,6 @@ account/subscription, membership adapters, original brand asset paths, EN/ES,
 responsive scrolling, release CI and exact-head browser testing. Roll back
 the presentation adapter/canonical copies without changing subscription data.
 
-
 ## 2026-10-22 | Map popup navigation and native WebView safe-area consistency
 
 MapLibre popup anchors are created imperatively, outside React. Until now, tapping

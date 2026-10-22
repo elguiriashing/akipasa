@@ -22,7 +22,6 @@
 - **Rollback:** revert adapter and copied canonical component files; billing
   and data state need no migration.
 
-
 ## 2026-10-21 | Membership design parity: AkiPasa, AkiDuermo, AkiCoches
 
 - **Before:** AkiPasa displayed four operational plans and a detached listing
