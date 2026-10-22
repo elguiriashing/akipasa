@@ -1,5 +1,31 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-22 | Canonical AkiSuite membership studio and group identity
+
+The public AkiPasa membership and subscription catalogue uses
+\`AkiSuiteMembershipStudio\`, the exact shared template also included in the
+independent AkiDuermo and AkiCoches repositories. The comparison has five
+cards in one scrolling row: AkiHQ Free and Listing Premium beneath ONE AkiHQ
+group identity, then AkiBusiness Standard, Plus and Pro beneath ONE AkiBusiness
+group identity. A one-pixel neutral separator divides the two headers; logos
+must never be repeated inside individual plan cards. The checked-in original
+\`/brand/hq-mark.svg\` and \`/brand/business-mark.svg\` remain the sources for
+the group marks. App-specific differences are limited to colour tokens,
+localized marketing copy, approved plan data and scoped actions.
+
+Keep free hub access independent of paid operating access. Preserve per-workspace
+selection, server-gated personal Premium, supported price IDs, trial and billing
+logic, customer records, checkout safety, and historical entitlements. The
+independent consumer personal offer remains separately gated and cannot change
+the first-two / last-three grouping. A single mobile horizontal scroller must
+keep logos aligned with cards and provide keyboard access.
+
+No schema, permissions, Stripe configuration or production data is changed.
+Acceptance: exact-source consistency across the three shared template files,
+membership rendering and access tests, account browser/mobile accessibility,
+full CI, and production verification. Merge only when required gates pass.
+
+
 ## 2026-10-21 | Discovery membership studio layout contract (PR #275)
 
 The AkiPasa public and account membership catalogue must use the same modern,
