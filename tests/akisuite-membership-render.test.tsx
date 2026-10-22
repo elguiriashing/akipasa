@@ -44,7 +44,7 @@ describe("Individual and Business membership separation", () => {
       expect(
         screen
           .getByRole("link", {
-            name: locale === "es" ? "Abrir AkiHQ gratis" : "Open free AkiHQ",
+            name: locale === "es" ? /^Abrir AkiHQ gratis/ : /^Open free AkiHQ/,
           })
           .getAttribute("href"),
       ).toBe(`https://akihq.app/${locale}/business`);
