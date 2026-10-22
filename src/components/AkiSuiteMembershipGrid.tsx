@@ -161,7 +161,7 @@ export function AkiSuiteMembershipGrid({
     },
     {
       id: listingPlan,
-      name: `${discoveryName} Premium`,
+      name: `${discoveryName} Listing Premium`,
       label: es ? "PARA AKIHQ · MÁS VISIBILIDAD" : "FOR AKIHQ · MORE VISIBILITY",
       description: es
         ? `Mejora tu presencia y accede a las herramientas Premium de ${discoveryName} para gestionar tu ficha desde AkiHQ.`
