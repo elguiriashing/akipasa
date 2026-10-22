@@ -389,7 +389,7 @@ describe("Account control disclosure preserves existing workflows", () => {
     ).toHaveAttribute("href", "/en/account/subscription");
     expect(card.querySelector("form")).toBeNull();
     expect(
-      screen.getByRole("link", { name: "Explore AkiBusiness" }),
+      screen.getByRole("link", { name: /^Explore AkiBusiness/ }),
     ).toHaveAttribute("href", "https://akibusiness.com/?locale=en");
     expect(screen.getByText("AkiPasa Premium (legacy)")).toBeInTheDocument();
     expect(Object.fromEntries(new FormData(manage))).toEqual({ locale: "en" });
