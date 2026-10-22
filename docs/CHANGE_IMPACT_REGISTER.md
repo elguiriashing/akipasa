@@ -2680,3 +2680,17 @@ assembleDebug --offline` could not fetch Gradle 9.5 (network unreachable).
   widths; no server auth, data, listings, billing, or non-Android styles modified.
 - Verification: mandatory repository CI and on-device navigation regression.
   Roll back the scoped CSS block if it causes overlap or cutout regression.
+
+## 2026-10-22 | MapLibre popup internal navigation in immersive WebView
+
+- Before: MapLibre-created anchors performed a full document load for map pin
+  venue/event detail; Explore uses Next.js in-app navigation instead.
+  The hard-navigation path correlated with persistent expanded Android toolbar.
+- After: normal same-origin map popup click uses Next router without refreshing
+  the WebView, preserving state and avoiding this unique navigation path.
+  Ctrl/meta/shift/alt clicks, download and external links use regular anchor
+  behavior. AkiDuermo external destinations remain external.
+- Scope: ProductionMap client UI only; no API, billing, roles, native permission
+  or database changes. Revert the popup click handling for rollback.
+- Verification: CI and actual Android Map -> Event/Venue navigation plus
+  Explore and non-Android regression tests; device-specific result pending.
