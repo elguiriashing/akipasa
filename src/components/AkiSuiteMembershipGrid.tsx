@@ -123,8 +123,8 @@ export function AkiSuiteMembershipGrid({
   const offers: MembershipOffer[] = [
     {
       id: "akihq-free",
-      name: "AkiHQ",
-      label: es ? "Gestión gratuita" : "Free management",
+      name: es ? "Gestión gratuita" : "Free management",
+      label: "AkiHQ",
       description: es
         ? "Organizaciones, ubicaciones, listados, titularidad y permisos esenciales."
         : "Organisations, locations, listings, ownership and essential permissions.",
