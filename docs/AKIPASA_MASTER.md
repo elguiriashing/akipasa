@@ -1,5 +1,18 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-22 | Android map-to-detail header inset persistence
+
+The Android WebView marks `body[data-android-app="true"]` and its native window owns
+camera cutout insets. The mobile app header is a fixed 48px across the Explore,
+Map, Venue, and Event routes, including Next.js client-side navigation from
+fullscreen Map into a detail page and back. A native-only high-specificity
+CSS override in `src/app/portal-unity.css` prevents legacy safe-area rules
+from expanding header height or search positioning after route changes.
+Browser/PWA safe-area handling and other app frontends remain unchanged.
+Physical device regression validation must cover Map → Event, Map → Venue,
+Explore → Event, direct deep link, repeated back/forward, Android gesture
+and button navigation; source checks alone do not confirm visual behavior.
+
 ## 2026-10-22 | Android release UI and OAuth return candidate
 
 The `com.akipasa` Android shell uses the current AkiPasa orange pin/star raster
