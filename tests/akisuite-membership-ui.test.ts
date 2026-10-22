@@ -26,19 +26,22 @@ describe("AkiSuite localized membership catalogue", () => {
     expect(grid).not.toContain("akihq_standard");
     expect(grid).not.toContain("aki_enterprise");
     expect(grid).not.toContain("setInterval");
-    for (const logo of [
-      "/pwa/akipasa-192.png",
-      "/brand/business-mark.svg",
-      "/brand/duermo-icon.png",
-      "/brand/hq-mark.svg",
-    ])
-      expect(grid).toContain(logo);
-    const css = readFileSync(
-      "src/components/AkiSuiteMembershipGrid.module.css",
+    const studio = readFileSync(
+      "src/components/AkiSuiteMembershipStudio.tsx",
       "utf8",
     );
-    expect(css).toContain("grid-auto-flow: column");
+    const css = readFileSync(
+      "src/components/AkiSuiteMembershipStudio.module.css",
+      "utf8",
+    );
+    expect(grid).toContain("AkiSuiteMembershipStudio");
+    expect(studio).toContain('"/brand/business-mark.svg"');
+    expect(studio).toContain('"/brand/hq-mark.svg"');
+    expect(css).toContain("grid-template-columns: repeat(5, minmax(0, 1fr))");
+    expect(css).toContain("grid-column: 1 / span 2");
+    expect(css).toContain("grid-column: 3 / span 3");
     expect(css).toContain("scroll-snap-type: x proximity");
+    expect(css).toContain("overflow-x: auto");
     expect(grid).not.toContain('id="listing-premium-title"');
   });
   it("renders the full catalogue regardless of checkout activation", () => {
