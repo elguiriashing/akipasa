@@ -227,7 +227,9 @@ export function AkiSuiteMembershipGrid({
       description: es
         ? `Mejora tu presencia y accede a las herramientas Premium de ${discoveryName} para gestionar tu ficha desde AkiHQ.`
         : `Upgrade your presence and unlock the deluxe suite of ${discoveryName} listing tools in AkiHQ.`,
-      price: fromDuermo ? money(1499) : money(akisuitePlans[listingPlan].monthlyCents),
+      price: fromDuermo
+        ? money(1499)
+        : money(akisuitePlans[listingPlan].monthlyCents),
       period: es ? "/ mes por ubicación" : "/ month per location",
       benefits: es
         ? [
@@ -245,16 +247,20 @@ export function AkiSuiteMembershipGrid({
           {es ? "Ver Premium para alojamientos" : "View property Premium"}
           <span aria-hidden="true">↗</span>
         </Link>
-      ) : planAction(listingPlan),
+      ) : (
+        planAction(listingPlan)
+      ),
       actionNote: fromDuermo
-        ? (es ? "La membresía personal de 5,99 € es independiente" : "Separate from legacy €5.99 personal Premium")
-        : !listingReady
         ? es
-          ? "Activación pendiente"
-          : "Activation pending"
-        : es
-          ? "Acceso sujeto a verificación"
-          : "Access subject to verification",
+          ? "La membresía personal de 5,99 € es independiente"
+          : "Separate from legacy €5.99 personal Premium"
+        : !listingReady
+          ? es
+            ? "Activación pendiente"
+            : "Activation pending"
+          : es
+            ? "Acceso sujeto a verificación"
+            : "Access subject to verification",
     },
     operationsOffers[0],
     operationsOffers[1],
