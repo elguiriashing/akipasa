@@ -1,5 +1,22 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-22 | Map popup navigation and native WebView safe-area consistency
+
+MapLibre popup anchors are created imperatively, outside React. Until now, tapping
+a map pin's venue/event link performed a full-document navigation instead of
+Next.js client routing. In the Android immersive WebView this path was reported
+to introduce a persistent enlarged header and extra safe-area padding, while
+Explore-to-detail client navigation kept the 48px header compact.
+
+Map popup taps targeting the current web origin now use the Next.js router.
+Standard external destinations, modified clicks and native link fallback remain
+unchanged. Map popup links retain their href attributes. No native Android
+bundle or Google Play upload is needed for this website change. Accept only
+after testing Map -> Venue, Map -> Event, Explore -> detail, backwards navigation
+and external accommodation links on a real Android device. The map navigation
+difference is established in source; the header resolution remains a device
+acceptance check rather than a confirmed outcome.
+
 ## 2026-10-22 | Android map-to-detail header inset persistence
 
 The Android WebView marks `body[data-android-app="true"]` and its native window owns
