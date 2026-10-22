@@ -2,6 +2,7 @@
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   compactMarkerSchema,
   type CompactMapMarker,
@@ -120,7 +121,11 @@ function markerImage(
   return context.getImageData(0, 0, canvas.width, canvas.height);
 }
 
-function popupContent(point: MapPoint, locale: Locale) {
+function popupContent(
+  point: MapPoint,
+  locale: Locale,
+  navigateInternal: (href: string) => void,
+) {
   const wrapper = document.createElement("article");
   wrapper.className = "map-popup-card";
   const category = document.createElement("span");
@@ -169,14 +174,32 @@ function popupContent(point: MapPoint, locale: Locale) {
       : locale === "es"
         ? "Ver evento"
         : "View event";
-  link.addEventListener("click", () =>
+  link.addEventListener("click", (event) => {
     trackBehaviour({
       eventType: "map_pin_clicked",
       surface: "map",
       entityType: point.kind === "venue" ? "venue" : "event",
       entityId: point.id,
-    }),
-  );
+    });
+    // MapLibre creates this anchor outside React. Use the same Next.js
+    // client navigation as Explore for ordinary internal taps instead of
+    // reloading the entire Android WebView (which resets safe-area insets).
+    // Preserve native link behavior for modifiers and external destinations.
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey ||
+      link.target === "_blank" ||
+      link.hasAttribute("download")
+    ) return;
+    const destination = new URL(link.href, window.location.href);
+    if (destination.origin !== window.location.origin) return;
+    event.preventDefault();
+    navigateInternal(destination.pathname + destination.search + destination.hash);
+  });
   wrapper.appendChild(category);
   wrapper.appendChild(title);
   wrapper.appendChild(venue);
@@ -208,6 +231,7 @@ export function ProductionMap({
   styleUrl: string;
   center: { latitude: number; longitude: number };
 }) {
+  const router = useRouter();
   const [mapTruncated, setMapTruncated] = useState(false);
   const [mapUnavailable, setMapUnavailable] = useState(false);
   const stayType = stayFilters?.type;
@@ -536,7 +560,7 @@ export function ProductionMap({
             activePopup = popup;
             popup.on("close", () => controller.abort());
             if (point.kind !== "venue") {
-              popup.setDOMContent(popupContent(point, locale)).addTo(map);
+              popup.setDOMContent(popupContent(point, locale, (href) => router.push(href))).addTo(map);
             } else {
               const loading = document.createElement("p");
               loading.textContent =
@@ -576,6 +600,7 @@ export function ProductionMap({
                           : point.category,
                     },
                     locale,
+                    (href) => router.push(href),
                   ),
                 );
               } catch {
@@ -842,7 +867,7 @@ export function ProductionMap({
       popupRequest?.abort();
       cleanup();
     };
-  }, [locale, styleUrl, fullScreen, venueDestination]);
+  }, [locale, styleUrl, fullScreen, venueDestination, router]);
 
   return (
     <section className="map-panel" aria-labelledby="production-map-title">
