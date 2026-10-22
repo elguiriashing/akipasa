@@ -48,7 +48,7 @@ it("shows personal memberships separately from free management and software", as
   const hq = screen.getByRole("heading", { name: "AkiHQ" }).closest("article")!;
   expect(
     within(hq)
-      .getByRole("link", { name: "Open free AkiHQ" })
+      .getByRole("link", { name: /^Open free AkiHQ/ })
       .getAttribute("href"),
   ).toBe("https://akihq.app/en/business");
   expect(
