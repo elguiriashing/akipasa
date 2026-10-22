@@ -38,15 +38,19 @@ for (const locale of ["en", "es"] as const) {
       });
       await page.goto(`/${locale}/membership?from=akibusiness`);
       const catalogue = page.locator('section[data-product="AkiPasa"]');
-      await expect(catalogue.getByRole("tablist", {
-        name: locale === "es" ? "Tipo de membresía" : "Membership type",
-      })).toBeVisible();
+      await expect(
+        catalogue.getByRole("tablist", {
+          name: locale === "es" ? "Tipo de membresía" : "Membership type",
+        }),
+      ).toBeVisible();
       await expect(catalogue.locator("[data-offer]")).toHaveCount(2);
       await expect(catalogue.locator("#personal-free")).toBeVisible();
       await expect(catalogue.locator("#akipasa_premium button")).toBeDisabled();
-      await catalogue.getByRole("tab", {
-        name: locale === "es" ? "Negocios" : "Business",
-      }).click();
+      await catalogue
+        .getByRole("tab", {
+          name: locale === "es" ? "Negocios" : "Business",
+        })
+        .click();
       await expect(catalogue.locator("[data-offer]")).toHaveCount(2);
       await expect(catalogue.locator("#akihq-free")).toContainText("AkiHQ");
       await expect(catalogue.locator("#akibusiness_premium")).toContainText(
@@ -56,13 +60,19 @@ for (const locale of ["en", "es"] as const) {
         "href",
         `https://akihq.app/${locale}/business`,
       );
-      await expect(catalogue.locator('a[href*="akibusiness.com"]')).toHaveCount(1);
+      await expect(catalogue.locator('a[href*="akibusiness.com"]')).toHaveCount(
+        1,
+      );
       await expect(catalogue.locator('[id^="operations-"]')).toHaveCount(0);
       await expect(catalogue.locator("#akisuite-sector")).toHaveCount(0);
       await expect(
-        catalogue.locator("#aki_enterprise, #akihq_pro, #akihq_standard, #akihq_business_addon"),
+        catalogue.locator(
+          "#aki_enterprise, #akihq_pro, #akihq_standard, #akihq_business_addon",
+        ),
       ).toHaveCount(0);
-      await expect(catalogue.locator("input[name=akisuite-interval]")).toHaveCount(0);
+      await expect(
+        catalogue.locator("input[name=akisuite-interval]"),
+      ).toHaveCount(0);
       await expect(catalogue.locator("article form")).toHaveCount(0);
       for (const theme of ["light", "dark"]) {
         await page.evaluate(

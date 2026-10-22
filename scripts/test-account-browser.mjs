@@ -976,7 +976,10 @@ try {
             1,
           );
           const links = page.getByRole("link", {
-            name: locale === "es" ? /^Explorar Premium/ : /^Explore listing Premium/,
+            name:
+              locale === "es"
+                ? /^Explorar Premium/
+                : /^Explore listing Premium/,
           });
           await expect(links).toHaveCount(1);
           for (const link of await links.all()) {
@@ -1053,7 +1056,10 @@ try {
             .click();
           await expect(
             page.getByRole("link", {
-              name: locale === "es" ? /^Explorar Premium/ : /^Explore listing Premium/,
+              name:
+                locale === "es"
+                  ? /^Explorar Premium/
+                  : /^Explore listing Premium/,
             }),
           ).toHaveCount(1);
           await expect(page.locator('[id^="operations-"] a')).toHaveCount(0);
