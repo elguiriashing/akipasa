@@ -49,7 +49,9 @@ describe("AkiSuite membership audience contract", () => {
     expect(source).toContain('"ArrowRight"');
     expect(source).toContain("AkiBusiness");
     const compactCss = css.replace(/\s+/g, "");
-    expect(compactCss).toContain("grid-template-columns:repeat(2,minmax(0,1fr))");
+    expect(compactCss).toContain(
+      "grid-template-columns:repeat(2,minmax(0,1fr))",
+    );
     expect(compactCss).toContain("@media(max-width:680px)");
     for (const [path, sha] of [
       [
