@@ -1,252 +1,65 @@
-/* Single-row membership studio, intentionally shared visually with AkiCoches and AkiDuermo. */
+/* Product-specific adapter only. Five-card layout uses the identical shared AkiSuiteMembershipStudio in all discovery apps. */
 .root {
-  --studio-accent: #ff822d;
-  display: grid;
-  gap: 1rem;
+  width: 100%;
   min-width: 0;
   max-width: 1540px;
-  padding: clamp(18px, 2.5vw, 32px);
-  border: 1px solid #bfd4f922;
-  border-radius: 23px;
-  background:
-    radial-gradient(ellipse at 7% 0%, #1b467a65, transparent 45%),
-    linear-gradient(138deg, #0a1530, #071124 70%, #0c1120);
-  color: #f6f8fc;
-  box-sizing: border-box;
-}
-.root * {
-  box-sizing: border-box;
-}
-.heading {
-  padding-bottom: clamp(15px, 2vw, 25px);
-  border-bottom: 1px solid #ffffff24;
-}
-.heading h2 {
-  margin: 8px 0 10px;
-  color: #fff;
-  font-size: clamp(28px, 3vw, 43px);
-  font-weight: 850;
-  line-height: 1.1;
-  letter-spacing: -0.055em;
-}
-.heading p {
-  max-width: 70ch;
-  margin: 0;
-  color: #b7c5dd;
-  line-height: 1.55;
-  font-size: clamp(14px, 1.2vw, 17px);
-}
-.grid {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(210px, 1fr);
-  gap: 12px;
-  align-items: stretch;
-  width: 100%;
-  min-width: 0;
-  overflow-x: auto;
-  overscroll-behavior-inline: contain;
-  scroll-snap-type: x proximity;
-  scrollbar-width: thin;
-  padding-bottom: 9px;
-}
-.card {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  min-width: 0;
-  gap: 0.6rem;
-  padding: clamp(14px, 1.25vw, 21px);
-  border: 1px solid #bfd4f92b;
-  border-radius: 18px;
-  background: linear-gradient(165deg, #ffffff12, #ffffff06);
-  box-shadow: 0 20px 60px #01091d26;
-  overflow-wrap: anywhere;
-  scroll-snap-align: start;
-}
-.card[data-product="akibusiness"]:nth-child(4) {
-  border-color: #ff822d92;
-  background: linear-gradient(160deg, #ff822d1c, #ffffff05);
-}
-.card h3 {
-  min-height: 2.2em;
-  margin: 0;
-  font-size: clamp(18px, 1.35vw, 23px);
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: -0.035em;
-  color: #fff;
-}
-.card > p {
-  min-height: 5.5em;
-  margin: 0;
-  color: #afbdd2;
-  font-size: 12.5px;
-  line-height: 1.5;
-}
-.card > ul {
-  flex: 1;
-}
-.brandIdentity {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.45rem;
-  min-height: 88px;
-}
-.brandIdentity img,
-.card > img {
-  width: 46px;
-  height: 46px;
-  border-radius: 10px;
-  object-fit: contain;
-}
-.card > img {
-  display: block;
-  margin-bottom: 33px;
-}
-.eyebrow {
-  color: #a8bad0;
-  font-weight: 800;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-.price {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.25rem;
-  margin: 4px 0 8px;
-  min-width: 0;
-}
-.price strong {
-  color: #fff;
-  font-size: clamp(25px, 2vw, 33px);
-  font-weight: 850;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.055em;
-}
-.price span {
-  color: #bdc8de;
-  font-size: 11px;
-  line-height: 1.4;
-}
-.benefits {
-  display: grid;
-  align-content: start;
-  gap: 9px;
-  padding: 14px 0 0;
-  margin: 0 0 12px;
-  border-top: 1px solid #ffffff24;
-  list-style: none;
-  color: #d7e0ef;
-  font-size: 12px;
-  line-height: 1.45;
-}
-.benefits li {
-  display: grid;
-  grid-template-columns: 15px minmax(0, 1fr);
-  gap: 7px;
-}
-.benefits li::before {
-  content: "✓";
-  color: var(--studio-accent);
-  font-weight: 900;
-}
-.card > a,
-.card > button,
-.card > form {
-  margin-top: auto;
-}
-.card > a,
-.card > button,
-.card form button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 46px;
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ffffff42;
-  border-radius: 12px;
-  background: #ffffff12;
-  color: #fff;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 1.4;
-  text-decoration: none;
-  white-space: normal;
-  text-align: center;
-  cursor: pointer;
-}
-.card > a:hover,
-.card form button:hover:not(:disabled) {
-  border-color: var(--studio-accent);
-  background: #ffffff20;
-}
-.card a:focus-visible,
-.card button:focus-visible,
-.workspaceChoice select:focus-visible {
-  outline: 3px solid var(--studio-accent);
-  outline-offset: 3px;
-}
-.card button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-.card form button {
-  width: 100%;
+  margin-inline: auto;
 }
 .workspaceChoice {
   display: grid;
-  gap: 0.5rem;
-  max-width: 32rem;
+  gap: 8px;
+  width: min(400px, 100%);
+  margin: 14px 0 8px;
   color: #d7e0ef;
+  font-size: 12px;
+  font-weight: 700;
 }
 .workspaceChoice select {
-  width: 100%;
   min-height: 44px;
-  padding: 8px;
+  border: 1px solid #ffffff40;
   border-radius: 12px;
   background: #1b2943;
   color: #fff;
-  border: 1px solid #ffffff40;
+  padding: 8px;
+}
+.workspaceChoice select:focus-visible,
+.personalPromo :is(a, button):focus-visible {
+  outline: 2px solid #ff822d;
+  outline-offset: 3px;
 }
 .footnote {
-  margin: 0;
   color: #a6b9d2;
   font-size: 12px;
-  line-height: 1.6;
 }
-@media (max-width: 1100px) {
-  .grid {
-    grid-auto-columns: minmax(235px, min(78vw, 320px));
-  }
-  .card > p,
-  .card h3 {
-    min-height: 0;
-  }
+.personalPromo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 14px;
+  padding: 16px;
+  border: 1px solid #ffffff2c;
+  border-radius: 16px;
+  background: #ffffff08;
+  color: #f6f8fc;
 }
-@media (max-width: 600px) {
-  .root {
-    padding: 16px 13px;
-    gap: 0.85rem;
-    border-radius: 18px;
-  }
-  .grid {
-    grid-auto-columns: minmax(235px, 84vw);
-  }
-  .card {
-    padding: 16px;
-  }
-  .card > img {
-    margin-bottom: 26px;
-  }
+.personalPromo strong { font-weight: 800; }
+.personalPromo p { margin: 5px 0; font-size: 12px; color: #b6c4dc; }
+.personalPromo span { font-size: 13px; }
+.personalAction { min-width: min(240px, 100%); }
+.personalAction :is(a, button) {
+  display: block;
+  width: 100%;
+  padding: 12px 18px;
+  border: 1px solid #ffffff46;
+  border-radius: 12px;
+  background: #ffffff14;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 12px;
 }
-@media (prefers-reduced-motion: reduce) {
-  .grid {
-    scroll-behavior: auto;
-  }
-}
+.personalAction form { margin: 0; }
+.personalAction button:disabled { opacity: .55; cursor: not-allowed; }
