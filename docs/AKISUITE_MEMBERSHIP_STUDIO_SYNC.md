@@ -23,3 +23,6 @@ all five cards share a keyboard-accessible horizontal scroller on mobile.
 This layout does not grant entitlements, change Stripe state, alter
 subscription prices or create checkout. Business billing and permissions
 remain scoped to the appropriate application and operating location.
+
+The approved AkiHQ and AkiBusiness group marks are loaded from existing
+`/brand/hq-mark.svg` and `/brand/business-mark.svg` files in each app.
