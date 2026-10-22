@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Monochrome notification glyph traced from the existing public AkiPasa BrandMark SVG.
+     Android applies its own notification tint. Do not use the adaptive launcher icon here. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="64"
+    android:viewportHeight="76">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M27,6 C13.2,6 2,17.2 2,31 C2,48 27,74 27,74 S52,48 52,31 C52,17.2 40.8,6 27,6 Z M27,21 A10,10 0,1 1,27 41 A10,10 0,1 1,27 21 Z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M53,0 L56.2,9.8 L64,13 L56.2,16.2 L53,26 L49.8,16.2 L42,13 L49.8,9.8 Z" />
+</vector>
