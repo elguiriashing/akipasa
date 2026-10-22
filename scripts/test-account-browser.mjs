@@ -530,42 +530,18 @@ async function interactions(page, route, locale) {
       page.locator(`a[href="/${locale}/account/export"]`),
     ).toHaveCount(1);
   } else if (route === "subscription") {
-    await expect(page.getByRole("tablist")).toHaveCount(0);
-    const catalogue = page.locator(
-      '[aria-labelledby="akisuite-catalogue-title"]',
+    await expect(page.getByRole("tablist", { name: es ? "Tipo de membresía" : "Membership type" })).toHaveCount(1);
+    await expect(page.locator("#personal-free")).toBeVisible();
+    await expect(page.locator("#akipasa_premium button")).toBeDisabled();
+    await page.getByRole("tab", { name: es ? "Negocios" : "Business" }).click();
+    await expect(page.locator("#akihq-free")).toBeVisible();
+    await expect(page.locator("#akihq-free a")).toHaveAttribute(
+      "href", `https://akihq.app/${locale}/business`,
     );
-    await expect(catalogue.locator("#akihq-free")).toBeVisible();
-    await expect(catalogue.locator("#akihq-free a")).toHaveAttribute(
-      "href",
-      `https://akihq.app/${locale}/business`,
-    );
-    for (const [tier, count] of [
-      ["basico", 4],
-      ["standard", 8],
-      ["pro", 12],
-    ]) {
-      const card = catalogue.locator(`#operations-${tier}`);
-      await expect(card).toBeVisible();
-      await expect(card).toContainText(
-        es
-          ? `${count} de 12 herramientas activas`
-          : `${count} of 12 active tools`,
-      );
-      await expect(card.locator("a")).toHaveAttribute(
-        "href",
-        `/${locale}/account/subscription/operations`,
-      );
-      await expect(card.locator("form")).toHaveCount(0);
-    }
-    await expect(
-      catalogue.getByRole("radio", { name: es ? /Anual/ : /Yearly/ }),
-    ).toHaveCount(0);
-    for (const id of ["aki_enterprise", "akihq_pro", "akihq_standard"])
-      await expect(catalogue.locator(`#${id}`)).toHaveCount(0);
-    for (const button of await catalogue
-      .locator("article form button[type=submit]")
-      .all())
-      await expect(button).toBeDisabled();
+    await expect(page.locator("#akibusiness_premium")).toBeVisible();
+    await expect(page.locator('[data-offer]')).toHaveCount(2);
+    await expect(page.locator('a[href*="akibusiness.com"]')).toHaveCount(1);
+    await expect(page.locator('[id^="operations-"]')).toHaveCount(0);
     expect(await page.evaluate(() => window.__accountActions)).toEqual([]);
   } else if (route === "bookings") {
     const cancel = page.locator(".booking-cancel").first();
@@ -842,24 +818,12 @@ try {
             for (const alert of await alerts.all())
               await expect(alert).toBeVisible();
             if (fixture === "billing-error") {
-              const catalogue = page.locator(
-                '[aria-labelledby="akisuite-catalogue-title"]',
-              );
-              await expect(catalogue.locator("article")).toHaveCount(5);
-              for (const id of [
-                "akihq-free",
-                "operations-basico",
-                "operations-standard",
-                "operations-pro",
-              ])
-                await expect(catalogue.locator(`#${id} form`)).toHaveCount(0);
-              await expect(
-                catalogue.locator("#akibusiness_premium button"),
-              ).toBeDisabled();
-              await expect(catalogue.locator("form")).toHaveCount(0);
-              await expect(page.locator(".workspace-content form")).toHaveCount(
-                0,
-              );
+              await expect(page.getByRole("tablist")).toHaveCount(1);
+              await page.getByRole("tab", {name: locale === "es" ? "Negocios" : "Business"}).click();
+              await expect(page.locator('[data-offer]')).toHaveCount(2);
+              await expect(page.locator("#akibusiness_premium button")).toBeDisabled();
+              await expect(page.locator("#akibusiness_premium form")).toHaveCount(0);
+              await expect(page.locator(".workspace-content form")).toHaveCount(0);
             } else
               await expect(page.locator(".workspace-content form")).toHaveCount(
                 0,
@@ -875,7 +839,7 @@ try {
                 }),
               ).toHaveAttribute("href", `/${locale}/account/export`);
             } else {
-              await expect(page.getByRole("tablist")).toHaveCount(0);
+              await expect(page.getByRole("tablist")).toHaveCount(fixture === "billing-error" ? 1 : 0);
             }
             await page
               .getByRole("button", {
@@ -979,19 +943,14 @@ try {
           await expect
             .poll(() => page.evaluate(() => window.__accountReady))
             .toBe(true);
-          await expect(page.getByRole("article")).toHaveCount(5);
-          for (const id of [
-            "akihq-free",
-            "operations-basico",
-            "operations-standard",
-            "operations-pro",
-          ])
-            await expect(page.locator(`#${id} form`)).toHaveCount(0);
+          await expect(page.locator("[data-offer]")).toHaveCount(2);
+          await page.getByRole("tab", {name: locale === "es" ? "Negocios" : "Business"}).click();
+          await expect(page.locator("[data-offer]")).toHaveCount(2);
           await expect(page.locator("#akihq-free a")).toHaveAttribute(
-            "href",
-            `https://akihq.app/${locale}/business`,
+            "href", `https://akihq.app/${locale}/business`,
           );
-          await expect(page.locator('[id^="operations-"] a')).toHaveCount(3);
+          await expect(page.locator('[id^="operations-"]')).toHaveCount(0);
+          await expect(page.locator('a[href*="akibusiness.com"]')).toHaveCount(1);
           const links = page.getByRole("link", {
             name:
               locale === "es"
@@ -1005,8 +964,7 @@ try {
               "href",
               `/${locale}/account/subscription?from=akiduermo`,
             );
-            // The canonical one-row membership carousel makes every CTA
-            // scroll-reachable, even when it is not initially in the viewport.
+            // Every audience CTA remains scroll-reachable without horizontal clipping.
             await link.scrollIntoViewIfNeeded();
             const geometry = await link.evaluate((el) => {
               const r = el.getBoundingClientRect();
@@ -1077,7 +1035,8 @@ try {
                   : "Continue in my account",
             }),
           ).toHaveCount(1);
-          await expect(page.locator('[id^="operations-"] a')).toHaveCount(3);
+          await page.getByRole("tab", {name: locale === "es" ? "Negocios" : "Business"}).click();
+          await expect(page.locator('[id^="operations-"] a')).toHaveCount(0);
           expect(await page.evaluate(() => window.__accountActions)).toEqual(
             [],
           );
