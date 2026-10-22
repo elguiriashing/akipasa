@@ -1,5 +1,25 @@
 # Change Impact Register
 
+## 2026-10-22 | Audience selector and suite membership role clarity
+
+- **Current objective:** three discovery apps display Individual Free/Personal
+  Premium or Business AkiHQ Free/Listing Premium via one accessible selector.
+  AkiHQ displays the three listing upgrades. AkiBusiness owns Standard/Plus/Pro.
+- **Scope:** presentation and EN/ES marketing copy only; no subscription,
+  schema, price IDs, checkout activation, RLS or permissions changed. The
+  prior five-plan comparison is superseded; related old PRs require closure
+  or explicit reconciliation after the new PR is green.
+- **Regression dependencies:** public and account views, personal feature
+  gate, workspace dropdown, existing-plan/enterprise grants, server action
+  scopes, checkout failure mode, keyboard tabs, translations, responsive
+  width, brand image assets, AkiHQ and AkiBusiness cross-product URLs.
+- **Source contract:** identical AkiSuiteAudienceStudio source/CSS blobs in
+  AkiPasa/AkiDuermo/AkiCoches; independent adapters preserve their existing
+  acquisition/readiness paths.
+- **Acceptance:** CI and browser/release gates are mandatory; an open PR or
+  passing fixture test is not proof of production. Roll back source only.
+
+
 ## 2026-10-22 | AkiPasa membership parity with independent discovery products
 
 - **Before:** AkiPasa had its own per-card logo layout and card geometry, while
