@@ -3,12 +3,16 @@ package com.akipasa;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.DownloadManager;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,6 +47,9 @@ import java.util.List;
 public final class MainActivity extends Activity {
     private static final int FILE_CHOOSER_REQUEST = 1001;
     private static final int LOCATION_PERMISSION_REQUEST = 1002;
+    private static final int NOTIFICATION_PERMISSION_REQUEST = 1003;
+    private static final String DEBUG_NOTIFICATION_ACTION = "com.akipasa.DEBUG_NOTIFICATION";
+    private static final String DEBUG_NOTIFICATION_CHANNEL = "akipasa_debug";
 
     private WebView webView;
     private ProgressBar progressBar;
@@ -63,8 +70,7 @@ public final class MainActivity extends Activity {
             attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
             getWindow().setAttributes(attributes);
         }
-        hideSystemBars();
-
+        // DecorView is not installed until setContentView; don't request insets yet.
         FrameLayout root = buildLayout();
         if (Build.VERSION.SDK_INT >= 28) {
             root.setOnApplyWindowInsetsListener((view, insets) -> {
@@ -80,6 +86,8 @@ public final class MainActivity extends Activity {
             });
         }
         setContentView(root);
+        // Apply immersive mode only after the view is attached to a window.
+        root.post(this::hideSystemBars);
         configureWebView();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
@@ -91,12 +99,41 @@ public final class MainActivity extends Activity {
         if (savedInstanceState == null || webView.restoreState(savedInstanceState) == null) {
             loadLaunchUrl(getIntent());
         }
+        if (getIntent() != null && DEBUG_NOTIFICATION_ACTION.equals(getIntent().getAction())) {
+            showDebugNotification();
+        }
+    }
+
+    private void showDebugNotification() {
+        // Local development exercise only: release builds cannot post via this trigger.
+        if (!BuildConfig.DEBUG) return;
+        if (Build.VERSION.SDK_INT >= 33
+                && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATION_PERMISSION_REQUEST);
+            return;
+        }
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (manager == null) return;
+        if (Build.VERSION.SDK_INT >= 26) {
+            manager.createNotificationChannel(new NotificationChannel(
+                    DEBUG_NOTIFICATION_CHANNEL, "AkiPasa development tests",
+                    NotificationManager.IMPORTANCE_HIGH));
+        }
+        Notification notification = new Notification.Builder(this, DEBUG_NOTIFICATION_CHANNEL)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground))
+                .setContentTitle("AkiPasa test notification")
+                .setContentText("Native Android notifications are working! 🚀")
+                .setAutoCancel(true)
+                .build();
+        manager.notify(1003, notification);
     }
 
     private void hideSystemBars() {
         if (Build.VERSION.SDK_INT >= 30) {
             getWindow().setDecorFitsSystemWindows(false);
-            WindowInsetsController controller = getWindow().getInsetsController();
+            View decorView = getWindow().getDecorView();
+            WindowInsetsController controller = decorView.getWindowInsetsController();
             if (controller != null) {
                 controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
                 controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
@@ -120,7 +157,8 @@ public final class MainActivity extends Activity {
 
     private FrameLayout buildLayout() {
         FrameLayout root = new FrameLayout(this);
-        root.setBackgroundColor(getColor(R.color.akipasa_background));
+        // Color the camera-cutout safe area like the header rather than showing a cream stripe.
+        root.setBackgroundColor(getColor(R.color.akipasa_status));
 
         webView = new WebView(this);
         webView.setId(View.generateViewId());
@@ -284,6 +322,10 @@ public final class MainActivity extends Activity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
+        if (BuildConfig.DEBUG && DEBUG_NOTIFICATION_ACTION.equals(intent.getAction())) {
+            showDebugNotification();
+            return;
+        }
         Uri uri = intent.getData();
         if (uri != null && (NavigationPolicy.isInternal(uri.toString())
                 || NavigationPolicy.appCallbackUrl(uri.toString()) != null)) {
@@ -332,6 +374,12 @@ public final class MainActivity extends Activity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == NOTIFICATION_PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                showDebugNotification();
+            }
+            return;
+        }
         if (requestCode != LOCATION_PERMISSION_REQUEST || locationCallback == null) return;
         boolean granted = false;
         for (int result : grantResults) granted |= result == PackageManager.PERMISSION_GRANTED;

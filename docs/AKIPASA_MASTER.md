@@ -1,5 +1,22 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-22 | Android native notification branding
+
+The Android shell's locally-triggered debug notification now uses a monochrome 24dp
+Android VectorDrawable traced from the existing AkiPasa pin-and-spark brand SVG
+(`public/brand/logo-horizontal-light.svg`) for the status-bar/small icon.
+The optional large notification artwork reuses the already-shipped AkiPasa
+launcher foreground PNG (`ic_launcher_foreground`) instead of the generic Android
+icon. The app posts only local test notifications through the explicit,
+debug-only `com.akipasa.DEBUG_NOTIFICATION` intent; release builds cannot
+trigger it. Android 13+ notification permission is requested for this test path.
+
+This does not implement remote push delivery, Firebase/FCM registration,
+server token storage, or notification dispatch. Verify the notification's
+legibility in the Xiaomi status bar and notification shade after installing a
+fresh Android debug build. A native Android rebuild/store bundle is required;
+deploying the website alone does not change the notification icon.
+
 ## 2026-10-22 | Android release UI and OAuth return candidate
 
 The `com.akipasa` Android shell uses the current AkiPasa orange pin/star raster
