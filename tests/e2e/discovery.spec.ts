@@ -199,9 +199,7 @@ test("membership offer is reachable before sign in", async ({ page }) => {
   await expect(catalogue.locator("#akipasa_premium button")).toBeDisabled();
   await catalogue.getByRole("tab", { name: "Business" }).click();
   await expect(catalogue.locator("[data-offer]")).toHaveCount(2);
-  await expect(
-    catalogue.getByRole("heading", { name: "AkiHQ" }),
-  ).toBeVisible();
+  await expect(catalogue.getByRole("heading", { name: "AkiHQ" })).toBeVisible();
   await expect(catalogue.locator("#akihq-free a")).toHaveAttribute(
     "href",
     "https://akihq.app/en/business",
