@@ -12,6 +12,7 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -119,7 +120,8 @@ public final class MainActivity extends Activity {
                     NotificationManager.IMPORTANCE_HIGH));
         }
         Notification notification = new Notification.Builder(this, DEBUG_NOTIFICATION_CHANNEL)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground))
                 .setContentTitle("AkiPasa test notification")
                 .setContentText("Native Android notifications are working! 🚀")
                 .setAutoCancel(true)
