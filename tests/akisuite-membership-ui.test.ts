@@ -53,11 +53,11 @@ describe("AkiSuite membership audience contract", () => {
     for (const [path, sha] of [
       [
         "src/components/AkiSuiteAudienceStudio.tsx",
-        "9ed87ee732c51105f2533f8ef66b6950b387b7b4",
+        "fbd1fac9f9ae6adae497f359fb0ef2f92cbe6c1f",
       ],
       [
         "src/components/AkiSuiteAudienceStudio.module.css",
-        "d84e4bc5367b5b22371d27c6958aedcecf7516a9",
+        "0bf1c16d123b5f7e7c93e228ef318083ef6b8a91",
       ],
     ] as const) {
       const blob = readFileSync(path);
