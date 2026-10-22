@@ -66,15 +66,9 @@ export function AkiSuiteMembershipGrid({
     ? "akiduermo_premium"
     : "akibusiness_premium";
   const discoveryName = origin === "akiduermo" ? "AkiDuermo" : "AkiPasa";
-  const listingIsCurrent = included.has(listingPlan);
   const listingReady =
     checkoutReady &&
     (listingPlan !== "akiduermo_premium" || personalPremiumUnlocked);
-  const listingBlocked =
-    accessUnavailable ||
-    !listingReady ||
-    listingIsCurrent ||
-    !validWorkspace;
 
   function planAction(plan: "akibusiness_premium" | "akiduermo_premium" | "akipasa_premium") {
     const personal = plan === "akipasa_premium";
