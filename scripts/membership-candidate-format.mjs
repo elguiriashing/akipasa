@@ -3,6 +3,7 @@ import { execFileSync } from "node:child_process";
 const paths = [
   "docs/AKIPASA_MASTER.md",
   "docs/CHANGE_IMPACT_REGISTER.md",
+  "src/app/compact-app.css",
   "src/components/AkiSuiteMembershipGrid.module.css",
   "src/components/AkiSuiteMembershipGrid.tsx",
   "tests/akisuite-membership-render.test.tsx",
