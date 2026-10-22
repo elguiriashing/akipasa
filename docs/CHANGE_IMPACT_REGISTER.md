@@ -15,6 +15,10 @@
 - **Invariants:** no changes to approved list/operation prices, Stripe, RLS,
   grants, team access, paid permissions, billing cycles or endpoints. Listing
   ownership and operational subscriptions are distinct, with EN/ES wording.
+- **Legacy pricing distinction:** `akiduermo_premium` is the existing €5.99
+  personal plan, **not** the €14.99 property listing Premium. From AkiDuermo
+  contexts the catalogue instead links to the independent AkiDuermo property
+  upgrade screen; no legacy purchase is triggered or repurposed.
 - **Validation gate:** frontend render/checkout tests, canonical markup/CSS
   hash parity, lint, typecheck and desktop/tablet/mobile review. GitHub CI and
   live release smoke are required before deployment; no unperformed checks
