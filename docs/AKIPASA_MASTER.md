@@ -1,5 +1,28 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-22 | Public and account membership source parity and product clarity
+
+The public and account AkiPasa membership pages now reuse the exact five-card
+AkiSuiteMembershipStudio markup/CSS used by the independent AkiCoches and
+AkiDuermo products. The first two cards fall under the single AkiHQ logo and
+the final three under the single AkiBusiness logo with one hairline divider.
+Product branding is shown only in the group headings, never repeated on cards.
+Cards retain one desktop row with horizontal scrolling on smaller screens.
+
+AkiHQ explains free AkiPasa listing management; AkiPasa Listing Premium is
+explicitly an AkiHQ listing upgrade and **does not** bundle AkiBusiness tools.
+Standard/Plus/Pro remain independently priced per operating location, with
+4/8/12 tools and existing monthly swap limits. Personal Premium stays
+feature-gated and is offered separately below the five-card row; its existing
+checkout path is preserved. Existing workspace selection, purchase gating,
+Stripe action routing, entitlement checks, account and locale behavior
+remain unchanged. No schema, production data, Stripe product, price or
+claim/booking effect is introduced. Dependencies: /[locale]/membership,
+account/subscription, membership adapters, original brand asset paths, EN/ES,
+responsive scrolling, release CI and exact-head browser testing. Roll back
+the presentation adapter/canonical copies without changing subscription data.
+
+
 ## 2026-10-22 | Map popup navigation and native WebView safe-area consistency
 
 MapLibre popup anchors are created imperatively, outside React. Until now, tapping
