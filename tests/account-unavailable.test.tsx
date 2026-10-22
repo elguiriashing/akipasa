@@ -170,7 +170,14 @@ for (const locale of ["en", "es"] as const) {
           Object.fromEntries(new FormData(manage!.closest("form")!)),
         ).toEqual({ locale });
       }
-      expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+      expect(screen.getByRole("tablist", {
+        name: locale === "es" ? "Tipo de membresía" : "Membership type",
+      })).toBeInTheDocument();
+      fireEvent.click(screen.getByRole("tab", {
+        name: locale === "es" ? "Negocios" : "Business",
+      }));
+      expect(container.querySelector("#akibusiness_premium button:disabled")).not.toBeNull();
+      expect(container.querySelector("#akibusiness_premium form")).toBeNull();
       fireEvent.click(
         screen.getByRole("button", {
           name: locale === "es" ? "Reintentar" : "Try again",
@@ -195,12 +202,12 @@ it("keeps locked personal Premium hidden after successful billing reads", async 
     }),
   );
   expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-  expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
-  expect(
-    screen.queryByRole("heading", { name: "AkiPasa Premium" }),
-  ).not.toBeInTheDocument();
+  expect(screen.getByRole("tablist", { name: "Membership type" })).toBeInTheDocument();
+  const lockedPersonal = screen.getByRole("heading", { name: "AkiPasa Personal Premium" }).closest("article")!;
+  expect(within(lockedPersonal).getByRole("button", { name: "Not available yet" })).toBeDisabled();
+  fireEvent.click(screen.getByRole("tab", { name: "Business" }));
   const card = screen
-    .getByRole("heading", { name: "AkiPasa Listing Premium" })
+    .getByRole("heading", { name: "AkiPasa Business Premium" })
     .closest("article")!;
   const form = within(card)
     .getByRole("button", { name: "Coming soon" })
