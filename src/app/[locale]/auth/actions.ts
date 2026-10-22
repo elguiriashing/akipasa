@@ -209,10 +209,16 @@ export async function signInWithGoogle(formData: FormData) {
     secure: origin.startsWith("https://"),
   });
   const supabase = await createSupabaseServerClient();
+  const isAndroidApp = /\bAkiPasaAndroid\//.test(
+    (await headers()).get("user-agent") ?? "",
+  );
+  const callback = new URL(`${origin}/${locale}/auth/callback`);
+  callback.searchParams.set("next", next);
+  if (isAndroidApp) callback.searchParams.set("android", "1");
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${origin}/${locale}/auth/callback?next=${encodeURIComponent(next)}`,
+      redirectTo: callback.toString(),
       queryParams: { access_type: "offline", prompt: "consent" },
     },
   });

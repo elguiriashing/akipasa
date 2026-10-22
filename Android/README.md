@@ -17,10 +17,14 @@ current product safely.
 
 - Installable Android app with package ID `com.akipasa`.
 - API 36 target and API 26 minimum.
+- Immersive AkiPasa screen (versionCode 3 / 1.0.2): swipe from the top or
+  bottom edge to reveal the system bars temporarily; Android's normal Back/Home
+  gestures and buttons remain available. The camera cutout stays clear of
+  controls. Test the keyboard and both navigation modes on a real device.
 - Persistent first-party WebView cookies for the existing Supabase session.
 - Exact-host HTTPS navigation policy; untrusted schemes stay blocked.
 - System-browser handoff for Google OAuth, Stripe, booking, phone, email, map,
-  and other external destinations.
+  and other external destinations; an explicit app return for Android OAuth.
 - Verified HTTPS App Link handling for AkiPasa callbacks and shared links.
 - Runtime location permission, wired to the existing user-initiated location
   control.
@@ -62,9 +66,14 @@ key managed outside this repository. Do not commit a keystore, password,
 
 ## Google OAuth and verified App Links
 
-Password sign-in operates entirely in the app. Google OAuth correctly opens
-in the system browser because Google does not support embedded-user-agent
-login. Automatic return to the app requires verified App Links:
+Password sign-in operates entirely in the app. Google OAuth opens in the
+system browser because Google does not support embedded-user-agent login.
+After Google consent, the browser's callback displays **Return to AkiPasa**.
+Tap it to hand the one-time code to the app's WebView, which owns the PKCE
+verifier cookie. A verified App Link may instead return automatically. Do not
+complete the code exchange in Chrome: its cookies are separate.
+
+Automatic HTTPS link handling requires verified App Links:
 
 1. The existing Play Console app fixes `com.akipasa` as the package name;
    Play package names cannot later be changed.
@@ -81,8 +90,18 @@ login. Automatic return to the app requires verified App Links:
    adb shell pm get-app-links com.akipasa
    ```
 
-Until that production file is deployed, Android may ask which app should open
-an AkiPasa link and the Google/Stripe return path is not release-ready.
+Until the production file is deployed and verified, Android may ask which app
+should open an AkiPasa HTTPS link. The explicit `akipasa://auth/callback`
+return works for local debug builds, but must be exercised on a device. Stripe
+returns still depend on verified HTTPS App Links.
+
+For a local Android Studio build, install the current web callback changes on
+the live site before trying Google sign-in; older deployed code cannot display
+the new return button. After Google consent, tap Return to AkiPasa, then verify
+you are signed in inside the app. The Play upload remains gated on a signed
+internal-track test of the complete flow.
+Web layout changes load from the site after a refresh, but immersive system-bar
+handling is native; pull the latest branch and reinstall version 1.0.2 to see it.
 
 ## Play Console release checklist
 

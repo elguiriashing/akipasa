@@ -132,6 +132,9 @@ export default async function RootLayout({
     trackingAllowed = false;
   }
   const requestHeaders = await headers();
+  const isAndroidApp = /\bAkiPasaAndroid\//.test(
+    requestHeaders.get("user-agent") ?? "",
+  );
   const product = requestHeaders.get("x-akipasa-product");
   const isAkiDuermo = product === "akiduermo";
   const isAkiBusiness = product === "akibusiness";
@@ -142,6 +145,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body
+        data-android-app={isAndroidApp ? "true" : undefined}
         data-product={
           isAkiDuermo
             ? "akiduermo"

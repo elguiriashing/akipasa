@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   host: "akipasa.com",
+  userAgent: "Mozilla/5.0",
   signInWithPassword: vi.fn(),
   signUp: vi.fn(),
   signInWithOtp: vi.fn(),
@@ -10,7 +11,8 @@ const mocks = vi.hoisted(() => ({
   setCookie: vi.fn(),
 }));
 vi.mock("next/headers", () => ({
-  headers: async () => new Headers({ host: mocks.host }),
+  headers: async () =>
+    new Headers({ host: mocks.host, "user-agent": mocks.userAgent }),
   cookies: async () => ({ set: mocks.setCookie }),
 }));
 vi.mock("next/navigation", () => ({
@@ -28,10 +30,12 @@ import {
   signInWithPassword,
   signUpWithPassword,
 } from "../src/app/[locale]/auth/actions";
+import { GET as authCallback } from "../src/app/[locale]/auth/callback/route";
 
 beforeEach(() => {
   vi.resetAllMocks();
   mocks.host = "akipasa.com";
+  mocks.userAgent = "Mozilla/5.0";
   mocks.signInWithPassword.mockResolvedValue({ error: { message: "inert" } });
   mocks.signUp.mockResolvedValue({ data: { session: null }, error: null });
   mocks.signInWithOtp.mockResolvedValue({ error: null });
@@ -180,6 +184,39 @@ describe("authentication journey recovery", () => {
     expect(mocks.signInWithOAuth.mock.calls[0][0].options.redirectTo).toContain(
       encodeURIComponent(next),
     );
+  });
+
+  it("marks only the Android WebView OAuth callback for browser-to-app handoff", async () => {
+    mocks.userAgent = "Mozilla/5.0 AkiPasaAndroid/1.0.1";
+    await destination(signInWithGoogle, form("es", "/es/account"));
+    const android = new URL(
+      mocks.signInWithOAuth.mock.calls[0][0].options.redirectTo,
+    );
+    expect(android.pathname).toBe("/es/auth/callback");
+    expect(android.searchParams.get("android")).toBe("1");
+    expect(android.searchParams.get("next")).toBe("/es/account");
+    mocks.userAgent = "Mozilla/5.0";
+    await destination(signInWithGoogle, form("es", "/es/account"));
+    const web = new URL(
+      mocks.signInWithOAuth.mock.calls[1][0].options.redirectTo,
+    );
+    expect(web.searchParams.has("android")).toBe(false);
+  });
+
+  it("hands the unexchanged Android code back to the app without leaking it as a referrer", async () => {
+    const response = await authCallback(
+      new Request(
+        "https://akipasa.com/es/auth/callback?android=1&code=single-use-code&next=%2Fes%2Faccount",
+      ),
+      { params: Promise.resolve({ locale: "es" }) },
+    );
+    const html = await response.text();
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(response.headers.get("referrer-policy")).toBe("no-referrer");
+    expect(html).toContain(
+      "akipasa://auth/callback?locale=es&amp;code=single-use-code",
+    );
+    expect(mocks.signInWithOAuth).not.toHaveBeenCalled();
   });
 
   it("retains successful password redirects without introducing an auth notice", async () => {
