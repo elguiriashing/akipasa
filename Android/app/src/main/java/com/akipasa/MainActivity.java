@@ -53,19 +53,28 @@ public final class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setStatusBarColor(getColor(R.color.akipasa_primary));
+        getWindow().setStatusBarColor(getColor(R.color.akipasa_status));
         getWindow().setNavigationBarColor(getColor(R.color.akipasa_background));
+        if (Build.VERSION.SDK_INT >= 35) {
+            // Android 15+ draws the system bars over the activity by default.
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        } else if (Build.VERSION.SDK_INT >= 26) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        }
 
         FrameLayout root = buildLayout();
-        root.setOnApplyWindowInsetsListener((view, insets) -> {
-            view.setPadding(
-                    insets.getSystemWindowInsetLeft(),
-                    insets.getSystemWindowInsetTop(),
-                    insets.getSystemWindowInsetRight(),
-                    insets.getSystemWindowInsetBottom()
-            );
-            return insets;
-        });
+        if (Build.VERSION.SDK_INT >= 35) {
+            root.setOnApplyWindowInsetsListener((view, insets) -> {
+                view.setPadding(
+                        insets.getSystemWindowInsetLeft(),
+                        insets.getSystemWindowInsetTop(),
+                        insets.getSystemWindowInsetRight(),
+                        insets.getSystemWindowInsetBottom()
+                );
+                return insets;
+            });
+        }
         setContentView(root);
         configureWebView();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -174,9 +183,19 @@ public final class MainActivity extends Activity {
 
     private void loadLaunchUrl(Intent intent) {
         Uri deepLink = intent == null ? null : intent.getData();
-        webView.loadUrl(deepLink != null && NavigationPolicy.isInternal(deepLink.toString())
-                ? deepLink.toString()
-                : BuildConfig.APP_URL);
+        webView.loadUrl(resolveLaunchUrl(deepLink));
+    }
+
+    private String resolveLaunchUrl(Uri deepLink) {
+        if (deepLink == null) return BuildConfig.APP_URL;
+        String callback = NavigationPolicy.appCallbackUrl(deepLink.toString());
+        if (callback != null) return callback;
+        if (!NavigationPolicy.isInternal(deepLink.toString())) return BuildConfig.APP_URL;
+        if ("1".equals(deepLink.getQueryParameter("android"))
+                && deepLink.getPath() != null && deepLink.getPath().matches("/(en|es)/auth/callback")) {
+            return deepLink.buildUpon().appendQueryParameter("native", "1").build().toString();
+        }
+        return deepLink.toString();
     }
 
     private boolean openExternal(Uri uri) {
@@ -237,7 +256,10 @@ public final class MainActivity extends Activity {
         super.onNewIntent(intent);
         setIntent(intent);
         Uri uri = intent.getData();
-        if (uri != null && NavigationPolicy.isInternal(uri.toString())) webView.loadUrl(uri.toString());
+        if (uri != null && (NavigationPolicy.isInternal(uri.toString())
+                || NavigationPolicy.appCallbackUrl(uri.toString()) != null)) {
+            webView.loadUrl(resolveLaunchUrl(uri));
+        }
     }
 
     @Override

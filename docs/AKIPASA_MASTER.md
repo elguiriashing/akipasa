@@ -1,5 +1,25 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-22 | Android release UI and OAuth return candidate
+
+The `com.akipasa` Android shell uses the current AkiPasa orange pin/star raster
+launcher identity and navy/cream system chrome. On pre-Android 15 windows, the
+decor already fits content inside system bars; explicit root inset padding is
+limited to Android 15+ edge-to-edge windows. Mobile app header and navigation
+heights are 48/60 CSS pixels with 44+ pixel touch controls. Physical-device
+visual acceptance across gesture/three-button navigation and light/dark remains
+required.
+
+Google OAuth continues in a trusted external browser. An Android-originated
+server action marks the existing HTTPS callback; the browser renders a no-store,
+no-referrer return link using `akipasa://auth/callback` without exchanging the
+PKCE code. The native app reconstructs the existing HTTPS callback inside its
+own WebView, which retains the verifier and terms cookies; verified HTTPS App
+Links can also return directly. Ordinary web OAuth, password, email and recovery
+callbacks keep their existing contract. Test real debug and Play-signed devices,
+Supabase redirect allowlisting, account/terms/onboarding and rejected/cancelled
+flows before a store upload. No auth tokens or signing material enter the app.
+
 ## 2026-10-21 | Discovery membership studio layout contract (PR #275)
 
 The AkiPasa public and account membership catalogue must use the same modern,

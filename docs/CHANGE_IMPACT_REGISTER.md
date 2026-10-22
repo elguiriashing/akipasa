@@ -2617,3 +2617,32 @@ member/staff access. Discovery intersects each placement with its specific event
 venue, hiding historical mismatches without deleting data. Five actual-policy SQL
 and two real SDK regressions plus60 repository cases pass. No Premium flag, paid
 access, ownership or live data changed. See EVENT_MEDIA_TARGET_SCOPE.md.
+
+## 2026-10-22 | Android visual identity and browser-to-app auth candidate
+
+- Before: Android's launcher and status tint were an obsolete purple symbol;
+  pre-35 windows received additional inset padding; Google OAuth returned to a
+  separate browser lacking the WebView's PKCE verifier/cookies. Screenshots
+  showed large bars and a browser account picker.
+- After: use the existing AkiPasa maskable pin/star icon and orange/navy/cream
+  palette, apply explicit system insets only to edge-to-edge Android 15+ windows,
+  compact mobile shell heights while retaining touch targets. Android OAuth
+  sends its code through an explicit custom-scheme return link (or verified
+  HTTPS link) into the original WebView callback; browser does not exchange it.
+- Scope: Android launch/insets/intent handling, existing AkiPasa auth action and
+  callback, compact CSS, release docs. Web OAuth is unmarked. No SQL, roles,
+  consent, Stripe, customer records, signing secrets or production config edits.
+  The callback's existing safe `next`, terms and onboarding checks still run in
+  WebView. Reverting source restores the old flow; no data rollback.
+- Verification: focused auth suite 17/17, scoped lint, TypeScript, root format,
+  contract integrity, application/security/database suites, automation
+  typecheck/tests 41/41 and Next production build passed locally. Root
+  `npm run check` stopped at automation typecheck before its dependencies were
+  installed; the separate automation checks and build then passed. Its Wrangler
+  dry-run was rejected by automatic approval review because it could transmit
+  the worker bundle/project metadata to Cloudflare. Android `gradlew test lint
+assembleDebug --offline` could not fetch Gradle 9.5 (network unreachable).
+  Physical debug and Play-signed OAuth return, App Link
+  association, light/dark locale/gesture/three-button geometry, hosted browser
+  and authenticated production smoke remain unperformed until device testing.
+  No release/deployment is claimed.
