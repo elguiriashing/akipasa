@@ -200,7 +200,9 @@ function popupContent(
     const destination = new URL(link.href, window.location.href);
     if (destination.origin !== window.location.origin) return;
     event.preventDefault();
-    navigateInternal(destination.pathname + destination.search + destination.hash);
+    navigateInternal(
+      destination.pathname + destination.search + destination.hash,
+    );
   });
   wrapper.appendChild(category);
   wrapper.appendChild(title);
