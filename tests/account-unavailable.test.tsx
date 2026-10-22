@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 // Regression: an unavailable subscription must never expose checkout in either membership audience.
 // The product selector itself remains usable without granting access.
+// Failed billing reads must not enable a payment action.
 
 import "@testing-library/jest-dom/vitest";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
