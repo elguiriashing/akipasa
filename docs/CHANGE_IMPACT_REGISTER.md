@@ -1,5 +1,28 @@
 # Change Impact Register
 
+## 2026-10-22 | AkiPasa membership parity with independent discovery products
+
+- **Before:** AkiPasa had its own per-card logo layout and card geometry, while
+  AkiCoches and AkiDuermo already used the canonical studio. The free HQ and
+  listing upgrade descriptions did not specify the product ownership boundary.
+- **After:** AkiPasa imports an exact copy of the reviewed, five-card Studio
+  source/CSS and supplies product-specific copy, prices, workspace/checkout
+  actions. The AkiHQ logo spans the first two cards, AkiBusiness spans the
+  final three; the brands are divided by one thin line.
+- **Scope:** public membership and account/subscription pages both consume the
+  same adapter. AkiPasa Personal Premium is a distinct, feature-gated strip
+  below the five-card comparison and retains its checkout behavior.
+- **Invariants:** no changes to approved list/operation prices, Stripe, RLS,
+  grants, team access, paid permissions, billing cycles or endpoints. Listing
+  ownership and operational subscriptions are distinct, with EN/ES wording.
+- **Validation gate:** frontend render/checkout tests, canonical markup/CSS
+  hash parity, lint, typecheck and desktop/tablet/mobile review. GitHub CI and
+  live release smoke are required before deployment; no unperformed checks
+  are recorded as passed.
+- **Rollback:** revert adapter and copied canonical component files; billing
+  and data state need no migration.
+
+
 ## 2026-10-21 | Membership design parity: AkiPasa, AkiDuermo, AkiCoches
 
 - **Before:** AkiPasa displayed four operational plans and a detached listing
