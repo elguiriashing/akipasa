@@ -1027,6 +1027,7 @@ try {
           // Readiness never suppresses free management or an account-only review
           // handoff; it must not create checkout forms or financial actions.
           await expect(page.locator("article form")).toHaveCount(0);
+          await page.getByRole("tab", {name: locale === "es" ? "Negocios" : "Business"}).click();
           await expect(
             page.getByRole("link", {
               name:
@@ -1035,7 +1036,6 @@ try {
                   : "Continue in my account",
             }),
           ).toHaveCount(1);
-          await page.getByRole("tab", {name: locale === "es" ? "Negocios" : "Business"}).click();
           await expect(page.locator('[id^="operations-"] a')).toHaveCount(0);
           expect(await page.evaluate(() => window.__accountActions)).toEqual(
             [],
