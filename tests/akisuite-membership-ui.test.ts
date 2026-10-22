@@ -82,12 +82,17 @@ describe("Personal Premium launch is server-controlled", () => {
   });
 });
 
-
 describe("Canonical AkiSuite membership studio source parity", () => {
   it("uses the same reviewed template and stylesheet as all three discovery apps", () => {
     const expected = [
-      ["src/components/AkiSuiteMembershipStudio.tsx", "28c8f7ee48d49ff91cad63c55e3aacaadfe3c28d"],
-      ["src/components/AkiSuiteMembershipStudio.module.css", "4b42977034d6a285fd355e7afcb72583779b5862"],
+      [
+        "src/components/AkiSuiteMembershipStudio.tsx",
+        "28c8f7ee48d49ff91cad63c55e3aacaadfe3c28d",
+      ],
+      [
+        "src/components/AkiSuiteMembershipStudio.module.css",
+        "4b42977034d6a285fd355e7afcb72583779b5862",
+      ],
     ] as const;
     for (const [path, sha] of expected) {
       const content = readFileSync(path);
