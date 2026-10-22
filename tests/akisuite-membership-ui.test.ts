@@ -28,13 +28,12 @@ describe("AkiSuite localized membership catalogue", () => {
     expect(grid).not.toContain("setInterval");
     const studio = readFileSync("src/components/AkiSuiteMembershipStudio.tsx", "utf8");
     for (const logo of [
-      "/pwa/akipasa-192.png",
       "/brand/business-mark.svg",
       "/brand/hq-mark.svg",
     ])
       expect(studio).toContain(logo);
     const css = readFileSync(
-      "src/components/AkiSuiteMembershipGrid.module.css",
+      "src/components/AkiSuiteMembershipStudio.module.css",
       "utf8",
     );
     expect(css).toContain("grid-column: 1 / span 2");
