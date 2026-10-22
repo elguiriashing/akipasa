@@ -42,7 +42,13 @@ type MembershipStudioProps = {
   footnotes?: ReactNode;
 };
 
-function OfferCard({ offer, locale }: { offer: MembershipOffer; locale: "en" | "es" }) {
+function OfferCard({
+  offer,
+  locale,
+}: {
+  offer: MembershipOffer;
+  locale: "en" | "es";
+}) {
   return (
     <article
       id={offer.id}
@@ -50,7 +56,14 @@ function OfferCard({ offer, locale }: { offer: MembershipOffer; locale: "en" | "
       data-featured={offer.featured || undefined}
       data-offer={offer.id}
     >
-      <div className={styles.cardType}>{offer.label}{offer.featured && <span className={styles.recommended}>{locale === "es" ? "8 herramientas" : "8 tools"}</span>}</div>
+      <div className={styles.cardType}>
+        {offer.label}
+        {offer.featured && (
+          <span className={styles.recommended}>
+            {locale === "es" ? "8 herramientas" : "8 tools"}
+          </span>
+        )}
+      </div>
       <h3>{offer.name}</h3>
       <p className={styles.description}>{offer.description}</p>
       <div className={styles.price}>
@@ -83,12 +96,19 @@ export function AkiSuiteMembershipStudio({
   footnotes,
 }: MembershipStudioProps) {
   const headingId = "akisuite-catalogue-title";
-  const heading = headingLevel === 1
-    ? <h1 id={headingId}>{title}</h1>
-    : <h2 id={headingId}>{title}</h2>;
+  const heading =
+    headingLevel === 1 ? (
+      <h1 id={headingId}>{title}</h1>
+    ) : (
+      <h2 id={headingId}>{title}</h2>
+    );
 
   return (
-    <section className={styles.studio} data-theme={theme} aria-labelledby={headingId}>
+    <section
+      className={styles.studio}
+      data-theme={theme}
+      aria-labelledby={headingId}
+    >
       <header className={styles.intro}>
         <span className={styles.eyebrow}>{eyebrow}</span>
         {heading}
@@ -98,23 +118,45 @@ export function AkiSuiteMembershipStudio({
       <div
         className={styles.scroller}
         role="region"
-        aria-label={locale === "es" ? "Comparar las cinco membresías" : "Compare five membership plans"}
+        aria-label={
+          locale === "es"
+            ? "Comparar las cinco membresías"
+            : "Compare five membership plans"
+        }
         tabIndex={0}
       >
         <div className={styles.track}>
           <div className={styles.hqGroup} aria-label="AkiHQ">
             <div className={styles.groupBrand}>
-              <Image src="/brand/hq-mark.svg" alt="" width={52} height={52} unoptimized />
-              <span className={styles.hqWordmark}>Aki<span>HQ.</span></span>
+              <Image
+                src="/brand/hq-mark.svg"
+                alt=""
+                width={52}
+                height={52}
+                unoptimized
+              />
+              <span className={styles.hqWordmark}>
+                Aki<span>HQ.</span>
+              </span>
             </div>
           </div>
           <div className={styles.businessGroup} aria-label="AkiBusiness">
             <div className={styles.groupBrand}>
-              <Image src="/brand/business-mark.svg" alt="" width={52} height={52} unoptimized />
-              <span className={styles.businessWordmark}>Aki<span>Business.</span></span>
+              <Image
+                src="/brand/business-mark.svg"
+                alt=""
+                width={52}
+                height={52}
+                unoptimized
+              />
+              <span className={styles.businessWordmark}>
+                Aki<span>Business.</span>
+              </span>
             </div>
           </div>
-          {offers.map((offer) => <OfferCard offer={offer} locale={locale} key={offer.id} />)}
+          {offers.map((offer) => (
+            <OfferCard offer={offer} locale={locale} key={offer.id} />
+          ))}
         </div>
       </div>
       {afterOffers}
