@@ -2651,3 +2651,20 @@ assembleDebug --offline` could not fetch Gradle 9.5 (network unreachable).
   association, cutout/keyboard/light/dark locale/gesture/three-button geometry, hosted browser
   and authenticated production smoke remain unperformed until device testing.
   No release/deployment is claimed.
+
+## 2026-10-22 | Android native notification icon branding
+
+- Before: the native debug notification used the adaptive launcher mipmap
+  as its small icon, rendering as a generic or unrecognisable silhouette in
+  Android's status bar and notification shade.
+- After: a white AkiPasa pin-and-spark VectorDrawable based on the checked-in
+  brand SVG is the small icon; the pre-existing launcher foreground provides
+  the large icon. No new generated branding artwork or external assets.
+- Scope: Android drawable resource and debug notification builder only.
+  The explicit debug intent remains guarded by `BuildConfig.DEBUG`.
+  No server, account, notification tokens, data migrations, email, or
+  production push-sending behavior changes.
+- Verification: GitHub Android and contract checks plus local-device notification
+  smoke test; public Play release still requires signed build and device
+  acceptance. Roll back Android resource/builder lines if needed.
+
