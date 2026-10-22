@@ -2651,3 +2651,16 @@ assembleDebug --offline` could not fetch Gradle 9.5 (network unreachable).
   association, cutout/keyboard/light/dark locale/gesture/three-button geometry, hosted browser
   and authenticated production smoke remain unperformed until device testing.
   No release/deployment is claimed.
+
+## 2026-10-22 | Android map-to-detail header safe-area regression
+
+- Before: screenshots showed the native Android WebView header becoming much taller
+  after Map → Venue or Map → Event, persisting until reload. Direct navigation
+  and Explore → Detail did not reproduce the issue.
+- After: the native Android body marker forces a 48px toolbar with zero vertical
+  safe-area padding and top offset 3px for the search trigger, independent of
+  route-specific CSS loading. Native cutout safety remains in the Activity.
+- Scope: `src/app/portal-unity.css` only, restricted to Android WebView at mobile
+  widths; no server auth, data, listings, billing, or non-Android styles modified.
+- Verification: mandatory repository CI and on-device navigation regression.
+  Roll back the scoped CSS block if it causes overlap or cutout regression.
