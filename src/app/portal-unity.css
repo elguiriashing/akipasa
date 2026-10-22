@@ -588,3 +588,34 @@ html[data-theme="dark"] body[data-product="akibusiness"] {
     background: var(--primary-soft);
   }
 }
+
+/*
+ * Android WebView applies camera-cutout padding natively. Next.js soft
+ * navigation from the fullscreen map may load mobile CSS chunks in a different
+ * order, so the legacy safe-area header rules must never grow the native
+ * toolbar or move its actions after a Map -> Venue/Event transition.
+ * Keep browsers/PWAs untouched.
+ */
+@media (max-width: 850px) {
+  body[data-android-app="true"] .app-shell {
+    --app-top: 48px;
+    --app-bottom: 60px;
+  }
+
+  body[data-android-app="true"] .app-shell .app-topbar-mobile {
+    box-sizing: border-box;
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  body[data-android-app="true"] .app-shell .global-search-trigger {
+    top: 3px !important;
+  }
+
+  body[data-android-app="true"] .app-shell .app-content {
+    padding-top: 48px;
+  }
+}
