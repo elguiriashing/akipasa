@@ -194,7 +194,9 @@ function popupContent(
       event.altKey ||
       link.target === "_blank" ||
       link.hasAttribute("download")
-    ) return;
+    ) {
+      return;
+    }
     const destination = new URL(link.href, window.location.href);
     if (destination.origin !== window.location.origin) return;
     event.preventDefault();
