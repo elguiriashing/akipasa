@@ -215,7 +215,7 @@ it.each(["en", "es"] as const)(
     ).toHaveAttribute("href", `/?lang=${locale}`);
     expect(container.querySelector("img")).toHaveAttribute(
       "src",
-      "/brand/v3/duermo.svg",
+      "/brand/duermo-icon.png",
     );
     fireEvent.click(
       screen.getByRole("button", {
