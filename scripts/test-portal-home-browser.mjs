@@ -190,7 +190,7 @@ try {
             exact: true,
           });
           const icon = brand.locator(
-            `img[src="/brand/${product === "stay" ? "duermo-icon.png" : "business-mark.svg"}"]`,
+            `img[src="${product === "stay" ? "/brand/duermo-icon.png" : "/brand/v3/business.svg"}"]`,
           );
           await expect(icon).toBeVisible();
           expect(
