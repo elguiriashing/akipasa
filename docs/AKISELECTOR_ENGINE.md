@@ -21,8 +21,8 @@ optional effect, subtitle and disabled values. Provide an ariaLabel.
 
 Example, in TSX:
 <AkiSelector ariaLabel="Pick a theme" options={[
-  { id: "night", label: "Nightlife", symbol: "☾", effect: "aurora" },
-  { id: "music", label: "Music", symbol: "♫", effect: "ember" }
+{ id: "night", label: "Nightlife", symbol: "☾", effect: "aurora" },
+{ id: "music", label: "Music", symbol: "♫", effect: "ember" }
 ]} value={selected} onValueChange={(id) => setSelected(id)} />
 
 Controlled API: value and onValueChange. Uncontrolled API: defaultValue.

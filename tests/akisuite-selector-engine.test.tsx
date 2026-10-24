@@ -29,7 +29,9 @@ describe("AkiSelector presentation engine", () => {
         onValueChange={onValueChange}
       />,
     );
-    expect(screen.getByRole("radiogroup", { name: "Prototype" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("radiogroup", { name: "Prototype" }),
+    ).toBeInTheDocument();
     expect(screen.getByRole("radio", { name: "Ember" })).toHaveAttribute(
       "aria-checked",
       "true",
@@ -100,7 +102,9 @@ describe("AkiSelector presentation engine", () => {
       "off",
     );
     rerender(<AkiSelector options={[]} ariaLabel="Empty" />);
-    expect(screen.getByRole("status")).toHaveTextContent("No options available");
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "No options available",
+    );
   });
 
   it("allows independent preview labels and presets with no server writes", () => {
@@ -109,7 +113,9 @@ describe("AkiSelector presentation engine", () => {
     expect(screen.getByRole("radio", { name: "Coast" })).toBeInTheDocument();
     const input = screen.getByRole("textbox", { name: "Selected label" });
     fireEvent.change(input, { target: { value: "New label" } });
-    expect(screen.getByRole("radio", { name: "New label" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("radio", { name: "New label" }),
+    ).toBeInTheDocument();
   });
 
   it("stays admin-only, unlisted, and respects reduced-motion preferences", () => {

@@ -24,28 +24,83 @@ function presets(preset: Preset, locale: Locale): AkiSelectorOption[] {
   const es = locale === "es";
   if (preset === "journey") {
     return [
-      { id: "sea", label: es ? "Costa" : "Coast", symbol: "≈", effect: "breeze" },
-      { id: "city", label: es ? "Ciudad" : "City", symbol: "◇", effect: "solar" },
-      { id: "nature", label: es ? "Naturaleza" : "Nature", symbol: "✿", effect: "bloom" },
-      { id: "night", label: es ? "De noche" : "After dark", symbol: "☾", effect: "aurora" },
-      { id: "explore", label: es ? "Explorar" : "Explore", symbol: "✦", effect: "ember" },
+      {
+        id: "sea",
+        label: es ? "Costa" : "Coast",
+        symbol: "≈",
+        effect: "breeze",
+      },
+      {
+        id: "city",
+        label: es ? "Ciudad" : "City",
+        symbol: "◇",
+        effect: "solar",
+      },
+      {
+        id: "nature",
+        label: es ? "Naturaleza" : "Nature",
+        symbol: "✿",
+        effect: "bloom",
+      },
+      {
+        id: "night",
+        label: es ? "De noche" : "After dark",
+        symbol: "☾",
+        effect: "aurora",
+      },
+      {
+        id: "explore",
+        label: es ? "Explorar" : "Explore",
+        symbol: "✦",
+        effect: "ember",
+      },
     ];
   }
   if (preset === "collect") {
     return [
-      { id: "bronze", label: es ? "Bronce" : "Bronze", symbol: "✧", effect: "ember" },
-      { id: "silver", label: es ? "Plata" : "Silver", symbol: "◈", effect: "breeze" },
+      {
+        id: "bronze",
+        label: es ? "Bronce" : "Bronze",
+        symbol: "✧",
+        effect: "ember",
+      },
+      {
+        id: "silver",
+        label: es ? "Plata" : "Silver",
+        symbol: "◈",
+        effect: "breeze",
+      },
       { id: "gold", label: es ? "Oro" : "Gold", symbol: "✺", effect: "solar" },
       { id: "rare", label: es ? "Raro" : "Rare", symbol: "✿", effect: "bloom" },
-      { id: "legend", label: es ? "Leyenda" : "Legend", symbol: "✷", effect: "aurora" },
+      {
+        id: "legend",
+        label: es ? "Leyenda" : "Legend",
+        symbol: "✷",
+        effect: "aurora",
+      },
     ];
   }
   return [
-    { id: "spark", label: es ? "Energía" : "Energy", symbol: "♨", effect: "ember" },
+    {
+      id: "spark",
+      label: es ? "Energía" : "Energy",
+      symbol: "♨",
+      effect: "ember",
+    },
     { id: "sun", label: es ? "Alegría" : "Joy", symbol: "☼", effect: "solar" },
     { id: "soft", label: es ? "Calma" : "Calm", symbol: "✿", effect: "bloom" },
-    { id: "flow", label: es ? "Libertad" : "Freedom", symbol: "≈", effect: "breeze" },
-    { id: "wonder", label: es ? "Magia" : "Wonder", symbol: "✦", effect: "aurora" },
+    {
+      id: "flow",
+      label: es ? "Libertad" : "Freedom",
+      symbol: "≈",
+      effect: "breeze",
+    },
+    {
+      id: "wonder",
+      label: es ? "Magia" : "Wonder",
+      symbol: "✦",
+      effect: "aurora",
+    },
   ];
 }
 
@@ -95,7 +150,11 @@ export function AkiSelectorLab({ locale }: { locale: Locale }) {
         </p>
       </div>
 
-      <div className="aks-lab__presets" role="group" aria-label={es ? "Ejemplos" : "Example presets"}>
+      <div
+        className="aks-lab__presets"
+        role="group"
+        aria-label={es ? "Ejemplos" : "Example presets"}
+      >
         {(["vibe", "journey", "collect"] as const).map((id) => (
           <button
             key={id}
@@ -118,10 +177,15 @@ export function AkiSelectorLab({ locale }: { locale: Locale }) {
         locale={locale}
       />
 
-      <section className="aks-lab__panel" aria-label={es ? "Controles del motor" : "Engine controls"}>
+      <section
+        className="aks-lab__panel"
+        aria-label={es ? "Controles del motor" : "Engine controls"}
+      >
         <div className="aks-lab__panel-heading">
           <h2>{es ? "Motor y apariencia" : "Engine & appearance"}</h2>
-          <span>{es ? "Vista previa · sin guardar" : "Preview only · not saved"}</span>
+          <span>
+            {es ? "Vista previa · sin guardar" : "Preview only · not saved"}
+          </span>
         </div>
         <div className="aks-lab__fields">
           <label>
@@ -159,8 +223,12 @@ export function AkiSelectorLab({ locale }: { locale: Locale }) {
               }
             >
               <option value="subtle">{es ? "Suave" : "Subtle"}</option>
-              <option value="balanced">{es ? "Equilibrada" : "Balanced"}</option>
-              <option value="cinematic">{es ? "Cinematográfica" : "Cinematic"}</option>
+              <option value="balanced">
+                {es ? "Equilibrada" : "Balanced"}
+              </option>
+              <option value="cinematic">
+                {es ? "Cinematográfica" : "Cinematic"}
+              </option>
             </select>
           </label>
           <label>
@@ -171,7 +239,9 @@ export function AkiSelectorLab({ locale }: { locale: Locale }) {
                 setMotion(event.target.value as "auto" | "off")
               }
             >
-              <option value="auto">{es ? "Sistema" : "Follow device setting"}</option>
+              <option value="auto">
+                {es ? "Sistema" : "Follow device setting"}
+              </option>
               <option value="off">{es ? "Sin animaciones" : "Disabled"}</option>
             </select>
           </label>

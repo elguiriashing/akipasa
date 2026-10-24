@@ -7,20 +7,23 @@
   gap: 20px;
   color: #f9f8f8;
 }
-.aks-lab__intro { width: 100%; text-align: center; }
+.aks-lab__intro {
+  width: 100%;
+  text-align: center;
+}
 .aks-lab__eyebrow {
   display: inline-block;
   margin-bottom: 10px;
   color: #ffc78c;
-  font-size: .72rem;
+  font-size: 0.72rem;
   font-weight: 750;
-  letter-spacing: .14em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 .aks-lab__intro h1 {
   font-weight: 830;
   font-size: clamp(1.7rem, 4.5vw, 2.8rem);
-  letter-spacing: -.05em;
+  letter-spacing: -0.05em;
 }
 .aks-lab__intro p {
   margin: 9px auto 0;
@@ -71,15 +74,29 @@
   gap: 8px;
   margin-bottom: 20px;
 }
-.aks-lab__panel-heading h2 { font-size: 1.22rem; font-weight: 780; }
-.aks-lab__panel-heading span { color: #92a5c1; font-size: .78rem; }
+.aks-lab__panel-heading h2 {
+  font-size: 1.22rem;
+  font-weight: 780;
+}
+.aks-lab__panel-heading span {
+  color: #92a5c1;
+  font-size: 0.78rem;
+}
 .aks-lab__fields {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 17px;
 }
-.aks-lab__fields label { display: flex; flex-direction: column; gap: 7px; }
-.aks-lab__fields label span { color: #c4d0de; font-size: .84rem; font-weight: 690; }
+.aks-lab__fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.aks-lab__fields label span {
+  color: #c4d0de;
+  font-size: 0.84rem;
+  font-weight: 690;
+}
 .aks-lab__fields input,
 .aks-lab__fields select {
   width: 100%;
@@ -90,8 +107,17 @@
   color: #f9fbfe;
   border: 1px solid #63758f;
 }
-.aks-lab__note { margin-top: 20px; font-size: .83rem; line-height: 1.55; color: #aebbd0; }
+.aks-lab__note {
+  margin-top: 20px;
+  font-size: 0.83rem;
+  line-height: 1.55;
+  color: #aebbd0;
+}
 @media (max-width: 560px) {
-  .aks-lab__fields { grid-template-columns: 1fr; }
-  .aks-lab__panel { border-radius: 17px; }
+  .aks-lab__fields {
+    grid-template-columns: 1fr;
+  }
+  .aks-lab__panel {
+    border-radius: 17px;
+  }
 }

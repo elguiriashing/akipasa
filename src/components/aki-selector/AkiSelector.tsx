@@ -75,7 +75,9 @@ export function AkiSelector({
     (option) => option.id === chosen && !option.disabled,
   );
   const activeIndex =
-    chosenIndex >= 0 ? chosenIndex : options.findIndex((option) => !option.disabled);
+    chosenIndex >= 0
+      ? chosenIndex
+      : options.findIndex((option) => !option.disabled);
   const active = activeIndex >= 0 ? options[activeIndex] : null;
   const es = locale === "es";
 
@@ -217,7 +219,11 @@ export function AkiSelector({
         >
           <span aria-hidden="true">←</span>
         </button>
-        <div className="aks-selector__caption" aria-live="polite" aria-atomic="true">
+        <div
+          className="aks-selector__caption"
+          aria-live="polite"
+          aria-atomic="true"
+        >
           <strong>{active.label}</strong>
           <span>{active.subtitle ?? (es ? "Seleccionado" : "Selected")}</span>
           <small>
