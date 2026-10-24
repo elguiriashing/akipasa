@@ -1,0 +1,105 @@
+{
+  "date": "2026-10-24",
+  "missionStatus": "in_progress",
+  "pricingPresentation": "pass",
+  "checkoutActivation": "blocked_by_existing_acceptance_gates",
+  "currency": "eur",
+  "interval": "month",
+  "catalogueSha256": "46ed8a3c8c3084fb0b34e5bc0fcc75ab9a957c56e0a8abf6d1a11589a22a5631",
+  "verifiedLocales": ["en", "es"],
+  "livePricingViewport": "desktop",
+  "hostedResponsiveChecks": "passed_on_reviewed_pricing_heads",
+  "releases": [
+    {
+      "product": "AkiPasa",
+      "pr": 285,
+      "sourceCommit": "d336749d74d19da8193e664ea765edda9985bc03",
+      "target": "akipasa",
+      "build": "a91635a0-6322-4fa5-9426-731fbf357605",
+      "version": "986b244a-a4f8-4bbc-a954-88a16051c5d0",
+      "individualAmount": 199,
+      "businessAmount": 1199,
+      "sourceStampObserved": true,
+      "bothAudienceTabsObserved": true
+    },
+    {
+      "product": "AkiDuermo",
+      "pr": 40,
+      "sourceCommit": "83e5898b4655e5a5c11f4431228361741282eb46",
+      "target": "akiduermo",
+      "build": "41bdb10a-d3f2-472e-bc6a-a4fb2edd2ae5",
+      "individualAmount": 199,
+      "businessAmount": 2499,
+      "sourceStampObserved": true,
+      "bothAudienceTabsObserved": true,
+      "protectedSourcePinRetained": true
+    },
+    {
+      "product": "AkiCoches",
+      "pr": 43,
+      "sourceCommit": "c135e537c622e26d9478d7b1c75b5e457aadc351",
+      "target": "akicoches",
+      "build": "df4ea7c7-d5b0-4475-a067-0aa65bb6be0b",
+      "individualAmount": 199,
+      "businessAmount": 1999,
+      "sourceStampObserved": true,
+      "bothAudienceTabsObserved": true
+    },
+    {
+      "product": "AkiHQ",
+      "pr": 83,
+      "sourceCommit": "74679795a9702b7f4dd0a33df381d6d88b81939d",
+      "target": "akihq-management-preview",
+      "build": "4b37b9c1-d87f-4f69-884d-f0f6d3a63f86",
+      "version": "af2c1dd3-ff16-459b-97a7-a6bcca403f97",
+      "sourceStampObserved": true,
+      "freeManagementAndThreeDistinctBusinessUpgradesObserved": true,
+      "firstDeployment1105": "rolled_back_then_rebuilt_unchanged_reviewed_source",
+      "initialFailureCause": "unproven"
+    },
+    {
+      "product": "AkiBusiness",
+      "prs": [45, 46],
+      "sourceCommit": "190be837d1d7ba3f404309955647b7b4b8dd8a53",
+      "target": "akibusiness-selfowned-staging",
+      "deployment": "e977fddc-e127-42ab-8293-62c0a51affa0",
+      "amounts": { "basico": 1999, "standard": 4899, "pro": 9799 },
+      "sourceStampObserved": true,
+      "sourceTreeDirty": false,
+      "tierSpecificAccountLinksObserved": true,
+      "optionalPublisher": "manual_only_token_gate_preserved"
+    }
+  ],
+  "billingSafety": {
+    "activeLegacySubscriptions": 4,
+    "existingPriceIdsUnchanged": true,
+    "subscriptionSchedules": 0,
+    "legacyDatabaseBindings": 3,
+    "queuedLegacyCommands": 3,
+    "migrationCommandsExecuted": false,
+    "migrationSnapshotsRequireApprovedCatalogueAndTargetPrice": true,
+    "pasaBindingCountBefore": 53,
+    "pasaBindingCountAfter": 53,
+    "onlyChangedBindings": [
+      "STRIPE_AKISUITE_AKIPASA_PREMIUM_MONTH_PRICE_ID",
+      "STRIPE_AKISUITE_AKIBUSINESS_PREMIUM_MONTH_PRICE_ID",
+      "STRIPE_AKISUITE_AKIDUERMO_PREMIUM_MONTH_PRICE_ID"
+    ],
+    "secretBindingsUnchanged": true,
+    "annualAndLegacyBindingsUnchanged": true,
+    "otherRuntimeBindingsUnchanged": true,
+    "separateSettingsPatchRequired": false,
+    "checkoutEnabled": false,
+    "operationsCheckoutReady": false,
+    "subscriptionsReady": false,
+    "taxReady": false,
+    "operationsTaxReady": false
+  },
+  "limitations": [
+    "New purchases and new entitlement activation remain gated.",
+    "No real payment, refund, renewal migration or bulk email was performed.",
+    "Live pricing was inspected at desktop width; hosted responsive acceptance is separate from physical device testing.",
+    "Authenticated role, booking, media, OAuth/recovery, Spanish ISP, legal, tax, printer, fiscal and store acceptance remain tracked in issue 284.",
+    "This is a release checkpoint; later documentation-only commits may advance the public source stamp."
+  ]
+}
