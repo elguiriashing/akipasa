@@ -1,5 +1,56 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-22 | Audience-first membership catalogue supersedes five-card comparison
+
+The canonical public/account membership now separates Individual and Business via
+keyboard-accessible tabs, showing two offers at a time. Individual is free
+discovery plus separately gated personal Premium; Business is free AkiHQ
+ownership/listing management plus one product-specific business listing Premium
+offer. AkiBusiness Standard/Plus/Pro are **not** presented as listing upgrades:
+a separate operations-software handoff links to akibusiness.com. The dedicated
+AkiHQ membership centre displays the three product-specific listing upgrades,
+while AkiBusiness itself displays only its three paid operating packages.
+
+AkiPasa, AkiDuermo and AkiCoches use byte-identical
+`AkiSuiteAudienceStudio.tsx` and stylesheet; each adapter owns its product
+wording, approved pricing and billing/readiness boundaries. This supersedes
+the earlier five-card visual contract, which remains in history below.
+Preserve all active/legacy entitlements, checkout gates, workspace/RLS scope,
+server authorization, and Stripe webhook/ledger authority. Do not invent
+personal prices on AkiDuermo/AkiCoches or activate purchase buttons before
+the commercial gate opens. AkiHQ remains free; listing Premium is not an
+AkiBusiness software subscription. No SQL, customer, Stripe or Cloudflare
+configuration change. Release only after EN/ES, browser/device, CI and
+deployed-SHA evidence; source rollback has no database impact.
+
+## 2026-10-22 | Public and account membership source parity and product clarity
+
+The public and account AkiPasa membership pages now reuse the exact five-card
+AkiSuiteMembershipStudio markup/CSS used by the independent AkiCoches and
+AkiDuermo products. The first two cards fall under the single AkiHQ logo and
+the final three under the single AkiBusiness logo with one hairline divider.
+Product branding is shown only in the group headings, never repeated on cards.
+Cards retain one desktop row with horizontal scrolling on smaller screens.
+
+The legacy AkiDuermo personal €5.99 plan is not renamed or repurposed: when an
+older AkiPasa account link originates at AkiDuermo, the comparison shows the
+€14.99 property listing offer and routes to the native AkiDuermo storefront
+without initiating the historical €5.99 checkout. The two entitlements remain
+separate.
+
+AkiHQ explains free AkiPasa listing management; AkiPasa Listing Premium is
+explicitly an AkiHQ listing upgrade and **does not** bundle AkiBusiness tools.
+Standard/Plus/Pro remain independently priced per operating location, with
+4/8/12 tools and existing monthly swap limits. Personal Premium stays
+feature-gated and is offered separately below the five-card row; its existing
+checkout path is preserved. Existing workspace selection, purchase gating,
+Stripe action routing, entitlement checks, account and locale behavior
+remain unchanged. No schema, production data, Stripe product, price or
+claim/booking effect is introduced. Dependencies: /[locale]/membership,
+account/subscription, membership adapters, original brand asset paths, EN/ES,
+responsive scrolling, release CI and exact-head browser testing. Roll back
+the presentation adapter/canonical copies without changing subscription data.
+
 ## 2026-10-22 | Map popup navigation and native WebView safe-area consistency
 
 MapLibre popup anchors are created imperatively, outside React. Until now, tapping

@@ -1,0 +1,333 @@
+/* Canonical AkiSuite membership studio: same source for all three discovery apps. */
+.studio {
+  --accent: #f27a29;
+  --accent-soft: #f27a2922;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 1540px;
+  margin-inline: auto;
+  padding: clamp(16px, 2.2vw, 34px);
+  border: 1px solid #bcd0f420;
+  border-radius: 22px;
+  background:
+    radial-gradient(ellipse at 90% 0%, var(--accent-soft), transparent 44%),
+    linear-gradient(138deg, #0b1730, #071124 67%, #0c1120);
+  color: #f7f9ff;
+  isolation: isolate;
+}
+.studio[data-theme="mint"] {
+  --accent: #40d9ad;
+  --accent-soft: #40d9ad28;
+}
+.studio[data-theme="coral"] {
+  --accent: #ff4b64;
+  --accent-soft: #ff4b6428;
+}
+.studio * {
+  box-sizing: border-box;
+}
+.intro {
+  padding: clamp(8px, 1.4vw, 20px) 0 clamp(18px, 2vw, 28px);
+  border-bottom: 1px solid #c7d3e329;
+}
+.eyebrow {
+  color: var(--accent);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+.intro h1,
+.intro h2 {
+  max-width: 24ch;
+  margin: 9px 0 12px;
+  font-size: clamp(30px, 3.4vw, 52px);
+  font-weight: 850;
+  letter-spacing: -0.055em;
+  line-height: 1.07;
+  color: #fff;
+}
+.intro p {
+  max-width: 72ch;
+  margin: 0;
+  color: #b6c4dc;
+  font-size: clamp(14px, 1.25vw, 18px);
+  line-height: 1.55;
+}
+.scroller {
+  max-width: 100%;
+  margin-top: 8px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  padding-bottom: 10px;
+}
+.scroller:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+.track {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  min-width: 0;
+  align-items: stretch;
+}
+.hqGroup,
+.businessGroup {
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 9px 12px 15px;
+}
+.hqGroup {
+  grid-column: 1 / span 2;
+}
+.businessGroup {
+  grid-column: 3 / span 3;
+}
+.businessGroup::before {
+  content: "";
+  position: absolute;
+  width: 1px;
+  top: 17px;
+  bottom: 13px;
+  left: -7px;
+  background: #b9c3d468;
+}
+.groupBrand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+}
+.groupBrand img {
+  display: block;
+  height: clamp(36px, 3.6vw, 52px);
+  width: clamp(36px, 3.6vw, 52px);
+  object-fit: contain;
+  border-radius: 9px;
+}
+.hqWordmark,
+.businessWordmark {
+  color: #fff;
+  font-size: clamp(23px, 2.3vw, 34px);
+  font-weight: 850;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.hqWordmark span {
+  color: #ffc533;
+}
+.businessWordmark span {
+  color: #ae8aff;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 10px;
+  min-height: 395px;
+  padding: clamp(13px, 1.2vw, 20px);
+  border: 1px solid #bfd4f932;
+  border-radius: 18px;
+  background: linear-gradient(165deg, #ffffff12, #ffffff05);
+  box-shadow: 0 20px 55px #01091923;
+  scroll-snap-align: start;
+  overflow-wrap: anywhere;
+}
+.card[data-featured] {
+  border-color: color-mix(in srgb, var(--accent) 58%, #8497ae);
+  background: linear-gradient(155deg, var(--accent-soft), #ffffff05);
+}
+.cardType {
+  font-size: 11px;
+  line-height: 1.45;
+  color: #a7bad7;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 800;
+  min-height: 2.1em;
+}
+.recommended {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 3px 7px;
+  border-radius: 99px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  font-size: 10px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.card h3 {
+  min-height: 2.5em;
+  margin: 0;
+  font-size: clamp(18px, 1.4vw, 23px);
+  letter-spacing: -0.04em;
+  line-height: 1.23;
+  color: #fff;
+  font-weight: 800;
+}
+.description {
+  min-height: 5.3em;
+  margin: 0;
+  color: #b0bfd7;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 5px;
+  margin-top: 6px;
+  min-width: 0;
+}
+.price strong {
+  color: #fff;
+  font-size: clamp(24px, 2.1vw, 34px);
+  font-weight: 850;
+  letter-spacing: -0.06em;
+  font-variant-numeric: tabular-nums;
+}
+.price span {
+  color: #bbcae1;
+  font-size: 11px;
+  line-height: 1.4;
+}
+.features {
+  list-style: none;
+  display: grid;
+  align-content: start;
+  gap: 9px;
+  flex: 1;
+  margin: 4px 0 8px;
+  padding: 14px 0 0;
+  border-top: 1px solid #ffffff23;
+  color: #d7e0ef;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.features li {
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr);
+  gap: 8px;
+}
+.features li::before {
+  content: "✓";
+  color: var(--accent);
+  font-weight: 900;
+}
+.action {
+  display: grid;
+  gap: 7px;
+  margin-top: auto;
+  width: 100%;
+}
+.action > :is(a, button, form) {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+.action a,
+.action button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #ffffff46;
+  border-radius: 12px;
+  background: #ffffff14;
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: center;
+  text-decoration: none;
+  white-space: normal;
+}
+.action a:hover,
+.action button:not(:disabled):hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.action :is(a, button):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.action button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.action small {
+  color: #96a9c5;
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.footnotes {
+  display: grid;
+  gap: 5px;
+  padding-top: 14px;
+  color: #a9b8ce;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.footnotes p {
+  margin: 0;
+}
+@media (max-width: 1250px) {
+  .track {
+    grid-template-columns: repeat(5, minmax(238px, 1fr));
+    min-width: max-content;
+  }
+  .hqGroup,
+  .businessGroup {
+    min-height: 82px;
+  }
+  .groupBrand img {
+    width: 42px;
+    height: 42px;
+  }
+}
+@media (max-width: 600px) {
+  .studio {
+    padding: 16px 12px;
+    border-radius: 16px;
+  }
+  .track {
+    grid-template-columns: repeat(5, minmax(252px, 84vw));
+  }
+  .hqWordmark,
+  .businessWordmark {
+    font-size: 25px;
+  }
+  .groupBrand img {
+    height: 38px;
+    width: 38px;
+  }
+  .card {
+    min-height: 0;
+    padding: 16px;
+  }
+  .card h3,
+  .description {
+    min-height: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroller {
+    scroll-behavior: auto;
+  }
+}

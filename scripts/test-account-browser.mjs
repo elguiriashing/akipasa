@@ -322,6 +322,10 @@ async function checkBounds(page, context) {
           )
             continue;
           const previous = ancestor.scrollLeft;
+          // Snap alignment can move a programmatic reachability probe
+          // backwards before the target control is measured.
+          const previousSnapType = ancestor.style.scrollSnapType;
+          ancestor.style.scrollSnapType = "none";
           const parentBox = ancestor.getBoundingClientRect();
           ancestor.scrollLeft += rect.left - parentBox.left;
           const reached = control.getBoundingClientRect();
@@ -329,6 +333,7 @@ async function checkBounds(page, context) {
             reached.left >= Math.max(-1, parentBox.left - 1) &&
             reached.right <= Math.min(width + 1, parentBox.right + 1);
           ancestor.scrollLeft = previous;
+          ancestor.style.scrollSnapType = previousSnapType;
           if (reachable) break;
         }
         if (!reachable)
@@ -525,42 +530,23 @@ async function interactions(page, route, locale) {
       page.locator(`a[href="/${locale}/account/export"]`),
     ).toHaveCount(1);
   } else if (route === "subscription") {
-    await expect(page.getByRole("tablist")).toHaveCount(0);
-    const catalogue = page.locator(
-      '[aria-labelledby="akisuite-catalogue-title"]',
-    );
-    await expect(catalogue.locator("#akihq-free")).toBeVisible();
-    await expect(catalogue.locator("#akihq-free a")).toHaveAttribute(
+    await expect(
+      page.getByRole("tablist", {
+        name: es ? "Tipo de membresía" : "Membership type",
+      }),
+    ).toHaveCount(1);
+    await expect(page.locator("#personal-free")).toBeVisible();
+    await expect(page.locator("#akipasa_premium button")).toBeDisabled();
+    await page.getByRole("tab", { name: es ? "Negocios" : "Business" }).click();
+    await expect(page.locator("#akihq-free")).toBeVisible();
+    await expect(page.locator("#akihq-free a")).toHaveAttribute(
       "href",
       `https://akihq.app/${locale}/business`,
     );
-    for (const [tier, count] of [
-      ["basico", 4],
-      ["standard", 8],
-      ["pro", 12],
-    ]) {
-      const card = catalogue.locator(`#operations-${tier}`);
-      await expect(card).toBeVisible();
-      await expect(card).toContainText(
-        es
-          ? `${count} de 12 herramientas activas`
-          : `${count} of 12 active tools`,
-      );
-      await expect(card.locator("a")).toHaveAttribute(
-        "href",
-        `/${locale}/account/subscription/operations`,
-      );
-      await expect(card.locator("form")).toHaveCount(0);
-    }
-    await expect(
-      catalogue.getByRole("radio", { name: es ? /Anual/ : /Yearly/ }),
-    ).toHaveCount(0);
-    for (const id of ["aki_enterprise", "akihq_pro", "akihq_standard"])
-      await expect(catalogue.locator(`#${id}`)).toHaveCount(0);
-    for (const button of await catalogue
-      .locator("article form button[type=submit]")
-      .all())
-      await expect(button).toBeDisabled();
+    await expect(page.locator("#akibusiness_premium")).toBeVisible();
+    await expect(page.locator("[data-offer]")).toHaveCount(2);
+    await expect(page.locator('a[href*="akibusiness.com"]')).toHaveCount(1);
+    await expect(page.locator('[id^="operations-"]')).toHaveCount(0);
     expect(await page.evaluate(() => window.__accountActions)).toEqual([]);
   } else if (route === "bookings") {
     const cancel = page.locator(".booking-cancel").first();
@@ -837,21 +823,19 @@ try {
             for (const alert of await alerts.all())
               await expect(alert).toBeVisible();
             if (fixture === "billing-error") {
-              const catalogue = page.locator(
-                '[aria-labelledby="akisuite-catalogue-title"]',
-              );
-              await expect(catalogue.locator("article")).toHaveCount(5);
-              for (const id of [
-                "akihq-free",
-                "operations-basico",
-                "operations-standard",
-                "operations-pro",
-              ])
-                await expect(catalogue.locator(`#${id} form`)).toHaveCount(0);
+              await expect(page.getByRole("tablist")).toHaveCount(1);
+              await page
+                .getByRole("tab", {
+                  name: locale === "es" ? "Negocios" : "Business",
+                })
+                .click();
+              await expect(page.locator("[data-offer]")).toHaveCount(2);
               await expect(
-                catalogue.locator("#akibusiness_premium button"),
+                page.locator("#akibusiness_premium button"),
               ).toBeDisabled();
-              await expect(catalogue.locator("form")).toHaveCount(0);
+              await expect(
+                page.locator("#akibusiness_premium form"),
+              ).toHaveCount(0);
               await expect(page.locator(".workspace-content form")).toHaveCount(
                 0,
               );
@@ -870,7 +854,9 @@ try {
                 }),
               ).toHaveAttribute("href", `/${locale}/account/export`);
             } else {
-              await expect(page.getByRole("tablist")).toHaveCount(0);
+              await expect(page.getByRole("tablist")).toHaveCount(
+                fixture === "billing-error" ? 1 : 0,
+              );
             }
             await page
               .getByRole("button", {
@@ -974,34 +960,35 @@ try {
           await expect
             .poll(() => page.evaluate(() => window.__accountReady))
             .toBe(true);
-          await expect(page.getByRole("article")).toHaveCount(5);
-          for (const id of [
-            "akihq-free",
-            "operations-basico",
-            "operations-standard",
-            "operations-pro",
-          ])
-            await expect(page.locator(`#${id} form`)).toHaveCount(0);
+          await expect(page.locator("[data-offer]")).toHaveCount(2);
+          await page
+            .getByRole("tab", {
+              name: locale === "es" ? "Negocios" : "Business",
+            })
+            .click();
+          await expect(page.locator("[data-offer]")).toHaveCount(2);
           await expect(page.locator("#akihq-free a")).toHaveAttribute(
             "href",
             `https://akihq.app/${locale}/business`,
           );
-          await expect(page.locator('[id^="operations-"] a')).toHaveCount(3);
+          await expect(page.locator('[id^="operations-"]')).toHaveCount(0);
+          await expect(page.locator('a[href*="akibusiness.com"]')).toHaveCount(
+            1,
+          );
           const links = page.getByRole("link", {
             name:
               locale === "es"
-                ? "Continuar en mi cuenta"
-                : "Continue in my account",
+                ? /^Explorar Premium/
+                : /^Explore listing Premium/,
           });
           await expect(links).toHaveCount(1);
           for (const link of await links.all()) {
             await expect(link).toBeVisible();
             await expect(link).toHaveAttribute(
               "href",
-              `/${locale}/account/subscription?from=akiduermo`,
+              `https://akiduermo.com/membership?lang=${locale}`,
             );
-            // The canonical one-row membership carousel makes every CTA
-            // scroll-reachable, even when it is not initially in the viewport.
+            // Every audience CTA remains scroll-reachable without horizontal clipping.
             await link.scrollIntoViewIfNeeded();
             const geometry = await link.evaluate((el) => {
               const r = el.getBoundingClientRect();
@@ -1048,10 +1035,8 @@ try {
             ),
             fullPage: true,
           });
-          await links.first().click();
-          await expect
-            .poll(() => new URL(page.url()).pathname)
-            .toBe(`/${locale}/account/subscription`);
+          // External AkiDuermo handoff is a no-payment navigation: verify the
+          // destination, but do not leave the local fixture to follow it.
           expect(await page.evaluate(() => window.__accountActions)).toEqual(
             [],
           );
@@ -1064,15 +1049,20 @@ try {
           // Readiness never suppresses free management or an account-only review
           // handoff; it must not create checkout forms or financial actions.
           await expect(page.locator("article form")).toHaveCount(0);
+          await page
+            .getByRole("tab", {
+              name: locale === "es" ? "Negocios" : "Business",
+            })
+            .click();
           await expect(
             page.getByRole("link", {
               name:
                 locale === "es"
-                  ? "Continuar en mi cuenta"
-                  : "Continue in my account",
+                  ? /^Explorar Premium/
+                  : /^Explore listing Premium/,
             }),
           ).toHaveCount(1);
-          await expect(page.locator('[id^="operations-"] a')).toHaveCount(3);
+          await expect(page.locator('[id^="operations-"] a')).toHaveCount(0);
           expect(await page.evaluate(() => window.__accountActions)).toEqual(
             [],
           );
