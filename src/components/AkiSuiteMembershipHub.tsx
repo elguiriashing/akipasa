@@ -4,6 +4,7 @@ import { changeAkiSuiteSubscription } from "@/app/[locale]/account/subscription/
 import { openBillingPortal } from "@/app/[locale]/account/subscription/actions";
 import { akisuitePlans, type AkiSuitePlan } from "@/lib/akisuite-catalogue";
 import styles from "./AkiSuiteMembershipHub.module.css";
+import { premiumName } from "@/lib/approved-pricing";
 import { suiteHref } from "@/lib/suite-navigation";
 
 import {
@@ -45,8 +46,10 @@ const currentListingPlans = [
   "akiduermo_premium",
 ];
 function recordLabel(code: string, es: boolean) {
-  if (code === "akibusiness_premium") return "AkiPasa Listing Premium";
-  if (code === "akiduermo_premium") return "AkiDuermo Listing Premium";
+  if (code === "akibusiness_premium")
+    return premiumName("akipasa", "business", es ? "es" : "en");
+  if (code === "akiduermo_premium")
+    return premiumName("akiduermo", "business", es ? "es" : "en");
   const historical: Record<string, string> = {
     business: "Business",
     business_pro: "Business Pro",
@@ -57,6 +60,8 @@ function recordLabel(code: string, es: boolean) {
   };
   if (historical[code])
     return `${historical[code]} (${es ? "anterior" : "legacy"})`;
+  if (code === "akipasa_premium")
+    return premiumName("akipasa", "individual", es ? "es" : "en");
   if (code === "premium")
     return `AkiPasa Premium (${es ? "anterior" : "legacy"})`;
   return akisuitePlans[code as AkiSuitePlan]?.label || code;

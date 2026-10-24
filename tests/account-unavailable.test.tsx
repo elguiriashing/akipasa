@@ -215,14 +215,14 @@ it("keeps locked personal Premium hidden after successful billing reads", async 
     screen.getByRole("tablist", { name: "Membership type" }),
   ).toBeInTheDocument();
   const lockedPersonal = screen
-    .getByRole("heading", { name: "AkiPasa Personal Premium" })
+    .getByRole("heading", { name: "AkiPasa Premium (for individuals)" })
     .closest("article")!;
   expect(
     within(lockedPersonal).getByRole("button", { name: "Not available yet" }),
   ).toBeDisabled();
   fireEvent.click(screen.getByRole("tab", { name: "Business" }));
   const card = screen
-    .getByRole("heading", { name: "AkiPasa Business Premium" })
+    .getByRole("heading", { name: "AkiPasa Premium (for businesses)" })
     .closest("article")!;
   const form = within(card)
     .getByRole("button", { name: "Coming soon" })

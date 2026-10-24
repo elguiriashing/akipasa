@@ -64,7 +64,7 @@ const subscription = {
         {
           subscription_item: "si_test",
           price: OPERATION_PRICES.basico.id,
-          amount: 2499,
+          amount: 1999,
           period: { start: now - 86400, end: now + 86400 },
         },
       ],

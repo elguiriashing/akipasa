@@ -177,15 +177,15 @@ function setup(
         result = {
           id: "upcoming_in_preview",
           currency: "eur",
-          amount_due: options.nonzero ? 2499 : 0,
-          total: options.nonzero ? 2499 : 0,
+          amount_due: options.nonzero ? 1999 : 0,
+          total: options.nonzero ? 1999 : 0,
           automatic_tax: { enabled: false },
-          total_discount_amounts: [{ amount: 2499, discount: "di_free" }],
+          total_discount_amounts: [{ amount: 1999, discount: "di_free" }],
           lines: {
             has_more: false,
             data: [
               {
-                amount: 2499,
+                amount: 1999,
                 pricing: {
                   price_details: { price: OPERATION_PRICES.basico.id },
                 },
@@ -265,6 +265,35 @@ function setup(
   };
 }
 describe("reviewed same-subscription renewal migration commands", () => {
+  it.each(["missing", "old-catalogue", "old-price"])(
+    "blocks a queued %s approval before any Stripe write",
+    async (kind) => {
+      const t = setup();
+      if (kind === "missing") {
+        delete t.command.source_snapshot.approvedCatalogue;
+        delete t.command.source_snapshot.targetPriceId;
+      } else if (kind === "old-catalogue") {
+        t.command.source_snapshot.approvedCatalogue = "2026-10-20";
+      } else {
+        t.command.source_snapshot.targetPriceId =
+          "price_1USgZRGfzDhsgsQZaZYnAjZC";
+      }
+      expect(
+        (await processOperationsMigrationCommand(env, t.fetcher)).outcome,
+      ).toBe("blocked");
+      expect(
+        t.calls.some(
+          (call) =>
+            call.url.startsWith("https://api.stripe.com/") &&
+            call.method !== "GET",
+        ),
+      ).toBe(false);
+      expect(
+        (t.calls.at(-1)?.body as { p_evidence: { reason: string } }).p_evidence
+          .reason,
+      ).toBe("migration_catalogue_review_required");
+    },
+  );
   it("explicitly enabled engine with an empty command queue performs no Stripe writes or grants", async () => {
     const calls: Array<{ url: string; method: string }> = [];
     const fetcher = vi.fn(

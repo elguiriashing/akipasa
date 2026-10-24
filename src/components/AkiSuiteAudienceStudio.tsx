@@ -160,8 +160,8 @@ export function AkiSuiteAudienceStudio({
               ? `Para descubrir y disfrutar de ${product}. No necesitas tener un negocio.`
               : `For discovering and enjoying ${product}. No business account needed.`
             : es
-              ? `Para propietarios que gestionan su presencia en ${product} mediante AkiHQ.`
-              : `For owners managing their ${product} presence through AkiHQ.`}
+              ? `Tu ficha es el primer contacto. Dale a tus clientes más motivos para elegirte con Premium en AkiHQ.`
+              : `Your listing makes the first impression. Give customers more reasons to choose you with Premium in AkiHQ.`}
         </p>
         {audience === "business" && beforeOffers}
         <div className={styles.grid}>
@@ -186,8 +186,8 @@ export function AkiSuiteAudienceStudio({
               </strong>
               <p>
                 {es
-                  ? "AkiBusiness Standard, Plus y Pro añaden herramientas de operaciones de pago por ubicación. No están incluidas en Premium."
-                  : "AkiBusiness Standard, Plus and Pro add separate paid operating tools per location. They are not included in listing Premium."}
+                  ? "AkiBusiness Basic, Standard y Pro añaden herramientas de operaciones de pago por ubicación. No están incluidas en Premium."
+                  : "AkiBusiness Basic, Standard and Pro add separate paid operating tools per location. They are not included in listing Premium."}
               </p>
             </div>
             <a href={businessSoftwareHref}>

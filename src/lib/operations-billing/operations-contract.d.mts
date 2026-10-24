@@ -1,7 +1,7 @@
 export const OPERATION_PRICES: Readonly<
   Record<
     "basico" | "standard" | "pro",
-    { id: string; amount: number; tools: number }
+    { id: string; amount: number; tools: number; name: string }
   >
 >;
 export const TOOL_KEYS: readonly string[];

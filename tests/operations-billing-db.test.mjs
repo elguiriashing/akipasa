@@ -6,7 +6,11 @@ const db = new PGlite();
 const owner = "11111111-1111-4111-8111-111111111111",
   other = "22222222-2222-4222-8222-222222222222";
 const tools = ["crm", "tasks", "calendar", "employees"];
-const price = "price_1USgZRGfzDhsgsQZaZYnAjZC";
+import {
+  OPERATION_PRICES,
+  TOOL_KEYS,
+} from "../src/lib/operations-billing/operations-contract.mjs";
+const price = OPERATION_PRICES.basico.id;
 const scalar = async (sql, args = []) =>
   Object.values((await db.query(sql, args)).rows[0])[0];
 const login = async (id = owner, role = "authenticated") => {
@@ -36,6 +40,7 @@ grant usage on schema public to anon,authenticated,service_role;`);
     "20261020181726_toolbox_entitlement_source_compatibility.sql",
     "20261020181614_operations_renewal_command_queue.sql",
     "20261020235342_operations_owner_migration_status.sql",
+    "20261024005500_approved_monthly_pricing.sql",
   ])
     await db.exec(
       await readFile(
@@ -96,6 +101,34 @@ test("same checkout selection reuses durable reservation; another selection cann
     ]),
     /reconciliation/,
   );
+});
+test("new checkouts accept only each approved tier price and reject historical or cross-tier offers", async () => {
+  for (const [tier, offer] of Object.entries(OPERATION_PRICES)) {
+    await db.exec("begin");
+    const chosen = TOOL_KEYS.slice(0, offer.tools);
+    const reserved = await scalar(
+      "select public.reserve_crm_operations_checkout($1,$2,$3,$4)",
+      ["private-test", tier, chosen, offer.id],
+    );
+    assert.equal(reserved.price_id, offer.id);
+    assert.equal(reserved.tier, tier);
+    await db.exec("rollback");
+  }
+  for (const unapproved of [
+    "price_1USgZRGfzDhsgsQZaZYnAjZC",
+    OPERATION_PRICES.pro.id,
+    "price_arbitrary",
+  ]) {
+    await assert.rejects(
+      scalar("select public.reserve_crm_operations_checkout($1,$2,$3,$4)", [
+        "private-test",
+        "basico",
+        tools,
+        unapproved,
+      ]),
+      /Unapproved operating offer/,
+    );
+  }
 });
 test("foreign owners and browser service calls denied; private tables remain inaccessible", async () => {
   await login(other);
@@ -799,7 +832,7 @@ for (const [name, sql] of [
   ],
   [
     "nonzero future invoice",
-    "update akibusiness_private.operations_migration_commands set preview_evidence=preview_evidence||'{\"amountDue\":2499}'",
+    "update akibusiness_private.operations_migration_commands set preview_evidence=preview_evidence||'{\"amountDue\":1999}'",
   ],
   [
     "different effective date",

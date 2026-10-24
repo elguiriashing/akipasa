@@ -44,76 +44,120 @@ this does not waive required checks or permit unsafe releases.
   The first recovery-test attempt failed only because jsdom was not installed;
   the successful rerun is the acceptance result.
 
-## Production evidence and pending rollout
+## Current recovery milestones
 
-| Product     | Provider evidence                                                                                                       | Runtime evidence / remaining check                                                                                                                                                     |
-| ----------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| AkiBusiness | Pages akibusiness-selfowned-staging, main ebf295c, successful canonical deployment afdc29e1-e4a8-4a4f-92a7-fdd1cae74d25 | release-source.json matches ebf295c; anonymous login HTTP 200; existing browser session reaches app dashboard without redirect loop. Fresh signed-out OAuth/recovery remains separate. |
-| AkiPasa     | Worker akipasa; prior active version 67a60a9d-bf09-49ef-8e55-70f5e91b3c0c                                               | #283 merged; wait for its production build and verify exact merged SHA plus EN/ES membership and homepage.                                                                             |
-| AkiDuermo   | Worker akiduermo; prior active version 626e9cff-e57d-47ee-86c7-e4727e04c58c                                             | Live membership still showed five-card design. Pin advanced from 890e295 to CI-passed 09c1b8a; build bad3df02-cd3d-46ee-a85f-46b11316d410 queued. Verify completion and exact source.  |
-| AkiCoches   | Worker akicoches; active version 92de2c07-0c96-409e-aa01-3116c60899a7                                                   | Main da5444e must be compared with release-source and actual membership behavior.                                                                                                      |
-| AkiHQ       | Canonical akihq.app maps to Worker akihq-management-preview, active version 9c383c2c-aa1e-4199-9893-8fded6b4c101        | Verify source b8496ec on actual canonical Worker. Pages akihq success alone is insufficient because its domains include legacy crm.akipasa.com.                                        |
-| QR hub      | qr.akihq.app maps to Worker akihq-qr-hub, version 06a1ed02-0b2a-4410-a50b-5b7c88b27e78                                  | Check personal/business journey and source colors: Pasa orange, HQ yellow, Business purple.                                                                                            |
+- AkiPasa#276 merged as `5d3afa13e2ab5ae242d8803960f727b1da22a773` after
+  fresh green CI, preserving this ledger and historical recovery evidence.
+- AkiPasa#271 reconciled current master, passed full local checks, 21 private
+  export cases and every exact-head hosted check, then merged as
+  `9cde05250dec9fd77020ce0631c556c77b1872bb`.
+- AkiHQ#61 reconciled current main and its test inventory, fixed the fleet media
+  caller's missing Premium/library props, passed 43 focused cases, full local
+  checks and hosted CI, then merged as `e7bffb655b3a602ca0b4661a1ab0eea213fc9205`.
+  This releases gated source; library/upload activation and real Storage
+  acceptance remain separate.
+- Installed all nine reviewed Pulse schema phases on the confirmed shared
+  project. All eleven public function bodies matched canonical source; own
+  management-export role probes passed with rollback-only empty synthetic
+  identity reads. Canonical/provider history, hashes and one precisely verified
+  idempotent timestamp-collision recovery are archived in
+  `receipts/AKIPULSE_SCHEMA_20261024.json`. No historical rows were rewritten.
+- AkiDuermo's stale deployment pin was advanced only to CI-passed main
+  `09c1b8a46b76310c64867e28ae2b21423c116269`. Provider build
+  `bad3df02-cd3d-46ee-a85f-46b11316d410` succeeded. The exact live source and new
+  audience UI were observed. The source-pin safeguard remains intact.
+- Before the pricing amendment, all five homepages and exact release stamps
+  were read successfully. Membership cards were inspected on Pasa, Duermo and
+  Coches, including EN/ES and narrow layouts, without payment or customer writes.
+- Anonymous account routes for HQ, Duermo, Coches and Pasa reach their proper
+  local sign-in screens with bounded local return paths. Business's anonymous
+  login renders without the previous redirect loop. Full OAuth, recovery,
+  refresh-token and authenticated role acceptance are not inferred from forms.
 
-The existing Cloudflare credentials/connections work. The terminal contains no
-Cloudflare deployment token; use the connected, source-stamped Workers Builds
-and Pages paths. Do not request unnecessary reconnects or invent deployment success.
+## Approved pricing amendment and current release work
 
-## Remaining PR dependency decisions
+Alex explicitly superseded previous prices and public tier names on 24 October.
+See [the full pricing contract](APPROVED_PRICING_20261024.md) and the identical
+`config/approved-pricing.json` catalogues in all five repositories.
 
-| PR          | Classification | Exact next step                                                                                                                             |
-| ----------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| akipasa#276 | PARTIAL        | Incorporate this recovery ledger, require fresh exact-head CI, merge documentation safely.                                                  |
-| akipasa#271 | BLOCKED        | Resolve current-master conflict only with accepted HQ#77 Pulse schema/own-export dependencies; keep complete-export failure behavior.       |
-| akihq#61    | BLOCKED        | Reconcile current-main conflicts and verify installed library functions plus strict-upload/provider acceptance before dependent UI release. |
-| akipasa#8   | BLOCKED        | Preserve draft/noindex and existing terms acceptance version until counsel/operational evidence gates are actually satisfied.               |
+AkiBusiness Basic/Standard/Pro are €19.99/€48.99/€97.99 monthly per operating
+location. Each discovery product's individual Premium is €1.99/month. Business
+Premium is AkiPasa €11.99, AkiDuermo €24.99 and AkiCoches €19.99 monthly, upgrading
+that product's free AkiHQ experience. No new annual price is inferred.
 
-## Shared database read-only checkpoint
+Nine new named Stripe price/product records were created in the confirmed live
+account. Four active subscriptions still use their existing legacy prices; none
+were charged, repriced or migrated. No renewal schedule was created.
+The additive two-function exact-price guard is installed as provider history
+`20261024005037` and read back against canonical source. Ownership, security
+search path and anonymous denial are retained. The local lifecycle/role suite
+passes 36/36. Receipts: `receipts/APPROVED_PRICING_20261024.json`.
 
-Connected project vhpbvcfkcteswlsdjrfl is ACTIVE_HEALTHY; its label is AkiPasa
-Development, while repository release evidence identifies it as the shared live
-backend. Native property and disabled commercial-funnel phases are already in
-migration history; do not replay them.
+Current source changes update public audience cards, AkiHQ comparisons, account
+and growth copy, server pricing checks, Business landing/comparison/toolbox,
+EN/ES upgrade CTAs, source bindings and cache versions. The Business fallback
+workflow also corrects its retired Pages target to the already canonical
+`akibusiness-selfowned-staging`, with strict owner/repository/branch/source checks.
+Full local source/build checks, fresh hosted CI, canonical rollout and live
+price/source verification are required before declaring the pricing release done.
 
-The actual public function catalogue lacks akipulse_scopes_v2 and
-my_pulse_management_export_page. HQ's nine staged additive Pulse migrations
-include explicit scope adapters, organization/native/rental reports and own
-management-history export. Their presence in Git is not installation evidence.
-The private account_features_allowed helper exists with authenticated execution
-and anonymous execution denied.
+## Canonical provider mapping and acceptance limits
 
-Security/performance advisor results were fetched and retained for classification.
-Private deny-all RLS tables are not automatically vulnerabilities. #207 owns the
-backlog. Review each exposed table/view/function and intended caller before any
-policy/grant change. No database schema, customer row or feature gate was changed
-by this checkpoint.
+| Product     | Existing production target                                | Evidence / release gate                                                                                          |
+| ----------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| AkiPasa     | Worker `akipasa`, repository `master`                     | Earlier audience release `ec1a5d1a` verified live; newest privacy/pricing source requires exact-source readback. |
+| AkiDuermo   | Worker `akiduermo`, repository `main`                     | `09c1b8a` verified live; advance the protected source pin only after exact pricing-head CI.                      |
+| AkiCoches   | Worker `akicoches`, repository `main`                     | `da5444e` verified live; pricing rollout must match its merged source.                                           |
+| AkiHQ       | Worker `akihq-management-preview`, repository `main`      | Canonical `akihq.app`; Pages `akihq` serves legacy CRM and cannot establish canonical rollout.                   |
+| AkiBusiness | Pages `akibusiness-selfowned-staging`, `AkiBusiness/main` | Canonical `akibusiness.com` and `operations.akipasa.com`; old `akibusiness-operations-preview` is historical.    |
+| QR hub      | Worker `akihq-qr-hub`                                     | Root audience choices observed; complete journey/color acceptance remains open.                                  |
+
+Cloudflare, GitHub and Supabase connectors work. The local connected browser
+became unavailable during the pricing amendment; the separate cloud browser can
+still inspect public live UI. Direct terminal requests later received network
+403s on all five domains; that does not establish a production outage.
+Do not invent successful live checks from provider/CI alone.
+
+## Database and activation boundaries
+
+Project `vhpbvcfkcteswlsdjrfl` is the confirmed shared backend, despite its
+Development label. Pulse and revised price validation are now installed. Native
+property inventory, the commercial-funnel database switch and listing library /
+strict upload switches remain disabled; source readiness is not activation.
+Existing role/RLS, mapping history, customer data and old booking authority are
+preserved. Advisors were retrieved; intentional private deny-all tables are not
+repaired by broadening access. Existing issue #207 retains advisor ownership.
+
+The only remaining old PR is legal draft AkiPasa#8: retain draft/noindex and legal
+acceptance version until professional and operational evidence gates are met.
+Current pricing candidates are separate reviewed branches across all five repos.
 
 ## Historical requirement ownership and acceptance
 
-| Workstream                 | State at recovery | Authoritative tracking / remaining evidence                                                                                                          |
-| -------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Membership presentation    | PARTIAL           | #200 and merged #283; complete all three exact-SHA production/EN/ES/responsive checks. Older five-card requests are superseded.                      |
-| Cross-domain auth          | PARTIAL           | Existing host-only identity paths; safe signed-out/login/callback/recovery/logout/role acceptance on all five products.                              |
-| ISP connectivity           | BLOCKED           | #203; remote success cannot resolve affected Spanish ISP evidence. Need affected-network trace/TCP/TLS comparison. Do not rewrite DNS speculatively. |
-| Independent property model | PARTIAL           | AkiDuermo#17; native schema is installed disabled, legacy bookings remain authoritative until accepted cutover.                                      |
-| Stay bookings              | BLOCKED           | AkiDuermo#20; disposable authenticated guest/owner, concurrency, cancellation and history acceptance.                                                |
-| Venue bookings             | PARTIAL           | #72; existing resources/offering/slot engine, confirm actual safe production acceptance.                                                             |
-| Rentals                    | PARTIAL           | Independent branches/fleets/request semantics exist; verify owned/foreign roles and overlap without false confirmations.                             |
-| Organisation/team tools    | PARTIAL           | #284 coordination; verify independent locations, invitation access, revocation and server-scoped delegation.                                         |
-| Toolbox/billing            | PARTIAL           | #124 and current runbooks; verify 4/8/12 tools, monthly cycle replacement and legacy continuity. No new prices/customer migration by inference.      |
-| Pulse/export               | BLOCKED           | #271 and HQ#77 nine schema phases; never hide a missing export section behind an unrelated feature flag.                                             |
-| Premium templates/media    | BLOCKED           | HQ#61; schema and real strict-upload/library acceptance.                                                                                             |
-| Claims/notifications       | PARTIAL           | Existing submission/decision/outbox contracts; verify owned listing becomes non-claimable and provider acceptance without bulk replay.               |
-| Search/map/data quality    | PARTIAL           | #284; preserve quarantine/location corrections, verify literal name/city/address and map/list parity. No approximate mass deletion.                  |
-| Passport/Pals              | PARTIAL           | #284; source foundations exist; public launch/physical rewards/monetization are not inferred from a private preview.                                 |
-| PoS/hospitality            | BLOCKED           | AkiBusiness#25; code/testing evidence separate from authenticated tablet/service acceptance.                                                         |
-| Printers/devices           | BLOCKED           | AkiBusiness#24; actual 58/80 mm/bar/kitchen hardware and disconnect/retry acceptance required.                                                       |
-| Payment processing         | BLOCKED           | AkiBusiness#23; recorded tender is not captured payment. No real charge/refund authorized.                                                           |
-| Spanish fiscal issuance    | BLOCKED           | AkiBusiness#22; official specifications/professional acceptance; retain disabled fiscal issuance.                                                    |
-| Android/store              | PARTIAL           | #185, AkiDuermo#18, AkiBusiness#27; preserve package/signing continuity; store approval and real-device acceptance are external gates.               |
-| Legal                      | BLOCKED           | #8 and AkiDuermo#19; updated incorporation documents do not replace professional review.                                                             |
-| GA4/SEO/performance        | PARTIAL           | #284; GA4 command-envelope repair exists; verify consent-aware collection and current crawl/source behavior before claiming recovery.                |
-| QR/brand links             | PARTIAL           | #284; verify canonical destinations and actual source assets/colors.                                                                                 |
+| Workstream                 | State at recovery | Authoritative tracking / remaining evidence                                                                                                                                                                         |
+| -------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Membership presentation    | PARTIAL           | #200 and merged #283; complete all three exact-SHA production/EN/ES/responsive checks. Older five-card requests are superseded.                                                                                     |
+| Cross-domain auth          | PARTIAL           | Existing host-only identity paths; safe signed-out/login/callback/recovery/logout/role acceptance on all five products.                                                                                             |
+| ISP connectivity           | BLOCKED           | #203; remote success cannot resolve affected Spanish ISP evidence. Need affected-network trace/TCP/TLS comparison. Do not rewrite DNS speculatively.                                                                |
+| Independent property model | PARTIAL           | AkiDuermo#17; native schema is installed disabled, legacy bookings remain authoritative until accepted cutover.                                                                                                     |
+| Stay bookings              | BLOCKED           | AkiDuermo#20; disposable authenticated guest/owner, concurrency, cancellation and history acceptance.                                                                                                               |
+| Venue bookings             | PARTIAL           | #72; existing resources/offering/slot engine, confirm actual safe production acceptance.                                                                                                                            |
+| Rentals                    | PARTIAL           | Independent branches/fleets/request semantics exist; verify owned/foreign roles and overlap without false confirmations.                                                                                            |
+| Organisation/team tools    | PARTIAL           | #284 coordination; verify independent locations, invitation access, revocation and server-scoped delegation.                                                                                                        |
+| Toolbox/billing            | PARTIAL           | #124 and current runbooks; verify 4/8/12 tools, monthly cycle replacement and legacy continuity. 24 October explicit pricing approval supersedes old amounts; customer migrations still require reviewed execution. |
+| Pulse/export               | PARTIAL           | Nine schema phases and #271 merged; preserve whole-export failure behavior and complete authenticated acceptance.                                                                                                   |
+| Premium templates/media    | PARTIAL           | HQ#61 merged gated; real strict-upload/library acceptance remains.                                                                                                                                                  |
+| Claims/notifications       | PARTIAL           | Existing submission/decision/outbox contracts; verify owned listing becomes non-claimable and provider acceptance without bulk replay.                                                                              |
+| Search/map/data quality    | PARTIAL           | #284; preserve quarantine/location corrections, verify literal name/city/address and map/list parity. No approximate mass deletion.                                                                                 |
+| Passport/Pals              | PARTIAL           | #284; source foundations exist; public launch/physical rewards/monetization are not inferred from a private preview.                                                                                                |
+| PoS/hospitality            | BLOCKED           | AkiBusiness#25; code/testing evidence separate from authenticated tablet/service acceptance.                                                                                                                        |
+| Printers/devices           | BLOCKED           | AkiBusiness#24; actual 58/80 mm/bar/kitchen hardware and disconnect/retry acceptance required.                                                                                                                      |
+| Payment processing         | BLOCKED           | AkiBusiness#23; recorded tender is not captured payment. No real charge/refund authorized.                                                                                                                          |
+| Spanish fiscal issuance    | BLOCKED           | AkiBusiness#22; official specifications/professional acceptance; retain disabled fiscal issuance.                                                                                                                   |
+| Android/store              | PARTIAL           | #185, AkiDuermo#18, AkiBusiness#27; preserve package/signing continuity; store approval and real-device acceptance are external gates.                                                                              |
+| Legal                      | BLOCKED           | #8 and AkiDuermo#19; updated incorporation documents do not replace professional review.                                                                                                                            |
+| GA4/SEO/performance        | PARTIAL           | #284; GA4 command-envelope repair exists; verify consent-aware collection and current crawl/source behavior before claiming recovery.                                                                               |
+| QR/brand links             | PARTIAL           | #284; verify canonical destinations and actual source assets/colors.                                                                                                                                                |
 
 ## Recovery and reporting
 
@@ -126,3 +170,9 @@ After each meaningful milestone, update #284 with merge/build/source/test eviden
 Before final handoff, refresh this document and produce the requested PASS/FAIL/
 BLOCKED scorecard. The mission is not complete while critical acceptance remains
 unverified. Keep independent safe engineering moving while external gates wait.
+
+Queued migration commands now bind their reviewed catalogue version and target price
+in the immutable snapshot. Commands lacking that binding or naming an old offer
+are blocked before any Stripe write. The three pre-existing queued commands need
+a separately reviewed migration decision; this pricing release does not execute or
+regenerate them. Regression cases cover missing, old-version and wrong-price approvals.

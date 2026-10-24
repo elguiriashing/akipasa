@@ -8,14 +8,19 @@ import {
   overlappingAkiSuitePlan,
 } from "../src/lib/akisuite-catalogue";
 describe("AkiSuite commercial catalogue", () => {
-  it("applies 20 percent off every yearly plan", () => {
+  it("preserves historical annual terms independently of revised monthly offers", () => {
     for (const plan of Object.keys(
       akisuitePlans,
     ) as (keyof typeof akisuitePlans)[]) {
+      if (["akibusiness_premium", "akiduermo_premium"].includes(plan)) continue;
       expect(akisuitePriceCents(plan, "year")).toBe(
         Math.round(akisuitePlans[plan].monthlyCents * 9.6),
       );
     }
+    expect(akisuitePriceCents("akibusiness_premium", "month")).toBe(1199);
+    expect(akisuitePriceCents("akiduermo_premium", "month")).toBe(2499);
+    expect(akisuitePriceCents("akibusiness_premium", "year")).toBe(14390);
+    expect(akisuitePriceCents("akiduermo_premium", "year")).toBe(5750);
     expect(akisuitePriceCents("aki_enterprise", "year")).toBe(76790);
     expect(akisuitePriceCents("akipasa_premium", "year")).toBe(1910);
   });

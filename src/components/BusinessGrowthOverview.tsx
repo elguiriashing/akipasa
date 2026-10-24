@@ -1,4 +1,9 @@
 import Link from "next/link";
+import {
+  approvedPricing,
+  monthlyPrice,
+  premiumName,
+} from "@/lib/approved-pricing";
 import styles from "./BusinessGrowthOverview.module.css";
 
 type GrowthVenue = {
@@ -135,7 +140,14 @@ export function BusinessGrowthOverview({
                     ? "Próximamente"
                     : "Coming later"}
             </span>
-            <h4>AkiBusiness Premium · €14.99/{es ? "mes" : "month"}</h4>
+            <h4>
+              {premiumName("akipasa", "business", locale)} ·{" "}
+              {monthlyPrice(
+                approvedPricing.discovery.akipasa.businessCents,
+                locale,
+              )}
+              /{es ? "mes" : "month"}
+            </h4>
             <p>
               {premiumEnabled
                 ? es
@@ -150,13 +162,13 @@ export function BusinessGrowthOverview({
                 className="button button-strong"
                 href={`/${locale}/account/subscription?from=akibusiness`}
               >
-                {es ? "Ver AkiBusiness Premium" : "Explore AkiBusiness Premium"}
+                {es ? "Quiero mejorar mi ficha" : "Explore my Premium upgrade"}
               </Link>
             )}
             <p className={styles.fine}>
               {es
-                ? "20 % de descuento anual. Sin promesas de posición en Google."
-                : "20% annual discount. No Google ranking guarantees."}
+                ? "Precio mensual por ubicación. Consulta la disponibilidad antes de contratar."
+                : "Monthly price per location. Check availability before subscribing."}
             </p>
           </div>
         </div>
