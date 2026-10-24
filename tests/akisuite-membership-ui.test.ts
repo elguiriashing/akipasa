@@ -56,7 +56,7 @@ describe("AkiSuite membership audience contract", () => {
     for (const [path, sha] of [
       [
         "src/components/AkiSuiteAudienceStudio.tsx",
-        "fbd1fac9f9ae6adae497f359fb0ef2f92cbe6c1f",
+        "b94dfa6a0f6f4c0d9013e7b6a4cc890ef4c79f5b",
       ],
       [
         "src/components/AkiSuiteAudienceStudio.module.css",

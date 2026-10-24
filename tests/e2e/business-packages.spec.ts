@@ -54,7 +54,7 @@ for (const locale of ["en", "es"] as const) {
       await expect(catalogue.locator("[data-offer]")).toHaveCount(2);
       await expect(catalogue.locator("#akihq-free")).toContainText("AkiHQ");
       await expect(catalogue.locator("#akibusiness_premium")).toContainText(
-        locale === "es" ? "14,99" : "14.99",
+        locale === "es" ? "11,99" : "11.99",
       );
       await expect(catalogue.locator("#akihq-free a")).toHaveAttribute(
         "href",

@@ -205,12 +205,14 @@ test("membership offer is reachable before sign in", async ({ page }) => {
     "https://akihq.app/en/business",
   );
   await expect(
-    catalogue.getByRole("heading", { name: "AkiPasa Business Premium" }),
+    catalogue.getByRole("heading", {
+      name: "AkiPasa Premium (for businesses)",
+    }),
   ).toBeVisible();
   await expect(
     catalogue
       .locator("#akibusiness_premium")
-      .getByRole("link", { name: /^Continue in my account/ }),
+      .getByRole("link", { name: /^Upgrade my listing/ }),
   ).toHaveAttribute("href", "/en/account/subscription?from=akipasa");
   await expect(catalogue.locator("#akibusiness_premium form")).toHaveCount(0);
   await expect(catalogue.locator('a[href*="akibusiness.com"]')).toHaveCount(1);

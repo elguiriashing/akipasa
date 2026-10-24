@@ -4,6 +4,7 @@ import {
   objectId,
 } from "./operations-billing/operations-contract.mjs";
 import type { OperationsRecoveryEnv } from "./operations-recovery";
+import approvedPricing from "../../config/approved-pricing.json" with { type: "json" };
 type Row = Record<string, unknown>;
 type Command = {
   command_id: string;
@@ -37,6 +38,8 @@ export function operationsMigrationSnapshot(subscription: Row): Row {
     price = record(item.price),
     invoice = record(subscription.latest_invoice);
   return {
+    approvedCatalogue: approvedPricing.version,
+    targetPriceId: OPERATION_PRICES.basico.id,
     id: subscription.id,
     customer: objectId(subscription.customer),
     profileId: record(subscription.metadata).profile_id,
@@ -276,6 +279,13 @@ export async function processOperationsMigrationCommand(
   let outcome: "scheduled" | "blocked" | "retry" = "blocked",
     evidence: Row = { verified: false };
   try {
+    // Historical queued commands approved a different offer. A catalogue edit
+    // must never silently change the renewal price they would schedule.
+    if (
+      command.source_snapshot.approvedCatalogue !== approvedPricing.version ||
+      command.source_snapshot.targetPriceId !== OPERATION_PRICES.basico.id
+    )
+      throw Error("migration_catalogue_review_required");
     if (
       !/^sub_[A-Za-z0-9]+$/.test(command.subscription_id) ||
       !/^[-a-f0-9]{36}$/.test(command.command_id) ||
@@ -418,7 +428,7 @@ export async function processOperationsMigrationCommand(
       record(invoice.lines).has_more ||
       lines.length !== 1 ||
       linePrice !== OPERATION_PRICES.basico.id ||
-      line.amount !== 2499 ||
+      line.amount !== OPERATION_PRICES.basico.amount ||
       record(line.period).start !== command.source_snapshot.periodEnd ||
       record(line.period).end !== (parameters.phases as Row[])[1].end_date ||
       line.proration === true ||
@@ -430,7 +440,7 @@ export async function processOperationsMigrationCommand(
       : [];
     if (
       discounts.length !== 1 ||
-      discounts[0].amount !== 2499 ||
+      discounts[0].amount !== OPERATION_PRICES.basico.amount ||
       objectId(discounts[0].discount) !==
         (command.source_snapshot.discountIds as string[])[0]
     )

@@ -20,6 +20,7 @@ export default async function OperationsSubscriptionPage({
     workspace?: string;
     saved?: string;
     scheduled?: string;
+    tier?: string;
   }>;
 }) {
   const { locale } = await params;
@@ -108,7 +109,12 @@ export default async function OperationsSubscriptionPage({
             {es
               ? "Cambio confirmado para la renovación:"
               : "Confirmed change at renewal:"}{" "}
-            {scheduled.tier} ·{" "}
+            {scheduled.tier === "basico"
+              ? "Basic"
+              : scheduled.tier === "standard"
+                ? "Standard"
+                : "Pro"}{" "}
+            ·{" "}
             {new Date(scheduled.effective_at).toLocaleString(locale, {
               timeZone: "Europe/Madrid",
             })}
@@ -123,7 +129,7 @@ export default async function OperationsSubscriptionPage({
             {es
               ? "Migración programada para la renovación:"
               : "Migration scheduled at renewal:"}{" "}
-            Standard ·{" "}
+            Basic ·{" "}
             {new Date(migration.effective_at).toLocaleString(locale, {
               timeZone: "Europe/Madrid",
             })}
@@ -147,8 +153,8 @@ export default async function OperationsSubscriptionPage({
             <fieldset>
               <legend>
                 {es
-                  ? "Elige tus cuatro herramientas iniciales de Standard"
-                  : "Choose your four initial Standard tools"}
+                  ? "Elige tus cuatro herramientas iniciales de Basic"
+                  : "Choose your four initial Basic tools"}
               </legend>
               <p>
                 {es
@@ -201,15 +207,17 @@ export default async function OperationsSubscriptionPage({
             </label>
             <label>
               {es ? "Paquete mensual" : "Monthly package"}
-              <select name="tier">
+              <select
+                name="tier"
+                defaultValue={
+                  query.tier && Object.hasOwn(OPERATION_PRICES, query.tier)
+                    ? query.tier
+                    : "basico"
+                }
+              >
                 {Object.entries(OPERATION_PRICES).map(([tier, offer]) => (
                   <option key={tier} value={tier}>
-                    {tier === "basico"
-                      ? "Standard"
-                      : tier === "standard"
-                        ? "Plus"
-                        : "Pro"}{" "}
-                    ·{" "}
+                    {offer.name} ·{" "}
                     {(offer.amount / 100).toLocaleString(locale, {
                       style: "currency",
                       currency: "EUR",
@@ -222,8 +230,8 @@ export default async function OperationsSubscriptionPage({
             <fieldset>
               <legend>
                 {es
-                  ? "Elige exactamente 4 herramientas para Standard u 8 para Plus. Pro incluye las 12 automáticamente"
-                  : "Choose exactly 4 tools for Standard or 8 for Plus. Pro includes all 12 automatically"}
+                  ? "Elige exactamente 4 herramientas para Basic u 8 para Standard. Pro incluye las 12 automáticamente"
+                  : "Choose exactly 4 tools for Basic or 8 for Standard. Pro includes all 12 automatically"}
               </legend>
               <div className="form-grid-two">
                 {TOOL_KEYS.map((tool) => (

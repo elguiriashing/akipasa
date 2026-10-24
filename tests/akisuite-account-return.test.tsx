@@ -1,5 +1,29 @@
 import { describe, expect, it, vi } from "vitest";
 import { akiSuiteMembershipReturnPath } from "../src/lib/akisuite-catalogue";
+
+it("retains only an approved single operating tier through authentication", () => {
+  for (const locale of ["en", "es"] as const) {
+    for (const tier of ["basico", "standard", "pro"]) {
+      const path = `/${locale}/account/subscription/operations`;
+      expect(
+        akiSuiteMembershipReturnPath(
+          locale,
+          `${path}?workspace=private-owner&tier=${tier}&access_token=dummy&next=https://evil.invalid`,
+        ),
+      ).toBe(`${path}?workspace=private-owner&tier=${tier}`);
+    }
+    for (const query of [
+      "tier=pro&tier=basico",
+      "tier=enterprise",
+      "tier=https://evil.invalid",
+    ]) {
+      const path = `/${locale}/account/subscription/operations`;
+      expect(akiSuiteMembershipReturnPath(locale, `${path}?${query}`)).toBe(
+        path,
+      );
+    }
+  }
+});
 const fixture = vi.hoisted(() => ({
   next: null as string | null,
   requireUser: vi.fn(async () => {

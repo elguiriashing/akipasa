@@ -1,9 +1,18 @@
 /** Approved monthly operations catalogue. Annual prices intentionally absent. */
-export const OPERATION_PRICES = Object.freeze({
-  basico: { id: "price_1USgZRGfzDhsgsQZaZYnAjZC", amount: 2499, tools: 4 },
-  standard: { id: "price_1USgZhGfzDhsgsQZBLuFFQ3c", amount: 4499, tools: 8 },
-  pro: { id: "price_1USgZiGfzDhsgsQZYEgPv3HL", amount: 6499, tools: 12 },
-});
+import approved from "../../../config/approved-pricing.json" with { type: "json" };
+export const OPERATION_PRICES = Object.freeze(
+  Object.fromEntries(
+    Object.entries(approved.operations).map(([tier, offer]) => [
+      tier,
+      {
+        id: offer.monthlyPriceId,
+        amount: offer.monthlyCents,
+        tools: offer.tools,
+        name: offer.name,
+      },
+    ]),
+  ),
+);
 export const TOOL_KEYS = Object.freeze([
   "crm",
   "inbox",

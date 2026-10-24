@@ -160,7 +160,7 @@ function sub() {
           {
             subscription_item: "si_ops",
             price: { id: OPERATION_PRICES.pro.id },
-            amount: 6499,
+            amount: 9799,
             period: { start: 2000, end: 3000 },
           },
         ],

@@ -1,9 +1,19 @@
-/** Approved commercial catalogue. Visibility is independent of payment activation. */
+/** Current listing prices plus retained historical plan identifiers. */
+import { approvedPricing } from "./approved-pricing";
 export const annualDiscount = 0.2;
 export const akisuitePlans = {
-  akipasa_premium: { label: "AkiPasa Premium", monthlyCents: 199 },
-  akibusiness_premium: { label: "AkiBusiness Premium", monthlyCents: 1499 },
-  akiduermo_premium: { label: "AkiDuermo Premium", monthlyCents: 599 },
+  akipasa_premium: {
+    label: "AkiPasa Premium (for individuals)",
+    monthlyCents: approvedPricing.discovery.akipasa.individualCents,
+  },
+  akibusiness_premium: {
+    label: "AkiPasa Premium (for businesses)",
+    monthlyCents: approvedPricing.discovery.akipasa.businessCents,
+  },
+  akiduermo_premium: {
+    label: "AkiDuermo Premium (for businesses)",
+    monthlyCents: approvedPricing.discovery.akiduermo.businessCents,
+  },
   akihq_standard: { label: "AkiHQ Standard", monthlyCents: 2000 },
   akihq_pro: { label: "AkiHQ Pro", monthlyCents: 6000 },
   akihq_business_addon: {
@@ -42,7 +52,15 @@ export function akiSuiteMembershipReturnPath(
         ids.length === 1 && /^[a-z0-9][a-z0-9_-]{2,79}$/.test(ids[0])
           ? ids[0]
           : null;
-      return `${url.pathname}${workspace ? `?workspace=${encodeURIComponent(workspace)}` : ""}`;
+      const tiers = url.searchParams.getAll("tier");
+      const tier =
+        tiers.length === 1 && ["basico", "standard", "pro"].includes(tiers[0])
+          ? tiers[0]
+          : null;
+      const query = new URLSearchParams();
+      if (workspace) query.set("workspace", workspace);
+      if (tier) query.set("tier", tier);
+      return `${url.pathname}${query.size ? `?${query}` : ""}`;
     }
     const from = url.searchParams.get("from");
     return `${url.pathname}${from ? `?from=${akiSuiteApp(from)}` : ""}`;
@@ -67,6 +85,9 @@ export function akisuitePriceCents(
   plan: AkiSuitePlan,
   interval: "month" | "year",
 ): number {
+  const legacyAnnual = { akibusiness_premium: 14390, akiduermo_premium: 5750 };
+  if (interval === "year" && plan in legacyAnnual)
+    return legacyAnnual[plan as keyof typeof legacyAnnual];
   const monthly = akisuitePlans[plan].monthlyCents;
   return interval === "month"
     ? monthly

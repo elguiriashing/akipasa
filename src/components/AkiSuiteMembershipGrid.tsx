@@ -4,13 +4,17 @@ import { useState } from "react";
 import Link from "next/link";
 import { startAkiSuiteCheckout } from "@/app/[locale]/account/subscription/akisuite-actions";
 import {
-  akisuitePlans,
   akiSuiteApp,
   effectiveAkiSuitePlans,
   type AkiSuiteApp,
   type AkiSuitePlan,
 } from "@/lib/akisuite-catalogue";
 import { suiteHref } from "@/lib/suite-navigation";
+import {
+  approvedPricing,
+  monthlyPrice,
+  premiumName,
+} from "@/lib/approved-pricing";
 import {
   AkiSuiteAudienceStudio,
   type MembershipAudienceOffer,
@@ -51,7 +55,8 @@ export function AkiSuiteMembershipGrid({
     : es
       ? "local"
       : "venue";
-  const listingPlan = isStay ? "akiduermo_premium" : "akibusiness_premium";
+  const pricingProduct = isStay ? "akiduermo" : "akipasa";
+  const prices = approvedPricing.discovery[pricingProduct];
   const [workspaceId, setWorkspaceId] = useState(
     workspaces.length === 1 ? workspaces[0].id : "",
   );
@@ -62,11 +67,6 @@ export function AkiSuiteMembershipGrid({
     ...activePlans,
     ...(workspacePlans[validWorkspace] || []),
   ]);
-  const money = (cents: number) =>
-    new Intl.NumberFormat(es ? "es-ES" : "en-IE", {
-      style: "currency",
-      currency: "EUR",
-    }).format(cents / 100);
 
   function planAction(
     plan: "akipasa_premium" | "akibusiness_premium" | "akiduermo_premium",
@@ -93,7 +93,13 @@ export function AkiSuiteMembershipGrid({
     if (purchaseMode === "account")
       return (
         <Link href={`/${locale}/account/subscription?from=${origin}`}>
-          {es ? "Continuar en mi cuenta" : "Continue in my account"}
+          {personal
+            ? es
+              ? "Explorar mi Premium"
+              : "Explore my Premium"
+            : es
+              ? "Mejorar mi ficha"
+              : "Upgrade my listing"}
         </Link>
       );
     return (
@@ -110,8 +116,8 @@ export function AkiSuiteMembershipGrid({
               ? "Próximamente"
               : "Coming soon"
             : es
-              ? "Revisar Premium"
-              : "Review Premium"}
+              ? "Mejorar mi ficha"
+              : "Upgrade my listing"}
         </button>
       </form>
     );
@@ -142,16 +148,12 @@ export function AkiSuiteMembershipGrid({
     {
       id: "akipasa_premium",
       label: es ? "Premium personal" : "Personal Premium",
-      name: `${discoveryName} Personal Premium`,
+      name: premiumName(pricingProduct, "individual", locale),
       description: es
         ? "Ventajas personales para descubrir y disfrutar. No mejora un anuncio empresarial."
         : "Personal discovery benefits. This does not upgrade a business listing.",
-      price: isStay
-        ? es
-          ? "Próximamente"
-          : "Coming soon"
-        : money(akisuitePlans.akipasa_premium.monthlyCents),
-      period: !isStay ? (es ? "/ mes" : "/ month") : undefined,
+      price: monthlyPrice(prices.individualCents, locale),
+      period: es ? "/ mes" : "/ month",
       benefits: es
         ? [
             "Ventajas personales",
@@ -209,13 +211,11 @@ export function AkiSuiteMembershipGrid({
       label: es
         ? "Premium empresarial para AkiHQ"
         : "Business Premium for AkiHQ",
-      name: `${discoveryName} Business Premium`,
+      name: premiumName(pricingProduct, "business", locale),
       description: es
-        ? `Mejora tu presencia y desbloquea herramientas Premium para gestionar tu ${noun} de ${discoveryName} desde AkiHQ.`
-        : `Upgrade your presence and unlock premium tools for your ${discoveryName} ${noun} listing in AkiHQ.`,
-      price: isStay
-        ? money(1499)
-        : money(akisuitePlans[listingPlan].monthlyCents),
+        ? `Una ficha básica cuenta lo esencial. Da a tus clientes más motivos para elegir tu ${noun} con contenido ampliado y herramientas Premium en AkiHQ.`
+        : `A basic listing covers the essentials. Give customers more reasons to choose your ${noun} with enhanced media and Premium listing tools in AkiHQ.`,
+      price: monthlyPrice(prices.businessCents, locale),
       period: es ? "/ mes por ubicación" : "/ month per location",
       benefits: es
         ? [

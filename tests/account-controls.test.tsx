@@ -382,7 +382,7 @@ describe("Account control disclosure preserves existing workflows", () => {
       screen.queryByRole("radio", { name: /Yearly/ }),
     ).not.toBeInTheDocument();
     const card = screen
-      .getByRole("heading", { name: "AkiPasa Business Premium" })
+      .getByRole("heading", { name: "AkiPasa Premium (for businesses)" })
       .closest("article")!;
     expect(
       within(card).getByRole("link", { name: "View my access" }),

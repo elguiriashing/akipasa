@@ -33,10 +33,14 @@ describe("Individual and Business membership separation", () => {
       );
       expect(
         container.querySelector("#akibusiness_premium")?.textContent,
-      ).toContain("AkiPasa Business Premium");
+      ).toContain(
+        locale === "es"
+          ? "AkiPasa Premium (para empresas)"
+          : "AkiPasa Premium (for businesses)",
+      );
       expect(
         container.querySelector("#akibusiness_premium")?.textContent,
-      ).toContain("14");
+      ).toContain(locale === "es" ? "11,99" : "€11.99");
       expect(
         container.querySelector('a[href*="akibusiness.com"]'),
       ).not.toBeNull();
@@ -61,7 +65,7 @@ describe("Individual and Business membership separation", () => {
     business("en");
     expect(
       container.querySelector("#akiduermo-listing-premium")?.textContent,
-    ).toContain("€14.99");
+    ).toContain("€24.99");
     expect(
       container
         .querySelector("#akiduermo-listing-premium a")

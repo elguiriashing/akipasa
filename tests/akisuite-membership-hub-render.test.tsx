@@ -88,7 +88,7 @@ describe("canonical five-product account membership overview", () => {
       "Access is checked for each location",
     );
     expect(card("akibusiness").textContent).not.toContain("Active");
-    expect(screen.getByText("AkiPasa Listing Premium")).toBeTruthy();
+    expect(screen.getByText("AkiPasa Premium (for businesses)")).toBeTruthy();
   });
   it("keeps paid legacy records and renewal/cancel data without advertising retired plans", () => {
     render(

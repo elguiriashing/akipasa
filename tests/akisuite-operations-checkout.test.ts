@@ -95,7 +95,7 @@ beforeEach(() => {
         id: OPERATION_PRICES.basico.id,
         active: mocks.activePrice,
         currency: "eur",
-        unit_amount: 2499,
+        unit_amount: 1999,
         tax_behavior: mocks.priceTax,
         recurring: { interval: "month", interval_count: 1 },
       };
