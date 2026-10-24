@@ -2207,3 +2207,35 @@ Bilingual new tests cover native profile forms, role/ID stripping, billing ident
 isolation, fixed destinations, partial failures, location idempotency and local
 logout. See `CUSTOMER_JOURNEYS_20261024.md` for all eight journeys, dependency/release
 order and explicit remaining shared safety/onboarding and provider acceptance.
+
+## 2026-10-24 | AkiSelector private presentation engine (candidate)
+
+AkiSelector is a dependency-free, React/CSS-only presentation primitive stored
+in src/components/aki-selector. Its caller owns option IDs, labels, symbols,
+effects and onValueChange callbacks. Controlled value or local defaultValue
+provides selection without discovery APIs, queries, storage, analytics,
+subscriptions, rewards or database integration. The six generic effect IDs are
+ember, solar, bloom, breeze, aurora and quiet. The carousel offers touch swipe,
+previous/next buttons, accessible radio semantics, arrow/Home/End navigation,
+responsive geometry, reduced-motion support and an explicit animation-off
+option. Labels/effects can change without altering selection logic. Visual
+presets are examples, not public promises or products.
+
+The internal lab lives at /en/admin/selector-lab and /es/admin/selector-lab,
+inherits the administrator-gated layout and independently rechecks the signed-in
+profile app_role. Unauthenticated, onboarding/terms-ineligible and non-admin
+visitors receive the existing auth redirects or a not-found response. The path
+is absent from public/Admin navigation; metadata requests no indexing or
+following. The page has no server actions and its temporary settings exist in
+client state only. There are no new grants, tables, SQL migrations, secrets,
+provider settings, feature flags, pricing, or deployment targets. Other AkiSuite
+frontends do not import it.
+
+Regression: tests/akisuite-selector-engine.test.tsx covers controlled/uncontrolled
+selection, keyboard focus, disabled options, empty states, editable previews and
+server-side admin/noindex/navigation boundary source checks. This suite is
+included by vitest.akisuite.config.ts. Full npm run check, hosted CI, admin
+browser/mobile visual acceptance and exact-source deployment evidence remain
+required. Motion performance must be reviewed on low-end Android before
+consumer integration. Rollback: revert component, playground and documentation;
+no provider or customer data require rollback.

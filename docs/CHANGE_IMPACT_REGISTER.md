@@ -2831,3 +2831,23 @@ journeys: the product storefront and the native account management destination.
 It asserts both exact locale-preserving URLs, rather than the superseded single
 external-domain count. Existing audience, disabled checkout and no-charge
 assertions remain unchanged. This changes only the acceptance harness.
+
+## 2026-10-24 | Additive, admin-only AkiSelector animation laboratory
+
+- Intent: prepare a reusable carousel animation engine from the owner's video
+  without preselecting its eventual product function.
+- Before: no feature-independent themed selection engine existed.
+- After: generic AkiSelector accepts supplied items, controlled/uncontrolled
+  state, six CSS visual effects, adjustable intensity and callbacks. Its
+  localized private lab previews mood/place/rewards configurations and
+  temporary relabelling.
+- Permissions/SEO: server lab route inherits admin layout, independently
+  checks app_role administrator, returns 404 to unauthorized users, requests
+  noindex/nofollow and is unlinked. URL obscurity is not access control.
+- Dependencies: existing Next/React packages, scoped CSS and auth shell only.
+  No discovery/ranking/map, account, database, Stripe, GA4, Supabase,
+  notification, hosting configuration, product prices or analytics changes.
+- Verification: Vitest source/UI regression tests added. Exact-head hosted CI,
+  physical touch, browser visual and low-end-device profiling pending.
+  Production deployment is not claimed.
+- Rollback: remove isolated component/lab/tests/docs; no data migration.
