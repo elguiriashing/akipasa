@@ -4,7 +4,7 @@ import {
   objectId,
 } from "./operations-billing/operations-contract.mjs";
 import type { OperationsRecoveryEnv } from "./operations-recovery";
-import { approvedPricing } from "./approved-pricing";
+import approvedPricing from "../../config/approved-pricing.json" with { type: "json" };
 type Row = Record<string, unknown>;
 type Command = {
   command_id: string;
