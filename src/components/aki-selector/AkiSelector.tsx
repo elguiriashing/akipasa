@@ -113,6 +113,8 @@ export function AkiSelector({
   }
 
   function onPointerDown(event: PointerEvent<HTMLDivElement>) {
+    // A new gesture must not inherit an unconsumed synthetic-click guard.
+    suppressClick.current = false;
     startPoint.current =
       event.pointerType === "touch" || event.pointerType === "pen"
         ? { x: event.clientX, y: event.clientY, id: event.pointerId }
