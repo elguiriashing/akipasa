@@ -2825,3 +2825,9 @@ replay it under the local filename or rewrite provider history. Live original
 latest-five query readback3.075ms; fresh signed-in Admin displayed complete counts
 and recent changes. Cloudflare's post-fix navigation trace was1206ms versus the
 previous repeated8.2–8.8second waits. This is one navigation sample, not a latency SLO.
+
+Account browser acceptance now distinguishes the two explicit AkiBusiness
+journeys: the product storefront and the native account management destination.
+It asserts both exact locale-preserving URLs, rather than the superseded single
+external-domain count. Existing audience, disabled checkout and no-charge
+assertions remain unchanged. This changes only the acceptance harness.
