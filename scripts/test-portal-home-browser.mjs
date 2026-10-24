@@ -102,7 +102,8 @@ const server = createServer((req, res) => {
   ) {
     try {
       const path = new URL(req.url, "http://localhost").pathname;
-      const ok = /^\/(brand|pwa|images\/cities)\/[a-z0-9-]+\.(png|webp|svg)$/;
+      const ok =
+        /^\/(brand(?:\/v3)?|pwa|images\/cities)\/[a-z0-9-]+\.(png|webp|svg)$/;
       if (!ok.test(path)) throw new Error("invalid");
       let mimeType = "image/webp";
       if (path.endsWith(".png")) mimeType = "image/png";
@@ -190,7 +191,7 @@ try {
             exact: true,
           });
           const icon = brand.locator(
-            `img[src="/brand/${product === "stay" ? "duermo-icon.png" : "business-mark.svg"}"]`,
+            `img[src="${product === "stay" ? "/brand/duermo-icon.png" : "/brand/v3/business.svg"}"]`,
           );
           await expect(icon).toBeVisible();
           expect(

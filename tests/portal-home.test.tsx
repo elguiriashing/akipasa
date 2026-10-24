@@ -128,13 +128,13 @@ it.each(["en", "es"] as const)(
       expect(pasa).toHaveAttribute("href", `https://akipasa.com/${locale}`);
       expect(pasa.querySelector("img")).toHaveAttribute(
         "src",
-        "/pwa/akipasa-512.png",
+        "/brand/v3/pasa.svg",
       );
       expect(
         within(popover)
           .getByRole("link", { name: "AkiHQ" })
           .querySelector("img"),
-      ).toHaveAttribute("src", "/brand/hq-mark.svg");
+      ).toHaveAttribute("src", "/brand/v3/hq.svg");
       const other = within(popover).getByRole("link", {
         name: product === "business" ? "AkiDuermo" : "AkiHQ",
       });

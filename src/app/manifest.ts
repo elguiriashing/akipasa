@@ -61,7 +61,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
       ...(conduzco
         ? [
             {
-              src: "/brand/conduzco-icon.svg",
+              src: "/brand/v3/coches.svg",
               sizes: "any",
               type: "image/svg+xml",
               purpose: "any" as const,
@@ -78,7 +78,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
         ? []
         : [
             {
-              src: "/pwa-icon.svg",
+              src: "/brand/v3/pasa.svg",
               sizes: "any",
               type: "image/svg+xml",
               purpose: "any" as const,
@@ -87,13 +87,13 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
       ...(!conduzco
         ? ([192, 512] as const).flatMap((size) => [
             {
-              src: `/pwa/${icon}-${size}.png`,
+              src: `/brand/v3/${icon === "akipasa" ? "pasa" : icon}-${size}.png`,
               sizes: `${size}x${size}`,
               type: "image/png",
               purpose: "any" as const,
             },
             {
-              src: `/pwa/${icon}-maskable-${size}.png`,
+              src: `/brand/v3/${icon === "akipasa" ? "pasa" : icon}-maskable-${size}.png`,
               sizes: `${size}x${size}`,
               type: "image/png",
               purpose: "maskable" as const,

@@ -50,10 +50,10 @@ const sharedMetadata: Metadata = {
   icons: {
     icon: [
       { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/icon-32.png", type: "image/png", sizes: "32x32" },
-      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
+      { url: "/brand/v3/pasa-32.png", type: "image/png", sizes: "32x32" },
+      { url: "/brand/v3/pasa-192.png", type: "image/png", sizes: "192x192" },
     ],
-    apple: "/icon-180.png",
+    apple: "/brand/v3/pasa-180.png",
     shortcut: "/icon.svg",
   },
 };
@@ -88,20 +88,16 @@ export async function generateMetadata(): Promise<Metadata> {
         {
           url:
             brand === "conduzco"
-              ? "/brand/conduzco-icon.svg"
+              ? "/brand/v3/coches.svg"
               : `/pwa/${brand}-192.png`,
           type: brand === "conduzco" ? "image/svg+xml" : "image/png",
           sizes: "192x192",
         },
       ],
       apple:
-        brand === "conduzco"
-          ? "/brand/conduzco-icon.svg"
-          : `/pwa/${brand}-192.png`,
+        brand === "conduzco" ? "/brand/v3/coches.svg" : `/pwa/${brand}-192.png`,
       shortcut:
-        brand === "conduzco"
-          ? "/brand/conduzco-icon.svg"
-          : `/pwa/${brand}-192.png`,
+        brand === "conduzco" ? "/brand/v3/coches.svg" : `/pwa/${brand}-192.png`,
     },
     ...(brand === "conduzco"
       ? {

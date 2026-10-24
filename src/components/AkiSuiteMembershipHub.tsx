@@ -18,26 +18,26 @@ const apps = [
     key: "akipasa",
     name: "AkiPasa",
     hue: "orange",
-    icon: "/pwa/akipasa-512.png",
+    icon: "/brand/v3/pasa.svg",
   },
   {
     key: "akiduermo",
     name: "AkiDuermo",
     hue: "green",
-    icon: "/brand/duermo-icon.png",
+    icon: "/brand/v3/duermo.svg",
   },
   {
     key: "akicoches",
     name: "AkiCoches",
     hue: "orange",
-    icon: "/brand/conduzco-icon.svg",
+    icon: "/brand/v3/coches.svg",
   },
-  { key: "akihq", name: "AkiHQ", hue: "purple", icon: "/brand/hq-icon.png" },
+  { key: "akihq", name: "AkiHQ", hue: "purple", icon: "/brand/v3/hq.svg" },
   {
     key: "akibusiness",
     name: "AkiBusiness",
     hue: "yellow",
-    icon: "/brand/business-icon.png",
+    icon: "/brand/v3/business.svg",
   },
 ] as const;
 const currentListingPlans = [

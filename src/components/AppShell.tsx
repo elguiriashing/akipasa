@@ -122,31 +122,31 @@ export function AppShell({
     {
       name: "AkiPasa",
       href: `/${locale}`,
-      icon: "/pwa/akipasa-512.png",
+      icon: "/brand/v3/pasa.svg",
       accent: "#F26B1D",
     },
     {
       name: "AkiDuermo",
       href: suiteHref("duermo", locale, { referralCode }),
-      icon: "/brand/duermo-icon.png",
+      icon: "/brand/v3/duermo.svg",
       accent: "#2FC2A5",
     },
     {
       name: "AkiCoches",
       href: suiteHref("coches", locale, { referralCode }),
-      icon: "/brand/conduzco-icon.svg",
+      icon: "/brand/v3/coches.svg",
       accent: "#FF3047",
     },
     {
       name: "AkiHQ",
       href: suiteHref("hq", locale, { referralCode }),
-      icon: "/brand/hq-mark.svg",
+      icon: "/brand/v3/hq.svg",
       accent: "#FFC533",
     },
     {
       name: "AkiBusiness",
       href: suiteHref("business", locale, { referralCode }),
-      icon: "/brand/business-mark.svg",
+      icon: "/brand/v3/business.svg",
       accent: "#8958FF",
     },
   ] as const;

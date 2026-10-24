@@ -170,22 +170,22 @@ if (action === "prepare") {
     selected === "hq"
       ? [
           [
-            "/brand/hq-mark.svg",
+            "/brand/v3/hq.svg",
             (s) => s.includes("#111111") && s.includes("#FFC533"),
           ],
-          ["/manifest.webmanifest", (s) => s.includes("hq-v2-512.png")],
+          ["/manifest.webmanifest", (s) => s.includes("v3/hq-512.png")],
           [
-            "/brand/hq-v2-512.png",
+            "/brand/v3/hq-512.png",
             (_, r) => r.headers.get("content-type")?.includes("image/png"),
           ],
         ]
       : [
           [
-            "/brand/hq-mark.svg",
+            "/brand/v3/hq.svg",
             (s) => s.includes("#111111") && s.includes("#FFC533"),
           ],
           [
-            "/brand/conduzco-icon.svg",
+            "/brand/v3/coches.svg",
             (s) => s.includes("#FF3047") && s.includes("#111111"),
           ],
         ];

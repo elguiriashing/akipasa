@@ -129,7 +129,7 @@ export function AkiSuiteMembershipStudio({
           <div className={styles.hqGroup} aria-label="AkiHQ">
             <div className={styles.groupBrand}>
               <Image
-                src="/brand/hq-mark.svg"
+                src="/brand/v3/hq.svg"
                 alt=""
                 width={52}
                 height={52}
@@ -143,7 +143,7 @@ export function AkiSuiteMembershipStudio({
           <div className={styles.businessGroup} aria-label="AkiBusiness">
             <div className={styles.groupBrand}>
               <Image
-                src="/brand/business-mark.svg"
+                src="/brand/v3/business.svg"
                 alt=""
                 width={52}
                 height={52}

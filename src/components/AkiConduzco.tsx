@@ -115,7 +115,7 @@ export function ConduzcoHeader({ locale }: { locale: Locale }) {
         aria-label="AkiConduzco home"
       >
         <Image
-          src="/brand/conduzco-icon.svg"
+          src="/brand/v3/coches.svg"
           alt=""
           width={38}
           height={38}
