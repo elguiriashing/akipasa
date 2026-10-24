@@ -2172,3 +2172,38 @@ member/staff access. Discovery intersects each placement with its specific event
 venue, hiding historical mismatches without deleting data. Five actual-policy SQL
 and two real SDK regressions plus60 repository cases pass. No Premium flag, paid
 access, ownership or live data changed. See EVENT_MEDIA_TARGET_SCOPE.md.
+
+## 2026-10-24 | Bounded administrator audit overview
+
+Live admin traces repeatedly waited 8.2–8.8 seconds; PostgREST timeout context
+identified moderation_actions reads evaluating has_platform_role per row. The
+75k-row table lacked an index for global latest-first reads. Forward migration
+20261024013730 preserves the exact authenticated administrator-only SELECT rule,
+wraps its row-independent guard in an initPlan and adds(created_at DESC,id DESC).
+The overview uses that deterministic order; its work-area links and Admin shell
+disable speculative prefetch of privileged workbenches. A local loading boundary
+announces pending navigation. No role, RLS bypass, customer row, billing, locale,
+storage, analytics or non-admin navigation change is introduced.
+
+Nine actual-role PGlite cases cover admin, moderator, ordinary/restricted/missing
+identities, anonymous denial, write denial, schema drift refusal and mirror parity.
+A rollback-only live administrator read used the new index and took2.846ms for
+five rows; this is query evidence, not whole-page latency. Full checks/CI and
+exact-source deployment remain required. Rollback restores only the old policy
+and removes the optional index; customer/audit records are retained.
+
+## 2026-10-24 | Native accounts and shared billing bridge
+
+Routine account/settings/membership screens now belong to each product while
+reading and modifying the same authenticated profiles row. AkiBusiness selects
+its package and creates a private location locally, without a public-venue claim
+or the Pasa→HQ chain. Coches/Duermo free management links target their actual HQ
+branch/property tools. The central bearer-only `/api/account/portal` verifies
+Supabase identity, eligibility and terms, reads only caller billing, preserves
+existing management-only portal configuration and returns Stripe to the fixed
+originating product. Customer/profile/return URL inputs are not accepted. No
+service key, cross-domain cookie, checkout activation or paid entitlement change.
+Bilingual new tests cover native profile forms, role/ID stripping, billing identity
+isolation, fixed destinations, partial failures, location idempotency and local
+logout. See `CUSTOMER_JOURNEYS_20261024.md` for all eight journeys, dependency/release
+order and explicit remaining shared safety/onboarding and provider acceptance.

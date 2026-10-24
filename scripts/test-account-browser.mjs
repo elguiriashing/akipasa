@@ -545,7 +545,15 @@ async function interactions(page, route, locale) {
     );
     await expect(page.locator("#akibusiness_premium")).toBeVisible();
     await expect(page.locator("[data-offer]")).toHaveCount(2);
-    await expect(page.locator('a[href*="akibusiness.com"]')).toHaveCount(1);
+    await expect(page.locator('a[href*="akibusiness.com"]')).toHaveCount(2);
+    await expect(
+      page.locator(
+        `a[href="https://akibusiness.com/account?locale=${locale}"]`,
+      ),
+    ).toHaveCount(1);
+    await expect(
+      page.locator(`a[href="https://akibusiness.com/?locale=${locale}"]`),
+    ).toHaveCount(1);
     await expect(page.locator('[id^="operations-"]')).toHaveCount(0);
     expect(await page.evaluate(() => window.__accountActions)).toEqual([]);
   } else if (route === "bookings") {

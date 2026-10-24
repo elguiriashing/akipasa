@@ -59,7 +59,7 @@ describe("canonical five-product account membership overview", () => {
         /Gratis|Free|Activo|Active/,
       );
       expect(card("akibusiness").querySelector("a")?.getAttribute("href")).toBe(
-        `/${locale}/account/subscription/operations`,
+        `https://akibusiness.com/account?locale=${locale}`,
       );
       expect(document.querySelector('a[href*="from=akihq"]')).toBeNull();
       expect(document.querySelector('a[href*="#akihq_standard"]')).toBeNull();

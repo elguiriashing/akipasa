@@ -52,6 +52,7 @@ export default async function AdminOverview({
       .from("moderation_actions")
       .select("id,action,target_type,reason,created_at")
       .order("created_at", { ascending: false })
+      .order("id", { ascending: false })
       .limit(5),
   ]);
   const es = locale === "es";
@@ -246,7 +247,7 @@ export default async function AdminOverview({
         </header>
         <nav>
           {tools.map((tool) => (
-            <Link href={tool.href} key={tool.href}>
+            <Link href={tool.href} key={tool.href} prefetch={false}>
               <span>
                 <Icon name={tool.icon} />
               </span>
