@@ -1,3 +1,9 @@
+> **Current delivery ledger (21 October 2026):** see
+> [AkiSuite mission delivery status](AKISUITE_MISSION_DELIVERY_STATUS_20261021.md).
+> The candidate-era statements below preserve historical preparation evidence;
+> they do not override later verified merges, applied migrations, gates or live
+> source markers. Consult the current ledger before any operational action.
+
 # AkiPasa mission integration checkpoint — 20 October 2026
 
 This candidate combines independently reviewed source branches without changing the
@@ -307,3 +313,7 @@ confirm explicit vars are supplied even with keep-vars. Read
 verification and rollback. No source is deployed, provider write made or customer
 configuration mutated by preparation; only the release manager may merge and
 verify the actual production source before enqueueing three reviewed commands.
+
+## 2026-10-21 | Coherent phased-readiness and library protection release
+
+Integration preserves f1e99 primary plus frozen PR264 df012, PR265 9e1 and PR263 8a1 ancestry and reviewed immutable SQL/utilities. Master/impact append entries from all parents are retained. Schema-only funnel readiness is declared against the installed disabled schema; billing/migration true and checkout/tax false remain unchanged. No production or provider writes, quota181500 changes or premature migration closure. Delivery status distinguishes merged diagnostic source from unverified deployment, native foundation installed with gates off, HQ e249 live and funnel collection off. Exact combined CI remains required; release manager owns merge and activation.

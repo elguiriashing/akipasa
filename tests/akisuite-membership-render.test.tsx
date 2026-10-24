@@ -7,112 +7,125 @@ vi.mock("@/app/[locale]/account/subscription/akisuite-actions", () => ({
   startAkiSuiteCheckout: vi.fn(),
 }));
 afterEach(cleanup);
-describe("canonical free hub and monthly operating catalogue", () => {
+const business = (locale: "en" | "es") =>
+  fireEvent.click(
+    screen.getByRole("tab", {
+      name: locale === "es" ? "Negocios" : "Business",
+    }),
+  );
+
+describe("Individual and Business membership separation", () => {
   it.each(["en", "es"] as const)(
-    "shows approved monthly packages and no historical acquisition in %s",
+    "shows two plans per audience in %s with safe business handoff",
     (locale) => {
-      render(<AkiSuiteMembershipGrid locale={locale} purchaseMode="account" />);
-      expect(document.querySelector("#akihq-free")?.textContent).toMatch(
-        /Free management|Gestión gratuita/,
+      const { container } = render(
+        <AkiSuiteMembershipGrid locale={locale} purchaseMode="account" />,
       );
-      for (const [tier, amount, count] of [
-        ["basico", "24", 4],
-        ["standard", "44", 8],
-        ["pro", "64", 12],
-      ] as const) {
-        const card = document.querySelector(`#operations-${tier}`)!;
-        expect(card.textContent).toContain(amount);
-        expect(card.textContent).toContain(`${count}`);
-        expect(card.querySelector("form")).toBeNull();
-      }
-      expect(document.body.textContent).not.toMatch(
-        /AkiHQ Standard|AkiHQ Pro|Aki Enterprise|Yearly|Anual|767[.,]90/,
+      expect(container.querySelectorAll("[data-offer]")).toHaveLength(2);
+      expect(container.querySelector("#personal-free")).not.toBeNull();
+      expect(
+        container.querySelector("#akipasa_premium button:disabled"),
+      ).not.toBeNull();
+      business(locale);
+      expect(container.querySelectorAll("[data-offer]")).toHaveLength(2);
+      expect(container.querySelector("#akihq-free")?.textContent).toContain(
+        locale === "es" ? "gestionar gratis" : "managing your free",
       );
+      expect(
+        container.querySelector("#akibusiness_premium")?.textContent,
+      ).toContain("AkiPasa Business Premium");
+      expect(
+        container.querySelector("#akibusiness_premium")?.textContent,
+      ).toContain("14");
+      expect(
+        container.querySelector('a[href*="akibusiness.com"]'),
+      ).not.toBeNull();
+      expect(container.querySelector("[id^=operations-]")).toBeNull();
       expect(
         screen
           .getByRole("link", {
-            name: locale === "es" ? "Abrir AkiHQ gratis" : "Open free AkiHQ",
+            name: locale === "es" ? /^Abrir AkiHQ gratis/ : /^Open free AkiHQ/,
           })
           .getAttribute("href"),
       ).toBe(`https://akihq.app/${locale}/business`);
-      expect(
-        document.querySelector("#akibusiness_premium")?.textContent,
-      ).toContain("Listing Premium");
     },
   );
-  it("requires an explicit scope choice when there are multiple locations and retains it in handoff", () => {
-    render(
+  it("keeps AkiDuermo property offers separate from historical personal Premium", () => {
+    const { container } = render(
+      <AkiSuiteMembershipGrid
+        locale="en"
+        originatingApp="akiduermo"
+        purchaseMode="account"
+      />,
+    );
+    business("en");
+    expect(
+      container.querySelector("#akiduermo-listing-premium")?.textContent,
+    ).toContain("€14.99");
+    expect(
+      container
+        .querySelector("#akiduermo-listing-premium a")
+        ?.getAttribute("href"),
+    ).toBe("https://akiduermo.com/membership?lang=en");
+    expect(
+      container.querySelector("#akiduermo-listing-premium form"),
+    ).toBeNull();
+  });
+  it("preserves explicit workspace choice and prevents premature checkout", () => {
+    const { container } = render(
       <AkiSuiteMembershipGrid
         locale="en"
         workspaces={[
           { id: "private-one", name: "One" },
           { id: "private-two", name: "Two" },
         ]}
+        checkoutReady
       />,
     );
-    expect(
-      screen
-        .getAllByRole("link", { name: "Manage operating tools" })[0]
-        .getAttribute("href"),
-    ).toBe("/en/account/subscription/operations");
+    business("en");
+    expect(container.querySelector("input[name=workspaceId]")).toBeNull();
     fireEvent.change(
-      screen.getByRole("combobox", { name: "Operating location" }),
+      screen.getByRole("combobox", { name: "Business location" }),
       { target: { value: "private-two" } },
     );
-    for (const link of screen.getAllByRole("link", {
-      name: "Manage operating tools",
-    }))
-      expect(link.getAttribute("href")).toBe(
-        "/en/account/subscription/operations?workspace=private-two",
-      );
-  });
-  it("keeps existing listing benefits visible without a duplicate purchase", () => {
-    render(
-      <AkiSuiteMembershipGrid
-        locale="en"
-        checkoutReady
-        activePlans={["aki_enterprise"]}
-      />,
-    );
-    expect(document.querySelector("#akibusiness_premium form")).toBeNull();
-    expect(screen.getByRole("link", { name: "View my access" })).toBeTruthy();
-  });
-  it("keeps listing checkout gated, scoped and independent of operational prices", () => {
-    render(
-      <AkiSuiteMembershipGrid
-        locale="es"
-        checkoutReady
-        workspaces={[{ id: "private-one", name: "One" }]}
-      />,
-    );
-    const form = document.querySelector("#akibusiness_premium form")!;
+    const form = container.querySelector("#akibusiness_premium form")!;
+    expect(
+      form.querySelector<HTMLInputElement>("input[name=workspaceId]")?.value,
+    ).toBe("private-two");
     expect(
       form.querySelector<HTMLInputElement>("input[name=plan]")?.value,
     ).toBe("akibusiness_premium");
     expect(
       form.querySelector<HTMLInputElement>("input[name=interval]")?.value,
     ).toBe("month");
-    expect(
-      form.querySelector<HTMLInputElement>("input[name=workspaceId]")?.value,
-    ).toBe("private-one");
-    expect(document.querySelector("#operations-basico form")).toBeNull();
+    expect(container.querySelector("[id^=operations-] form")).toBeNull();
   });
-  it("keeps personal launch and failed access closed without a public tool selector", () => {
-    render(
+  it("shows existing entitlement without another purchase", () => {
+    const { container } = render(
+      <AkiSuiteMembershipGrid
+        locale="en"
+        checkoutReady
+        activePlans={["aki_enterprise"]}
+      />,
+    );
+    business("en");
+    expect(container.querySelector("#akibusiness_premium form")).toBeNull();
+    expect(screen.getByRole("link", { name: "View my access" })).toBeTruthy();
+  });
+  it("keeps personal launch and failed reads closed", () => {
+    const { container } = render(
       <AkiSuiteMembershipGrid locale="en" checkoutReady accessUnavailable />,
     );
-    expect(document.querySelector("#akipasa_premium")).toBeNull();
     expect(
-      screen
-        .getByRole("button", { name: "Access unavailable" })
-        .hasAttribute("disabled"),
-    ).toBe(true);
+      container.querySelector("#akipasa_premium button[disabled]"),
+    ).not.toBeNull();
+    business("en");
     expect(
-      screen.queryByRole("combobox", { name: "Business type" }),
-    ).toBeNull();
-    expect(document.body.textContent).not.toContain("Tools for your business");
+      container.querySelector("#akibusiness_premium button[disabled]"),
+    ).not.toBeNull();
+    expect(container.querySelector("form")).toBeNull();
   });
-  it("distinguishes staff access and excludes future grants and delinquent subscriptions", () => {
+  it("does not infer access from delinquent or future grants", () => {
     const now = Date.parse("2026-10-12T12:00:00Z");
     const access = resolveMembershipHub(
       [

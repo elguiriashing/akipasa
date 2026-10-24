@@ -1,5 +1,18 @@
 # Referral and prestige own-identity export
 
+## 24 October 2026 dependency acceptance
+
+The nine additive HQ Pulse schema phases, including the separate own-management
+privacy reader, are installed with their launch settings still false. The
+eleven public function bodies match the reviewed canonical sources. Raw browser
+mapping/audit access and anonymous/service privacy-reader execution are denied.
+Both new tables are empty; a rollback-only authenticated synthetic subject read
+returns the complete empty two-section protocol. Local SQL role cases pass 33/33.
+See [installation receipts](receipts/AKIPULSE_SCHEMA_20261024.json), including
+the verified same-second history collision recovery. Central adapter CI and
+exact-source production acceptance remain separate gates. No analytics/native
+activation, customer record change or financial action accompanies installation.
+
 Status: implemented and tested source, not deployed or applied by this task.
 No account enrollment, financial programme, address intake, fulfilment, payout,
 retention period or production configuration is activated.

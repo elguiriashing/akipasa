@@ -1,0 +1,26 @@
+name: Native accommodation deployment safety
+on:
+  pull_request:
+    paths:
+      - "scripts/build-native-accommodation-deployment*"
+      - "database/deployments/native-accommodation/**"
+      - "database/migrations/*native_accommodation*"
+      - "supabase/migrations/*native_accommodation*"
+      - "tests/akisuite-native-*.test.ts"
+      - "tests/helpers/native-deployment-fixture.ts"
+      - ".github/workflows/native-accommodation-deployment.yml"
+permissions:
+  contents: read
+jobs:
+  closed-phases:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: node --test scripts/build-native-accommodation-deployment.test.mjs
+      - run: npx vitest run --config vitest.akisuite.config.ts tests/akisuite-native-deployment.test.ts tests/akisuite-native-accommodation.test.ts tests/akisuite-native-privacy.test.ts tests/akisuite-native-inventory.test.ts tests/akisuite-native-review.test.ts

@@ -1,0 +1,265 @@
+{
+  "project": "vhpbvcfkcteswlsdjrfl",
+  "source_repository": "elguiriashing/akihq",
+  "source_commit": "b8496ec095943f7b54c8d07f84567dbacea1421f",
+  "date": "2026-10-24",
+  "purpose": "Disabled additive Pulse schema and independent own-management privacy reader; no feature activation or customer writes",
+  "phases": [
+    {
+      "file": "20261021141734_akipulse_native_scope_adapters.sql",
+      "canonical_sha256": "6daec495206d81b6fac86957d5a73361f763e0f8e8559a228bb41ec11c7f7c0a",
+      "history": {
+        "name": "akipulse_native_scope_adapters_20261021141734",
+        "version": "20261024002225"
+      }
+    },
+    {
+      "file": "20261021141744_akipulse_organisation_verified_funnel.sql",
+      "canonical_sha256": "d4f0e86babde3974d7731df2c5998e9cf838863eefb84e2a3dcb75d624f87f8a",
+      "history": {
+        "name": "akipulse_organisation_verified_funnel_20261021141744",
+        "version": "20261024002336"
+      }
+    },
+    {
+      "file": "20261021141816_akipulse_native_property_report.sql",
+      "canonical_sha256": "902a1bd178b4eacc1d855c451f2cd30f52dc9fd85d8d3a60215790ebf65e9b78",
+      "history": {
+        "name": "akipulse_native_property_report_20261021141816",
+        "version": "20261024002347"
+      }
+    },
+    {
+      "file": "20261021141823_akipulse_native_organisation_report.sql",
+      "canonical_sha256": "7a7807c93297e51b772e66faa79dfa5df1c11dd79a71a695a617279059c15cdc",
+      "history": {
+        "name": "akipulse_native_organisation_report_20261021141823",
+        "version": "20261024002349"
+      }
+    },
+    {
+      "file": "20261021141838_akipulse_explicit_funnel_dispatch.sql",
+      "canonical_sha256": "575b727387c36c0df450d55ef7e842f699d3bf3ad488cb728c1097cb71efc671",
+      "history": {
+        "name": "akipulse_explicit_funnel_dispatch_20261021141838",
+        "version": "20261024002351"
+      }
+    },
+    {
+      "file": "20261021142517_akipulse_explicit_rental_workspace_links.sql",
+      "canonical_sha256": "ce4fe4d0a385dc98259a762a00845b7422f28d02293994968c171b1ebc10ddbf",
+      "history": {
+        "name": "akipulse_explicit_rental_workspace_links_20261021142517",
+        "version": "20261024002353"
+      }
+    },
+    {
+      "file": "20261021142549_akipulse_rental_workspace_owner_controls.sql",
+      "canonical_sha256": "5c3a563ff54d66e4a51b0ac32ee242d54738b66bb7e855e9fc909ec7bd049efd",
+      "history": {
+        "name": "akipulse_rental_workspace_owner_controls_20261021142549",
+        "version": "20261024002355"
+      }
+    },
+    {
+      "file": "20261021142652_akipulse_organisation_rental_cohorts.sql",
+      "canonical_sha256": "0d3e045c9a2c394ea19fa22567dbd71d79ff0af6396d8a2c7665195d066fb0c4",
+      "history": {
+        "name": "akipulse_organisation_rental_cohorts_20261021142652",
+        "version": "20261024002357"
+      }
+    },
+    {
+      "file": "20261021145321_akipulse_management_privacy_export.sql",
+      "canonical_sha256": "7bfd4bd8c32e335cf7d2615d27e3b6c8e31e97fcdfd8aa28f6942cb07497932a",
+      "history": {
+        "name": "akipulse_management_privacy_export_20261021145321",
+        "version": "20261024002358"
+      }
+    }
+  ],
+  "provider_collision": {
+    "phase": "20261021141744_akipulse_organisation_verified_funnel.sql",
+    "error": "23505 duplicate generated migration version 20261024002225",
+    "catalogue_after_error": "Function body already committed, md5 f835e2a4ee398baaeb65b3cf5c686d6f; owner postgres, stable definer, empty search_path, anon denied/authenticated allowed",
+    "recovery": "Exact body verified before idempotent CREATE OR REPLACE and identical ACL replay after time advanced. No migration-history DML. Successful receipt 20261024002336."
+  },
+  "verification": {
+    "local_role_cases": 33,
+    "canonical_function_bodies": 11,
+    "role_probe": "Rollback-only authenticated synthetic subject read both empty own-data sections; anonymous/service RPC execution denied by ACL; raw browser table access denied",
+    "readback": {
+      "history": [
+        {
+          "name": "akipulse_native_scope_adapters_20261021141734",
+          "version": "20261024002225"
+        },
+        {
+          "name": "akipulse_organisation_verified_funnel_20261021141744",
+          "version": "20261024002336"
+        },
+        {
+          "name": "akipulse_native_property_report_20261021141816",
+          "version": "20261024002347"
+        },
+        {
+          "name": "akipulse_native_organisation_report_20261021141823",
+          "version": "20261024002349"
+        },
+        {
+          "name": "akipulse_explicit_funnel_dispatch_20261021141838",
+          "version": "20261024002351"
+        },
+        {
+          "name": "akipulse_explicit_rental_workspace_links_20261021142517",
+          "version": "20261024002353"
+        },
+        {
+          "name": "akipulse_rental_workspace_owner_controls_20261021142549",
+          "version": "20261024002355"
+        },
+        {
+          "name": "akipulse_organisation_rental_cohorts_20261021142652",
+          "version": "20261024002357"
+        },
+        {
+          "name": "akipulse_management_privacy_export_20261021145321",
+          "version": "20261024002358"
+        }
+      ],
+      "functions": [
+        {
+          "anon": false,
+          "args": "p_kind text, p_id uuid, p_days integer",
+          "name": "akipulse_business_funnel_v2",
+          "owner": "postgres",
+          "config": ["search_path=\"\""],
+          "definer": true,
+          "service": true,
+          "body_md5": "a9679e62b21e046d02e224e652ef010d",
+          "authenticated": true
+        },
+        {
+          "anon": false,
+          "args": "",
+          "name": "akipulse_native_inventory_ready",
+          "owner": "postgres",
+          "config": ["search_path=\"\""],
+          "definer": true,
+          "service": true,
+          "body_md5": "887e67194e21b8fff0b43f9d846c0c7b",
+          "authenticated": false
+        },
+        {
+          "anon": false,
+          "args": "p_id uuid, p_days integer, p_until timestamp with time zone",
+          "name": "akipulse_native_property_report",
+          "owner": "postgres",
+          "config": ["search_path=\"\""],
+          "definer": true,
+          "service": true,
+          "body_md5": "73d26e3dcebde9327bd4ea49ca0cb5d1",
+          "authenticated": true
+        },
+        {
+          "anon": false,
+          "args": "p_organisation uuid, p_days integer",
+          "name": "akipulse_organisation_funnel",
+          "owner": "postgres",
+          "config": ["search_path=\"\""],
+          "definer": true,
+          "service": true,
+          "body_md5": "f835e2a4ee398baaeb65b3cf5c686d6f",
+          "authenticated": true
+        },
+        {
+          "anon": false,
+          "args": "p_org uuid, p_until timestamp with time zone, p_base jsonb, p_native_covered text[]",
+          "name": "akipulse_organisation_rental_report",
+          "owner": "postgres",
+          "config": ["search_path=\"\""],
+          "definer": true,
+          "service": true,
+          "body_md5": "bf0efffb6dac5d823a676541f241209a",
+          "authenticated": false
+        },
+        {
+          "anon": false,
+          "args": "p_company uuid, p_limit integer, p_offset integer",
+          "name": "akipulse_rental_workspace_options",
+          "owner": "postgres",
+          "config": ["search_path=\"\""],
+          "definer": true,
+          "service": true,
+          "body_md5": "47668ca3b9f44872f9b1c50384f7421c",
+          "authenticated": true
+        },
+        {
+          "anon": false,
+          "args": "p_kind text, p_id uuid, p_days integer, p_until timestamp with time zone",
+          "name": "akipulse_scope_analytics_v2",
+          "owner": "postgres",
+          "config": ["search_path=\"\""],
+          "definer": true,
+          "service": true,
+          "body_md5": "92a6b01bd31a09077b9dff6454ba9596",
+          "authenticated": true
+        },
+        {
+          "anon": false,
+          "args": "p_kind text, p_limit integer, p_offset integer",
+          "name": "akipulse_scopes_v2",
+          "owner": "postgres",
+          "config": ["search_path=\"\""],
+          "definer": true,
+          "service": true,
+          "body_md5": "bd19a775dc21370b42416b2c29114e98",
+          "authenticated": true
+        },
+        {
+          "anon": false,
+          "args": "p_workspace text",
+          "name": "akipulse_workspace_management",
+          "owner": "postgres",
+          "config": ["search_path=\"\""],
+          "definer": true,
+          "service": true,
+          "body_md5": "2194b22895569927c56e933b0e40ff4f",
+          "authenticated": false
+        },
+        {
+          "anon": false,
+          "args": "p_section text, p_after text, p_limit integer",
+          "name": "my_pulse_management_export_page",
+          "owner": "postgres",
+          "config": ["search_path=\"\""],
+          "definer": true,
+          "service": false,
+          "body_md5": "302c5105dfdb08d6fb00cb645f8e5aee",
+          "authenticated": true
+        },
+        {
+          "anon": false,
+          "args": "p_company uuid, p_workspace text",
+          "name": "set_akipulse_rental_workspace",
+          "owner": "postgres",
+          "config": ["search_path=\"\""],
+          "definer": true,
+          "service": true,
+          "body_md5": "072c2f77c78bd35a952e32f0559512cc",
+          "authenticated": true
+        }
+      ],
+      "audit_rows": 0,
+      "mapping_rows": 0,
+      "native_flags": {
+        "enabled": false,
+        "inventory_enabled": false
+      },
+      "funnel_enabled": false,
+      "raw_audit_authenticated": false,
+      "raw_mapping_authenticated": false
+    }
+  },
+  "rollback": "Keep new runtime flags false; retain compatible read RPCs/mapping audit; disable reader consumer through source rollback if necessary without dropping user data."
+}

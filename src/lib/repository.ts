@@ -379,6 +379,9 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
     // Process rows to extract media paths
     const rows = data as unknown as DbRecord[];
     const eventIds = rows.map((row) => String(row.id));
+    const eventVenueIds = new Map(
+      rows.map((row) => [String(row.id), String(row.venue_id)]),
+    );
     const venueIds = Array.from(
       new Set(
         rows
@@ -393,7 +396,7 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
           ? supabase
               .from("venue_media_placements")
               .select(
-                "target_key,placement,sort_order,media_id,venue_media(id,storage_path,alt_es,alt_en)",
+                "venue_id,target_key,placement,sort_order,media_id,venue_media(id,storage_path,alt_es,alt_en)",
               )
               .in("placement", [
                 "event_banner",
@@ -457,6 +460,11 @@ export class SupabaseDiscoveryRepository implements DiscoveryRepository {
       }
     >();
     for (const placement of eventVisualPlacements || []) {
+      if (
+        eventVenueIds.get(String(placement.target_key)) !==
+        String(placement.venue_id)
+      )
+        continue;
       const media = one(placement.venue_media as unknown);
       if (!media) continue;
       const current = eventVisualRows.get(String(placement.target_key)) || {

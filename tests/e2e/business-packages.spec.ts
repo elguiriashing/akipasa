@@ -37,29 +37,34 @@ for (const locale of ["en", "es"] as const) {
         document.cookie = "ak_consent_version=2; Path=/";
       });
       await page.goto(`/${locale}/membership?from=akibusiness`);
-      const catalogue = page.locator(
-        'section[aria-labelledby="akisuite-catalogue-title"]',
-      );
-      await expect(catalogue.locator("article")).toHaveCount(5);
-      await expect(catalogue.locator("#akihq-free")).toContainText("AkiHQ");
-      await expect(catalogue.locator("#operations-basico")).toContainText(
-        locale === "es" ? "24,99" : "24.99",
-      );
-      await expect(catalogue.locator("#operations-standard")).toContainText(
-        locale === "es" ? "44,99" : "44.99",
-      );
-      await expect(catalogue.locator("#operations-pro")).toContainText(
-        locale === "es" ? "64,99" : "64.99",
-      );
-      await expect(catalogue.locator("#akisuite-sector")).toHaveCount(0);
+      const catalogue = page.locator('section[data-product="AkiPasa"]');
       await expect(
-        catalogue.getByRole("heading", {
-          name:
-            locale === "es"
-              ? "Herramientas para tu actividad"
-              : "Tools for your business",
+        catalogue.getByRole("tablist", {
+          name: locale === "es" ? "Tipo de membresía" : "Membership type",
         }),
-      ).toHaveCount(0);
+      ).toBeVisible();
+      await expect(catalogue.locator("[data-offer]")).toHaveCount(2);
+      await expect(catalogue.locator("#personal-free")).toBeVisible();
+      await expect(catalogue.locator("#akipasa_premium button")).toBeDisabled();
+      await catalogue
+        .getByRole("tab", {
+          name: locale === "es" ? "Negocios" : "Business",
+        })
+        .click();
+      await expect(catalogue.locator("[data-offer]")).toHaveCount(2);
+      await expect(catalogue.locator("#akihq-free")).toContainText("AkiHQ");
+      await expect(catalogue.locator("#akibusiness_premium")).toContainText(
+        locale === "es" ? "14,99" : "14.99",
+      );
+      await expect(catalogue.locator("#akihq-free a")).toHaveAttribute(
+        "href",
+        `https://akihq.app/${locale}/business`,
+      );
+      await expect(catalogue.locator('a[href*="akibusiness.com"]')).toHaveCount(
+        1,
+      );
+      await expect(catalogue.locator('[id^="operations-"]')).toHaveCount(0);
+      await expect(catalogue.locator("#akisuite-sector")).toHaveCount(0);
       await expect(
         catalogue.locator(
           "#aki_enterprise, #akihq_pro, #akihq_standard, #akihq_business_addon",
@@ -69,18 +74,6 @@ for (const locale of ["en", "es"] as const) {
         catalogue.locator("input[name=akisuite-interval]"),
       ).toHaveCount(0);
       await expect(catalogue.locator("article form")).toHaveCount(0);
-      for (const link of await catalogue
-        .getByRole("link", {
-          name:
-            locale === "es"
-              ? "Gestionar herramientas de operaciones"
-              : "Manage operating tools",
-        })
-        .all())
-        await expect(link).toHaveAttribute(
-          "href",
-          `/${locale}/account/subscription/operations`,
-        );
       for (const theme of ["light", "dark"]) {
         await page.evaluate(
           (value) => window.localStorage.setItem("akipasa.theme", value),

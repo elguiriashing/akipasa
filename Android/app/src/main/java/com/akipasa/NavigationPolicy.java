@@ -19,6 +19,27 @@ final class NavigationPolicy {
         return INTERNAL_HOSTS.contains(normalize(uri.getHost()));
     }
 
+    static String appCallbackUrl(String value) {
+        URI uri = parse(value);
+        if (uri == null || !"akipasa".equals(normalize(uri.getScheme()))
+                || !"auth".equals(normalize(uri.getHost())) || !"/callback".equals(uri.getPath())
+                || uri.getRawUserInfo() != null || uri.getPort() != -1 || uri.getRawFragment() != null) return null;
+        try {
+            android.net.Uri incoming = android.net.Uri.parse(value);
+            String locale = "en".equals(incoming.getQueryParameter("locale")) ? "en" : "es";
+            android.net.Uri.Builder callback = new android.net.Uri.Builder().scheme("https")
+                    .authority("akipasa.com").path("/" + locale + "/auth/callback")
+                    .appendQueryParameter("android", "1").appendQueryParameter("native", "1");
+            for (String key : new String[]{"code", "next", "error", "error_code", "error_description"}) {
+                String parameter = incoming.getQueryParameter(key);
+                if (parameter != null) callback.appendQueryParameter(key, parameter);
+            }
+            return callback.build().toString();
+        } catch (IllegalArgumentException error) {
+            return null;
+        }
+    }
+
     static boolean canOpenExternally(String value) {
         URI uri = parse(value);
         return uri != null && EXTERNAL_SCHEMES.contains(normalize(uri.getScheme()));

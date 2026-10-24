@@ -3,12 +3,16 @@ package com.akipasa;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.DownloadManager;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +21,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.GeolocationPermissions;
 import android.webkit.URLUtil;
@@ -41,6 +47,9 @@ import java.util.List;
 public final class MainActivity extends Activity {
     private static final int FILE_CHOOSER_REQUEST = 1001;
     private static final int LOCATION_PERMISSION_REQUEST = 1002;
+    private static final int NOTIFICATION_PERMISSION_REQUEST = 1003;
+    private static final String DEBUG_NOTIFICATION_ACTION = "com.akipasa.DEBUG_NOTIFICATION";
+    private static final String DEBUG_NOTIFICATION_CHANNEL = "akipasa_debug";
 
     private WebView webView;
     private ProgressBar progressBar;
@@ -53,20 +62,32 @@ public final class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setStatusBarColor(getColor(R.color.akipasa_primary));
+        getWindow().setStatusBarColor(getColor(R.color.akipasa_status));
         getWindow().setNavigationBarColor(getColor(R.color.akipasa_background));
-
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        if (Build.VERSION.SDK_INT >= 28) {
+            WindowManager.LayoutParams attributes = getWindow().getAttributes();
+            attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            getWindow().setAttributes(attributes);
+        }
+        // DecorView is not installed until setContentView; don't request insets yet.
         FrameLayout root = buildLayout();
-        root.setOnApplyWindowInsetsListener((view, insets) -> {
-            view.setPadding(
-                    insets.getSystemWindowInsetLeft(),
-                    insets.getSystemWindowInsetTop(),
-                    insets.getSystemWindowInsetRight(),
-                    insets.getSystemWindowInsetBottom()
-            );
-            return insets;
-        });
+        if (Build.VERSION.SDK_INT >= 28) {
+            root.setOnApplyWindowInsetsListener((view, insets) -> {
+                android.view.DisplayCutout cutout = insets.getDisplayCutout();
+                view.setPadding(
+                        cutout == null ? 0 : cutout.getSafeInsetLeft(),
+                        cutout == null ? 0 : cutout.getSafeInsetTop(),
+                        cutout == null ? 0 : cutout.getSafeInsetRight(),
+                        cutout == null ? 0 : cutout.getSafeInsetBottom()
+                );
+                // The root owns cutout spacing; the WebView still receives IME insets.
+                return insets.consumeDisplayCutout();
+            });
+        }
         setContentView(root);
+        // Apply immersive mode only after the view is attached to a window.
+        root.post(this::hideSystemBars);
         configureWebView();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
@@ -78,11 +99,66 @@ public final class MainActivity extends Activity {
         if (savedInstanceState == null || webView.restoreState(savedInstanceState) == null) {
             loadLaunchUrl(getIntent());
         }
+        if (getIntent() != null && DEBUG_NOTIFICATION_ACTION.equals(getIntent().getAction())) {
+            showDebugNotification();
+        }
+    }
+
+    private void showDebugNotification() {
+        // Local development exercise only: release builds cannot post via this trigger.
+        if (!BuildConfig.DEBUG) return;
+        if (Build.VERSION.SDK_INT >= 33
+                && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATION_PERMISSION_REQUEST);
+            return;
+        }
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (manager == null) return;
+        if (Build.VERSION.SDK_INT >= 26) {
+            manager.createNotificationChannel(new NotificationChannel(
+                    DEBUG_NOTIFICATION_CHANNEL, "AkiPasa development tests",
+                    NotificationManager.IMPORTANCE_HIGH));
+        }
+        Notification notification = new Notification.Builder(this, DEBUG_NOTIFICATION_CHANNEL)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground))
+                .setContentTitle("AkiPasa test notification")
+                .setContentText("Native Android notifications are working! 🚀")
+                .setAutoCancel(true)
+                .build();
+        manager.notify(1003, notification);
+    }
+
+    private void hideSystemBars() {
+        if (Build.VERSION.SDK_INT >= 30) {
+            getWindow().setDecorFitsSystemWindows(false);
+            View decorView = getWindow().getDecorView();
+            WindowInsetsController controller = decorView.getWindowInsetsController();
+            if (controller != null) {
+                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+                controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+            }
+        } else {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) hideSystemBars();
     }
 
     private FrameLayout buildLayout() {
         FrameLayout root = new FrameLayout(this);
-        root.setBackgroundColor(getColor(R.color.akipasa_background));
+        // Color the camera-cutout safe area like the header rather than showing a cream stripe.
+        root.setBackgroundColor(getColor(R.color.akipasa_status));
 
         webView = new WebView(this);
         webView.setId(View.generateViewId());
@@ -174,9 +250,19 @@ public final class MainActivity extends Activity {
 
     private void loadLaunchUrl(Intent intent) {
         Uri deepLink = intent == null ? null : intent.getData();
-        webView.loadUrl(deepLink != null && NavigationPolicy.isInternal(deepLink.toString())
-                ? deepLink.toString()
-                : BuildConfig.APP_URL);
+        webView.loadUrl(resolveLaunchUrl(deepLink));
+    }
+
+    private String resolveLaunchUrl(Uri deepLink) {
+        if (deepLink == null) return BuildConfig.APP_URL;
+        String callback = NavigationPolicy.appCallbackUrl(deepLink.toString());
+        if (callback != null) return callback;
+        if (!NavigationPolicy.isInternal(deepLink.toString())) return BuildConfig.APP_URL;
+        if ("1".equals(deepLink.getQueryParameter("android"))
+                && deepLink.getPath() != null && deepLink.getPath().matches("/(en|es)/auth/callback")) {
+            return deepLink.buildUpon().appendQueryParameter("native", "1").build().toString();
+        }
+        return deepLink.toString();
     }
 
     private boolean openExternal(Uri uri) {
@@ -236,8 +322,15 @@ public final class MainActivity extends Activity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
+        if (BuildConfig.DEBUG && DEBUG_NOTIFICATION_ACTION.equals(intent.getAction())) {
+            showDebugNotification();
+            return;
+        }
         Uri uri = intent.getData();
-        if (uri != null && NavigationPolicy.isInternal(uri.toString())) webView.loadUrl(uri.toString());
+        if (uri != null && (NavigationPolicy.isInternal(uri.toString())
+                || NavigationPolicy.appCallbackUrl(uri.toString()) != null)) {
+            webView.loadUrl(resolveLaunchUrl(uri));
+        }
     }
 
     @Override
@@ -281,6 +374,12 @@ public final class MainActivity extends Activity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == NOTIFICATION_PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                showDebugNotification();
+            }
+            return;
+        }
         if (requestCode != LOCATION_PERMISSION_REQUEST || locationCallback == null) return;
         boolean granted = false;
         for (int result : grantResults) granted |= result == PackageManager.PERMISSION_GRANTED;

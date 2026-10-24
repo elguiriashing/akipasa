@@ -1,0 +1,9 @@
+# Canonical listing Storage namespace
+
+The legacy direct-upload admission predicate accepted case-insensitive UUID prefixes, cast the prefix to UUID for authorization, then counted raw object prefixes against the lowercase UUID string. An authorized owner could create more than eight uppercase-prefix orphan objects because those objects never entered the counter. Actual media registration already rejected noncanonical paths; the gap concerned upload/storage quota enforcement.
+
+Additive200000 requires the path accounting introduced in190000. It patches two exact installed anchors while preserving function ownership, ACLs, OIDs and security configuration. New event-media object names must use the canonical lowercase venue UUID prefix whenever base enforcement is active. Historical case-variant paths remain unchanged and are counted by normalized prefix. They remain removable through existing authorized policies; no historical object is deleted or renamed by this migration. Other buckets and disabled cohorts retain their existing behavior. No subscriptions or feature flags change.
+
+Four actual-role SQL regressions reproduce nine uppercase-prefix objects before the fix, verify retained objects consume quota afterwards, allow the canonical eighth upload while denying new noncanonical names, verify verified reservations count historical case variants, and preserve disabled-cohort behavior. Installed function metadata is unchanged. The isolated PostgreSQL workflow adds READ COMMITTED and REPEATABLE READ races starting with seven historical uppercase-prefix objects; exact hosted evidence is required before application.
+
+Root must review200000 along with181500/190000 before enabling baseline limits. Strict uploads and enhanced library retain their independent real provider acceptance gate. This amendment does not establish external Storage byte-upload acceptance.

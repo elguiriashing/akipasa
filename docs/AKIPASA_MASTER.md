@@ -1,5 +1,167 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-24 | Installed AkiPulse own-history export prerequisite
+
+The shared project now has all nine additive HQ Pulse phases, including the
+caller-only management privacy pager. Eleven installed function bodies match
+canonical source, private mapping/audit remain empty and inaccessible to browser
+table clients, and all native/funnel launch settings remain false. The privacy
+reader allows authenticated callers only; anonymous and service execution are
+denied. A rollback-only authenticated synthetic-subject read returned two complete
+empty sections. Local actual-role SQL regressions pass 33 cases; this is not
+positive live customer/provider acceptance. The central two-section adapter
+retains authentication, bounded pagination, no-store and whole-export failure
+semantics independently of dashboard/analytics gates. Current-master membership,
+Android, media and prior contract entries are preserved during reconciliation.
+Receipts and the verified provider-history collision recovery are recorded in
+`docs/receipts/AKIPULSE_SCHEMA_20261024.json`; no customer rows, billing state,
+tracking activation or migration-history DML changed. Exact-head CI and deployed
+source verification remain required for the application release.
+
+## 2026-10-22 | Audience-first membership catalogue supersedes five-card comparison
+
+The canonical public/account membership now separates Individual and Business via
+keyboard-accessible tabs, showing two offers at a time. Individual is free
+discovery plus separately gated personal Premium; Business is free AkiHQ
+ownership/listing management plus one product-specific business listing Premium
+offer. AkiBusiness Standard/Plus/Pro are **not** presented as listing upgrades:
+a separate operations-software handoff links to akibusiness.com. The dedicated
+AkiHQ membership centre displays the three product-specific listing upgrades,
+while AkiBusiness itself displays only its three paid operating packages.
+
+AkiPasa, AkiDuermo and AkiCoches use byte-identical
+`AkiSuiteAudienceStudio.tsx` and stylesheet; each adapter owns its product
+wording, approved pricing and billing/readiness boundaries. This supersedes
+the earlier five-card visual contract, which remains in history below.
+Preserve all active/legacy entitlements, checkout gates, workspace/RLS scope,
+server authorization, and Stripe webhook/ledger authority. Do not invent
+personal prices on AkiDuermo/AkiCoches or activate purchase buttons before
+the commercial gate opens. AkiHQ remains free; listing Premium is not an
+AkiBusiness software subscription. No SQL, customer, Stripe or Cloudflare
+configuration change. Release only after EN/ES, browser/device, CI and
+deployed-SHA evidence; source rollback has no database impact.
+
+## 2026-10-22 | Public and account membership source parity and product clarity
+
+The public and account AkiPasa membership pages now reuse the exact five-card
+AkiSuiteMembershipStudio markup/CSS used by the independent AkiCoches and
+AkiDuermo products. The first two cards fall under the single AkiHQ logo and
+the final three under the single AkiBusiness logo with one hairline divider.
+Product branding is shown only in the group headings, never repeated on cards.
+Cards retain one desktop row with horizontal scrolling on smaller screens.
+
+The legacy AkiDuermo personal €5.99 plan is not renamed or repurposed: when an
+older AkiPasa account link originates at AkiDuermo, the comparison shows the
+€14.99 property listing offer and routes to the native AkiDuermo storefront
+without initiating the historical €5.99 checkout. The two entitlements remain
+separate.
+
+AkiHQ explains free AkiPasa listing management; AkiPasa Listing Premium is
+explicitly an AkiHQ listing upgrade and **does not** bundle AkiBusiness tools.
+Standard/Plus/Pro remain independently priced per operating location, with
+4/8/12 tools and existing monthly swap limits. Personal Premium stays
+feature-gated and is offered separately below the five-card row; its existing
+checkout path is preserved. Existing workspace selection, purchase gating,
+Stripe action routing, entitlement checks, account and locale behavior
+remain unchanged. No schema, production data, Stripe product, price or
+claim/booking effect is introduced. Dependencies: /[locale]/membership,
+account/subscription, membership adapters, original brand asset paths, EN/ES,
+responsive scrolling, release CI and exact-head browser testing. Roll back
+the presentation adapter/canonical copies without changing subscription data.
+
+## 2026-10-22 | Map popup navigation and native WebView safe-area consistency
+
+MapLibre popup anchors are created imperatively, outside React. Until now, tapping
+a map pin's venue/event link performed a full-document navigation instead of
+Next.js client routing. In the Android immersive WebView this path was reported
+to introduce a persistent enlarged header and extra safe-area padding, while
+Explore-to-detail client navigation kept the 48px header compact.
+
+Map popup taps targeting the current web origin now use the Next.js router.
+Standard external destinations, modified clicks and native link fallback remain
+unchanged. Map popup links retain their href attributes. No native Android
+bundle or Google Play upload is needed for this website change. Accept only
+after testing Map -> Venue, Map -> Event, Explore -> detail, backwards navigation
+and external accommodation links on a real Android device. The map navigation
+difference is established in source; the header resolution remains a device
+acceptance check rather than a confirmed outcome.
+
+## 2026-10-22 | Android map-to-detail header inset persistence
+
+The Android WebView marks `body[data-android-app="true"]` and its native window owns
+camera cutout insets. The mobile app header is a fixed 48px across the Explore,
+Map, Venue, and Event routes, including Next.js client-side navigation from
+fullscreen Map into a detail page and back. A native-only high-specificity
+CSS override in `src/app/portal-unity.css` prevents legacy safe-area rules
+from expanding header height or search positioning after route changes.
+Browser/PWA safe-area handling and other app frontends remain unchanged.
+Physical device regression validation must cover Map → Event, Map → Venue,
+Explore → Event, direct deep link, repeated back/forward, Android gesture
+and button navigation; source checks alone do not confirm visual behavior.
+
+## 2026-10-22 | Android native notification branding
+
+The Android shell's locally-triggered debug notification now uses a monochrome 24dp
+Android VectorDrawable traced from the existing AkiPasa pin-and-spark brand SVG
+(`public/brand/logo-horizontal-light.svg`) for the status-bar/small icon.
+The optional large notification artwork reuses the already-shipped AkiPasa
+launcher foreground PNG (`ic_launcher_foreground`) instead of the generic Android
+icon. The app posts only local test notifications through the explicit,
+debug-only `com.akipasa.DEBUG_NOTIFICATION` intent; release builds cannot
+trigger it. Android 13+ notification permission is requested for this test path.
+
+This does not implement remote push delivery, Firebase/FCM registration,
+server token storage, or notification dispatch. Verify the notification's
+legibility in the Xiaomi status bar and notification shade after installing a
+fresh Android debug build. A native Android rebuild/store bundle is required;
+deploying the website alone does not change the notification icon.
+
+## 2026-10-22 | Android release UI and OAuth return candidate
+
+The `com.akipasa` Android shell uses the current AkiPasa orange pin/star raster
+launcher identity and navy/cream system chrome. Its immersive window hides the
+status and navigation bars on API 26+, lets an edge swipe reveal them briefly,
+and restores immersive mode on focus return. It draws to the physical edges,
+while the native root keeps WebView controls outside display cutouts and passes
+keyboard insets through. Mobile app header and navigation heights are 48/60 CSS
+pixels with 44+ pixel touch controls. Physical-device visual acceptance across
+cutouts, keyboard, gesture/three-button navigation and light/dark remains required.
+The server marks only the native WebView's AkiPasa user agent; that shell uses
+the native system-bar insets and suppresses duplicate CSS safe-area padding in
+its header, bottom navigation and search trigger. Browser/PWA safe areas remain
+unchanged. The Android wrapper is now versionCode 3 / 1.0.2; this native change
+requires a new installed build and signed bundle, whereas web CSS updates load
+from the live site on refresh.
+
+Google OAuth continues in a trusted external browser. An Android-originated
+server action marks the existing HTTPS callback; the browser renders a no-store,
+no-referrer return link using `akipasa://auth/callback` without exchanging the
+PKCE code. The native app reconstructs the existing HTTPS callback inside its
+own WebView, which retains the verifier and terms cookies; verified HTTPS App
+Links can also return directly. Ordinary web OAuth, password, email and recovery
+callbacks keep their existing contract. Test real debug and Play-signed devices,
+Supabase redirect allowlisting, account/terms/onboarding and rejected/cancelled
+flows before a store upload. No auth tokens or signing material enter the app.
+
+## 2026-10-21 | Discovery membership studio layout contract (PR #275)
+
+The AkiPasa public and account membership catalogue must use the same modern,
+single-row five-offer visual hierarchy as the native AkiCoches and AkiDuermo
+storefronts: AkiHQ free, AkiBusiness Standard/Plus/Pro and the origin-scoped
+Listing Premium offer. Cards are equally spaced on wide screens and remain a
+single, horizontally scrollable, keyboard-accessible row on narrow screens.
+Original in-repository AkiHQ and AkiBusiness SVG brand marks appear above their
+respective plan titles. Personal Premium remains separately feature-gated, and
+may add a sixth card without removing available options.
+
+This is presentation and catalogue ordering only. Keep the approved monthly
+prices, checkout-readiness safeguards, existing subscription and Stripe logic,
+workspace scope, team delegation, role checks, personal-launch gate and bilingual
+links unchanged. Do not create artwork, enable checkout or alter entitlements.
+Acceptance requires updated membership UI tests, exact-head lint/typecheck,
+visual review at desktop/tablet/mobile sizes and full required PR CI. Production
+merges and release verification remain gated on successful checks.
+
 ## 2026-10-20 | Authoritative contract recovery and integrity gate
 
 The complete source-history contract text is restored from the last intact parent
@@ -1808,6 +1970,29 @@ the authenticated, workspace-scoped AkiBusiness operating screen. This keeps the
 public sales journey compact and consistent across products without changing price
 IDs, entitlement keys, active subscriptions or checkout readiness.
 
+## 2026-10-21 | Atomic disabled funnel deployment recovery
+
+Preserves canonical242/243 SQL unchanged while generating12 short dependency-ordered
+apply_migration phases with canonical/hash IDs, transaction-local timeouts, immediate
+private ACL closure and disabledNULL-state assertions. The reported enum-only live
+baseline resumes at verifiedphase01; no large request is replayed. Full SQL catalogue
+parity, hostile-default permissions, phase rollback and all capture/privacy cases are
+covered locally. No provider write, activation, retention approval or history repair
+is performed. See TRUSTED_BUSINESS_FUNNEL_PHASED_DEPLOYMENT.md for receipt archival,
+readback, interruption handling and the separate operator history-reconciliation gate.
+
+## 2026-10-21 | Installed disabled funnel schema and privacy readiness
+
+Release-manager apply_migration receipts for phases01–11 are archived with the
+frozen manifest/phase hashes; enum00 was already present. Independently read-only
+history/readback confirms disabled collection, NULL retention/approval/start, zero
+optional rows,13 triggers and intended RPC/private grants. Source
+AKISUITE_FUNNEL_READY=true now opens only installed identity-export readers and
+bounded maintenance; it cannot activate collection or set retention. Focused SQL/
+adapter tests preserve inactive reporting and restricted own-data export. No agent
+production write, financial configuration or migration-history repair occurs.
+Worker deployment and actual runtime acceptance remain separate release gates.
+
 ## 2026-10-21 | Independent property listing foundation (gated)
 
 Native accommodation uses real property UUID ownership and CRM intersection,
@@ -1868,6 +2053,20 @@ copies must not be used. Forty scoped native/review/deletion cases pass locally;
 hosted exact-head checks and provider/role acceptance remain release gates.
 No live schema, customer row, flag, payment or primary branch changed here.
 
+## 2026-10-21 | Atomic disabled native property deployment representation
+
+New deterministic deployment files represent the unchanged corrected001000/002500/005500 canonical SQL as23 bounded transactions (≤4971bytes), each with2s lock/8s statement/15s idle transaction timeouts and disabled/empty postconditions. Table RLS/client ACL and function execution controls accompany creation atomically. A restrictive native Storage hold precedes bucket creation and is removed only after all permanent policies and the evidence trigger exist. Hostile-default-grant intermediate actual-role tests and normal/hostile final catalogue parity preserve legacy accommodation_private, existing bookings and other buckets. No application, locale, analytics, identity, billing, existing data or feature flag changes. The release owner subsequently applied all23 reviewed phases with all activation gates false; exact history/readback receipts and the phase21 provider-history collision recovery are archived. See NATIVE_ACCOMMODATION_ATOMIC_DEPLOYMENT.md for hashes, ordered receipts, uncertainty recovery and separate provider/activation gates.
+
+## 2026-10-21 | Listing quota snapshot serialization
+
+Forward181500 adds private per-venue/channel revision writes before existing
+quota reads, preserving advisory keys2/17. Exact installed function anchors retain
+all authorization, owner/OID/ACL/config and package/date/grandfather semantics;
+unknown bodies fail atomically. No existing venue row is touched or history
+backfilled. Local quota/metadata/receipt/isolation regressions pass; a dedicated
+actual PostgreSQL RC/RR event/reservation/legacy Storage race job gates release.
+All flags remain unchanged. See LISTING_QUOTA_SERIALIZATION.md.
+
 ## 2026-10-21 — Private merchant-stage classification
 
 Observes existing billing/migration merchant GET without changing request, fixed
@@ -1892,3 +2091,70 @@ authorization, marketing consent or analytics activation is added. Companion HQ
 readiness stays independent of all HQ feature gates. See PRIVATE_IDENTITY_EXPORT.md
 for exact dependency, projection, regression evidence and rollback constraints.
 No source SQL, live data/configuration, financial or primary-branch mutation.
+
+## 2026-10-21 | Standalone library public artwork and reference deletion
+
+Additive175000 exposes only explicitly selected published destination artwork
+from shared private-source media. Draft events, bins and unrelated images stay
+private. Database triggers block direct referenced media/object deletion; reference
+writes lock media plus Storage rows to close concurrent deletion races. Existing
+intentional whole-venue deletion remains compatible without Storage cleanup or
+ownership transfer. Seven new actual-role cases and the existing21 pass locally;
+four independent PostgreSQL race scenarios are a separate exact-head hosted gate.
+All library/strict flags remain unchanged. See LISTING_LIBRARY_REFERENCE_BOUNDARIES.md.
+
+## 2026-10-21 | Repeatable-read shared media deletion safety
+
+Corrects the still-unapplied175000 descendant: reference writes touch unchanged
+media and Storage row metadata so old repeatable-read snapshots cannot miss a
+committed placement after waiting. Bytes/paths remain unchanged; no security guard
+is weakened. The real PostgreSQL matrix covers both isolation levels and both
+orderings, while the full strict receipt flow runs all installed guards together.
+Apply only the tested corrected child; frozen262 is not the production SQL source.
+No live migration, activation or data mutation was performed here.
+
+## 2026-10-21 | Reconciled master mission delivery ledger
+
+The docs-only delivery ledger indexes all mission phases against source, exact-head
+CI, applied SQL, runtime gates and manager-observed production identity. It preserves
+historical integration records and links them to the current ledger. Queued customer
+commands are not schedules; configured bindings are not merchant verification; a
+merge is not a production marker. Native/funnel/Storage acceptance and the deliberate
+Standard/Plus/Pro versus mission naming conflict remain explicit. No application,
+price, customer, permission, database, primary branch or provider setting changes.
+See AKISUITE_MISSION_DELIVERY_STATUS_20261021.md; refresh moving heads before release.
+
+### Delivery-ledger review amendment
+
+Record the approved EUR 24.99/44.99/64.99 per-location monthly amounts against stable
+basico/standard/pro keys and current Standard/Plus/Pro label conflict. Preserve the
+three valid 100%-forever coupons, paid-through dates and Personal subscriptions; no
+immediate invoice/proration/new subscription. Include unresolved Supabase-owned
+spatial_ref_sys write/TRUNCATE exposure (HQ59 actual 42501 rollback), Cloudflare
+MCP-32603 deployment/pin blocker, live HQ e249 at 14:02 UTC and disabled-funnel owner/
+foreign/privacy role acceptance at 13:59 UTC. PR261 new 6d6 head CI and PR262 guard
+repair remain pending; neither is claimed installed/observed. Documentation only.
+
+## 2026-10-21 | Coherent phased-readiness and library protection release
+
+Integration preserves f1e99 primary plus frozen PR264 df012, PR265 9e1 and PR263 8a1 ancestry and reviewed immutable SQL/utilities. Master/impact append entries from all parents are retained. Schema-only funnel readiness is declared against the installed disabled schema; billing/migration true and checkout/tax false remain unchanged. No production or provider writes, quota181500 changes or premature migration closure. Delivery status distinguishes merged diagnostic source from unverified deployment, native foundation installed with gates off, HQ e249 live and funnel collection off. Exact combined CI remains required; release manager owns merge and activation.
+
+## 2026-10-21 | Stay browser host-proxy transport cleanup
+
+The existing isolated AkiDuermo guest-route browser spec now uses the same bounded GET-only connection-reset retry and wait-for-in-flight-route teardown as the previously reviewed frontend-health host proxy. This addresses two hosted socket-reset failures on local branding/image requests without changing any route, locale, privacy, keyboard, layout or consent assertion. HTTP errors and non-GET requests are never retried; intercepted errors are not ignored during cleanup. Application, provider, data, feature flags and canonical SQL are unchanged. Full exact-head browser CI remains the acceptance gate.
+
+Baseline media quota accounting is independent of the enhanced-library feature gate: owned images, historical shared placements, stored objects and active upload reservations share one path-deduplicated allowance. New cross-listing placement is unavailable until the scoped enhanced library is enabled; historical associations remain retained. See [baseline media quota integrity](BASELINE_MEDIA_QUOTA_INTEGRITY.md); additive190000 requires the RR-safe181500 quota scope migration and changes no launch flags.
+
+Enhanced-library placement admission also shares the complete Storage/reservation allowance, under the same RR-safe quota scope. Additive193000 builds on181500/190000 without changing membership, Premium reuse or historical retention rules. See [library reservation capacity](LIBRARY_RESERVATION_CAPACITY.md).
+
+Listing upload namespace admission requires a canonical lowercase venue UUID prefix when base limits are active; historical case-variant object paths are retained and counted. See [listing Storage canonical prefix](LISTING_STORAGE_CANONICAL_PREFIX.md), additive200000 after190000; no flags are activated.
+
+## 2026-10-21 | Event artwork tenant-target integrity
+
+Confirmed an ordinary-owner placement could name another venue's public event,
+and discovery trusted target*key without its per-event venue. Forward184000
+validates new/edited event*\* associations while preserving valid draft bins and
+member/staff access. Discovery intersects each placement with its specific event's
+venue, hiding historical mismatches without deleting data. Five actual-policy SQL
+and two real SDK regressions plus60 repository cases pass. No Premium flag, paid
+access, ownership or live data changed. See EVENT_MEDIA_TARGET_SCOPE.md.

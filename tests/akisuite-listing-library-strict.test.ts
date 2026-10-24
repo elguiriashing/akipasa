@@ -31,6 +31,7 @@ beforeAll(async () => {
     "20261020233027_standalone_listing_premium_library.sql",
     "20261021003500_prevent_retained_media_identity_reuse.sql",
     "20261021004500_library_requires_verified_uploads.sql",
+    "20261021175000_listing_library_reference_boundaries.sql",
   ])
     await db.exec(readFileSync(`database/migrations/${file}`, "utf8"));
 }, 30000);

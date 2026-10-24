@@ -1,126 +1,80 @@
+/* Product-specific adapter only. Five-card layout uses the identical shared AkiSuiteMembershipStudio in all discovery apps. */
 .root {
-  display: grid;
-  gap: 1.5rem;
-  min-width: 0;
-}
-.heading h2 {
-  margin: 0.25rem 0 0.5rem;
-  font-size: clamp(1.5rem, 2.8vw, 2.3rem);
-}
-.heading p,
-.footnote {
-  color: var(--muted);
-  line-height: 1.5;
-}
-.grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
-}
-.card {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  gap: 0.8rem;
-  padding: 1.25rem;
-  border: 1px solid var(--line);
-  border-radius: 1.1rem;
-  background: var(--panel, transparent);
-  overflow-wrap: anywhere;
-}
-.card h3,
-.card p {
-  margin: 0;
-}
-.card p,
-.benefits {
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-.card > a,
-.card > form {
-  margin-top: auto;
-}
-.card a,
-.card button {
-  min-height: 44px;
-  white-space: normal;
-  text-align: center;
-}
-.card form button {
   width: 100%;
-}
-.brandIdentity {
-  display: flex;
-  gap: 0.6rem;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.brandIdentity img {
-  border-radius: 0.7rem;
-}
-.eyebrow {
-  color: var(--muted);
-  font-weight: 700;
-  font-size: 0.85rem;
-}
-.price {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.3rem;
-}
-.price strong {
-  font-size: clamp(1.5rem, 2vw, 2rem);
-}
-.price span {
-  font-size: 0.8rem;
-  color: var(--muted);
-}
-.benefits {
-  display: grid;
-  gap: 0.5rem;
-  padding-left: 1.2rem;
-  margin: 0;
+  min-width: 0;
+  max-width: 1540px;
+  margin-inline: auto;
 }
 .workspaceChoice {
   display: grid;
-  gap: 0.5rem;
-  max-width: 32rem;
+  gap: 8px;
+  width: min(400px, 100%);
+  margin: 14px 0 8px;
+  color: #d7e0ef;
+  font-size: 12px;
+  font-weight: 700;
 }
-.workspaceChoice select,
-.sectorPanel select {
-  width: 100%;
+.workspaceChoice select {
   min-height: 44px;
-  margin: 0.5rem 0;
+  border: 1px solid #ffffff40;
+  border-radius: 12px;
+  background: #1b2943;
+  color: #fff;
+  padding: 8px;
 }
-.sectorPanel {
-  padding: 1.25rem;
-  border: 1px solid var(--line);
-  border-radius: 1rem;
-}
-.sectorPanel > div {
-  max-width: 48rem;
-}
-.sectorPanel label {
-  display: block;
+.workspaceChoice select:focus-visible,
+.personalPromo :is(a, button):focus-visible {
+  outline: 2px solid #ff822d;
+  outline-offset: 3px;
 }
 .footnote {
-  font-size: 0.85rem;
+  color: #a6b9d2;
+  font-size: 12px;
 }
-@media (max-width: 1100px) {
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.personalPromo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 14px;
+  padding: 16px;
+  border: 1px solid #ffffff2c;
+  border-radius: 16px;
+  background: #ffffff08;
+  color: #f6f8fc;
 }
-@media (max-width: 600px) {
-  .grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .root {
-    gap: 1rem;
-  }
-  .card {
-    padding: 1rem;
-  }
+.personalPromo strong {
+  font-weight: 800;
+}
+.personalPromo p {
+  margin: 5px 0;
+  font-size: 12px;
+  color: #b6c4dc;
+}
+.personalPromo span {
+  font-size: 13px;
+}
+.personalAction {
+  min-width: min(240px, 100%);
+}
+.personalAction :is(a, button) {
+  display: block;
+  width: 100%;
+  padding: 12px 18px;
+  border: 1px solid #ffffff46;
+  border-radius: 12px;
+  background: #ffffff14;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 12px;
+}
+.personalAction form {
+  margin: 0;
+}
+.personalAction button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }

@@ -5,7 +5,7 @@
         <item name="android:windowActionModeOverlay">true</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:navigationBarColor">@color/akipasa_background</item>
-        <item name="android:statusBarColor">@color/akipasa_primary</item>
+        <item name="android:statusBarColor">@color/akipasa_status</item>
         <item name="android:windowBackground">@color/akipasa_background</item>
         <item name="android:colorAccent">@color/akipasa_primary</item>
     </style>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="akipasa_primary">#6B35FF</color>
-    <color name="akipasa_background">#F4F7FA</color>
-    <color name="akipasa_ink">#102126</color>
+    <color name="akipasa_primary">#F26B1D</color>
+    <color name="akipasa_background">#FBF7F1</color>
+    <color name="akipasa_ink">#14213D</color>
+    <color name="akipasa_status">#14213D</color>
 </resources>
