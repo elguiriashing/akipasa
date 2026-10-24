@@ -1,5 +1,23 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-24 | Installed AkiPulse own-history export prerequisite
+
+The shared project now has all nine additive HQ Pulse phases, including the
+caller-only management privacy pager. Eleven installed function bodies match
+canonical source, private mapping/audit remain empty and inaccessible to browser
+table clients, and all native/funnel launch settings remain false. The privacy
+reader allows authenticated callers only; anonymous and service execution are
+denied. A rollback-only authenticated synthetic-subject read returned two complete
+empty sections. Local actual-role SQL regressions pass 33 cases; this is not
+positive live customer/provider acceptance. The central two-section adapter
+retains authentication, bounded pagination, no-store and whole-export failure
+semantics independently of dashboard/analytics gates. Current-master membership,
+Android, media and prior contract entries are preserved during reconciliation.
+Receipts and the verified provider-history collision recovery are recorded in
+`docs/receipts/AKIPULSE_SCHEMA_20261024.json`; no customer rows, billing state,
+tracking activation or migration-history DML changed. Exact-head CI and deployed
+source verification remain required for the application release.
+
 ## 2026-10-22 | Audience-first membership catalogue supersedes five-card comparison
 
 The canonical public/account membership now separates Individual and Business via
@@ -2061,6 +2079,18 @@ preserved. Focused86 tests and SQL permission audit pass; full exact CI and live
 installation/deployment remain release-owner gates. See
 OPERATIONS_MERCHANT_DIAGNOSTICS.md for categories, interpretation and rollback.
 No production, primary, provider, customer, configuration or financial writes.
+
+## 2026-10-21 | Complete own AkiPulse management privacy export
+
+Extends central identity-only export with two allowlisted rental-link/history
+sections using the separate authenticated my_pulse_management_export_page RPC.
+Existing referral/prestige paging, completeness budgets,503/no-store response and
+pending/underage privacy exception remain intact; no other-person data, business
+authorization, marketing consent or analytics activation is added. Companion HQ
+20261021145321 must be installed before this adapter deploys. Existing privacy
+readiness stays independent of all HQ feature gates. See PRIVATE_IDENTITY_EXPORT.md
+for exact dependency, projection, regression evidence and rollback constraints.
+No source SQL, live data/configuration, financial or primary-branch mutation.
 
 ## 2026-10-21 | Standalone library public artwork and reference deletion
 

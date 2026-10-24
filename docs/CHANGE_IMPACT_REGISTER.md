@@ -1,5 +1,27 @@
 # Change Impact Register
 
+## 2026-10-24 | Recover private Pulse export on current master
+
+- Reconciles #271 with the reviewed audience membership, Android and media
+  changes on master ec1a5d1a, preserving both sides of appended contract history.
+- Installs the nine already-reviewed HQ schema phases without enabling their
+  dashboard/native/funnel gates. Canonical SQL SHA256, provider versions, exact
+  function-body comparison, client ACL checks and rollback are archived in
+  `docs/receipts/AKIPULSE_SCHEMA_20261024.json`.
+- A same-second provider history collision committed the second function before
+  its history write failed. Readback verified its exact body/owner/ACL before a
+  narrowly idempotent CREATE OR REPLACE recorded the ordinary delayed receipt.
+  No history table was edited and no schema/table phase was blindly replayed.
+- Thirty-three local actual-role database cases pass. Hosted readback verifies
+  eleven canonical bodies, empty mapping/audit, closed launch settings and an
+  authenticated synthetic-subject privacy read. No customer record is changed.
+- Application scope remains two caller-only export sections. Existing complete
+  export limits, authentication, no-store/503 behavior and restricted-user data
+  rights remain intact; no client identity or business scope is accepted.
+- Full current-head checks, CI and exact-source production verification are
+  separate application release gates. Retain compatible schema and audit data
+  on rollback; keep new runtime gates closed.
+
 ## 2026-10-22 | Audience selector and suite membership role clarity
 
 - **Current objective:** three discovery apps display Individual Free/Personal
@@ -2576,6 +2598,18 @@ preserved. Focused86 tests and SQL permission audit pass; full exact CI and live
 installation/deployment remain release-owner gates. See
 OPERATIONS_MERCHANT_DIAGNOSTICS.md for categories, interpretation and rollback.
 No production, primary, provider, customer, configuration or financial writes.
+
+## 2026-10-21 | Complete own AkiPulse management privacy export
+
+Extends central identity-only export with two allowlisted rental-link/history
+sections using the separate authenticated my_pulse_management_export_page RPC.
+Existing referral/prestige paging, completeness budgets,503/no-store response and
+pending/underage privacy exception remain intact; no other-person data, business
+authorization, marketing consent or analytics activation is added. Companion HQ
+20261021145321 must be installed before this adapter deploys. Existing privacy
+readiness stays independent of all HQ feature gates. See PRIVATE_IDENTITY_EXPORT.md
+for exact dependency, projection, regression evidence and rollback constraints.
+No source SQL, live data/configuration, financial or primary-branch mutation.
 
 ## 2026-10-21 | Standalone library public artwork and reference deletion
 
