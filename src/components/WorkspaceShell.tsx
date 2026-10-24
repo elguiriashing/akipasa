@@ -271,6 +271,7 @@ export function WorkspaceShell({
           return (
             <Link
               href={item.href}
+              prefetch={workspaceKind === "admin-workspace" ? false : undefined}
               aria-current={active ? "page" : undefined}
               className={active ? "active" : undefined}
               onClick={(event) => {

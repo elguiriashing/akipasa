@@ -41,8 +41,8 @@ export default async function ProfilePage({
       title={es ? "Perfil" : "Profile"}
       description={
         es
-          ? "Tu información pública y cómo apareces en AkiPasa."
-          : "Your public information and how you appear on AkiPasa."
+          ? "Tu perfil compartido de AkiSuite. Los cambios aparecen en los cinco productos."
+          : "Your shared AkiSuite profile. Changes appear across all five products."
       }
     />
   );

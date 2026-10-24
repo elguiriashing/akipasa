@@ -158,7 +158,7 @@ export function AkiSuiteMembershipHub({
     akibusiness: {
       badge: es ? "Por ubicación" : "Per location",
       detail: es ? "Herramientas operativas de pago" : "Paid operating tools",
-      href: `/${locale}/account/subscription/operations`,
+      href: suiteHref("business", locale, { path: "/account" }),
       action: es
         ? "Gestionar herramientas operativas"
         : "Manage operating tools",

@@ -2787,3 +2787,41 @@ assembleDebug --offline` could not fetch Gradle 9.5 (network unreachable).
   or database changes. Revert the popup click handling for rollback.
 - Verification: CI and actual Android Map -> Event/Venue navigation plus
   Explore and non-Android regression tests; device-specific result pending.
+
+## 2026-10-24 | Admin timeout recovery
+
+- Before: administrator recent-audit RLS was called per row across~75k records,
+  latest-first ordering had no matching index, and navigation prefetched multiple
+  privileged workbenches. Live admin responses repeatedly took8.2–8.8seconds.
+- After: exact same authenticated administrator predicate runs once per statement,
+  deterministic indexed latest-five read; Admin-only prefetch suppression and
+  bilingual loading state. Other shells retain existing prefetch.
+- Dependencies: shared public.moderation_actions SELECT policy/index, Admin
+  overview/layout/navigation, EN/ES, administrator and denied roles, master
+  Cloudflare source. No new grants, service clients, writes or billing changes.
+- Evidence:9 new role/ACL/mirror/drift SQL cases and16 focused tests pass.
+  Rollback-only live query EXPLAIN ANALYZE2.846ms,index scan,5rows. Whole-page
+  authenticated deployed acceptance remains separate from query evidence.
+
+## 2026-10-24 | Native accounts and shared billing bridge
+
+Routine account/settings/membership screens now belong to each product while
+reading and modifying the same authenticated profiles row. AkiBusiness selects
+its package and creates a private location locally, without a public-venue claim
+or the Pasa→HQ chain. Coches/Duermo free management links target their actual HQ
+branch/property tools. The central bearer-only `/api/account/portal` verifies
+Supabase identity, eligibility and terms, reads only caller billing, preserves
+existing management-only portal configuration and returns Stripe to the fixed
+originating product. Customer/profile/return URL inputs are not accepted. No
+service key, cross-domain cookie, checkout activation or paid entitlement change.
+Bilingual new tests cover native profile forms, role/ID stripping, billing identity
+isolation, fixed destinations, partial failures, location idempotency and local
+logout. See `CUSTOMER_JOURNEYS_20261024.md` for all eight journeys, dependency/release
+order and explicit remaining shared safety/onboarding and provider acceptance.
+
+Live schema receipt: source migration20261024013730 was installed as provider
+version20261024014143 named`admin_read_policy_initplans_20261024013730`. Do not
+replay it under the local filename or rewrite provider history. Live original
+latest-five query readback3.075ms; fresh signed-in Admin displayed complete counts
+and recent changes. Cloudflare's post-fix navigation trace was1206ms versus the
+previous repeated8.2–8.8second waits. This is one navigation sample, not a latency SLO.
