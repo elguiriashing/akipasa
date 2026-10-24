@@ -29,7 +29,7 @@ describe("independent AkiSuite installations", () => {
           app.icons?.filter((icon) => icon.type === "image/png"),
         ).toHaveLength(0);
         expect(
-          app.icons?.some((icon) => icon.src === "/brand/conduzco-icon.svg"),
+          app.icons?.some((icon) => icon.src === "/brand/v3/coches.svg"),
         ).toBe(true);
       } else {
         expect(

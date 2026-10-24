@@ -172,7 +172,7 @@ export function AkiSuiteAudienceStudio({
         {audience === "business" && (
           <aside className={styles.software}>
             <Image
-              src="/brand/business-mark.svg"
+              src="/brand/v3/business.svg"
               alt=""
               width={36}
               height={36}

@@ -21,13 +21,13 @@ export function PortalLogo({
       <Image
         src={
           product === "pasa"
-            ? "/pwa/akipasa-512.png"
+            ? "/brand/v3/pasa.svg"
             : product === "hq"
-              ? "/brand/hq-mark.svg"
+              ? "/brand/v3/hq.svg"
               : product === "coches"
-                ? "/brand/conduzco-icon.svg"
+                ? "/brand/v3/coches.svg"
                 : product === "business"
-                  ? "/brand/business-mark.svg"
+                  ? "/brand/v3/business.svg"
                   : `/brand/${product}-icon.png`
         }
         alt=""
