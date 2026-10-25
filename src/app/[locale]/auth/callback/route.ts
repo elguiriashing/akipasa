@@ -2,6 +2,7 @@ import { readOnboardingStatus } from "@/lib/account-onboarding-server";
 import { onboardingUrl } from "@/lib/account-onboarding";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { renderAndroidReturnPage } from "@/lib/android-return-page";
 import { config, isLocale } from "@/lib/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { publicRequestOrigin } from "@/lib/public-request-origin";
@@ -34,18 +35,16 @@ export async function GET(
       const value = url.searchParams.get(key);
       if (value) handoff.searchParams.set(key, value);
     }
-    return new NextResponse(
-      `<!doctype html><html lang="${safeLocale}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>AkiPasa</title></head><body style="font:16px system-ui;background:#fbf7f1;color:#14213d;padding:24px;max-width:30rem;margin:12vh auto"><h1>AkiPasa</h1><p>${safeLocale === "es" ? "Vuelve a AkiPasa para terminar de iniciar sesión." : "Return to AkiPasa to finish signing in."}</p><a style="display:inline-block;padding:16px 24px;background:#f26b1d;color:#14213d;border-radius:16px;font-weight:700" href="${handoff.toString().replaceAll("&", "&amp;").replaceAll('"', "&quot;")}">${safeLocale === "es" ? "Volver a AkiPasa" : "Return to AkiPasa"}</a></body></html>`,
-      {
-        headers: {
-          "Content-Type": "text/html; charset=utf-8",
-          "Cache-Control": "no-store",
-          "Referrer-Policy": "no-referrer",
-          "Content-Security-Policy":
-            "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'",
-        },
+    const nonce = crypto.randomUUID().replaceAll("-", "");
+    const script = 'var seconds=5;var counter=document.getElementById("return-seconds");var ticker=setInterval(function(){seconds=Math.max(0,seconds-1);if(counter)counter.textContent=String(seconds);if(seconds===0)clearInterval(ticker)},1000);setTimeout(function(){location.assign(document.getElementById("android-return").href)},5000);';
+    return new NextResponse(renderAndroidReturnPage({brand:"pasa",name:"AkiPasa",locale:safeLocale,target:handoff,nonce,script,id:"android-return"}), {
+      headers: {
+        "Content-Type": "text/html; charset=utf-8",
+        "Cache-Control": "no-store",
+        "Referrer-Policy": "no-referrer",
+        "Content-Security-Policy": `default-src 'none'; script-src 'nonce-${nonce}'; style-src 'unsafe-inline'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`,
       },
-    );
+    });
   }
   const requested = url.searchParams.get("next");
   const next = safeAuthDestinationForOrigin(
