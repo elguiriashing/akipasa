@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { hasSupabaseAuthCookie } from "../src/lib/supabase/auth-cookie";
+import { renderAndroidReturnPage } from "../src/lib/android-return-page";
 import { publicRequestOrigin } from "../src/lib/public-request-origin";
 import {
   passwordSchema,
@@ -89,4 +90,26 @@ describe("authentication security", () => {
       ),
     ).toBe("/en/account");
   });
+  it("renders an escaped bilingual native OAuth return without revealing session tokens", () => {
+    const target = new URL("akipasa://auth/callback");
+    target.searchParams.set("code", "one-time");
+    target.searchParams.set("error_description", '\"><img src=x>');
+    const html = renderAndroidReturnPage({
+      brand: "pasa",
+      name: "AkiPasa",
+      locale: "es",
+      target,
+      nonce: "test-nonce",
+      script: "",
+      id: "android-return",
+    });
+    expect(html).toContain("/brand/v3/pasa.svg");
+    expect(html).toContain("Abrir AkiPasa ahora");
+    expect(html).toContain('id="return-seconds">5');
+    expect(html).toContain("akipasa://auth/callback?");
+    expect(html).toContain("&amp;");
+    expect(html).not.toContain('href="akipasa://auth/callback?code=one-time&');
+    expect(html).not.toContain("access_token");
+  });
+
 });
