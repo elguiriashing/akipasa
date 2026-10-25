@@ -1,5 +1,10 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-25 | Android OAuth callback styling and return UX
+
+AkiPasa's existing app-owned OAuth callback bridge is unchanged: the browser must not exchange a PKCE code stored with the initiating WebView's verifier. The temporary external-browser return page now uses AkiPasa's v3 icon, orange/branded responsive card, bilingual return instructions, a visible five-second timer/progress indicator and an immediate manual custom-scheme link. One-time code and existing safe continuation fields are retained; refresh/access tokens are not forwarded. The HTML is no-store, no-referrer, noindex and enforces a nonce-scoped script with no third-party dependencies. Other browser login and user onboarding/terms gates are unchanged. The old installed AkiPasa custom-scheme handler already exists: the web-only UX release should not require a new Android binary. Regression: callback and login unit tests, production build, browser rendering on Android Chrome, real-device OAuth cold/warm handoff and an exact-source release check; unit tests cannot confirm OS-level intent dispatch. Rollback: revert isolated HTML renderer and callback route changes; no SQL, Supabase settings, billing, permissions or customer data were changed.
+
+
 ## 2026-10-24 | Owner-approved monthly pricing and upgrade paths
 
 The current commercial catalogue is `APPROVED_PRICING_20261024.md` and
