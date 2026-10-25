@@ -22,6 +22,112 @@ const checks = {
   retentionRecorded: true,
   confirmationContactVerified: true,
 };
+
+test("cancelled reviewed requests receive a bounded evidence expiry without deleting the identity", async () => {
+  const db = await fixture();
+  try {
+    await review(db);
+    await db.exec(
+      `update account_deletion_requests set state='cancelled' where id='${request}'`,
+    );
+    assert.ok(
+      (
+        await db.query(
+          "select evidence_until from account_privacy_private.reviews",
+        )
+      ).rows[0].evidence_until,
+    );
+    await db.exec(
+      "update account_privacy_private.reviews set evidence_until=now()-interval '1 day';update account_privacy_private.settings set retention_enabled=true;select purge_account_deletion_evidence()",
+    );
+    assert.equal(
+      (await db.query("select * from account_deletion_requests")).rows.length,
+      0,
+    );
+    assert.equal(
+      (await db.query("select * from account_privacy_private.reviews")).rows
+        .length,
+      0,
+    );
+    assert.equal((await db.query("select * from profiles")).rows.length, 2);
+  } finally {
+    await db.close();
+  }
+});
+
+test("real restrictive FK preflight reports metadata only and blocks the lease without deleting retained records", async () => {
+  const db = await fixture();
+  try {
+    await db.exec(
+      `create table synthetic_retained_finance(id text primary key,actor uuid references profiles(id),private_text text);insert into synthetic_retained_finance values('invoice','${target}','must not appear in dependency output')`,
+    );
+    await review(db);
+    const report = (
+      await db.query("select account_deletion_dependencies($1) report", [
+        request,
+      ])
+    ).rows[0].report;
+    assert.ok(
+      report.some(
+        (row) => row.table === "synthetic_retained_finance" && row.blocking,
+      ),
+    );
+    assert.ok(!JSON.stringify(report).includes("must not appear"));
+    await assert.rejects(
+      begin(db),
+      /dependencies require scoped manual resolution/,
+    );
+    assert.equal(
+      (await db.query("select private_text from synthetic_retained_finance"))
+        .rows[0].private_text,
+      "must not appear in dependency output",
+    );
+    assert.equal((await db.query("select * from profiles")).rows.length, 2);
+    await db.exec("set role anon");
+    await assert.rejects(
+      db.query("select account_deletion_dependencies($1)", [request]),
+      /permission denied/,
+    );
+    await db.exec("reset role");
+  } finally {
+    await db.close();
+  }
+});
+
+test("interrupted Auth success reconciles by original reviewer and UUID without repeating deletion", async () => {
+  const db = await fixture();
+  try {
+    await review(db);
+    await begin(db);
+    await db.exec(`delete from profiles where id='${target}'`);
+    await assert.rejects(
+      db.query("select reconcile_account_deletion($1,$2)", [request, actor]),
+      /original exact account/,
+    );
+    await db.query("select reconcile_account_deletion($1,$2)", [
+      request,
+      target,
+    ]);
+    assert.ok(
+      (
+        await db.query(
+          "select finished_at from account_privacy_private.reviews",
+        )
+      ).rows[0].finished_at,
+    );
+    assert.equal(
+      (await db.query("select state from account_deletion_requests")).rows[0]
+        .state,
+      "processing",
+    );
+    await assert.rejects(
+      db.query("select reconcile_account_deletion($1,$2)", [request, target]),
+      /original exact account/,
+    );
+  } finally {
+    await db.close();
+  }
+});
 async function fixture() {
   const db = new PGlite();
   await db.exec(`create role anon;create role authenticated;create role service_role;create schema auth;
@@ -202,6 +308,12 @@ test("lease prevents repeats and changed review; identity must disappear; manual
     await review(db);
     const grant = await begin(db);
     assert.equal(grant.profile, target);
+    await assert.rejects(
+      db.exec(
+        `update account_deletion_requests set state='cancelled' where id='${request}'`,
+      ),
+      /reconciled before cancellation/,
+    );
     await assert.rejects(begin(db), /blocked/);
     await assert.rejects(review(db), /progress/);
     await assert.rejects(
@@ -222,6 +334,12 @@ test("lease prevents repeats and changed review; identity must disappear; manual
       request,
       grant.lease,
     ]);
+    await assert.rejects(
+      db.exec(
+        `update account_deletion_requests set state='cancelled' where id='${request}'`,
+      ),
+      /reconciled before cancellation/,
+    );
     assert.equal(
       (await db.query("select state from account_deletion_requests")).rows[0]
         .state,

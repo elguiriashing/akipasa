@@ -60,6 +60,43 @@ end $$;
 revoke all on function public.review_account_deletion(uuid,uuid,jsonb,boolean,text) from public,anon,service_role;
 grant execute on function public.review_account_deletion(uuid,uuid,jsonb,boolean,text) to authenticated;
 
+-- Read-only FK preflight. Metadata identifiers are quoted, the exact profile is
+-- a bound parameter, and rows are never returned. No FK or retained record changes.
+create function account_privacy_private.identity_dependencies(p_profile uuid)
+returns jsonb language plpgsql security definer set search_path='' as $$
+declare fk record; blocked boolean; result jsonb:='[]'::jsonb;
+begin
+ for fk in
+ select n.nspname schema_name,t.relname table_name,c.conname constraint_name,
+ a.attname column_name,cardinality(c.conkey) key_count,c.confdeltype
+ from pg_catalog.pg_constraint c
+ join pg_catalog.pg_class t on t.oid=c.conrelid
+ join pg_catalog.pg_namespace n on n.oid=t.relnamespace
+ join pg_catalog.pg_attribute a on a.attrelid=t.oid and a.attnum=c.conkey[1]
+ where c.contype='f' and c.confrelid='public.profiles'::regclass and c.confdeltype in ('a','r')
+ order by n.nspname,t.relname,c.conname
+ loop
+  if fk.key_count<>1 then blocked:=true;
+  else execute format('select exists(select 1 from %I.%I where %I=$1)',fk.schema_name,fk.table_name,fk.column_name) into blocked using p_profile;
+  end if;
+  result:=result||jsonb_build_array(jsonb_build_object('schema',fk.schema_name,'table',fk.table_name,'column',fk.column_name,'constraint',fk.constraint_name,'blocking',blocked,'composite',fk.key_count<>1));
+ end loop;
+ return result;
+end $$;
+revoke all on function account_privacy_private.identity_dependencies(uuid) from public,anon,authenticated,service_role;
+
+create function public.account_deletion_dependencies(p_request uuid)
+returns jsonb language plpgsql security definer set search_path='' as $$
+declare target uuid;
+begin
+ if auth.uid() is null or not public.has_platform_role(array['administrator']::public.app_role[]) then raise exception 'administrator required'; end if;
+ select profile_id into target from public.account_deletion_requests where id=p_request and state in ('requested','processing');
+ if target is null then raise exception 'active linked request required'; end if;
+ return account_privacy_private.identity_dependencies(target);
+end $$;
+revoke all on function public.account_deletion_dependencies(uuid) from public,anon,service_role;
+grant execute on function public.account_deletion_dependencies(uuid) to authenticated;
+
 create function public.begin_account_deletion(p_request uuid,p_target uuid)
 returns jsonb language plpgsql security definer set search_path='' as $$
 declare r public.account_deletion_requests; v account_privacy_private.reviews; token uuid;
@@ -72,6 +109,7 @@ begin
  or v.lease_until>now() or v.finished_at is not null or v.target_profile is distinct from p_target
  or not(v.checks @> '{"identityVerified":true,"sessionsReviewed":true,"storageCleared":true,"providersResolved":true,"businessContinuityResolved":true,"retentionRecorded":true,"confirmationContactVerified":true}'::jsonb)
  then raise exception 'review incomplete, stale or blocked'; end if;
+ if exists(select 1 from jsonb_array_elements(account_privacy_private.identity_dependencies(p_target)) dependency where coalesce((dependency->>'blocking')::boolean,true)) then raise exception 'identity dependencies require scoped manual resolution'; end if;
  token:=gen_random_uuid();
  update account_privacy_private.reviews set lease=token,lease_until=now()+interval '10 minutes' where request_id=p_request;
  update public.account_deletion_requests set state='processing',updated_at=now(),updated_by=auth.uid() where id=p_request;
@@ -101,6 +139,22 @@ begin
 end $$;
 revoke all on function public.finish_account_deletion(uuid,uuid,boolean) from public,anon,service_role;
 grant execute on function public.finish_account_deletion(uuid,uuid,boolean) to authenticated;
+
+-- Recovery after Auth succeeded but acknowledgement was interrupted. This does
+-- not call Auth or repeat erasure; the same reviewer confirms the original UUID.
+create function public.reconcile_account_deletion(p_request uuid,p_target uuid)
+returns void language plpgsql security definer set search_path='' as $$
+declare v account_privacy_private.reviews;
+begin
+ if auth.uid() is null or not public.has_platform_role(array['administrator']::public.app_role[]) then raise exception 'administrator required'; end if;
+ perform 1 from public.account_deletion_requests where id=p_request and state='processing' and profile_id is null for update;
+ if not found then raise exception 'unlinked processing request required'; end if;
+ select * into v from account_privacy_private.reviews where request_id=p_request for update;
+ if not found or p_target is null or v.target_profile is distinct from p_target or v.reviewed_by is distinct from auth.uid() or v.finished_at is not null or v.lease is null then raise exception 'original exact account execution required'; end if;
+ perform public.finish_account_deletion(p_request,v.lease,true);
+end $$;
+revoke all on function public.reconcile_account_deletion(uuid,uuid) from public,anon,service_role;
+grant execute on function public.reconcile_account_deletion(uuid,uuid) to authenticated;
 
 create function public.confirm_account_deletion_reply(p_request uuid,p_evidence text)
 returns void language plpgsql security definer set search_path='' as $$
@@ -135,6 +189,10 @@ grant execute on function public.hold_account_deletion(uuid,boolean) to authenti
 create function account_privacy_private.require_completed_review() returns trigger
 language plpgsql security definer set search_path='' as $$
 begin
+ if new.state='cancelled' and old.state is distinct from new.state then
+  if exists(select 1 from account_privacy_private.reviews where request_id=new.id and (lease_until>now() or finished_at is not null)) then raise exception 'execution must be reconciled before cancellation'; end if;
+  update account_privacy_private.reviews set evidence_until=now()+interval '12 months' where request_id=new.id;
+ end if;
  if new.state='completed' and old.state is distinct from new.state then
   if not exists(select 1 from account_privacy_private.reviews where request_id=new.id and finished_at is not null and manual_confirmation_at is not null and not legal_hold) then raise exception 'reviewed identity execution and manual confirmation required'; end if;
  end if;
@@ -156,7 +214,9 @@ begin
  and not exists(select 1 from account_privacy_private.reviews v where v.request_id=e.request_id and v.legal_hold) order by e.created_at limit 1000);
  delete from public.account_deletion_requests where id in
  (select v.request_id from account_privacy_private.reviews v join public.account_deletion_requests r on r.id=v.request_id
- where v.finished_at is not null and v.evidence_until<now() and not v.legal_hold and r.state='completed' order by v.evidence_until limit 1000);
+ where v.evidence_until<now() and not v.legal_hold and
+ ((r.state='completed' and v.finished_at is not null) or (r.state='cancelled' and v.finished_at is null))
+ order by v.evidence_until limit 1000);
  get diagnostics count_deleted=row_count;
  return count_deleted;
 end $$;

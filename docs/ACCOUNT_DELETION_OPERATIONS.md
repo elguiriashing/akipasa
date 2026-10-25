@@ -43,6 +43,10 @@ alert, not automatic email/Telegram delivery or a guarantee that an operator act
 6. Save every review prerequisite with no blocking hold. The same administrator
    must explicitly type the exact subject UUID and execute within24hours of review.
    Self-deletion is refused. A10minute lease blocks concurrent/repeated execution.
+   Inspect the exact-request Identity dependencies report first. The database also
+   refuses the lease while any current RESTRICT/NO ACTION profile reference exists
+   (or a composite dependency requires bespoke review). The report contains schema,
+   table, column, constraint and presence only, never the referenced record contents.
 7. The server calls Supabase Admin deleteUser only after those database checks.
    Actual FK/Storage/provider failures stop the flow and invalidate review checks;
    investigate then review again. No cron invokes this operation. No automatic retry.
@@ -55,6 +59,17 @@ deletion. An administrator must reconcile the exact request/lease and absent pro
 using `finish_account_deletion` before recording the manual confirmation. Do not
 edit rows to bypass checks. A stale executing request remains visibly Processing.
 Preserve the lease reference privately for recovery; no secrets belong in evidence.
+
+Root's read-only live FK metadata inspection found restrictive references in rental
+booking renter/company submitter, company reviews, CRM inventory/POS/tip actors and
+31audit references. This candidate does not alter those FKs. A normal account can
+therefore be BLOCKED: review business/financial/statutory ownership and document a
+lawful field-specific erasure/pseudonymisation or necessary restricted retention
+with an approved migration/workflow. Never broadly CASCADE, drop constraints, delete
+financial rows or label a soft-deleted identity fully erased to clear the form.
+If a blocker cannot be resolved safely within48hours, notify the requester with
+the exact exception/next step instead of claiming success. Fixture passage proves
+guard behavior, not complete production-account erasure viability.
 
 Review source is human evidence, not machine verification of external erasure.
 The service client is server-only. Both server actions and SQL require an actual
@@ -70,6 +85,8 @@ and a separately recorded manual confirmation.
   12calendar months from manually recorded closure, then removed together. No
   historical request is backfilled into purge eligibility. Unresolved requests and
   legal holds remain for resolution/review; do not abandon them indefinitely.
+  Cancelled reviewed requests also receive a12month expiry. Cancellation is blocked
+  during execution and after identity deletion awaiting manual confirmation.
 - Existing external support mailboxes, third-party logs, backups and other audit
   systems are not purged by this new workflow. Operators must configure/document
   their own90day operational-log/12month support targets before claiming coverage.

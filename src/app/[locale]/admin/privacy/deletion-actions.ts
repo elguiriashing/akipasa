@@ -119,3 +119,23 @@ export async function confirmDeletionReply(form: FormData) {
     `/${locale}/admin/privacy?${error ? "error=confirmation" : "updated=completed"}`,
   );
 }
+
+export async function reconcileDeletion(form: FormData) {
+  const locale = form.get("locale") === "en" ? "en" : "es";
+  const parsed = z
+    .object({ requestId: z.string().uuid(), target: z.string().uuid() })
+    .safeParse({
+      requestId: form.get("requestId"),
+      target: form.get("confirmation"),
+    });
+  if (!parsed.success)
+    redirect(`/${locale}/admin/privacy?error=reconciliation`);
+  const { supabase } = await administrator(locale);
+  const { error } = await supabase.rpc("reconcile_account_deletion", {
+    p_request: parsed.data.requestId,
+    p_target: parsed.data.target,
+  });
+  redirect(
+    `/${locale}/admin/privacy?${error ? "error=reconciliation" : "updated=reconciled"}`,
+  );
+}

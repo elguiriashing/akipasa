@@ -4,11 +4,13 @@ import { notFound } from "next/navigation";
 import { WorkspacePageHeader } from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
+import { z } from "zod";
 import { updateDeletionRequest } from "../actions";
 import {
   saveDeletionReview,
   executeDeletion,
   confirmDeletionReply,
+  reconcileDeletion,
 } from "./deletion-actions";
 
 export default async function PrivacyRequestsPage({
@@ -30,6 +32,12 @@ export default async function PrivacyRequestsPage({
     .in("state", ["requested", "processing"])
     .order("requested_at");
   const es = locale === "es";
+  const dependencyRequest = z.string().uuid().safeParse(query.dependencies);
+  const dependencyReport = dependencyRequest.success
+    ? await supabase.rpc("account_deletion_dependencies", {
+        p_request: dependencyRequest.data,
+      })
+    : null;
   return (
     <>
       <WorkspacePageHeader
@@ -41,6 +49,29 @@ export default async function PrivacyRequestsPage({
             : "Open and process one request at a time."
         }
       />
+      {dependencyReport && (
+        <section className="panel">
+          <h2>
+            {es ? "Dependencias de la identidad" : "Identity dependencies"}
+          </h2>
+          <p>
+            {es
+              ? "Solo lectura: resuelve cada bloqueo de forma específica sin borrar registros financieros o ajenos."
+              : "Read only: resolve each blocker specifically without erasing financial or other people's records."}
+          </p>
+          {dependencyReport.error ? (
+            <p role="alert">
+              {es
+                ? "No disponible; no ejecutes la eliminación."
+                : "Unavailable; do not execute deletion."}
+            </p>
+          ) : (
+            <pre style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>
+              {JSON.stringify(dependencyReport.data, null, 2)}
+            </pre>
+          )}
+        </section>
+      )}
       {(query.updated || query.error) && (
         <p className="notice">
           {query.updated
@@ -120,6 +151,13 @@ export default async function PrivacyRequestsPage({
                   </form>
                   {item.profile_id && (
                     <>
+                      <a
+                        href={`/${locale}/admin/privacy?dependencies=${item.id}`}
+                      >
+                        {es
+                          ? "Inspeccionar dependencias antes de borrar"
+                          : "Inspect dependencies before deletion"}
+                      </a>
                       <p>
                         {es
                           ? "Revisión manual antes de borrar la identidad. No borres datos de otros usuarios ni negocios completos. Registra referencias internas sin copiar datos sensibles."
@@ -234,6 +272,37 @@ export default async function PrivacyRequestsPage({
                         </button>
                       </form>
                     </>
+                  )}
+                  {!item.profile_id && (
+                    <details>
+                      <summary>
+                        {es
+                          ? "Recuperar confirmación técnica interrumpida"
+                          : "Recover interrupted technical acknowledgement"}
+                      </summary>
+                      <p>
+                        {es
+                          ? "Solo si Auth ya borró la identidad pero falló el registro del resultado. No vuelve a borrar la cuenta; el administrador original debe confirmar su UUID original."
+                          : "Only if Auth erased the identity but recording the result failed. This does not erase again; the original administrator must confirm the original account UUID."}
+                      </p>
+                      <form action={reconcileDeletion} className="stack">
+                        <input type="hidden" name="locale" value={locale} />
+                        <input type="hidden" name="requestId" value={item.id} />
+                        <label>
+                          {es ? "UUID original exacto" : "Exact original UUID"}
+                          <input
+                            name="confirmation"
+                            required
+                            autoComplete="off"
+                          />
+                        </label>
+                        <button type="submit" className="button">
+                          {es
+                            ? "Conciliar resultado existente"
+                            : "Reconcile existing result"}
+                        </button>
+                      </form>
+                    </details>
                   )}
                   {!item.profile_id && (
                     <form action={confirmDeletionReply} className="stack">
