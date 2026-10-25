@@ -2288,3 +2288,12 @@ no framework runtime or third-party dependency added. The private lab keeps
 its administrator-only route. No pricing, session, tenant, permissions or
 provider setting changes. Source revert is rollback. Source, responsive
 browser, exact live source and physical device acceptance remain distinct.
+
+### 2026-10-25 | Reliable first-tap mobile menus
+
+The More/AkiSuite dialog buttons remain disabled in server markup until their
+client handlers are ready. This avoids advertising an interactive control
+during hydration, where a very early tap could fail to open its sheet. Existing
+menu destinations, authorized workspaces, focus trap and dismissal stay intact.
+A server/rendered-control regression and the unchanged tablet first-click
+acceptance cover the transition. No backend or permission change.

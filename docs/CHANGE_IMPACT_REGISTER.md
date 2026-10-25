@@ -2912,3 +2912,12 @@ preventScroll. The compact login scene clips without becoming a scroll container
 so Home/End cannot shift the card stage sideways. This changes presentation
 focus only; application opening remains an explicit link. Browser evidence
 asserts zero scene scroll and captures settled transitions.
+
+### 2026-10-25 | Reliable first-tap mobile menus
+
+The More/AkiSuite dialog buttons remain disabled in server markup until their
+client handlers are ready. This avoids advertising an interactive control
+during hydration, where a very early tap could fail to open its sheet. Existing
+menu destinations, authorized workspaces, focus trap and dismissal stay intact.
+A server/rendered-control regression and the unchanged tablet first-click
+acceptance cover the transition. No backend or permission change.

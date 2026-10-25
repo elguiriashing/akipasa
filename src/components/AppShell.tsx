@@ -87,6 +87,7 @@ export function AppShell({
   const m = msg(locale);
   const es = locale === "es";
   const other = es ? "en" : "es";
+  const [ready, setReady] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [suiteOpen, setSuiteOpen] = useState(false);
   const [compact, setCompact] = useState(false);
@@ -244,6 +245,11 @@ export function AppShell({
         ]
       : []),
   ];
+
+  // Server markup must not advertise a working menu before hydration attaches its handlers.
+  useEffect(() => {
+    setReady(true);
+  }, []);
 
   useEffect(() => {
     setSheetOpen(false);
@@ -495,6 +501,7 @@ export function AppShell({
         <button
           type="button"
           ref={suiteButtonRef}
+          disabled={!ready}
           className="app-suite-mobile-trigger"
           aria-label={
             es ? "Cambiar aplicación AkiSuite" : "Switch AkiSuite app"
@@ -540,6 +547,7 @@ export function AppShell({
         ))}
         <button
           ref={moreButtonRef}
+          disabled={!ready}
           type="button"
           className={sheetOpen ? "active" : undefined}
           onClick={() => setSheetOpen(true)}
