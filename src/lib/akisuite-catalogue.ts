@@ -63,7 +63,15 @@ export function akiSuiteMembershipReturnPath(
       return `${url.pathname}${query.size ? `?${query}` : ""}`;
     }
     const from = url.searchParams.get("from");
-    return `${url.pathname}${from ? `?from=${akiSuiteApp(from)}` : ""}`;
+    const query = new URLSearchParams();
+    if (from) query.set("from", akiSuiteApp(from));
+    const audiences = url.searchParams.getAll("audience");
+    if (
+      audiences.length === 1 &&
+      ["individual", "business"].includes(audiences[0])
+    )
+      query.set("audience", audiences[0]);
+    return `${url.pathname}${query.size ? `?${query}` : ""}`;
   } catch {
     return fallback;
   }

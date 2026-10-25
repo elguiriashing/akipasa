@@ -1,11 +1,12 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { AkiSuiteMembershipGrid } from "../src/components/AkiSuiteMembershipGrid";
 import { resolveMembershipHub } from "../src/lib/akisuite-membership";
 vi.mock("@/app/[locale]/account/subscription/akisuite-actions", () => ({
   startAkiSuiteCheckout: vi.fn(),
 }));
+beforeEach(() => window.history.replaceState(null, "", "/en/membership"));
 afterEach(cleanup);
 const business = (locale: "en" | "es") =>
   fireEvent.click(
@@ -70,7 +71,7 @@ describe("Individual and Business membership separation", () => {
       container
         .querySelector("#akiduermo-listing-premium a")
         ?.getAttribute("href"),
-    ).toBe("https://akiduermo.com/membership?lang=en");
+    ).toBe("https://akiduermo.com/membership?lang=en&audience=business");
     expect(
       container.querySelector("#akiduermo-listing-premium form"),
     ).toBeNull();
