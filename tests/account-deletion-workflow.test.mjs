@@ -98,8 +98,20 @@ test("interrupted Auth success reconciles by original reviewer and UUID without 
   const db = await fixture();
   try {
     await review(db);
-    await begin(db);
+    const grant = await begin(db);
     await db.exec(`delete from auth.users where id='${target}'`);
+    await assert.rejects(
+      db.query("select finish_account_deletion($1,$2,false)", [
+        request,
+        grant.lease,
+      ]),
+      /identity absent; reconcile/,
+    );
+    assert.equal(
+      (await db.query("select lease from account_privacy_private.reviews"))
+        .rows[0].lease,
+      grant.lease,
+    );
     await assert.rejects(
       db.query("select reconcile_account_deletion($1,$2)", [request, actor]),
       /original exact account/,
@@ -407,6 +419,12 @@ test("failure invalidates checks, deadline does not reset; purge disabled and re
       request,
       grant.lease,
     ]);
+    await assert.rejects(
+      db.exec(
+        `update account_deletion_requests set state='cancelled' where id='${request}'`,
+      ),
+      /reconciled before cancellation/,
+    );
     await assert.rejects(begin(db), /incomplete/);
     await review(db);
     assert.equal(

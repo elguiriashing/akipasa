@@ -129,13 +129,16 @@ begin
  select * into v from account_privacy_private.reviews where request_id=p_request for update;
  if not found or p_lease is null or v.lease is distinct from p_lease or v.reviewed_by is distinct from auth.uid() or v.finished_at is not null then raise exception 'invalid execution lease'; end if;
  if p_succeeded is null then raise exception 'execution result required'; end if;
+ -- A provider timeout can follow a committed erasure. Preserve the one-use
+ -- execution for exact-target reconciliation rather than clearing its lease.
+ if not p_succeeded and r.profile_id is null and not exists(select 1 from auth.users where id=v.target_profile) then raise exception 'identity absent; reconcile existing execution'; end if;
  if p_succeeded then
   if r.profile_id is not null or exists(select 1 from public.profiles where id=v.target_profile)
   or exists(select 1 from auth.users where id=v.target_profile) then raise exception 'identity still exists'; end if;
   update account_privacy_private.reviews set finished_at=now(),evidence_until=now()+interval '12 months',lease_until=null where request_id=p_request;
   -- Keep the request open until the separately written human email is recorded.
  else
-  update account_privacy_private.reviews set lease=null,lease_until=null,checks='{}'::jsonb where request_id=p_request;
+  update account_privacy_private.reviews set lease_until=null,checks='{}'::jsonb where request_id=p_request;
  end if;
  insert into account_privacy_private.events(request_id,event) values(p_request,case when p_succeeded then 'identity_deleted' else 'execution_failed' end);
 end $$;
@@ -193,7 +196,7 @@ create function account_privacy_private.require_completed_review() returns trigg
 language plpgsql security definer set search_path='' as $$
 begin
  if new.state='cancelled' and old.state is distinct from new.state then
-  if exists(select 1 from account_privacy_private.reviews where request_id=new.id and (lease_until>now() or finished_at is not null)) then raise exception 'execution must be reconciled before cancellation'; end if;
+  if exists(select 1 from account_privacy_private.reviews where request_id=new.id and (lease is not null or finished_at is not null)) then raise exception 'execution must be reconciled before cancellation'; end if;
   update account_privacy_private.reviews set evidence_until=now()+interval '12 months' where request_id=new.id;
  end if;
  if new.state='completed' and old.state is distinct from new.state then

@@ -59,6 +59,10 @@ deletion. An administrator must reconcile the exact request/lease and absent pro
 using `finish_account_deletion` before recording the manual confirmation. Do not
 edit rows to bypass checks. A stale executing request remains visibly Processing.
 Preserve the lease reference privately for recovery; no secrets belong in evidence.
+An ambiguous provider/network failure preserves the execution lease even while
+invalidating review checks. Verify the actual Auth outcome before a fresh manual
+attempt. If erasure committed before or after the error, the exact-target recovery
+form reconciles the existing execution without issuing another erasure request.
 
 Root's read-only live FK metadata inspection found restrictive references in rental
 booking renter/company submitter, company reviews, CRM inventory/POS/tip actors and
