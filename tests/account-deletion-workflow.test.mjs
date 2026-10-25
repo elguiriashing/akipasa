@@ -172,4 +172,31 @@ test("failure invalidates checks, deadline does not reset; purge disabled and re
       String(due),
     );
     await db.exec(
-      "update account_privacy_private.events set created_at=now()-interval '
+      "update account_privacy_private.events set created_at=now()-interval '91 days'",
+    );
+    await db.exec("select purge_account_deletion_evidence()");
+    assert.ok(
+      (await db.query("select * from account_privacy_private.events")).rows
+        .length > 0,
+    );
+    await db.exec(
+      "update account_privacy_private.settings set retention_enabled=true",
+    );
+    await db.query("select hold_account_deletion($1,true)", [request]);
+    await db.exec("select purge_account_deletion_evidence()");
+    assert.ok(
+      (await db.query("select * from account_privacy_private.events")).rows
+        .length > 0,
+    );
+    await db.query("select hold_account_deletion($1,false)", [request]);
+    await db.exec("select purge_account_deletion_evidence()");
+    assert.equal(
+      (await db.query("select * from account_privacy_private.events")).rows
+        .length,
+      0,
+    );
+    assert.equal((await db.query("select * from profiles")).rows.length, 2);
+  } finally {
+    await db.close();
+  }
+});

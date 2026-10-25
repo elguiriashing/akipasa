@@ -61,3 +61,20 @@ describe("human-approved deletion boundary", () => {
     );
     expect(events).toEqual(["erase", "finish"]);
   });
+  it("retention off makes zero calls; insecure endpoint rejected", async () => {
+    const fetcher = vi.fn();
+    await purgeAccountDeletionEvidence({}, fetcher);
+    expect(fetcher).not.toHaveBeenCalled();
+    await expect(
+      purgeAccountDeletionEvidence(
+        {
+          ACCOUNT_DELETION_RETENTION_READY: "true",
+          NEXT_PUBLIC_SUPABASE_URL: "http://example.test",
+          SUPABASE_SERVICE_ROLE_KEY: "synthetic",
+        },
+        fetcher,
+      ),
+    ).rejects.toThrow("Encrypted");
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+});

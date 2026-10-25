@@ -59,7 +59,11 @@ const worker = {
     ctx: { waitUntil(work: Promise<unknown>): void },
   ) {
     await recordOperationsCronTick(env);
-    ctx.waitUntil(purgeAccountDeletionEvidence(env).catch(() => console.error("account_privacy_retention_retry")));
+    ctx.waitUntil(
+      purgeAccountDeletionEvidence(env).catch(() =>
+        console.error("account_privacy_retention_retry"),
+      ),
+    );
     ctx.waitUntil(
       purgeBusinessFunnel(env).catch(() =>
         console.error("business_funnel_retention_retry"),
