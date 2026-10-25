@@ -1,5 +1,13 @@
 # Change Impact Register
 
+## 2026-10-25 | Branded five-second Android OAuth return screen
+
+- **Before:** AkiPasa's external Google-auth callback displayed a sparse orange hyperlink and required a manual tap, although the installed Android app already registered the `akipasa://auth/callback` deep link.
+- **After:** The bilingual callback renders the approved v3 brand icon, orange card, five-second countdown/progress and prominent "Open AkiPasa now"/"Abrir AkiPasa ahora" button. It attempts to return automatically at five seconds; manual action remains available when browsers block programmatic external app opening.
+- **Authentication:** The code-only PKCE handoff and original WebView session exchange remain; next/terms/onboarding sanitizers, no-store, no-referrer, nonce CSP and web Google login remain unchanged. No token-containing URL is logged, forwarded to another web host or placed in external assets.
+- **Dependencies/rollout:** Companion AkiHQ/Duermo/Coches/Business source has independent PRs and Android/native acceptance. No Supabase migrations, API secrets, pricing, product eligibility or data grants. Build/lint/unit tests and real-device cold/warm EN/ES callback acceptance required before merging and live source assertion.
+- **Rollback:** Revert renderer/route commit only; no persistent state change.
+
 ## 2026-10-24 | Owner-approved monthly pricing and upgrade paths
 
 The current commercial catalogue is `APPROVED_PRICING_20261024.md` and
