@@ -28,6 +28,7 @@ import {
 } from "./src/lib/release-source";
 
 import { purgeBusinessFunnel } from "./src/lib/business-funnel-maintenance";
+import { purgeAccountDeletionEvidence } from "./src/lib/account-deletion-maintenance";
 
 import {
   recoverOperationsBillingWithNotifications,
@@ -53,10 +54,12 @@ const worker = {
       AKIBUSINESS_OPERATIONS_BILLING_READY?: string;
       AKISUITE_FUNNEL_READY?: string;
       AKIBUSINESS_OPERATIONS_MIGRATIONS_READY?: string;
+      ACCOUNT_DELETION_RETENTION_READY?: string;
     },
     ctx: { waitUntil(work: Promise<unknown>): void },
   ) {
     await recordOperationsCronTick(env);
+    ctx.waitUntil(purgeAccountDeletionEvidence(env).catch(() => console.error("account_privacy_retention_retry")));
     ctx.waitUntil(
       purgeBusinessFunnel(env).catch(() =>
         console.error("business_funnel_retention_retry"),

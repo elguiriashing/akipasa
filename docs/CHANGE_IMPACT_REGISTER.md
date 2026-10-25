@@ -1,5 +1,25 @@
 # Change Impact Register
 
+## 2026-10-25 | Explicit human account deletion workflow candidate
+
+- Before: shared requests enter a queue; status-only admin action records externally
+  completed deletion. No automatic queue consumer exists.
+- Candidate: EN/ES anonymous instructions, administrator review plus explicit exact
+  UUID Auth action, legal/provider/business/storage/session gates, immutable48hour
+  deadline warning, separate manual-email confirmation and bounded gated retention.
+- Dependencies: shared five-product identity, existing request and privacy routes,
+  Admin role/RLS, server-only Supabase service client, Auth/profile cascades, Storage
+  and billing/manual provider decisions; new private schema/RPC/completion trigger
+  and existing Worker cron. OAuth redirects, prices, grants and customer data are
+  unchanged by implementation. Public controller/policy disclosures are coordinated
+  separately; this source cannot establish deletion of every provider record.
+- Verification: actual SQL/role/state/retention fixture tests and orchestration mocks
+  added; commands/results must be recorded before acceptance. Hosted full checks,
+  EN/ES responsive/admin acceptance, exact migration/ACL readback and disposable
+  provider acceptance remain release gates. No live deletion/email/purge performed.
+- Rollback: turn off retention and revert app source; preserve review/audit evidence
+  and completion guards. Do not undo erasure or drop retained records.
+
 ## 2026-10-25 | Branded five-second Android OAuth return screen
 
 - **Before:** AkiPasa's external Google-auth callback displayed a sparse orange hyperlink and required a manual tap, although the installed Android app already registered the `akipasa://auth/callback` deep link.

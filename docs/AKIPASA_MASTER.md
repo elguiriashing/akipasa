@@ -1,5 +1,21 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-25 | Human-reviewed account deletion candidate
+
+Central EN/ES public account-deletion instructions retain the existing signed-in
+request. Administrators record identity/session/storage/provider/billing/business
+continuity and restricted-retention evidence before a fresh exact-UUID action can
+call Auth deletion. Self-deletion, incomplete/stale reviews, holds and concurrent
+execution are blocked. Erasure never runs in cron; a separately written human
+support confirmation closes the request. First verified review fixes a48hour due
+instant with dashboard overdue warning. No automatic email/provider/tenant purge.
+New workflow logs90days and completed request/evidence12months have bounded,
+hold-aware maintenance behind two disabled gates; unrelated records/backups stay
+outside its authority. Read ACCOUNT_DELETION_OPERATIONS.md for dependencies,
+manual actions, retention limits, recovery and rollback. Mirrored migration must
+precede app release. Synthetic tests and exact CI are required; source does not
+prove production deletion or provider fulfilment. No auth redirect is changed.
+
 ## 2026-10-25 | Android OAuth callback styling and return UX
 
 AkiPasa's existing app-owned OAuth callback bridge is unchanged: the browser must not exchange a PKCE code stored with the initiating WebView's verifier. The temporary external-browser return page now uses AkiPasa's v3 icon, orange/branded responsive card, bilingual return instructions, a visible five-second timer/progress indicator and an immediate manual custom-scheme link. One-time code and existing safe continuation fields are retained; refresh/access tokens are not forwarded. The HTML is no-store, no-referrer, noindex and enforces a nonce-scoped script with no third-party dependencies. Other browser login and user onboarding/terms gates are unchanged. The old installed AkiPasa custom-scheme handler already exists: the web-only UX release should not require a new Android binary. Regression: callback and login unit tests, production build, browser rendering on Android Chrome, real-device OAuth cold/warm handoff and an exact-source release check; unit tests cannot confirm OS-level intent dispatch. Rollback: revert isolated HTML renderer and callback route changes; no SQL, Supabase settings, billing, permissions or customer data were changed.
