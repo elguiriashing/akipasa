@@ -8,7 +8,6 @@
 - **Dependencies/rollout:** Companion AkiHQ/Duermo/Coches/Business source has independent PRs and Android/native acceptance. No Supabase migrations, API secrets, pricing, product eligibility or data grants. Build/lint/unit tests and real-device cold/warm EN/ES callback acceptance required before merging and live source assertion.
 - **Rollback:** Revert renderer/route commit only; no persistent state change.
 
-
 ## 2026-10-24 | Owner-approved monthly pricing and upgrade paths
 
 The current commercial catalogue is `APPROVED_PRICING_20261024.md` and
