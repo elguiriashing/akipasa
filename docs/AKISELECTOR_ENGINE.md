@@ -1,6 +1,8 @@
 # AkiSelector: future-use animation engine
 
-Status: feature branch / admin-only demo. Not a public AkiPasa feature.
+Status: private administrator playground plus owner-authorized login workspace adapter.
+The lab route remains private; the reusable engine now also powers the five-product
+public sign-in chooser.
 
 The selector recreates the interaction mechanics from the reference clip:
 centred cards, themed energy effects and animated selection. It has no concept
@@ -43,7 +45,7 @@ Intensity: subtle, balanced, cinematic. Motion: auto, off.
 - Review EN/ES signed-in admin at desktop, tablet and phone sizes, confirm
   keyboard/touch accessibility and low-end Android frame-rate before any
   public integration. Hosted CI and production-SHA deployment remain separate.
-- No public navigation, no sitemap addition, no feature flag activation,
+- The lab has no public navigation or sitemap addition; login adoption adds no feature flag activation,
   no prices, no event hooks, no backend writes, no cross-product release.
 
 Future adopters should define actual labels, outcomes, analytics consent and

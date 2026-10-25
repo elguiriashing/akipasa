@@ -1,5 +1,4 @@
-import Image from "next/image";
-import { suiteHref } from "@/lib/suite-navigation";
+import { WorkspaceSelector } from "@/components/WorkspaceSelector";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { config, isLocale } from "@/lib/config";
@@ -143,31 +142,18 @@ export default async function AuthPage({
             </p>
           )}
         </div>
-        {!isStayHost && !isConduzcoHost && (
-          <aside className="auth-product-portals">
-            <span>{es ? "Elige tu espacio" : "Choose your workspace"}</span>
-            {(
-              [
-                ["pasa", "AkiPasa", "/auth", "/brand/v3/pasa.svg"],
-                ["duermo", "AkiDuermo", "/account", "/brand/v3/duermo.svg"],
-                ["coches", "AkiCoches", "/account", "/brand/v3/coches.svg"],
-                ["hq", "AkiHQ", "/business", "/brand/v3/hq.svg"],
-                ["business", "AkiBusiness", "/login", "/brand/v3/business.svg"],
-              ] as const
-            ).map(([product, name, path, icon]) => (
-              <a
-                key={product}
-                className={`auth-product-card ${product === (isBusinessHost ? "hq" : "pasa") ? "active" : ""}`}
-                href={suiteHref(product, locale, { path })}
-              >
-                <Image src={icon} alt="" width={28} height={28} unoptimized />
-                <span>
-                  <strong>{name}</strong>
-                </span>
-              </a>
-            ))}
-          </aside>
-        )}
+        <WorkspaceSelector
+          locale={locale}
+          current={
+            isBusinessHost
+              ? "hq"
+              : isStayHost
+                ? "duermo"
+                : isConduzcoHost
+                  ? "coches"
+                  : "pasa"
+          }
+        />
       </section>
       {businessIntent && (
         <aside

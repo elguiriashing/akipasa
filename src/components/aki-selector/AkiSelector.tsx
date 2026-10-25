@@ -4,6 +4,7 @@ import {
   useRef,
   useState,
   type CSSProperties,
+  type ReactNode,
   type KeyboardEvent,
   type PointerEvent,
 } from "react";
@@ -21,7 +22,8 @@ export type AkiSelectorEffect =
 export type AkiSelectorOption = {
   id: string;
   label: string;
-  symbol: string;
+  symbol: ReactNode;
+  accent?: string;
   effect?: AkiSelectorEffect;
   subtitle?: string;
   disabled?: boolean;
@@ -146,6 +148,11 @@ export function AkiSelector({
       data-intensity={intensity}
       data-motion={motion}
       data-effect={active.effect ?? "quiet"}
+      style={
+        active.accent
+          ? ({ "--aks-glow": active.accent } as CSSProperties)
+          : undefined
+      }
       aria-label={ariaLabel}
     >
       <div
@@ -169,6 +176,7 @@ export function AkiSelector({
           const style = {
             left: "calc(50% + " + distance * 31 + "%)",
             "--aks-order": String(Math.abs(distance)),
+            ...(option.accent ? { "--aks-own-glow": option.accent } : {}),
           } as CSSProperties;
           return (
             <button
