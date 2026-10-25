@@ -37,14 +37,25 @@ export async function GET(
     }
     const nonce = crypto.randomUUID().replaceAll("-", "");
     const script = 'var seconds=5;var counter=document.getElementById("return-seconds");var ticker=setInterval(function(){seconds=Math.max(0,seconds-1);if(counter)counter.textContent=String(seconds);if(seconds===0)clearInterval(ticker)},1000);setTimeout(function(){location.assign(document.getElementById("android-return").href)},5000);';
-    return new NextResponse(renderAndroidReturnPage({brand:"pasa",name:"AkiPasa",locale:safeLocale,target:handoff,nonce,script,id:"android-return"}), {
-      headers: {
-        "Content-Type": "text/html; charset=utf-8",
-        "Cache-Control": "no-store",
-        "Referrer-Policy": "no-referrer",
-        "Content-Security-Policy": `default-src 'none'; script-src 'nonce-${nonce}'; style-src 'unsafe-inline'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`,
+    return new NextResponse(
+      renderAndroidReturnPage({
+        brand: "pasa",
+        name: "AkiPasa",
+        locale: safeLocale,
+        target: handoff,
+        nonce,
+        script,
+        id: "android-return",
+      }),
+      {
+        headers: {
+          "Content-Type": "text/html; charset=utf-8",
+          "Cache-Control": "no-store",
+          "Referrer-Policy": "no-referrer",
+          "Content-Security-Policy": `default-src 'none'; script-src 'nonce-${nonce}'; style-src 'unsafe-inline'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`,
+        },
       },
-    });
+    );
   }
   const requested = url.searchParams.get("next");
   const next = safeAuthDestinationForOrigin(
