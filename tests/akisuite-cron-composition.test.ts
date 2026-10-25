@@ -23,6 +23,7 @@ const exportsByModule: Record<string, string[]> = {
   "./src/lib/akisuite-publication": ["publishScheduledAkiSuiteEvents"],
   "./src/lib/release-source": ["releaseSourceCommit"],
   "./src/lib/business-funnel-maintenance": ["purgeBusinessFunnel"],
+  "./src/lib/account-deletion-maintenance": ["purgeAccountDeletionEvidence"],
   "./src/lib/operations-recovery": [
     "recoverOperationsBillingWithNotifications",
   ],
@@ -30,7 +31,11 @@ const exportsByModule: Record<string, string[]> = {
     "processOperationsMigrationCommand",
   ],
 };
-it.each(["purgeBusinessFunnel", "recoverOperationsBillingWithNotifications"])(
+it.each([
+  "purgeBusinessFunnel",
+  "recoverOperationsBillingWithNotifications",
+  "purgeAccountDeletionEvidence",
+])(
   "actual scheduled composition preserves independent tasks when %s fails",
   async (failedTask) => {
     const probe = vi.fn(async (name: string) => {
@@ -100,6 +105,7 @@ it.each(["purgeBusinessFunnel", "recoverOperationsBillingWithNotifications"])(
       [
         "recordOperationsCronTick",
         "purgeBusinessFunnel",
+        "purgeAccountDeletionEvidence",
         "recoverOperationsBillingWithNotifications",
         "processOperationsMigrationCommand",
         "dispatchBookingConfirmations",
@@ -112,9 +118,12 @@ it.each(["purgeBusinessFunnel", "recoverOperationsBillingWithNotifications"])(
       ].sort(),
     );
     expect(errors).toHaveBeenCalledWith(
-      failedTask === "purgeBusinessFunnel"
-        ? "business_funnel_retention_retry"
-        : "operations_billing_recovery_retry",
+      {
+        purgeBusinessFunnel: "business_funnel_retention_retry",
+        recoverOperationsBillingWithNotifications:
+          "operations_billing_recovery_retry",
+        purgeAccountDeletionEvidence: "account_privacy_retention_retry",
+      }[failedTask],
     );
   },
 );

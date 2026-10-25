@@ -20,6 +20,7 @@ const exportsByModule: Record<string, string[]> = {
   "./src/lib/akisuite-addon-renewal": ["stopIneligibleAkiSuiteAddonRenewals"],
   "./src/lib/akisuite-publication": ["publishScheduledAkiSuiteEvents"],
   "./src/lib/business-funnel-maintenance": ["purgeBusinessFunnel"],
+  "./src/lib/account-deletion-maintenance": ["purgeAccountDeletionEvidence"],
   "./src/lib/operations-recovery": [
     "recoverOperationsBillingWithNotifications",
   ],
