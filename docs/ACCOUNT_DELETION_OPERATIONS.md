@@ -98,6 +98,30 @@ and a separately recorded manual confirmation.
 - Backup30day target is UNCONFIRMED and must not be published as achieved. Verify
   provider schedules, restore/re-erasure procedures and contracts separately.
 
+Provider backup receipt from root's read-only production dashboard: Pro scheduled
+physical database backup rows18–25October2026 were visible (roughly a rolling
+week), PITR was disabled, and the provider explicitly excludes Storage objects
+from those database backups. No setting/add-on/purchase was changed. This is a
+dated observed database schedule, not a promise covering all provider copies.
+
+Before any restore, preserve the minimal completed-deletion UUID/time ledger in a
+separately protected, encrypted operator-controlled location outside the database
+being restored. Restrict access and retain this recovery evidence only for the
+documented12month workflow period (or a specific lawful hold). Do not export full
+profiles, correspondence or keys. After restore, keep restored systems inaccessible
+to users/schedulers/providers, compare against that surviving ledger, reapply each
+authorized completed erasure and provider restriction through the reviewed process,
+and verify Storage/external services independently before reopening. A restored
+profile or subscription is not permission to reactivate or recharge an erased user.
+Record completion and erase the temporary restoration workspace. This is a manual
+restore prerequisite, not an automated off-database export implemented here.
+
+Hold changes/reviews and retention qualification/deletion share a transaction
+advisory lock. Purge requires READ COMMITTED so a waited-for hold is re-read with
+a fresh snapshot. The dedicated CI PostgreSQL17 test exercises two real
+connections, with a hold transaction pending while purge waits; sequential tests
+alone do not prove this concurrency property.
+
 `purge_account_deletion_evidence()` processes at most1000log rows and1000closed
 workflow requests per call. It never deletes accounts, customer/business data,
 legacy support mail or statutory records. SQL retention_enabled defaults false;

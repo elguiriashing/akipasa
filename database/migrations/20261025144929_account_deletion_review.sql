@@ -40,6 +40,7 @@ create function public.review_account_deletion(p_request uuid,p_target uuid,p_ch
 returns void language plpgsql security definer set search_path='' as $$
 declare r public.account_deletion_requests; existing account_privacy_private.reviews;
 begin
+ perform pg_advisory_xact_lock(hashtextextended('account_privacy_private.retention',0));
  if auth.uid() is null or not public.has_platform_role(array['administrator']::public.app_role[]) then raise exception 'administrator required'; end if;
  if p_evidence is null or length(trim(p_evidence)) not between 30 and 4000 or p_legal_hold is null
  or p_checks is null or jsonb_typeof(p_checks)<>'object' then raise exception 'invalid review'; end if;
@@ -129,7 +130,8 @@ begin
  if not found or p_lease is null or v.lease is distinct from p_lease or v.reviewed_by is distinct from auth.uid() or v.finished_at is not null then raise exception 'invalid execution lease'; end if;
  if p_succeeded is null then raise exception 'execution result required'; end if;
  if p_succeeded then
-  if r.profile_id is not null or exists(select 1 from public.profiles where id=v.target_profile) then raise exception 'identity still exists'; end if;
+  if r.profile_id is not null or exists(select 1 from public.profiles where id=v.target_profile)
+  or exists(select 1 from auth.users where id=v.target_profile) then raise exception 'identity still exists'; end if;
   update account_privacy_private.reviews set finished_at=now(),evidence_until=now()+interval '12 months',lease_until=null where request_id=p_request;
   -- Keep the request open until the separately written human email is recorded.
  else
@@ -176,6 +178,7 @@ grant execute on function public.confirm_account_deletion_reply(uuid,text) to au
 create function public.hold_account_deletion(p_request uuid,p_hold boolean)
 returns void language plpgsql security definer set search_path='' as $$
 begin
+ perform pg_advisory_xact_lock(hashtextextended('account_privacy_private.retention',0));
  if auth.uid() is null or not public.has_platform_role(array['administrator']::public.app_role[]) then raise exception 'administrator required'; end if;
  perform 1 from public.account_deletion_requests where id=p_request for update;
  update account_privacy_private.reviews set legal_hold=p_hold
@@ -206,6 +209,10 @@ create function public.purge_account_deletion_evidence() returns integer
 language plpgsql security definer set search_path='' as $$
 declare count_deleted integer;
 begin
+ if current_setting('transaction_isolation')<>'read committed' then raise exception 'retention requires read committed isolation'; end if;
+ -- Serialize hold changes/reviews with candidate qualification and deletion.
+ -- The following statements obtain fresh READ COMMITTED snapshots after waiting.
+ perform pg_advisory_xact_lock(hashtextextended('account_privacy_private.retention',0));
  if not exists(select 1 from account_privacy_private.settings where retention_enabled) then return 0; end if;
  -- Only this new workflow's logs/evidence. No accounts, business/provider rows,
  -- existing support mail, statutory records or historical audit are purged.

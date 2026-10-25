@@ -99,7 +99,7 @@ test("interrupted Auth success reconciles by original reviewer and UUID without 
   try {
     await review(db);
     await begin(db);
-    await db.exec(`delete from profiles where id='${target}'`);
+    await db.exec(`delete from auth.users where id='${target}'`);
     await assert.rejects(
       db.query("select reconcile_account_deletion($1,$2)", [request, actor]),
       /original exact account/,
@@ -128,6 +128,29 @@ test("interrupted Auth success reconciles by original reviewer and UUID without 
     await db.close();
   }
 });
+
+test("missing public profile does not prove Auth identity deletion", async () => {
+  const db = await fixture();
+  try {
+    await review(db);
+    const grant = await begin(db);
+    await db.exec(`delete from profiles where id='${target}'`);
+    await assert.rejects(
+      db.query("select finish_account_deletion($1,$2,true)", [
+        request,
+        grant.lease,
+      ]),
+      /identity still exists/,
+    );
+    await assert.rejects(
+      db.query("select reconcile_account_deletion($1,$2)", [request, target]),
+      /identity still exists/,
+    );
+    assert.equal((await db.query("select * from auth.users")).rows.length, 2);
+  } finally {
+    await db.close();
+  }
+});
 async function fixture() {
   const db = new PGlite();
   await db.exec(`create role anon;create role authenticated;create role service_role;create schema auth;
@@ -135,8 +158,10 @@ async function fixture() {
  create type deletion_request_state as enum ('requested','processing','completed','cancelled');
  create function auth.uid() returns uuid language sql as $$ select nullif(current_setting('test.uid',true),'')::uuid $$;
  create function public.has_platform_role(app_role[]) returns boolean language sql as $$ select coalesce(current_setting('test.admin',true),'false')='true' $$;
- create table profiles(id uuid primary key);
+ create table auth.users(id uuid primary key);
+ create table profiles(id uuid primary key references auth.users(id) on delete cascade);
  create table account_deletion_requests(id uuid primary key,profile_id uuid references profiles(id) on delete set null,state deletion_request_state default 'requested',requested_at timestamptz default now(),completed_at timestamptz,updated_at timestamptz,updated_by uuid,resolution text);
+ insert into auth.users values('${actor}'),('${target}');
  insert into profiles values('${actor}'),('${target}');
  insert into account_deletion_requests(id,profile_id) values('${request}','${target}');
  select set_config('test.uid','${actor}',false),set_config('test.admin','true',false);`);
@@ -229,7 +254,7 @@ test("13-month completed request and identifying evidence purge together, holds 
     );
     await review(db);
     const grant = await begin(db);
-    await db.exec(`delete from profiles where id='${target}'`);
+    await db.exec(`delete from auth.users where id='${target}'`);
     await db.query("select finish_account_deletion($1,$2,true)", [
       request,
       grant.lease,
@@ -329,7 +354,7 @@ test("lease prevents repeats and changed review; identity must disappear; manual
       ),
       /reviewed identity/,
     );
-    await db.exec(`delete from profiles where id='${target}'`);
+    await db.exec(`delete from auth.users where id='${target}'`);
     await db.query("select finish_account_deletion($1,$2,true)", [
       request,
       grant.lease,

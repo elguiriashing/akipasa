@@ -7,6 +7,17 @@ permissions:
 jobs:
   deletion:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: disposable-local-only
+          POSTGRES_DB: deletion_fixture
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s
+          --health-retries 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -15,4 +26,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: node --test tests/account-deletion-workflow.test.mjs
+      - run: node --test tests/account-deletion-concurrency.test.mjs
+        env:
+          TEST_DELETION_DATABASE_URL: postgres://postgres:disposable-local-only@127.0.0.1:5432/deletion_fixture
       - run: npx vitest run --environment node tests/account-deletion-execution.test.ts
