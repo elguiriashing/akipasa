@@ -1,7 +1,6 @@
 // @vitest-environment jsdom
 
 import React from "react";
-import { renderToString } from "react-dom/server";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import "@testing-library/jest-dom/vitest";
@@ -539,26 +538,21 @@ for (const locale of ["en", "es"] as const) {
   });
 }
 
-it("keeps server-rendered menu buttons disabled until their handlers are ready", () => {
+it("keeps More open through same-route updates and dismisses it on navigation", () => {
   navigation.pathname = "/en";
-  const content = (
+  const shell = (text: string) => (
     <AppShell locale="en" signedIn={false}>
-      <main>Discovery</main>
+      <main>{text}</main>
     </AppShell>
   );
-  const initial = new DOMParser().parseFromString(
-    renderToString(content),
-    "text/html",
-  );
-  for (const target of ["app-more-sheet", "app-suite-sheet"])
-    expect(
-      initial
-        .querySelector(`[aria-controls="${target}"]`)
-        ?.hasAttribute("disabled"),
-    ).toBe(true);
-  render(content);
-  const more = screen.getByRole("button", { name: "More options" });
-  expect(more).toBeEnabled();
-  fireEvent.click(more);
+  const view = render(shell("Discovery"));
+  fireEvent.click(screen.getByRole("button", { name: "More options" }));
   expect(screen.getByRole("dialog", { name: "More options" })).toBeVisible();
+  view.rerender(shell("Updated discovery"));
+  expect(screen.getByRole("dialog", { name: "More options" })).toBeVisible();
+  navigation.pathname = "/en/community";
+  view.rerender(shell("Community"));
+  expect(
+    screen.queryByRole("dialog", { name: "More options" }),
+  ).not.toBeInTheDocument();
 });
