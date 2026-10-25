@@ -90,10 +90,11 @@ describe("authentication security", () => {
       ),
     ).toBe("/en/account");
   });
-  it("renders an escaped bilingual native OAuth return without revealing session tokens", () => {
+
+  it("escapes native OAuth callback links", () => {
     const target = new URL("akipasa://auth/callback");
     target.searchParams.set("code", "one-time");
-    target.searchParams.set("error_description", '\"><img src=x>');
+    target.searchParams.set("error_description", '"><img src=x>');
     const html = renderAndroidReturnPage({
       brand: "pasa",
       name: "AkiPasa",
@@ -111,5 +112,4 @@ describe("authentication security", () => {
     expect(html).not.toContain('href="akipasa://auth/callback?code=one-time&');
     expect(html).not.toContain("access_token");
   });
-
 });
