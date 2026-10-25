@@ -26,15 +26,20 @@ test(
    create table auth.users(id uuid primary key);create table profiles(id uuid primary key references auth.users(id) on delete cascade);
    create table account_deletion_requests(id uuid primary key,profile_id uuid references profiles(id) on delete set null,state deletion_request_state default 'requested',requested_at timestamptz default now(),completed_at timestamptz,updated_at timestamptz,updated_by uuid,resolution text);
    insert into auth.users values('${actor}'),('${target}');insert into profiles values('${actor}'),('${target}');insert into account_deletion_requests(id,profile_id) values('${request}','${target}');`);
-      await sql.unsafe(
-        await readFile(
-          new URL(
-            "../supabase/migrations/20261025144929_account_deletion_review.sql",
-            import.meta.url,
+      const migrationConnection = await sql.reserve();
+      try {
+        await migrationConnection.unsafe(
+          await readFile(
+            new URL(
+              "../supabase/migrations/20261025144929_account_deletion_review.sql",
+              import.meta.url,
+            ),
+            "utf8",
           ),
-          "utf8",
-        ),
-      );
+        );
+      } finally {
+        migrationConnection.release();
+      }
       await sql`select review_account_deletion(${request},${target},${sql.json({ identityVerified: true, sessionsReviewed: true, storageCleared: true, providersResolved: true, businessContinuityResolved: true, retentionRecorded: true, confirmationContactVerified: true })},false,'Synthetic reviewed request with no customer data')`;
       const [grant] =
         await sql`select begin_account_deletion(${request},${target}) value`;
