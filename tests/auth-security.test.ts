@@ -109,7 +109,7 @@ describe("authentication security", () => {
     expect(html).toContain('id="return-seconds">5');
     expect(html).toContain("akipasa://auth/callback?");
     expect(html).toContain("&amp;");
-    expect(html).not.toContain('href="akipasa://auth/callback?code=one-time&');
+    expect(html).not.toContain("&error_description=");
     expect(html).not.toContain("access_token");
   });
 });
