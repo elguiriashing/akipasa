@@ -86,13 +86,17 @@ export function AkiSuiteMembershipGrid({
       );
     if (current)
       return (
-        <Link href={`/${locale}/account/subscription`}>
+        <Link
+          href={`/${locale}/account/subscription?audience=${personal ? "individual" : "business"}`}
+        >
           {es ? "Ver mi acceso" : "View my access"}
         </Link>
       );
     if (purchaseMode === "account")
       return (
-        <Link href={`/${locale}/account/subscription?from=${origin}`}>
+        <Link
+          href={`/${locale}/account/subscription?from=${origin}&audience=${personal ? "individual" : "business"}`}
+        >
           {personal
             ? es
               ? "Explorar mi Premium"
@@ -230,7 +234,9 @@ export function AkiSuiteMembershipGrid({
           ],
       highlighted: true,
       action: isStay ? (
-        <Link href={suiteHref("duermo", locale, { path: "/membership" })}>
+        <Link
+          href={`${suiteHref("duermo", locale, { path: "/membership" })}&audience=business`}
+        >
           {es ? "Explorar Premium" : "Explore listing Premium"} ↗
         </Link>
       ) : (

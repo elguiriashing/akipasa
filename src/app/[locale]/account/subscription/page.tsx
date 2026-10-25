@@ -6,7 +6,11 @@ import { AkiSuiteMembershipGrid } from "@/components/AkiSuiteMembershipGrid";
 import { AkiSuiteMembershipHub } from "@/components/AkiSuiteMembershipHub";
 import { requireUser } from "@/lib/auth";
 import { resolveMembershipHub } from "@/lib/akisuite-membership";
-import { type AkiSuitePlan, akiSuiteApp } from "@/lib/akisuite-catalogue";
+import {
+  type AkiSuitePlan,
+  akiSuiteApp,
+  akiSuiteMembershipReturnPath,
+} from "@/lib/akisuite-catalogue";
 import { akiSuiteCheckoutReady } from "@/lib/akisuite-readiness";
 import { isLocale } from "@/lib/config";
 import { prepareAkiSuiteWorkspace } from "./akisuite-actions";
@@ -26,7 +30,10 @@ export default async function SubscriptionPage({
   const query = await searchParams;
   const { supabase, user } = await requireUser(
     locale,
-    `/${locale}/account/subscription${query.from ? `?from=${akiSuiteApp(query.from)}` : ""}`,
+    akiSuiteMembershipReturnPath(
+      locale,
+      `/${locale}/account/subscription?${new URLSearchParams(Object.entries(query).filter((entry): entry is [string, string] => typeof entry[1] === "string"))}`,
+    ),
   );
   const [
     { data: subscriptions, error: subscriptionsError },

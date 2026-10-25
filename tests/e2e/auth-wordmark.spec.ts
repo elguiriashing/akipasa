@@ -14,28 +14,38 @@ for (const locale of ["en", "es"] as const)
           });
         }, theme);
         await page.goto(`/${locale}/auth`);
-        const card = page
-          .locator(".auth-product-portals .auth-product-card")
-          .filter({ hasText: "AkiBusiness" });
-        await expect(card).toBeVisible();
-        const word = card.locator("strong");
-        await expect(word).toHaveText("AkiBusiness");
-        const geometry = await word.evaluate((node) => {
-          const range = document.createRange();
-          range.selectNodeContents(node);
-          const text = range.getBoundingClientRect();
-          const box = node.getBoundingClientRect();
-          return {
-            lines: new Set(
-              Array.from(range.getClientRects()).map((rect) => rect.top),
-            ).size,
-            width: text.width,
-            available: box.width,
-          };
-        });
-        expect(geometry.lines).toBe(1);
-        expect(geometry.width).toBeLessThanOrEqual(geometry.available + 1);
-        expect((await card.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+        const picker = page.locator(".aki-workspace-picker");
+        await expect(picker.getByRole("radio")).toHaveCount(5);
+        await picker
+          .getByRole("radio", { name: "AkiPasa", exact: true })
+          .focus();
+        for (const name of [
+          "AkiPasa",
+          "AkiDuermo",
+          "AkiCoches",
+          "AkiHQ",
+          "AkiBusiness",
+        ]) {
+          const card = picker.getByRole("radio", { name, exact: true });
+          await expect(card).toHaveAttribute("aria-checked", "true");
+          const word = card.locator(".aks-selector__label");
+          await expect(word).toHaveText(name);
+          const geometry = await word.evaluate((node) => {
+            const range = document.createRange();
+            range.selectNodeContents(node);
+            return {
+              lines: new Set(
+                Array.from(range.getClientRects()).map((rect) => rect.top),
+              ).size,
+              width: range.getBoundingClientRect().width,
+              available: node.getBoundingClientRect().width,
+            };
+          });
+          expect(geometry.lines).toBe(1);
+          expect(geometry.width).toBeLessThanOrEqual(geometry.available + 1);
+          expect((await card.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+          await page.keyboard.press("ArrowRight");
+        }
         expect(
           await page.evaluate(() => document.documentElement.scrollWidth),
         ).toBeLessThanOrEqual(width + 1);

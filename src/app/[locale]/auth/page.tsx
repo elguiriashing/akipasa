@@ -1,3 +1,4 @@
+import { WorkspaceSelector } from "@/components/WorkspaceSelector";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { config, isLocale } from "@/lib/config";
@@ -141,44 +142,18 @@ export default async function AuthPage({
             </p>
           )}
         </div>
-        {!isStayHost && !isConduzcoHost && (
-          <aside className="auth-product-portals">
-            <span>{es ? "Elige tu espacio" : "Choose your workspace"}</span>
-            <a
-              className={`auth-product-card ${!isBusinessHost ? "active" : ""}`}
-              href={`${config.siteUrl}/${locale}/auth`}
-            >
-              <i
-                className="auth-product-dot auth-product-dot-akipasa"
-                aria-hidden="true"
-              />
-              <span>
-                <strong>AkiPasa</strong>
-              </span>
-            </a>
-            <a
-              className={`auth-product-card ${isBusinessHost ? "active" : ""}`}
-              href={`${config.businessUrl}/${locale}/auth?next=/${locale}/business`}
-            >
-              <i
-                className="auth-product-dot auth-product-dot-business"
-                aria-hidden="true"
-              />
-              <span>
-                <strong>AkiBusiness</strong>
-              </span>
-            </a>
-            <a className="auth-product-card" href={config.crmUrl}>
-              <i
-                className="auth-product-dot auth-product-dot-hq"
-                aria-hidden="true"
-              />
-              <span>
-                <strong>AkiHQ</strong>
-              </span>
-            </a>
-          </aside>
-        )}
+        <WorkspaceSelector
+          locale={locale}
+          current={
+            isBusinessHost
+              ? "hq"
+              : isStayHost
+                ? "duermo"
+                : isConduzcoHost
+                  ? "coches"
+                  : "pasa"
+          }
+        />
       </section>
       {businessIntent && (
         <aside

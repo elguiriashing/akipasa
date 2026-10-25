@@ -106,3 +106,23 @@ describe("operating subscription return scope", () => {
     ).toBe("/en/account");
   });
 });
+
+it("retains a single presentation audience through sign-in without passing arbitrary query values", () => {
+  for (const locale of ["en", "es"] as const) {
+    const path = `/${locale}/account/subscription`;
+    expect(
+      akiSuiteMembershipReturnPath(
+        locale,
+        `${path}?from=akipasa&audience=business&access_token=discard&next=https://evil.invalid`,
+      ),
+    ).toBe(`${path}?from=akipasa&audience=business`);
+    for (const query of [
+      "audience=business&audience=individual",
+      "audience=owner",
+      "audience=https://evil.invalid",
+    ])
+      expect(akiSuiteMembershipReturnPath(locale, `${path}?${query}`)).toBe(
+        path,
+      );
+  }
+});

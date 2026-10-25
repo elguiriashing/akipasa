@@ -2873,3 +2873,51 @@ No roles, links, data, billing, analytics, storage or provider configuration cha
 See AKISUITE_ICON_FAMILY.md for dependencies, checks, native rebuild limitations
 and source-only rollback. Local visual/asset validation and required CI are
 separate from exact-source production and signed native-device acceptance.
+
+## 2026-10-25 | AkiSuite navigation and surface continuity
+
+Owner-authorized tightening preserves identity, tenant permissions, booking and
+billing authority. Discovery membership audience now survives explicit Business
+handoffs, reload and browser history without enabling checkout. Duermo/Coches
+share one desktop rail/mobile dock component where available; Coches membership
+retains its product header. Pasa's auth selector uses all five canonical brands
+and origins. Duermo auth stays teal; HQ marketing and login use one request
+language, keep readable dark-surface text, and expose header controls. Business
+login gains local home/language/appearance controls retaining input only in memory.
+Each repository carries only its affected subset. No schema, feature activation,
+provider setting, customer record or native signing change. Source revert is the
+rollback. Full source, browser/CI and exact production checks remain required;
+device/authenticated acceptance must not be inferred from fixtures.
+
+## 2026-10-25 | AkiSelector workspace login integration
+
+Alex explicitly selected the existing private lab's AkiSelector for the public
+login workspace chooser. All five apps appear: Pasa orange, Duermo teal,
+Coches red/burgundy, HQ yellow/space grey and Business purple. Reuse the
+engine's card scene, swipe, keyboard navigation and reduced-motion behavior
+in a compact sign-in adapter. Previewing an app never submits, navigates or
+replaces a login form; opening another app is an explicit localized action
+with only the bounded referral code passed across origins. Current product
+is selected initially. Mobile keeps the chooser after the sign-in fields.
+The static operating app uses a DOM adapter and the same scene styles, with
+no framework runtime or third-party dependency added. The private lab keeps
+its administrator-only route. No pricing, session, tenant, permissions or
+provider setting changes. Source revert is rollback. Source, responsive
+browser, exact live source and physical device acceptance remain distinct.
+
+### Login selector focus and clipping acceptance
+
+Keyboard selection focuses only after the selected card is committed, using
+preventScroll. The compact login scene clips without becoming a scroll container,
+so Home/End cannot shift the card stage sideways. This changes presentation
+focus only; application opening remains an explicit link. Browser evidence
+asserts zero scene scroll and captures settled transitions.
+
+### 2026-10-25 | Reliable first-tap mobile menus
+
+Initial page effects no longer dismiss the More/AkiSuite sheets; they close
+only after an actual pathname change. This prevents a late initial route effect
+from undoing an early tap, while preserving navigation dismissal, authorized
+workspaces, focus containment and search hydration. The unchanged first-click
+tablet acceptance and same-route/navigation regression cover the behavior.
+No backend or permission change.

@@ -69,6 +69,7 @@ import {
 } from "../src/app/[locale]/account/subscription/actions";
 
 beforeEach(() => {
+  window.history.replaceState(null, "", "/en/account/subscription");
   vi.clearAllMocks();
   fixture.failedTable = "";
   fixture.tables = {

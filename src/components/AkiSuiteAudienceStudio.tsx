@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, type ReactNode } from "react";
+import { useEffect, useId, useState, type ReactNode } from "react";
 import Image from "next/image";
 import styles from "./AkiSuiteAudienceStudio.module.css";
 
@@ -81,6 +81,27 @@ export function AkiSuiteAudienceStudio({
   const [audience, setAudience] = useState<"individual" | "business">(
     "individual",
   );
+  useEffect(() => {
+    const restore = () => {
+      const values = new URLSearchParams(window.location.search).getAll(
+        "audience",
+      );
+      setAudience(
+        values.length === 1 && values[0] === "business"
+          ? "business"
+          : "individual",
+      );
+    };
+    restore();
+    window.addEventListener("popstate", restore);
+    return () => window.removeEventListener("popstate", restore);
+  }, []);
+  function chooseAudience(next: "individual" | "business") {
+    setAudience(next);
+    const url = new URL(window.location.href);
+    url.searchParams.set("audience", next);
+    window.history.replaceState(window.history.state, "", url.toString());
+  }
   const id = useId();
   const tabId = (key: "individual" | "business") => `${id}-${key}`;
   const heading =
@@ -116,7 +137,7 @@ export function AkiSuiteAudienceStudio({
             aria-controls={`${id}-offers`}
             aria-selected={audience === key}
             tabIndex={audience === key ? 0 : -1}
-            onClick={() => setAudience(key)}
+            onClick={() => chooseAudience(key)}
             onKeyDown={(event) => {
               if (
                 event.key === "ArrowLeft" ||
@@ -133,7 +154,7 @@ export function AkiSuiteAudienceStudio({
                       : key === "individual"
                         ? "business"
                         : "individual";
-                setAudience(next);
+                chooseAudience(next);
                 document.getElementById(tabId(next))?.focus();
               }
             }}

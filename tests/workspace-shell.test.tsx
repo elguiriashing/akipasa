@@ -537,3 +537,22 @@ for (const locale of ["en", "es"] as const) {
       expect(hrefs).toContain(expected);
   });
 }
+
+it("keeps More open through same-route updates and dismisses it on navigation", () => {
+  navigation.pathname = "/en";
+  const shell = (text: string) => (
+    <AppShell locale="en" signedIn={false}>
+      <main>{text}</main>
+    </AppShell>
+  );
+  const view = render(shell("Discovery"));
+  fireEvent.click(screen.getByRole("button", { name: "More options" }));
+  expect(screen.getByRole("dialog", { name: "More options" })).toBeVisible();
+  view.rerender(shell("Updated discovery"));
+  expect(screen.getByRole("dialog", { name: "More options" })).toBeVisible();
+  navigation.pathname = "/en/community";
+  view.rerender(shell("Community"));
+  expect(
+    screen.queryByRole("dialog", { name: "More options" }),
+  ).not.toBeInTheDocument();
+});

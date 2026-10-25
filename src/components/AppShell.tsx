@@ -84,6 +84,7 @@ export function AppShell({
 }) {
   const referralCode = useSuiteReferral();
   const pathname = usePathname();
+  const previousPathname = useRef(pathname);
   const m = msg(locale);
   const es = locale === "es";
   const other = es ? "en" : "es";
@@ -246,6 +247,9 @@ export function AppShell({
   ];
 
   useEffect(() => {
+    // Only a real route change dismisses menus; the initial effect must not undo an early tap.
+    if (previousPathname.current === pathname) return;
+    previousPathname.current = pathname;
     setSheetOpen(false);
     setSuiteOpen(false);
   }, [pathname]);

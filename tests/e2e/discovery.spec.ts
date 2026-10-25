@@ -213,7 +213,10 @@ test("membership offer is reachable before sign in", async ({ page }) => {
     catalogue
       .locator("#akibusiness_premium")
       .getByRole("link", { name: /^Upgrade my listing/ }),
-  ).toHaveAttribute("href", "/en/account/subscription?from=akipasa");
+  ).toHaveAttribute(
+    "href",
+    "/en/account/subscription?from=akipasa&audience=business",
+  );
   await expect(catalogue.locator("#akibusiness_premium form")).toHaveCount(0);
   await expect(catalogue.locator('a[href*="akibusiness.com"]')).toHaveCount(1);
   await expect(catalogue.locator('[id^="operations-"]')).toHaveCount(0);
