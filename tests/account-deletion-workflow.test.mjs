@@ -66,6 +66,108 @@ test("mirrored migration identical", async () =>
       "utf8",
     ),
   ));
+
+test("private evidence ACLs, authenticated non-admin, self target and wrong lease deny", async () => {
+  const db = await fixture();
+  try {
+    for (const role of ["anon", "authenticated", "service_role"]) {
+      await db.exec(`set role ${role}`);
+      for (const table of ["reviews", "events", "settings"]) {
+        await assert.rejects(
+          db.exec(`select * from account_privacy_private.${table}`),
+          /permission denied/,
+        );
+        await assert.rejects(
+          db.exec(`delete from account_privacy_private.${table}`),
+          /permission denied/,
+        );
+      }
+      await db.exec("reset role");
+    }
+    await db.exec(
+      "select set_config('test.admin','false',false); set role authenticated",
+    );
+    await assert.rejects(review(db), /administrator required/);
+    await db.exec("reset role;select set_config('test.admin','true',false)");
+    await db.exec(
+      `update account_deletion_requests set profile_id='${actor}' where id='${request}'`,
+    );
+    await assert.rejects(
+      db.query("select review_account_deletion($1,$2,$3,false,$4)", [
+        request,
+        actor,
+        JSON.stringify(checks),
+        "Synthetic self deletion must be rejected",
+      ]),
+      /invalid target/,
+    );
+    await db.exec(
+      `update account_deletion_requests set profile_id='${target}' where id='${request}'`,
+    );
+    await review(db);
+    await begin(db);
+    await assert.rejects(
+      db.query("select finish_account_deletion($1,$2,false)", [request, actor]),
+      /invalid execution lease/,
+    );
+  } finally {
+    await db.close();
+  }
+});
+
+test("13-month completed request and identifying evidence purge together, holds preserve them, business/profile survive", async () => {
+  const db = await fixture();
+  try {
+    await db.exec(
+      "create table synthetic_business(id text primary key,payload text);insert into synthetic_business values('retained','business data must survive')",
+    );
+    await review(db);
+    const grant = await begin(db);
+    await db.exec(`delete from profiles where id='${target}'`);
+    await db.query("select finish_account_deletion($1,$2,true)", [
+      request,
+      grant.lease,
+    ]);
+    await db.query("select confirm_account_deletion_reply($1,$2)", [
+      request,
+      "Synthetic manually written email reference",
+    ]);
+    await db.exec(
+      "update account_privacy_private.reviews set evidence_until=now()-interval '1 month'; update account_privacy_private.events set created_at=now()-interval '13 months';update account_privacy_private.settings set retention_enabled=true",
+    );
+    await db.query("select hold_account_deletion($1,true)", [request]);
+    await db.exec("select purge_account_deletion_evidence()");
+    assert.equal(
+      (await db.query("select * from account_deletion_requests")).rows.length,
+      1,
+    );
+    assert.equal(
+      (await db.query("select * from account_privacy_private.reviews")).rows
+        .length,
+      1,
+    );
+    assert.ok(
+      (await db.query("select * from account_privacy_private.events")).rows
+        .length > 0,
+    );
+    await db.query("select hold_account_deletion($1,false)", [request]);
+    await db.exec("select purge_account_deletion_evidence()");
+    for (const table of [
+      "account_deletion_requests",
+      "account_privacy_private.reviews",
+      "account_privacy_private.events",
+    ])
+      assert.equal((await db.query(`select * from ${table}`)).rows.length, 0);
+    assert.equal((await db.query("select id from profiles")).rows[0].id, actor);
+    assert.equal(
+      (await db.query("select payload from synthetic_business")).rows[0]
+        .payload,
+      "business data must survive",
+    );
+  } finally {
+    await db.close();
+  }
+});
 test("requires real admin, exact target, every check, no hold and fresh review", async () => {
   const db = await fixture();
   try {

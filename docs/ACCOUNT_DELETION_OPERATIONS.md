@@ -3,6 +3,12 @@
 Candidate implementation; not evidence of deployment or a completed customer request.
 Source baseline: master642641822541381a09eb81da9d1abddf3f837d6f.
 
+Read-only production preflight: root verified the public unauthenticated
+`https://akipasa.supabase.co/auth/v1/health` response header
+`sb-project-ref=vhpbvcfkcteswlsdjrfl` (HTTP401, no key supplied). This confirms
+the configured vanity host maps to the intended shared project; it is not
+authorization to delete any real account or inspect customer records.
+
 ## Operating contract
 
 Public EN/ES instructions at `/{locale}/account-deletion` cover AkiPasa,
@@ -91,6 +97,13 @@ evidence from purge. It refuses changes during an execution lease; complete the
 in-progress reconciliation first. Unknown legal status must remain blocked.
 
 ## Deployment / rollback
+
+Local isolated actual-SQL regression6/6 passes, covering private ACL denial for
+anon/authenticated/service roles, non-admin/self/wrong-target/wrong-lease denial,
+fresh complete review, holds, replay, provider-failure reset, fixed deadline,
+post-identity manual confirmation and13-month identifying-evidence cleanup with
+business/profile survival. Execution/maintenance unit tests5/5 pass; migration
+permission audit reports0findings. Hosted exact-head/full checks remain required.
 
 Apply the mirrored additive migration before deploying the page/actions; the new
 columns/RPCs are required and missing schema must fail closed. The existing public

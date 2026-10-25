@@ -20,6 +20,15 @@
 - Rollback: turn off retention and revert app source; preserve review/audit evidence
   and completion guards. Do not undo erasure or drop retained records.
 
+Local verification: six actual-SQL PGlite cases and five execution/maintenance
+unit cases pass; migration permission audit0findings. The expanded SQL suite
+executes private ACL denials, wrong/self/nonadmin/stale/held/replayed requests,
+manual-confirmation closure, immutable48hour deadline and13month evidence purge
+while retaining business/other-profile fixtures. Hosted PR291 checks continue.
+Public EN/ES privacy now names verified operator AkiPasa Marketing S.L., shared
+five-product data/purposes/providers/choices/retention and deletion instructions;
+no registered address, backup guarantee or legal-review completion is invented.
+
 ## 2026-10-25 | Branded five-second Android OAuth return screen
 
 - **Before:** AkiPasa's external Google-auth callback displayed a sparse orange hyperlink and required a manual tap, although the installed Android app already registered the `akipasa://auth/callback` deep link.
