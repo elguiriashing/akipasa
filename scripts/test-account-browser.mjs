@@ -994,7 +994,7 @@ try {
             await expect(link).toBeVisible();
             await expect(link).toHaveAttribute(
               "href",
-              `https://akiduermo.com/membership?lang=${locale}`,
+              `https://akiduermo.com/membership?lang=${locale}&audience=business`,
             );
             // Every audience CTA remains scroll-reachable without horizontal clipping.
             await link.scrollIntoViewIfNeeded();
