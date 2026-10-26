@@ -3,6 +3,7 @@
 Status: source-only candidate, DEFAULT DISABLED. Feature may not be advertised live until Firebase, Supabase migration, founder IDs, CI and signed-device acceptance are verified.
 
 ## Firebase console (project `akipasa-android`)
+
 1. Project settings > General: Android app `com.akipasa` is registered. The client `google-services.json` is committed beneath `Android/app/` (contains only client config, NOT a service account).
 2. Project settings > **Cloud Messaging**: confirm Cloud Messaging API (V1) is enabled. The **Integrations** catalogue is irrelevant.
 3. Use **Google Cloud IAM & Admin > Service Accounts** to create/select a dedicated least-privilege FCM sender service account for the Firebase project, with `Firebase Cloud Messaging API Admin` or a narrower custom role with `cloudmessaging.messages.create`. Only if organizational policy permits: generate a JSON key and store the entire JSON as a **Cloudflare Worker secret** `FIREBASE_SERVICE_ACCOUNT_JSON`; NEVER commit it or paste it into chat. Prefer a keyless signing/broker approach before production if feasible.
@@ -18,6 +19,7 @@ Status: source-only candidate, DEFAULT DISABLED. Feature may not be advertised l
 8. Existing Resend founder emails are independent and remain operational.
 
 ## Safety
+
 - DB tables are inaccessible to browser SQL/REST roles; only service_role can view tokens. The HTTP registration route requires Supabase authentication plus current administrator app_role and a private founder UUID allowlist.
 - FCM data-only payload contains a claim UUID and event type. Applicant name, phone, email and evidence never leave the authenticated staff panel.
 - Email fallback remains separate. A Cloudflare cron scans due pushes every **five minutes**; this is not guaranteed instantaneous delivery. A verified event-driven wake-up is follow-on work.
@@ -26,4 +28,5 @@ Status: source-only candidate, DEFAULT DISABLED. Feature may not be advertised l
 - Turn off by setting `AKIPASA_PUSH_ENABLED=false` immediately. Do not disable existing email notifications.
 
 ## Firebase analytics
+
 **No Firebase Analytics SDK is added.** Do not import it from the Firebase setup wizard. The SDK's automatic FCM initialization is disabled for ordinary discovery users.
