@@ -13,6 +13,7 @@ import {
 } from "./src/lib/claim-mail-delivery";
 
 import { dispatchClaimSubmissionAlerts } from "./src/lib/claim-alert-delivery";
+import { dispatchFounderClaimPushes } from "./src/lib/founder-push-delivery";
 import { dispatchSuiteEmails } from "./src/lib/suite-mail-delivery";
 
 import {
@@ -76,6 +77,7 @@ const worker = {
     ctx.waitUntil(dispatchAccommodationConfirmations(env));
     ctx.waitUntil(dispatchClaimDecisions(env));
     ctx.waitUntil(dispatchClaimSubmissionAlerts(env));
+    ctx.waitUntil(dispatchFounderClaimPushes(env));
     ctx.waitUntil(dispatchSuiteEmails(env));
     ctx.waitUntil(publishScheduledAkiSuiteEvents(env));
     ctx.waitUntil(

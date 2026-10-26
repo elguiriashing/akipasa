@@ -1,5 +1,13 @@
 # Change Impact Register
 
+## 2026-10-27 | Founder FCM push integration (dark launch)
+- **Before:** Android had branded local debug notifications only. Founder claim alerts used Resend and a five-minute cron. Staff notification links could show the wrong claim if the UUID was outside the first page.
+- **Change:** Build-time Firebase Android app config and native FCM receiver (no Analytics), first-party staff-page token exchange, server-side founder-only admin+live-session check, service-only token store and idempotent claim-device outbox, FCM HTTP v1 OAuth sender, exact-claim staff RPC and logout revoke. Existing email remains independent.
+- **Security:** Denied to all other roles, consumer native FCM initialization off, service account strictly Cloudflare secret, private lock-screen notifications with no applicant name/email/phone, 30-day bounded lease, source feature flag OFF by default. No client can query FCM tokens or outbox.
+- **Rollout:** Requires additive Supabase SQL migration on matching production project, Firebase FCM API, Cloudflare secrets, founder auth UUIDs, signed Android update via internal Play test, CI and live exact-source verification. A website-only deploy does not update installed Android apps.
+- **Rollback:** Set `AKIPASA_PUSH_ENABLED=false` first; revert source as needed. Retain private schema initially and do not disturb Resend.
+- **Pending verification:** android real-device background/killed/signed-out delivery; sender credential configuration; active-session SQL on live provider; recurring cron and Play build, complete CI.
+
 ## 2026-10-25 | Branded five-second Android OAuth return screen
 
 - **Before:** AkiPasa's external Google-auth callback displayed a sparse orange hyperlink and required a manual tap, although the installed Android app already registered the `akipasa://auth/callback` deep link.

@@ -41,6 +41,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.window.OnBackInvokedDispatcher;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +51,7 @@ public final class MainActivity extends Activity {
     private static final int FILE_CHOOSER_REQUEST = 1001;
     private static final int LOCATION_PERMISSION_REQUEST = 1002;
     private static final int NOTIFICATION_PERMISSION_REQUEST = 1003;
+    private static final int PUSH_PERMISSION_REQUEST = 1004;
     private static final String DEBUG_NOTIFICATION_ACTION = "com.akipasa.DEBUG_NOTIFICATION";
     private static final String DEBUG_NOTIFICATION_CHANNEL = "akipasa_debug";
 
@@ -127,6 +131,34 @@ public final class MainActivity extends Activity {
                 .setAutoCancel(true)
                 .build();
         manager.notify(1003, notification);
+    }
+
+    /** Only expose a device token to our first-party STAFF web page. The server checks
+     * the authenticated founder UUID and current administrator role independently. */
+    private void registerFounderPushForUrl(String url) {
+        if (url == null) return;
+        Uri uri = Uri.parse(url);
+        if (!"https".equals(uri.getScheme()) || !"akipasa.com".equals(uri.getHost())) return;
+        String path = uri.getPath();
+        if (path == null || !path.matches("/(en|es)/(staff|admin)(/.*)?")) return;
+        if (Build.VERSION.SDK_INT >= 33
+                && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, PUSH_PERMISSION_REQUEST);
+            return;
+        }
+        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(token -> {
+            Uri current = Uri.parse(webView.getUrl() == null ? "" : webView.getUrl());
+            if (!"https".equals(current.getScheme()) || !"akipasa.com".equals(current.getHost())) return;
+            String activePath = current.getPath();
+            if (activePath == null || !activePath.matches("/(en|es)/(staff|admin)(/.*)?")) return;
+            // No JavascriptInterface or JS->native privileged methods; exact origin only.
+            String js = "(function(){fetch('/api/admin/push-devices',{" +
+                    "method:'POST',credentials:'same-origin'," +
+                    "headers:{'Content-Type':'application/json'}," +
+                    "body:JSON.stringify({token:" + JSONObject.quote(token) + "})" +
+                    "}).catch(function(){});})();";
+            webView.evaluateJavascript(js, null);
+        });
     }
 
     private void hideSystemBars() {
@@ -380,6 +412,11 @@ public final class MainActivity extends Activity {
             }
             return;
         }
+        if (requestCode == PUSH_PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                registerFounderPushForUrl(webView.getUrl());
+            return;
+        }
         if (requestCode != LOCATION_PERMISSION_REQUEST || locationCallback == null) return;
         boolean granted = false;
         for (int result : grantResults) granted |= result == PackageManager.PERMISSION_GRANTED;
@@ -424,6 +461,8 @@ public final class MainActivity extends Activity {
             if (mainFrameFailed) {
                 webView.setVisibility(View.GONE);
                 offlineView.setVisibility(View.VISIBLE);
+            } else {
+                registerFounderPushForUrl(url);
             }
         }
 

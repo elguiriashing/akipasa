@@ -94,6 +94,17 @@ export default async function StaffModerationPage({
       .eq("singleton", true)
       .maybeSingle(),
   ]);
+  // Deep-linked claims can be anywhere in the paginated queue. Never render
+  // the *wrong* claim if the requested one is missing/closed.
+  let claimItems = data || [];
+  if(queue==="claims" && !queueError && query.claim && /^[0-9a-f-]{36}$/i.test(query.claim)
+      && !claimItems.some((item:{id:string})=>item.id===query.claim)) {
+    const {data:focused,error:focusError}=await supabase.rpc("staff_pending_venue_claim_by_id",{
+      p_claim:query.claim,
+    });
+    if(focusError) console.error("focused_claim_unavailable",focusError.code);
+    claimItems=focused?.length ? [...focused,...claimItems] : [];
+  }
   const automaticEnabled = automaticMode?.enabled === true;
   const automaticModeKnown =
     !automaticModeError && typeof automaticMode?.enabled === "boolean";
@@ -260,7 +271,7 @@ export default async function StaffModerationPage({
         ) : (
           <StaffQueue
             locale={locale}
-            items={(data || []) as StaffQueueItem[]}
+            items={claimItems as StaffQueueItem[]}
             targetType={
               target as
                 | "submission"
