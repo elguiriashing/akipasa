@@ -1,6 +1,7 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
 ## 2026-10-27 | Founder-only Android Firebase push (feature-gated)
+
 Firebase project `akipasa-android` and Android application `com.akipasa` are configured for FCM data-only notifications; NO Firebase Analytics SDK. Default FCM auto-init is disabled for ordinary, potentially underage consumers. Android checks the first-party HTTPS staff context before requesting permission/token; native receiver opens a validated deep link into the correct claim. All recipient decisions remain on the server: configured immutable founder UUID allowlist AND current administrator role AND active Supabase auth session. Registration uses an authenticated same-origin API, server-only tokens, 30-day bounded lease; auth logout revokes founder devices. A new service-only private push outbox does not change or gate the existing Resend email outbox. Cloudflare cron every five minutes dispatches only recent pending claims, with no client details, attempts/backoff and blocked ambiguous deliveries. Source is disabled by default (`AKIPASA_PUSH_ENABLED` absent/false), and requires Firebase service-account secret, founder UUID configuration, migration, tests and a signed Android Play test build. Detailed setup and rollback: `docs/FOUNDER_ANDROID_PUSH.md`. Do not claim actual FCM delivery or exact-user mobile acceptance without these operational gates.
 
 ## 2026-10-25 | Android OAuth callback styling and return UX

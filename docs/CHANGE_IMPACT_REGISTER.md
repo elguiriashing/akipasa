@@ -1,6 +1,7 @@
 # Change Impact Register
 
 ## 2026-10-27 | Founder FCM push integration (dark launch)
+
 - **Before:** Android had branded local debug notifications only. Founder claim alerts used Resend and a five-minute cron. Staff notification links could show the wrong claim if the UUID was outside the first page.
 - **Change:** Build-time Firebase Android app config and native FCM receiver (no Analytics), first-party staff-page token exchange, server-side founder-only admin+live-session check, service-only token store and idempotent claim-device outbox, FCM HTTP v1 OAuth sender, exact-claim staff RPC and logout revoke. Existing email remains independent.
 - **Security:** Denied to all other roles, consumer native FCM initialization off, service account strictly Cloudflare secret, private lock-screen notifications with no applicant name/email/phone, 30-day bounded lease, source feature flag OFF by default. No client can query FCM tokens or outbox.
