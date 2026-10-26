@@ -2948,3 +2948,17 @@ no footer/actions, localized/referral-safe URLs and zero scene scroll. Complete
 hosted source/browser/Cloudflare checks and exact live-source verification are
 required before release; installed native/device acceptance remains separate.
 Rollback is a source revert and renewed Business asset/cache versions.
+
+## 2026-10-26 | AkiPasa desktop rail matches approved discovery siblings
+
+Owner explicitly approved the existing Duermo/Coches rails and requested Pasa
+follow their geometry. Only Pasa changes: the desktop AkiSuite popup opens beside
+the rail, bounded by the viewport, and avoids a backdrop-filter containing block.
+Collapse switches width without animation; the account action keeps a 52px height
+and a 21px icon. The collapse control is icon-only, retaining its accessible name.
+Mobile sheets, authorized workspace links, EN/ES destinations, brand, persisted
+collapse preference, authentication and product permissions remain unchanged.
+No API, database, storage, analytics, provider, billing or sibling app mutations.
+Regression extends the real browser rail test to 480px height and compact popup
+bounds/account geometry. Required full check, hosted browser CI and production
+source/visual verification remain separate gates. Rollback is a source revert.
