@@ -445,6 +445,7 @@ export function AppShell({
           {!signedIn && (
             <Link
               className="button button-strong app-rail-cta"
+              aria-label={es ? "Entrar" : "Sign in"}
               href={`/${locale}/auth`}
               title={compact ? (es ? "Entrar" : "Sign in") : undefined}
             >

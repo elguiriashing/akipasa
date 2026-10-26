@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test("AkiSuite rail keeps its controls reachable on short desktop windows", async ({
   page,
 }) => {
-  for (const height of [740, 900]) {
+  for (const height of [480, 740, 900]) {
     await page.setViewportSize({ width: 1280, height });
     await page.goto("/en");
 
@@ -41,6 +41,21 @@ test("AkiSuite rail keeps its controls reachable on short desktop windows", asyn
     expect(compactDock!.y + compactDock!.height).toBeLessThanOrEqual(
       height + 1,
     );
+    const account = rail.locator(".app-rail-cta");
+    await expect(account).toHaveCSS("height", "52px");
+    await expect(account.locator("svg")).toHaveCSS("width", "21px");
+    await expect(rail).toHaveCSS("transition-duration", "0s");
+    await rail.locator(".app-suite-trigger").click();
+    const compactPopover = await popover.boundingBox();
+    const railRect = await rail.boundingBox();
+    expect(compactPopover!.x).toBeGreaterThan(railRect!.x + railRect!.width);
+    expect(compactPopover!.y).toBeGreaterThanOrEqual(0);
+    expect(compactPopover!.y + compactPopover!.height).toBeLessThanOrEqual(
+      height,
+    );
+    expect(compactPopover!.x + compactPopover!.width).toBeLessThanOrEqual(1280);
+    await rail.locator(".app-suite-trigger").click();
     await rail.getByRole("button", { name: "Expand sidebar" }).click();
+    await expect(account).toHaveCSS("height", "52px");
   }
 });
