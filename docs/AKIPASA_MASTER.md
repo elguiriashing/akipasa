@@ -2531,3 +2531,8 @@ only loss on the scene cancels its gesture. Mouse movement with no primary
 button held clears a pending gesture after an uncaptured outside release.
 Acceptance now uses real Chromium touch input originating on a card descendant,
 and covers outside vertical release followed by ordinary mouse hover.
+
+CI follow-up: wait for the selected card’s finite transition before taking the
+drag baseline. Account acceptance passed 310 cases; the initial selector check
+measured a still-easing card on a busy runner. The >20px movement requirement
+and real pointer input remain unchanged.

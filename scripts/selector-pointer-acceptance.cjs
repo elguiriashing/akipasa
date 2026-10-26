@@ -40,6 +40,17 @@ module.exports = async function exercisePointerBrowsing(page, expect, locale) {
   const drag = async (name, direction) => {
     const icon = card(name);
     await icon.hover();
+    // Selection can still be easing after the prior swipe on a busy runner.
+    await expect
+      .poll(() =>
+        icon.evaluate(
+          (node) =>
+            node
+              .getAnimations()
+              .filter((animation) => animation.playState === "running").length,
+        ),
+      )
+      .toBe(0);
     const start = await icon.boundingBox();
     const x = start.x + start.width / 2,
       y = start.y + start.height / 2;
