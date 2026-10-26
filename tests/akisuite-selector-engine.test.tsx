@@ -13,6 +13,69 @@ import { AkiSelectorLab } from "../src/components/aki-selector/AkiSelectorLab";
 
 afterEach(cleanup);
 
+it("crossfades hover energy without moving selection, focus or navigating", () => {
+  const changed = vi.fn();
+  const { container } = render(
+    <AkiSelector
+      options={options}
+      ariaLabel="Energy"
+      onValueChange={changed}
+      getOptionHref={(option) => `/${option.id}`}
+      showControls={false}
+    />,
+  );
+  const ember = screen.getByRole("link", { name: "Ember" });
+  const solar = screen.getByRole("link", { name: "Solar" });
+  ember.focus();
+  const left = solar.style.left;
+  const enter = new Event("pointerover", { bubbles: true });
+  Object.assign(enter, { pointerType: "mouse" });
+  fireEvent(solar, enter);
+  expect(solar).toHaveAttribute("data-energized", "true");
+  expect(ember).toHaveAttribute("data-energized", "false");
+  expect(ember).toHaveAttribute("data-selected", "true");
+  expect(ember).toHaveFocus();
+  expect(solar.style.left).toBe(left);
+  expect(solar).toHaveAttribute("href", "/b");
+  expect(changed).not.toHaveBeenCalled();
+  // Outgoing artwork stays mounted so CSS can complete its decay.
+  expect(ember.querySelector(".aks-selector__ignition")).toBeInTheDocument();
+  expect(ember.querySelectorAll(".aks-selector__particles i")).toHaveLength(10);
+  fireEvent.keyDown(ember, { key: "ArrowRight" });
+  expect(solar).toHaveAttribute("data-selected", "true");
+  expect(solar).toHaveAttribute("data-energized", "true");
+  expect(container.querySelectorAll('[data-energized="true"]')).toHaveLength(1);
+});
+
+it("ignores touch hover and disabled previews and restores energy on pointer exit", () => {
+  render(
+    <AkiSelector
+      options={[
+        ...options,
+        { id: "d", label: "Disabled", symbol: "D", disabled: true },
+      ]}
+      ariaLabel="Energy"
+    />,
+  );
+  const ember = screen.getByRole("radio", { name: "Ember" });
+  const solar = screen.getByRole("radio", { name: "Solar" });
+  const over = (node: HTMLElement, pointerType: string) => {
+    const event = new Event("pointerover", { bubbles: true });
+    Object.assign(event, { pointerType });
+    fireEvent(node, event);
+  };
+  over(solar, "touch");
+  expect(ember).toHaveAttribute("data-energized", "true");
+  over(screen.getByRole("radio", { name: "Disabled" }), "mouse");
+  expect(ember).toHaveAttribute("data-energized", "true");
+  over(solar, "mouse");
+  expect(solar).toHaveAttribute("data-energized", "true");
+  const leave = new Event("pointerout", { bubbles: true });
+  Object.assign(leave, { pointerType: "mouse", relatedTarget: document.body });
+  fireEvent(solar, leave);
+  expect(ember).toHaveAttribute("data-energized", "true");
+});
+
 const options: AkiSelectorOption[] = [
   { id: "a", label: "Ember", symbol: "A", effect: "ember" },
   { id: "b", label: "Solar", symbol: "B", effect: "solar" },
