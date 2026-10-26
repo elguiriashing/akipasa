@@ -50,3 +50,38 @@ Intensity: subtle, balanced, cinematic. Motion: auto, off.
 
 Future adopters should define actual labels, outcomes, analytics consent and
 rollout strategy before connecting this to discovery or user rewards.
+
+## Cinematic materials (26 October 2026)
+
+The existing effect IDs now render distinct inline SVG masks: flame tongues,
+liquid ribbons, diagonal aero wakes, precision gimbals and spectral curtains.
+No image/provider requests are added. An energy state is independent of the
+selected value: mouse hover previews material without relocating the link or
+firing onValueChange; leaving restores selected energy. Keyboard/pointer-down
+clear hover. Touch and pen retain the existing swipe/direct-link behavior.
+
+Artwork remains mounted while opacity decays over 650ms. Activation ramps in
+over 280ms, with a one-shot lens flare, expanding wave and glass reflection;
+card travel eases over 680ms. Rapid interruptions use native CSS interpolation,
+without queued timers or JavaScript animation frames. Ten deterministic particles
+per card have material-specific trajectories; inactive loops pause. Reduced
+motion and motion=off remove loops, flare and transitions.
+
+The shared browser runner tests interpolated incoming/outgoing opacity, rapid
+interruption, stable hover geometry and reduced motion alongside its 12-case
+EN/ES × light/dark × phone/tablet/desktop matrix. The static AkiBusiness adapter
+uses identical CSS and equivalent DOM state. Login link semantics and the
+administrator-only lab remain unchanged. Physical Android performance and
+production source acceptance are separate from local browser evidence.
+
+## Product opening stories
+
+Options may set arrival to pasa, duermo, coches, hq or business independently
+from their generic effect. A decorative three-layer opening runs once whenever
+the card becomes energized, followed by its continuously looping material.
+The login adapters opt in; generic lab examples do not inherit product meanings.
+CSS cancels interrupted openings and restarts on re-entry, without queued timers,
+requestAnimationFrame loops, new dependencies or navigation delays. Native reduced
+motion and motion=off hide the opening. Browser acceptance samples each actor
+above zero opacity, confirms a single iteration and then zero actor/full idle
+opacity. The same masks and timelines serve the static Business adapter.
