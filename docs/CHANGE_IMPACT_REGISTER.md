@@ -2973,3 +2973,15 @@ assets, network requests, data, analytics, API, role, price or provider changes.
 Validate both locales, light/dark and phone/tablet/desktop for fit and readability
 through full repository/browser CI and visual inspection before release. Source
 revert restores the previous presentation without changing user state.
+
+## 2026-10-26 | Open nationwide discovery presentation
+
+Owner rejected the framed first section introduced in #295. Remove its border,
+rounded container and inset padding; a subtle non-interactive radial glow now
+fades behind the discovery area. Moderate the oversized heading. EN/ES intro
+copy explicitly describes nationwide discovery and featured cities as starting
+points; keep this clarification visible on phones. Preserve city links, filters,
+sidebar, photo accessibility and reduced motion. No sibling app, auth, role,
+API, data, storage, analytics, asset or provider changes. Full check and existing
+responsive browser acceptance gate release; inspect desktop and phone captures
+and verify exact production source. Source revert is the rollback path.

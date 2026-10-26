@@ -189,8 +189,8 @@ export function CityDiscovery({ locale }: { locale: Locale }) {
             </h1>
             <p>
               {es
-                ? "Cinco ciudades, mil formas de disfrutarlas."
-                : "Five cities. So many ways to enjoy them."}
+                ? "Planes por toda España. Algunas ideas para empezar."
+                : "Find your next plan across Spain. A few places to start."}
             </p>
           </div>
         </div>
