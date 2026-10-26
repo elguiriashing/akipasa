@@ -136,3 +136,51 @@ describe("AkiSelector presentation engine", () => {
     expect(styles).toContain('data-motion="off"');
   });
 });
+
+it("suppresses a swipe click while allowing a later keyboard activation", () => {
+  const { container } = render(
+    <AkiSelector
+      options={options}
+      ariaLabel="Links"
+      getOptionHref={(option) => `/${option.id}`}
+      showControls={false}
+    />,
+  );
+  const scene = container.querySelector(".aks-selector__scene")!;
+  const swipe = () => {
+    for (const [type, x] of [
+      ["pointerdown", 220],
+      ["pointerup", 100],
+    ] as const) {
+      const event = new Event(type, { bubbles: true });
+      Object.assign(event, {
+        pointerType: "touch",
+        pointerId: 1,
+        clientX: x,
+        clientY: 100,
+      });
+      fireEvent(scene, event);
+    }
+  };
+  const outcomes: boolean[] = [];
+  const observe = (event: MouseEvent) => {
+    outcomes.push(event.defaultPrevented);
+    event.preventDefault();
+  };
+  document.addEventListener("click", observe);
+  try {
+    swipe();
+    expect(screen.getByRole("link", { name: "Solar" })).toHaveAttribute(
+      "data-selected",
+      "true",
+    );
+    fireEvent.click(screen.getByRole("link", { name: "Ember" }));
+    swipe();
+    const card = screen.getByRole("link", { name: "Breeze" });
+    fireEvent.keyDown(card, { key: "Enter" });
+    fireEvent.click(card);
+    expect(outcomes).toEqual([true, false]);
+  } finally {
+    document.removeEventListener("click", observe);
+  }
+});
