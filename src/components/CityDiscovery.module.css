@@ -3,22 +3,24 @@
   gap: 2.8rem;
   padding-top: 1rem;
   position: relative;
+  isolation: isolate;
   min-width: 0;
 }
-.discovery > section:first-child {
-  padding: clamp(20px, 3vw, 40px);
-  border: 1px solid color-mix(in srgb, var(--primary) 20%, var(--line));
-  border-radius: 28px;
-  background:
-    radial-gradient(
-      ellipse at 100% 0%,
-      color-mix(in srgb, var(--primary) 16%, transparent),
-      transparent 62%
-    ),
-    linear-gradient(140deg, var(--surface), var(--surface-alt));
+.discovery::before {
+  content: "";
+  position: absolute;
+  inset: -4rem 0 auto;
+  height: 42rem;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 75% 0%,
+    color-mix(in srgb, var(--primary) 10%, transparent),
+    transparent 70%
+  );
 }
 .discovery > section:first-child .heading h1 {
-  font-size: clamp(2rem, 4.2vw, 4rem);
+  font-size: clamp(2rem, 3.4vw, 3.2rem);
   max-width: 20ch;
   line-height: 1.04;
   letter-spacing: -0.055em;
@@ -318,12 +320,11 @@
 }
 
 @media (max-width: 650px) {
-  .discovery > section:first-child {
-    padding: 16px;
-    border-radius: 20px;
-  }
   .discovery > section:first-child .heading h1 {
-    font-size: clamp(1.8rem, 7vw, 2.5rem);
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+  }
+  .discovery > section:first-child .heading p {
+    display: block;
   }
 }
 @media (prefers-reduced-motion: reduce) {
