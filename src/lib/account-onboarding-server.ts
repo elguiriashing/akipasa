@@ -1,3 +1,7 @@
+import {
+  accountAgeVerified,
+  ageAssuranceEnforced,
+} from "./age-assurance-server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { onboardingEnabled, type OnboardingStatus } from "./account-onboarding";
 
@@ -21,6 +25,7 @@ export async function accountTrackingAllowed(
 ) {
   const status = await readOnboardingStatus(supabase);
   if (status === "pending" || status === "underage") return false;
+  if (ageAssuranceEnforced()) return accountAgeVerified(supabase);
   const { data, error } = await supabase
     .from("profiles")
     .select("birth_year")

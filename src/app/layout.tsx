@@ -1,3 +1,4 @@
+import { ageAssuranceEnforced } from "@/lib/age-assurance-server";
 import { optionalUser } from "@/lib/auth";
 import { accountTrackingAllowed } from "@/lib/account-onboarding-server";
 import "./globals.css";
@@ -120,7 +121,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  let trackingAllowed = true;
+  let trackingAllowed = !ageAssuranceEnforced();
   try {
     const { supabase, user } = await optionalUser();
     if (user) trackingAllowed = await accountTrackingAllowed(supabase, user.id);

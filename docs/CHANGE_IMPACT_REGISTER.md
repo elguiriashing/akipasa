@@ -3116,3 +3116,14 @@ collapse cases pass locally (3/3), and the production Next build passes. The
 local map browser reports WebGL unavailable before mounting attribution, so
 the unchanged EN/ES map attribution hit-target/non-overlap matrix must pass
 hosted browser CI; no map assertion or browser gate is skipped or weakened.
+
+## 2026-10-26 | Staged adult assurance and experience review policy
+
+Provider-neutral v1 rule module and fail-closed caller-only age reader are shared
+across the three discovery apps. Optional enforcement branches are staged in the
+existing account-tracking helper/root layout; all flags remain off. AkiPasa owns
+the disabled private-registry/check-in-guard migration. No existing account is
+verified or enrolled, no provider connected and no reviews launched. Dependency,
+privacy, moderation, database, EN/ES/browser and activation holds are explicit in
+VERIFIED_REVIEWS_20261026.md. Keep current behavior until complete coordinated
+acceptance; do not describe the foundation as a live privacy/review rollout.
