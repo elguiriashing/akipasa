@@ -61,7 +61,8 @@ body:has(.suite-discovery-nav) {
 body:has([data-suite-fullscreen]) {
   padding-bottom: 0;
 }
-body:has(.suite-discovery-nav) > .privacy-preferences {
+body:has(.suite-discovery-nav:not([data-product="pasa"]))
+  > .privacy-preferences {
   position: fixed;
   z-index: 80;
   left: auto;
@@ -317,10 +318,12 @@ body:has(.suite-discovery-nav) > .privacy-preferences {
     padding: 7px 2px;
     font-size: 11px;
   }
-  body:has(.suite-discovery-nav) > .privacy-preferences {
+  body:has(.suite-discovery-nav:not([data-product="pasa"]))
+    > .privacy-preferences {
     bottom: calc(80px + env(safe-area-inset-bottom, 0px));
   }
-  body:has(.suite-discovery-nav) > .personalisation-consent {
+  body:has(.suite-discovery-nav:not([data-product="pasa"]))
+    > .personalisation-consent {
     bottom: calc(80px + env(safe-area-inset-bottom, 0px));
     max-height: calc(100dvh - 100px - env(safe-area-inset-bottom, 0px));
     overflow-y: auto;

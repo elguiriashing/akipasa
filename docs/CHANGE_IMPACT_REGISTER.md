@@ -3099,3 +3099,20 @@ The shared discovery rail is reconciled with master selector release #298
 opening artwork, transition styles and regressions remain unchanged; navigation
 uses its own frame classes and preserves focus-mode compatibility. Combined
 current-head CI remains mandatory before the sidebar merge and deployment.
+
+### Route privacy-control and navigation-name regression
+
+Public browser acceptance exposed two issues in the shared-frame candidate.
+Pasa keeps its existing route-owned privacy/consent positioning instead of the
+sibling global positioning; this prevents map attribution overlapping Privacy
+and retains detail/membership controls. The mobile-bottom-navigation browser
+locator uses its exact accessible name, so the visible desktop AkiPasa
+navigation is not mistaken for the hidden mobile dock. Keep all original
+hidden/visible, hit-target and non-overlap assertions. No consent decision,
+tracking gate, map provider, navigation destination or authorization changes.
+
+The corrected real-route mobile navigation, rail/focus and cross-route theme/
+collapse cases pass locally (3/3), and the production Next build passes. The
+local map browser reports WebGL unavailable before mounting attribution, so
+the unchanged EN/ES map attribution hit-target/non-overlap matrix must pass
+hosted browser CI; no map assertion or browser gate is skipped or weakened.
