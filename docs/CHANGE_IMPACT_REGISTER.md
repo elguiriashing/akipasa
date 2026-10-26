@@ -3025,3 +3025,11 @@ collapse persistence Playwright cases passed separately against loopback fixture
 The first browser start lacked the required fixture Supabase configuration; the
 retry used explicit disposable localhost configuration and passed. No real
 customer/provider acceptance or deployment is inferred.
+
+### Shared rail focus-mode compatibility
+
+The existing owner focus appearance preference also hides the new discovery
+rail and releases its body offset. This preserves the prior navigation-free
+view after replacing the legacy rail classes. No owner authorization or stored
+preference changes. Real-component Chromium verifies hidden navigation and a
+zero body offset in expanded/compact modes, then restoration after focus ends.

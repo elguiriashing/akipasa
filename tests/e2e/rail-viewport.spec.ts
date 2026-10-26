@@ -10,6 +10,18 @@ test("AkiSuite rail keeps its controls reachable on short desktop windows", asyn
     const rail = page.locator(".suite-discovery-nav");
     const dock = rail.locator(".suite-discovery-footer");
     await expect(rail).toBeVisible();
+    async function verifyFocusMode() {
+      await page.evaluate(() => {
+        document.documentElement.dataset.ownerFocus = "true";
+      });
+      await expect(rail).toBeHidden();
+      await expect(page.locator("body")).toHaveCSS("padding-left", "0px");
+      await page.evaluate(() => {
+        delete document.documentElement.dataset.ownerFocus;
+      });
+      await expect(rail).toBeVisible();
+    }
+    await verifyFocusMode();
     await expect(dock).toBeVisible();
     await expect(rail.locator(".suite-discovery-menu > summary")).toBeVisible();
     await expect(
@@ -35,6 +47,7 @@ test("AkiSuite rail keeps its controls reachable on short desktop windows", asyn
 
     await rail.getByRole("button", { name: "Collapse sidebar" }).click();
     await expect(rail).toHaveAttribute("data-compact", "true");
+    await verifyFocusMode();
     await expect(rail.locator(".suite-discovery-menu > summary")).toBeVisible();
     const compactDock = await dock.boundingBox();
     expect(compactDock).not.toBeNull();

@@ -41,3 +41,12 @@
     --suite-navigation-offset: 0px;
   }
 }
+
+/* The existing owner focus preference hides navigation without reserving space. */
+html[data-owner-focus="true"] .suite-discovery-nav[data-product="pasa"] {
+  display: none !important;
+}
+html[data-owner-focus="true"]
+  body:has(.suite-discovery-nav[data-product="pasa"]) {
+  padding-left: 0;
+}
