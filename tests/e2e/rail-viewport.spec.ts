@@ -7,11 +7,23 @@ test("AkiSuite rail keeps its controls reachable on short desktop windows", asyn
     await page.setViewportSize({ width: 1280, height });
     await page.goto("/en");
 
-    const rail = page.locator(".app-rail");
-    const dock = rail.locator(".app-rail-bottom");
+    const rail = page.locator(".suite-discovery-nav");
+    const dock = rail.locator(".suite-discovery-footer");
     await expect(rail).toBeVisible();
+    async function verifyFocusMode() {
+      await page.evaluate(() => {
+        document.documentElement.dataset.ownerFocus = "true";
+      });
+      await expect(rail).toBeHidden();
+      await expect(page.locator("body")).toHaveCSS("padding-left", "0px");
+      await page.evaluate(() => {
+        delete document.documentElement.dataset.ownerFocus;
+      });
+      await expect(rail).toBeVisible();
+    }
+    await verifyFocusMode();
     await expect(dock).toBeVisible();
-    await expect(rail.locator(".app-suite-trigger")).toBeVisible();
+    await expect(rail.locator(".suite-discovery-menu > summary")).toBeVisible();
     await expect(
       rail.getByRole("button", { name: "Collapse sidebar" }),
     ).toBeVisible();
@@ -20,8 +32,8 @@ test("AkiSuite rail keeps its controls reachable on short desktop windows", asyn
     expect(dockRect).not.toBeNull();
     expect(dockRect!.y + dockRect!.height).toBeLessThanOrEqual(height + 1);
 
-    await rail.locator(".app-suite-trigger").click();
-    const popover = rail.locator(".app-suite-popover");
+    await rail.locator(".suite-discovery-menu > summary").click();
+    const popover = rail.locator(".suite-discovery-popover");
     await expect(
       popover.getByRole("link", { name: "AkiBusiness" }),
     ).toBeVisible();
@@ -31,21 +43,22 @@ test("AkiSuite rail keeps its controls reachable on short desktop windows", asyn
     expect(popoverRect!.y + popoverRect!.height).toBeLessThanOrEqual(
       height + 1,
     );
-    await rail.locator(".app-suite-trigger").click();
+    await rail.locator(".suite-discovery-menu > summary").click();
 
     await rail.getByRole("button", { name: "Collapse sidebar" }).click();
-    await expect(rail).toHaveClass(/app-rail--compact/);
-    await expect(rail.locator(".app-suite-trigger")).toBeVisible();
+    await expect(rail).toHaveAttribute("data-compact", "true");
+    await verifyFocusMode();
+    await expect(rail.locator(".suite-discovery-menu > summary")).toBeVisible();
     const compactDock = await dock.boundingBox();
     expect(compactDock).not.toBeNull();
     expect(compactDock!.y + compactDock!.height).toBeLessThanOrEqual(
       height + 1,
     );
-    const account = rail.locator(".app-rail-cta");
+    const account = rail.locator(".suite-discovery-signin");
     await expect(account).toHaveCSS("height", "52px");
     await expect(account.locator("svg")).toHaveCSS("width", "21px");
     await expect(rail).toHaveCSS("transition-duration", "0s");
-    await rail.locator(".app-suite-trigger").click();
+    await rail.locator(".suite-discovery-menu > summary").click();
     const compactPopover = await popover.boundingBox();
     const railRect = await rail.boundingBox();
     expect(compactPopover!.x).toBeGreaterThan(railRect!.x + railRect!.width);
@@ -54,7 +67,7 @@ test("AkiSuite rail keeps its controls reachable on short desktop windows", asyn
       height,
     );
     expect(compactPopover!.x + compactPopover!.width).toBeLessThanOrEqual(1280);
-    await rail.locator(".app-suite-trigger").click();
+    await rail.locator(".suite-discovery-menu > summary").click();
     await rail.getByRole("button", { name: "Expand sidebar" }).click();
     await expect(account).toHaveCSS("height", "52px");
   }

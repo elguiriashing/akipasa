@@ -133,6 +133,7 @@ test("mobile navigation is compact and opens section links in place", async ({
 
   const bottomNavigation = page.getByRole("navigation", {
     name: "Navigation",
+    exact: true,
   });
   await expect(bottomNavigation).toBeVisible();
   await expect(

@@ -2986,6 +2986,54 @@ API, data, storage, analytics, asset or provider changes. Full check and existin
 responsive browser acceptance gate release; inspect desktop and phone captures
 and verify exact production source. Source revert is the rollback path.
 
+## 2026-10-26 | Reuse the approved discovery rail frame
+
+Replace AppShell's legacy desktop rail markup with an adapter of the approved
+Duermo/Coches DiscoveryNavigation v2 frame and stylesheet. Brand artwork is the
+40px v3 Pasa tile; links use the same 21px icons, 256/80px expanded/compact rail,
+spacing, pinned footer, 52px account action and viewport-bounded app popup.
+Only Pasa's orange accent, existing localized routes and account actions differ.
+Pasa retains its existing 850px mobile-shell boundary; its mobile More and Apps
+sheets, focus containment and bottom navigation remain unchanged. Authorized
+workspace links move into a labelled section of the desktop app popup, reducing
+rail density without changing capability checks or server authorization.
+
+Dependencies: AppShell, copied DiscoveryNavigation frame/CSS and small Pasa
+adapter, Icons, v3 artwork, LanguageLink (retained safe next/query switching),
+ThemeToggle, suiteHref/referral allowlist, roleCapabilities and local signOut.
+Discover/Map links still use discoveryViewHref and preserve only allowed filters.
+The existing true/false collapse storage key, storage events, map resize event,
+path-change dismissal, outside dismissal, Escape and focus return are retained.
+No API, database, RLS, storage, billing, analytics, provider or Android change.
+Source revert is rollback. Public source remains master; no sibling source import
+or production publication is implied by this candidate.
+
+Validation: 20 focused rendered/interaction tests passed. A real Chromium harness
+using the actual AppShell and production styles passed 48 expanded/compact states
+across EN/ES, light/dark, guest/admin and 480/740/900px heights. All app destinations,
+40px brand, widths, reachable footer and authorized popup links were checked;
+compact screenshot inspected. Existing rail/UI browser assertions now follow the
+shared frame's data-compact attribute. Full check, hosted CI, real-route browser
+and deployed source verification are tracked separately before release.
+
+Verification update: repository format/lint/typecheck and 1,959 Vitest cases in
+`npm run check` passed, along with security/database checks. That command first
+stopped at missing local automation dependencies; after restoring the existing
+locked dependency installation, automation check/dry-run and the Next production
+build passed. The real production-route rail viewport and cross-route theme/
+collapse persistence Playwright cases passed separately against loopback fixtures.
+The first browser start lacked the required fixture Supabase configuration; the
+retry used explicit disposable localhost configuration and passed. No real
+customer/provider acceptance or deployment is inferred.
+
+### Shared rail focus-mode compatibility
+
+The existing owner focus appearance preference also hides the new discovery
+rail and releases its body offset. This preserves the prior navigation-free
+view after replacing the legacy rail classes. No owner authorization or stored
+preference changes. Real-component Chromium verifies hidden navigation and a
+zero body offset in expanded/compact modes, then restoration after focus ends.
+
 ## 2026-10-26 | Cinematic AkiSelector energy and transitions
 
 The login selector now uses five distinct vector-mask materials: Pasa flame
@@ -3043,3 +3091,28 @@ No production data, SQL, storage, billing, analytics, provider configuration or
 Android binary changes. Source revert plus fresh static versions is rollback.
 GitHub publication is still awaiting the explicit authorization requested earlier;
 no push, PR, merge or deployment is implied by this design refinement.
+
+### Sidebar and selector release reconciliation
+
+The shared discovery rail is reconciled with master selector release #298
+(74b22a1). Both complete contract histories are retained. Selector components,
+opening artwork, transition styles and regressions remain unchanged; navigation
+uses its own frame classes and preserves focus-mode compatibility. Combined
+current-head CI remains mandatory before the sidebar merge and deployment.
+
+### Route privacy-control and navigation-name regression
+
+Public browser acceptance exposed two issues in the shared-frame candidate.
+Pasa keeps its existing route-owned privacy/consent positioning instead of the
+sibling global positioning; this prevents map attribution overlapping Privacy
+and retains detail/membership controls. The mobile-bottom-navigation browser
+locator uses its exact accessible name, so the visible desktop AkiPasa
+navigation is not mistaken for the hidden mobile dock. Keep all original
+hidden/visible, hit-target and non-overlap assertions. No consent decision,
+tracking gate, map provider, navigation destination or authorization changes.
+
+The corrected real-route mobile navigation, rail/focus and cross-route theme/
+collapse cases pass locally (3/3), and the production Next build passes. The
+local map browser reports WebGL unavailable before mounting attribution, so
+the unchanged EN/ES map attribution hit-target/non-overlap matrix must pass
+hosted browser CI; no map assertion or browser gate is skipped or weakened.

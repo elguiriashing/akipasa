@@ -8,6 +8,7 @@ import { BrandLogo } from "./BrandLogo";
 import { GlobalSearch } from "./GlobalSearch";
 import { Icon, type IconName } from "./Icons";
 import { LanguageLink } from "./LanguageLink";
+import { DiscoveryNavigation } from "./DiscoveryNavigation";
 import { ThemeToggle } from "./ThemeModeControls";
 import { signOut } from "../app/[locale]/auth/actions";
 import { ConsoleSwitcher, type ConsoleKey } from "./ConsoleSwitcher";
@@ -24,8 +25,6 @@ type NavItem = {
   icon: IconName;
 };
 
-const SIDEBAR_KEY = "akipasa.sidebar.collapsed";
-
 function isActive(pathname: string, href: string) {
   const target = href.split("?")[0];
   return (
@@ -38,13 +37,11 @@ function PrimaryNavLink({
   item,
   locale,
   pathname,
-  compact,
   mobile = false,
 }: {
   item: NavItem;
   locale: Locale;
   pathname: string;
-  compact: boolean;
   mobile?: boolean;
 }) {
   const query = useSearchParams();
@@ -61,10 +58,11 @@ function PrimaryNavLink({
       href={href}
       className={isActive(pathname, item.href) ? "active" : undefined}
       aria-current={isActive(pathname, item.href) ? "page" : undefined}
-      title={!mobile && compact ? item.label : undefined}
+      aria-label={item.label}
+      title={!mobile ? item.label : undefined}
     >
       <Icon name={item.icon} />
-      {(mobile || !compact) && <span>{item.label}</span>}
+      <span>{item.label}</span>
     </Link>
   );
 }
@@ -90,7 +88,6 @@ export function AppShell({
   const other = es ? "en" : "es";
   const [sheetOpen, setSheetOpen] = useState(false);
   const [suiteOpen, setSuiteOpen] = useState(false);
-  const [compact, setCompact] = useState(false);
   const moreButtonRef = useRef<HTMLButtonElement>(null);
   const suiteButtonRef = useRef<HTMLButtonElement>(null);
   const suiteCloseRef = useRef<HTMLButtonElement>(null);
@@ -255,34 +252,6 @@ export function AppShell({
   }, [pathname]);
 
   useEffect(() => {
-    try {
-      setCompact(window.localStorage.getItem(SIDEBAR_KEY) === "true");
-    } catch {
-      setCompact(false);
-    }
-
-    const handleStorage = (event: StorageEvent) => {
-      if (event.key === SIDEBAR_KEY) {
-        setCompact(event.newValue === "true");
-      }
-    };
-    window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
-  }, []);
-
-  function toggleSidebar() {
-    setCompact((current) => {
-      const next = !current;
-      try {
-        window.localStorage.setItem(SIDEBAR_KEY, String(next));
-      } catch {
-        // The control still works when storage is unavailable.
-      }
-      return next;
-    });
-  }
-
-  useEffect(() => {
     if (!sheetOpen && !suiteOpen) return;
     const previousOverflow = document.body.style.overflow;
     const returnFocus = suiteOpen
@@ -351,139 +320,40 @@ export function AppShell({
         section === "passports" ? "app-shell app-shell--passport" : "app-shell"
       }
     >
-      {/* Desktop rail */}
-      <aside
-        className={["app-rail", compact ? "app-rail--compact" : ""]
-          .filter(Boolean)
-          .join(" ")}
-        aria-label={es ? "Navegación principal" : "Primary navigation"}
-      >
-        <Link
-          href={`/${locale}`}
-          className="app-rail-brand"
-          aria-label="AkiPasa"
-        >
-          <BrandLogo compact={compact} />
-        </Link>
-
-        <nav className="app-rail-nav">
-          {primaryNav.map((item) => (
-            <Suspense
-              key={item.href}
-              fallback={
-                <Link href={item.href}>
-                  <Icon name={item.icon} />
-                  {!compact && <span>{item.label}</span>}
-                </Link>
-              }
-            >
-              <PrimaryNavLink
-                item={item}
-                locale={locale}
-                pathname={pathname}
-                compact={compact}
-              />
-            </Suspense>
-          ))}
-          {signedIn && workspaceNav.length > 0 && (
-            <>
-              <div className="app-rail-divider" role="separator" />
-              {!compact && (
-                <span className="app-rail-section-label">
-                  {es ? "Tus espacios" : "Your workspaces"}
-                </span>
-              )}
-              {workspaceNav.map((item) => (
+      <DiscoveryNavigation
+        locale={locale}
+        signedIn={signedIn}
+        actions={suiteActions}
+        workspaces={
+          signedIn && workspaceNav.length > 0
+            ? workspaceNav.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={
-                    isActive(pathname, item.href) ? "active" : undefined
-                  }
                   aria-current={
                     isActive(pathname, item.href) ? "page" : undefined
                   }
-                  title={compact ? item.label : undefined}
                 >
-                  <Icon name={item.icon} />
-                  {!compact && <span>{item.label}</span>}
+                  <Icon name={item.icon} size={21} />
+                  <span>{item.label}</span>
                 </Link>
-              ))}
-            </>
-          )}
-          <div className="app-rail-divider" role="separator" />
-          {railExtras.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={isActive(pathname, item.href) ? "active" : undefined}
-              aria-current={isActive(pathname, item.href) ? "page" : undefined}
-              title={compact ? item.label : undefined}
-            >
-              <Icon name={item.icon} />
-              {!compact && <span>{item.label}</span>}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="app-rail-bottom">
-          <details className="app-suite-menu">
-            <summary
-              className="app-suite-trigger"
-              aria-label={
-                es ? "Cambiar aplicación AkiSuite" : "Switch AkiSuite app"
-              }
-            >
-              <Icon name="more" />
-              <span>AkiSuite</span>
-            </summary>
-            <div className="app-suite-popover">
-              {suiteLinks}
-              {suiteActions}
-            </div>
-          </details>
-          {!signedIn && (
-            <Link
-              className="button button-strong app-rail-cta"
-              aria-label={es ? "Entrar" : "Sign in"}
-              href={`/${locale}/auth`}
-              title={compact ? (es ? "Entrar" : "Sign in") : undefined}
-            >
-              {compact ? <Icon name="account" /> : es ? "Entrar" : "Sign in"}
-            </Link>
-          )}
-          <div className="app-rail-tools">
-            <ThemeToggle locale={locale} />
-            <LanguageLink locale={other} compact={compact} />
-          </div>
-          <button
-            type="button"
-            className="app-rail-collapse"
-            onClick={toggleSidebar}
-            aria-label={
-              compact
-                ? es
-                  ? "Expandir barra lateral"
-                  : "Expand sidebar"
-                : es
-                  ? "Contraer barra lateral"
-                  : "Collapse sidebar"
-            }
-            title={
-              compact
-                ? es
-                  ? "Expandir barra lateral"
-                  : "Expand sidebar"
-                : undefined
+              ))
+            : null
+        }
+        navigation={[...primaryNav, ...railExtras].map((item) => (
+          <Suspense
+            key={item.href}
+            fallback={
+              <Link href={item.href} aria-label={item.label}>
+                <Icon name={item.icon} size={21} />
+                <span>{item.label}</span>
+              </Link>
             }
           >
-            <Icon name="chevron" />
-            {!compact && (
-              <span>{es ? "Contraer barra" : "Collapse sidebar"}</span>
-            )}
-          </button>
-        </div>
-      </aside>
+            <PrimaryNavLink item={item} locale={locale} pathname={pathname} />
+          </Suspense>
+        ))}
+      />
 
       <Suspense fallback={null}>
         <GlobalSearch locale={locale} />
@@ -538,7 +408,6 @@ export function AppShell({
               item={item}
               locale={locale}
               pathname={pathname}
-              compact={compact}
               mobile
             />
           </Suspense>
