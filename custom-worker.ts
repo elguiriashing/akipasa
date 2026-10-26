@@ -46,6 +46,7 @@ const worker = {
   async scheduled(
     _event: unknown,
     env: ClaimMailEnv & {
+      AKIPASA_PUSH_ENABLED?: string;
       AKISUITE_SUBSCRIPTIONS_READY?: string;
       AKISUITE_FEATURES_READY?: string;
       AKISUITE_BILLING_VERIFIED?: string;
@@ -77,7 +78,9 @@ const worker = {
     ctx.waitUntil(dispatchAccommodationConfirmations(env));
     ctx.waitUntil(dispatchClaimDecisions(env));
     ctx.waitUntil(dispatchClaimSubmissionAlerts(env));
-    ctx.waitUntil(dispatchFounderClaimPushes(env));
+    if (env.AKIPASA_PUSH_ENABLED === "true") {
+      ctx.waitUntil(dispatchFounderClaimPushes(env));
+    }
     ctx.waitUntil(dispatchSuiteEmails(env));
     ctx.waitUntil(publishScheduledAkiSuiteEvents(env));
     ctx.waitUntil(
