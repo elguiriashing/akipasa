@@ -17,7 +17,7 @@ current product safely.
 
 - Installable Android app with package ID `com.akipasa`.
 - API 36 target and API 26 minimum.
-- Immersive AkiPasa screen (versionCode 3 / 1.0.2): swipe from the top or
+- Immersive AkiPasa screen (versionCode 4 / 1.0.3): swipe from the top or
   bottom edge to reveal the system bars temporarily; Android's normal Back/Home
   gestures and buttons remain available. The camera cutout stays clear of
   controls. Test the keyboard and both navigation modes on a real device.
@@ -101,7 +101,7 @@ the new return button. After Google consent, tap Return to AkiPasa, then verify
 you are signed in inside the app. The Play upload remains gated on a signed
 internal-track test of the complete flow.
 Web layout changes load from the site after a refresh, but immersive system-bar
-handling is native; pull the latest branch and reinstall version 1.0.2 to see it.
+handling is native; pull the latest branch and reinstall version 1.0.3 to see it.
 
 ## Play Console release checklist
 
@@ -153,3 +153,16 @@ Play upload creates a different Play app.
 - Validate the signed bundle on Internal testing before Closed or Production.
 - The key reset does not resolve the existing policy rejection or complete the
   organisation-account conversion.
+
+## Founder-only claim notifications (FCM)
+
+The Android 1.0.3 source includes native Firebase Cloud Messaging, but it is a
+**disabled-by-default** feature. Only a signed-in, authorized founder visiting
+AkiPasa Staff triggers FCM token registration; consumer app launch never enables
+Firebase Analytics or FCM auto-registration. See
+`docs/FOUNDER_ANDROID_PUSH.md` for required Cloudflare secrets, Supabase
+migration, Google Cloud FCM API, signed Play internal testing, and rollback.
+
+The `Android/app/google-services.json` file is the public Android client
+configuration. It is NOT the privileged Firebase service-account JSON. Never
+commit private service-account credentials, Firebase Admin SDK keys, or keystores.
