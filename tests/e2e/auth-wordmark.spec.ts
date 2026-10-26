@@ -15,9 +15,9 @@ for (const locale of ["en", "es"] as const)
         }, theme);
         await page.goto(`/${locale}/auth`);
         const picker = page.locator(".aki-workspace-picker");
-        await expect(picker.getByRole("radio")).toHaveCount(5);
+        await expect(picker.getByRole("link")).toHaveCount(5);
         await picker
-          .getByRole("radio", { name: "AkiPasa", exact: true })
+          .getByRole("link", { name: "AkiPasa", exact: true })
           .focus();
         for (const name of [
           "AkiPasa",
@@ -26,8 +26,8 @@ for (const locale of ["en", "es"] as const)
           "AkiHQ",
           "AkiBusiness",
         ]) {
-          const card = picker.getByRole("radio", { name, exact: true });
-          await expect(card).toHaveAttribute("aria-checked", "true");
+          const card = picker.getByRole("link", { name, exact: true });
+          await expect(card).toHaveAttribute("data-selected", "true");
           const word = card.locator(".aks-selector__label");
           await expect(word).toHaveText(name);
           const geometry = await word.evaluate((node) => {
