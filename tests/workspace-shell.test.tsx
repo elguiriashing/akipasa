@@ -376,7 +376,9 @@ it("keeps Passport content and the global rail inside the viewport shell across 
       <main>Passport content</main>
     </AppShell>,
   );
-  expect(container.querySelector(".app-shell > .app-rail")).not.toBeNull();
+  expect(
+    container.querySelector(".app-shell > .suite-discovery-nav"),
+  ).not.toBeNull();
   expect(
     container.querySelector(".app-shell--passport > .app-content > main"),
   ).toHaveTextContent("Passport content");
@@ -404,7 +406,7 @@ it("uses one persistent rail state and a real light/dark icon control", () => {
   const rail = screen.getByRole("complementary", {
     name: "Primary navigation",
   });
-  expect(rail).not.toHaveClass("app-rail--compact");
+  expect(rail).toHaveAttribute("data-compact", "false");
   expect(screen.getByRole("link", { name: "Passports" })).toBeInTheDocument();
 
   const themeToggle = screen.getByRole("button", {
@@ -415,7 +417,7 @@ it("uses one persistent rail state and a real light/dark icon control", () => {
   expect(screen.queryByText(/premium|standard/i)).not.toBeInTheDocument();
 
   fireEvent.click(screen.getByRole("button", { name: "Collapse sidebar" }));
-  expect(rail).toHaveClass("app-rail--compact");
+  expect(rail).toHaveAttribute("data-compact", "true");
   expect(window.localStorage.getItem("akipasa.sidebar.collapsed")).toBe("true");
   expect(
     screen.getByRole("button", { name: "Expand sidebar" }),
@@ -435,7 +437,7 @@ it("uses one persistent rail state and a real light/dark icon control", () => {
   );
   expect(
     screen.getByRole("complementary", { name: "Primary navigation" }),
-  ).toHaveClass("app-rail--compact");
+  ).toHaveAttribute("data-compact", "true");
 });
 it("puts every authorized workspace in the main mobile menu", () => {
   render(
@@ -464,7 +466,7 @@ it("puts every authorized workspace in the main mobile menu", () => {
   ).toHaveAttribute("href", "/en/admin");
 });
 
-it("keeps authorized workspaces in the persistent desktop navigation", () => {
+it("keeps authorized workspaces reachable in the desktop app menu", () => {
   render(
     <AppShell locale="en" signedIn={true} role="administrator">
       <main>Discovery content</main>
@@ -474,6 +476,7 @@ it("keeps authorized workspaces in the persistent desktop navigation", () => {
   const rail = screen.getByRole("complementary", {
     name: "Primary navigation",
   });
+  fireEvent.click(within(rail).getByText("AkiSuite"));
   expect(within(rail).getByText("Your workspaces")).toBeInTheDocument();
   expect(
     within(rail)

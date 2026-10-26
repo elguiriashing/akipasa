@@ -1,0 +1,43 @@
+/* Product adapter only. Geometry is the approved Duermo/Coches rail. */
+.suite-discovery-nav[data-product="pasa"] {
+  --suite-tone: #f26b1d;
+  --suite-tone-ink: #17181c;
+}
+.suite-discovery-nav[data-product="pasa"]
+  .suite-discovery-actions
+  .app-suite-actions {
+  display: contents;
+}
+.suite-discovery-nav[data-product="pasa"] .suite-discovery-tools > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.suite-discovery-nav[data-product="pasa"] .suite-discovery-actions button {
+  width: 100%;
+  justify-content: flex-start;
+  border: 0;
+  border-radius: 10px;
+}
+@media (min-width: 851px) {
+  .app-shell:has(> .suite-discovery-nav) {
+    display: block;
+  }
+}
+@media (max-width: 850px) {
+  .suite-discovery-nav[data-product="pasa"] {
+    display: none;
+  }
+  body:has(.suite-discovery-nav[data-product="pasa"]) {
+    padding-left: 0;
+    padding-bottom: 0;
+    --suite-navigation-offset: 0px;
+  }
+}

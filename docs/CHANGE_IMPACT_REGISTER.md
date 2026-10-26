@@ -2985,3 +2985,43 @@ sidebar, photo accessibility and reduced motion. No sibling app, auth, role,
 API, data, storage, analytics, asset or provider changes. Full check and existing
 responsive browser acceptance gate release; inspect desktop and phone captures
 and verify exact production source. Source revert is the rollback path.
+
+## 2026-10-26 | Reuse the approved discovery rail frame
+
+Replace AppShell's legacy desktop rail markup with an adapter of the approved
+Duermo/Coches DiscoveryNavigation v2 frame and stylesheet. Brand artwork is the
+40px v3 Pasa tile; links use the same 21px icons, 256/80px expanded/compact rail,
+spacing, pinned footer, 52px account action and viewport-bounded app popup.
+Only Pasa's orange accent, existing localized routes and account actions differ.
+Pasa retains its existing 850px mobile-shell boundary; its mobile More and Apps
+sheets, focus containment and bottom navigation remain unchanged. Authorized
+workspace links move into a labelled section of the desktop app popup, reducing
+rail density without changing capability checks or server authorization.
+
+Dependencies: AppShell, copied DiscoveryNavigation frame/CSS and small Pasa
+adapter, Icons, v3 artwork, LanguageLink (retained safe next/query switching),
+ThemeToggle, suiteHref/referral allowlist, roleCapabilities and local signOut.
+Discover/Map links still use discoveryViewHref and preserve only allowed filters.
+The existing true/false collapse storage key, storage events, map resize event,
+path-change dismissal, outside dismissal, Escape and focus return are retained.
+No API, database, RLS, storage, billing, analytics, provider or Android change.
+Source revert is rollback. Public source remains master; no sibling source import
+or production publication is implied by this candidate.
+
+Validation: 20 focused rendered/interaction tests passed. A real Chromium harness
+using the actual AppShell and production styles passed 48 expanded/compact states
+across EN/ES, light/dark, guest/admin and 480/740/900px heights. All app destinations,
+40px brand, widths, reachable footer and authorized popup links were checked;
+compact screenshot inspected. Existing rail/UI browser assertions now follow the
+shared frame's data-compact attribute. Full check, hosted CI, real-route browser
+and deployed source verification are tracked separately before release.
+
+Verification update: repository format/lint/typecheck and 1,959 Vitest cases in
+`npm run check` passed, along with security/database checks. That command first
+stopped at missing local automation dependencies; after restoring the existing
+locked dependency installation, automation check/dry-run and the Next production
+build passed. The real production-route rail viewport and cross-route theme/
+collapse persistence Playwright cases passed separately against loopback fixtures.
+The first browser start lacked the required fixture Supabase configuration; the
+retry used explicit disposable localhost configuration and passed. No real
+customer/provider acceptance or deployment is inferred.

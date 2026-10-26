@@ -353,13 +353,13 @@ test.describe("polished public UI", () => {
     const rail = page.getByRole("complementary", {
       name: "Primary navigation",
     });
-    await expect(rail).not.toHaveClass(/app-rail--compact/);
+    await expect(rail).toHaveAttribute("data-compact", "false");
     await expect(
       page.getByRole("button", { name: "Switch to light mode" }),
     ).toBeVisible();
 
     await page.getByRole("button", { name: "Collapse sidebar" }).click();
-    await expect(rail).toHaveClass(/app-rail--compact/);
+    await expect(rail).toHaveAttribute("data-compact", "true");
     expect(
       await page.evaluate(() =>
         window.localStorage.getItem("akipasa.sidebar.collapsed"),
@@ -369,11 +369,11 @@ test.describe("polished public UI", () => {
     await page.goto("/en/passports");
     await expect(
       page.getByRole("complementary", { name: "Primary navigation" }),
-    ).toHaveClass(/app-rail--compact/);
+    ).toHaveAttribute("data-compact", "true");
     await page.getByRole("button", { name: "Expand sidebar" }).click();
     await expect(
       page.getByRole("complementary", { name: "Primary navigation" }),
-    ).not.toHaveClass(/app-rail--compact/);
+    ).toHaveAttribute("data-compact", "false");
 
     const themeToggle = page.getByRole("button", {
       name: "Switch to light mode",

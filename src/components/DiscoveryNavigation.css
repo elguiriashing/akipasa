@@ -1,0 +1,328 @@
+/* AkiSuite discovery rail v2. Geometry copied from Duermo/Coches; Pasa retains its 850px mobile shell boundary. */
+.suite-discovery-nav {
+  position: fixed;
+  z-index: 70;
+  box-sizing: border-box;
+  color: var(--ink, #172238);
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #dce1e8);
+  --suite-tone: #2fc2a5;
+  --suite-tone-ink: #082b27;
+}
+.suite-discovery-nav[data-product="coches"] {
+  --surface: #50212c;
+  --ink: #f6f4f1;
+  --suite-tone: #ff3047;
+  --suite-tone-ink: #17181c;
+}
+html[data-theme="light"] .suite-discovery-nav[data-product="coches"] {
+  --surface: #fff;
+  --ink: #17181c;
+}
+.suite-discovery-nav svg {
+  width: 21px;
+  height: 21px;
+  flex: 0 0 auto;
+}
+.suite-discovery-nav a {
+  color: inherit;
+  text-decoration: none;
+}
+.suite-discovery-links {
+  display: flex;
+}
+.suite-discovery-links > a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 46px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  color: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  box-sizing: border-box;
+}
+.suite-discovery-links > a[aria-current="page"] {
+  background: var(--suite-tone);
+  color: var(--suite-tone-ink);
+}
+.suite-discovery-nav :is(a, button, summary):focus-visible {
+  outline: 2px solid var(--suite-tone);
+  outline-offset: 2px;
+}
+.suite-discovery-brand,
+.suite-discovery-footer {
+  display: none;
+}
+body:has(.suite-discovery-nav) {
+  --suite-navigation-offset: 0px;
+}
+body:has([data-suite-fullscreen]) {
+  padding-bottom: 0;
+}
+body:has(.suite-discovery-nav) > .privacy-preferences {
+  position: fixed;
+  z-index: 80;
+  left: auto;
+  right: max(12px, env(safe-area-inset-right, 0px));
+  bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  max-width: calc(100vw - 24px);
+  margin: 0;
+  padding: 0;
+}
+@media (min-width: 851px) {
+  body:has(.suite-discovery-nav) {
+    --suite-rail-width: 16rem;
+    --suite-header-height: 0px;
+    padding-left: var(--suite-rail-width);
+  }
+  body:has(.suite-discovery-nav[data-compact="true"]) {
+    --suite-rail-width: 5rem;
+  }
+  body:has(.suite-discovery-nav) [data-suite-header] {
+    display: none;
+  }
+  .suite-discovery-nav {
+    inset: 0 auto 0 0;
+    width: var(--suite-rail-width);
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    border-width: 0 1px 0 0;
+  }
+  .suite-discovery-brand {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 9px;
+    min-height: 44px;
+    padding: 0 4px;
+  }
+  .suite-discovery-brand img {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+  }
+  .suite-discovery-brand strong {
+    font-family: "Avenir Next", "Montserrat", "Inter", "Segoe UI", sans-serif;
+    font-size: 24px;
+    font-weight: 750;
+    letter-spacing: -0.055em;
+    white-space: nowrap;
+  }
+  .suite-discovery-brand strong span {
+    color: var(--suite-tone);
+  }
+  .suite-discovery-links {
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
+    gap: 3px;
+    overflow-y: auto;
+  }
+  .suite-discovery-links svg {
+    flex: 0 0 auto;
+  }
+  .suite-discovery-footer {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 44px;
+    align-items: center;
+    gap: 6px;
+    padding-top: 9px;
+    border-top: 1px solid var(--line);
+  }
+  .suite-discovery-menu,
+  .suite-discovery-signin {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+  .suite-discovery-menu {
+    position: relative;
+  }
+  .suite-discovery-menu summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 44px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+  }
+  .suite-discovery-menu summary::-webkit-details-marker {
+    display: none;
+  }
+  .suite-discovery-popover {
+    position: fixed;
+    bottom: 12px;
+    left: calc(var(--suite-rail-width) + 8px);
+    width: min(21rem, calc(100vw - 24px));
+    max-height: calc(100dvh - 24px);
+    overflow-y: auto;
+    padding: 12px;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: 0 16px 40px #0005;
+  }
+  .suite-discovery-popover nav {
+    display: grid;
+    gap: 4px;
+  }
+  .suite-discovery-popover a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    border-radius: 10px;
+    padding: 8px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .suite-discovery-popover a:hover {
+    background: color-mix(in srgb, var(--suite-tone) 15%, transparent);
+  }
+  .suite-discovery-popover img {
+    width: 36px;
+    height: 36px;
+  }
+  .suite-discovery-actions {
+    display: grid;
+    gap: 4px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--line);
+  }
+  .suite-discovery-actions form {
+    margin: 0;
+  }
+  .suite-discovery-nav .suite-discovery-signin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 52px;
+    border-radius: 999px;
+    background: var(--suite-tone);
+    color: var(--suite-tone-ink);
+    font-size: 14px;
+    font-weight: 800;
+  }
+  .suite-discovery-signin > svg {
+    display: none;
+  }
+  .suite-discovery-tools {
+    display: flex;
+    gap: 6px;
+  }
+  .suite-discovery-footer button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    margin: 0;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: inherit;
+    background: transparent;
+    box-shadow: none;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .suite-discovery-footer .suite-discovery-collapse {
+    padding: 0;
+    border-radius: 12px;
+  }
+  .suite-discovery-collapse span {
+    display: none;
+  }
+  .suite-discovery-collapse svg {
+    transform: rotate(180deg);
+  }
+  .suite-discovery-nav[data-compact="true"] {
+    padding-inline: 9px;
+  }
+  .suite-discovery-nav[data-compact="true"] .suite-discovery-brand {
+    justify-content: center;
+    padding: 0;
+  }
+  .suite-discovery-nav[data-compact="true"]
+    :is(
+      .suite-discovery-brand strong,
+      .suite-discovery-links span,
+      .suite-discovery-menu summary span,
+      .suite-discovery-signin span
+    ) {
+    display: none;
+  }
+  .suite-discovery-nav[data-compact="true"] .suite-discovery-links > a {
+    justify-content: center;
+    padding-inline: 8px;
+  }
+  .suite-discovery-nav[data-compact="true"] .suite-discovery-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .suite-discovery-nav[data-compact="true"] .suite-discovery-tools {
+    flex-direction: column;
+    align-items: center;
+  }
+  .suite-discovery-nav[data-compact="true"] .suite-discovery-signin > svg {
+    display: block;
+  }
+  .suite-discovery-nav[data-compact="true"] .suite-discovery-collapse svg {
+    transform: none;
+  }
+}
+@media (max-width: 850px) {
+  body:has(.suite-discovery-nav) {
+    --suite-navigation-offset: calc(72px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: var(--suite-navigation-offset);
+  }
+  body:has([data-suite-fullscreen]) {
+    padding-bottom: 0;
+  }
+  .suite-discovery-nav {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 5px 6px max(5px, env(safe-area-inset-bottom, 0px));
+    border-width: 1px 0 0;
+    border-radius: 18px 18px 0 0;
+  }
+  .suite-discovery-links {
+    justify-content: space-around;
+  }
+  .suite-discovery-links > a {
+    flex: 1;
+    min-width: 0;
+    min-height: 56px;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+    padding: 7px 2px;
+    font-size: 11px;
+  }
+  body:has(.suite-discovery-nav) > .privacy-preferences {
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  }
+  body:has(.suite-discovery-nav) > .personalisation-consent {
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+    max-height: calc(100dvh - 100px - env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+  }
+}
