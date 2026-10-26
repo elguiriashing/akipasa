@@ -456,6 +456,14 @@ public final class MainActivity extends Activity {
         }
 
         @Override
+        public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
+            super.doUpdateVisitedHistory(view, url, isReload);
+            // Next.js SPA navigation does not always trigger onPageFinished.
+            // A founder entering Staff from Discover must still opt in/register.
+            view.post(() -> registerFounderPushForUrl(url));
+        }
+
+        @Override
         public void onPageFinished(WebView view, String url) {
             progressBar.setVisibility(View.GONE);
             if (mainFrameFailed) {
