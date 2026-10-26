@@ -2338,3 +2338,14 @@ No API, database, storage, analytics, provider, billing or sibling app mutations
 Regression extends the real browser rail test to 480px height and compact popup
 bounds/account geometry. Required full check, hosted browser CI and production
 source/visual verification remain separate gates. Rollback is a source revert.
+
+## 2026-10-26 | Sunset discovery presentation refresh
+
+The public CityDiscovery opening becomes an orange-lit editorial panel with a
+responsive headline, framed photography and clearer image-arrow contrast. Styling
+is local to CityDiscovery; sidebar, search, route destinations and saved preferences
+remain authoritative. Reduced-motion visitors get no photo hover transform. No new
+assets, network requests, data, analytics, API, role, price or provider changes.
+Validate both locales, light/dark and phone/tablet/desktop for fit and readability
+through full repository/browser CI and visual inspection before release. Source
+revert restores the previous presentation without changing user state.
