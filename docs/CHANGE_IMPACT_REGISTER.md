@@ -9,7 +9,6 @@
 - **Verification:** Automation Worker PR workflow must pass at exact head. No production dispatch is requested; merge and deployment are separate operations. No replay of missed cron jobs until backed by logs and idempotency evidence.
 - **Rollback:** Revert the workflow setting through reviewed PR only after confirming a secure alternative runtime.
 
-
 ## 2026-10-27 | Founder FCM push integration (dark launch)
 
 - **Before:** Android had branded local debug notifications only. Founder claim alerts used Resend and a five-minute cron. Staff notification links could show the wrong claim if the UUID was outside the first page.
