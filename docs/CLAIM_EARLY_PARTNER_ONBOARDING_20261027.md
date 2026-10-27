@@ -43,3 +43,9 @@ The original manual reward queue is now upgraded for newly completed feedback: t
 This deliberately **does not use Google Forms**: Google verified email can prove a Google account, but not the approved AkiPasa claim. Native Google Forms creation is not available in the connected Google Drive tool. Google Sheets may later mirror anonymous aggregate attribution for analysis; do not sync raw responses or use a spreadsheet response as an entitlement authority.
 
 The campaign is capped at 25 eligible venues and can be disabled service-side. Duplicate forms never extend expiry, existing Premium never gets overridden and no paid checkout is created. Staff approval remains mandatory before the survey and gift work. Specifically, **Route 66 remains pending** until a human verifies the claimant and approves it; the application does not automatically decide ownership.
+
+## Branding correction: AkiHQ management and AkiPasa business Premium (27 October)
+
+The previous claim-approval and claim-received messages incorrectly referenced the legacy AkiBusiness portal. The **canonical** business listing manager is now `akihq.app`, and the premium business benefit is **AkiPasa Premium for the claimed location**, managed inside AkiHQ. AkiHQ's base management hub remains free. Paid AkiBusiness operating packages and AkiPasa personal Premium are not part of the incentive. The historical `akibusiness_premium` plan code refers to AkiPasa business listing Premium, not an operating product.
+
+All relevant EN/ES claim messages, claim-received CTA, moderation screen, early-partner page, venue deep link and email tests are corrected. The current database reward contract already grants only venue-scoped listing Premium for three calendar months, so no reward migration is made here. Old sent emails remain unchanged; claim decisions and customer subscriptions remain untouched. Route 66 continues pending staff approval.
