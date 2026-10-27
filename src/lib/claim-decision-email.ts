@@ -76,7 +76,18 @@ export function renderClaimDecision(data: ClaimDecision) {
     : es
       ? "Enviar una nueva reclamación"
       : "Submit a new claim";
-  const reasonLabel = es ? "Motivo de la decisión" : "Decision reason";
+  const reasonLabel = approved
+    ? es ? "Notas de verificación" : "Verification notes"
+    : es ? "Motivo de la decisión" : "Reason for this decision";
+  const partnerHref = `https://akipasa.com/${data.locale}/business/early-partner?claim=${encodeURIComponent(data.claimId)}`;
+  const partnerTitle = es ? "Queremos construir AkiPasa contigo" : "Help us build a better AkiPasa";
+  const partnerCopy = es
+    ? "Estás entre nuestros primeros propietarios de locales. Estamos mejorando AkiHQ y las herramientas para negocios, y nos encantaría ofrecerte una incorporación personalizada. Tu experiencia nos ayudará a crear funciones que de verdad necesites."
+    : "You are among our first venue owners. We are still improving AkiHQ and our business tools, and we would love to offer more personal onboarding. Your experience will help us build features that real businesses actually need.";
+  const giftCopy = es
+    ? "Responde dos preguntas sobre cómo nos conociste y qué herramientas necesitas. Después de comprobar los requisitos, nuestro equipo preparará 3 meses de AkiPasa Premium para la ficha de tu negocio. Sin tarjeta ni renovación automática. Tus respuestas no se publicarán como reseñas."
+    : "Answer two quick questions about how you found us and what your venue needs. After checking eligibility, our team will arrange 3 months of AkiPasa business listing Premium for your venue. No card and no automatic renewal. Your answers will not be published as reviews.";
+  const partnerCta = es ? "Compartir mi opinión" : "Share my feedback";
   const stepsLabel = approved
     ? es
       ? "Primeros pasos"
@@ -108,12 +119,13 @@ export function renderClaimDecision(data: ClaimDecision) {
     ...steps.map((step, i) => `${i + 1}. ${step}`),
     "",
     `${cta}: ${href}`,
+    ...(approved ? ["", partnerTitle, partnerCopy, "", giftCopy, `${partnerCta}: ${partnerHref}`] : []),
     "",
     closing,
     "Alex · AkiPasa",
     `${es ? "Referencia" : "Reference"}: ${data.claimId}`,
   ].join("\n");
-  const html = `<!doctype html><html lang="${data.locale}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(subject)}</title></head><body style="margin:0;background:#f1f4fa;color:#14213b;font-family:Arial,sans-serif;font-size:16px;line-height:1.6"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:24px 12px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:auto;background:#fff;border-radius:16px"><tr><td style="padding:28px;overflow-wrap:anywhere"><p style="color:#b84b00;font-weight:bold;letter-spacing:1px">AkiPasa</p><h1 style="font-size:26px;line-height:1.3">${escapeHtml(title)}</h1><p>${escapeHtml(greeting)}</p><p>${escapeHtml(intro)}</p><h2 style="font-size:18px">${reasonLabel}</h2><p style="background:#f1f4fa;padding:16px;border-radius:8px;white-space:pre-wrap;overflow-wrap:anywhere">${escapeHtml(data.reason)}</p><h2 style="font-size:20px">${stepsLabel}</h2><ol style="padding-left:24px">${steps.map((step) => `<li style="margin-bottom:12px">${escapeHtml(step)}</li>`).join("")}</ol><p style="margin:28px 0"><a href="${escapeHtml(href)}" style="display:inline-block;background:#14213b;color:#fff;padding:14px 20px;border-radius:8px;text-decoration:none;font-weight:bold">${cta}</a></p><p>${escapeHtml(closing)}</p><p>Alex<br>AkiPasa</p><p style="font-size:13px;color:#536078">${es ? "Referencia" : "Reference"}: ${escapeHtml(data.claimId)}</p></td></tr></table></td></tr></table></body></html>`;
+  const html = `<!doctype html><html lang="${data.locale}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(subject)}</title></head><body style="margin:0;background:#f1f4fa;color:#14213b;font-family:Arial,sans-serif;font-size:16px;line-height:1.6"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:24px 12px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:auto;background:#fff;border-radius:16px"><tr><td style="padding:28px;overflow-wrap:anywhere"><p style="color:#b84b00;font-weight:bold;letter-spacing:1px">AkiPasa</p><h1 style="font-size:26px;line-height:1.3">${escapeHtml(title)}</h1><p>${escapeHtml(greeting)}</p><p>${escapeHtml(intro)}</p><h2 style="font-size:18px">${reasonLabel}</h2><p style="background:#f1f4fa;padding:16px;border-radius:8px;white-space:pre-wrap;overflow-wrap:anywhere">${escapeHtml(data.reason)}</p><h2 style="font-size:20px">${stepsLabel}</h2><ol style="padding-left:24px">${steps.map((step) => `<li style="margin-bottom:12px">${escapeHtml(step)}</li>`).join("")}</ol><p style="margin:28px 0"><a href="${escapeHtml(href)}" style="display:inline-block;background:#14213b;color:#fff;padding:14px 20px;border-radius:8px;text-decoration:none;font-weight:bold">${cta}</a></p>${approved ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;border:1px solid #aae4dc;border-radius:12px;background:#ecfbf9"><tr><td style="padding:20px"><h2 style="font-size:20px;color:#143b4c">${escapeHtml(partnerTitle)}</h2><p>${escapeHtml(partnerCopy)}</p><p><strong>${escapeHtml(giftCopy)}</strong></p><p><a href="${escapeHtml(partnerHref)}" style="display:inline-block;padding:13px 18px;border-radius:9px;text-decoration:none;background:#0bbbab;color:#09283a;font-weight:bold">${escapeHtml(partnerCta)}</a></p></td></tr></table>` : ""}<p>${escapeHtml(closing)}</p><p>Alex<br>AkiPasa</p><p style="font-size:13px;color:#536078">${es ? "Referencia" : "Reference"}: ${escapeHtml(data.claimId)}</p></td></tr></table></td></tr></table></body></html>`;
   return { subject, text, html };
 }
 
