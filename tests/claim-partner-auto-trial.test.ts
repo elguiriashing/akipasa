@@ -158,7 +158,7 @@ it("does not replace existing paid Premium, and expires independently", async ()
   await feedback();
   expect((await status())?.state).toBe("granted");
   await db.exec(
-    `update public.claim_partner_rewards set expires_at=now()-interval '1 day' where claim_id='${claim}'`,
+    `update public.claim_partner_rewards set granted_at=now()-interval '120 days', expires_at=now()-interval '30 days' where claim_id='${claim}'`,
   );
   await db.exec(`select set_config('test.uid','${applicant}',false)`);
   const { rows } = await db.query<{ premium: boolean }>(
