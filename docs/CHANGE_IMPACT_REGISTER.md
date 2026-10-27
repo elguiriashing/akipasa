@@ -1,5 +1,13 @@
 # Change Impact Register
 
+## 2026-10-27 | Verified feedback now automatically activates a capped three-month venue listing gift
+
+- **Before:** Approved owners received a survey invitation, but feedback only queued a manual reward and gave no actual Premium access.
+- **Change:** Continue using the existing sign-in protected bilingual survey as proof of response; require a real approved claim, verified account email, current owner membership and completed onboarding. A trigger activates the exact venue-specific, nonrenewing Premium entitlement immediately on feedback submission with a true three-month expiry and shows the result to the owner.
+- **Fraud/billing controls:** Refuse anonymous, mismatched-account, pending/rejected, unverified, nonowner, duplicated, previously gifted, existing paid Premium or exhausted-campaign grants. Default cap 25 venue grants; service role can disable the campaign. No direct Google Forms authorization, cross-app access escalation, Stripe charge, personal Premium or account-wide Business grant.
+- **Dependencies:** Mirrored `20261027081500_claim_partner_auto_trial.sql` migration must be applied before deploying the updated UI. SQL RLS/trigger tests, email preview, whole app and browser release checks must pass on exact source.
+- **Rollback:** Disable the campaign first; preserve historic submissions, exact earned grants and expirations. Never revoke paid subscriptions or pending claims to work around this.
+
 ## 2026-10-27 | Claim email visibility, early-partner survey and reward tracking
 
 - **Before:** The mandatory moderator reason was emailed verbatim without clear UI disclosure; approval emails contained basic venue management instructions and denial emails were purely corrective. Resend-hosted templates do not control claim decisions.

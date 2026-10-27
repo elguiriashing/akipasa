@@ -35,3 +35,11 @@ The denial stays purely transactional: the actual reason, evidence correction st
 5. Review Resend delivery status: the 26 October Route 66 welcome and claim receipt were marked `delivery_delayed`, whereas the internal alert was delivered. Do not infer inbox delivery from an API acceptance ID.
 
 The feedback launch is prospective: existing claim decisions, mail provider IDs and applicant status must remain unchanged. A moderator approval is still the only action that transfers venue management access.
+
+## Automated trial follow-up (27 October 2026)
+
+The original manual reward queue is now upgraded for newly completed feedback: the verified **AkiPasa account** must be the actual claimant of an approved claim, be email-confirmed, have completed onboarding and retain owner venue membership. Eligible survey submissions automatically activate the per-venue Premium check for three months; status and expiry are visible to that claimant only through `claim_partner_reward_status`. The client never grants access and cannot read or update the raw reward table.
+
+This deliberately **does not use Google Forms**: Google verified email can prove a Google account, but not the approved AkiPasa claim. Native Google Forms creation is not available in the connected Google Drive tool. Google Sheets may later mirror anonymous aggregate attribution for analysis; do not sync raw responses or use a spreadsheet response as an entitlement authority.
+
+The campaign is capped at 25 eligible venues and can be disabled service-side. Duplicate forms never extend expiry, existing Premium never gets overridden and no paid checkout is created. Staff approval remains mandatory before the survey and gift work. Specifically, **Route 66 remains pending** until a human verifies the claimant and approves it; the application does not automatically decide ownership.
