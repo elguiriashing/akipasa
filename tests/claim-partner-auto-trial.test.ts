@@ -203,15 +203,19 @@ it("does not expose the raw rewards table and scopes status by signed-in claiman
   }
 });
 
-
 it("never queues an AkiDuermo accommodation claim as an AkiPasa Premium trial", async () => {
-  await db.exec(`update public.venues set discovery_vertical='accommodation' where id='${venue}'`);
+  await db.exec(
+    `update public.venues set discovery_vertical='accommodation' where id='${venue}'`,
+  );
   await feedback();
   expect(await status()).toBe(null);
-  expect((await db.query("select * from public.claim_partner_rewards")).rows).toHaveLength(0);
+  expect(
+    (await db.query("select * from public.claim_partner_rewards")).rows,
+  ).toHaveLength(0);
   await db.exec(`select set_config('test.uid','${applicant}',false)`);
   const { rows } = await db.query<{ premium: boolean }>(
-    "select akisuite_listing_private.listing_premium($1) premium", [venue],
+    "select akisuite_listing_private.listing_premium($1) premium",
+    [venue],
   );
   expect(rows[0].premium).toBe(false);
 });
