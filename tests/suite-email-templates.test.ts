@@ -55,6 +55,10 @@ it("claims acknowledge receipt without suggesting the request has been approved"
   expect(es.text).toContain("AkiHQ");
   expect(en.text).not.toContain("AkiBusiness");
   expect(es.text).not.toContain("AkiBusiness");
+  expect(en.html).toContain("AkiHQ");
+  expect(es.html).toContain("AkiHQ");
+  expect(en.html).not.toContain("AkiBusiness");
+  expect(es.html).not.toContain("AkiBusiness");
 });
 
 it("welcome links are product-specific, bilingual and single-action", () => {
