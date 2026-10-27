@@ -24,8 +24,8 @@ const needs = [
   ["marketing", "Reach more customers", "Llegar a más clientes"],
   [
     "operations",
-    "Business operations / AkiHQ",
-    "Operaciones del negocio / AkiHQ",
+    "Manage my AkiPasa venue in AkiHQ",
+    "Gestionar mi local de AkiPasa desde AkiHQ",
   ],
   ["other", "Something else", "Otra necesidad"],
 ] as const;
@@ -104,8 +104,8 @@ export default async function EarlyPartnerPage({
           </strong>
           <p>
             {es
-              ? "Responde dos preguntas con tu cuenta AkiPasa verificada. Si tu reclamación está aprobada, tu local aún no tiene Premium y quedan plazas del programa, se activarán automáticamente 3 meses de Premium para esta ficha. Sin tarjeta ni renovación automática."
-              : "Answer two quick questions with your verified AkiPasa account. If your ownership claim is approved, this venue has no existing Premium access and programme places remain, three months of listing Premium will activate automatically. No card and no automatic renewal."}
+              ? "Responde dos preguntas con tu cuenta verificada de AkiPasa. Si tu reclamación está aprobada, tu local aún no tiene Premium y quedan plazas, se activarán automáticamente 3 meses de AkiPasa Premium para esta ficha, gestionada desde AkiHQ. No incluye software de operaciones de pago, tarjeta ni renovación automática."
+              : "Answer two questions with your verified AkiPasa account. If your claim is approved, your venue has no existing Premium and places remain, you will automatically receive 3 months of AkiPasa listing Premium, managed in AkiHQ. No paid operations software, card or automatic renewal."}
           </p>
         </div>
         {done || active ? (
@@ -113,8 +113,8 @@ export default async function EarlyPartnerPage({
             <h2>
               {active
                 ? es
-                  ? "¡Tu Premium de 3 meses está activado!"
-                  : "Your 3-month Premium is active!"
+                  ? "¡AkiPasa Premium para tu local está activado!"
+                  : "AkiPasa listing Premium is active!"
                 : es
                   ? "¡Gracias por compartir tu opinión!"
                   : "Thank you for sharing your thoughts!"}
@@ -122,13 +122,13 @@ export default async function EarlyPartnerPage({
             <p>
               {active
                 ? es
-                  ? `Hemos verificado tu cuenta y activado Premium para este local hasta el ${expiry}. No se te cobrará nada ni se renovará automáticamente.`
-                  : `We verified your account and activated Premium for this venue until ${expiry}. You won't be charged or automatically renewed.`
+                  ? `Hemos verificado tu cuenta y activado AkiPasa Premium para este local en AkiHQ hasta el ${expiry}. Sin cargos ni renovación automática.`
+                  : `Your verified account now has AkiPasa listing Premium for this venue in AkiHQ until ${expiry}. No charges or automatic renewal.`
                 : es
                   ? "Hemos guardado tus respuestas. Premium no se ha activado automáticamente; nuestro equipo revisará si cumples los requisitos o si ya tienes Premium."
                   : "Your answers were saved. Premium has not activated automatically; our team will check eligibility or whether you already have Premium."}
             </p>
-            <a href="https://akihq.app/">
+            <a href={`https://akihq.app/${locale}/business/venue/${encodeURIComponent(claim.venue_id)}`}>
               {es ? "Visitar AkiHQ" : "Explore AkiHQ"}
             </a>
           </section>
