@@ -33,3 +33,5 @@ The denial stays purely transactional: the actual reason, evidence correction st
 3. Confirm the claim-owner form works for an approved account and denies other accounts, pending claims and anonymous access. Confirm repeated submissions do not create duplicate rewards.
 4. Deploy AkiPasa Worker only after verified migration and checks; smoke-test the feedback path and previous claim decision email dispatch. Existing decisions remain unchanged and no historical mail is resent.
 5. Review Resend delivery status: the 26 October Route 66 welcome and claim receipt were marked `delivery_delayed`, whereas the internal alert was delivered. Do not infer inbox delivery from an API acceptance ID.
+
+The feedback launch is prospective: existing claim decisions, mail provider IDs and applicant status must remain unchanged. A moderator approval is still the only action that transfers venue management access.
