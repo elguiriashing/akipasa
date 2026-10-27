@@ -52,6 +52,25 @@ it("renders both decisions in both languages with safe HTML, real feedback and c
       }
     }
 });
+it("welcomes only approved owners to the early-partner survey and keeps rejections focused", () => {
+  const approved = renderClaimDecision({ ...claim, decision: "approved" });
+  const rejected = renderClaimDecision({ ...claim, decision: "rejected" });
+  expect(approved.text).toContain(
+    "3 months of AkiPasa business listing Premium",
+  );
+  expect(approved.text).toContain(
+    `/en/business/early-partner?claim=${claim.claimId}`,
+  );
+  expect(approved.html).toContain("Share my feedback");
+  expect(approved.text).toContain("No card and no automatic renewal");
+  expect(rejected.text).not.toContain("early-partner");
+  expect(rejected.text).not.toContain("Premium");
+  expect(rejected.text).toContain("Reason for this decision");
+  const es = renderClaimDecision({ ...claim, locale: "es" });
+  expect(es.text).toContain("3 meses");
+  expect(es.html).toContain("Compartir mi opinión");
+});
+
 it("handles missing applicant name and sanitizes the subject", () => {
   const mail = renderClaimDecision({
     ...claim,
