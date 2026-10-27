@@ -46,7 +46,11 @@ try {
         });
         await page.setContent(mail.html);
         await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-        const link = page.getByRole("link");
+        const link = page.getByRole("link", {
+          name: decision === "approved"
+            ? locale === "es" ? "Gestionar mi local" : "Manage my venue"
+            : locale === "es" ? "Enviar una nueva reclamación" : "Submit a new claim",
+        });
         await expect(link).toBeVisible();
         expect(await link.getAttribute("href")).toContain(
           decision === "approved" ? "/business/venue/" : "view=claims&venueId=",
@@ -54,6 +58,18 @@ try {
         expect(
           await link.evaluate((el) => el.getBoundingClientRect().height),
         ).toBeGreaterThanOrEqual(44);
+        if (decision === "approved") {
+          const feedback = page.getByRole("link", {
+            name: locale === "es" ? "Compartir mi opinión" : "Share my feedback",
+          });
+          await expect(feedback).toBeVisible();
+          expect(await feedback.getAttribute("href")).toContain(
+            `/${locale}/business/early-partner?claim=`,
+          );
+          expect(await feedback.evaluate((el) => el.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
+        } else {
+          expect(await page.getByRole("link").count()).toBe(1);
+        }
         expect(
           await page.evaluate(
             () => document.documentElement.scrollWidth <= innerWidth + 1,
