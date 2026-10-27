@@ -1,5 +1,15 @@
 # Change Impact Register
 
+## 2026-10-27 | Automation Worker GitHub Actions Node runtime security baseline
+
+- **Before:** Both automation CI check and manually dispatched deployment used the moving `node-version: 22` major selector; their exact patch level could vary.
+- **Change:** Pin each `actions/setup-node` instance in `.github/workflows/automation.yml` to Node.js `22.23.4`, the patched baseline identified in the 21 October 2026 Brotli advisory.
+- **Impact:** Only GitHub Actions build/deploy host Node selection changes. Worker application logic, D1, schedules, secrets and existing production deployment are unchanged.
+- **Security boundary:** Does not fix or prove exposure of Cloudflare's V8 Workers runtime, other Node-based jobs, third-party services or user Android clients. Remaining inventory/incident work: #305.
+- **Verification:** Automation Worker PR workflow must pass at exact head. No production dispatch is requested; merge and deployment are separate operations. No replay of missed cron jobs until backed by logs and idempotency evidence.
+- **Rollback:** Revert the workflow setting through reviewed PR only after confirming a secure alternative runtime.
+
+
 ## 2026-10-27 | Founder FCM push integration (dark launch)
 
 - **Before:** Android had branded local debug notifications only. Founder claim alerts used Resend and a five-minute cron. Staff notification links could show the wrong claim if the UUID was outside the first page.
