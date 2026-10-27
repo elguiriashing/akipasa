@@ -4,7 +4,7 @@
 
 - **Problem:** Claim approval and receipt templates used legacy AkiBusiness URLs/terminology, confusing the free AkiHQ venue management and AkiPasa business listing Premium benefit with the separate paid AkiBusiness operating suite.
 - **Scope:** Change only source-driven EN/ES claim communications, staff help/badges, early-owner survey and success CTA. Approved claims link to `akihq.app/{locale}/business/venue/{venueId}`; rejected/pending claims link to `akihq.app/{locale}/business?view=claims`. Gift is three months of _AkiPasa listing Premium managed in AkiHQ_, with existing eligibility/cap/expiry unchanged. Regular operating-plan membership and AkiBusiness onboarding remain separate and untouched.
-- **Permissions/billing:** No new tables, entitlement modifications, automatic claim approvals, Stripe transactions or trial extension. Existing rewards are per-venue, not account-wide.
+- **Permissions/billing:** New restrictive SQL migration guards existing reward queuing, activation and listing entitlement by `discovery_vertical='activities'`, preventing AkiDuermo accommodation Premium from being gifted via this campaign. There are no new tables, automatic claim approvals, Stripe transactions or trial extensions; existing rewards remain per-venue, not account-wide. Verified no granted rewards existed at the start of this correction.
 - **Tests/deploy:** EN/ES plaintext and HTML content, branded claim receipt and exact links, safe mobile CTA, CI full contract, Cloudflare production verification. Rollback source alone without rewriting customer claims or reward audit records. Existing sent messages remain historical.
 
 ## 2026-10-27 | Verified feedback now automatically activates a capped three-month venue listing gift
