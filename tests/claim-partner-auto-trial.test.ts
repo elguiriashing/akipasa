@@ -8,7 +8,6 @@ const applicant = uuid(1);
 const stranger = uuid(2);
 const venue = uuid(3);
 const claim = uuid(4);
-const receipt = (value: string) => value.replaceAll("'", "''");
 
 beforeAll(async () => {
   db = new PGlite();
