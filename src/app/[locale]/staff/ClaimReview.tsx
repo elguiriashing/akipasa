@@ -262,7 +262,7 @@ export function ClaimReview({
               <Icon name="store" />
               {venue?.discovery_vertical === "accommodation"
                 ? "AkiDuermo"
-                : "AkiBusiness"}
+                : "AkiPasa · AkiHQ"}
             </span>
             <span className="claim-modern-warning">
               <Icon name="info" />
@@ -504,8 +504,8 @@ export function ClaimReview({
                 </summary>
                 <p className="claim-modern-helper">
                   {es
-                    ? "Aprobar: confirmación de acceso, primeros pasos, notas de verificación y bienvenida de socio pionero con encuesta y propuesta de 3 meses Premium tras verificar requisitos."
-                    : "Approve: owner access confirmation, getting-started steps, your verification notes, and an early-partner feedback invitation with a proposed three-month Premium gift after eligibility checks."}
+                    ? "Aprobar: acceso a la ficha de AkiPasa desde AkiHQ, notas de verificación y encuesta para socios pioneros. Los propietarios que cumplan los requisitos recibirán 3 meses de Premium para su local de AkiPasa, no software de operaciones."
+                    : "Approve: confirmation of AkiPasa venue management through AkiHQ, your verification notes, and the early-partner feedback invitation. Eligible owners receive three months of AkiPasa listing Premium inside AkiHQ, not paid operations software."}
                 </p>
                 <p className="claim-modern-helper">
                   {es
