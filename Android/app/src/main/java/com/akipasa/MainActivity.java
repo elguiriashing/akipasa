@@ -41,9 +41,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.window.OnBackInvokedDispatcher;
 
-import com.google.firebase.messaging.FirebaseMessaging;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +48,6 @@ public final class MainActivity extends Activity {
     private static final int FILE_CHOOSER_REQUEST = 1001;
     private static final int LOCATION_PERMISSION_REQUEST = 1002;
     private static final int NOTIFICATION_PERMISSION_REQUEST = 1003;
-    private static final int PUSH_PERMISSION_REQUEST = 1004;
     private static final String DEBUG_NOTIFICATION_ACTION = "com.akipasa.DEBUG_NOTIFICATION";
     private static final String DEBUG_NOTIFICATION_CHANNEL = "akipasa_debug";
 
@@ -62,6 +58,7 @@ public final class MainActivity extends Activity {
     private GeolocationPermissions.Callback locationCallback;
     private String locationOrigin;
     private boolean mainFrameFailed;
+    private FounderPushCoordinator founderPush;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,32 +130,22 @@ public final class MainActivity extends Activity {
         manager.notify(1003, notification);
     }
 
-    /** Only expose a device token to our first-party STAFF web page. The server checks
-     * the authenticated founder UUID and current administrator role independently. */
+    /** Recheck server eligibility on both full-document and SPA navigation. */
     private void registerFounderPushForUrl(String url) {
-        if (url == null) return;
-        Uri uri = Uri.parse(url);
-        if (!"https".equals(uri.getScheme()) || !"akipasa.com".equals(uri.getHost())) return;
-        String path = uri.getPath();
-        if (path == null || !path.matches("/(en|es)/(staff|admin)(/.*)?")) return;
-        if (Build.VERSION.SDK_INT >= 33
-                && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, PUSH_PERMISSION_REQUEST);
-            return;
-        }
-        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(token -> {
-            Uri current = Uri.parse(webView.getUrl() == null ? "" : webView.getUrl());
-            if (!"https".equals(current.getScheme()) || !"akipasa.com".equals(current.getHost())) return;
-            String activePath = current.getPath();
-            if (activePath == null || !activePath.matches("/(en|es)/(staff|admin)(/.*)?")) return;
-            // No JavascriptInterface or JS->native privileged methods; exact origin only.
-            String js = "(function(){fetch('/api/admin/push-devices',{" +
-                    "method:'POST',credentials:'same-origin'," +
-                    "headers:{'Content-Type':'application/json'}," +
-                    "body:JSON.stringify({token:" + JSONObject.quote(token) + "})" +
-                    "}).catch(function(){});})();";
-            webView.evaluateJavascript(js, null);
-        });
+        if (founderPush != null) founderPush.refresh(false);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (founderPush != null) founderPush.resume();
+    }
+
+    @Override
+    protected void onPause() {
+        if (founderPush != null) founderPush.pause();
+        CookieManager.getInstance().flush();
+        super.onPause();
     }
 
     private void hideSystemBars() {
@@ -215,6 +202,14 @@ public final class MainActivity extends Activity {
         );
         progressParams.gravity = Gravity.TOP;
         root.addView(progressBar, progressParams);
+        Button pushTest = new Button(this);
+        pushTest.setVisibility(View.GONE);
+        FrameLayout.LayoutParams testParams = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        testParams.gravity = Gravity.BOTTOM | Gravity.END;
+        testParams.setMargins(dp(12), 0, dp(12), dp(88));
+        root.addView(pushTest, testParams);
+        founderPush = new FounderPushCoordinator(this, webView, pushTest);
         return root;
     }
 
@@ -412,9 +407,8 @@ public final class MainActivity extends Activity {
             }
             return;
         }
-        if (requestCode == PUSH_PERMISSION_REQUEST) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                registerFounderPushForUrl(webView.getUrl());
+        if (requestCode == FounderPushCoordinator.PERMISSION_REQUEST) {
+            founderPush.refresh(true);
             return;
         }
         if (requestCode != LOCATION_PERMISSION_REQUEST || locationCallback == null) return;
@@ -427,6 +421,7 @@ public final class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        if (founderPush != null) founderPush.destroy();
         if (fileCallback != null) fileCallback.onReceiveValue(null);
         if (locationCallback != null) locationCallback.invoke(locationOrigin, false, false);
         webView.stopLoading();

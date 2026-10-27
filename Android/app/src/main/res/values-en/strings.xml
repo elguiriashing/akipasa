@@ -6,4 +6,11 @@
     <string name="retry">Try again</string>
     <string name="download_started">Download started</string>
     <string name="cannot_open_link">This link cannot be opened</string>
+    <string name="push_channel">AkiPasa founder requests</string>
+    <string name="push_private">Open AkiPasa to review.</string>
+    <string name="push_claim_body">New ownership claim. Tap to review.</string>
+    <string name="push_test_body">Test notification received. No claim was created.</string>
+    <string name="push_send_test">Send test notification</string>
+    <string name="push_test_accepted">Firebase accepted the test. Check this device’s notifications.</string>
+    <string name="push_test_failed">The test could not be sent. Check your session and try later.</string>
 </resources>

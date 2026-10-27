@@ -6,4 +6,11 @@
     <string name="retry">Reintentar</string>
     <string name="download_started">Descarga iniciada</string>
     <string name="cannot_open_link">No se puede abrir este enlace</string>
+    <string name="push_channel">Solicitudes para fundadores de AkiPasa</string>
+    <string name="push_private">Abre AkiPasa para revisar.</string>
+    <string name="push_claim_body">Nueva solicitud de titularidad. Toca para revisarla.</string>
+    <string name="push_test_body">Notificación de prueba recibida. No se ha creado ninguna solicitud.</string>
+    <string name="push_send_test">Enviar notificación de prueba</string>
+    <string name="push_test_accepted">Prueba aceptada por Firebase. Comprueba las notificaciones del dispositivo.</string>
+    <string name="push_test_failed">No se pudo enviar la prueba. Comprueba tu sesión e inténtalo más tarde.</string>
 </resources>

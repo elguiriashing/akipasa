@@ -234,9 +234,8 @@ export async function signOut(formData: FormData) {
   const locale = String(formData.get("locale"));
   const safeLocale = isLocale(locale) ? locale : "es";
   const supabase = await createSupabaseServerClient();
-  // No extra database calls for ordinary users while the feature is off.
+  // Revocation must still work during a dark launch or after delivery is disabled.
   if (
-    process.env.AKIPASA_PUSH_ENABLED === "true" &&
     process.env.AKIPASA_PUSH_FOUNDER_IDS &&
     process.env.SUPABASE_SERVICE_ROLE_KEY &&
     process.env.NEXT_PUBLIC_SUPABASE_URL

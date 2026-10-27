@@ -218,6 +218,8 @@ export async function submitVenueClaim(formData: FormData) {
   // The database trigger already committed a durable staff-alert outbox row.
   // Best-effort immediate dispatch; Cloudflare's scheduled worker retries if
   // the mail provider is unavailable. Never undo the submitted claim.
+  // Push wakes independently through the post-commit database hook for every
+  // claim origin; provider latency must not extend this submission action.
   try {
     await dispatchClaimSubmissionAlerts(undefined, claimId);
   } catch {

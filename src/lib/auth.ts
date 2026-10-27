@@ -10,14 +10,15 @@ import { createSupabaseServerClient } from "./supabase/server";
 export async function optionalUser() {
   const cookieStore = await cookies();
   if (!hasSupabaseAuthCookie(cookieStore.getAll())) {
-    return { supabase: createSupabasePublicClient(), user: null };
+    return { supabase: createSupabasePublicClient(), user: null, error: null };
   }
 
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
+    error,
   } = await supabase.auth.getUser();
-  return { supabase, user };
+  return { supabase, user, error };
 }
 
 export async function requireIdentity(
