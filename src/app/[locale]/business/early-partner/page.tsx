@@ -10,7 +10,11 @@ const sources = [
   ["venue_listing", "Our AkiPasa venue listing", "Nuestra ficha en AkiPasa"],
   ["social_media", "Social media", "Redes sociales"],
   ["recommendation", "Recommendation from someone", "Recomendación de alguien"],
-  ["business_outreach", "AkiPasa team contacted us", "Contactó el equipo de AkiPasa"],
+  [
+    "business_outreach",
+    "AkiPasa team contacted us",
+    "Contactó el equipo de AkiPasa",
+  ],
   ["other", "Somewhere else", "Otro lugar"],
 ] as const;
 const needs = [
@@ -18,7 +22,11 @@ const needs = [
   ["events", "Promote events", "Promocionar eventos"],
   ["reservations", "Manage bookings", "Gestionar reservas"],
   ["marketing", "Reach more customers", "Llegar a más clientes"],
-  ["operations", "Business operations / AkiHQ", "Operaciones del negocio / AkiHQ"],
+  [
+    "operations",
+    "Business operations / AkiHQ",
+    "Operaciones del negocio / AkiHQ",
+  ],
   ["other", "Something else", "Otra necesidad"],
 ] as const;
 
@@ -44,17 +52,32 @@ export default async function EarlyPartnerPage({
     .eq("claimant_id", user.id)
     .maybeSingle();
   if (claimError || !claim || claim.status !== "approved") notFound();
-  const [{ data: venue }, { data: existing, error: feedbackError }] = await Promise.all([
-    supabase.from("venues").select("name").eq("id", claim.venue_id).maybeSingle(),
-    supabase.from("claim_owner_feedback").select("discovery_source,priority_need,comments,contact_permission").eq("claim_id", claimId).maybeSingle(),
-  ]);
+  const [{ data: venue }, { data: existing, error: feedbackError }] =
+    await Promise.all([
+      supabase
+        .from("venues")
+        .select("name")
+        .eq("id", claim.venue_id)
+        .maybeSingle(),
+      supabase
+        .from("claim_owner_feedback")
+        .select("discovery_source,priority_need,comments,contact_permission")
+        .eq("claim_id", claimId)
+        .maybeSingle(),
+    ]);
   const done = query.done === "1";
   return (
     <main className={styles.backdrop}>
       <article className={styles.card}>
         <header className={styles.header}>
-          <p className={styles.eyebrow}>AKIPASA · {es ? "SOCIOS PIONEROS" : "EARLY PARTNERS"}</p>
-          <h1>{es ? "Tu negocio, nuestro siguiente paso." : "Your business, our next chapter."}</h1>
+          <p className={styles.eyebrow}>
+            AKIPASA · {es ? "SOCIOS PIONEROS" : "EARLY PARTNERS"}
+          </p>
+          <h1>
+            {es
+              ? "Tu negocio, nuestro siguiente paso."
+              : "Your business, our next chapter."}
+          </h1>
           <p>
             {es
               ? `¡Gracias por formar parte de AkiPasa${venue?.name ? " con " + venue.name : ""}! Estamos desarrollando las herramientas para negocios junto a nuestros primeros propietarios y queremos escucharte.`
@@ -62,56 +85,129 @@ export default async function EarlyPartnerPage({
           </p>
         </header>
         <div className={styles.gift}>
-          <strong>{es ? "Un detalle por ayudarnos" : "A thank-you for helping us"}</strong>
-          <p>{es
-            ? "Responde estas dos preguntas y nuestro equipo preparará 3 meses de AkiPasa Premium para la ficha de tu negocio, sin tarjeta ni renovación automática. Confirmaremos la activación después de comprobar que cumple los requisitos."
-            : "Answer these two questions and our team will arrange 3 months of AkiPasa business listing Premium for your venue, with no card and no automatic renewal. We'll confirm activation after checking eligibility."}</p>
+          <strong>
+            {es ? "Un detalle por ayudarnos" : "A thank-you for helping us"}
+          </strong>
+          <p>
+            {es
+              ? "Responde estas dos preguntas y nuestro equipo preparará 3 meses de AkiPasa Premium para la ficha de tu negocio, sin tarjeta ni renovación automática. Confirmaremos la activación después de comprobar que cumple los requisitos."
+              : "Answer these two questions and our team will arrange 3 months of AkiPasa business listing Premium for your venue, with no card and no automatic renewal. We'll confirm activation after checking eligibility."}
+          </p>
         </div>
         {done ? (
           <section className={styles.success} role="status">
-            <h2>{es ? "¡Gracias por compartir tu opinión!" : "Thank you for sharing your thoughts!"}</h2>
-            <p>{es ? "Hemos guardado tus respuestas. Revisaremos tu regalo de socio pionero y nos pondremos en contacto contigo para ayudarte a empezar." : "Your answers have been saved. We'll review your early-partner gift and reach out to help you get started."}</p>
-            <a href="https://akihq.app/">{es ? "Visitar AkiHQ" : "Explore AkiHQ"}</a>
+            <h2>
+              {es
+                ? "¡Gracias por compartir tu opinión!"
+                : "Thank you for sharing your thoughts!"}
+            </h2>
+            <p>
+              {es
+                ? "Hemos guardado tus respuestas. Revisaremos tu regalo de socio pionero y nos pondremos en contacto contigo para ayudarte a empezar."
+                : "Your answers have been saved. We'll review your early-partner gift and reach out to help you get started."}
+            </p>
+            <a href="https://akihq.app/">
+              {es ? "Visitar AkiHQ" : "Explore AkiHQ"}
+            </a>
           </section>
         ) : feedbackError ? (
-          <p role="alert" className={styles.error}>{es ? "El formulario aún no está disponible. Vuelve a intentarlo más tarde o responde al correo de soporte." : "The survey is temporarily unavailable. Please try again later or reply to the support email."}</p>
+          <p role="alert" className={styles.error}>
+            {es
+              ? "El formulario aún no está disponible. Vuelve a intentarlo más tarde o responde al correo de soporte."
+              : "The survey is temporarily unavailable. Please try again later or reply to the support email."}
+          </p>
         ) : (
           <form action={submitEarlyPartnerFeedback} className={styles.form}>
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="claimId" value={claimId} />
             <fieldset>
-              <legend>{es ? "1. ¿Cómo nos conociste?" : "1. How did you hear about us?"}</legend>
+              <legend>
+                {es
+                  ? "1. ¿Cómo nos conociste?"
+                  : "1. How did you hear about us?"}
+              </legend>
               <div className={styles.options}>
                 {sources.map(([id, en, spanish]) => (
                   <label key={id} className={styles.option}>
-                    <input type="radio" name="source" value={id} required defaultChecked={existing?.discovery_source === id} />
+                    <input
+                      type="radio"
+                      name="source"
+                      value={id}
+                      required
+                      defaultChecked={existing?.discovery_source === id}
+                    />
                     <span>{es ? spanish : en}</span>
                   </label>
                 ))}
               </div>
             </fieldset>
             <fieldset>
-              <legend>{es ? "2. ¿Qué te ayudaría más en tu negocio?" : "2. What would help your business most?"}</legend>
+              <legend>
+                {es
+                  ? "2. ¿Qué te ayudaría más en tu negocio?"
+                  : "2. What would help your business most?"}
+              </legend>
               <div className={styles.options}>
                 {needs.map(([id, en, spanish]) => (
                   <label key={id} className={styles.option}>
-                    <input type="radio" name="need" value={id} required defaultChecked={existing?.priority_need === id} />
+                    <input
+                      type="radio"
+                      name="need"
+                      value={id}
+                      required
+                      defaultChecked={existing?.priority_need === id}
+                    />
                     <span>{es ? spanish : en}</span>
                   </label>
                 ))}
               </div>
             </fieldset>
             <label className={styles.notes}>
-              <strong>{es ? "¿Algo más que deberíamos crear o mejorar? (opcional)" : "Anything else we should build or improve? (optional)"}</strong>
-              <textarea name="comments" rows={4} maxLength={1000} defaultValue={existing?.comments || ""} placeholder={es ? "Cuéntanos qué necesita tu negocio..." : "Tell us what your venue actually needs..."} />
+              <strong>
+                {es
+                  ? "¿Algo más que deberíamos crear o mejorar? (opcional)"
+                  : "Anything else we should build or improve? (optional)"}
+              </strong>
+              <textarea
+                name="comments"
+                rows={4}
+                maxLength={1000}
+                defaultValue={existing?.comments || ""}
+                placeholder={
+                  es
+                    ? "Cuéntanos qué necesita tu negocio..."
+                    : "Tell us what your venue actually needs..."
+                }
+              />
             </label>
             <label className={styles.consent}>
-              <input type="checkbox" name="contactPermission" value="yes" defaultChecked={existing?.contact_permission || false} />
-              <span>{es ? "Sí, podéis contactarme para una incorporación personalizada y hablar de mis respuestas." : "Yes, you can contact me for tailored onboarding and to discuss my feedback."}</span>
+              <input
+                type="checkbox"
+                name="contactPermission"
+                value="yes"
+                defaultChecked={existing?.contact_permission || false}
+              />
+              <span>
+                {es
+                  ? "Sí, podéis contactarme para una incorporación personalizada y hablar de mis respuestas."
+                  : "Yes, you can contact me for tailored onboarding and to discuss my feedback."}
+              </span>
             </label>
-            {query.error && <p className={styles.error} role="alert">{es ? "No se pudo guardar la respuesta. Inténtalo de nuevo." : "Your answer could not be saved. Please try again."}</p>}
-            <button type="submit">{es ? "Enviar mis respuestas" : "Send my answers"}</button>
-            <small>{es ? "Tus respuestas son privadas, no son reseñas públicas y no te inscriben en publicidad." : "Your answers are private, not public reviews, and don't subscribe you to marketing."}</small>
+            {query.error && (
+              <p className={styles.error} role="alert">
+                {es
+                  ? "No se pudo guardar la respuesta. Inténtalo de nuevo."
+                  : "Your answer could not be saved. Please try again."}
+              </p>
+            )}
+            <button type="submit">
+              {es ? "Enviar mis respuestas" : "Send my answers"}
+            </button>
+            <small>
+              {es
+                ? "Tus respuestas son privadas, no son reseñas públicas y no te inscriben en publicidad."
+                : "Your answers are private, not public reviews, and don't subscribe you to marketing."}
+            </small>
           </form>
         )}
       </article>

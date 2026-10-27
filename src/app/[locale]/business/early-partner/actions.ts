@@ -7,8 +7,23 @@ import { requireUser } from "@/lib/auth";
 const schema = z.object({
   locale: z.enum(["en", "es"]),
   claimId: z.string().uuid(),
-  source: z.enum(["google_search", "google_maps", "social_media", "recommendation", "business_outreach", "venue_listing", "other"]),
-  need: z.enum(["listing", "events", "reservations", "marketing", "operations", "other"]),
+  source: z.enum([
+    "google_search",
+    "google_maps",
+    "social_media",
+    "recommendation",
+    "business_outreach",
+    "venue_listing",
+    "other",
+  ]),
+  need: z.enum([
+    "listing",
+    "events",
+    "reservations",
+    "marketing",
+    "operations",
+    "other",
+  ]),
   comments: z.string().trim().max(1000).default(""),
   contactPermission: z.enum(["yes"]).optional(),
 });

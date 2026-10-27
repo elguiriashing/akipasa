@@ -77,10 +77,16 @@ export function renderClaimDecision(data: ClaimDecision) {
       ? "Enviar una nueva reclamación"
       : "Submit a new claim";
   const reasonLabel = approved
-    ? es ? "Notas de verificación" : "Verification notes"
-    : es ? "Motivo de la decisión" : "Reason for this decision";
+    ? es
+      ? "Notas de verificación"
+      : "Verification notes"
+    : es
+      ? "Motivo de la decisión"
+      : "Reason for this decision";
   const partnerHref = `https://akipasa.com/${data.locale}/business/early-partner?claim=${encodeURIComponent(data.claimId)}`;
-  const partnerTitle = es ? "Queremos construir AkiPasa contigo" : "Help us build a better AkiPasa";
+  const partnerTitle = es
+    ? "Queremos construir AkiPasa contigo"
+    : "Help us build a better AkiPasa";
   const partnerCopy = es
     ? "Estás entre nuestros primeros propietarios de locales. Estamos mejorando AkiHQ y las herramientas para negocios, y nos encantaría ofrecerte una incorporación personalizada. Tu experiencia nos ayudará a crear funciones que de verdad necesites."
     : "You are among our first venue owners. We are still improving AkiHQ and our business tools, and we would love to offer more personal onboarding. Your experience will help us build features that real businesses actually need.";
@@ -119,7 +125,16 @@ export function renderClaimDecision(data: ClaimDecision) {
     ...steps.map((step, i) => `${i + 1}. ${step}`),
     "",
     `${cta}: ${href}`,
-    ...(approved ? ["", partnerTitle, partnerCopy, "", giftCopy, `${partnerCta}: ${partnerHref}`] : []),
+    ...(approved
+      ? [
+          "",
+          partnerTitle,
+          partnerCopy,
+          "",
+          giftCopy,
+          `${partnerCta}: ${partnerHref}`,
+        ]
+      : []),
     "",
     closing,
     "Alex · AkiPasa",
