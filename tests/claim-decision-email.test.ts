@@ -39,7 +39,7 @@ it("renders both decisions in both languages with safe HTML, real feedback and c
           `${locale}/business/venue/${claim.venueId}`,
         );
         expect(mail.text).toContain(
-          locale === "es" ? "propietario" : "owner access",
+          locale === "es" ? "gestionar" : "manage",
         );
       } else {
         expect(mail.text).toContain(`view=claims&venueId=${claim.venueId}`);
@@ -67,7 +67,7 @@ it("welcomes only approved owners to the early-partner survey and keeps rejectio
     `/en/business/early-partner?claim=${claim.claimId}`,
   );
   expect(approved.html).toContain("Share my feedback");
-  expect(approved.text).toContain("No card and no automatic renewal");
+  expect(approved.text).toContain("No card, charges or auto-renewal");
   expect(rejected.text).not.toContain("early-partner");
   expect(rejected.text).not.toContain("Premium");
   expect(rejected.text).toContain("Reason for this decision");
