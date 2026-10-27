@@ -41,7 +41,7 @@ beforeAll(async () => {
     insert into public.profiles values ('${applicant}','consumer'),('${stranger}','consumer');
     insert into auth.users values ('${applicant}','person@example.test',now(),null),
        ('${stranger}','other@example.test',now(),null);
-    insert into public.venues values ('${venue}','venue');
+    insert into public.venues values ('${venue}','activities');
   `);
   await db.exec(
     readFileSync(
@@ -52,6 +52,12 @@ beforeAll(async () => {
   await db.exec(
     readFileSync(
       "database/migrations/20261027081500_claim_partner_auto_trial.sql",
+      "utf8",
+    ),
+  );
+  await db.exec(
+    readFileSync(
+      "database/migrations/20261027093500_limit_partner_gifts_to_akipasa_venues.sql",
       "utf8",
     ),
   );
@@ -68,6 +74,7 @@ beforeEach(async () => {
     delete from public.billing_subscriptions;
     delete from public.staff_billing_grants;
     update public.claim_partner_campaign set enabled=true,max_grants=25;
+    update public.venues set discovery_vertical='activities' where id='${venue}';
     update auth.users set email_confirmed_at=now(),deleted_at=null;
     insert into public.venue_claims values ('${claim}','${venue}','${applicant}','approved');
     insert into public.venue_members values ('${venue}','${applicant}','owner');
@@ -194,4 +201,21 @@ it("does not expose the raw rewards table and scopes status by signed-in claiman
   } finally {
     await db.exec("reset role; select set_config('test.uid','',false)");
   }
+});
+
+it("never queues an AkiDuermo accommodation claim as an AkiPasa Premium trial", async () => {
+  await db.exec(
+    `update public.venues set discovery_vertical='accommodation' where id='${venue}'`,
+  );
+  await feedback();
+  expect(await status()).toBe(null);
+  expect(
+    (await db.query("select * from public.claim_partner_rewards")).rows,
+  ).toHaveLength(0);
+  await db.exec(`select set_config('test.uid','${applicant}',false)`);
+  const { rows } = await db.query<{ premium: boolean }>(
+    "select akisuite_listing_private.listing_premium($1) premium",
+    [venue],
+  );
+  expect(rows[0].premium).toBe(false);
 });

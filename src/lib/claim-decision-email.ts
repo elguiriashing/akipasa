@@ -36,20 +36,20 @@ export function renderClaimDecision(data: ClaimDecision) {
       : "Hello,";
   const intro = approved
     ? es
-      ? `Hemos aprobado tu reclamación de ${data.venueName}. Ya tienes acceso como propietario para gestionar su ficha en AkiBusiness.`
-      : `We have approved your claim for ${data.venueName}. You now have owner access to manage its listing in AkiBusiness.`
+      ? `Hemos aprobado tu reclamación de ${data.venueName}. Ya puedes gestionar la ficha de tu local en AkiPasa desde AkiHQ.`
+      : `We have approved your claim for ${data.venueName}. You can now manage your venue's AkiPasa listing through AkiHQ.`
     : es
       ? `No hemos aprobado tu reclamación de ${data.venueName} con la información presentada. Puedes corregirla y enviar una nueva solicitud para que la revisemos.`
       : `We have not approved your claim for ${data.venueName} based on the information submitted. You can address the feedback and submit a new claim for review.`;
   const steps = approved
     ? es
       ? [
-          "Inicia sesión en AkiBusiness con la misma cuenta que usaste para reclamar el local.",
+          "Inicia sesión en AkiHQ con la misma cuenta de AkiPasa que usaste para reclamar el local.",
           "Comprueba el nombre, la dirección y los datos de contacto de la ficha.",
           "Añade fotos y mantén actualizada la información que verán tus visitantes.",
         ]
       : [
-          "Sign in to AkiBusiness with the same account you used to claim the venue.",
+          "Sign in to AkiHQ with the same AkiPasa account you used to claim the venue.",
           "Check the listing name, address and contact details.",
           "Add photos and keep the information visitors see up to date.",
         ]
@@ -58,21 +58,21 @@ export function renderClaimDecision(data: ClaimDecision) {
           "Revisa el motivo de la decisión y corrige los puntos indicados.",
           "Completa tu nombre y tus datos de contacto en tu cuenta para que podamos identificarte.",
           "Prepara pruebas de que eres propietario o estás autorizado para gestionar el negocio: web oficial, email corporativo, teléfono del local y una explicación de tu relación con el negocio.",
-          "Abre Reclamaciones en AkiBusiness, selecciona el mismo local y envía una nueva solicitud con las pruebas actualizadas. No incluyas contraseñas, datos bancarios ni documentos de identidad completos.",
+          "Abre Reclamaciones en AkiHQ, selecciona el mismo local y envía una nueva solicitud con las pruebas actualizadas. No incluyas contraseñas, datos bancarios ni documentos de identidad completos.",
         ]
       : [
           "Read the decision reason and address the points raised.",
           "Complete your name and contact details in your account so we can identify you.",
           "Provide evidence that you own or are authorized to manage the business: its official website, company email, venue phone number and an explanation of your role.",
-          "Open Claims in AkiBusiness, select the same venue and submit a new claim with the updated evidence. Do not include passwords, bank details or full identity documents.",
+          "Open Claims in AkiHQ, select the same venue and submit a new claim with the updated evidence. Do not include passwords, bank details or full identity documents.",
         ];
   const href = approved
-    ? `https://business.akipasa.com/${data.locale}/business/venue/${encodeURIComponent(data.venueId)}`
-    : `https://business.akipasa.com/${data.locale}/business?view=claims&venueId=${encodeURIComponent(data.venueId)}`;
+    ? `https://akihq.app/${data.locale}/business/venue/${encodeURIComponent(data.venueId)}`
+    : `https://akihq.app/${data.locale}/business?view=claims&venueId=${encodeURIComponent(data.venueId)}`;
   const cta = approved
     ? es
-      ? "Gestionar mi local"
-      : "Manage my venue"
+      ? "Gestionar mi local en AkiHQ"
+      : "Manage my venue in AkiHQ"
     : es
       ? "Enviar una nueva reclamación"
       : "Submit a new claim";
@@ -88,11 +88,11 @@ export function renderClaimDecision(data: ClaimDecision) {
     ? "Queremos construir AkiPasa contigo"
     : "Help us build a better AkiPasa";
   const partnerCopy = es
-    ? "Estás entre nuestros primeros propietarios de locales. Estamos mejorando AkiHQ y las herramientas para negocios, y nos encantaría ofrecerte una incorporación personalizada. Tu experiencia nos ayudará a crear funciones que de verdad necesites."
-    : "You are among our first venue owners. We are still improving AkiHQ and our business tools, and we would love to offer more personal onboarding. Your experience will help us build features that real businesses actually need.";
+    ? "Estás entre los primeros propietarios que gestionan sus locales de AkiPasa desde AkiHQ. Estamos mejorando esa experiencia y nos encantaría ofrecerte una incorporación personalizada. Queremos construir las funciones que realmente necesitan los negocios."
+    : "You are among the first owners managing an AkiPasa venue through AkiHQ. We are improving that experience and would love to offer personal onboarding. Your feedback will help us build the features venues actually need.";
   const giftCopy = es
-    ? "Responde dos preguntas sobre cómo nos conociste y qué herramientas necesitas, iniciando sesión con tu cuenta verificada de AkiPasa. Si el local aún no tiene Premium y hay plazas disponibles, activaremos automáticamente 3 meses de AkiPasa Premium para esta ficha. Sin tarjeta ni renovación automática. Tus respuestas serán privadas."
-    : "Answer two quick questions about how you found us and what your venue needs, while signed in to your verified AkiPasa account. If the venue has no existing Premium access and places remain, 3 months of AkiPasa business listing Premium will activate automatically. No card and no automatic renewal. Your answers stay private.";
+    ? "Responde dos preguntas con tu cuenta verificada de AkiPasa. Si tu local cumple los requisitos y quedan plazas, activaremos automáticamente 3 meses de AkiPasa Premium para este local, que gestionarás desde AkiHQ. Es una mejora de la ficha de AkiPasa, no una suscripción a software de operaciones. Sin tarjeta, cobros ni renovación automática. Tus respuestas serán privadas."
+    : "Answer two quick questions with your verified AkiPasa account. If your venue is eligible and places remain, we will automatically activate 3 months of AkiPasa listing Premium for this venue, managed through AkiHQ. This upgrades your AkiPasa listing, not an operations software subscription. No card, charges or auto-renewal. Your answers stay private.";
   const partnerCta = es ? "Compartir mi opinión" : "Share my feedback";
   const stepsLabel = approved
     ? es
