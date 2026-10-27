@@ -55,9 +55,12 @@ it("renders both decisions in both languages with safe HTML, real feedback and c
 it("welcomes only approved owners to the early-partner survey and keeps rejections focused", () => {
   const approved = renderClaimDecision({ ...claim, decision: "approved" });
   const rejected = renderClaimDecision({ ...claim, decision: "rejected" });
-  expect(approved.text).toContain(
-    "3 months of AkiPasa business listing Premium",
-  );
+  expect(approved.text).toContain("3 months of AkiPasa listing Premium");
+  expect(approved.text).toContain("managed through AkiHQ");
+  expect(approved.text).not.toContain("AkiBusiness");
+  expect(rejected.text).not.toContain("AkiBusiness");
+  expect(approved.text).toContain(`https://akihq.app/en/business/venue/${claim.venueId}`);
+  expect(rejected.text).toContain("https://akihq.app/en/business?view=claims");
   expect(approved.text).toContain(
     `/en/business/early-partner?claim=${claim.claimId}`,
   );
@@ -68,6 +71,8 @@ it("welcomes only approved owners to the early-partner survey and keeps rejectio
   expect(rejected.text).toContain("Reason for this decision");
   const es = renderClaimDecision({ ...claim, locale: "es" });
   expect(es.text).toContain("3 meses");
+  expect(es.text).toContain("desde AkiHQ");
+  expect(es.text).not.toContain("AkiBusiness");
   expect(es.html).toContain("Compartir mi opinión");
 });
 
