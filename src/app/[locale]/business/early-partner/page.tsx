@@ -108,7 +108,7 @@ export default async function EarlyPartnerPage({
               : "Answer two quick questions with your verified AkiPasa account. If your ownership claim is approved, this venue has no existing Premium access and programme places remain, three months of listing Premium will activate automatically. No card and no automatic renewal."}
           </p>
         </div>
-        {done ? (
+        {done || active ? (
           <section className={styles.success} role="status">
             <h2>
               {active
