@@ -91,8 +91,8 @@ export function renderClaimDecision(data: ClaimDecision) {
     ? "Estás entre nuestros primeros propietarios de locales. Estamos mejorando AkiHQ y las herramientas para negocios, y nos encantaría ofrecerte una incorporación personalizada. Tu experiencia nos ayudará a crear funciones que de verdad necesites."
     : "You are among our first venue owners. We are still improving AkiHQ and our business tools, and we would love to offer more personal onboarding. Your experience will help us build features that real businesses actually need.";
   const giftCopy = es
-    ? "Responde dos preguntas sobre cómo nos conociste y qué herramientas necesitas. Después de comprobar los requisitos, nuestro equipo preparará 3 meses de AkiPasa Premium para la ficha de tu negocio. Sin tarjeta ni renovación automática. Tus respuestas no se publicarán como reseñas."
-    : "Answer two quick questions about how you found us and what your venue needs. After checking eligibility, our team will arrange 3 months of AkiPasa business listing Premium for your venue. No card and no automatic renewal. Your answers will not be published as reviews.";
+    ? "Responde dos preguntas sobre cómo nos conociste y qué herramientas necesitas, iniciando sesión con tu cuenta verificada de AkiPasa. Si el local aún no tiene Premium y hay plazas disponibles, activaremos automáticamente 3 meses de AkiPasa Premium para esta ficha. Sin tarjeta ni renovación automática. Tus respuestas serán privadas."
+    : "Answer two quick questions about how you found us and what your venue needs, while signed in to your verified AkiPasa account. If the venue has no existing Premium access and places remain, 3 months of AkiPasa business listing Premium will activate automatically. No card and no automatic renewal. Your answers stay private.";
   const partnerCta = es ? "Compartir mi opinión" : "Share my feedback";
   const stepsLabel = approved
     ? es
