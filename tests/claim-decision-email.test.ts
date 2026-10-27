@@ -38,9 +38,7 @@ it("renders both decisions in both languages with safe HTML, real feedback and c
         expect(mail.text).toContain(
           `${locale}/business/venue/${claim.venueId}`,
         );
-        expect(mail.text).toContain(
-          locale === "es" ? "gestionar" : "manage",
-        );
+        expect(mail.text).toContain(locale === "es" ? "gestionar" : "manage");
       } else {
         expect(mail.text).toContain(`view=claims&venueId=${claim.venueId}`);
         expect(mail.text).toContain(
