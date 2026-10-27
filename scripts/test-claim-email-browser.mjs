@@ -64,7 +64,9 @@ try {
         expect(mail.text).not.toContain("AkiBusiness");
         if (decision === "approved") {
           expect(mail.text).toContain("AkiHQ");
-          expect(mail.text).toContain(locale === "es" ? "AkiPasa Premium" : "AkiPasa listing Premium");
+          expect(mail.text).toContain(
+            locale === "es" ? "AkiPasa Premium" : "AkiPasa listing Premium",
+          );
         }
         expect(
           await link.evaluate((el) => el.getBoundingClientRect().height),

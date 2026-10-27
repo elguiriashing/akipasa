@@ -59,7 +59,9 @@ it("welcomes only approved owners to the early-partner survey and keeps rejectio
   expect(approved.text).toContain("managed through AkiHQ");
   expect(approved.text).not.toContain("AkiBusiness");
   expect(rejected.text).not.toContain("AkiBusiness");
-  expect(approved.text).toContain(`https://akihq.app/en/business/venue/${claim.venueId}`);
+  expect(approved.text).toContain(
+    `https://akihq.app/en/business/venue/${claim.venueId}`,
+  );
   expect(rejected.text).toContain("https://akihq.app/en/business?view=claims");
   expect(approved.text).toContain(
     `/en/business/early-partner?claim=${claim.claimId}`,

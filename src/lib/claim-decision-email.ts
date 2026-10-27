@@ -72,7 +72,7 @@ export function renderClaimDecision(data: ClaimDecision) {
   const cta = approved
     ? es
       ? "Gestionar mi local en AkiHQ"
-       : "Manage my venue in AkiHQ"
+      : "Manage my venue in AkiHQ"
     : es
       ? "Enviar una nueva reclamación"
       : "Submit a new claim";

@@ -128,7 +128,9 @@ export default async function EarlyPartnerPage({
                   ? "Hemos guardado tus respuestas. Premium no se ha activado automáticamente; nuestro equipo revisará si cumples los requisitos o si ya tienes Premium."
                   : "Your answers were saved. Premium has not activated automatically; our team will check eligibility or whether you already have Premium."}
             </p>
-            <a href={`https://akihq.app/${locale}/business/venue/${encodeURIComponent(claim.venue_id)}`}>
+            <a
+              href={`https://akihq.app/${locale}/business/venue/${encodeURIComponent(claim.venue_id)}`}
+            >
               {es ? "Visitar AkiHQ" : "Explore AkiHQ"}
             </a>
           </section>

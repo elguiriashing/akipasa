@@ -3,7 +3,7 @@
 ## 2026-10-27 | Correct AkiPasa business listing Premium onboarding in AkiHQ
 
 - **Problem:** Claim approval and receipt templates used legacy AkiBusiness URLs/terminology, confusing the free AkiHQ venue management and AkiPasa business listing Premium benefit with the separate paid AkiBusiness operating suite.
-- **Scope:** Change only source-driven EN/ES claim communications, staff help/badges, early-owner survey and success CTA. Approved claims link to `akihq.app/{locale}/business/venue/{venueId}`; rejected/pending claims link to `akihq.app/{locale}/business?view=claims`. Gift is three months of *AkiPasa listing Premium managed in AkiHQ*, with existing eligibility/cap/expiry unchanged. Regular operating-plan membership and AkiBusiness onboarding remain separate and untouched.
+- **Scope:** Change only source-driven EN/ES claim communications, staff help/badges, early-owner survey and success CTA. Approved claims link to `akihq.app/{locale}/business/venue/{venueId}`; rejected/pending claims link to `akihq.app/{locale}/business?view=claims`. Gift is three months of _AkiPasa listing Premium managed in AkiHQ_, with existing eligibility/cap/expiry unchanged. Regular operating-plan membership and AkiBusiness onboarding remain separate and untouched.
 - **Permissions/billing:** No new tables, entitlement modifications, automatic claim approvals, Stripe transactions or trial extension. Existing rewards are per-venue, not account-wide.
 - **Tests/deploy:** EN/ES plaintext and HTML content, branded claim receipt and exact links, safe mobile CTA, CI full contract, Cloudflare production verification. Rollback source alone without rewriting customer claims or reward audit records. Existing sent messages remain historical.
 
