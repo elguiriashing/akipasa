@@ -79,7 +79,7 @@ key managed outside this repository. Do not commit a keystore, password,
 3. In Play Console, open the app's **App integrity > App signing** page and find
    the **Upload key certificate** SHA-256. Compare it with the existing upload
    keystore and alias using `keytool -list -v -keystore "<existing-keystore>"
-   -alias "<existing-alias>"`; enter any password at the prompt. Do not generate
+-alias "<existing-alias>"`; enter any password at the prompt. Do not generate
    or reset a key for this release. The separate **App signing key certificate**
    is used by Play-delivered APKs and App Links, not for this upload comparison.
 4. In the separate project's Android Studio window choose **Build > Generate
@@ -90,7 +90,7 @@ key managed outside this repository. Do not commit a keystore, password,
    credentials or place passwords in scripts, chat, logs or project files.
 5. Verify the generated file with `jarsigner -verify "<signed-release.aab>"`
    and inspect its certificate with `keytool -printcert -jarfile
-   "<signed-release.aab>"`. Require a valid content signature and the expected
+"<signed-release.aab>"`. Require a valid content signature and the expected
    upload certificate. Record the signed AAB's SHA-256 and version separately
    from the unsigned CI artifact.
 6. In the existing Play app open **Test and release > Testing > Internal
