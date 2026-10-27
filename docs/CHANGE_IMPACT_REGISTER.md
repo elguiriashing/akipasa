@@ -1,5 +1,13 @@
 # Change Impact Register
 
+## 2026-10-27 | Claim email visibility, early-partner survey and reward tracking
+
+- **Before:** The mandatory moderator reason was emailed verbatim without clear UI disclosure; approval emails contained basic venue management instructions and denial emails were purely corrective. Resend-hosted templates do not control claim decisions.
+- **Change:** Explicit customer-visible decision note in moderation; bilingual first-owner welcome and survey CTA on approvals only; authenticated EN/ES attribution and product-needs form; distinct opt-in for personalised onboarding; manual three-month listing Premium gift queue.
+- **Security and privacy:** RLS limits feedback to the approved claimant, reward queue service-role only; no public reviews, raw tokens, newsletter opt-in, automatic billing, or direct entitlement grants. Denials have no marketing pitch. Emails remain persisted, audited and idempotent.
+- **Dependencies:** Apply mirrored additive Supabase migration before deploying the AkiPasa Worker; pass hosted email, SQL policy, TS, formatting and authenticated survey tests; verify current Cloudflare deployment and delayed Resend deliveries.
+- **Rollback:** Remove survey CTA and UI route without deleting feedback or reward audit records. Never roll back by altering existing venue claims or customer subscriptions.
+
 ## 2026-10-27 | Founder FCM push integration (dark launch)
 
 - **Before:** Android had branded local debug notifications only. Founder claim alerts used Resend and a five-minute cron. Staff notification links could show the wrong claim if the UUID was outside the first page.
