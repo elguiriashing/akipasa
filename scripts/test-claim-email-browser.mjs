@@ -50,16 +50,22 @@ try {
           name:
             decision === "approved"
               ? locale === "es"
-                ? "Gestionar mi local"
-                : "Manage my venue"
+                ? "Gestionar mi local en AkiHQ"
+                : "Manage my venue in AkiHQ"
               : locale === "es"
                 ? "Enviar una nueva reclamación"
                 : "Submit a new claim",
         });
         await expect(link).toBeVisible();
+        expect(await link.getAttribute("href")).toContain("https://akihq.app/");
         expect(await link.getAttribute("href")).toContain(
           decision === "approved" ? "/business/venue/" : "view=claims&venueId=",
         );
+        expect(mail.text).not.toContain("AkiBusiness");
+        if (decision === "approved") {
+          expect(mail.text).toContain("AkiHQ");
+          expect(mail.text).toContain(locale === "es" ? "AkiPasa Premium" : "AkiPasa listing Premium");
+        }
         expect(
           await link.evaluate((el) => el.getBoundingClientRect().height),
         ).toBeGreaterThanOrEqual(44);
