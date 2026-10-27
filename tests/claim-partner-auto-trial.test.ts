@@ -3,7 +3,8 @@ import { readFileSync } from "node:fs";
 import { afterAll, beforeAll, beforeEach, expect, it } from "vitest";
 
 let db: PGlite;
-const uuid = (n: number) => `10000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
+const uuid = (n: number) =>
+  `10000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
 const applicant = uuid(1);
 const stranger = uuid(2);
 const venue = uuid(3);
@@ -42,8 +43,18 @@ beforeAll(async () => {
        ('${stranger}','other@example.test',now(),null);
     insert into public.venues values ('${venue}','venue');
   `);
-  await db.exec(readFileSync("database/migrations/20261027031500_claim_early_partner_feedback.sql","utf8"));
-  await db.exec(readFileSync("database/migrations/20261027081500_claim_partner_auto_trial.sql","utf8"));
+  await db.exec(
+    readFileSync(
+      "database/migrations/20261027031500_claim_early_partner_feedback.sql",
+      "utf8",
+    ),
+  );
+  await db.exec(
+    readFileSync(
+      "database/migrations/20261027081500_claim_partner_auto_trial.sql",
+      "utf8",
+    ),
+  );
 }, 30000);
 
 beforeEach(async () => {
@@ -63,10 +74,14 @@ beforeEach(async () => {
   `);
 });
 
-afterAll(async () => { await db?.close(); });
+afterAll(async () => {
+  await db?.close();
+});
 
 async function feedback(actor = applicant) {
-  await db.exec(`set role authenticated; select set_config('test.uid','${actor}',false)`);
+  await db.exec(
+    `set role authenticated; select set_config('test.uid','${actor}',false)`,
+  );
   try {
     return await db.query(
       `insert into public.claim_owner_feedback
@@ -93,14 +108,21 @@ it("grants exactly three months to the verified approved venue owner, without St
   expect((await status())?.state).toBe("granted");
   const { rows } = await db.query<{ days: number }>(
     `select extract(epoch from(expires_at-granted_at))/86400 as days
-       from public.claim_partner_rewards where claim_id=$1`, [claim],
+       from public.claim_partner_rewards where claim_id=$1`,
+    [claim],
   );
   expect(Number(rows[0].days)).toBeGreaterThan(88);
   expect(Number(rows[0].days)).toBeLessThan(94);
-  expect((await db.query("select * from public.billing_subscriptions")).rows).toHaveLength(0);
-  expect((await db.query("select * from public.staff_billing_grants")).rows).toHaveLength(0);
+  expect(
+    (await db.query("select * from public.billing_subscriptions")).rows,
+  ).toHaveLength(0);
+  expect(
+    (await db.query("select * from public.staff_billing_grants")).rows,
+  ).toHaveLength(0);
   await feedback();
-  expect((await db.query("select * from public.claim_partner_rewards")).rows).toHaveLength(1);
+  expect(
+    (await db.query("select * from public.claim_partner_rewards")).rows,
+  ).toHaveLength(1);
 });
 
 it("requires approved ownership and never grants to a different authenticated user", async () => {
@@ -108,29 +130,40 @@ it("requires approved ownership and never grants to a different authenticated us
   await expect(feedback()).rejects.toThrow();
   await db.exec("update public.venue_claims set status='approved'");
   await expect(feedback(stranger)).rejects.toThrow();
-  expect((await db.query("select * from public.claim_partner_rewards")).rows).toHaveLength(0);
+  expect(
+    (await db.query("select * from public.claim_partner_rewards")).rows,
+  ).toHaveLength(0);
 });
 
 it("fails closed when email is unverified and can grant after verification and feedback retry", async () => {
-  await db.exec(`update auth.users set email_confirmed_at=null where id='${applicant}'`);
+  await db.exec(
+    `update auth.users set email_confirmed_at=null where id='${applicant}'`,
+  );
   await feedback();
   expect((await status())?.state).toBe("pending");
-  await db.exec(`update auth.users set email_confirmed_at=now() where id='${applicant}'`);
+  await db.exec(
+    `update auth.users set email_confirmed_at=now() where id='${applicant}'`,
+  );
   await feedback();
   expect((await status())?.state).toBe("granted");
 });
 
 it("does not replace existing paid Premium, and expires independently", async () => {
-  await db.exec(`insert into public.billing_subscriptions values ('${applicant}','business','active',now()+interval '60 days')`);
+  await db.exec(
+    `insert into public.billing_subscriptions values ('${applicant}','business','active',now()+interval '60 days')`,
+  );
   await feedback();
   expect((await status())?.state).toBe("pending");
   await db.exec(`delete from public.billing_subscriptions`);
   await feedback();
   expect((await status())?.state).toBe("granted");
-  await db.exec(`update public.claim_partner_rewards set expires_at=now()-interval '1 day' where claim_id='${claim}'`);
+  await db.exec(
+    `update public.claim_partner_rewards set expires_at=now()-interval '1 day' where claim_id='${claim}'`,
+  );
   await db.exec(`select set_config('test.uid','${applicant}',false)`);
   const { rows } = await db.query<{ premium: boolean }>(
-    "select akisuite_listing_private.listing_premium($1) premium", [venue],
+    "select akisuite_listing_private.listing_premium($1) premium",
+    [venue],
   );
   expect(rows[0].premium).toBe(false);
 });
@@ -146,11 +179,16 @@ it("obeys campaign capacity without silently activating a paid plan", async () =
 
 it("does not expose the raw rewards table and scopes status by signed-in claimant", async () => {
   await feedback();
-  await db.exec(`set role authenticated; select set_config('test.uid','${stranger}',false)`);
+  await db.exec(
+    `set role authenticated; select set_config('test.uid','${stranger}',false)`,
+  );
   try {
-    await expect(db.query("select * from public.claim_partner_rewards")).rejects.toThrow();
-    const { rows } = await db.query<{ result: Record<string,string> | null }>(
-      "select public.claim_partner_reward_status($1) result",[claim],
+    await expect(
+      db.query("select * from public.claim_partner_rewards"),
+    ).rejects.toThrow();
+    const { rows } = await db.query<{ result: Record<string, string> | null }>(
+      "select public.claim_partner_reward_status($1) result",
+      [claim],
     );
     expect(rows[0].result).toBe(null);
   } finally {

@@ -57,21 +57,23 @@ export default async function EarlyPartnerPage({
     { data: existing, error: feedbackError },
     { data: reward, error: rewardError },
   ] = await Promise.all([
-      supabase
-        .from("venues")
-        .select("name")
-        .eq("id", claim.venue_id)
-        .maybeSingle(),
-      supabase
-        .from("claim_owner_feedback")
-        .select("discovery_source,priority_need,comments,contact_permission")
-        .eq("claim_id", claimId)
-        .maybeSingle(),
-      supabase.rpc("claim_partner_reward_status", { p_claim: claimId }),
-    ]);
+    supabase
+      .from("venues")
+      .select("name")
+      .eq("id", claim.venue_id)
+      .maybeSingle(),
+    supabase
+      .from("claim_owner_feedback")
+      .select("discovery_source,priority_need,comments,contact_permission")
+      .eq("claim_id", claimId)
+      .maybeSingle(),
+    supabase.rpc("claim_partner_reward_status", { p_claim: claimId }),
+  ]);
   const done = query.done === "1" && Boolean(existing);
-  const active = reward?.state === "granted" &&
-    Boolean(reward.expires_at) && Date.parse(reward.expires_at) > Date.now();
+  const active =
+    reward?.state === "granted" &&
+    Boolean(reward.expires_at) &&
+    Date.parse(reward.expires_at) > Date.now();
   const expiry = active
     ? new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", {
         dateStyle: "long",
