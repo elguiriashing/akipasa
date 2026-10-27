@@ -58,6 +58,7 @@ public final class MainActivity extends Activity {
     private GeolocationPermissions.Callback locationCallback;
     private String locationOrigin;
     private boolean mainFrameFailed;
+    private FounderPushCoordinator founderPush;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +130,24 @@ public final class MainActivity extends Activity {
         manager.notify(1003, notification);
     }
 
+    /** Recheck server eligibility on both full-document and SPA navigation. */
+    private void registerFounderPushForUrl(String url) {
+        if (founderPush != null) founderPush.refresh(false);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (founderPush != null) founderPush.resume();
+    }
+
+    @Override
+    protected void onPause() {
+        if (founderPush != null) founderPush.pause();
+        CookieManager.getInstance().flush();
+        super.onPause();
+    }
+
     private void hideSystemBars() {
         if (Build.VERSION.SDK_INT >= 30) {
             getWindow().setDecorFitsSystemWindows(false);
@@ -183,6 +202,14 @@ public final class MainActivity extends Activity {
         );
         progressParams.gravity = Gravity.TOP;
         root.addView(progressBar, progressParams);
+        Button pushTest = new Button(this);
+        pushTest.setVisibility(View.GONE);
+        FrameLayout.LayoutParams testParams = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        testParams.gravity = Gravity.BOTTOM | Gravity.END;
+        testParams.setMargins(dp(12), 0, dp(12), dp(88));
+        root.addView(pushTest, testParams);
+        founderPush = new FounderPushCoordinator(this, webView, pushTest);
         return root;
     }
 
@@ -380,6 +407,10 @@ public final class MainActivity extends Activity {
             }
             return;
         }
+        if (requestCode == FounderPushCoordinator.PERMISSION_REQUEST) {
+            founderPush.refresh(true);
+            return;
+        }
         if (requestCode != LOCATION_PERMISSION_REQUEST || locationCallback == null) return;
         boolean granted = false;
         for (int result : grantResults) granted |= result == PackageManager.PERMISSION_GRANTED;
@@ -390,6 +421,7 @@ public final class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        if (founderPush != null) founderPush.destroy();
         if (fileCallback != null) fileCallback.onReceiveValue(null);
         if (locationCallback != null) locationCallback.invoke(locationOrigin, false, false);
         webView.stopLoading();
@@ -419,11 +451,21 @@ public final class MainActivity extends Activity {
         }
 
         @Override
+        public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
+            super.doUpdateVisitedHistory(view, url, isReload);
+            // Next.js SPA navigation does not always trigger onPageFinished.
+            // A founder entering Staff from Discover must still opt in/register.
+            view.post(() -> registerFounderPushForUrl(url));
+        }
+
+        @Override
         public void onPageFinished(WebView view, String url) {
             progressBar.setVisibility(View.GONE);
             if (mainFrameFailed) {
                 webView.setVisibility(View.GONE);
                 offlineView.setVisibility(View.VISIBLE);
+            } else {
+                registerFounderPushForUrl(url);
             }
         }
 

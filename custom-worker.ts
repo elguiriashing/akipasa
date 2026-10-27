@@ -13,6 +13,11 @@ import {
 } from "./src/lib/claim-mail-delivery";
 
 import { dispatchClaimSubmissionAlerts } from "./src/lib/claim-alert-delivery";
+import {
+  dispatchFounderClaimPushes,
+  type PushEnv,
+} from "./src/lib/founder-push-delivery";
+import { handleFounderPushWake } from "./src/lib/founder-push-wake";
 import { dispatchSuiteEmails } from "./src/lib/suite-mail-delivery";
 
 import {
@@ -44,16 +49,18 @@ import {
 const worker = {
   async scheduled(
     _event: unknown,
-    env: ClaimMailEnv & {
-      AKISUITE_SUBSCRIPTIONS_READY?: string;
-      AKISUITE_FEATURES_READY?: string;
-      AKISUITE_BILLING_VERIFIED?: string;
-      AKISUITE_STRIPE_ACCOUNT_ID?: string;
-      STRIPE_SECRET_KEY?: string;
-      AKIBUSINESS_OPERATIONS_BILLING_READY?: string;
-      AKISUITE_FUNNEL_READY?: string;
-      AKIBUSINESS_OPERATIONS_MIGRATIONS_READY?: string;
-    },
+    env: ClaimMailEnv &
+      PushEnv & {
+        AKIPASA_PUSH_ENABLED?: string;
+        AKISUITE_SUBSCRIPTIONS_READY?: string;
+        AKISUITE_FEATURES_READY?: string;
+        AKISUITE_BILLING_VERIFIED?: string;
+        AKISUITE_STRIPE_ACCOUNT_ID?: string;
+        STRIPE_SECRET_KEY?: string;
+        AKIBUSINESS_OPERATIONS_BILLING_READY?: string;
+        AKISUITE_FUNNEL_READY?: string;
+        AKIBUSINESS_OPERATIONS_MIGRATIONS_READY?: string;
+      },
     ctx: { waitUntil(work: Promise<unknown>): void },
   ) {
     await recordOperationsCronTick(env);
@@ -76,6 +83,13 @@ const worker = {
     ctx.waitUntil(dispatchAccommodationConfirmations(env));
     ctx.waitUntil(dispatchClaimDecisions(env));
     ctx.waitUntil(dispatchClaimSubmissionAlerts(env));
+    if (env.AKIPASA_PUSH_ENABLED === "true") {
+      ctx.waitUntil(
+        dispatchFounderClaimPushes(env).catch(() =>
+          console.error("founder_push_cron_failed"),
+        ),
+      );
+    }
     ctx.waitUntil(dispatchSuiteEmails(env));
     ctx.waitUntil(publishScheduledAkiSuiteEvents(env));
     ctx.waitUntil(
@@ -88,6 +102,7 @@ const worker = {
     request: Request,
     env: MapEdgeEnv &
       ClaimMailEnv &
+      PushEnv &
       OperationsRecoveryEnv & {
         ASSETS?: ReleaseAssets;
         AKIBUSINESS_OPERATIONS_MIGRATIONS_READY?: string;
@@ -95,6 +110,9 @@ const worker = {
     ctx: { waitUntil(work: Promise<unknown>): void },
   ) {
     const path = new URL(request.url).pathname;
+    if (path === "/api/internal/founder-push/wake") {
+      return handleFounderPushWake(request, env, (work) => ctx.waitUntil(work));
+    }
     if (path === "/api/bookings/release" && request.method === "GET") {
       return Response.json(
         {

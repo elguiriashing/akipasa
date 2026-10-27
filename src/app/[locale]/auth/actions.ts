@@ -1,6 +1,7 @@
 "use server";
 
 import { readOnboardingStatus } from "@/lib/account-onboarding-server";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { onboardingUrl } from "@/lib/account-onboarding";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -233,6 +234,33 @@ export async function signOut(formData: FormData) {
   const locale = String(formData.get("locale"));
   const safeLocale = isLocale(locale) ? locale : "es";
   const supabase = await createSupabaseServerClient();
+  // Revocation must still work during a dark launch or after delivery is disabled.
+  if (
+    process.env.AKIPASA_PUSH_FOUNDER_IDS &&
+    process.env.SUPABASE_SERVICE_ROLE_KEY &&
+    process.env.NEXT_PUBLIC_SUPABASE_URL
+  ) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const allowed = new Set(
+      process.env.AKIPASA_PUSH_FOUNDER_IDS.toLowerCase()
+        .split(",")
+        .map((id) => id.trim()),
+    );
+    if (user && allowed.has(user.id.toLowerCase())) {
+      const db = createAdminClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL,
+        process.env.SUPABASE_SERVICE_ROLE_KEY,
+        { auth: { persistSession: false, autoRefreshToken: false } },
+      );
+      const { error } = await db
+        .from("admin_push_devices")
+        .delete()
+        .eq("user_id", user.id);
+      if (error) console.error("founder_push_signout_revoke", error.code);
+    }
+  }
   await supabase.auth.signOut();
   redirect(`/${safeLocale}`);
 }

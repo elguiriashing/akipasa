@@ -19,6 +19,18 @@
         android:theme="@style/Theme.AkiPasa"
         android:usesCleartextTraffic="false">
 
+        <!-- Do not initialise FCM or collect Firebase analytics for ordinary users. -->
+        <meta-data android:name="firebase_messaging_auto_init_enabled" android:value="false" />
+        <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
+        <meta-data android:name="firebase_messaging_notification_delegation_enabled" android:value="false" />
+        <service
+            android:name=".AkiPasaMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"

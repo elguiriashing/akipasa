@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "238525224046",
+    "project_id": "akipasa-android",
+    "storage_bucket": "akipasa-android.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:238525224046:android:5f9ae20ec798a9a833427f",
+        "android_client_info": {
+          "package_name": "com.akipasa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdP8DfXDkcaV7YyuXY1Q5gQRgHqFexOWg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
