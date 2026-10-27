@@ -52,8 +52,11 @@ export default async function EarlyPartnerPage({
     .eq("claimant_id", user.id)
     .maybeSingle();
   if (claimError || !claim || claim.status !== "approved") notFound();
-  const [{ data: venue }, { data: existing, error: feedbackError }] =
-    await Promise.all([
+  const [
+    { data: venue },
+    { data: existing, error: feedbackError },
+    { data: reward, error: rewardError },
+  ] = await Promise.all([
       supabase
         .from("venues")
         .select("name")
@@ -64,8 +67,17 @@ export default async function EarlyPartnerPage({
         .select("discovery_source,priority_need,comments,contact_permission")
         .eq("claim_id", claimId)
         .maybeSingle(),
+      supabase.rpc("claim_partner_reward_status", { p_claim: claimId }),
     ]);
-  const done = query.done === "1";
+  const done = query.done === "1" && Boolean(existing);
+  const active = reward?.state === "granted" &&
+    Boolean(reward.expires_at) && Date.parse(reward.expires_at) > Date.now();
+  const expiry = active
+    ? new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", {
+        dateStyle: "long",
+        timeZone: "Europe/Madrid",
+      }).format(new Date(reward.expires_at))
+    : null;
   return (
     <main className={styles.backdrop}>
       <article className={styles.card}>
@@ -90,27 +102,35 @@ export default async function EarlyPartnerPage({
           </strong>
           <p>
             {es
-              ? "Responde estas dos preguntas y nuestro equipo preparará 3 meses de AkiPasa Premium para la ficha de tu negocio, sin tarjeta ni renovación automática. Confirmaremos la activación después de comprobar que cumple los requisitos."
-              : "Answer these two questions and our team will arrange 3 months of AkiPasa business listing Premium for your venue, with no card and no automatic renewal. We'll confirm activation after checking eligibility."}
+              ? "Responde dos preguntas con tu cuenta AkiPasa verificada. Si tu reclamación está aprobada, tu local aún no tiene Premium y quedan plazas del programa, se activarán automáticamente 3 meses de Premium para esta ficha. Sin tarjeta ni renovación automática."
+              : "Answer two quick questions with your verified AkiPasa account. If your ownership claim is approved, this venue has no existing Premium access and programme places remain, three months of listing Premium will activate automatically. No card and no automatic renewal."}
           </p>
         </div>
         {done ? (
           <section className={styles.success} role="status">
             <h2>
-              {es
-                ? "¡Gracias por compartir tu opinión!"
-                : "Thank you for sharing your thoughts!"}
+              {active
+                ? es
+                  ? "¡Tu Premium de 3 meses está activado!"
+                  : "Your 3-month Premium is active!"
+                : es
+                  ? "¡Gracias por compartir tu opinión!"
+                  : "Thank you for sharing your thoughts!"}
             </h2>
             <p>
-              {es
-                ? "Hemos guardado tus respuestas. Revisaremos tu regalo de socio pionero y nos pondremos en contacto contigo para ayudarte a empezar."
-                : "Your answers have been saved. We'll review your early-partner gift and reach out to help you get started."}
+              {active
+                ? es
+                  ? `Hemos verificado tu cuenta y activado Premium para este local hasta el ${expiry}. No se te cobrará nada ni se renovará automáticamente.`
+                  : `We verified your account and activated Premium for this venue until ${expiry}. You won't be charged or automatically renewed.`
+                : es
+                  ? "Hemos guardado tus respuestas. Premium no se ha activado automáticamente; nuestro equipo revisará si cumples los requisitos o si ya tienes Premium."
+                  : "Your answers were saved. Premium has not activated automatically; our team will check eligibility or whether you already have Premium."}
             </p>
             <a href="https://akihq.app/">
               {es ? "Visitar AkiHQ" : "Explore AkiHQ"}
             </a>
           </section>
-        ) : feedbackError ? (
+        ) : feedbackError || rewardError ? (
           <p role="alert" className={styles.error}>
             {es
               ? "El formulario aún no está disponible. Vuelve a intentarlo más tarde o responde al correo de soporte."
