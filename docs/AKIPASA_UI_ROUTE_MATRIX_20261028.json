@@ -363,6 +363,11 @@
       "status": "pending",
       "note": ""
     },
+    "src/app/[locale]/roadmap/page.tsx": {
+      "scope": "consumer",
+      "status": "in-progress",
+      "note": "Public ES/EN rollout roadmap. Await mobile, accessible preview and release verification."
+    },
     "src/app/[locale]/staff/audit/page.tsx": {
       "scope": "operational",
       "status": "pending",
@@ -492,6 +497,11 @@
       "scope": "cross-product",
       "status": "pending",
       "note": ""
+    },
+    "src/app/roadmap/page.tsx": {
+      "scope": "cross-product",
+      "status": "in-progress",
+      "note": "Public /roadmap entry redirect to /es/roadmap; verify SEO and redirect."
     },
     "src/app/waitlist/confirm/page.tsx": {
       "scope": "cross-product",
