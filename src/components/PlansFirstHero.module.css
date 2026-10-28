@@ -152,3 +152,25 @@
  .shortcuts::-webkit-scrollbar{display:none;}
  .shortcut,.mapShortcut {flex:0 0 auto; white-space:nowrap;}
 }
+
+/* Real approved discovery imagery, never mock event artwork. */
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.media img { object-fit: cover; object-position: center; }
+.media::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(4, 9, 16, 0.96) 0%, rgba(4, 9, 16, 0.78) 48%, rgba(4, 9, 16, 0.4) 100%), linear-gradient(0deg, rgba(4, 9, 16, 0.7), transparent 55%);
+  content: "";
+}
+.hero > :not(.media) { position: relative; z-index: 1; }
+@media (max-width: 640px) {
+  .media::after {
+    background: linear-gradient(0deg, rgba(4, 9, 16, 0.94), rgba(4, 9, 16, 0.28) 72%), linear-gradient(90deg, rgba(4, 9, 16, 0.48), transparent);
+  }
+}
