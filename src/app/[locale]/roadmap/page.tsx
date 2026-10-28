@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { Metadata } from "next";
+import { localizedMetadata } from "@/lib/seo";
 import { Icon } from "@/components/Icons";
 import { isLocale, type Locale } from "@/lib/config";
 import { launchPhases, roadmapFeatures, localized } from "@/lib/pasa-roadmap";
@@ -10,26 +10,18 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
+}) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const es = locale === "es";
-  return {
-    title: es
-      ? "Nuestro plan y expansión | AkiPasa"
-      : "Our plan & rollout | AkiPasa",
-    description: es
+  return localizedMetadata(
+    locale,
+    "/roadmap",
+    es ? "Nuestro plan y expansión | AkiPasa" : "Our plan & rollout | AkiPasa",
+    es
       ? "Descubre cómo se está preparando AkiPasa, empezando por la Costa del Sol y creciendo por España según la demanda."
       : "Follow the AkiPasa launch plan: Costa del Sol first, then expansion across Spain based on real demand.",
-    alternates: {
-      canonical: `https://akipasa.com/${locale}/roadmap`,
-      languages: {
-        es: "https://akipasa.com/es/roadmap",
-        en: "https://akipasa.com/en/roadmap",
-        "x-default": "https://akipasa.com/roadmap",
-      },
-    },
-  };
+  );
 }
 
 export default async function RoadmapPage({
