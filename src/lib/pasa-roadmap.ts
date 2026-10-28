@@ -48,7 +48,10 @@ export const launchPhases: readonly LaunchPhase[] = [
       en: "Use genuine feedback to improve Community, verified check-ins, Passport achievements and our AkiPals mascot experience.",
       es: "Usar opiniones reales para mejorar Comunidad, check-ins verificados, logros del Pasaporte y nuestros personajes AkiPals.",
     },
-    schedule: { en: "After the first rollout", es: "Tras el primer lanzamiento" },
+    schedule: {
+      en: "After the first rollout",
+      es: "Tras el primer lanzamiento",
+    },
   },
   {
     key: "expand",
@@ -59,7 +62,10 @@ export const launchPhases: readonly LaunchPhase[] = [
       en: "Grow across Spain according to real interest, local community activity and reliable venue coverage, rather than publishing a made-up city calendar.",
       es: "Crecer por España según el interés real, la actividad de cada comunidad y la calidad de los locales disponibles, sin inventar un calendario.",
     },
-    schedule: { en: "Demand-led, no fixed dates yet", es: "Según demanda, sin fechas cerradas" },
+    schedule: {
+      en: "Demand-led, no fixed dates yet",
+      es: "Según demanda, sin fechas cerradas",
+    },
   },
 ];
 
@@ -67,41 +73,62 @@ export const roadmapFeatures: readonly RoadmapFeature[] = [
   {
     name: "Discovery + Map",
     label: { en: "Core experience", es: "Experiencia principal" },
-    detail: { en: "Real places and plans, without the clutter.", es: "Lugares y planes reales, sin complicaciones." },
+    detail: {
+      en: "Real places and plans, without the clutter.",
+      es: "Lugares y planes reales, sin complicaciones.",
+    },
     state: "building",
   },
   {
     name: "Venue + Event pages",
     label: { en: "Core experience", es: "Experiencia principal" },
-    detail: { en: "Useful details before you head out.", es: "Lo que necesitas saber antes de salir." },
+    detail: {
+      en: "Useful details before you head out.",
+      es: "Lo que necesitas saber antes de salir.",
+    },
     state: "building",
   },
   {
     name: "Community",
     label: { en: "Being developed", es: "En desarrollo" },
-    detail: { en: "Discover local creators and share better plans.", es: "Descubre creadores y comparte planes." },
+    detail: {
+      en: "Discover local creators and share better plans.",
+      es: "Descubre creadores y comparte planes.",
+    },
     state: "building",
   },
   {
     name: "Passport",
     label: { en: "Evolving", es: "En evolución" },
-    detail: { en: "Stamps, progress and verified achievements.", es: "Sellos, progreso y logros verificados." },
+    detail: {
+      en: "Stamps, progress and verified achievements.",
+      es: "Sellos, progreso y logros verificados.",
+    },
     state: "building",
   },
   {
     name: "AkiPals",
     label: { en: "Private playtest", es: "Pruebas privadas" },
-    detail: { en: "Virtual companions, outfits and adventures.", es: "Mascotas virtuales, conjuntos y aventuras." },
+    detail: {
+      en: "Virtual companions, outfits and adventures.",
+      es: "Mascotas virtuales, conjuntos y aventuras.",
+    },
     state: "private",
   },
   {
     name: "Friends + plans",
     label: { en: "On the horizon", es: "En el horizonte" },
-    detail: { en: "Opt-in connections, not public location tracking.", es: "Conexiones voluntarias, sin rastrear ubicaciones." },
+    detail: {
+      en: "Opt-in connections, not public location tracking.",
+      es: "Conexiones voluntarias, sin rastrear ubicaciones.",
+    },
     state: "planned",
   },
 ];
 
-export function localized<T extends { en: string; es: string }>(text: T, locale: Locale): string {
+export function localized<T extends { en: string; es: string }>(
+  text: T,
+  locale: Locale,
+): string {
   return text[locale];
 }

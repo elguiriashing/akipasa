@@ -76,7 +76,7 @@ export function PasaBottomDock({ locale }: { locale: Locale }) {
           <Link
             key={item.key}
             href={href}
-            className={`pasa-dock__item pasa-dock__item--${item.key}${active ? " active" : ""}`}
+            className={`pasa-dock__item pasa-dock__item--${item.key}${active ? "active" : ""}`}
             aria-current={active ? "page" : undefined}
             aria-label={item.label}
           >

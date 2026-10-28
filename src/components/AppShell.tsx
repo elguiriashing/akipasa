@@ -396,7 +396,8 @@ export function AppShell({
         </button>
       </header>
 
-      {(!section || ["map", "community", "venues", "events"].includes(section)) && (
+      {(!section ||
+        ["map", "community", "venues", "events"].includes(section)) && (
         <LaunchRibbon locale={locale} />
       )}
       <div className="app-content">{children}</div>

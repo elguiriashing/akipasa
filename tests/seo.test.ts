@@ -120,7 +120,9 @@ describe("catalogue sitemaps", () => {
       throw new Error("must not query catalogue");
     });
     const doc = document(await response.text());
-    expect(doc.querySelectorAll("url")).toHaveLength(publicPagePaths.length * 2);
+    expect(doc.querySelectorAll("url")).toHaveLength(
+      publicPagePaths.length * 2,
+    );
     expect(doc.querySelectorAll("lastmod")).toHaveLength(0);
     const urls = [...doc.querySelectorAll("loc")].map(
       (loc) => loc.textContent!,

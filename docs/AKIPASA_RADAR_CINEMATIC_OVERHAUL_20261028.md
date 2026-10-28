@@ -8,7 +8,6 @@
 - The public Home no-results state links to the roadmap alongside the existing search-expansion actions. Keep no-event truthful; never create fake events or fake signups.
 - Canonical copy and statuses reside in `src/lib/pasa-roadmap.ts` and `tests/pasa-roadmap.test.ts`; both new pages are registered in the strict route matrix. Remaining #326 release gates are unchanged.
 
-
 Date: 2026-10-28. Status: implementation specification; NOT deployed.
 Base: master at creation. Visual reference: Alex's approved Index, Map, Community, AkiPals, Passport, Login and Profile concepts.
 

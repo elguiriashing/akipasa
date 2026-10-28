@@ -1,11 +1,25 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { launchPhases, localized, roadmapFeatures } from "../src/lib/pasa-roadmap";
+import {
+  launchPhases,
+  localized,
+  roadmapFeatures,
+} from "../src/lib/pasa-roadmap";
 
 describe("Costa del Sol-first public launch roadmap", () => {
   it("contains four ordered phases without fabricated launch dates", () => {
-    expect(launchPhases.map((phase) => phase.key)).toEqual(["build", "coast", "refine", "expand"]);
-    expect(launchPhases.map((phase) => phase.status)).toEqual(["current", "next", "planned", "planned"]);
+    expect(launchPhases.map((phase) => phase.key)).toEqual([
+      "build",
+      "coast",
+      "refine",
+      "expand",
+    ]);
+    expect(launchPhases.map((phase) => phase.status)).toEqual([
+      "current",
+      "next",
+      "planned",
+      "planned",
+    ]);
     expect(launchPhases[1].title.en).toContain("Costa del Sol");
     expect(launchPhases[3].description.en).toContain("real interest");
     for (const phase of launchPhases) {
@@ -17,8 +31,13 @@ describe("Costa del Sol-first public launch roadmap", () => {
   });
 
   it("distinguishes restricted AkiPals testing from future friends", () => {
-    expect(roadmapFeatures.find((feature) => feature.name === "AkiPals")?.state).toBe("private");
-    expect(roadmapFeatures.find((feature) => feature.name === "Friends + plans")?.state).toBe("planned");
+    expect(
+      roadmapFeatures.find((feature) => feature.name === "AkiPals")?.state,
+    ).toBe("private");
+    expect(
+      roadmapFeatures.find((feature) => feature.name === "Friends + plans")
+        ?.state,
+    ).toBe("planned");
     expect(localized(launchPhases[0].title, "es")).toBe("Construirlo bien");
   });
 
@@ -37,7 +56,7 @@ describe("Costa del Sol-first public launch roadmap", () => {
 
   it("adds a truthful roadmap link on empty discovery results", () => {
     const home = readFileSync("src/app/[locale]/page.tsx", "utf8");
-    expect(home).toContain('No plans nearby yet');
+    expect(home).toContain("No plans nearby yet");
     expect(home).toContain("See our rollout plan");
     expect(home).toContain("/roadmap");
   });
