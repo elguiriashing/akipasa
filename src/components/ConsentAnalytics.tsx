@@ -23,8 +23,10 @@ export function ConsentAnalytics({
       const choices = readPrivacyChoices();
       // Never send one-time verification tokens in Analytics page_location or ads.
       const verificationPage = location.pathname === "/waitlist/confirm";
-      const analytics = trackingAllowed && choices.analytics && !verificationPage;
-      const marketing = trackingAllowed && choices.marketing && !verificationPage;
+      const analytics =
+        trackingAllowed && choices.analytics && !verificationPage;
+      const marketing =
+        trackingAllowed && choices.marketing && !verificationPage;
       // The consumer advertising campaign must not tag AkiBusiness or AkiDuermo.
       const adsAllowed =
         marketing &&
