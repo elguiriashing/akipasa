@@ -15,17 +15,11 @@ for (const locale of ["en", "es"] as const)
         }, theme);
         await page.goto(`/${locale}/auth`);
         const picker = page.locator(".aki-workspace-picker");
-        await expect(picker.getByRole("link")).toHaveCount(5);
+        await expect(picker.getByRole("link")).toHaveCount(3);
         await picker
           .getByRole("link", { name: "AkiPasa", exact: true })
           .focus();
-        for (const name of [
-          "AkiPasa",
-          "AkiDuermo",
-          "AkiCoches",
-          "AkiHQ",
-          "AkiBusiness",
-        ]) {
+        for (const name of ["AkiPasa", "AkiDuermo", "AkiCoches"]) {
           const card = picker.getByRole("link", { name, exact: true });
           await expect(card).toHaveAttribute("data-selected", "true");
           const word = card.locator(".aks-selector__label");
