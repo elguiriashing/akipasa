@@ -9,6 +9,7 @@ on:
       - "tests/pals*.test.ts"
       - "vitest.pals.config.ts"
       - "scripts/test-pals-browser.mjs"
+      - "scripts/test-pals-identity-browser.mjs"
       - "package.json"
       - "package-lock.json"
       - ".github/workflows/pals-browser.yml"
@@ -29,9 +30,12 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npx vitest run --config vitest.pals.config.ts
       - run: node scripts/test-pals-browser.mjs
+      - run: node scripts/test-pals-identity-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: pals-browser-evidence
-          path: test-results/pals-browser
+          path: |
+            test-results/pals-browser
+            test-results/pals-identity-browser
           retention-days: 7
