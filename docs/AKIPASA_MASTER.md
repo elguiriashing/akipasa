@@ -8,7 +8,6 @@ The canonical public pages `/es/roadmap` and `/en/roadmap` have a convenient `/r
 
 The homepage no-event empty state provides explicit reassurance and a roadmap link without hiding existing filter expansion/Map controls. Acceptance requires `tests/pasa-roadmap.test.ts`, a 101-route inventory, ES/EN, reduced motion, 320–1440 px responsive views, Cloudflare source pin, privacy/legal review and the full atomic #326 release gate. No live deployment, data migration, email signup, payments or backend writes are authorized by this addition.
 
-
 ## 2026-10-28 | Radar × After Dark unified consumer redesign (draft, not live)
 
 The AkiPasa visual overhaul is staged on PR #326, independently of the Cloudflare production Worker. The canonical mobile consumer destinations are Home, Map, Check-in, Community and Profile. The same route descriptors feed the desktop links and mobile dock, and one shared icon implementation supplies every destination. Check-in points to the existing venue-specific signed QR and verified-location flow, not an unverified or invented reward. The existing MapLibre data, filter query state, user consent, Supabase RLS/auth, XP ledgers, game saves and Stripe gates remain unchanged.

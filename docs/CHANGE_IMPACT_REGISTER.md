@@ -9,7 +9,6 @@
 - **Privacy/safety:** no geolocation request, tracking, signup, notifications, backend migrations, consent override, private preview opening, or ads. Venue and event details remain accurate; empty-state actions continue to work.
 - **Validation:** bilingual rendering, touch/keyboard accessibility, reduced-motion, mobile dock and map inset conflict checks, permanent redirect, SEO canonical, all existing routes and tests, exact-head CI/Cloudflare preview. Roll back only the page/banner if needed; no data rollback.
 
-
 ## 2026-10-28 | Radar × After Dark full consumer experience (PR #326, staging)
 
 - **Before:** App-first discovery uses inconsistent page-specific hero/cards and a four-destination mobile dock with a More sheet; Community's home redirects to a creator index; AkiPals is a restricted preview behind `/pals`.
