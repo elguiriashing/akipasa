@@ -1,0 +1,74 @@
+/* Event-led discovery cards, scoped to public plans only. */
+.discover-page .event-plan-card {
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+  border-radius: 1.35rem;
+  background: var(--surface);
+  transition:
+    transform 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.discover-page .event-plan-card .card-media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border-radius: 1.2rem 1.2rem 0 0;
+}
+
+.discover-page .event-plan-card .card-media-image {
+  object-fit: cover;
+  transition: transform 280ms ease;
+}
+
+.discover-page .event-plan-card .card-body {
+  padding: clamp(1rem, 3vw, 1.4rem);
+}
+
+.discover-page .event-plan-card .card-body h3 {
+  font-size: clamp(1.12rem, 2.8vw, 1.48rem);
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.discover-page .event-plan-card .card-pill-date {
+  background: rgba(13, 23, 43, 0.88);
+  color: #fff;
+  backdrop-filter: blur(8px);
+}
+
+.discover-page .event-plan-card .card-arrow {
+  color: var(--primary-text, var(--primary));
+  font-weight: 800;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .discover-page .event-plan-card:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--primary) 38%, var(--line));
+  }
+
+  .discover-page .event-plan-card:hover .card-media-image {
+    transform: scale(1.025);
+  }
+}
+
+@media (max-width: 640px) {
+  .discover-page .event-plan-card {
+    border-radius: 1.15rem;
+  }
+
+  .discover-page .event-plan-card .card-media {
+    aspect-ratio: 16 / 10;
+    border-radius: 1rem 1rem 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .discover-page .event-plan-card,
+  .discover-page .event-plan-card .card-media-image {
+    transition: none;
+  }
+}
