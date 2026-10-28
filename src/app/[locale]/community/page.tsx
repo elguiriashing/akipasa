@@ -1,4 +1,5 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
+import { CommunityLanding } from "@/components/community/CommunityLanding";
 import Link from "next/link";
 import {
   ConsoleIcon,
@@ -39,7 +40,7 @@ export default async function CommunityPage({
     : query.target
       ? "report"
       : "home";
-  if (view === "home") redirect(`/${locale}/community/creators`);
+  if (view === "home") return <CommunityLanding locale={locale} />;
   const { supabase, user } = await requireUser(
     locale,
     communityWorkflowPath(locale, view as CommunityView, {
