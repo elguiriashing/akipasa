@@ -1,0 +1,502 @@
+{
+  "version": 1,
+  "generatedFrom": "077899c0829276740a1648ade995e86bc5833755",
+  "description": "Route-by-route acceptance inventory. In progress is NOT accepted. Strict mode blocks single production release until every AkiPasa consumer/operational route is reviewed.",
+  "routes": {
+    "src/app/[locale]/account/activity/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/account/bookings/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/account/following/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/account/membership/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/account/memberships/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/account/page.tsx": {
+      "scope": "consumer",
+      "status": "in-progress",
+      "note": ""
+    },
+    "src/app/[locale]/account/premium/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/account/privacy/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/account/profile/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/account/referrals/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/account/rewards/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/account/saved/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/account/settings/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/account/subscription/operations/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/account/subscription/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/accommodation-review/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/achievements/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/achievements/venues/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/ai-team/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/audit/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/business-applications/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/catalogue/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/listing-review/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/passports/awards/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/passports/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/passports/prestige/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/personalisation/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/privacy/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/promotions/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/referrals/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/selector-lab/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/settings/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/users/[id]/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/users/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/admin/venue-relevance/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/akipals/page.tsx": {
+      "scope": "consumer",
+      "status": "in-progress",
+      "note": ""
+    },
+    "src/app/[locale]/auth/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/auth/recover/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/business/apply/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/business/early-partner/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/business/memberships/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/business/mobility/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/business/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/business/venue/[id]/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/check-in/[token]/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/check-in/page.tsx": {
+      "scope": "consumer",
+      "status": "in-progress",
+      "note": ""
+    },
+    "src/app/[locale]/community/creator/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/community/creators/[slug]/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/community/creators/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/community/page.tsx": {
+      "scope": "consumer",
+      "status": "in-progress",
+      "note": ""
+    },
+    "src/app/[locale]/creators/[slug]/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/creators/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/duermo/memberships/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/events/[slug]/book/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/events/[slug]/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/map/page.tsx": {
+      "scope": "consumer",
+      "status": "in-progress",
+      "note": ""
+    },
+    "src/app/[locale]/membership/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/moderation/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/onboarding/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/onboarding/privacy/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/owner/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/page.tsx": {
+      "scope": "consumer",
+      "status": "in-progress",
+      "note": ""
+    },
+    "src/app/[locale]/passports/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/passports/places/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/passports/prestige/certificate/[publicId]/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/passports/prestige/hall/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/passports/prestige/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/photo-credits/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/privacy/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/privacy/prestige/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/referrals/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/staff/audit/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/staff/catalogue/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/staff/catalogue/venues/[id]/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/staff/creators/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/staff/moderation/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/staff/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/staff/promotions/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/staff/support/page.tsx": {
+      "scope": "operational",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/terms/accept/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/terms/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/venues/[slug]/book/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/[locale]/venues/[slug]/page.tsx": {
+      "scope": "consumer",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/akiconduzco/account/page.tsx": {
+      "scope": "other-product",
+      "status": "excluded",
+      "note": ""
+    },
+    "src/app/akiconduzco/bookings/page.tsx": {
+      "scope": "other-product",
+      "status": "excluded",
+      "note": ""
+    },
+    "src/app/akiconduzco/map/page.tsx": {
+      "scope": "other-product",
+      "status": "excluded",
+      "note": ""
+    },
+    "src/app/akiconduzco/page.tsx": {
+      "scope": "other-product",
+      "status": "excluded",
+      "note": ""
+    },
+    "src/app/akiconduzco/rentals/[slug]/page.tsx": {
+      "scope": "other-product",
+      "status": "excluded",
+      "note": ""
+    },
+    "src/app/akiduermo/account/page.tsx": {
+      "scope": "other-product",
+      "status": "excluded",
+      "note": ""
+    },
+    "src/app/akiduermo/bookings/page.tsx": {
+      "scope": "other-product",
+      "status": "excluded",
+      "note": ""
+    },
+    "src/app/akiduermo/map/page.tsx": {
+      "scope": "other-product",
+      "status": "excluded",
+      "note": ""
+    },
+    "src/app/akiduermo/membership/page.tsx": {
+      "scope": "other-product",
+      "status": "excluded",
+      "note": ""
+    },
+    "src/app/akiduermo/page.tsx": {
+      "scope": "other-product",
+      "status": "excluded",
+      "note": ""
+    },
+    "src/app/akiduermo/saved/page.tsx": {
+      "scope": "other-product",
+      "status": "excluded",
+      "note": ""
+    },
+    "src/app/akiduermo/settings/page.tsx": {
+      "scope": "other-product",
+      "status": "excluded",
+      "note": ""
+    },
+    "src/app/akiduermo/stays/[slug]/page.tsx": {
+      "scope": "other-product",
+      "status": "excluded",
+      "note": ""
+    },
+    "src/app/hq-login/page.tsx": {
+      "scope": "cross-product",
+      "status": "pending",
+      "note": ""
+    },
+    "src/app/waitlist/confirm/page.tsx": {
+      "scope": "cross-product",
+      "status": "pending",
+      "note": ""
+    }
+  }
+}
