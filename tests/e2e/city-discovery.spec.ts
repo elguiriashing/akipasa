@@ -22,7 +22,9 @@ for (const width of [360, 390, 768, 1440]) {
     await expect(
       page.getByRole("heading", { name: "Keep discovering cities" }),
     ).toBeVisible();
-    await expect(page.getByRole("heading", { name: "What are we doing today?" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "What are we doing today?" }),
+    ).toBeVisible();
     const featured = page.locator(
       'section[aria-labelledby="city-discovery-title"]',
     );
