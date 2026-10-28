@@ -135,13 +135,18 @@ export function verificationMessage({
   link.searchParams.set("lang", locale);
   const spanish = locale === "es";
   return {
-    subject: (spanish ? "Confirma tu interés en " : "Confirm your ") + name +
+    subject:
+      (spanish ? "Confirma tu interés en " : "Confirm your ") +
+      name +
       (spanish ? "" : " launch updates"),
     text: spanish
       ? [
-          "Has solicitado recibir noticias sobre el lanzamiento de " + name + ".",
+          "Has solicitado recibir noticias sobre el lanzamiento de " +
+            name +
+            ".",
           "",
-          "Para confirmar tu correo, abre el enlace y pulsa «Confirmar»: " + link,
+          "Para confirmar tu correo, abre el enlace y pulsa «Confirmar»: " +
+            link,
           "",
           "El enlace caduca en 24 horas. Si no lo solicitaste, ignóralo.",
           "Puedes retirar tu consentimiento o pedir la eliminación de tus datos en support@akipasa.com.",

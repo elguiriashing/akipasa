@@ -55,7 +55,8 @@ export async function POST(request: Request) {
   const input = parsed.data;
 
   // Don't reveal the purpose of a hidden field to automated form fillers.
-  if (input.website) return json({ ok: true, status: "check_email" }, 202, origin);
+  if (input.website)
+    return json({ ok: true, status: "check_email" }, 202, origin);
 
   const env = {
     url: process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -111,7 +112,11 @@ export async function POST(request: Request) {
       },
     );
     if (ipError)
-      return json({ ok: false, status: "temporarily_unavailable" }, 503, origin);
+      return json(
+        { ok: false, status: "temporarily_unavailable" },
+        503,
+        origin,
+      );
     if (!ipAllowed)
       return json({ ok: false, status: "try_later" }, 429, origin);
   }
@@ -137,8 +142,7 @@ export async function POST(request: Request) {
 
   const entryId = (rows as Array<{ entry_id: string }> | null)?.[0]?.entry_id;
   // Already verified or recently sent. Never disclose subscriber state.
-  if (!entryId)
-    return json({ ok: true, status: "check_email" }, 202, origin);
+  if (!entryId) return json({ ok: true, status: "check_email" }, 202, origin);
 
   const email = verificationMessage({
     entryId,

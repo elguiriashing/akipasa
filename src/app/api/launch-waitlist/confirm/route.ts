@@ -14,9 +14,9 @@ export async function POST(request: Request) {
   const length = Number(request.headers.get("content-length") || 0);
   if (
     length > 2048 ||
-    !request.headers.get("content-type")?.startsWith(
-      "application/x-www-form-urlencoded",
-    )
+    !request.headers
+      .get("content-type")
+      ?.startsWith("application/x-www-form-urlencoded")
   )
     return outcome(request, "invalid", "es");
 
@@ -48,10 +48,7 @@ export async function POST(request: Request) {
   const entry = form.get("entry") ?? "";
   const token = form.get("token") ?? "";
   const locale = form.get("lang") ?? "es";
-  if (
-    !/^[a-f0-9-]{36}$/i.test(entry) ||
-    !/^[a-f0-9]{64}$/i.test(token)
-  )
+  if (!/^[a-f0-9-]{36}$/i.test(entry) || !/^[a-f0-9]{64}$/i.test(token))
     return outcome(request, "invalid", locale);
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;

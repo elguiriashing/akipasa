@@ -28,8 +28,7 @@ export default async function LaunchWaitlistConfirmation({
       : product === "coches"
         ? "https://akicoches.com"
         : "https://akipasa.com";
-  const valid =
-    /^[a-f0-9-]{36}$/i.test(entry) && /^[a-f0-9]{64}$/i.test(token);
+  const valid = /^[a-f0-9-]{36}$/i.test(entry) && /^[a-f0-9]{64}$/i.test(token);
   const confirmed = status === "confirmed";
   const unavailable = status === "unavailable";
   const invalid = status === "invalid" || (!status && !valid);

@@ -41,9 +41,10 @@ describe("launch waitlist contract", () => {
         "Access-Control-Allow-Origin",
       );
     }
-    expect(
-      waitlistCorsHeaders("https://akicoches.com"),
-    ).toHaveProperty("Access-Control-Allow-Origin", "https://akicoches.com");
+    expect(waitlistCorsHeaders("https://akicoches.com")).toHaveProperty(
+      "Access-Control-Allow-Origin",
+      "https://akicoches.com",
+    );
   });
 
   it("requires explicit launch consent, separate optional marketing and validates fields", () => {
@@ -77,9 +78,9 @@ describe("launch waitlist contract", () => {
 
   it("requires a successful, same-host, exact-action Turnstile proof", async () => {
     const respond = (hostname: string, action: string, success = true) =>
-      vi.fn<typeof fetch>().mockResolvedValue(
-        Response.json({ hostname, action, success }),
-      );
+      vi
+        .fn<typeof fetch>()
+        .mockResolvedValue(Response.json({ hostname, action, success }));
     expect(
       await verifyTurnstile(
         "token",
