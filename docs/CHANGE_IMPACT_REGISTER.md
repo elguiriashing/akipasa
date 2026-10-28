@@ -1,5 +1,15 @@
 # Change Impact Register
 
+## 2026-10-28 | Radar × After Dark full consumer experience (PR #326, staging)
+
+- **Before:** App-first discovery uses inconsistent page-specific hero/cards and a four-destination mobile dock with a More sheet; Community's home redirects to a creator index; AkiPals is a restricted preview behind `/pals`.
+- **After (source only):** One shared five-destination nav definition, a single mobile dock, safe check-in landing, image-forward Home from actual event media, consistent event cards in Home and Map, a meaningful Community portal, gated AkiPals landing with the user's real saved character, and shared cinematic treatment for public detail pages, map overlays, login and profile. Passport stays an independent collectible experience.
+- **Privacy/security:** No schema/RLS writes, new social graph, client geolocation logging, paid subscription activation, game grant, or QR validation change. Community friends are not exposed until privacy/consent controls exist. Preview role checks remain on the server.
+- **Dependencies:** Pending #324 real event-card refinements must be reconciled without losing layout and featured classes; #325 waitlist notices must not be overwritten. Existing Next.js/MapLibre/Supabase/Cloudflare contracts and native Android insets must remain compatible.
+- **Acceptance:** Source-derived 99+ route inventory including per-page status, exact-head formatting/lint/typecheck/security/full tests, EN/ES, phone/tablet/desktop, screen-reader/zoom/light/dark, actual user journeys (auth, map, check-in, Passport, Pals wardrobe, booking, privacy, moderation), reviewed exact-source Cloudflare preview and final single production merge. `npm run release:pasa-audit` deliberately fails until every in-scope route is accepted.
+- **Rollback:** Preserve existing Worker deployment pointer, disable the new UI at source and redeploy the prior accepted revision. No database rollback necessary for the current presentation-only scope. Merge/deploy must not occur before the full gate passes.
+
+
 ## 2026-10-28 | Shared, gated Duermo/Coches launch-waitlist backend
 
 - **Before:** Consumers could see ostensibly usable accommodation/car listings while those products were still under development, without a credible verified signup flow.
