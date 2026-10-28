@@ -1,5 +1,23 @@
 # Change Impact Register
 
+## 2026-10-28 | AkiPals identity, not RPG (private rollout)
+
+- **Before:** Private mascot game with ten families, XP, care, random parcels,
+  equipment statistics, slot upgrades, stories and an own-map mascot marker.
+- **Now:** Private first-party human avatar creation with 17 validated appearance
+  choices, free basic tops, responsive live SVG preview and owner-account save.
+  No legacy game logic is called by the new studio. Saved game data stays intact.
+- **Dependencies:** New isolated public.pals_avatar_profiles migration and own
+  RLS policies, authorization from existing pals_preview_access/admin gate,
+  CSP/nonindex, API origin checking. No schema deletion or commerce activation.
+- **Privacy:** No new public profiles, user coordinates, heatmaps, friend graph,
+  targeted ads, sponsored clothing or paid items. All social presence deferred
+  pending separate explicit consent, aggregate protection and abuse controls.
+- **Validation:** Format, typecheck, focused identity/SQL tests, authenticated
+  RLS read/write QA, mobile/browser visual acceptance, account save/restore.
+  Reconcile full AkiPasa redesign #326 before any production release. Data and
+  branch rollback preserve previous avatar and legacy saves.
+
 ## 2026-10-28 | Shared, gated Duermo/Coches launch-waitlist backend
 
 - **Before:** Consumers could see ostensibly usable accommodation/car listings while those products were still under development, without a credible verified signup flow.
