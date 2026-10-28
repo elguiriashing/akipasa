@@ -9,6 +9,8 @@ import { GlobalSearch } from "./GlobalSearch";
 import { Icon, type IconName } from "./Icons";
 import { LanguageLink } from "./LanguageLink";
 import { DiscoveryNavigation } from "./DiscoveryNavigation";
+import { PasaBottomDock, pasaDestinations } from "./PasaBottomDock";
+import "./PasaBottomDock.css";
 import { ThemeToggle } from "./ThemeModeControls";
 import { signOut } from "../app/[locale]/auth/actions";
 import { ConsoleSwitcher, type ConsoleKey } from "./ConsoleSwitcher";
@@ -105,16 +107,7 @@ export function AppShell({
     capabilities.administerPlatform ||
     ownerConsole;
 
-  const primaryNav: NavItem[] = [
-    { href: `/${locale}`, label: m.discover, icon: "discover" },
-    { href: `/${locale}/map`, label: m.map, icon: "map" },
-    {
-      href: `/${locale}/community`,
-      label: es ? "Comunidad" : "Community",
-      icon: "community",
-    },
-    { href: `/${locale}/account`, label: m.saved, icon: "account" },
-  ];
+  const primaryNav: NavItem[] = pasaDestinations(locale);
 
   const suiteApps = [
     {
@@ -383,43 +376,8 @@ export function AppShell({
 
       <div className="app-content">{children}</div>
 
-      {/* Mobile bottom tab bar */}
-      <nav
-        className="app-bottom-nav"
-        aria-label={es ? "Navegación" : "Navigation"}
-      >
-        {primaryNav.map((item) => (
-          <Suspense
-            key={item.href}
-            fallback={
-              <Link href={item.href}>
-                <Icon name={item.icon} />
-                <span>{item.label}</span>
-              </Link>
-            }
-          >
-            <PrimaryNavLink
-              item={item}
-              locale={locale}
-              pathname={pathname}
-              mobile
-            />
-          </Suspense>
-        ))}
-        <button
-          ref={moreButtonRef}
-          type="button"
-          className={sheetOpen ? "active" : undefined}
-          onClick={() => setSheetOpen(true)}
-          aria-haspopup="dialog"
-          aria-expanded={sheetOpen}
-          aria-controls="app-more-sheet"
-          aria-label={es ? "Más opciones" : "More options"}
-        >
-          <Icon name="more" />
-          <span>{es ? "Más" : "More"}</span>
-        </button>
-      </nav>
+      {/* One shared mobile dock across the complete consumer shell. */}
+      <Suspense fallback={null}><PasaBottomDock locale={locale} /></Suspense>
 
       {suiteOpen && (
         <div className="app-sheet-layer app-suite-layer">
