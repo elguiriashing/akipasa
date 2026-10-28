@@ -2,23 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { verifiedVenueQrPath } from "@/lib/checkin-scan";
 
 type ScanResult = { rawValue: string };
 type BarcodeReader = { detect: (source: HTMLVideoElement) => Promise<ScanResult[]> };
 type BarcodeFactory = new (options: { formats: string[] }) => BarcodeReader;
 
-function verifiedVenuePath(raw: string, origin: string, locale: "en" | "es") {
-  try {
-    const url = new URL(raw, origin);
-    if (url.origin !== origin) return null;
-    if (!new RegExp(`^/${locale}/check-in/[0-9a-f-]{36}$`, "i").test(url.pathname)) {
-      return null;
-    }
-    return url.pathname;
-  } catch {
-    return null;
-  }
-}
 
 export function CheckInScanner({ locale }: { locale: "en" | "es" }) {
   const router = useRouter();
@@ -76,7 +65,7 @@ export function CheckInScanner({ locale }: { locale: "en" | "es" }) {
         busy = true;
         try {
           const detected = await reader.detect(video.current);
-          const target = detected.map((item) => verifiedVenuePath(item.rawValue, location.origin, locale)).find(Boolean);
+          const target = detected.map((item) => verifiedVenueQrPath(item.rawValue, location.origin, locale)).find(Boolean);
           if (target) {
             stop();
             router.push(target);
