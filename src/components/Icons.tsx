@@ -11,6 +11,7 @@ export type IconName =
   | "car"
   | "discover"
   | "map"
+  | "checkin"
   | "community"
   | "passport"
   | "membership"
@@ -79,6 +80,13 @@ const paths: Record<IconName, React.ReactNode> = {
     <>
       <circle cx="12" cy="12" r="9" />
       <path d="m14.5 9.5-2 5-5 2 2-5z" />
+    </>
+  ),
+  checkin: (
+    <>
+      <path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3" />
+      <path d="M12 17s-4-3.3-4-7a4 4 0 1 1 8 0c0 3.7-4 7-4 7Z" />
+      <circle cx="12" cy="10" r="1.4" />
     </>
   ),
   map: (
