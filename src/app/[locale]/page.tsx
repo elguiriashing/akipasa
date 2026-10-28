@@ -166,6 +166,10 @@ export default async function DiscoverPage({
       />
       <PlansFirstHero
         locale={locale}
+        imageUrl={
+          results[0]?.event.exploreImage?.url ||
+          results[0]?.venue.exploreImage?.url
+        }
         location={{
           locality,
           name: localityName,
