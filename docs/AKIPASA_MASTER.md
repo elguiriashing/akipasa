@@ -2534,3 +2534,12 @@ collapse cases pass locally (3/3), and the production Next build passes. The
 local map browser reports WebGL unavailable before mounting attribution, so
 the unchanged EN/ES map attribution hit-target/non-overlap matrix must pass
 hosted browser CI; no map assertion or browser gate is skipped or weakened.
+
+
+## 2026-10-28 | App-first consumer discovery UI (new approved logo direction)
+
+Scoped AkiPasa consumer discovery styling in `src/app/aki-app-first.css` imported by `src/app/globals.css`, plus `PlansFirstHero.module.css` mobile-first refinement. Inspiration: user-supplied orange fluid movement mark, strong geometric wordmark and near-black contrast. Actual uploaded raster logo is **not yet committed as a production asset**, so existing logos remain unchanged in this PR rather than shipping an inaccurate recreation.
+
+Homepage changes: larger headline, mobile two-column date shortcuts, stronger orange primary action, subtle nonblocking radial flare, compact mobile floating nav with larger touch targets, and restrained event grid/empty-state visuals. Existing links, accessibility semantics, search, login, data/analytics, maps and tenant routes remain intact. Effects respect reduced-motion; no image generation, custom font, client tracking or new dependencies.
+
+Release acceptance: review on 320px/375px/430px phones, tablet, desktop, touch navigation and bottom safe area; light/dark themes, focus visibility, reduced motion, Android immersive UI, ES/EN, empty event feed and performance. Check CSS cascade and competing nav styles. Complete required CI and Cloudflare build before merging; match exact deployed SHA. Rollback is removing the isolated import plus hero CSS tail. No database, billing, email, age policy or customer data changes.
