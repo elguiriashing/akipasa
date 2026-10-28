@@ -105,3 +105,50 @@
     transition: none;
   }
 }
+
+/* Radar x After Dark: photography-led layout leaves real event imagery to EventCard. */
+.hero {
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: clamp(1.35rem, 3vw, 2.25rem);
+  padding: clamp(1.4rem, 4vw, 3.6rem);
+  background:
+    radial-gradient(ellipse at 90% 0%, rgba(255,108,24,.23), transparent 48%),
+    linear-gradient(145deg, #16161b 0%, #0a1019 62%, #080d15 100%);
+  border: 1px solid rgba(255,136,64,.19);
+  box-shadow: 0 20px 58px rgba(0,0,0,.24);
+}
+.hero::before {
+  inset: auto -12% -52% auto;
+  width: 70%;
+  height: 140%;
+  background: radial-gradient(ellipse, rgba(242,107,29,.12), transparent 70%);
+}
+.hero h1 {
+  max-width: 13ch;
+  font-weight: 850;
+  text-wrap: balance;
+  color: #fff;
+}
+.description { max-width: 48ch; color: #d4d8e0; }
+.kicker {color:#ffae70;}
+.shortcut, .mapShortcut {
+  background: rgba(8,12,20,.65);
+  border-color: rgba(255,255,255,.19);
+  color: #f7f7fa;
+  backdrop-filter: blur(12px);
+}
+.shortcut:first-child {
+  color:#141414;
+  background:#ff7628;
+  border-color:#ff7628;
+}
+.hint {color:#c1c8d3;}
+@media (max-width:640px){
+ .hero {padding:1.4rem 1.1rem 1.55rem; border-radius:1.45rem;}
+ .hero h1 {font-size:clamp(2.3rem,11vw,3.7rem);}
+ .description {font-size:.95rem; line-height:1.5; margin:.85rem 0 1.25rem;}
+ .shortcuts {flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; padding-bottom:.3rem;}
+ .shortcuts::-webkit-scrollbar{display:none;}
+ .shortcut,.mapShortcut {flex:0 0 auto; white-space:nowrap;}
+}
