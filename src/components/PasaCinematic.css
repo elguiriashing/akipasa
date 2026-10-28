@@ -201,3 +201,97 @@ html[data-theme="light"] .app-shell {
     backdrop-filter: none;
   }
 }
+
+/* Retain the existing More sheet for subscriptions, legal, staff and account tools. */
+@media (max-width: 850px) {
+  .app-shell .app-more-mobile-trigger {
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    margin-inline-start: auto;
+    margin-inline-end: 48px;
+    border: 1px solid var(--pasa-edge);
+    border-radius: 50%;
+    background: rgba(12, 20, 32, 0.75);
+    color: #f9f9fc;
+  }
+}
+@media (min-width: 851px) {
+  .app-shell .app-more-mobile-trigger {
+    display: none;
+  }
+}
+
+/* The AkiPasa login keeps every existing auth mode and action. */
+.app-shell:has(.auth-theme-akipasa) .auth-page {
+  background-image:
+    linear-gradient(90deg, rgba(4, 8, 15, 0.98) 0%, rgba(4, 8, 15, 0.84) 42%, rgba(4, 8, 15, 0.65) 100%),
+    url("/images/cities/malaga.webp");
+  background-position: center;
+  background-size: cover;
+}
+.app-shell:has(.auth-theme-akipasa) .auth-intro-copy,
+.app-shell:has(.auth-theme-akipasa) .auth-focus-panel {
+  position: relative;
+  z-index: 1;
+}
+.app-shell:has(.auth-theme-akipasa) .auth-intro-copy h1 {
+  color: #fff;
+}
+.app-shell:has(.auth-theme-akipasa) .auth-intro-copy p {
+  color: #d9e0eb;
+}
+@media (max-width: 850px) {
+  .app-shell:has(.auth-theme-akipasa) .pasa-dock {
+    display: none;
+  }
+  .app-shell:has(.auth-theme-akipasa) :is(.app-topbar-mobile, .global-search-trigger) {
+    display: none;
+  }
+}
+
+/* The primary dock only opens the scanner; the venue token action verifies visits. */
+.pasa-checkin-scanner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  overflow: hidden;
+  margin-block: 1.3rem;
+  padding: clamp(1rem, 3vw, 1.6rem);
+  border: 1px solid rgba(255, 130, 54, 0.28);
+  border-radius: 1.3rem;
+  background: var(--pasa-ink);
+}
+.pasa-checkin-scanner__frame {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  width: min(100%, 460px);
+  aspect-ratio: 4 / 3;
+  margin-inline: auto;
+  border: 2px dashed rgba(255, 137, 67, 0.5);
+  border-radius: 1.1rem;
+  background: radial-gradient(circle, #283247, #090f1a);
+}
+.pasa-checkin-scanner video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pasa-checkin-scanner__actions {
+  display: grid;
+  justify-items: center;
+  gap: 0.7rem;
+}
+.pasa-checkin-scanner__actions p {
+  max-width: 43ch;
+  margin: 0;
+  color: var(--pasa-muted);
+  text-align: center;
+}
+.pasa-checkin-scanner__actions button {
+  min-height: 48px;
+  border-radius: 999px;
+}
