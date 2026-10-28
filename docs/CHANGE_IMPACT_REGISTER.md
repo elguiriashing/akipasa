@@ -1,5 +1,14 @@
 # Change Impact Register
 
+## 2026-10-28 | Shared, gated Duermo/Coches launch-waitlist backend
+
+- **Before:** Consumers could see ostensibly usable accommodation/car listings while those products were still under development, without a credible verified signup flow.
+- **Change:** Add a staged, private waitlist schema and a cross-product origin-scoped, Turnstile-protected, rate-limited submission API on AkiPasa. Verification is by an expiring hashed token and explicit POST confirmation page, not by opening an email link. ES/EN plain-text mail, marketing consent separated from launch news.
+- **Dependencies:** Reviewed and installed migration; server-only service-role, Resend, rate HMAC and Turnstile secrets; DNS/domain/sitekey allowlists; Duermo/Coches form PRs; published privacy policy and deletion channel; periodic retention cleanup. Existing venue, subscription, booking, identity, admin, and analytics flows stay untouched.
+- **Risk/rollback:** API fails closed on missing secrets/provider. No frontend launch until the backend is deployed and verified end-to-end. Roll back API/UI feature without deleting existing subscriber records; remove access only through reviewed retention and deletion processes. No live DB writes, business/customer contact or mass mail during PR validation.
+- **Acceptance:** CI lint/types/security and migration permission checks; staging tests for consent, spam, CORS, replay/expiry, duplicate verified addresses, email provider outage and rate exhaustion; exact live source and privacy/legal review. Track #313/#315.
+
+
 ## 2026-10-27 | Correct AkiPasa business listing Premium onboarding in AkiHQ
 
 - **Problem:** Claim approval and receipt templates used legacy AkiBusiness URLs/terminology, confusing the free AkiHQ venue management and AkiPasa business listing Premium benefit with the separate paid AkiBusiness operating suite.
