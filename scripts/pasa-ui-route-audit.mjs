@@ -38,6 +38,32 @@ if (missing.length || removed.length || invalid.length) {
   console.error(JSON.stringify({ missing, removed, invalid }, null, 2));
   process.exit(1);
 }
+// An accepted checkbox is not evidence. Require a reviewed source commit plus
+// links to actual screenshot and functional-test results before release.
+const evidenceUrl = /^https:\/\/github\.com\/elguiriashing\/akipasa\/(actions\/runs|pull)\/\d+/;
+const unsupportedAcceptance = expected.filter((name) => {
+  const entry = inventory.routes[name];
+  if (entry.status !== "accepted" || entry.scope === "other-product") {
+    return false;
+  }
+  const evidence = entry.acceptance;
+  return (
+    !evidence ||
+    typeof evidence.reviewer !== "string" ||
+    !evidence.reviewer.trim() ||
+    !/^[a-f0-9]{40}$/.test(evidence.reviewedCommit || "") ||
+    !evidenceUrl.test(evidence.screenshots || "") ||
+    !evidenceUrl.test(evidence.functionalTests || "")
+  );
+});
+if (unsupportedAcceptance.length) {
+  console.error(
+    "These routes claim acceptance without reviewed source and traceable test evidence:",
+    unsupportedAcceptance,
+  );
+  process.exit(1);
+}
+
 const outstanding = expected.filter((name) => {
   const item = inventory.routes[name];
   return item.scope !== "other-product" && item.status !== "accepted";
