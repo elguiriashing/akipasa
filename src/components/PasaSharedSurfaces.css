@@ -1,0 +1,231 @@
+/*
+ * Shared AkiPasa workbench and secondary-page skin.
+ * Single source of visual treatments for account, staff, admin, privacy,
+ * forms, event/venue details and other secondary routes. Do not copy these
+ * rules into page-specific stylesheets or affect the AkiSuite sister hosts.
+ */
+.app-shell {
+  --pasa-ui-border: rgba(184, 207, 232, 0.17);
+  --pasa-ui-glass: rgba(18, 29, 45, 0.92);
+  --pasa-ui-elevated: #1a273a;
+  --pasa-ui-panel: #111c2b;
+  --pasa-ui-text: #f7f9fd;
+  --pasa-ui-subtle: #c0ccda;
+  --pasa-ui-highlight: #ff9b62;
+}
+
+html:not([data-theme="light"]) .app-shell .workspace-shell {
+  --surface: var(--pasa-ui-panel);
+  --surface-alt: var(--pasa-ui-elevated);
+  --line: var(--pasa-ui-border);
+  --ink: var(--pasa-ui-text);
+  --muted: var(--pasa-ui-subtle);
+  color: var(--pasa-ui-text);
+}
+
+.app-shell .workspace-grid-system {
+  min-width: 0;
+}
+
+.app-shell .workspace-grid-system .workspace-sidebar {
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.35rem;
+  background:
+    radial-gradient(
+      circle at 0 0,
+      rgba(255, 125, 49, 0.13),
+      transparent 50%
+    ),
+    var(--pasa-ui-glass);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.16);
+}
+
+.app-shell .workspace-grid-system .workspace-brand {
+  border-bottom: 1px solid var(--pasa-ui-border);
+}
+
+.app-shell .workspace-grid-system .workspace-navigation a {
+  border-radius: 0.9rem;
+  text-decoration: none;
+}
+
+.app-shell .workspace-grid-system .workspace-navigation a.active {
+  border-color: rgba(255, 139, 68, 0.4);
+  background: rgba(255, 120, 45, 0.16);
+  color: var(--pasa-ui-highlight);
+}
+
+.app-shell .workspace-grid-system .workspace-mobile-trigger {
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1rem;
+  background: var(--pasa-ui-glass);
+  color: var(--pasa-ui-text);
+}
+
+.app-shell .workspace-grid-system .workspace-page-heading,
+.app-shell .workspace-grid-system .workspace-section-heading {
+  min-width: 0;
+  text-wrap: balance;
+}
+
+.app-shell .workspace-grid-system
+  :is(.workspace-page-heading, .workspace-section-heading)
+  :is(h1, h2) {
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+}
+
+.app-shell .workspace-grid-system
+  :is(.workspace-page-heading, .workspace-section-heading)
+  > div > span {
+  color: var(--pasa-ui-highlight);
+  font-weight: 750;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.app-shell .workspace-grid-system
+  :is(.workspace-page-heading, .workspace-section-heading)
+  p {
+  max-width: 66ch;
+  line-height: 1.55;
+}
+
+.app-shell .workspace-grid-system .workspace-grid-body {
+  min-width: 0;
+}
+
+.app-shell .workspace-grid-system
+  :is(.workspace-empty, .account-control-card, .queue-card) {
+  min-width: 0;
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.25rem;
+  background: var(--pasa-ui-panel);
+}
+
+.app-shell .account-workspace
+  :is(.account-control-card, .account-next-step, .account-collection-card) {
+  border-color: var(--pasa-ui-border);
+  border-radius: 1.3rem;
+  background: var(--pasa-ui-panel);
+}
+
+.app-shell .account-workspace .account-control-heading {
+  min-width: 0;
+}
+
+.app-shell .account-workspace
+  :is(.account-controls-page, .account-collection-page)
+  :is(input, select, textarea) {
+  min-height: 44px;
+  border-color: var(--pasa-ui-border);
+  border-radius: 0.8rem;
+}
+
+.app-shell .account-workspace
+  :is(.account-controls-page, .account-collection-page)
+  :is(button, .button, summary):focus-visible {
+  outline: 3px solid #ffb783;
+  outline-offset: 3px;
+}
+
+.app-shell :is(.admin-workspace, .staff-workspace)
+  :is(.operations-hero, .staff-dashboard-hero) {
+  border: 1px solid rgba(255, 145, 81, 0.3);
+  border-radius: 1.6rem;
+  background:
+    radial-gradient(
+      circle at 92% 2%,
+      rgba(255, 121, 39, 0.2),
+      transparent 47%
+    ),
+    linear-gradient(135deg, #20273b, #101a2a 85%);
+}
+
+.app-shell :is(.admin-workspace, .staff-workspace)
+  :is(.staff-dashboard-task, .staff-dashboard-metric, .managed-row) {
+  border-color: var(--pasa-ui-border);
+  border-radius: 1.15rem;
+}
+
+.app-shell :is(.admin-workspace, .staff-workspace)
+  :is(.managed-row, .staff-dashboard-task) {
+  background: var(--pasa-ui-panel);
+}
+
+.app-shell :is(.admin-workspace, .staff-workspace)
+  :is(.staff-dashboard-task, .managed-row):focus-within {
+  outline: 2px solid #ffac78;
+  outline-offset: 2px;
+}
+
+/* Cards and page headings shared by public legal and secondary pages. */
+.app-shell .app-content
+  :is(.legal-page, .privacy-page, .terms-page, .photo-credits-page)
+  :is(.panel, .card) {
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.25rem;
+  background: var(--pasa-ui-panel);
+}
+
+.app-shell .app-content
+  :is(.legal-page, .privacy-page, .terms-page, .photo-credits-page)
+  h1 {
+  font-size: clamp(2.15rem, 5vw, 3.8rem);
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+}
+
+.app-shell .spotlight-page :is(.spotlight-actions, .spotlight-secondary) {
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.app-shell .spotlight-page :is(.event-spotlight-about, .venue-spotlight-information) {
+  border-color: var(--pasa-ui-border);
+}
+
+html[data-theme="light"] .app-shell {
+  --pasa-ui-border: rgba(35, 54, 76, 0.18);
+  --pasa-ui-glass: rgba(255, 255, 255, 0.94);
+  --pasa-ui-elevated: #fffaf4;
+  --pasa-ui-panel: #ffffff;
+  --pasa-ui-text: #1b2a39;
+  --pasa-ui-subtle: #475569;
+  --pasa-ui-highlight: #a9470e;
+}
+
+html[data-theme="light"] .app-shell
+  :is(.admin-workspace, .staff-workspace)
+  :is(.operations-hero, .staff-dashboard-hero) {
+  background:
+    radial-gradient(
+      circle at 92% 2%,
+      rgba(255, 121, 39, 0.12),
+      transparent 47%
+    ),
+    #fffaf4;
+  color: #1b2a39;
+}
+
+@media (max-width: 850px) {
+  .app-shell .workspace-grid-system .workspace-mobile-trigger {
+    min-height: 48px;
+  }
+
+  .app-shell .workspace-grid-system .workspace-drawer {
+    border-color: var(--pasa-ui-border);
+    background: var(--pasa-ui-panel);
+  }
+
+  .app-shell .workspace-grid-system .workspace-grid-body {
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .app-shell .workspace-grid-system .workspace-sidebar,
+  .app-shell .workspace-grid-system .workspace-mobile-trigger {
+    background: var(--pasa-ui-panel);
+  }
+}
