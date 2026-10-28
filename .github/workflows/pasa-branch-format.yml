@@ -1,0 +1,36 @@
+name: Format AkiPasa redesign branch
+on:
+  push:
+    branches:
+      - design/pasa-radar-cinematic-overhaul-20261028
+permissions:
+  contents: write
+concurrency:
+  group: pasa-redesign-formatter
+  cancel-in-progress: false
+jobs:
+  format:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          ref: design/pasa-radar-cinematic-overhaul-20261028
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.4'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Prettier changed branch files
+        run: |
+          npx prettier --write             docs/AKIPASA_RADAR_CINEMATIC_OVERHAUL_20261028.md             docs/AKIPASA_MASTER.md             docs/CHANGE_IMPACT_REGISTER.md             package.json             src/app/aki-app-first.css             src/app/'[locale]'/page.tsx             src/app/'[locale]'/check-in/page.tsx             src/app/'[locale]'/community/page.tsx             src/app/'[locale]'/account/page.tsx             src/app/'[locale]'/akipals/page.tsx             src/app/'[locale]'/akipals/akipals.module.css             src/components/AppShell.tsx             src/components/EventCard.tsx             src/components/PasaBottomDock.tsx             src/components/PasaBottomDock.css             src/components/PasaCinematic.css             src/components/PlansFirstHero.tsx             src/components/PlansFirstHero.module.css             src/components/community/CommunityLanding.tsx             src/components/community/CommunityLanding.module.css             tests/pasa-dock.test.tsx             scripts/pasa-ui-route-audit.mjs             .github/workflows/pasa-branch-format.yml
+      - name: Commit formatting only
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A
+            git commit -m "style(pasa): autoformat redesign branch [skip ci]"
+            git push origin HEAD:design/pasa-radar-cinematic-overhaul-20261028
+          fi
