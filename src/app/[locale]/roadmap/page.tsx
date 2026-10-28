@@ -6,8 +6,6 @@ import { isLocale, type Locale } from "@/lib/config";
 import { launchPhases, roadmapFeatures, localized } from "@/lib/pasa-roadmap";
 import styles from "./roadmap.module.css";
 
-export const dynamic = "force-static";
-
 export async function generateMetadata({
   params,
 }: {
