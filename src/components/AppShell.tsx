@@ -135,7 +135,7 @@ export function AppShell({
       icon: "/brand/v3/coches.svg",
       accent: "#FF3047",
     },
-   ] as const;
+  ] as const;
   const suiteLinks = (
     <nav
       className="app-suite-links"
