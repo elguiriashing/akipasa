@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { BrandLogo } from "./BrandLogo";
+import { LaunchRibbon } from "./LaunchRibbon";
 import { GlobalSearch } from "./GlobalSearch";
 import { Icon, type IconName } from "./Icons";
 import { LanguageLink } from "./LanguageLink";
@@ -390,6 +391,9 @@ export function AppShell({
         </button>
       </header>
 
+      {(!section || ["map", "community", "venues", "events"].includes(section)) && (
+        <LaunchRibbon locale={locale} />
+      )}
       <div className="app-content">{children}</div>
 
       {/* One shared mobile dock across the complete consumer shell. */}
