@@ -1,0 +1,95 @@
+.hero {
+  padding: clamp(1.2rem, 4vw, 3.25rem) 0 clamp(1.8rem, 4vw, 3rem);
+  position: relative;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto -8%;
+  width: min(80vw, 44rem);
+  height: 22rem;
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(
+    ellipse at 30% 25%,
+    color-mix(in srgb, var(--primary) 12%, transparent),
+    transparent 70%
+  );
+}
+.kicker {
+  margin: 0 0 0.8rem;
+  color: var(--primary-text, var(--primary));
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2.55rem, 6.2vw, 5.5rem);
+  font-weight: 830;
+  line-height: 1.02;
+  letter-spacing: -0.06em;
+  color: var(--ink);
+}
+.description {
+  margin: 1.25rem 0 1.75rem;
+  max-width: 64ch;
+  color: var(--muted);
+  line-height: 1.65;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+}
+.shortcuts {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.shortcut,
+.mapShortcut {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 750;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+.shortcut:first-child {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #121722;
+}
+.shortcut:hover,
+.mapShortcut:hover {
+  border-color: var(--primary);
+}
+.shortcut:focus-visible,
+.mapShortcut:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+}
+.mapShortcut {
+  background: transparent;
+}
+.hint {
+  margin: 1.1rem 0 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+@media (max-width: 640px) {
+  .hero { padding: 1.5rem 0 2rem; }
+  .shortcuts { gap: 0.55rem; }
+  .shortcut,
+  .mapShortcut { padding: 0.65rem 0.85rem; font-size: 0.86rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shortcut,
+  .mapShortcut { transition: none; }
+}
