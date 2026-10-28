@@ -20,15 +20,34 @@ export async function POST(request: Request) {
   )
     return outcome(request, "invalid", "es");
 
-  let form: FormData;
+  // Bound the actual streamed bytes, not just caller-controlled Content-Length.
+  // A 200-byte confirmation must never cause an unbounded multipart parse.
+  let form: URLSearchParams;
   try {
-    form = await request.formData();
+    const reader = request.body?.getReader();
+    if (!reader) return outcome(request, "invalid", "es");
+    let total = 0;
+    const chunks: Uint8Array[] = [];
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > 2048) throw new Error("body_too_large");
+      chunks.push(value);
+    }
+    const bytes = new Uint8Array(total);
+    let offset = 0;
+    for (const chunk of chunks) {
+      bytes.set(chunk, offset);
+      offset += chunk.byteLength;
+    }
+    form = new URLSearchParams(new TextDecoder().decode(bytes));
   } catch {
     return outcome(request, "invalid", "es");
   }
-  const entry = String(form.get("entry") ?? "");
-  const token = String(form.get("token") ?? "");
-  const locale = String(form.get("lang") ?? "es");
+  const entry = form.get("entry") ?? "";
+  const token = form.get("token") ?? "";
+  const locale = form.get("lang") ?? "es";
   if (
     !/^[a-f0-9-]{36}$/i.test(entry) ||
     !/^[a-f0-9]{64}$/i.test(token)
