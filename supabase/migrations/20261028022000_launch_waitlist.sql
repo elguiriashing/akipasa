@@ -35,11 +35,11 @@ alter table public.launch_waitlist_rate_limits enable row level security;
 revoke all on public.launch_waitlist_rate_limits from public, anon, authenticated;
 grant select, insert, update, delete on public.launch_waitlist_rate_limits to service_role;
 
--- Atomic fixed-window limiting: avoids the select/insert race on concurrent submissions.
+-- Service-role-only security-invoker RPC: atomic fixed-window limiting avoids races.
 create or replace function public.reserve_launch_waitlist_rate(
   p_key_hash text, p_limit integer, p_window_seconds integer
 ) returns boolean
-language plpgsql security definer set search_path = ''
+language plpgsql security invoker set search_path = ''
 as $$
 declare v_count integer;
 begin
@@ -74,7 +74,7 @@ create or replace function public.reserve_launch_waitlist_verification(
   p_audience text, p_interests text, p_locale text,
   p_marketing_consent boolean, p_token_hash text
 ) returns table (entry_id uuid)
-language plpgsql security definer set search_path = ''
+language plpgsql security invoker set search_path = ''
 as $$
 begin
   if p_product not in ('duermo','coches')
@@ -125,7 +125,7 @@ grant execute on function public.reserve_launch_waitlist_verification(
 -- Unverified: 30 days; confirmed: 12 months maximum, unless a shorter
 -- documented purpose-specific retention window is needed.
 create or replace function public.purge_expired_launch_waitlist()
-returns integer language plpgsql security definer set search_path = ''
+returns integer language plpgsql security invoker set search_path = ''
 as $$
 declare v_deleted integer;
 begin
