@@ -84,7 +84,7 @@ export async function POST(request: Request) {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 
-  // Both checks use an atomic SECURITY DEFINER function with service-only
+  // Both checks use atomic SECURITY INVOKER functions with service-only
   // EXECUTE permission, independent of client-controlled browser storage.
   const emailKey = rateDigest(
     env.rateSecret!,
