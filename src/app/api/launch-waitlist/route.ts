@@ -60,7 +60,9 @@ export async function POST(request: Request) {
     return json({ ok: true, status: "check_email" }, 202, origin);
 
   const env = {
-    url: process.env.LAUNCH_WAITLIST_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL,
+    url:
+      process.env.LAUNCH_WAITLIST_SUPABASE_URL ||
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
     serviceKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
     challengeSecret: process.env.LAUNCH_WAITLIST_TURNSTILE_SECRET,
     rateSecret: process.env.LAUNCH_WAITLIST_RATE_SECRET,
