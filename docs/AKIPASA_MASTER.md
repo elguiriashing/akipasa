@@ -1,5 +1,22 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-28 | AkiPals human avatar identity reset (private draft)
+
+AkiPals is a customizable human avatar and personal wardrobe, **not** the old
+mascot/gacha RPG. The replacement private /pals studio offers validated, original
+illustrated features, proportions and free clothes; no XP, equipment stats,
+sockets, loot boxes, care tasks, stories or game economies are part of the v2
+experience. This PR introduces owner-only RLS storage in
+public.pals_avatar_profiles; the additive migration must be reviewed/applied
+before feature testing. Legacy game saves stay untouched for rollback, not as a
+v2 mechanic. No public avatar, social graph, real-time user location, heatmap,
+commercial item or payments are enabled. Future Where's Poppin' heatmaps must
+be crowd-aggregated; any identifiable presence requires separate adult-only,
+explicit, short-lived consent with no exact stranger GPS sharing. Reconcile
+AkiPasa redesign PR #326, run all CI/browser/Android acceptance, and obtain
+explicit release approval. See docs/AKIPALS_IDENTITY_V2_20261028.md and draft
+PR #327.
+
 ## 2026-10-28 | Secure cross-product launch waitlist (staged, not activated)
 
 AkiDuermo and AkiCoches under-development launches require a shared **double-opt-in** waitlist managed by AkiPasa's existing authorized server. Subscriber contact information is service-only in `public.launch_waitlist_entries`, with explicit launch-purpose consent and a separate optional marketing preference (never prechecked). Browser-origin product and host must match. Turnstile proofs require a matching hostname and the `launch_waitlist` action. Requests are payload-limited, rate-limited by keyed hashes, and require one-time hashed verification tokens with 24-hour expiry and a human POST confirmation (no scanner-triggered GET verification). Existing Supabase and Resend credentials remain **server-only**. A privacy/deletion contact, retention purge job and consent review must be operational before activation. No live migration, customer mail or signup feature is activated by the initial PR. Track #313, #315 and the corresponding front-end/release holds.
