@@ -153,7 +153,10 @@ export function DiscoveryNavigation({
                 </section>
               )}
               {actions}
-              <Link href={`/hq-login?lang=${locale}`} onClick={() => menu.current?.removeAttribute("open")}>
+              <Link
+                href={`/hq-login?lang=${locale}`}
+                onClick={() => menu.current?.removeAttribute("open")}
+              >
                 {es ? "Acceso para negocios" : "Business sign in"}
               </Link>
             </div>
