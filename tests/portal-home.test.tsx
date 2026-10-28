@@ -111,7 +111,7 @@ it.each(["en", "es"] as const)(
       const popover = tools.querySelector(
         ".portal-product-popover",
       )! as HTMLElement;
-      expect(within(popover).getAllByRole("link")).toHaveLength(3);
+      expect(popover.querySelectorAll(":scope > a")).toHaveLength(3);
       const duermo = within(popover).getByRole("link", {
         name: "AkiDuermo",
       });
