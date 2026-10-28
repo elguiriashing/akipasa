@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 
@@ -13,7 +13,7 @@ function pageFiles(dir) {
     const current = path.join(dir, item.name);
     if (item.isDirectory()) files.push(...pageFiles(current));
     else if (item.isFile() && item.name === "page.tsx") {
-      files.push(current.replaceAll(path.sep, "/"));
+      files.push(path.relative(process.cwd(), current).replaceAll(path.sep, "/"));
     }
   }
   return files;
