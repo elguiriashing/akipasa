@@ -903,7 +903,7 @@ export function ProductionMap({
       popupRequest?.abort();
       cleanup();
     };
-  }, [locale, styleUrl, fullScreen, venueDestination, router]);
+  }, [locale, styleUrl, fullScreen, venueDestination, initialVertical, router]);
 
   return (
     <section className="map-panel" aria-labelledby="production-map-title">
