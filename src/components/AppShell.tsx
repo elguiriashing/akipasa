@@ -373,6 +373,21 @@ export function AppShell({
           <Icon name="more" />
           <span>AkiSuite</span>
         </button>
+        <button
+          type="button"
+          ref={moreButtonRef}
+          className="app-more-mobile-trigger"
+          aria-label={es ? "Más opciones" : "More options"}
+          aria-haspopup="dialog"
+          aria-expanded={sheetOpen}
+          aria-controls="app-more-sheet"
+          onClick={() => {
+            setSuiteOpen(false);
+            setSheetOpen(true);
+          }}
+        >
+          <Icon name="more" />
+        </button>
       </header>
 
       <div className="app-content">{children}</div>
