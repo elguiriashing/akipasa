@@ -135,18 +135,6 @@ export function AppShell({
       icon: "/brand/v3/coches.svg",
       accent: "#FF3047",
     },
-    {
-      name: "AkiHQ",
-      href: suiteHref("hq", locale, { referralCode }),
-      icon: "/brand/v3/hq.svg",
-      accent: "#FFC533",
-    },
-    {
-      name: "AkiBusiness",
-      href: suiteHref("business", locale, { referralCode }),
-      icon: "/brand/v3/business.svg",
-      accent: "#8958FF",
-    },
   ] as const;
   const suiteLinks = (
     <nav
@@ -176,6 +164,12 @@ export function AppShell({
   );
   const suiteActions = (
     <div className="app-suite-actions">
+      <Link
+        href={`/hq-login?lang=${locale}`}
+        onClick={() => setSheetOpen(false)}
+      >
+        {es ? "Acceso para negocios" : "Business sign in"}
+      </Link>
       <Link
         href={`/${locale}/account/settings`}
         onClick={() => setSheetOpen(false)}
@@ -457,7 +451,15 @@ export function AppShell({
             >
               <Icon name="close" />
             </button>
-            <section className="app-sheet-suite">{suiteLinks}</section>
+            <section className="app-sheet-suite">
+              {suiteLinks}
+              <Link
+                href={`/hq-login?lang=${locale}`}
+                onClick={() => setSuiteOpen(false)}
+              >
+                {es ? "Acceso para negocios" : "Business sign in"}
+              </Link>
+            </section>
           </div>
         </div>
       )}

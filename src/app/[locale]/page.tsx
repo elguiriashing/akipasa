@@ -334,6 +334,10 @@ export default async function DiscoverPage({
           {locale === "es" ? "Añádelo a AkiPasa" : "List it on AkiPasa"}
           <span aria-hidden="true"> →</span>
         </Link>
+        <Link href={`/hq-login?lang=${locale}`}>
+          {locale === "es" ? "Acceder a mi negocio" : "Business sign in"}
+          <span aria-hidden="true"> →</span>
+        </Link>
       </p>
     </main>
   );

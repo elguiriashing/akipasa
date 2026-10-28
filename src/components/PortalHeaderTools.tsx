@@ -30,19 +30,9 @@ export function PortalHeaderTools({
       href: suiteHref("pasa", locale, { referralCode }),
     },
     {
-      product: "hq",
-      name: "AkiHQ",
-      href: suiteHref("hq", locale, { referralCode }),
-    },
-    {
       product: "duermo",
       name: "AkiDuermo",
       href: suiteHref("duermo", locale, { referralCode }),
-    },
-    {
-      product: "business",
-      name: "AkiBusiness",
-      href: suiteHref("business", locale, { referralCode }),
     },
     {
       product: "coches",

@@ -1,5 +1,13 @@
 # Change Impact Register
 
+## 2026-10-28 | Consumer product reset and business handoff
+
+- **Surfaces:** public login AkiSelector, three-app portal menu, public discovery owner link, branded `/hq-login` (EN/ES); coordinated HQ/Duermo/Coches PRs.
+- **Contract:** discovery remains ungated; Pasa leads events/experiences, HQ remains free listing management, AkiBusiness stays independent paid operating software. No cookie or credential transfer; all existing owner deep links kept.
+- **Unchanged:** OAuth callbacks, Android bridge, team/RLS, claims, subscriptions, Stripe, booking, backend migrations, Supabase, R2, staff/admin roles, push and indexing.
+- **Acceptance:** exact-head CI and Cloudflare build, anonymous and signed-in business redirects, EN/ES phone/tablet/desktop, reduced-motion, cross-domain login and Android native return; no live state inferred from source.
+- **Rollback:** revert selector, gateway and nudge; no data reversals.
+
 ## 2026-10-28 | Plans-first AkiPasa discovery, without data changes
 
 - **Before:** The first screen prioritised five national city photos, hiding real event results farther down the page.
