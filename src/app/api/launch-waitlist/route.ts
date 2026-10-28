@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { resendSendingKey } from "@/lib/booking-mail-delivery";
+import { resendSendingKey } from "../../../lib/booking-mail-delivery";
 import {
   boundedJson,
   digestToken,
@@ -10,7 +10,7 @@ import {
   verifyTurnstile,
   waitlistCorsHeaders,
   waitlistOriginProduct,
-} from "@/lib/launch-waitlist";
+} from "../../../lib/launch-waitlist";
 
 export const dynamic = "force-dynamic";
 
