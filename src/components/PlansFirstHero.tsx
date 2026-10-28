@@ -34,15 +34,15 @@ export function PlansFirstHero({
   return (
     <section className={styles.hero} aria-labelledby="plans-first-title">
       <p className={styles.kicker}>
-        {es ? "¿Dónde pasa? AkiPasa." : "Where is it happening? AkiPasa."}
+        {es ? "Tu ciudad tiene plan." : "Your city has plans."}
       </p>
       <h1 id="plans-first-title">
         {es ? "¿Qué hacemos hoy?" : "What are we doing today?"}
       </h1>
       <p className={styles.description}>
         {es
-          ? "Conciertos, experiencias y planes para salir. Encuentra algo que merezca la pena cerca de ti, empezando por la Costa del Sol."
-          : "Live music, experiences and places worth going. Find a plan near you, starting on the Costa del Sol."}
+          ? "Música en directo, planes con amigos y cosas nuevas por descubrir. Mira qué pasa hoy en tu zona, empezando por la Costa del Sol."
+          : "Live music, plans with friends and something new to discover. See what’s happening near you today, starting on the Costa del Sol."}
       </p>
       <nav
         className={styles.shortcuts}
