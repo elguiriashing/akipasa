@@ -12,7 +12,7 @@ const manifest = JSON.parse(
 
 const privateRoutes = Object.keys(manifest.routes)
   .filter((path) =>
-    /^src\/app\/\[locale\]\/(account|admin|staff)\/.*\/page\.tsx$/.test(
+    /^src\/app\/\[locale\]\/(account|admin|staff)(?:\/.*)?\/page\.tsx$/.test(
       path,
     ),
   )
