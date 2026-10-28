@@ -52,7 +52,8 @@ describe("plans-first Costa discovery shortcuts", () => {
       expect(url.pathname).toBe("/en");
       expect(url.searchParams.get("locality")).toBe("fuengirola");
       expect(url.hash).toBe("#results");
-      if (shortcut === "free") expect(url.searchParams.get("price")).toBe("free");
+      if (shortcut === "free")
+        expect(url.searchParams.get("price")).toBe("free");
       else expect(url.searchParams.get("time")).toBe(shortcut);
     }
   });
