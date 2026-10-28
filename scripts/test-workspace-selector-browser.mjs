@@ -262,11 +262,7 @@ try {
             .evaluate((node) => node.scrollLeft),
         ).toBe(0);
         expect(errors).toEqual([]);
-        for (
-          let i = 0;
-          i < ["pasa", "duermo", "coches"].indexOf(product);
-          i++
-        )
+        for (let i = 0; i < ["pasa", "duermo", "coches"].indexOf(product); i++)
           await page.keyboard.press("ArrowRight");
         await page.screenshot({
           path: path.join(output, `${product}-${locale}-${theme}-${width}.png`),
