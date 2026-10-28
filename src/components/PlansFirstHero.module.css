@@ -59,7 +59,9 @@
   border: 1px solid var(--line);
   background: var(--surface);
   color: var(--ink);
-  transition: border-color 160ms ease, background-color 160ms ease;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease;
 }
 .shortcut:first-child {
   border-color: var(--primary);
