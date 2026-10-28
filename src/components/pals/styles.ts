@@ -5,14 +5,14 @@ export const PALS_CSS =
   String.raw`
 :root {
   color-scheme: dark;
-  --bg: #0c1422;
-  --panel: #152237;
-  --raised: #1d2d45;
-  --line: #31435d;
+  --bg: #0b111b;
+  --panel: #171f30;
+  --raised: #232d44;
+  --line: #3c3b51;
   --text: #f3f5fa;
   --muted: #adbbcf;
-  --orange: #ffb579;
-  --primary: #ffb579;
+  --orange: #ffa56b;
+  --primary: #ffa56b;
   --on-primary: #222334;
   --mint: #9ed8c0;
   --lilac: #c7b5f1;
@@ -570,5 +570,30 @@ dialog::backdrop { background: #07101de0; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *:before, *:after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+/* Cinematic AkiPals reskin. Game state, vector families, wardrobe and inventory are unchanged. */
+:root:not([data-theme="light"]) body {
+  background:
+    radial-gradient(ellipse at 88% 10%, rgba(250, 91, 45, .14), transparent 42%),
+    radial-gradient(ellipse at 50% 60%, rgba(99, 53, 129, .11), transparent 58%),
+    var(--bg);
+}
+:root:not([data-theme="light"]) .topbar {
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  border-bottom-color: rgba(255, 156, 93, .24);
+  backdrop-filter: blur(18px);
+}
+:root:not([data-theme="light"]) .stage {
+  background-image:
+    radial-gradient(ellipse at 80% 35%, rgba(245, 103, 46, .16), transparent 60%),
+    linear-gradient(145deg, #171d30, #101725);
+}
+:root:not([data-theme="light"]) :is(.panel, .card, .game-panel, .game-shell) {
+  border-color: rgba(241, 165, 103, .17);
+}
+:root:not([data-theme="light"]) :is(.btn, .nav-button):focus-visible {
+  outline: 3px solid #ffd0ac;
+  outline-offset: 3px;
 }
 ` + PALS_ARCADE_CSS;
