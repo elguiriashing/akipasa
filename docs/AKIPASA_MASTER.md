@@ -2,7 +2,7 @@
 
 ## 2026-10-28 | Plans-first Costa del Sol launch hypothesis
 
-AkiPasa's first screen answers **¿Qué hacemos hoy?**, showing live upcoming plan results *before* the national city-photo catalogue. Supported shortcut filters: **Hoy** (Madrid calendar day, bounded start/end), **Esta noche**, **Este finde**, **Planes gratis**, and the existing map. Initial product focus is local residents and bilingual visitors around Fuengirola/Mijas Costa/Benalmádena; nationwide canonical venue/event URLs stay usable. Discovery remains anonymous, and photo/city inventory is not presented as a promise of current events. Passport/AkiPals/AkiQuests are a later verified-attendance pilot, not fabricated check-ins or paid rewards. No RLS, event schemas, payments, or location tracking are changed by this UI patch. See issue #310 and `src/lib/plans-first.ts` regression tests.
+AkiPasa's first screen answers **¿Qué hacemos hoy?**, showing live upcoming plan results _before_ the national city-photo catalogue. Supported shortcut filters: **Hoy** (Madrid calendar day, bounded start/end), **Esta noche**, **Este finde**, **Planes gratis**, and the existing map. Initial product focus is local residents and bilingual visitors around Fuengirola/Mijas Costa/Benalmádena; nationwide canonical venue/event URLs stay usable. Discovery remains anonymous, and photo/city inventory is not presented as a promise of current events. Passport/AkiPals/AkiQuests are a later verified-attendance pilot, not fabricated check-ins or paid rewards. No RLS, event schemas, payments, or location tracking are changed by this UI patch. See issue #310 and `src/lib/plans-first.ts` regression tests.
 
 ## 2026-10-27 | Correct first-owner Premium destination: AkiPasa listing managed in AkiHQ
 
