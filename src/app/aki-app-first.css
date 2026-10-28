@@ -1,0 +1,83 @@
+/* AkiPasa mobile-first discovery layer, confined to the consumer discovery surface.
+   Uses existing navigation, search and event controls; never hides missing supply. */
+:root {
+  --aki-flare: #ff6716;
+  --aki-flare-bright: #ff812d;
+  --aki-night: #0d172b;
+  --aki-curve: cubic-bezier(.2,.85,.25,1);
+}
+.discover-page {
+  isolation: isolate;
+}
+.discover-page .section-head {
+  align-items: baseline;
+  gap: .7rem;
+  margin-top: clamp(.5rem,2vw,1.4rem);
+}
+.discover-page .section-head h2 {
+  font-size: clamp(1.5rem,4vw,2.4rem);
+  letter-spacing: -.055em;
+  font-weight: 850;
+}
+.discover-page .result-caption {
+  margin-block: .35rem 1.15rem;
+  color: var(--muted);
+}
+.discover-page .grid {
+  gap: clamp(.75rem, 2vw, 1.25rem);
+}
+.discover-page .grid > * {
+  min-width: 0;
+  transition: transform 220ms var(--aki-curve), box-shadow 220ms ease;
+}
+@media (hover:hover) and (prefers-reduced-motion:no-preference) {
+  .discover-page .grid > *:hover {transform: translateY(-3px);}
+}
+.discover-page .discovery-empty {
+  border-radius: 1.5rem;
+  border: 1px solid color-mix(in srgb,var(--primary) 18%,var(--line));
+  background: radial-gradient(ellipse at 15% 0%,rgba(255,103,22,.08),transparent 60%),var(--surface-alt);
+}
+@media (max-width: 850px) {
+  body:has(.discover-page) .app-content {
+    padding-bottom: calc(6.5rem + env(safe-area-inset-bottom,0px));
+  }
+  body:has(.discover-page) .app-bottom-nav {
+    bottom: max(.45rem,env(safe-area-inset-bottom,0px));
+    left: max(.65rem,env(safe-area-inset-left,0px));
+    right: max(.65rem,env(safe-area-inset-right,0px));
+    width: auto;
+    min-height: 4.25rem;
+    padding: .32rem .35rem;
+    border: 1px solid color-mix(in srgb,var(--primary) 20%,var(--line));
+    border-radius: 1.4rem;
+    background: color-mix(in srgb,var(--surface-alt) 93%,transparent);
+    box-shadow: 0 12px 32px rgba(0,0,0,.3);
+    backdrop-filter: blur(22px) saturate(135%);
+    -webkit-backdrop-filter: blur(22px) saturate(135%);
+  }
+  body:has(.discover-page) .app-bottom-nav a,
+  body:has(.discover-page) .app-bottom-nav button {
+    min-width: 0;
+    min-height: 3.4rem;
+    border-radius: 1rem;
+    transition: background-color 180ms ease,transform 180ms var(--aki-curve);
+  }
+  body:has(.discover-page) .app-bottom-nav .active {
+    background: color-mix(in srgb,var(--primary) 18%,transparent);
+    color: var(--primary-text,var(--primary));
+  }
+  body:has(.discover-page) .app-bottom-nav :is(a,button):active {
+    transform: scale(.96);
+  }
+  .discover-page .grid {
+    grid-template-columns: minmax(0,1fr);
+  }
+  .discover-page .grid > * {overflow: hidden;}
+}
+@media (prefers-reduced-motion:reduce) {
+  .discover-page .grid > *,
+  body:has(.discover-page) .app-bottom-nav :is(a,button) {
+    transition: none;
+  }
+}
