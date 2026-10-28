@@ -42,7 +42,8 @@ const server = createServer(async (request, response) => {
       response.writeHead(200, {
         "Content-Type": "text/html; charset=utf-8",
         "Cache-Control": "private, no-store",
-        "Content-Security-Policy": "default-src 'none'; script-src 'nonce-" +
+        "Content-Security-Policy":
+          "default-src 'none'; script-src 'nonce-" +
           nonce +
           "'; style-src 'nonce-" +
           nonce +
@@ -106,7 +107,9 @@ const server = createServer(async (request, response) => {
   }
 });
 try {
-  await new Promise((resolveReady) => server.listen(0, "127.0.0.1", resolveReady));
+  await new Promise((resolveReady) =>
+    server.listen(0, "127.0.0.1", resolveReady),
+  );
   const port = server.address().port;
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
@@ -114,11 +117,15 @@ try {
   page.on("pageerror", (error) => failures.push(error.message));
   await page.goto("http://127.0.0.1:" + port + "/pals");
   await expect(page.locator("#portrait svg")).toBeVisible();
-  await expect(page.getByRole("heading", { name: /Be you.*Go places/i })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: /Be you.*Go places/i }),
+  ).toBeVisible();
   await page.getByLabel("Hairstyle").selectOption("bun");
   await expect(page.locator("#save")).toBeEnabled();
   await page.locator("#save").click();
-  await expect(page.locator("#status")).toContainText("Saved to your AkiPasa account");
+  await expect(page.locator("#status")).toContainText(
+    "Saved to your AkiPasa account",
+  );
   await page.reload();
   await expect(page.getByLabel("Hairstyle")).toHaveValue("bun");
   await page.getByLabel("Hairstyle").selectOption("buzz");
@@ -127,15 +134,20 @@ try {
   for (const width of [320, 390, 820, 1440]) {
     await page.setViewportSize({ width, height: 850 });
     await expect(page.locator("#portrait svg")).toBeVisible();
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > innerWidth,
+    );
     if (overflow) throw new Error("Horizontal overflow at " + width + "px");
     await page.screenshot({
       path: resolve(outputDir, "identity-" + width + ".png"),
       fullPage: true,
     });
   }
-  if (failures.length) throw new Error("Client-side errors: " + failures.join("; "));
-  console.log("AkiPals identity: save, restore, mobile-to-desktop and CSP smoke passed.");
+  if (failures.length)
+    throw new Error("Client-side errors: " + failures.join("; "));
+  console.log(
+    "AkiPals identity: save, restore, mobile-to-desktop and CSP smoke passed.",
+  );
 } finally {
   if (browser) await browser.close();
   await new Promise((done) => server.close(done));
