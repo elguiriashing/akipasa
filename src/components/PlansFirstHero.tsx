@@ -4,6 +4,7 @@ import { planShortcutHref, type PlanShortcut } from "@/lib/plans-first";
 import { discoveryViewHref } from "@/lib/discovery-navigation";
 import styles from "./PlansFirstHero.module.css";
 
+/** Social-plans hero: short ES/EN promise, existing search routes unchanged. */
 export function PlansFirstHero({
   locale,
   location,
