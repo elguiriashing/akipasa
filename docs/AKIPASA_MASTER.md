@@ -2545,7 +2545,6 @@ Release acceptance: review on 320px/375px/430px phones, tablet, desktop, touch n
 
 Follow-up asset integration: `public/brand/pasa-2026-traced.svg` is a vector trace made from the founder-uploaded PNG; `BrandLogo.tsx` now uses its orange dynamic movement mark and dark endpoint circle in the app shell. It is a trace/preview, not a claim to replace an original designer-supplied editable vector. Wordmark remains DOM text for responsive size and accessibility. Check light/dark contrast and 24px icon legibility before merge; keep original supplied PNG as the definitive visual reference. Rollback restores the previous `BrandLogo.tsx` mark.
 
-
 ## 2026-10-28 | Young-adult social discovery messaging follow-up
 
 The new `PlansFirstHero.tsx` EN/ES copy prioritizes live music, plans with friends and nearby activities for a Spain-first young-adult audience; all category, search, pricing, event, authentication, consent and age rules remain unchanged. Full brand/retention direction is recorded in `docs/AKIPASA_BRAND_RETENTION_20261028.md`. This branch is rebased conceptually on already merged app-first PR #320; it supersedes conflicting PR #319. Require the same six hosted CI workflows, responsive/browser accessibility review and exact-source Cloudflare verification before production. Rollback: restore only the prior hero copy. No DB, bulk marketing, analytics activation or billing changes.
