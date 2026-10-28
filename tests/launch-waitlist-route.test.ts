@@ -15,10 +15,17 @@ vi.mock("@supabase/supabase-js", () => ({
 import { POST } from "../src/app/api/launch-waitlist/route";
 
 const entryId = "20000000-0000-4000-8000-000000000022";
-const request = (overrides: Record<string, unknown> = {}, origin = "https://akiduermo.com") =>
+const request = (
+  overrides: Record<string, unknown> = {},
+  origin = "https://akiduermo.com",
+) =>
   new Request("https://akipasa.com/api/launch-waitlist", {
     method: "POST",
-    headers: { Origin: origin, "Content-Type": "application/json", "cf-connecting-ip": "203.0.113.21" },
+    headers: {
+      Origin: origin,
+      "Content-Type": "application/json",
+      "cf-connecting-ip": "203.0.113.21",
+    },
     body: JSON.stringify({
       product: "duermo",
       fullName: "Example Traveller",
@@ -48,8 +55,10 @@ function mockSender(
     if (url !== "https://api.resend.com/emails" || !options)
       throw new Error("unexpected outbound request");
     if (result === "ambiguous") throw new Error("simulated timeout");
-    if (result === "rejected") return Response.json({ message: "invalid" }, { status: 400 });
-    if (result === "rate_limited") return Response.json({ message: "retry" }, { status: 429 });
+    if (result === "rejected")
+      return Response.json({ message: "invalid" }, { status: 400 });
+    if (result === "rate_limited")
+      return Response.json({ message: "retry" }, { status: 429 });
     if (result === "bad_success") return Response.json({}, { status: 200 });
     return Response.json({ id: "provider-id-123" });
   });
@@ -89,12 +98,17 @@ afterEach(() => {
 });
 
 describe("launch waitlist provider boundary", () => {
-  it("uses the canonical primary Resend key and accepts provider-confirmed mail", async () => {
+  it("uses the primary Resend key and confirms accepted email", async () => {
     const sender = mockSender("success");
     const response = await POST(request());
     expect(response.status).toBe(202);
-    expect(await response.json()).toEqual({ ok: true, status: "check_email" });
-    const mailCall = sender.mock.calls.find(([url]) => url === "https://api.resend.com/emails");
+    expect(await response.json()).toEqual({
+      ok: true,
+      status: "check_email",
+    });
+    const mailCall = sender.mock.calls.find(
+      ([url]) => url === "https://api.resend.com/emails",
+    );
     expect(mailCall).toBeDefined();
     expect(mailCall?.[1]?.headers).toMatchObject({
       Authorization: "Bearer primary-test-key",
@@ -103,19 +117,22 @@ describe("launch waitlist provider boundary", () => {
   });
 
   for (const result of ["ambiguous", "rate_limited", "bad_success"] as const) {
-    it("preserves valid verification links after " + result + " delivery", async () => {
-      mockSender(result);
-      const response = await POST(request());
-      expect(response.status).toBe(503);
-      expect(db.from).not.toHaveBeenCalled();
-      expect(db.rpc).toHaveBeenCalledWith(
-        "reserve_launch_waitlist_verification",
-        expect.objectContaining({ p_product: "duermo" }),
-      );
-    });
+    it(
+      "preserves valid verification links after " + result + " delivery",
+      async () => {
+        mockSender(result);
+        const response = await POST(request());
+        expect(response.status).toBe(503);
+        expect(db.from).not.toHaveBeenCalled();
+        expect(db.rpc).toHaveBeenCalledWith(
+          "reserve_launch_waitlist_verification",
+          expect.objectContaining({ p_product: "duermo" }),
+        );
+      },
+    );
   }
 
-  it("releases only the current unconfirmed token after a definite provider rejection", async () => {
+  it("clears only this token after definite provider rejection", async () => {
     mockSender("rejected");
     const response = await POST(request());
     expect(response.status).toBe(503);
@@ -126,11 +143,14 @@ describe("launch waitlist provider boundary", () => {
       verification_sent_at: null,
     });
     expect(db.eq).toHaveBeenCalledWith("id", entryId);
-    expect(db.eq).toHaveBeenCalledWith("verification_hash", expect.stringMatching(/^[a-f0-9]{64}$/));
+    expect(db.eq).toHaveBeenCalledWith(
+      "verification_hash",
+      expect.stringMatching(/^[a-f0-9]{64}$/),
+    );
     expect(db.is).toHaveBeenCalledWith("verified_at", null);
   });
 
-  it("refuses mismatched origins and unconsented requests before contacting providers", async () => {
+  it("rejects wrong origins and missing consent before sending", async () => {
     const sender = mockSender("success");
     const wrongOrigin = await POST(request({}, "https://akicoches.com"));
     expect(wrongOrigin.status).toBe(400);
