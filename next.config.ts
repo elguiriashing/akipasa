@@ -37,6 +37,16 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      // Confirmation URLs contain single-use verification tokens.
+      // Never cache them or forward the full URL in Referer headers.
+      {
+        source: "/waitlist/confirm",
+        headers: [
+          { key: "Cache-Control", value: "private, no-store" },
+          { key: "Referrer-Policy", value: "no-referrer" },
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
+        ],
+      },
       {
         source: "/(.*)",
         headers: [
