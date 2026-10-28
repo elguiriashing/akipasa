@@ -333,15 +333,15 @@ test("mobile AkiSuite and internal More stay separate without overlapping search
     await trigger.click();
     const apps = page.getByRole("dialog", { name: "AkiSuite apps" });
     await expect(apps).toBeVisible();
-    for (const name of [
-      "AkiPasa",
-      "AkiDuermo",
-      "AkiCoches",
-      "AkiHQ",
-      "AkiBusiness",
-    ]) {
+    for (const name of ["AkiPasa", "AkiDuermo", "AkiCoches"]) {
       await expect(apps.getByRole("link", { name })).toBeVisible();
     }
+    await expect(apps.getByRole("link", { name: "AkiHQ", exact: true })).toHaveCount(0);
+    await expect(apps.getByRole("link", { name: "AkiBusiness", exact: true })).toHaveCount(0);
+    await expect(apps.getByRole("link", { name: "Business sign in" })).toHaveAttribute(
+      "href",
+      "/hq-login?lang=en",
+    );
     await expect(apps.getByRole("link", { name: "Membership" })).toHaveCount(0);
     await expect(apps.getByRole("link", { name: "Passports" })).toHaveCount(0);
     await apps.getByRole("button", { name: "Close" }).click();
