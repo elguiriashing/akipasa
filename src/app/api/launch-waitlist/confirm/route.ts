@@ -1,5 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { digestToken } from "@/lib/launch-waitlist";
+import { resendSendingKey } from "@/lib/booking-mail-delivery";
+import { sendFounderWaitlistNotice, type ConfirmedWaitlistEntry } from "@/lib/launch-waitlist-founder-notice";
 
 export const dynamic = "force-dynamic";
 
@@ -71,9 +73,30 @@ export async function POST(request: Request) {
     .eq("verification_hash", digestToken(token))
     .gt("verification_expires_at", new Date().toISOString())
     .is("verified_at", null)
-    .select("id")
+    .select("id, product, full_name, email, city, audience, interests, locale, verified_at, marketing_consent_at")
     .maybeSingle();
 
   if (error) return outcome(request, "unavailable", locale);
+  if (data) {
+    // Only the first successful atomic confirmation reaches this branch.
+    // Mail failure must not roll back a person's verified consent or allow replay.
+    const key = resendSendingKey({
+      RESEND_API_KEY: process.env.RESEND_API_KEY,
+      CLAIM_RESEND_API_KEY: process.env.CLAIM_RESEND_API_KEY,
+    });
+    if (key) {
+      try {
+        const sent = await sendFounderWaitlistNotice(
+          data as ConfirmedWaitlistEntry,
+          key,
+        );
+        if (!sent) console.error("Verified launch signup founder notice rejected");
+      } catch {
+        console.error("Verified launch signup founder notice unavailable");
+      }
+    } else {
+      console.error("Verified launch signup founder notice key unavailable");
+    }
+  }
   return outcome(request, data ? "confirmed" : "invalid", locale);
 }
