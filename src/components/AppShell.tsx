@@ -187,6 +187,11 @@ export function AppShell({
   const railExtras: NavItem[] = [
     { href: `/${locale}/passports`, label: m.passports, icon: "passport" },
     {
+      href: `/${locale}/roadmap`,
+      label: es ? "Plan de lanzamiento" : "Roadmap",
+      icon: "calendar",
+    },
+    {
       href: `/${locale}/membership`,
       label: es ? "Membresía" : "Membership",
       icon: "membership",
