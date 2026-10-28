@@ -46,7 +46,11 @@ export function PlansFirstHero({
       </p>
       <nav
         className={styles.shortcuts}
-        aria-label={es ? "Explorar planes por fecha y precio" : "Browse plans by date and price"}
+        aria-label={
+          es
+            ? "Explorar planes por fecha y precio"
+            : "Browse plans by date and price"
+        }
       >
         {shortcuts.map((shortcut) => (
           <Link
