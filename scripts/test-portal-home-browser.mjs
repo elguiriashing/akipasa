@@ -239,7 +239,7 @@ try {
           // The consumer chooser contains three apps. Business management is
           // a separate entry point, so it has no selected consumer app.
           await expect(popover.locator(":scope > a")).toHaveCount(3);
-          const currentApp = product === "duermo" ? "AkiDuermo" : null;
+          const currentApp = product === "stay" ? "AkiDuermo" : null;
           await expect(popover.locator('a[aria-current="page"]')).toHaveCount(
             currentApp ? 1 : 0,
           );
