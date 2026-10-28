@@ -9,11 +9,7 @@ export function BrandMark() {
       aria-hidden="true"
       focusable="false"
     >
-      <image
-        href="/brand/pasa-2026-traced.svg"
-        width="768"
-        height="768"
-      />
+      <image href="/brand/pasa-2026-traced.svg" width="768" height="768" />
     </svg>
   );
 }
