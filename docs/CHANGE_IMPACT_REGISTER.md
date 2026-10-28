@@ -1,5 +1,15 @@
 # Change Impact Register
 
+## 2026-10-28 | Local-first public launch banner and roadmap (staged in PR #326)
+
+- **Motivation:** A nationwide, still-growing event database can feel empty in cities outside the first rollout. A clear, honest launch story is preferable to implying nationwide venue/event availability.
+- **New public UI:** Reusable accessible non-marquee `LaunchRibbon` in consumer discovery surfaces; prominent link to `/{locale}/roadmap`; localized, SEO-indexable visual roadmap and public `/roadmap` redirect; reassuring no-event state on Home.
+- **Schedule:** Four stages: improve product reliability now; launch first around Fuengirola/Costa del Sol; learn and improve; then expand across Spain following observed demand, community engagement and quality venue coverage. **No unsupported public dates, fixed city order, follower totals or invented milestones.** Feature statuses distinguish building, private playtest (AkiPals) and planned (Friends).
+- **Dependencies:** shared `AppShell`, existing locale routing and metadata, existing event/map state, central roadmap copy; user-controlled locale and genuine publisher data remain intact. The announcement is cosmetic and creates no subscriptions or personal data.
+- **Privacy/safety:** no geolocation request, tracking, signup, notifications, backend migrations, consent override, private preview opening, or ads. Venue and event details remain accurate; empty-state actions continue to work.
+- **Validation:** bilingual rendering, touch/keyboard accessibility, reduced-motion, mobile dock and map inset conflict checks, permanent redirect, SEO canonical, all existing routes and tests, exact-head CI/Cloudflare preview. Roll back only the page/banner if needed; no data rollback.
+
+
 ## 2026-10-28 | Radar × After Dark full consumer experience (PR #326, staging)
 
 - **Before:** App-first discovery uses inconsistent page-specific hero/cards and a four-destination mobile dock with a More sheet; Community's home redirects to a creator index; AkiPals is a restricted preview behind `/pals`.
