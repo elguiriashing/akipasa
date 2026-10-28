@@ -11,6 +11,7 @@ import { LanguageLink } from "./LanguageLink";
 import { DiscoveryNavigation } from "./DiscoveryNavigation";
 import { PasaBottomDock, pasaDestinations } from "./PasaBottomDock";
 import "./PasaBottomDock.css";
+import "./PasaCinematic.css";
 import { ThemeToggle } from "./ThemeModeControls";
 import { signOut } from "../app/[locale]/auth/actions";
 import { ConsoleSwitcher, type ConsoleKey } from "./ConsoleSwitcher";
