@@ -1,5 +1,14 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-28 | Public launch roadmap and Costa del Sol rollout notice (draft PR #326)
+
+AkiPasa's initial audience launch is **planned** around Fuengirola and the Costa del Sol. Consumer visitors should see one accessible, non-scrolling announcement on Home, Map, Community, and public venue/event details, linking to a public localized roadmap. The announcement may not falsely imply that any venue, city, check-in rewards, Passport, AkiPals, or Friends services are already live or verified. The English and Spanish notice uses honest phased language rather than claiming concrete dates for uncertain milestones; no consent, geolocation or email collection is introduced by the banner.
+
+The canonical public pages `/es/roadmap` and `/en/roadmap` have a convenient `/roadmap` redirect to Spanish, consistent with the site's default root. Phase 1 is development and quality, phase 2 is the Costa del Sol first rollout, phase 3 is feedback and engagement improvements, and phase 4 is Spain-wide expansion based on demand and dependable venue coverage. The page distinguishes current active development from private AkiPals testing and planned Friend features. All exact dates are intentionally **to be confirmed**, never invented. Data and bilingual descriptions are centralized in `src/lib/pasa-roadmap.ts`; the page is static and indexable and included in the public SEO catalogue.
+
+The homepage no-event empty state provides explicit reassurance and a roadmap link without hiding existing filter expansion/Map controls. Acceptance requires `tests/pasa-roadmap.test.ts`, a 101-route inventory, ES/EN, reduced motion, 320–1440 px responsive views, Cloudflare source pin, privacy/legal review and the full atomic #326 release gate. No live deployment, data migration, email signup, payments or backend writes are authorized by this addition.
+
+
 ## 2026-10-28 | Radar × After Dark unified consumer redesign (draft, not live)
 
 The AkiPasa visual overhaul is staged on PR #326, independently of the Cloudflare production Worker. The canonical mobile consumer destinations are Home, Map, Check-in, Community and Profile. The same route descriptors feed the desktop links and mobile dock, and one shared icon implementation supplies every destination. Check-in points to the existing venue-specific signed QR and verified-location flow, not an unverified or invented reward. The existing MapLibre data, filter query state, user consent, Supabase RLS/auth, XP ledgers, game saves and Stripe gates remain unchanged.
