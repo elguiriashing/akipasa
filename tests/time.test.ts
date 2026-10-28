@@ -29,12 +29,8 @@ describe("plans-first Costa discovery shortcuts", () => {
   };
 
   it("uses Madrid calendar dates for today, including after midnight and DST", () => {
-    expect(madridToday(new Date("2026-10-27T23:30:00Z"))).toBe(
-      "2026-10-28",
-    );
-    expect(madridToday(new Date("2026-07-31T22:30:00Z"))).toBe(
-      "2026-08-01",
-    );
+    expect(madridToday(new Date("2026-10-27T23:30:00Z"))).toBe("2026-10-28");
+    expect(madridToday(new Date("2026-07-31T22:30:00Z"))).toBe("2026-08-01");
     const href = planShortcutHref(
       "es",
       location,
