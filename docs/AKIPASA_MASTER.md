@@ -1,5 +1,9 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-28 | Secure cross-product launch waitlist (staged, not activated)
+
+AkiDuermo and AkiCoches under-development launches require a shared **double-opt-in** waitlist managed by AkiPasa's existing authorized server. Subscriber contact information is service-only in `public.launch_waitlist_entries`, with explicit launch-purpose consent and a separate optional marketing preference (never prechecked). Browser-origin product and host must match. Turnstile proofs require a matching hostname and the `launch_waitlist` action. Requests are payload-limited, rate-limited by keyed hashes, and require one-time hashed verification tokens with 24-hour expiry and a human POST confirmation (no scanner-triggered GET verification). Existing Supabase and Resend credentials remain **server-only**. A privacy/deletion contact, retention purge job and consent review must be operational before activation. No live migration, customer mail or signup feature is activated by the initial PR. Track #313, #315 and the corresponding front-end/release holds.
+
 ## 2026-10-28 | Consumer chooser and AkiHQ business entry
 
 The AkiPasa consumer selector now presents only AkiPasa, AkiDuermo and AkiCoches. Business users retain the existing owner/application path and receive a separate localized `/hq-login` entry pointing to AkiHQ's existing host-local `/login`. AkiBusiness remains a **separate independent operating-software product**. No account, cookie, role, billing, claim, event, or venue data changes; AkiSuite is an umbrella name, not a separate product. See `docs/PRODUCT_RESET_20261028.md` and AkiPasa #310. CI, browser/Android return acceptance and exact live SHA remain required.
