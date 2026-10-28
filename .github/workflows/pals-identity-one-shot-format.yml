@@ -21,10 +21,10 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci --ignore-scripts
-      - run: npx prettier --write src/lib/pals/avatar-v2.ts src/app/pals/identity/route.ts tests/pals-identity.test.ts
+      - run: npx prettier --write src/lib/pals/avatar-v2.ts src/app/pals/identity/route.ts tests/pals-identity.test.ts scripts/test-pals-identity-browser.mjs
       - name: Commit formatting only if needed
         run: |
-          git add src/lib/pals/avatar-v2.ts src/app/pals/identity/route.ts tests/pals-identity.test.ts
+          git add src/lib/pals/avatar-v2.ts src/app/pals/identity/route.ts tests/pals-identity.test.ts scripts/test-pals-identity-browser.mjs
           if ! git diff --cached --quiet; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
