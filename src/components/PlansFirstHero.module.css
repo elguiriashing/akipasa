@@ -84,12 +84,22 @@
   font-size: 0.84rem;
 }
 @media (max-width: 640px) {
-  .hero { padding: 1.5rem 0 2rem; }
-  .shortcuts { gap: 0.55rem; }
+  .hero {
+    padding: 1.5rem 0 2rem;
+  }
+  .shortcuts {
+    gap: 0.55rem;
+  }
   .shortcut,
-  .mapShortcut { padding: 0.65rem 0.85rem; font-size: 0.86rem; }
+  .mapShortcut {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.86rem;
+  }
 }
+
 @media (prefers-reduced-motion: reduce) {
   .shortcut,
-  .mapShortcut { transition: none; }
+  .mapShortcut {
+    transition: none;
+  }
 }
