@@ -11,7 +11,7 @@ export function pasaDestinations(locale: Locale): PasaDestination[] {
   return [
     { key: "home", href: `/${locale}`, label: es ? "Inicio" : "Home", icon: "home" },
     { key: "map", href: `/${locale}/map`, label: es ? "Mapa" : "Map", icon: "map" },
-    { key: "checkin", href: `/${locale}/check-in`, label: "Check-in", icon: "map" },
+    { key: "checkin", href: `/${locale}/check-in`, label: "Check-in", icon: "checkin" },
     { key: "community", href: `/${locale}/community`, label: es ? "Comunidad" : "Community", icon: "community" },
     { key: "profile", href: `/${locale}/account`, label: es ? "Perfil" : "Profile", icon: "account" },
   ];
