@@ -21,8 +21,11 @@ export function ConsentAnalytics({
     let adsConfigured = false;
     function update() {
       const choices = readPrivacyChoices();
-      const analytics = trackingAllowed && choices.analytics;
-      const marketing = trackingAllowed && choices.marketing;
+      // Verification URLs contain short-lived one-time secrets. Never emit
+      // their query strings as Google Analytics page_location or ad pageviews.
+      const privateVerification = location.pathname === "/waitlist/confirm";
+      const analytics = trackingAllowed && choices.analytics && !privateVerification;
+      const marketing = trackingAllowed && choices.marketing && !privateVerification;
       // The consumer advertising campaign must not tag AkiBusiness or AkiDuermo.
       const adsAllowed =
         marketing &&
