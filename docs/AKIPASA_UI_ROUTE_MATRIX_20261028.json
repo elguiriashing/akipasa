@@ -5,28 +5,28 @@
   "routes": {
     "src/app/[locale]/account/activity/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
     },
     "src/app/[locale]/account/bookings/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
     },
     "src/app/[locale]/account/following/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
     },
     "src/app/[locale]/account/membership/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
     },
     "src/app/[locale]/account/memberships/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
     },
     "src/app/[locale]/account/page.tsx": {
       "scope": "consumer",
@@ -35,153 +35,153 @@
     },
     "src/app/[locale]/account/premium/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
     },
     "src/app/[locale]/account/privacy/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
     },
     "src/app/[locale]/account/profile/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
     },
     "src/app/[locale]/account/referrals/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
     },
     "src/app/[locale]/account/rewards/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
     },
     "src/app/[locale]/account/saved/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
     },
     "src/app/[locale]/account/settings/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
     },
     "src/app/[locale]/account/subscription/operations/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
     },
     "src/app/[locale]/account/subscription/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
     },
     "src/app/[locale]/admin/accommodation-review/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/achievements/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/achievements/venues/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/ai-team/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/audit/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/business-applications/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/catalogue/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/listing-review/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/passports/awards/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/passports/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/passports/prestige/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/personalisation/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/privacy/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/promotions/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/referrals/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/selector-lab/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/settings/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/users/[id]/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/users/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/admin/venue-relevance/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/akipals/page.tsx": {
       "scope": "consumer",
@@ -190,13 +190,13 @@
     },
     "src/app/[locale]/auth/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES."
     },
     "src/app/[locale]/auth/recover/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES."
     },
     "src/app/[locale]/business/apply/page.tsx": {
       "scope": "operational",
@@ -280,8 +280,8 @@
     },
     "src/app/[locale]/events/[slug]/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Existing spotlight detail design + common cinematic surface applied; isolated multi-viewport spotlight suite available; individual real-data acceptance pending."
     },
     "src/app/[locale]/map/page.tsx": {
       "scope": "consumer",
@@ -320,28 +320,28 @@
     },
     "src/app/[locale]/passports/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES."
     },
     "src/app/[locale]/passports/places/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES."
     },
     "src/app/[locale]/passports/prestige/certificate/[publicId]/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES."
     },
     "src/app/[locale]/passports/prestige/hall/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES."
     },
     "src/app/[locale]/passports/prestige/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES."
     },
     "src/app/[locale]/photo-credits/page.tsx": {
       "scope": "consumer",
@@ -370,43 +370,43 @@
     },
     "src/app/[locale]/staff/audit/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/staff/catalogue/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/staff/catalogue/venues/[id]/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/staff/creators/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/staff/moderation/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/staff/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/staff/promotions/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/staff/support/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
     },
     "src/app/[locale]/terms/accept/page.tsx": {
       "scope": "consumer",
@@ -425,8 +425,8 @@
     },
     "src/app/[locale]/venues/[slug]/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Existing spotlight detail design + common cinematic surface applied; isolated multi-viewport spotlight suite available; individual real-data acceptance pending."
     },
     "src/app/akiconduzco/account/page.tsx": {
       "scope": "other-product",
@@ -513,5 +513,7 @@
       "status": "pending",
       "note": ""
     }
-  }
+  },
+  "releaseStatus": "blocked-pending-visual-and-functional-acceptance",
+  "acceptancePolicy": "In-progress indicates a shared shell or skin has been implemented, NOT that the route passed visual or functional acceptance. Accepted requires real reviewed evidence and all exact-head checks."
 }
