@@ -1,4 +1,4 @@
-import { previewHtml } from "@/components/pals/preview";
+import { identityPreviewHtml } from "@/components/pals/identity-preview";
 import { previewAccess, privateHeaders } from "@/lib/pals/server";
 
 // Restricted preview release checkpoint: intentionally unlinked and non-indexable.
@@ -24,7 +24,7 @@ export async function GET() {
         headers: privateHeaders,
       });
     const nonce = crypto.randomUUID().replace(/-/g, "");
-    return new Response(previewHtml(nonce), {
+    return new Response(identityPreviewHtml(nonce), {
       headers: {
         ...privateHeaders,
         "Content-Type": "text/html; charset=utf-8",
