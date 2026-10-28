@@ -205,7 +205,11 @@ try {
         );
         await current.focus();
         await page.keyboard.press("Home");
-        for (const name of ["AkiPasa", "AkiDuermo", "AkiCoches"]) {
+        for (const name of [
+          "AkiPasa",
+          "AkiDuermo",
+          "AkiCoches",
+        ]) {
           await expect(
             page.getByRole("link", { name, exact: true }),
           ).toHaveAttribute("data-selected", "true");
