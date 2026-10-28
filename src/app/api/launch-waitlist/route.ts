@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { resendSendingKey } from "@/lib/booking-mail-delivery";
 import {
   boundedJson,
   digestToken,
@@ -63,7 +64,10 @@ export async function POST(request: Request) {
     serviceKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
     challengeSecret: process.env.LAUNCH_WAITLIST_TURNSTILE_SECRET,
     rateSecret: process.env.LAUNCH_WAITLIST_RATE_SECRET,
-    resendKey: process.env.CLAIM_RESEND_API_KEY || process.env.RESEND_API_KEY,
+    resendKey: resendSendingKey({
+      RESEND_API_KEY: process.env.RESEND_API_KEY,
+      CLAIM_RESEND_API_KEY: process.env.CLAIM_RESEND_API_KEY,
+    }),
   };
   // Fail closed until the migration, secrets, and verified mail domain are ready.
   if (Object.values(env).some((value) => !value))
@@ -151,7 +155,10 @@ export async function POST(request: Request) {
     token,
   });
 
-  let sent = false;
+  // A timeout may happen *after* the provider accepts the message. A received
+  // verification link must remain usable even when our delivery result is
+  // uncertain. Only a definite provider rejection may release its token.
+  let delivery: "confirmed" | "rejected" | "uncertain" = "uncertain";
   try {
     const provider = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -170,14 +177,23 @@ export async function POST(request: Request) {
     });
     if (provider.ok) {
       const result = (await provider.json()) as { id?: string };
-      sent = typeof result.id === "string" && result.id.length > 0;
+      if (typeof result.id === "string" && result.id.length > 0)
+        delivery = "confirmed";
+    } else if (
+      provider.status >= 400 &&
+      provider.status < 500 &&
+      provider.status !== 429
+    ) {
+      delivery = "rejected";
     }
   } catch {
-    // Do not claim success on a provider timeout or ambiguous send.
+    // Network timeouts and unreadable successful responses are ambiguous.
   }
-  if (!sent) {
-    // Release the retry hold only for the token from this exact request.
-    // A later retry may already have replaced it: never invalidate that retry.
+  if (delivery === "confirmed")
+    return json({ ok: true, status: "check_email" }, 202, origin);
+  if (delivery === "rejected") {
+    // Release only our own token on a definite rejection. Never invalidate a
+    // later concurrent retry or a token already confirmed by the recipient.
     await db
       .from("launch_waitlist_entries")
       .update({
@@ -188,7 +204,6 @@ export async function POST(request: Request) {
       .eq("id", entryId)
       .eq("verification_hash", tokenHash)
       .is("verified_at", null);
-    return json({ ok: false, status: "temporarily_unavailable" }, 503, origin);
   }
-  return json({ ok: true, status: "check_email" }, 202, origin);
+  return json({ ok: false, status: "temporarily_unavailable" }, 503, origin);
 }
