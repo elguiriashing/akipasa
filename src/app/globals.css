@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./discovery-redesign.css";
 @import "./aki-app-first.css";
+@import "./aki-event-cards.css";
 
 :root {
   --primary: #f26b1d;
