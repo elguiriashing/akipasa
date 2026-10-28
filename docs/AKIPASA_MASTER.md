@@ -1,5 +1,14 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-28 | Radar × After Dark unified consumer redesign (draft, not live)
+
+The AkiPasa visual overhaul is staged on PR #326, independently of the Cloudflare production Worker. The canonical mobile consumer destinations are Home, Map, Check-in, Community and Profile. The same route descriptors feed the desktop links and mobile dock, and one shared icon implementation supplies every destination. Check-in points to the existing venue-specific signed QR and verified-location flow, not an unverified or invented reward. The existing MapLibre data, filter query state, user consent, Supabase RLS/auth, XP ledgers, game saves and Stripe gates remain unchanged.
+
+The first photo-led Home, shared event cards, map overlays, authentic public Community landing, gated AkiPals entry and account/spotlight styles are source changes only. AkiPals remains a restricted preview with server-side permission checks and saved mascot state; public friend features are not represented as active without a reviewed privacy-safe backend. Passport preserves all current achievements and awards. All locale routes, owner/staff/admin routes and other-product hosts require explicit classification; the exhaustive matrix is `docs/AKIPASA_UI_ROUTE_MATRIX_20261028.json` and the release gate is `npm run release:pasa-audit`.
+
+Every consumer and operational route must be reviewed, the complete exact-head CI and browser/Android regressions must pass, and Cloudflare preview and final deployment must be pinned to the reviewed source. Do not merge an unfinished draft branch, turn on unimplemented social or age verification, introduce fabricated events, alter existing customer data, or bypass check-in restrictions. Rollback is the prior validated production Worker version plus reverting the UI branch, with no data migration.
+
+
 ## 2026-10-28 | Secure cross-product launch waitlist (staged, not activated)
 
 AkiDuermo and AkiCoches under-development launches require a shared **double-opt-in** waitlist managed by AkiPasa's existing authorized server. Subscriber contact information is service-only in `public.launch_waitlist_entries`, with explicit launch-purpose consent and a separate optional marketing preference (never prechecked). Browser-origin product and host must match. Turnstile proofs require a matching hostname and the `launch_waitlist` action. Requests are payload-limited, rate-limited by keyed hashes, and require one-time hashed verification tokens with 24-hour expiry and a human POST confirmation (no scanner-triggered GET verification). Existing Supabase and Resend credentials remain **server-only**. A privacy/deletion contact, retention purge job and consent review must be operational before activation. No live migration, customer mail or signup feature is activated by the initial PR. Track #313, #315 and the corresponding front-end/release holds.
