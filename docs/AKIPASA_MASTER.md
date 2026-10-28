@@ -1,5 +1,9 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-28 | Plans-first Costa del Sol launch hypothesis
+
+AkiPasa's first screen answers **¿Qué hacemos hoy?**, showing live upcoming plan results _before_ the national city-photo catalogue. Supported shortcut filters: **Hoy** (Madrid calendar day, bounded start/end), **Esta noche**, **Este finde**, **Planes gratis**, and the existing map. Initial product focus is local residents and bilingual visitors around Fuengirola/Mijas Costa/Benalmádena; nationwide canonical venue/event URLs stay usable. Discovery remains anonymous, and photo/city inventory is not presented as a promise of current events. Passport/AkiPals/AkiQuests are a later verified-attendance pilot, not fabricated check-ins or paid rewards. No RLS, event schemas, payments, or location tracking are changed by this UI patch. See issue #310 and `src/lib/plans-first.ts` regression tests.
+
 ## 2026-10-27 | Correct first-owner Premium destination: AkiPasa listing managed in AkiHQ
 
 AkiPasa's approved claim emails, rejection resubmission links and claim-received acknowledgements now point to the canonical **AkiHQ** management hub at `https://akihq.app/{locale}/business`, with owner venue deep-links scoped to the approved venue UUID. AkiBusiness is **only** the separately paid operating suite (Basic, Standard, Pro), not the claims portal or the early-adopter benefit. The existing free AkiHQ hub manages business-facing Premium listing upgrades for each discovery vertical. For this programme the reward is **three months of AkiPasa Premium for the claimed business listing in AkiHQ** (normally EUR 11.99 per location/month), not AkiPasa personal Premium, AkiHQ-wide Premium, nor any paid AkiBusiness operating software.
