@@ -1,5 +1,10 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-28 | Secure cross-product launch waitlist (staged, not activated)
+
+AkiDuermo and AkiCoches under-development launches require a shared **double-opt-in** waitlist managed by AkiPasa's existing authorized server. Subscriber contact information is service-only in `public.launch_waitlist_entries`, with explicit launch-purpose consent and a separate optional marketing preference (never prechecked). Browser-origin product and host must match. Turnstile proofs require a matching hostname and the `launch_waitlist` action. Requests are payload-limited, rate-limited by keyed hashes, and require one-time hashed verification tokens with 24-hour expiry and a human POST confirmation (no scanner-triggered GET verification). Existing Supabase and Resend credentials remain **server-only**. A privacy/deletion contact, retention purge job and consent review must be operational before activation. No live migration, customer mail or signup feature is activated by the initial PR. Track #313, #315 and the corresponding front-end/release holds.
+
+
 ## 2026-10-27 | Correct first-owner Premium destination: AkiPasa listing managed in AkiHQ
 
 AkiPasa's approved claim emails, rejection resubmission links and claim-received acknowledgements now point to the canonical **AkiHQ** management hub at `https://akihq.app/{locale}/business`, with owner venue deep-links scoped to the approved venue UUID. AkiBusiness is **only** the separately paid operating suite (Basic, Standard, Pro), not the claims portal or the early-adopter benefit. The existing free AkiHQ hub manages business-facing Premium listing upgrades for each discovery vertical. For this programme the reward is **three months of AkiPasa Premium for the claimed business listing in AkiHQ** (normally EUR 11.99 per location/month), not AkiPasa personal Premium, AkiHQ-wide Premium, nor any paid AkiBusiness operating software.
