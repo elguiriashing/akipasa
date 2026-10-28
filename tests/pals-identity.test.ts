@@ -10,24 +10,32 @@ describe("AkiPals human avatar identity", () => {
   it("has a valid fully customisable free starter appearance", () => {
     expect(appearanceSchema.safeParse(DEFAULT_APPEARANCE).success).toBe(true);
     for (const [key, choices] of Object.entries(APPEARANCE_OPTIONS)) {
-      expect(choices).toContain(DEFAULT_APPEARANCE[key as keyof typeof DEFAULT_APPEARANCE]);
+      expect(choices).toContain(
+        DEFAULT_APPEARANCE[key as keyof typeof DEFAULT_APPEARANCE],
+      );
       expect(choices.length).toBeGreaterThan(1);
     }
   });
 
   it("rejects extra fields, injected markup and invalid body values", () => {
-    expect(appearanceSchema.safeParse({
-      ...DEFAULT_APPEARANCE,
-      userId: "someone-else",
-    }).success).toBe(false);
-    expect(appearanceSchema.safeParse({
-      ...DEFAULT_APPEARANCE,
-      top: "sponsored-premium",
-    }).success).toBe(false);
-    expect(appearanceSchema.safeParse({
-      ...DEFAULT_APPEARANCE,
-      hair: "<script>alert(1)</script>",
-    }).success).toBe(false);
+    expect(
+      appearanceSchema.safeParse({
+        ...DEFAULT_APPEARANCE,
+        userId: "someone-else",
+      }).success,
+    ).toBe(false);
+    expect(
+      appearanceSchema.safeParse({
+        ...DEFAULT_APPEARANCE,
+        top: "sponsored-premium",
+      }).success,
+    ).toBe(false);
+    expect(
+      appearanceSchema.safeParse({
+        ...DEFAULT_APPEARANCE,
+        hair: "<script>alert(1)</script>",
+      }).success,
+    ).toBe(false);
   });
 
   it("renders an accessible SVG that differs across saved looks", () => {
@@ -51,7 +59,7 @@ describe("AkiPals human avatar identity", () => {
 
   it("sanitises SVG IDs to avoid caller-supplied attributes", () => {
     const svg = renderHumanAvatar(DEFAULT_APPEARANCE, 'evil" onload="alert(1)');
-    expect(svg).not.toContain('onload=');
+    expect(svg).not.toContain("onload=");
     expect(svg).not.toContain("<script");
     expect(svg).toContain("evilonloadalert1");
   });

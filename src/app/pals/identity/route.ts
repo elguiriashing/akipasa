@@ -1,13 +1,19 @@
 import { z } from "zod";
-import { appearanceSchema, DEFAULT_APPEARANCE, renderHumanAvatar } from "@/lib/pals/avatar-v2";
+import {
+  appearanceSchema,
+  DEFAULT_APPEARANCE,
+  renderHumanAvatar,
+} from "@/lib/pals/avatar-v2";
 import { previewAccess, privateHeaders } from "@/lib/pals/server";
 
 export const dynamic = "force-dynamic";
 
-const actionSchema = z.object({
-  appearance: appearanceSchema,
-  save: z.boolean(),
-}).strict();
+const actionSchema = z
+  .object({
+    appearance: appearanceSchema,
+    save: z.boolean(),
+  })
+  .strict();
 
 function reply(data: unknown, status = 200) {
   return Response.json(data, { status, headers: privateHeaders });
@@ -16,7 +22,8 @@ function reply(data: unknown, status = 200) {
 export async function GET() {
   try {
     const access = await previewAccess();
-    if (!access.user) return reply({ error: "Sign in to access the private preview." }, 401);
+    if (!access.user)
+      return reply({ error: "Sign in to access the private preview." }, 401);
     if (!access.allowed) return reply({ error: "Not found" }, 404);
     const { data, error } = await access.supabase
       .from("pals_avatar_profiles")
@@ -32,7 +39,10 @@ export async function GET() {
       saved: Boolean(data),
     });
   } catch {
-    return reply({ error: "The avatar studio is temporarily unavailable." }, 503);
+    return reply(
+      { error: "The avatar studio is temporarily unavailable." },
+      503,
+    );
   }
 }
 
@@ -42,7 +52,8 @@ export async function POST(request: Request) {
     !origin ||
     origin !== new URL(request.url).origin ||
     request.headers.get("sec-fetch-site") === "cross-site"
-  ) return reply({ error: "Cross-site edits are not allowed." }, 403);
+  )
+    return reply({ error: "Cross-site edits are not allowed." }, 403);
   if (!request.headers.get("content-type")?.startsWith("application/json")) {
     return reply({ error: "JSON required" }, 415);
   }
@@ -77,17 +88,20 @@ export async function POST(request: Request) {
   }
   try {
     const access = await previewAccess();
-    if (!access.user) return reply({ error: "Sign in to access the private preview." }, 401);
+    if (!access.user)
+      return reply({ error: "Sign in to access the private preview." }, 401);
     if (!access.allowed) return reply({ error: "Not found" }, 404);
     if (action.save) {
-      const { error } = await access.supabase.from("pals_avatar_profiles").upsert(
-        {
-          user_id: access.user.id,
-          appearance: action.appearance,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "user_id" },
-      );
+      const { error } = await access.supabase
+        .from("pals_avatar_profiles")
+        .upsert(
+          {
+            user_id: access.user.id,
+            appearance: action.appearance,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "user_id" },
+        );
       if (error) throw new Error("Saving appearance failed");
     }
     return reply({
@@ -96,6 +110,12 @@ export async function POST(request: Request) {
       saved: action.save,
     });
   } catch {
-    return reply({ error: "The studio could not confirm this change. Your previous saved look is untouched." }, 503);
+    return reply(
+      {
+        error:
+          "The studio could not confirm this change. Your previous saved look is untouched.",
+      },
+      503,
+    );
   }
 }
