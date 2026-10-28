@@ -35,3 +35,37 @@ G. CI full gate, screenshot baselines and manual smoke tests on actual Android; 
 - Verify sign-in/redirect/deep-link/return, profile completion, save/favourite/follow, Community moderation and consent, idempotent check-in and XP, Pals wardrobe persistence and legacy save migration, Passport awards and public/private sharing, venue/event booking, payments boundaries and no unauthorized writes.
 - No duplicate nav implementations: code scan for dock styles/markup beyond single shared component and tested exceptions; all links and active states consistent.
 - Reconcile open PRs and verify exact-head CI, Cloudflare preview and production SHA independently. Keep master untouched until gates pass; rollback planned. No assertion of release without evidence.
+
+
+## Inspected implementation findings (2026-10-28)
+- `src/components/AppShell.tsx` currently defines four `primaryNav` entries (Discover, Map, Community, Account), and also renders a separate `.app-bottom-nav` directly; `DiscoveryNavigation.tsx` handles desktop navigation. The new five-destination dock must be composed in **one** exported component and injected into AppShell, with one canonical route descriptor array shared by desktop/mobile. Do not duplicate nav markup or styles to simulate consistency.
+- Existing `src/app/globals.css` imports `discovery-redesign.css` and `aki-app-first.css` and already contains layered workspace overrides. Consolidate or deliberately scope overrides: avoid a new final CSS file that simply overrides every previous final CSS file.
+- Current npm scripts include `check`, `test:pals`, `test:pals:browser`, `test:passport-db`, `test:booking:browser`, `test:onboarding:browser`, `test:e2e` and `build:cloudflare`. Add route-coverage and shared-navigation checks into the existing `check` pipeline, not a disconnected manual checklist.
+- Existing PR #324 addresses live event cards, #325 verified launch-waitlist notifications; integrate by reviewing actual changed files and reconciling with latest master before final exact-head CI. Do not silently drop those fixes.
+- Existing deployed Cloudflare Worker `akipasa` has an active deployment; redesign delivery must not modify it before the consolidated release gate passes.
+
+## Screen-by-screen UX acceptance contract
+| Surface | New visual behaviour | Existing behaviour to preserve |
+| --- | --- | --- |
+| Home | editorial photo hero; Tonight / Nearby / Weekend; concise live event cards | real ranked results, filters, consent, locale, availability truthfulness |
+| Map | map dominates; distinct category pins, selected-venue sheet and list fallback | MapLibre, clustering, privacy and geolocation failure, URL state |
+| Check-in | dock centre launches one shared verify/check-in entry, modal or route as existing model requires | auth return, check-in proof, one-time award, anti-fraud, safe cancellation |
+| Community | feed plus Friends/Following/Nearby **only** where real backend entitlement exists | moderation, blocking, reporting, minor safety, no location leakage |
+| AkiPals | mascot stage, wardrobe, inventory, quests and XP | character family catalogue, user ownership, versioned saved-state migrations |
+| Passport | parchment book under dark common shell; stamps and milestones | awarded history, visibility controls, public-share rules |
+| Login | cinematic splash and obvious OAuth/email options | callback, passkeys where supported, legal/consent/referral, deep-link return |
+| Profile | identity, interests, activity and prominent access to Pals + Passport | editing, privacy, account export/deletion, membership and claims |
+| Venue | photo-led media hero, succinct metadata and sticky action strip | identity, hours, claim ownership, QR, favorites, reviews, directions |
+| Event | poster/photo hero, date and ticket/action hierarchy | occurrence/timezone, organiser, booking and anti-fake-event validations |
+| Secondary routes | shared typographic system and controls, purpose-specific content layouts | every pre-existing route/action, including empty/loading/error states |
+| Admin and business | shared design primitives only where safe; do not apply consumer dock to workspaces | permission boundaries, moderation, staff tools, owner operations |
+
+## Single-release acceptance evidence
+1. Generate route manifest from source (all `page.tsx`, dynamic variations and both locales) and reconcile every entry against a designated visual owner. Include metadata routes, error/not-found pages and loading states as a separate explicit inventory.
+2. Add static test that only the shared dock owns dock markup/styles and that Home/Map/Check-in/Community/Profile route definitions are stable. No styling copied into individual pages.
+3. Capture screenshots **of the built branch**, not concept art, at common Android, iPhone, tablet and desktop sizes. Include dark and light, empty/data-populated, authenticated and anonymous, and EN/ES.
+4. Exercise actual return links and sensitive mutations in a disposable test context. Never create fake user check-ins or invoke live payment operations for testing.
+5. Preserve canonical page URLs, structured data, accessibility focus, reduced-motion, touch target sizes, Android WebView inset handling and Cloudflare source pin.
+6. Require exact branch-head green checks and signed release acceptance; merge once, verify deployed Worker version against merge source, run production read-only probes, and retain a fast rollback pointer.
+
+**Release scope clarification:** Single atomic public release does not prohibit iterative commits on the same draft branch. It forbids piecemeal consumer UI deployment, not normal isolated development and CI feedback.
