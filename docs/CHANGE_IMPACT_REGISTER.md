@@ -8,7 +8,6 @@
 - **Acceptance:** exact-head CI and Cloudflare build, anonymous and signed-in business redirects, EN/ES phone/tablet/desktop, reduced-motion, cross-domain login and Android native return; no live state inferred from source.
 - **Rollback:** revert selector, gateway and nudge; no data reversals.
 
-
 ## 2026-10-27 | Correct AkiPasa business listing Premium onboarding in AkiHQ
 
 - **Problem:** Claim approval and receipt templates used legacy AkiBusiness URLs/terminology, confusing the free AkiHQ venue management and AkiPasa business listing Premium benefit with the separate paid AkiBusiness operating suite.

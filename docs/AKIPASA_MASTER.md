@@ -4,7 +4,6 @@
 
 The AkiPasa consumer selector now presents only AkiPasa, AkiDuermo and AkiCoches. Business users retain the existing owner/application path and receive a separate localized `/hq-login` entry pointing to AkiHQ's existing host-local `/login`. AkiBusiness remains a **separate independent operating-software product**. No account, cookie, role, billing, claim, event, or venue data changes; AkiSuite is an umbrella name, not a separate product. See `docs/PRODUCT_RESET_20261028.md` and AkiPasa #310. CI, browser/Android return acceptance and exact live SHA remain required.
 
-
 ## 2026-10-27 | Correct first-owner Premium destination: AkiPasa listing managed in AkiHQ
 
 AkiPasa's approved claim emails, rejection resubmission links and claim-received acknowledgements now point to the canonical **AkiHQ** management hub at `https://akihq.app/{locale}/business`, with owner venue deep-links scoped to the approved venue UUID. AkiBusiness is **only** the separately paid operating suite (Basic, Standard, Pro), not the claims portal or the early-adopter benefit. The existing free AkiHQ hub manages business-facing Premium listing upgrades for each discovery vertical. For this programme the reward is **three months of AkiPasa Premium for the claimed business listing in AkiHQ** (normally EUR 11.99 per location/month), not AkiPasa personal Premium, AkiHQ-wide Premium, nor any paid AkiBusiness operating software.
