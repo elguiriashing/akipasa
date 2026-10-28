@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CheckInScanner } from "@/components/CheckInScanner";
 import { isLocale } from "@/lib/config";
 import { notFound } from "next/navigation";
 export default async function CheckInEntry({params}:{params:Promise<{locale:string}>}) {
@@ -11,6 +12,7 @@ export default async function CheckInEntry({params}:{params:Promise<{locale:stri
      <h1>{es?"Cada aventura empieza aquí.":"Your next adventure starts here."}</h1>
      <p className="lede">{es?"Escanea el código QR oficial del local con la cámara de tu móvil. Al abrir el enlace podrás verificar tu presencia antes de confirmar la visita.":"Scan the venue's official AkiPasa QR code with your phone camera. Open its link to verify your presence before confirming a visit."}</p>
    </section>
+   <CheckInScanner locale={locale} />
    <section className="panel" style={{display:"grid",gap:"1rem"}}>
      <h2>{es?"¿Cómo funciona?":"How it works"}</h2>
      <p>{es?"1. Visita un local participante. 2. Escanea su QR. 3. Verifica tu ubicación y confirma el check-in.":"1. Visit a participating venue. 2. Scan its QR. 3. Verify your location and confirm your check-in."}</p>
