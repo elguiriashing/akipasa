@@ -9,6 +9,7 @@ import { msg } from "@/lib/messages";
 import { recommendDiscovery } from "@/lib/personalisation/server";
 import type { TimeWindow } from "@/lib/domain";
 import { CityDiscovery } from "@/components/CityDiscovery";
+import { PlansFirstHero } from "@/components/PlansFirstHero";
 import { EventCard } from "@/components/EventCard";
 import { DiscoveryIntentSignal } from "@/components/DiscoveryIntentSignal";
 import { nearbyVenuePage } from "@/lib/unclaimed-venues";
@@ -163,7 +164,16 @@ export default async function DiscoverPage({
           accessible,
         }}
       />
-      <CityDiscovery locale={locale} />
+      <PlansFirstHero
+        locale={locale}
+        location={{
+          locality,
+          name: localityName,
+          latitude: searchCenter.latitude,
+          longitude: searchCenter.longitude,
+          radius,
+        }}
+      />
 
       <section id="results">
         <div className="section-head">
@@ -313,6 +323,8 @@ export default async function DiscoverPage({
             : "Nearby venues are temporarily unavailable. Please try again shortly."}
         </p>
       ) : null}
+
+      <CityDiscovery locale={locale} />
 
       <p className="owner-nudge">
         <span>
