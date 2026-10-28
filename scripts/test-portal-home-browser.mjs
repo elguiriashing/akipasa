@@ -236,20 +236,21 @@ try {
           await page.keyboard.press("Enter");
           const popover = tools.locator(".portal-product-popover");
           await expect(popover).toBeVisible();
-          // The legacy business portal is the free management surface; the
-          // suite selector retains all five products and marks its current role.
-          const currentApp = product === "business" ? "AkiHQ" : "AkiDuermo";
+          // The consumer chooser contains three apps. Business management is
+          // a separate entry point, so it has no selected consumer app.
+          await expect(popover.locator(":scope > a")).toHaveCount(3);
+          const currentApp = product === "duermo" ? "AkiDuermo" : null;
           await expect(popover.locator('a[aria-current="page"]')).toHaveCount(
-            1,
+            currentApp ? 1 : 0,
           );
-          await expect(
-            popover.getByRole("link", { name: currentApp, exact: true }),
-          ).toHaveAttribute("aria-current", "page");
+          if (currentApp) {
+            await expect(
+              popover.getByRole("link", { name: currentApp, exact: true }),
+            ).toHaveAttribute("aria-current", "page");
+          }
           const destinations = {
             AkiPasa: `https://akipasa.com/${locale}`,
-            AkiHQ: `https://akihq.app/${locale}/business`,
             AkiDuermo: `https://akiduermo.com/?lang=${locale}`,
-            AkiBusiness: `https://akibusiness.com/?locale=${locale}`,
             AkiCoches: `https://akicoches.com/?lang=${locale}`,
           };
           for (const [app, href] of Object.entries(destinations)) {
