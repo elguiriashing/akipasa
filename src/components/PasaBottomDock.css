@@ -1,5 +1,13 @@
 /* Canonical shared AkiPasa dock: all consumer routes use PasaBottomDock. */
 @media (max-width: 850px) {
+  /* Keep the consumer dock visible even when older global CSS is loaded later.
+     Auth and owner-focus mode remain explicit exceptions. */
+  html:not([data-owner-focus="true"])
+    .app-shell:not(:has(.auth-theme-akipasa))
+    .app-bottom-nav.pasa-dock {
+    display: grid;
+  }
+
   .app-bottom-nav.pasa-dock {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
