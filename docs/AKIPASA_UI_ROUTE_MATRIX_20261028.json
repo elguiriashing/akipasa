@@ -498,6 +498,11 @@
       "status": "pending",
       "note": ""
     },
+    "src/app/page.tsx": {
+      "scope": "cross-product",
+      "status": "pending",
+      "note": "Existing default locale redirect; verify canonical /es behavior when roadmap goes live."
+    },
     "src/app/roadmap/page.tsx": {
       "scope": "cross-product",
       "status": "in-progress",
