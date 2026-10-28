@@ -148,7 +148,8 @@ describe("launch waitlist contract", () => {
     expect(sql).toContain(
       "grant select, insert, update, delete on public.launch_waitlist_entries to service_role",
     );
-    expect(sql).toContain("security definer set search_path = ''");
+    expect(sql).toContain("security invoker set search_path = ''");
+    expect(sql).not.toContain("security definer");
     expect(sql).toContain("p_window_seconds");
     expect(sql).toContain("verified_at is null");
     expect(sql).toContain("interval '24 hours'");
