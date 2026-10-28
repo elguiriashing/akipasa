@@ -72,11 +72,15 @@ export function PasaBottomDock({ locale }: { locale: Locale }) {
                 query,
               )
             : item.href;
+        const className =
+          "pasa-dock__item pasa-dock__item--" +
+          item.key +
+          (active ? " active" : "");
         return (
           <Link
             key={item.key}
             href={href}
-            className={`pasa-dock__item pasa-dock__item--${item.key}${active ? " active" : ""}`}
+            className={className}
             aria-current={active ? "page" : undefined}
             aria-label={item.label}
           >
