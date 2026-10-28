@@ -8,7 +8,6 @@
 - **Risk/rollback:** API fails closed on missing secrets/provider. No frontend launch until the backend is deployed and verified end-to-end. Roll back API/UI feature without deleting existing subscriber records; remove access only through reviewed retention and deletion processes. No live DB writes, business/customer contact or mass mail during PR validation.
 - **Acceptance:** CI lint/types/security and migration permission checks; staging tests for consent, spam, CORS, replay/expiry, duplicate verified addresses, email provider outage and rate exhaustion; exact live source and privacy/legal review. Track #313/#315.
 
-
 ## 2026-10-28 | Plans-first AkiPasa discovery, without data changes
 
 - **Before:** The first screen prioritised five national city photos, hiding real event results farther down the page.
