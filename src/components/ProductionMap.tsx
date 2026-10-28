@@ -472,6 +472,32 @@ export function ProductionMap({
               "text-halo-width": 1,
             },
           });
+          // Radar glow is a separate MapLibre layer: real venue/event pins remain unchanged.
+          if (venueDestination === "akipasa" && initialVertical === "activities") {
+            map.addLayer({
+              id: "pasa-radar-glow",
+              type: "circle",
+              source: "discovery-points",
+              filter: ["!", ["has", "point_count"]],
+              paint: {
+                "circle-radius": 24,
+                "circle-blur": 0.95,
+                "circle-opacity": 0.44,
+                "circle-color": [
+                  "match",
+                  ["get", "source"],
+                  "claimed",
+                  "#277cf0",
+                  "unclaimed",
+                  "#62768b",
+                  "community",
+                  "#aa3ff0",
+                  "#ff6c1d",
+                ],
+              },
+            });
+          }
+
           map.addLayer({
             id: "discovery-unclustered",
             type: "symbol",
