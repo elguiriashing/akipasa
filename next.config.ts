@@ -37,6 +37,16 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      // Confirmation URLs contain single-use verification tokens.
+      // Prevent caching, indexing, and Referer leakage from email links.
+      {
+        source: "/waitlist/confirm",
+        headers: [
+          { key: "Cache-Control", value: "private, no-store" },
+          { key: "Referrer-Policy", value: "no-referrer" },
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
+        ],
+      },
       {
         source: "/(.*)",
         headers: [
