@@ -1,5 +1,14 @@
 # AkiPasa Radar × After Dark: full-app redesign contract
 
+## Added public rollout communications: Costa del Sol first
+
+- The shared `LaunchRibbon` is a non-scrolling, bilingual announcement on public discovery paths and venue/event pages; links to the same localized /roadmap. Avoid showing it on login, admin or the roadmap itself.
+- `/roadmap` redirects to `/es/roadmap`. Both `/{locale}/roadmap` variants have canonical URLs and the public SEO catalogue. The page is a compact, responsive four-stage timeline and six-feature plan.
+- No release date is asserted before quality checks and formal communication. The public plan describes launch preparation and location expansion following verified demand rather than false nationwide coverage.
+- The public Home no-results state links to the roadmap alongside the existing search-expansion actions. Keep no-event truthful; never create fake events or fake signups.
+- Canonical copy and statuses reside in `src/lib/pasa-roadmap.ts` and `tests/pasa-roadmap.test.ts`; both new pages are registered in the strict route matrix. Remaining #326 release gates are unchanged.
+
+
 Date: 2026-10-28. Status: implementation specification; NOT deployed.
 Base: master at creation. Visual reference: Alex's approved Index, Map, Community, AkiPals, Passport, Login and Profile concepts.
 
