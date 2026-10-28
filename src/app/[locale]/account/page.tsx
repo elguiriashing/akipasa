@@ -22,7 +22,9 @@ export default async function AccountOverview({
   ] = await Promise.all([
     supabase
       .from("profiles")
-      .select("display_name,app_role,preferred_locale,membership_tier,username,bio,avatar_url")
+      .select(
+        "display_name,app_role,preferred_locale,membership_tier,username,bio,avatar_url",
+      )
       .eq("id", user.id)
       .maybeSingle(),
     supabase
@@ -110,8 +112,12 @@ export default async function AccountOverview({
         <div className="account-welcome-copy">
           <span>{es ? "Tu mundo AkiPasa" : "Your AkiPasa world"}</span>
           <h1>{displayName}</h1>
-          {profile?.username ? <p className="pasa-profile-handle">@{profile.username}</p> : null}
-          {profile?.bio ? <p className="pasa-profile-bio">{profile.bio}</p> : null}
+          {profile?.username ? (
+            <p className="pasa-profile-handle">@{profile.username}</p>
+          ) : null}
+          {profile?.bio ? (
+            <p className="pasa-profile-bio">{profile.bio}</p>
+          ) : null}
           <p>
             {profileError
               ? es

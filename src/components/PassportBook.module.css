@@ -2241,8 +2241,16 @@
 }
 .page:not(:has(.cover)) {
   background:
-    radial-gradient(ellipse at 0% 5%, rgba(162, 109, 61, 0.16), transparent 50%),
-    repeating-linear-gradient(1deg, rgba(111, 73, 38, 0.025) 0 1px, transparent 1px 5px),
+    radial-gradient(
+      ellipse at 0% 5%,
+      rgba(162, 109, 61, 0.16),
+      transparent 50%
+    ),
+    repeating-linear-gradient(
+      1deg,
+      rgba(111, 73, 38, 0.025) 0 1px,
+      transparent 1px 5px
+    ),
     #f6e7ca;
   color: #372d25;
   border: 1px solid rgba(138, 93, 59, 0.2);

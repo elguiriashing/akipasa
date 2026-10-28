@@ -10,7 +10,9 @@ export function verifiedVenueQrPath(
   try {
     const url = new URL(raw, origin);
     if (url.origin !== origin || url.search || url.hash) return null;
-    if (!new RegExp(`^/${locale}/check-in/[0-9a-f-]{36}$`, "i").test(url.pathname)) {
+    if (
+      !new RegExp(`^/${locale}/check-in/[0-9a-f-]{36}$`, "i").test(url.pathname)
+    ) {
       return null;
     }
     return url.pathname;

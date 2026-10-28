@@ -36,7 +36,9 @@ export default async function AkiPalsEntrance({
       <section className={styles.stage}>
         <div className={styles.copy}>
           <span className={styles.eyebrow}>AkiPasa presents</span>
-          <h1>AkiPals<span>.</span></h1>
+          <h1>
+            AkiPals<span>.</span>
+          </h1>
           <p className={styles.lede}>
             {es
               ? "Tus compañeros virtuales, tu estilo. Viste, juega y conserva tus aventuras."
@@ -44,7 +46,8 @@ export default async function AkiPalsEntrance({
           </p>
           {active ? (
             <Link className={styles.primary} href="/pals">
-              <Icon name="gift" size={21} /> {es ? "Entrar en mi mundo" : "Enter my world"}
+              <Icon name="gift" size={21} />{" "}
+              {es ? "Entrar en mi mundo" : "Enter my world"}
             </Link>
           ) : access?.user ? (
             <p className={styles.notice} role="status">
@@ -65,20 +68,36 @@ export default async function AkiPalsEntrance({
               <Icon name="passport" size={18} /> Passport
             </Link>
             <Link href={`/${locale}/account`}>
-              <Icon name="account" size={18} /> {es ? "Mi perfil" : "My profile"}
+              <Icon name="account" size={18} />{" "}
+              {es ? "Mi perfil" : "My profile"}
             </Link>
           </div>
         </div>
-        <div className={styles.portrait} aria-label={es ? "Tu personaje" : "Your character"}>
+        <div
+          className={styles.portrait}
+          aria-label={es ? "Tu personaje" : "Your character"}
+        >
           {portrait ? (
-            <Image unoptimized src={portrait} alt={es ? "Tu AkiPal" : "Your AkiPal"} width={300} height={350} />
+            <Image
+              unoptimized
+              src={portrait}
+              alt={es ? "Tu AkiPal" : "Your AkiPal"}
+              width={300}
+              height={350}
+            />
           ) : (
             <div aria-hidden="true" className={styles.character}>
               <Icon name="star" size={96} />
             </div>
           )}
           <span className={styles.caption}>
-            {active ? (es ? "Tu AkiPal guardado" : "Your saved AkiPal") : (es ? "Un universo para explorar" : "A little world to explore")}
+            {active
+              ? es
+                ? "Tu AkiPal guardado"
+                : "Your saved AkiPal"
+              : es
+                ? "Un universo para explorar"
+                : "A little world to explore"}
           </span>
         </div>
       </section>

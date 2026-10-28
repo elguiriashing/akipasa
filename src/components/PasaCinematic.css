@@ -19,7 +19,11 @@ html:not([data-theme="light"]) .app-shell {
   --ink: #f9fafc;
   --muted: #bdc7d6;
   --line: rgba(233, 243, 255, 0.14);
-  background: radial-gradient(ellipse at 50% -12%, #253248, var(--pasa-night) 63%);
+  background: radial-gradient(
+    ellipse at 50% -12%,
+    #253248,
+    var(--pasa-night) 63%
+  );
   color: #f9fafc;
 }
 
@@ -99,15 +103,21 @@ html[data-theme="light"] .app-shell {
   box-shadow: 0 18px 55px rgba(0, 0, 0, 0.26);
 }
 
-.app-shell .spotlight-page :is(.event-spotlight-poster-image, .venue-spotlight-art img) {
+.app-shell
+  .spotlight-page
+  :is(.event-spotlight-poster-image, .venue-spotlight-art img) {
   object-fit: cover;
 }
 
-.app-shell .spotlight-page :is(.event-spotlight-summary, .venue-spotlight-summary) {
+.app-shell
+  .spotlight-page
+  :is(.event-spotlight-summary, .venue-spotlight-summary) {
   min-width: 0;
 }
 
-.app-shell .spotlight-page :is(.event-spotlight-summary h1, .venue-spotlight-title) {
+.app-shell
+  .spotlight-page
+  :is(.event-spotlight-summary h1, .venue-spotlight-title) {
   font-size: clamp(2rem, 5vw, 4.25rem);
   letter-spacing: -0.055em;
   line-height: 1.08;
@@ -134,7 +144,13 @@ html[data-theme="light"] .app-shell {
 .app-shell:has(.account-overview) .account-welcome {
   border: 1px solid var(--pasa-edge);
   border-radius: 1.5rem;
-  background: radial-gradient(circle at 92% 5%, rgba(255, 114, 37, 0.24), transparent 60%), #131e2c;
+  background:
+    radial-gradient(
+      circle at 92% 5%,
+      rgba(255, 114, 37, 0.24),
+      transparent 60%
+    ),
+    #131e2c;
   box-shadow: 0 16px 44px rgba(0, 0, 0, 0.2);
 }
 
@@ -148,14 +164,21 @@ html[data-theme="light"] .app-shell {
   box-shadow: 0 0 0 5px rgba(255, 125, 55, 0.15);
 }
 
-.app-shell:has(.account-overview) :is(.account-next-step, .account-shortcuts > a) {
+.app-shell:has(.account-overview)
+  :is(.account-next-step, .account-shortcuts > a) {
   border: 1px solid var(--pasa-edge);
   border-radius: 1.3rem;
   background: var(--pasa-ink);
 }
 
 .app-shell:has(.auth-theme-akipasa) .auth-page {
-  background: radial-gradient(ellipse at 75% 18%, rgba(233, 84, 27, 0.28), transparent 60%), linear-gradient(140deg, #141a26, #080c14 70%);
+  background:
+    radial-gradient(
+      ellipse at 75% 18%,
+      rgba(233, 84, 27, 0.28),
+      transparent 60%
+    ),
+    linear-gradient(140deg, #141a26, #080c14 70%);
 }
 
 .app-shell .auth-theme-akipasa :is(.auth-focus-panel, .auth-intro) {
@@ -227,7 +250,12 @@ html[data-theme="light"] .app-shell {
 /* The AkiPasa login keeps every existing auth mode and action. */
 .app-shell:has(.auth-theme-akipasa) .auth-page {
   background-image:
-    linear-gradient(90deg, rgba(4, 8, 15, 0.98) 0%, rgba(4, 8, 15, 0.84) 42%, rgba(4, 8, 15, 0.65) 100%),
+    linear-gradient(
+      90deg,
+      rgba(4, 8, 15, 0.98) 0%,
+      rgba(4, 8, 15, 0.84) 42%,
+      rgba(4, 8, 15, 0.65) 100%
+    ),
     url("/images/cities/malaga.webp");
   background-position: center;
   background-size: cover;
@@ -247,7 +275,8 @@ html[data-theme="light"] .app-shell {
   .app-shell:has(.auth-theme-akipasa) .pasa-dock {
     display: none;
   }
-  .app-shell:has(.auth-theme-akipasa) :is(.app-topbar-mobile, .global-search-trigger) {
+  .app-shell:has(.auth-theme-akipasa)
+    :is(.app-topbar-mobile, .global-search-trigger) {
     display: none;
   }
 }
@@ -325,6 +354,8 @@ html[data-theme="light"] .app-shell:has(.account-overview) .account-welcome {
 html[data-theme="light"] .app-shell:has(.account-overview) .pasa-profile-bio {
   color: #3b4656;
 }
-html[data-theme="light"] .app-shell:has(.account-overview) .pasa-profile-handle {
+html[data-theme="light"]
+  .app-shell:has(.account-overview)
+  .pasa-profile-handle {
   color: #b34913;
 }

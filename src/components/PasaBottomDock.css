@@ -29,17 +29,32 @@
     color: #d1d7e0;
     text-decoration: none;
   }
-  .app-bottom-nav.pasa-dock .pasa-dock__item.active {color: #ff9a60; background: rgba(255, 104, 24, 0.14);}
+  .app-bottom-nav.pasa-dock .pasa-dock__item.active {
+    color: #ff9a60;
+    background: rgba(255, 104, 24, 0.14);
+  }
   .app-bottom-nav.pasa-dock .pasa-dock__item--checkin svg {
     box-sizing: content-box;
     color: white;
     background: #f26b1d;
     border-radius: 999px;
     padding: 0.55rem;
-    box-shadow: 0 0 22px rgba(242,107,29,.45);
+    box-shadow: 0 0 22px rgba(242, 107, 29, 0.45);
   }
-  .app-bottom-nav.pasa-dock .pasa-dock__item--checkin.active {background: transparent;}
-  .app-bottom-nav.pasa-dock .pasa-dock__item:focus-visible {outline: 3px solid #ffc08a; outline-offset: 2px;}
-  body:has(.pasa-dock) .app-content {padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px));}
+  .app-bottom-nav.pasa-dock .pasa-dock__item--checkin.active {
+    background: transparent;
+  }
+  .app-bottom-nav.pasa-dock .pasa-dock__item:focus-visible {
+    outline: 3px solid #ffc08a;
+    outline-offset: 2px;
+  }
+  body:has(.pasa-dock) .app-content {
+    padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px));
+  }
 }
-@media (prefers-reduced-transparency: reduce) { .app-bottom-nav.pasa-dock {background: #0a101a; backdrop-filter: none;} }
+@media (prefers-reduced-transparency: reduce) {
+  .app-bottom-nav.pasa-dock {
+    background: #0a101a;
+    backdrop-filter: none;
+  }
+}

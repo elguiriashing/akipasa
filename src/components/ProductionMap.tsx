@@ -473,7 +473,10 @@ export function ProductionMap({
             },
           });
           // Radar glow is a separate MapLibre layer: real venue/event pins remain unchanged.
-          if (venueDestination === "akipasa" && initialVertical === "activities") {
+          if (
+            venueDestination === "akipasa" &&
+            initialVertical === "activities"
+          ) {
             map.addLayer({
               id: "pasa-radar-glow",
               type: "circle",

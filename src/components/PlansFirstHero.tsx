@@ -39,7 +39,13 @@ export function PlansFirstHero({
     <section className={styles.hero} aria-labelledby="plans-first-title">
       {imageUrl ? (
         <div className={styles.media} aria-hidden="true">
-          <Image src={imageUrl} alt="" fill unoptimized sizes="(max-width: 640px) 100vw, 1100px" />
+          <Image
+            src={imageUrl}
+            alt=""
+            fill
+            unoptimized
+            sizes="(max-width: 640px) 100vw, 1100px"
+          />
         </div>
       ) : null}
       <p className={styles.kicker}>

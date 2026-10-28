@@ -13,7 +13,9 @@ function pageFiles(dir) {
     const current = path.join(dir, item.name);
     if (item.isDirectory()) files.push(...pageFiles(current));
     else if (item.isFile() && item.name === "page.tsx") {
-      files.push(path.relative(process.cwd(), current).replaceAll(path.sep, "/"));
+      files.push(
+        path.relative(process.cwd(), current).replaceAll(path.sep, "/"),
+      );
     }
   }
   return files;
@@ -25,8 +27,12 @@ const missing = actual.filter((name) => !expected.includes(name));
 const removed = expected.filter((name) => !actual.includes(name));
 const invalid = expected.filter((name) => {
   const record = inventory.routes[name];
-  return !["consumer", "operational", "other-product", "cross-product"].includes(record.scope) ||
-    !["in-progress", "pending", "accepted", "excluded"].includes(record.status);
+  return (
+    !["consumer", "operational", "other-product", "cross-product"].includes(
+      record.scope,
+    ) ||
+    !["in-progress", "pending", "accepted", "excluded"].includes(record.status)
+  );
 });
 if (missing.length || removed.length || invalid.length) {
   console.error(JSON.stringify({ missing, removed, invalid }, null, 2));
@@ -36,9 +42,13 @@ const outstanding = expected.filter((name) => {
   const item = inventory.routes[name];
   return item.scope !== "other-product" && item.status !== "accepted";
 });
-console.log(`Pasa route audit: ${expected.length} routes inventoried, ${outstanding.length} awaiting release acceptance.`);
+console.log(
+  `Pasa route audit: ${expected.length} routes inventoried, ${outstanding.length} awaiting release acceptance.`,
+);
 if (process.argv.includes("--strict") && outstanding.length) {
-  console.error("Release blocked. Not all in-scope pages have passed visual and functional acceptance:");
+  console.error(
+    "Release blocked. Not all in-scope pages have passed visual and functional acceptance:",
+  );
   for (const file of outstanding) console.error(`  ${file}`);
   process.exit(2);
 }

@@ -393,7 +393,9 @@ export function AppShell({
       <div className="app-content">{children}</div>
 
       {/* One shared mobile dock across the complete consumer shell. */}
-      <Suspense fallback={null}><PasaBottomDock locale={locale} /></Suspense>
+      <Suspense fallback={null}>
+        <PasaBottomDock locale={locale} />
+      </Suspense>
 
       {suiteOpen && (
         <div className="app-sheet-layer app-suite-layer">
