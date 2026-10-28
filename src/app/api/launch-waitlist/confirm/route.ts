@@ -51,7 +51,9 @@ export async function POST(request: Request) {
   if (!/^[a-f0-9-]{36}$/i.test(entry) || !/^[a-f0-9]{64}$/i.test(token))
     return outcome(request, "invalid", locale);
 
-  const url = process.env.LAUNCH_WAITLIST_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url =
+    process.env.LAUNCH_WAITLIST_SUPABASE_URL ||
+    process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) return outcome(request, "unavailable", locale);
   const db = createClient(url, key, {
