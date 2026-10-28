@@ -1,0 +1,203 @@
+/*
+ * Radar × After Dark visual tokens and shared page treatments.
+ * Loaded only by AkiPasa's AppShell; never by independent AkiSuite hosts.
+ * Visual styles do not change map queries, auth, billing or Supabase contracts.
+ */
+.app-shell {
+  --pasa-night: #080d15;
+  --pasa-ink: #101926;
+  --pasa-raised: #192435;
+  --pasa-orange: #ff7628;
+  --pasa-glow: rgba(255, 118, 40, 0.3);
+  --pasa-edge: rgba(202, 220, 244, 0.16);
+  --pasa-muted: #c1cad9;
+}
+
+html:not([data-theme="light"]) .app-shell {
+  --surface: #142033;
+  --surface-alt: #0c1726;
+  --ink: #f9fafc;
+  --muted: #bdc7d6;
+  --line: rgba(233, 243, 255, 0.14);
+  background: radial-gradient(ellipse at 50% -12%, #253248, var(--pasa-night) 63%);
+  color: #f9fafc;
+}
+
+html[data-theme="light"] .app-shell {
+  --pasa-night: #f8f6f2;
+  --pasa-ink: #ffffff;
+  --pasa-raised: #ffffff;
+  --pasa-edge: rgba(20, 30, 45, 0.2);
+  --pasa-muted: #41506a;
+  background: #f8f6f2;
+}
+
+.app-shell .app-content {
+  min-width: 0;
+}
+
+.app-shell :where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid #ffb076;
+  outline-offset: 3px;
+}
+
+.app-shell :where(.button, button, a) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app-shell:has(.discover-page) .section-head h2 {
+  font-weight: 850;
+  letter-spacing: -0.05em;
+}
+
+.app-shell:has(.discover-page) .section-head .count {
+  border: 1px solid var(--pasa-edge);
+  border-radius: 999px;
+  background: var(--pasa-raised);
+}
+
+.app-shell:has(.map-page) .production-map-wrap {
+  overflow: hidden;
+  border: 1px solid rgba(89, 139, 188, 0.27);
+  border-radius: 1.4rem;
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.35);
+}
+
+.app-shell:has(.map-page) :is(.map-list-toggle, .map-legend > summary) {
+  border: 1px solid rgba(255, 145, 80, 0.35);
+  border-radius: 999px;
+  background: rgba(9, 18, 30, 0.94);
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(14px);
+}
+
+.app-shell:has(.map-page) .map-results-drawer {
+  border: 1px solid rgba(255, 146, 80, 0.26);
+  border-radius: 1.55rem 1.55rem 0 0;
+  background: #101b2a;
+  color: #f8fafc;
+}
+
+.app-shell:has(.map-page) .map-results-drawer .map-drawer-content {
+  max-width: 100%;
+}
+
+.app-shell .spotlight-page {
+  --spotlight-surface: var(--pasa-ink);
+  --spotlight-surface-alt: var(--pasa-raised);
+  --spotlight-line: var(--pasa-edge);
+  --spotlight-orange: #f26b1d;
+  --spotlight-orange-text: #ffad78;
+}
+
+.app-shell .spotlight-page :is(.event-spotlight-card, .venue-spotlight-card) {
+  overflow: hidden;
+  border: 1px solid var(--pasa-edge);
+  border-radius: clamp(1rem, 2.4vw, 1.75rem);
+  background: linear-gradient(145deg, var(--pasa-ink), #101a29);
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.26);
+}
+
+.app-shell .spotlight-page :is(.event-spotlight-poster-image, .venue-spotlight-art img) {
+  object-fit: cover;
+}
+
+.app-shell .spotlight-page :is(.event-spotlight-summary, .venue-spotlight-summary) {
+  min-width: 0;
+}
+
+.app-shell .spotlight-page :is(.event-spotlight-summary h1, .venue-spotlight-title) {
+  font-size: clamp(2rem, 5vw, 4.25rem);
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+}
+
+.app-shell .spotlight-page .button:not(.secondary):not(.ghost) {
+  border-color: #ff7628;
+  background: #ff7628;
+  color: #161315;
+}
+
+.app-shell .spotlight-page .button.secondary {
+  border: 1px solid var(--pasa-edge);
+  border-radius: 999px;
+  background: var(--pasa-raised);
+}
+
+.app-shell .spotlight-page .spotlight-mobile-actions {
+  border: 1px solid rgba(255, 140, 68, 0.24);
+  background: rgba(10, 18, 29, 0.97);
+  backdrop-filter: blur(20px);
+}
+
+.app-shell:has(.account-overview) .account-welcome {
+  border: 1px solid var(--pasa-edge);
+  border-radius: 1.5rem;
+  background: radial-gradient(circle at 92% 5%, rgba(255, 114, 37, 0.24), transparent 60%), #131e2c;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.2);
+}
+
+.app-shell:has(.account-overview) .account-welcome h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  letter-spacing: -0.05em;
+}
+
+.app-shell:has(.account-overview) .account-avatar {
+  border: 2px solid #ff843c;
+  box-shadow: 0 0 0 5px rgba(255, 125, 55, 0.15);
+}
+
+.app-shell:has(.account-overview) :is(.account-next-step, .account-shortcuts > a) {
+  border: 1px solid var(--pasa-edge);
+  border-radius: 1.3rem;
+  background: var(--pasa-ink);
+}
+
+.app-shell:has(.auth-theme-akipasa) .auth-page {
+  background: radial-gradient(ellipse at 75% 18%, rgba(233, 84, 27, 0.28), transparent 60%), linear-gradient(140deg, #141a26, #080c14 70%);
+}
+
+.app-shell .auth-theme-akipasa :is(.auth-focus-panel, .auth-intro) {
+  border-color: var(--pasa-edge);
+}
+
+.app-shell .auth-theme-akipasa :is(.google-button, .auth-submit) {
+  border-radius: 999px;
+}
+
+.app-shell .auth-theme-akipasa .auth-intro-copy h1 {
+  letter-spacing: -0.055em;
+}
+
+.app-shell:has(.passports-workspace) .passports-workspace {
+  --passport-parchment: #f4e4c5;
+  --passport-ink: #38291e;
+}
+
+@media (max-width: 850px) {
+  .app-shell .spotlight-page .spotlight-mobile-actions {
+    bottom: calc(6.4rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .app-shell .spotlight-page {
+    padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .app-shell:has(.map-page) .production-map-wrap {
+    border-radius: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell :where(.pasa-event-card, .button) {
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .app-shell:has(.map-page) :is(.map-list-toggle, .map-legend > summary) {
+    background: #0a1420;
+    backdrop-filter: none;
+  }
+}
