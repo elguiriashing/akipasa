@@ -164,7 +164,10 @@ export function AppShell({
   );
   const suiteActions = (
     <div className="app-suite-actions">
-      <Link href={`/hq-login?lang=${locale}`} onClick={() => setSheetOpen(false)}>
+      <Link
+        href={`/hq-login?lang=${locale}`}
+        onClick={() => setSheetOpen(false)}
+      >
         {es ? "Acceso para negocios" : "Business sign in"}
       </Link>
       <Link
@@ -450,7 +453,10 @@ export function AppShell({
             </button>
             <section className="app-sheet-suite">
               {suiteLinks}
-              <Link href={`/hq-login?lang=${locale}`} onClick={() => setSuiteOpen(false)}>
+              <Link
+                href={`/hq-login?lang=${locale}`}
+                onClick={() => setSuiteOpen(false)}
+              >
                 {es ? "Acceso para negocios" : "Business sign in"}
               </Link>
             </section>
