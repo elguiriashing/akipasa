@@ -2535,7 +2535,6 @@ local map browser reports WebGL unavailable before mounting attribution, so
 the unchanged EN/ES map attribution hit-target/non-overlap matrix must pass
 hosted browser CI; no map assertion or browser gate is skipped or weakened.
 
-
 ## 2026-10-28 | App-first consumer discovery UI (new approved logo direction)
 
 Scoped AkiPasa consumer discovery styling in `src/app/aki-app-first.css` imported by `src/app/globals.css`, plus `PlansFirstHero.module.css` mobile-first refinement. Inspiration: user-supplied orange fluid movement mark, strong geometric wordmark and near-black contrast. Actual uploaded raster logo is **not yet committed as a production asset**, so existing logos remain unchanged in this PR rather than shipping an inaccurate recreation.
