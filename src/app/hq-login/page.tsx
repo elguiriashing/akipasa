@@ -30,10 +30,14 @@ export default async function HQLogin({
           </span>
         </div>
         <p className={styles.kicker}>
-          {es ? "TU NEGOCIO, SIN COMPLICACIONES" : "YOUR BUSINESS, WITHOUT THE CLUTTER"}
+          {es
+            ? "TU NEGOCIO, SIN COMPLICACIONES"
+            : "YOUR BUSINESS, WITHOUT THE CLUTTER"}
         </p>
         <h1 className={styles.title}>
-          {es ? "Gestiona tu local desde AkiHQ" : "Manage your venue on AkiHQ"}
+          {es
+            ? "Gestiona tu local desde AkiHQ"
+            : "Manage your venue on AkiHQ"}
         </h1>
         <p className={styles.description}>
           {es
