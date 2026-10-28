@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./discovery-redesign.css";
+@import "./aki-app-first.css";
 
 :root {
   --primary: #f26b1d;
