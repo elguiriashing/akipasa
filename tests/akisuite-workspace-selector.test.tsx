@@ -45,19 +45,12 @@ it.each(["en", "es"] as const)(
       const card = screen.getByRole("link", { name: names[i] });
       const target = new URL(card.getAttribute("href")!);
       expect(target.host).toBe(
-        [
-          "akipasa.com",
-          "akiduermo.com",
-          "akicoches.com",
-        ][i],
+        ["akipasa.com", "akiduermo.com", "akicoches.com"][i],
       );
       expect(target.searchParams.get("ref")).toBe("AKI12345");
       expect(target.searchParams.has("access_token")).toBe(false);
       if (i === 0) expect(target.pathname).toBe(`/${locale}/auth`);
-      else
-        expect(target.searchParams.get("lang")).toBe(
-          locale,
-        );
+      else expect(target.searchParams.get("lang")).toBe(locale);
       expect(card).not.toHaveAttribute("role", "radio");
     }
   },
