@@ -34,7 +34,7 @@ test("current city discovery and accommodation navigation survive the audit rele
   await page.goto("/en", { waitUntil: "domcontentloaded" });
   await expect(
     page.getByRole("heading", {
-      name: "Your next plan starts here",
+      name: "What are we doing today?",
       exact: true,
     }),
   ).toBeVisible();

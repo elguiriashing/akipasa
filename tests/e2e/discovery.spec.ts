@@ -26,7 +26,7 @@ async function openPassportChapters(page: Page) {
 test("guest discovers and filters nationwide events", async ({ page }) => {
   await page.goto("/en");
   await expect(
-    page.getByRole("heading", { name: "Your next plan starts here" }),
+    page.getByRole("heading", { name: "What are we doing today?" }),
   ).toBeVisible();
   await page
     .locator('section[aria-labelledby="city-discovery-title"]')
@@ -67,7 +67,7 @@ test("language switch preserves route and filters", async ({ page }) => {
     .click();
   await expect(page).toHaveURL(/\/en\?locality=barcelona&radius=25&time=all/);
   await expect(
-    page.getByRole("heading", { name: "Your next plan starts here" }),
+    page.getByRole("heading", { name: "What are we doing today?" }),
   ).toBeVisible();
 });
 
