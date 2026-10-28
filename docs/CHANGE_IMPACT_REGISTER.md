@@ -8,6 +8,15 @@
 - **Risk/rollback:** API fails closed on missing secrets/provider. No frontend launch until the backend is deployed and verified end-to-end. Roll back API/UI feature without deleting existing subscriber records; remove access only through reviewed retention and deletion processes. No live DB writes, business/customer contact or mass mail during PR validation.
 - **Acceptance:** CI lint/types/security and migration permission checks; staging tests for consent, spam, CORS, replay/expiry, duplicate verified addresses, email provider outage and rate exhaustion; exact live source and privacy/legal review. Track #313/#315.
 
+
+## 2026-10-28 | Plans-first AkiPasa discovery, without data changes
+
+- **Before:** The first screen prioritised five national city photos, hiding real event results farther down the page.
+- **Change:** A non-boxy EN/ES **¿Qué hacemos hoy?** hero, accurate Madrid-day/weekend/tonight/free shortcuts, and event results come before the preserved city-photo collection. Default Fuengirola location and existing filters/URLs remain. No login required.
+- **Dependencies:** `plans-first.ts`, `PlansFirstHero.tsx`, hero CSS, existing CityDiscovery and discovery page. Shared routing, search, map, event/venue data unchanged.
+- **Safety and rollback:** No database, Supabase, R2, OAuth, consent, payments, staff/admin, subscriptions, or Stripe changes. Preserve public canonical URLs and mobile page performance. Roll back homepage/hero if event quality or engagement worsens.
+- **Validation:** CI formatting/types/tests, ES/EN usability, event search accuracy, DST day-boundary regression, one-minute first-plan tests, Cloudflare build, exact production SHA. Measure weekly planners and repeat planners before increasing gamification complexity.
+
 ## 2026-10-27 | Correct AkiPasa business listing Premium onboarding in AkiHQ
 
 - **Problem:** Claim approval and receipt templates used legacy AkiBusiness URLs/terminology, confusing the free AkiHQ venue management and AkiPasa business listing Premium benefit with the separate paid AkiBusiness operating suite.
