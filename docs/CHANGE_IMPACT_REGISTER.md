@@ -9,7 +9,6 @@
 - **Acceptance:** Source-derived 99+ route inventory including per-page status, exact-head formatting/lint/typecheck/security/full tests, EN/ES, phone/tablet/desktop, screen-reader/zoom/light/dark, actual user journeys (auth, map, check-in, Passport, Pals wardrobe, booking, privacy, moderation), reviewed exact-source Cloudflare preview and final single production merge. `npm run release:pasa-audit` deliberately fails until every in-scope route is accepted.
 - **Rollback:** Preserve existing Worker deployment pointer, disable the new UI at source and redeploy the prior accepted revision. No database rollback necessary for the current presentation-only scope. Merge/deploy must not occur before the full gate passes.
 
-
 ## 2026-10-28 | Shared, gated Duermo/Coches launch-waitlist backend
 
 - **Before:** Consumers could see ostensibly usable accommodation/car listings while those products were still under development, without a credible verified signup flow.
