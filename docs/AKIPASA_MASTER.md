@@ -2534,3 +2534,8 @@ collapse cases pass locally (3/3), and the production Next build passes. The
 local map browser reports WebGL unavailable before mounting attribution, so
 the unchanged EN/ES map attribution hit-target/non-overlap matrix must pass
 hosted browser CI; no map assertion or browser gate is skipped or weakened.
+
+
+## 2026-10-28 | Youth-first AkiPasa positioning (PR #319)
+
+The discovery hero ES/EN copy now emphasizes genuine live music, plans with friends and activities close to the selected location. This is a messaging change only; the four date/price shortcut destinations, map href, result ranking, inventory, canonical metadata, accounts and auth remain unchanged. It targets Spain-based adults approximately 18–35 without excluding others or targeting minors. The brand and meaningful-retention playbook is `docs/AKIPASA_BRAND_RETENTION_20261028.md`; Duermo/Coches remain under development, HQ handles business logins, and AkiBusiness stays separate. No new data collection, notifications, paid promotion, event creation or rewards. Validate ES/EN copy, focus/accessible hero, responsive layout, live feed empty state and CI; deploy only with exact-source Cloudflare verification. Rollback is reverting the copy in `src/components/PlansFirstHero.tsx`.
