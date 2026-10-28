@@ -8,7 +8,6 @@
 - **Acceptance:** exact-head CI and Cloudflare build, anonymous and signed-in business redirects, EN/ES phone/tablet/desktop, reduced-motion, cross-domain login and Android native return; no live state inferred from source.
 - **Rollback:** revert selector, gateway and nudge; no data reversals.
 
-
 ## 2026-10-28 | Plans-first AkiPasa discovery, without data changes
 
 - **Before:** The first screen prioritised five national city photos, hiding real event results farther down the page.

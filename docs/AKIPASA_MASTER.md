@@ -4,7 +4,6 @@
 
 The AkiPasa consumer selector now presents only AkiPasa, AkiDuermo and AkiCoches. Business users retain the existing owner/application path and receive a separate localized `/hq-login` entry pointing to AkiHQ's existing host-local `/login`. AkiBusiness remains a **separate independent operating-software product**. No account, cookie, role, billing, claim, event, or venue data changes; AkiSuite is an umbrella name, not a separate product. See `docs/PRODUCT_RESET_20261028.md` and AkiPasa #310. CI, browser/Android return acceptance and exact live SHA remain required.
 
-
 ## 2026-10-28 | Plans-first Costa del Sol launch hypothesis
 
 AkiPasa's first screen answers **¿Qué hacemos hoy?**, showing live upcoming plan results _before_ the national city-photo catalogue. Supported shortcut filters: **Hoy** (Madrid calendar day, bounded start/end), **Esta noche**, **Este finde**, **Planes gratis**, and the existing map. Initial product focus is local residents and bilingual visitors around Fuengirola/Mijas Costa/Benalmádena; nationwide canonical venue/event URLs stay usable. Discovery remains anonymous, and photo/city inventory is not presented as a promise of current events. Passport/AkiPals/AkiQuests are a later verified-attendance pilot, not fabricated check-ins or paid rewards. No RLS, event schemas, payments, or location tracking are changed by this UI patch. See issue #310 and `src/lib/plans-first.ts` regression tests.
