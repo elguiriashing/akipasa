@@ -373,3 +373,38 @@
 .auth:global(.auth-theme-akipasa) :global(.aks-selector__browse--next) {
   right: calc(50% - 49px);
 }
+
+/* Keep the original approved SVG image inside its existing mark viewport. */
+.brandMark :global(.brand-pin) {
+  overflow: hidden;
+}
+
+/* Only the consumer auth page moves its existing support launcher into flow. */
+:global(body):has(.auth:global(.auth-theme-akipasa))
+  :global(.global-support-trigger) {
+  position: static;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  min-width: 44px;
+  height: auto;
+  min-height: 44px;
+  margin: 24px auto 104px;
+  padding: 12px 20px;
+  background: #ff8b46;
+  color: #221208;
+}
+:global(body):has(.auth:global(.auth-theme-akipasa))
+  :global(.global-support-label) {
+  display: inline;
+}
+:global(body):has(.auth:global(.auth-theme-akipasa))
+  :global(.global-support-icon) {
+  display: none;
+}
+
+/* The focused consumer entrance retains the header Home exit and workspace links. */
+:global(body):has(.auth:global(.auth-theme-akipasa)) :global(.app-bottom-nav) {
+  display: none;
+}

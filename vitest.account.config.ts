@@ -6,6 +6,7 @@ export default defineConfig({
   esbuild: { jsx: "automatic" },
   test: {
     include: [
+      "tests/discovery-search-trigger.test.tsx",
       "tests/account-controls.test.tsx",
       "tests/discovery-search-trigger.test.tsx",
       "tests/account-unavailable.test.tsx",

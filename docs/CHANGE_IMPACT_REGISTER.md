@@ -3914,3 +3914,40 @@ directories; previously those three executed families were absent from artifacts
 No test, assertion, timeout, permission or production workflow is removed.
 The acceptance document records the explicit Home/Login staged exception without
 waiving the strict coordinated overhaul gate.
+
+## 2026-10-29 | Proposed production-master Home/Login visual batch
+
+- **Base/scope:** f3d2687 production master. Eight application paths: Home hero
+  component/styles, inline shared-search trigger, three existing GlobalSearch
+  handler-lifetime lines, consumer Auth page/class/brand/module and decorative
+  WebP. No package/dependency, global shell, Account, Community, Passport, avatar,
+  schema, RLS, API, billing, OAuth/callback/action or provider configuration change.
+- **Journeys:** Existing Home filters/date/map links remain. Trigger is disabled
+  until the real form listeners attach and remains usable after unchanged query
+  submission. Consumer Auth preserves four modes, Google availability, unchecked
+  consent, hidden next values, recovery and workspace links. Only its redundant
+  dock is hidden; visible mobile-header/desktop-rail Home exits remain focusable.
+  Support cannot cover submit controls; owner-focus hide remains authoritative.
+- **Evidence:** Production-style isolated build and80 actual browser states pass
+  EN/ES, light/dark,360/390/820/1440, keyboard/reduced-motion/touch-like contexts,
+  actual image decode, unchanged query navigation, all Auth modes and unobscured
+  submit centers. Focused auth/security cases and handler-lifetime/no-op tests
+  accompany the patch. Full check/clean packaging/hosted exact-head CI follow.
+- **Limits:** Synthetic local reads and no Auth POST/provider operation. No
+  physical Android proof or whole90-route approval. Other routes retain the live
+  master's presentation; this is not the entire overhaul.
+- **Authority:** Owner's new request prioritizes getting changes live. A staged
+  boundary needs explicit confirmation against the original one-release/90-route
+  requirement; no acceptance records or CI gates are weakened in this proposal.
+- **Rollback:** Revert this limited source batch or restore the existing verified
+  Worker884dda44-e95d-4266-8ce1-d7a4de5c54db. No data/schema rollback necessary.
+
+## 2026-10-29 | Reconcile approved live Home/Login into the draft overhaul
+
+- Preserve both commit histories and all existing consumer repairs.
+- Resolve Auth to the exact production-master module and consumer-only class;
+  keep normal-flow support and hidden redundant Auth dock from tested PR333.
+- Preserve default-off Tonight condition in the broader Home hero.
+- Retain original and staged Auth regressions and readiness-trigger coverage.
+- No production merge/deploy, schema, consent-state or authentication action
+  change. Final-source full check, browser rerun and hosted CI are required.
