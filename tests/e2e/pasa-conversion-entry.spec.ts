@@ -271,15 +271,16 @@ for (const locale of ["en", "es"] as const) {
           ).toHaveValue(waitlistProduct);
           await expect(
             page.getByRole("link", {
-              name:
-                locale === "es" ? "Volver a la web" : "Back to the website",
+              name: locale === "es" ? "Volver a la web" : "Back to the website",
             }),
           ).toHaveAttribute("href", waitlistHost);
           const waitlistDimensions = await page.evaluate(() => ({
             viewport: document.documentElement.clientWidth,
             scroll: document.documentElement.scrollWidth,
             submitHeight: document
-              .querySelector('form[action="/api/launch-waitlist/confirm"] button')
+              .querySelector(
+                'form[action="/api/launch-waitlist/confirm"] button',
+              )
               ?.getBoundingClientRect().height,
           }));
           expect(
@@ -332,19 +333,28 @@ for (const locale of ["en", "es"] as const) {
         query: "product=untrusted&entry=bad&token=bad",
         product: "pasa",
         host: "https://akipasa.com",
-        heading: locale === "es" ? "Enlace no válido o caducado" : "Link invalid or expired",
+        heading:
+          locale === "es"
+            ? "Enlace no válido o caducado"
+            : "Link invalid or expired",
       },
       {
         query: "product=coches&status=invalid",
         product: "coches",
         host: "https://akicoches.com",
-        heading: locale === "es" ? "Enlace no válido o caducado" : "Link invalid or expired",
+        heading:
+          locale === "es"
+            ? "Enlace no válido o caducado"
+            : "Link invalid or expired",
       },
       {
         query: "product=duermo&status=unavailable",
         product: "duermo",
         host: "https://akiduermo.com",
-        heading: locale === "es" ? "Verificación no disponible" : "Verification unavailable",
+        heading:
+          locale === "es"
+            ? "Verificación no disponible"
+            : "Verification unavailable",
       },
     ] as const;
 
@@ -354,13 +364,24 @@ for (const locale of ["en", "es"] as const) {
         { waitUntil: "domcontentloaded" },
       );
       expect(response?.status()).toBe(200);
-      await expect(page.getByRole("heading", { name: variant.heading, level: 1 })).toBeVisible();
-      await expect(page.locator("main[data-product]")).toHaveAttribute("data-product", variant.product);
-      await expect(page.locator('form[action="/api/launch-waitlist/confirm"]')).toHaveCount(0);
       await expect(
-        page.getByRole("link", { name: locale === "es" ? "Volver a la web" : "Back to the website" }),
+        page.getByRole("heading", { name: variant.heading, level: 1 }),
+      ).toBeVisible();
+      await expect(page.locator("main[data-product]")).toHaveAttribute(
+        "data-product",
+        variant.product,
+      );
+      await expect(
+        page.locator('form[action="/api/launch-waitlist/confirm"]'),
+      ).toHaveCount(0);
+      await expect(
+        page.getByRole("link", {
+          name: locale === "es" ? "Volver a la web" : "Back to the website",
+        }),
       ).toHaveAttribute("href", variant.host);
-      await expect(page.locator('a[href="mailto:support@akipasa.com"]')).toBeVisible();
+      await expect(
+        page.locator('a[href="mailto:support@akipasa.com"]'),
+      ).toBeVisible();
     }
   });
 }
