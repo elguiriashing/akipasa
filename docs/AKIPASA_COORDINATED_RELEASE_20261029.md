@@ -36,4 +36,14 @@ The integrated matrix inventories **103 pages: 90 in scope and 13 other-product 
 
 A read-only Supabase probe confirms **zero future-start scheduled occurrences**, including zero published future events. One published ongoing long-duration lunch listing is not credible nightlife launch inventory. Tonight stays default off. Business-owned genuine upcoming events must be onboarded using existing moderation workflows; no fabricated rows are introduced.
 
-Merge order: independent verified cleanup first; then final combined source after all genuine route/device/art gates pass; then explicit canonical production workflow and deployed-source/HTTPS verification. Preserve prior Worker revision and all legacy user records on rollback.
+Merge order: independent verified cleanup first; then final combined source after all genuine route/device/art gates pass; then verified Cloudflare publication and deployed-source/HTTPS verification, using the reviewed manual workflow only when needed. Preserve prior Worker revision and all legacy user records on rollback.
+
+## Verified cleanup publication and corrected deployment assumption
+
+Independent cleanup PR #331 merged at `f3d2687fa66e53d4e529118eb08210ad9cc0ff45` after all seven exact-head workflows passed. Original #299/#325 are closed as superseded with ancestry retained. Full-feature #326/#327/#328 are also superseded by the single draft #332; branches and original source remain preserved in its ancestry.
+
+Cloudflare subsequently **automatically published** the cleanup: deployment `96e0e51f-474a-496c-b7b0-1303fe8187d7`, version `884dda44-e95d-4266-8ce1-d7a4de5c54db`, created `2026-10-29T02:00:54.198053Z`. Public `/api/bookings/release` independently returned source `f3d2687fa66e53d4e529118eb08210ad9cc0ff45`. The previous assumption that master merges cannot publish was wrong; the manual GitHub workflow is not the only deployment path. Never merge the unfinished full candidate as a way to test it.
+
+Combined application validation passed 2,209 Vitest cases plus infrastructure/security/database/automation checks and an optimized Next build. Actual production-built Tonight passed all 22 expanded EN/ES responsive cases with its gate enabled only in the disposable fixture server. Private-avatar Chromium rendering/save/restore passed on the combined source. Public browser runs passed 31 cases/208 screenshots; a separate computed 32-case check found and repaired real light-theme/heading contrast failures (final sampled minimum base 13.54:1; sampled hero headings 8.96:1). Those are bounded sample metrics, not comprehensive WCAG certification. The last desktop empty-state geometry repair is undergoing final recapture. A source-stamped Cloudflare bundle compiled successfully with disposable fixture configuration; that validation bundle was not deployed.
+
+All 90 in-scope route sign-offs, real authenticated/device journeys, live map-provider evidence and premium avatar artwork acceptance remain incomplete. No matrix statuses were forged. Public Tonight launch, notices, paid campaigns, currency and location sharing remain unactivated.

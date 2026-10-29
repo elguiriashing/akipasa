@@ -166,6 +166,22 @@ test.describe("AkiPasa shared public page-family visuals", () => {
               titleOpacity,
               `${route}: fully rendered content`,
             ).toBeGreaterThanOrEqual(0.99);
+            if (path === "" && device.width > 850) {
+              const explanation = page.locator(
+                ".discovery-empty > div:first-child",
+              );
+              if (await explanation.count()) {
+                const paragraph = await explanation
+                  .locator("p")
+                  .first()
+                  .boundingBox();
+                const card = await explanation.boundingBox();
+                expect(
+                  paragraph!.width,
+                  "desktop empty-state text stays out of the icon column",
+                ).toBeGreaterThanOrEqual(card!.width * 0.8);
+              }
+            }
             if (path === "" && device.width <= 850) {
               const explanation = page.locator(
                 ".discovery-empty > div:first-child",

@@ -50,7 +50,7 @@ The upgraded public screenshot audit now explicitly includes both languages of H
 3. Review every new CSS selector in dark and light modes, reduced motion, keyboard, touch, desktop, Android safe-area and EN/ES. Exercise real action paths using disposable test fixtures; never award XP or take live payments for testing.
 4. Reconcile relevant outstanding PR changes and confirm GitHub reviewers, no blocking threads, up-to-date master and rollback-ready source SHA.
 5. Merge **once** with expected head SHA only after all requirements are actually satisfied.
-6. GitHub workflow `.github/workflows/brand-production.yml` must then be dispatched on the exact merged source with its explicit `DEPLOY_AKIPASA` confirmation. A merge alone does **not** deploy the Worker.
+6. Cloudflare connected builds can automatically publish `master`: this was observed on 29 October when cleanup merge `f3d2687f` reached production without a manual dispatch. Treat merging as production-impacting and require all acceptance gates before merging. `.github/workflows/brand-production.yml` remains an explicit manual release path with `DEPLOY_AKIPASA`; it is not the sole publication path. Verify the exact merged source after automatic publication, or use the reviewed manual path only if a release is still needed.
 7. Confirm Cloudflare Worker version and HTTPS production content match the built source; check public Home, Map, Community, Check-in, /roadmap, venue/event pages, login and app routing. Keep the prior working Worker version as rollback.
 
 No automation or operator may change all `pending` values to `accepted` to force a release. A deliberate red visual acceptance workflow is expected before actual review is complete.

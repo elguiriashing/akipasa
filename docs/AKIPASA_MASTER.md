@@ -2794,3 +2794,12 @@ color issue in the shared Check-in/Privacy/Terms hero family (six light-mode
 phone/desktop failures). The canonical shared hero h1/h2 now explicitly use light
 text on their fixed dark artwork. Base text contrast and all other sampled hero
 families passed; corrected-source captures and gradient-aware contrast are rerun.
+
+The final desktop empty-state probe also found explanatory copy auto-flowing into
+the 62px icon column instead of its 726px content area. Shared CSS now assigns all
+headings/paragraphs to the explicit content column; the existing phone block layout
+is retained. Browser coverage asserts meaningful paragraph width on desktop too.
+
+## 2026-10-29 | Observed automatic Cloudflare publication after verified cleanup
+
+All seven hosted workflows passed cleanup PR #331 before merge f3d2687fa66e53d4e529118eb08210ad9cc0ff45. Cloudflare automatically published it as deployment 96e0e51f-474a-496c-b7b0-1303fe8187d7 / version 884dda44-e95d-4266-8ce1-d7a4de5c54db, independently confirmed by the public release endpoint. The manual GitHub workflow is not the sole publication path: merging must itself be treated as production-impacting. Draft #332 consolidates the original #326/#327/#328 with preserved ancestry and remains blocked by genuine route/device/art acceptance. See coordinated release ledger for 2,209-test, browser, contrast and test-only packaging receipts. No notices, Tonight launch, billing, commercial campaigns or public presence were activated.

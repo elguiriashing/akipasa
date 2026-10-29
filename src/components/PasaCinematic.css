@@ -405,3 +405,12 @@ html[data-theme="light"]
     animation: none;
   }
 }
+
+/* The icon occupies the first desktop column; all copy belongs to the second,
+   including the added launch explanation rather than auto-flowing under the icon. */
+.app-shell .discover-page .discovery-empty > div:first-child > :is(h3, p) {
+  grid-column: 2;
+}
+.app-shell .discover-page .discovery-empty-mark {
+  grid-row: 1 / 4;
+}
