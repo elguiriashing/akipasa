@@ -89,7 +89,7 @@ it.each(["en", "es"] as const)(
   },
 );
 it.each(["en", "es"] as const)(
-  "shares ordered controls and five canonical branded app destinations in %s",
+  "shares ordered controls and three consumer app destinations in %s",
   (locale) => {
     for (const product of ["business", "duermo"] as const) {
       const { container, unmount } = render(
@@ -111,17 +111,22 @@ it.each(["en", "es"] as const)(
       const popover = tools.querySelector(
         ".portal-product-popover",
       )! as HTMLElement;
-      expect(
-        within(popover).getByRole("link", {
-          name: product === "business" ? "AkiHQ" : "AkiDuermo",
-        }),
-      ).toHaveAttribute("aria-current", "page");
+      expect(popover.querySelectorAll(":scope > a")).toHaveLength(3);
+      const duermo = within(popover).getByRole("link", {
+        name: "AkiDuermo",
+      });
+      expect(duermo).toHaveAttribute(
+        "href",
+        `https://akiduermo.com/?lang=${locale}`,
+      );
+      if (product === "duermo") {
+        expect(duermo).toHaveAttribute("aria-current", "page");
+      } else {
+        expect(duermo).not.toHaveAttribute("aria-current");
+      }
       expect(
         within(popover).getByRole("link", { name: "AkiCoches" }),
       ).toHaveAttribute("href", `https://akicoches.com/?lang=${locale}`);
-      expect(
-        within(popover).getByRole("link", { name: "AkiBusiness" }),
-      ).toHaveAttribute("href", `https://akibusiness.com/?locale=${locale}`);
       const pasa = within(popover).getByRole("link", {
         name: "AkiPasa",
       });
@@ -130,20 +135,10 @@ it.each(["en", "es"] as const)(
         "src",
         "/brand/v3/pasa.svg",
       );
+      expect(within(popover).queryByRole("link", { name: "AkiHQ" })).toBeNull();
       expect(
-        within(popover)
-          .getByRole("link", { name: "AkiHQ" })
-          .querySelector("img"),
-      ).toHaveAttribute("src", "/brand/v3/hq.svg");
-      const other = within(popover).getByRole("link", {
-        name: product === "business" ? "AkiDuermo" : "AkiHQ",
-      });
-      expect(other).toHaveAttribute(
-        "href",
-        product === "business"
-          ? `https://akiduermo.com/?lang=${locale}`
-          : `https://akihq.app/${locale}/business`,
-      );
+        within(popover).queryByRole("link", { name: "AkiBusiness" }),
+      ).toBeNull();
       fireEvent.keyDown(document, { key: "Escape" });
       expect(menu).not.toHaveAttribute("open");
       expect(menu.querySelector("summary")).toHaveFocus();
@@ -154,6 +149,7 @@ it.each(["en", "es"] as const)(
     }
   },
 );
+
 it("retains business locale query state and only offers logout when signed in", () => {
   const { container } = render(
     <BusinessHeader locale="en" signedIn={false} signOut={vi.fn()} />,

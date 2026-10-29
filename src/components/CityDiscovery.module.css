@@ -19,7 +19,7 @@
     transparent 70%
   );
 }
-.discovery > section:first-child .heading h1 {
+.discovery > section:first-child .heading h2 {
   font-size: clamp(2rem, 3.4vw, 3.2rem);
   max-width: 20ch;
   line-height: 1.04;
@@ -320,7 +320,7 @@
 }
 
 @media (max-width: 650px) {
-  .discovery > section:first-child .heading h1 {
+  .discovery > section:first-child .heading h2 {
     font-size: clamp(1.6rem, 6vw, 2.2rem);
   }
   .discovery > section:first-child .heading p {

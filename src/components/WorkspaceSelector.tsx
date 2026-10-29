@@ -30,20 +30,6 @@ const workspaces = [
     accent: "255,48,71",
     path: "/account",
   },
-  {
-    id: "hq",
-    label: "AkiHQ",
-    effect: "solar",
-    accent: "255,197,51",
-    path: "/auth",
-  },
-  {
-    id: "business",
-    label: "AkiBusiness",
-    effect: "aurora",
-    accent: "154,112,250",
-    path: "/login",
-  },
 ] as const;
 
 /** Swipe/keyboard browse in place; each icon is a direct workspace link. */

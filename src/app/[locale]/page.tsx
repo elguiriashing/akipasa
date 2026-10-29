@@ -9,6 +9,7 @@ import { msg } from "@/lib/messages";
 import { recommendDiscovery } from "@/lib/personalisation/server";
 import type { TimeWindow } from "@/lib/domain";
 import { CityDiscovery } from "@/components/CityDiscovery";
+import { PlansFirstHero } from "@/components/PlansFirstHero";
 import { EventCard } from "@/components/EventCard";
 import { DiscoveryIntentSignal } from "@/components/DiscoveryIntentSignal";
 import { nearbyVenuePage } from "@/lib/unclaimed-venues";
@@ -163,7 +164,16 @@ export default async function DiscoverPage({
           accessible,
         }}
       />
-      <CityDiscovery locale={locale} />
+      <PlansFirstHero
+        locale={locale}
+        location={{
+          locality,
+          name: localityName,
+          latitude: searchCenter.latitude,
+          longitude: searchCenter.longitude,
+          radius,
+        }}
+      />
 
       <section id="results">
         <div className="section-head">
@@ -314,12 +324,18 @@ export default async function DiscoverPage({
         </p>
       ) : null}
 
+      <CityDiscovery locale={locale} />
+
       <p className="owner-nudge">
         <span>
           {locale === "es" ? "¿Tienes un negocio?" : "Run a business?"}
         </span>
         <Link href={`/${locale}/business/apply`}>
           {locale === "es" ? "Añádelo a AkiPasa" : "List it on AkiPasa"}
+          <span aria-hidden="true"> →</span>
+        </Link>
+        <Link href={`/hq-login?lang=${locale}`}>
+          {locale === "es" ? "Acceder a mi negocio" : "Business sign in"}
           <span aria-hidden="true"> →</span>
         </Link>
       </p>

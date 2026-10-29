@@ -1,5 +1,17 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-28 | Secure cross-product launch waitlist (staged, not activated)
+
+AkiDuermo and AkiCoches under-development launches require a shared **double-opt-in** waitlist managed by AkiPasa's existing authorized server. Subscriber contact information is service-only in `public.launch_waitlist_entries`, with explicit launch-purpose consent and a separate optional marketing preference (never prechecked). Browser-origin product and host must match. Turnstile proofs require a matching hostname and the `launch_waitlist` action. Requests are payload-limited, rate-limited by keyed hashes, and require one-time hashed verification tokens with 24-hour expiry and a human POST confirmation (no scanner-triggered GET verification). Existing Supabase and Resend credentials remain **server-only**. A privacy/deletion contact, retention purge job and consent review must be operational before activation. No live migration, customer mail or signup feature is activated by the initial PR. Track #313, #315 and the corresponding front-end/release holds.
+
+## 2026-10-28 | Consumer chooser and AkiHQ business entry
+
+The AkiPasa consumer selector now presents only AkiPasa, AkiDuermo and AkiCoches. Business users retain the existing owner/application path and receive a separate localized `/hq-login` entry pointing to AkiHQ's existing host-local `/login`. AkiBusiness remains a **separate independent operating-software product**. No account, cookie, role, billing, claim, event, or venue data changes; AkiSuite is an umbrella name, not a separate product. See `docs/PRODUCT_RESET_20261028.md` and AkiPasa #310. CI, browser/Android return acceptance and exact live SHA remain required.
+
+## 2026-10-28 | Plans-first Costa del Sol launch hypothesis
+
+AkiPasa's first screen answers **¿Qué hacemos hoy?**, showing live upcoming plan results _before_ the national city-photo catalogue. Supported shortcut filters: **Hoy** (Madrid calendar day, bounded start/end), **Esta noche**, **Este finde**, **Planes gratis**, and the existing map. Initial product focus is local residents and bilingual visitors around Fuengirola/Mijas Costa/Benalmádena; nationwide canonical venue/event URLs stay usable. Discovery remains anonymous, and photo/city inventory is not presented as a promise of current events. Passport/AkiPals/AkiQuests are a later verified-attendance pilot, not fabricated check-ins or paid rewards. No RLS, event schemas, payments, or location tracking are changed by this UI patch. See issue #310 and `src/lib/plans-first.ts` regression tests.
+
 ## 2026-10-27 | Correct first-owner Premium destination: AkiPasa listing managed in AkiHQ
 
 AkiPasa's approved claim emails, rejection resubmission links and claim-received acknowledgements now point to the canonical **AkiHQ** management hub at `https://akihq.app/{locale}/business`, with owner venue deep-links scoped to the approved venue UUID. AkiBusiness is **only** the separately paid operating suite (Basic, Standard, Pro), not the claims portal or the early-adopter benefit. The existing free AkiHQ hub manages business-facing Premium listing upgrades for each discovery vertical. For this programme the reward is **three months of AkiPasa Premium for the claimed business listing in AkiHQ** (normally EUR 11.99 per location/month), not AkiPasa personal Premium, AkiHQ-wide Premium, nor any paid AkiBusiness operating software.
@@ -2522,3 +2534,17 @@ collapse cases pass locally (3/3), and the production Next build passes. The
 local map browser reports WebGL unavailable before mounting attribution, so
 the unchanged EN/ES map attribution hit-target/non-overlap matrix must pass
 hosted browser CI; no map assertion or browser gate is skipped or weakened.
+
+## 2026-10-28 | App-first consumer discovery UI (new approved logo direction)
+
+Scoped AkiPasa consumer discovery styling in `src/app/aki-app-first.css` imported by `src/app/globals.css`, plus `PlansFirstHero.module.css` mobile-first refinement. Inspiration: user-supplied orange fluid movement mark, strong geometric wordmark and near-black contrast. Actual uploaded raster logo is **not yet committed as a production asset**, so existing logos remain unchanged in this PR rather than shipping an inaccurate recreation.
+
+Homepage changes: larger headline, mobile two-column date shortcuts, stronger orange primary action, subtle nonblocking radial flare, compact mobile floating nav with larger touch targets, and restrained event grid/empty-state visuals. Existing links, accessibility semantics, search, login, data/analytics, maps and tenant routes remain intact. Effects respect reduced-motion; no image generation, custom font, client tracking or new dependencies.
+
+Release acceptance: review on 320px/375px/430px phones, tablet, desktop, touch navigation and bottom safe area; light/dark themes, focus visibility, reduced motion, Android immersive UI, ES/EN, empty event feed and performance. Check CSS cascade and competing nav styles. Complete required CI and Cloudflare build before merging; match exact deployed SHA. Rollback is removing the isolated import plus hero CSS tail. No database, billing, email, age policy or customer data changes.
+
+Follow-up asset integration: `public/brand/pasa-2026-traced.svg` is a vector trace made from the founder-uploaded PNG; `BrandLogo.tsx` now uses its orange dynamic movement mark and dark endpoint circle in the app shell. It is a trace/preview, not a claim to replace an original designer-supplied editable vector. Wordmark remains DOM text for responsive size and accessibility. Check light/dark contrast and 24px icon legibility before merge; keep original supplied PNG as the definitive visual reference. Rollback restores the previous `BrandLogo.tsx` mark.
+
+## 2026-10-28 | Young-adult social discovery messaging follow-up
+
+The new `PlansFirstHero.tsx` EN/ES copy prioritizes live music, plans with friends and nearby activities for a Spain-first young-adult audience; all category, search, pricing, event, authentication, consent and age rules remain unchanged. Full brand/retention direction is recorded in `docs/AKIPASA_BRAND_RETENTION_20261028.md`. This branch is rebased conceptually on already merged app-first PR #320; it supersedes conflicting PR #319. Require the same six hosted CI workflows, responsive/browser accessibility review and exact-source Cloudflare verification before production. Rollback: restore only the prior hero copy. No DB, bulk marketing, analytics activation or billing changes.

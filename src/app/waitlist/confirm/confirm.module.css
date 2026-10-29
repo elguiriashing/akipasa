@@ -1,0 +1,66 @@
+.page {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+  background:
+    radial-gradient(circle at 12% 14%, rgb(246 107 29 / 18%), transparent 38%),
+    radial-gradient(circle at 90% 85%, rgb(22 68 104 / 22%), transparent 45%),
+    #0d1824;
+  color: #f5f8fb;
+}
+.panel {
+  width: min(100%, 32rem);
+  display: grid;
+  gap: 1.35rem;
+  padding: clamp(1.5rem, 5vw, 3rem);
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 1.5rem;
+  background: rgb(18 35 50 / 94%);
+  box-shadow: 0 24px 70px rgb(0 0 0 / 20%);
+}
+.eyebrow {
+  margin: 0;
+  color: #ffb27a;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+}
+.panel h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+.panel p {
+  margin: 0;
+  color: #cbd8e2;
+  line-height: 1.65;
+}
+.panel button {
+  width: 100%;
+  min-height: 3rem;
+  border: 0;
+  border-radius: 999px;
+  background: #f26b1d;
+  color: #121923;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.panel button:hover {
+  background: #ffa15c;
+}
+.panel button:focus-visible,
+.panel a:focus-visible {
+  outline: 3px solid #ffc089;
+  outline-offset: 3px;
+}
+.panel a {
+  color: #ffbc8d;
+  text-underline-offset: 0.2em;
+}
+.panel small {
+  color: #b8c7d2;
+  line-height: 1.5;
+}
