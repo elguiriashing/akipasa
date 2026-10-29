@@ -1,5 +1,9 @@
 # Architecture
 
+## AkiTonight real-data discovery slice (2026-10-29, candidate)
+
+The localized `/[locale]/tonight` server component is a **read-only adapter** over the existing `repository.discover` / `recommendDiscovery` event pipeline and `public_nearby_venue_page`. It sanitizes selected launch-area, intent, budget, start-time and travel-radius inputs in `src/lib/aki-tonight.ts`; it does not introduce a second event catalogue or write customer-state records. `EventCard` retains sponsorship disclosure and consent-aware tracking. Nearby published business listings are explicitly **not** evidence of opening hours, activity fit or group availability. Future-coverage/Android/UX acceptance is blocked by the zero-upcoming-event audit and active cinematic redesign PR #326. Source rollback removes new routes/CTA only.
+
 ## AkiConduzco rental marketplace and operator desk (2026-10-14)
 
 AkiConduzco is a dedicated Cloudflare custom-domain application at
