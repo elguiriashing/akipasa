@@ -99,6 +99,8 @@ export function AppShell({
   const suiteCloseRef = useRef<HTMLButtonElement>(null);
   const sheetCloseRef = useRef<HTMLButtonElement>(null);
   const section = pathname.split("/").filter(Boolean)[1];
+  const pasaSurface = pasaSurfaceFamily(pathname);
+  const showConsumerDock = pasaSurface !== "operations" && pasaSurface !== "auth";
   const activeWorkspace = ["account", "business", "staff", "admin"].includes(
     section || "",
   )
@@ -404,15 +406,17 @@ export function AppShell({
       )}
       <div
         className="app-content"
-        data-pasa-surface={pasaSurfaceFamily(pathname)}
+        data-pasa-surface={pasaSurface}
       >
         {children}
       </div>
 
       {/* One shared mobile dock across the complete consumer shell. */}
-      <Suspense fallback={null}>
-        <PasaBottomDock locale={locale} />
-      </Suspense>
+      {showConsumerDock && (
+        <Suspense fallback={null}>
+          <PasaBottomDock locale={locale} />
+        </Suspense>
+      )}
 
       {suiteOpen && (
         <div className="app-sheet-layer app-suite-layer">
