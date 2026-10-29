@@ -2,6 +2,51 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 29 October 2026 UTC.
 
+## M3 engine investigation — 29 October 2026 12:49 UTC
+
+Alex requested evaluating M3 and removing crypto purchasing. The identified
+upstream is `M3-org/CharacterStudio`, pinned to
+`293182bf4a6087f4a4a7fd00e4fbdfb590029da7` (MIT code). The isolated work lives at
+`/workspace/akipasa-m3-prototype`; upstream inspection is at
+`/workspace/akipasa-m3-study`. Neither is integrated into the application or
+accepted artwork. Main branch remains `work/coordinated-release-20261029`,
+published checkpoint `a46b236b9b8f66e2bdfeeaab29e066542ebc6548`.
+
+Implemented in the isolated fork: selected character-manager dependency closure,
+removed wallet/NFT/mint/purchase modules and dependencies, deny-by-default trusted
+catalog authorization, bounded local asset URLs, proper manager disposal, lazy
+export renderers and local fixture save/restore. Removed an unused encoder import
+that otherwise pulled in an external WASM CDN. The selected engine bundle has 106 inputs (the complete UI build has 110);
+compile receipts must be regenerated after each subsequent edit. No upstream
+secrets, private keys or original application startup scripts were used.
+
+Tested: 17 direct Node tests currently pass. The earlier frozen baseline passed
+17 actual Chromium cases covering EN/ES, four widths, reduced motion, real VRM
+rendering, local persistence, retry, context recovery and repeated teardown.
+Subsequent core changes require fresh browser results. Orion is a CC0 technical
+robot fixture only, explicitly not proposed human artwork. Source-engine success
+is not visual acceptance or proof of application integration.
+
+Asset rights are separate from MIT code. The inspected M3 packs contain
+noncommercial, author-only and no-redistribution models; they were not admitted.
+Professionally authored Blender Foundation Rain/Snow sources have retained
+CC-BY-4.0 grants, immutable hashes and credits in
+`/workspace/akipasa-avatar-assets`. Static and experimental rigged exports are
+local engineering proofs. Current VRM1 exports fail the default loader because
+its specification requires a VRM Public License URL; no allowlist bypass or
+false relicense is authorized. Agents are evaluating native VRM0 CC_BY metadata
+with the original license URL and attribution, correct humanoid mapping and
+orientation. Facial corrective shapes must not be advertised as blink/visemes
+without actual visible semantic behavior.
+
+Next executable actions: finish rights-faithful Rain/Snow exports; run the actual
+M3 professional-model browser harness; inspect real front/three-quarter renders,
+rig deformation, facial controls, memory and mobile budgets. Preserve the fork,
+source receipts and failed evidence before considering an application adapter.
+Do not send its prototype DTO to the existing strict private avatar API or
+replace saved identities. Final art, wardrobe authority, versioned migration,
+physical Android and all 90 route sign-offs remain unaccepted. No merge or deploy.
+
 ## Current owner feedback and validated source
 
 Alex explicitly rejected both the retained avatar artwork and the isolated
