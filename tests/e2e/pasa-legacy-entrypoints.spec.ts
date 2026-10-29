@@ -46,9 +46,7 @@ for (const locale of ["en", "es"] as const) {
       encodedQueue.url(),
     );
     expect(destination.pathname).toBe(`/${locale}/staff/moderation`);
-    expect(destination.searchParams.get("queue")).toBe(
-      "claims&show=private",
-    );
+    expect(destination.searchParams.get("queue")).toBe("claims&show=private");
     expect(destination.searchParams.has("show")).toBe(false);
     const noOverride = await request.get(
       `/${locale}/moderation?view=https%3A%2F%2Fevil.test&queue=claims`,
@@ -81,15 +79,11 @@ for (const locale of ["en", "es"] as const) {
   test(`${locale} old membership and business paths respect product boundaries`, async ({
     request,
   }) => {
-    const duermo = await request.get(
-      `/${locale}/duermo/memberships`,
-      { maxRedirects: 0 },
-    );
+    const duermo = await request.get(`/${locale}/duermo/memberships`, {
+      maxRedirects: 0,
+    });
     expect([307, 308]).toContain(duermo.status());
-    const membership = new URL(
-      duermo.headers().location || "",
-      duermo.url(),
-    );
+    const membership = new URL(duermo.headers().location || "", duermo.url());
     expect(membership.pathname).toBe(`/${locale}/membership`);
     expect(membership.searchParams.get("from")).toBe("akiduermo");
 
@@ -100,10 +94,9 @@ for (const locale of ["en", "es"] as const) {
       "/business/mobility",
       `/business/venue/${uuid}`,
     ]) {
-      const response = await request.get(
-        `/${locale}${suffix}?source=akipasa`,
-        { maxRedirects: 0 },
-      );
+      const response = await request.get(`/${locale}${suffix}?source=akipasa`, {
+        maxRedirects: 0,
+      });
       expect(response.status()).toBe(307);
       const destination = new URL(
         response.headers().location || "",
@@ -123,10 +116,7 @@ test("public root preserves its canonical locale and campaign query", async ({
     maxRedirects: 0,
   });
   expect(response.status()).toBe(308);
-  const target = new URL(
-    response.headers().location || "",
-    response.url(),
-  );
+  const target = new URL(response.headers().location || "", response.url());
   expect(target.pathname).toBe("/es");
   expect(target.searchParams.get("campaign")).toBe("launch");
   expect(target.origin).toBe(new URL(response.url()).origin);
@@ -162,10 +152,9 @@ for (const locale of ["en", "es"] as const) {
       });
       try {
         const page = await context.newPage();
-        const response = await page.goto(
-          `/${locale}/moderation?queue=claims`,
-          { waitUntil: "domcontentloaded" },
-        );
+        const response = await page.goto(`/${locale}/moderation?queue=claims`, {
+          waitUntil: "domcontentloaded",
+        });
         expect(response?.status()).toBe(200);
         expect(new URL(page.url()).pathname).toBe(`/${locale}/auth`);
         await expect(page.locator("main").first()).toBeVisible();
