@@ -2,6 +2,22 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 29 October 2026 UTC.
 
+## Approved first live batch — deployed 29 October 2026 22:22 UTC
+
+Alex explicitly approved shipping Home and Login first, replacing the original all-at-once requirement ONLY for this small batch. PR #333 merged candidate e2b537962193fcfe7a40967a10b58551dc58f8e4 as master 39cd9bb42fd858dd54bd9f0d9e79a0504b15a0f2. Trees match: 8015979264fc590abcb71e2b0ab7062e1782cd5e.
+
+Implemented: cinematic Home and consumer Login, readiness-safe discovery search; no schema, billing, auth-action, consent-state or avatar changes.
+Tested: clean npm check (2,124 tests), 80 local browser states, all six exact-head CI workflows passed.
+Accepted: owner approved this bounded staged release; physical Android remains pending. This does not grant acceptance to the 90-route overhaul.
+Merged: #333, exact expected candidate head.
+Deployed: automatic master Cloudflare build 000f30a4-a43f-41b4-8486-deee74362a16 succeeded for 39cd9bb; deployment e7a51648-afc5-41d3-b1f7-167411c23c4a, Worker 8199ce83-b416-42d1-9568-9dc167601b6a at 100%. No duplicate manual deploy.
+
+Public verification: Cloudflare Browser Rendering loaded /en, /es, /en/auth and /es/auth; Home contains the new editorial asset and Login contains actual password forms. Public /release-source.json reports exact sourceCommit 39cd9bb42fd858dd54bd9f0d9e79a0504b15a0f2. Direct runner HTTPS requests returned 403; browser verification succeeded, without WAF changes. Local browser screenshots were reviewed; physical-device and protected live transaction journeys were not claimed.
+
+Rollback reference retained: Worker 884dda44-e95d-4266-8ce1-d7a4de5c54db, preceding deployment 96e0e51f-474a-496c-b7b0-1303fe8187d7.
+
+Broad #332 remains draft/unmerged, 0/90 routes accepted. Broad branch baseline 49d102487167f136b08d556ca2c41e1596f941fe and uncommitted Account/Spotlight/Passport contrast repairs remain preserved. Next: checkpoint validated contrast repairs, reconcile master39cd into broad branch, obtain fresh exact-head results, and prepare the next bounded reviewable batch. AkiPals remains paused.
+
 ## Account return recovery validated — 29 October 2026 21:04 UTC
 
 Current committed baseline/head `1b9e45acc4e4fbc32042388202d24ca438aa550d`
