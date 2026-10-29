@@ -121,7 +121,9 @@ export default async function PrestigePrivacyPage({
                     <p>
                       {address ? (
                         <>
-                          {es ? "Dirección conservada hasta" : "Address retained until"}{" "}
+                          {es
+                            ? "Dirección conservada hasta"
+                            : "Address retained until"}{" "}
                           {new Date(address.delete_after).toLocaleDateString(
                             es ? "es-ES" : "en-GB",
                             { timeZone: "Europe/Madrid" },
