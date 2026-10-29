@@ -2,6 +2,29 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 29 October 2026 UTC.
 
+## Environment outage checkpoint — 29 October 2026 17:39 UTC
+
+The managed workspace became unavailable/offline during final integration.
+The second main-layout batch is UNCOMMITTED and not remotely backed up in full.
+Recover the same workspace before resetting, cleaning or replacing any files.
+
+Safe application source: `969ead29e625e525cc9d1568b3d2a242833dd0a5`, pushed
+to draft PR #332. All ten ordinary exact-head workflows passed. Full check and
+independent clean Cloudflare packaging passed; source stamps match. Hosted
+booking screenshots/hashes were inspected. Strict acceptance still fails:
+zero of90 in-scope routes accepted. No merge or production deployment.
+
+The next batch includes Community continuity, logo/Roadmap/full-page evidence,
+Passport reload/contrast, product-aware route/global errors, protected-journey
+test repair and mobile privacy/header fixes. Its focused evidence exists locally;
+the final combined check62398 outcome is UNKNOWN. New whole-app privacy/fallback
+tests and second-batch clean packaging are still outstanding.
+
+Read `docs/AKIPASA_ENVIRONMENT_RECOVERY_20261029.md` for exact files, verified
+counts/hashes, receipts, failure history and executable restart commands.
+This remote documentation checkpoint preserves the continuation plan, not a
+pretend backup of unavailable uncommitted source. AkiPals remains user-paused.
+
 ## Main repair batch validated — 29 October 2026 16:57 UTC
 
 Implemented: authoritative remaining-capacity event booking with the shared wizard;
