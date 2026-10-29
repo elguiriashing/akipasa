@@ -319,3 +319,45 @@ for (const locale of ["en", "es"] as const) {
     }
   }
 }
+
+for (const locale of ["en", "es"] as const) {
+  test(`${locale} waitlist status screens never expose a submit action for invalid links`, async ({
+    page,
+  }) => {
+    const cases = [
+      {
+        query: "product=untrusted&entry=bad&token=bad",
+        product: "pasa",
+        host: "https://akipasa.com",
+        heading: locale === "es" ? "Enlace no válido o caducado" : "Link invalid or expired",
+      },
+      {
+        query: "product=coches&status=invalid",
+        product: "coches",
+        host: "https://akicoches.com",
+        heading: locale === "es" ? "Enlace no válido o caducado" : "Link invalid or expired",
+      },
+      {
+        query: "product=duermo&status=unavailable",
+        product: "duermo",
+        host: "https://akiduermo.com",
+        heading: locale === "es" ? "Verificación no disponible" : "Verification unavailable",
+      },
+    ] as const;
+
+    for (const variant of cases) {
+      const response = await page.goto(
+        `/waitlist/confirm?lang=${locale}&${variant.query}`,
+        { waitUntil: "domcontentloaded" },
+      );
+      expect(response?.status()).toBe(200);
+      await expect(page.getByRole("heading", { name: variant.heading, level: 1 })).toBeVisible();
+      await expect(page.locator("main[data-product]")).toHaveAttribute("data-product", variant.product);
+      await expect(page.locator('form[action="/api/launch-waitlist/confirm"]')).toHaveCount(0);
+      await expect(
+        page.getByRole("link", { name: locale === "es" ? "Volver a la web" : "Back to the website" }),
+      ).toHaveAttribute("href", variant.host);
+      await expect(page.locator('a[href="mailto:support@akipasa.com"]')).toBeVisible();
+    }
+  });
+}
