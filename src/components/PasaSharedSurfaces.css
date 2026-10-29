@@ -1469,7 +1469,10 @@ html[data-theme="light"] .app-shell .pasa-conversion-status {
   min-width: 0;
   padding-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
 }
-.app-shell .app-content[data-pasa-surface="operations"] .owner-console-page .owner-hero {
+.app-shell
+  .app-content[data-pasa-surface="operations"]
+  .owner-console-page
+  .owner-hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
@@ -1478,7 +1481,11 @@ html[data-theme="light"] .app-shell .pasa-conversion-status {
   border: 1px solid rgba(255, 153, 88, 0.32);
   border-radius: 1.75rem;
   background:
-    radial-gradient(circle at 91% 4%, rgba(255, 131, 49, 0.26), transparent 48%),
+    radial-gradient(
+      circle at 91% 4%,
+      rgba(255, 131, 49, 0.26),
+      transparent 48%
+    ),
     linear-gradient(135deg, #1e2b42, #0c1726 85%);
   color: #f8fafc;
 }
@@ -1581,10 +1588,17 @@ html[data-theme="light"] .app-shell .pasa-conversion-status {
   min-width: 0;
   overflow-wrap: anywhere;
 }
-html[data-theme="light"] .app-shell .app-content[data-pasa-surface="operations"] .owner-console-page .owner-hero {
+html[data-theme="light"] .app-shell
+  .app-content[data-pasa-surface="operations"]
+  .owner-console-page
+  .owner-hero {
   border-color: rgba(173, 79, 24, 0.27);
   background:
-    radial-gradient(circle at 90% 5%, rgba(255, 135, 60, 0.16), transparent 49%),
+    radial-gradient(
+      circle at 90% 5%,
+      rgba(255, 135, 60, 0.16),
+      transparent 49%
+    ),
     #fff8f0;
   color: #17283a;
 }
@@ -1597,7 +1611,11 @@ html[data-theme="light"] .app-shell .owner-console-page .owner-hero p {
 html[data-theme="light"] .app-shell .owner-console-page .owner-command-kicker {
   color: #9d420a;
 }
-html[data-theme="light"] .app-shell .owner-console-page .owner-command-actions a:not(:first-child) {
+html[data-theme="light"]
+  .app-shell
+  .owner-console-page
+  .owner-command-actions
+  a:not(:first-child) {
   color: #6f300a;
   border-color: rgba(154, 69, 18, 0.45);
 }
@@ -1610,7 +1628,10 @@ html[data-theme="light"] .app-shell .owner-console-page .owner-command-actions a
   }
 }
 @media (max-width: 700px) {
-  .app-shell .app-content[data-pasa-surface="operations"] .owner-console-page .owner-hero {
+  .app-shell
+  .app-content[data-pasa-surface="operations"]
+  .owner-console-page
+  .owner-hero {
     grid-template-columns: minmax(0, 1fr);
     padding: 1.4rem;
   }
