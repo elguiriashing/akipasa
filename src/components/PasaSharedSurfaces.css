@@ -754,3 +754,144 @@ html[data-theme="light"]
     padding: 1.4rem;
   }
 }
+
+/* Public legal and attribution screens share the same designed reading
+ * surface without changing policy text, licences or product permissions. */
+.app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-page {
+  width: min(100%, 78rem);
+  min-width: 0;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+  padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+}
+
+.app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: clamp(1.75rem, 5vw, 4rem);
+  border: 1px solid rgba(255, 159, 94, 0.32);
+  border-radius: clamp(1.25rem, 3vw, 2rem);
+  background:
+    radial-gradient(ellipse at 90% 0%, rgba(255, 131, 50, 0.25), transparent 54%),
+    linear-gradient(135deg, #24314a, #0b1625 82%);
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.16);
+  color: #ffffff;
+}
+
+.app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-hero h1 {
+  max-width: 21ch;
+  margin-block: 0.5rem 0.85rem;
+  font-size: clamp(2rem, 5.5vw, 4rem);
+  line-height: 1.08;
+  letter-spacing: -0.055em;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-hero .eyebrow {
+  color: #ffb37d;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-hero :is(p, .lede) {
+  max-width: 67ch;
+  color: #e1e9f3;
+  line-height: 1.65;
+}
+
+.app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-prose {
+  max-width: 74ch;
+  margin-block: clamp(1rem, 2.5vw, 2rem);
+  padding: clamp(1.35rem, 3.5vw, 2.7rem);
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: clamp(1.2rem, 3vw, 1.8rem);
+  background: var(--pasa-ui-panel);
+  color: var(--pasa-ui-text);
+  line-height: 1.75;
+}
+
+.app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-prose h2 {
+  margin-block: 1.5rem 0.5rem;
+  color: var(--pasa-ui-text);
+  font-size: clamp(1.25rem, 2.5vw, 1.65rem);
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+.app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-prose h2:first-child {
+  margin-top: 0;
+}
+
+.app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-prose p {
+  margin-block: 0.45rem 1rem;
+  color: var(--pasa-ui-subtle);
+  overflow-wrap: anywhere;
+}
+
+.app-shell .app-content[data-pasa-surface="legal"] .pasa-photo-credit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: clamp(0.8rem, 2vw, 1.35rem);
+  margin-block: clamp(1rem, 2.5vw, 2rem);
+  min-width: 0;
+}
+
+.app-shell .app-content[data-pasa-surface="legal"] .pasa-photo-credit-card {
+  min-width: 0;
+  padding: clamp(1.25rem, 2.4vw, 1.85rem);
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.35rem;
+  background: var(--pasa-ui-panel);
+  color: var(--pasa-ui-text);
+  box-shadow: 0 12px 33px rgba(0, 0, 0, 0.1);
+}
+
+.app-shell .app-content[data-pasa-surface="legal"] .pasa-photo-credit-card h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.2rem, 2vw, 1.55rem);
+  overflow-wrap: anywhere;
+}
+
+.app-shell .app-content[data-pasa-surface="legal"] .pasa-photo-credit-card p {
+  color: var(--pasa-ui-subtle);
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+
+.app-shell .app-content[data-pasa-surface="legal"] .pasa-photo-credit-card a {
+  display: inline-block;
+  max-width: 100%;
+  color: var(--pasa-ui-highlight);
+  font-weight: 750;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  overflow-wrap: anywhere;
+}
+
+html[data-theme="light"] .app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-hero {
+  border-color: rgba(180, 79, 23, 0.26);
+  background:
+    radial-gradient(ellipse at 92% 0%, rgba(253, 154, 75, 0.19), transparent 53%),
+    #fff9f1;
+  color: #182b3b;
+  box-shadow: 0 16px 35px rgba(65, 43, 20, 0.09);
+}
+
+html[data-theme="light"] .app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-hero .eyebrow {
+  color: #a34514;
+}
+
+html[data-theme="light"] .app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-hero :is(p, .lede) {
+  color: #425467;
+}
+
+@media (max-width: 600px) {
+  .app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-hero {
+    padding: 1.4rem;
+  }
+  .app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-prose {
+    padding: 1.25rem;
+  }
+}
