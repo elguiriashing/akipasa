@@ -3447,3 +3447,11 @@ paragraph/label widths and fully rendered main content before capturing evidence
 ## 2026-10-29 | Repeatable avatar build validation
 
 The generated, gitignored public/pals/runtime Three.js bundle is excluded from source linting, matching other compiler outputs. Original studio JS/TypeScript, bundle integrity tests and browser execution remain checked. This repairs a repeat-check failure after build generated minified vendor output; no source rule or application coverage is lowered. Full combined check/build is rerun after source freeze.
+
+The final light-theme contrast probe caught white Community/roadmap surrounding
+copy on cream and global dark heading colors inside their dark hero artwork.
+These route-local styles now use theme-aware base text and explicit light hero/
+card headings. LaunchRibbon has an opaque night-colored base behind its orange
+lighting, so its first words remain readable in light mode; its link retains a
+44px target. No routes, data, permissions, consent or mutation behavior change.
+Final screenshot and contrast evidence must come from the corrected built source.

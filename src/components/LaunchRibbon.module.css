@@ -14,6 +14,7 @@
     rgba(20, 30, 46, 0.96) 40%,
     rgba(11, 19, 29, 0.96)
   );
+  background-color: #111c2b;
   color: #f9f8f7;
 }
 .spark {
@@ -40,7 +41,7 @@
   align-items: center;
   gap: 7px;
   flex: none;
-  min-height: 38px;
+  min-height: 44px;
   padding: 6px 10px;
   border: 1px solid rgba(255, 178, 126, 0.35);
   border-radius: 999px;
@@ -75,7 +76,7 @@
   }
   .link {
     margin-left: 20px;
-    min-height: 32px;
+    min-height: 44px;
     font-size: 0.76rem;
   }
 }

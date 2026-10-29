@@ -1,7 +1,7 @@
 .main {
   --road-orange: #ff762b;
-  --road-ink: #f9f6f2;
-  --road-muted: #bac3d3;
+  --road-ink: var(--pasa-ui-text, #f9f6f2);
+  --road-muted: var(--pasa-ui-subtle, #bac3d3);
   --road-line: rgba(255, 255, 255, 0.14);
   width: min(100%, 1250px);
   margin: 0 auto;
@@ -73,6 +73,7 @@
   color: #ffa16b;
 }
 .hero h1 {
+  color: #f9f6f2;
   max-width: 14ch;
   margin: 18px 0 20px;
   font-size: clamp(2.9rem, 6.3vw, 5.8rem);
@@ -439,6 +440,7 @@
     padding: 28px 25px 4px;
   }
   .hero h1 {
+    color: #f9f6f2;
     font-size: clamp(2.9rem, 11vw, 4.3rem);
   }
   .heroVisual {
@@ -500,4 +502,29 @@
   .main {
     scroll-behavior: auto;
   }
+}
+
+/* Hero and roadmap cards deliberately retain their dark artwork in light mode;
+   surrounding labels follow the user's theme instead of disappearing on cream. */
+.hero,
+.phase,
+.feature {
+  color: #f9f6f2;
+}
+.phase h3,
+.feature h3 {
+  color: #f9f6f2;
+}
+.expansion,
+.expansion h2 {
+  color: #f9f6f2;
+}
+.edition,
+.plan .eyebrow,
+.features .eyebrow,
+.footer a {
+  color: var(--pasa-ui-highlight, #ffab7b);
+}
+.footer {
+  color: var(--road-muted);
 }

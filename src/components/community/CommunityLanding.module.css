@@ -2,7 +2,7 @@
   width: min(100%, 1120px);
   margin: 0 auto;
   padding: clamp(1rem, 3vw, 2.5rem);
-  color: #f8f9fc;
+  color: var(--pasa-ui-text, var(--ink));
 }
 .hero {
   position: relative;
@@ -27,6 +27,7 @@
   text-transform: uppercase;
 }
 .hero h1 {
+  color: #f8f9fc;
   max-width: 13ch;
   margin: 1rem 0;
   font-size: clamp(2.45rem, 7vw, 5rem);
@@ -127,4 +128,12 @@
   .hero {
     border-radius: 1.3rem;
   }
+}
+
+.friends p,
+.pending {
+  color: var(--pasa-ui-subtle, var(--muted));
+}
+.friends .kicker {
+  color: var(--pasa-ui-highlight, var(--primary-text));
 }
