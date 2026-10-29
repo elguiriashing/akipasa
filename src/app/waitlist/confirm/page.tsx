@@ -149,6 +149,7 @@ export default async function LaunchWaitlistConfirmation({
               <input type="hidden" name="entry" value={entry} />
               <input type="hidden" name="token" value={token} />
               <input type="hidden" name="lang" value={en ? "en" : "es"} />
+              <input type="hidden" name="product" value={product} />
               <button className={styles.confirmButton} type="submit">
                 {en ? "Confirm my email" : "Confirmar mi correo"}
                 <Icon name="arrow-right" size={19} />
