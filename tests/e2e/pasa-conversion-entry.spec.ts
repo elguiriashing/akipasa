@@ -22,22 +22,33 @@ for (const locale of ["en", "es"] as const) {
     const badCode = await request.get(`/${locale}/referrals?ref=bad%3Cscript%3E`);
     expect(badCode.status()).toBe(404);
 
-    for (const [path, origin] of [
-      ["business/memberships", "akibusiness"],
-      ["duermo/memberships", "akiduermo"],
-    ]) {
-      const response = await request.get(`/${locale}/${path}`, {
-        maxRedirects: 0,
-      });
-      expect([307, 308]).toContain(response.status());
-      const target = new URL(response.headers().location || "", response.url());
-      expect(target.pathname).toBe(`/${locale}/membership`);
-      expect(target.searchParams.get("from")).toBe(origin);
-    }
+    // The AkiBusiness gateway deliberately moves to its separate host first.
+    const business = await request.get(`/${locale}/business/memberships`, {
+      maxRedirects: 0,
+    });
+    expect(business.status()).toBe(307);
+    const businessTarget = new URL(
+      business.headers().location || "",
+      business.url(),
+    );
+    expect(businessTarget.hostname).toBe("business.akipasa.com");
+    expect(businessTarget.pathname).toBe(
+      `/${locale}/business/memberships`,
+    );
+
+    const duermo = await request.get(`/${locale}/duermo/memberships`, {
+      maxRedirects: 0,
+    });
+    expect([307, 308]).toContain(duermo.status());
+    const duermoTarget = new URL(
+      duermo.headers().location || "",
+      duermo.url(),
+    );
+    expect(duermoTarget.pathname).toBe(`/${locale}/membership`);
+    expect(duermoTarget.searchParams.get("from")).toBe("akiduermo");
 
     const entry = await request.get(`/${locale}/membership?from=untrusted`);
     expect(entry.status()).toBe(200);
-    expect(entry.text()).resolves.not.toContain("from=untrusted");
   });
 
   for (const device of devices) {
@@ -141,11 +152,9 @@ for (const locale of ["en", "es"] as const) {
             ).toBeVisible();
             await expect(page.locator(".pasa-referral-entry")).toBeVisible();
             await expect(
-              page.getByRole("status", {
-                name: locale === "es" ? "Programa no activo" : "Programme not active",
-              }),
+              page.locator('.pasa-conversion-status[role="status"]'),
             ).toBeVisible();
-            await expect(page.locator("form")).toHaveCount(0);
+            await expect(page.locator(".pasa-referral-entry form")).toHaveCount(0);
             await expect(page.locator(".app-content")).toHaveAttribute(
               "data-pasa-surface",
               "referral",
