@@ -106,5 +106,4 @@ describe("AkiPasa shared redesign system", () => {
     expect(actions).toContain("accept_current_terms");
     expect(actions).toContain('formData.get("acceptTerms") !== "accepted"');
   });
-
 });
