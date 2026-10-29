@@ -61,6 +61,21 @@ for (const locale of ["en", "es"] as const) {
     expect(fallback.origin).toBe(new URL(noOverride.url()).origin);
     expect(fallback.pathname).toBe(`/${locale}/staff/moderation`);
     expect(fallback.searchParams.get("queue")).toBe("claims");
+
+    for (const inheritedKey of ["__proto__", "constructor", "toString"]) {
+      const response = await request.get(
+        `/${locale}/moderation?view=${inheritedKey}&queue=claims`,
+        { maxRedirects: 0 },
+      );
+      expect([303, 307]).toContain(response.status());
+      const destination = new URL(
+        response.headers().location || "",
+        response.url(),
+      );
+      expect(destination.origin).toBe(new URL(response.url()).origin);
+      expect(destination.pathname).toBe(`/${locale}/staff/moderation`);
+      expect(destination.searchParams.get("queue")).toBe("claims");
+    }
   });
 
   test(`${locale} old membership and business paths respect product boundaries`, async ({
