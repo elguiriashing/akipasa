@@ -2,6 +2,59 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 29 October 2026 UTC.
 
+## Main release resumed — 29 October 2026 16:30 UTC
+
+Alex explicitly paused AkiPals and returned execution to the original main-release
+redesign and customer journeys. This section supersedes the historical avatar
+priorities and owner leases below. Integration owner `/root` owns the branch until
+19:00 UTC; parallel agents have non-overlapping file assignments. Coordination
+issue: <https://github.com/elguiriashing/akipasa/issues/330#issuecomment-6502549427>.
+
+Baseline branch `work/coordinated-release-20261029`, exact head
+`a8b514e73008875ace8806d16397c82a813d157a`; master
+`f3d2687fa66e53d4e529118eb08210ad9cc0ff45` is an ancestor. PR #332 remains draft.
+Ten ordinary exact-head workflows passed; the strict visual audit still fails
+with 103 inventoried routes: 90 in progress, 13 excluded, zero accepted. Staging
+site regression is skipped and needs its separately provisioned backend.
+
+Current implementation cycle, not yet validated or committed:
+
+- P0: private business booking editors must withhold dependent saves when settings,
+  notification or inventory reads fail, preserving healthy independent sections.
+- P1: event booking must use remaining-capacity RPC results and the shared booking
+  wizard rather than displaying raw total capacity; preserve occurrence/context.
+- P2: staff moderation queues need bounded, stable pages, truthful counts and
+  retained queue context after decisions; preserve audited RPC authority.
+- P3: native admin listing/accommodation review cards and forms need continuous
+  responsive workspace styling, preserving exact revision/reason/access rules.
+
+Read-only provider evidence at 16:26 UTC: active Cloudflare Worker version
+`884dda44-e95d-4266-8ce1-d7a4de5c54db`, deployment
+`96e0e51f-474a-496c-b7b0-1303fe8187d7`. Candidate upload
+`b00b4de0-d97d-4521-aadf-0491e0744562` is not active. Master automatically deploys;
+non-master builds upload versions. At 16:27 UTC, aggregate data remained nine
+events, ten occurrences, zero future starts and zero future published/scheduled
+occurrences. Tonight stays default-off. Public release endpoints were blocked by
+the proxy, so no fresh public source identity or customer-journey claim is made.
+
+Paused AkiPals candidate: feature source
+`443bedbce593fa26f36219a0e61ad232b45de0ce`, checkpoint
+`4bedc388a6d9fd21b6cd071ad739bda1870dba5e`, recoverable at
+`/workspace/akipasa-m3-checkpoints/creator-paused.bundle` (SHA256
+`39b00f1630330f75a49a68d5dc0cf14ad5d4faf47d51796506a9f84f61bac927`).
+It is unpublished;
+private live Site remains `28ac17cd2c1ac0808695e0769d6479924ca61f9a`.
+The paused candidate has 34 node passes and four of eight final creator browser
+cases completed; tablet/desktop completion is not claimed. All avatar jobs were
+stopped at Alex's direction. Do not resume or publish it as part of this cycle.
+
+Next executable action: finish the four isolated repairs, review diffs, register
+browser harnesses, inspect EN/ES responsive screenshots, run focused regressions
+and full `npm run check`, then commit and independently package the clean source.
+Refresh hosted checks on that exact new head. Keep routes in progress until actual
+review/device evidence exists. No merge, deployment, production data/configuration,
+billing, notification or feature activation is authorized by fixture success.
+
 ## Customization editor — privately published 29 October 2026 14:20 UTC
 
 Alex gave positive feedback on the private playground and requested changeable
