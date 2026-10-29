@@ -37,6 +37,12 @@ A route may move to `in-progress` when its common component or visual styling is
 
 Replace the placeholders only with real evidence. A missing or malformed record is rejected by `scripts/pasa-ui-route-audit.mjs`.
 
+## Actual screenshot inspection checkpoint
+
+The earlier successful Account CI run `40787776091` produced real responsive captures for ten Account subpages at six viewport sizes in both languages and themes. The earlier tablet CI run `40787776158` captured Spotlight venue/event routes and operations components. The reviewed contact sheets showed functional content and no obvious missing Account screen, but the Account layout was still more utilitarian than the requested cinematic reference. The shared profile hero and workbench changes in this PR were added **after** those captures and must be screenshot-reviewed again at the final source SHA. No Account, Venue or Event route was marked accepted on that earlier evidence.
+
+The upgraded public screenshot audit now explicitly includes both languages of Home, Map, Check-in, Community, Roadmap, Passport, Login, membership and legal pages. A source-driven guest-gate suite exercises the real Account, Admin and Staff page inventory; that is security evidence, **not** proof of an authenticated admin visual experience. Keep the red strict gate until the actual output and required role-specific UI changes have been reviewed.
+
 ## Pre-merge and production
 
 1. Check every route in the source matrix; attach evidence and validate `npm run release:pasa-audit` successfully with **zero** outstanding in-scope routes.
