@@ -26,8 +26,8 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - name: Capture canonical source formatting (temporary)
         run: |
-          npx prettier --write src/lib/aki-weekly-quests.ts src/components/WeeklyQuestPanel.tsx src/components/WeeklyQuestPanel.module.css "src/app/[locale]/passports/page.tsx" tests/aki-weekly-quests.test.ts
-          for file in src/lib/aki-weekly-quests.ts src/components/WeeklyQuestPanel.tsx src/components/WeeklyQuestPanel.module.css "src/app/[locale]/passports/page.tsx" tests/aki-weekly-quests.test.ts; do
+          npx prettier --write src/lib/aki-weekly-quests.ts src/components/WeeklyQuestPanel.tsx src/components/WeeklyQuestPanel.module.css "src/app/[locale]/passports/page.tsx" tests/aki-weekly-quests.test.ts docs/AKIPASSPORT_WEEKLY_QUEST_PILOT_20261029.md
+          for file in src/lib/aki-weekly-quests.ts src/components/WeeklyQuestPanel.tsx src/components/WeeklyQuestPanel.module.css "src/app/[locale]/passports/page.tsx" tests/aki-weekly-quests.test.ts docs/AKIPASSPORT_WEEKLY_QUEST_PILOT_20261029.md; do
             echo "AKI_FORMAT_BEGIN:$file"
             base64 -w 0 "$file"
             echo ""
@@ -41,6 +41,7 @@ jobs:
           src/components/WeeklyQuestPanel.module.css
           "src/app/[locale]/passports/page.tsx"
           tests/aki-weekly-quests.test.ts
+          docs/AKIPASSPORT_WEEKLY_QUEST_PILOT_20261029.md
       - name: Lint touched sources
         run: >
           npx eslint
