@@ -73,23 +73,29 @@ describe("referral bilingual account handoff", () => {
       );
     },
   );
-  it("refuses malicious code or unavailable programme without auth tracking", async () => {
-    await expect(
-      ReferralLanding({
-        params: Promise.resolve({ locale: "en" }),
-        searchParams: Promise.resolve({ ref: "https://evil.example" }),
-      }),
-    ).rejects.toThrow("NOT_FOUND");
-    vi.stubEnv("AKISUITE_REFERRALS_READY", "false");
-    const html = renderToStaticMarkup(
-      await ReferralLanding({
-        params: Promise.resolve({ locale: "en" }),
-        searchParams: Promise.resolve({ ref: "AKIREFER01" }),
-      }),
-    );
-    expect(html).toContain("not available");
-    expect(mocks.require).not.toHaveBeenCalled();
-  });
+  it.each(["en", "es"] as const)(
+    "refuses malicious codes and keeps inactive referrals read-only (%s)",
+    async (locale) => {
+      await expect(
+        ReferralLanding({
+          params: Promise.resolve({ locale }),
+          searchParams: Promise.resolve({ ref: "https://evil.example" }),
+        }),
+      ).rejects.toThrow("NOT_FOUND");
+      vi.stubEnv("AKISUITE_REFERRALS_READY", "false");
+      const html = renderToStaticMarkup(
+        await ReferralLanding({
+          params: Promise.resolve({ locale }),
+          searchParams: Promise.resolve({ ref: "AKIREFER01" }),
+        }),
+      );
+      expect(html).toContain(
+        locale === "es" ? "Programa no activo" : "Programme not active",
+      );
+      expect(html).not.toContain("<form");
+      expect(mocks.require).not.toHaveBeenCalled();
+    },
+  );
   it.each(["en", "es"])(
     "renders real scoped metrics and inactive money warning (%s)",
     async (locale) => {
