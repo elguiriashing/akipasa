@@ -74,7 +74,7 @@ describe("AkiPasa shared redesign system", () => {
     }
   });
 
-  it("shares the business application surface without replacing its consent and review flow", () => {
+  it("styles business applications without changing review actions", () => {
     const css = source("src/components/PasaSharedSurfaces.css");
     const page = source("src/app/[locale]/business/apply/page.tsx");
     expect(css).toContain(".business-application-steps");
@@ -88,5 +88,4 @@ describe("AkiPasa shared redesign system", () => {
     expect(page).toContain("No se te ha cobrado nada");
     expect(page).toContain("You have not been charged");
   });
-
 });
