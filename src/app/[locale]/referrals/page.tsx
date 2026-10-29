@@ -23,7 +23,7 @@ export default async function ReferralLanding({
   if (!ready)
     return (
       <main className="shell pasa-referral-entry">
-        <section className="hero pasa-conversion-hero">
+        <section className="pasa-conversion-hero">
           <span className="pasa-conversion-kicker">AKISUITE / {es ? "RECOMENDACIONES" : "REFERRALS"}</span>
           <h1>{es ? "Las recomendaciones están en preparación" : "Referrals are being prepared"}</h1>
           <p>
@@ -54,7 +54,7 @@ export default async function ReferralLanding({
   await requireUser(locale, `/${locale}/referrals?ref=${code}`);
   return (
     <main className="shell pasa-referral-entry">
-      <section className="hero pasa-conversion-hero">
+      <section className="pasa-conversion-hero">
         <span className="pasa-conversion-kicker">AKISUITE / {es ? "RECOMENDACIONES" : "REFERRALS"}</span>
         <h1>{es ? "Guarda tu recomendación" : "Save your referral"}</h1>
         <p>
