@@ -765,7 +765,10 @@ html[data-theme="light"]
   padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
 }
 
-.app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-page.shell.legal > .pasa-legal-hero.hero {
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page.shell.legal
+  > .pasa-legal-hero.hero {
   position: relative;
   overflow: hidden;
   isolation: isolate;
@@ -773,13 +776,21 @@ html[data-theme="light"]
   border: 1px solid rgba(255, 159, 94, 0.32);
   border-radius: clamp(1.25rem, 3vw, 2rem);
   background:
-    radial-gradient(ellipse at 90% 0%, rgba(255, 131, 50, 0.25), transparent 54%),
+    radial-gradient(
+      ellipse at 90% 0%,
+      rgba(255, 131, 50, 0.25),
+      transparent 54%
+    ),
     linear-gradient(135deg, #24314a, #0b1625 82%);
   box-shadow: 0 20px 55px rgba(0, 0, 0, 0.16);
   color: #ffffff;
 }
 
-.app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-page.shell.legal > .pasa-legal-hero.hero h1 {
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page.shell.legal
+  > .pasa-legal-hero.hero
+  h1 {
   max-width: 21ch;
   margin-block: 0.5rem 0.85rem;
   font-size: clamp(2rem, 5.5vw, 4rem);
@@ -789,13 +800,21 @@ html[data-theme="light"]
   text-wrap: balance;
 }
 
-.app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-page.shell.legal > .pasa-legal-hero.hero .eyebrow {
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page.shell.legal
+  > .pasa-legal-hero.hero
+  .eyebrow {
   color: #ffb37d;
   font-weight: 800;
   letter-spacing: 0.1em;
 }
 
-.app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-page.shell.legal > .pasa-legal-hero.hero :is(p, .lede) {
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page.shell.legal
+  > .pasa-legal-hero.hero
+  :is(p, .lede) {
   max-width: 67ch;
   color: #e1e9f3;
   line-height: 1.65;
@@ -820,7 +839,10 @@ html[data-theme="light"]
   letter-spacing: -0.025em;
 }
 
-.app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-prose h2:first-child {
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-prose
+  h2:first-child {
   margin-top: 0;
 }
 
@@ -870,25 +892,46 @@ html[data-theme="light"]
   overflow-wrap: anywhere;
 }
 
-html[data-theme="light"] .app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-page.shell.legal > .pasa-legal-hero.hero {
+html[data-theme="light"]
+  .app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page.shell.legal
+  > .pasa-legal-hero.hero {
   border-color: rgba(180, 79, 23, 0.26);
   background:
-    radial-gradient(ellipse at 92% 0%, rgba(253, 154, 75, 0.19), transparent 53%),
+    radial-gradient(
+      ellipse at 92% 0%,
+      rgba(253, 154, 75, 0.19),
+      transparent 53%
+    ),
     #fff9f1;
   color: #182b3b;
   box-shadow: 0 16px 35px rgba(65, 43, 20, 0.09);
 }
 
-html[data-theme="light"] .app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-page.shell.legal > .pasa-legal-hero.hero .eyebrow {
+html[data-theme="light"]
+  .app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page.shell.legal
+  > .pasa-legal-hero.hero
+  .eyebrow {
   color: #a34514;
 }
 
-html[data-theme="light"] .app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-page.shell.legal > .pasa-legal-hero.hero :is(p, .lede) {
+html[data-theme="light"]
+  .app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page.shell.legal
+  > .pasa-legal-hero.hero
+  :is(p, .lede) {
   color: #425467;
 }
 
 @media (max-width: 600px) {
-  .app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-page.shell.legal > .pasa-legal-hero.hero {
+  .app-shell
+    .app-content[data-pasa-surface="legal"]
+    .pasa-legal-page.shell.legal
+    > .pasa-legal-hero.hero {
     padding: 1.4rem;
   }
   .app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-prose {
