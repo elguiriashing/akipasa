@@ -117,7 +117,7 @@ function draw(){
    }wrap.append(line);grid.append(wrap);
   }else{
    const label=document.createElement("label");label.textContent=text;
-   const select=document.createElement("select");select.name=key;
+   const select=document.createElement("select");select.name=key;select.setAttribute("aria-label",text);
    for(const choice of options[key]){
     const opt=document.createElement("option");opt.value=choice;opt.textContent=pretty(choice);select.append(opt);
    }select.value=current[key];label.append(select);grid.append(label);
