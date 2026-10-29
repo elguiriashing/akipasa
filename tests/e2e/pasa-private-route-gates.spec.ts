@@ -39,9 +39,46 @@ test.describe("AkiPasa private route matrix", () => {
           `${route} returned ${response.status()} without an authenticated session`,
         ).toContain(response.status());
         const redirect = response.headers().location || "";
-        expect(redirect, `${route} must return to the sign-in page`).toContain(
-          `/${locale}/auth?next=`,
+        // Membership aliases are normalized by middleware before auth runs.
+        // Verify the canonical destination still enforces sign-in rather than
+        // assuming the first 307 is issued by requireUser.
+        if (
+          path === "/account/membership" ||
+          path === "/account/memberships"
+        ) {
+          const destination = new URL(redirect, response.url());
+          expect(
+            destination.origin,
+            `${route} must stay on the same origin`,
+          ).toBe(new URL(response.url()).origin);
+          expect(destination.pathname).toBe(
+            `/${locale}/account/subscription`,
+          );
+          const canonical = await request.get(destination.toString(), {
+            maxRedirects: 0,
+          });
+          expect([303, 307], `${route} canonical guest gate`).toContain(
+            canonical.status(),
+          );
+          const signIn = new URL(
+            canonical.headers().location || "",
+            canonical.url(),
+          );
+          expect(signIn.origin).toBe(new URL(canonical.url()).origin);
+          expect(signIn.pathname).toBe(`/${locale}/auth`);
+          expect(signIn.searchParams.get("next")).toMatch(
+            new RegExp(`^/${locale}/account/subscription(?:\\?|$)`),
+          );
+          continue;
+        }
+        const signIn = new URL(redirect, response.url());
+        expect(signIn.origin, `${route} sign-in must remain same-origin`).toBe(
+          new URL(response.url()).origin,
         );
+        expect(signIn.pathname, `${route} must enforce sign-in`).toBe(
+          `/${locale}/auth`,
+        );
+        expect(signIn.searchParams.get("next"), route).toBeTruthy();
       }
     });
   }
