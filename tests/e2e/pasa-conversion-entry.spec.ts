@@ -223,6 +223,75 @@ for (const locale of ["en", "es"] as const) {
             fullPage: false,
           });
           screenshots.push(gatewayScreenshot);
+          // A real, non-mutating GET of the cross-product email-verification UI.
+          // Dummy tokens stay inside this disposable browser; never POST them.
+          const waitlistProduct =
+            device.name === "phone-360"
+              ? "duermo"
+              : device.name === "phone-390"
+                ? "coches"
+                : "pasa";
+          const waitlistHost = {
+            pasa: "https://akipasa.com",
+            duermo: "https://akiduermo.com",
+            coches: "https://akicoches.com",
+          }[waitlistProduct];
+          const waitlistEntry = "00000000-0000-4000-8000-000000000003";
+          const waitlistToken = "a".repeat(64);
+          const confirmation = await page.goto(
+            `/waitlist/confirm?lang=${locale}&product=${waitlistProduct}&entry=${waitlistEntry}&token=${waitlistToken}`,
+            { waitUntil: "domcontentloaded" },
+          );
+          expect(confirmation?.status()).toBe(200);
+          await expect(
+            page.getByRole("heading", {
+              level: 1,
+              name: locale === "es" ? "Solo falta un paso" : "One last step",
+            }),
+          ).toBeVisible();
+          await expect(page.locator("main[data-product]")).toHaveAttribute(
+            "data-product",
+            waitlistProduct,
+          );
+          const confirmationForm = page.locator(
+            'form[action="/api/launch-waitlist/confirm"][method="post"]',
+          );
+          await expect(confirmationForm).toBeVisible();
+          await expect(
+            confirmationForm.locator('input[name="entry"]'),
+          ).toHaveValue(waitlistEntry);
+          await expect(
+            confirmationForm.locator('input[name="token"]'),
+          ).toHaveValue(waitlistToken);
+          await expect(
+            confirmationForm.locator('input[name="lang"]'),
+          ).toHaveValue(locale);
+          await expect(
+            page.getByRole("link", {
+              name:
+                locale === "es" ? "Volver a la web" : "Back to the website",
+            }),
+          ).toHaveAttribute("href", waitlistHost);
+          const waitlistDimensions = await page.evaluate(() => ({
+            viewport: document.documentElement.clientWidth,
+            scroll: document.documentElement.scrollWidth,
+            submitHeight: document
+              .querySelector('form[action="/api/launch-waitlist/confirm"] button')
+              ?.getBoundingClientRect().height,
+          }));
+          expect(
+            waitlistDimensions.scroll - waitlistDimensions.viewport,
+            `Waitlist overflow: ${JSON.stringify(waitlistDimensions)}`,
+          ).toBeLessThanOrEqual(2);
+          expect(waitlistDimensions.submitHeight).toBeGreaterThanOrEqual(44);
+          const waitlistScreenshot = `test-results/pasa-waitlist-confirm-${locale}-${device.name}-${theme}.png`;
+          await page.screenshot({
+            path: waitlistScreenshot,
+            animations: "disabled",
+            fullPage: false,
+          });
+          screenshots.push(waitlistScreenshot);
+
           const stem = `pasa-conversion-${locale}-${device.name}-${theme}`;
           writeFileSync(
             `test-results/${stem}.json`,
