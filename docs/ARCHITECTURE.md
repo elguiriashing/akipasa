@@ -1,5 +1,9 @@
 # Architecture
 
+## Passport weekly challenge read-only projection (2026-10-29 candidate)
+
+`src/lib/aki-weekly-quests.ts` computes Europe/Madrid civil-week windows and distinct accepted, venue-credential-backed check-in milestones; `src/app/[locale]/passports/page.tsx` reads only the authenticated profile's existing `check_ins` under RLS. The visual `WeeklyQuestPanel` has no permission to change authoritative XP, stamps, rewards, benefits or check-in state. It explicitly does not equate a static venue credential with fraud-proof physical attendance. No schema or payment changes. Full browser/RLS and PR #326 styling acceptance are held for release.
+
 ## AkiConduzco rental marketplace and operator desk (2026-10-14)
 
 AkiConduzco is a dedicated Cloudflare custom-domain application at
