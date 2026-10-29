@@ -155,7 +155,26 @@ export default async function OwnerConsolePage({
 
       <section className="owner-hero panel">
         <div>
-          <h2>Welcome Back Alex</h2>
+          <span className="owner-command-kicker">
+            AkiPasa / {es ? "Centro de control" : "Control room"}
+          </span>
+          <h2>
+            {es ? "Tu centro de operaciones" : "Your operations cockpit"}
+          </h2>
+          <p>
+            {es
+              ? "Accede a moderación, aprobaciones y personalización desde tu panel privado."
+              : "Review moderation, approvals and personalisation from your private workspace."}
+          </p>
+          <nav
+            className="owner-command-actions"
+            aria-label={es ? "Accesos de la consola" : "Console shortcuts"}
+          >
+            <a href="#owner-launchpad">{es ? "Herramientas" : "Open tools"}</a>
+            <a href="#owner-activity">
+              {es ? "Actividad reciente" : "Recent activity"}
+            </a>
+          </nav>
         </div>
         <div className="owner-hero-orbit" aria-hidden="true">
           <i />
@@ -198,7 +217,7 @@ export default async function OwnerConsolePage({
       </section>
 
       <div className="owner-console-grid">
-        <section className="panel owner-launchpad">
+        <section className="panel owner-launchpad" id="owner-launchpad">
           <div className="owner-section-heading">
             <span>01</span>
             <div>
@@ -306,7 +325,7 @@ export default async function OwnerConsolePage({
           </div>
         </section>
 
-        <section className="panel owner-activity-stream">
+        <section className="panel owner-activity-stream" id="owner-activity">
           <div className="owner-section-heading">
             <span>04</span>
             <div>
