@@ -2,7 +2,6 @@ import { z } from "zod";
 import {
   appearanceSchema,
   DEFAULT_APPEARANCE,
-  renderHumanAvatar,
 } from "@/lib/pals/avatar-v2";
 import { previewAccess, privateHeaders } from "@/lib/pals/server";
 
@@ -35,7 +34,6 @@ export async function GET() {
     const appearance = parsed.success ? parsed.data : DEFAULT_APPEARANCE;
     return reply({
       appearance,
-      portrait: renderHumanAvatar(appearance),
       saved: Boolean(data),
     });
   } catch {
@@ -106,7 +104,6 @@ export async function POST(request: Request) {
     }
     return reply({
       appearance: action.appearance,
-      portrait: renderHumanAvatar(action.appearance),
       saved: action.save,
     });
   } catch {
