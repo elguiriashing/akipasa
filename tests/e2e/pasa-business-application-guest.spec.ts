@@ -47,6 +47,25 @@ for (const locale of ["en", "es"] as const) {
           expect(canonical.origin).toBe("https://business.akipasa.com");
           expect(canonical.pathname).toBe(route);
 
+          // Early-partner forms are claim-owner-only on the business host.
+          // Preserve the verified claim ID through the canonical handoff;
+          // never request the protected feedback or grant a trial here.
+          const claimId = "00000000-0000-4000-8000-000000000001";
+          const partnerPath = `/${locale}/business/early-partner?claim=${claimId}`;
+          const partnerGate = await context.request.get(partnerPath, {
+            maxRedirects: 0,
+          });
+          expect(partnerGate.status(), partnerPath).toBe(307);
+          const partnerTarget = new URL(
+            partnerGate.headers().location || "",
+            baseURL,
+          );
+          expect(partnerTarget.origin).toBe("https://business.akipasa.com");
+          expect(partnerTarget.pathname).toBe(
+            `/${locale}/business/early-partner`,
+          );
+          expect(partnerTarget.searchParams.get("claim")).toBe(claimId);
+
           // The AkiPasa sign-in shell is safe to screenshot locally, but this
           // is NOT authenticated acceptance of the business-host application.
           const localSignIn = `/${locale}/auth?next=${encodeURIComponent(route)}`;
