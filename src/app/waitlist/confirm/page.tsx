@@ -66,7 +66,9 @@ export default async function LaunchWaitlistConfirmation({
             <strong>{productName}</strong>
           </a>
           <p className={styles.kicker}>
-            {en ? "COSTA DEL SOL · LAUNCH UPDATES" : "COSTA DEL SOL · NOVEDADES"}
+            {en
+              ? "COSTA DEL SOL · LAUNCH UPDATES"
+              : "COSTA DEL SOL · NOVEDADES"}
           </p>
           <h2>
             {en
