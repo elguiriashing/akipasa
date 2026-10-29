@@ -1255,11 +1255,7 @@ html[data-theme="light"] .app-shell .pasa-terms-accept-version {
   border: 1px solid rgba(255, 160, 98, 0.32);
   border-radius: clamp(1.35rem, 2.8vw, 2rem);
   background:
-    radial-gradient(
-      circle at 90% 3%,
-      rgba(255, 135, 53, 0.3),
-      transparent 48%
-    ),
+    radial-gradient(circle at 90% 3%, rgba(255, 135, 53, 0.3), transparent 48%),
     linear-gradient(135deg, #1d2941, #0c1728 83%);
   color: #f7f9fd;
   box-shadow: 0 20px 55px rgba(0, 0, 0, 0.18);
