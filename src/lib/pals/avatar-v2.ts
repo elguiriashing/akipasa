@@ -6,6 +6,7 @@ import { z } from "zod";
  */
 export const appearanceSchema = z
   .object({
+    bodyStyle: z.enum(["feminine", "masculine"]).default("feminine"),
     skin: z.enum(["porcelain", "light", "warm", "olive", "brown", "deep"]),
     face: z.enum(["oval", "round", "angular"]),
     hair: z.enum(["buzz", "crop", "quiff", "bob", "curls", "long", "bun"]),
@@ -32,12 +33,17 @@ export const appearanceSchema = z
     build: z.enum(["slim", "regular", "broad"]),
     top: z.enum(["tee", "hoodie", "jacket", "sweater"]),
     topColor: z.enum(["orange", "ink", "cream", "mint", "purple", "red"]),
+    bottom: z.enum(["cargo", "jeans", "tailored", "shorts"]).default("cargo"),
+    shoes: z.enum(["sneakers", "boots", "trainers"]).default("sneakers"),
+    bag: z.enum(["none", "crossbody", "backpack"]).default("crossbody"),
+    accessory: z.enum(["none", "glasses", "earrings", "cap"]).default("none"),
   })
   .strict();
 
 export type Appearance = z.infer<typeof appearanceSchema>;
 
 export const DEFAULT_APPEARANCE: Appearance = {
+  bodyStyle: "feminine",
   skin: "warm",
   face: "oval",
   hair: "quiff",
@@ -55,10 +61,15 @@ export const DEFAULT_APPEARANCE: Appearance = {
   build: "regular",
   top: "tee",
   topColor: "orange",
+  bottom: "cargo",
+  shoes: "sneakers",
+  bag: "crossbody",
+  accessory: "none",
 };
 
 /** Every starter item and colour is free. No paid, random or unlockable gear here. */
 export const APPEARANCE_OPTIONS: Record<keyof Appearance, readonly string[]> = {
+  bodyStyle: ["feminine", "masculine"],
   skin: ["porcelain", "light", "warm", "olive", "brown", "deep"],
   face: ["oval", "round", "angular"],
   hair: ["buzz", "crop", "quiff", "bob", "curls", "long", "bun"],
@@ -85,6 +96,10 @@ export const APPEARANCE_OPTIONS: Record<keyof Appearance, readonly string[]> = {
   build: ["slim", "regular", "broad"],
   top: ["tee", "hoodie", "jacket", "sweater"],
   topColor: ["orange", "ink", "cream", "mint", "purple", "red"],
+  bottom: ["cargo", "jeans", "tailored", "shorts"],
+  shoes: ["sneakers", "boots", "trainers"],
+  bag: ["none", "crossbody", "backpack"],
+  accessory: ["none", "glasses", "earrings", "cap"],
 };
 
 const skin: Record<Appearance["skin"], string> = {
