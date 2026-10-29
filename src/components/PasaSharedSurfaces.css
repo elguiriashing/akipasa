@@ -330,7 +330,11 @@ html[data-theme="light"] .app-shell .account-workspace .account-welcome {
     #fff9f1;
 }
 
-html[data-theme="light"] .app-shell .account-workspace .account-welcome-copy h1 {
+html[data-theme="light"]
+  .app-shell
+  .account-workspace
+  .account-welcome-copy
+  h1 {
   color: #1b2a39;
 }
 
