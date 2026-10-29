@@ -2614,3 +2614,25 @@ Founder notices require the exact server-only `LAUNCH_WAITLIST_FOUNDER_NOTICES_E
 ## 2026-10-27 | Automation Worker Node CI security baseline
 
 The Automation Worker checks and its manually dispatched production deployment workflow use an explicit Node.js 22.23.4 runtime, rather than an unbounded 22.x selector. This addresses the October 2026 Node.js Brotli security baseline in GitHub Actions. Cloudflare Workers run in their own runtime; this change neither claims a Workers engine vulnerability nor modifies their production code or cron schedule. No production deployment is implied. Verify the complete AkiSuite build-runtime inventory, and reconcile the 23 and 26 October Cloudflare Cron incidents separately in issue #305. GitHub PR #304 tracks CI acceptance.
+
+## 2026-10-29 | Proposed first live Home and Login batch
+
+This isolated candidate is based on the current production master, f3d2687, and
+changes only Home's photographic opening/shared-search entrance and consumer
+Login presentation. The broader coordinated PR332 remains separate and draft.
+It does not import its database/native-product/Avatar/Passport/workspace changes.
+Home keeps the existing date/price/map destinations. The inline search waits for
+actual existing filter listeners; three GlobalSearch readiness-marker lines do
+not change validation, serialization or router calls. Generated rooftop artwork
+is decorative illustration, not real venue, crowd or event-supply evidence.
+
+Consumer Login retains every existing auth action, provider-availability gate,
+consent choice, return input, WorkspaceSelector and other-host decision. A focused
+CSS skin adds branding/background/readable controls and removes the redundant
+consumer-Login dock while retaining the visible Home exit. Its support launcher
+moves into normal flow. Other product hosts and all other routes remain baseline.
+
+This is a concrete staged-release proposal, not approval to bypass PR332's
+90-route gate. Alex must explicitly approve changing the original single-release
+boundary before this separate batch is published. Existing master checks, exact
+reviewed source, production configuration preservation and rollback apply.
