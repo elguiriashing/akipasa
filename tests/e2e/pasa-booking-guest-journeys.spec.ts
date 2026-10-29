@@ -25,7 +25,13 @@ for (const locale of ["en", "es"] as const) {
       expect(location, path).toBeTruthy();
       const destination = new URL(location!, "http://localhost");
       expect(destination.pathname, path).toBe(`/${locale}/auth`);
-      expect(destination.searchParams.get("next"), path).toBe(path);
+      const returnPath =
+        path === `/${locale}/onboarding`
+          ? `/${locale}/onboarding?${new URLSearchParams({
+              next: `/${locale}/account`,
+            })}`
+          : path;
+      expect(destination.searchParams.get("next"), path).toBe(returnPath);
     }
 
     const terms = await request.get(`/${locale}/terms/accept`, {
