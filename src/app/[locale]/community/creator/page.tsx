@@ -23,7 +23,10 @@ export default async function CreatorStudioPage({
   if (!isLocale(locale)) notFound();
   const es = locale === "es";
   const query = await searchParams;
-  const { supabase, user } = await requireUser(locale);
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/community/creator`,
+  );
   const { data: profile, error: profileError } = await supabase
     .from("creator_profiles")
     .select(

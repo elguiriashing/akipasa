@@ -1,6 +1,13 @@
 # First live batch: Home and consumer Login
 
-Status: tested local candidate; staged-release boundary awaits Alex's approval.
+Status: approved, merged and deployed on 29 October 2026 at22:22UTC.
+PR333 candidate `e2b537962193fcfe7a40967a10b58551dc58f8e4` merged as
+`39cd9bb42fd858dd54bd9f0d9e79a0504b15a0f2`; Cloudflare Worker
+`8199ce83-b416-42d1-9568-9dc167601b6a` received100%traffic. Public browser
+reads verified exact source identity plus English/Spanish Home and Login.
+All six exact-head CI workflows, clean full check (2,124tests) and80local browser
+states passed before merge. Physical Android remains a follow-up. The original
+proposal below records the bounded scope; it is no longer awaiting approval.
 Base: production master `f3d2687fa66e53d4e529118eb08210ad9cc0ff45`.
 
 Ship the photographic Home opening and consumer Login presentation first. Keep

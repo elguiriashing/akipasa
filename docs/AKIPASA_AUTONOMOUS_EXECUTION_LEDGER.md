@@ -2,6 +2,62 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 29 October 2026 UTC.
 
+## Reconciled overhaul and creator journey recovery — 29 October 2026
+
+Branch `work/coordinated-release-20261029`; committed baseline
+`da4ab3d72e9208f7cb046c56d3218690f63dd592`. The commit containing this entry
+freezes the application/test hashes in
+`docs/receipts/AKIPASA_CREATOR_RETURN_AND_CONTRAST_20261029.json`.
+
+Completed commits:79e17c4 consumer contrast/caption/detail repairs; da4ab3d merges
+production39cd9bb without losing either history. Exact da4 source passed all11
+ordinary hosted workflows, full check2,557 tests, complete Account312 and public
+browser437 (53explicit skips: separate Spotlight/credential-dependent cases).
+Cloudflare nonproduction build9bf16ceb-593d-4d97-b6d8-1434042a01e1 succeeded;
+it uploaded a candidate, not production traffic. Strict visual gate remains red.
+
+The next source fixes real Creator studio and Account action session-return loss,
+using exact existing task destinations through the unchanged Auth/terms/onboarding
+gate. Creator page/save/verification, Profile save/media, Settings email/password
+and Privacy deletion returns retain all original permissions and side effects.
+45focused Creator/Account action cases pass. Existing category-boundary tests
+now assert the intentional explicit studio return; no threshold/auth guard removed.
+
+Full repaired check PASSED2,599 tests plus format/lint/type/security/database/
+automation and optimized build. New creator browser PASSED144 with actual page
+exports, AppShell/dock and actions but explicit disposable Next/Auth/DB adapters.
+18venue-label contrast samples minimum5.842:1; actual reviewed screenshots show
+neutral dark hero/tabs/forms, truthful empty content and readable light venue text.
+Initial adapter-only document/draft races were fixed by real document navigation
+and nonce readiness, not sleeps or weakened assertions; failed runs are preserved.
+CI uploads the new Creator evidence plus previously omitted Staff/Stay/Support
+captures. Review groups/gaps are indexed in AKIPASA_RELEASE_REVIEW_PACK_20261029.md.
+
+WorkstreamA: implementation/contrast/journey repairs tested, genuine route review
+still pending. WorkstreamB: user-paused, private identities preserved, no artwork
+acceptance. WorkstreamC: truthful Tonight production gate stays off; no invented
+supply/XP/activity. WorkstreamD: new separate local Creator fixture faithfully
+replays official defaults before scoped source;39actual Auth/REST probes pass.
+The original partial fixture and production remain untouched. Full canonical
+migration parity is NOT established. Actual Next tests exposed missing committed
+Profile column-grant provenance; live read-only metadata confirms those intended
+grants already exist. Do not invent a live defect or broaden grants to hide it.
+
+Implemented/tested are not accepted/merged/deployed:90in-scope routes remain
+in-progress,13excluded,0accepted;6fallback boundaries also await genuine review.
+#332 stays draft. Physical Android, provider/protected journeys, final reviewer
+sign-offs and current canonical source dependencies remain release holds.
+
+Production remains approved #333 source39cd9bb / Worker
+8199ce83-b416-42d1-9568-9dc167601b6a. Rollback884dda44-e95d-4266-8ce1-d7a4de5c54db.
+No new production deployment/migration, consent, billing or customer-data change.
+
+Exact next action: commit/push this validated source without force, obtain fresh
+exact-head CI/Cloudflare upload results, finish isolated actual Next Creator tests
+against93-source fixture only after verified ACL-source recovery; preserve its
+failures and scope limits. Continue outstanding protected-role/device/reviewer
+acceptance. Root is sole integration owner; agents own isolated fixtures/tests.
+
 ## Approved first live batch — deployed 29 October 2026 22:22 UTC
 
 Alex explicitly approved shipping Home and Login first, replacing the original all-at-once requirement ONLY for this small batch. PR #333 merged candidate e2b537962193fcfe7a40967a10b58551dc58f8e4 as master 39cd9bb42fd858dd54bd9f0d9e79a0504b15a0f2. Trees match: 8015979264fc590abcb71e2b0ab7062e1782cd5e.

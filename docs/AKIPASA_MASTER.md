@@ -3177,3 +3177,35 @@ dock hiding. Separate-product Auth styling remains isolated. Home retains its
 existing default-off Tonight check; reconciliation never enables it. Both source
 histories and their tests are preserved. This merge is into the draft overhaul,
 not production. Full integrated checks and genuine route/device review remain.
+
+## 2026-10-29 | Creator studio authentication continuity
+
+The creator studio page, profile save and verification request now supply their
+exact localized studio destination to the existing authentication/onboarding/
+terms gate. A session lapse previously returned creators to Account root.
+Profile media upload likewise supplies its existing allowlisted creator/Profile
+return destination; file validation, storage ownership, caller-scoped profile
+writes and error redirects remain unchanged. No user-provided redirect is trusted.
+The real creator review action already preserves its detail/draft return path.
+New isolated creator route/action browser evidence covers populated, empty and
+failed reads, safe draft restoration, keyboard navigation and caller-bound writes.
+It is explicitly not proof of live Auth/RLS, integrated Next routing or a physical
+Android device. No feature gate, grant, SQL, XP, billing or production data change.
+
+The same exact-task return applies to Account Profile save, Settings email/password
+requests and Privacy deletion requests. Only navigation metadata changes; the
+existing gate still runs before any profile write, provider mail or deletion
+request. Original validation, confirmation, callback URLs and caller scope remain.
+
+Actual shell-backed creator captures additionally exposed small yellow venue
+labels against white event cards. They now use the readable theme highlight;
+creator workspaces inherit the consumer neutral night surfaces instead of the
+old navy workbench. Atmospheric hero fallbacks remain dark in both themes.
+Measured text contrast and final-source shell-backed captures are required.
+
+A separate clean local Creator fixture now faithfully applies the immutable
+Supabase initial schema defaults before92 unchanged scoped source artifacts.
+39 real Auth/REST checks prove private draft isolation and denied forged ownership,
+reassignment, verification escalation and category writes. The earlier partial QA
+fixture is preserved rather than broadly re-granted. Full canonical migration
+parity and actual provider/device acceptance remain separate requirements.

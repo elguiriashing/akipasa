@@ -108,7 +108,10 @@ it.each([0, 6])(
     await expect(saveCreatorProfile(f)).rejects.toThrow(
       "redirect:/en/community/creator?updated=1",
     );
-    expect(mocks.requireUser).toHaveBeenCalledWith("en");
+    expect(mocks.requireUser).toHaveBeenCalledWith(
+      "en",
+      "/en/community/creator",
+    );
     expect(mocks.upsert).toHaveBeenCalledWith(
       expect.objectContaining({
         profile_id: userId,

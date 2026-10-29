@@ -13,6 +13,8 @@ export default defineConfig({
       "tests/account-collections-ui.test.tsx",
       "tests/account-passport-redirect.test.ts",
       "tests/account-profile-website.test.ts",
+      "tests/account-profile-media-action.test.ts",
+      "tests/account-action-return.test.ts",
       "tests/account-collection-catalogue.test.ts",
       "tests/passport-read-recovery.test.tsx",
     ],

@@ -60,7 +60,10 @@ export async function updateAccountProfile(formData: FormData) {
     ? `https://www.instagram.com/${parsed.data.instagramHandle}`
     : null;
 
-  const { supabase, user } = await requireUser(locale);
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/account/profile`,
+  );
   const { error } = await supabase.rpc("update_own_profile", {
     p_display_name: parsed.data.displayName,
     p_preferred_locale: parsed.data.preferredLocale,
@@ -99,7 +102,10 @@ export async function requestAccountEmailChange(formData: FormData) {
   if (!parsed.success)
     redirect(`/${locale}/account/settings?error=email-validation`);
 
-  const { supabase, user } = await requireUser(locale);
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/account/settings`,
+  );
   const nextEmail = parsed.data.email.toLowerCase();
   if (user.email?.toLowerCase() === nextEmail)
     redirect(`/${locale}/account/settings?error=email-same`);
@@ -119,7 +125,10 @@ export async function requestAccountEmailChange(formData: FormData) {
 
 export async function requestAccountPasswordReset(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
-  const { supabase, user } = await requireUser(locale);
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/account/settings`,
+  );
   if (!user.email) redirect(`/${locale}/account/settings?error=password-email`);
 
   const redirectTo = `${config.siteUrl}/${locale}/auth/callback?next=${encodeURIComponent(
@@ -138,7 +147,10 @@ export async function requestAccountDeletion(formData: FormData) {
   const confirmation = String(formData.get("confirmation") || "");
   if (confirmation !== "DELETE" && confirmation !== "BORRAR")
     redirect(`/${locale}/account/privacy?error=delete-confirmation`);
-  const { supabase, user } = await requireUser(locale);
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/account/privacy`,
+  );
   const { error } = await supabase
     .from("account_deletion_requests")
     .insert({ profile_id: user.id });
@@ -163,7 +175,7 @@ export async function uploadProfileMedia(formData: FormData) {
   ) {
     redirect(`${returnTo}?error=media`);
   }
-  const { supabase, user } = await requireUser(locale);
+  const { supabase, user } = await requireUser(locale, returnTo);
   const extension =
     file.type === "image/png"
       ? "png"

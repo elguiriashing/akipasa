@@ -29,6 +29,8 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - name: Verify Community forms, history and draft recovery
         run: node scripts/test-community-workflows-browser.mjs
+      - name: Verify creator detail, studio and safe draft journeys
+        run: node scripts/test-creator-routes-browser.mjs
       - name: Verify framework error recovery and loading boundaries
         run: node scripts/test-pasa-boundaries-browser.mjs
       - name: Verify root-layout failure recovery
@@ -41,6 +43,7 @@ jobs:
           name: consumer-workflow-evidence
           path: |
             test-results/community-workflows
+            test-results/creator-routes
             test-results/pasa-boundaries-framework
             test-results/global-error
             test-results/business-home-read

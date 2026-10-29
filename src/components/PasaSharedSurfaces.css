@@ -547,7 +547,7 @@ html[data-theme="light"]
       rgba(248, 119, 43, 0.25),
       transparent 49%
     ),
-    linear-gradient(135deg, #1a2940, #0d1623);
+    linear-gradient(135deg, #191715, #090b0d);
   color: #fff;
 }
 
@@ -1650,4 +1650,12 @@ html[data-theme="light"]
   .app-shell .owner-console-page .owner-hero-orbit i {
     animation: none;
   }
+}
+
+/* Creator tabs share the same neutral night chrome as their form panels. */
+html:not([data-theme="light"])
+  .app-shell
+  .app-content[data-pasa-surface="creators"]
+  .studio-tab-list {
+  background: var(--pasa-raised);
 }

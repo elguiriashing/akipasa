@@ -3951,3 +3951,39 @@ waiving the strict coordinated overhaul gate.
 - Retain original and staged Auth regressions and readiness-trigger coverage.
 - No production merge/deploy, schema, consent-state or authentication action
   change. Final-source full check, browser rerun and hosted CI are required.
+
+## 2026-10-29 | Creator studio session-return recovery and browser coverage
+
+- Trigger: guest/session expiry on Creator studio or its save/verification action
+  used requireUser's Account-root default. Return now remains on the localized
+  studio. Shared media upload uses its existing creator/Profile allowlist.
+- Existing authentication, terms, onboarding, authorization, file size/type,
+  storage path, signed caller IDs and mutation payloads remain authoritative.
+- Regression evidence must cover EN/ES guest page/action returns, rejected Auth
+  before writes, safe review drafts, profile caller scope and both upload returns.
+- A new loopback-only browser harness imports actual creator detail/studio page
+  exports and server actions with explicit disposable Next/Auth/DB/media adapters.
+  CI must upload its artifacts; it does not establish live role/RLS acceptance.
+- Real local Auth preflight confirmed creator profile reads, eligibility and
+  Prestige admin denial. Partial local schema lacks categories/events/submission
+  table permissions; no grants or activation were changed to hide the gap.
+- Source-only rollback. Full check, fresh browser and exact-head CI remain required.
+
+The Account action audit found the same default-next defect in Profile save,
+Settings email/password and Privacy deletion requests. They now pass their exact
+existing localized task paths to requireUser. Tests must exercise Auth denial
+with valid payloads and confirm no mutation or provider/email call occurs. No
+callback URL, deletion confirmation, sensitive-action permission or data changes.
+
+Shell-backed screenshots found faint yellow creator venue labels in light mode.
+Scoped creator CSS now uses the shared readable theme highlight and neutral
+consumer night surfaces; dark hero fallback artwork remains paired with light
+text. A computed4.5:1 venue-label regression is added without lowering thresholds.
+
+The local Creator permission gap was traced to an omitted official Supabase
+initial-default-privileges baseline. A separate internal-network fixture applies
+that immutable baseline BEFORE92 unchanged scoped source artifacts.39 actual
+Auth/REST probes now pass (own/private/public visibility and denied forged owner,
+reassignment, verification and category writes). The original fixture is retained;
+no broad retroactive grants, production API writes or feature activation occurred.
+This is scoped Creator/Auth/RLS proof, not complete canonical migration parity.

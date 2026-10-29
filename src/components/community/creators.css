@@ -25,7 +25,7 @@
   border-radius: 1.5rem;
   background:
     radial-gradient(ellipse at 95% 15%, #fa752731, transparent 55%),
-    linear-gradient(125deg, #172338, #0b1321);
+    linear-gradient(125deg, #191715, #090b0d);
   color: #f7f9fd;
   box-shadow: 0 18px 45px #0002;
 }
@@ -128,7 +128,7 @@
 .app-shell .community-workspace .creator-card-v2 .creator-card-media {
   height: 180px;
   background:
-    radial-gradient(ellipse at 90% 0, #d86c3138, transparent 70%), #172338;
+    radial-gradient(ellipse at 90% 0, #d86c3138, transparent 70%), #151719;
 }
 
 .app-shell .community-workspace .creator-card-v2 .creator-card-body {
@@ -144,7 +144,7 @@
 .app-shell .community-workspace .creator-profile-v2 .creator-cover {
   min-height: 300px;
   padding: clamp(1.1rem, 3vw, 2rem);
-  background-color: #111d30;
+  background-color: #101214;
 }
 
 .app-shell .community-workspace .creator-profile-v2 .creator-profile-title h1 {
@@ -282,4 +282,16 @@
     > img {
     transform: none;
   }
+}
+
+/* Keep creator workspaces within the consumer night palette. */
+html:not([data-theme="light"]) .app-shell .community-workspace {
+  --pasa-ui-panel: var(--pasa-ink);
+  --pasa-ui-elevated: var(--pasa-raised);
+  --pasa-ui-glass: var(--pasa-ink);
+}
+
+/* Yellow accent is decorative; small venue labels need readable themed ink. */
+.app-shell .community-workspace .creator-event-venue {
+  color: var(--pasa-ui-highlight);
 }

@@ -39,7 +39,10 @@ export async function saveCreatorProfile(formData: FormData) {
     .safeParse(rawCategoryIds);
   if (!parsed.success || !categoryIds.success)
     redirect(`/${locale}/community/creator?error=validation`);
-  const { supabase, user } = await requireUser(locale);
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/community/creator`,
+  );
   const v = parsed.data;
   const { error } = await supabase.from("creator_profiles").upsert(
     {
@@ -98,7 +101,10 @@ export async function saveCreatorProfile(formData: FormData) {
 }
 export async function requestCreatorVerification(formData: FormData) {
   const locale = formData.get("locale") === "en" ? "en" : "es";
-  const { supabase, user } = await requireUser(locale);
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/community/creator`,
+  );
   const { data: eligibility, error: eligibilityError } = await supabase.rpc(
     "creator_verification_eligibility",
     { p_profile: user.id },
