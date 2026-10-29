@@ -3234,3 +3234,20 @@ account mutation coverage, preserving earlier failed receipts and original QA.
 This remains scoped proof, not full canonical migration or physical-device
 acceptance. Rollback keeps pre-existing live grants; fresh replay rollback must
 restore its recorded pre-migration ACL, never blindly revoke production rights.
+
+## 2026-10-29 | Preserve RPC-only terms acceptance records
+
+Read-only live metadata found direct authenticated UPDATE privileges on both
+profiles.terms_version and terms_accepted_at, despite0022/0033's RPC-only contract.
+Owner RLS and existing BEFORE triggers do not protect those fields. This allows
+own-user acceptance markers to be changed outside the intended server-stamped
+RPC; it does not establish an age/onboarding or cross-account bypass.
+
+The security-only mirrored migration20261029232451 revokes UPDATE on just those
+two columns from PUBLIC/anon/authenticated. It preserves the existing RPC body,
+execution ACL, policies, ordinary editing rights and all stored acceptance rows.
+Preconditions verify RLS, no broad client table UPDATE, and the existing trusted
+owner RPC's availability; postconditions ensure effective client denial and
+continued RPC-owner access. Unsupported/inherited privileges fail atomically.
+This source is prepared for independent review and explicit production approval;
+no live SQL or customer-data change has occurred. The larger overhaul stays draft.

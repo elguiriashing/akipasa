@@ -8,7 +8,6 @@ export default defineConfig({
     include: [
       "tests/discovery-search-trigger.test.tsx",
       "tests/account-controls.test.tsx",
-      "tests/discovery-search-trigger.test.tsx",
       "tests/account-unavailable.test.tsx",
       "tests/account-collections-ui.test.tsx",
       "tests/account-passport-redirect.test.ts",
@@ -16,6 +15,7 @@ export default defineConfig({
       "tests/account-profile-media-action.test.ts",
       "tests/account-action-return.test.ts",
       "tests/profile-edit-grants-sql.test.ts",
+      "tests/profile-terms-grants-sql.test.ts",
       "tests/account-collection-catalogue.test.ts",
       "tests/passport-read-recovery.test.tsx",
     ],

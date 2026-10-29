@@ -2,6 +2,55 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 29 October 2026 UTC.
 
+## Terms-record security patch prepared, production approval pending
+
+Committed integration baseline `6b7f2f8be21a3848a2f6e49c59b279f0353ba6a1` on
+`work/coordinated-release-20261029`. This commit integrates the exact reviewed
+terms patch from separate draft PR334, source
+`892a1948bb739d3ae6e88d091e085e88a940a294`, into the unmerged full overhaul.
+PR334 is based solely on production39cd9bb; its8changedpaths include no runtime
+app/package/lockfile/UI change. Neither PR is production approval.
+
+Read-only live metadata confirmed authenticated UPDATE on terms_version and
+terms_accepted_at. Sole owner RLS and all applicable live BEFORE UPDATE triggers
+do not protect them. The intended0022/0033 RPC-only source contract therefore
+has existing production ACL drift. This is own-user record integrity, not an
+established cross-user, onboarding or age bypass. No customer row/exploit/mutation
+was used. New15editor-column repair did NOT introduce this issue or grant terms.
+
+Mirrored CLI-generated20261029232451, exactSHA256
+7fe0fa1aa1346cc3877e9693b60a6f1a382f09bf37ebbe33e0bea951b8eeeb75,
+revokes ONLYthe2termsclient UPDATE permissions. Existing acceptance records,
+ordinary edits, RPCdefinition/executeACL, RLS and all roles/settings remain.
+Pre/post guards preserve trusted tableowner RPC availability and fail atomically
+on unexpected broad/inherited privileges. Independent review strengthened owner
+privilege/bypass checks; no unreviewed version was applied to production.
+
+TESTED: security-only fullcheck PASSED2,143tests and Next build; integrated fullcheck
+PASSED2,639tests and full security/database/automation/build. An initial test-only
+TypeScript snapshot-row type error was corrected without changing SQL/assertions;
+failed logs remain.19actual SQL semantic cases pass. Final local95-source fixture
+passed39Auth/REST/RLS,5actual Next and11Profile boundaries after exactpatch;
+rows/RPC/policies/editorprivileges retained. Crossportal immutable source checks
+AkiPasa main3a046967 and separateAkiHQba33054c found compatible RPCuse, no direct
+terms writes. This is not physical/provider acceptance or all164canonical parity.
+
+UNMERGED / UNDEPLOYED: require fresh exact-head CI for both candidates. PR332's
+strict90route/6fallback gate remains unchanged,0accepted. AkiPals user-paused,
+Tonightdefaultoff. Production still only approved #333 source39cd9bb / Worker
+8199ce83-b416-42d1-9568-9dc167601b6a. Immediate rollback reference is that current
+Home/Login Worker; older884dda44 remains historical prior to Home/Login.
+
+NEXT: integrate/push this immutable patch history, verify all fresh CI and CF
+nonproduction builds. Then request explicit owner approval for standalone334
+merge/productiontwo-columnSQL ONLY, as required by AGENTS.md production rule.
+Do NOTapply remote SQL or merge while approvalpending. After approval recheck
+currentmaster/expectedhead/liveguardmetadata, apply exacttransactiononce, verify
+ACL/RPC/policies/rowswithoutmutatingcustomerrecords and automaticWorker source;
+never duplicate manualdeployment. Full-overhaul reviewer/device gates stay.
+Root integration owner lease through00:15UTC30October; checkpoint in existing
+single continuation task, no duplicate or guaranteedbackgroundcoding claim.
+
 ## Existing Profile grant replay repaired — 29 October 2026 23:22 UTC
 
 Branch `work/coordinated-release-20261029`; committed baseline

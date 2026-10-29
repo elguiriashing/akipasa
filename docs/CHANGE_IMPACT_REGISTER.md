@@ -4008,3 +4008,22 @@ This is scoped Creator/Auth/RLS proof, not complete canonical migration parity.
   permissions which existed before this source repair.
 - Remaining: full required check, fresh exact-head CI/Cloudflare packaging and
   independent source/reviewer/device acceptance; no accepted-route change.
+
+## 2026-10-29 | Terms-record ACL drift correction (security-only proposal)
+
+- Evidence: live schema/privilege/trigger metadata only, no customer rows or
+  mutation. Authenticated can update both own terms markers; owner RLS and live
+  authority/tier triggers do not prevent it. Existing source reserves these
+  fields to accept_current_terms(text,text).
+- Scope: revoke only two client column-update permissions. No RPC body/execution
+  ACL, row policy, editing field, acceptance row, onboarding, role or billing change.
+- Fail closed: enabledRLS, no broad clienttableUPDATE, trusted tableowner RPC with
+  required privileges; verify effective client denial and RPC availability after.
+- Tests:19actual SQL cases cover observed drift, denial, normal server-stamped
+  RPC, unchanged rows/ACL/policies, idempotence and unsupported-state rollback.
+  Separate real local39Auth/REST,5Next and11security-boundary checks pass.
+- Cross-portal: consumer Terms/OAuth uses the existing RPC; other portal callers
+  must be checked before production. No live application is authorized by this entry.
+- Production/rollback: explicit approval required before any remote application.
+  Guard failures roll back all ACL changes. Do not regrant acceptance-field edits
+  as a cosmetic rollback; keep ordinary profile edits and RPC acceptance working.
