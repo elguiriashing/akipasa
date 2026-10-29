@@ -410,8 +410,8 @@
     },
     "src/app/[locale]/terms/accept/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Auth-scoped shared terms-confirmation layout and EN/ES responsive guest-return tests implemented. Pending genuine signed-in terms form review, submission/error handling, consent records, browser light/dark screenshots and physical Android proof; not accepted."
     },
     "src/app/[locale]/terms/page.tsx": {
       "scope": "consumer",
