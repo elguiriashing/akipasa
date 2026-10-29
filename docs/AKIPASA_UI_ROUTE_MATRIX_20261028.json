@@ -200,8 +200,8 @@
     },
     "src/app/[locale]/business/apply/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared responsive business application hero, 3-stage progress strip, form/help panels and light/dark styles implemented. EN/ES phone/desktop/Android-emulated guest-return browser tests authored; authenticated applicant, actual form submission, visual screenshots and physical Android review still outstanding; NOT accepted."
     },
     "src/app/[locale]/business/early-partner/page.tsx": {
       "scope": "operational",
