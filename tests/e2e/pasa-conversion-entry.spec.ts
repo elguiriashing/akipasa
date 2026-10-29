@@ -171,6 +171,59 @@ for (const locale of ["en", "es"] as const) {
             fullPage: false,
           });
           screenshots.push(referralScreenshot);
+
+          // Business sign-in is an explicit cross-product handoff.
+          // Inspect the public gateway, never follow the external login.
+          const hqResponse = await page.goto(`/hq-login?lang=${locale}`, {
+            waitUntil: "domcontentloaded",
+          });
+          expect(hqResponse?.status()).toBe(200);
+          await expect(
+            page.getByRole("heading", {
+              level: 1,
+              name:
+                locale === "es"
+                  ? "Gestiona tu local desde AkiHQ"
+                  : "Manage your venue on AkiHQ",
+            }),
+          ).toBeVisible();
+          const hqGuide = page.locator(
+            'aside[aria-labelledby="hq-how-it-works"]',
+          );
+          await expect(hqGuide).toBeVisible();
+          await expect(hqGuide.locator("li")).toHaveCount(3);
+          const hqSignIn = page.getByRole("link", {
+            name: locale === "es" ? "Entrar a AkiHQ" : "Sign in to AkiHQ",
+          });
+          const hqTarget = new URL(
+            (await hqSignIn.getAttribute("href")) || "",
+            baseURL,
+          );
+          expect(hqTarget.origin).toBe("https://akihq.app");
+          expect(hqTarget.pathname).toBe("/login");
+          expect(hqTarget.searchParams.get("lang")).toBe(locale);
+          const operationsLink = page.getByRole("link", {
+            name:
+              locale === "es" ? "Conocer AkiBusiness" : "About AkiBusiness",
+          });
+          expect(await operationsLink.getAttribute("href")).toBe(
+            "https://akibusiness.com",
+          );
+          const gatewayDimensions = await page.evaluate(() => ({
+            viewport: document.documentElement.clientWidth,
+            scroll: document.documentElement.scrollWidth,
+          }));
+          expect(
+            gatewayDimensions.scroll - gatewayDimensions.viewport,
+            `HQ gateway overflow: ${JSON.stringify(gatewayDimensions)}`,
+          ).toBeLessThanOrEqual(2);
+          const gatewayScreenshot = `test-results/pasa-hq-gateway-${locale}-${device.name}-${theme}.png`;
+          await page.screenshot({
+            path: gatewayScreenshot,
+            animations: "disabled",
+            fullPage: false,
+          });
+          screenshots.push(gatewayScreenshot);
           const stem = `pasa-conversion-${locale}-${device.name}-${theme}`;
           writeFileSync(
             `test-results/${stem}.json`,
