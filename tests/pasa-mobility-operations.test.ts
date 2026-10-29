@@ -15,6 +15,7 @@ describe("rental operations visual integration", () => {
     expect(page).toContain("createRentalCompany");
     expect(page).toContain("createRentalVehicle");
     expect(page).toContain("updateRentalBookingStatus");
+    expect(page).toContain("vehicleError || bookingError || blockError");
   });
 
   it("shows only working nav targets for each rental workspace state", () => {
