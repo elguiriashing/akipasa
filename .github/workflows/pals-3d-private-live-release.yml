@@ -22,7 +22,7 @@ concurrency:
 jobs:
   private-playtest:
     # One intentional PR #327 squash merge only. This cannot deploy on ordinary pushes.
-    if: ${{ startsWith(github.event.head_commit.message, 'release(pals): private 3D playtest PR #327') }}
+    if: "${{ startsWith(github.event.head_commit.message, 'release(pals): private 3D playtest PR #327') }}"
     runs-on: ubuntu-latest
     timeout-minutes: 70
     env:
