@@ -23,7 +23,7 @@ secrets, private keys or original application startup scripts were used.
 Tested: 17 direct Node tests currently pass. The earlier frozen baseline passed
 17 actual Chromium cases covering EN/ES, four widths, reduced motion, real VRM
 rendering, local persistence, retry, context recovery and repeated teardown.
-Subsequent core changes require fresh browser results. Orion is a CC0 technical
+The current studio hash `af3eae7477af2dfd1348a7c424bcd34232d777a784c6a403fa1b5ef48a8584b4` also passed a fresh 17-case baseline. Orion is a CC0 technical
 robot fixture only, explicitly not proposed human artwork. Source-engine success
 is not visual acceptance or proof of application integration.
 
@@ -32,20 +32,53 @@ noncommercial, author-only and no-redistribution models; they were not admitted.
 Professionally authored Blender Foundation Rain/Snow sources have retained
 CC-BY-4.0 grants, immutable hashes and credits in
 `/workspace/akipasa-avatar-assets`. Static and experimental rigged exports are
-local engineering proofs. Current VRM1 exports fail the default loader because
+local engineering proofs. Initial VRM1 exports failed the default loader because
 its specification requires a VRM Public License URL; no allowlist bypass or
-false relicense is authorized. Agents are evaluating native VRM0 CC_BY metadata
+false relicense is authorized. Agents implemented native VRM0 CC_BY metadata
 with the original license URL and attribution, correct humanoid mapping and
 orientation. Facial corrective shapes must not be advertised as blink/visemes
 without actual visible semantic behavior.
 
-Next executable actions: finish rights-faithful Rain/Snow exports; run the actual
-M3 professional-model browser harness; inspect real front/three-quarter renders,
-rig deformation, facial controls, memory and mobile budgets. Preserve the fork,
-source receipts and failed evidence before considering an application adapter.
+The native VRM0 CC_BY alternative is now verified against official immutable
+specification blobs and works with the default loader. The final professional
+bundle `5c333bf504d12192c95ab7be3bc4a2697a7dc99cb5e2f46ea056083e0ec90266`
+passed 26 real browser captures plus four repeated loads. Real screenshot review
+caught and corrected distant portrait framing and raised diagnostic arms. The
+final tests assert useful head/hair bounds, downward arm movement, valid weights,
+finite skin matrices and actual authored facial changes; no external/mutation
+requests, page errors or GPU-context warnings were recorded. Root inspected final
+Rain blink/happy and Snow portrait/full-body captures. This is engineering
+inspection, not Alex art acceptance. Final node suite passes 17 individual cases.
+The pinned local Playwright dependency removes the neighboring-app dependency.
+
+Next executable actions: preserve the frozen fork and source-bound evidence; use
+`docs/AKIPALS_M3_ENGINE_EVALUATION_20261029.md` for the integration contract and
+runtime dependency split. Author a coherent mobile-budgeted customization catalog
+before any application identity adapter.
 Do not send its prototype DTO to the existing strict private avatar API or
 replace saved identities. Final art, wardrobe authority, versioned migration,
 physical Android and all 90 route sign-offs remain unaccepted. No merge or deploy.
+
+### Frozen M3 recovery checkpoint
+
+The isolated prototype is committed locally as
+`e2649049cb58a51da57ee465f843c3b5e4a2e2d6`, branch
+`experiment/akipals-m3-engine`. Its complete tracked code, reviewed model fixtures,
+license evidence and browser screenshots are retained in
+`/workspace/akipasa-m3-checkpoints/prototype-e264904.bundle`, SHA256
+`6c8641f059355d6801f0f6cfffe78b3b6c12469aaea618574b4f463f2e5e6918`.
+This separate local repository is not a competing release branch and has no remote
+publication. `docs/receipts/AKIPALS_M3_FEASIBILITY_20261029.json` contains restore
+and validation commands; `evidence/tests/INDEX.md` indexes final and failed proof.
+The additional prototype-local Playwright wrapper smoke passed twelve captures.
+All prototype authors froze changes and closed their test servers before commit.
+Do not discard the bundle or claim another runner can access it without checking.
+
+The existing hourly task was updated with the restored source state and M3 scope;
+its schedule was preserved. Its recorded 12:56 UTC run performed read-only checks,
+respected foreground ownership and did not have the foreground filesystem. No
+continuous background worker or prototype integration is claimed. Strict local
+release audit still exits 2 with all 90 in-scope routes awaiting genuine sign-off.
 
 ## Current owner feedback and validated source
 
