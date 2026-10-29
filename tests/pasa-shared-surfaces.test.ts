@@ -154,7 +154,6 @@ describe("AkiPasa shared redesign system", () => {
     expect(actions).toContain('status", "approved"');
     expect(actions).toContain('onConflict: "claim_id"');
   });
-
   it("keeps the owner cockpit protected and source data server-owned", () => {
     const page = source("src/app/[locale]/owner/page.tsx");
     const access = source("src/lib/owner-console.ts");
@@ -193,5 +192,4 @@ describe("AkiPasa shared redesign system", () => {
     expect(controls).toContain('apply("shipping_delete")');
     expect(controls).toContain('apply("withdraw")');
   });
-
 });
