@@ -97,7 +97,7 @@ async function rows() {
 }
 async function acl() {
   return (
-    await db.query(
+    await db.query<{ attname: string; attacl: string | null }>(
       `select attname,attacl::text from pg_attribute where attrelid='public.profiles'::regclass and attnum>0 and not attisdropped order by attnum`,
     )
   ).rows;
