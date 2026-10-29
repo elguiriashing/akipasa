@@ -230,8 +230,8 @@
     },
     "src/app/[locale]/check-in/[token]/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Real QR-token venue page and EN/ES mobile proof copy updated; client GPS is labelled received, not verified, stale fixes invalidated, server-owned geofence and XP/loyalty logic untouched. UI regression tests added. Real credential fixture screenshots, Android WebView and visual sign-off remain outstanding."
     },
     "src/app/[locale]/check-in/page.tsx": {
       "scope": "consumer",
