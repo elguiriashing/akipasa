@@ -122,3 +122,192 @@
   max-width: 100%;
   overflow-wrap: anywhere;
 }
+
+/* Personal Prestige privacy centre, scoped away from public trophy screens. */
+.privacyWorkspace {
+  --prestige-private-ink: #f5f8ff;
+  --prestige-private-muted: #c5d3e3;
+  --prestige-private-panel: #142137;
+  --prestige-private-line: rgba(174, 200, 229, 0.22);
+  width: min(100%, 1100px);
+  padding-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
+  color: var(--prestige-private-ink);
+}
+.privacyNavigation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+.privacyNavigation a {
+  color: var(--prestige-private-muted);
+}
+.privacyHero {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.4rem, 4vw, 3.25rem);
+  border: 1px solid rgba(255, 155, 87, 0.34);
+  border-radius: clamp(1.2rem, 3vw, 2rem);
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(255, 130, 55, 0.22), transparent 52%),
+    linear-gradient(135deg, #20344c, #0e1728 85%);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.16);
+}
+.privacyEyebrow {
+  color: #ffb985;
+  font-size: 0.77rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+.privacyHero h1 {
+  max-width: 19ch;
+  margin: 0.65rem 0;
+  color: #fff;
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  font-weight: 850;
+  line-height: 1.08;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+.privacyHero p {
+  max-width: 66ch;
+  color: #dce6f2;
+  line-height: 1.6;
+}
+.privacyActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+.privacyActions a {
+  border: 1px solid rgba(255, 173, 113, 0.6);
+  background: #ff8d49;
+  color: #21190f;
+  font-weight: 800;
+  text-decoration: none;
+}
+.privacySection {
+  margin-top: clamp(1.25rem, 3vw, 2rem);
+}
+.privacySectionHeading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+.privacySectionHeading h2 {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.35rem, 2.8vw, 2rem);
+  letter-spacing: -0.035em;
+}
+.privacySectionHeading p {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--prestige-private-muted);
+  line-height: 1.55;
+}
+.privacyCount {
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--prestige-private-line);
+  border-radius: 999px;
+  background: var(--prestige-private-panel);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+.privacyAwardCard {
+  border-color: var(--prestige-private-line);
+  background: var(--prestige-private-panel);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.11);
+}
+.privacyAwardCard h3 {
+  margin: 0.55rem 0 0.8rem;
+  font-size: 1.22rem;
+  overflow-wrap: anywhere;
+}
+.privacyAwardCard p {
+  color: var(--prestige-private-muted);
+  line-height: 1.5;
+}
+.privacyAwardCard button {
+  width: 100%;
+  border: 1px solid var(--prestige-private-line);
+  background: transparent;
+  color: var(--prestige-private-ink);
+  text-align: center;
+}
+.privacyAwardCard button:disabled {
+  opacity: 0.55;
+}
+.privacyAwardCard :is(button, a):focus-visible,
+.privacyActions a:focus-visible,
+.privacyNavigation a:focus-visible {
+  outline: 3px solid #ffbc88;
+  outline-offset: 3px;
+}
+.privacySerial {
+  color: #ffbc8a;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.privacyEmpty,
+.privacyNotice {
+  padding: clamp(1.2rem, 3vw, 2rem);
+  border: 1px solid var(--prestige-private-line);
+  border-radius: 1.25rem;
+  background: var(--prestige-private-panel);
+  line-height: 1.6;
+}
+.privacyEmpty h3 {
+  margin: 0 0 0.5rem;
+}
+.privacyEmpty p {
+  margin: 0;
+  color: var(--prestige-private-muted);
+}
+:global(html[data-theme="light"]) .privacyWorkspace {
+  --prestige-private-ink: #203145;
+  --prestige-private-muted: #485a6c;
+  --prestige-private-panel: #fffdfa;
+  --prestige-private-line: rgba(55, 77, 100, 0.21);
+}
+:global(html[data-theme="light"]) .privacyHero {
+  border-color: rgba(183, 82, 23, 0.3);
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(255, 141, 79, 0.19), transparent 52%),
+    #fff9f1;
+}
+:global(html[data-theme="light"]) .privacyHero h1 {
+  color: #203145;
+}
+:global(html[data-theme="light"]) .privacyHero p {
+  color: #475569;
+}
+:global(html[data-theme="light"]) .privacyEyebrow,
+:global(html[data-theme="light"]) .privacySerial {
+  color: #9b420c;
+}
+@media (max-width: 600px) {
+  .privacyHero {
+    padding: 1.5rem 1.2rem;
+  }
+  .privacyActions a {
+    width: 100%;
+  }
+  .privacySectionHeading {
+    align-items: flex-start;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .privacyWorkspace * {
+    scroll-behavior: auto;
+    transition: none;
+  }
+}
