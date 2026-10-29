@@ -1,3 +1,4 @@
+import { accountReturnPath } from "@/lib/account-return-path";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
@@ -27,7 +28,10 @@ export default async function MyBookingsPage({
   );
   const { supabase, user } = await requireUser(
     locale,
-    `/${locale}/account/bookings`,
+    accountReturnPath(
+      locale,
+      `/${locale}/account/bookings?${new URLSearchParams(Object.entries(query).filter((entry): entry is [string, string] => typeof entry[1] === "string"))}`,
+    ),
   );
   const { data: stays, error: stayError } = await supabase
     .from("accommodation_reservations")

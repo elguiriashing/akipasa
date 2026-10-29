@@ -14,7 +14,7 @@ export default async function ActivityPage({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireUser(locale, `/${locale}/account/activity`);
   const { data, error } = await supabase
     .from("recent_event_view_refs")
     .select("event_key,title,href,viewed_at")

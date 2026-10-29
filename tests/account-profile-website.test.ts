@@ -40,7 +40,9 @@ describe("saved profile website navigation", () => {
       "src/app/[locale]/account/account-controls.css",
       "utf8",
     );
-    expect(page).toContain("requireUser(locale)");
+    expect(page).toMatch(
+      /requireUser\(\s*locale,\s*`\/\$\{locale\}\/account\/profile`,?\s*\)/,
+    );
     expect(page).toContain('.eq("id", user.id)');
     expect(page).toContain("accountProfileWebsiteHref(profile?.website_url)");
     expect(page).toContain("href={websiteHref}");

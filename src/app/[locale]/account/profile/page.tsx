@@ -27,7 +27,10 @@ export default async function ProfilePage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
-  const { supabase, user } = await requireUser(locale);
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/account/profile`,
+  );
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select(

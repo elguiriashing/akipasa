@@ -12,7 +12,10 @@ export default async function PremiumPage({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const { supabase, user } = await requireUser(locale);
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/account/premium`,
+  );
   const [
     { data: premium, error: premiumError },
     { count: savedCount, error: savedError },

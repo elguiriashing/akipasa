@@ -1,3 +1,4 @@
+import { accountReturnPath } from "@/lib/account-return-path";
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
@@ -31,7 +32,10 @@ export default async function Referrals({
   const code = referralCode(query.ref);
   const { supabase, user } = await requireUser(
     locale,
-    `/${locale}/account/referrals${code ? `?ref=${code}` : ""}`,
+    accountReturnPath(
+      locale,
+      `/${locale}/account/referrals?${new URLSearchParams(Object.entries(query).filter((entry): entry is [string, string] => typeof entry[1] === "string"))}`,
+    ),
   );
   const ready = process.env.AKISUITE_REFERRALS_READY === "true";
   const [overview, rep, leads, cases] = ready

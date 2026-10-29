@@ -3831,3 +3831,37 @@ and removes it on cleanup. This is independent of the existing auto-submit/debou
 marker, which can remain absent after same-value navigation. Query serialization,
 validation, router calls and feature gates are unchanged. Delayed hydration,
 cleanup/replacement and no-op readiness receive targeted regressions.
+
+## 2026-10-29 | Real Account return-journey and final visual recovery
+
+- **Observed:** On actual isolated Next/Auth/PostgREST, EN/ES consumer sign-in and
+  own Profile work, but a fresh terms-required identity requesting
+  `/en/account/profile` is redirected to Account root. Parent layout and parallel
+  child requireUser calls both used root defaults. Original failed assertion and
+  image are retained in isolated real-auth evidence; default-account terms and
+  bidirectional profile RLS own/other tests separately pass.
+- **Implementation:** Middleware deletes spoofed navigation metadata before
+  deriving a same-locale exact Account target. Layout sanitizes this target and
+  retains the existing membership-header fallback. Children independently pass
+  their actual route and supported query state, avoiding parallel-render or
+  retained-layout races. Existing requireUser authority and callback sanitation
+  are unchanged; no permission, form, action, tenant, data or consent mutation.
+- **Query contracts:** Saved/Following retain existing normalized80-character q
+  and bounded page. Bookings retain upcoming/active/past and bounded zero-based
+  page. Referrals retain validated uppercase ref and30/90/365 period. Subscription
+  and operations keep existing from/audience/workspace/tier product policies.
+  Profile/settings/privacy and collection/booking result notices are transient
+  feedback and are dropped through auth. Unknown/token/next/duplicate fields and
+  external, encoded, wrong-locale or unrelated paths are rejected.
+- **Evidence:**96 routing tests including40 new return-target cases and102
+  Account regressions passed; scoped lint/full typecheck passed. Six existing
+  expectations now assert the correct explicit child target, with all prior
+  data/authorization checks retained. Actual Next replay and full check are next.
+- **Visual findings:** Actual screenshots exposed navy Account navigation/privacy
+  footer and cumulative lower whitespace, plus a low-contrast paper placeholder.
+  Consumer-only palette/padding repairs preserve navigation and final fixed-dock
+  clearance. The public browser suite adds actual computed placeholder contrast
+  at4.5:1 minimum across its existing locale/theme/viewport matrix.
+- **Safety/rollback:** Source-only revert. No production deployment/data, hosted
+  credentials, billing, SQL, claims, private identities, XP or owner-focus controls
+  changed. Local schema remains a documented partial synthetic test fixture.

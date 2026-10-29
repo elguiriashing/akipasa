@@ -203,10 +203,13 @@ describe("collection loaders and reminder consent", () => {
     ["activity", ActivityPage, "recent_event_view_refs"],
   ] as const)(
     "shows %s read failure instead of an empty collection",
-    async (_name, Page, table) => {
+    async (name, Page, table) => {
       const { from } = mockCollectionReads({ readError: true });
       render(await Page({ params: Promise.resolve({ locale: "en" }) }));
-      expect(mocks.requireUser).toHaveBeenCalledWith("en");
+      expect(mocks.requireUser).toHaveBeenCalledWith(
+        "en",
+        `/en/account/${name}`,
+      );
       expect(from).toHaveBeenCalledWith(table);
       expect(screen.getByRole("alert")).toHaveTextContent(
         "This list could not be loaded",

@@ -374,6 +374,62 @@ test.describe("AkiPasa shared public page-family visuals", () => {
                       }),
                     ).toBeVisible();
                   }
+                  if (chapter === "index") {
+                    const search = page.getByRole("searchbox", {
+                      name:
+                        locale === "es" ? "Busca una ciudad" : "Find a city",
+                    });
+                    const ratio = await search.evaluate((input) => {
+                      const rgb = (value: string) =>
+                        (value.match(/[\d.]+/g) || []).map(Number);
+                      const foreground = rgb(
+                        getComputedStyle(input, "::placeholder").color,
+                      );
+                      const background = rgb(
+                        getComputedStyle(input).backgroundColor,
+                      );
+                      if (background.length > 3 && background[3] !== 1)
+                        throw new Error(
+                          "Placeholder needs opaque contrast surface",
+                        );
+                      const opacity =
+                        Number(
+                          getComputedStyle(input, "::placeholder").opacity,
+                        ) * (foreground[3] ?? 1);
+                      const luminance = (color: number[]) =>
+                        color
+                          .slice(0, 3)
+                          .map((value) => {
+                            const channel = value / 255;
+                            return channel <= 0.04045
+                              ? channel / 12.92
+                              : ((channel + 0.055) / 1.055) ** 2.4;
+                          })
+                          .reduce(
+                            (sum, channel, index) =>
+                              sum + channel * [0.2126, 0.7152, 0.0722][index],
+                            0,
+                          );
+                      const front = luminance(
+                        foreground
+                          .slice(0, 3)
+                          .map(
+                            (value, index) =>
+                              value * opacity +
+                              background[index] * (1 - opacity),
+                          ),
+                      );
+                      const back = luminance(background);
+                      return (
+                        (Math.max(front, back) + 0.05) /
+                        (Math.min(front, back) + 0.05)
+                      );
+                    });
+                    expect(
+                      ratio,
+                      "Paper Passport search placeholder contrast",
+                    ).toBeGreaterThanOrEqual(4.5);
+                  }
                   const capture = screenshot.replace(".png", `-${chapter}.png`);
                   await page.screenshot({
                     path: capture,

@@ -1,3 +1,4 @@
+import { accountReturnPath } from "@/lib/account-return-path";
 import { notFound } from "next/navigation";
 import { operationToolLabel } from "@/lib/operations-billing/tool-labels";
 import { isLocale } from "@/lib/config";
@@ -26,9 +27,13 @@ export default async function OperationsSubscriptionPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const es = locale === "es";
+  const query = await searchParams;
   const { supabase, user } = await requireUser(
     locale,
-    `/${locale}/account/subscription/operations`,
+    accountReturnPath(
+      locale,
+      `/${locale}/account/subscription/operations?${new URLSearchParams(Object.entries(query).filter((entry): entry is [string, string] => typeof entry[1] === "string"))}`,
+    ),
   );
   const { data: workspaces, error } = await supabase
     .from("crm_workspaces")
@@ -37,7 +42,6 @@ export default async function OperationsSubscriptionPage({
     .in("status", ["active", "trial"])
     .order("name")
     .limit(100);
-  const query = await searchParams;
   const initialWorkspace = workspaces?.some((w) => w.id === query.workspace)
     ? query.workspace
     : !query.workspace && workspaces?.length === 1

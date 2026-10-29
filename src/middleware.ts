@@ -7,10 +7,23 @@ import {
   conduzcoHostMethodAllowed,
 } from "@/lib/akiconduzco-routing";
 import { shouldNoindex } from "@/lib/seo";
+import { accountReturnPath } from "@/lib/account-return-path";
 import { akiSuiteMembershipReturnPath } from "@/lib/akisuite-catalogue";
 
 export async function middleware(request: NextRequest) {
   request.headers.delete("x-akipasa-membership-next");
+  request.headers.delete("x-akipasa-account-next");
+  const accountLocale = request.nextUrl.pathname.match(
+    /^\/(en|es)\/account(?:\/|$)/,
+  )?.[1];
+  if (accountLocale)
+    request.headers.set(
+      "x-akipasa-account-next",
+      accountReturnPath(
+        accountLocale === "en" ? "en" : "es",
+        request.nextUrl.pathname + request.nextUrl.search,
+      ),
+    );
   const hostname = (
     request.headers.get("host")?.split(":")[0] || request.nextUrl.hostname
   ).toLowerCase();

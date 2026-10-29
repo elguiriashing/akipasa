@@ -1,3 +1,4 @@
+import { accountReturnPath } from "@/lib/account-return-path";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { Icon } from "@/components/Icons";
@@ -27,7 +28,13 @@ export default async function SavedEventsPage({
   const search = accountCollectionQuery(query.q);
   const page = accountCollectionPage(query.page);
   const from = (page - 1) * accountCollectionPageSize;
-  const { supabase } = await requireUser(locale);
+  const { supabase } = await requireUser(
+    locale,
+    accountReturnPath(
+      locale,
+      `/${locale}/account/saved?${new URLSearchParams(Object.entries(query).filter((entry): entry is [string, string] => typeof entry[1] === "string"))}`,
+    ),
+  );
   const { data: emailPreferences, error: preferenceError } = await supabase.rpc(
     "suite_email_reminder_preferences",
     { p_event: null, p_stay: null },

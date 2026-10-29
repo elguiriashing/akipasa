@@ -2,6 +2,45 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 29 October 2026 UTC.
 
+## Account return recovery validated — 29 October 2026 21:04 UTC
+
+Current committed baseline/head `1b9e45acc4e4fbc32042388202d24ca438aa550d`
+on `work/coordinated-release-20261029`. The next commit freezes the source hashes
+in `docs/receipts/AKIPASA_ACCOUNT_RETURN_RECOVERY_20261029.json`.
+
+Fixed the actual Profile terms-return defect without changing auth authority:
+trusted middleware navigation metadata plus exact child return arguments retain
+supported EN/ES query state and existing cross-product membership policy. Spoofed,
+external and transient targets are rejected. Personal Account header/privacy
+palette and redundant padding corrected; paper search placeholder contrast fixed.
+
+Complete npm check PASSED2,556 Vitest cases and remaining checks/build. Integrated
+public/contrast/privacy browser PASSED38. Actual isolated Next/Auth/REST replay
+PASSED original3 journeys (including unchanged formerly failing terms-return),
+6 query/header cases and4 authenticated keyboard/layout/privacy cases. Original
+failed receipt remains archived. Independent source review found no blocker.
+These are engineering results, not visual release acceptance:0/90 remain accepted.
+
+Previous1b9 source independently packaged successfully from a fresh814-package
+installation, clean tracked tree and exact source stamp. Package2229files tree
+hash `f73d299036096bce028dbce28a88d320bb93a182640e0d1fa4e1ee0da1bdf350`;
+algorithm/manifest in `/workspace/akipasa-main-checkpoints/cinematic-1b9e45a-build.json`.
+Nine ordinary hosted workflows passed; Account/public workflow still executing at
+last observation. Obtain fresh exact-head results for this new recovery commit.
+
+Read-only Cloudflare recheck21:00UTC: deployment96e0e51f-474a-496c-b7b0-1303fe8187d7,
+Worker884dda44-e95d-4266-8ce1-d7a4de5c54db at100%; rollback version GET200. No deploy.
+
+Local-only schema replay continues separately: real pg_cron loaded on preserved
+synthetic volume with active scheduled jobs disabled; unchanged0012 and0074 now
+pass after actual synthetic administrator fixture. Full parity is still pending.
+No customer data, production changes or paid resource creation occurred.
+
+Next: commit/push recovery, independently package its exact SHA, verify all fresh
+CI; continue local source migration replay and remaining consumer route review.
+AkiPals stays paused, Tonight production gate remains default-off, PR332 stays draft.
+Root exclusive integration lease through22:00UTC; no merge/deploy without all gates.
+
 ## Photographic consumer correction validated — 29 October 2026 20:43 UTC
 
 Branch `work/coordinated-release-20261029`, committed baseline

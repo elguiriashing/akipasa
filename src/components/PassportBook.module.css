@@ -2290,6 +2290,10 @@
   background: #fffaed;
   color: #32251c;
 }
+.page:not(:has(.cover)) .search input::placeholder {
+  color: #735e48;
+  opacity: 1;
+}
 .page:not(:has(.cover)) .chapterList button {
   border-color: #a88b6e;
   background: #fff5df;

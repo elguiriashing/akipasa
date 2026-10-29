@@ -32,7 +32,10 @@ describe("legacy account progress links", () => {
       await expect(
         RewardsPage({ params: Promise.resolve({ locale }) }),
       ).rejects.toThrow(`redirect:/${locale}/passports`);
-      expect(mocks.requireUser).toHaveBeenCalledWith(locale);
+      expect(mocks.requireUser).toHaveBeenCalledWith(
+        locale,
+        `/${locale}/account/rewards`,
+      );
       expect(mocks.requireUser.mock.invocationCallOrder[0]).toBeLessThan(
         mocks.redirect.mock.invocationCallOrder[0],
       );

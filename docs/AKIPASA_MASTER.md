@@ -3111,3 +3111,21 @@ state, preserving same-value submissions and cleanup/replacement. No query,
 validation, router, consent or feature-gate behavior changes. Auth's existing
 support launcher stays reachable in normal document flow, respecting owner-focus
 mode, rather than overlapping submit controls.
+
+## 2026-10-29 | Preserve Account child destinations through auth and terms
+
+A real local Auth/Next probe found Profile's requested destination collapsed to
+Account root when current terms were missing. AccountLayout and independently
+rendered child pages must both pass their correct return target to existing
+requireUser. Middleware clears any incoming `x-akipasa-account-next` and derives
+its replacement from the actual same-locale Account URL. A pure allowlisted
+navigation sanitizer preserves existing collection/search, bookings and referral
+filters and retains the established membership/operations sanitizer. Unknown,
+duplicate, sensitive and transient feedback fields do not become auth return
+state. This header is navigation metadata, never an identity or permission claim.
+No global auth, terms, age, onboarding, role or private-read authority is changed.
+
+Personal Account's navigation header and external privacy control use coherent
+paired consumer colors, with redundant lower padding reduced while retaining
+final dock/privacy clearance. Physical Passport paper search placeholders receive
+an explicit readable color; the app's brightness tokens remain inherited.

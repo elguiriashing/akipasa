@@ -19,7 +19,7 @@ export default async function AccountSettingsPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
-  const { user } = await requireUser(locale);
+  const { user } = await requireUser(locale, `/${locale}/account/settings`);
   const es = locale === "es";
   const emailError =
     query.error === "email-validation"

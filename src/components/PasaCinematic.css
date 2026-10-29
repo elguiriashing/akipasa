@@ -448,3 +448,62 @@ html:not([data-owner-focus="true"])
   .global-support-icon {
   display: none;
 }
+
+/* Personal Account keeps navigation tools but shares the consumer palette. */
+.app-shell
+  .account-workspace:has(:is(.account-overview, .account-profile-screen))
+  .workspace-mobile-trigger {
+  background: var(--pasa-ink);
+  color: var(--ink);
+  border-color: var(--pasa-edge);
+  box-shadow: none;
+}
+.app-shell
+  .account-workspace:has(:is(.account-overview, .account-profile-screen))
+  .workspace-mobile-trigger
+  small {
+  color: var(--pasa-muted);
+}
+.app-shell
+  .account-workspace:has(:is(.account-overview, .account-profile-screen)) {
+  margin-bottom: 1rem;
+}
+.app-shell
+  .account-workspace:has(:is(.account-overview, .account-profile-screen))
+  .workspace-content {
+  padding-bottom: 1.5rem;
+}
+.app-shell:has(.account-overview, .account-profile-screen) .app-content {
+  padding-bottom: 1rem;
+}
+
+/* This consent control is outside AppShell; pair its colors explicitly instead
+   of inheriting the old navy body. Existing dock clearance remains intact. */
+html:not([data-theme="light"])
+  body:not([data-product]):has(.app-shell)
+  > .privacy-preferences:not(.privacy-preferences--passport) {
+  background: #07090b;
+  color: #bdc7d6;
+}
+html:not([data-theme="light"])
+  body:not([data-product]):has(.app-shell)
+  > .privacy-preferences:not(.privacy-preferences--passport)
+  button {
+  background: #131619;
+  color: #f9fafc;
+  border-color: #41464d;
+}
+html[data-theme="light"]
+  body:not([data-product]):has(.app-shell)
+  > .privacy-preferences:not(.privacy-preferences--passport) {
+  background: #f8f6f2;
+  color: #41506a;
+}
+html[data-theme="light"]
+  body:not([data-product]):has(.app-shell)
+  > .privacy-preferences:not(.privacy-preferences--passport)
+  button {
+  background: #fff;
+  color: #17202a;
+  border-color: #aab2bd;
+}
