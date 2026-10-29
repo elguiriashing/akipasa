@@ -28,7 +28,7 @@ export default async function ReferralLanding({
           <h1>{es ? "Las recomendaciones están en preparación" : "Referrals are being prepared"}</h1>
           <p>
             {es
-              ? "Todavía no puedes aplicar códigos ni conseguir descuentos o comisiones. Te avisaremos cuando el programa esté disponible."
+              ? "Todavía no puedes aplicar códigos ni conseguir descuentos o comisiones. Publicaremos los detalles cuando el programa esté disponible."
               : "Codes cannot be applied yet, and discounts or commissions are not active. The programme will be announced when it is available."}
           </p>
           <span className="pasa-conversion-status" role="status">
