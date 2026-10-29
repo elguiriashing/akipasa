@@ -352,6 +352,34 @@
   font-size: 0.8rem;
 }
 
+/* Real visibility state, sourced from the signed-in user's profile row. */
+.account-profile-visibility {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.32rem 0.6rem;
+  border: 1px solid var(--consumer-line, var(--line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 9%, var(--surface));
+  color: var(--ink);
+  font-size: 0.72rem;
+  font-weight: 750;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 480px) {
+  .account-profile-identity {
+    align-items: flex-start;
+  }
+
+  .account-profile-visibility {
+    border-radius: 0.75rem;
+  }
+}
+
 .account-profile-avatar {
   display: grid;
   flex: 0 0 4rem;

@@ -319,10 +319,28 @@ try {
               .toBe("delivery");
           }
           expect(errors).toEqual([]);
-          await page.screenshot({
-            path: resolve(output, `${screen}-${locale}-${theme}-${width}.png`),
-            fullPage: true,
-          });
+          // Keep the required full-page screenshot; retry only Chromium's
+          // intermittent Page.captureScreenshot protocol rejection.
+          const screenshotPath = resolve(
+            output,
+            `${screen}-${locale}-${theme}-${width}.png`,
+          );
+          for (let attempt = 0; attempt < 2; attempt++) {
+            try {
+              await page.screenshot({
+                path: screenshotPath,
+                fullPage: true,
+                animations: "disabled",
+              });
+              break;
+            } catch (error) {
+              const chromiumCaptureFailure =
+                String(error).includes("Page.captureScreenshot") &&
+                String(error).includes("Unable to capture screenshot");
+              if (!chromiumCaptureFailure || attempt === 1) throw error;
+              await page.waitForTimeout(350);
+            }
+          }
           results.push({
             screen,
             locale,
