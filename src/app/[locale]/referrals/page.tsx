@@ -46,7 +46,9 @@ export default async function ReferralLanding({
           aria-labelledby="referral-next-steps"
         >
           <h2 id="referral-next-steps">
-            {es ? "Mientras tanto, sigue explorando" : "Keep exploring in the meantime"}
+            {es
+              ? "Mientras tanto, sigue explorando"
+              : "Keep exploring in the meantime"}
           </h2>
           <p>
             {es
