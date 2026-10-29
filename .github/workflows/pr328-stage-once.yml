@@ -1,0 +1,117 @@
+name: Stage PR328 launch guard once
+on:
+  push:
+    branches: [feature/akitonight-verified-discovery-20261029]
+    paths: [.github/workflows/pr328-stage-once.yml]
+permissions:
+  contents: read
+jobs:
+  stage:
+    if: github.repository == 'elguiriashing/akipasa'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.23.4"
+          cache: npm
+      - name: Prepare bounded reviewed source changes
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          branch=feature/akitonight-verified-discovery-20261029
+          test "$(git ls-remote origin "refs/heads/$branch" | cut -f1)" = "$EXPECTED_HEAD"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin master
+          git merge --no-commit --no-ff origin/master
+          python3 - <<'PY'
+          from pathlib import Path
+          def replace(path, old, new, count=1):
+              p = Path(path)
+              s = p.read_text()
+              if s.count(old) != count:
+                  raise SystemExit('Source changed; review before retry: ' + path)
+              p.write_text(s.replace(old, new))
+          helper = 'src/lib/aki-tonight-release.ts'
+          if Path(helper).exists():
+              raise SystemExit('Launch guard already exists; no duplicate editing')
+          Path(helper).write_text('''/** Server-side release switch. Missing or malformed configuration stays off. */
+          export function tonightEnabled(value = process.env.AKIPASA_TONIGHT_ENABLED) {
+            return value === "true";
+          }
+          ''')
+          page = 'src/app/[locale]/tonight/page.tsx'
+          replace(page, 'import type { Metadata } from "next";', 'import type { Metadata } from "next";\nimport { tonightEnabled } from "@/lib/aki-tonight-release";')
+          replace(page, 'if (!isLocale(locale)) notFound();', 'if (!isLocale(locale) || !tonightEnabled()) notFound();', 2)
+          hero = 'src/components/PlansFirstHero.tsx'
+          replace(hero, 'import Link from "next/link";', 'import Link from "next/link";\nimport { tonightEnabled } from "@/lib/aki-tonight-release";')
+          old = '''        <Link className={styles.mapShortcut} href={`/${locale}/tonight`}>
+                    {es ? "Crear un plan · AkiTonight" : "Make a plan · AkiTonight"}
+                  </Link>'''
+          new = '{tonightEnabled() && (\n' + old + '\n)}'
+          replace(hero, old, new)
+          Path('tests/aki-tonight-release.test.ts').write_text('''import { describe, expect, it } from "vitest";
+          import { tonightEnabled } from "../src/lib/aki-tonight-release";
+          describe("AkiTonight release boundary", () => {
+            it("requires the exact explicit server activation value", () => {
+              for (const value of ["", "false", "TRUE", "1", " true "]) {
+                expect(tonightEnabled(value)).toBe(false);
+              }
+              expect(tonightEnabled("true")).toBe(true);
+            });
+          });
+          ''')
+          workflow = '.github/workflows/aki-tonight.yml'
+          replace(workflow, '"src/lib/aki-tonight.ts"', '"src/lib/aki-tonight*.ts"')
+          replace(workflow, '"tests/aki-tonight.test.ts"', '"tests/aki-tonight*.test.ts"')
+          replace(workflow, 'run: npx vitest run --environment node tests/aki-tonight.test.ts', 'run: npx vitest run --environment node tests/aki-tonight.test.ts tests/aki-tonight-release.test.ts')
+          replace('.github/workflows/account-browser.yml', 'NEXT_PUBLIC_SUPABASE_ANON_KEY: public-ui-local-disposable', 'NEXT_PUBLIC_SUPABASE_ANON_KEY: public-ui-local-disposable\n      AKIPASA_TONIGHT_ENABLED: "true"')
+          e2e = Path('tests/e2e/aki-tonight.spec.ts')
+          text = e2e.read_text()
+          marker = 'for (const locale of ["en", "es"] as const) {'
+          assert text.count(marker) == 1
+          start = text.index(marker)
+          off = '''if (process.env.AKIPASA_TONIGHT_ENABLED !== "true") {
+            test("disabled Tonight stays unavailable", async ({ page }) => {
+              const response = await page.goto("/en/tonight");
+              expect(response?.status()).toBe(404);
+              await page.goto("/en");
+              await expect(page.locator('a[href="/en/tonight"]')).toHaveCount(0);
+            });
+          } else {
+          '''
+          e2e.write_text(text[:start] + off + text[start:] + '\n}\n')
+          section = '''
+          ## 2026-10-29 | AkiTonight dark-launch merge boundary
+
+          AkiTonight is disabled unless the server-only `AKIPASA_TONIGHT_ENABLED` value is exactly `true`. The homepage entry is absent and both route rendering and metadata fail closed before discovery reads when disabled. Query parameters and browser storage cannot activate it. The public-UI CI job explicitly enables only its disposable local fixture to exercise the EN/ES planner, query round trip, light/dark and mobile/desktop layouts; the unconfigured browser path asserts 404 and no entry link. This permits a tested source-only foundation merge independently of #326 without claiming a public launch or changing Cloudflare configuration. Real event coverage, recommendation consent/age review, the final cinematic integration and device acceptance remain launch gates. Roll back by keeping this switch off. No database, billing, customer email or production flag changes. Cleanup tracker: #330.
+          '''
+          for path in ['docs/AKIPASA_MASTER.md', 'docs/CHANGE_IMPACT_REGISTER.md', 'docs/AKIPASA_RETENTION_IMPLEMENTATION_20261029.md']:
+              p = Path(path)
+              original = p.read_text()
+              assert '## 2026-10-29 | AkiTonight dark-launch merge boundary' not in original
+              p.write_text(original + '\n' + section.strip() + '\n')
+          PY
+      - run: npm ci --no-audit --no-fund
+      - name: Validate formatting and publish only the reviewed branch changes
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          npx prettier --write src/lib/aki-tonight-release.ts tests/aki-tonight-release.test.ts tests/e2e/aki-tonight.spec.ts "src/app/[locale]/tonight/page.tsx" src/components/PlansFirstHero.tsx .github/workflows/aki-tonight.yml .github/workflows/account-browser.yml docs/AKIPASA_MASTER.md docs/CHANGE_IMPACT_REGISTER.md docs/AKIPASA_RETENTION_IMPLEMENTATION_20261029.md
+          node scripts/check-contract-document-integrity.mjs
+          npx vitest run --environment node tests/aki-tonight.test.ts tests/aki-tonight-release.test.ts
+          git add src/lib/aki-tonight-release.ts tests/aki-tonight-release.test.ts tests/e2e/aki-tonight.spec.ts "src/app/[locale]/tonight/page.tsx" src/components/PlansFirstHero.tsx .github/workflows/aki-tonight.yml .github/workflows/account-browser.yml docs/AKIPASA_MASTER.md docs/CHANGE_IMPACT_REGISTER.md docs/AKIPASA_RETENTION_IMPLEMENTATION_20261029.md
+          git diff --cached --check
+          git commit -m 'Stage Tonight behind an explicit server launch gate with browser coverage'
+          branch=feature/akitonight-verified-discovery-20261029
+          test "$(git ls-remote origin "refs/heads/$branch" | cut -f1)" = "$EXPECTED_HEAD"
+          git push origin "HEAD:refs/heads/$branch"
