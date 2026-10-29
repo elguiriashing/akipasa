@@ -510,8 +510,8 @@
     },
     "src/app/waitlist/confirm/page.tsx": {
       "scope": "cross-product",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Cinematic responsive EN/ES waitlist confirmation committed for Pasa/Duermo/Coches; dummy-token non-mutating Playwright coverage added for 360/390/1440 and emulated Android, dark/light and invalid states. Exact-head CI and screenshot review pending. Verification POST/server rules untouched; not accepted; physical Android and real email-delivery journeys not reviewed."
     },
     "src/app/[locale]/tonight/page.tsx": {
       "scope": "consumer",
