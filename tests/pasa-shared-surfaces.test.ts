@@ -173,7 +173,6 @@ describe("AkiPasa shared redesign system", () => {
     expect(css).toContain('html[data-theme="light"]');
   });
 
-
   it("Prestige privacy centre reuses owner-only server controls and private award state", () => {
     const page = source("src/app/[locale]/privacy/prestige/page.tsx");
     const css = source("src/components/passport-prestige.module.css");
