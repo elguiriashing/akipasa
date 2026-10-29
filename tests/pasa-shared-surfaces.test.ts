@@ -88,4 +88,23 @@ describe("AkiPasa shared redesign system", () => {
     expect(page).toContain("No se te ha cobrado nada");
     expect(page).toContain("You have not been charged");
   });
+
+  it("uses shared terms styling while keeping terms consent server-owned", () => {
+    const css = source("src/components/PasaSharedSurfaces.css");
+    const page = source("src/app/[locale]/terms/accept/page.tsx");
+    const actions = source("src/app/[locale]/terms/accept/actions.ts");
+    expect(css).toContain(".pasa-terms-accept-documents");
+    expect(css).toContain(".pasa-terms-accept-consent");
+    expect(css).toContain("safe-area-inset-bottom");
+    expect(css).toContain("grid-template-columns: minmax(0, 1fr)");
+    expect(page).toContain("pasa-terms-accept-page");
+    expect(page).toContain("pasa-terms-accept-panel");
+    expect(page).toContain('type="checkbox"');
+    expect(page).toContain('name="acceptTerms"');
+    expect(page).toContain("safeAuthDestination");
+    expect(actions).toContain("safeAuthDestination");
+    expect(actions).toContain("accept_current_terms");
+    expect(actions).toContain('formData.get("acceptTerms") !== "accepted"');
+  });
+
 });
