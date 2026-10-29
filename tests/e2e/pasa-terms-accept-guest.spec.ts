@@ -21,7 +21,10 @@ for (const locale of ["en", "es"] as const) {
     )}`;
     const response = await request.get(malicious, { maxRedirects: 0 });
     expect(response.status()).toBe(307);
-    const destination = new URL(response.headers().location || "", response.url());
+    const destination = new URL(
+      response.headers().location || "",
+      response.url(),
+    );
     expect(destination.origin).toBe(new URL(response.url()).origin);
     expect(destination.pathname).toBe(`/${locale}/auth`);
     const returnTo = new URL(
@@ -61,12 +64,17 @@ for (const locale of ["en", "es"] as const) {
             localStorage.setItem("akipasa.theme", value);
           }, theme);
           const desired = `/${locale}/account`;
-          const route = `/${locale}/terms/accept?next=${encodeURIComponent(desired)}`;
+          const route = `/${locale}/terms/accept?next=${encodeURIComponent(
+            desired,
+          )}`;
           const gate = await context.request.get(route, { maxRedirects: 0 });
           expect(gate.status()).toBe(307);
           const location = new URL(gate.headers().location || "", baseURL);
           expect(location.pathname).toBe(`/${locale}/auth`);
-          const returnTo = new URL(location.searchParams.get("next") || "", baseURL);
+          const returnTo = new URL(
+            location.searchParams.get("next") || "",
+            baseURL,
+          );
           expect(returnTo.pathname).toBe(`/${locale}/terms/accept`);
           expect(returnTo.searchParams.get("next")).toBe(desired);
 
@@ -81,7 +89,9 @@ for (const locale of ["en", "es"] as const) {
             viewport: document.documentElement.clientWidth,
             content: document.documentElement.scrollWidth,
           }));
-          expect(dimensions.content - dimensions.viewport).toBeLessThanOrEqual(2);
+          expect(dimensions.content - dimensions.viewport).toBeLessThanOrEqual(
+            2,
+          );
 
           mkdirSync("test-results", { recursive: true });
           const stem = `pasa-terms-entry-${locale}-${device.name}-${theme}`;
