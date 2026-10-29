@@ -42,18 +42,13 @@ test.describe("AkiPasa private route matrix", () => {
         // Membership aliases are normalized by middleware before auth runs.
         // Verify the canonical destination still enforces sign-in rather than
         // assuming the first 307 is issued by requireUser.
-        if (
-          path === "/account/membership" ||
-          path === "/account/memberships"
-        ) {
+        if (path === "/account/membership" || path === "/account/memberships") {
           const destination = new URL(redirect, response.url());
           expect(
             destination.origin,
             `${route} must stay on the same origin`,
           ).toBe(new URL(response.url()).origin);
-          expect(destination.pathname).toBe(
-            `/${locale}/account/subscription`,
-          );
+          expect(destination.pathname).toBe(`/${locale}/account/subscription`);
           const canonical = await request.get(destination.toString(), {
             maxRedirects: 0,
           });
