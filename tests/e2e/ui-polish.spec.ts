@@ -5,6 +5,12 @@ const publicRoutes = [
   "/es",
   "/en/map",
   "/es/map",
+  "/en/check-in",
+  "/es/check-in",
+  "/en/community",
+  "/es/community",
+  "/en/roadmap",
+  "/es/roadmap",
   "/en/passports",
   "/es/passports",
   "/en/auth",
@@ -228,14 +234,31 @@ test.describe("polished public UI", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/en");
 
-    const targets = await page
-      .locator(".app-bottom-nav a, .app-bottom-nav button")
-      .evaluateAll((elements) =>
-        elements.map((element) => element.getBoundingClientRect().height),
-      );
+    const dock = page.getByRole("navigation", {
+      name: "Primary navigation",
+      exact: true,
+    });
+    await expect(dock).toBeVisible();
+    const items = dock.getByRole("link");
+    await expect(items).toHaveCount(5);
+    for (const item of await items.all()) await expect(item).toBeVisible();
 
-    expect(targets).toHaveLength(5);
-    for (const height of targets) expect(height).toBeGreaterThanOrEqual(44);
+    const targets = await items.evaluateAll((elements) =>
+      elements.map((element) => ({
+        label: element.getAttribute("aria-label"),
+        height: element.getBoundingClientRect().height,
+        display: getComputedStyle(element).display,
+        visibility: getComputedStyle(element).visibility,
+        parentDisplay: getComputedStyle(element.parentElement!).display,
+      })),
+    );
+
+    for (const target of targets) {
+      expect(
+        target.height,
+        `${target.label}: ${JSON.stringify(targets)}`,
+      ).toBeGreaterThanOrEqual(44);
+    }
 
     const more = page.getByRole("button", { name: "More options" });
     await more.click();

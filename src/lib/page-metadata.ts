@@ -43,6 +43,16 @@ const copy = {
       "Explore local passports, stamp cards and rewards available on AkiPasa.",
     ],
   },
+  "/roadmap": {
+    es: [
+      "Nuestro plan de lanzamiento",
+      "Conoce el plan de AkiPasa: Costa del Sol primero, y expansión por España siguiendo la demanda real de cada comunidad.",
+    ],
+    en: [
+      "Our launch roadmap",
+      "Explore AkiPasa's plan: Costa del Sol first, then expansion across Spain guided by genuine local demand.",
+    ],
+  },
   "/privacy": {
     es: [
       "Privacidad",

@@ -70,8 +70,11 @@ test("root, invalid content and all guest gates resolve safely", async ({
   const community = await page.request.get("/en/community", {
     maxRedirects: 0,
   });
-  expect(community.status()).toBe(307);
-  expect(community.headers().location).toBe("/en/community/creators");
+  expect(community.status()).toBe(200);
+  expect(community.headers().location).toBeUndefined();
+  const communityHtml = await community.text();
+  expect(communityHtml).toContain("Explore creators");
+  expect(communityHtml).toContain("/en/community/creators");
   expect((await page.request.get("/en/community/creators")).status()).toBe(200);
 
   const relevanceApi = await page.request.get("/api/admin/venue-relevance");

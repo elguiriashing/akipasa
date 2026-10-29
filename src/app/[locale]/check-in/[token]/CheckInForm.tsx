@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { completeCheckIn } from "./actions";
 export function CheckInForm({
   locale,
@@ -16,13 +16,27 @@ export function CheckInForm({
     accuracy: number;
   } | null>(null);
   const [message, setMessage] = useState("");
+  const locationRequest = useRef(0);
   const es = locale === "es";
   function locate() {
+    // A fresh request invalidates previous coordinates and in-flight callbacks.
+    // The server, not the browser, decides whether a visit is verified.
+    const request = ++locationRequest.current;
+    setLocation(null);
     setMessage(
-      es ? "Comprobando tu ubicacion..." : "Checking your location...",
+      es ? "Obteniendo tu ubicación..." : "Getting your current location...",
     );
+    if (!navigator.geolocation?.getCurrentPosition) {
+      setMessage(
+        es
+          ? "Este dispositivo no permite obtener la ubicación. Comprueba los permisos."
+          : "Location is not available on this device. Check its permissions.",
+      );
+      return;
+    }
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
+        if (request !== locationRequest.current) return;
         setLocation({
           latitude: coords.latitude,
           longitude: coords.longitude,
@@ -30,16 +44,19 @@ export function CheckInForm({
         });
         setMessage(
           es
-            ? "Ubicacion verificada. Ya puedes hacer check-in."
-            : "Location verified. You can now check in.",
+            ? "Ubicación recibida. Verificaremos tu visita al confirmar."
+            : "Location received. We will verify your visit when you confirm.",
         );
       },
-      () =>
+      () => {
+        if (request !== locationRequest.current) return;
+        setLocation(null);
         setMessage(
           es
-            ? "Activa la ubicacion precisa para verificar que estas en el local."
-            : "Enable precise location so we can verify that you are at the venue.",
-        ),
+            ? "Activa la ubicación precisa para comprobar que estás en el local."
+            : "Enable precise location so we can check that you are at the venue.",
+        );
+      },
       { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 },
     );
   }
@@ -53,12 +70,12 @@ export function CheckInForm({
       <input type="hidden" name="accuracy" value={location?.accuracy ?? ""} />
       <p className="muted">
         {es
-          ? "Tu ubicacion se usa una vez para comprobar la distancia y no se guarda."
+          ? "Tu ubicación se usa una vez para comprobar la distancia y no se guarda."
           : "Your location is used once to check distance and is not stored."}
       </p>
       <div className="actions">
         <button className="button secondary" type="button" onClick={locate}>
-          {es ? "Verificar ubicacion" : "Verify location"}
+          {es ? "Obtener ubicación" : "Get current location"}
         </button>
         <button className="button" type="submit" disabled={!location}>
           {es ? "Confirmar check-in" : "Confirm check-in"}

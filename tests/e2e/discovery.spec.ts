@@ -132,7 +132,7 @@ test("mobile navigation is compact and opens section links in place", async ({
   await page.goto("/en");
 
   const bottomNavigation = page.getByRole("navigation", {
-    name: "Navigation",
+    name: "Primary navigation",
     exact: true,
   });
   await expect(bottomNavigation).toBeVisible();
@@ -262,8 +262,8 @@ test("primary navigation, footer and document language are correct", async ({
 }) => {
   await page.goto("/en");
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
-  const primary = page.getByRole("navigation", { name: "Navigation" });
-  await expect(primary.getByRole("link", { name: "Discover" })).toHaveAttribute(
+  const primary = page.getByRole("navigation", { name: "Primary navigation" });
+  await expect(primary.getByRole("link", { name: "Home" })).toHaveAttribute(
     "href",
     "/en",
   );
@@ -271,14 +271,18 @@ test("primary navigation, footer and document language are correct", async ({
     "href",
     "/en/map",
   );
+  await expect(primary.getByRole("link", { name: "Check-in" })).toHaveAttribute(
+    "href",
+    "/en/check-in",
+  );
   await expect(
     primary.getByRole("link", { name: "Community" }),
   ).toHaveAttribute("href", "/en/community");
-  await expect(primary.getByRole("link", { name: "Account" })).toHaveAttribute(
+  await expect(primary.getByRole("link", { name: "Profile" })).toHaveAttribute(
     "href",
     "/en/account",
   );
-  for (const name of ["Discover", "Map", "Community", "Account"]) {
+  for (const name of ["Home", "Map", "Check-in", "Community", "Profile"]) {
     await expect(primary.getByRole("link", { name })).toBeVisible();
   }
   await page.getByRole("button", { name: "More options" }).click();

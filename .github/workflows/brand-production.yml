@@ -34,6 +34,8 @@ jobs:
       - run: npm ci --prefix automation --no-audit --no-fund
       - name: Verify code and tests before production
         run: npm run check
+      - name: Require completed route acceptance before production
+        run: npm run release:pasa-audit
       - name: Load existing production bindings and check destination
         run: node scripts/brand-production-release.mjs prepare
       - uses: actions/cache@v4

@@ -24,7 +24,7 @@ export default async function CreatorStudioPage({
   const es = locale === "es";
   const query = await searchParams;
   const { supabase, user } = await requireUser(locale);
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from("creator_profiles")
     .select(
       "slug,display_name,headline_es,headline_en,bio_es,bio_en,locality,province,avatar_url,cover_url,website_url,instagram_url,youtube_url,state,verification_state",
@@ -32,11 +32,11 @@ export default async function CreatorStudioPage({
     .eq("profile_id", user.id)
     .maybeSingle();
   const [
-    { data: categories },
-    { data: selectedCategories },
-    { data: hostedEvents },
-    { data: submittedEvents },
-    { data: verificationEligibility },
+    { data: categories, error: categoriesError },
+    { data: selectedCategories, error: selectedCategoriesError },
+    { data: hostedEvents, error: hostedEventsError },
+    { data: submittedEvents, error: submittedEventsError },
+    { data: verificationEligibility, error: eligibilityError },
   ] = await Promise.all([
     supabase.from("categories").select("id,name_es,name_en").order("name_es"),
     supabase
@@ -57,6 +57,43 @@ export default async function CreatorStudioPage({
       p_profile: user.id,
     }),
   ]);
+  if (profileError || categoriesError || selectedCategoriesError) {
+    return (
+      <WorkspaceShell
+        title={es ? "Mi perfil creador" : "Creator studio"}
+        eyebrow={es ? "Comunidad" : "Community"}
+        description={
+          es
+            ? "Tu página, tus eventos y tu identidad."
+            : "Your page, your events and your identity."
+        }
+        navigationTitle={es ? "Comunidad" : "Community"}
+        homeHref={`/${locale}/community`}
+        items={communityCreatorItems(locale)}
+      >
+        <section className="panel stack creator-recovery" role="alert">
+          <span className="eyebrow">
+            {es
+              ? "Estudio temporalmente no disponible"
+              : "Studio temporarily unavailable"}
+          </span>
+          <h2>
+            {es
+              ? "No se pudo recuperar tu perfil completo"
+              : "Your complete profile could not be loaded"}
+          </h2>
+          <p>
+            {es
+              ? "Los formularios estarán disponibles cuando podamos confirmar tu perfil y tus categorías. Tu información guardada se conserva."
+              : "The editors will be available when your profile and categories can be confirmed. Your saved information is retained."}
+          </p>
+          <Link className="button" href={`/${locale}/community/creator`}>
+            {es ? "Reintentar" : "Retry"}
+          </Link>
+        </section>
+      </WorkspaceShell>
+    );
+  }
   const eligibility = verificationEligibility as {
     eligible?: boolean;
     published_events?: number;
@@ -119,6 +156,13 @@ export default async function CreatorStudioPage({
         {query.updated && (
           <p className="notice">
             {es ? "Perfil actualizado." : "Profile updated."}
+          </p>
+        )}
+        {query.error && query.error !== "verification-requirements" && (
+          <p className="notice" role="alert">
+            {es
+              ? "No se pudo completar el cambio. Revisa los datos y vuelve a intentarlo."
+              : "The change could not be completed. Check the details and try again."}
           </p>
         )}
         {query.error === "verification-requirements" && (
@@ -414,6 +458,18 @@ export default async function CreatorStudioPage({
               </Link>
             </div>
             <div className="managed-list">
+              {(hostedEventsError || submittedEventsError) && (
+                <div className="creator-recovery" role="alert">
+                  <p>
+                    {es
+                      ? "No se pudo cargar todo tu historial de eventos. Los resultados disponibles se muestran a continuación."
+                      : "Your complete event history could not be loaded. Available results are shown below."}
+                  </p>
+                  <Link href={`/${locale}/community/creator`}>
+                    {es ? "Reintentar" : "Retry"}
+                  </Link>
+                </div>
+              )}
               {(hostedEvents || []).map((event) => (
                 <Link
                   className="managed-row"
@@ -444,18 +500,38 @@ export default async function CreatorStudioPage({
                     <span className="status-pill">{event.state}</span>
                   </div>
                 ))}
-              {!hostedEvents?.length && !submittedEvents?.length && (
-                <p className="empty-state">
-                  {es
-                    ? "Aun no has creado ningun evento."
-                    : "You have not created an event yet."}
-                </p>
-              )}
+              {!hostedEventsError &&
+                !submittedEventsError &&
+                !hostedEvents?.length &&
+                !submittedEvents?.length && (
+                  <p className="empty-state">
+                    {es
+                      ? "Aun no has creado ningun evento."
+                      : "You have not created an event yet."}
+                  </p>
+                )}
             </div>
           </section>
         </StudioTabs>
         {profile?.state === "published" &&
-          !["verified", "pending"].includes(profile.verification_state) && (
+          !["verified", "pending"].includes(profile.verification_state) &&
+          (eligibilityError || !eligibility ? (
+            <section className="panel stack creator-recovery" role="alert">
+              <h2>
+                {es
+                  ? "No se pudo comprobar la verificación"
+                  : "Verification eligibility could not be checked"}
+              </h2>
+              <p>
+                {es
+                  ? "Vuelve a intentarlo para consultar el progreso y enviar una solicitud."
+                  : "Retry to see your progress and submit a request."}
+              </p>
+              <Link href={`/${locale}/community/creator`}>
+                {es ? "Reintentar" : "Retry"}
+              </Link>
+            </section>
+          ) : (
             <form
               action={requestCreatorVerification}
               className="panel creator-verification-callout"
@@ -481,7 +557,7 @@ export default async function CreatorStudioPage({
               <button
                 className="button"
                 type="submit"
-                disabled={eligibility ? !eligibility.eligible : false}
+                disabled={!eligibility.eligible}
               >
                 {eligibility && !eligibility.eligible
                   ? es
@@ -492,7 +568,7 @@ export default async function CreatorStudioPage({
                     : "Submit request"}
               </button>
             </form>
-          )}
+          ))}
         {profile?.verification_state === "pending" && (
           <p className="notice">
             {es ? "Verificación en revisión." : "Verification is in review."}

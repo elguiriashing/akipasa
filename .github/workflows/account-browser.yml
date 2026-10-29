@@ -41,6 +41,7 @@ jobs:
       NEXT_PUBLIC_DATA_PROVIDER: fixtures
       NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:3999
       NEXT_PUBLIC_SUPABASE_ANON_KEY: public-ui-local-disposable
+      AKIPASA_TONIGHT_ENABLED: "true"
       NEXT_PUBLIC_GOOGLE_AUTH_ENABLED: "true"
     steps:
       - uses: actions/checkout@v4

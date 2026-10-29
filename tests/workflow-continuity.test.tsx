@@ -106,6 +106,31 @@ it.each(["en", "es"] as const)(
 );
 
 it.each(["en", "es"] as const)(
+  "%s sponsored cards keep their base classes and disclosure after formatting",
+  (locale) => {
+    const { rerender } = render(
+      <EventCard
+        result={{ ...result, event: { ...result.event, sponsored: true } }}
+        locale={locale}
+      />,
+    );
+    const card = screen.getByRole("link");
+    expect(card).toHaveClass(
+      "card",
+      "pasa-event-card",
+      "event-plan-card",
+      "card-featured",
+    );
+    expect(card).toHaveTextContent(
+      locale === "es" ? "Patrocinado" : "Sponsored",
+    );
+    rerender(<EventCard result={result} locale={locale} />);
+    expect(screen.getByRole("link")).not.toHaveClass("card-featured");
+    expect(screen.getByRole("link")).toHaveClass("event-plan-card");
+  },
+);
+
+it.each(["en", "es"] as const)(
   "collection links use %s and keep occurrence/query/hash",
   (locale) => {
     render(

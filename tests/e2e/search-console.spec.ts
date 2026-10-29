@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { publicPagePaths } from "../../src/lib/seo";
 
 test("current discovery layout is retained and achievement management requires sign-in", async ({
   request,
@@ -31,7 +32,9 @@ test("sitemap index and root-level child files are crawlable XML without session
   expect(child.status()).toBe(200);
   expect(child.headers()["set-cookie"]).toBeUndefined();
   const xml = await child.text();
-  expect(xml.match(/<url>/g)).toHaveLength(12);
+  expect(xml.match(/<url>/g)).toHaveLength(publicPagePaths.length * 2);
+  expect(xml).toContain("/en/roadmap");
+  expect(xml).toContain("/es/roadmap");
   expect(xml).toContain('hreflang="x-default"');
   expect(xml).not.toContain("/account");
   expect((await request.get("/sitemap-venues--1.xml")).status()).toBe(404);
@@ -50,6 +53,7 @@ test("all public landing pages render canonical, language and social metadata on
       "/map",
       "/membership",
       "/passports",
+      "/roadmap",
       "/privacy",
       "/terms",
     ]) {

@@ -1,14 +1,16 @@
-import { previewHtml } from "@/components/pals/preview";
+import { identityPreviewHtml } from "@/components/pals/identity-preview";
 import { previewAccess, privateHeaders } from "@/lib/pals/server";
 
 // Restricted preview release checkpoint: intentionally unlinked and non-indexable.
 export const dynamic = "force-dynamic";
-export async function GET() {
+export async function GET(request: Request) {
+  const requested = new URL(request.url).searchParams.get("lang");
+  const locale = requested === "es" ? "es" : "en";
   try {
     const access = await previewAccess();
     if (!access.user)
       return new Response(
-        '<!doctype html><html lang="en"><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Private preview</title></head><body style="font:16px system-ui;background:#14213d;color:#fff1db;padding:48px;line-height:1.6"><main style="max-width:520px;margin:12vh auto"><h1>Private preview</h1><p>This area is not open to the public.</p><a style="color:#ffba87" href="/en/auth?next=%2Fpals" rel="nofollow">Sign in with your team account</a></main></body></html>',
+        `<!doctype html><html lang="${locale}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${locale === "es" ? "Prueba privada" : "Private preview"}</title></head><body style="font:16px system-ui;background:#14213d;color:#fff1db;padding:48px;line-height:1.6"><main style="max-width:520px;margin:12vh auto"><h1>${locale === "es" ? "Prueba privada" : "Private preview"}</h1><p>${locale === "es" ? "Esta zona aún no está abierta al público." : "This area is not open to the public."}</p><a style="color:#ffba87" href="/${locale}/auth?next=${encodeURIComponent(`/pals?lang=${locale}`)}" rel="nofollow">${locale === "es" ? "Inicia sesión con tu cuenta de equipo" : "Sign in with your team account"}</a></main></body></html>`,
         {
           status: 401,
           headers: {
@@ -24,7 +26,7 @@ export async function GET() {
         headers: privateHeaders,
       });
     const nonce = crypto.randomUUID().replace(/-/g, "");
-    return new Response(previewHtml(nonce), {
+    return new Response(identityPreviewHtml(nonce, locale), {
       headers: {
         ...privateHeaders,
         "Content-Type": "text/html; charset=utf-8",
@@ -34,7 +36,9 @@ export async function GET() {
     });
   } catch {
     return new Response(
-      "The private preview is temporarily unavailable. Please retry.",
+      locale === "es"
+        ? "La prueba privada no está disponible temporalmente. Vuelve a intentarlo."
+        : "The private preview is temporarily unavailable. Please retry.",
       { status: 503, headers: privateHeaders },
     );
   }

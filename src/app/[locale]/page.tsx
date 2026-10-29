@@ -166,6 +166,10 @@ export default async function DiscoverPage({
       />
       <PlansFirstHero
         locale={locale}
+        imageUrl={
+          results[0]?.event.exploreImage?.url ||
+          results[0]?.venue.exploreImage?.url
+        }
         location={{
           locality,
           name: localityName,
@@ -212,8 +216,16 @@ export default async function DiscoverPage({
                 : "No plans nearby yet"}
             </h3>
             <p>{m.noResults}</p>
+            <p>
+              {locale === "es"
+                ? "Estamos preparando el lanzamiento en la Costa del Sol y ampliaremos la cobertura según crezca la comunidad. Si tu ciudad aún está tranquila, no te hemos olvidado."
+                : "We're preparing our Costa del Sol launch and will grow coverage as the community grows. A quiet city doesn't mean we've forgotten yours."}
+            </p>
           </div>
           <div className="discovery-empty-actions">
+            <Link className="button button-ghost" href={`/${locale}/roadmap`}>
+              {locale === "es" ? "Ver nuestro plan" : "See our rollout plan"}
+            </Link>
             {radius < 100 ? (
               <Link
                 className="button button-strong"

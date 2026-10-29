@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AccountWorkspacePortals } from "@/components/AccountWorkspacePortals";
@@ -21,7 +22,9 @@ export default async function AccountOverview({
   ] = await Promise.all([
     supabase
       .from("profiles")
-      .select("display_name,app_role,preferred_locale,membership_tier")
+      .select(
+        "display_name,app_role,preferred_locale,membership_tier,username,bio,avatar_url",
+      )
       .eq("id", user.id)
       .maybeSingle(),
     supabase
@@ -58,6 +61,14 @@ export default async function AccountOverview({
       detail: es ? "Vuelve a tus favoritos" : "Back to your favourites",
     },
     {
+      href: `/${locale}/akipals`,
+      icon: "gift",
+      label: "AkiPals",
+      detail: es
+        ? "Tu mascota, vestuario y aventuras"
+        : "Your mascot, wardrobe and adventures",
+    },
+    {
       href: `/${locale}/passports`,
       icon: "passport",
       label: "Passport",
@@ -85,11 +96,28 @@ export default async function AccountOverview({
     <div className="account-overview">
       <header className="account-welcome">
         <div className="account-avatar" aria-hidden="true">
-          {firstName.slice(0, 1).toUpperCase()}
+          {profile?.avatar_url ? (
+            <Image
+              src={profile.avatar_url}
+              alt=""
+              width={96}
+              height={96}
+              unoptimized
+              className="pasa-profile-avatar-image"
+            />
+          ) : (
+            firstName.slice(0, 1).toUpperCase()
+          )}
         </div>
         <div className="account-welcome-copy">
-          <span>{es ? "Tu espacio" : "Your space"}</span>
-          <h1>{es ? `Hola, ${firstName}` : `Hi, ${firstName}`}</h1>
+          <span>{es ? "Tu mundo AkiPasa" : "Your AkiPasa world"}</span>
+          <h1>{displayName}</h1>
+          {profile?.username ? (
+            <p className="pasa-profile-handle">@{profile.username}</p>
+          ) : null}
+          {profile?.bio ? (
+            <p className="pasa-profile-bio">{profile.bio}</p>
+          ) : null}
           <p>
             {profileError
               ? es

@@ -1,5 +1,12 @@
 # AkiPals product architecture
 
+> **Superseded 28 October 2026.** This describes the retired mascot/RPG
+> engineering baseline, kept only for old save compatibility and rollback.
+> The current AkiPals direction is user-created **human avatars**, personal
+> wardrobes and eventual opt-in social discovery. No XP/levels, pet care,
+> equipment slots, gacha parcels, adventures or game economy in the v2 product.
+> Canonical new direction: docs/AKIPALS_IDENTITY_V2_20261028.md.
+
 AkiPals is being evolved from a restricted game preview into a reusable identity,
 collection and rewards platform inside AkiPasa. The existing ten Pal families,
 layered vector rendering, equipment gameplay and schema-1 saves remain the

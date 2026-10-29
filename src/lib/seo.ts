@@ -8,6 +8,7 @@ export const publicPagePaths = [
   "/map",
   "/membership",
   "/passports",
+  "/roadmap",
   "/privacy",
   "/terms",
 ] as const;

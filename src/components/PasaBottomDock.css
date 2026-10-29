@@ -1,0 +1,76 @@
+/* Canonical shared AkiPasa dock: all consumer routes use PasaBottomDock. */
+@media (max-width: 850px) {
+  /* Keep the consumer dock visible even when older global CSS is loaded later.
+     Auth and owner-focus mode remain explicit exceptions. */
+  html:not([data-owner-focus="true"])
+    .app-shell:not(:has(.auth-theme-akipasa))
+    .app-bottom-nav.pasa-dock {
+    display: grid;
+  }
+
+  .app-bottom-nav.pasa-dock {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.2fr) minmax(
+        44px,
+        0.8fr
+      );
+    align-items: center;
+    gap: 0.1rem;
+    bottom: max(0.45rem, env(safe-area-inset-bottom, 0px));
+    left: max(0.65rem, env(safe-area-inset-left, 0px));
+    right: max(0.65rem, env(safe-area-inset-right, 0px));
+    width: auto;
+    padding: 0.32rem;
+    border: 1px solid rgba(255, 126, 56, 0.25);
+    border-radius: 1.4rem;
+    background: rgba(9, 17, 30, 0.94);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px);
+  }
+  .app-bottom-nav.pasa-dock .pasa-dock__item {
+    min-width: 0;
+    min-height: 3.45rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    border-radius: 1rem;
+    font-size: 0.67rem;
+    color: #d1d7e0;
+    text-decoration: none;
+  }
+  .app-shell .app-bottom-nav.pasa-dock .pasa-dock__item span {
+    font-size: clamp(0.625rem, 2.7vw, 0.69rem);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+  }
+  .app-bottom-nav.pasa-dock .pasa-dock__item.active {
+    color: #ff9a60;
+    background: rgba(255, 104, 24, 0.14);
+  }
+  .app-bottom-nav.pasa-dock .pasa-dock__item--checkin svg {
+    box-sizing: content-box;
+    color: white;
+    background: #f26b1d;
+    border-radius: 999px;
+    padding: 0.55rem;
+    box-shadow: 0 0 22px rgba(242, 107, 29, 0.45);
+  }
+  .app-bottom-nav.pasa-dock .pasa-dock__item--checkin.active {
+    background: transparent;
+  }
+  .app-bottom-nav.pasa-dock .pasa-dock__item:focus-visible {
+    outline: 3px solid #ffc08a;
+    outline-offset: 2px;
+  }
+  body:has(.pasa-dock) .app-content {
+    padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .app-bottom-nav.pasa-dock {
+    background: #0a101a;
+    backdrop-filter: none;
+  }
+}

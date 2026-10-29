@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import clsx from "clsx";
 import { useEffect, useRef } from "react";
 import type { DiscoveryResult } from "@/lib/domain";
 import { translated } from "@/lib/domain";
@@ -201,7 +202,9 @@ export function EventCard({
   return (
     <Link
       ref={cardRef}
-      className={`card${result.event.sponsored ? "card-featured" : ""}`}
+      className={clsx("card pasa-event-card event-plan-card", {
+        "card-featured": result.event.sponsored,
+      })}
       href={occurrenceHref(
         `/${locale}/events/${result.event.slug}`,
         result.occurrence.id,
@@ -252,7 +255,7 @@ export function EventCard({
           <span className="pill-muted">{categoryLabel}</span>
           {result.event.sponsored ? (
             <span className="pill-price featured-chip">
-              {locale === "es" ? "Destacado" : "Featured"}
+              {locale === "es" ? "Patrocinado" : "Sponsored"}
             </span>
           ) : result.event.source === "akipasa_selection" ? (
             <span className="akipasa-selection-chip">

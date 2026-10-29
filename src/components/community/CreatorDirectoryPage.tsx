@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @next/next/no-img-element */
 import Link from "next/link";
+import "./creators.css";
 import { notFound } from "next/navigation";
 import { unstable_cache } from "next/cache";
 import { isLocale } from "@/lib/config";
@@ -164,6 +165,13 @@ export async function CreatorDirectoryPage({
       )
     : allCreators;
   const now = Date.now();
+  const categoryHref = (slug = "") => {
+    const filters = new URLSearchParams();
+    if (q) filters.set("q", q);
+    if (locality) filters.set("locality", locality);
+    if (slug) filters.set("category", slug);
+    return `/${locale}/community/creators${filters.size ? `?${filters.toString()}` : ""}`;
+  };
 
   return (
     <WorkspaceShell
@@ -204,6 +212,7 @@ export async function CreatorDirectoryPage({
         </section>
 
         <form className="creator-search creator-search-v2">
+          {category && <input type="hidden" name="category" value={category} />}
           <label className="creator-search-main">
             <span>{es ? "Buscar" : "Search"}</span>
             <input
@@ -236,7 +245,8 @@ export async function CreatorDirectoryPage({
           >
             <Link
               className={!category ? "active" : ""}
-              href={`/${locale}/community/creators`}
+              href={categoryHref()}
+              aria-current={!category ? "page" : undefined}
               prefetch={false}
             >
               {es ? "Todos" : "All"}
@@ -245,7 +255,8 @@ export async function CreatorDirectoryPage({
               <Link
                 className={category === item.slug ? "active" : ""}
                 key={item.slug}
-                href={`/${locale}/community/creators?category=${encodeURIComponent(item.slug)}`}
+                href={categoryHref(item.slug)}
+                aria-current={category === item.slug ? "page" : undefined}
                 prefetch={false}
               >
                 {es ? item.name_es : item.name_en || item.name_es}
@@ -332,9 +343,13 @@ export async function CreatorDirectoryPage({
                   {es ? "Todavía hay sitio para ti." : "There is room for you."}
                 </strong>
                 <p>
-                  {es
-                    ? "Sé la primera persona en publicar una página en esta categoría."
-                    : "Be the first person to publish a page in this category."}
+                  {q || locality || category
+                    ? es
+                      ? "Prueba otra zona o limpia los filtros para descubrir más creadores."
+                      : "Try another area or clear the filters to discover more creators."
+                    : es
+                      ? "Los creadores publicados aparecerán aquí. Puedes empezar con tu propia página."
+                      : "Published creators will appear here. You can start with your own page."}
                 </p>
                 <Link className="button" href={`/${locale}/community/creator`}>
                   {es ? "Crear mi página" : "Create my page"}

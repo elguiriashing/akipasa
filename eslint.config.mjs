@@ -23,6 +23,8 @@ export default defineConfig([
     ".wrangler-config/**",
     "automation/worker-configuration.d.ts",
     "next-env.d.ts",
+    // Bundled Three.js output is generated from linted studio sources.
+    "public/pals/runtime/**",
     "coverage/**",
     "playwright-report/**",
     "test-results/**",

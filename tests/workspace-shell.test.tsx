@@ -58,7 +58,7 @@ afterEach(() => {
   document.body.className = "";
 });
 
-it("retains active discovery filters across desktop and mobile Discover/Map links", () => {
+it("retains active discovery filters across desktop and mobile Home/Map links", () => {
   navigation.pathname = "/en/map";
   navigation.search =
     "locality=madrid&locationName=Madrid+Centro&latitude=40.4168&longitude=-3.7038&radius=15&time=tonight&category=music&price=paid&accessible=on&eventPage=3&list=1";
@@ -68,7 +68,7 @@ it("retains active discovery filters across desktop and mobile Discover/Map link
     </AppShell>,
   );
 
-  for (const link of screen.getAllByRole("link", { name: "Discover" })) {
+  for (const link of screen.getAllByRole("link", { name: "Home" })) {
     const url = new URL(link.getAttribute("href")!, "https://akipasa.com");
     expect(url.pathname).toBe("/en");
     expect(url.searchParams.get("category")).toBe("music");
@@ -80,6 +80,44 @@ it("retains active discovery filters across desktop and mobile Discover/Map link
   for (const link of screen.getAllByRole("link", { name: "Map" })) {
     expect(link).toHaveAttribute("aria-current", "page");
     expect(link.getAttribute("href")).toContain("category=music");
+  }
+});
+
+it("keeps one consumer dock on public/Profile screens but never duplicates operational or authentication navigation", () => {
+  for (const pathname of ["/en", "/en/map", "/en/community", "/en/account"]) {
+    navigation.pathname = pathname;
+    const view = render(
+      <AppShell locale="en" signedIn={pathname.endsWith("/account")}>
+        <main>Consumer page</main>
+      </AppShell>,
+    );
+    expect(
+      view.container.querySelectorAll(".app-bottom-nav.pasa-dock"),
+      pathname,
+    ).toHaveLength(1);
+    view.unmount();
+  }
+
+  for (const pathname of [
+    "/en/admin",
+    "/en/admin/users",
+    "/en/staff",
+    "/en/business",
+    "/en/owner",
+    "/en/auth",
+    "/en/onboarding",
+  ]) {
+    navigation.pathname = pathname;
+    const view = render(
+      <AppShell locale="en" signedIn={true}>
+        <main>Workspace or sign-in page</main>
+      </AppShell>,
+    );
+    expect(
+      view.container.querySelectorAll(".app-bottom-nav.pasa-dock"),
+      pathname,
+    ).toHaveLength(0);
+    view.unmount();
   }
 });
 

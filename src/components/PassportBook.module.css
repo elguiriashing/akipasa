@@ -2226,3 +2226,76 @@
     margin-top: 14px;
   }
 }
+
+/* Radar × After Dark: collectible paper atlas inside the original AkiPasa book.
+   Existing chapters, achievement data, motion and privacy controls are unchanged. */
+.book {
+  border-color: #7b5237;
+  border-left-color: #573a2c;
+  background: #563929;
+  box-shadow:
+    0 28px 60px rgba(0, 0, 0, 0.35),
+    3px 3px 0 #debf88,
+    6px 6px 0 #6a4933,
+    8px 8px 0 #997657;
+}
+.page:not(:has(.cover)) {
+  background:
+    radial-gradient(
+      ellipse at 0% 5%,
+      rgba(162, 109, 61, 0.16),
+      transparent 50%
+    ),
+    repeating-linear-gradient(
+      1deg,
+      rgba(111, 73, 38, 0.025) 0 1px,
+      transparent 1px 5px
+    ),
+    #f6e7ca;
+  color: #372d25;
+  border: 1px solid rgba(138, 93, 59, 0.2);
+}
+.page:not(:has(.cover)) .pageHeader,
+.page:not(:has(.cover)) .pageFooter {
+  color: #735b45;
+  border-color: rgba(109, 80, 51, 0.22);
+}
+.page:not(:has(.cover)) .pageTitle {
+  color: #33251e;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
+}
+.page:not(:has(.cover)) .index > p {
+  color: #594737;
+}
+.page:not(:has(.cover)) .cityIndex button {
+  color: #3b2b20;
+  border-bottom-color: rgba(75, 51, 29, 0.17);
+}
+.page:not(:has(.cover)) .cityIndex small {
+  color: #71543b;
+}
+.page:not(:has(.cover)) .search {
+  color: #604d3c;
+}
+.page:not(:has(.cover)) .search input {
+  border-color: #ad9374;
+  background: #fffaed;
+  color: #32251c;
+}
+.page:not(:has(.cover)) .chapterList button {
+  border-color: #a88b6e;
+  background: #fff5df;
+  color: #35271c;
+}
+.page:not(:has(.cover)) .chapterList b {
+  color: #ae4d1f;
+}
+.page:not(:has(.cover)) .chapter > :global(p) {
+  color: #584433;
+}
+@media (prefers-reduced-motion: reduce) {
+  .book .page {
+    animation: none;
+  }
+}

@@ -1,5 +1,50 @@
 # Change Impact Register
 
+## 2026-10-29 | AkiPals actual 3D creator replacing flat avatar preview
+
+- **Changed:** Build imports pinned Three.js from local npm, exports a self-hosted
+  browser runtime, loads CC0 rigged GLBs, procedurally assembles free 3D garment
+  and hair parts, exposes responsive 360-degree orbit, colour swatches, real
+  wardrobe choices, presets and only-on-confirmation persistence.
+- **Scope:** Private /pals; dedicated own-account RLS appearance table. Legacy
+  RPG state and public maps, QR/check-in and other Aki products unchanged.
+- **Dependencies:** Full CI, lockfile integrity, 3D real-browser tests,
+  smartphone WebGL, GLB licence, reviewed database migration, PR #326 conflict
+  reconciliation and manual art QA. Public avatar and payments not enabled.
+- **Risks:** Procedural geometry is not final premium character art; 3D device
+  support and bandwidth require measurement. On GPU/load failure show a clear
+  error, never a false saved render or old ghost SVG. Browser and SQL tests are
+  staged and must be confirmed against exact head before release.
+- **Rollback:** Revert editor/runtime; preserve old game save and new own-account
+  appearance rows. Do not delete database tables during source rollback.
+
+## 2026-10-28 | AkiPals identity, not RPG (private rollout)
+
+- **Before:** Private mascot game with ten families, XP, care, random parcels,
+  equipment statistics, slot upgrades, stories and an own-map mascot marker.
+- **Now:** Private first-party human avatar creation with 17 validated appearance
+  choices, free basic tops, responsive live SVG preview and owner-account save.
+  No legacy game logic is called by the new studio. Saved game data stays intact.
+- **Dependencies:** New isolated public.pals_avatar_profiles migration and own
+  RLS policies, authorization from existing pals_preview_access/admin gate,
+  CSP/nonindex, API origin checking. No schema deletion or commerce activation.
+- **Privacy:** No new public profiles, user coordinates, heatmaps, friend graph,
+  targeted ads, sponsored clothing or paid items. All social presence deferred
+  pending separate explicit consent, aggregate protection and abuse controls.
+- **Validation:** Format, typecheck, focused identity/SQL tests, authenticated
+  RLS read/write QA, mobile/browser visual acceptance, account save/restore.
+  Reconcile full AkiPasa redesign #326 before any production release. Data and
+  branch rollback preserve previous avatar and legacy saves.
+
+## 2026-10-29 | AkiTonight read-only planning slice
+
+- **Current state:** Existing plans-first homepage and event recommendations work, but the connected project has zero future scheduled event occurrences; nearby venues are available without published opening-hour or activity-availability proof.
+- **Change (candidate):** New bilingual mobile-first `/[locale]/tonight` with mood, area, company, party size, budget, start time, radius; strict server query allowlist; existing recommendation ranking/labels; honest near-venue fallback and event detail/directions/share links. Existing `PlansFirstHero` adds the guided link.
+- **Cross-surface:** Scoped to public AkiPasa; map, existing homepage shortcuts and venue/event URLs preserved. No AkiHQ or AkiBusiness code, subscriptions, rewards, XP, check-in, friends, age verification, service grants, schema, OAuth, Stripe, Resend or Android native code changed. Existing recommendation consent and EventCard sponsorship remain in charge.
+- **Risk:** Group size is **not** confirmed capacity; nearby directory records do not indicate open-now/attendance. No mock events, pseudo-crowd values, bookings or paid campaign activation. Route `noindex` while launch coverage is sparse.
+- **Checks:** New unit suite for input allowlist, published-text matching, price privacy, cancelled/expired events and overnight start; full formatting, type, lint, CI, browser/mobile/EN-ES acceptance and real source confirmation still required. PR #326 changes the same hero and its source-derived 102-route matrix; reconcile or do not merge.
+- **Rollback:** Remove guided entry/route; no data reversal, no migrations. Exact-source Cloudflare deployment and operational proof required before claiming live.
+
 ## 2026-10-29 | Passport weekly exploration milestones without XP writes
 
 - **Before:** Existing Passport displays XP, stamps, achievements, enrolments and reward claims, but no optional weekly exploration checkpoint.
@@ -8,6 +53,24 @@
 - **Dependencies:** Existing Passport UI and Supabase auth, no AkiHQ/AkiBusiness/Stripe/Resend/FCM changes. PR #326 modifies Passport visual styling; reconcile at release.
 - **Tests:** Unit DST, duplicate, cooldown, GPS-only and future timestamp exclusions; full CI and authenticated owner/other-account negative acceptance still required. Passing source checks is not live proof.
 - **Rollback:** Remove optional panel/read, leaving existing check-ins, rewards, Passport, XP and history untouched. No migration reversal.
+
+## 2026-10-28 | Local-first public launch banner and roadmap (staged in PR #326)
+
+- **Motivation:** A nationwide, still-growing event database can feel empty in cities outside the first rollout. A clear, honest launch story is preferable to implying nationwide venue/event availability.
+- **New public UI:** Reusable accessible non-marquee `LaunchRibbon` in consumer discovery surfaces; prominent link to `/{locale}/roadmap`; localized, SEO-indexable visual roadmap and public `/roadmap` redirect; reassuring no-event state on Home.
+- **Schedule:** Four stages: improve product reliability now; launch first around Fuengirola/Costa del Sol; learn and improve; then expand across Spain following observed demand, community engagement and quality venue coverage. **No unsupported public dates, fixed city order, follower totals or invented milestones.** Feature statuses distinguish building, private playtest (AkiPals) and planned (Friends).
+- **Dependencies:** shared `AppShell`, existing locale routing and metadata, existing event/map state, central roadmap copy; user-controlled locale and genuine publisher data remain intact. The announcement is cosmetic and creates no subscriptions or personal data.
+- **Privacy/safety:** no geolocation request, tracking, signup, notifications, backend migrations, consent override, private preview opening, or ads. Venue and event details remain accurate; empty-state actions continue to work.
+- **Validation:** bilingual rendering, touch/keyboard accessibility, reduced-motion, mobile dock and map inset conflict checks, permanent redirect, SEO canonical, all existing routes and tests, exact-head CI/Cloudflare preview. Roll back only the page/banner if needed; no data rollback.
+
+## 2026-10-28 | Radar × After Dark full consumer experience (PR #326, staging)
+
+- **Before:** App-first discovery uses inconsistent page-specific hero/cards and a four-destination mobile dock with a More sheet; Community's home redirects to a creator index; AkiPals is a restricted preview behind `/pals`.
+- **After (source only):** One shared five-destination nav definition, a single mobile dock, safe check-in landing, image-forward Home from actual event media, consistent event cards in Home and Map, a meaningful Community portal, gated AkiPals landing with the user's real saved character, and shared cinematic treatment for public detail pages, map overlays, login and profile. Passport stays an independent collectible experience.
+- **Privacy/security:** No schema/RLS writes, new social graph, client geolocation logging, paid subscription activation, game grant, or QR validation change. Community friends are not exposed until privacy/consent controls exist. Preview role checks remain on the server.
+- **Dependencies:** Pending #324 real event-card refinements must be reconciled without losing layout and featured classes; #325 waitlist notices must not be overwritten. Existing Next.js/MapLibre/Supabase/Cloudflare contracts and native Android insets must remain compatible.
+- **Acceptance:** Source-derived 99+ route inventory including per-page status, exact-head formatting/lint/typecheck/security/full tests, EN/ES, phone/tablet/desktop, screen-reader/zoom/light/dark, actual user journeys (auth, map, check-in, Passport, Pals wardrobe, booking, privacy, moderation), reviewed exact-source Cloudflare preview and final single production merge. `npm run release:pasa-audit` deliberately fails until every in-scope route is accepted.
+- **Rollback:** Preserve existing Worker deployment pointer, disable the new UI at source and redeploy the prior accepted revision. No database rollback necessary for the current presentation-only scope. Merge/deploy must not occur before the full gate passes.
 
 ## 2026-10-28 | Shared, gated Duermo/Coches launch-waitlist backend
 
@@ -3205,6 +3268,66 @@ Follow-up asset integration: `public/brand/pasa-2026-traced.svg` is a vector tra
 
 The new `PlansFirstHero.tsx` EN/ES copy prioritizes live music, plans with friends and nearby activities for a Spain-first young-adult audience; all category, search, pricing, event, authentication, consent and age rules remain unchanged. Full brand/retention direction is recorded in `docs/AKIPASA_BRAND_RETENTION_20261028.md`. This branch is rebased conceptually on already merged app-first PR #320; it supersedes conflicting PR #319. Require the same six hosted CI workflows, responsive/browser accessibility review and exact-source Cloudflare verification before production. Rollback: restore only the prior hero copy. No DB, bulk marketing, analytics activation or billing changes.
 
+## 2026-10-29 | Coordinated release branch retains visual gates
+
+The combined release preserves current master Passport and security changes alongside the draft UI and private 3D studio. The visual workflow now runs for every PR carrying it, including the integration branch, rather than silently skipping branches whose names differ from the original design branch. The manual production workflow explicitly requires the strict route audit before inspecting bindings or publishing. No route acceptance is manufactured, no feature is activated, and no Worker or database is changed by this commit. Validation: source inspection and route inventory; final combined CI and actual screenshots remain required. Rollback reverts source without changing user data.
+
+## 2026-10-26 | Mouse dragging, corner arrows and branded login names
+
+The public login AkiSelector supports primary-button mouse dragging alongside
+touch/pen swipes. Cards follow a bounded horizontal pointer offset; capture
+starts only after 10px of horizontal intent, leaving ordinary clicks and
+vertical touch scrolling intact. Release outside the scene is supported. A
+45px horizontal release browses one enabled option, with wraparound; shorter
+drags snap back and suppress their compatibility click. Pointer cancellation
+and capture loss clear temporary offsets. Modified/right/middle clicks retain
+ordinary link behavior, and starting a later pointer/keyboard action clears the
+click guard. Native HTML link/image dragging is prevented within the scene.
+
+Two localized, keyboard-accessible 44px circular arrows sit in the lower scene
+corners. They browse in place without submitting, navigating or replacing the
+login form; the separate footer/caption stays hidden. Generic lab callers opt
+in via showBrowseArrows. Names use the individual product accent and self-hosted
+Poppins Semibold 600, with a dark label backing for legibility over effects.
+The Latin WOFF2 is vendored from @fontsource/poppins 5.3.0 with its SIL OFL;
+requests stay on the app's own origin. Existing startup/idle artwork, motion-off,
+reduced motion, EN/ES/referral-safe hrefs, current-product semantics, drafts and
+auth/session/role behavior remain. No API, database, billing, analytics, provider
+or native Android binary change.
+
+Shared React engine, adapter, CSS and font assets are copied across four Next
+apps; Business has an equivalent DOM adapter and matching assets. Business
+engine/adapter CSS v4, JS v5 and paid release cache v158 include the font and
+retain production assertions. Acceptance covers real mouse capture/release
+outside the scene, follow-pointer geometry, short-drag suppression, immediate
+subsequent clicks, arrows/wraparound/keyboard, touch and cancelled gestures,
+loaded font/brand colours and responsive label bounds. Regression evidence is
+recorded in the PR; exact-head CI and production verification gate release.
+Rollback restores source with fresh static cache/asset versions; no data rollback.
+
+Capture-transfer follow-up: descendant lostpointercapture events are ignored;
+only loss on the scene cancels its gesture. Mouse movement with no primary
+button held clears a pending gesture after an uncaptured outside release.
+Acceptance now uses real Chromium touch input originating on a card descendant,
+and covers outside vertical release followed by ordinary mouse hover.
+
+CI follow-up: wait for the selected card’s finite transition before taking the
+drag baseline. Account acceptance passed 310 cases; the initial selector check
+measured a still-easing card on a busy runner. The >20px movement requirement
+and real pointer input remain unchanged.
+
+## 2026-10-29 | Selector drag reconciliation with consumer product reset
+
+PR #299 mouse/touch drag, corner-arrow and local-font improvements are reconciled with current master without restoring the retired HQ/Business consumer choices. AkiPasa login still presents exactly AkiPasa, AkiDuermo and AkiCoches; authenticated business handoffs remain separate. The browser pointer helper receives the expected product list explicitly, preserving wraparound, movement, outside-release, touch and font assertions for the three-product chooser. Focused selector suites pass 20/20 locally; real browser and combined exact-head CI remain required. No auth, data, provider, billing or deployment changes. Rollback reverts the presentation/harness changes only.
+
+## 2026-10-28 | Verified launch waitlist founder notifications
+
+On the shared AkiPasa backend, after a first successful atomic `POST /api/launch-waitlist/confirm` token consumption, send one idempotency-keyed, HTML-escaped operational notification to alex@akipasa.com and andrew@akipasa.com through the canonical Resend account. Include product, verified identity/contact, location, audience, interest, separately opted-in marketing status, timestamp and id. Do not email founders on raw unverified submissions, honeypot hits, repeated or expired tokens, or registration lookups; this prevents anonymous inbox floods and ensures uniqueness. A failed notice is logged but does not reverse verified subscriber state or enable token replay. No tracking pixels, no mass mailing, no new public data API, no SQL/secret changes. Validate Resend mocked payload, HTML escaping, concurrent proof, CI and actual delivery on controlled test signup before considering external signup activation. Existing subscriber consent and service-role database access remain authoritative.
+
+## 2026-10-29 | Verified waitlist notice acceptance and launch boundary
+
+Founder notices require the exact server-only `LAUNCH_WAITLIST_FOUNDER_NOTICES_ENABLED=true` setting. Missing or malformed values leave existing email confirmation operational without sending founder mail. Tests are registered in `npm test` and exercise atomic proof consumption, expired/replayed proof, missing storage, malformed requests and provider rejection/timeout. Subscriber consent is never rolled back to retry a notice. Delivery is best effort after confirmation, not a durable outbox or a guaranteed delivery promise; gated-off or failed historical notices are not automatically replayed. The one-off self-editing preparation workflow is removed from the candidate. A controlled signup and actual provider delivery acceptance remain required before activation. No schema, billing, public data exposure or production configuration change. Cleanup tracker: #330.
+
 ## 2026-10-27 | Automation Worker GitHub Actions Node runtime security baseline
 
 - **Before:** Both automation CI check and manually dispatched deployment used the moving `node-version: 22` major selector; their exact patch level could vary.
@@ -3213,3 +3336,114 @@ The new `PlansFirstHero.tsx` EN/ES copy prioritizes live music, plans with frien
 - **Security boundary:** Does not fix or prove exposure of Cloudflare's V8 Workers runtime, other Node-based jobs, third-party services or user Android clients. Remaining inventory/incident work: #305.
 - **Verification:** Automation Worker PR workflow must pass at exact head. No production dispatch is requested; merge and deployment are separate operations. No replay of missed cron jobs until backed by logs and idempotency evidence.
 - **Rollback:** Revert the workflow setting through reviewed PR only after confirming a secure alternative runtime.
+
+## 2026-10-29 | PR #326 coordinated source and creator recovery
+
+- **Before:** eight unformatted source/test files blocked the public app CI. The
+  formatter also stripped leading whitespace inside EventCard's conditional class
+  string, joining the sponsored and base class names. Creator category changes
+  dropped search/locality, while studio read failures could appear as editable
+  empty drafts.
+- **After:** canonical formatting, clsx-owned independent sponsored class and an
+  explicit bilingual sponsorship label. Creator public/private views share a
+  locally imported route-scoped theme; category/search retain each other, profile
+  has one h1, and unknown profile/category/eligibility reads cannot enable blind
+  editing or verification. Existing moderation, auth and server actions remain.
+- **Cross-surface:** Home and Map reuse EventCard; creator aliases reuse canonical
+  components in both locales. No changed RLS, SQL, pricing, billing, email,
+  consent, tracking, rewards, occurrence IDs or customer data. Presentation-only
+  rollback restores source; no database rollback is needed.
+- **Verified:** 21 workflow-continuity tests include rendered EN/ES sponsored class
+  and disclosure regression. Creator focused read/filter/review suite: 20 passed;
+  scoped ESLint passed. TypeScript passed before the final creator edits. Full
+  combined checks, exact-head CI and responsive browser/source acceptance remain
+  separate gates; no production publication is claimed by this entry.
+
+## 2026-10-29 | Coordinated Tonight integration: dark launch and exact arrival
+
+The Tonight source now includes a server-only `AKIPASA_TONIGHT_ENABLED` gate: only the exact value `true` exposes its homepage link, metadata and route; an unset or malformed value returns not-found before either discovery source is queried. Browser query parameters cannot activate it. The public-UI fixture explicitly enables the gate to test the planner; unconfigured browser tests verify the closed route. The temporary branch-writing staging workflow is removed. This is a source integration boundary, not authorization to enable the production flag.
+
+`selectTonightEvents` compares actual Europe/Madrid evening/arrival instants, including the existing 04:00 night cutoff, rather than end-hour numbers. An event ending at 22:30 remains eligible for a 22:00 arrival, overnight events may continue after dawn, and a matching clock hour on another date is excluded. Current time remains a lower bound after midnight. Spanish singular/plural cocktail text matches published wording. Empty listings are described as published, not independently verified. Failed result sources display unknown counts and an unavailable summary, preserving their independent error states.
+
+Rechecked linked-project metadata read-only at 2026-10-29 01:30 UTC: 75,370 venues, nine events, zero future-start scheduled occurrences (zero published future-start); three ongoing scheduled occurrences, only one attached to a published event. This does not establish nightlife launch supply. Passport PR #329 is merged in `master` at `0d1fac5d09bd13dff6fa5ec44bd84146ff90d5e5`; its read-only milestones and own-profile query are preserved by this integration. `check_ins` RLS remains enabled; no permission, customer record, XP, reward, billing, paid campaign or production configuration is changed. The existing recommendation service may write its existing request/item telemetry; "read-only planner" means no new business-state mutation, not a guarantee that the reused service performs no database writes.
+
+Validation: focused Tonight release/domain tests, Passport read recovery and DST milestone tests are run locally; exact final integrated CI/build/browser and authenticated production acceptance remain required. Root coordinator owns the cinematic hero conflict and route-matrix acceptance. Revert these application changes or keep the Tonight gate off for rollback; retain existing Passport and customer history.
+
+### Real-browser correction: mobile announcement and header controls
+
+The first 360px source-built screenshot review exposed the launch notice behind
+its fixed topbar and an app-switcher button squeezed to an empty pill. The notice
+now lives inside the existing content inset and both header menus retain 44px
+controls, reusing the reserved global-search space. The public screenshot matrix
+now covers both themes and 360/390/820/1440px; its setup records the dismissed
+consent version correctly instead of failing on a not-yet-created document root.
+Consent defaults, actual optional permissions, focus/menus and Android insets are
+unchanged. Capture rerun and inspected output remain required before acceptance.
+
+## 2026-10-29 | AkiPals model-space fit, rendering lifecycle and executable avatar SQL
+
+- **Changed:** Replace world clipping with bounded head topology; real bounded
+  facial deformations, frame-aware hair/accessories, eye detail, boot silhouette,
+  per-instance geometry, skeleton cleanup, background suspension and demand-only
+  reduced-motion rendering. Loading/error cannot be reported as an exportable look.
+- **Dependencies:** Private `/pals` and its existing own-account API; local pinned
+  Three.js/CC0 GLBs and no new provider. EN/ES, final sculpted clothing/art, Android,
+  combined exact-source CI and source-pinned hosted saving still require acceptance.
+- **SQL repair:** Correct the existing migration DO delimiter and add its identical
+  Supabase mirror; execute twice locally and test owner RLS, cross-owner update,
+  anonymous/read/write/delete denials, payload constraints, service maintenance,
+  account cascade and untouched old saves. No hosted SQL or customer row changed.
+- **Validation:** 119 Pals unit/geometry/executable SQL cases pass. Chromium 153
+  WebGL save/reload/restore and 320/390/820/1440 screenshots pass on loopback data;
+  genuine final artwork and live authenticated saving are not claimed.
+- **Rollback:** Source revert only; retain both old game saves and avatar records.
+
+### Tonight browser accessibility repair
+
+Real Chromium 153 testing reproduced the hosted Tonight EN/ES planner failure: implicit select labels included option text, preventing stable Area/Zona, People/Personas and Distance labels. All six selectors now reference their visible label span with `aria-labelledby`; the browser assertions stay unchanged. Both real query round trips pass with the same filters and values. On the isolated development server, nine of ten cases passed (EN/ES, 390/1280 px, themes and reduced motion); the final ES/dark/1280 navigation failed with connection refused after that server exited, so the complete matrix is not claimed passed. EN dark phone and EN light desktop screenshots were inspected directly. Synthetic read-only venue data and empty events are explicitly fixture evidence, not production content or authenticated acceptance. Final integrated production build/browser remains the release gate.
+
+## 2026-10-29 | Combined-release privacy and route compatibility
+
+Own-account exports now include the new pals_avatar_profiles appearance under the existing authenticated caller filter, deterministic user_id ordering, bounded pagination and fail-closed export. Existing legacy saves remain exportable and auth-user deletion cascades new appearance records. Tonight uses the discovery visual family, and the source inventory now contains 103 pages (90 in scope, 13 other-product exclusions) without invented acceptance. Weekly quest tests join the mandatory test command. The obsolete commit-message-triggered Pals production workflow is retired so the manual source-verified production path and strict route gate remain authoritative for the combined tree. No runtime activation, migration application, email, billing or customer data change. Regression evidence: caller-filter/order export test and full matrix classification tests; final combined CI and role/device acceptance still required.
+
+### Narrow-phone navigation and stable visual captures
+
+Direct inspection at 360/390px found the full Community label ellipsized and two
+indistinguishable ellipsis menu icons. The canonical dock now uses a bounded
+label size/weight, while the product switcher reuses the shared globe glyph.
+Accessible names, routes, touch areas and menu handlers stay unchanged. The real
+browser suite checks full rendered label width, and screenshot capture disables
+finite transitions so light-theme hydration cannot produce washed-out intermediate
+frames. No consent choice, animation preference or product behavior is bypassed.
+
+## 2026-10-29 | Bilingual human-avatar entrance and continuous 3D wardrobe
+
+- **Changed:** Identity/wardrobe entrance replaces legacy mascot/adventure copy
+  and portraits, preserving authorized access and locale in the private link.
+  EN/ES static/dynamic editor text, status, controls and enum labels; canonical
+  saved appearance untouched. Keyboard tabs and edit-focus retention added.
+- **Visual:** Continuous swept sleeves/forearms replace articulated shoulder and
+  elbow shapes; original rig weights exclude remaining T-pose fragments. Fitted
+  headwear and responsive stage retain the same original CC0 assets/runtime.
+- **Evidence:** 123 focused Pals cases passed before final browser pass, including
+  identity-entry/no-mascot/locale/privacy and executable SQL tests. Real EN/ES
+  Chromium save/restore and responsive captures inspected. Final full CI, Android,
+  hosted saving and premium art acceptance remain pending, not assumed passed.
+- **Rollback:** Revert UI/runtime source; keep legacy and new account save rows.
+  No hosted schema, role, billing, external asset or provider configuration change.
+
+## 2026-10-29 | Retired temporary orchestration helpers
+
+After local source and formatter recovery, remove the one-shot Pals visual formatter and isolated dependency-packaging workflow. Permanent CI/browser suites and canonical manual production workflow remain. The coordinated source/evidence/rollback ledger is docs/AKIPASA_COORDINATED_RELEASE_20261029.md; 103 source pages include the added gated Tonight route, with 90 in-scope routes still requiring genuine release acceptance. No production rollout or data mutation is implied.
+
+The follow-up screenshot review repairs the Home no-results explanation: hiding
+its legacy icon on phones no longer leaves paragraphs in a narrow grid column.
+Recovery links retain their original filtering URLs and 44px touch targets.
+The canonical dock grants the Community label sufficient width while preserving
+all five destinations and the centered check-in column. Reduced-motion visitors
+no longer receive the inherited shell fade-in. Browser assertions require full
+paragraph/label widths and fully rendered main content before capturing evidence.
+
+## 2026-10-29 | Repeatable avatar build validation
+
+The generated, gitignored public/pals/runtime Three.js bundle is excluded from source linting, matching other compiler outputs. Original studio JS/TypeScript, bundle integrity tests and browser execution remain checked. This repairs a repeat-check failure after build generated minified vendor output; no source rule or application coverage is lowered. Full combined check/build is rerun after source freeze.

@@ -608,14 +608,19 @@ describe("community workflow return paths", () => {
       },
     );
     it(
-      "retains default community creator navigation in " + locale,
+      "renders a public Community landing rather than redirecting in " + locale,
       async () => {
-        await expect(
-          CommunityPage({
-            params: Promise.resolve({ locale }),
-            searchParams: Promise.resolve({}),
+        const landing = await CommunityPage({
+          params: Promise.resolve({ locale }),
+          searchParams: Promise.resolve({}),
+        });
+        render(landing);
+        expect(
+          screen.getByRole("link", {
+            name: locale === "es" ? /Explorar creadores/ : /Explore creators/,
           }),
-        ).rejects.toThrow(`redirect:/${locale}/community/creators`);
+        ).toHaveAttribute("href", `/${locale}/community/creators`);
+        expect(mocks.redirect).not.toHaveBeenCalled();
         expect(mocks.requireUser).not.toHaveBeenCalled();
       },
     );

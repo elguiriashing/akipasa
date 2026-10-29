@@ -1,15 +1,19 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Locale } from "@/lib/config";
 import { planShortcutHref, type PlanShortcut } from "@/lib/plans-first";
 import { discoveryViewHref } from "@/lib/discovery-navigation";
+import { tonightEnabled } from "@/lib/aki-tonight-release";
 import styles from "./PlansFirstHero.module.css";
 
 /** Social-plans hero: short ES/EN promise, existing search routes unchanged. */
 export function PlansFirstHero({
   locale,
   location,
+  imageUrl,
 }: {
   locale: Locale;
+  imageUrl?: string;
   location: {
     locality: string;
     name: string;
@@ -34,6 +38,17 @@ export function PlansFirstHero({
   });
   return (
     <section className={styles.hero} aria-labelledby="plans-first-title">
+      {imageUrl ? (
+        <div className={styles.media} aria-hidden="true">
+          <Image
+            src={imageUrl}
+            alt=""
+            fill
+            unoptimized
+            sizes="(max-width: 640px) 100vw, 1100px"
+          />
+        </div>
+      ) : null}
       <p className={styles.kicker}>
         {es ? "Tu ciudad tiene plan." : "Your city has plans."}
       </p>
@@ -62,6 +77,11 @@ export function PlansFirstHero({
             {es ? shortcut.es : shortcut.en}
           </Link>
         ))}
+        {tonightEnabled() && (
+          <Link className={styles.mapShortcut} href={`/${locale}/tonight`}>
+            {es ? "Crear un plan · AkiTonight" : "Make a plan · AkiTonight"}
+          </Link>
+        )}
         <Link className={styles.mapShortcut} href={mapHref}>
           {es ? "Ver mapa" : "See map"}
         </Link>

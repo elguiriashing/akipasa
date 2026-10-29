@@ -56,6 +56,7 @@ describe("account data export contract", () => {
       "profiles",
       "pals_preview_access",
       "pals_states",
+      "pals_avatar_profiles",
       "pals_entitlements",
       "claim_decision_emails",
       "saved_events",
@@ -85,6 +86,48 @@ describe("account data export contract", () => {
     expect(tables).not.toContain("pals_commands");
     expect(tables).not.toContain("pals_analytics_events");
     expect(tables).not.toContain("ai_chat_messages");
+  });
+
+  it("exports avatar appearance with caller ownership and its real primary key", async () => {
+    const avatar = { user_id: "owner", appearance: { schema: 1 } };
+    const eq = vi.fn();
+    const order = vi.fn();
+    const from = vi.fn();
+    const query = {
+      eq: (...args: unknown[]) => {
+        eq(...args);
+        return query;
+      },
+      order: (...args: unknown[]) => {
+        order(...args);
+        return query;
+      },
+      range: () => query,
+      retry: async () => ({ data: [avatar], error: null, count: 1 }),
+    };
+    const client = {
+      from: (table: string) => {
+        from(table);
+        return { select: () => query };
+      },
+    } as unknown as SupabaseClient;
+    const scope = currentAccountExportTables().find(
+      ([table]) => table === "pals_avatar_profiles",
+    );
+    expect(scope).toEqual(["pals_avatar_profiles", "user_id"]);
+    const result = await createAccountExportReader(client)(
+      scope![0],
+      scope![1],
+      "owner",
+    );
+    expect(from).toHaveBeenCalledWith("pals_avatar_profiles");
+    expect(eq).toHaveBeenCalledWith("user_id", "owner");
+    expect(order).toHaveBeenCalledWith("user_id", { ascending: true });
+    expect(result).toEqual({
+      table: "pals_avatar_profiles",
+      data: [avatar],
+      failed: false,
+    });
   });
 
   it("exports provider names without authentication secrets", () => {

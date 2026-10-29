@@ -1,0 +1,133 @@
+.page {
+  max-width: 1120px;
+  margin-inline: auto;
+  padding: clamp(1rem, 3vw, 2.5rem);
+}
+.stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.85fr);
+  min-height: min(75vh, 700px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 131, 47, 0.27);
+  border-radius: 2rem;
+  background:
+    radial-gradient(
+      circle at 76% 42%,
+      #6f2d39 0%,
+      #35213c 30%,
+      transparent 63%
+    ),
+    linear-gradient(130deg, #121c2a 0%, #090f1a 80%);
+  color: #fff;
+}
+.copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(1.6rem, 5vw, 4.5rem);
+}
+.eyebrow {
+  color: #ffad73;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.copy h1 {
+  margin: 0.4rem 0 1rem;
+  font-size: clamp(3.4rem, 9vw, 6.5rem);
+  letter-spacing: -0.065em;
+}
+.copy h1 span {
+  color: #ff7228;
+}
+.lede {
+  max-width: 34ch;
+  margin: 0 0 2rem;
+  color: #d7dae9;
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+  line-height: 1.55;
+}
+.primary,
+.links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 48px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 750;
+}
+.primary {
+  padding: 0.9rem 1.4rem;
+  background: #ff7326;
+  color: #10131a;
+}
+.notice {
+  max-width: 42ch;
+  padding: 1rem;
+  border: 1px solid #8b7084;
+  border-radius: 1rem;
+  color: #f6d5e2;
+}
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.4rem;
+}
+.links a {
+  color: #e8ebf8;
+}
+.portrait {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 2rem;
+  background: radial-gradient(
+    circle at 55% 58%,
+    rgba(255, 116, 38, 0.4),
+    transparent 55%
+  );
+}
+.portrait img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 15px 26px rgba(0, 0, 0, 0.4));
+}
+.character {
+  display: grid;
+  place-items: center;
+  width: min(260px, 68vw);
+  aspect-ratio: 1;
+  border: 2px solid rgba(255, 139, 68, 0.36);
+  border-radius: 50%;
+  background: radial-gradient(circle, #df7336, #3a2340 70%);
+  color: #fce4bf;
+  box-shadow: 0 0 90px rgba(255, 122, 42, 0.3);
+}
+.caption {
+  margin-top: 1rem;
+  color: #e6cbd8;
+  font-size: 0.85rem;
+}
+.page a:focus-visible {
+  outline: 3px solid #ffd0ab;
+  outline-offset: 4px;
+}
+@media (max-width: 700px) {
+  .stage {
+    grid-template-columns: 1fr;
+  }
+  .portrait {
+    min-height: 230px;
+    padding: 1rem 1rem 2rem;
+  }
+  .character {
+    width: min(180px, 48vw);
+  }
+}
