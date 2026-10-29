@@ -240,35 +240,58 @@ function makeFaceDetails(a) {
   const noseY = male ? 1.647 : 1.614;
   const mouthY = male ? 1.615 : 1.573;
   const front = 0.116;
-  const noseShape = a.nose === "straight" ? [0.009, 0.017] :
-    a.nose === "button" ? [0.016, 0.011] : [0.012, 0.013];
-  addEllipsoid(group,{
-    x:0,y:noseY,z:front,
-    rx:noseShape[0],ry:noseShape[1],rz:0.013,mat:skin,details:16
+  const noseShape =
+    a.nose === "straight"
+      ? [0.009, 0.017]
+      : a.nose === "button"
+        ? [0.016, 0.011]
+        : [0.012, 0.013];
+  addEllipsoid(group, {
+    x: 0,
+    y: noseY,
+    z: front,
+    rx: noseShape[0],
+    ry: noseShape[1],
+    rz: 0.013,
+    mat: skin,
+    details: 16,
   });
-  const smile = a.mouth === "neutral" ? 0.001 :
-    a.mouth === "grin" ? 0.010 : 0.006;
-  curve(group,[
-    [-0.022,mouthY+smile,front + 0.003],
-    [0,mouthY,front + 0.012],
-    [0.022,mouthY+smile,front + 0.003]
-  ],0.0022,lips,12);
+  const smile =
+    a.mouth === "neutral" ? 0.001 : a.mouth === "grin" ? 0.01 : 0.006;
+  curve(
+    group,
+    [
+      [-0.022, mouthY + smile, front + 0.003],
+      [0, mouthY, front + 0.012],
+      [0.022, mouthY + smile, front + 0.003],
+    ],
+    0.0022,
+    lips,
+    12,
+  );
   return group;
 }
 /** Construct a tapered torso from an actual lathed fabric mesh. */
 function shirtTorso(parent, a, fabric) {
-  const width = a.top === "hoodie" ? 1.10 : a.top === "jacket" ? 1.07 : 1;
+  const width = a.top === "hoodie" ? 1.1 : a.top === "jacket" ? 1.07 : 1;
   const profile = [
-    [0,1.047], [0.155*width,1.047], [0.177*width,1.12],
-    [0.182*width,1.27], [0.200*width,1.37],
-    [0.178*width,1.455], [0.107*width,1.51], [0,1.51]
+    [0, 1.047],
+    [0.155 * width, 1.047],
+    [0.177 * width, 1.12],
+    [0.182 * width, 1.27],
+    [0.2 * width, 1.37],
+    [0.178 * width, 1.455],
+    [0.107 * width, 1.51],
+    [0, 1.51],
   ];
   const geometry = new THREE.LatheGeometry(
-    profile.map(([radius,y])=>new THREE.Vector2(radius,y)), 40
+    profile.map(([radius, y]) => new THREE.Vector2(radius, y)),
+    40,
   );
-  const mesh = new THREE.Mesh(geometry,fabric);
+  const mesh = new THREE.Mesh(geometry, fabric);
   mesh.scale.z = 0.73;
-  mesh.castShadow = true; mesh.receiveShadow = true;
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
   parent.add(mesh);
   return mesh;
 }
@@ -293,13 +316,13 @@ function makeWardrobe(a) {
     z: 0.023,
     rx: 0.115,
     ry: 0.026,
-    rz: 0.090,
+    rz: 0.09,
     mat: trim,
     details: 28,
   });
   addEllipsoid(group, {
     x: 0,
-    y: 1.510,
+    y: 1.51,
     z: 0.025,
     rx: 0.067,
     ry: 0.047,
@@ -314,30 +337,52 @@ function makeWardrobe(a) {
     const radius = puffy ? 0.082 : 0.066;
     const shoulder = [side * 0.205, 1.436, 0.007];
     const elbow = [side * 0.294, 1.268, 0.015];
-    const wrist = [side * 0.315, 1.090, 0.07];
-    addEllipsoid(group,{
-      x:side * 0.210,y:1.440,z:0.008,
-      rx:radius * 1.2,ry:radius * 1.2,rz:radius * 1.1,mat:textile
+    const wrist = [side * 0.315, 1.09, 0.07];
+    addEllipsoid(group, {
+      x: side * 0.21,
+      y: 1.44,
+      z: 0.008,
+      rx: radius * 1.2,
+      ry: radius * 1.2,
+      rz: radius * 1.1,
+      mat: textile,
     });
     if (a.top === "tee") {
-      segment(group,shoulder,elbow,radius,radius * 0.88,textile);
-      segment(group,elbow,wrist,0.055,0.042,skin);
+      segment(group, shoulder, elbow, radius, radius * 0.88, textile);
+      segment(group, elbow, wrist, 0.055, 0.042, skin);
     } else {
-      segment(group,shoulder,elbow,radius,radius * 0.94,textile);
-      segment(group,elbow,wrist,radius * 0.94,radius * 0.72,textile);
-      addEllipsoid(group,{
-        x:wrist[0],y:wrist[1] + 0.014,z:wrist[2],
-        rx:radius * 0.79,ry:0.024,rz:radius * 0.77,mat:trim
+      segment(group, shoulder, elbow, radius, radius * 0.94, textile);
+      segment(group, elbow, wrist, radius * 0.94, radius * 0.72, textile);
+      addEllipsoid(group, {
+        x: wrist[0],
+        y: wrist[1] + 0.014,
+        z: wrist[2],
+        rx: radius * 0.79,
+        ry: 0.024,
+        rz: radius * 0.77,
+        mat: trim,
       });
     }
-    addEllipsoid(group,{
-      x:side * 0.318,y:1.021,z:0.073,
-      rx:0.050,ry:0.086,rz:0.038,mat:skin,details:24
+    addEllipsoid(group, {
+      x: side * 0.318,
+      y: 1.021,
+      z: 0.073,
+      rx: 0.05,
+      ry: 0.086,
+      rz: 0.038,
+      mat: skin,
+      details: 24,
     });
     // Rounded thumb, angled inward for a friendly idle silhouette.
-    addEllipsoid(group,{
-      x:side * 0.270,y:1.055,z:0.091,
-      rx:0.025,ry:0.041,rz:0.029,mat:skin,details:18
+    addEllipsoid(group, {
+      x: side * 0.27,
+      y: 1.055,
+      z: 0.091,
+      rx: 0.025,
+      ry: 0.041,
+      rz: 0.029,
+      mat: skin,
+      details: 18,
     });
   }
   if (a.top === "hoodie") {
@@ -616,7 +661,7 @@ function applyBaseColors(base, a) {
     const isBody = /Superhero_|Retopology/i.test(node.name);
     if (isBody) {
       node.material.clippingPlanes = [
-        new THREE.Plane(new THREE.Vector3(0, 1, 0), -1.50),
+        new THREE.Plane(new THREE.Vector3(0, 1, 0), -1.5),
       ];
       node.material.clipShadows = true;
     }

@@ -170,7 +170,10 @@ try {
   );
   await page.getByLabel("Body frame").selectOption("masculine");
   await maleMesh;
-  await expect(page.locator("#avatar-stage")).toHaveAttribute("data-ready", "true");
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-ready",
+    "true",
+  );
   await page.screenshot({
     path: resolve(outputDir, "identity-male-390.png"),
     fullPage: true,
