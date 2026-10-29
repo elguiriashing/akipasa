@@ -31,7 +31,9 @@ export async function generateMetadata({
     ...localizedMetadata(
       locale,
       "/tonight",
-      es ? "AkiTonight: ¿Qué hacemos esta noche?" : "AkiTonight: What's the plan?",
+      es
+        ? "AkiTonight: ¿Qué hacemos esta noche?"
+        : "AkiTonight: What's the plan?",
       es
         ? "Busca planes y locales reales en la Costa del Sol, elige tu ambiente y comparte ideas con amigos."
         : "Find real plans and local places on the Costa del Sol, choose your vibe and share ideas with friends.",
@@ -138,7 +140,11 @@ export default async function TonightPage({
           <div className={styles.heroActions}>
             <ShareButton
               locale={locale}
-              title={es ? "Plan de esta noche · AkiTonight" : "Tonight's plan · AkiTonight"}
+              title={
+                es
+                  ? "Plan de esta noche · AkiTonight"
+                  : "Tonight's plan · AkiTonight"
+              }
               label={es ? "Compartir plan" : "Share this plan"}
               copiedLabel={es ? "Enlace copiado" : "Link copied"}
             />
@@ -159,10 +165,15 @@ export default async function TonightPage({
         </div>
       </header>
 
-      <section aria-label={es ? "Crear un plan" : "Build a plan"} className={styles.planner}>
+      <section
+        aria-label={es ? "Crear un plan" : "Build a plan"}
+        className={styles.planner}
+      >
         <form action={`/${locale}/tonight`} method="get">
           <fieldset className={styles.intentField}>
-            <legend>{es ? "¿Qué te apetece?" : "What are you in the mood for?"}</legend>
+            <legend>
+              {es ? "¿Qué te apetece?" : "What are you in the mood for?"}
+            </legend>
             <div className={styles.intentGrid}>
               {tonightIntents.map((intent, index) => (
                 <label className={styles.intentOption} key={intent.key}>
@@ -212,7 +223,9 @@ export default async function TonightPage({
               </select>
             </label>
             <label>
-              <span>{es ? "Presupuesto por persona" : "Budget per person"}</span>
+              <span>
+                {es ? "Presupuesto por persona" : "Budget per person"}
+              </span>
               <select name="budget" defaultValue={preferences.budget}>
                 {budgets.map((budget) => (
                   <option key={budget.key} value={budget.key}>
@@ -259,9 +272,13 @@ export default async function TonightPage({
       <section className={styles.results} aria-labelledby="tonight-events">
         <div className={styles.sectionHeading}>
           <div>
-            <p className={styles.kicker}>{displayArea} / {es ? "esta noche" : "tonight"}</p>
+            <p className={styles.kicker}>
+              {displayArea} / {es ? "esta noche" : "tonight"}
+            </p>
             <h2 id="tonight-events">
-              {es ? "Planes con horario publicado" : "Plans with published schedules"}
+              {es
+                ? "Planes con horario publicado"
+                : "Plans with published schedules"}
             </h2>
           </div>
           <span className={styles.resultCount}>{events.length}</span>
@@ -361,7 +378,11 @@ export default async function TonightPage({
           </div>
         ) : (
           <div className={styles.empty}>
-            <strong>{es ? "Aún estamos llegando a tu zona." : "We're still building in this area."}</strong>
+            <strong>
+              {es
+                ? "Aún estamos llegando a tu zona."
+                : "We're still building in this area."}
+            </strong>
             <p>
               {es
                 ? "No hay locales publicados a esta distancia. Amplía el radio o cambia de zona."

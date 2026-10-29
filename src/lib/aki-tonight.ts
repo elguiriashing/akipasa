@@ -88,7 +88,8 @@ export function parseTonightPreferences(query: RawQuery): TonightPreferences {
 
 export function tonightArea(preferences: TonightPreferences) {
   return (
-    tonightAreas.find((area) => area.key === preferences.area) || tonightAreas[0]
+    tonightAreas.find((area) => area.key === preferences.area) ||
+    tonightAreas[0]
   );
 }
 
@@ -124,8 +125,7 @@ export function matchesTonightIntent(
     );
   if (intent === "cocktails")
     return /\b(cocktails?|cócteles?|cocteles?|mixolog[ií]a)\b/i.test(text);
-  if (intent === "food")
-    return result.event.category === "food";
+  if (intent === "food") return result.event.category === "food";
   if (intent === "sports")
     return /\b(sports?|deportes?|football|f[uú]tbol|partido|match|rugby|f1)\b/i.test(
       text,

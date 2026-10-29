@@ -83,7 +83,11 @@
   border: 1px solid var(--line);
   border-radius: clamp(1.25rem, 3vw, 2.5rem);
   background:
-    radial-gradient(circle at 30% 45%, rgba(242, 107, 29, 0.38), transparent 60%),
+    radial-gradient(
+      circle at 30% 45%,
+      rgba(242, 107, 29, 0.38),
+      transparent 60%
+    ),
     linear-gradient(140deg, var(--surface), var(--surface-alt));
 }
 
