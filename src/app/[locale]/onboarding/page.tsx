@@ -6,7 +6,6 @@ import { readOnboardingStatus } from "@/lib/account-onboarding-server";
 import { onboardingDestination, onboardingUrl } from "@/lib/account-onboarding";
 import { signOut } from "../auth/actions";
 import { completeAccount } from "./actions";
-import "./onboarding.css";
 
 export const metadata = { robots: { index: false, follow: false } };
 export default async function OnboardingPage({
@@ -29,7 +28,7 @@ export default async function OnboardingPage({
   const es = locale === "es";
   return (
     <main className="account-completion">
-      <section className="account-completion-card">
+      <section className="account-completion-card onboarding-profile-card">
         <p className="eyebrow">AkiPasa · {es ? "Tu cuenta" : "Your account"}</p>
         <h1>
           {status === "underage"

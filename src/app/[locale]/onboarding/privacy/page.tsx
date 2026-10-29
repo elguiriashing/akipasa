@@ -20,7 +20,8 @@ export default async function RestrictedPrivacy({
   const es = locale === "es";
   return (
     <main className="account-completion">
-      <section className="account-completion-card stack">
+      <section className="account-completion-card onboarding-privacy-card stack">
+        <p className="eyebrow">AkiPasa · {es ? "Tu privacidad" : "Your privacy"}</p>
         <h1>
           {es
             ? "Privacidad y control de cuenta"
@@ -31,8 +32,14 @@ export default async function RestrictedPrivacy({
             ? "Estas opciones siguen disponibles mientras tu cuenta está restringida."
             : "These controls remain available while your account is restricted."}
         </p>
-        <PersonalisationSettings locale={locale} initialEnabled={false} />
-        <Link href={`/${locale}/account/export`}>
+        <div className="onboarding-privacy-preferences">
+          <PersonalisationSettings locale={locale} initialEnabled={false} />
+        </div>
+        <nav
+          className="onboarding-privacy-links"
+          aria-label={es ? "Tus datos" : "Your data"}
+        >
+          <Link href={`/${locale}/account/export`}>
           {es ? "Exportar mis datos" : "Export my data"}
         </Link>
         <Link href={`/${locale}/privacy`}>
@@ -47,6 +54,16 @@ export default async function RestrictedPrivacy({
               : "Award and shipping privacy"}
           </Link>
         )}
+        </nav>
+        <section className="onboarding-danger-zone" aria-labelledby="onboarding-deletion-title">
+          <h2 id="onboarding-deletion-title">
+            {es ? "Eliminar cuenta" : "Delete account"}
+          </h2>
+          <p>
+            {es
+              ? "Esto envía una solicitud de eliminación. Tu cuenta no se borra inmediatamente."
+              : "This submits a deletion request. Your account is not erased immediately."}
+          </p>
         {query.error && (
           <p role="alert">
             {es
@@ -61,20 +78,21 @@ export default async function RestrictedPrivacy({
               : "Deletion request registered."}
           </p>
         ) : (
-          <form className="stack" action={requestRestrictedDeletion}>
+          <form className="stack onboarding-delete-form" action={requestRestrictedDeletion}>
             <input type="hidden" name="locale" value={locale} />
             <label>
               {es
                 ? "Escribe DELETE para solicitar la eliminación"
                 : "Type DELETE to request deletion"}
-              <input name="confirmation" autoComplete="off" required />
+              <input name="confirmation" autoComplete="off" spellCheck={false} required />
             </label>
             <button className="button secondary" type="submit">
               {es ? "Solicitar eliminación" : "Request deletion"}
             </button>
           </form>
         )}
-        <form action={signOut}>
+        </section>
+        <form className="onboarding-signout" action={signOut}>
           <input name="locale" type="hidden" value={locale} />
           <button className="button secondary" type="submit">
             {es ? "Cerrar sesión" : "Sign out"}

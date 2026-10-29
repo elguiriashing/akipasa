@@ -1,38 +1,226 @@
+/* Shared through the onboarding route layout, including /onboarding/privacy.
+ * Presentation only: age gating, consent and data deletion remain server-owned.
+ */
 .account-completion {
+  --onboarding-ink: #f4f8ff;
+  --onboarding-muted: #b9c9df;
+  --onboarding-panel: #1b2c49;
+  --onboarding-control: #14223a;
+  --onboarding-line: rgba(180, 204, 232, 0.23);
+  --onboarding-accent: #ff994d;
   min-height: 100dvh;
   display: grid;
   place-items: center;
+  min-width: 0;
   padding: clamp(1rem, 4vw, 3rem);
+  padding-bottom: calc(clamp(1.5rem, 4vw, 3rem) + env(safe-area-inset-bottom, 0px));
+  background:
+    radial-gradient(ellipse at 88% 7%, rgba(253, 118, 38, 0.13), transparent 48%),
+    radial-gradient(ellipse at 1% 100%, rgba(64, 121, 192, 0.16), transparent 50%),
+    #101a30;
 }
-.account-completion-card {
-  width: min(100%, 42rem);
-  border: 1px solid var(--line);
-  border-radius: 1.5rem;
-  padding: clamp(1rem, 4vw, 2.5rem);
-  background: var(--surface);
+html[data-theme="light"] .account-completion {
+  --onboarding-ink: #17283b;
+  --onboarding-muted: #4e5e71;
+  --onboarding-panel: #ffffff;
+  --onboarding-control: #fffaf3;
+  --onboarding-line: rgba(47, 65, 88, 0.18);
+  --onboarding-accent: #a94c18;
+  background:
+    radial-gradient(ellipse at 88% 7%, rgba(253, 118, 38, 0.12), transparent 48%),
+    #f5f3f0;
+}
+.account-completion-card,
+.app-shell .app-content[data-pasa-surface="auth"] .account-completion-card:is(.onboarding-profile-card, .onboarding-privacy-card) {
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 45rem);
+  min-width: 0;
+  border: 1px solid var(--onboarding-line);
+  border-top: 3px solid var(--onboarding-accent);
+  border-radius: clamp(1.25rem, 3vw, 2rem);
+  padding: clamp(1.2rem, 4vw, 3rem);
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(255, 132, 54, 0.09), transparent 55%),
+    var(--onboarding-panel);
+  color: var(--onboarding-ink);
+  box-shadow: 0 22px 65px rgba(0, 0, 0, 0.18);
+}
+.account-completion-card > .eyebrow {
+  color: var(--onboarding-accent);
+  font-size: 0.77rem;
+  font-weight: 850;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
 }
 .account-completion-card h1 {
-  font-size: clamp(1.9rem, 5vw, 2.75rem);
-  line-height: 1.12;
+  max-width: 19ch;
+  margin-block: 0.45rem 1rem;
+  color: var(--onboarding-ink);
+  font-size: clamp(2rem, 5.5vw, 3.35rem);
+  line-height: 1.09;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
   overflow-wrap: anywhere;
 }
-.account-completion-card input:not([type="radio"]):not([type="checkbox"]),
+.account-completion-card h2 {
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+.account-completion-card > p:not(.eyebrow),
+.account-completion-card > .stack > p {
+  max-width: 60ch;
+  color: var(--onboarding-muted);
+  line-height: 1.6;
+}
+.account-completion-card .stack {
+  min-width: 0;
+  gap: 1rem;
+}
+.account-completion-card label:not(.consent-row) {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+  font-weight: 700;
+}
+.account-completion-card input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]),
+.account-completion-card select,
 .account-completion-card textarea {
   width: 100%;
   min-width: 0;
+  max-width: 100%;
+  min-height: 48px;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--onboarding-line);
+  border-radius: 0.85rem;
+  background: var(--onboarding-control);
+  color: var(--onboarding-ink);
+  font: inherit;
+}
+.account-completion-card textarea {
+  resize: vertical;
+}
+.account-completion-card input[type="file"] {
+  padding: 0.6rem;
+}
+.account-completion-card input[type="file"]::file-selector-button {
+  min-height: 38px;
+  margin-right: 0.75rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--onboarding-line);
+  border-radius: 0.7rem;
+  color: var(--onboarding-ink);
+  background: var(--onboarding-panel);
+  cursor: pointer;
 }
 .account-completion-card fieldset {
   min-width: 0;
-  padding: 1rem;
-  border: 1px solid var(--line);
-  border-radius: 0.8rem;
+  padding: clamp(0.75rem, 2vw, 1.25rem);
+  border: 1px solid var(--onboarding-line);
+  border-radius: 1rem;
 }
-.account-completion-card nav {
+.account-completion-card legend {
+  padding-inline: 0.4rem;
+  font-weight: 800;
+}
+.account-completion-card .consent-row {
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-block: 1.5rem;
+  gap: 0.7rem;
+  align-items: center;
+  min-height: 48px;
+  line-height: 1.5;
+}
+.account-completion-card .consent-row :is(input[type="checkbox"], input[type="radio"]) {
+  flex: 0 0 auto;
+  accent-color: #f47627;
 }
 .account-completion-card small {
   display: block;
+  color: var(--onboarding-muted);
+  line-height: 1.5;
+}
+.account-completion-card :is(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid #ffaf78;
+  outline-offset: 3px;
+}
+.account-completion-card :is(button, .button) {
+  min-height: 48px;
+}
+.onboarding-profile-card > .stack > button[type="submit"] {
+  width: 100%;
+  border-radius: 0.95rem;
+  font-weight: 850;
+}
+.account-completion-card nav {
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  margin-block: 1.2rem;
+}
+.account-completion-card nav > a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--onboarding-line);
+  border-radius: 0.7rem;
+  color: var(--onboarding-ink);
+  text-decoration: none;
+}
+.account-completion-card nav > a:hover {
+  border-color: var(--onboarding-accent);
+}
+.onboarding-privacy-card .onboarding-privacy-preferences,
+.onboarding-privacy-card .onboarding-danger-zone {
+  min-width: 0;
+  border: 1px solid var(--onboarding-line);
+  border-radius: 1.15rem;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  background: var(--onboarding-control);
+}
+.onboarding-privacy-card .onboarding-privacy-preferences :is(.panel, .console-card) {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+.onboarding-privacy-card .onboarding-privacy-links {
+  margin: 0;
+}
+.onboarding-privacy-card .onboarding-danger-zone {
+  border-color: rgba(229, 101, 82, 0.45);
+  background: color-mix(in srgb, var(--onboarding-control) 92%, #b64d37);
+}
+.onboarding-privacy-card .onboarding-danger-zone > h2 {
+  margin-top: 0;
+}
+.onboarding-privacy-card .onboarding-danger-zone > p {
+  color: var(--onboarding-muted);
+  line-height: 1.55;
+}
+.onboarding-privacy-card .onboarding-delete-form label {
+  min-width: 0;
+}
+.onboarding-privacy-card .onboarding-delete-form > button {
+  align-self: start;
+}
+.onboarding-privacy-card .onboarding-signout {
+  padding-top: 1rem;
+  border-top: 1px solid var(--onboarding-line);
+}
+@media (max-width: 600px) {
+  .account-completion-card {
+    border-radius: 1.3rem;
+  }
+  .onboarding-privacy-card .onboarding-delete-form > button {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .account-completion-card,
+  .account-completion-card * {
+    scroll-behavior: auto;
+    transition-duration: 0.01ms;
+    animation-duration: 0.01ms;
+  }
 }
