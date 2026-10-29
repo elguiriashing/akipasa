@@ -1,5 +1,14 @@
 # Change Impact Register
 
+## 2026-10-29 | AkiTonight read-only planning slice
+
+- **Current state:** Existing plans-first homepage and event recommendations work, but the connected project has zero future scheduled event occurrences; nearby venues are available without published opening-hour or activity-availability proof.
+- **Change (candidate):** New bilingual mobile-first `/[locale]/tonight` with mood, area, company, party size, budget, start time, radius; strict server query allowlist; existing recommendation ranking/labels; honest near-venue fallback and event detail/directions/share links. Existing `PlansFirstHero` adds the guided link.
+- **Cross-surface:** Scoped to public AkiPasa; map, existing homepage shortcuts and venue/event URLs preserved. No AkiHQ or AkiBusiness code, subscriptions, rewards, XP, check-in, friends, age verification, service grants, schema, OAuth, Stripe, Resend or Android native code changed. Existing recommendation consent and EventCard sponsorship remain in charge.
+- **Risk:** Group size is **not** confirmed capacity; nearby directory records do not indicate open-now/attendance. No mock events, pseudo-crowd values, bookings or paid campaign activation. Route `noindex` while launch coverage is sparse.
+- **Checks:** New unit suite for input allowlist, published-text matching, price privacy, cancelled/expired events and overnight start; full formatting, type, lint, CI, browser/mobile/EN-ES acceptance and real source confirmation still required. PR #326 changes the same hero and its source-derived 102-route matrix; reconcile or do not merge.
+- **Rollback:** Remove guided entry/route; no data reversal, no migrations. Exact-source Cloudflare deployment and operational proof required before claiming live.
+
 ## 2026-10-28 | Shared, gated Duermo/Coches launch-waitlist backend
 
 - **Before:** Consumers could see ostensibly usable accommodation/car listings while those products were still under development, without a credible verified signup flow.
