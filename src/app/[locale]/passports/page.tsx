@@ -10,6 +10,8 @@ import { isLocale } from "@/lib/config";
 import { optionalUser } from "@/lib/auth";
 import { AchievementCelebration } from "@/components/AchievementCelebration";
 import { BadgeProgress } from "@/components/BadgeProgress";
+import { WeeklyQuestPanel } from "@/components/WeeklyQuestPanel";
+import { currentMadridQuestWeek } from "@/lib/aki-weekly-quests";
 import {
   ConsoleMetric,
   ConsoleSectionHeader,
@@ -64,6 +66,8 @@ export default async function PassportsPage({
     ? query.view!
     : "progress";
   const { supabase, user } = await optionalUser();
+  const weeklyQuestNow = new Date();
+  const weeklyQuestWindow = currentMadridQuestWeek(weeklyQuestNow);
   const passportResult = user
     ? await myPassportCollection()
         .then((data) => ({ data, error: false }))
@@ -77,6 +81,7 @@ export default async function PassportsPage({
     progressResult,
     enrollmentsResult,
     claimsResult,
+    weeklyVisitsResult,
   ] = await Promise.all([
     supabase
       .from("passports")
@@ -123,6 +128,17 @@ export default async function PassportsPage({
           .eq("profile_id", user.id)
           .order("created_at", { ascending: false })
       : Promise.resolve({ data: [], error: null }),
+    user
+      ? supabase
+          .from("check_ins")
+          .select("venue_id,state,credential_id,created_at")
+          .eq("profile_id", user.id)
+          .eq("state", "accepted")
+          .not("credential_id", "is", null)
+          .gte("created_at", weeklyQuestWindow.start.toISOString())
+          .lt("created_at", weeklyQuestWindow.end.toISOString())
+          .limit(100)
+      : Promise.resolve({ data: [], error: null }),
   ]);
   const { data: passports } = passportsResult;
   const { data: programs } = programsResult;
@@ -131,6 +147,7 @@ export default async function PassportsPage({
   const { data: progress } = progressResult;
   const { data: enrollments } = enrollmentsResult;
   const { data: claims } = claimsResult;
+  const { data: weeklyVisits } = weeklyVisitsResult;
   const passportsUnavailable = Boolean(passportsResult.error);
   const programsUnavailable = Boolean(programsResult.error);
   const ledgerUnavailable = Boolean(user && ledgerResult.error);
@@ -138,6 +155,7 @@ export default async function PassportsPage({
   const progressUnavailable = Boolean(user && progressResult.error);
   const enrollmentsUnavailable = Boolean(user && enrollmentsResult.error);
   const claimsUnavailable = Boolean(user && claimsResult.error);
+  const weeklyVisitsUnavailable = Boolean(user && weeklyVisitsResult.error);
   const balances = new Map<string, number>();
   ledger?.forEach((entry) =>
     balances.set(
@@ -255,6 +273,14 @@ export default async function PassportsPage({
               />
             </section>
           }
+
+          <WeeklyQuestPanel
+            locale={locale}
+            signedIn={Boolean(user)}
+            unavailable={weeklyVisitsUnavailable}
+            visits={weeklyVisits || []}
+            now={weeklyQuestNow}
+          />
 
           {
             <section className="console-section">
