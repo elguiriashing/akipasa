@@ -22,7 +22,7 @@ The prebuilt GLBs have body rigs and geometry but **do not include** the
 fashionable clothes, hair or high-quality facial morph targets shown in AkiPals
 concept-art mockups. The AkiPals studio's original procedural hair and clothes
 are separate, real 3D mesh overlays. The images used in the visual target
-are *concept only*, NOT textures/mesh sources.
+are _concept only_, NOT textures/mesh sources.
 
 These GLBs require production art approval and optimisation before public
 release; they are engineering staging assets, not final professional 3D avatars.

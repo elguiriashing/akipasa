@@ -51,7 +51,7 @@ in the repository; no remote model CDN or avatar vendor is contacted.
 - Source: src/components/pals/studio-3d.js. This drives OrbitControls,
   constrained touch/wheel zoom, drag rotation, responsive canvas sizing, 3-point
   lighting, PBR materials, soft shadows and reduced-motion handling.
-- Original procedural *3D meshes* provide hair styles (including curls,
+- Original procedural _3D meshes_ provide hair styles (including curls,
   long hair and a bun), colour palettes, free tops, trousers, sleeves,
   sneakers/boots, crossbody bags/backpacks, glasses/earrings/caps and outfit
   presets. These are physical mesh overlays, not flat sprite layers.
@@ -68,7 +68,7 @@ in the repository; no remote model CDN or avatar vendor is contacted.
 - tests/pals-3d-assets.test.ts inspects both binary GLB files and save
   migration compatibility.
 
-**ART-QUALITY LIMITATION:** the supplied high-end concept art is *not*
+**ART-QUALITY LIMITATION:** the supplied high-end concept art is _not_
 game geometry. The first 3D runtime is a functional, original wardrobe and
 rendering foundation with CC0 Quaternius bodies. It is **not yet visually
 equivalent** to the cinematic concept. Final public launch requires a cohesive

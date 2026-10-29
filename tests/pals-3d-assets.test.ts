@@ -4,7 +4,9 @@ import { appearanceSchema, DEFAULT_APPEARANCE } from "@/lib/pals/avatar-v2";
 
 /** Structural GLB checks; real rendering is separately covered by Chromium. */
 function inspectGLB(frame: "female" | "male") {
-  const bytes = readFileSync("public/pals/models/akipals-base-" + frame + ".glb");
+  const bytes = readFileSync(
+    "public/pals/models/akipals-base-" + frame + ".glb",
+  );
   expect(bytes.toString("ascii", 0, 4)).toBe("glTF");
   expect(bytes.readUInt32LE(4)).toBe(2);
   expect(bytes.readUInt32LE(8)).toBe(bytes.length);
@@ -24,7 +26,7 @@ function inspectGLB(frame: "female" | "male") {
 
 describe("AkiPals licensed 3D model fixtures", () => {
   for (const frame of ["female", "male"] as const) {
-    it("contains a real rigged "+frame+" mesh", () => {
+    it("contains a real rigged " + frame + " mesh", () => {
       const model = inspectGLB(frame);
       expect(model.asset.version).toBe("2.0");
       expect(model.skins.some((skin) => skin.joints.length >= 50)).toBe(true);
@@ -34,7 +36,9 @@ describe("AkiPals licensed 3D model fixtures", () => {
     });
   }
   it("supports validated saved body frame and clothing options", () => {
-    expect(appearanceSchema.parse(DEFAULT_APPEARANCE).bodyStyle).toBe("feminine");
+    expect(appearanceSchema.parse(DEFAULT_APPEARANCE).bodyStyle).toBe(
+      "feminine",
+    );
     const look = appearanceSchema.parse({
       ...DEFAULT_APPEARANCE,
       bodyStyle: "masculine",
@@ -45,10 +49,12 @@ describe("AkiPals licensed 3D model fixtures", () => {
       accessory: "glasses",
     });
     expect(look.bottom).toBe("tailored");
-    expect(appearanceSchema.safeParse({
-      ...look,
-      bag: "somebody-elses-paid-bag",
-    }).success).toBe(false);
+    expect(
+      appearanceSchema.safeParse({
+        ...look,
+        bag: "somebody-elses-paid-bag",
+      }).success,
+    ).toBe(false);
   });
   it("upgrades legacy appearance records with starter wardrobe defaults", () => {
     const legacy: Record<string, unknown> = { ...DEFAULT_APPEARANCE };

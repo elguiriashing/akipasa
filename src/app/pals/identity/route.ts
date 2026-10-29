@@ -1,8 +1,5 @@
 import { z } from "zod";
-import {
-  appearanceSchema,
-  DEFAULT_APPEARANCE,
-} from "@/lib/pals/avatar-v2";
+import { appearanceSchema, DEFAULT_APPEARANCE } from "@/lib/pals/avatar-v2";
 import { previewAccess, privateHeaders } from "@/lib/pals/server";
 
 export const dynamic = "force-dynamic";

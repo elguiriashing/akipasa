@@ -28,7 +28,12 @@ await build({
 const studio = await import(pathToFileURL(resolve(buildDir, "runtime.mjs")));
 const icon = readFileSync("src/app/icon.svg");
 const creatorBundle = readFileSync("public/pals/runtime/creator.min.js");
-const avatarMeshes = Object.fromEntries(["male", "female"].map((base) => [base,readFileSync("public/pals/models/akipals-base-" + base + ".glb")]));
+const avatarMeshes = Object.fromEntries(
+  ["male", "female"].map((base) => [
+    base,
+    readFileSync("public/pals/models/akipals-base-" + base + ".glb"),
+  ]),
+);
 let saved = null;
 let browser;
 const server = createServer(async (request, response) => {
@@ -40,13 +45,23 @@ const server = createServer(async (request, response) => {
       return;
     }
     if (path === "/pals/runtime/creator.min.js") {
-      response.writeHead(200, { "Content-Type": "application/javascript", "Cache-Control": "private, no-store" });
-      response.end(creatorBundle);return;
+      response.writeHead(200, {
+        "Content-Type": "application/javascript",
+        "Cache-Control": "private, no-store",
+      });
+      response.end(creatorBundle);
+      return;
     }
-    const modelMatch = /^\/pals\/models\/akipals-base-(male|female)\.glb$/.exec(path);
+    const modelMatch = /^\/pals\/models\/akipals-base-(male|female)\.glb$/.exec(
+      path,
+    );
     if (modelMatch) {
-      response.writeHead(200, { "Content-Type": "model/gltf-binary", "Cache-Control": "private, no-store" });
-      response.end(avatarMeshes[modelMatch[1]]);return;
+      response.writeHead(200, {
+        "Content-Type": "model/gltf-binary",
+        "Cache-Control": "private, no-store",
+      });
+      response.end(avatarMeshes[modelMatch[1]]);
+      return;
     }
     if (path === "/pals") {
       const nonce = randomUUID().replaceAll("-", "");
@@ -120,13 +135,25 @@ try {
     server.listen(0, "127.0.0.1", resolveReady),
   );
   const port = server.address().port;
-  browser = await chromium.launch({ headless: true, args: ["--enable-webgl", "--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"] });
+  browser = await chromium.launch({
+    headless: true,
+    args: [
+      "--enable-webgl",
+      "--use-gl=angle",
+      "--use-angle=swiftshader",
+      "--enable-unsafe-swiftshader",
+    ],
+  });
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   const failures = [];
   page.on("pageerror", (error) => failures.push(error.message));
   await page.goto("http://127.0.0.1:" + port + "/pals");
   await expect(page.locator("#avatar-stage canvas")).toBeVisible();
-  await expect(page.locator("#avatar-stage")).toHaveAttribute("data-ready", "true", { timeout: 30000 });
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-ready",
+    "true",
+    { timeout: 30000 },
+  );
   await expect(
     page.getByRole("heading", { name: /Looking like.*yourself/i }),
   ).toBeVisible();
