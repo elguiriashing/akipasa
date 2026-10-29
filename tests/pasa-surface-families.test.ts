@@ -19,10 +19,16 @@ describe("one AkiPasa surface system for the full route matrix", () => {
     "classifies every in-scope locale page in %s without a fallback",
     (locale) => {
       const paths = Object.entries(matrix.routes)
-        .filter(([path, data]) => data.scope !== "other-product" && path.startsWith("src/app/[locale]/"))
+        .filter(
+          ([path, data]) =>
+            data.scope !== "other-product" &&
+            path.startsWith("src/app/[locale]/"),
+        )
         .map(([path]) => path);
       expect(paths.length).toBeGreaterThan(80);
-      const unknown = paths.filter((path) => pasaSurfaceFamily(toUrl(path, locale)) === "generic");
+      const unknown = paths.filter(
+        (path) => pasaSurfaceFamily(toUrl(path, locale)) === "generic",
+      );
       expect(unknown).toEqual([]);
     },
   );
@@ -43,7 +49,7 @@ describe("one AkiPasa surface system for the full route matrix", () => {
   it("uses only one route-aware parent and shared stylesheet", () => {
     const shell = readFileSync("src/components/AppShell.tsx", "utf8");
     const css = readFileSync("src/components/PasaSharedSurfaces.css", "utf8");
-    expect(shell).toContain('data-pasa-surface={pasaSurfaceFamily(pathname)}');
+    expect(shell).toContain("data-pasa-surface={pasaSurfaceFamily(pathname)}");
     expect(shell).toContain('import "./PasaSharedSurfaces.css"');
     expect(css).toContain('data-pasa-surface="booking"');
     expect(css).toContain('data-pasa-surface="operations"');

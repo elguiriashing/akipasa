@@ -402,7 +402,10 @@ export function AppShell({
         ["map", "community", "venues", "events"].includes(section)) && (
         <LaunchRibbon locale={locale} />
       )}
-      <div className="app-content" data-pasa-surface={pasaSurfaceFamily(pathname)}>
+      <div
+        className="app-content"
+        data-pasa-surface={pasaSurfaceFamily(pathname)}
+      >
         {children}
       </div>
 
