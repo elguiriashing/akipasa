@@ -39,6 +39,50 @@ Legacy game APIs and state remain for safe rollback, but the studio never uses
 them. Decommission the old routes before public launch. AkiPasa redesign PR #326
 changes the old AkiPals surface and MUST be reconciled before either merges.
 
+## 3D engine implementation — 29 October 2026
+
+The original flat illustrated preview has been replaced at the private /pals UI
+with a genuine **self-hosted Three.js WebGL** renderer. The stage loads two
+commercially usable CC0 rigged humanoid GLB bases from
+public/pals/models/akipals-base-female.glb and akipals-base-male.glb,
+with a model provenance notice alongside them. The files are physically stored
+in the repository; no remote model CDN or avatar vendor is contacted.
+
+- Source: src/components/pals/studio-3d.js. This drives OrbitControls,
+  constrained touch/wheel zoom, drag rotation, responsive canvas sizing, 3-point
+  lighting, PBR materials, soft shadows and reduced-motion handling.
+- Original procedural *3D meshes* provide hair styles (including curls,
+  long hair and a bun), colour palettes, free tops, trousers, sleeves,
+  sneakers/boots, crossbody bags/backpacks, glasses/earrings/caps and outfit
+  presets. These are physical mesh overlays, not flat sprite layers.
+- The live editor updates the 3D scene locally, making appearance changes
+  without an API mutation. Only pressing Save sends a validated, same-origin,
+  versioned own-account appearance payload to /pals/identity. Existing RLS and
+  the unmodified legacy save tables remain separate.
+- Build entry: scripts/build-pals-3d.mjs, which bundles the pinned MIT Three.js
+  dependency from the local npm package to
+  public/pals/runtime/creator.min.js. prebuild and prebuild:cloudflare invoke
+  it; no runtime external script requests.
+- scripts/test-pals-identity-browser.mjs exercises actual Chromium WebGL
+  rendering, save/reload/restore and screen captures across 320–1440 px.
+- tests/pals-3d-assets.test.ts inspects both binary GLB files and save
+  migration compatibility.
+
+**ART-QUALITY LIMITATION:** the supplied high-end concept art is *not*
+game geometry. The first 3D runtime is a functional, original wardrobe and
+rendering foundation with CC0 Quaternius bodies. It is **not yet visually
+equivalent** to the cinematic concept. Final public launch requires a cohesive
+professionally sculpted base, fitted garments, high-resolution textured hair,
+facial blend shapes, character rigging/animation, LOD meshes, licence/source
+review and physical-device GPU/performance approval. Labels for facial features
+not yet driven by true morph targets must not be misrepresented as complete.
+Do not enable billing, community or live presence because of this engine.
+
+**Release hold:** SQL must be independently reviewed and applied before the
+private preview is tested with a real account. Reconcile with PR #326. Run
+exact-head CI and actual browser/Android screenshot checks. No public merge or
+Cloudflare release is approved by this implementation alone.
+
 ## Planned phases
 
 1. Account identity: an optional avatar next to profile photos, shared with
