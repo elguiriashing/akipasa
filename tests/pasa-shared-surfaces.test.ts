@@ -57,4 +57,19 @@ describe("AkiPasa shared redesign system", () => {
       "prefers-reduced-motion: reduce",
     );
   });
+
+  it("shares responsive booking styling without replacing protected booking handlers", () => {
+    const css = source("src/components/PasaSharedSurfaces.css");
+    expect(css).toContain('data-pasa-surface="booking"');
+    expect(css).toContain("grid-template-columns: repeat(2, minmax(0, 1fr))");
+    expect(css).toContain("@media (max-width: 759px)");
+    expect(css).toContain("color-scheme: light");
+    for (const kind of ["events", "venues"]) {
+      const booking = source(`src/app/[locale]/${kind}/[slug]/book/page.tsx`);
+      expect(booking).toContain("requireUser");
+      expect(booking).toContain('.eq("status", "published")');
+      expect(booking).toContain(`request${kind === "events" ? "Event" : "Venue"}Booking`);
+    }
+  });
+
 });
