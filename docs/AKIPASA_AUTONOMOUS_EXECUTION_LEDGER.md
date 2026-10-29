@@ -2,6 +2,37 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 29 October 2026 UTC.
 
+## Current owner feedback and validated source
+
+Alex explicitly rejected both the retained avatar artwork and the isolated
+procedural portrait experiment. Neither meets the approved visual target. The
+procedural experiment is stopped, unaccepted and not integrated. The avatar stream
+is researching a professionally authored stylized human model/rig foundation with
+verified commercial redistribution terms, mobile budgets and saved-appearance
+compatibility. No paid generation, asset purchase or new provider account was
+authorized. Routine free licensed asset inspection/rendering remains in scope.
+
+Published application source is `435782ed5765df8f7f4c0908c441b35e88deb452`, tree
+`c7c15c0f54f8cafde24a68389ce53af35412a747`. It passed full `npm run check` and
+Cloudflare packaging in an independent clean checkout with fresh locked installs;
+the generated `release-source.json` matches the source SHA. Ten ordinary hosted
+workflows succeeded. The strict visual workflow remains deliberately red with
+zero of ninety routes accepted. The bundle was not deployed.
+
+The full local browser run recorded **385 passed / one failed / 29 skipped**.
+The failure was a background PWA-image transport reset in the virtual-host test;
+the test-only native-asset/GET-retry repair passed a fresh worker with all 112
+login combinations intact. This does not turn the original run or skipped
+authenticated scenarios green. Additional source-bound Staff/Admin and portal
+fixture runs passed 80 and 64 combinations. Detailed immutable-source results are
+in `docs/receipts/AKIPASA_VALIDATION_435782E_20261029.json`.
+
+A live OpenFreeMap style probe returned HTTP 403 (`error code: 1010`) through the
+approved network path. Controlled MapLibre outage/retry tests pass, but live
+basemap rendering remains unaccepted. No TLS checks or provider settings were
+changed to manufacture coverage. Physical Android, genuine protected/provider
+journeys, all route sign-offs and acceptable avatar artwork remain release holds.
+
 ## Current recovery state — environment restored
 
 The retained environment is connected again. Local commits, all seventeen pending

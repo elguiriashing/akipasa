@@ -1,5 +1,22 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-29 | Avatar artwork rejected; functional evidence is not art approval
+
+Alex rejected the retained private-avatar artwork and the isolated original
+procedural portrait experiment. Neither is an approved release design. Stop that
+art direction; keep experimental files outside the candidate and investigate a
+professionally authored stylized human model/rig with verified licensing, mobile
+export/customization feasibility and preserved saved-appearance/wardrobe state.
+Do not treat passing geometry, WebGL or save tests as visual acceptance. No paid
+provider or asset purchase is authorized by this art-foundation research.
+
+Application source `435782ed5765df8f7f4c0908c441b35e88deb452` has independent full
+check and clean Cloudflare-package evidence, but all ninety route acceptances and
+avatar/physical-device/protected-journey approval remain outstanding. The strict
+gate stays intact; this is not merge or deployment authority. The validation
+receipt distinguishes the failed broad-browser run from its successful targeted
+transport repair and records the live basemap provider-path denial honestly.
+
 ## 2026-10-29 | Readable auth and resilient map/private-avatar return
 
 Auth's cinematic photo previously retained navy form text in light mode. A

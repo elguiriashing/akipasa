@@ -1,5 +1,29 @@
 # Change Impact Register
 
+## 2026-10-29 | Owner rejects avatar art and source-bound validation checkpoint
+
+Alex rejected both current avatar directions. The isolated procedural head/hand
+experiment is not integrated or accepted; research now targets a professionally
+authored human character foundation with verified rights and preserved account
+appearance/wardrobe state. No source/API/schema/customer mutation is made by this
+decision, and no paid provider or new account is authorized.
+
+Published source `435782ed5765df8f7f4c0908c441b35e88deb452` passed an independent
+clean-checkout full check and Cloudflare package with matching source marker.
+The exact-head ordinary workflows succeeded; strict acceptance still fails on
+all ninety routes. A local 415-case browser run had 385 passes, one background
+PWA-image transport reset and 29 intentional authenticated skips. The virtual-host
+test now keeps actual PWA assets on native localhost transport and retries only
+one GET transport reset; its original 112 login assertions pass a fresh-worker
+retry. No application action, consent, test expectation or CI policy is weakened.
+The original failed run remains failed evidence, separate from that retry.
+
+The real OpenFreeMap style probe returned HTTP 403/code 1010; no live basemap
+acceptance is inferred from the controlled sixteen-case MapLibre fixture. Source,
+test and evidence links are in the mission ledger and immutable validation receipt.
+Rollback for this checkpoint/test-transport change is a source revert only. No
+deployment, hosted migration, paid resource or production data change.
+
 ## 2026-10-29 | Auth contrast, MapLibre recovery and private avatar return
 
 - **Observed/requested:** Real captures exposed unreadable light-theme auth text
