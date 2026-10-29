@@ -27,27 +27,15 @@ export default async function CheckInPage({
     name: string;
   } | null;
   if (!venue) notFound();
-  const { data: programs } = await supabase
-    .from("loyalty_programs")
-    .select("id")
-    .eq("venue_id", venue.id)
-    .eq("active", true);
-  const program = {
-    stamps_required: programs?.length || 0,
-    reward_es: "tarjetas activas",
-    reward_en: "active cards",
-  };
   return (
-    <main className="shell">
+    <main className="shell pasa-checkin-visit">
       <section className="hero">
         <div className="eyebrow">Check-in</div>
         <h1>{venue.name}</h1>
         <p className="lede">
-          {venue?.name} · {program.stamps_required}{" "}
-          {es ? "sellos para" : "stamps for"}{" "}
-          {locale === "en"
-            ? program.reward_en || program.reward_es
-            : program.reward_es}
+          {es
+            ? "Comprueba el nombre del local y confirma tu ubicación. La visita se verificará al enviar el check-in."
+            : "Check the venue name and share your location. Your visit is verified when you submit the check-in."}
         </p>
       </section>
       <section className="panel auth-panel">
