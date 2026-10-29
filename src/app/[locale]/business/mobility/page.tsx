@@ -150,11 +150,14 @@ export default async function MobilityWorkspace({
               ? "Estado no disponible"
               : "Status unavailable";
   return (
-    <div className={`${styles.business} ${desk.desk}`}>
+    <div
+      className={`${styles.business} ${desk.desk}`}
+      data-pasa-operation="rental-mobility"
+    >
       <main className={styles.businessMain}>
         <header className={styles.businessHeader}>
           <div>
-            <Link href={`/${locale}/business`} className={desk.back}>
+            <Link href={`/${locale}/business`} className={styles.businessBack}>
               ← {es ? "Mis negocios" : "My businesses"}
             </Link>
             <span className={desk.eyebrow}>AkiCoches</span>
@@ -174,15 +177,25 @@ export default async function MobilityWorkspace({
             ? "Gestiona tu empresa sin reclamar un local. Las solicitudes requieren confirmación; esta pantalla no cobra pagos."
             : "Manage your company without claiming a venue. Requests require confirmation; this screen does not take payments."}
         </p>
-        {company && (
+        {!companyError && (
           <nav
             className={styles.businessNav}
             aria-label={es ? "Herramientas de alquiler" : "Rental tools"}
           >
-            <a href="#overview">{es ? "Resumen" : "Overview"}</a>
-            <a href="#fleet">{es ? "Flota" : "Fleet"}</a>
-            <a href="#availability">{es ? "Disponibilidad" : "Availability"}</a>
-            <a href="#bookings">{es ? "Solicitudes" : "Requests"}</a>
+            {company ? (
+              <>
+                <a href="#overview">{es ? "Resumen" : "Overview"}</a>
+                <a href="#fleet">{es ? "Flota" : "Fleet"}</a>
+                <a href="#availability">
+                  {es ? "Disponibilidad" : "Availability"}
+                </a>
+                <a href="#bookings">{es ? "Solicitudes" : "Requests"}</a>
+              </>
+            ) : (
+              <a href="#setup">
+                {es ? "Registrar empresa" : "Set up rental company"}
+              </a>
+            )}
           </nav>
         )}
         {(query.error ||
@@ -215,7 +228,11 @@ export default async function MobilityWorkspace({
           </p>
         )}
         {!company && !companyError && (
-          <section className={styles.businessCard} style={{ marginTop: 22 }}>
+          <section
+            className={styles.businessCard}
+            style={{ marginTop: 22 }}
+            id="setup"
+          >
             <h2>
               {es
                 ? "Registra tu empresa de alquiler"
@@ -692,7 +709,7 @@ export default async function MobilityWorkspace({
             </section>
           </>
         )}
-        <footer className={styles.footer}>
+        <footer className={`${styles.footer} ${styles.businessFooter}`}>
           <span>
             {es
               ? "AkiCoches · gestión de alquiler"

@@ -125,6 +125,9 @@ describe("private rental workspace continuity", () => {
     fixture({ company: null });
     const html = await render();
     expect(html).not.toContain('href="#fleet"');
+    expect(html).toContain('href="#setup"');
+    expect(html).toContain('id="setup"');
+    expect(html).toContain('data-pasa-operation="rental-mobility"');
     expect(html).toContain("You do not need to claim an AkiPasa venue.");
     expect(html).toContain("Submit company for review");
   });
@@ -135,6 +138,8 @@ describe("private rental workspace continuity", () => {
     expect(html).toContain('role="alert"');
     expect(html).not.toContain("Submit company for review");
     expect(html).not.toContain(company.name);
+    expect(html).not.toContain('href="#setup"');
+    expect(html).not.toContain('href="#fleet"');
   });
 
   it("reports unknown fleet, booking and calendar summaries instead of zero after failures", async () => {
