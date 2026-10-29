@@ -661,7 +661,9 @@ function applyBaseColors(base, a) {
     const isBody = /Superhero_|Retopology/i.test(node.name);
     if (isBody) {
       node.material.clippingPlanes = [
-        new THREE.Plane(new THREE.Vector3(0, 1, 0), -1.5),
+        // Keep the face above the collar; the donor rig's T-pose shoulder tips
+        // extend above y=1.5 and otherwise leak as detached skin triangles.
+        new THREE.Plane(new THREE.Vector3(0, 1, 0), -1.585),
       ];
       node.material.clipShadows = true;
     }
