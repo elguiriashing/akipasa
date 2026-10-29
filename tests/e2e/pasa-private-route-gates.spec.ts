@@ -131,9 +131,7 @@ for (const locale of ["en", "es"] as const) {
             viewport: document.documentElement.clientWidth,
             content: document.documentElement.scrollWidth,
           }));
-          expect(dimensions.content).toBeLessThanOrEqual(
-            dimensions.viewport + 2,
-          );
+          expect(dimensions.content).toBeLessThanOrEqual(dimensions.viewport + 2);
           mkdirSync("test-results", { recursive: true });
           const stem = `pasa-owner-guest-${locale}-${device.name}-${theme}`;
           const screenshot = `test-results/${stem}.png`;
