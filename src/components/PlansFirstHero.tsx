@@ -62,6 +62,9 @@ export function PlansFirstHero({
             {es ? shortcut.es : shortcut.en}
           </Link>
         ))}
+        <Link className={styles.mapShortcut} href={`/${locale}/tonight`}>
+          {es ? "Crear un plan · AkiTonight" : "Make a plan · AkiTonight"}
+        </Link>
         <Link className={styles.mapShortcut} href={mapHref}>
           {es ? "Ver mapa" : "See map"}
         </Link>
