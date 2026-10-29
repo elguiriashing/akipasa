@@ -939,3 +939,145 @@ html[data-theme="light"]
     padding: 1.25rem;
   }
 }
+
+/* Business application journey: one visual surface, unchanged review actions. */
+.app-shell .business-application-page {
+  width: min(100%, 82rem);
+  margin-inline: auto;
+  padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+}
+
+.app-shell .business-application-page .business-application-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(17rem, 1fr);
+  align-items: center;
+  gap: clamp(1rem, 3vw, 3rem);
+  padding: clamp(1.4rem, 4vw, 3.25rem);
+}
+
+.app-shell .business-application-page .business-application-checklist {
+  min-width: 0;
+  padding: clamp(1.1rem, 2vw, 1.75rem);
+  border: 1px solid rgba(255, 169, 102, 0.32);
+  border-radius: 1.25rem;
+  background: rgba(13, 22, 37, 0.58);
+  color: #f4f7fb;
+}
+
+.app-shell .business-application-page .business-application-checklist li {
+  margin-block: 0.55rem;
+  line-height: 1.5;
+}
+
+.app-shell .business-application-page .business-application-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-block: clamp(1rem, 3vw, 2rem);
+  padding: 0;
+  list-style: none;
+}
+
+.app-shell .business-application-page .business-application-steps > li {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: clamp(1rem, 2vw, 1.3rem);
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.15rem;
+  background: var(--pasa-ui-panel);
+  color: var(--pasa-ui-text);
+}
+
+.app-shell .business-application-page .business-application-steps > li.active {
+  border-color: rgba(255, 145, 65, 0.68);
+  box-shadow: inset 0 0 0 1px rgba(255, 145, 65, 0.22);
+}
+
+.app-shell .business-application-page .business-application-steps li > span {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 2rem;
+  place-items: center;
+  border-radius: 0.65rem;
+  background: rgba(255, 145, 65, 0.18);
+  color: var(--pasa-ui-highlight);
+  font-weight: 800;
+}
+
+.app-shell .business-application-page .business-application-steps small {
+  display: block;
+  margin-top: 0.3rem;
+  color: var(--pasa-ui-subtle);
+  line-height: 1.4;
+}
+
+.app-shell .business-application-page .business-application-form-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(16rem, 0.85fr);
+  align-items: start;
+  gap: clamp(1rem, 2.5vw, 2rem);
+}
+
+.app-shell .business-application-page .business-application-form,
+.app-shell .business-application-page .business-application-help,
+.app-shell .business-application-page .business-application-status {
+  min-width: 0;
+  padding: clamp(1.2rem, 2.5vw, 2rem);
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.3rem;
+  background: var(--pasa-ui-panel);
+  color: var(--pasa-ui-text);
+}
+
+.app-shell .business-application-page .business-application-form label {
+  font-weight: 700;
+}
+
+.app-shell .business-application-page .business-application-form input,
+.app-shell .business-application-page .business-application-form select,
+.app-shell .business-application-page .business-application-form textarea {
+  width: 100%;
+  max-width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 0.85rem;
+  background: var(--pasa-ui-elevated);
+  color: var(--pasa-ui-text);
+}
+
+.app-shell .business-application-page .business-application-form textarea {
+  min-height: 8rem;
+}
+
+.app-shell .business-application-page .business-application-form button {
+  min-height: 52px;
+}
+
+html[data-theme="light"]
+  .app-shell
+  .business-application-page
+  .business-application-checklist {
+  border-color: rgba(169, 84, 29, 0.27);
+  background: rgba(255, 255, 255, 0.88);
+  color: #213145;
+}
+
+@media (max-width: 800px) {
+  .app-shell .business-application-page .business-application-hero,
+  .app-shell .business-application-page .business-application-form-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .app-shell .business-application-page .business-application-steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell .business-application-page .business-application-hero {
+    padding: 1.35rem;
+  }
+}
