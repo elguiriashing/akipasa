@@ -1,0 +1,83 @@
+{
+  "status": "published-private-customization-editor",
+  "publishedAt": "2026-10-29T14:20:34.307777Z",
+  "url": "https://akipals-avatar-playground.cptguirimax.chatgpt.site",
+  "siteProjectId": "appgprj_6ae348412d3c8191a4cb26dd7fc8615b",
+  "audience": "owner-private, unchanged",
+  "sourceCommit": "28ac17cd2c1ac0808695e0769d6479924ca61f9a",
+  "featureCommit": "fcd3358fe3d08f5d2c823cc9800be79d868ab7bc",
+  "deploymentId": "appgdep_6ae3561747508191bef6c77754d40dcb",
+  "savedVersionId": "appgprj_6ae348412d3c8191a4cb26dd7fc8615b~appgver_d7ceeeeecae48191b64aaf3517141e22",
+  "playgroundJsSha256": "55678cc5346be8dc4939cb91dd09ea942088390ac286c83f6176bcb5ba8e8f60",
+  "controls": {
+    "both": [
+      "hair colour",
+      "skin colour",
+      "iris colour",
+      "top colour",
+      "trousers colour",
+      "shoes colour",
+      "top fit original/relaxed",
+      "hair volume",
+      "nose width",
+      "jaw width"
+    ],
+    "rainAdditional": [
+      "scarf colour",
+      "side strand",
+      "ponytail with hairband",
+      "scarf visibility"
+    ]
+  },
+  "savedAppearance": {
+    "schemaVersion": 2,
+    "perModel": true,
+    "v1Migration": true,
+    "olderV2OnlyNewFieldsDefaulted": true,
+    "unknownAndOutOfRangeRejected": true,
+    "productionIdentityMigration": false
+  },
+  "validation": {
+    "nodeTestsPassed": 23,
+    "customizationEnEsMobileDesktopCases": 4,
+    "additionalCompatibilityCase": 1,
+    "existingPlaygroundRegressionCases": 4,
+    "customizationScreenshots": 15,
+    "networkExternalRequests": 0,
+    "networkMutationRequests": 0,
+    "pageErrors": 0,
+    "freshZipInstallNodeTestsPassed": 23,
+    "freshZipBuildHashMatches": true
+  },
+  "liveHttpsBrowser": {
+    "viewport": [390, 844],
+    "authentication": "Sites-provided same-origin dispatch header; human OAuth and physical hardware not tested",
+    "httpStatus": 200,
+    "contentType": "text/html",
+    "realModelDrawCalls": 34,
+    "hairAndIrisRecoloured": true,
+    "noseAndClothingEdited": true,
+    "saveReloadRestoreMatches": true,
+    "modelChecksPassed": 6,
+    "pageErrors": 0,
+    "downloadsTriggered": 0,
+    "screenshot": "/workspace/akipasa-m3-checkpoints/live-customizer-mobile.png"
+  },
+  "download": {
+    "path": "/downloads/akipals-test-suite.zip",
+    "bytes": 21533782,
+    "sha256": "f86914917ea25f95de7e1ba235edf44c647fe91be5e722a05eb6753804b1736d"
+  },
+  "sourceBundle": {
+    "path": "/workspace/akipasa-m3-checkpoints/customizer-release.bundle",
+    "sha256": "554bf2e1b2d57f662dd7f3a661db8e7f747722c219c56c59670cfe0d0d10a126"
+  },
+  "remaining": [
+    "Actual broader interchangeable hairstyle/garment asset library",
+    "Further authored facial feature controls",
+    "Physical Android and mobile budget acceptance",
+    "Server-authorized versioned production identity/wardrobe integration"
+  ],
+  "AkiPasaProductionRelease": false,
+  "artOrRouteAcceptance": false
+}

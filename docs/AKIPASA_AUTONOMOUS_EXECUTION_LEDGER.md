@@ -2,6 +2,62 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 29 October 2026 UTC.
 
+## Customization editor — privately published 29 October 2026 14:20 UTC
+
+Alex gave positive feedback on the private playground and requested changeable
+hair, eye colours, clothes and facial features. The same owner-private site is now
+updated: <https://akipals-avatar-playground.cptguirimax.chatgpt.site>.
+Source `28ac17cd2c1ac0808695e0769d6479924ca61f9a`, feature commit
+`fcd3358fe3d08f5d2c823cc9800be79d868ab7bc`, native successful deployment
+`appgdep_6ae3561747508191bef6c77754d40dcb`. Canonical code is now
+`/workspace/sites/akipals-playground`; the older isolated prototype is historical.
+
+Implemented: ten common controls for hair/skin/iris/top/trousers/shoes colours,
+original/relaxed top fit, hair volume, nose and jaw width. Rain has four additional
+controls: scarf colour, side strand, ponytail coupled with its hairband, and scarf
+visibility. These operate on real licensed components and immutable base buffers.
+True albedo recolouring corrected an observed defect where light hair choices
+stayed dark. Eye whites/pupils and authored PBR maps are retained. Generated
+textures are cached with bounded replacement and disposed on teardown. Geometry
+changes reset from original positions and normals; edits do not accumulate drift.
+
+Session v2 retains independent per-character settings. V1 sessions migrate to
+original appearances; narrowly scoped older-v2 defaults preserve the original
+required fields. Unknown fields/models and out-of-range values fail before
+application. No production account, API, wardrobe, identity schema or consent is
+connected or changed. White colour swatches restore original authored colours.
+
+Tested: 23 node cases; four new EN/ES 360/1440 customization browser scenarios;
+one additional 390px compatibility/component case; and all four existing
+playground regression scenarios. Fifteen customization screenshots include rear
+ponytail-off/on coverage, exposed scarf-free neck and full-body clothing fit.
+Root and QA inspected real renders. No external/mutation requests or page errors.
+A fresh extracted ZIP passes all 23 node cases and reproduces exact renderer hash
+`55678cc5346be8dc4939cb91dd09ea942088390ac286c83f6176bcb5ba8e8f60`.
+
+Published HTTPS was additionally tested in 390px Chromium with normal TLS and the
+Sites-provided same-origin access header: real Rain renders, hair/iris/nose/top
+edits apply, a saved appearance survives reload/restore, six model checks pass,
+and zero downloads/page errors occur. This is not a human OAuth journey or a
+physical Android test. The prior reported download was the optional source ZIP;
+the homepage correctly serves HTML.
+
+The actual broader haircut and outfit asset library remains unfinished. Snow has
+one authored hair mesh; its volume control is not a new haircut collection.
+Relaxed fit reshapes the existing garment, not a different outfit. Garment-masked
+body geometry prevents safe shirt/trouser removal. These limits are explicit in
+UI/catalog/docs; no fake asset choices or unlicensed packs were added. Further
+facial features, compatible modular assets, mobile budgets and production server
+identity migration remain the next work. No route or final-art acceptance granted.
+
+Receipt: `docs/receipts/AKIPALS_CUSTOMIZER_RELEASE_20261029.json`. Full source and
+evidence bundle: `/workspace/akipasa-m3-checkpoints/customizer-release.bundle`,
+SHA256 `554bf2e1b2d57f662dd7f3a661db8e7f747722c219c56c59670cfe0d0d10a126`.
+The source is remotely recoverable through this existing Site's credential
+workflow. Prior saved private Site version remains available; do not deploy
+AkiPasa master. PR332 is still draft, with 0/90 routes accepted. Foreground owner
+lease is extended to 15:00 UTC; scheduled worker must not race source or releases.
+
 ## Hands-on avatar playground — privately published 29 October 2026
 
 Alex requested a test suite to explore directly. The separate owner-private studio
