@@ -63,7 +63,7 @@ for (const locale of ["en", "es"] as const) {
             expect(response?.status()).toBe(200);
             expect(actualPath).toBe(`/${locale}/auth`);
           }
-          await expect(page.locator("main.privacyAwardCard")).toHaveCount(0);
+          await expect(page.locator('[class*="privacyAwardCard"]')).toHaveCount(0);
           const dimensions = await page.evaluate(() => ({
             viewport: document.documentElement.clientWidth,
             width: document.documentElement.scrollWidth,
