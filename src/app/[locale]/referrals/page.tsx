@@ -24,8 +24,14 @@ export default async function ReferralLanding({
     return (
       <main className="shell pasa-referral-entry">
         <section className="pasa-conversion-hero">
-          <span className="pasa-conversion-kicker">AKISUITE / {es ? "RECOMENDACIONES" : "REFERRALS"}</span>
-          <h1>{es ? "Las recomendaciones están en preparación" : "Referrals are being prepared"}</h1>
+          <span className="pasa-conversion-kicker">
+            AKISUITE / {es ? "RECOMENDACIONES" : "REFERRALS"}
+          </span>
+          <h1>
+            {es
+              ? "Las recomendaciones están en preparación"
+              : "Referrals are being prepared"}
+          </h1>
           <p>
             {es
               ? "Todavía no puedes aplicar códigos ni conseguir descuentos o comisiones. Publicaremos los detalles cuando el programa esté disponible."
@@ -35,7 +41,10 @@ export default async function ReferralLanding({
             {es ? "Programa no activo" : "Programme not active"}
           </span>
         </section>
-        <section className="pasa-conversion-panel" aria-labelledby="referral-next-steps">
+        <section
+          className="pasa-conversion-panel"
+          aria-labelledby="referral-next-steps"
+        >
           <h2 id="referral-next-steps">
             {es ? "Mientras tanto, sigue explorando" : "Keep exploring in the meantime"}
           </h2>
@@ -45,7 +54,8 @@ export default async function ReferralLanding({
               : "You can still discover venues and plans on AkiPasa without a referral code."}
           </p>
           <Link className="pasa-conversion-link" href={`/${locale}`}>
-            {es ? "Volver a AkiPasa" : "Back to AkiPasa"} <span aria-hidden="true">↗</span>
+            {es ? "Volver a AkiPasa" : "Back to AkiPasa"}{" "}
+            <span aria-hidden="true">↗</span>
           </Link>
         </section>
       </main>
@@ -55,7 +65,9 @@ export default async function ReferralLanding({
   return (
     <main className="shell pasa-referral-entry">
       <section className="pasa-conversion-hero">
-        <span className="pasa-conversion-kicker">AKISUITE / {es ? "RECOMENDACIONES" : "REFERRALS"}</span>
+        <span className="pasa-conversion-kicker">
+          AKISUITE / {es ? "RECOMENDACIONES" : "REFERRALS"}
+        </span>
         <h1>{es ? "Guarda tu recomendación" : "Save your referral"}</h1>
         <p>
           {es
@@ -63,10 +75,15 @@ export default async function ReferralLanding({
             : "Confirm the code someone shared with you. It can be linked once to your AkiSuite account."}
         </p>
         <span className="pasa-conversion-status">
-          {es ? "Sin descuentos ni recompensas monetarias activas" : "No active discounts or monetary rewards"}
+          {es
+            ? "Sin descuentos ni recompensas monetarias activas"
+            : "No active discounts or monetary rewards"}
         </span>
       </section>
-      <form action={captureReferral} className="pasa-conversion-panel pasa-referral-confirmation">
+      <form
+        action={captureReferral}
+        className="pasa-conversion-panel pasa-referral-confirmation"
+      >
         <input type="hidden" name="locale" value={locale} />
         <input type="hidden" name="product" value="akipasa" />
         <input type="hidden" name="code" value={code} />
@@ -83,7 +100,10 @@ export default async function ReferralLanding({
           <button className="pasa-conversion-submit" type="submit">
             {es ? "Confirmar recomendación" : "Confirm referral"}
           </button>
-          <Link className="pasa-conversion-secondary" href={`/${locale}/account`}>
+          <Link
+            className="pasa-conversion-secondary"
+            href={`/${locale}/account`}
+          >
             {es ? "Continuar sin aplicar" : "Continue without applying"}
           </Link>
         </div>
