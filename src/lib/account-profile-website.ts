@@ -8,11 +8,7 @@ export function accountProfileWebsiteHref(
 ): string | null {
   if (!stored) return null;
   const value = stored.trim();
-  if (
-    !value ||
-    /[\u0000-\u001f\u007f\\]/.test(value) ||
-    value.startsWith("//")
-  )
+  if (!value || /[\u0000-\u001f\u007f\\]/.test(value) || value.startsWith("//"))
     return null;
 
   const hasHttpScheme = /^https?:\/\//i.test(value);
