@@ -649,3 +649,77 @@ html[data-theme="light"]
     background: #131d2a;
   }
 }
+
+/* Booking conversion surfaces: shared by event and venue requests.
+ * Scoped to the booking route; no reservation/auth/payment logic changes. */
+.app-shell .app-content[data-pasa-surface="booking"] .narrow-page {
+  width: min(100%, 72rem);
+  padding-inline: clamp(1rem, 3.4vw, 2.8rem);
+}
+.app-shell .app-content[data-pasa-surface="booking"] .narrow-page > .hero {
+  padding: clamp(1.5rem, 5vw, 3.5rem);
+  margin-block: clamp(1rem, 2.5vw, 2rem);
+}
+.app-shell .app-content[data-pasa-surface="booking"] .booking-card {
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  margin-block: 1.25rem;
+}
+.app-shell .app-content[data-pasa-surface="booking"] .booking-card > h2 {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+.app-shell .app-content[data-pasa-surface="booking"] .booking-card .stack {
+  display: grid;
+  gap: clamp(0.85rem, 2vw, 1.3rem);
+  margin-block-start: 1.5rem;
+}
+.app-shell .app-content[data-pasa-surface="booking"] .booking-card label {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+  font-weight: 650;
+}
+.app-shell .app-content[data-pasa-surface="booking"] .booking-card :is(input:not([type="hidden"]), select, textarea) {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.75rem 0.95rem;
+  border: 1px solid var(--pasa-ui-border);
+  background: var(--pasa-ui-elevated);
+  color: var(--pasa-ui-text);
+  color-scheme: dark;
+}
+html[data-theme="light"] .app-shell .app-content[data-pasa-surface="booking"] .booking-card :is(input:not([type="hidden"]), select, textarea) {
+  color-scheme: light;
+}
+.app-shell .app-content[data-pasa-surface="booking"] .booking-card textarea {
+  min-height: 7rem;
+  resize: vertical;
+}
+.app-shell .app-content[data-pasa-surface="booking"] .booking-card button[type="submit"] {
+  min-height: 52px;
+  width: 100%;
+  border-radius: 1rem;
+  font-weight: 800;
+}
+.app-shell .app-content[data-pasa-surface="booking"] .narrow-page > .back-link {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  margin-block: 0.75rem 2rem;
+}
+@media (min-width: 760px) {
+  .app-shell .app-content[data-pasa-surface="booking"] .booking-card .stack {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .app-shell .app-content[data-pasa-surface="booking"] .booking-card .stack > label:has(textarea),
+  .app-shell .app-content[data-pasa-surface="booking"] .booking-card .stack > button[type="submit"] {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 759px) {
+  .app-shell .app-content[data-pasa-surface="booking"] .narrow-page > .hero {
+    padding: 1.4rem;
+  }
+}
