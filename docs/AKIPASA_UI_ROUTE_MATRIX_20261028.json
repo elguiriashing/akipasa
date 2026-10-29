@@ -310,8 +310,8 @@
     },
     "src/app/[locale]/owner/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Private owner cockpit EN/ES control-room hero and responsive shared operations styling implemented; owner access and existing data/actions retained. Guest gate/browser EN/ES phone/tablet/desktop/Android-emulated tests added but exact-head CI, authenticated owner populated/empty/error screenshot review and physical Android acceptance remain outstanding. NOT accepted."
     },
     "src/app/[locale]/page.tsx": {
       "scope": "consumer",
