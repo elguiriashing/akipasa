@@ -511,7 +511,7 @@
     "src/app/waitlist/confirm/page.tsx": {
       "scope": "cross-product",
       "status": "in-progress",
-      "note": "Cinematic responsive EN/ES waitlist confirmation committed for Pasa/Duermo/Coches; dummy-token non-mutating Playwright coverage added for 360/390/1440 and emulated Android, dark/light and invalid states. Exact-head CI and screenshot review pending. Verification POST/server rules untouched; not accepted; physical Android and real email-delivery journeys not reviewed."
+      "note": "Cinematic responsive EN/ES confirmation for AkiPasa/AkiDuermo/AkiCoches committed. Real defect repaired: POST success redirect now derives product from verified database row, not caller hint; failure product hint allowlisted. Non-mutating Playwright cases cover invalid links, 360/390/1440 and Android-style emulation, dark/light. Exact-head CI/screenshot inspection, physical Android and genuine signup→email→verification acceptance still pending. In-progress, not accepted."
     },
     "src/app/[locale]/tonight/page.tsx": {
       "scope": "consumer",
