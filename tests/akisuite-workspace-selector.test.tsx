@@ -7,14 +7,8 @@ import {
   WorkspaceSelector,
   type LoginWorkspace,
 } from "../src/components/WorkspaceSelector";
-const products: LoginWorkspace[] = [
-  "pasa",
-  "duermo",
-  "coches",
-  "hq",
-  "business",
-];
-const names = ["AkiPasa", "AkiDuermo", "AkiCoches", "AkiHQ", "AkiBusiness"];
+const products: LoginWorkspace[] = ["pasa", "duermo", "coches"];
+const names = ["AkiPasa", "AkiDuermo", "AkiCoches"];
 beforeEach(() =>
   window.history.replaceState(
     null,
@@ -24,12 +18,12 @@ beforeEach(() =>
 );
 afterEach(cleanup);
 it.each(products)(
-  "makes the five icons direct links with %s current",
+  "makes the three icons direct links with %s current",
   (current) => {
     const { container } = render(
       <WorkspaceSelector current={current} locale="en" />,
     );
-    expect(screen.getAllByRole("link")).toHaveLength(5);
+    expect(screen.getAllByRole("link")).toHaveLength(3);
     const active = screen.getByRole("link", {
       name: names[products.indexOf(current)],
     });
@@ -51,21 +45,12 @@ it.each(["en", "es"] as const)(
       const card = screen.getByRole("link", { name: names[i] });
       const target = new URL(card.getAttribute("href")!);
       expect(target.host).toBe(
-        [
-          "akipasa.com",
-          "akiduermo.com",
-          "akicoches.com",
-          "akihq.app",
-          "akibusiness.com",
-        ][i],
+        ["akipasa.com", "akiduermo.com", "akicoches.com"][i],
       );
       expect(target.searchParams.get("ref")).toBe("AKI12345");
       expect(target.searchParams.has("access_token")).toBe(false);
-      if (i === 0 || i === 3) expect(target.pathname).toBe(`/${locale}/auth`);
-      else
-        expect(target.searchParams.get(i === 4 ? "locale" : "lang")).toBe(
-          locale,
-        );
+      if (i === 0) expect(target.pathname).toBe(`/${locale}/auth`);
+      else expect(target.searchParams.get("lang")).toBe(locale);
       expect(card).not.toHaveAttribute("role", "radio");
     }
   },
@@ -80,12 +65,12 @@ it("browses by keyboard without opening an app or changing the login draft", () 
   const initial = screen.getByRole("link", { name: "AkiPasa" });
   initial.focus();
   fireEvent.keyDown(initial, { key: "End" });
-  const last = screen.getByRole("link", { name: "AkiBusiness" });
+  const last = screen.getByRole("link", { name: "AkiCoches" });
   expect(last).toHaveFocus();
   expect(last).toHaveAttribute("data-selected", "true");
   expect(last).toHaveAttribute(
     "href",
-    "https://akibusiness.com/login?locale=en&ref=AKI12345",
+    "https://akicoches.com/account?lang=en&ref=AKI12345",
   );
   fireEvent.keyDown(last, { key: "Home" });
   expect(initial).toHaveFocus();
@@ -114,7 +99,7 @@ it("previews hover energy while preserving the current app, selected card and fi
   expect(preview.getAttribute("href")).toBe(destination);
   expect(preview.getAttribute("style")).toBe(position);
   fireEvent.keyDown(current, { key: "End" });
-  expect(screen.getByRole("link", { name: "AkiBusiness" })).toHaveAttribute(
+  expect(screen.getByRole("link", { name: "AkiCoches" })).toHaveAttribute(
     "data-energized",
     "true",
   );

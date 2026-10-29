@@ -182,15 +182,13 @@ export function CityDiscovery({ locale }: { locale: Locale }) {
             <span className={styles.eyebrow}>
               {es ? "Sal. Explora. Vive." : "Go out. Explore. Enjoy."}
             </span>
-            <h1 id="city-discovery-title">
-              {es
-                ? "Tu próximo plan empieza aquí"
-                : "Your next plan starts here"}
-            </h1>
+            <h2 id="city-discovery-title">
+              {es ? "Sigue descubriendo ciudades" : "Keep discovering cities"}
+            </h2>
             <p>
               {es
-                ? "Planes por toda España. Algunas ideas para empezar."
-                : "Find your next plan across Spain. A few places to start."}
+                ? "¿Te apetece explorar más lejos? Los planes actuales siempre tienen prioridad."
+                : "In the mood to explore further? Current local plans come first."}
             </p>
           </div>
         </div>

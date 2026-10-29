@@ -262,7 +262,7 @@ export function ClaimReview({
               <Icon name="store" />
               {venue?.discovery_vertical === "accommodation"
                 ? "AkiDuermo"
-                : "AkiBusiness"}
+                : "AkiPasa · AkiHQ"}
             </span>
             <span className="claim-modern-warning">
               <Icon name="info" />
@@ -492,6 +492,27 @@ export function ClaimReview({
                     : "State the verification or reason for rejection..."
                 }
               />
+              <p className="claim-modern-helper" role="note">
+                {es
+                  ? "Este motivo aparecerá literalmente en el correo al solicitante. Escribe únicamente la prueba verificada o los pasos concretos que faltan. La bienvenida y la encuesta se añaden automáticamente al aprobar."
+                  : "This reason appears verbatim in the applicant's email. Enter only verified evidence or concrete missing steps. The welcome and feedback invitation are added automatically when you approve."}
+              </p>
+              <details className="claim-modern-references">
+                <summary>
+                  <Icon name="mail" />
+                  {es ? "¿Qué correo recibirá?" : "What email will be sent?"}
+                </summary>
+                <p className="claim-modern-helper">
+                  {es
+                    ? "Aprobar: acceso a la ficha de AkiPasa desde AkiHQ, notas de verificación y encuesta para socios pioneros. Los propietarios que cumplan los requisitos recibirán 3 meses de Premium para su local de AkiPasa, no software de operaciones."
+                    : "Approve: confirmation of AkiPasa venue management through AkiHQ, your verification notes, and the early-partner feedback invitation. Eligible owners receive three months of AkiPasa listing Premium inside AkiHQ, not paid operations software."}
+                </p>
+                <p className="claim-modern-helper">
+                  {es
+                    ? "Denegar: explicación y notas de rechazo, cómo corregir los datos y cómo volver a solicitar. Sin promoción ni regalo."
+                    : "Deny: rejection explanation and notes, what to correct, and how to reapply. No promotion or gift."}
+                </p>
+              </details>
               <button
                 type="submit"
                 className="claim-modern-approve"

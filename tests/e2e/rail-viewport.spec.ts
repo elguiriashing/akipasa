@@ -35,7 +35,7 @@ test("AkiSuite rail keeps its controls reachable on short desktop windows", asyn
     await rail.locator(".suite-discovery-menu > summary").click();
     const popover = rail.locator(".suite-discovery-popover");
     await expect(
-      popover.getByRole("link", { name: "AkiBusiness" }),
+      popover.getByRole("link", { name: "AkiCoches" }),
     ).toBeVisible();
     const popoverRect = await popover.boundingBox();
     expect(popoverRect).not.toBeNull();

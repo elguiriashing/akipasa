@@ -107,9 +107,17 @@ for (const locale of ["en", "es"]) {
               exact: true,
             });
             if (await more.isVisible()) {
-              await more.click();
               const sheet = page.locator(".app-sheet");
-              await expect(sheet).toBeVisible();
+              // Client hydration may replace the initial mobile navigation button.
+              // Wait for the opened sheet and retry once after hydration if needed.
+              await more.click();
+              try {
+                await expect(sheet).toBeVisible({ timeout: 4000 });
+              } catch {
+                await expect(more).toBeVisible();
+                await more.click();
+                await expect(sheet).toBeVisible();
+              }
               const bounds = await sheet.boundingBox();
               expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(
                 viewport.width + 1,

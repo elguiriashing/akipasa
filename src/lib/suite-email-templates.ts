@@ -188,7 +188,7 @@ export function suiteEmailCopy(
 
     case "claim_received":
       return {
-        product: "akibusiness",
+        product: "akihq",
         subject:
           (es
             ? "Hemos recibido tu reclamación"
@@ -214,8 +214,8 @@ export function suiteEmailCopy(
             ? "Te informaremos de la decisión o solicitaremos información adicional."
             : "We'll contact you with a decision or if more information is needed.",
         ],
-        button: es ? "Abrir AkiBusiness" : "Open AkiBusiness",
-        href: appUrl("akibusiness", locale) + "?view=claims",
+        button: es ? "Consultar reclamación en AkiHQ" : "View claim in AkiHQ",
+        href: `https://akihq.app/${locale}/business?view=claims`,
         footer: baseFooter,
       };
     case "welcome_akipasa":

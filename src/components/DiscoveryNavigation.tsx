@@ -72,8 +72,6 @@ export function DiscoveryNavigation({
     ["pasa", "AkiPasa"],
     ["duermo", "AkiDuermo"],
     ["coches", "AkiCoches"],
-    ["hq", "AkiHQ"],
-    ["business", "AkiBusiness"],
   ] as const;
   return (
     <aside
@@ -155,6 +153,12 @@ export function DiscoveryNavigation({
                 </section>
               )}
               {actions}
+              <Link
+                href={`/hq-login?lang=${locale}`}
+                onClick={() => menu.current?.removeAttribute("open")}
+              >
+                {es ? "Acceso para negocios" : "Business sign in"}
+              </Link>
             </div>
             {referralCode && (
               <a

@@ -1,13 +1,51 @@
 # Change Impact Register
 
-## 2026-10-27 | Automation Worker GitHub Actions Node runtime security baseline
+## 2026-10-28 | Shared, gated Duermo/Coches launch-waitlist backend
 
-- **Before:** Both automation CI check and manually dispatched deployment used the moving `node-version: 22` major selector; their exact patch level could vary.
-- **Change:** Pin each `actions/setup-node` instance in `.github/workflows/automation.yml` to Node.js `22.23.4`, the patched baseline identified in the 21 October 2026 Brotli advisory.
-- **Impact:** Only GitHub Actions build/deploy host Node selection changes. Worker application logic, D1, schedules, secrets and existing production deployment are unchanged.
-- **Security boundary:** Does not fix or prove exposure of Cloudflare's V8 Workers runtime, other Node-based jobs, third-party services or user Android clients. Remaining inventory/incident work: #305.
-- **Verification:** Automation Worker PR workflow must pass at exact head. No production dispatch is requested; merge and deployment are separate operations. No replay of missed cron jobs until backed by logs and idempotency evidence.
-- **Rollback:** Revert the workflow setting through reviewed PR only after confirming a secure alternative runtime.
+- **Before:** Consumers could see ostensibly usable accommodation/car listings while those products were still under development, without a credible verified signup flow.
+- **Change:** Add a staged, private waitlist schema and a cross-product origin-scoped, Turnstile-protected, rate-limited submission API on AkiPasa. Verification is by an expiring hashed token and explicit POST confirmation page, not by opening an email link. ES/EN plain-text mail, marketing consent separated from launch news.
+- **Dependencies:** Reviewed and installed migration; server-only service-role, Resend, rate HMAC and Turnstile secrets; DNS/domain/sitekey allowlists; Duermo/Coches form PRs; published privacy policy and deletion channel; periodic retention cleanup. Existing venue, subscription, booking, identity, admin, and analytics flows stay untouched.
+- **Risk/rollback:** API fails closed on missing secrets/provider. No frontend launch until the backend is deployed and verified end-to-end. Roll back API/UI feature without deleting existing subscriber records; remove access only through reviewed retention and deletion processes. No live DB writes, business/customer contact or mass mail during PR validation.
+- **Acceptance:** CI lint/types/security and migration permission checks; staging tests for consent, spam, CORS, replay/expiry, duplicate verified addresses, email provider outage and rate exhaustion; exact live source and privacy/legal review. Track #313/#315.
+
+## 2026-10-28 | Consumer product reset and business handoff
+
+- **Surfaces:** public login AkiSelector, three-app portal menu, public discovery owner link, branded `/hq-login` (EN/ES); coordinated HQ/Duermo/Coches PRs.
+- **Contract:** discovery remains ungated; Pasa leads events/experiences, HQ remains free listing management, AkiBusiness stays independent paid operating software. No cookie or credential transfer; all existing owner deep links kept.
+- **Unchanged:** OAuth callbacks, Android bridge, team/RLS, claims, subscriptions, Stripe, booking, backend migrations, Supabase, R2, staff/admin roles, push and indexing.
+- **Acceptance:** exact-head CI and Cloudflare build, anonymous and signed-in business redirects, EN/ES phone/tablet/desktop, reduced-motion, cross-domain login and Android native return; no live state inferred from source.
+- **Rollback:** revert selector, gateway and nudge; no data reversals.
+
+## 2026-10-28 | Plans-first AkiPasa discovery, without data changes
+
+- **Before:** The first screen prioritised five national city photos, hiding real event results farther down the page.
+- **Change:** A non-boxy EN/ES **¿Qué hacemos hoy?** hero, accurate Madrid-day/weekend/tonight/free shortcuts, and event results come before the preserved city-photo collection. Default Fuengirola location and existing filters/URLs remain. No login required.
+- **Dependencies:** `plans-first.ts`, `PlansFirstHero.tsx`, hero CSS, existing CityDiscovery and discovery page. Shared routing, search, map, event/venue data unchanged.
+- **Safety and rollback:** No database, Supabase, R2, OAuth, consent, payments, staff/admin, subscriptions, or Stripe changes. Preserve public canonical URLs and mobile page performance. Roll back homepage/hero if event quality or engagement worsens.
+- **Validation:** CI formatting/types/tests, ES/EN usability, event search accuracy, DST day-boundary regression, one-minute first-plan tests, Cloudflare build, exact production SHA. Measure weekly planners and repeat planners before increasing gamification complexity.
+
+## 2026-10-27 | Correct AkiPasa business listing Premium onboarding in AkiHQ
+
+- **Problem:** Claim approval and receipt templates used legacy AkiBusiness URLs/terminology, confusing the free AkiHQ venue management and AkiPasa business listing Premium benefit with the separate paid AkiBusiness operating suite.
+- **Scope:** Change only source-driven EN/ES claim communications, staff help/badges, early-owner survey and success CTA. Approved claims link to `akihq.app/{locale}/business/venue/{venueId}`; rejected/pending claims link to `akihq.app/{locale}/business?view=claims`. Gift is three months of _AkiPasa listing Premium managed in AkiHQ_, with existing eligibility/cap/expiry unchanged. Regular operating-plan membership and AkiBusiness onboarding remain separate and untouched.
+- **Permissions/billing:** New restrictive SQL migration guards existing reward queuing, activation and listing entitlement by `discovery_vertical='activities'`, preventing AkiDuermo accommodation Premium from being gifted via this campaign. There are no new tables, automatic claim approvals, Stripe transactions or trial extensions; existing rewards remain per-venue, not account-wide. Verified no granted rewards existed at the start of this correction.
+- **Tests/deploy:** EN/ES plaintext and HTML content, branded claim receipt and exact links, safe mobile CTA, CI full contract, Cloudflare production verification. Rollback source alone without rewriting customer claims or reward audit records. Existing sent messages remain historical.
+
+## 2026-10-27 | Verified feedback now automatically activates a capped three-month venue listing gift
+
+- **Before:** Approved owners received a survey invitation, but feedback only queued a manual reward and gave no actual Premium access.
+- **Change:** Continue using the existing sign-in protected bilingual survey as proof of response; require a real approved claim, verified account email, current owner membership and completed onboarding. A trigger activates the exact venue-specific, nonrenewing Premium entitlement immediately on feedback submission with a true three-month expiry and shows the result to the owner.
+- **Fraud/billing controls:** Refuse anonymous, mismatched-account, pending/rejected, unverified, nonowner, duplicated, previously gifted, existing paid Premium or exhausted-campaign grants. Default cap 25 venue grants; service role can disable the campaign. No direct Google Forms authorization, cross-app access escalation, Stripe charge, personal Premium or account-wide Business grant.
+- **Dependencies:** Mirrored `20261027081500_claim_partner_auto_trial.sql` migration must be applied before deploying the updated UI. SQL RLS/trigger tests, email preview, whole app and browser release checks must pass on exact source.
+- **Rollback:** Disable the campaign first; preserve historic submissions, exact earned grants and expirations. Never revoke paid subscriptions or pending claims to work around this.
+
+## 2026-10-27 | Claim email visibility, early-partner survey and reward tracking
+
+- **Before:** The mandatory moderator reason was emailed verbatim without clear UI disclosure; approval emails contained basic venue management instructions and denial emails were purely corrective. Resend-hosted templates do not control claim decisions.
+- **Change:** Explicit customer-visible decision note in moderation; bilingual first-owner welcome and survey CTA on approvals only; authenticated EN/ES attribution and product-needs form; distinct opt-in for personalised onboarding; manual three-month listing Premium gift queue.
+- **Security and privacy:** RLS limits feedback to the approved claimant, reward queue service-role only; no public reviews, raw tokens, newsletter opt-in, automatic billing, or direct entitlement grants. Denials have no marketing pitch. Emails remain persisted, audited and idempotent.
+- **Dependencies:** Apply mirrored additive Supabase migration before deploying the AkiPasa Worker; pass hosted email, SQL policy, TS, formatting and authenticated survey tests; verify current Cloudflare deployment and delayed Resend deliveries.
+- **Rollback:** Remove survey CTA and UI route without deleting feedback or reward audit records. Never roll back by altering existing venue claims or customer subscriptions.
 
 ## 2026-10-27 | Founder FCM push integration (dark launch)
 
@@ -3143,3 +3181,26 @@ collapse cases pass locally (3/3), and the production Next build passes. The
 local map browser reports WebGL unavailable before mounting attribution, so
 the unchanged EN/ES map attribution hit-target/non-overlap matrix must pass
 hosted browser CI; no map assertion or browser gate is skipped or weakened.
+
+## 2026-10-28 | App-first consumer discovery UI (new approved logo direction)
+
+Scoped AkiPasa consumer discovery styling in `src/app/aki-app-first.css` imported by `src/app/globals.css`, plus `PlansFirstHero.module.css` mobile-first refinement. Inspiration: user-supplied orange fluid movement mark, strong geometric wordmark and near-black contrast. Actual uploaded raster logo is **not yet committed as a production asset**, so existing logos remain unchanged in this PR rather than shipping an inaccurate recreation.
+
+Homepage changes: larger headline, mobile two-column date shortcuts, stronger orange primary action, subtle nonblocking radial flare, compact mobile floating nav with larger touch targets, and restrained event grid/empty-state visuals. Existing links, accessibility semantics, search, login, data/analytics, maps and tenant routes remain intact. Effects respect reduced-motion; no image generation, custom font, client tracking or new dependencies.
+
+Release acceptance: review on 320px/375px/430px phones, tablet, desktop, touch navigation and bottom safe area; light/dark themes, focus visibility, reduced motion, Android immersive UI, ES/EN, empty event feed and performance. Check CSS cascade and competing nav styles. Complete required CI and Cloudflare build before merging; match exact deployed SHA. Rollback is removing the isolated import plus hero CSS tail. No database, billing, email, age policy or customer data changes.
+
+Follow-up asset integration: `public/brand/pasa-2026-traced.svg` is a vector trace made from the founder-uploaded PNG; `BrandLogo.tsx` now uses its orange dynamic movement mark and dark endpoint circle in the app shell. It is a trace/preview, not a claim to replace an original designer-supplied editable vector. Wordmark remains DOM text for responsive size and accessibility. Check light/dark contrast and 24px icon legibility before merge; keep original supplied PNG as the definitive visual reference. Rollback restores the previous `BrandLogo.tsx` mark.
+
+## 2026-10-28 | Young-adult social discovery messaging follow-up
+
+The new `PlansFirstHero.tsx` EN/ES copy prioritizes live music, plans with friends and nearby activities for a Spain-first young-adult audience; all category, search, pricing, event, authentication, consent and age rules remain unchanged. Full brand/retention direction is recorded in `docs/AKIPASA_BRAND_RETENTION_20261028.md`. This branch is rebased conceptually on already merged app-first PR #320; it supersedes conflicting PR #319. Require the same six hosted CI workflows, responsive/browser accessibility review and exact-source Cloudflare verification before production. Rollback: restore only the prior hero copy. No DB, bulk marketing, analytics activation or billing changes.
+
+## 2026-10-27 | Automation Worker GitHub Actions Node runtime security baseline
+
+- **Before:** Both automation CI check and manually dispatched deployment used the moving `node-version: 22` major selector; their exact patch level could vary.
+- **Change:** Pin each `actions/setup-node` instance in `.github/workflows/automation.yml` to Node.js `22.23.4`, the patched baseline identified in the 21 October 2026 Brotli advisory.
+- **Impact:** Only GitHub Actions build/deploy host Node selection changes. Worker application logic, D1, schedules, secrets and existing production deployment are unchanged.
+- **Security boundary:** Does not fix or prove exposure of Cloudflare's V8 Workers runtime, other Node-based jobs, third-party services or user Android clients. Remaining inventory/incident work: #305.
+- **Verification:** Automation Worker PR workflow must pass at exact head. No production dispatch is requested; merge and deployment are separate operations. No replay of missed cron jobs until backed by logs and idempotency evidence.
+- **Rollback:** Revert the workflow setting through reviewed PR only after confirming a secure alternative runtime.

@@ -521,7 +521,7 @@ it("keeps the business application reachable before sign in", () => {
 });
 
 for (const locale of ["en", "es"] as const) {
-  it(`keeps all product languages in the actual ${locale} suite launcher`, () => {
+  it(`keeps three consumer destinations and separate business access in the ${locale} suite launcher`, () => {
     navigation.pathname = `/${locale}`;
     const { container } = render(
       <AppShell locale={locale} signedIn={false}>
@@ -534,10 +534,11 @@ for (const locale of ["en", "es"] as const) {
     for (const expected of [
       `https://akiduermo.com/?lang=${locale}`,
       `https://akicoches.com/?lang=${locale}`,
-      `https://akihq.app/${locale}/business`,
-      `https://akibusiness.com/?locale=${locale}`,
+      `/hq-login?lang=${locale}`,
     ])
       expect(hrefs).toContain(expected);
+    expect(hrefs).not.toContain(`https://akihq.app/${locale}/business`);
+    expect(hrefs).not.toContain(`https://akibusiness.com/?locale=${locale}`);
   });
 }
 

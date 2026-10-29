@@ -1,0 +1,125 @@
+.gateway {
+  --gateway-accent: #f26b1d;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: clamp(20px, 5vw, 72px);
+  background:
+    radial-gradient(
+      ellipse at 80% 10%,
+      color-mix(in srgb, var(--gateway-accent) 19%, transparent),
+      transparent 52%
+    ),
+    linear-gradient(145deg, #121722, #090e17);
+  color: #f5f8fc;
+}
+
+.shell {
+  width: min(100%, 700px);
+  padding: clamp(26px, 6vw, 62px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 28px;
+  background: rgba(18, 26, 38, 0.86);
+  box-shadow: 0 24px 90px rgba(0, 0, 0, 0.3);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 36px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.35rem;
+}
+
+.brand img {
+  flex: none;
+}
+
+.kicker {
+  color: var(--gateway-accent);
+  font-size: 0.77rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: clamp(2.2rem, 6vw, 3.8rem);
+  font-weight: 750;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  margin: 14px 0 20px;
+}
+
+.description {
+  font-size: 1.12rem;
+  line-height: 1.65;
+  max-width: 54ch;
+  color: #ccd5e2;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 36px;
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 48px;
+  border-radius: 13px;
+  padding: 13px 20px;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.primary {
+  color: #10141b;
+  background: var(--gateway-accent);
+}
+
+.secondary {
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  color: #fff;
+}
+
+.primary:hover,
+.secondary:hover {
+  filter: brightness(1.12);
+}
+
+.primary:focus-visible,
+.secondary:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+.note {
+  margin-top: 28px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #a7b8cc;
+}
+
+.note a {
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .shell {
+    animation: enter 380ms ease-out both;
+  }
+
+  @keyframes enter {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+}

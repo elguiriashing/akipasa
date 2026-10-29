@@ -38,9 +38,7 @@ it("renders both decisions in both languages with safe HTML, real feedback and c
         expect(mail.text).toContain(
           `${locale}/business/venue/${claim.venueId}`,
         );
-        expect(mail.text).toContain(
-          locale === "es" ? "propietario" : "owner access",
-        );
+        expect(mail.text).toContain(locale === "es" ? "gestionar" : "manage");
       } else {
         expect(mail.text).toContain(`view=claims&venueId=${claim.venueId}`);
         expect(mail.text).toContain(
@@ -52,6 +50,32 @@ it("renders both decisions in both languages with safe HTML, real feedback and c
       }
     }
 });
+it("welcomes only approved owners to the early-partner survey and keeps rejections focused", () => {
+  const approved = renderClaimDecision({ ...claim, decision: "approved" });
+  const rejected = renderClaimDecision({ ...claim, decision: "rejected" });
+  expect(approved.text).toContain("3 months of AkiPasa listing Premium");
+  expect(approved.text).toContain("managed through AkiHQ");
+  expect(approved.text).not.toContain("AkiBusiness");
+  expect(rejected.text).not.toContain("AkiBusiness");
+  expect(approved.text).toContain(
+    `https://akihq.app/en/business/venue/${claim.venueId}`,
+  );
+  expect(rejected.text).toContain("https://akihq.app/en/business?view=claims");
+  expect(approved.text).toContain(
+    `/en/business/early-partner?claim=${claim.claimId}`,
+  );
+  expect(approved.html).toContain("Share my feedback");
+  expect(approved.text).toContain("No card, charges or auto-renewal");
+  expect(rejected.text).not.toContain("early-partner");
+  expect(rejected.text).not.toContain("Premium");
+  expect(rejected.text).toContain("Reason for this decision");
+  const es = renderClaimDecision({ ...claim, locale: "es" });
+  expect(es.text).toContain("3 meses");
+  expect(es.text).toContain("desde AkiHQ");
+  expect(es.text).not.toContain("AkiBusiness");
+  expect(es.html).toContain("Compartir mi opinión");
+});
+
 it("handles missing applicant name and sanitizes the subject", () => {
   const mail = renderClaimDecision({
     ...claim,
