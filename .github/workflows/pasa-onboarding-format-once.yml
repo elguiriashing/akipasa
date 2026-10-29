@@ -1,0 +1,58 @@
+name: One-time coordinated onboarding formatting repair
+
+on:
+  push:
+    branches: [work/coordinated-release-20261029]
+    paths:
+      - .github/workflows/pasa-onboarding-format-once.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pasa-onboarding-format-once
+  cancel-in-progress: false
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install exact locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Format only three new onboarding UI files
+        run: |
+          npx prettier --write \
+            scripts/test-onboarding-browser.mjs \
+            src/app/[locale]/onboarding/onboarding.css \
+            src/app/[locale]/onboarding/privacy/page.tsx
+          npx prettier --check \
+            scripts/test-onboarding-browser.mjs \
+            src/app/[locale]/onboarding/onboarding.css \
+            src/app/[locale]/onboarding/privacy/page.tsx
+          git diff --check
+      - name: Commit verified formatting without forcing concurrent edits
+        run: |
+          test "$GITHUB_REF_NAME" = "work/coordinated-release-20261029"
+          if git diff --quiet -- \
+            scripts/test-onboarding-browser.mjs \
+            src/app/[locale]/onboarding/onboarding.css \
+            src/app/[locale]/onboarding/privacy/page.tsx; then
+            echo "Already formatted"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            scripts/test-onboarding-browser.mjs \
+            src/app/[locale]/onboarding/onboarding.css \
+            src/app/[locale]/onboarding/privacy/page.tsx
+          git commit -m "style(pasa): prettier-format onboarding and privacy"
+          git push origin HEAD:work/coordinated-release-20261029

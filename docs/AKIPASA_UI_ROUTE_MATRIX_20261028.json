@@ -300,13 +300,13 @@
     },
     "src/app/[locale]/onboarding/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared onboarding layout now supplies the intended responsive visual system to setup and restricted privacy, with EN/ES fixture and consent/deletion UI regression tests. Actual authenticated/device screenshot review and functional acceptance still required."
     },
     "src/app/[locale]/onboarding/privacy/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared onboarding layout now supplies the intended responsive visual system to setup and restricted privacy, with EN/ES fixture and consent/deletion UI regression tests. Actual authenticated/device screenshot review and functional acceptance still required."
     },
     "src/app/[locale]/owner/page.tsx": {
       "scope": "operational",

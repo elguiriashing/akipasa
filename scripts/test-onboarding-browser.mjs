@@ -52,8 +52,11 @@ await build({
           loader: "ts",
         }));
         b.onLoad({ filter: /[\\/](onboarding|auth)[\\/]actions\.ts$/ }, () => ({
-          contents:
-            "export async function completeAccount(){};export async function signOut(){}",
+          contents: [
+            "export async function completeAccount(){}",
+            "export async function signOut(){}",
+            "export async function requestRestrictedDeletion(){}",
+          ].join(";"),
           loader: "ts",
         }));
       },
