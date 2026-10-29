@@ -83,6 +83,49 @@ it("retains active discovery filters across desktop and mobile Home/Map links", 
   }
 });
 
+it("keeps one consumer dock on public/Profile screens but never duplicates operational or authentication navigation", () => {
+  for (const pathname of [
+    "/en",
+    "/en/map",
+    "/en/community",
+    "/en/account",
+  ]) {
+    navigation.pathname = pathname;
+    const view = render(
+      <AppShell locale="en" signedIn={pathname.endsWith("/account")}>
+        <main>Consumer page</main>
+      </AppShell>,
+    );
+    expect(
+      view.container.querySelectorAll(".app-bottom-nav.pasa-dock"),
+      pathname,
+    ).toHaveLength(1);
+    view.unmount();
+  }
+
+  for (const pathname of [
+    "/en/admin",
+    "/en/admin/users",
+    "/en/staff",
+    "/en/business",
+    "/en/owner",
+    "/en/auth",
+    "/en/onboarding",
+  ]) {
+    navigation.pathname = pathname;
+    const view = render(
+      <AppShell locale="en" signedIn={true}>
+        <main>Workspace or sign-in page</main>
+      </AppShell>,
+    );
+    expect(
+      view.container.querySelectorAll(".app-bottom-nav.pasa-dock"),
+      pathname,
+    ).toHaveLength(0);
+    view.unmount();
+  }
+});
+
 it("contains mobile More focus, makes the background inert and restores its opener", () => {
   navigation.pathname = "/en";
   const { container } = render(
