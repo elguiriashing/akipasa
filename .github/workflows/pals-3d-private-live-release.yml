@@ -1,0 +1,83 @@
+name: AkiPals 3D guarded private live release
+on:
+  push:
+    branches: [master]
+    paths:
+      - ".github/workflows/pals-3d-private-live-release.yml"
+      - "src/app/pals/**"
+      - "src/lib/pals/**"
+      - "src/components/pals/**"
+      - "public/pals/models/**"
+      - "scripts/build-pals-3d.mjs"
+      - "package.json"
+      - "package-lock.json"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: akisuite-pasa-production
+  cancel-in-progress: false
+
+jobs:
+  private-playtest:
+    # One intentional PR #327 squash merge only. This cannot deploy on ordinary pushes.
+    if: ${{ startsWith(github.event.head_commit.message, 'release(pals): private 3D playtest PR #327') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    env:
+      AKISUITE_RELEASE_KIND: pasa
+      CLOUDFLARE_ACCOUNT_ID: 501bc9434d8ae555a6ac984a26dd2725
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      NEXT_TELEMETRY_DISABLED: "1"
+      WRANGLER_SEND_METRICS: "false"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm ci --prefix automation --no-audit --no-fund
+      - name: Full AkiPasa verification
+        run: npm run check
+      - name: Install headless Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Real GLB rendering and account-save browser fixture
+        run: npm run test:pals:browser
+      - name: Preserve production Worker bindings and load release config
+        run: node scripts/brand-production-release.mjs prepare
+      - name: Build exact source for Cloudflare
+        run: npm run build:cloudflare
+      - name: Validate source stamp and dry-run Worker upload
+        run: |
+          node scripts/brand-production-release.mjs config
+          npx wrangler deploy --config .wrangler/brand-production.json --dry-run --outdir .wrangler/pals-3d-dry-run
+      - name: Publish private 3D studio to existing AkiPasa Worker
+        run: npx wrangler deploy --config .wrangler/brand-production.json --keep-vars
+      - name: Verify deployed Git SHA and existing brand assets
+        run: node scripts/brand-production-release.mjs verify
+      - name: Verify private route and 3D assets on akipasa.com
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          const origin='https://akipasa.com';
+          const request=async(path)=>fetch(origin+path,{redirect:'manual',signal:AbortSignal.timeout(20000),cache:'no-store'});
+          const pals=await request('/pals');
+          assert.equal(pals.status,401,'Anonymous callers cannot view 3D studio');
+          assert.match(pals.headers.get('cache-control')||'',/no-store/i);
+          assert.match(pals.headers.get('x-robots-tag')||'',/noindex/i);
+          const avatar=await request('/pals/identity');
+          assert.equal(avatar.status,401,'Anonymous callers cannot read avatar state');
+          const js=await request('/pals/runtime/creator.min.js');
+          assert.equal(js.status,200,'Locally bundled Three.js runtime must be deployed');
+          assert.match(js.headers.get('content-type')||'',/javascript|octet-stream/i);
+          const glb=await request('/pals/models/akipals-base-female.glb');
+          assert.equal(glb.status,200,'The real GLB model must be deployed');
+          assert.equal((await glb.arrayBuffer()).byteLength>500_000,true);
+          const home=await request('/en');
+          assert.equal(home.status,200,'AkiPasa public homepage must remain available');
+          console.log(JSON.stringify({privateStudio:pals.status,privateAvatar:avatar.status,runtime:js.status,riggedModel:glb.status,home:home.status}));
+          NODE
