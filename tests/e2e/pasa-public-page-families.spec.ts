@@ -84,6 +84,18 @@ test.describe("AkiPasa shared public page-family visuals", () => {
               surface,
             );
             await expect(page.getByRole("main").first(), route).toBeVisible();
+            if (device.width <= 850 && path !== "/auth") {
+              const dock = page.locator(".pasa-dock");
+              await expect(
+                dock,
+                `${route}: canonical mobile navigation`,
+              ).toHaveCount(1);
+              await expect(
+                dock,
+                `${route}: canonical mobile navigation`,
+              ).toBeVisible();
+              await expect(dock.locator(".pasa-dock__item")).toHaveCount(5);
+            }
             await expect(page.locator("html")).toHaveAttribute(
               "data-theme",
               theme,

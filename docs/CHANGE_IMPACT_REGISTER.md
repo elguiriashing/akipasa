@@ -3455,3 +3455,9 @@ card headings. LaunchRibbon has an opaque night-colored base behind its orange
 lighting, so its first words remain readable in light mode; its link retains a
 44px target. No routes, data, permissions, consent or mutation behavior change.
 Final screenshot and contrast evidence must come from the corrected built source.
+
+A 32-case computed contrast sweep additionally isolated the same inherited heading
+color issue in the shared Check-in/Privacy/Terms hero family (six light-mode
+phone/desktop failures). The canonical shared hero h1/h2 now explicitly use light
+text on their fixed dark artwork. Base text contrast and all other sampled hero
+families passed; corrected-source captures and gradient-aware contrast are rerun.

@@ -385,6 +385,7 @@ html[data-theme="light"] .app-shell .account-workspace .account-welcome-copy p {
   :is(.shell, .dashboard, .narrow-page)
   > .hero
   :is(h1, h2) {
+  color: #f9fafc;
   max-width: 22ch;
   font-size: clamp(2rem, 5vw, 3.9rem);
   font-weight: 850;
