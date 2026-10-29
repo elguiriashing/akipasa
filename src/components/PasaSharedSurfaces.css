@@ -342,7 +342,9 @@ html[data-theme="light"]
 html[data-theme="light"] .app-shell .account-workspace .account-welcome-copy p {
   color: #4b5868;
 }
-\n\n/*
+
+
+/*
  * Unified route-aware surface system. AppShell sets data-pasa-surface from
  * a single route classifier. No individual page redefines navigation.
  * Scoped to AkiPasa to preserve sister products and auth behaviour.
