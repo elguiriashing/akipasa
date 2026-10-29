@@ -1,5 +1,23 @@
 # Change Impact Register
 
+## 2026-10-29 | AkiPals actual 3D creator replacing flat avatar preview
+
+- **Changed:** Build imports pinned Three.js from local npm, exports a self-hosted
+  browser runtime, loads CC0 rigged GLBs, procedurally assembles free 3D garment
+  and hair parts, exposes responsive 360-degree orbit, colour swatches, real
+  wardrobe choices, presets and only-on-confirmation persistence.
+- **Scope:** Private /pals; dedicated own-account RLS appearance table. Legacy
+  RPG state and public maps, QR/check-in and other Aki products unchanged.
+- **Dependencies:** Full CI, lockfile integrity, 3D real-browser tests,
+  smartphone WebGL, GLB licence, reviewed database migration, PR #326 conflict
+  reconciliation and manual art QA. Public avatar and payments not enabled.
+- **Risks:** Procedural geometry is not final premium character art; 3D device
+  support and bandwidth require measurement. On GPU/load failure show a clear
+  error, never a false saved render or old ghost SVG. Browser and SQL tests are
+  staged and must be confirmed against exact head before release.
+- **Rollback:** Revert editor/runtime; preserve old game save and new own-account
+  appearance rows. Do not delete database tables during source rollback.
+
 ## 2026-10-28 | AkiPals identity, not RPG (private rollout)
 
 - **Before:** Private mascot game with ten families, XP, care, random parcels,
