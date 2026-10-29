@@ -352,7 +352,11 @@ export default async function BusinessPage({
       label: es ? "Promoción" : "Growth",
       icon: "megaphone",
     },
-    { href: `${base}?view=analytics`, label: "Analytics", icon: "activity" },
+    {
+      href: `${base}?view=analytics`,
+      label: es ? "Analítica" : "Analytics",
+      icon: "activity",
+    },
     {
       href: `/${locale}/account/subscription?from=akibusiness`,
       label: es ? "Membresías" : "Memberships",
@@ -957,9 +961,11 @@ export default async function BusinessPage({
                       className="button primary"
                       type="submit"
                       style={{
-                        width: "100%",
+                        width: "auto",
                         minWidth: "max-content",
                         minHeight: 44,
+                        flexShrink: 0,
+                        alignSelf: "flex-start",
                       }}
                     >
                       {es ? "Confirmar entrega" : "Confirm handover"}

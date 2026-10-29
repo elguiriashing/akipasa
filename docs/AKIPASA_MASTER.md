@@ -3053,3 +3053,22 @@ ordinary successful payloads still pass the existing authenticated-owner/admin
 checks. Independent review and45 isolated actual-action/render regressions passed.
 These guards are narrow runtime mitigations, not a claim that all Zod3 exposure
 or dependency advisories have been eliminated.
+
+## 2026-10-29 | Awards authority before validation and compact handover actions
+
+Passport Awards now authenticates the caller and reads/checks the current
+administrator role before validating its potentially large payload record.
+Profile read errors fail closed even if stale data accompanies the failure.
+Authorized valid/invalid requests retain their schema, arbitrary accepted keys,
+nine actions, exact caller-bound RPC, idempotency and revalidation behavior.
+Guest malformed requests intentionally follow existing auth/onboarding/terms
+redirects; disallowed malformed callers receive the existing administrator denial
+before field validation. No award, XP, audit, SQL or data-authority change.
+
+Business handover remains a44px minimum touch target with fully readable EN/ES
+labels but uses content width instead of stretching across desktop rows.
+The existing Analytics navigation label is localized as Analítica in Spanish;
+URLs, filters and all actions are unchanged. The default browser harness still
+runs the complete160-state matrix, with an additional compact-width assertion.
+Its explicit local handover-only mode stores evidence separately; it is not
+used by the mandatory CI job. Final-source verification is in the mission ledger.

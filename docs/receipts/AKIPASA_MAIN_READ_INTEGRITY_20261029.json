@@ -69,6 +69,18 @@
       "status": "failure expected",
       "accepted": 0,
       "inScope": 90
+    },
+    "independentCloudflareBuild": {
+      "sourceCommit": "6e025ad693f599e45fb286a6d409cf81f96b3caf",
+      "files": 2226,
+      "treeSha256": "d83613c8c8a7540b34e2076bcb8673b8b2f921ae6013308293bf2d2df1cafe59",
+      "sourceStamp": {
+        "sourceCommit": "6e025ad693f599e45fb286a6d409cf81f96b3caf"
+      },
+      "trackedTreeClean": true,
+      "status": "passed",
+      "freshLockedPackages": 814,
+      "log": "/tmp/akipasa-6e025ad-independent-cloudflare.log"
     }
   },
   "inspectedScreenshots": {
@@ -81,12 +93,18 @@
     "accepted": false,
     "merged": false,
     "deployed": false,
-    "newHeadCI": "pending commit",
-    "newHeadIndependentPackaging": "pending commit"
+    "newHeadCI": {
+      "status": "in_progress",
+      "ordinaryPassed": 9,
+      "remaining": "Account and public UI acceptance",
+      "strict": "failure expected0/90"
+    },
+    "newHeadIndependentPackaging": "passed"
   },
   "limits": [
     "Disposable fixtures are not live Auth/RLS/provider or physical Android proof.",
     "Dependency inventory remains open; no blanket Zod or npm audit clearance.",
     "Separate Awards action and compact-button patches are excluded from this source."
-  ]
+  ],
+  "validatedSourceCommit": "6e025ad693f599e45fb286a6d409cf81f96b3caf"
 }

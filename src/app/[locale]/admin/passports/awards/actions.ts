@@ -22,19 +22,19 @@ export async function passportAdminAction(
   locale: Locale,
   input: unknown,
 ): Promise<{ data?: unknown; error?: string }> {
-  const parsed = requestSchema.safeParse(input);
-  if (!parsed.success) return { error: "Invalid award request" };
   const { supabase, user } = await requireUser(
     locale,
     `/${locale}/admin/passports/awards`,
   );
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("app_role")
     .eq("id", user.id)
     .maybeSingle();
-  if (!profile || !isAdministrator(profile.app_role))
+  if (profileError || !profile || !isAdministrator(profile.app_role))
     return { error: "Administrator required" };
+  const parsed = requestSchema.safeParse(input);
+  if (!parsed.success) return { error: "Invalid award request" };
   const { data, error } = await supabase.rpc("admin_passport_awards", {
     p_action: parsed.data.action,
     p_payload: parsed.data.payload,

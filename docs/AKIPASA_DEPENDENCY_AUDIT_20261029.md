@@ -53,3 +53,9 @@ Prestige configure achievement_keys>1000 cases before per-item Zod validation.
 Existing locale/feature gates and owner/admin mutation authority are unchanged;
 45 actual-action/render tests and independent review passed. The broader Zod
 upgrade and other tool-chain remediation candidates remain open.
+
+The subsequent Awards followup moves existing authenticated-administrator checks
+before its unrestricted string/bool record schema and fails closed on profile
+read errors. This removes unauthenticated/disallowed schema processing while
+preserving the accepted record and all award authority. Authorized administrator
+records retain their existing framework10MB bound; no blanket advisory clearance.

@@ -2,6 +2,36 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 29 October 2026 UTC.
 
+## Awards/compact-control followup validated — 29 October 2026 19:14 UTC
+
+Baseline committed/pushed source6e025ad693f599e45fb286a6d409cf81f96b3caf
+independently packaged from a fresh814-package install; exact source stamp and
+clean tracked tree verified. Whole generated package2226 files hashes to
+`d83613c8c8a7540b34e2076bcb8673b8b2f921ae6013308293bf2d2df1cafe59`.
+Nine ordinary exact-head workflows have passed, including the repaired tablet
+consumer fixture; Account/public UI remains running. Strict0/90gate stays red.
+
+Current followup is implemented/tested and ready to commit: existing Awards caller
+and administrator checks now precede record validation, with explicit profile-read
+failure denial. Authorized schema/payload/RPC/idempotency/revalidation contracts
+are unchanged. Guest/disallowed malformed feedback intentionally becomes existing
+auth/admin denial. Handover buttons use compact content width while retaining
+44px targets; Spanish navigation says Analítica. No production/SQL/XP/consent,
+provider, billing, private identity or dependency changes.
+
+Complete fresh npm check PASSED2508 Vitest cases plus remaining configured
+checks/build. Integrated Awards action and both client regressions PASSED29.
+The default complete dashboard browser matrix PASSED160 with compact upper-width,
+text-fit/image-decode/Retry/no-external-or-action assertions; focused-only mode was
+explicitly unset. Root inspected actual ES1440 light and EN360 light captures.
+Receipt: docs/receipts/AKIPASA_AWARDS_CONTROL_REPAIRS_20261029.json.
+
+Next: commit this frozen source, independently package its exact Git SHA, preserve
+the prior candidate's completed CI evidence, push the existing draft branch and
+obtain all fresh exact-head results/artifacts. No route acceptance, merge or deploy.
+Human visual/device and disposable protected-provider access remain open blockers;
+AkiPals stays paused and Tonight off. Root owns integration through20:00UTC.
+
 ## Read-integrity repair batch validated — 29 October 2026 19:03 UTC
 
 Implemented and tested, ready for the next coordinated commit: business independent

@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "observedAt": "2026-10-29T19:14:20.238091+00:00",
+  "baselineCommit": "6e025ad693f599e45fb286a6d409cf81f96b3caf",
+  "testedWorkingTree": true,
+  "sourceDirty": true,
+  "sourceHashes": {
+    "scripts/test-business-home-read-browser.mjs": "92c657feb7880d3a872d924417ffa5e37c7fbd4e86adf73ffccc7701c9b0f530",
+    "src/app/[locale]/admin/passports/awards/actions.ts": "bbb9f17d7f734c94e14ecf536f02036e1f05331be6efee4f471dafc016f43165",
+    "src/app/[locale]/business/page.tsx": "9a516f2516ba9faca39e47b201aff550b2b9067d6f4c087157257c3ad0870e88",
+    "tests/akisuite-awards-auth-boundary.test.ts": "743180879e253002344dfc8e495c83e3e6e92292a39f980c45d570ef4169276d"
+  },
+  "checks": {
+    "fullCheck": {
+      "status": "passed",
+      "vitestPassed": 2508,
+      "log": "/tmp/akipasa-cycle4-combined-check.log"
+    },
+    "awardsActionAndClients": {
+      "status": "passed",
+      "cases": 29,
+      "log": "/tmp/akipasa-cycle4-awards-integrated.log"
+    },
+    "defaultDashboardBrowser": {
+      "status": "passed",
+      "cases": 160,
+      "focusedMode": false,
+      "executableOverride": false,
+      "log": "/tmp/akipasa-cycle4-business-full-browser.log",
+      "receipt": "test-results/business-home-read/evidence.json",
+      "receiptSha256": "a4e2fd8238f2d04500cf128e5a04062ce013d751000b7c21d101fbbfc8b6ce70"
+    }
+  },
+  "inspectedScreenshots": {
+    "test-results/business-home-read/loyalty_programs-es-light-1440.png": "0c8cdf93cd72e0888214d709a578c3bb067def3219b51fe24c7d9e8d5e57a80a",
+    "test-results/business-home-read/loyalty_programs-en-light-360.png": "ed59207e8e5e5f1b8cdfd719fad296cf3ad018279dd6d480996a9317b3c48d96"
+  },
+  "intentionalAuthFeedbackChange": "Guest/disallowed malformed Awards inputs now follow existing Auth/admin denial before schema; authorized contracts unchanged.",
+  "engineeringReview": "Independent source review and mocked-provider regressions, not route approval.",
+  "release": {
+    "accepted": false,
+    "merged": false,
+    "deployed": false,
+    "strictAccepted": 0,
+    "strictInScope": 90,
+    "newHeadCI": "pending commit",
+    "independentPackaging": "pending commit"
+  },
+  "limits": [
+    "No live Auth/RLS/provider or physical Android acceptance.",
+    "Awards accepted schema/SQL authority remains unchanged; authorized large records still bounded by framework."
+  ]
+}

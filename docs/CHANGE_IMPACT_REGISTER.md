@@ -3745,3 +3745,26 @@ a source revert; physical Android and live authenticated acceptance remain open.
   MIME failed decode, image/svg+xml succeeded. Fixture delivery now declares
   actual MIME and asserts rendered-image decode;160 fresh integrated cases passed
   without an executable override. Earlier incomplete-image captures stay archived.
+
+## 2026-10-29 | Awards pre-validation authorization and compact delivery controls
+
+- **Observed/reviewed:** Awards' open string/bool record schema executed before
+  caller/admin checks. Existing requireUser and exact current-profile role check
+  now precede schema; profile read error denies stale accompanying administrator
+  data. No arbitrary key limit is invented. Authenticated authorized valid/invalid
+  payloads, all nine RPC actions, idempotency/unknown keys, failure feedback and
+  read/write revalidation stay unchanged. Guest/disallowed malformed feedback
+  intentionally becomes existing authentication/admin denial, without parsing.
+- **Dependencies/tests:** Trace AwardManager and OwnerToolboxPanel callers,
+  requireUser onboarding/terms/auth return, caller-scoped profile and final
+  admin_passport_awards SQL/RLS/audit authority. Independent source review and29
+  isolated regressions passed, including23 actual-action cases and both clients.
+  Mocked providers only; no actual award or role mutation performed.
+- **Visual followup:** The handover button's full-row desktop width was excessive
+  despite passing text-fit bounds. Content-sized nonshrinking layout preserves
+  min44px and both labels, with an upper text/padding width assertion. Isolated16
+  locale/theme/width cases passed; default mandatory harness retains160 scenarios
+  and real image decode. Spanish Analytics is localized without route changes.
+- **Safety/rollback:** Source-only revert; no migrations, grants, billing,
+  consent defaults, private identities, award history, XP or provider changes.
+  Full integrated checks and default complete browser matrix remain required.

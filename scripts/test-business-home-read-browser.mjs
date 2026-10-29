@@ -6,7 +6,11 @@ import { createServer } from "node:http";
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve, extname } from "node:path";
 import { createHash } from "node:crypto";
-const dir = resolve("test-results/business-home-read");
+const dir = resolve(
+  process.env.BUSINESS_READ_HANDOVER_ONLY === "1"
+    ? "test-results/business-handover-fit"
+    : "test-results/business-home-read",
+);
 mkdirSync(dir, { recursive: true });
 const entry = `import React from 'react';import{createRoot}from'react-dom/client';import Page from './src/app/[locale]/business/page';import './src/components/PasaSharedSurfaces.css';
 const q=new URLSearchParams(location.search),locale=location.pathname.startsWith('/es/')?'es':'en';document.documentElement.lang=locale;document.documentElement.dataset.theme=localStorage.getItem('business-read-theme')||'light';document.body.className='akibusiness-host';window.__fixtureActions=[];
@@ -212,7 +216,11 @@ try {
         });
         const page = await context.newPage();
         page.on("pageerror", (error) => pageErrors.push(error.message));
-        for (const [failure, view, key] of scenarios) {
+        for (const [failure, view, key] of scenarios.filter(
+          ([failure]) =>
+            process.env.BUSINESS_READ_HANDOVER_ONLY !== "1" ||
+            failure === "loyalty_programs",
+        )) {
           const query = new URLSearchParams({
             view,
             fixtureFailed: failure,
@@ -315,6 +323,9 @@ try {
               });
             expect(handoverBounds.width).toBeGreaterThanOrEqual(44);
             expect(handoverBounds.height).toBeGreaterThanOrEqual(44);
+            expect(handoverBounds.width).toBeLessThanOrEqual(
+              handoverBounds.textWidth + handoverBounds.paddingX + 6,
+            );
             expect(handoverBounds.width).toBeGreaterThanOrEqual(
               handoverBounds.textWidth + handoverBounds.paddingX - 2,
             );
