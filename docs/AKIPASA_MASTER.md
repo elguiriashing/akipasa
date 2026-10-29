@@ -10,7 +10,7 @@ is saved only upon explicit Save into RLS-isolated pals_avatar_profiles.
 Built-in local Three.js runtime bundling occurs before dev, Next and Cloudflare
 builds. The preceding flat SVG character is no longer served by the /pals UI,
 although old game endpoints/data are retained solely for rollback and must be
-reconciled in a future retirement gate. The screenshot reference is a *concept*,
+reconciled in a future retirement gate. The screenshot reference is a _concept_,
 not finished in-game art. Actual GLB/browser screenshots, perf, final morphs,
 RLS migration and AkiPasa redesign PR #326 integration remain prerequisites.
 No commercial unlocks, payments, public social presence, GPS sharing or maps
