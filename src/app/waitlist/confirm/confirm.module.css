@@ -22,7 +22,11 @@
     max(1rem, env(safe-area-inset-left, 0px));
   background:
     radial-gradient(ellipse at 8% -15%, var(--accent-muted), transparent 48%),
-    radial-gradient(ellipse at 96% 105%, rgb(42 100 152 / 23%), transparent 58%),
+    radial-gradient(
+      ellipse at 96% 105%,
+      rgb(42 100 152 / 23%),
+      transparent 58%
+    ),
     var(--confirm-backdrop);
   color: var(--confirm-ink);
 }
