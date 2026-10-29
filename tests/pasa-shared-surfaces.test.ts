@@ -154,4 +154,22 @@ describe("AkiPasa shared redesign system", () => {
     expect(actions).toContain('status", "approved"');
     expect(actions).toContain('onConflict: "claim_id"');
   });
+  it("keeps the owner cockpit protected and source data server-owned", () => {
+    const page = source("src/app/[locale]/owner/page.tsx");
+    const access = source("src/lib/owner-console.ts");
+    const css = source("src/components/PasaSharedSurfaces.css");
+    expect(page).toContain("requireOwnerConsole(locale)");
+    expect(access).toContain('rpc("has_owner_console")');
+    expect(page).toContain('className="owner-command-kicker"');
+    expect(page).toContain('id="owner-launchpad"');
+    expect(page).toContain('id="owner-activity"');
+    expect(page).toContain("pendingApprovals.count");
+    expect(page).toContain("OwnerAppearanceForm");
+    expect(css).toContain("Owner-only operational cockpit");
+    expect(css).toContain('data-pasa-surface="operations"');
+    expect(css).toContain("prefers-reduced-motion: reduce");
+    expect(css).toContain("safe-area-inset-bottom");
+    expect(css).toContain('html[data-theme="light"]');
+  });
+
 });
