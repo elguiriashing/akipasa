@@ -10,30 +10,29 @@ test.beforeEach(async ({ page }) => {
 for (const locale of ["en", "es"] as const) {
   const es = locale === "es";
 
-  test(`${locale}: Tonight is reachable and retains submitted planning filters`, async ({
-    page,
-  }) => {
+  test(`${locale}: Tonight query round trip`, async ({ page }) => {
     await page.goto(`/${locale}`);
-    await page
-      .getByRole("link", {
-        name: es ? "Crear un plan · AkiTonight" : "Make a plan · AkiTonight",
-        exact: true,
-      })
-      .click();
+    const entry = es ? "Crear un plan · AkiTonight" : "Make a plan · AkiTonight";
+    await page.getByRole("link", { name: entry, exact: true }).click();
     await expect(page).toHaveURL(new RegExp(`/${locale}/tonight$`));
+    const heading = es ? "¿Qué hacemos esta noche?" : "What's the plan tonight?";
     await expect(
-      page.getByRole("heading", {
-        level: 1,
-        name: es ? "¿Qué hacemos esta noche?" : "What's the plan tonight?",
-      }),
+      page.getByRole("heading", { level: 1, name: heading }),
     ).toBeVisible();
     const planner = page.getByRole("region", {
       name: es ? "Crear un plan" : "Build a plan",
     });
+    const area = planner.getByLabel(es ? "Zona" : "Area", { exact: true });
+    const people = planner.getByLabel(es ? "Personas" : "People", {
+      exact: true,
+    });
+    const distance = planner.getByLabel(es ? "Distancia máxima" : "Distance", {
+      exact: true,
+    });
     await planner.getByText(es ? "Bailar" : "Dancing", { exact: true }).click();
-    await planner.getByLabel(es ? "Zona" : "Area", { exact: true }).selectOption("benalmadena");
-    await planner.getByLabel(es ? "Personas" : "People", { exact: true }).selectOption("6");
-    await planner.getByLabel(es ? "Distancia máxima" : "Distance", { exact: true }).selectOption("25");
+    await area.selectOption("benalmadena");
+    await people.selectOption("6");
+    await distance.selectOption("25");
     await planner
       .getByRole("button", {
         name: es ? "Buscar planes reales" : "Find real plans",
@@ -43,15 +42,14 @@ for (const locale of ["en", "es"] as const) {
     await expect(page).toHaveURL(/area=benalmadena/);
     await expect(page).toHaveURL(/people=6/);
     await expect(page).toHaveURL(/radius=25/);
-    await expect(planner.getByRole("radio", { name: /Dancing|Bailar/ })).toBeChecked();
-    await expect(planner.getByLabel(es ? "Personas" : "People", { exact: true })).toHaveValue("6");
     await expect(
-      page.getByText(
-        es
-          ? "El tamaño del grupo es orientativo: no confirma aforo ni reserva."
-          : "Group size is for planning only, not a capacity or booking confirmation.",
-      ),
-    ).toBeVisible();
+      planner.getByRole("radio", { name: /Dancing|Bailar/ }),
+    ).toBeChecked();
+    await expect(people).toHaveValue("6");
+    const disclaimer = es
+      ? "El tamaño del grupo es orientativo: no confirma aforo ni reserva."
+      : "Group size is for planning only, not a capacity or booking confirmation.";
+    await expect(page.getByText(disclaimer)).toBeVisible();
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
       "content",
       /noindex/,
@@ -65,9 +63,12 @@ for (const locale of ["en", "es"] as const) {
 
   for (const theme of ["light", "dark"] as const) {
     for (const width of [390, 1280]) {
-      test(`${locale}: Tonight ${theme} layout fits ${width}px`, async ({ page }) => {
+      test(`${locale}: Tonight ${theme} ${width}px`, async ({ page }) => {
         await page.setViewportSize({ width, height: 900 });
-        await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
+        await page.emulateMedia({
+          colorScheme: theme,
+          reducedMotion: "reduce",
+        });
         await page.goto(`/${locale}/tonight?intent=not-valid&radius=-9`);
         await page.evaluate((value) => {
           document.documentElement.setAttribute("data-theme", value);
@@ -77,11 +78,10 @@ for (const locale of ["en", "es"] as const) {
         await expect(main.getByRole("radio")).toHaveCount(8);
         await expect(main.locator('select[name="radius"]')).toHaveValue("15");
         await expect(main.locator('input[value="all"]')).toBeChecked();
-        expect(
-          await page.evaluate(
-            () => document.documentElement.scrollWidth <= window.innerWidth + 1,
-          ),
-        ).toBe(true);
+        const fits = await page.evaluate(
+          () => document.documentElement.scrollWidth <= window.innerWidth + 1,
+        );
+        expect(fits).toBe(true);
         for (const select of await main.locator("select").all()) {
           const box = await select.boundingBox();
           expect(box).not.toBeNull();
