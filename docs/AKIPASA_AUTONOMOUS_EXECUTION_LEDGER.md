@@ -2,6 +2,54 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 29 October 2026 UTC.
 
+## Hands-on avatar playground — privately published 29 October 2026
+
+Alex requested a test suite to explore directly. The separate owner-private studio
+is live at <https://akipals-avatar-playground.cptguirimax.chatgpt.site>.
+Native Sites publication succeeded at 13:37:26 UTC, deployment
+`appgdep_6ae34bf23bcc8191b8bd826b5440d99c`, source
+`60acce956a69e41b8e92cd1d9ae584cd8ea6c90c`. This is an isolated test site, not
+AkiPasa production or acceptance of the coordinated release. Its audience was
+preserved as owner-private; no AkiPasa account or wardrobe is connected.
+
+Implemented: real Rain/Snow selection, touch/mouse and keyboard camera, portrait/
+full-body/three-quarter views, authored expressions and intensity, diagnostic arm
+pose, EN/ES, dark/light, strict local-only JSON save/import/export/reset, visible
+model checks and downloadable reports. The bottom link downloads a runnable
+source/assets/test ZIP. `npm ci --ignore-scripts` then `npm start` opens the suite
+at `http://127.0.0.1:4173`; Node22.18+ is required. Code and artist notices are
+included. No Python, production services or crypto are needed.
+
+Tested: 17 node cases pass; four real EN/ES mobile/desktop browser scenarios pass
+with twelve inspected screenshots. Checks include mouse/touch and keyboard,
+local restoration and invalid import denial, actual on-page geometry/rig checks,
+reduced motion and simulated persisted-page recovery. QA found and corrected
+light-theme contrast inherited from legacy CSS. Final computed contrast checks
+pass. No external requests, mutation requests or page errors were observed.
+This is not physical Android, actual BFCache or Alex artwork acceptance.
+
+Final playground JS SHA256:
+`b5f1089742dd26bf34f2cd5924c7edc29f6ca2409d254b2807c4cbb38be52345`.
+The delivered ZIP passed CRC checks and a fresh independent install, 17 node tests
+and static build reproducing that exact JS hash. Full deployment IDs, ZIP hash,
+commands and evidence limits are in
+`docs/receipts/AKIPALS_PLAYGROUND_RELEASE_20261029.json`.
+
+Prototype commit: `05ffee95f6ebb3f2552bcf89956961ee67a77c52`; complete history and
+screenshots retained in `/workspace/akipasa-m3-checkpoints/playground-05ffee9.bundle`,
+SHA256 `e3a1492310a8a81956ee30acb9cf487b7840a92c01ff65a39a59a8573118fb10`.
+The private Site source is also remotely published; use its native source
+credential workflow to recover without exposing credentials if this workspace
+is unavailable. Site helpers were absent in this portable environment, so native
+Git source synchronization and the documented static archive contract were used.
+Credentials remained in memory and were not committed or archived.
+
+Next engineering boundary: refine the licensed, modular human art/customization
+system and mobile budgets before a server-authorized versioned identity adapter.
+Existing AkiPasa identities remain on their existing schema. All ninety route
+acceptances remain outstanding; PR332 stays draft and no master merge occurred.
+The hourly task retains the foreground integration lease until 14:15 UTC.
+
 ## M3 engine investigation — 29 October 2026 12:49 UTC
 
 Alex requested evaluating M3 and removing crypto purchasing. The identified
