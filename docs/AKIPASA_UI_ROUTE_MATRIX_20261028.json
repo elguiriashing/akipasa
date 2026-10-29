@@ -495,8 +495,8 @@
     },
     "src/app/hq-login/page.tsx": {
       "scope": "cross-product",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Responsive bilingual AkiHQ gateway and access guide implemented; guest links, phone/tablet/desktop, dark/light and Android-like Chromium checks added. Physical Android, authenticated cross-host handoff and exact-source screenshot review are still REQUIRED. No acceptance granted."
     },
     "src/app/page.tsx": {
       "scope": "cross-product",
