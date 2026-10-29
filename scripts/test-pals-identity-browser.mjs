@@ -27,6 +27,8 @@ await build({
 });
 const studio = await import(pathToFileURL(resolve(buildDir, "runtime.mjs")));
 const icon = readFileSync("src/app/icon.svg");
+const creatorBundle = readFileSync("public/pals/runtime/creator.min.js");
+const avatarMeshes = Object.fromEntries(["male", "female"].map((base) => [base,readFileSync("public/pals/models/akipals-base-" + base + ".glb")]));
 let saved = null;
 let browser;
 const server = createServer(async (request, response) => {
@@ -36,6 +38,15 @@ const server = createServer(async (request, response) => {
       response.writeHead(200, { "Content-Type": "image/svg+xml" });
       response.end(icon);
       return;
+    }
+    if (path === "/pals/runtime/creator.min.js") {
+      response.writeHead(200, { "Content-Type": "application/javascript", "Cache-Control": "private, no-store" });
+      response.end(creatorBundle);return;
+    }
+    const modelMatch = /^\/pals\/models\/akipals-base-(male|female)\.glb$/.exec(path);
+    if (modelMatch) {
+      response.writeHead(200, { "Content-Type": "model/gltf-binary", "Cache-Control": "private, no-store" });
+      response.end(avatarMeshes[modelMatch[1]]);return;
     }
     if (path === "/pals") {
       const nonce = randomUUID().replaceAll("-", "");
@@ -68,7 +79,6 @@ const server = createServer(async (request, response) => {
       const appearance = saved ?? studio.DEFAULT_APPEARANCE;
       json(200, {
         appearance,
-        portrait: studio.renderHumanAvatar(appearance),
         saved: Boolean(saved),
       });
       return;
@@ -98,7 +108,6 @@ const server = createServer(async (request, response) => {
     if (input.save) saved = appearance.data;
     json(200, {
       appearance: appearance.data,
-      portrait: studio.renderHumanAvatar(appearance.data),
       saved: input.save,
     });
   } catch (error) {
@@ -111,14 +120,15 @@ try {
     server.listen(0, "127.0.0.1", resolveReady),
   );
   const port = server.address().port;
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({ headless: true, args: ["--enable-webgl", "--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"] });
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   const failures = [];
   page.on("pageerror", (error) => failures.push(error.message));
   await page.goto("http://127.0.0.1:" + port + "/pals");
-  await expect(page.locator("#portrait svg")).toBeVisible();
+  await expect(page.locator("#avatar-stage canvas")).toBeVisible();
+  await expect(page.locator("#avatar-stage")).toHaveAttribute("data-ready", "true", { timeout: 30000 });
   await expect(
-    page.getByRole("heading", { name: /Be you.*Go places/i }),
+    page.getByRole("heading", { name: /Looking like.*yourself/i }),
   ).toBeVisible();
   await page.getByLabel("Hairstyle").selectOption("bun");
   await expect(page.locator("#save")).toBeEnabled();
@@ -133,7 +143,7 @@ try {
   await expect(page.getByLabel("Hairstyle")).toHaveValue("bun");
   for (const width of [320, 390, 820, 1440]) {
     await page.setViewportSize({ width, height: 850 });
-    await expect(page.locator("#portrait svg")).toBeVisible();
+    await expect(page.locator("#avatar-stage canvas")).toBeVisible();
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth > innerWidth,
     );
@@ -146,7 +156,7 @@ try {
   if (failures.length)
     throw new Error("Client-side errors: " + failures.join("; "));
   console.log(
-    "AkiPals identity: save, restore, mobile-to-desktop and CSP smoke passed.",
+    "AkiPals real GLB 3D creator: renders, saves, restores and passes responsive browser smoke.",
   );
 } finally {
   if (browser) await browser.close();
