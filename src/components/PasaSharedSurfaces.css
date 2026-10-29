@@ -1588,7 +1588,8 @@ html[data-theme="light"] .app-shell .pasa-conversion-status {
   min-width: 0;
   overflow-wrap: anywhere;
 }
-html[data-theme="light"] .app-shell
+html[data-theme="light"]
+  .app-shell
   .app-content[data-pasa-surface="operations"]
   .owner-console-page
   .owner-hero {
@@ -1629,9 +1630,9 @@ html[data-theme="light"]
 }
 @media (max-width: 700px) {
   .app-shell
-  .app-content[data-pasa-surface="operations"]
-  .owner-console-page
-  .owner-hero {
+    .app-content[data-pasa-surface="operations"]
+    .owner-console-page
+    .owner-hero {
     grid-template-columns: minmax(0, 1fr);
     padding: 1.4rem;
   }
