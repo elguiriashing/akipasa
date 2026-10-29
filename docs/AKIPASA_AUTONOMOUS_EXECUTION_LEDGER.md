@@ -277,3 +277,15 @@ requested or mutated. **Tonight stays default off.**
    customer mutation is permitted while release prerequisites remain incomplete.
 
 No task is claimed to continue merely because this checkpoint exists.
+
+## Scheduled recovery coordination
+
+The existing enabled hourly task `6ae27d68e97c8191a3303027a4f2a45a`
+(AkiPasa overhaul release gate) was updated to use #332 and this recovery
+checkpoint. Its obsolete #326 target and false manual-only production assumption
+were removed. No duplicate task was created, and its existing schedule/timezone
+were preserved. Future execution must recover the actual retained workspace
+before claiming source/evidence access, preserve all local changes, coordinate
+one integration owner and keep every release gate. The task service confirms
+the update and enabled hourly schedule, but returned no next-run timestamp;
+no currently running background engineering session is claimed.
