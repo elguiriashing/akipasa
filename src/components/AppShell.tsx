@@ -14,7 +14,6 @@ import { PasaBottomDock, pasaDestinations } from "./PasaBottomDock";
 import "./PasaBottomDock.css";
 import "./PasaCinematic.css";
 import "./PasaSharedSurfaces.css";
-import "./PasaSecondarySurfaces.css";
 import { pasaSurfaceFamily } from "../lib/pasa-surface-families";
 import { ThemeToggle } from "./ThemeModeControls";
 import { signOut } from "../app/[locale]/auth/actions";
