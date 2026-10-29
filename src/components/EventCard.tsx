@@ -201,7 +201,7 @@ export function EventCard({
   return (
     <Link
       ref={cardRef}
-      className={`card pasa-event-card event-plan-card${result.event.sponsored ? "card-featured" : ""}`}
+      className={`card pasa-event-card event-plan-card${result.event.sponsored ? " card-featured" : ""}`}
       href={occurrenceHref(
         `/${locale}/events/${result.event.slug}`,
         result.occurrence.id,
