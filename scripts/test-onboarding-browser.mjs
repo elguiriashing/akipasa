@@ -8,8 +8,14 @@ import tailwind from "@tailwindcss/postcss";
 import { chromium } from "playwright";
 
 const out = resolve("test-results/onboarding-browser");
-if (!readFileSync("src/app/[locale]/onboarding/layout.tsx", "utf8").includes('import "./onboarding.css"'))
-  throw new Error("Both onboarding routes must inherit the same stylesheet via layout");
+if (
+  !readFileSync("src/app/[locale]/onboarding/layout.tsx", "utf8").includes(
+    'import "./onboarding.css"',
+  )
+)
+  throw new Error(
+    "Both onboarding routes must inherit the same stylesheet via layout",
+  );
 mkdirSync(out, { recursive: true });
 const bundle = resolve(out, "render.cjs");
 await build({
@@ -86,10 +92,11 @@ const server = createServer(async (req, res) => {
   try {
     const url = new URL(req.url, "http://127.0.0.1");
     const locale = url.searchParams.get("locale") === "es" ? "es" : "en";
-    const status =
-      ["underage", "requested"].includes(url.searchParams.get("status"))
-        ? url.searchParams.get("status")
-        : "pending";
+    const status = ["underage", "requested"].includes(
+      url.searchParams.get("status"),
+    )
+      ? url.searchParams.get("status")
+      : "pending";
     res.setHeader("Content-Type", "text/html;charset=utf-8");
     res.end(
       `<!doctype html><html lang="${locale}" data-theme="${url.searchParams.get("theme") || "light"}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>${css}</style></head><body>${await renderer.render(locale, status, url.searchParams.get("route") || "onboarding")}</body></html>`,
@@ -146,14 +153,27 @@ try {
               `Horizontal overflow ${locale}/${route}/${status}/${theme}/${width}`,
             );
           const inputs = await page.locator('input[name="adult"]').count();
-          if (inputs !== (route === "onboarding" && status === "pending" ? 2 : 0))
+          if (
+            inputs !== (route === "onboarding" && status === "pending" ? 2 : 0)
+          )
             throw new Error("Unexpected declaration controls");
           if (route === "privacy") {
-            const deleteForm = await page.locator('form input[name="confirmation"]').count();
+            const deleteForm = await page
+              .locator('form input[name="confirmation"]')
+              .count();
             if (deleteForm !== (status === "requested" ? 0 : 1))
               throw new Error("Restricted deletion request controls changed");
-            if (!(await page.getByRole("link", { name: locale === "es" ? "Exportar mis datos" : "Export my data" }).isVisible()))
-              throw new Error("Data export must remain available to restricted accounts");
+            if (
+              !(await page
+                .getByRole("link", {
+                  name:
+                    locale === "es" ? "Exportar mis datos" : "Export my data",
+                })
+                .isVisible())
+            )
+              throw new Error(
+                "Data export must remain available to restricted accounts",
+              );
           }
           await page
             .getByRole("button", {
@@ -175,17 +195,31 @@ try {
           if (!["A", "BUTTON", "INPUT", "TEXTAREA", "BODY"].includes(active))
             throw new Error("Unexpected keyboard focus");
           if (width === 360) {
-            const shortTargets = await page.locator('button, input:not([type="hidden"]):not([type="radio"]):not([type="checkbox"]), textarea').evaluateAll((elements) =>
-              elements.filter((element) => {
-                const rect = element.getBoundingClientRect();
-                return rect.width > 0 && rect.height > 0 && rect.height < 43.5;
-              }).map((element) => element.outerHTML.slice(0, 140)),
-            );
-            if (shortTargets.length) throw new Error(`Undersized mobile controls: ${JSON.stringify(shortTargets)}`);
+            const shortTargets = await page
+              .locator(
+                'button, input:not([type="hidden"]):not([type="radio"]):not([type="checkbox"]), textarea',
+              )
+              .evaluateAll((elements) =>
+                elements
+                  .filter((element) => {
+                    const rect = element.getBoundingClientRect();
+                    return (
+                      rect.width > 0 && rect.height > 0 && rect.height < 43.5
+                    );
+                  })
+                  .map((element) => element.outerHTML.slice(0, 140)),
+              );
+            if (shortTargets.length)
+              throw new Error(
+                `Undersized mobile controls: ${JSON.stringify(shortTargets)}`,
+              );
           }
           if (width === 360 || width === 1280) {
             await page.screenshot({
-              path: resolve(out, `${locale}-${route}-${status}-${theme}-${width}.png`),
+              path: resolve(
+                out,
+                `${locale}-${route}-${status}-${theme}-${width}.png`,
+              ),
               fullPage: true,
             });
           }
@@ -194,7 +228,10 @@ try {
             route,
             status,
             theme,
-            browserEnvironment: width === 360 ? "chromium-touch-mobile-emulation" : "chromium-desktop",
+            browserEnvironment:
+              width === 360
+                ? "chromium-touch-mobile-emulation"
+                : "chromium-desktop",
             width,
             height,
             overflow: false,

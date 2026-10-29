@@ -13,10 +13,20 @@
   place-items: center;
   min-width: 0;
   padding: clamp(1rem, 4vw, 3rem);
-  padding-bottom: calc(clamp(1.5rem, 4vw, 3rem) + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(
+    clamp(1.5rem, 4vw, 3rem) + env(safe-area-inset-bottom, 0px)
+  );
   background:
-    radial-gradient(ellipse at 88% 7%, rgba(253, 118, 38, 0.13), transparent 48%),
-    radial-gradient(ellipse at 1% 100%, rgba(64, 121, 192, 0.16), transparent 50%),
+    radial-gradient(
+      ellipse at 88% 7%,
+      rgba(253, 118, 38, 0.13),
+      transparent 48%
+    ),
+    radial-gradient(
+      ellipse at 1% 100%,
+      rgba(64, 121, 192, 0.16),
+      transparent 50%
+    ),
     #101a30;
 }
 html[data-theme="light"] .account-completion {
@@ -27,11 +37,20 @@ html[data-theme="light"] .account-completion {
   --onboarding-line: rgba(47, 65, 88, 0.18);
   --onboarding-accent: #a94c18;
   background:
-    radial-gradient(ellipse at 88% 7%, rgba(253, 118, 38, 0.12), transparent 48%),
+    radial-gradient(
+      ellipse at 88% 7%,
+      rgba(253, 118, 38, 0.12),
+      transparent 48%
+    ),
     #f5f3f0;
 }
 .account-completion-card,
-.app-shell .app-content[data-pasa-surface="auth"] .account-completion-card:is(.onboarding-profile-card, .onboarding-privacy-card) {
+.app-shell
+  .app-content[data-pasa-surface="auth"]
+  .account-completion-card:is(
+    .onboarding-profile-card,
+    .onboarding-privacy-card
+  ) {
   position: relative;
   isolation: isolate;
   width: min(100%, 45rem);
@@ -41,7 +60,11 @@ html[data-theme="light"] .account-completion {
   border-radius: clamp(1.25rem, 3vw, 2rem);
   padding: clamp(1.2rem, 4vw, 3rem);
   background:
-    radial-gradient(ellipse at 100% 0%, rgba(255, 132, 54, 0.09), transparent 55%),
+    radial-gradient(
+      ellipse at 100% 0%,
+      rgba(255, 132, 54, 0.09),
+      transparent 55%
+    ),
     var(--onboarding-panel);
   color: var(--onboarding-ink);
   box-shadow: 0 22px 65px rgba(0, 0, 0, 0.18);
@@ -83,7 +106,8 @@ html[data-theme="light"] .account-completion {
   min-width: 0;
   font-weight: 700;
 }
-.account-completion-card input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]),
+.account-completion-card
+  input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]),
 .account-completion-card select,
 .account-completion-card textarea {
   width: 100%;
@@ -130,7 +154,9 @@ html[data-theme="light"] .account-completion {
   min-height: 48px;
   line-height: 1.5;
 }
-.account-completion-card .consent-row :is(input[type="checkbox"], input[type="radio"]) {
+.account-completion-card
+  .consent-row
+  :is(input[type="checkbox"], input[type="radio"]) {
   flex: 0 0 auto;
   accent-color: #f47627;
 }
@@ -178,7 +204,9 @@ html[data-theme="light"] .account-completion {
   padding: clamp(1rem, 2.5vw, 1.5rem);
   background: var(--onboarding-control);
 }
-.onboarding-privacy-card .onboarding-privacy-preferences :is(.panel, .console-card) {
+.onboarding-privacy-card
+  .onboarding-privacy-preferences
+  :is(.panel, .console-card) {
   border: 0;
   background: transparent;
   box-shadow: none;
