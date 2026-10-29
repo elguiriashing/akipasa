@@ -23,11 +23,7 @@ function madridCalendarDay(now: Date) {
     parts.map((part) => [part.type, part.value]),
   );
   return new Date(
-    Date.UTC(
-      Number(values.year),
-      Number(values.month) - 1,
-      Number(values.day),
-    ),
+    Date.UTC(Number(values.year), Number(values.month) - 1, Number(values.day)),
   );
 }
 
@@ -74,11 +70,7 @@ export function weeklyCredentialQuestProgress(
   const { start, end } = currentMadridQuestWeek(now);
   const uniqueVenues = new Set<string>();
   for (const visit of rows) {
-    if (
-      visit.state !== "accepted" ||
-      !visit.credential_id ||
-      !visit.venue_id
-    )
+    if (visit.state !== "accepted" || !visit.credential_id || !visit.venue_id)
       continue;
     const timestamp = new Date(visit.created_at).getTime();
     if (

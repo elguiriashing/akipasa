@@ -30,9 +30,7 @@ describe("AkiPassport optional weekly venue milestones", () => {
     const week = currentMadridQuestWeek(new Date("2026-03-27T12:00:00Z"));
     expect(week.start.toISOString()).toBe("2026-03-22T23:00:00.000Z");
     expect(week.end.toISOString()).toBe("2026-03-29T22:00:00.000Z");
-    expect(
-      (week.end.getTime() - week.start.getTime()) / 3_600_000,
-    ).toBe(167);
+    expect((week.end.getTime() - week.start.getTime()) / 3_600_000).toBe(167);
   });
 
   it("counts one accepted credential-backed visit per distinct venue", () => {

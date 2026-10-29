@@ -5,6 +5,7 @@
 ## Purpose
 
 Show two small, optional weekly milestones in the existing `/[locale]/passports?view=progress` tab:
+
 1. First distinct venue with an accepted **venue-credential check-in** this week.
 2. Two distinct venues with accepted **venue-credential check-ins** this week.
 

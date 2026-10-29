@@ -24,15 +24,6 @@ jobs:
           node-version: "22.23.4"
           cache: npm
       - run: npm ci --no-audit --no-fund
-      - name: Capture canonical source formatting (temporary)
-        run: |
-          npx prettier --write src/lib/aki-weekly-quests.ts src/components/WeeklyQuestPanel.tsx src/components/WeeklyQuestPanel.module.css "src/app/[locale]/passports/page.tsx" tests/aki-weekly-quests.test.ts docs/AKIPASSPORT_WEEKLY_QUEST_PILOT_20261029.md
-          for file in src/lib/aki-weekly-quests.ts src/components/WeeklyQuestPanel.tsx src/components/WeeklyQuestPanel.module.css "src/app/[locale]/passports/page.tsx" tests/aki-weekly-quests.test.ts docs/AKIPASSPORT_WEEKLY_QUEST_PILOT_20261029.md; do
-            echo "AKI_FORMAT_BEGIN:$file"
-            base64 -w 0 "$file"
-            echo ""
-            echo "AKI_FORMAT_END:$file"
-          done
       - name: Check source formatting
         run: >
           npx prettier --check

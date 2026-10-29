@@ -44,14 +44,13 @@ export function WeeklyQuestPanel({
   const es = locale === "es";
   const progress = weeklyCredentialQuestProgress(visits, now);
   return (
-    <section
-      className={styles.section}
-      aria-labelledby="weekly-quests-heading"
-    >
+    <section className={styles.section} aria-labelledby="weekly-quests-heading">
       <div className={styles.heading}>
         <div>
           <p className={styles.eyebrow}>
-            {es ? "RETOS OPCIONALES / SEMANALES" : "OPTIONAL / WEEKLY CHALLENGES"}
+            {es
+              ? "RETOS OPCIONALES / SEMANALES"
+              : "OPTIONAL / WEEKLY CHALLENGES"}
           </p>
           <h2 id="weekly-quests-heading">
             {es ? "Tu semana de exploración" : "Your week of exploring"}
