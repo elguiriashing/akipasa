@@ -22,7 +22,7 @@ export default async function PhotoCredits({
         </p>
       </section>
       <div
-        className="grid pasa-photo-credit-grid"
+        className="pasa-photo-credit-grid grid"
         aria-label={es ? "Licencias de fotografías" : "Photo licences"}
       >
         {majorCities.map((city) => (
