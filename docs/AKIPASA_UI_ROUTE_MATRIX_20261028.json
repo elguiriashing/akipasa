@@ -290,8 +290,8 @@
     },
     "src/app/[locale]/membership/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared cinematic conversion header integrated with existing AkiSuite membership grid and unchanged checkout/launch guards. EN/ES phone/desktop/emulated Android browser evidence and real sign-off pending."
     },
     "src/app/[locale]/moderation/page.tsx": {
       "scope": "consumer",
@@ -360,8 +360,8 @@
     },
     "src/app/[locale]/referrals/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared EN/ES referral entry for disabled and enabled programmes; server-owned feature, user and attribution gates retained. Guest/browser evidence pending, authenticated flow and physical Android unreviewed."
     },
     "src/app/[locale]/roadmap/page.tsx": {
       "scope": "consumer",
