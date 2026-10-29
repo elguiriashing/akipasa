@@ -199,3 +199,146 @@
     margin: 12px 20px 28px;
   }
 }
+
+/* AkiPasa owner journey: use the consumer brand, not the sister-suite palette.
+ * No changes to consent, claim ownership, premium grants or form actions. */
+.backdrop {
+  --partner-ink: #fbfcff;
+  --partner-muted: #d9e2ef;
+  --partner-accent: #ffae75;
+  --partner-surface: #132137;
+  --partner-border: rgba(255, 177, 122, 0.3);
+  --partner-input: #101c30;
+  color-scheme: dark;
+  min-height: 100svh;
+  padding: max(1.25rem, env(safe-area-inset-top, 0px))
+    max(1rem, env(safe-area-inset-right, 0px))
+    max(5.5rem, env(safe-area-inset-bottom, 0px))
+    max(1rem, env(safe-area-inset-left, 0px));
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(255, 119, 42, 0.24), transparent 42%),
+    radial-gradient(ellipse at 100% 92%, rgba(95, 127, 177, 0.16), transparent 55%),
+    #091321;
+  color: var(--partner-ink);
+}
+.card {
+  max-width: 950px;
+  background: linear-gradient(145deg, #202d43, #0e1a2b 80%);
+  border-color: var(--partner-border);
+}
+.header {
+  padding: clamp(1.4rem, 4vw, 3.2rem) clamp(1.25rem, 4vw, 3.2rem) 1.25rem;
+}
+.header h1 {
+  max-width: 18ch;
+  font-size: clamp(2rem, 5vw, 3.7rem);
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+.eyebrow,
+.gift strong {
+  color: var(--partner-accent);
+}
+.header p,
+.gift p,
+.consent,
+.success p {
+  color: var(--partner-muted);
+}
+.gift,
+.success {
+  border-color: var(--partner-border);
+  background: rgba(255, 130, 62, 0.1);
+}
+.option {
+  min-height: 52px;
+  border-color: rgba(203, 219, 239, 0.23);
+}
+.option:has(input:checked) {
+  border-color: var(--partner-accent);
+  background: rgba(255, 148, 82, 0.16);
+}
+.option input,
+.consent input {
+  accent-color: #ff9e60;
+  min-width: 20px;
+  min-height: 20px;
+}
+.notes textarea {
+  background: var(--partner-input);
+  border-color: var(--partner-border);
+}
+.form button,
+.success a {
+  min-height: 48px;
+  background: #ffac74;
+  color: #172235;
+}
+.form button:hover,
+.success a:hover {
+  background: #ffc49b;
+}
+.backdrop :is(a, button, textarea, input):focus-visible {
+  outline: 3px solid #ffc49b;
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .backdrop {
+    padding: max(1rem, env(safe-area-inset-top, 0px))
+      max(0.5rem, env(safe-area-inset-right, 0px))
+      max(5.5rem, env(safe-area-inset-bottom, 0px))
+      max(0.5rem, env(safe-area-inset-left, 0px));
+  }
+  .header h1 {
+    font-size: clamp(1.85rem, 8vw, 2.6rem);
+  }
+  .option {
+    min-height: 48px;
+  }
+  .form button,
+  .success a {
+    width: 100%;
+    text-align: center;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .backdrop *,
+  .backdrop *::before,
+  .backdrop *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+:global(html[data-theme="light"]) .backdrop {
+  --partner-ink: #19293d;
+  --partner-muted: #364a61;
+  --partner-accent: #99400c;
+  --partner-border: rgba(128, 74, 34, 0.28);
+  --partner-input: #fff;
+  color-scheme: light;
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(255, 160, 89, 0.2), transparent 45%),
+    #f6f7fb;
+}
+:global(html[data-theme="light"]) .card {
+  background: linear-gradient(145deg, #fffaf4, #f0f4fb);
+  box-shadow: 0 20px 60px rgba(29, 42, 59, 0.12);
+}
+:global(html[data-theme="light"]) .gift,
+:global(html[data-theme="light"]) .success {
+  background: rgba(255, 149, 68, 0.12);
+}
+:global(html[data-theme="light"]) .option {
+  border-color: rgba(61, 79, 105, 0.25);
+  background: #fff;
+}
+:global(html[data-theme="light"]) .option:has(input:checked) {
+  border-color: #a34b17;
+  background: #fff0e4;
+}
+:global(html[data-theme="light"]) .notes textarea {
+  color: var(--partner-ink);
+}
+:global(html[data-theme="light"]) .form small {
+  color: var(--partner-muted);
+}
