@@ -295,8 +295,8 @@
     },
     "src/app/[locale]/moderation/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Legacy redirect-only compatibility route: validated locale, allowlisted canonical destinations and safe queue encoding; EN/ES auth-gated redirect and phone/desktop/Android-like guest handoff tests added. No standalone screen exists. Destination role permissions, authenticated queue interactions, final source browser evidence and physical Android review remain unaccepted."
     },
     "src/app/[locale]/onboarding/page.tsx": {
       "scope": "consumer",
