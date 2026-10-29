@@ -172,4 +172,26 @@ describe("AkiPasa shared redesign system", () => {
     expect(css).toContain('html[data-theme="light"]');
   });
 
+
+  it("Prestige privacy centre reuses owner-only server controls and private award state", () => {
+    const page = source("src/app/[locale]/privacy/prestige/page.tsx");
+    const css = source("src/components/passport-prestige.module.css");
+    const identity = source("src/lib/passport-prestige-identity.ts");
+    const controls = source("src/components/PassportPrestigePrivacy.tsx");
+    expect(page).toContain("requirePrestigePrivacyIdentity(locale)");
+    expect(page).toContain('p_action: "export"');
+    expect(page).toContain("robots: { index: false, follow: false }");
+    expect(page).toContain("<PassportPrestigePrivacy");
+    expect(page).toContain("privacyEmpty");
+    expect(page).toContain("privacyAwardCard");
+    expect(page).toContain("account/export");
+    expect(css).toContain("safe-area-inset-bottom");
+    expect(css).toContain('html[data-theme="light"]');
+    expect(css).toContain("@media (max-width: 600px)");
+    expect(css).toContain("prefers-reduced-motion");
+    expect(identity).toContain("if (!user)");
+    expect(controls).toContain('apply("shipping_delete")');
+    expect(controls).toContain('apply("withdraw")');
+  });
+
 });
