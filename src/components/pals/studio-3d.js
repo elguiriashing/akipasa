@@ -255,6 +255,23 @@ function makeFaceDetails(a) {
   ],0.0022,lips,12);
   return group;
 }
+/** Construct a tapered torso from an actual lathed fabric mesh. */
+function shirtTorso(parent, a, fabric) {
+  const width = a.top === "hoodie" ? 1.10 : a.top === "jacket" ? 1.07 : 1;
+  const profile = [
+    [0,1.047], [0.155*width,1.047], [0.177*width,1.12],
+    [0.182*width,1.27], [0.200*width,1.37],
+    [0.178*width,1.455], [0.107*width,1.51], [0,1.51]
+  ];
+  const geometry = new THREE.LatheGeometry(
+    profile.map(([radius,y])=>new THREE.Vector2(radius,y)), 40
+  );
+  const mesh = new THREE.Mesh(geometry,fabric);
+  mesh.scale.z = 0.73;
+  mesh.castShadow = true; mesh.receiveShadow = true;
+  parent.add(mesh);
+  return mesh;
+}
 function makeWardrobe(a) {
   const group = new THREE.Group();
   group.name = "AkiPals original clothing";
@@ -764,7 +781,6 @@ function create(container) {
         if (base) root.remove(base);
         base = cloneSkeleton(cached.scene);
         root.add(base);
-        poseArmature(base);
         faceType = model;
       }
       if (!active || number !== loadNumber) return;
