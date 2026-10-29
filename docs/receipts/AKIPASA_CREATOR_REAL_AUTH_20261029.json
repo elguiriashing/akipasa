@@ -1,0 +1,70 @@
+{
+  "observedAt": "2026-10-29T23:15:15.274Z",
+  "backendArtifactCount": 95,
+  "backendManifestSha256": "c857b61b36188d7b9ac54c877966babaa22a47b56f1f9cb8a7add97b6bb200a5",
+  "actualNextServer": true,
+  "actualAuthPostgREST": true,
+  "localDisposableOnly": true,
+  "fullCanonicalParity": false,
+  "independentPackageInstall": false,
+  "sourceBase": "da4ab3d72e9208f7cb046c56d3218690f63dd592",
+  "applicationOverrides": {
+    "src/app/[locale]/account/actions.ts": "105d6b269fdd11022b2bf0582362b976aea2bfb3d053c9a101fcfc3ca0bfbb93",
+    "src/app/[locale]/community/creator-actions.ts": "00f022fbc3c78605cae4d4982f95c74a6437108a8d81800a78581d6d1085676c",
+    "src/app/[locale]/community/creator/page.tsx": "73eac5fe9ca0ea6d18d283015df95dfbc9fc7e0cec4788c8967cb0825e125c97",
+    "src/components/community/creators.css": "42b7c461c0328a4bac83d6df5648ef24b598489f4a8d40cbfeade1fb78535e2e",
+    "src/components/PasaSharedSurfaces.css": "538407373e5210f718d481498d46db5b49105537a540c89a34dc8db6780213d3"
+  },
+  "sourceUnchanged": true,
+  "allowedOrigins": ["http://localhost:3191", "http://127.0.0.1:55461"],
+  "serviceWorkersBlocked": true,
+  "results": [
+    {
+      "name": "en-own-studio-normal-auth-save",
+      "width": 390,
+      "theme": "dark",
+      "passed": true
+    },
+    {
+      "name": "es-own-studio-normal-auth-save",
+      "width": 1440,
+      "theme": "light",
+      "passed": true
+    },
+    {
+      "name": "other-consumer-own-private-studio",
+      "width": 360,
+      "theme": "dark",
+      "passed": true
+    },
+    {
+      "name": "anonymous-private-creator-hidden",
+      "width": 390,
+      "theme": "light",
+      "passed": true
+    },
+    {
+      "name": "es-new-user-terms-return-studio-and-review",
+      "width": 390,
+      "theme": "dark",
+      "passed": true
+    }
+  ],
+  "failures": [],
+  "productionAcceptance": false,
+  "physicalAndroid": false,
+  "backendSelectedSourceFileCount": 94,
+  "backendExecutionRecords": 95,
+  "backendExecutionNote": "Original new repair proposal applied locally; stronger reviewed precondition revision rerun idempotently. Both immutable executions preserved, final fresh replay plan selects only final repair source.",
+  "canonicalRepair": {
+    "name": "20261029231041_restore_existing_profile_edit_columns.sql",
+    "sha256": "040cddb415d1a4f3e6458581475c1a122edf6efbd8b3d3696549b90c504d2ee7",
+    "newProposedRepair": true,
+    "recoveredHistoricalDDL": false,
+    "productionApplied": false
+  },
+  "blockedExternalRequestCount": 0,
+  "rawReceiptSha256": "d5054c1dc0c3f1b19a2f6937b3095ed5d09d92ecffed544807deba969913d575",
+  "profileBoundaryReceiptSha256": "c88e3e9d47f463308c8173c35744910965eadc296965c55b4428b66cfba21744",
+  "sensitivePrivilegesRetained": true
+}

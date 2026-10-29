@@ -3987,3 +3987,24 @@ Auth/REST probes now pass (own/private/public visibility and denied forged owner
 reassignment, verification and category writes). The original fixture is retained;
 no broad retroactive grants, production API writes or feature activation occurred.
 This is scoped Creator/Auth/RLS proof, not complete canonical migration parity.
+
+## 2026-10-29 | Existing Profile grant source reconstruction
+
+- Real failure: fresh source Creator save upserts its creator row, then receives
+  permission denied syncing ordinary profile fields. Existing production metadata
+  already grants all15 editor columns to authenticated and none to anon.
+- New source: mirrored20261029231041, generated via official CLI. Column-only
+  grants preserve name/locale, exact owner/role RLS and sensitive-field denials.
+  Guard disabled/altered/extra policies, unexpected roles or broad privileges;
+  unsupported schemas fail transactionally instead of silently widening access.
+- Evidence:21actual PGlite SQL cases,39real local Auth/REST probes and5real Next
+  normal Auth/save/private/terms/pending-review journeys pass. Original source/
+  permission failures remain archived. Fixture is94scoped source paths with a
+  transparent superseded guard revision, not all164canonical migrations.
+- Production: read-only metadata only; no remote migration, grants, customer data,
+  consent or billing write. Current live grants already satisfy the new allowlist.
+- Rollback: keep pre-existing production ACLs when reverting application source.
+  Restore recorded before-ACL only for a fresh replay; do not blindly revoke
+  permissions which existed before this source repair.
+- Remaining: full required check, fresh exact-head CI/Cloudflare packaging and
+  independent source/reviewer/device acceptance; no accepted-route change.

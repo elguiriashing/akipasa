@@ -2,6 +2,51 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 29 October 2026 UTC.
 
+## Existing Profile grant replay repaired — 29 October 2026 23:22 UTC
+
+Branch `work/coordinated-release-20261029`; committed baseline
+`43b743efdcc1ad8371a12a05a8add7d9afbc4e46`. The next commit freezes mirrored
+20261029231041 and docs/receipts/AKIPASA_PROFILE_EDIT_GRANT_BASELINE_20261029.json.
+Application code remains exactly43b743e; this cycle repairs only canonical source
+permissions already present in production and adds meaningful SQL regressions.
+
+The source-only CLI-generated migration grants15ordinary profile editor columns,
+matching read-only live metadata. Enabled RLS, exact public/permissive owner+role
+policy, one mutation policy and no broad authenticated/anonymous UPDATE are
+mandatory preconditions. It grants no role/ID/terms/private privilege or table
+UPDATE and changes no policy, function, row or feature setting. No production SQL
+was applied; current live rights already satisfy its allowlist.
+
+TESTED: full npmcheck PASSED2,620tests plus security/database/automation/build;
+21actual SQL ACL/RLS regressions passed; permission audit2migrations/0findings.
+Independent review caught and strengthened unknown/additional-policy guards.
+A separate scoped fixture now has94final source paths and95transparent execution
+records, preserving the initial guard revision and earlier failures.39actual
+Auth/REST/RLS,10actual profile security-boundary and5actual Next journeys PASS.
+The previously observed EN/ESCreator save failures are repaired under source
+replay; private-other/anon, role/terms/ID and ownership boundaries remain closed in the
+scoped local source baseline. Live terms-column metadata is not claimed denied.
+Final sanitized actualNext receipt is committed; no credential material is included.
+This is not complete164-filecanonical parity or physical Android acceptance.
+
+43b743e previously passed full2,599tests and144creator browser cases (18contrast
+samples minimum5.842:1); its exact-head CI must be read freshly, never inferred.
+New source commit requires fresh full hosted CI and nonproduction Cloudflare build.
+Strict90route review gate remains red; matrix statuses/acceptance are unchanged.
+PR332 remains draft; no new merge or production deployment is authorized by these
+engineering results. Home/Login #333 remains live39cd9bb, Worker`8199ce83-b416-42d1-9568-9dc167601b6a`; rollback884dda44-e95d-4266-8ce1-d7a4de5c54db.
+
+Review holds: genuine90route sign-offs and6fallback reviews, physical Android,
+remaining protected-role/provider journeys, AkiPals approved release boundary and
+full canonical source reconstruction. No waiver or fictitious evidence created.
+
+Exact next action: commit/push this validated repair, fetch latest head/CI and
+Cloudflare build identity, update PR332/#330 and review pack with real results,
+then continue unresolved protected-role/source/reviewer/device work. Root owns
+integration through00:15UTC30October; agents must not compete on shared files.
+The existing continuation task is updated, not duplicated; no guaranteed running
+future coding session is claimed.
+
 ## Reconciled overhaul and creator journey recovery — 29 October 2026
 
 Branch `work/coordinated-release-20261029`; committed baseline

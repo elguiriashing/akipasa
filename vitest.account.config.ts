@@ -15,6 +15,7 @@ export default defineConfig({
       "tests/account-profile-website.test.ts",
       "tests/account-profile-media-action.test.ts",
       "tests/account-action-return.test.ts",
+      "tests/profile-edit-grants-sql.test.ts",
       "tests/account-collection-catalogue.test.ts",
       "tests/passport-read-recovery.test.tsx",
     ],

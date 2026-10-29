@@ -58,6 +58,12 @@ Next/Auth/database/media adapters inside actual AppShell. Their receipt explicit
 states that scope. Account's maintained harness also includes AppShell; neither
 harness is physical Android or production authorization evidence.
 
+Actual Next Creator coverage now additionally passes five real local Auth/save/
+private/terms/pending-review journeys, plus39Auth/REST and10Profile boundary probes,
+after the narrowly reviewed source grant repair. See
+AKIPASA_PROFILE_EDIT_REPLAY_20261029.md and its sanitized receipt. This does not
+replace all-role/provider/device acceptance or complete canonical schema replay.
+
 ## Next execution
 
 Finish the current Creator return regressions, full integrated browser suites and

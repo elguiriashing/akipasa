@@ -1,0 +1,114 @@
+{
+  "observedAt": "2026-10-29T23:16:03.236582+00:00",
+  "purpose": "New canonical source repair for already-existing production own-profile editing privileges; not a recovered historical migration.",
+  "productionReadOnly": true,
+  "productionMutations": false,
+  "metadataOnly": true,
+  "productionRlsEnabled": true,
+  "productionOwnerPolicy": {
+    "name": "profiles_update_self",
+    "using": "(id = auth.uid())",
+    "withCheck": "((id = auth.uid()) AND (app_role = current_app_role()))"
+  },
+  "productionEditableColumns": {
+    "username": {
+      "authenticatedUpdate": true,
+      "anonUpdate": false
+    },
+    "avatar_url": {
+      "authenticatedUpdate": true,
+      "anonUpdate": false
+    },
+    "banner_url": {
+      "authenticatedUpdate": true,
+      "anonUpdate": false
+    },
+    "bio": {
+      "authenticatedUpdate": true,
+      "anonUpdate": false
+    },
+    "public_email": {
+      "authenticatedUpdate": true,
+      "anonUpdate": false
+    },
+    "phone": {
+      "authenticatedUpdate": true,
+      "anonUpdate": false
+    },
+    "website_url": {
+      "authenticatedUpdate": true,
+      "anonUpdate": false
+    },
+    "instagram_url": {
+      "authenticatedUpdate": true,
+      "anonUpdate": false
+    },
+    "locality": {
+      "authenticatedUpdate": true,
+      "anonUpdate": false
+    },
+    "province": {
+      "authenticatedUpdate": true,
+      "anonUpdate": false
+    },
+    "birth_year": {
+      "authenticatedUpdate": true,
+      "anonUpdate": false
+    },
+    "gender": {
+      "authenticatedUpdate": true,
+      "anonUpdate": false
+    },
+    "profile_visibility": {
+      "authenticatedUpdate": true,
+      "anonUpdate": false
+    },
+    "contact_visibility": {
+      "authenticatedUpdate": true,
+      "anonUpdate": false
+    },
+    "attendance_visibility": {
+      "authenticatedUpdate": true,
+      "anonUpdate": false
+    }
+  },
+  "productionRoleColumn": {
+    "authenticatedUpdate": false,
+    "anonUpdate": false
+  },
+  "termsColumnObservedButNotGrantedByPatch": true,
+  "migration": {
+    "name": "20261029231041_restore_existing_profile_edit_columns.sql",
+    "sha256": "040cddb415d1a4f3e6458581475c1a122edf6efbd8b3d3696549b90c504d2ee7",
+    "mirrorsEqual": true,
+    "generatedBy": "Official Supabase CLI migration new",
+    "notAppliedToProduction": true
+  },
+  "independentSqlTestsPassed": 21,
+  "localActualAuthRestProbesPassed": 39,
+  "actualNextJourneysPassed": 5,
+  "actualNextExternalRequests": 0,
+  "fullCanonicalSchemaParity": false,
+  "physicalAndroid": false,
+  "routeAccepted": false,
+  "rollback": "Preserve existing production grants on application rollback. On a fresh replay only, restore the pre-migration column ACL snapshot; never blindly revoke production pre-existing rights.",
+  "fullCheck": {
+    "passed": true,
+    "vitestPassed": 2620,
+    "logSha256": "7eacdca864333039d2048b35dd8920e162b546de1e9828fdd28683db3fa414a5"
+  },
+  "sqlPermissionAudit": {
+    "selfTestPassed": true,
+    "migrationsAudited": 2,
+    "findings": 0
+  },
+  "realProfileBoundaryChecksPassed": 10,
+  "readOnlySecurityAdvisorBaseline": {
+    "checked": true,
+    "profileFindings": 0,
+    "productionChanged": false,
+    "unappliedPatchAssessment": false
+  },
+  "actualApplicationSourceCommit": "43b743efdcc1ad8371a12a05a8add7d9afbc4e46",
+  "actualNextReceipt": "docs/receipts/AKIPASA_CREATOR_REAL_AUTH_20261029.json"
+}

@@ -3209,3 +3209,28 @@ Supabase initial schema defaults before92 unchanged scoped source artifacts.
 reassignment, verification escalation and category writes. The earlier partial QA
 fixture is preserved rather than broadly re-granted. Full canonical migration
 parity and actual provider/device acceptance remain separate requirements.
+
+## 2026-10-29 | Reproducible existing Profile edit grants
+
+Actual Next/REST testing found that fresh checked-in replay rejected Creator's
+Profile synchronization:0033 grants name/locale only, while0069 adds ordinary
+editable profile fields without granting their updates. Read-only production
+metadata confirms all15 required edit columns already allow authenticated UPDATE,
+none allow anon UPDATE, and app_role remains denied. This is a source baseline
+gap, not a demonstrated production outage or permission-expansion request.
+
+New mirrored CLI-generated migration20261029231041 restores only those existing
+15column grants. It fails closed unless RLS is enabled, exactly one canonical
+public/permissive owner+role UPDATE policy exists, and no broad authenticated
+table UPDATE or anonymous column UPDATE exists. It changes no policies/functions,
+role/ID/terms/private privileges, rows, onboarding, billing or feature settings.
+It has not been applied to production; that environment already has these rights.
+
+21actual SQL regressions plus39actual isolated Auth/REST probes and5real Next
+journeys pass, including healthy EN/ES Creator saves, other-account/private404,
+unchecked terms/explicit acceptance/Studio return and a real pending review.
+The separate fixture uses the official initial defaults and current scoped
+account mutation coverage, preserving earlier failed receipts and original QA.
+This remains scoped proof, not full canonical migration or physical-device
+acceptance. Rollback keeps pre-existing live grants; fresh replay rollback must
+restore its recorded pre-migration ACL, never blindly revoke production rights.
