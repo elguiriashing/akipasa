@@ -2,6 +2,34 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 29 October 2026 UTC.
 
+## Main repair batch validated — 29 October 2026 16:57 UTC
+
+Implemented: authoritative remaining-capacity event booking with the shared wizard;
+real pending duplicate prevention; private booking read-failure/recovery boundaries;
+bounded stable Staff queues with preserved audited action context and readable
+rejection buttons; responsive native admin review cards/forms; shared menu dismissal
+on Back/Forward; retained long-biography editing. AkiPals remains paused.
+
+Tested: complete `npm run check` passed after one genuine harness-formatting repair.
+The full Account browser suite passed 312 cases. Event booking passed 208 states;
+private booking passed 96 read failures plus 16 successful missing-row defaults;
+Staff passed 85 cases; native admin review passed 70 cases. All use disposable
+adapters; no live role/RLS, physical Android or customer-data mutation is implied.
+Root inspected representative phone/tablet/desktop captures and final source hashes.
+Final machine receipt: `docs/receipts/AKIPASA_MAIN_RELEASE_REPAIRS_20261029.json`.
+New harnesses are mandatory in existing booking/tablet workflows with artifacts.
+
+Accepted: zero of 90 in-scope routes. Merged: no. Deployed: no. Tonight remains
+off with zero actual future event occurrences. Strict release audit deliberately
+still exits 2; route notes are updated individually without changing statuses.
+
+Next: commit the validated frozen source, independently package its clean Git SHA
+with `npm run build:cloudflare`, push the existing draft branch and refresh exact-head
+CI. Then extend full-page consumer capture coverage: the opening-only public suite
+missed stale below-fold Roadmap copy and a duplicate traced-logo wordmark. Check
+missing public error/not-found/loading boundaries separately. These findings remain
+open; do not call the overall redesign complete or mark PR #332 ready.
+
 ## Main release resumed — 29 October 2026 16:30 UTC
 
 Alex explicitly paused AkiPals and returned execution to the original main-release

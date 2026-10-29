@@ -9,13 +9,30 @@ import {
   reportResolutionSchema,
 } from "@/lib/moderation";
 
+import {
+  parseStaffQueue,
+  parseStaffQueuePage,
+  staffQueueForTarget,
+  staffModerationHref,
+} from "@/lib/staff-moderation-queue";
+
 export async function moderateItem(formData: FormData) {
   const parsed = moderationDecisionSchema.safeParse(
     Object.fromEntries(formData),
   );
   const locale = formData.get("locale") === "en" ? "en" : "es";
-  if (!parsed.success) redirect(`/${locale}/staff/moderation?error=decision`);
-  const { supabase } = await requireUser(locale, `/${locale}/staff/moderation`);
+  const queue = staffQueueForTarget(
+    parsed.success ? parsed.data.targetType : formData.get("targetType"),
+  );
+  const page = parseStaffQueuePage(
+    formData.get(queue === "claims" ? "claimPage" : "queuePage"),
+  );
+  if (!parsed.success)
+    redirect(staffModerationHref(locale, queue, page, { error: "decision" }));
+  const { supabase } = await requireUser(
+    locale,
+    staffModerationHref(locale, queue, page),
+  );
   const value = parsed.data;
   const { error } = await supabase.rpc("moderate_item", {
     target_type: value.targetType,
@@ -24,13 +41,8 @@ export async function moderateItem(formData: FormData) {
     reason: value.reason,
     p_duplicate_of: value.duplicateOf || null,
   });
-  const page = String(formData.get("claimPage") || "1");
-  const claimQuery =
-    value.targetType === "venue_claim"
-      ? `&queue=claims&page=${/^\d{1,5}$/.test(page) ? Math.min(10001, Math.max(1, Number(page))) : 1}`
-      : "";
   if (error)
-    redirect(`/${locale}/staff/moderation?error=decision${claimQuery}`);
+    redirect(staffModerationHref(locale, queue, page, { error: "decision" }));
   let claimantMailStatus: "sent" | "not_sent" = "not_sent";
   if (value.targetType === "venue_claim") {
     // The decision and durable email already committed. Provider failure must not undo it.
@@ -41,14 +53,18 @@ export async function moderateItem(formData: FormData) {
       console.error("claim_email_dispatch_pending");
     }
   }
-  const mailQuery =
-    value.targetType === "venue_claim" ? `&mail=${claimantMailStatus}` : "";
   redirect(
-    `/${locale}/staff/moderation?updated=decision${claimQuery}${mailQuery}`,
+    staffModerationHref(locale, queue, page, {
+      updated: "decision",
+      ...(value.targetType === "venue_claim"
+        ? { mail: claimantMailStatus }
+        : {}),
+    }),
   );
 }
 
 export async function reviewRentalCompany(formData: FormData) {
+  const page = parseStaffQueuePage(formData.get("queuePage"));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const parsed = z
     .object({
@@ -58,29 +74,40 @@ export async function reviewRentalCompany(formData: FormData) {
     })
     .safeParse(Object.fromEntries(formData));
   if (!parsed.success)
-    redirect(`/${locale}/staff/moderation?queue=rentals&error=review`);
+    redirect(staffModerationHref(locale, "rentals", page, { error: "review" }));
   const { supabase } = await requireUser(
     locale,
-    `/${locale}/staff/moderation?queue=rentals`,
+    staffModerationHref(locale, "rentals", page),
   );
   const { error } = await supabase.rpc("review_car_rental_company", {
     p_company: parsed.data.companyId,
     p_status: parsed.data.status,
     p_note: parsed.data.note || null,
   });
-  if (error) redirect(`/${locale}/staff/moderation?queue=rentals&error=review`);
-  redirect(`/${locale}/staff/moderation?queue=rentals&updated=review`);
+  if (error)
+    redirect(staffModerationHref(locale, "rentals", page, { error: "review" }));
+  redirect(staffModerationHref(locale, "rentals", page, { updated: "review" }));
 }
 
 export async function setAutomaticModeration(formData: FormData) {
+  const queue = parseStaffQueue(formData.get("queue"));
+  const page = parseStaffQueuePage(formData.get("queuePage"));
   const locale = formData.get("locale") === "en" ? "en" : "es";
   const enabled = formData.get("enabled") === "true";
-  const { supabase } = await requireUser(locale, `/${locale}/staff/moderation`);
+  const { supabase } = await requireUser(
+    locale,
+    staffModerationHref(locale, queue, page),
+  );
   const { error } = await supabase.rpc("set_automatic_moderation", {
     p_enabled: enabled,
   });
-  if (error) redirect(`/${locale}/staff/moderation?error=automatic-mode`);
-  redirect(`/${locale}/staff/moderation?updated=automatic-mode`);
+  if (error)
+    redirect(
+      staffModerationHref(locale, queue, page, { error: "automatic-mode" }),
+    );
+  redirect(
+    staffModerationHref(locale, queue, page, { updated: "automatic-mode" }),
+  );
 }
 export async function resolveReport(formData: FormData) {
   const parsed = reportResolutionSchema.safeParse(Object.fromEntries(formData));

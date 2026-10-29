@@ -64,7 +64,8 @@ async function renderRoute(){
     const handoff=route==='membership-handoff';
     const content=handoff?<main style={{padding:16}}><AkiSuiteMembershipGrid locale={locale} purchaseMode="account" checkoutReady={new URLSearchParams(location.search).get("ready")==="true"} originatingApp="akiduermo" /></main>:await page(props);
     const shell=handoff?content:await AccountLayout({...props,children:content});
-    root.render(React.createElement(React.Fragment,{key:location.href},shell));
+    // Next preserves a shared localized layout across child-route navigation.
+    root.render(React.createElement(React.Fragment,{key:locale},shell));
     requestAnimationFrame(()=>requestAnimationFrame(()=>{window.__accountReady=true;window.__accountReadiness++}));
   }catch(error){
     if(error.redirect){window.__accountRedirect=error.redirect;root.render(<p data-testid="redirect">{error.redirect}</p>);window.__accountReady=true;return}
@@ -483,6 +484,12 @@ async function interactions(page, route, locale) {
       email: "changed.disposable@example.test",
     });
   } else if (route === "profile") {
+    const bio = page.locator('textarea[name="bio"]');
+    await bio.fill("A".repeat(500));
+    await bio.press("End");
+    await bio.press("Backspace");
+    await expect(bio).toHaveValue("A".repeat(499));
+    expect(await bio.evaluate((field) => field.checkValidity())).toBe(true);
     const name = page.locator('input[name="displayName"]');
     await reveal(page, name);
     await name.fill("María ÁÉÍÓÚ Ñ Ç");
@@ -495,6 +502,7 @@ async function interactions(page, route, locale) {
     await lastAction(page, "updateAccountProfile", {
       locale,
       displayName: "María ÁÉÍÓÚ Ñ Ç",
+      bio: "A".repeat(499),
     });
   } else if (route === "privacy") {
     const checkbox = page.getByRole("checkbox", { name: /recom/ });
@@ -611,6 +619,45 @@ try {
       ? { args: JSON.parse(process.env.ACCOUNT_BROWSER_ARGS) }
       : {}),
   });
+  for (const locale of ["en", "es"]) {
+    const context = await browser.newContext({
+      viewport: { width: 360, height: 800 },
+    });
+    const page = await context.newPage();
+    try {
+      await page.goto(`${origin}/${locale}/account`);
+      await ready(page);
+      await page.evaluate(
+        (href) => window.__accountNavigate(href),
+        `/${locale}/account/profile`,
+      );
+      await expect(page.locator(".account-profile-form")).toBeVisible();
+      const opener = page.locator(".workspace-mobile-trigger");
+      await opener.click();
+      await expect(opener).toHaveAttribute("aria-expanded", "true");
+      await page.goBack();
+      await expect(page.locator(".account-overview")).toBeVisible();
+      await expect(opener).toHaveAttribute("aria-expanded", "false");
+      await opener.click();
+      await page.goForward();
+      await expect(page.locator(".account-profile-form")).toBeVisible();
+      await expect(opener).toHaveAttribute("aria-expanded", "false");
+      await opener.click();
+      await page.evaluate(() =>
+        window.dispatchEvent(new PopStateEvent("popstate")),
+      );
+      await expect(opener).toHaveAttribute("aria-expanded", "true");
+      await page.keyboard.press("Escape");
+      await expect(opener).toBeFocused();
+      await expect(opener).toHaveAttribute("aria-expanded", "false");
+      await page.screenshot({
+        path: resolve(directory, `workspace-history-${locale}.png`),
+      });
+      results.push({ locale, test: "workspace-history", passed: true });
+    } finally {
+      await context.close();
+    }
+  }
   const selected = process.env.ACCOUNT_BROWSER_ROUTES?.split(",") || routes;
   // An explicit fixture list runs only the selected boundary states.
   const selectedFixtures = process.env.ACCOUNT_BROWSER_FIXTURES?.split(",");

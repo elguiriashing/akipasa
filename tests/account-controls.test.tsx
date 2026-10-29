@@ -116,6 +116,34 @@ afterEach(() => {
 
 describe("Account control disclosure preserves existing workflows", () => {
   it.each(["en", "es"] as const)(
+    "preserves editing an existing biography within the account limit (%s)",
+    async (locale) => {
+      const savedBio = "A".repeat(500);
+      account.tables.profiles = { ...profile, bio: savedBio };
+      render(
+        await ProfilePage({
+          params: Promise.resolve({ locale }),
+          searchParams: Promise.resolve({}),
+        }),
+      );
+      const bio = screen.getByRole("textbox", {
+        name: locale === "es" ? /^Sobre ti/ : /^About you/,
+      });
+      expect(bio).toHaveValue(savedBio);
+      expect(bio).toHaveAttribute("maxlength", "2000");
+      fireEvent.change(bio, { target: { value: savedBio.slice(0, -1) } });
+      expect(bio).toHaveValue(savedBio.slice(0, -1));
+      expect(
+        screen.getByText(
+          locale === "es"
+            ? "Máximo 2000 caracteres."
+            : "Up to 2000 characters.",
+        ),
+      ).toBeInTheDocument();
+    },
+  );
+
+  it.each(["en", "es"] as const)(
     "describes the private 3D identity instead of the retired mascot game (%s)",
     async (locale) => {
       render(await AccountOverview({ params: Promise.resolve({ locale }) }));

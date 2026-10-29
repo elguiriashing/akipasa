@@ -119,12 +119,15 @@ export default async function VenueWorkspace({
     { data: credentials },
     { data: rewards },
     { data: passportOptions },
-    { data: bookingSettings },
-    { data: bookingNotificationSettings },
-    { count: pendingBookingCount },
-    { data: bookingSlots },
-    { data: bookingResources },
-    { data: bookingOfferings },
+    { data: bookingSettings, error: bookingSettingsError },
+    {
+      data: bookingNotificationSettings,
+      error: bookingNotificationSettingsError,
+    },
+    { count: pendingBookingCount, error: pendingBookingCountError },
+    { data: bookingSlots, error: bookingSlotsError },
+    { data: bookingResources, error: bookingResourcesError },
+    { data: bookingOfferings, error: bookingOfferingsError },
     bookingInbox,
     { data: catalogue, error: catalogueError },
     { data: audience },
@@ -503,7 +506,7 @@ export default async function VenueWorkspace({
         catalogueItems: catalogueError ? null : catalogueItemCount,
         programs: programs?.filter((program) => program.active).length || 0,
         credentials: credentials?.length || 0,
-        requests: pendingBookingCount || 0,
+        requests: pendingBookingCountError ? null : pendingBookingCount || 0,
         members: members?.length || 0,
       }}
       overview={
@@ -1940,6 +1943,7 @@ export default async function VenueWorkspace({
             />
           ) : (
             <BookingManager
+              key={`${Boolean(bookingSettingsError)}:${bookingSettings?.mode || "missing"}:${bookingSettings?.booking_template || "experience"}`}
               locale={locale}
               venueId={id}
               settings={{
@@ -1947,12 +1951,22 @@ export default async function VenueWorkspace({
                 notification_email:
                   bookingNotificationSettings?.notification_email,
               }}
+              readErrors={{
+                settings: Boolean(bookingSettingsError),
+                notificationSettings: Boolean(bookingNotificationSettingsError),
+                slots: Boolean(bookingSlotsError),
+                resources: Boolean(bookingResourcesError),
+                offerings: Boolean(bookingOfferingsError),
+                pending: Boolean(pendingBookingCountError),
+              }}
               initialTab={query.bookingTab}
               notifications={bookingInbox.notifications}
               inbox={{
                 ...bookingInbox.filters,
                 total: bookingInbox.total,
-                pending: pendingBookingCount || 0,
+                pending: pendingBookingCountError
+                  ? null
+                  : pendingBookingCount || 0,
                 error: bookingInbox.error,
                 notificationError: bookingInbox.notificationError,
               }}

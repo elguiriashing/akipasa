@@ -280,7 +280,7 @@ export default async function ProfilePage({
               <textarea
                 name="bio"
                 defaultValue={profile?.bio || ""}
-                maxLength={300}
+                maxLength={2000}
                 placeholder={
                   es
                     ? "Cuéntale a la gente un poco sobre ti..."
@@ -288,7 +288,7 @@ export default async function ProfilePage({
                 }
               />
               <small>
-                {es ? "Máximo 300 caracteres." : "Up to 300 characters."}
+                {es ? "Máximo 2000 caracteres." : "Up to 2000 characters."}
               </small>
             </label>
           </section>

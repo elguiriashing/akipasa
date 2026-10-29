@@ -5,6 +5,8 @@ on:
     paths:
       - "src/**"
       - "scripts/test-booking-browser.mjs"
+      - "scripts/test-event-booking-browser.mjs"
+      - "scripts/test-booking-read-boundary-browser.mjs"
       - ".github/workflows/booking-browser.yml"
   workflow_dispatch:
 permissions:
@@ -22,11 +24,18 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:booking:browser
+      - name: Verify real event booking availability and request journey
+        run: node scripts/test-event-booking-browser.mjs
+      - name: Verify private booking read failures and safe recovery
+        run: node scripts/test-booking-read-boundary-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: booking-browser-evidence
-          path: test-results/booking-release
+          path: |
+            test-results/booking-release
+            test-results/event-booking-browser
+            test-results/booking-read-boundary
           retention-days: 7
   site-regression:
     # The existing 63-case site suite needs a provisioned catalogue backend.

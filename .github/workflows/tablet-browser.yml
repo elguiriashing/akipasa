@@ -64,6 +64,10 @@ jobs:
           retention-days: 7
       - run: node scripts/test-staff-claims-browser.mjs
       - run: node scripts/test-staff-ui-upgrades-browser.mjs
+      - name: Verify bounded moderation queue journeys
+        run: node scripts/test-staff-pagination-browser.mjs
+      - name: Verify native administrator review layouts and decisions
+        run: node scripts/test-admin-review-browser.mjs
       - run: node scripts/test-stay-ui-upgrades-browser.mjs
       - run: node scripts/test-support-ui-upgrades-browser.mjs
       - uses: actions/upload-artifact@v4
@@ -88,6 +92,8 @@ jobs:
             test-results/workspace-role-browser
             test-results/business-mobility
             test-results/map-availability
+            test-results/staff-pagination
+            test-results/admin-review
           retention-days: 7
 
   tablet-layout-and-spotlight:

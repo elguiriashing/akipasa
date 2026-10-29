@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { staffQueueStateLabel } from "@/lib/staff-moderation-queue";
 import { ClaimReview } from "./ClaimReview";
 import { moderateItem } from "../moderation/actions";
 
@@ -47,6 +48,7 @@ export function StaffQueue({
   targetType,
   approve,
   claimPage = 1,
+  queuePage = 1,
   selectedClaimId,
 }: {
   locale: "es" | "en";
@@ -54,13 +56,20 @@ export function StaffQueue({
   targetType: "submission" | "venue" | "event" | "offer" | "venue_claim";
   approve: "approved" | "published";
   claimPage?: number;
+  queuePage?: number;
   selectedClaimId?: string;
 }) {
   const es = locale === "es";
   if (!items.length)
     return (
       <p className="empty-state">
-        {es ? "La cola está vacía." : "This queue is empty."}
+        {queuePage > 1
+          ? es
+            ? "No hay elementos en esta página."
+            : "There are no items on this page."
+          : es
+            ? "La cola está vacía."
+            : "This queue is empty."}
       </p>
     );
   if (targetType === "venue_claim") {
@@ -110,7 +119,9 @@ export function StaffQueue({
                   {candidate.venues?.name ||
                     (es ? "Local sin nombre" : "Unnamed venue")}
                 </span>
-                <small>{candidate.status || "pending"}</small>
+                <small>
+                  {staffQueueStateLabel(candidate.status || "pending", locale)}
+                </small>
               </Link>
             ))}
           </nav>
@@ -144,11 +155,15 @@ export function StaffQueue({
               </p>
             </div>
             <span className="status-pill">
-              {item.status || item.state || "pending"}
+              {staffQueueStateLabel(
+                item.status || item.state || "pending",
+                locale,
+              )}
             </span>
           </div>
           <form action={moderateItem} className="moderation-form">
             <input type="hidden" name="locale" value={locale} />
+            <input type="hidden" name="queuePage" value={queuePage} />
             <input type="hidden" name="targetType" value={targetType} />
             <input type="hidden" name="targetId" value={item.id} />
             <input

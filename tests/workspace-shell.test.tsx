@@ -153,6 +153,49 @@ it("contains mobile More focus, makes the background inert and restores its open
 });
 
 describe("progressive disclosure workspace shell", () => {
+  it.each(["account", "staff", "admin", "community", "business", "owner"])(
+    "dismisses %s menus on history-style route changes without closing same-route updates",
+    (workspace) => {
+      navigation.pathname = `/en/${workspace}`;
+      const shell = () => (
+        <WorkspaceShell
+          title="Workspace"
+          eyebrow="Navigation"
+          description="Focused workflow"
+          homeHref={`/en/${workspace}`}
+          items={[
+            { href: `/en/${workspace}`, label: "Overview", icon: "home" },
+          ]}
+        >
+          <p>Current content</p>
+        </WorkspaceShell>
+      );
+      const view = render(shell());
+      const opener = screen.getByRole("button", {
+        name: "Navigation Workspace menu",
+      });
+      fireEvent.click(opener);
+      view.rerender(shell());
+      expect(opener).toHaveAttribute("aria-expanded", "true");
+
+      navigation.pathname = `/en/${workspace}/details`;
+      view.rerender(shell());
+      expect(opener).toHaveAttribute("aria-expanded", "false");
+
+      fireEvent.click(opener);
+      navigation.search = "view=history&page=2";
+      view.rerender(shell());
+      expect(opener).toHaveAttribute("aria-expanded", "false");
+
+      fireEvent.click(opener);
+      view.rerender(shell());
+      expect(opener).toHaveAttribute("aria-expanded", "true");
+      navigation.pathname = `/es/${workspace}/details`;
+      view.rerender(shell());
+      expect(opener).toHaveAttribute("aria-expanded", "false");
+    },
+  );
+
   it("keeps crowded desktop workspace navigation horizontally reachable", () => {
     const source = readFileSync(
       resolve(process.cwd(), "src/components/WorkspaceShell.tsx"),

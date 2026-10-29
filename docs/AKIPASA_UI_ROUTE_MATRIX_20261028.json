@@ -46,7 +46,7 @@
     "src/app/[locale]/account/profile/page.tsx": {
       "scope": "consumer",
       "status": "in-progress",
-      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review. Biography maxlength now matches existing 2000-character server contract, retaining editable legacy500-character values. Shared menu closes after browser history/route changes. Focused tests and selected EN-ES browser cases pass; final release acceptance remains outstanding."
     },
     "src/app/[locale]/account/referrals/page.tsx": {
       "scope": "consumer",
@@ -81,7 +81,7 @@
     "src/app/[locale]/admin/accommodation-review/page.tsx": {
       "scope": "operational",
       "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "note": "Scoped shared review card/form design, visible heading and accessible decision pending/error states; exact revision/admin/reason checks and read-only orphan boundary retained. Responsive browser evidence under review; not accepted."
     },
     "src/app/[locale]/admin/achievements/page.tsx": {
       "scope": "operational",
@@ -116,7 +116,7 @@
     "src/app/[locale]/admin/listing-review/page.tsx": {
       "scope": "operational",
       "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "note": "Scoped responsive review cards replace undefined legacy grid styling; existing administrator/read-only signal boundary retained. EN-ES/theme/viewport browser evidence under review; final source/reviewer/device acceptance required."
     },
     "src/app/[locale]/admin/page.tsx": {
       "scope": "operational",
@@ -226,7 +226,7 @@
     "src/app/[locale]/business/venue/[id]/page.tsx": {
       "scope": "operational",
       "status": "in-progress",
-      "note": "Existing authorized VenueDashboard retained. Failed catalogue reads now withhold dependent catalogue/event editors, show localized same-section retry and unknown count rather than false zero; successful missing catalogue stays editable. Actual loader and dashboard regression tests pass. Real owner/editor/manager role, populated/error browser workflow and final screenshot/device review still required; not accepted."
+      "note": "Existing authorized VenueDashboard retained. Failed catalogue reads now withhold dependent catalogue/event editors, show localized same-section retry and unknown count rather than false zero; successful missing catalogue stays editable. Actual loader and dashboard regression tests pass. Real owner/editor/manager role, populated/error browser workflow and final screenshot/device review still required; not accepted. Booking settings/notification/inventory failures now withhold dependent editors and expose localized retry; recovered settings and unknown pending counts retain truthfulness. 112 isolated browser failure/default states passed; production role/device acceptance remains outstanding."
     },
     "src/app/[locale]/check-in/[token]/page.tsx": {
       "scope": "consumer",
@@ -276,7 +276,7 @@
     "src/app/[locale]/events/[slug]/book/page.tsx": {
       "scope": "consumer",
       "status": "in-progress",
-      "note": "Shared responsive booking presentation committed; real authenticated EN/ES phone/desktop/Android visual and functional acceptance still missing. Guest-only redirect captures do not count."
+      "note": "Reuses shared booking wizard and canonical remaining-capacity RPC; distinguishes full/empty/read failure, retains native gating and event/occurrence return. New pending/EN-ES/responsive browser regressions are under validation. No final-source reviewer/device acceptance yet."
     },
     "src/app/[locale]/events/[slug]/page.tsx": {
       "scope": "consumer",
@@ -391,7 +391,7 @@
     "src/app/[locale]/staff/moderation/page.tsx": {
       "scope": "operational",
       "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "note": "Selected pending queues use bounded stable twenty-row pages, truthful counts and retained action/retry context; claims retain existing paged RPC authorization. Responsive/role/action regressions under validation. Final reviewer/device acceptance still required."
     },
     "src/app/[locale]/staff/page.tsx": {
       "scope": "operational",

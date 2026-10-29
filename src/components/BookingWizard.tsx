@@ -21,6 +21,7 @@ type Props = {
   slug: string;
   venueId: string;
   venueName: string;
+  event?: { id: string; occurrence?: string };
   slots: Slot[];
   offerings: Record<string, string>;
   profile: { name: string; email: string; phone: string };
@@ -32,6 +33,7 @@ export function BookingWizard({
   slug,
   venueId,
   venueName,
+  event,
   slots,
   offerings,
   profile,
@@ -53,7 +55,23 @@ export function BookingWizard({
   const [contactEmail, setContactEmail] = useState(profile.email);
   const [contactPhone, setContactPhone] = useState(profile.phone);
   const [notes, setNotes] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [, submitAction, busy] = React.useActionState(
+    async (_previous: null, formData: FormData) => {
+      const result = await submit(formData);
+      if (result?.error) {
+        setError(result.error);
+        if (result.remaining !== undefined) {
+          setRemainingOverride((previous) => ({
+            ...previous,
+            [slotId]: result.remaining!,
+          }));
+          setStep(0);
+        }
+      }
+      return null;
+    },
+    null,
+  );
   const current = slots.find((s) => s.id === slotId) || slots[0];
   const maxGuests = Math.min(
     bookingGuestLimit(current),
@@ -117,8 +135,35 @@ export function BookingWizard({
         <h2>{es ? "No hay horarios disponibles" : "No available dates"}</h2>
         <p>
           {es
-            ? "Este local todavía no tiene plazas abiertas."
-            : "This venue hasn't opened any bookable slots yet."}
+            ? event
+              ? "Este evento todavía no tiene plazas abiertas."
+              : "Este local todavía no tiene plazas abiertas."
+            : event
+              ? "This event hasn't opened any bookable slots yet."
+              : "This venue hasn't opened any bookable slots yet."}
+        </p>
+      </section>
+    );
+
+  if (
+    slots.every(
+      (slot) =>
+        Math.min(bookingGuestLimit(slot), remainingOverride[slot.id] ?? 100) ===
+        0,
+    )
+  )
+    return (
+      <section className="panel booking-wizard" role="status">
+        {error && (
+          <p role="alert" className="notice">
+            {error}
+          </p>
+        )}
+        <h2>{es ? "No quedan plazas disponibles" : "No places available"}</h2>
+        <p>
+          {es
+            ? "Los horarios publicados están completos. Vuelve a consultar la disponibilidad más tarde."
+            : "The published times are full. Check availability again later."}
         </p>
       </section>
     );
@@ -181,7 +226,14 @@ export function BookingWizard({
               >
                 <strong>{dateText(value[0].starts_at)}</strong>
                 <small>
-                  {value.length} {es ? "horarios" : "times"}
+                  {value.length}{" "}
+                  {es
+                    ? value.length === 1
+                      ? "horario"
+                      : "horarios"
+                    : value.length === 1
+                      ? "time"
+                      : "times"}
                 </small>
               </button>
             ))}
@@ -216,7 +268,19 @@ export function BookingWizard({
                     bookingGuestLimit(slot),
                     remainingOverride[slot.id] ?? 100,
                   )}{" "}
-                  {es ? "plazas libres" : "places left"}
+                  {es
+                    ? Math.min(
+                        bookingGuestLimit(slot),
+                        remainingOverride[slot.id] ?? 100,
+                      ) === 1
+                      ? "plaza libre"
+                      : "plazas libres"
+                    : Math.min(
+                          bookingGuestLimit(slot),
+                          remainingOverride[slot.id] ?? 100,
+                        ) === 1
+                      ? "place left"
+                      : "places left"}
                 </small>
                 <small>
                   {slot.offering_id
@@ -278,29 +342,16 @@ export function BookingWizard({
           </h3>
           <form
             id="customer-booking-form"
-            action={async (formData) => {
-              setBusy(true);
-              try {
-                const result = await submit(formData);
-                if (result?.error) {
-                  setError(result.error);
-                  if (result.remaining !== undefined) {
-                    setRemainingOverride((prev) => ({
-                      ...prev,
-                      [slotId]: result.remaining!,
-                    }));
-                    setStep(0);
-                  }
-                }
-              } finally {
-                setBusy(false);
-              }
-            }}
+            action={submitAction}
             className="booking-contact-form"
           >
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="slug" value={slug} />
             <input type="hidden" name="venueId" value={venueId} />
+            {event && <input type="hidden" name="eventId" value={event.id} />}
+            {event?.occurrence && (
+              <input type="hidden" name="occurrence" value={event.occurrence} />
+            )}
             <input type="hidden" name="slotId" value={slotId} />
             <input type="hidden" name="requestKey" value={requestKey} />
             <input type="hidden" name="partySize" value={selectedGuests} />
@@ -358,7 +409,14 @@ export function BookingWizard({
             {dateText(current.starts_at)} · {timeText(current.starts_at)}
           </strong>
           <span>
-            {selectedGuests} {es ? "personas" : "guests"}
+            {selectedGuests}{" "}
+            {es
+              ? selectedGuests === 1
+                ? "persona"
+                : "personas"
+              : selectedGuests === 1
+                ? "guest"
+                : "guests"}
           </span>
         </div>
         <div className="booking-wizard-navigation">

@@ -1,4 +1,4 @@
-/* AkiPasa Staff / Claims. Scoped: other moderation queues remain unchanged.
+/* AkiPasa Staff / Claims and scoped moderation action contrast.
  * The UI deliberately distinguishes submitted, unverified evidence from canonical
  * venue/account records. Layout responds to the actual workspace container width.
  */
@@ -622,4 +622,16 @@
   .claim-modern-venue-link {
     margin-left: 0;
   }
+}
+
+/* Staff queue decisions keep a readable danger identity in both workspace themes. */
+.staff-workspace .moderation-form .button.danger {
+  color: #fff;
+  background: #9f2d2d;
+  border-color: #9f2d2d;
+}
+.staff-workspace .moderation-form .button.danger:hover {
+  color: #fff;
+  background: #862626;
+  border-color: #862626;
 }

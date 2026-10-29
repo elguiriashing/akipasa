@@ -16,7 +16,7 @@ type Counts = {
   catalogueItems?: number | null;
   programs: number;
   credentials: number;
-  requests: number;
+  requests: number | null;
   members: number;
 };
 
@@ -83,10 +83,11 @@ export function VenueDashboard({
     };
   }, []);
   function countLabel(
-    value: number,
+    value: number | null,
     en: [string, string],
     spanish: [string, string],
   ) {
+    if (value === null) return es ? "No disponible" : "Unavailable";
     return `${value} ${(es ? spanish : en)[value === 1 ? 0 : 1]}`;
   }
   const tools: {

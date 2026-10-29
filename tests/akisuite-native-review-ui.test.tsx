@@ -74,7 +74,9 @@ it.each(["en", "es"] as const)(
       name: locale === "es" ? "Rechazar publicación" : "Reject publication",
     });
     fireEvent.click(button);
-    await screen.findByRole("status");
+    await screen.findByText(
+      locale === "es" ? "Revisión registrada." : "Review recorded.",
+    );
     await waitFor(() =>
       expect((button.closest("fieldset") as HTMLFieldSetElement).disabled).toBe(
         true,
@@ -82,5 +84,55 @@ it.each(["en", "es"] as const)(
     );
     expect(review).toHaveBeenCalledTimes(1);
     expect(review.mock.calls[0][0].publish).toBe(false);
+  },
+);
+it.each(["en", "es"] as const)(
+  "disables the %s decision while pending without claiming success",
+  async (locale) => {
+    let resolveReview!: (value: { ok: boolean; error?: string }) => void;
+    review.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveReview = resolve;
+        }),
+    );
+    render(
+      <NativeAccommodationReviewForm
+        property={property}
+        revision={revision}
+        locale={locale}
+      />,
+    );
+    const input = screen.getByLabelText(
+      locale === "es" ? "Motivo de la revisión" : "Review reason",
+    );
+    const approve = screen.getByRole("button", {
+      name: locale === "es" ? "Aprobar publicación" : "Approve publication",
+    });
+    expect((approve as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.change(input, {
+      target: { value: "Verified pending review reason" },
+    });
+    fireEvent.click(approve);
+    expect(screen.getByRole("status").textContent).toContain(
+      locale === "es" ? "Registrando" : "Recording",
+    );
+    expect((approve.closest("fieldset") as HTMLFieldSetElement).disabled).toBe(
+      true,
+    );
+    expect(
+      screen.queryByText(
+        locale === "es" ? "Revisión registrada." : "Review recorded.",
+      ),
+    ).toBeNull();
+    resolveReview({ ok: false, error: "unavailable" });
+    await screen.findByRole("alert");
+    expect((input as HTMLTextAreaElement).value).toBe(
+      "Verified pending review reason",
+    );
+    expect(screen.queryByRole("status")).toBeNull();
+    expect((approve.closest("fieldset") as HTMLFieldSetElement).disabled).toBe(
+      false,
+    );
   },
 );

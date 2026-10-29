@@ -2922,3 +2922,54 @@ is retained. Browser coverage asserts meaningful paragraph width on desktop too.
 ## 2026-10-29 | Observed automatic Cloudflare publication after verified cleanup
 
 All seven hosted workflows passed cleanup PR #331 before merge f3d2687fa66e53d4e529118eb08210ad9cc0ff45. Cloudflare automatically published it as deployment 96e0e51f-474a-496c-b7b0-1303fe8187d7 / version 884dda44-e95d-4266-8ce1-d7a4de5c54db, independently confirmed by the public release endpoint. The manual GitHub workflow is not the sole publication path: merging must itself be treated as production-impacting. Draft #332 consolidates the original #326/#327/#328 with preserved ancestry and remains blocked by genuine route/device/art acceptance. See coordinated release ledger for 2,209-test, browser, contrast and test-only packaging receipts. No notices, Tonight launch, billing, commercial campaigns or public presence were activated.
+
+## 2026-10-29 | Resume main release: truthful booking and continuous review surfaces
+
+Alex paused further AkiPals development/publication and returned priority to the
+single coordinated PR #332 redesign and customer journeys. The unpublished private
+creator remains checkpointed separately; it grants no main-route acceptance.
+
+Event booking reuses the existing BookingWizard and booking_available_slots
+remaining-capacity aggregate, preserving authenticated event/occurrence context,
+contact defaults and the original request_booking_v2 action. Read failures remain
+unavailable; empty and full inventory are distinct. External/inactive settings do
+not expose native requests. Return-query copy directs callers to their actual
+booking history rather than asserting a mutation from a URL alone. The shared
+wizard must prevent duplicate submission throughout a genuinely pending request;
+its venue caller retains the same fields and action boundary.
+
+Private business booking reads retain independent settings, notification,
+inventory and pending-count failures. Unknown settings/contact configuration must
+not expose a Save form with fallback values; dependent calendar editors wait for
+their required reads. Healthy independent service/resource sections remain usable.
+Recovery must restore authoritative settings before editing, including when React
+retains the client component. Unknown pending counts are not zero. Missing rows
+following successful reads retain their existing onboarding defaults.
+
+Staff pending queues use bounded twenty-row reads, exact counts and deterministic
+created_at/id ordering. Safe queue/page context survives existing decisions,
+authentication returns and retries; audited RPC payloads and claim notification
+semantics remain authoritative. Claims retain their existing privileged paged RPCs.
+Native administrator review pages use a route-local shared card/form stylesheet,
+visible headings and accessible pending/error/read-only states. Exact revision,
+reason, administrator and orphaned-property boundaries remain unchanged.
+
+These changes require focused regressions, actual responsive browser inspection,
+full check and exact-head CI before handoff. Disposable fixtures do not prove live
+authenticated roles or physical Android. The strict ninety-route acceptance gate
+remains mandatory; no route is accepted by this entry. No migration, customer-row,
+RLS/grant, consent, billing, email replay, Tonight activation or production change.
+Rollback is a source revert preserving all booking, audit and identity history.
+
+The consumer audit additionally reproduced the shared workspace drawer staying
+open after browser Back. Dismissal follows actual pathname/query changes while
+preserving initial and same-route interaction; Account browser fixtures retain the
+real shared-layout identity to test this lifecycle instead of remounting it away.
+Desktop navigation, role filtering, focus/Escape handling and native offsets remain
+authoritative. Final integrated tests and physical-device review remain required.
+
+Profile biography editing now matches the existing 2,000-character action and
+onboarding limit. A retained 500-character biography previously became invalid
+when edited because the form imposed 300; the existing data remains unchanged.
+EN/ES helper text and native validation agree. No profile action, schema, visibility
+or private identity boundary changes.

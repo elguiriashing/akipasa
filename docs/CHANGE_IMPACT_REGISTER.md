@@ -3606,3 +3606,55 @@ is retained. Browser coverage asserts meaningful paragraph width on desktop too.
 ## 2026-10-29 | Observed automatic Cloudflare publication after verified cleanup
 
 All seven hosted workflows passed cleanup PR #331 before merge f3d2687fa66e53d4e529118eb08210ad9cc0ff45. Cloudflare automatically published it as deployment 96e0e51f-474a-496c-b7b0-1303fe8187d7 / version 884dda44-e95d-4266-8ce1-d7a4de5c54db, independently confirmed by the public release endpoint. The manual GitHub workflow is not the sole publication path: merging must itself be treated as production-impacting. Draft #332 consolidates the original #326/#327/#328 with preserved ancestry and remains blocked by genuine route/device/art acceptance. See coordinated release ledger for 2,209-test, browser, contrast and test-only packaging receipts. No notices, Tonight launch, billing, commercial campaigns or public presence were activated.
+
+## 2026-10-29 | Main release resumed: booking read integrity and review continuity
+
+- **Direction:** Alex paused AkiPals and requested the original coordinated main
+  release. Existing private avatar candidate is checkpointed and unpublished;
+  production and the draft PR's strict acceptance boundary are retained.
+- **Event dependencies:** Event booking page -> shared BookingWizard -> unchanged
+  authenticated event action -> booking_available_slots/request_booking_v2. Native
+  settings, exact occurrence returns, caller contact defaults, stable request key,
+  remaining capacity, pending UI and empty/full/outage states require coverage;
+  venue booking must retain its original action payload without event fields.
+- **Private workspace dependencies:** VenueWorkspace -> BookingManager and
+  VenueDashboard. Independent Supabase read failures propagate explicitly so blind
+  saves cannot overwrite settings/notification data, calendar prerequisites remain
+  unknown and pending counts do not become zero. Successful missing rows retain
+  defaults. Recovered authoritative settings must replace stale initial client state.
+- **Staff dependencies:** Five selected pending-table reads -> stable twenty-row
+  pages/exact counts; claims keep existing authorized RPC pagination. Shared
+  moderation actions retain exact audited payloads and conditional claim mail while
+  returning allowlisted queue/page context. Role guards and RLS remain unchanged.
+- **Review layout dependencies:** NativeAccommodationReviewForm, both native admin
+  review pages and one scoped module; visible page headings, responsive cards,
+  labelled reason, retained pending/error reasons and read-only orphan state.
+  Existing administrator layout/action, UUID/revision validation and reason rules
+  remain authoritative. Shared navigation needs responsive obstruction inspection.
+- **Validation/limits:** Focused and browser suites are running; final counts,
+  source identities and screenshot receipts belong in the execution ledger after
+  completion. New browser harnesses join existing booking/tablet CI with artifacts.
+  No assertions/workflows/acceptance gates are disabled. Live roles, provider data,
+  physical Android and Alex's visual approval remain separate from fixtures.
+- **Rollback:** Revert source presentation/read adapters only; retain customer
+  booking/audit/identity history. No SQL migration, grant, billing, consent, email,
+  feature flag, production data or deployment configuration is changed.
+
+### Consumer workspace lifecycle and retained biography compatibility
+
+Actual browser Back/Forward reproduced an open Account drawer covering a new
+route. WorkspaceShell now closes on changed pathname/query identity, retaining
+initial/same-route taps, Escape focus return, outside/desktop dismissal and all
+role-filtered destinations. Traced Account/Staff/Admin persistent layouts and
+Business/Community/creator/owner callers; native offsets are unchanged. Account
+browser fixtures now preserve layout identity so this defect cannot be hidden by
+remounting. Twenty-five shell regressions and 48 selected Account browser cases
+pass with disposable boundaries; final full integration remains required.
+
+Profile's maxlength/helper now match the existing 2,000-character server/onboarding
+contract. Real Chromium reproduced a persisted 500-character bio becoming invalid
+after deletion to 499 under the old 300 limit; the repaired form accepts/submits
+that exact 499-character text. Sixteen Account-control cases pass. No stored
+profile, action, database, permission, consent or provider change. Suspected
+failed-action draft loss was not reproduced and is not claimed fixed. Rollback is
+a source revert; physical Android and live authenticated acceptance remain open.
