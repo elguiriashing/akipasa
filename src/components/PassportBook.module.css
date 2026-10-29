@@ -2269,11 +2269,11 @@
   color: #594737;
 }
 .page:not(:has(.cover)) .cityIndex button {
-  color: #3b2b20;
+  color: #f8fafc;
   border-bottom-color: rgba(75, 51, 29, 0.17);
 }
 .page:not(:has(.cover)) .cityIndex small {
-  color: #71543b;
+  color: #e2e8f0;
 }
 .page:not(:has(.cover)) .search {
   color: #604d3c;

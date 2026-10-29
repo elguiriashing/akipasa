@@ -256,7 +256,7 @@
     "src/app/[locale]/community/page.tsx": {
       "scope": "consumer",
       "status": "in-progress",
-      "note": ""
+      "note": "Private task forms/history now use continuous WorkspaceShell panels, localized display labels, approval-conditional copy and neutral created-query feedback. Existing caller/action/target/draft boundaries retained; 63 focused and 240 disposable browser cases passed. Full integrated exact-source/reviewer/device acceptance remains outstanding."
     },
     "src/app/[locale]/creators/[slug]/page.tsx": {
       "scope": "consumer",
@@ -321,7 +321,7 @@
     "src/app/[locale]/passports/page.tsx": {
       "scope": "consumer",
       "status": "in-progress",
-      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES."
+      "note": "Generated cover/index chapter URLs now survive server reload; existing invalid/default/city/feedback behavior retained. Photo-card city captions corrected for contrast; no check-in/XP mutations. 25 isolated production browser cases passed; final integrated source/reviewer/device acceptance remains outstanding."
     },
     "src/app/[locale]/passports/places/page.tsx": {
       "scope": "consumer",
@@ -366,7 +366,7 @@
     "src/app/[locale]/roadmap/page.tsx": {
       "scope": "consumer",
       "status": "in-progress",
-      "note": "Public ES/EN rollout roadmap. Await mobile, accessible preview and release verification."
+      "note": "Human 3D identity copy replaces stale mascot wording; AkiPals engineering remains paused. Expanded public tests visit lazy content and full page, rather than opening viewport alone. No release acceptance claimed."
     },
     "src/app/[locale]/staff/audit/page.tsx": {
       "scope": "operational",

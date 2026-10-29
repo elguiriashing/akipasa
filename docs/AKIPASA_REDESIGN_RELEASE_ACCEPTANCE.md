@@ -2,7 +2,7 @@
 
 **Scope:** All 103 source page routes. The 13 separate-product routes are deliberately excluded; 90 other consumer, operational and cross-product pages require review. The definitive source of route state is `docs/AKIPASA_UI_ROUTE_MATRIX_20261028.json`.
 
-**Current status:** work in progress. The seven existing GitHub workflows being green is not a substitute for this checklist. Never mark an unreviewed route accepted or merge solely to make the site appear updated.
+**Current status:** work in progress. Ordinary GitHub workflows being green is not a substitute for this checklist. Never mark an unreviewed route accepted or merge solely to make the site appear updated.
 
 ## Shared visual contract
 
@@ -20,6 +20,14 @@ All AkiPasa consumer pages use `AppShell` and its canonical `PasaBottomDock` (Ho
 | Shared entrypoints      | Root, /roadmap, /hq-login, waitlist confirmation            | Redirects, consent, correct product identity and operational safety                                                                                                 |
 
 ## Evidence requirements
+
+Review the six shared error, not-found and existing Admin loading states in
+`docs/AKIPASA_UI_FALLBACK_MATRIX_20261029.json` alongside their parent routes.
+The page-only inventory does not prove fallback-state acceptance. Preserve the
+original 404/307 guest and missing-route contracts; a global loading boundary was
+rejected after actual Next testing changed 404 to 200. Root-layout failures use
+the separate neutral bilingual global-error document. These states remain in
+progress until genuine reviewed-source/browser/device evidence exists.
 
 A route may move to `in-progress` when its common component or visual styling is implemented. **In-progress is never a sign-off.** For an `accepted` status, record a meaningful reviewer and the exact code commit reviewed, along with accessible GitHub Actions / PR links to real screenshots and functional test results. Use this object under the relevant route record:
 

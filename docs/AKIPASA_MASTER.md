@@ -2973,3 +2973,41 @@ onboarding limit. A retained 500-character biography previously became invalid
 when edited because the form imposed 300; the existing data remains unchanged.
 EN/ES helper text and native validation agree. No profile action, schema, visibility
 or private identity boundary changes.
+
+## 2026-10-29 | Below-fold consumer continuity and truthful fallback journeys
+
+The next main-release pass reviews full pages rather than only first viewports.
+Public evidence retains the original captures, visits lazy content, opens actual
+Passport chapters and scrolls their internal containers. Loaded-image failures
+remain visible in the receipt. Clipping the original traced brand image removes
+its duplicate embedded lettering without redrawing or replacing approved artwork;
+separate repeated-logo clip IDs preserve the semantic DOM wordmark. Roadmap copy
+now describes private human 3D avatar testing, not mascot adventures; the AkiPals
+engine remains user-paused.
+
+Community task views reuse the existing workspace header with continuous scoped
+form/history panels, localized display labels and corrected Spanish. Exact draft,
+address, search/target, feature-gate, caller-read and server-action contracts remain.
+Submission requires approval; a created query alone cannot prove submission.
+Passport accepts its own generated cover/index chapter URLs on return and retains
+existing city, feedback/default and invalid-query behavior. City names remain
+readable on their original photographic cards. No XP/check-in/reward mutation.
+
+The mobile dock reserves clearance after the outside privacy trigger, so a real
+page-bottom visit can reach it. Map/Passport/auth/focus exceptions retain their
+existing placements; native WebViews do not reserve a second safe area. Mobile
+header artwork uses paired opaque night/background and light wordmark colours
+instead of inheriting dark light-theme text over a scrolled dark header. Consent
+choices, requests and motion permissions are unchanged.
+
+Public missing/error views use a small public locale/product context and scoped
+presentation inside existing shells, preserving product homes and authorization.
+Errors never display provider messages, stacks or private route IDs. Explicit
+retry revalidates reads; it does not replay form mutations. A global root-layout
+failure uses a minimal neutral AkiSuite bilingual document with manual GET retry,
+without assuming an unavailable product/session context. The existing authorized
+Admin loading boundary reuses an honest indeterminate view. A global localized
+loading boundary was rejected after an actual framework test changed404 to200;
+existing404/307 contracts remain mandatory and their assertions are retained.
+No production fault route, activation, database, grant, billing or provider change.
+Full integrated/browser/CI and final source/device acceptance remain required.

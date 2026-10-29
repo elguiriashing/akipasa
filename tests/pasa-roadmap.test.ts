@@ -41,6 +41,18 @@ describe("Costa del Sol-first public launch roadmap", () => {
     expect(localized(launchPhases[0].title, "es")).toBe("Construirlo bien");
   });
 
+  it("describes private human avatar testing without mascot or adventure claims", () => {
+    const pals = roadmapFeatures.find((feature) => feature.name === "AkiPals")!;
+    expect(pals.detail.en).toContain("Humanlike 3D avatars");
+    expect(pals.detail.es).toContain("Avatares humanos 3D");
+    expect(pals.detail.en).toContain("private wardrobes");
+    expect(pals.detail.es).toContain("armarios privados");
+    expect(JSON.stringify({ pals, refine: launchPhases[2] })).not.toMatch(
+      /mascot|mascota|adventures|aventuras/i,
+    );
+    expect(pals.state).toBe("private");
+  });
+
   it("exposes both locale pages, public short URL and a reusable launch notice", () => {
     const short = readFileSync("src/app/roadmap/page.tsx", "utf8");
     const page = readFileSync("src/app/[locale]/roadmap/page.tsx", "utf8");

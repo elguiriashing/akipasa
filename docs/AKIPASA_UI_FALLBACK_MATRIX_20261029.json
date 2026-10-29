@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "description": "Fallback-state companion to the103-page route inventory. In progress is not release acceptance. Review these states with their parent routes and source-bound browser/device evidence.",
+  "boundaries": {
+    "src/app/not-found.tsx": {
+      "scope": "consumer",
+      "status": "in-progress",
+      "note": "Standalone product-aware missing-route view; actual status/noindex/locale and product home evidence required."
+    },
+    "src/app/error.tsx": {
+      "scope": "consumer",
+      "status": "in-progress",
+      "note": "Standalone route/layout-child error surface; explicit read refresh/reset, no private error text."
+    },
+    "src/app/[locale]/not-found.tsx": {
+      "scope": "consumer",
+      "status": "in-progress",
+      "note": "Missing-route view inside existing localized shell; preserve404 and existing authorization/redirect contracts."
+    },
+    "src/app/[locale]/error.tsx": {
+      "scope": "consumer",
+      "status": "in-progress",
+      "note": "Localized recoverable route error; manual retry revalidates reads without replaying form actions."
+    },
+    "src/app/[locale]/admin/loading.tsx": {
+      "scope": "operations",
+      "status": "in-progress",
+      "note": "Existing administrator loading boundary, reused embedded indeterminate view; no new public streaming boundary."
+    },
+    "src/app/global-error.tsx": {
+      "scope": "shared",
+      "status": "in-progress",
+      "note": "Root-layout failure bypasses product context: neutral bilingual AkiSuite document, explicit manual GET retry, no error details."
+    }
+  },
+  "preservedSeparateProductBoundaries": [
+    "src/app/akiduermo/error.tsx",
+    "src/app/akiduermo/not-found.tsx"
+  ],
+  "deliberatelyNotInstalled": {
+    "src/app/[locale]/loading.tsx": "Actual Next framework testing changed404 to200 when this global loading boundary streamed. Preserve original404/307 assertions; use only the existing authorized Admin boundary."
+  },
+  "accepted": 0
+}

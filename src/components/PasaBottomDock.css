@@ -67,6 +67,24 @@
   body:has(.pasa-dock) .app-content {
     padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px));
   }
+
+  /* The ordinary privacy trigger is outside AppShell, after its content inset.
+     Reserve clearance after that final control too, so it can scroll above the
+     fixed dock. Map and Passport keep their existing dedicated placements. */
+  html:not([data-owner-focus="true"])
+    body:has(.pasa-dock):not(:has(.auth-theme-akipasa, .map-page))
+    > .privacy-preferences:not(.privacy-preferences--passport) {
+    padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Native system bars already inset the WebView. */
+  html:not([data-owner-focus="true"])
+    body[data-android-app="true"]:has(.pasa-dock):not(
+      :has(.auth-theme-akipasa, .map-page)
+    )
+    > .privacy-preferences:not(.privacy-preferences--passport) {
+    padding-bottom: 7rem;
+  }
 }
 @media (prefers-reduced-transparency: reduce) {
   .app-bottom-nav.pasa-dock {

@@ -364,6 +364,10 @@ html[data-theme="light"]
 @media (max-width: 850px) {
   .app-shell .app-topbar-mobile {
     gap: 0.5rem;
+    background: #0b1423;
+  }
+  .app-shell .app-topbar-mobile .brand-wordmark {
+    color: #f7f9fd;
   }
   .app-shell .app-topbar-mobile .app-suite-mobile-trigger {
     display: inline-grid;

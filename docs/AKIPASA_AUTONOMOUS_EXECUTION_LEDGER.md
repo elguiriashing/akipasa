@@ -2,6 +2,43 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 29 October 2026 UTC.
 
+## Workspace recovered; main layout batch validated — 29 October 2026 18:20 UTC
+
+The original workspace was restored with all previously uncommitted sources intact.
+Binary tracked patch, all untracked source and a repository bundle were saved at
+`/workspace/akipasa-recovery-20261029` before fast-forwarding the docs-only remote
+checkpoint `68d44db4d0dbdfa8df5acccbc3b70cdb8bf493e6`. Local implementation notes
+were reconciled without replacing source. The offline final check was abandoned;
+it is not counted as passing. A fresh complete `npm run check` passed, including
+format, zero-warning lint, types, all configured tests, SQL/security/automation
+checks and optimized Next packaging. Log: `/tmp/akipasa-main-cycle2-recovered-check-unrestricted.log`.
+The first restored restricted-shell attempt could not run child-process tests;
+normal authorized subprocess/server access passed without application changes.
+
+Implemented: continuous localized Community task forms/history, original logo
+lettering cleanup, truthful Roadmap identity copy, Passport chapter reload and
+photo-caption contrast, reachable page-bottom privacy controls, readable mobile
+headers, product-aware error/not-found views and independent root-error recovery.
+AkiPals remains paused. No production data, consent defaults, rewards, schema or
+provider configuration changes. Existing 404/307 contracts remain mandatory.
+
+Fresh focused validation: Community63 unit/240 browser cases; route boundaries30
+unit/88 actual Next states; root-error8 browser cases plus21 focused global/auth/
+Account regressions. Source hashes match retained files. Representative fresh
+screenshots were inspected. Previous Passport25-browser and expanded public
+captures remain documented working-tree evidence; the complete integrated462-test
+run is now executing against a freshly built localhost disposable backend. It is
+not yet reported green. Source-bound receipt:
+`docs/receipts/AKIPASA_MAIN_LAYOUT_RECOVERY_20261029.json`.
+
+Current commit/push, exact-head hosted CI and independent clean Cloudflare
+packaging must be obtained next. All90 in-scope routes remain in progress, zero
+accepted; strict audit still exits2. Draft PR#332 remains unmerged and undeployed.
+Protected disposable credentials, physical Android and independent reviewer
+acceptance remain unavailable. Main business-home independent-read integrity is
+the next repair cycle; its agent works only in an isolated worktree. Root owns
+integration; no competing branch is deployed.
+
 ## Environment outage checkpoint — 29 October 2026 17:39 UTC
 
 The managed workspace became unavailable/offline during final integration.
@@ -24,6 +61,48 @@ Read `docs/AKIPASA_ENVIRONMENT_RECOVERY_20261029.md` for exact files, verified
 counts/hashes, receipts, failure history and executable restart commands.
 This remote documentation checkpoint preserves the continuation plan, not a
 pretend backup of unavailable uncommitted source. AkiPals remains user-paused.
+
+## Validated source and next layout cycle — 29 October 2026 17:01 UTC
+
+Current committed implementation is
+`969ead29e625e525cc9d1568b3d2a242833dd0a5` on
+`work/coordinated-release-20261029`, pushed to draft PR #332. Full check and the
+browser results below passed. Clean `npm run build:cloudflare` passed, and a
+second detached worktree `/workspace/akipasa-validation-969ead2` independently
+installed all 814 locked packages with `npm ci --offline` and packaged successfully.
+Both release-source assets contain that exact 40-character source SHA; the
+independent tracked tree is clean. Neither build was deployed.
+
+Fresh exact-head CI: all ten ordinary workflows passed, including full public-app
+check/Cloudflare packaging, Account/public UI, booking and tablet evidence. Hosted
+booking artifact12916152054 (SHA256
+`e8ee62cbd364d7ca264d1ba9a07ff257394a1bda947fccb899e03aee506a9304`)
+was downloaded and actual ES phone/private read-failure screenshots inspected; all
+eleven recorded event-source hashes match this commit. The strict gate fails
+as intended: <https://github.com/elguiriashing/akipasa/actions/runs/40916590885>.
+Do not promote queued/in-progress checks to success. Coordination receipt:
+<https://github.com/elguiriashing/akipasa/issues/330#issuecomment-6503061810>.
+
+Four-stream state: A consumer/operations continuity is implemented and being
+extended below the opening viewport; B AkiPals is user-paused and unpublished
+changes remain separate; C Tonight stays gated off because real future supply is
+zero, preserving check-in/XP authority; D booking read integrity and bounded
+operations fixes are validated, while actual protected-role/device acceptance
+still needs disposable access. No conflicting writer or production change.
+
+Next isolated assignments: Community workflow hierarchy/EN-ES display labels and
+truthful submission copy; full-page/lazy-image/Passport-interaction screenshots,
+Roadmap copy and original-mark clipping; product-aware public not-found/error/
+loading boundaries; stale opt-in protected-journey selectors. Root owns shared
+documentation, CI integration and final commit. All new work requires its own
+focused/browser/full checks. The earlier public screenshot suite captured only
+first viewports; it was not evidence that every lower section had been reviewed.
+Root-layout/global error coverage is a separate open fallback boundary.
+
+Production remains the last read-only verified Worker
+`884dda44-e95d-4266-8ce1-d7a4de5c54db`; exact new HTTPS source verification was blocked
+by the proxy. Preserve it for rollback and recheck before any release decision.
+All 90 in-scope routes remain in progress, zero accepted. No merge or deployment.
 
 ## Main repair batch validated — 29 October 2026 16:57 UTC
 

@@ -1,13 +1,11 @@
 import { notFound } from "next/navigation";
 import { CommunityLanding } from "@/components/community/CommunityLanding";
 import Link from "next/link";
-import {
-  ConsoleIcon,
-  ConsoleMetric,
-  ConsoleSectionHeader,
-} from "@/components/ConsoleChrome";
+import { Icon } from "@/components/Icons";
+import styles from "./community-workflows.module.css";
 import {
   WorkspaceShell,
+  WorkspacePageHeader,
   type WorkspaceItem,
 } from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
@@ -145,10 +143,6 @@ export default async function CommunityPage({
   const submissionsUnavailable = Boolean(submissionsResult.error);
   const reportsUnavailable = Boolean(reportsResult.error);
   const categoriesUnavailable = Boolean(categoriesResult.error);
-  const pendingSuggestions =
-    submissions?.filter((item) => item.state === "pending").length || 0;
-  const openReports =
-    reports?.filter((item) => item.state === "open").length || 0;
   const hasReportableItems = Boolean(events.length || venues.length);
   const base = `/${locale}/community`;
   const items: WorkspaceItem[] = communityCreatorItems(locale, {
@@ -167,473 +161,400 @@ export default async function CommunityPage({
       }
       homeHref={base}
       items={items}
+      hidePageHeading
     >
-      {query.created && (
-        <p className="notice">
-          {es
-            ? "Enviado correctamente para revision."
-            : "Submitted successfully for review."}
-        </p>
-      )}
-      {query.error && (
-        <p className="notice">
-          {query.error === "rate-limit"
-            ? es
-              ? "Has alcanzado el limite temporal de envios. Intentalo mas tarde."
-              : "You have reached the temporary submission limit. Try again later."
-            : es
-              ? "No se pudo enviar. Revisa los datos o si ya mandaste el mismo aviso."
-              : "Could not submit. Check the details or whether you already sent the same report."}
-        </p>
-      )}
+      <div className={styles.workflow}>
+        {query.created && (
+          <p className={styles.notice} role="status">
+            {es
+              ? "Consulta abajo el estado actual de tu envío."
+              : "Check your submission’s current status below."}
+          </p>
+        )}
+        {query.error && (
+          <p className={styles.notice} role="alert">
+            {query.error === "rate-limit"
+              ? es
+                ? "Has alcanzado el límite temporal de envíos. Inténtalo más tarde."
+                : "You have reached the temporary submission limit. Try again later."
+              : es
+                ? "No se pudo enviar. Revisa los datos o si ya mandaste el mismo aviso."
+                : "Could not submit. Check the details or whether you already sent the same report."}
+          </p>
+        )}
 
-      {view === "home" && (
-        <section
-          className="metrics-grid"
-          aria-label={es ? "Resumen" : "Summary"}
-        >
-          <ConsoleMetric
-            label={es ? "Aportes" : "Contributions"}
-            value={(submissions?.length || 0) + (reports?.length || 0)}
-            detail={es ? "Total enviados" : "Total submitted"}
-          />
-          <ConsoleMetric
-            label={es ? "En revision" : "In review"}
-            value={pendingSuggestions}
-            detail={es ? "Sugerencias pendientes" : "Pending suggestions"}
-          />
-          <ConsoleMetric
-            label={es ? "Avisos abiertos" : "Open reports"}
-            value={openReports}
-            detail={es ? "Esperando respuesta" : "Awaiting response"}
-          />
-          <ConsoleMetric
-            label={es ? "Catalogo" : "Catalogue"}
-            value={(events?.length || 0) + (venues?.length || 0)}
-            detail={es ? "Elementos reportables" : "Reportable items"}
-          />
-        </section>
-      )}
-
-      {view === "home" && (
-        <section className="console-section">
-          <ConsoleSectionHeader
-            label={es ? "Comunidad" : "Community"}
-            title={es ? "Que quieres hacer?" : "What do you need?"}
-            description={
-              es
-                ? "Elige una accion. Cada flujo tiene su propio espacio."
-                : "Choose an action. Each workflow has its own space."
-            }
-            icon="CO"
-          />
-          <div className="workspace-launcher">
-            <Link
-              className="workspace-launch-card"
-              href={`/${locale}/community/creators`}
-            >
-              <ConsoleIcon label="CR" />
-              <strong>
-                {es ? "Descubrir creadores" : "Discover creators"}
-              </strong>
-              <span aria-hidden="true">&rarr;</span>
-            </Link>
-            <Link
-              className="workspace-launch-card"
-              href={`/${locale}/community/creator`}
-            >
-              <ConsoleIcon label="ME" />
-              <strong>
-                {es ? "Gestionar mi perfil" : "Manage my creator profile"}
-              </strong>
-              <span aria-hidden="true">&rarr;</span>
-            </Link>
-            <Link
-              className="workspace-launch-card"
-              href={`/${locale}/community?view=suggest`}
-            >
-              <ConsoleIcon label="+E" />
-              <strong>{es ? "Sugerir un evento" : "Suggest an event"}</strong>
-              <span aria-hidden="true">&rarr;</span>
-            </Link>
-            <Link
-              className="workspace-launch-card"
-              href={`/${locale}/community?view=report`}
-            >
-              <ConsoleIcon label="!" />
-              <strong>
-                {es ? "Informar de un problema" : "Report a problem"}
-              </strong>
-              <span aria-hidden="true">&rarr;</span>
-            </Link>
-          </div>
-        </section>
-      )}
-
-      {(view === "suggest" || view === "report") && (
-        <section className="console-section">
-          <ConsoleSectionHeader
-            label={es ? "Contribuir" : "Contribute"}
-            title={
-              view === "suggest"
-                ? es
-                  ? "Sugerir un evento"
-                  : "Suggest an event"
-                : es
-                  ? "Informar de un problema"
-                  : "Report a problem"
-            }
-            description={
-              es
-                ? "Completa solo los datos necesarios para este flujo."
-                : "Complete only the details needed for this workflow."
-            }
-            icon="CO"
-          />
-          <div className="community-workspace focused-workspace">
-            {view === "suggest" && (
-              <section className="panel console-card contribution-card">
-                <div className="card-title-row">
-                  <ConsoleIcon label="+E">
-                    <svg viewBox="0 0 24 24">
-                      <path d="M6 5h12v14H6zM9 9h6M9 13h6" />
-                    </svg>
-                  </ConsoleIcon>
-                  <div>
-                    <h3>{es ? "Sugerir un evento" : "Suggest an event"}</h3>
-                    <p>
-                      {es
-                        ? "Envia los datos basicos. Se publicara tras la revision."
-                        : "Send the essentials. It will go live after review."}
-                    </p>
-                  </div>
-                </div>
-                {flagsUnavailable ? (
-                  <CommunityUnavailable
-                    locale={locale}
-                    href={`/${locale}/community?view=suggest`}
-                    label={
-                      es
-                        ? "La disponibilidad de sugerencias no se puede confirmar ahora."
-                        : "Suggestion availability cannot be confirmed right now."
-                    }
-                  />
-                ) : categoriesUnavailable ? (
-                  <CommunityUnavailable
-                    locale={locale}
-                    href={`/${locale}/community?view=suggest`}
-                    label={
-                      es
-                        ? "Las categorías no están disponibles ahora."
-                        : "Categories are unavailable right now."
-                    }
-                  />
-                ) : flags.community_submissions ? (
-                  <ContributionDraftForm
-                    action={submitCommunityEvent}
-                    className="stack"
-                    draftKey={`akipasa:community:${locale}:suggest`}
-                    recover={
-                      query.error === "submission" ||
-                      query.error === "rate-limit"
-                    }
-                    locale={locale}
-                  >
-                    <input type="hidden" name="locale" value={locale} />
-                    <div className="two-col">
-                      <label>
-                        {es ? "Nombre del local" : "Venue name"}
-                        <input name="venueName" required minLength={2} />
-                      </label>
-                      <SpainAddressAutocomplete
-                        locale={locale}
-                        mode="address"
-                        name="venueAddress"
-                        label={es ? "Direccion" : "Address"}
-                      />
+        {(view === "suggest" || view === "report") && (
+          <section className={styles.section}>
+            <WorkspacePageHeader
+              level={1}
+              eyebrow={es ? "Contribuir" : "Contribute"}
+              title={
+                view === "suggest"
+                  ? es
+                    ? "Sugerir un evento"
+                    : "Suggest an event"
+                  : es
+                    ? "Informar de un problema"
+                    : "Report a problem"
+              }
+              description={
+                es
+                  ? "Completa solo los datos necesarios para este flujo."
+                  : "Complete only the details needed for this workflow."
+              }
+            />
+            <div className={styles.content}>
+              {view === "suggest" && (
+                <section className={styles.formCard}>
+                  <header className={styles.cardHeader}>
+                    <span className={styles.icon} aria-hidden="true">
+                      <Icon name="calendar" />
+                    </span>
+                    <div>
+                      <h2>{es ? "Datos del evento" : "Event details"}</h2>
+                      <p>
+                        {es
+                          ? "Envía los datos básicos para que el equipo los revise. La publicación depende de su aprobación."
+                          : "Send the essentials for the team to review. Publication depends on approval."}
+                      </p>
                     </div>
-                    <label>
-                      {es ? "Categoria" : "Category"}
-                      <select name="categoryId" required defaultValue="">
-                        <option value="" disabled>
-                          {es
-                            ? "Selecciona una categoria"
-                            : "Choose a category"}
-                        </option>
-                        {(categories || []).map((category) => (
-                          <option key={category.id} value={category.id}>
+                  </header>
+                  {flagsUnavailable ? (
+                    <CommunityUnavailable
+                      locale={locale}
+                      href={`/${locale}/community?view=suggest`}
+                      label={
+                        es
+                          ? "La disponibilidad de sugerencias no se puede confirmar ahora."
+                          : "Suggestion availability cannot be confirmed right now."
+                      }
+                    />
+                  ) : categoriesUnavailable ? (
+                    <CommunityUnavailable
+                      locale={locale}
+                      href={`/${locale}/community?view=suggest`}
+                      label={
+                        es
+                          ? "Las categorías no están disponibles ahora."
+                          : "Categories are unavailable right now."
+                      }
+                    />
+                  ) : flags.community_submissions ? (
+                    <ContributionDraftForm
+                      action={submitCommunityEvent}
+                      className={styles.form}
+                      draftKey={`akipasa:community:${locale}:suggest`}
+                      recover={
+                        query.error === "submission" ||
+                        query.error === "rate-limit"
+                      }
+                      locale={locale}
+                    >
+                      <input type="hidden" name="locale" value={locale} />
+                      <div className="two-col">
+                        <label>
+                          {es ? "Nombre del local" : "Venue name"}
+                          <input name="venueName" required minLength={2} />
+                        </label>
+                        <SpainAddressAutocomplete
+                          locale={locale}
+                          mode="address"
+                          name="venueAddress"
+                          label={es ? "Dirección" : "Address"}
+                        />
+                      </div>
+                      <label>
+                        {es ? "Categoría" : "Category"}
+                        <select name="categoryId" required defaultValue="">
+                          <option value="" disabled>
                             {es
-                              ? category.name_es
-                              : category.name_en || category.name_es}
+                              ? "Selecciona una categoría"
+                              : "Choose a category"}
                           </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label>
-                      {es ? "Titulo del evento" : "Event title"}
-                      <input name="title" required minLength={3} />
-                    </label>
-                    <label>
-                      {es ? "Descripcion" : "Description"}
-                      <textarea name="description" required minLength={20} />
-                    </label>
-                    <div className="two-col">
-                      <label>
-                        {es ? "Inicio" : "Starts"}
-                        <input name="startsAt" type="datetime-local" required />
+                          {(categories || []).map((category) => (
+                            <option key={category.id} value={category.id}>
+                              {es
+                                ? category.name_es
+                                : category.name_en || category.name_es}
+                            </option>
+                          ))}
+                        </select>
                       </label>
                       <label>
-                        {es ? "Fin" : "Ends"}
-                        <input name="endsAt" type="datetime-local" required />
+                        {es ? "Título del evento" : "Event title"}
+                        <input name="title" required minLength={3} />
                       </label>
-                    </div>
-                    <label>
+                      <label>
+                        {es ? "Descripción" : "Description"}
+                        <textarea name="description" required minLength={20} />
+                      </label>
+                      <div className="two-col">
+                        <label>
+                          {es ? "Inicio" : "Starts"}
+                          <input
+                            name="startsAt"
+                            type="datetime-local"
+                            required
+                          />
+                        </label>
+                        <label>
+                          {es ? "Fin" : "Ends"}
+                          <input name="endsAt" type="datetime-local" required />
+                        </label>
+                      </div>
+                      <label>
+                        {es
+                          ? "Fuente HTTPS (opcional)"
+                          : "HTTPS source (optional)"}
+                        <input
+                          name="sourceUrl"
+                          type="url"
+                          placeholder="https://"
+                        />
+                      </label>
+                      <button className={styles.submit} type="submit">
+                        {es ? "Enviar a revisión" : "Submit for review"}
+                      </button>
+                    </ContributionDraftForm>
+                  ) : (
+                    <p className={styles.notice} role="status">
                       {es
-                        ? "Fuente HTTPS (opcional)"
-                        : "HTTPS source (optional)"}
-                      <input
-                        name="sourceUrl"
-                        type="url"
-                        placeholder="https://"
-                      />
-                    </label>
-                    <button className="button" type="submit">
-                      {es ? "Enviar a revision" : "Submit for review"}
-                    </button>
-                  </ContributionDraftForm>
-                ) : (
-                  <p className="notice">
-                    {es
-                      ? "Las sugerencias estan pausadas temporalmente."
-                      : "Event suggestions are temporarily paused."}
-                  </p>
-                )}
-              </section>
-            )}
-
-            {view === "report" && (
-              <section className="panel console-card contribution-card report-card">
-                <div className="card-title-row">
-                  <ConsoleIcon label="!">
-                    <svg viewBox="0 0 24 24">
-                      <path d="M12 4 21 20H3L12 4Z" />
-                      <path d="M12 9v5M12 17h.01" />
-                    </svg>
-                  </ConsoleIcon>
-                  <div>
-                    <h3>
-                      {es ? "Informar de un problema" : "Report a problem"}
-                    </h3>
-                    <p>
-                      {es
-                        ? "Senala informacion incorrecta, duplicada o sospechosa."
-                        : "Flag incorrect, duplicate or suspicious information."}
+                        ? "Las sugerencias están pausadas temporalmente."
+                        : "Event suggestions are temporarily paused."}
                     </p>
-                  </div>
-                </div>
-                <form className="stack" action={`/${locale}/community`}>
-                  <input type="hidden" name="view" value="report" />
-                  {validRequestedTarget && (
-                    <input
-                      type="hidden"
-                      name="target"
-                      value={requestedTarget}
-                    />
                   )}
-                  <label>
-                    {es ? "Buscar evento o local" : "Search events or venues"}
-                    <input
-                      type="search"
-                      name="target_q"
-                      defaultValue={reportSearch}
-                      maxLength={80}
-                    />
-                  </label>
-                  <button className="button secondary" type="submit">
-                    {es ? "Buscar" : "Search"}
-                  </button>
-                </form>
-                {reportTargetsUnavailable ? (
-                  <CommunityUnavailable
-                    locale={locale}
-                    href={communityWorkflowPath(locale, "report", {
-                      target: requestedTarget,
-                      targetQuery: reportSearch,
-                    })}
-                    label={
-                      es
-                        ? "Los elementos publicados no están disponibles ahora."
-                        : "Published report targets are unavailable right now."
-                    }
-                  />
-                ) : (
-                  <ContributionDraftForm
-                    action={submitReport}
-                    className="stack"
-                    draftKey={`akipasa:community:${locale}:report`}
-                    recover={
-                      query.error === "report" || query.error === "rate-limit"
-                    }
-                    locale={locale}
-                  >
-                    <input type="hidden" name="locale" value={locale} />
-                    {reportSearch && (
+                </section>
+              )}
+
+              {view === "report" && (
+                <section className={styles.formCard}>
+                  <header className={styles.cardHeader}>
+                    <span className={styles.icon} aria-hidden="true">
+                      <Icon name="megaphone" />
+                    </span>
+                    <div>
+                      <h2>{es ? "Detalles del aviso" : "Report details"}</h2>
+                      <p>
+                        {es
+                          ? "Señala información incorrecta, duplicada o sospechosa."
+                          : "Flag incorrect, duplicate or suspicious information."}
+                      </p>
+                    </div>
+                  </header>
+                  <form className={styles.form} action={`/${locale}/community`}>
+                    <input type="hidden" name="view" value="report" />
+                    {validRequestedTarget && (
                       <input
                         type="hidden"
-                        name="target_q"
-                        value={reportSearch}
+                        name="target"
+                        value={requestedTarget}
                       />
                     )}
                     <label>
-                      {es ? "Elemento" : "Item"}
-                      <select
-                        name="target"
-                        required
-                        defaultValue={requestedTarget}
+                      {es ? "Buscar evento o local" : "Search events or venues"}
+                      <input
+                        type="search"
+                        name="target_q"
+                        defaultValue={reportSearch}
+                        maxLength={80}
+                      />
+                    </label>
+                    <button className={styles.secondary} type="submit">
+                      {es ? "Buscar" : "Search"}
+                    </button>
+                  </form>
+                  {reportTargetsUnavailable ? (
+                    <CommunityUnavailable
+                      locale={locale}
+                      href={communityWorkflowPath(locale, "report", {
+                        target: requestedTarget,
+                        targetQuery: reportSearch,
+                      })}
+                      label={
+                        es
+                          ? "Los elementos publicados no están disponibles ahora."
+                          : "Published report targets are unavailable right now."
+                      }
+                    />
+                  ) : (
+                    <ContributionDraftForm
+                      action={submitReport}
+                      className={styles.form}
+                      draftKey={`akipasa:community:${locale}:report`}
+                      recover={
+                        query.error === "report" || query.error === "rate-limit"
+                      }
+                      locale={locale}
+                    >
+                      <input type="hidden" name="locale" value={locale} />
+                      {reportSearch && (
+                        <input
+                          type="hidden"
+                          name="target_q"
+                          value={reportSearch}
+                        />
+                      )}
+                      <label>
+                        {es ? "Elemento" : "Item"}
+                        <select
+                          name="target"
+                          required
+                          defaultValue={requestedTarget}
+                          disabled={!hasReportableItems}
+                        >
+                          <option value="" disabled>
+                            {es
+                              ? "Selecciona un evento o local"
+                              : "Select an event or venue"}
+                          </option>
+                          <optgroup label={es ? "Eventos" : "Events"}>
+                            {events.map((event) => (
+                              <option
+                                key={event.id}
+                                value={`event:${event.id}`}
+                              >
+                                {locale === "es"
+                                  ? event.title_es
+                                  : event.title_en || event.title_es}
+                              </option>
+                            ))}
+                          </optgroup>
+                          <optgroup label={es ? "Locales" : "Venues"}>
+                            {venues.map((venue) => (
+                              <option
+                                key={venue.id}
+                                value={`venue:${venue.id}`}
+                              >
+                                {venue.name}
+                              </option>
+                            ))}
+                          </optgroup>
+                        </select>
+                      </label>
+                      {!hasReportableItems && (
+                        <p className={styles.empty}>
+                          {es
+                            ? "No hay elementos publicados disponibles para informar."
+                            : "There are no published items available to report."}
+                        </p>
+                      )}
+                      <label>
+                        {es ? "Motivo" : "Reason"}
+                        <select name="reason" required>
+                          <option value="cancelled">
+                            {es ? "Cancelado" : "Cancelled"}
+                          </option>
+                          <option value="duplicate">
+                            {es ? "Duplicado" : "Duplicate"}
+                          </option>
+                          <option value="incorrect">
+                            {es ? "Datos incorrectos" : "Incorrect details"}
+                          </option>
+                          <option value="scam">{es ? "Estafa" : "Scam"}</option>
+                          <option value="other">{es ? "Otro" : "Other"}</option>
+                        </select>
+                      </label>
+                      <label>
+                        {es ? "Detalles" : "Details"}
+                        <textarea name="details" required minLength={10} />
+                      </label>
+                      <button
+                        className={styles.submit}
+                        type="submit"
                         disabled={!hasReportableItems}
                       >
-                        <option value="" disabled>
-                          {es
-                            ? "Selecciona un evento o local"
-                            : "Select an event or venue"}
-                        </option>
-                        <optgroup label={es ? "Eventos" : "Events"}>
-                          {events.map((event) => (
-                            <option key={event.id} value={`event:${event.id}`}>
-                              {locale === "es"
-                                ? event.title_es
-                                : event.title_en || event.title_es}
-                            </option>
-                          ))}
-                        </optgroup>
-                        <optgroup label={es ? "Locales" : "Venues"}>
-                          {venues.map((venue) => (
-                            <option key={venue.id} value={`venue:${venue.id}`}>
-                              {venue.name}
-                            </option>
-                          ))}
-                        </optgroup>
-                      </select>
-                    </label>
-                    {!hasReportableItems && (
-                      <p className="empty-state">
-                        {es
-                          ? "No hay elementos publicados disponibles para informar."
-                          : "There are no published items available to report."}
-                      </p>
-                    )}
-                    <label>
-                      {es ? "Motivo" : "Reason"}
-                      <select name="reason" required>
-                        <option value="cancelled">
-                          {es ? "Cancelado" : "Cancelled"}
-                        </option>
-                        <option value="duplicate">
-                          {es ? "Duplicado" : "Duplicate"}
-                        </option>
-                        <option value="incorrect">
-                          {es ? "Datos incorrectos" : "Incorrect details"}
-                        </option>
-                        <option value="scam">Scam</option>
-                        <option value="other">{es ? "Otro" : "Other"}</option>
-                      </select>
-                    </label>
-                    <label>
-                      {es ? "Detalles" : "Details"}
-                      <textarea name="details" required minLength={10} />
-                    </label>
-                    <button
-                      className="button"
-                      type="submit"
-                      disabled={!hasReportableItems}
-                    >
-                      {es ? "Enviar aviso" : "Submit report"}
-                    </button>
-                  </ContributionDraftForm>
-                )}
-              </section>
+                        {es ? "Enviar aviso" : "Submit report"}
+                      </button>
+                    </ContributionDraftForm>
+                  )}
+                </section>
+              )}
+            </div>
+          </section>
+        )}
+
+        {view === "suggestions" && (
+          <section className={styles.section}>
+            <WorkspacePageHeader
+              level={1}
+              eyebrow={es ? "Sugerencias" : "Suggestions"}
+              title={es ? "Tus eventos propuestos" : "Your proposed events"}
+              description={
+                es
+                  ? "Consulta el estado de cada aporte enviado."
+                  : "Track the status of every contribution you have sent."
+              }
+            />
+            {submissionsUnavailable ? (
+              <CommunityUnavailable
+                locale={locale}
+                href={`/${locale}/community?view=suggestions`}
+                label={
+                  es
+                    ? "Tus sugerencias no están disponibles ahora."
+                    : "Your suggestions are unavailable right now."
+                }
+              />
+            ) : (
+              <ContributionList
+                locale={locale}
+                empty={
+                  es
+                    ? "Aún no has enviado sugerencias."
+                    : "No suggestions submitted yet."
+                }
+                items={(submissions || []).map((item) => ({
+                  id: item.id,
+                  title: item.title,
+                  detail: new Date(item.created_at).toLocaleDateString(locale),
+                  state: item.state,
+                }))}
+              />
             )}
-          </div>
-        </section>
-      )}
+          </section>
+        )}
 
-      {view === "suggestions" && (
-        <section className="console-section">
-          <ConsoleSectionHeader
-            label={es ? "Sugerencias" : "Suggestions"}
-            title={es ? "Tus eventos propuestos" : "Your proposed events"}
-            description={
-              es
-                ? "Consulta el estado de cada aporte enviado."
-                : "Track the status of every contribution you have sent."
-            }
-            icon="EV"
-          />
-          {submissionsUnavailable ? (
-            <CommunityUnavailable
-              locale={locale}
-              href={`/${locale}/community?view=suggestions`}
-              label={
+        {view === "reports" && (
+          <section className={styles.section}>
+            <WorkspacePageHeader
+              level={1}
+              eyebrow={es ? "Avisos" : "Reports"}
+              title={es ? "Problemas comunicados" : "Reported problems"}
+              description={
                 es
-                  ? "Tus sugerencias no están disponibles ahora."
-                  : "Your suggestions are unavailable right now."
+                  ? "Historial y estado de tus avisos a moderación."
+                  : "History and status of your reports to moderation."
               }
             />
-          ) : (
-            <ContributionList
-              empty={
-                es
-                  ? "Aun no has enviado sugerencias."
-                  : "No suggestions submitted yet."
-              }
-              items={(submissions || []).map((item) => ({
-                id: item.id,
-                title: item.title,
-                detail: new Date(item.created_at).toLocaleDateString(locale),
-                state: item.state,
-              }))}
-            />
-          )}
-        </section>
-      )}
-
-      {view === "reports" && (
-        <section className="console-section">
-          <ConsoleSectionHeader
-            label={es ? "Avisos" : "Reports"}
-            title={es ? "Problemas comunicados" : "Reported problems"}
-            description={
-              es
-                ? "Historial y estado de tus avisos a moderacion."
-                : "History and status of your reports to moderation."
-            }
-            icon="RP"
-          />
-          {reportsUnavailable ? (
-            <CommunityUnavailable
-              locale={locale}
-              href={`/${locale}/community?view=reports`}
-              label={
-                es
-                  ? "Tus avisos no están disponibles ahora."
-                  : "Your reports are unavailable right now."
-              }
-            />
-          ) : (
-            <ContributionList
-              empty={
-                es ? "Aun no has enviado avisos." : "No reports submitted yet."
-              }
-              items={(reports || []).map((item) => ({
-                id: item.id,
-                title: `${item.target_type} / ${item.reason}`,
-                detail: new Date(item.created_at).toLocaleDateString(locale),
-                state: item.state,
-              }))}
-            />
-          )}
-        </section>
-      )}
+            {reportsUnavailable ? (
+              <CommunityUnavailable
+                locale={locale}
+                href={`/${locale}/community?view=reports`}
+                label={
+                  es
+                    ? "Tus avisos no están disponibles ahora."
+                    : "Your reports are unavailable right now."
+                }
+              />
+            ) : (
+              <ContributionList
+                locale={locale}
+                empty={
+                  es
+                    ? "Aún no has enviado avisos."
+                    : "No reports submitted yet."
+                }
+                items={(reports || []).map((item) => ({
+                  id: item.id,
+                  title: `${displayLabel("target", item.target_type, locale)} · ${displayLabel("reason", item.reason, locale)}`,
+                  detail: new Date(item.created_at).toLocaleDateString(locale),
+                  state: item.state,
+                }))}
+              />
+            )}
+          </section>
+        )}
+      </div>
     </WorkspaceShell>
   );
 }
@@ -648,7 +569,7 @@ function CommunityUnavailable({
   label: string;
 }) {
   return (
-    <p className="notice" role="alert">
+    <p className={styles.notice} role="alert">
       {label}{" "}
       <Link href={href}>{locale === "es" ? "Reintentar" : "Retry"}</Link>
     </p>
@@ -656,30 +577,62 @@ function CommunityUnavailable({
 }
 
 function ContributionList({
+  locale,
   empty,
   items,
 }: {
+  locale: "es" | "en";
   empty: string;
   items: Array<{ id: string; title: string; detail: string; state: string }>;
 }) {
   return (
-    <section className="panel contribution-list">
+    <section className={styles.history}>
       {items.length ? (
         items.map((item) => (
-          <article className="contribution-row" key={item.id}>
-            <span className="contribution-mark" aria-hidden="true">
+          <article className={styles.historyRow} key={item.id}>
+            <span className={styles.historyMark} aria-hidden="true">
               {item.title.slice(0, 1).toUpperCase()}
             </span>
             <div>
               <strong>{item.title}</strong>
               <span>{item.detail}</span>
             </div>
-            <span className="status-pill">{item.state}</span>
+            <span className={styles.status} data-state={item.state}>
+              {displayLabel("state", item.state, locale)}
+            </span>
           </article>
         ))
       ) : (
-        <p className="empty-state">{empty}</p>
+        <p className={styles.empty}>{empty}</p>
       )}
     </section>
   );
+}
+
+const displayLabels = {
+  state: {
+    pending: ["Pending", "Pendiente"],
+    approved: ["Approved", "Aprobado"],
+    rejected: ["Rejected", "Rechazado"],
+    open: ["Open", "Abierto"],
+    resolved: ["Resolved", "Resuelto"],
+    dismissed: ["Dismissed", "Descartado"],
+  },
+  target: { event: ["Event", "Evento"], venue: ["Venue", "Local"] },
+  reason: {
+    cancelled: ["Cancelled", "Cancelado"],
+    duplicate: ["Duplicate", "Duplicado"],
+    incorrect: ["Incorrect details", "Datos incorrectos"],
+    scam: ["Scam", "Estafa"],
+    other: ["Other", "Otro"],
+  },
+} as const;
+function displayLabel(
+  group: keyof typeof displayLabels,
+  value: string,
+  locale: "en" | "es",
+) {
+  const labels: Record<string, readonly [string, string]> =
+    displayLabels[group];
+  return labels[value]?.[locale === "es" ? 1 : 0] || value;
 }

@@ -45,8 +45,8 @@ export const launchPhases: readonly LaunchPhase[] = [
     eyebrow: { en: "03 · Learn and improve", es: "03 · Escuchar y mejorar" },
     title: { en: "More reasons to return", es: "Más motivos para volver" },
     description: {
-      en: "Use genuine feedback to improve Community, verified check-ins, Passport achievements and our AkiPals mascot experience.",
-      es: "Usar opiniones reales para mejorar Comunidad, check-ins verificados, logros del Pasaporte y nuestros personajes AkiPals.",
+      en: "Use genuine feedback to improve Community, verified check-ins, Passport achievements and our humanlike 3D AkiPals avatars.",
+      es: "Usar opiniones reales para mejorar Comunidad, check-ins verificados, logros del Pasaporte y nuestros avatares humanos 3D AkiPals.",
     },
     schedule: {
       en: "After the first rollout",
@@ -110,8 +110,8 @@ export const roadmapFeatures: readonly RoadmapFeature[] = [
     name: "AkiPals",
     label: { en: "Private playtest", es: "Pruebas privadas" },
     detail: {
-      en: "Virtual companions, outfits and adventures.",
-      es: "Mascotas virtuales, conjuntos y aventuras.",
+      en: "Humanlike 3D avatars and private wardrobes, in private testing.",
+      es: "Avatares humanos 3D y armarios privados, en pruebas privadas.",
     },
     state: "private",
   },

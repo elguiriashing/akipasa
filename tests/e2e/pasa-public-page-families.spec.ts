@@ -58,7 +58,7 @@ test.describe("AkiPasa shared public page-family visuals", () => {
             {
               name: "ak_consent_version",
               value: "2",
-              url: "http://127.0.0.1:3100",
+              url: test.info().project.use.baseURL || "http://127.0.0.1:3100",
             },
           ]);
           const evidence: Array<{
@@ -68,6 +68,11 @@ test.describe("AkiPasa shared public page-family visuals", () => {
             viewport: string;
             screenshot: string;
             theme: string;
+            fullPageScreenshot?: string;
+            belowFoldScreenshot?: string;
+            documentHeight?: number;
+            failedImages?: string[];
+            passportScreenshots?: string[];
           }> = [];
 
           for (const path of publicSurfaces) {
@@ -235,7 +240,152 @@ test.describe("AkiPasa shared public page-family visuals", () => {
               fullPage: false,
               animations: "disabled",
             });
+            if (path === "" && device.width === 360) {
+              const logo = page.locator(".brand-logo:visible").first();
+              await expect(logo.locator("image")).toHaveAttribute(
+                "clip-path",
+                /^url\(#brand-mark-/,
+              );
+              await logo.screenshot({
+                path: screenshot.replace(".png", "-brand.png"),
+                animations: "disabled",
+              });
+            }
+            const extended: {
+              fullPageScreenshot?: string;
+              belowFoldScreenshot?: string;
+              documentHeight?: number;
+              failedImages?: string[];
+              passportScreenshots?: string[];
+            } = {};
+            if (
+              [360, 1440].includes(device.width) &&
+              [
+                "",
+                "/community",
+                "/roadmap",
+                "/privacy",
+                "/terms",
+                "/photo-credits",
+                "/passports",
+              ].includes(path)
+            ) {
+              // Visit the whole document before capture: fullPage alone does not
+              // trigger off-screen lazy images or prove bottom controls usable.
+              const height = await page.evaluate(
+                () => document.documentElement.scrollHeight,
+              );
+              for (let y = 0; y < height; y += device.height * 0.75) {
+                await page.evaluate((top) => window.scrollTo(0, top), y);
+                await page.waitForTimeout(75);
+              }
+              await page.evaluate(async () => {
+                await Promise.all(
+                  [...document.images]
+                    .filter(
+                      (image) =>
+                        image.currentSrc &&
+                        image.loading === "lazy" &&
+                        image.complete,
+                    )
+                    .map((image) => image.decode().catch(() => undefined)),
+                );
+              });
+              await page.evaluate(() =>
+                window.scrollTo(0, document.documentElement.scrollHeight),
+              );
+              const scrollState = await page.evaluate(() => ({
+                top: scrollY,
+                height: document.documentElement.scrollHeight,
+                viewport: innerHeight,
+                failedImages: [...document.images]
+                  .filter(
+                    (image) =>
+                      image.currentSrc && image.complete && !image.naturalWidth,
+                  )
+                  .map((image) => image.currentSrc),
+              }));
+              if (scrollState.height > scrollState.viewport + 2)
+                expect(
+                  scrollState.top,
+                  `${route}: actually visited below-fold content`,
+                ).toBeGreaterThan(0);
+              extended.failedImages = scrollState.failedImages;
+              const footer = page.locator("footer").last();
+              if (path !== "/passports" && (await footer.count()))
+                await expect(footer).toBeVisible();
+              extended.documentHeight = await page.evaluate(
+                () => document.documentElement.scrollHeight,
+              );
+              extended.belowFoldScreenshot = screenshot.replace(
+                ".png",
+                "-below-fold.png",
+              );
+              await page.screenshot({
+                path: extended.belowFoldScreenshot,
+                animations: "disabled",
+              });
+              await page.evaluate(() => window.scrollTo(0, 0));
+              extended.fullPageScreenshot = screenshot.replace(
+                ".png",
+                "-full-page.png",
+              );
+              await page.screenshot({
+                path: extended.fullPageScreenshot,
+                fullPage: true,
+                animations: "disabled",
+              });
+              if (path === "/passports") {
+                await page
+                  .getByRole("button", {
+                    name: locale === "es" ? "Abrir pasaporte" : "Open passport",
+                    exact: true,
+                  })
+                  .click();
+                await expect(
+                  page.getByRole("heading", {
+                    name: locale === "es" ? "Ciudades" : "Cities",
+                    exact: true,
+                  }),
+                ).toBeVisible();
+                extended.passportScreenshots = [];
+                for (const chapter of ["index", "progress"] as const) {
+                  if (chapter === "progress") {
+                    if (device.width === 360)
+                      await page
+                        .getByRole("button", {
+                          name:
+                            locale === "es"
+                              ? "Abrir menú del pasaporte"
+                              : "Open passport menu",
+                          exact: true,
+                        })
+                        .click();
+                    await page
+                      .getByRole("button", {
+                        name: locale === "es" ? /Mi viaje/ : /My journey/,
+                      })
+                      .first()
+                      .click();
+                    await expect(
+                      page.getByRole("heading", {
+                        name: locale === "es" ? "Mi viaje" : "My journey",
+                        exact: true,
+                      }),
+                    ).toBeVisible();
+                  }
+                  const capture = screenshot.replace(".png", `-${chapter}.png`);
+                  await page.screenshot({
+                    path: capture,
+                    fullPage: true,
+                    animations: "disabled",
+                  });
+                  extended.passportScreenshots.push(capture);
+                }
+              }
+            }
             evidence.push({
+              ...extended,
               route,
               surface,
               status: response!.status(),
@@ -261,6 +411,91 @@ test.describe("AkiPasa shared public page-family visuals", () => {
       }
     }
   }
+
+  test("Passport chapters expose their actual internal below-fold content", async ({
+    page,
+  }) => {
+    test.setTimeout(120_000);
+    const evidence = [];
+    await page.context().addCookies([
+      {
+        name: "ak_consent_version",
+        value: "2",
+        url: test.info().project.use.baseURL || "http://127.0.0.1:3100",
+      },
+    ]);
+    for (const locale of ["en", "es"] as const)
+      for (const width of [360, 1440])
+        for (const theme of ["dark", "light"] as const) {
+          await page.setViewportSize({ width, height: 900 });
+          await page.emulateMedia({
+            reducedMotion: "reduce",
+            colorScheme: theme,
+          });
+          await page.addInitScript(
+            (value) => localStorage.setItem("akipasa.theme", value),
+            theme,
+          );
+          for (const view of ["index", "progress"]) {
+            await page.goto(
+              `/${locale}/passports${view === "progress" ? "?view=progress" : ""}`,
+            );
+            if (view === "index")
+              await page
+                .getByRole("button", {
+                  name: locale === "es" ? "Abrir pasaporte" : "Open passport",
+                  exact: true,
+                })
+                .click();
+            await expect(
+              page.getByRole("heading", {
+                name:
+                  view === "index"
+                    ? locale === "es"
+                      ? "Ciudades"
+                      : "Cities"
+                    : locale === "es"
+                      ? "Mi viaje"
+                      : "My journey",
+                exact: true,
+              }),
+            ).toBeVisible();
+            const chapter = page
+              .locator('[class*="PassportBook_page__"]')
+              .first();
+            await expect(chapter).toBeVisible();
+            const state = await chapter.evaluate((element) => {
+              element.scrollTop = element.scrollHeight;
+              return {
+                top: element.scrollTop,
+                height: element.scrollHeight,
+                viewport: element.clientHeight,
+              };
+            });
+            if (width === 360 && state.height > state.viewport + 2)
+              expect(state.top).toBeGreaterThan(0);
+            const screenshot = `test-results/pasa-passport-${locale}-${width}-${theme}-${view}-chapter-bottom.png`;
+            await page.screenshot({
+              path: screenshot,
+              fullPage: true,
+              animations: "disabled",
+            });
+            evidence.push({ locale, width, theme, view, ...state, screenshot });
+          }
+        }
+    writeFileSync(
+      "test-results/pasa-passport-chapter-bottom-evidence.json",
+      JSON.stringify(
+        {
+          sourceCommit: process.env.GITHUB_SHA || "local",
+          acceptance: "automated-render-only",
+          cases: evidence,
+        },
+        null,
+        2,
+      ),
+    );
+  });
 
   test("AkiPasa secondary entrypoint preserves approved redirects", async ({
     request,

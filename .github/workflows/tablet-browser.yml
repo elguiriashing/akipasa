@@ -16,6 +16,33 @@ env:
   NEXT_PUBLIC_SUPABASE_ANON_KEY: tablet-local-disposable
 
 jobs:
+  consumer-workflow-fixtures:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Verify Community forms, history and draft recovery
+        run: node scripts/test-community-workflows-browser.mjs
+      - name: Verify framework error recovery and loading boundaries
+        run: node scripts/test-pasa-boundaries-browser.mjs
+      - name: Verify root-layout failure recovery
+        run: node scripts/test-global-error-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: consumer-workflow-evidence
+          path: |
+            test-results/community-workflows
+            test-results/pasa-boundaries-framework
+            test-results/global-error
+          retention-days: 7
+
   tablet-ui:
     runs-on: ubuntu-latest
     timeout-minutes: 25

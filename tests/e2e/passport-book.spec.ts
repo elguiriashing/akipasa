@@ -470,3 +470,113 @@ for (const locale of ["en", "es"] as const) {
     ).toHaveCount(0);
   });
 }
+
+for (const locale of ["en", "es"] as const) {
+  for (const width of [360, 1440]) {
+    for (const theme of ["dark", "light"] as const) {
+      test(`${locale} ${width}/${theme} generated chapter links survive reload and city labels stay readable`, async ({
+        page,
+      }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.emulateMedia({
+          reducedMotion: "reduce",
+          colorScheme: theme,
+        });
+        await page.addInitScript(
+          (value) => localStorage.setItem("akipasa.theme", value),
+          theme,
+        );
+        await page.goto(`/${locale}/passports`);
+        await page
+          .getByRole("button", {
+            name: locale === "es" ? "Abrir pasaporte" : "Open passport",
+            exact: true,
+          })
+          .click();
+        await expect(page).toHaveURL(/view=index/);
+        await page.reload();
+        await expect(
+          page.getByRole("heading", {
+            name: locale === "es" ? "Ciudades" : "Cities",
+            exact: true,
+          }),
+        ).toBeVisible();
+        const card = page.getByRole("button", { name: /^Málaga/ });
+        await card.scrollIntoViewIfNeeded();
+        const contrast = await card.evaluate((button) => {
+          const gradient = getComputedStyle(button, "::after").backgroundImage;
+          const stops = [...gradient.matchAll(/rgba?\(([^)]+)\)/g)].map(
+            (match) => match[1].split(",").map(Number),
+          );
+          if (stops.length !== 2 || stops.some((stop) => stop.length !== 4))
+            throw Error(`Unexpected city scrim: ${gradient}`);
+          const bounds = button.getBoundingClientRect();
+          const luminance = (channels: number[]) =>
+            channels
+              .slice(0, 3)
+              .map((channel) => channel / 255)
+              .map((channel) =>
+                channel <= 0.04045
+                  ? channel / 12.92
+                  : ((channel + 0.055) / 1.055) ** 2.4,
+              )
+              .reduce(
+                (sum, value, index) =>
+                  sum + value * [0.2126, 0.7152, 0.0722][index],
+                0,
+              );
+          return [...button.querySelectorAll("b, small")].map((label) => {
+            const top =
+              (label.getBoundingClientRect().top - bounds.top) / bounds.height;
+            const alpha =
+              stops[0][3] +
+              (stops[1][3] - stops[0][3]) * Math.max(0, Math.min(1, top));
+            // White is the brightest possible photograph pixel. Composite the
+            // actual scrim at the label's actual top for a conservative bound.
+            const background = stops[0]
+              .slice(0, 3)
+              .map((channel) => channel * alpha + 255 * (1 - alpha));
+            const foreground = getComputedStyle(label)
+              .color.match(/[\d.]+/g)!
+              .map(Number);
+            const a = luminance(foreground),
+              b = luminance(background);
+            return {
+              label: label.textContent,
+              ratio: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05),
+            };
+          });
+        });
+        for (const result of contrast)
+          expect(
+            result.ratio,
+            `${result.label}: worst-case photo contrast`,
+          ).toBeGreaterThanOrEqual(4.5);
+        await page.screenshot({
+          path: `test-results/passport-city-contrast-${locale}-${width}-${theme}.png`,
+          fullPage: true,
+          animations: "disabled",
+        });
+        await card.click();
+        await page.reload();
+        await expect(
+          page.getByRole("heading", { name: "Málaga", exact: true, level: 2 }),
+        ).toBeVisible();
+        const menu = await openPassportMenu(page, locale);
+        await menu
+          .getByRole("button", {
+            name: locale === "es" ? /Pasaporte$/ : /Passport$/,
+          })
+          .click();
+        await expect(page).toHaveURL(/view=cover/);
+        await page.reload();
+        await expect(
+          page.getByRole("button", {
+            name: locale === "es" ? "Abrir pasaporte" : "Open passport",
+            exact: true,
+          }),
+        ).toBeVisible();
+      });
+    }
+  }
+}

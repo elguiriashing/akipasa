@@ -3658,3 +3658,40 @@ that exact 499-character text. Sixteen Account-control cases pass. No stored
 profile, action, database, permission, consent or provider change. Suspected
 failed-action draft loss was not reproduced and is not claimed fixed. Rollback is
 a source revert; physical Android and live authenticated acceptance remain open.
+
+## 2026-10-29 | Below-fold continuity, private journeys and framework fallbacks
+
+- **Observed:** First-viewport captures missed stale Roadmap mascot copy, duplicate
+  embedded logo lettering, a privacy trigger hidden by the mobile dock, low light-
+  theme header contrast and dark city-card captions. Passport generated index/cover
+  URLs that its server allowlist rejected on reload. Community operational panels
+  repeated headings and exposed untranslated display states after its premium entry.
+- **Presentation:** Preserve approved traced SVG bytes, current logo geometry and
+  semantic wordmark; give repeated clips unique IDs. Scope Community workflow skin
+  and copy to its actual existing forms/history without modifying queries, actions,
+  field values, rate/feature gates, address selection or draft recovery. Align
+  Passport chapter admission with its existing client destinations and change only
+  photographic-caption colour, retaining caller-filtered XP/check-in projections.
+- **Shell/consent:** Canonical dock CSS adds clearance after the external trigger;
+  map, immersive Passport, hidden auth dock and owner focus remain exceptions.
+  Native system-bar padding is not duplicated. Fixed mobile header gets an opaque
+  paired palette. No consent submission/default, analytics permission or data change.
+- **Fallback dependencies:** RootLayout supplies only public locale/product context;
+  scoped route boundaries reuse existing shells and canonical product origins.
+  No error message/stack/identifier is accepted by the display view. Root-layout
+  failure instead has standalone neutral bilingual markup and explicit GET retry.
+  Admin retains its pre-existing loading boundary; the proposed global loading file
+  was removed after a real Next fixture demonstrated404 becoming200. Existing guest
+  redirects/not-found status assertions are preserved. No production throw hook.
+- **Protected tests:** Opt-in authenticated selectors follow current routes/forms,
+  enforce final protected destinations and remain read-only apart from session
+  sign-in. Disposable staging credentials, onboarded/current-terms admin, owned QA
+  venue/event/occurrence and enabled fixture feature flags are still required;
+  skipped discovery is not protected acceptance or consumer/staff role proof.
+- **Evidence/gates:** Source-bound component fixtures and actual Next framework
+  tests cover labels/payloads/drafts, HTTP contracts, explicit error recovery,
+  noindex, safe homes and browser keyboard/theme/responsive behavior. Public
+  full-page/internal-scroll capture expands existing assertions. Final counts and
+  exact committed source/CI are recorded after integration, not inferred here.
+  Route statuses remain in progress; real Auth/RLS/physical Android/reviewer
+  acceptance is separate. Rollback is source-only, retaining all history and data.
