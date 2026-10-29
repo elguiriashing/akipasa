@@ -1081,3 +1081,161 @@ html[data-theme="light"]
     padding: 1.35rem;
   }
 }
+
+/* Protected terms confirmation reuses the Pasa auth shell and legal visual
+ * tokens. Neither the recorded terms version nor the server action changes. */
+.app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-page {
+  width: min(100%, 70rem);
+  min-width: 0;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+  padding-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
+}
+
+.app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-hero {
+  padding: clamp(1.5rem, 4.8vw, 3.5rem);
+  border: 1px solid rgba(255, 151, 86, 0.3);
+  border-radius: clamp(1.25rem, 3vw, 2rem);
+  background:
+    radial-gradient(ellipse at 88% 8%, rgba(248, 121, 42, 0.24), transparent 56%),
+    linear-gradient(135deg, #202b42, #0d1626 85%);
+  color: #fff;
+}
+
+.app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-hero h1 {
+  max-width: 22ch;
+  margin-block: 0.5rem 0.9rem;
+  color: inherit;
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  letter-spacing: -0.055em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+.app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-hero .lede {
+  max-width: 64ch;
+  color: #e3eaf4;
+  line-height: 1.65;
+}
+
+.app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-version {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid rgba(255, 181, 124, 0.38);
+  border-radius: 999px;
+  color: #ffcdab;
+  font-size: 0.85rem;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-documents {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  margin-block: clamp(1rem, 3vw, 2rem);
+}
+
+.app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-documents a {
+  display: grid;
+  min-width: 0;
+  min-height: 100px;
+  align-content: center;
+  gap: 0.65rem;
+  padding: clamp(1rem, 2.3vw, 1.6rem);
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.25rem;
+  background: var(--pasa-ui-panel);
+  color: var(--pasa-ui-text);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-documents a span {
+  color: var(--pasa-ui-highlight);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.045em;
+}
+
+.app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-documents a strong {
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+}
+
+.app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-panel {
+  width: 100%;
+  max-width: none;
+  padding: clamp(1.3rem, 3.2vw, 2.5rem);
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.5rem;
+  background: var(--pasa-ui-panel);
+  color: var(--pasa-ui-text);
+}
+
+.app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-panel h2 {
+  margin-block: 0 1.5rem;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  letter-spacing: -0.035em;
+}
+
+.app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-consent {
+  display: grid;
+  grid-template-columns: 1.3rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.9rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1rem;
+  background: var(--pasa-ui-elevated);
+  color: var(--pasa-ui-text);
+  line-height: 1.55;
+}
+
+.app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-consent input {
+  width: 1.3rem;
+  height: 1.3rem;
+  min-height: 1.3rem;
+  margin-top: 0.2rem;
+  accent-color: #fb862e;
+}
+
+.app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-consent a {
+  color: var(--pasa-ui-highlight);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-submit {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 1rem;
+  border-radius: 0.95rem;
+  font-weight: 800;
+}
+
+html[data-theme="light"] .app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-hero {
+  border-color: rgba(178, 92, 28, 0.24);
+  background:
+    radial-gradient(ellipse at 89% 8%, rgba(249, 140, 63, 0.19), transparent 57%),
+    #fff9f2;
+  color: #182b3b;
+}
+
+html[data-theme="light"] .app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-hero .lede {
+  color: #415269;
+}
+
+html[data-theme="light"] .app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-version {
+  color: #93400e;
+  border-color: rgba(153, 73, 20, 0.32);
+}
+
+@media (max-width: 600px) {
+  .app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-documents {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .app-shell .app-content[data-pasa-surface="auth"] .pasa-terms-accept-hero {
+    padding: 1.5rem;
+  }
+}
