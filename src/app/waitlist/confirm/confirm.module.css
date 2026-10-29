@@ -1,66 +1,420 @@
+/* The unauthenticated verification entrypoint shares AkiPasa's cinematic
+ * visual language without inheriting the authenticated AppShell/dock. */
 .page {
+  --accent: #ff8a42;
+  --accent-muted: rgb(255 138 66 / 18%);
+  --confirm-ink: #f9fbff;
+  --confirm-muted: #d0daea;
+  --confirm-backdrop: #080e18;
+  --confirm-panel: #172336;
+  --confirm-border: rgb(223 236 255 / 19%);
+  --confirm-control: #26364c;
+  color-scheme: dark;
   min-height: 100svh;
   display: grid;
   place-items: center;
-  padding: 2rem 1rem;
+  padding: max(1rem, env(safe-area-inset-top, 0px))
+    max(1rem, env(safe-area-inset-right, 0px))
+    max(1rem, env(safe-area-inset-bottom, 0px))
+    max(1rem, env(safe-area-inset-left, 0px));
   background:
-    radial-gradient(circle at 12% 14%, rgb(246 107 29 / 18%), transparent 38%),
-    radial-gradient(circle at 90% 85%, rgb(22 68 104 / 22%), transparent 45%),
-    #0d1824;
-  color: #f5f8fb;
+    radial-gradient(ellipse at 8% -15%, var(--accent-muted), transparent 48%),
+    radial-gradient(ellipse at 96% 105%, rgb(42 100 152 / 23%), transparent 58%),
+    var(--confirm-backdrop);
+  color: var(--confirm-ink);
 }
-.panel {
-  width: min(100%, 32rem);
+
+.page[data-product="duermo"] {
+  --accent: #60e2d8;
+  --accent-muted: rgb(55 190 179 / 19%);
+}
+
+.page[data-product="coches"] {
+  --accent: #ff9295;
+  --accent-muted: rgb(185 36 63 / 23%);
+}
+
+.layout {
+  width: min(100%, 75rem);
   display: grid;
-  gap: 1.35rem;
-  padding: clamp(1.5rem, 5vw, 3rem);
-  border: 1px solid rgb(255 255 255 / 18%);
-  border-radius: 1.5rem;
-  background: rgb(18 35 50 / 94%);
-  box-shadow: 0 24px 70px rgb(0 0 0 / 20%);
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(1rem, 3vw, 2.5rem);
+  align-items: stretch;
 }
+
+.story,
+.panel {
+  min-width: 0;
+  border: 1px solid var(--confirm-border);
+  border-radius: clamp(1.15rem, 2.6vw, 2rem);
+  box-shadow: 0 25px 65px rgb(0 0 0 / 22%);
+}
+
+.story {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  padding: clamp(1.5rem, 4.5vw, 3.5rem);
+  background:
+    radial-gradient(ellipse at 87% 12%, var(--accent-muted), transparent 54%),
+    linear-gradient(145deg, #1b2a40 3%, #101a2a 82%);
+}
+
+.story::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image: linear-gradient(rgb(243 251 255 / 3%) 1px, transparent 1px);
+  background-size: 100% 3.5rem;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 0.85rem;
+  min-height: 48px;
+  color: var(--confirm-ink);
+  font-size: clamp(1.2rem, 2.4vw, 1.55rem);
+  text-decoration: none;
+}
+
+.brandIcon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid var(--accent);
+  border-radius: 1rem;
+  background: var(--accent-muted);
+  color: var(--accent);
+}
+
+.kicker,
 .eyebrow {
   margin: 0;
-  color: #ffb27a;
+  color: var(--accent);
+  font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.12em;
-  font-size: 0.75rem;
+  text-transform: uppercase;
 }
-.panel h1 {
+
+.story h2 {
+  max-width: 13ch;
   margin: 0;
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(2.3rem, 4.3vw, 4.3rem);
+  font-weight: 850;
   line-height: 1.05;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
 }
-.panel p {
+
+.storyCopy {
+  max-width: 55ch;
   margin: 0;
-  color: #cbd8e2;
+  color: var(--confirm-muted);
   line-height: 1.65;
 }
-.panel button {
-  width: 100%;
-  min-height: 3rem;
-  border: 0;
-  border-radius: 999px;
-  background: #f26b1d;
-  color: #121923;
+
+.steps {
+  position: relative;
+  display: grid;
+  gap: 0.75rem;
+  margin: auto 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.8rem 0;
+}
+
+.steps li > span {
+  display: grid;
+  width: 2.4rem;
+  min-width: 2.4rem;
+  height: 2.4rem;
+  place-items: center;
+  border: 1px solid var(--confirm-border);
+  border-radius: 50%;
+  color: var(--confirm-muted);
   font-weight: 800;
-  font-size: 1rem;
+  font-size: 0.75rem;
+}
+
+.steps li.currentStep > span {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #101820;
+}
+
+.steps li strong {
+  display: block;
+  font-size: 0.96rem;
+}
+
+.steps li small {
+  display: block;
+  margin-top: 0.3rem;
+  color: var(--confirm-muted);
+}
+
+.routeArt {
+  position: absolute;
+  width: 16rem;
+  height: 16rem;
+  top: 13%;
+  right: -5rem;
+  border: 2px dashed var(--accent);
+  border-radius: 50%;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.routeArt i {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.routeArt i:nth-child(1) {
+  top: 7%;
+  left: 20%;
+}
+
+.routeArt i:nth-child(2) {
+  bottom: 9%;
+  left: 13%;
+}
+
+.routeArt i:nth-child(3) {
+  top: 46%;
+  right: -0.5rem;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+  padding: clamp(1.5rem, 4.5vw, 3.5rem);
+  background: var(--confirm-panel);
+}
+
+.panelTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.statusIcon {
+  display: grid;
+  width: 3.5rem;
+  min-width: 3.5rem;
+  height: 3.5rem;
+  place-items: center;
+  border: 1px solid var(--confirm-border);
+  border-radius: 1.25rem;
+  background: var(--accent-muted);
+  color: var(--accent);
+}
+
+.panel h1 {
+  max-width: 16ch;
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.explanation {
+  max-width: 55ch;
+  margin: 0;
+  color: var(--confirm-muted);
+  line-height: 1.7;
+}
+
+.confirmButton,
+.returnLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  min-height: 52px;
+  padding: 0.95rem 1.25rem;
+  border-radius: 1rem;
+  font: inherit;
+  font-weight: 800;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.confirmButton {
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #111820;
   cursor: pointer;
 }
-.panel button:hover {
-  background: #ffa15c;
+
+.confirmButton:hover {
+  filter: brightness(1.1);
 }
-.panel button:focus-visible,
-.panel a:focus-visible {
-  outline: 3px solid #ffc089;
-  outline-offset: 3px;
+
+.returnLink {
+  border: 1px solid var(--confirm-border);
+  background: var(--confirm-control);
+  color: var(--confirm-ink);
 }
-.panel a {
-  color: #ffbc8d;
+
+.privacyLine {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--confirm-border);
+  color: var(--confirm-muted);
+}
+
+.privacyLine svg {
+  flex: 0 0 auto;
+}
+
+.privacyLine small {
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.privacyLine a {
+  color: var(--accent);
   text-underline-offset: 0.2em;
 }
-.panel small {
-  color: #b8c7d2;
-  line-height: 1.5;
+
+.page :is(a, button):focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+
+@media (max-width: 760px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .story {
+    gap: 1rem;
+  }
+
+  .story h2 {
+    max-width: 19ch;
+    font-size: clamp(2rem, 7vw, 3rem);
+  }
+
+  .steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+  }
+
+  .steps li {
+    display: block;
+  }
+
+  .steps li strong {
+    margin-top: 0.7rem;
+  }
+
+  .routeArt {
+    right: -7rem;
+    top: -4rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .steps li {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.3rem 0;
+  }
+
+  .steps li strong {
+    margin-top: 0;
+  }
+
+  .brand {
+    font-size: 1.15rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page *,
+  .page *::before,
+  .page *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .page {
+    --confirm-ink: #172236;
+    --confirm-muted: #344961;
+    --confirm-backdrop: #f4f7fa;
+    --confirm-panel: #fff;
+    --confirm-border: rgb(29 51 77 / 20%);
+    --confirm-control: #e9eef5;
+    color-scheme: light;
+  }
+
+  .story {
+    background:
+      radial-gradient(ellipse at 87% 12%, var(--accent-muted), transparent 54%),
+      linear-gradient(145deg, #fdfaf5, #e7eef6 95%);
+  }
+
+  .story::after {
+    background-image: linear-gradient(rgb(12 25 45 / 5%) 1px, transparent 1px);
+  }
+
+  .page:not([data-product="duermo"]):not([data-product="coches"]) {
+    --accent: #9b3c07;
+  }
+}
+
+:global(html[data-theme="dark"]) .page {
+  --confirm-ink: #f9fbff;
+  --confirm-muted: #d0daea;
+  --confirm-backdrop: #080e18;
+  --confirm-panel: #172336;
+  --confirm-border: rgb(223 236 255 / 19%);
+  --confirm-control: #26364c;
+  color-scheme: dark;
+}
+
+:global(html[data-theme="light"]) .page {
+  --confirm-ink: #172236;
+  --confirm-muted: #344961;
+  --confirm-backdrop: #f4f7fa;
+  --confirm-panel: #fff;
+  --confirm-border: rgb(29 51 77 / 20%);
+  --confirm-control: #e9eef5;
+  color-scheme: light;
 }
