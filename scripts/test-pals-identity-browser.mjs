@@ -157,6 +157,10 @@ try {
   await expect(
     page.getByRole("heading", { name: /Looking like.*yourself/i }),
   ).toBeVisible();
+  await page.screenshot({
+    path: resolve(outputDir, "identity-default-390.png"),
+    fullPage: true,
+  });
   // A real 3D renderer must load the alternate rig when the user changes body frame.
   await page.getByRole("tab", { name: "Face" }).click();
   const maleMesh = page.waitForResponse(
@@ -167,6 +171,10 @@ try {
   await page.getByLabel("Body frame").selectOption("masculine");
   await maleMesh;
   await expect(page.locator("#avatar-stage")).toHaveAttribute("data-ready", "true");
+  await page.screenshot({
+    path: resolve(outputDir, "identity-male-390.png"),
+    fullPage: true,
+  });
   await page.getByRole("tab", { name: "Outfit" }).click();
   await page.getByRole("button", { name: "Night out" }).click();
   await expect(page.locator('select[name="top"]')).toHaveValue("jacket");
