@@ -2,7 +2,7 @@
 import React from "react";
 import "@testing-library/jest-dom/vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 
 vi.mock("../src/app/[locale]/check-in/[token]/actions", () => ({
   completeCheckIn: vi.fn(async () => undefined),
@@ -48,9 +48,11 @@ describe("venue check-in proof UI", () => {
     expect(submit).toBeDisabled();
 
     const success = getCurrentPosition.mock.calls[0][0] as PositionCallback;
-    success({
-      coords: { latitude: 36.54, longitude: -4.63, accuracy: 18.7 },
-    } as GeolocationPosition);
+    act(() => {
+      success({
+        coords: { latitude: 36.54, longitude: -4.63, accuracy: 18.7 },
+      } as GeolocationPosition);
+    });
 
     expect(submit).toBeEnabled();
     expect(screen.getByText(/Location received/)).toBeVisible();
@@ -65,15 +67,20 @@ describe("venue check-in proof UI", () => {
     const submit = screen.getByRole("button", { name: "Confirm check-in" });
     fireEvent.click(locate);
     const firstSuccess = getCurrentPosition.mock.calls[0][0] as PositionCallback;
-    firstSuccess({
-      coords: { latitude: 36.54, longitude: -4.63, accuracy: 10 },
-    } as GeolocationPosition);
+    act(() => {
+      firstSuccess({
+        coords: { latitude: 36.54, longitude: -4.63, accuracy: 10 },
+      } as GeolocationPosition);
+    });
     expect(submit).toBeEnabled();
 
     fireEvent.click(locate);
     expect(submit).toBeDisabled();
-    const latestFailure = getCurrentPosition.mock.calls[1][1] as PositionErrorCallback;
-    latestFailure({ code: 1 } as GeolocationPositionError);
+    const latestFailure = getCurrentPosition.mock.calls[1][1] as
+      PositionErrorCallback;
+    act(() => {
+      latestFailure({ code: 1 } as GeolocationPositionError);
+    });
     expect(submit).toBeDisabled();
 
     // The old callback cannot restore coordinates after a newer request.
