@@ -19,7 +19,9 @@ for (const locale of ["en", "es"] as const) {
   test(`${locale} conversion links reject invalid codes`, async ({
     request,
   }) => {
-    const badCode = await request.get(`/${locale}/referrals?ref=bad%3Cscript%3E`);
+    const badCode = await request.get(
+      `/${locale}/referrals?ref=bad%3Cscript%3E`,
+    );
     expect(badCode.status()).toBe(404);
 
     // The AkiBusiness gateway deliberately moves to its separate host first.
@@ -38,10 +40,7 @@ for (const locale of ["en", "es"] as const) {
       maxRedirects: 0,
     });
     expect([307, 308]).toContain(duermo.status());
-    const duermoTarget = new URL(
-      duermo.headers().location || "",
-      duermo.url(),
-    );
+    const duermoTarget = new URL(duermo.headers().location || "", duermo.url());
     expect(duermoTarget.pathname).toBe(`/${locale}/membership`);
     expect(duermoTarget.searchParams.get("from")).toBe("akiduermo");
 
