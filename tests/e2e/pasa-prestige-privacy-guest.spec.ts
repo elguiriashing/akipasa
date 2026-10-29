@@ -54,16 +54,15 @@ for (const locale of ["en", "es"] as const) {
             expect(response?.status()).toBe(404);
             expect(actualPath).toBe(route);
           } else {
-            const destination = new URL(
-              gate.headers().location || "",
-              baseURL,
-            );
+            const destination = new URL(gate.headers().location || "", baseURL);
             expect(destination.pathname).toBe(`/${locale}/auth`);
             expect(destination.searchParams.get("next")).toBe(route);
             expect(response?.status()).toBe(200);
             expect(actualPath).toBe(`/${locale}/auth`);
           }
-          await expect(page.locator('[class*="privacyAwardCard"]')).toHaveCount(0);
+          await expect(page.locator('[class*="privacyAwardCard"]')).toHaveCount(
+            0,
+          );
           const dimensions = await page.evaluate(() => ({
             viewport: document.documentElement.clientWidth,
             width: document.documentElement.scrollWidth,
