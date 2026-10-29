@@ -2554,3 +2554,7 @@ Follow-up asset integration: `public/brand/pasa-2026-traced.svg` is a vector tra
 ## 2026-10-28 | Young-adult social discovery messaging follow-up
 
 The new `PlansFirstHero.tsx` EN/ES copy prioritizes live music, plans with friends and nearby activities for a Spain-first young-adult audience; all category, search, pricing, event, authentication, consent and age rules remain unchanged. Full brand/retention direction is recorded in `docs/AKIPASA_BRAND_RETENTION_20261028.md`. This branch is rebased conceptually on already merged app-first PR #320; it supersedes conflicting PR #319. Require the same six hosted CI workflows, responsive/browser accessibility review and exact-source Cloudflare verification before production. Rollback: restore only the prior hero copy. No DB, bulk marketing, analytics activation or billing changes.
+
+## 2026-10-27 | Automation Worker Node CI security baseline
+
+The Automation Worker checks and its manually dispatched production deployment workflow use an explicit Node.js 22.23.4 runtime, rather than an unbounded 22.x selector. This addresses the October 2026 Node.js Brotli security baseline in GitHub Actions. Cloudflare Workers run in their own runtime; this change neither claims a Workers engine vulnerability nor modifies their production code or cron schedule. No production deployment is implied. Verify the complete AkiSuite build-runtime inventory, and reconcile the 23 and 26 October Cloudflare Cron incidents separately in issue #305. GitHub PR #304 tracks CI acceptance.

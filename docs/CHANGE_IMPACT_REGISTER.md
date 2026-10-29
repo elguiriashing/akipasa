@@ -3204,3 +3204,12 @@ Follow-up asset integration: `public/brand/pasa-2026-traced.svg` is a vector tra
 ## 2026-10-28 | Young-adult social discovery messaging follow-up
 
 The new `PlansFirstHero.tsx` EN/ES copy prioritizes live music, plans with friends and nearby activities for a Spain-first young-adult audience; all category, search, pricing, event, authentication, consent and age rules remain unchanged. Full brand/retention direction is recorded in `docs/AKIPASA_BRAND_RETENTION_20261028.md`. This branch is rebased conceptually on already merged app-first PR #320; it supersedes conflicting PR #319. Require the same six hosted CI workflows, responsive/browser accessibility review and exact-source Cloudflare verification before production. Rollback: restore only the prior hero copy. No DB, bulk marketing, analytics activation or billing changes.
+
+## 2026-10-27 | Automation Worker GitHub Actions Node runtime security baseline
+
+- **Before:** Both automation CI check and manually dispatched deployment used the moving `node-version: 22` major selector; their exact patch level could vary.
+- **Change:** Pin each `actions/setup-node` instance in `.github/workflows/automation.yml` to Node.js `22.23.4`, the patched baseline identified in the 21 October 2026 Brotli advisory.
+- **Impact:** Only GitHub Actions build/deploy host Node selection changes. Worker application logic, D1, schedules, secrets and existing production deployment are unchanged.
+- **Security boundary:** Does not fix or prove exposure of Cloudflare's V8 Workers runtime, other Node-based jobs, third-party services or user Android clients. Remaining inventory/incident work: #305.
+- **Verification:** Automation Worker PR workflow must pass at exact head. No production dispatch is requested; merge and deployment are separate operations. No replay of missed cron jobs until backed by logs and idempotency evidence.
+- **Rollback:** Revert the workflow setting through reviewed PR only after confirming a secure alternative runtime.
