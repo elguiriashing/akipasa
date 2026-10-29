@@ -113,11 +113,11 @@ test.describe("AkiPasa shared public page-family visuals", () => {
             if (path === "/auth") {
               await expect(page.locator(".auth-focus-panel")).toHaveCSS(
                 "background-color",
-                "rgb(16, 27, 45)",
+                "rgb(8, 8, 7)",
               );
               await expect(page.locator(".auth-form-head h2")).toHaveCSS(
                 "color",
-                "rgb(244, 247, 255)",
+                "rgb(255, 247, 240)",
               );
             }
             if (path === "" && device.width <= 850) {

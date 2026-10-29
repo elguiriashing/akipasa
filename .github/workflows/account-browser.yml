@@ -23,6 +23,8 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium chrome
       - run: node scripts/test-account-browser.mjs
+      - name: Verify personal profile presentation and preserved controls
+        run: node scripts/test-account-personal-browser.mjs
       - name: AkiSelector login acceptance
         env:
           SELECTOR_EVIDENCE_DIR: test-results/account/workspace-selector
@@ -31,7 +33,9 @@ jobs:
         if: always()
         with:
           name: account-responsive-evidence
-          path: test-results/account
+          path: |
+            test-results/account
+            test-results/account-personal
           retention-days: 7
   public-ui:
     runs-on: ubuntu-latest

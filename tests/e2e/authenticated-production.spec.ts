@@ -1,8 +1,14 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type BrowserContext } from "@playwright/test";
+import { installAuthenticatedLocalTransport } from "../helpers/authenticated-local-transport";
 
 const email = process.env.AKIPASA_QA_EMAIL;
 const password = process.env.AKIPASA_QA_PASSWORD;
 const venueId = process.env.AKIPASA_QA_VENUE_ID;
+
+// Browser interception cannot cover service-worker-owned requests.
+test.use({ serviceWorkers: "block" });
+const transportChecks = new WeakMap<BrowserContext, () => Promise<void>>();
+test.afterEach(({ context }) => transportChecks.get(context)?.());
 
 // Opt-in only: use a disposable, fully onboarded administrator with current
 // terms accepted and owner membership of a non-accommodation QA venue. Seed
@@ -19,10 +25,26 @@ test.describe("disposable authenticated production acceptance", () => {
 
   test("administrator account and owned venue controls render safely", async ({
     page,
+    context,
+    baseURL,
   }) => {
     test.setTimeout(180_000);
+    const transport = await installAuthenticatedLocalTransport(context, {
+      baseURL: baseURL || "",
+      projectRef: process.env.BOOKING_STAGING_PROJECT_REF || "",
+      supabaseURL: process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+    });
+    transportChecks.set(context, async () => {
+      try {
+        transport.assertSafe();
+      } finally {
+        await transport.close();
+      }
+    });
+    const goto = (path: string, options?: Parameters<typeof page.goto>[1]) =>
+      page.goto(new URL(path, transport.origin).href, options);
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto("/en/auth?mode=signin&next=/en/account");
+    await goto("/en/auth?mode=signin&next=/en/account");
     await expect(
       page.getByRole("heading", { name: "Sign in to AkiPasa", exact: true }),
     ).toBeVisible();
@@ -43,11 +65,11 @@ test.describe("disposable authenticated production acceptance", () => {
       page.locator('a[href="/en/passports"]').filter({ hasText: "Passport" }),
     ).toBeVisible();
 
-    await page.goto("/en/community?view=suggest");
+    await goto("/en/community?view=suggest");
     await expect(
       page.getByRole("button", { name: "Submit for review" }),
     ).toBeVisible();
-    await page.goto("/en/business?view=growth");
+    await goto("/en/business?view=growth");
     const promotion = page
       .locator("details")
       .filter({ hasText: "Request Commercial Promotion" });
@@ -83,7 +105,7 @@ test.describe("disposable authenticated production acceptance", () => {
       "/en/admin/audit",
       `/en/business/venue/${venueId}`,
     ]) {
-      const response = await page.goto(route, {
+      const response = await goto(route, {
         waitUntil: "domcontentloaded",
       });
       expect(response?.status(), route).toBe(200);
@@ -139,26 +161,26 @@ test.describe("disposable authenticated production acceptance", () => {
       });
     }
 
-    await page.goto("/en/admin");
+    await goto("/en/admin");
     await expect(
       page.getByRole("navigation", {
         name: "Administration sections",
         exact: true,
       }),
     ).toBeVisible();
-    await page.goto("/en/admin/users");
+    await goto("/en/admin/users");
     await expect(
       page.getByRole("searchbox", { name: "Search accounts" }),
     ).toBeVisible();
     expect(await page.locator(".user-search-result").count()).toBe(0);
 
-    await page.goto("/en/admin/settings");
+    await goto("/en/admin/settings");
     await expect(
       page.getByRole("heading", { name: "Platform controls" }),
     ).toBeVisible();
 
     await page.setViewportSize({ width: 360, height: 800 });
-    await page.goto("/en/account");
+    await goto("/en/account");
     await expect(
       page.getByRole("button", { name: "AkiPasa account Your account menu" }),
     ).toBeVisible();
@@ -192,7 +214,7 @@ test.describe("disposable authenticated production acceptance", () => {
     ).toBeHidden();
     await page.setViewportSize({ width: 1280, height: 900 });
 
-    await page.goto(`/en/business/venue/${venueId}?section=events`);
+    await goto(`/en/business/venue/${venueId}?section=events`);
     const event = page
       .locator("details[data-event-card]")
       .filter({
@@ -225,7 +247,7 @@ test.describe("disposable authenticated production acceptance", () => {
     // Media now uses a shared library and five placement pickers, rather than
     // legacy per-language alt/order forms. Opening/closing the picker is read-only;
     // choosing a library item would persist a placement and is intentionally absent.
-    await page.goto(`/en/business/venue/${venueId}?section=profile`);
+    await goto(`/en/business/venue/${venueId}?section=profile`);
     await expect(
       page.getByRole("heading", {
         name: "Five surfaces, one media library.",

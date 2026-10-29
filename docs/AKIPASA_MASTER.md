@@ -3072,3 +3072,42 @@ URLs, filters and all actions are unchanged. The default browser harness still
 runs the complete160-state matrix, with an additional compact-width assertion.
 Its explicit local handover-only mode stores evidence separately; it is not
 used by the mandatory CI job. Final-source verification is in the mission ledger.
+
+## 2026-10-29 | Consumer photographic visual correction (in progress)
+
+Following Alex's additional Home/Map/Community/Profile/Login/Passport references,
+the consumer presentation is being corrected toward near-black surfaces, warm
+orange navigation, substantial atmospheric imagery and compact personal content.
+Home retains its existing date/price/map destinations and Tonight feature gate.
+The generated `/images/akipasa/nightlife-editorial.webp` is decorative rooftop
+atmosphere, not evidence of a real venue, live event or crowd. Catalogue imagery
+still takes precedence when present. No mock reference statistics, friends,
+stamps or availability become application facts. AkiPals remains paused.
+
+Auth provider availability, callbacks, form actions, consent and return paths;
+Account authorization/private data; Community real-content actions; Passport
+ledger/earned state and owner controls remain the existing contracts. Shared
+consumer shell changes stay separate from independently branded product hosts.
+Fresh integrated visual/function evidence is required for this wave; previous
+checks and screenshot artifacts do not confer visual acceptance.
+
+## 2026-10-29 | Disposable authenticated browser isolation
+
+The optional manually dispatched full-site browser job requires an explicitly
+separate QA Supabase origin/project reference, disposable credentials and QA venue
+through secure GitHub configuration. Known live ref `vhpbvcfkcteswlsdjrfl` and
+`akipasa` alias are rejected. Fixture mode remains limited to localhost.
+The authenticated browser case uses a fixed-backend loopback proxy so canonical
+business-host redirects and cookies remain local; external browser HTTP/WebSockets
+are blocked. No production middleware, permission or redirect policy is changed.
+This infrastructure has local regression evidence, not actual QA acceptance.
+A provisioned QA backend/catalogue/accounts and external-media acceptance remain
+outstanding; the sole currently connected Development-labelled project is live.
+
+Home's inline search shares the existing GlobalSearch popover and remains disabled
+until that sibling form attaches its actual navigation listeners. The dedicated
+`data-search-handlers-ready` lifetime marker is independent of auto-submit pending
+state, preserving same-value submissions and cleanup/replacement. No query,
+validation, router, consent or feature-gate behavior changes. Auth's existing
+support launcher stays reachable in normal document flow, respecting owner-focus
+mode, rather than overlapping submit controls.

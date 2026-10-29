@@ -67,10 +67,10 @@ for (const locale of ["en", "es"] as const)
             theme,
           );
           const panel = page.locator(".auth-theme-akipasa .auth-focus-panel");
-          await expect(panel).toHaveCSS("background-color", "rgb(16, 27, 45)");
+          await expect(panel).toHaveCSS("background-color", "rgb(8, 8, 7)");
           await expect(page.locator(".aki-workspace-picker h2")).toHaveCSS(
             "color",
-            "rgb(244, 247, 255)",
+            "rgb(245, 233, 223)",
           );
           const text = panel.locator(
             "h2, .auth-modes a, label, small, .auth-secondary a, .consent-row a, .auth-label-line a, .auth-form-head > span",
@@ -99,6 +99,25 @@ for (const locale of ["en", "es"] as const)
           if (await google.count()) {
             expect(["signin", "signup"]).toContain(mode);
             expect(await textContrast(google)).toBeGreaterThanOrEqual(4.5);
+          }
+          for (const submit of await panel
+            .locator('button[type="submit"]')
+            .all()) {
+            await submit.scrollIntoViewIfNeeded();
+            expect(
+              await submit.evaluate((button) => {
+                const box = button.getBoundingClientRect();
+                return (
+                  document
+                    .elementFromPoint(
+                      box.x + box.width / 2,
+                      box.y + box.height / 2,
+                    )
+                    ?.closest("button") === button
+                );
+              }),
+              "Auth submit must not be covered by floating support",
+            ).toBe(true);
           }
           expect(
             await page.evaluate(() => document.documentElement.scrollWidth),

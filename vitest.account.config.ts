@@ -7,6 +7,7 @@ export default defineConfig({
   test: {
     include: [
       "tests/account-controls.test.tsx",
+      "tests/discovery-search-trigger.test.tsx",
       "tests/account-unavailable.test.tsx",
       "tests/account-collections-ui.test.tsx",
       "tests/account-passport-redirect.test.ts",

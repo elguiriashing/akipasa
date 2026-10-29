@@ -1,0 +1,381 @@
+/* Personal account presentation only: no workspace or sibling-route overrides. */
+.profile {
+  --personal-bg: #090c10;
+  --personal-card: #11161c;
+  --personal-ink: #f4f4f5;
+  --personal-muted: #afb6c1;
+  --personal-line: #2a323d;
+  --personal-orange: #ff8b32;
+}
+:global(html[data-theme="light"]) .profile,
+:global(html[data-theme="light"]) .editor {
+  --personal-bg: #faf8f4;
+  --personal-card: #ffffff;
+  --personal-ink: #17202a;
+  --personal-muted: #526071;
+  --personal-line: #d4d9df;
+  --personal-orange: #a74308;
+}
+:global(.account-workspace) .profile {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.15rem;
+  max-width: 62rem;
+  margin-inline: auto;
+  padding: clamp(1rem, 2.8vw, 2rem);
+  color: var(--personal-ink);
+  background: var(--personal-bg);
+  border-radius: 1.5rem;
+}
+:global(.account-workspace) .profile > * {
+  grid-column: 1 / -1;
+}
+:global(.account-workspace) .profile :global(.account-welcome) {
+  display: grid;
+  grid-template-columns: 5.4rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+:global(.account-workspace) .profile :global(.account-avatar) {
+  width: 5.4rem;
+  height: 5.4rem;
+  border: 2px solid var(--personal-orange);
+  border-radius: 50%;
+  background: var(--personal-card);
+  color: var(--personal-orange);
+  font-size: 2rem;
+  overflow: hidden;
+}
+:global(.account-workspace) .profile :global(.account-welcome-copy) > span {
+  color: var(--personal-orange);
+  font-size: 0.62rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+:global(.account-workspace) .profile :global(.account-welcome-copy) h1 {
+  color: var(--personal-ink);
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  line-height: 1.12;
+}
+:global(.account-workspace) .profile :global(.account-welcome-copy) p {
+  margin: 0.3rem 0 0;
+  color: var(--personal-muted);
+  font-size: 0.78rem;
+}
+:global(.account-workspace) .profile :global(.account-icon-link) {
+  align-self: start;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: none;
+  color: var(--personal-ink);
+}
+:global(.account-workspace) .profile :global(.account-pulse) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 0.3rem 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+:global(.account-workspace) .profile :global(.account-pulse) a {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.35rem;
+  text-align: center;
+  color: var(--personal-ink);
+  border: 0;
+  border-inline-end: 1px solid var(--personal-line);
+}
+:global(.account-workspace) .profile :global(.account-pulse) a:last-child {
+  border: 0;
+}
+:global(.account-workspace) .profile :global(.account-pulse) strong {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+:global(.account-workspace) .profile :global(.account-pulse) span {
+  color: var(--personal-muted);
+  font-size: 0.75rem;
+}
+.editProfile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--personal-line);
+  border-radius: 999px;
+  color: var(--personal-ink);
+  background: var(--personal-card);
+  font-size: 0.85rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+.editProfile svg {
+  width: 18px;
+  height: 18px;
+}
+:global(.account-workspace) .profile :global(.account-overview-main),
+:global(.account-workspace) .profile :global(.account-overview-aside) {
+  display: grid;
+  gap: 1.5rem;
+}
+.profile .about,
+.profile .activity {
+  padding: 0.25rem 0;
+}
+.profile .about h2,
+.profile .activity h2 {
+  margin: 0 0 0.6rem;
+  color: var(--personal-ink);
+  font-size: 1rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+.profile .about p {
+  margin: 0;
+  max-width: 60ch;
+  color: var(--personal-muted);
+  line-height: 1.65;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.profile .about > a,
+.profile .activity header > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 44px;
+  color: var(--personal-orange);
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+.profile .about > a svg,
+.profile .activity header > a svg {
+  width: 15px;
+  height: 15px;
+}
+.profile .activity header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.activityLinks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+.activityLinks a {
+  display: grid;
+  gap: 0.4rem;
+  padding: 1rem 0.8rem;
+  min-height: 120px;
+  border: 1px solid var(--personal-line);
+  border-radius: 1rem;
+  background: var(--personal-card);
+  text-decoration: none;
+  color: var(--personal-ink);
+}
+.activityLinks svg {
+  width: 24px;
+  height: 24px;
+  color: var(--personal-orange);
+}
+.activityLinks strong {
+  font-size: 0.85rem;
+}
+.activityLinks span {
+  color: var(--personal-muted);
+  font-size: 0.73rem;
+}
+:global(.account-workspace) .profile :global(.account-next-step) {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 1rem 0;
+  gap: 0.7rem;
+  border: 0;
+  border-block: 1px solid var(--personal-line);
+  border-radius: 0;
+  background: none;
+}
+:global(.account-workspace) .profile :global(.account-next-step) > div > span {
+  color: var(--personal-orange);
+  font-size: 0.7rem;
+}
+:global(.account-workspace) .profile :global(.account-next-step) h2 {
+  margin: 0.2rem 0;
+  color: var(--personal-ink);
+  font-size: 1.1rem;
+}
+:global(.account-workspace) .profile :global(.account-discover-link) {
+  background: var(--personal-orange);
+  color: #090c10;
+  border: 0;
+}
+:global(html[data-theme="light"]) .profile :global(.account-discover-link) {
+  color: #fff;
+}
+:global(.account-workspace) .profile :global(.account-section) {
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+:global(.account-workspace) .profile :global(.account-section) > header > span {
+  display: none;
+}
+:global(.account-workspace) .profile :global(.account-section) h2 {
+  margin: 0 0 0.7rem;
+  color: var(--personal-ink);
+  font-size: 1rem;
+}
+:global(.account-workspace) .profile :global(.account-shortcuts) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+:global(.account-workspace) .profile :global(.account-shortcuts) > a,
+:global(.account-workspace) .profile :global(.account-business-link) {
+  min-height: 68px;
+  padding: 0.75rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--personal-line);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--personal-ink);
+}
+:global(.account-workspace) .profile :global(.account-shortcut-icon) {
+  color: var(--personal-orange);
+  background: none;
+}
+:global(.account-workspace) .profile :global(.account-shortcuts) strong {
+  color: var(--personal-ink);
+  font-size: 0.88rem;
+}
+:global(.account-workspace) .profile :global(.account-shortcuts) small,
+:global(.account-workspace) .profile :global(.account-business-link) small {
+  color: var(--personal-muted);
+}
+:global(.account-workspace) .profile :global(.account-membership-strip) {
+  padding: 1rem;
+  border: 1px solid var(--personal-line);
+  border-radius: 1rem;
+  background: var(--personal-card);
+  box-shadow: none;
+}
+:global(.account-workspace) .profile :global(.account-membership-strip) h2 {
+  color: var(--personal-ink);
+  font-size: 1rem;
+}
+:global(.account-workspace) .profile :global(.account-membership-strip) p {
+  color: var(--personal-muted);
+  font-size: 0.82rem;
+}
+:global(.account-workspace)
+  .profile
+  :global(.account-membership-strip)
+  > div
+  > span {
+  color: var(--personal-orange);
+}
+.profile a:focus-visible {
+  outline: 2px solid var(--personal-orange);
+  outline-offset: 4px;
+}
+.editor {
+  --personal-bg: #090c10;
+  --personal-card: #11161c;
+  --personal-ink: #f4f4f5;
+  --personal-muted: #afb6c1;
+  --personal-line: #2a323d;
+  --personal-orange: #ff8b32;
+}
+:global(.account-workspace) .editor :global(.account-page-heading),
+:global(.account-workspace) .editor :global(.account-control-card) {
+  background: var(--personal-card);
+  border-color: var(--personal-line);
+  box-shadow: none;
+}
+:global(.account-workspace) .editor :global(.account-page-heading) h1,
+:global(.account-workspace) .editor :global(.account-control-heading) h2 {
+  color: var(--personal-ink);
+}
+:global(.account-workspace) .editor :global(.account-page-heading) p,
+:global(.account-workspace) .editor :global(.account-control-heading) p {
+  color: var(--personal-muted);
+}
+@media (min-width: 900px) {
+  :global(.account-workspace) .profile {
+    grid-template-columns: minmax(0, 1fr) 17rem;
+    column-gap: 2rem;
+  }
+  :global(.account-workspace) .profile > :global(.account-overview-main) {
+    grid-column: 1;
+  }
+  :global(.account-workspace) .profile > :global(.account-overview-aside) {
+    grid-column: 2;
+  }
+}
+@media (max-width: 400px) {
+  :global(.account-workspace) .profile {
+    padding: 0.9rem;
+  }
+  :global(.account-workspace) .profile :global(.account-welcome) {
+    grid-template-columns: 4.3rem minmax(0, 1fr) 36px;
+    gap: 0.65rem;
+  }
+  :global(.account-workspace) .profile :global(.account-avatar) {
+    width: 4.3rem;
+    height: 4.3rem;
+  }
+  :global(.account-workspace) .profile :global(.account-welcome-copy) > span {
+    font-size: 0.55rem;
+  }
+}
+:global(.account-workspace) .profile :global(.account-more-section),
+:global(.account-workspace) .profile :global(.account-operations-link) {
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+:global(.account-workspace) .profile :global(.account-utility-heading) > span {
+  display: none;
+}
+:global(.account-workspace) .profile :global(.account-utility-heading) h2 {
+  margin: 0 0 0.5rem;
+  color: var(--personal-ink);
+  font-size: 1rem;
+}
+:global(.account-workspace) .profile :global(.account-more-grid) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+:global(.account-workspace) .profile :global(.account-more-link) {
+  min-height: 54px;
+  padding: 0.7rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--personal-line);
+  border-radius: 0;
+  color: var(--personal-ink);
+  background: none;
+  box-shadow: none;
+}
+:global(.account-workspace)
+  .profile
+  :global(.account-more-link)
+  > svg:first-child {
+  color: var(--personal-orange);
+}

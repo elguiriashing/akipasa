@@ -85,10 +85,13 @@ export function GlobalSearch({ locale }: { locale: Locale }) {
       form.addEventListener("change", update);
       form.addEventListener("akipasa:filters-change", update);
       form.addEventListener("submit", submit);
+      // Handler readiness is independent of debounced submission/navigation.
+      form.dataset.searchHandlersReady = "true";
       form.dataset.autoSubmitReady = "true";
       return () => {
         clearTimeout(timer);
         delete form.dataset.autoSubmitReady;
+        delete form.dataset.searchHandlersReady;
         form.removeEventListener("change", update);
         form.removeEventListener("akipasa:filters-change", update);
         form.removeEventListener("submit", submit);

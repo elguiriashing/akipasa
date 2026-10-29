@@ -16,14 +16,16 @@
       );
     align-items: center;
     gap: 0.1rem;
-    bottom: max(0.45rem, env(safe-area-inset-bottom, 0px));
-    left: max(0.65rem, env(safe-area-inset-left, 0px));
-    right: max(0.65rem, env(safe-area-inset-right, 0px));
+    bottom: 0;
+    left: 0;
+    right: 0;
     width: auto;
-    padding: 0.32rem;
+    padding: 0.4rem max(0.35rem, env(safe-area-inset-right, 0px))
+      calc(0.4rem + env(safe-area-inset-bottom, 0px))
+      max(0.35rem, env(safe-area-inset-left, 0px));
     border: 1px solid rgba(255, 126, 56, 0.25);
-    border-radius: 1.4rem;
-    background: rgba(9, 17, 30, 0.94);
+    border-radius: 0;
+    background: rgba(7, 9, 11, 0.97);
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(20px);
   }
@@ -47,7 +49,7 @@
   }
   .app-bottom-nav.pasa-dock .pasa-dock__item.active {
     color: #ff9a60;
-    background: rgba(255, 104, 24, 0.14);
+    background: transparent;
   }
   .app-bottom-nav.pasa-dock .pasa-dock__item--checkin svg {
     box-sizing: content-box;
@@ -78,6 +80,9 @@
   }
 
   /* Native system bars already inset the WebView. */
+  body[data-android-app="true"] .app-bottom-nav.pasa-dock {
+    padding-bottom: 0.4rem;
+  }
   html:not([data-owner-focus="true"])
     body[data-android-app="true"]:has(.pasa-dock):not(
       :has(.auth-theme-akipasa, .map-page)

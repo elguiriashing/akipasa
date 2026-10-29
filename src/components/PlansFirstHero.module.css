@@ -1,49 +1,65 @@
+/* Decorative atmosphere is distinct from real event and venue imagery. */
 .hero {
-  padding: clamp(1.2rem, 4vw, 3.25rem) 0 clamp(1.8rem, 4vw, 3rem);
   position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: clamp(32rem, 65vw, 42rem);
+  overflow: hidden;
+  padding: clamp(1.3rem, 4vw, 3rem);
+  border-radius: 1.5rem;
+  background: #080a0c;
+  color: #fff;
 }
-.hero::before {
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.media img {
+  object-fit: cover;
+  object-position: center 42%;
+}
+.media::after {
   content: "";
   position: absolute;
-  inset: 0 auto auto -8%;
-  width: min(80vw, 44rem);
-  height: 22rem;
-  pointer-events: none;
-  z-index: -1;
-  background: radial-gradient(
-    ellipse at 30% 25%,
-    color-mix(in srgb, var(--primary) 12%, transparent),
-    transparent 70%
+  inset: 0;
+  background: linear-gradient(
+    0deg,
+    #080a0c 0%,
+    rgba(8, 10, 12, 0.9) 16%,
+    rgba(8, 10, 12, 0.3) 53%,
+    rgba(8, 10, 12, 0.08) 100%
   );
 }
 .kicker {
-  margin: 0 0 0.8rem;
-  color: var(--primary-text, var(--primary));
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  font-size: 0.78rem;
-  text-transform: uppercase;
+  margin: 0 0 0.7rem;
+  color: #ff9b55;
+  font-size: 0.9rem;
+  font-weight: 750;
 }
 .hero h1 {
+  max-width: 12ch;
   margin: 0;
-  font-size: clamp(2.55rem, 6.2vw, 5.5rem);
-  font-weight: 830;
-  line-height: 1.02;
-  letter-spacing: -0.06em;
-  color: var(--ink);
+  color: #fff;
+  font-size: clamp(2.8rem, 6vw, 5.2rem);
+  line-height: 1;
+  font-weight: 850;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
 }
 .description {
-  margin: 1.25rem 0 1.75rem;
-  max-width: 64ch;
-  color: var(--muted);
-  line-height: 1.65;
-  font-size: clamp(1rem, 2vw, 1.2rem);
+  margin: 1rem 0 1.4rem;
+  color: #f0eeec;
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  line-height: 1.5;
 }
 .shortcuts {
   display: flex;
-  gap: 0.6rem;
   flex-wrap: wrap;
-  align-items: center;
+  gap: 0.5rem;
 }
 .shortcut,
 .mapShortcut {
@@ -51,136 +67,50 @@
   align-items: center;
   justify-content: center;
   min-height: 46px;
-  padding: 0.75rem 1.25rem;
+  padding: 0.65rem 1rem;
+  border: 1px solid #5b5b5e;
   border-radius: 999px;
+  background: #111316;
+  color: #fff;
   text-decoration: none;
-  font-size: 0.95rem;
-  font-weight: 750;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--ink);
-  transition:
-    border-color 160ms ease,
-    background-color 160ms ease;
+  font-size: 0.9rem;
+  font-weight: 650;
 }
 .shortcut:first-child {
-  border-color: var(--primary);
-  background: var(--primary);
-  color: #121722;
+  border-color: #ff7628;
+  background: #ff7628;
+  color: #16100a;
 }
 .shortcut:hover,
 .mapShortcut:hover {
-  border-color: var(--primary);
+  border-color: #ffad70;
 }
 .shortcut:focus-visible,
 .mapShortcut:focus-visible {
-  outline: 3px solid var(--primary);
+  outline: 3px solid #ffbf8b;
   outline-offset: 3px;
 }
-.mapShortcut {
-  background: transparent;
-}
 .hint {
-  margin: 1.1rem 0 0;
-  color: var(--muted);
-  font-size: 0.84rem;
+  margin: 1rem 0 0;
+  color: #d4d1ce;
+  font-size: 0.78rem;
+  line-height: 1.5;
 }
 @media (max-width: 640px) {
   .hero {
-    padding: 1.5rem 0 2rem;
-  }
-  .shortcuts {
-    gap: 0.55rem;
-  }
-  .shortcut,
-  .mapShortcut {
-    padding: 0.65rem 0.85rem;
-    font-size: 0.86rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .shortcut,
-  .mapShortcut {
-    transition: none;
-  }
-}
-
-/* Radar x After Dark: photography-led layout leaves real event imagery to EventCard. */
-.hero {
-  isolation: isolate;
-  overflow: hidden;
-  border-radius: clamp(1.35rem, 3vw, 2.25rem);
-  padding: clamp(1.4rem, 4vw, 3.6rem);
-  background:
-    radial-gradient(
-      ellipse at 90% 0%,
-      rgba(255, 108, 24, 0.23),
-      transparent 48%
-    ),
-    linear-gradient(145deg, #16161b 0%, #0a1019 62%, #080d15 100%);
-  border: 1px solid rgba(255, 136, 64, 0.19);
-  box-shadow: 0 20px 58px rgba(0, 0, 0, 0.24);
-}
-.hero::before {
-  inset: auto -12% -52% auto;
-  width: 70%;
-  height: 140%;
-  background: radial-gradient(
-    ellipse,
-    rgba(242, 107, 29, 0.12),
-    transparent 70%
-  );
-}
-.hero h1 {
-  max-width: 13ch;
-  font-weight: 850;
-  text-wrap: balance;
-  color: #fff;
-}
-.description {
-  max-width: 48ch;
-  color: #d4d8e0;
-}
-.kicker {
-  color: #ffae70;
-}
-.shortcut,
-.mapShortcut {
-  background: rgba(8, 12, 20, 0.65);
-  border-color: rgba(255, 255, 255, 0.19);
-  color: #f7f7fa;
-  backdrop-filter: blur(12px);
-}
-.shortcut:first-child {
-  color: #141414;
-  background: #ff7628;
-  border-color: #ff7628;
-}
-.hint {
-  color: #c1c8d3;
-}
-@media (max-width: 640px) {
-  .hero {
-    padding: 1.4rem 1.1rem 1.55rem;
-    border-radius: 1.45rem;
+    min-height: 35rem;
+    margin-inline: -1rem;
+    padding: 1.4rem 1rem;
+    border-radius: 0;
   }
   .hero h1 {
-    font-size: clamp(2.3rem, 11vw, 3.7rem);
-  }
-  .description {
-    font-size: 0.95rem;
-    line-height: 1.5;
-    margin: 0.85rem 0 1.25rem;
+    font-size: clamp(2.8rem, 12vw, 4rem);
   }
   .shortcuts {
     flex-wrap: nowrap;
     overflow-x: auto;
-    scrollbar-width: none;
-    padding-bottom: 0.3rem;
-  }
-  .shortcuts::-webkit-scrollbar {
-    display: none;
+    padding: 0.25rem 0.2rem 0.4rem;
+    scrollbar-width: thin;
   }
   .shortcut,
   .mapShortcut {
@@ -189,39 +119,29 @@
   }
 }
 
-/* Real approved discovery imagery, never mock event artwork. */
-.media {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
+.search {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: min(100%, 36rem);
+  min-height: 48px;
+  margin-bottom: auto;
+  padding: 0.8rem 1rem;
+  border: 1px solid #9a7661;
+  border-radius: 999px;
+  background: #151313;
+  color: #f5efeb;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
 }
-.media img {
-  object-fit: cover;
-  object-position: center;
+.search svg {
+  flex-shrink: 0;
 }
-.media::after {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(
-      90deg,
-      rgba(4, 9, 16, 0.96) 0%,
-      rgba(4, 9, 16, 0.78) 48%,
-      rgba(4, 9, 16, 0.4) 100%
-    ),
-    linear-gradient(0deg, rgba(4, 9, 16, 0.7), transparent 55%);
-  content: "";
+.search:focus-visible {
+  outline: 3px solid #ffbf8b;
+  outline-offset: 3px;
 }
-.hero > :not(.media) {
-  position: relative;
-  z-index: 1;
-}
-@media (max-width: 640px) {
-  .media::after {
-    background:
-      linear-gradient(0deg, rgba(4, 9, 16, 0.94), rgba(4, 9, 16, 0.28) 72%),
-      linear-gradient(90deg, rgba(4, 9, 16, 0.48), transparent);
-  }
+.search:disabled {
+  cursor: wait;
 }

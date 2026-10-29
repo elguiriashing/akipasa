@@ -2,6 +2,103 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 29 October 2026 UTC.
 
+## Photographic consumer correction validated — 29 October 2026 20:43 UTC
+
+Branch `work/coordinated-release-20261029`, committed baseline
+`78d7d9f864a54d174859283847804a39026be6f9`; the commit containing this checkpoint
+freezes the source hashes in
+`docs/receipts/AKIPASA_CINEMATIC_REFERENCE_CORRECTION_20261029.json`.
+Root remains integration owner through22:00 UTC. No competing branch or release.
+
+Implemented: substantial photographic Home, compact shared black/orange dock and
+rollout strip, image-led Community, atmospheric Auth, compact personal
+Account/Profile and physical Passport paper interiors. Existing app/provider,
+role, consent, private identity, XP and Tonight boundaries remain. AkiPals paused.
+
+Tested: complete fresh `npm run check` passed2,516 Vitest cases plus all remaining
+configured checks/build; source-matched integrated browser matrix passed50,
+personal Account fixture passed32, staging guard48 and local host transport13.
+Root reviewed actual mobile Home/Auth, desktop Community and paper Passport index.
+Independent engineering review and eight actual handler-lifetime/no-op readiness
+regressions completed. No route acceptance has been manufactured: strict audit
+exits2 at0/90. Fresh commit CI and independent Cloudflare packaging are next.
+
+Real local Auth/REST now supports synthetic AkiPasa profile/terms journeys on a
+recorded partial source schema. EN390dark and ES1440light real password login,
+Account and own Profile render; actual profiles RLS own/other boundaries pass.
+Default-account terms acceptance works. A fresh child-route terms test correctly
+FAILED: requesting `/en/account/profile` returns to `/en/account`. Preserve the
+failed assertion and fix the actual layout/page return-target dependency next.
+Full schema parity remains false; pg_cron derivative image is prepared but actual
+load/replay still pending. No paid resources, production contacts or customer data.
+
+Remaining visual defects found in real captures: personal Account workspace
+header/privacy footer retain navy and cumulative lower whitespace; paper search
+placeholder contrast needs strengthening. These are unfinished, not accepted.
+
+Exact next executable actions: commit/push this validated batch; independently
+package that Git SHA and obtain fresh exact-head CI. In parallel repair the
+Account child-route terms/auth return and the three bounded visual findings, then
+rerun real local Auth/browser checks. Continue source migration reconciliation in
+the isolated local stack. No merge/deploy until all original release gates pass.
+
+## Active visual correction — 29 October 2026
+
+Current committed source: `78d7d9f864a54d174859283847804a39026be6f9` on
+`work/coordinated-release-20261029`. Alex rejected the prior dashboard-like
+consumer aesthetic and supplied Home/Map/Community/Profile/Login/Passport
+references. A new uncommitted photographic black/orange visual wave is underway.
+Root owns integration and Home/shared shell; existing agents own non-overlapping
+Community, Auth, personal Account and Passport presentation. Integration lease through
+22:00 UTC. AkiPals remains paused. No merge, deployment or route acceptance.
+
+New artwork `/images/akipasa/nightlife-editorial.webp` is AI-generated decorative
+Mediterranean rooftop atmosphere, generated 29 October 2026. It does not depict a
+verified venue, event, attendance or availability. It must never substitute for
+real catalogue facts. Source reference mockup statistics are not product data.
+
+Also pending: isolated staging configuration validator (48 Node cases passed).
+Do not dispatch remote authenticated browser tests: business-host redirects need
+an isolated local transport before QA credentials can be safely exercised.
+The only connected Supabase project is live despite its Development name. No
+paid test project, provider configuration, production data or credentials changed.
+
+Working source now includes Home, shared shell/dock/launch strip, Community,
+Auth, personal Account/Profile and physical Passport paper interiors. All ten
+ordinary workflows for the previous commit were green. New complete check passed
+2,508 Vitest cases plus configured checks/build before the final search-readiness
+repair; that repair and its new delayed-hydration regression require fresh checks.
+Initial integrated 50-case browser matrix passed. Actual screenshot review found
+and corrected the oversized launch notice, stale Auth RGB expectations, mobile
+scrollbar gutter, hidden-header inset and desktop roadmap/search overlap. Auth
+support is now in document flow so it cannot cover a form submit control.
+
+Home search now waits for actual shared filter listeners, using a dedicated
+handler-readiness marker independent of the existing debounce/navigation marker.
+This preserves same-value/no-op submissions. Navigation, feature gates and all
+original assertions remain; final rebuilt browser evidence is still required.
+
+Local-only Auth/REST investigation is active in `/workspace/akipasa-local-qa`.
+Docker is available; extraction of the large official Supabase Postgres image
+reported no space despite the workspace reporting free capacity. Smaller pinned official local components now pass real synthetic signup, password
+login, refresh, invalid-password rejection and PostgREST private-row isolation
+(own read, other-user read hidden, forged-owner write denied, anonymous denied).
+Gateway127.0.0.1:55421 reaches internal no-egress containers through a fixed local
+Docker-exec transport; no Docker socket mounts or remote credentials. Receipt:
+`/workspace/akipasa-local-qa/verification.json`. Full AkiPasa migration parity is
+explicitly false; only a synthetic private-notes fixture was exercised so far.
+Source migration reconciliation is in progress. No paid project was created.
+
+Historical exact-head recheck at 19:55 UTC: all ten ordinary workflows for78d7d9f
+completed successfully; strict visual gate failed as expected at0/90. Those results
+do not validate the new uncommitted source.
+
+Next executable action: integrate the visual families, build local fixtures,
+inspect actual EN/ES responsive captures against the supplied references, repair
+real defects, run fresh checks, document and commit. Prior source checks are
+historical evidence, not validation of this uncommitted wave. Acceptance remains
+0/90; human review and real Android testing remain outstanding.
+
 ## Awards/compact-control followup validated — 29 October 2026 19:14 UTC
 
 Baseline committed/pushed source6e025ad693f599e45fb286a6d409cf81f96b3caf

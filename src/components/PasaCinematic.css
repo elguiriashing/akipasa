@@ -4,9 +4,9 @@
  * Visual styles do not change map queries, auth, billing or Supabase contracts.
  */
 .app-shell {
-  --pasa-night: #080d15;
-  --pasa-ink: #101926;
-  --pasa-raised: #192435;
+  --pasa-night: #07090b;
+  --pasa-ink: #101214;
+  --pasa-raised: #191b1e;
   --pasa-orange: #ff7628;
   --pasa-glow: rgba(255, 118, 40, 0.3);
   --pasa-edge: rgba(202, 220, 244, 0.16);
@@ -14,14 +14,14 @@
 }
 
 html:not([data-theme="light"]) .app-shell {
-  --surface: #142033;
-  --surface-alt: #0c1726;
+  --surface: #131619;
+  --surface-alt: #0b0d10;
   --ink: #f9fafc;
   --muted: #bdc7d6;
   --line: rgba(233, 243, 255, 0.14);
   background: radial-gradient(
     ellipse at 50% -12%,
-    #253248,
+    #251710,
     var(--pasa-night) 63%
   );
   color: #f9fafc;
@@ -70,7 +70,7 @@ html[data-theme="light"] .app-shell {
 .app-shell:has(.map-page) :is(.map-list-toggle, .map-legend > summary) {
   border: 1px solid rgba(255, 145, 80, 0.35);
   border-radius: 999px;
-  background: rgba(9, 18, 30, 0.94);
+  background: rgba(9, 11, 13, 0.96);
   color: #fff;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32);
   backdrop-filter: blur(14px);
@@ -79,7 +79,7 @@ html[data-theme="light"] .app-shell {
 .app-shell:has(.map-page) .map-results-drawer {
   border: 1px solid rgba(255, 146, 80, 0.26);
   border-radius: 1.55rem 1.55rem 0 0;
-  background: #101b2a;
+  background: #101214;
   color: #f8fafc;
 }
 
@@ -171,16 +171,6 @@ html[data-theme="light"] .app-shell {
   background: var(--pasa-ink);
 }
 
-.app-shell:has(.auth-theme-akipasa) .auth-page {
-  background:
-    radial-gradient(
-      ellipse at 75% 18%,
-      rgba(233, 84, 27, 0.28),
-      transparent 60%
-    ),
-    linear-gradient(140deg, #141a26, #080c14 70%);
-}
-
 .app-shell .auth-theme-akipasa :is(.auth-focus-panel, .auth-intro) {
   border-color: var(--pasa-edge);
 }
@@ -220,7 +210,7 @@ html[data-theme="light"] .app-shell {
 
 @media (prefers-reduced-transparency: reduce) {
   .app-shell:has(.map-page) :is(.map-list-toggle, .map-legend > summary) {
-    background: #0a1420;
+    background: #0a0c0e;
     backdrop-filter: none;
   }
 }
@@ -236,7 +226,7 @@ html[data-theme="light"] .app-shell {
     margin-inline: 0;
     border: 1px solid var(--pasa-edge);
     border-radius: 50%;
-    background: rgba(12, 20, 32, 0.75);
+    background: rgba(12, 14, 16, 0.95);
     color: #f9f9fc;
   }
 }
@@ -247,18 +237,6 @@ html[data-theme="light"] .app-shell {
 }
 
 /* The AkiPasa login keeps every existing auth mode and action. */
-.app-shell:has(.auth-theme-akipasa) .auth-page {
-  background-image:
-    linear-gradient(
-      90deg,
-      rgba(4, 8, 15, 0.98) 0%,
-      rgba(4, 8, 15, 0.84) 42%,
-      rgba(4, 8, 15, 0.65) 100%
-    ),
-    url("/images/cities/malaga.webp");
-  background-position: center;
-  background-size: cover;
-}
 .app-shell:has(.auth-theme-akipasa) .auth-intro-copy,
 .app-shell:has(.auth-theme-akipasa) .auth-focus-panel {
   position: relative;
@@ -364,14 +342,14 @@ html[data-theme="light"]
 @media (max-width: 850px) {
   .app-shell .app-topbar-mobile {
     gap: 0.5rem;
-    background: #0b1423;
+    background: #090b0d;
   }
   .app-shell .app-topbar-mobile .brand-wordmark {
     color: #f7f9fd;
   }
   .app-shell .global-search-trigger {
     color: #f7f9fd;
-    background: #142339;
+    background: #171a1d;
     border-color: #415169;
   }
   .app-shell .app-topbar-mobile .app-suite-mobile-trigger {
@@ -422,4 +400,51 @@ html[data-theme="light"]
 }
 .app-shell .discover-page .discovery-empty-mark {
   grid-row: 1 / 4;
+}
+
+/* Consumer Home uses a full-width photographic opening on phones. Real result
+   rows retain a readable content gutter beneath the image. */
+@media (max-width: 640px) {
+  .app-shell .discover-page {
+    width: 100%;
+    padding: 0 1rem 1.5rem;
+  }
+}
+
+/* Auth hides the mobile app header, so it must not retain its reserved inset. */
+@media (max-width: 850px) {
+  .app-shell:has(.auth-theme-akipasa) .app-content {
+    padding-top: 0;
+  }
+  html:has(body:not([data-product]) .app-shell) {
+    scrollbar-gutter: auto;
+  }
+}
+
+/* Keep support available after the login content instead of covering a submit
+   button on short screens. The existing launcher/action remains unchanged. */
+html:not([data-owner-focus="true"])
+  body:has(.app-shell .auth-theme-akipasa)
+  .global-support-trigger {
+  position: relative;
+  inset: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-width: 44px;
+  min-height: 44px;
+  height: auto;
+  margin: 1rem auto;
+  padding: 0.65rem 1rem;
+}
+html:not([data-owner-focus="true"])
+  body:has(.app-shell .auth-theme-akipasa)
+  .global-support-label {
+  display: inline;
+}
+html:not([data-owner-focus="true"])
+  body:has(.app-shell .auth-theme-akipasa)
+  .global-support-icon {
+  display: none;
 }

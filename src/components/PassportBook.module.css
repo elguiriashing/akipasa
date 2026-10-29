@@ -2227,56 +2227,63 @@
   }
 }
 
-/* Radar × After Dark: collectible paper atlas inside the original AkiPasa book.
-   Existing chapters, achievement data, motion and privacy controls are unchanged. */
+/* Travel-book finish: paper is a physical object in either app theme. Keep
+   these local tokens together so every real chapter inherits the same paper. */
+.page:not(:has(.cover)) {
+  --paper-ink: #30251d;
+  --paper-muted: #685442;
+  --paper-panel: #fff5df;
+  --paper-surface: #f6e7ca;
+  --paper-line: #bda180;
+  --paper-selected: #f6d6a8;
+}
+.intro {
+  color: var(--ink, #f2eee6);
+}
+.page:has(.cover) {
+  color: #f7e9d6;
+  background: #171512;
+  border-color: #5a4634;
+}
+.page:has(.cover) .pageTitle {
+  color: #f7e9d6;
+}
 .book {
-  border-color: #7b5237;
+  border-color: #755139;
   border-left-color: #573a2c;
-  background: #563929;
+  border-radius: 18px;
+  background: #573c2b;
   box-shadow:
-    0 28px 60px rgba(0, 0, 0, 0.35),
-    3px 3px 0 #debf88,
-    6px 6px 0 #6a4933,
-    8px 8px 0 #997657;
+    0 24px 60px #0005,
+    2px 3px 0 #e5cda2,
+    4px 5px 0 #805d40;
 }
 .page:not(:has(.cover)) {
   background:
-    radial-gradient(
-      ellipse at 0% 5%,
-      rgba(162, 109, 61, 0.16),
-      transparent 50%
-    ),
-    repeating-linear-gradient(
-      1deg,
-      rgba(111, 73, 38, 0.025) 0 1px,
-      transparent 1px 5px
-    ),
+    radial-gradient(ellipse at 0% 5%, #a26d3d24, transparent 55%),
+    repeating-linear-gradient(1deg, #6f492606 0 1px, transparent 1px 5px),
     #f6e7ca;
-  color: #372d25;
-  border: 1px solid rgba(138, 93, 59, 0.2);
+  color: var(--paper-ink);
+  border: 1px solid #8a5d3b33;
 }
 .page:not(:has(.cover)) .pageHeader,
 .page:not(:has(.cover)) .pageFooter {
   color: #735b45;
-  border-color: rgba(109, 80, 51, 0.22);
+  border-color: #6d503338;
 }
 .page:not(:has(.cover)) .pageTitle {
   color: #33251e;
   font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(1.5rem, 4vw, 2.1rem);
+  margin-block: 14px 18px;
 }
-.page:not(:has(.cover)) .index > p {
+.page:not(:has(.cover)) .index > p,
+.page:not(:has(.cover)) .chapter > :global(p) {
   color: #594737;
-}
-.page:not(:has(.cover)) .cityIndex button {
-  color: #f8fafc;
-  border-bottom-color: rgba(75, 51, 29, 0.17);
-}
-.page:not(:has(.cover)) .cityIndex small {
-  color: #e2e8f0;
 }
 .page:not(:has(.cover)) .search {
   color: #604d3c;
+  margin-block: 16px 12px;
 }
 .page:not(:has(.cover)) .search input {
   border-color: #ad9374;
@@ -2291,8 +2298,103 @@
 .page:not(:has(.cover)) .chapterList b {
   color: #ae4d1f;
 }
-.page:not(:has(.cover)) .chapter > :global(p) {
-  color: #584433;
+/* Original city photographs are destinations, not fabricated earned stamps. */
+.page:not(:has(.cover)) .cityIndex button {
+  color: #fff8e9;
+  border: 3px double #d2b180;
+  border-radius: 4px;
+  box-shadow: 2px 3px 0 #7f57351a;
+}
+.page:not(:has(.cover)) .cityIndex small {
+  color: #f2e4ce;
+}
+/* Paper belongs to the physical book interior; interface appearance tokens
+   remain inherited from the selected app theme. */
+.page:not(:has(.cover)) .chapter :global(.panel),
+.page:not(:has(.cover)) .chapter :global(.passport-card),
+.page:not(:has(.cover)) .chapter :global(.stamp-card),
+.page:not(:has(.cover)) .chapter :global(.console-section-header),
+.page:not(:has(.cover)) .chapter :global(.notice),
+.page:not(:has(.cover)) .chapter :global(.status-pill) {
+  color: var(--paper-ink);
+  background: var(--paper-panel);
+  border-color: var(--paper-line);
+}
+.page:not(:has(.cover)) .chapter :global(.console-section-heading) {
+  color: var(--paper-ink);
+}
+.page:not(:has(.cover)) .chapter :global(p) {
+  color: var(--paper-muted);
+}
+.chapter :global(.console-section-header) {
+  border-radius: 8px;
+  box-shadow: none;
+}
+.chapter :global(.panel),
+.chapter :global(.passport-card),
+.chapter :global(.stamp-card) {
+  border-radius: 8px;
+  box-shadow: 0 3px 0 #8e684215;
+}
+.chapter :global(.stamp-card) {
+  border-style: dashed;
+  border-width: 2px;
+}
+.chapter :global(.metrics-grid) {
+  gap: 10px;
+}
+.chapter :global(.metric-card) {
+  background: #fff5df;
+  border-color: #bda180;
+  color: #30251d;
+  box-shadow: none;
+}
+.bookmarks,
+.mobileMenuButton {
+  background: #141311;
+  border-color: #5a4634;
+  color: #fff3df;
+}
+.bookmarks button,
+.bookmarks button .bookmarkNumber,
+.bookmarks .motionControls .motionButton,
+.bookmarks .privacyControls button {
+  color: #f7e9d6;
+  background: #211d18;
+  border-color: #5a4634;
+}
+.bookmarks button[aria-current] {
+  color: #21160b;
+  border-color: #ff9c4a;
+  background: #ff923e;
+}
+.bookmarks button[aria-current] .bookmarkNumber {
+  color: #40240e;
+}
+.bookmarks .motionControls button[aria-pressed="true"],
+.bookmarks .privacyControls button:hover {
+  color: #fff3df;
+  background: #634021;
+}
+@media (max-width: 700px) {
+  .book {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+  .page:not(:has(.cover)) {
+    border-radius: 12px 12px 0 0;
+  }
+  .cityIndex {
+    gap: 9px;
+  }
+  .cityIndex button {
+    min-height: 124px;
+  }
+  .page:not(:has(.cover)) .pageTitle {
+    margin-block: 12px;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .book .page {

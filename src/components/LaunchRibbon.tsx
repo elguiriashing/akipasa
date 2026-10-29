@@ -15,17 +15,12 @@ export function LaunchRibbon({ locale }: { locale: Locale }) {
       <p>
         <strong>
           {es
-            ? "AkiPasa empieza en la Costa del Sol."
-            : "AkiPasa starts on the Costa del Sol."}
-        </strong>{" "}
-        <span>
-          {es
-            ? "¡Pronto en más ciudades! Crecemos con nuestra comunidad."
-            : "Coming to more towns soon, as our community grows."}
-        </span>
+            ? "Empezamos en la Costa del Sol."
+            : "Starting on the Costa del Sol."}
+        </strong>
       </p>
       <Link href={`/${locale}/roadmap`} className={styles.link}>
-        {es ? "Nuestro plan" : "See our roadmap"}
+        {es ? "Nuestro plan" : "Roadmap"}
         <Icon name="arrow-right" size={17} />
       </Link>
     </aside>

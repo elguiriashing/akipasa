@@ -31,7 +31,7 @@
     "src/app/[locale]/account/page.tsx": {
       "scope": "consumer",
       "status": "in-progress",
-      "note": "Current shared account presentation retained; obsolete mascot/adventure shortcut copy replaced with 3D avatar/private wardrobe in EN/ES, preserving gated destination. Rendered regression tests pass. Actual final-source visual and physical-device approval remains required; not accepted."
+      "note": "Current shared account presentation retained; obsolete mascot/adventure shortcut copy replaced with 3D avatar/private wardrobe in EN/ES, preserving gated destination. Rendered regression tests pass. Actual final-source visual and physical-device approval remains required; not accepted. Compact personal profile, truthful saved/following/plan, existing bio and real activity destinations implemented; no fake interests/friend/XP data.94focused tests and32isolated responsive page/layout renders passed. Final integrated protected-provider and reviewer/device acceptance pending."
     },
     "src/app/[locale]/account/premium/page.tsx": {
       "scope": "consumer",
@@ -46,7 +46,7 @@
     "src/app/[locale]/account/profile/page.tsx": {
       "scope": "consumer",
       "status": "in-progress",
-      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review. Biography maxlength now matches existing 2000-character server contract, retaining editable legacy500-character values. Shared menu closes after browser history/route changes. Focused tests and selected EN-ES browser cases pass; final release acceptance remains outstanding."
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review. Biography maxlength now matches existing 2000-character server contract, retaining editable legacy500-character values. Shared menu closes after browser history/route changes. Focused tests and selected EN-ES browser cases pass; final release acceptance remains outstanding. Personal editor scoped styling aligned with consumer profile; existing fields/actions/2000-character biography contract retained. Included in32isolated actual page/layout renders. Protected-provider and reviewer/device acceptance pending."
     },
     "src/app/[locale]/account/referrals/page.tsx": {
       "scope": "consumer",
@@ -191,7 +191,7 @@
     "src/app/[locale]/auth/page.tsx": {
       "scope": "consumer",
       "status": "in-progress",
-      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES."
+      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES. Consumer entrance now uses decorative nightlife art, compact branding and opaque near-black readable form surfaces; provider/action/consent/return contracts retained. Isolated72cases and initial integrated EN/ES contrast passed; final source visual/device approval remains pending."
     },
     "src/app/[locale]/auth/recover/page.tsx": {
       "scope": "consumer",
@@ -256,7 +256,7 @@
     "src/app/[locale]/community/page.tsx": {
       "scope": "consumer",
       "status": "in-progress",
-      "note": "Private task forms/history now use continuous WorkspaceShell panels, localized display labels, approval-conditional copy and neutral created-query feedback. Existing caller/action/target/draft boundaries retained; 63 focused and 240 disposable browser cases passed. Full integrated exact-source/reviewer/device acceptance remains outstanding."
+      "note": "Private task forms/history now use continuous WorkspaceShell panels, localized display labels, approval-conditional copy and neutral created-query feedback. Existing caller/action/target/draft boundaries retained; 63 focused and 240 disposable browser cases passed. Full integrated exact-source/reviewer/device acceptance remains outstanding. Image-led editorial landing, compact orange destination pills and circular real navigation implemented without invented social activity. Decorative illustration explicitly labelled; real city photographs retain credits. Isolated16responsive cases and initial integrated captures passed; final reviewer/device acceptance pending."
     },
     "src/app/[locale]/creators/[slug]/page.tsx": {
       "scope": "consumer",
@@ -316,12 +316,12 @@
     "src/app/[locale]/page.tsx": {
       "scope": "consumer",
       "status": "in-progress",
-      "note": ""
+      "note": " Reference-driven photographic Home opening, compact search/date shortcuts and launch strip implemented. Decorative generated artwork is not catalogue evidence. Real shared-search keyboard behavior tested; final source review and device acceptance remain pending."
     },
     "src/app/[locale]/passports/page.tsx": {
       "scope": "consumer",
       "status": "in-progress",
-      "note": "Generated cover/index chapter URLs now survive server reload; existing invalid/default/city/feedback behavior retained. Photo-card city captions corrected for contrast; no check-in/XP mutations. 25 isolated production browser cases passed; final integrated source/reviewer/device acceptance remains outstanding."
+      "note": "Generated cover/index chapter URLs now survive server reload; existing invalid/default/city/feedback behavior retained. Photo-card city captions corrected for contrast; no check-in/XP mutations. 25 isolated production browser cases passed; final integrated source/reviewer/device acceptance remains outstanding. Physical paper interiors and black/orange chapter chrome implemented while preserving inherited app theme tokens, closed cover, real XP/stamps/privacy/actions.46focused tests passed after unchanged theme regression identified and repaired. Final source visual/device acceptance pending."
     },
     "src/app/[locale]/passports/places/page.tsx": {
       "scope": "consumer",

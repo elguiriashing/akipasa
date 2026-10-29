@@ -1,4 +1,5 @@
 import Image from "next/image";
+import styles from "../account-personal.module.css";
 import { notFound } from "next/navigation";
 import { Icon } from "@/components/Icons";
 import { requireUser } from "@/lib/auth";
@@ -63,7 +64,9 @@ export default async function ProfilePage({
 
   if (profileError) {
     return (
-      <div className="account-controls-page account-profile-screen">
+      <div
+        className={`account-controls-page account-profile-screen ${styles.editor}`}
+      >
         {header}
         <AccountCollectionState
           locale={locale}
@@ -83,7 +86,9 @@ export default async function ProfilePage({
   }
 
   return (
-    <div className="account-controls-page account-profile-screen">
+    <div
+      className={`account-controls-page account-profile-screen ${styles.editor}`}
+    >
       {header}
 
       {query.updated && (

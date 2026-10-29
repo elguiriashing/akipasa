@@ -3768,3 +3768,66 @@ a source revert; physical Android and live authenticated acceptance remain open.
 - **Safety/rollback:** Source-only revert; no migrations, grants, billing,
   consent defaults, private identities, award history, XP or provider changes.
   Full integrated checks and default complete browser matrix remain required.
+
+## 2026-10-29 | Consumer reference-driven photographic correction (in progress)
+
+- **Trigger/scope:** Alex rejected the dashboard-like consumer aesthetic and
+  supplied additional photographic Home, Map, Community, Profile, Login and
+  parchment Passport references. Root owns shared shell/Home; existing agents
+  own separate Community, Auth, Account and Passport presentation files.
+- **Dependencies:** Home keeps discovery query destinations and Tonight gate.
+  Shared dock retains canonical routes, touch targets, privacy clearance and
+  safe-area handling. EN/ES and both themes remain supported. Auth providers,
+  consent/return journeys, role gates, private identity and earned Passport/XP
+  authority are not changed. Independently branded products stay scoped out.
+- **Media provenance:** AI-generated decorative Mediterranean rooftop atmosphere,
+  generated 29 October 2026 and optimized as 163886-byte WebP. It is not a real
+  catalogue photograph or evidence of event supply. Empty/populated content must
+  remain truthful. No invented social accounts, rewards or activity.
+- **Validation:** Existing Tonight regressions passed27 after the Home change.
+  Integrated build, responsive screenshots, contrast/keyboard/privacy checks and
+  complete repository check remain pending; no new acceptance is asserted.
+- **Rollback:** Revert source/assets only. No schema, production data, billing,
+  provider, deployment, consent or XP mutation is part of this visual change.
+
+## 2026-10-29 | Isolated staging browser guard and local business-host transport
+
+- **Observed:** The manually dispatched site-regression job paired fixtures mode
+  with a remote provider URL, which the existing localhost fixture guard rejects.
+  It now requires explicit non-production Supabase QA configuration before install
+  or build. The validator rejects the known live project and alias, malformed
+  origins, missing disposable credentials and invalid QA venue IDs;48 cases pass.
+- **Authenticated journey:** Real business routes redirect to a separate host.
+  A test-only fixed-backend loopback proxy preserves that middleware behavior and
+  the disposable browser session without sending credentials to public hosts.
+  Native HTTP never follows redirects; allowed canonical destinations are rewritten
+  to the local proxy. External browser HTTP/WebSockets fail closed.13 actual
+  Chromium/local-server tests cover redirect chains, virtual host, cookies, inert
+  password POST, gzip and multiple Set-Cookie headers. These regressions run in the
+  browser-enabled booking CI job. Production middleware/auth policies unchanged.
+- **Limits:** No approved separate QA project exists or has been created. The
+  manual suite remains unexecuted and requires provisioned migrations, deterministic
+  catalogue/RPC supply and authorized disposable accounts. External QA media is
+  deliberately unsupported by the local transport. No real authentication or
+  production acceptance is claimed. An earlier external-forwarding design was
+  rejected by automatic review and removed; final transport opens only loopback.
+- **Rollback:** Revert test/workflow/guard source; no live credentials, provider
+  settings, database, deployment or billing changes occurred.
+
+### Integrated visual and readiness repairs
+
+Actual full-shell screenshots required additional repairs beyond isolated page
+captures: compact truthful launch strip, desktop roadmap link clearance from
+fixed search, mobile scrollbar gutter, removal of hidden Auth-header inset and
+obsolete shared Auth background overrides. Auth support remains available in
+normal document flow instead of covering submit controls. Browser checks retain
+all original assertions, use the actual new opaque Auth colors and additionally
+assert that submit controls and the roadmap link are not obscured.
+
+The new Home search must wait for the sibling GlobalSearch form's actual handler
+attachment, not merely its own hydration. GlobalSearch publishes a dedicated
+`data-search-handlers-ready` marker after attaching its unchanged three listeners
+and removes it on cleanup. This is independent of the existing auto-submit/debounce
+marker, which can remain absent after same-value navigation. Query serialization,
+validation, router calls and feature gates are unchanged. Delayed hydration,
+cleanup/replacement and no-op readiness receive targeted regressions.
