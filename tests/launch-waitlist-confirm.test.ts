@@ -35,11 +35,16 @@ const entry = {
   marketing_consent_at: null,
 };
 
-function request(proof = token) {
+function request(proof = token, product?: string) {
   return new Request("https://akipasa.com/api/launch-waitlist/confirm", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({ entry: entry.id, token: proof, lang: "en" }),
+    body: new URLSearchParams({
+      entry: entry.id,
+      token: proof,
+      lang: "en",
+      ...(product ? { product } : {}),
+    }),
   });
 }
 
@@ -96,6 +101,28 @@ describe("verified waitlist founder notification boundary", () => {
       entry,
       "primary-test-key",
     );
+  });
+
+  it("uses the database-verified product for successful confirmation redirects", async () => {
+    const response = await POST(request(token, "coches"));
+    const result = new URL(response.headers.get("location")!);
+    expect(result.searchParams.get("status")).toBe("confirmed");
+    expect(result.searchParams.get("product")).toBe("duermo");
+    expect(result.searchParams.get("lang")).toBe("en");
+    expect(db.notice).toHaveBeenCalledOnce();
+  });
+
+  it("uses only allowlisted product hints when proof fails", async () => {
+    db.maybeSingle.mockResolvedValue({ data: null, error: null });
+    const validHint = await POST(request(token, "coches"));
+    const validResult = new URL(validHint.headers.get("location")!);
+    expect(validResult.searchParams.get("status")).toBe("invalid");
+    expect(validResult.searchParams.get("product")).toBe("coches");
+    const untrustedHint = await POST(request(token, "javascript:evil"));
+    const untrustedResult = new URL(untrustedHint.headers.get("location")!);
+    expect(untrustedResult.searchParams.get("status")).toBe("invalid");
+    expect(untrustedResult.searchParams.has("product")).toBe(false);
+    expect(db.notice).not.toHaveBeenCalled();
   });
 
   it("never notifies on expired or replayed proof", async () => {
