@@ -128,7 +128,34 @@ try {
             expect(box.x + box.width).toBeLessThanOrEqual(width + 1);
           }
           if (["member", "shipping"].includes(screen)) {
+            const privacyButton = page.getByRole("button", {
+              name: locale === "es" ? "Guardar privacidad" : "Save privacy",
+              exact: true,
+            });
+            const controlStyle = await privacyButton.evaluate((element) => {
+              const style = getComputedStyle(element);
+              return {
+                background: style.backgroundColor,
+                border: style.borderTopWidth,
+              };
+            });
+            expect(controlStyle.background).not.toBe("rgba(0, 0, 0, 0)");
+            expect(controlStyle.border).toBe("1px");
+            expect(
+              await page
+                .locator("progress")
+                .evaluate((element) => getComputedStyle(element).appearance),
+            ).toBe("none");
             const check = page.getByRole("checkbox").first();
+            expect((await check.boundingBox()).width).toBeGreaterThanOrEqual(
+              19,
+            );
+            expect(
+              await check.evaluate(
+                (element) =>
+                  element.closest("label").getBoundingClientRect().height,
+              ),
+            ).toBeGreaterThanOrEqual(44);
             await check.focus();
             await page.keyboard.press("Space");
             await expect(check).toBeChecked();

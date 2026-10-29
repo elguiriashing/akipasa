@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import type { DiscoveryQuery } from "@/lib/domain";
 import { optionalUser } from "@/lib/auth";
-import { repository } from "@/lib/repository";
+import { repository, SupabaseDiscoveryRepository } from "@/lib/repository";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import {
   defaultRankingConfig,
@@ -83,13 +83,18 @@ export async function recommendDiscovery({
   query,
   surface,
   limit = 50,
+  liveOnly = false,
 }: {
   query: DiscoveryQuery;
   surface: string;
   limit?: number;
+  /** Supply-sensitive surfaces must expose live outages, never fixture fallback. */
+  liveOnly?: boolean;
 }): Promise<RecommendationEnvelope> {
   const started = Date.now();
-  const candidates = await repository.discover(query);
+  const candidates = await (
+    liveOnly ? new SupabaseDiscoveryRepository() : repository
+  ).discover(query);
   let service: ReturnType<typeof createSupabaseServiceClient> | undefined;
   let preferenceProfileId: string | undefined;
   let signals: PreferenceSignal[] = [];

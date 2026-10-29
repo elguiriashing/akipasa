@@ -107,6 +107,17 @@ function softLimb(parent, points, radii, mat) {
       }
     }
   }
+  // Closed ends prevent dark, hollow shoulder openings and visible trouser
+  // interiors when the user orbits below the default camera position.
+  const firstCenter = positions.length / 3;
+  const first = path.getPointAt(0),
+    last = path.getPointAt(1);
+  positions.push(first.x, first.y, first.z, last.x, last.y, last.z);
+  const lastRing = steps * (sides + 1);
+  for (let side = 0; side < sides; side++) {
+    indices.push(firstCenter, side + 1, side);
+    indices.push(firstCenter + 1, lastRing + side, lastRing + side + 1);
+  }
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute(
     "position",
@@ -147,7 +158,7 @@ export function makeHair(a) {
     y: 1.728,
     z: -0.014,
     rx: 0.125,
-    ry: a.hair === "buzz" ? 0.044 : 0.08,
+    ry: a.hair === "buzz" ? 0.044 : 0.059,
     rz: 0.127,
     mat: main,
     details: 32,
@@ -162,13 +173,13 @@ export function makeHair(a) {
       const spikes = a.hair === "quiff" ? 13 : 9;
       for (let i = 0; i < spikes; i++) {
         const x = -0.101 + (i / (spikes - 1)) * 0.202;
-        const lift = a.hair === "quiff" ? 0.065 : 0.024;
+        const lift = a.hair === "quiff" ? 0.026 : 0.006;
         curve(
           group,
           [
             [x, 1.744, 0.078],
-            [x * 0.9, 1.777 + lift, 0.086],
-            [x * 0.86 + 0.023, 1.768 + lift * 0.6, 0.103],
+            [x * 0.9 + 0.014, 1.765 + lift, 0.075],
+            [x * 0.86 + 0.029, 1.754 + lift * 0.6, 0.105],
             [x + 0.018, 1.721, 0.113],
           ],
           0.016 + 0.004 * (i % 3),
@@ -409,7 +420,7 @@ export function makeWardrobe(a) {
     group,
     [
       [0, 1.485, 0.002],
-      [0, 1.58, 0.002],
+      [0, a.bodyStyle === "masculine" ? 1.64 : 1.58, 0.002],
     ],
     [neckRadius, neckRadius * 0.9],
     skin,
@@ -551,7 +562,7 @@ export function makeWardrobe(a) {
   }
   const short = a.bottom === "shorts";
   const wide =
-    a.bottom === "cargo" ? 0.127 : a.bottom === "tailored" ? 0.092 : 0.105;
+    a.bottom === "cargo" ? 0.114 : a.bottom === "tailored" ? 0.092 : 0.104;
   addEllipsoid(group, {
     x: 0,
     y: 1.055,
@@ -562,26 +573,30 @@ export function makeWardrobe(a) {
     mat: pants,
   });
   for (const side of [-1, 1]) {
-    const top = [side * 0.1, 1.02, 0];
-    const ankle = [side * 0.112, short ? 0.59 : 0.15, 0.01];
-    segment(
+    // A curved thigh/knee/cuff silhouette retains fabric volume without the
+    // former rigid, constant-radius cylinders. All wardrobe IDs stay intact.
+    const leg = softLimb(
       group,
-      top,
-      ankle,
-      wide,
-      wide * (a.bottom === "cargo" ? 0.78 : 0.88),
+      [
+        [side * 0.095, 1.035, 0],
+        [side * 0.108, 0.84, 0.012],
+        [side * 0.112, short ? 0.68 : 0.56, 0.024],
+        [side * 0.112, short ? 0.59 : 0.15, 0.01],
+      ],
+      [wide, wide * 0.98, wide * 0.88, wide * 0.73],
       pants,
-      20,
     );
+    leg.name = "AkiPals tailored trouser leg";
     if (short)
-      segment(
+      softLimb(
         group,
-        [side * 0.112, 0.61, 0],
-        [side * 0.112, 0.15, 0],
-        0.062,
-        0.049,
+        [
+          [side * 0.112, 0.61, 0],
+          [side * 0.112, 0.39, 0.018],
+          [side * 0.112, 0.15, 0],
+        ],
+        [0.062, 0.058, 0.043],
         skin,
-        14,
       );
     if (a.bottom === "cargo") {
       const pocket = new THREE.Mesh(
@@ -604,7 +619,7 @@ export function makeWardrobe(a) {
       z: 0.076,
       rx: 0.108,
       ry: 0.082,
-      rz: 0.191,
+      rz: 0.168,
       mat: footwear,
       details: 24,
     });
@@ -625,7 +640,7 @@ export function makeWardrobe(a) {
       z: 0.08,
       rx: 0.11,
       ry: 0.027,
-      rz: 0.195,
+      rz: 0.172,
       mat: a.shoes === "boots" ? dark : trim,
       details: 24,
     });
@@ -760,6 +775,7 @@ export function makeWardrobe(a) {
 /** Keep only the head triangles in object space. A world-space clipping plane
  * sliced short/tall avatars at the wrong height and could expose the T-pose. */
 export function prepareBase(base) {
+  base.updateMatrixWorld(true);
   base.traverse((node) => {
     if (!node.isMesh) return;
     node.geometry = node.geometry.clone();
@@ -770,6 +786,13 @@ export function prepareBase(base) {
       const kept = [];
       const skinIndex = node.geometry.getAttribute("skinIndex"),
         skinWeight = node.geometry.getAttribute("skinWeight");
+      const headBone = node.skeleton.bones.find((bone) => bone.name === "Head");
+      const headOrigin = node.worldToLocal(
+        headBone.getWorldPosition(new THREE.Vector3()),
+      );
+      // Each donor has a different neck height. Retain the jaw, but replace
+      // the low-poly flared neck/shoulder remnants with our continuous neck.
+      const neckJoin = Math.max(1.5, headOrigin.y - 0.022);
       const headBones = new Set(
         node.skeleton.bones.flatMap((bone, index) =>
           /^(Head|neck_01)$/.test(bone.name) ? [index] : [],
@@ -789,7 +812,7 @@ export function prepareBase(base) {
         if (
           triangle.every(
             (index) =>
-              position.getY(index) >= 1.5 &&
+              position.getY(index) >= neckJoin &&
               Math.abs(position.getX(index)) <= 0.145 &&
               headWeight(index) > 0.5,
           )
@@ -840,6 +863,14 @@ export function applyBaseColors(base, a) {
         if (a.brows === "arched")
           y += 0.011 * Math.sin(Math.min(Math.abs(x) / 0.065, 1) * Math.PI);
       } else if (y >= 1.5) {
+        // Donor neck topology was authored for a T-pose torso, not this
+        // portrait. Collapse its cut boundary into a level, narrow join inside
+        // the authored neck instead of exposing triangular shoulder scraps.
+        if (y < chinY + 0.022) {
+          y = chinY + 0.008;
+          x = THREE.MathUtils.clamp(x, -0.039, 0.039);
+          z = THREE.MathUtils.clamp(z, -0.035, 0.037);
+        }
         const chinInfluence = Math.max(0, 1 - Math.abs(y - chinY) / 0.055);
         x *=
           1 +
@@ -852,7 +883,7 @@ export function applyBaseColors(base, a) {
           1 +
           earInfluence *
             (a.ears === "prominent" ? 0.18 : a.ears === "small" ? -0.16 : 0);
-        const neckInfluence = Math.max(0, 1 - (y - 1.5) / 0.05);
+        const neckInfluence = Math.max(0, 1 - (y - chinY) / 0.06);
         x *=
           1 +
           neckInfluence *
@@ -890,13 +921,12 @@ function create(container) {
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
     alpha: true,
-    powerPreference: "high-performance",
-    preserveDrawingBuffer: true,
+    powerPreference: "default",
   });
   renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.42;
+  renderer.toneMappingExposure = 1.12;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.setClearColor(0x000000, 0);
@@ -912,9 +942,10 @@ function create(container) {
   container.replaceChildren(renderer.domElement);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(33, 1, 0.05, 90);
-  camera.position.set(0, 1.34, 3.8);
+  // Reserve breathing room for the stage badge and bottom touch controls.
+  camera.position.set(0, 1.34, 4.5);
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, 0.99, 0);
+  controls.target.set(0, 1.04, 0);
   controls.enablePan = false;
   controls.enableDamping = !prefersReducedMotion;
   controls.dampingFactor = 0.07;
@@ -923,7 +954,7 @@ function create(container) {
   controls.minPolarAngle = 0.67;
   controls.maxPolarAngle = 2.07;
   controls.update();
-  scene.add(new THREE.HemisphereLight("#eaf5ff", "#725146", 2.3));
+  scene.add(new THREE.HemisphereLight("#f1f5ff", "#504b57", 1.65));
   const light = (color, intensity, x, y, z, shadow = false) => {
     const l = new THREE.DirectionalLight(color, intensity);
     l.position.set(x, y, z);
@@ -938,9 +969,9 @@ function create(container) {
     }
     scene.add(l);
   };
-  light("#ffe1c7", 3.2, -2.5, 4, 3, true);
-  light("#ff8c58", 2.4, 2, 3, -3, false);
-  light("#afc9ff", 0.86, -3, 1, -1, false);
+  light("#fff0e5", 2.65, -2.5, 4, 3, true);
+  light("#ffab7e", 1.65, 2, 3, -3, false);
+  light("#c4d8ff", 1.2, 3, 2, 2, false);
   const stageMat = new THREE.MeshStandardMaterial({
     color: "#1a1c27",
     roughness: 0.43,
@@ -970,8 +1001,8 @@ function create(container) {
   // A friendly six-head silhouette. Hair, facial details and accessories use
   // the same neck pivot, preserving fit while the body/height controls change.
   const head = new THREE.Group();
-  head.position.y = 1.5 * (1 - 1.22);
-  head.scale.set(1.2, 1.22, 1.2);
+  head.position.y = 1.5 * (1 - 1.4);
+  head.scale.set(1.38, 1.4, 1.35);
   root.add(head);
   let base = null,
     cloth = null,
@@ -979,9 +1010,11 @@ function create(container) {
     faceDetails = null,
     loadNumber = 0,
     active = true,
+    contextLost = false,
     raf = 0;
   let faceType = null,
-    previousStyle = null;
+    previousStyle = null,
+    requestedStyle = null;
   const resize = () => {
     if (!active) return;
     const w = Math.max(container.clientWidth, 1),
@@ -991,18 +1024,17 @@ function create(container) {
     camera.updateProjectionMatrix();
     requestRender();
   };
-  let frame = 0;
   const requestRender = () => {
-    if (active && !document.hidden && !raf) raf = requestAnimationFrame(tick);
+    if (active && !contextLost && !document.hidden && !raf)
+      raf = requestAnimationFrame(tick);
   };
   const tick = () => {
     raf = 0;
-    if (!active || document.hidden) return;
-    frame += 0.016;
-    if (!prefersReducedMotion) root.position.y = Math.sin(frame * 0.8) * 0.007;
+    if (!active || contextLost || document.hidden) return;
     controls.update();
     renderer.render(scene, camera);
-    if (!prefersReducedMotion) requestRender();
+    // OrbitControls emits change while damping settles. An idle portrait needs
+    // no perpetual animation loop, especially inside an Android WebView.
   };
   const visibility = () => {
     if (document.hidden) {
@@ -1012,23 +1044,49 @@ function create(container) {
   };
   controls.addEventListener("change", requestRender);
   document.addEventListener("visibilitychange", visibility);
+  const loseContext = (event) => {
+    event.preventDefault();
+    contextLost = true;
+    cancelAnimationFrame(raf);
+    raf = 0;
+    container.dataset.rendered = "error";
+    container.dispatchEvent(
+      new CustomEvent("akipals:error", {
+        detail: {
+          message:
+            "3D preview paused. Waiting for graphics to recover. Your saved look is unchanged.",
+        },
+      }),
+    );
+  };
+  const restoreContext = () => {
+    contextLost = false;
+    if (requestedStyle) void setAppearance(JSON.parse(requestedStyle));
+  };
+  renderer.domElement.addEventListener("webglcontextlost", loseContext);
+  renderer.domElement.addEventListener("webglcontextrestored", restoreContext);
   const observer = new ResizeObserver(resize);
   observer.observe(container);
   resize();
   async function setAppearance(a) {
+    requestedStyle = JSON.stringify(a);
     const model = a.bodyStyle === "masculine" ? "male" : "female";
     const number = ++loadNumber;
     container.dataset.rendered = "loading";
     container.dispatchEvent(new CustomEvent("akipals:loading"));
     try {
       if (!base || faceType !== model) {
-        let cached = models.get(model);
-        if (!cached) {
-          cached = await loader.loadAsync(
-            "/pals/models/akipals-base-" + model + ".glb",
-          );
-          models.set(model, cached);
+        let pending = models.get(model);
+        if (!pending) {
+          pending = loader
+            .loadAsync("/pals/models/akipals-base-" + model + ".glb")
+            .catch((error) => {
+              models.delete(model);
+              throw error;
+            });
+          models.set(model, pending);
         }
+        const cached = await pending;
         if (!active || number !== loadNumber) return;
         clearGroup(base);
         base = cloneSkeleton(cached.scene);
@@ -1036,7 +1094,7 @@ function create(container) {
         head.add(base);
         faceType = model;
       }
-      if (!active || number !== loadNumber) return;
+      if (!active || contextLost || number !== loadNumber) return;
       applyBaseColors(base, a);
       clearGroup(cloth);
       clearGroup(hair);
@@ -1086,6 +1144,8 @@ function create(container) {
       requestRender();
     },
     screenshot() {
+      if (contextLost || container.dataset.rendered !== "true")
+        throw new Error("3D preview is not ready");
       renderer.render(scene, camera);
       return renderer.domElement.toDataURL("image/png");
     },
@@ -1097,6 +1157,11 @@ function create(container) {
       cancelAnimationFrame(raf);
       observer.disconnect();
       document.removeEventListener("visibilitychange", visibility);
+      renderer.domElement.removeEventListener("webglcontextlost", loseContext);
+      renderer.domElement.removeEventListener(
+        "webglcontextrestored",
+        restoreContext,
+      );
       controls.removeEventListener("change", requestRender);
       controls.dispose();
       clearGroup(base);

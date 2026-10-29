@@ -3,6 +3,26 @@
   padding: clamp(1rem, 3vw, 3rem);
   max-width: 1500px;
   margin: auto;
+  color: var(--ink, #203145);
+}
+.workspace > h1 {
+  max-width: 24ch;
+  margin: 0.7rem 0 1rem;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 850;
+  line-height: 1.1;
+  letter-spacing: -0.045em;
+}
+.workspace > h2 {
+  margin: 2rem 0 1rem;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  letter-spacing: -0.03em;
+}
+.workspace > p {
+  max-width: 70ch;
+  margin-bottom: 1rem;
+  color: var(--muted, #485a6c);
+  line-height: 1.6;
 }
 .grid {
   display: grid;
@@ -17,6 +37,23 @@
   min-width: 0;
   overflow-wrap: anywhere;
   background: var(--surface);
+  box-shadow: 0 10px 28px rgba(10, 24, 42, 0.06);
+}
+.panel > :is(h2, h3) {
+  margin: 0 0 0.85rem;
+  font-size: 1.2rem;
+  line-height: 1.35;
+}
+.panel > p {
+  margin-block: 0.85rem;
+  line-height: 1.6;
+}
+.panel > ul {
+  display: grid;
+  gap: 1rem;
+  margin: 1rem 0;
+  padding: 0;
+  list-style: none;
 }
 .panel form {
   display: grid;
@@ -43,6 +80,16 @@
   align-items: center;
   gap: 0.65rem;
   min-height: 44px;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--line, #c9d4df);
+  border-radius: 0.75rem;
+  background: var(--surface-alt, #f3f6f9);
+}
+.panel input[type="checkbox"] {
+  flex: 0 0 1.2rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: #b64f16;
 }
 .workspace button,
 .workspace a {
@@ -52,10 +99,58 @@
   align-items: center;
   justify-content: center;
   border-radius: 0.6rem;
+  border: 1px solid var(--line, #c9d4df);
+  background: var(--surface-alt, #f3f6f9);
+  color: var(--ink, #203145);
+  font-weight: 750;
+  line-height: 1.4;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+.workspace button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.workspace :is(button, a, input, select, textarea, summary):focus-visible {
+  outline: 3px solid #d17a37;
+  outline-offset: 3px;
+}
+.workspace > a {
+  margin: 0 0.5rem 1rem 0;
+}
+.panel details > summary {
+  min-height: 44px;
+  padding: 0.75rem;
+  border: 1px solid var(--line, #c9d4df);
+  border-radius: 0.65rem;
+  background: var(--surface-alt, #f3f6f9);
+  font-weight: 750;
+  cursor: pointer;
 }
 .panel progress {
+  display: block;
   width: 100%;
-  accent-color: #29a9be;
+  height: 0.65rem;
+  margin-block: 0.6rem 1rem;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  appearance: none;
+  background: var(--line, #c9d4df);
+  accent-color: #247b8c;
+}
+.panel progress::-webkit-progress-bar {
+  border-radius: 999px;
+  background: var(--line, #c9d4df);
+}
+.panel progress::-webkit-progress-value {
+  border-radius: 999px;
+  background: #247b8c;
+}
+.panel progress::-moz-progress-bar {
+  border-radius: 999px;
+  background: #247b8c;
 }
 .trophy {
   border: 2px solid #8fbbd1;

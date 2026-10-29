@@ -101,17 +101,12 @@ export default async function BusinessPage({
   const { supabase, user } = claimView
     ? await requireUser(locale, returnPath)
     : await requireBusinessAccess(locale, returnPath);
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("app_role")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  const flags = await loadFeatureFlags(supabase);
   const es = locale === "es";
-  const platformStaff = canModerate(profile?.app_role || "");
-
+  // Independent caller-authorized reads share one network stage. Staff-only
+  // editorial loading below still waits for the current profile's role.
   const [
+    { data: profile },
+    flags,
     { data: members, error: membersError },
     { data: categories },
     { data: claims },
@@ -119,6 +114,12 @@ export default async function BusinessPage({
     { data: redemptions },
     { data: promotions },
   ] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("app_role")
+      .eq("id", user.id)
+      .maybeSingle(),
+    loadFeatureFlags(supabase),
     supabase
       .from("venue_members")
       .select("role,venues(id,name,slug,status,verified,discovery_vertical)")
@@ -147,15 +148,28 @@ export default async function BusinessPage({
       .order("created_at", { ascending: false }),
   ]);
 
+  const platformStaff = canModerate(profile?.app_role || "");
   const memberManaged = (members || []) as unknown as ManagedVenue[];
-  const { data: editorialVenue } = platformStaff
-    ? await supabase
-        .from("venues")
-        .select("id,name,slug,status,verified,discovery_vertical")
-        .eq("slug", "akipasa-editorial")
-        .eq("status", "published")
-        .maybeSingle()
-    : { data: null };
+  const [
+    { data: editorialVenue },
+    { data: rentalCompanies, error: rentalCompaniesError },
+  ] = await Promise.all([
+    platformStaff
+      ? supabase
+          .from("venues")
+          .select("id,name,slug,status,verified,discovery_vertical")
+          .eq("slug", "akipasa-editorial")
+          .eq("status", "published")
+          .maybeSingle()
+      : { data: null },
+    view === "venues"
+      ? supabase
+          .from("car_rental_companies")
+          .select("id,name,slug,status,venue_id")
+          .eq("submitted_by", user.id)
+          .order("created_at", { ascending: true })
+      : { data: [], error: null },
+  ]);
   const managed: ManagedVenue[] = [
     ...memberManaged,
     ...(editorialVenue &&
@@ -163,14 +177,6 @@ export default async function BusinessPage({
       ? [{ role: "editor", venues: editorialVenue }]
       : []),
   ];
-  const { data: rentalCompanies, error: rentalCompaniesError } =
-    view === "venues"
-      ? await supabase
-          .from("car_rental_companies")
-          .select("id,name,slug,status,venue_id")
-          .eq("submitted_by", user.id)
-          .order("created_at", { ascending: true })
-      : { data: [], error: null };
   const managedVenueIds = managed.flatMap((item) =>
     item.venues ? [item.venues.id] : [],
   );

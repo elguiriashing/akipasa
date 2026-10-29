@@ -69,6 +69,7 @@ vi.mock("../src/app/[locale]/account/subscription/actions", () => ({
 }));
 
 import ProfilePage from "../src/app/[locale]/account/profile/page";
+import AccountOverview from "../src/app/[locale]/account/page";
 import AccountSettingsPage from "../src/app/[locale]/account/settings/page";
 import AccountPrivacyPage from "../src/app/[locale]/account/privacy/page";
 import SubscriptionPage from "../src/app/[locale]/account/subscription/page";
@@ -114,6 +115,23 @@ afterEach(() => {
 });
 
 describe("Account control disclosure preserves existing workflows", () => {
+  it.each(["en", "es"] as const)(
+    "describes the private 3D identity instead of the retired mascot game (%s)",
+    async (locale) => {
+      render(await AccountOverview({ params: Promise.resolve({ locale }) }));
+      const shortcut = screen.getByRole("link", { name: /AkiPals/ });
+      expect(shortcut).toHaveAttribute("href", `/${locale}/akipals`);
+      expect(shortcut).toHaveTextContent(
+        locale === "es"
+          ? "Tu avatar 3D y tu armario privado"
+          : "Your 3D avatar and private wardrobe",
+      );
+      expect(shortcut).not.toHaveTextContent(
+        /mascot|mascota|adventures|aventuras|gacha/i,
+      );
+    },
+  );
+
   it.each(["en", "es"] as const)(
     "blocks profile edits and uploads when saved details cannot be loaded (%s)",
     async (locale) => {

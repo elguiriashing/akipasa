@@ -65,8 +65,8 @@ export default async function AccountOverview({
       icon: "gift",
       label: "AkiPals",
       detail: es
-        ? "Tu mascota, vestuario y aventuras"
-        : "Your mascot, wardrobe and adventures",
+        ? "Tu avatar 3D y tu armario privado"
+        : "Your 3D avatar and private wardrobe",
     },
     {
       href: `/${locale}/passports`,

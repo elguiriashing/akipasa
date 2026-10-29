@@ -15,6 +15,7 @@ import {
   tonightAreas,
   tonightIntents,
   tonightMaximumPriceCents,
+  tonightPlanHref,
 } from "@/lib/aki-tonight";
 import styles from "./tonight.module.css";
 
@@ -84,6 +85,7 @@ export default async function TonightPage({
   const es = locale === "es";
   const preferences = parseTonightPreferences(await searchParams);
   const area = tonightArea(preferences);
+  const retryHref = tonightPlanHref(locale, preferences);
   const query = {
     locality: preferences.area,
     latitude: area.latitude,
@@ -93,9 +95,15 @@ export default async function TonightPage({
     maxPriceCents: tonightMaximumPriceCents(preferences.budget),
   };
 
-  // Both queries are read-only. Never replace absent events with invented ones.
+  // No new business-state writes; recommendations retain existing telemetry.
+  // Never replace absent events with invented ones.
   const [discovery, venues] = await Promise.all([
-    recommendDiscovery({ query, surface: "akitonight", limit: 60 })
+    recommendDiscovery({
+      query,
+      surface: "akitonight",
+      limit: 60,
+      liveOnly: true,
+    })
       .then((value) => ({ ...value, unavailable: false }))
       .catch((error: unknown) => {
         console.error("AkiTonight event discovery unavailable", error);
@@ -319,11 +327,16 @@ export default async function TonightPage({
           </span>
         </div>
         {discovery.unavailable ? (
-          <p className={styles.notice} role="alert">
-            {es
-              ? "No hemos podido comprobar los eventos ahora mismo. Prueba de nuevo."
-              : "We couldn't check events right now. Please try again."}
-          </p>
+          <div className={styles.notice} role="alert">
+            <p>
+              {es
+                ? "No hemos podido comprobar los eventos ahora mismo. Prueba de nuevo."
+                : "We couldn't check events right now. Please try again."}
+            </p>
+            <Link className={styles.secondaryLink} href={retryHref}>
+              {es ? "Reintentar este plan" : "Retry this plan"}
+            </Link>
+          </div>
         ) : events.length ? (
           <>
             <p className={styles.disclaimer}>
@@ -356,9 +369,23 @@ export default async function TonightPage({
                 ? "Estamos preparando el lanzamiento por la Costa del Sol. Puedes explorar locales reales mientras reunimos más eventos con horarios publicados."
                 : "We're building up the Costa del Sol launch. Explore real local places while more events with published schedules are added."}
             </p>
-            <Link href={`/${locale}/map`} className={styles.secondaryLink}>
-              {es ? "Ver locales en el mapa" : "Explore places on the map"}
-            </Link>
+            <div className={styles.heroActions}>
+              <Link href={`/${locale}/map`} className={styles.secondaryLink}>
+                {es ? "Ver locales en el mapa" : "Explore places on the map"}
+              </Link>
+              <Link
+                href={`/${locale}/community?view=suggest`}
+                className={styles.secondaryLink}
+              >
+                {es ? "Sugerir un evento real" : "Suggest a real event"}
+              </Link>
+              <Link
+                href={`/${locale}/roadmap`}
+                className={styles.secondaryLink}
+              >
+                {es ? "Ver el plan de lanzamiento" : "View the launch roadmap"}
+              </Link>
+            </div>
           </div>
         )}
       </section>
@@ -381,11 +408,16 @@ export default async function TonightPage({
             : "These businesses are near your chosen area. Opening hours, selected vibe and group availability are not confirmed. Check with the venue before heading out."}
         </p>
         {venues.unavailable ? (
-          <p className={styles.notice} role="alert">
-            {es
-              ? "El directorio de locales no está disponible ahora."
-              : "The local venue directory is temporarily unavailable."}
-          </p>
+          <div className={styles.notice} role="alert">
+            <p>
+              {es
+                ? "El directorio de locales no está disponible ahora."
+                : "The local venue directory is temporarily unavailable."}
+            </p>
+            <Link className={styles.secondaryLink} href={retryHref}>
+              {es ? "Reintentar locales cercanos" : "Retry nearby places"}
+            </Link>
+          </div>
         ) : venues.rows.length ? (
           <div className={styles.placeGrid}>
             {venues.rows.slice(0, 9).map((venue) => (

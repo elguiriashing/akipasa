@@ -1,5 +1,41 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-29 | Truthful private workspaces and continuous identity presentation
+
+The coordinated candidate now gives the existing private rental desk scoped
+AkiCoches light/dark surfaces and canonical independent product links, without
+requiring venue claims or changing authenticated company/fleet/booking actions.
+Unavailable fleet, request or block reads remain unknown rather than becoming zero;
+bounded summaries disclose their loaded limits. Business home starts independent
+caller-scoped reads together after authorization, while privileged editorial reads
+still wait for the known platform role. Failed venue catalogue reads withhold both
+the catalogue editor and dependent event editor instead of inventing revision zero;
+a successful missing catalogue remains editable. Same-section localized retry and
+unknown catalogue counts preserve the read-failure distinction.
+
+Tonight requests an explicit live-only discovery source. This optional internal
+recommendation setting defaults false for all existing callers; Tonight bypasses
+hybrid fixture/error fallback so outages produce its localized unavailable state.
+Retry links retain only sanitized planning filters. Genuine empty results offer
+the existing moderated suggestion and roadmap paths, without inventing availability
+or enabling the default-off production gate. No XP, ranking consent, RLS, billing,
+schema or customer-data authority changes.
+
+Account's EN/ES AkiPals entry describes a 3D avatar and private wardrobe, not a
+mascot/adventure game. Private studio work improves authored silhouette, garment
+joins, lighting, touch targets, readable disabled controls, idle rendering and
+WebGL loss/recovery. Existing appearance IDs, save/restore and wardrobe ownership
+remain intact; the art is still subject to Alex's premium visual approval.
+Prestige's scoped stylesheet now gives existing privacy controls, checkboxes and
+progress a consistent usable presentation; award/privacy logic is unchanged.
+
+New browser fixtures exercise workspace role boundaries and rental operations;
+they join tablet CI without replacing any existing checks. Redirect tests exercise
+actual root/membership exports and HTTP locale/attribution behavior. Virtual-host
+browser transport keeps vendored font assets local instead of following test-only
+redirects to production. Fixture screenshots are not proof of production Auth/RLS
+or physical Android. All 90 routes still require genuine release acceptance.
+
 ## 2026-10-29 | Autonomous coordinated-release control and current precedence
 
 The single candidate is draft PR #332 on `work/coordinated-release-20261029`.

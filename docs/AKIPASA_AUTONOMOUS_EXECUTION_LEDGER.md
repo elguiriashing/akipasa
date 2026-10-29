@@ -53,6 +53,70 @@ The fourth original recoverable feature stream is Passport, not a separately evi
 
 Agents do not independently commit, deploy, edit shared shells or mark routes accepted. No source conflicts observed. Root serializes integration and full checks.
 
+## Implemented batch after mission-control commit
+
+Mission-control commit: `c6f29d53cb0f870e1d7700c3a5ed219c9c2f621b` (pushed).
+The following application batch is under integrated validation; its final commit
+and hosted receipts must be recorded after the run completes.
+
+- **Consumer/business:** Completed scoped AkiCoches rental desk styling, canonical
+  product links, truthful unknown summaries, localized request states and unique
+  availability anchor. Business home parallelizes independent reads only after
+  authorization. Venue catalogue failures withhold dependent editors and offer
+  localized retry; successful absent catalogues stay editable.
+- **Identity:** Removed Account's obsolete mascot/adventure shortcut description.
+  Pals has better garment/neck joins, proportions, lighting, readable controls,
+  touch targets, stationary GPU idling and actual WebGL context-loss recovery.
+  The original art remains prototype quality awaiting further improvement and
+  Alex's final review, not an accepted premium result.
+- **Retention/privacy:** Tonight requests live-only discovery, keeps failures
+  distinct from empty results and offers bounded same-plan retry/moderated event
+  suggestion/roadmap recovery. The launch gate stays off. Prestige's existing
+  privacy controls and progress now have explicit scoped visual treatments.
+- **Coverage:** Added actual redirect/loader regressions and private workspace
+  role/browser fixtures. Tablet CI runs new role/mobility harnesses and retains
+  all existing steps. Fixed three test-only virtual-host hooks that sent local
+  vendored fonts to production; actual local font loading is now asserted.
+- **Matrix:** All six previously pending routes received individual implementation
+  or redirect-test treatment. Current inventory is **90 in progress / 0 pending /
+  13 excluded / 0 accepted**. The strict release hold remains unchanged.
+
+### Actual local results and limits
+
+- Locked root and automation installs passed. The first full check passed format,
+  lint, types and all application/security/SQL checks, then failed because the
+  separate automation dependencies had not been installed. This was an environment
+  setup failure, not a source defect. The locked automation install and subsequent
+  automation typecheck/dry-run passed. No production deployment occurred.
+- Integrated optimized Next build passed. The full public E2E run uses that build
+  and disposable localhost fixtures; it is still running. Eight Duermo cases
+  initially failed on font transport; all eight passed after the test-only repair.
+- Focused source tests: Tonight 27; mobility 7; Business home 8; catalogue loader 3;
+  dashboard 35; redirect/navigation 42; Account controls 14; Pals 124; Prestige 42.
+- Browser fixture runs passed: booking 8 locale/theme/viewport combinations;
+  Account 310 cases; onboarding 64; Prestige 64 (including strengthened visual
+  assertions); private workspace roles 88; mobility 32; expanded Pals actual GLB,
+  save/restore, GPU idle/context-loss and touch/reduced-motion checks.
+- Actual inspected captures include Account phone overview and desktop settings,
+  mobility light/error and dark/populated, Prestige light/tablet and dark/phone,
+  Pals phone/editor and male stage. Reviews found and repaired obsolete copy,
+  layout/contrast, native-control styling and neck fragments. Premium avatar
+  artwork, production roles/RLS and physical Android remain unaccepted.
+- Evidence is under ignored `test-results/` directories, with hashes in new role
+  and mobility manifests. These working-tree captures are not exact-head reviewer
+  sign-off. Fresh hosted artifacts are required after commit.
+- Full integrated check log: `/tmp/akipasa-integrated-check.log`; broad browser log:
+  `/tmp/akipasa-e2e.log`. The full-check parent shell was temporarily paused with
+  `kill -STOP 34698` so its final Next build cannot overwrite `.next` while E2E
+  serves it. Resume with `kill -CONT 34698` immediately after that E2E run exits.
+
+### Remaining release blockers
+
+All 90 route sign-offs; Alex's visual and physical Android review; premium avatar
+art; protected real-authenticated/provider journeys; staging-only full-site
+acceptance; definitive production Supabase alias mapping; final exact-head CI and
+reproducible Cloudflare package. No merge/deploy is permitted while these remain.
+
 ## Prioritized continuation
 
 1. Finish required contract/dependency reading; inspect the baseline check log and resolve real failures without altering acceptance policies.

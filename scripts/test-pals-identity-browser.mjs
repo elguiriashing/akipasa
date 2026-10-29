@@ -181,6 +181,41 @@ try {
     path: resolve(outputDir, "identity-default-390.png"),
     fullPage: true,
   });
+  // A stationary portrait should not keep the mobile GPU busy indefinitely.
+  await page.waitForTimeout(350);
+  const idleFrames = await page.evaluate(() => window.__palsFrames);
+  await page.waitForTimeout(250);
+  expect(await page.evaluate(() => window.__palsFrames)).toBe(idleFrames);
+  await page.getByLabel("Hairstyle").selectOption("crop");
+  await expect(page.locator("#save")).toBeEnabled();
+  // Exercise real WebGL loss/restoration, not a synthetic DOM-only event. A
+  // lost context must never leave a blank render presented as save/export ready.
+  await page.evaluate(() => {
+    const canvas = document.querySelector("#avatar-stage canvas");
+    window.__palsContext = canvas
+      .getContext("webgl2")
+      .getExtension("WEBGL_lose_context");
+    if (!window.__palsContext) throw new Error("Context-loss test unavailable");
+    window.__palsContext.loseContext();
+  });
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-ready",
+    "error",
+  );
+  await expect(page.locator("#stage-error")).toContainText("preview paused");
+  await expect(page.locator("#save")).toBeDisabled();
+  await expect(page.locator("#download")).toBeDisabled();
+  expect(saved).toBeNull();
+  await page.evaluate(() => window.__palsContext.restoreContext());
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-ready",
+    "true",
+    { timeout: 30000 },
+  );
+  await expect(page.getByLabel("Hairstyle")).toHaveValue("crop");
+  await expect(page.locator("#save")).toBeEnabled();
+  await page.locator("#reset").click();
+  await expect(page.getByLabel("Hairstyle")).toHaveValue("quiff");
   // A real 3D renderer must load the alternate rig when the user changes body frame.
   await page.getByRole("tab", { name: "Face" }).click();
   const maleMesh = page.waitForResponse(
@@ -201,6 +236,9 @@ try {
   await page.screenshot({
     path: resolve(outputDir, "identity-male-390.png"),
     fullPage: true,
+  });
+  await page.locator("#avatar-stage canvas").screenshot({
+    path: resolve(outputDir, "identity-male-stage-390.png"),
   });
   await page.getByRole("tab", { name: "Outfit" }).click();
   await page.getByRole("button", { name: "Night out" }).click();
@@ -227,7 +265,7 @@ try {
     "data-ready",
     "true",
   );
-  for (const width of [320, 390, 820, 1440]) {
+  for (const width of [320, 360, 390, 820, 1440]) {
     await page.setViewportSize({ width, height: 850 });
     await expect(page.locator("#avatar-stage canvas")).toBeVisible();
     const overflow = await page.evaluate(
@@ -272,6 +310,21 @@ try {
     "true",
   );
   await page.getByRole("tab", { name: "Ropa", exact: true }).click();
+  await page.evaluate(() => {
+    window.__palsContext = document
+      .querySelector("#avatar-stage canvas")
+      .getContext("webgl2")
+      .getExtension("WEBGL_lose_context");
+    window.__palsContext.loseContext();
+  });
+  await expect(page.locator("#stage-error")).toContainText("Vista 3D en pausa");
+  await expect(page.locator("#download")).toBeDisabled();
+  await page.evaluate(() => window.__palsContext.restoreContext());
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-ready",
+    "true",
+    { timeout: 30000 },
+  );
   await page
     .getByRole("button", { name: "Día tranquilo", exact: true })
     .click();
@@ -293,7 +346,7 @@ try {
   await expect(page.getByLabel("Parte superior", { exact: true })).toHaveValue(
     "sweater",
   );
-  for (const width of [320, 390, 820, 1440]) {
+  for (const width of [320, 360, 390, 820, 1440]) {
     await page.setViewportSize({ width, height: 850 });
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
@@ -303,6 +356,48 @@ try {
       fullPage: true,
     });
   }
+  const android = await browser.newPage({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+    userAgent:
+      "Mozilla/5.0 (Linux; Android 13; AkiPasa WebView) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/153.0.0.0 Mobile Safari/537.36",
+  });
+  android.on("pageerror", (error) => failures.push(error.message));
+  await android.goto("http://127.0.0.1:" + port + "/pals?lang=es");
+  await expect(android.locator("#avatar-stage")).toHaveAttribute(
+    "data-ready",
+    "true",
+    { timeout: 30000 },
+  );
+  const canvas = android.locator("#avatar-stage canvas");
+  await canvas.scrollIntoViewIfNeeded();
+  const beforeTouch = await canvas.screenshot();
+  const box = await canvas.boundingBox();
+  const touch = await android.context().newCDPSession(android);
+  await touch.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [{ x: box.x + box.width * 0.4, y: box.y + box.height * 0.5 }],
+  });
+  await touch.send("Input.dispatchTouchEvent", {
+    type: "touchMove",
+    touchPoints: [{ x: box.x + box.width * 0.7, y: box.y + box.height * 0.5 }],
+  });
+  await touch.send("Input.dispatchTouchEvent", {
+    type: "touchEnd",
+    touchPoints: [],
+  });
+  await expect
+    .poll(async () => beforeTouch.equals(await canvas.screenshot()))
+    .toBe(false);
+  await android.screenshot({
+    path: resolve(outputDir, "identity-es-android-emulated-390.png"),
+    fullPage: true,
+  });
+  expect(
+    await android.evaluate(() => document.documentElement.scrollWidth),
+  ).toBeLessThanOrEqual(390);
+  await android.close();
   if (failures.length)
     throw new Error("Client-side errors: " + failures.join("; "));
   console.log(

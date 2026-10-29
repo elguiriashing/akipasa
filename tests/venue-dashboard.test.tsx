@@ -53,6 +53,42 @@ beforeEach(() => {
   window.history.replaceState({}, "", "/en/business/venue/example");
   HTMLElement.prototype.scrollIntoView = vi.fn();
 });
+
+it.each(["en", "es"] as const)(
+  "%s: distinguishes an unavailable catalogue count from an empty catalogue",
+  (locale) => {
+    const { rerender } = render(
+      <VenueDashboard
+        {...props}
+        locale={locale}
+        counts={{ ...props.counts, catalogueItems: null }}
+      />,
+    );
+    expect(
+      screen.getByRole("tab", {
+        name:
+          locale === "es"
+            ? "Carta / catálogo · No disponible"
+            : "Menu / catalogue · Unavailable",
+      }),
+    ).toBeInTheDocument();
+    rerender(
+      <VenueDashboard
+        {...props}
+        locale={locale}
+        counts={{ ...props.counts, catalogueItems: 0 }}
+      />,
+    );
+    expect(
+      screen.getByRole("tab", {
+        name:
+          locale === "es"
+            ? "Carta / catálogo · 0 elementos"
+            : "Menu / catalogue · 0 items",
+      }),
+    ).toBeInTheDocument();
+  },
+);
 afterEach(cleanup);
 
 describe("compact venue dashboard", () => {

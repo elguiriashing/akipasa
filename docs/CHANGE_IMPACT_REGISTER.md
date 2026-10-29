@@ -1,5 +1,46 @@
 # Change Impact Register
 
+## 2026-10-29 | Coordinated private-workspace, identity and supply repairs
+
+- **Current/requested:** Preserve functioning consumer/business journeys while
+  eliminating legacy presentation, false empty states and unverified supply. The
+  shared candidate remains #332; no production publication is authorized before
+  its existing strict gates pass.
+- **Business dependencies:** Mobility retains requireUser, submitted_by/company
+  filters, vehicle-scoped blocks, original server-action fields and tenant RLS.
+  Canonical AkiCoches links keep EN/ES and separate-product identity. Business home
+  parallelizes only independent reads after access resolves; editorial reads still
+  require a known privileged role. Venue catalogue failures suppress dependent
+  catalogue/event editors and show same-section retry; genuine missing rows remain
+  editable. Dashboard count now represents unavailable distinctly from zero.
+- **Identity/UI dependencies:** Account shortcut wording follows the human-avatar
+  reset without changing the private entry. Pals edits remain self-hosted rendering
+  and original appearance controls, with idle-GPU and context-loss recovery tests.
+  Prestige stylesheet changes retain every award/privacy/shipping action and gate.
+  Shared shells, auth, stored appearance/wardrobe and native return contracts stay
+  authoritative. Final artwork and physical Android approval remain Alex's.
+- **Tonight interface:** Internal optional liveOnly recommendation option defaults
+  false. Tonight selects live Supabase discovery explicitly; query errors propagate
+  to unavailable instead of hybrid fixture/error fallback. Existing discovery
+  callers retain their configured repository. Localized retry preserves parsed
+  filters; empty recovery uses existing moderated suggestions and roadmap. No
+  event, crowd, capacity, reward, consent or launch activation is invented.
+- **Validation before integration:** 27 Tonight tests; seven mobility loader tests
+  and 32 responsive fixture cases; eight Business home loader cases; three venue
+  catalogue loader cases and 35 dashboard cases; 42 redirect/navigation cases;
+  14 account-control cases; 124 Pals cases; 42 Prestige cases. Browser results:
+  booking eight combinations, Account 310 cases, onboarding 64, workspace roles 88. Prestige/Pals final recaptures and integrated full/browser checks are tracked
+  separately in the ledger; working-tree fixtures do not certify a committed head.
+- **Browser infrastructure:** New workspace-role/mobility harnesses join tablet CI
+  with artifacts. Membership/root HTTP coverage joins the existing E2E inventory.
+  Three virtual-host test hooks keep actual vendored font requests on localhost;
+  assertions and consent behavior remain required. Initial broad run exposed this
+  real test transport failure; the corrected run must be recorded, not concealed.
+- **Rollback/risk:** Source revert only; no migration, production data, role/grant,
+  checkout, consent, mail, paid-resource or deployment configuration change. Keep
+  Tonight off and the PR draft. All 90 routes remain unaccepted pending genuine
+  reviewer, exact-source functional and screenshot/device evidence.
+
 ## 2026-10-29 | Autonomous mission control and release-source reconciliation
 
 - **Requested/current:** Continue the single coordinated #332 candidate, not

@@ -126,7 +126,7 @@ export default async function VenueWorkspace({
     { data: bookingResources },
     { data: bookingOfferings },
     bookingInbox,
-    { data: catalogue },
+    { data: catalogue, error: catalogueError },
     { data: audience },
     { data: ownerResults, error: ownerResultsError },
   ] = await Promise.all([
@@ -456,6 +456,18 @@ export default async function VenueWorkspace({
     (sum, section) => sum + section.items.length,
     0,
   );
+  const catalogueUnavailable = (section: "catalogue" | "events") => (
+    <div className="notice notice-error" role="alert">
+      <p>
+        {es
+          ? "No se pudo cargar el catálogo. La edición está pausada para proteger la carta y las selecciones de los eventos."
+          : "The catalogue could not be loaded. Editing is paused to protect your menu and event selections."}
+      </p>
+      <Link href={`/${locale}/business/venue/${id}?section=${section}`}>
+        {es ? "Reintentar" : "Retry"}
+      </Link>
+    </div>
+  );
   const isOwner = members?.some(
     (member) => member.profile_id === user.id && member.role === "owner",
   );
@@ -488,7 +500,7 @@ export default async function VenueWorkspace({
       counts={{
         photos: media?.length || 0,
         events: events?.length || 0,
-        catalogueItems: catalogueItemCount,
+        catalogueItems: catalogueError ? null : catalogueItemCount,
         programs: programs?.filter((program) => program.active).length || 0,
         credentials: credentials?.length || 0,
         requests: pendingBookingCount || 0,
@@ -951,7 +963,7 @@ export default async function VenueWorkspace({
                       )}
                     </div>
                     <div className="event-editor">
-                      <BusinessEventEditPanel
+                      {catalogueError ? catalogueUnavailable("events") : <BusinessEventEditPanel
                         listingPremium={listingLimitsEnabled ? listingPremium : undefined}
                         locale={locale}
                         venueId={id}
@@ -1027,7 +1039,7 @@ export default async function VenueWorkspace({
                         eventBinMediaIds={
                           eventPlacementMap.get(event.id)?.binMediaIds || []
                         }
-                      />
+                      />}
                       {event.event_occurrences?.length ? (
                         <details>
                           <summary>
@@ -1399,18 +1411,22 @@ export default async function VenueWorkspace({
         ),
         catalogue: (
           <section className="panel">
-            <VenueCatalogueEditor
-              locale={locale}
-              venueId={id}
-              revision={catalogue?.revision || 0}
-              publishedRevision={catalogue?.published_revision ?? null}
-              initialDocument={catalogueDocument}
-              mediaOptions={mediaStudioItems.map((item) => ({
-                id: item.id,
-                url: item.url,
-                alt: item.alt,
-              }))}
-            />
+            {catalogueError ? (
+              catalogueUnavailable("catalogue")
+            ) : (
+              <VenueCatalogueEditor
+                locale={locale}
+                venueId={id}
+                revision={catalogue?.revision || 0}
+                publishedRevision={catalogue?.published_revision ?? null}
+                initialDocument={catalogueDocument}
+                mediaOptions={mediaStudioItems.map((item) => ({
+                  id: item.id,
+                  url: item.url,
+                  alt: item.alt,
+                }))}
+              />
+            )}
             {query.error === "catalogue-item" && (
               <p className="notice notice-error" role="alert">
                 {es

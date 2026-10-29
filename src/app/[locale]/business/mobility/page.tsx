@@ -3,8 +3,10 @@ import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { rentalCategoryLabels } from "@/lib/akiconduzco";
+import { suiteHref } from "@/lib/suite-navigation";
 import { SpainAddressAutocomplete } from "@/components/SpainAddressAutocomplete";
 import styles from "@/components/AkiConduzco.module.css";
+import desk from "./mobility-desk.module.css";
 import {
   createRentalBlock,
   createRentalCompany,
@@ -56,6 +58,22 @@ export default async function MobilityWorkspace({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const es = locale === "es";
+  const rentalHref = suiteHref("coches", locale);
+  const bookingLabels: Record<string, string> = es
+    ? {
+        requested: "Pendiente",
+        confirmed: "Confirmada",
+        declined: "Rechazada",
+        cancelled: "Cancelada",
+        completed: "Completada",
+      }
+    : {
+        requested: "Requested",
+        confirmed: "Confirmed",
+        declined: "Declined",
+        cancelled: "Cancelled",
+        completed: "Completed",
+      };
   const query = await searchParams;
   const { supabase, user } = await requireUser(
     locale,
@@ -128,47 +146,45 @@ export default async function MobilityWorkspace({
             ? es
               ? "Rechazado"
               : "Rejected"
-            : "";
+            : es
+              ? "Estado no disponible"
+              : "Status unavailable";
   return (
-    <div className={styles.business}>
+    <div className={`${styles.business} ${desk.desk}`}>
       <main className={styles.businessMain}>
         <header className={styles.businessHeader}>
           <div>
-            <Link
-              href={`/${locale}/business`}
-              style={{
-                color: "#a71929",
-                textDecoration: "none",
-                fontWeight: 800,
-              }}
-            >
-              ← AkiBusiness
+            <Link href={`/${locale}/business`} className={desk.back}>
+              ← {es ? "Mis negocios" : "My businesses"}
             </Link>
-            <h1 style={{ marginTop: 14 }}>
-              Aki<span style={{ color: "#ed3345" }}>Conduzco</span>
-            </h1>
+            <span className={desk.eyebrow}>AkiCoches</span>
+            <h1>{es ? "Tu operación de alquiler" : "Your rental desk"}</h1>
             <p>
               {es
                 ? "Panel de alquiler · flota, disponibilidad y solicitudes"
                 : "Rental desk · fleet, availability and requests"}
             </p>
           </div>
-          <Link
-            className={styles.button}
-            href={`https://akiconduzco.akipasa.com/?lang=${locale}`}
-          >
-            {es ? "Ver AkiConduzco" : "View AkiConduzco"}
+          <Link className={styles.button} href={rentalHref}>
+            {es ? "Ver AkiCoches" : "View AkiCoches"}
           </Link>
         </header>
-        <nav
-          className={styles.businessNav}
-          aria-label={es ? "Herramientas de alquiler" : "Rental tools"}
-        >
-          <a href="#overview">{es ? "Resumen" : "Overview"}</a>
-          <a href="#fleet">{es ? "Flota" : "Fleet"}</a>
-          <a href="#availability">{es ? "Disponibilidad" : "Availability"}</a>
-          <a href="#bookings">{es ? "Solicitudes" : "Requests"}</a>
-        </nav>
+        <p className={desk.boundary}>
+          {es
+            ? "Gestiona tu empresa sin reclamar un local. Las solicitudes requieren confirmación; esta pantalla no cobra pagos."
+            : "Manage your company without claiming a venue. Requests require confirmation; this screen does not take payments."}
+        </p>
+        {company && (
+          <nav
+            className={styles.businessNav}
+            aria-label={es ? "Herramientas de alquiler" : "Rental tools"}
+          >
+            <a href="#overview">{es ? "Resumen" : "Overview"}</a>
+            <a href="#fleet">{es ? "Flota" : "Fleet"}</a>
+            <a href="#availability">{es ? "Disponibilidad" : "Availability"}</a>
+            <a href="#bookings">{es ? "Solicitudes" : "Requests"}</a>
+          </nav>
+        )}
         {(query.error ||
           companyError ||
           (company && (vehicleError || bookingError))) && (
@@ -263,12 +279,12 @@ export default async function MobilityWorkspace({
               <p>
                 {company.status === "pending_review"
                   ? es
-                    ? "La ficha pública se mostrará cuando el equipo la apruebe. Mientras tanto, puedes cargar vehículos y precios."
-                    : "Your public profile appears after the team approves it. You can add vehicles and prices meanwhile."
+                    ? "Tu ficha está pendiente de revisión. Mientras tanto, puedes preparar vehículos y precios."
+                    : "Your profile is awaiting review. You can prepare vehicles and prices meanwhile."
                   : company.status === "published"
                     ? es
-                      ? "Tu empresa y los vehículos activos pueden aparecer en búsqueda y mapa."
-                      : "Your company and active vehicles can appear in search and on the map."
+                      ? "Tu ficha está aprobada. Su visibilidad pública depende de la disponibilidad del producto AkiCoches."
+                      : "Your profile is approved. Public visibility depends on the AkiCoches product rollout."
                     : es
                       ? "La ficha no está visible al público. Contacta con soporte si necesitas ayuda."
                       : "Your company is not visible publicly. Contact support if you need help."}
@@ -276,25 +292,36 @@ export default async function MobilityWorkspace({
             </section>
             <div className={styles.businessStats}>
               <a href="#fleet">
-                <strong>{vehicles.length}</strong>
+                <strong>{vehicleError ? "—" : vehicles.length}</strong>
                 <span>{es ? "Vehículos" : "Vehicles"}</span>
               </a>
               <a href="#fleet">
-                <strong>{vehicles.filter((v) => v.active).length}</strong>
+                <strong>
+                  {vehicleError ? "—" : vehicles.filter((v) => v.active).length}
+                </strong>
                 <span>{es ? "Visibles" : "Active listings"}</span>
               </a>
               <a href="#bookings">
                 <strong>
-                  {bookings.filter((b) => b.status === "requested").length}
+                  {bookingError
+                    ? "—"
+                    : bookings.filter((b) => b.status === "requested").length}
                 </strong>
                 <span>{es ? "Por responder" : "Awaiting reply"}</span>
               </a>
               <a href="#availability">
-                <strong>{blocks.length}</strong>
+                <strong>
+                  {blockError || vehicleError ? "—" : blocks.length}
+                </strong>
                 <span>{es ? "Bloqueos" : "Date blocks"}</span>
               </a>
             </div>
-            <div className={styles.businessGrid}>
+            <p className={desk.sample}>
+              {es
+                ? "Resumen de los registros cargados: hasta 100 vehículos, 100 solicitudes y 200 bloqueos."
+                : "Summary of loaded records: up to 100 vehicles, 100 requests and 200 date blocks."}
+            </p>
+            <div className={`${styles.businessGrid} ${desk.workspaceGrid}`}>
               <section className={styles.businessCard}>
                 <h2>{es ? "Añadir vehículo" : "Add vehicle"}</h2>
                 <form action={createRentalVehicle}>
@@ -402,8 +429,10 @@ export default async function MobilityWorkspace({
               </section>
               <section className={styles.businessCard} id="fleet">
                 <h2>
-                  {es ? "Tu flota" : "Your fleet"} · {vehicles.length}
+                  {es ? "Tu flota" : "Your fleet"} ·{" "}
+                  {vehicleError ? "—" : vehicles.length}
                 </h2>
+                <span id="availability" className={desk.anchor} />
                 {vehicleError ? (
                   <p role="alert">
                     {es
@@ -501,7 +530,6 @@ export default async function MobilityWorkspace({
                         <form
                           action={createRentalBlock}
                           className="form-grid-two"
-                          id="availability"
                         >
                           <input type="hidden" name="locale" value={locale} />
                           <input
@@ -600,7 +628,12 @@ export default async function MobilityWorkspace({
                             : ""}
                         </p>
                         {booking.note && <p>{booking.note}</p>}
-                        <span className={styles.status}>{booking.status}</span>
+                        <span className={styles.status}>
+                          {bookingLabels[booking.status] ||
+                            (es
+                              ? "Estado no disponible"
+                              : "Status unavailable")}
+                        </span>
                         {booking.status === "requested" && (
                           <div className={styles.tools}>
                             <form action={updateRentalBookingStatus}>
@@ -659,16 +692,13 @@ export default async function MobilityWorkspace({
             </section>
           </>
         )}
-        <footer
-          className={styles.footer}
-          style={{ color: "#666", borderColor: "#ddd" }}
-        >
+        <footer className={styles.footer}>
           <span>
             {es
-              ? "AkiConduzco · herramientas para empresas de alquiler"
-              : "AkiConduzco · rental operator tools"}
+              ? "AkiCoches · gestión de alquiler"
+              : "AkiCoches · rental management"}
           </span>
-          <Link href={`https://akiconduzco.akipasa.com/?lang=${locale}`}>
+          <Link href={rentalHref}>
             {es ? "Ver experiencia de clientes" : "View customer experience"}
           </Link>
         </footer>

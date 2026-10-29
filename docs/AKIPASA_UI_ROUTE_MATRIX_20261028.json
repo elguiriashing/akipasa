@@ -31,7 +31,7 @@
     "src/app/[locale]/account/page.tsx": {
       "scope": "consumer",
       "status": "in-progress",
-      "note": ""
+      "note": "Current shared account presentation retained; obsolete mascot/adventure shortcut copy replaced with 3D avatar/private wardrobe in EN/ES, preserving gated destination. Rendered regression tests pass. Actual final-source visual and physical-device approval remains required; not accepted."
     },
     "src/app/[locale]/account/premium/page.tsx": {
       "scope": "consumer",
@@ -210,23 +210,23 @@
     },
     "src/app/[locale]/business/memberships/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Redirect-only compatibility entry preserves locale and fixed akibusiness membership origin. Executable route and middleware tests added; final production-server HTTP evidence and Alex sign-off still required. No standalone screen or acceptance claimed."
     },
     "src/app/[locale]/business/mobility/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Private AkiCoches rental desk has scoped dark/light surfaces, canonical independent product links, truthful unavailable summaries, bounded data disclosure and localized request states. Seven component tests and 32 EN/ES 360/390/820/1440 populated/error browser fixture cases passed; final exact-source hosted evidence, real role/RLS workflow and physical Android/Alex review remain required. NOT accepted."
     },
     "src/app/[locale]/business/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Existing authenticated WorkspaceShell/BusinessHome presentation retained after inspection. Team/role coverage and actual shell browser boundary fixtures added. Real signed-in business home populated/empty/error interactions, final responsive screenshot review and physical Android/Alex review remain outstanding; not accepted."
     },
     "src/app/[locale]/business/venue/[id]/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Existing authorized VenueDashboard retained. Failed catalogue reads now withhold dependent catalogue/event editors, show localized same-section retry and unknown count rather than false zero; successful missing catalogue stays editable. Actual loader and dashboard regression tests pass. Real owner/editor/manager role, populated/error browser workflow and final screenshot/device review still required; not accepted."
     },
     "src/app/[locale]/check-in/[token]/page.tsx": {
       "scope": "consumer",
@@ -270,8 +270,8 @@
     },
     "src/app/[locale]/duermo/memberships/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Redirect-only compatibility entry preserves EN/ES and fixed akiduermo membership origin without trusting caller attribution. Executable route tests and production-server HTTP cases added; final Alex review and exact-source hosted evidence still required. No standalone screen or acceptance claimed."
     },
     "src/app/[locale]/events/[slug]/book/page.tsx": {
       "scope": "consumer",
@@ -500,8 +500,8 @@
     },
     "src/app/page.tsx": {
       "scope": "cross-product",
-      "status": "pending",
-      "note": "Existing default locale redirect; verify canonical /es behavior when roadmap goes live."
+      "status": "in-progress",
+      "note": "Permanent default /es redirect retained. Executable root and middleware tests verify default locale and safe query preservation; production-server HTTP cases added. Final reviewer/HTTP evidence required; no fictional page screenshot or acceptance claimed."
     },
     "src/app/roadmap/page.tsx": {
       "scope": "cross-product",
@@ -516,7 +516,7 @@
     "src/app/[locale]/tonight/page.tsx": {
       "scope": "consumer",
       "status": "in-progress",
-      "notes": "Gated off by default; Tonight absolute night and locale tests pass. Final integrated browser and role acceptance pending."
+      "notes": "Default-off gate retained. Tonight explicitly uses live discovery with no hybrid/fixture fallback; localized retry preserves sanitized preferences, empty states link to moderated suggestions and roadmap. Source-selection/outage tests pass; production supply alias mapping, final integrated browser and reviewer acceptance remain outstanding."
     }
   },
   "releaseStatus": "blocked-pending-visual-and-functional-acceptance",

@@ -47,6 +47,8 @@ describe("AkiPals actual 3D geometry, independent of WebGL", () => {
         expect(index.count).toBeGreaterThan(100);
         for (const i of index.array) {
           expect(attributes.position.getY(i)).toBeGreaterThanOrEqual(1.5);
+          if (frame === "male")
+            expect(attributes.position.getY(i)).toBeGreaterThan(1.57);
           expect(Math.abs(attributes.position.getX(i))).toBeLessThanOrEqual(
             0.145,
           );
@@ -117,6 +119,26 @@ describe("AkiPals actual 3D geometry, independent of WebGL", () => {
       expect(bounds.min.x).toBeGreaterThan(-0.45);
       expect(bounds.max.x).toBeLessThan(0.45);
       expect(bounds.min.y).toBeGreaterThan(-0.03);
+    }
+  });
+  it("gives each trouser style tapered knees and cuffs instead of rigid cylinders", () => {
+    for (const bottom of ["cargo", "jeans", "tailored", "shorts"]) {
+      const wardrobe = makeWardrobe({ ...DEFAULT_APPEARANCE, bottom });
+      const legs = wardrobe.children.filter(
+        (node) => node.name === "AkiPals tailored trouser leg",
+      );
+      expect(legs).toHaveLength(2);
+      for (const leg of legs) {
+        const positions = leg.geometry.attributes.position;
+        const widthAt = (row) => {
+          const xs = Array.from({ length: 19 }, (_, i) =>
+            positions.getX(row * 19 + i),
+          );
+          return Math.max(...xs) - Math.min(...xs);
+        };
+        expect(widthAt(24)).toBeLessThan(widthAt(0) * 0.8);
+        expect(Array.from(positions.array).every(Number.isFinite)).toBe(true);
+      }
     }
   });
 });

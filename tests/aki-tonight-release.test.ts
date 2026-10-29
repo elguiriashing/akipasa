@@ -100,7 +100,12 @@ describe("AkiTonight server-owned release boundary", () => {
           : "No published event listings",
       );
       expect(sources.events).toHaveBeenCalledOnce();
+      expect(sources.events).toHaveBeenCalledWith(
+        expect.objectContaining({ liveOnly: true }),
+      );
       expect(sources.venues).toHaveBeenCalledOnce();
+      expect(html).toContain(`href="/${locale}/community?view=suggest"`);
+      expect(html).toContain(`href="/${locale}/roadmap"`);
     },
   );
 
@@ -115,7 +120,12 @@ describe("AkiTonight server-owned release boundary", () => {
         const html = renderToStaticMarkup(
           await TonightPage({
             params: Promise.resolve({ locale }),
-            searchParams: Promise.resolve({}),
+            searchParams: Promise.resolve({
+              area: "malaga",
+              radius: "25",
+              people: "6",
+              ignored: "private",
+            }),
           }),
         );
         expect(html.match(/role="alert"/g)).toHaveLength(2);
@@ -127,6 +137,37 @@ describe("AkiTonight server-owned release boundary", () => {
             : "Some results couldn&#x27;t be checked.",
         );
         expect(html).not.toContain("No published event listings");
+        expect(html).toContain(
+          `/${locale}/tonight?intent=all&amp;area=malaga&amp;radius=25&amp;budget=any&amp;company=friends&amp;people=6&amp;start=now`,
+        );
+        expect(html).not.toContain("ignored=");
+      } finally {
+        log.mockRestore();
+      }
+    },
+  );
+
+  it.each(["en", "es"])(
+    "%s: keeps a healthy venue directory visible when event discovery fails",
+    async (locale) => {
+      vi.stubEnv("AKIPASA_TONIGHT_ENABLED", "true");
+      const log = vi.spyOn(console, "error").mockImplementation(() => {});
+      sources.events.mockRejectedValueOnce(new Error("event read failed"));
+      try {
+        const html = renderToStaticMarkup(
+          await TonightPage({
+            params: Promise.resolve({ locale }),
+            searchParams: Promise.resolve({}),
+          }),
+        );
+        expect(html.match(/role="alert"/g)).toHaveLength(1);
+        expect(html).toContain(
+          locale === "es"
+            ? "Aún estamos llegando a tu zona."
+            : "We&#x27;re still building in this area.",
+        );
+        expect(html).not.toContain("No published event listings");
+        expect(html).not.toContain("community?view=suggest");
       } finally {
         log.mockRestore();
       }

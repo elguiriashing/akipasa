@@ -73,11 +73,18 @@ jobs:
           path: test-results/staff-claims
           retention-days: 7
       - run: node scripts/test-portal-home-browser.mjs
+      - name: Verify private workspace role boundaries
+        run: node scripts/test-workspace-role-browser.mjs
+      - name: Verify AkiCoches rental workspace
+        run: node scripts/test-business-mobility-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: portal-home-evidence
-          path: test-results/portal-home
+          path: |
+            test-results/portal-home
+            test-results/workspace-role-browser
+            test-results/business-mobility
           retention-days: 7
 
   tablet-layout-and-spotlight:

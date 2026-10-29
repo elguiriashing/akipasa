@@ -1,0 +1,215 @@
+.desk {
+  --rental-accent: #8c263f;
+  --rental-soft: #f8e9ed;
+  min-width: 0;
+  color: var(--ink, #20232b);
+  background: var(--surface-alt, #f5f3ef);
+}
+
+.desk main {
+  padding-block: 1.25rem 3rem;
+}
+
+.desk header {
+  align-items: center;
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+  border: 1px solid #64263a;
+  border-radius: 1.5rem;
+  background:
+    radial-gradient(ellipse at top right, #68293f, transparent 65%), #181c25;
+  color: #faf7f8;
+}
+
+.desk header h1 {
+  margin-top: 0.4rem;
+  color: #fff;
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.desk header p {
+  margin-bottom: 0;
+  color: #e0d5db;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: #faf7f8;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.eyebrow {
+  display: block;
+  margin-top: 0.5rem;
+  color: #ffb1c7;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.desk header > a {
+  flex-shrink: 0;
+  min-height: 44px;
+  border-color: #efb3c5;
+  background: #f6dce4;
+  color: #421728;
+}
+
+.boundary,
+.sample {
+  max-width: 76ch;
+  color: var(--muted, #565b66);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.boundary {
+  margin-block: 1rem 1.5rem;
+}
+
+.sample {
+  margin-top: -0.5rem;
+}
+
+.desk nav {
+  top: var(--business-header-height, 0px);
+  border-color: var(--line, #dcdce0);
+  background: var(--surface, #fff);
+}
+
+.desk nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ink, #20232b);
+}
+
+.desk nav a:hover {
+  color: var(--rental-accent);
+  background: var(--rental-soft);
+}
+
+.desk section,
+.desk article {
+  min-width: 0;
+  border-color: var(--line, #dcdce0);
+  background: var(--surface, #fff);
+  color: var(--ink, #20232b);
+  overflow-wrap: anywhere;
+}
+
+.desk section h2 {
+  color: var(--ink, #20232b);
+}
+
+.desk section p {
+  color: var(--muted, #565b66);
+}
+
+.desk section > div > strong {
+  color: var(--ink, #20232b);
+}
+
+.desk section > div > span[class] {
+  color: var(--ink, #20232b);
+}
+
+.workspaceGrid {
+  align-items: start;
+}
+
+.desk input,
+.desk select,
+.desk textarea {
+  min-width: 0;
+  min-height: 44px;
+  border-color: var(--line, #dcdce0);
+  background: var(--surface-alt, #f5f3ef);
+  color: var(--ink, #20232b);
+  font-size: 1rem;
+}
+
+.desk button {
+  min-height: 44px;
+  background: var(--rental-accent);
+  color: #fff;
+}
+
+.desk :is(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid var(--rental-accent);
+  outline-offset: 3px;
+}
+
+.desk header a:focus-visible {
+  outline-color: #ffb1c7;
+}
+
+.desk article > form + form {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line, #dcdce0);
+}
+
+.desk article small {
+  display: block;
+  margin-block: 0.4rem;
+  color: var(--muted, #565b66);
+  line-height: 1.5;
+}
+
+.desk main > div > a {
+  border-color: var(--line, #dcdce0);
+  background: var(--surface, #fff);
+  color: var(--ink, #20232b);
+}
+
+.desk main > div > a span {
+  color: var(--muted, #565b66);
+}
+
+.desk footer {
+  gap: 1rem;
+  color: var(--muted, #565b66);
+  border-color: var(--line, #dcdce0);
+}
+
+.desk footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ink, #20232b);
+}
+
+.anchor {
+  display: block;
+  scroll-margin-top: calc(var(--business-header-height, 0px) + 90px);
+}
+
+:global(html[data-theme="dark"]) .desk {
+  --rental-accent: #a83351;
+  --rental-soft: #351d2a;
+}
+
+@media (max-width: 640px) {
+  .desk header {
+    align-items: stretch;
+  }
+
+  .desk header > a {
+    justify-content: center;
+  }
+
+  .desk main {
+    padding-inline: 1rem;
+  }
+
+  .desk nav {
+    margin-inline: -1rem;
+    padding-inline: 1rem;
+  }
+}

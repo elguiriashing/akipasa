@@ -1,4 +1,5 @@
 import type { DiscoveryResult } from "./domain";
+import type { Locale } from "./config";
 import { spainLocations } from "./locations";
 import { madridLocalDateTimeSchema, windowBounds } from "./time";
 
@@ -92,6 +93,23 @@ export function tonightArea(preferences: TonightPreferences) {
     tonightAreas.find((area) => area.key === preferences.area) ||
     tonightAreas[0]
   );
+}
+
+/** Retry the same bounded plan without replaying arbitrary incoming query values. */
+export function tonightPlanHref(
+  locale: Locale,
+  preferences: TonightPreferences,
+) {
+  const query = new URLSearchParams({
+    intent: preferences.intent,
+    area: preferences.area,
+    radius: String(preferences.radiusKm),
+    budget: preferences.budget,
+    company: preferences.company,
+    people: String(preferences.people),
+    start: preferences.start,
+  });
+  return `/${locale}/tonight?${query}`;
 }
 
 export function tonightMaximumPriceCents(budget: TonightBudget) {

@@ -1,6 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 import { isValidElement, type ReactElement, type ReactNode } from "react";
-const mocks = vi.hoisted(() => ({ requireUser: vi.fn(), redirect: vi.fn() }));
+const mocks = vi.hoisted(() => ({
+  requireUser: vi.fn(),
+  redirect: vi.fn(),
+  flags: vi.fn(async () => ({})),
+}));
 vi.mock("@/lib/auth", () => ({ requireUser: mocks.requireUser }));
 vi.mock("next/navigation", () => ({
   redirect: mocks.redirect,
@@ -8,7 +12,7 @@ vi.mock("next/navigation", () => ({
     throw new Error("not-found");
   },
 }));
-vi.mock("@/lib/feature-flags", () => ({ loadFeatureFlags: async () => ({}) }));
+vi.mock("@/lib/feature-flags", () => ({ loadFeatureFlags: mocks.flags }));
 vi.mock("../src/app/[locale]/business/actions", () => ({
   confirmRedemption: vi.fn(),
   createOfficialEvent: vi.fn(),
@@ -21,6 +25,7 @@ vi.mock("../src/app/[locale]/business/actions", () => ({
 }));
 import BusinessPage from "../src/app/[locale]/business/page";
 import { BusinessHome } from "../src/components/BusinessHome";
+import * as entitlements from "../src/lib/entitlements";
 function homeProps(node: ReactNode): Record<string, unknown> | undefined {
   if (Array.isArray(node)) return node.map(homeProps).find(Boolean);
   if (!isValidElement<{ children?: ReactNode }>(node)) return;
@@ -51,6 +56,93 @@ function textContent(node: ReactNode): string {
   return textContent(node.props.children);
 }
 describe("team member's real business page loader", () => {
+  it.each(["en", "es"])(
+    "%s: starts independent reads together after authorization and waits for the staff role before editorial access",
+    async (locale) => {
+      function deferred<T>() {
+        let resolve!: (value: T) => void;
+        const promise = new Promise<T>((done) => {
+          resolve = done;
+        });
+        return { promise, resolve };
+      }
+      const authorize = deferred<{ supabase: unknown; user: { id: string } }>();
+      const profile = deferred<{ data: { app_role: string }; error: null }>();
+      const flags = deferred<Record<string, never>>();
+      const profileStarted = deferred<void>();
+      const editorial = deferred<{ data: null; error: null }>();
+      const editorialStarted = deferred<void>();
+      const reads: string[] = [];
+      const supabase = {
+        from(table: string) {
+          reads.push(table);
+          const query = {
+            select: () => query,
+            eq: () => query,
+            in: () => query,
+            order: () => query,
+            maybeSingle: () => {
+              if (table === "profiles") {
+                profileStarted.resolve();
+                return profile.promise;
+              }
+              editorialStarted.resolve();
+              return editorial.promise;
+            },
+            then: (resolve: (value: unknown) => unknown) =>
+              Promise.resolve({ data: [], error: null }).then(resolve),
+          };
+          return query;
+        },
+      };
+      const access = vi
+        .spyOn(entitlements, "requireBusinessAccess")
+        .mockImplementation(
+          () =>
+            authorize.promise as ReturnType<
+              typeof entitlements.requireBusinessAccess
+            >,
+        );
+      mocks.flags.mockImplementationOnce(() => flags.promise);
+      const pagePromise = BusinessPage({
+        params: Promise.resolve({ locale }),
+        searchParams: Promise.resolve({}),
+      });
+      try {
+        // The explicit auth barrier proves private reads cannot begin early.
+        await Promise.resolve();
+        expect(reads).toEqual([]);
+        authorize.resolve({ supabase, user: { id: "owner" } });
+        await profileStarted.promise;
+        // Profile and flags are unresolved; no wall-clock timing is involved.
+        expect(mocks.flags).toHaveBeenLastCalledWith(supabase);
+        expect(reads).toEqual([
+          "profiles",
+          "venue_members",
+          "categories",
+          "venue_claims",
+          "loyalty_programs",
+          "reward_redemptions",
+          "promotion_requests",
+        ]);
+        expect(reads).not.toContain("venues");
+        profile.resolve({ data: { app_role: "administrator" }, error: null });
+        flags.resolve({});
+        await editorialStarted.promise;
+        // Rental loading does not wait for the independent editorial response.
+        expect(reads).toContain("car_rental_companies");
+        editorial.resolve({ data: null, error: null });
+        const page = await pagePromise;
+        expect(homeProps(page)?.places).toEqual([]);
+      } finally {
+        profile.resolve({ data: { app_role: "consumer" }, error: null });
+        flags.resolve({});
+        editorial.resolve({ data: null, error: null });
+        access.mockRestore();
+        await pagePromise;
+      }
+    },
+  );
   it.each([
     ["en", "consumer"],
     ["es", "consumer"],

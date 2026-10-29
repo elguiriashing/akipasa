@@ -52,6 +52,8 @@ const SPANISH: Record<string, string> = {
   "Could not load the character studio.":
     "No se ha podido cargar el estudio de personajes.",
   "3D model failed to load.": "No se ha podido cargar el modelo 3D.",
+  "3D preview paused. Waiting for graphics to recover. Your saved look is unchanged.":
+    "Vista 3D en pausa. Esperando a que se recuperen los gráficos. Tu estilo guardado no ha cambiado.",
   Feminine: "Femenina",
   Masculine: "Masculina",
   Porcelain: "Porcelana",
@@ -182,7 +184,7 @@ h1{font-size:clamp(38px,6vw,76px);letter-spacing:-.07em;line-height:1.03;margin:
 select{width:100%;background:#131b2a;color:#f8f2ed;border:1px solid #ffffff30;border-radius:12px;padding:12px 10px;min-height:46px}
 .actions{display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid #ffffff2a;padding-top:21px;margin-top:24px}
 button{padding:12px 17px;min-height:45px;border-radius:12px;background:#ffffff15;color:#f7f3ef;font-weight:800;border:1px solid #ffffff40}
-button.primary{background:#ff854a;color:#241f28;border-color:#ff854a}button:disabled{opacity:.45;cursor:default}
+button.primary{background:#ff854a;color:#241f28;border-color:#ff854a}button:disabled{opacity:1;cursor:default;background:#343743;color:#cbd0dc;border-color:#697180;box-shadow:none}.actions button.primary:disabled{background:#68432f;color:#ffe6d6;border-color:#a17457;box-shadow:none}
 #status{flex-basis:100%;font-size:12px;color:#c2c7d1;min-height:18px}
 .notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:18px}
 .note{background:#ffffff0a;border:1px solid #ffffff25;border-radius:17px;padding:19px}.note strong{font-size:14px}.note p{font-size:12px;line-height:1.6;color:#b5bdc9}
@@ -205,20 +207,20 @@ footer{text-align:center;font-size:12px;color:#979eae;padding:18px}
 .editor{display:flex;flex-direction:column;min-height:630px;background:linear-gradient(155deg,#282735ee,#141c2bee)}
 .editor >p{margin-top:4px}
 .tabstrip{display:flex;gap:5px;overflow-x:auto;margin:13px 0 12px;padding-bottom:12px;border-bottom:1px solid #ffffff1c}
-.tab{white-space:nowrap;padding:10px 10px;min-height:41px;font-size:12px;background:#ffffff0b;border:1px solid #ffffff2c;border-radius:12px}
+.tab{white-space:nowrap;padding:10px 10px;min-height:44px;font-size:12px;background:#ffffff0b;border:1px solid #ffffff2c;border-radius:12px}
 .tab[aria-selected="true"]{background:#ff854a28;color:#ffc3a2;border-color:#ff955e;box-shadow:inset 0 -2px #ff854a}
 #fields{flex:1}
 .group h3{margin:3px 0 15px;font-size:14px;color:#ffc19e}
 .color-group{grid-column:1/-1;border-top:1px solid #ffffff23;padding-top:12px}
 .color-group strong{display:block;font-size:12px;margin-bottom:11px}
 .swatches{display:flex;gap:9px;flex-wrap:wrap}
-.swatch{width:35px;height:35px;min-height:0;padding:0;border-radius:100%;background:var(--color);border:2px solid #ffffff48}
+.swatch{width:44px;height:44px;min-height:44px;padding:0;border-radius:100%;background:var(--color);border:2px solid #ffffff48}
 .swatch[aria-pressed="true"]{box-shadow:0 0 0 3px #ff854a57;border:3px solid #ff9659}
 .presets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:0 0 16px}
 .presets button{min-height:58px;border-radius:12px;padding:9px 12px;text-align:left;background:linear-gradient(135deg,#3f3844,#1e2634);font-size:12px}
 .presets button[aria-pressed="true"]{border-color:#ff955e;background:linear-gradient(135deg,#5a332e,#202232)}
 .actions{margin-top:auto}.actions button.primary{flex:1;background:linear-gradient(120deg,#ff914c,#ff7148);font-size:15px;box-shadow:0 7px 23px #f7754040}
-.actions #download{width:100%;background:none;border:0;font-size:12px;min-height:30px;color:#afb6c2;text-align:left;padding:0}
+.actions #download{width:100%;background:none;border:0;font-size:12px;min-height:44px;color:#cbd0dc;text-align:left;padding:0}
 @media(max-width:860px){.grid{grid-template-columns:1fr}.stage,#avatar-stage{min-height:495px;height:495px}.editor{min-height:400px}}
 @media(max-width:480px){.stage{border-radius:23px 23px 0 0}.stage,#avatar-stage{height:456px;min-height:456px}.stage h2{font-size:10px}.editor{border-radius:0 0 23px 23px;padding:22px 16px}.tab{font-size:11px;padding:10px 8px}.stage-caption strong{font-size:13px}.stage-caption small{font-size:10px}}
 `;
@@ -328,7 +330,7 @@ document.querySelector("#download").addEventListener("click",()=>{
 });
 reset.addEventListener("click",()=>{if(!saved)return;current={...saved};draw();buttons();void stage?.setAppearance(current);message("Restored your saved 3D look.")});
 save.addEventListener("click",async()=>{
- if(!current||saving||!dirty())return;
+ if(!current||saving||rendering||!dirty())return;
  saving=true;buttons();message("Saving your avatar...");
  try{
   const copy={...current};
@@ -338,7 +340,7 @@ save.addEventListener("click",async()=>{
  }catch(err){message(err.message||"Previous saved look unchanged.")}
  finally{saving=false;buttons()}
 });
-function showError(msg){rendering=true;area.dataset.ready="error";buttons();failure.hidden=false;failure.textContent=msg;message("3D could not render on this device.")}
+function showError(msg){rendering=true;area.dataset.ready="error";buttons();failure.hidden=false;failure.textContent=t(msg);message("3D could not render on this device.")}
 area.addEventListener("akipals:loading",()=>{rendering=true;area.dataset.ready="loading";buttons()});
 area.addEventListener("akipals:rendered",()=>{rendering=false;buttons();failure.hidden=true;area.dataset.ready="true"});
 area.addEventListener("akipals:error",event=>showError(event.detail?.message||"3D model failed to load."));
