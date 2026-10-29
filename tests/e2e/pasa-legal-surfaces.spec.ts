@@ -93,6 +93,10 @@ for (const locale of ["en", "es"] as const) {
               "color",
               theme === "light" ? "rgb(24, 43, 59)" : "rgb(255, 255, 255)",
             );
+            await expect(main.locator(".pasa-legal-hero h1")).toHaveCSS(
+              "color",
+              theme === "light" ? "rgb(24, 43, 59)" : "rgb(255, 255, 255)",
+            );
             if (surface.path === "/photo-credits") {
               const cards = main.locator(".pasa-photo-credit-card");
               expect(await cards.count()).toBeGreaterThan(0);
