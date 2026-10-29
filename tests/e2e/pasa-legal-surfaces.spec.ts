@@ -108,12 +108,16 @@ for (const locale of ["en", "es"] as const) {
               viewport: document.documentElement.clientWidth,
               width: document.documentElement.scrollWidth,
             }));
-            expect(
-              geometry.width,
-              `${route}: horizontal overflow ${JSON.stringify(geometry)}`,
-            ).toBeLessThanOrEqual(geometry.viewport + 2);
-            const screenshot =
-              `test-results/pasa-legal-${locale}-${surface.path.slice(1)}-${device.name}-${theme}.png`;
+            const overflow = geometry.width - geometry.viewport;
+            expect(overflow, route).toBeLessThanOrEqual(2);
+            const stem = [
+              "pasa-legal",
+              locale,
+              surface.path.slice(1),
+              device.name,
+              theme,
+            ].join("-");
+            const screenshot = `test-results/${stem}.png`;
             mkdirSync("test-results", { recursive: true });
             await page.screenshot({
               path: screenshot,
@@ -122,8 +126,9 @@ for (const locale of ["en", "es"] as const) {
             });
             screenshots.push(screenshot);
           }
+          const evidenceStem = `pasa-legal-${locale}-${device.name}-${theme}`;
           writeFileSync(
-            `test-results/pasa-legal-${locale}-${device.name}-${theme}.json`,
+            `test-results/${evidenceStem}.json`,
             JSON.stringify(
               {
                 sourceCheckout: process.env.GITHUB_SHA || "local",
