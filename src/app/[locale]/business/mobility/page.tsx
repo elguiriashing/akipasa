@@ -176,7 +176,7 @@ export default async function MobilityWorkspace({
         )}
         {(query.error ||
           companyError ||
-          (company && (vehicleError || bookingError))) && (
+          (company && (vehicleError || bookingError || blockError))) && (
           <p className={styles.error} role="alert">
             {es
               ? "No se pudo cargar o guardar toda la información. Reintenta antes de gestionar reservas."
