@@ -129,4 +129,25 @@ describe("AkiPasa shared redesign system", () => {
     expect(referral).toContain('name="product" value="akipasa"');
     expect(referral).toContain('name="code" value={code}');
   });
+  it("keeps early-partner visual improvements separate from claim-owner and consent rules", () => {
+    const css = source(
+      "src/app/[locale]/business/early-partner/early-partner.module.css",
+    );
+    const page = source("src/app/[locale]/business/early-partner/page.tsx");
+    const actions = source("src/app/[locale]/business/early-partner/actions.ts");
+    expect(css).toContain("--partner-accent");
+    expect(css).toContain('html[data-theme="light"]');
+    expect(css).toContain("safe-area-inset-bottom");
+    expect(css).toContain("prefers-reduced-motion");
+    expect(css).toContain(":focus-visible");
+    expect(page).toContain("requireUser(locale, current)");
+    expect(page).toContain('.eq("claimant_id", user.id)');
+    expect(page).toContain('claim.status !== "approved"');
+    expect(page).toContain("submitEarlyPartnerFeedback");
+    expect(page).toContain("3 months of AkiPasa listing Premium");
+    expect(actions).toContain('contact_permission: parsed.data.contactPermission === "yes"');
+    expect(actions).toContain('status", "approved"');
+    expect(actions).toContain('onConflict: "claim_id"');
+  });
+
 });
