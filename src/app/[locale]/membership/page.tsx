@@ -40,7 +40,8 @@ export default async function MembershipPage({
               : "Explore without a subscription, upgrade a business listing or choose separate business tools. Pick what fits."}
           </p>
         </div>
-        <Link className="pasa-conversion-link pasa-membership-manage"
+        <Link
+          className="pasa-conversion-link pasa-membership-manage"
           href={
             signedIn
               ? `/${locale}/account/subscription?from=${akiSuiteApp(query.from)}`
