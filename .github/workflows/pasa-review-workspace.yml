@@ -1,0 +1,39 @@
+name: Prepare isolated AkiPasa UI review
+
+on:
+  push:
+    branches: [design/pasa-radar-cinematic-overhaul-20261028]
+    paths: [.github/workflows/pasa-review-workspace.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  review-workspace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm ci --prefix automation --no-audit --no-fund
+      - name: Package tracked source and installed dependencies only
+        shell: bash
+        run: |
+          mkdir -p /tmp/pasa-review
+          git archive --format=tar.gz --output=/tmp/pasa-review/source.tar.gz HEAD
+          tar -czf /tmp/pasa-review/dependencies.tar.gz node_modules automation/node_modules
+          git rev-parse HEAD > /tmp/pasa-review/source-sha.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pasa-review-workspace
+          path: /tmp/pasa-review
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: error
