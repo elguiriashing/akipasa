@@ -203,8 +203,7 @@ for (const locale of ["en", "es"] as const) {
           expect(hqTarget.pathname).toBe("/login");
           expect(hqTarget.searchParams.get("lang")).toBe(locale);
           const operationsLink = page.getByRole("link", {
-            name:
-              locale === "es" ? "Conocer AkiBusiness" : "About AkiBusiness",
+            name: locale === "es" ? "Conocer AkiBusiness" : "About AkiBusiness",
           });
           expect(await operationsLink.getAttribute("href")).toBe(
             "https://akibusiness.com",
