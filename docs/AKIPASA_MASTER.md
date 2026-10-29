@@ -1,5 +1,21 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-29 | Private AkiPals 3D character engine (no public launch)
+
+The approved AkiPals reset now has a self-hosted Three.js WebGL studio with two
+CC0 rigged Quaternius base models stored under public/pals/models, and original
+procedural 3D hair, outfits, bags, shoes and facial feature meshes. Characters
+are rotatable/zoomable; edits preview locally, then owner-validated appearance
+is saved only upon explicit Save into RLS-isolated pals_avatar_profiles.
+Built-in local Three.js runtime bundling occurs before dev, Next and Cloudflare
+builds. The preceding flat SVG character is no longer served by the /pals UI,
+although old game endpoints/data are retained solely for rollback and must be
+reconciled in a future retirement gate. The screenshot reference is a *concept*,
+not finished in-game art. Actual GLB/browser screenshots, perf, final morphs,
+RLS migration and AkiPasa redesign PR #326 integration remain prerequisites.
+No commercial unlocks, payments, public social presence, GPS sharing or maps
+were enabled. PR #327 remains draft and production deployment prohibited.
+
 ## 2026-10-28 | AkiPals human avatar identity reset (private draft)
 
 AkiPals is a customizable human avatar and personal wardrobe, **not** the old
