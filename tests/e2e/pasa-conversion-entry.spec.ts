@@ -1,0 +1,197 @@
+import { mkdirSync, writeFileSync } from "node:fs";
+import { expect, test } from "@playwright/test";
+
+/**
+ * Public membership and referral entrypoints.
+ * No payment, referral action or signed-in account is used for these captures.
+ * Android-like Chromium emulation does not count as physical device acceptance.
+ */
+const devices = [
+  { name: "phone-360", width: 360, height: 800, android: false },
+  { name: "phone-390", width: 390, height: 844, android: false },
+  { name: "desktop-1440", width: 1440, height: 900, android: false },
+  { name: "android-webview-emulated", width: 390, height: 844, android: true },
+] as const;
+
+const sampleCode = "AKIPASA2026";
+
+for (const locale of ["en", "es"] as const) {
+  test(`${locale} conversion links preserve the product and reject invalid codes`, async ({
+    request,
+  }) => {
+    const badCode = await request.get(`/${locale}/referrals?ref=bad%3Cscript%3E`);
+    expect(badCode.status()).toBe(404);
+
+    for (const [path, origin] of [
+      ["business/memberships", "akibusiness"],
+      ["duermo/memberships", "akiduermo"],
+    ]) {
+      const response = await request.get(`/${locale}/${path}`, {
+        maxRedirects: 0,
+      });
+      expect([307, 308]).toContain(response.status());
+      const target = new URL(response.headers().location || "", response.url());
+      expect(target.pathname).toBe(`/${locale}/membership`);
+      expect(target.searchParams.get("from")).toBe(origin);
+    }
+
+    const entry = await request.get(`/${locale}/membership?from=untrusted`);
+    expect(entry.status()).toBe(200);
+    expect(entry.text()).resolves.not.toContain("from=untrusted");
+  });
+
+  for (const device of devices) {
+    for (const theme of ["dark", "light"] as const) {
+      test(`${locale} conversion entry on ${device.name}/${theme}`, async ({
+        browser,
+      }) => {
+        test.setTimeout(150_000);
+        const baseURL =
+          process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:3100";
+        const context = await browser.newContext({
+          baseURL,
+          viewport: { width: device.width, height: device.height },
+          colorScheme: theme,
+          reducedMotion: "reduce",
+          ...(device.android
+            ? {
+                isMobile: true,
+                hasTouch: true,
+                deviceScaleFactor: 2.75,
+                userAgent:
+                  "Mozilla/5.0 (Linux; Android 14; Pixel 7; wv) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36",
+              }
+            : {}),
+        });
+        try {
+          const page = await context.newPage();
+          await page.addInitScript((value) => {
+            localStorage.setItem("akipasa.theme", value);
+          }, theme);
+          await context.addCookies([
+            { name: "ak_consent_version", value: "2", url: baseURL },
+          ]);
+          const screenshots: string[] = [];
+
+          const membership = await page.goto(
+            `/${locale}/membership?from=akipasa`,
+            { waitUntil: "domcontentloaded" },
+          );
+          expect(membership?.status()).toBe(200);
+          await expect(
+            page.getByRole("heading", {
+              name: locale === "es" ? "Membresía" : "Membership",
+              level: 1,
+            }),
+          ).toBeVisible();
+          await expect(page.locator(".pasa-membership-intro")).toBeVisible();
+          const manage = page.locator(".pasa-membership-manage");
+          const manageHref = await manage.getAttribute("href");
+          const destination = new URL(manageHref || "", baseURL);
+          expect(destination.pathname).toBe(`/${locale}/auth`);
+          expect(destination.searchParams.get("next")).toBe(
+            `/${locale}/account/subscription?from=akipasa`,
+          );
+          await expect(page.locator(".app-content")).toHaveAttribute(
+            "data-pasa-surface",
+            "membership",
+          );
+          await expect(page.locator("html")).toHaveAttribute(
+            "data-theme",
+            theme,
+          );
+          const membershipScreenshot =
+            `test-results/pasa-membership-entry-${locale}-${device.name}-${theme}.png`;
+          mkdirSync("test-results", { recursive: true });
+          await page.screenshot({
+            path: membershipScreenshot,
+            animations: "disabled",
+            fullPage: false,
+          });
+          screenshots.push(membershipScreenshot);
+
+          const referralPath = `/${locale}/referrals?ref=${sampleCode}`;
+          const gate = await context.request.get(referralPath, {
+            maxRedirects: 0,
+          });
+          const ready = process.env.AKISUITE_REFERRALS_READY === "true";
+          const referral = await page.goto(referralPath, {
+            waitUntil: "domcontentloaded",
+          });
+          expect(referral?.status()).toBe(200);
+          if (ready) {
+            expect(gate.status()).toBe(307);
+            const location = new URL(
+              gate.headers().location || "",
+              baseURL,
+            );
+            expect(location.pathname).toBe(`/${locale}/auth`);
+            expect(location.searchParams.get("next")).toBe(referralPath);
+            expect(new URL(page.url()).pathname).toBe(`/${locale}/auth`);
+          } else {
+            expect(gate.status()).toBe(200);
+            await expect(
+              page.getByRole("heading", {
+                name:
+                  locale === "es"
+                    ? "Las recomendaciones están en preparación"
+                    : "Referrals are being prepared",
+                level: 1,
+              }),
+            ).toBeVisible();
+            await expect(page.locator(".pasa-referral-entry")).toBeVisible();
+            await expect(
+              page.getByRole("status", {
+                name: locale === "es" ? "Programa no activo" : "Programme not active",
+              }),
+            ).toBeVisible();
+            await expect(page.locator("form")).toHaveCount(0);
+            await expect(page.locator(".app-content")).toHaveAttribute(
+              "data-pasa-surface",
+              "referral",
+            );
+          }
+          const dimensions = await page.evaluate(() => ({
+            viewport: document.documentElement.clientWidth,
+            scroll: document.documentElement.scrollWidth,
+          }));
+          expect(
+            dimensions.scroll - dimensions.viewport,
+            `Overflow: ${JSON.stringify(dimensions)}`,
+          ).toBeLessThanOrEqual(2);
+
+          const referralScreenshot =
+            `test-results/pasa-referral-entry-${locale}-${device.name}-${theme}.png`;
+          await page.screenshot({
+            path: referralScreenshot,
+            animations: "disabled",
+            fullPage: false,
+          });
+          screenshots.push(referralScreenshot);
+          const stem = `pasa-conversion-${locale}-${device.name}-${theme}`;
+          writeFileSync(
+            `test-results/${stem}.json`,
+            JSON.stringify(
+              {
+                sourceCommit: process.env.GITHUB_SHA || "local",
+                locale,
+                device,
+                theme,
+                screenshots,
+                referralFeatureReady: ready,
+                acceptance: "automated-guest-evidence-only",
+                physicalAndroidReviewed: false,
+                authenticatedReferralReviewed: false,
+                checkoutReviewed: false,
+              },
+              null,
+              2,
+            ),
+          );
+        } finally {
+          await context.close();
+        }
+      });
+    }
+  }
+}
