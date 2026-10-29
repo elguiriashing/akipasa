@@ -41,9 +41,7 @@ for (const locale of ["en", "es"] as const) {
             localStorage.setItem("akipasa.theme", value);
           }, theme);
           const route = `/${locale}/account/profile`;
-          const gate = await context.request.get(route, {
-            maxRedirects: 0,
-          });
+          const gate = await context.request.get(route, { maxRedirects: 0 });
           expect([303, 307], route).toContain(gate.status());
           const login = new URL(gate.headers().location || "", baseURL);
           expect(login.origin).toBe(new URL(baseURL).origin);
@@ -56,9 +54,7 @@ for (const locale of ["en", "es"] as const) {
           });
           expect(response?.status()).toBe(200);
           expect(new URL(page.url()).pathname).toBe(`/${locale}/auth`);
-          await expect(page.locator(".account-profile-screen")).toHaveCount(
-            0,
-          );
+          await expect(page.locator(".account-profile-screen")).toHaveCount(0);
           await expect(page.getByRole("main").first()).toBeVisible();
           await expect(page.locator("html")).toHaveAttribute(
             "data-theme",
