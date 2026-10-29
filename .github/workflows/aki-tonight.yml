@@ -24,13 +24,6 @@ jobs:
           node-version: "22.23.4"
           cache: npm
       - run: npm ci --no-audit --no-fund
-      - name: Capture canonical tracker formatting for correction
-        run: |
-          npx prettier --write docs/AKIPASA_RETENTION_IMPLEMENTATION_20261029.md
-          echo "AKI_FORMAT_BEGIN:docs/AKIPASA_RETENTION_IMPLEMENTATION_20261029.md"
-          base64 -w 0 docs/AKIPASA_RETENTION_IMPLEMENTATION_20261029.md
-          echo ""
-          echo "AKI_FORMAT_END:docs/AKIPASA_RETENTION_IMPLEMENTATION_20261029.md"
       - name: Check source formatting
         run: >
           npx prettier --check
