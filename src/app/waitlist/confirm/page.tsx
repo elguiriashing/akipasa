@@ -12,8 +12,16 @@ export const metadata: Metadata = {
 
 const products = {
   pasa: { name: "AkiPasa", destination: "https://akipasa.com", icon: "map" },
-  duermo: { name: "AkiDuermo", destination: "https://akiduermo.com", icon: "bed" },
-  coches: { name: "AkiCoches", destination: "https://akicoches.com", icon: "car" },
+  duermo: {
+    name: "AkiDuermo",
+    destination: "https://akiduermo.com",
+    icon: "bed",
+  },
+  coches: {
+    name: "AkiCoches",
+    destination: "https://akicoches.com",
+    icon: "car",
+  },
 } as const;
 
 export default async function LaunchWaitlistConfirmation({
@@ -47,7 +55,9 @@ export default async function LaunchWaitlistConfirmation({
       <div className={styles.layout}>
         <aside
           className={styles.story}
-          aria-label={en ? "How launch updates work" : "Cómo funcionan los avisos"}
+          aria-label={
+            en ? "How launch updates work" : "Cómo funcionan los avisos"
+          }
         >
           <a className={styles.brand} href={destination}>
             <span className={styles.brandIcon}>
@@ -73,21 +83,31 @@ export default async function LaunchWaitlistConfirmation({
               <span>01</span>
               <div>
                 <strong>{en ? "Join the list" : "Apúntate"}</strong>
-                <small>{en ? "Choose your product" : "Elige tu producto"}</small>
+                <small>
+                  {en ? "Choose your product" : "Elige tu producto"}
+                </small>
               </div>
             </li>
             <li className={styles.currentStep}>
               <span>02</span>
               <div>
-                <strong>{en ? "Verify your email" : "Verifica tu correo"}</strong>
-                <small>{en ? "Use the private link" : "Usa el enlace privado"}</small>
+                <strong>
+                  {en ? "Verify your email" : "Verifica tu correo"}
+                </strong>
+                <small>
+                  {en ? "Use the private link" : "Usa el enlace privado"}
+                </small>
               </div>
             </li>
             <li>
               <span>03</span>
               <div>
                 <strong>{en ? "Get launch news" : "Recibe novedades"}</strong>
-                <small>{en ? "When there is real news" : "Cuando haya noticias reales"}</small>
+                <small>
+                  {en
+                    ? "When there is real news"
+                    : "Cuando haya noticias reales"}
+                </small>
               </div>
             </li>
           </ol>
@@ -98,10 +118,14 @@ export default async function LaunchWaitlistConfirmation({
           </div>
         </aside>
 
-        <section className={styles.panel} aria-labelledby="waitlist-confirm-heading">
+        <section
+          className={styles.panel}
+          aria-labelledby="waitlist-confirm-heading"
+        >
           <div className={styles.panelTop}>
             <p className={styles.eyebrow}>
-              {productName} · {en ? "EMAIL VERIFICATION" : "VERIFICACIÓN DE EMAIL"}
+              {productName} ·{" "}
+              {en ? "EMAIL VERIFICATION" : "VERIFICACIÓN DE EMAIL"}
             </p>
             <span className={styles.statusIcon} aria-hidden="true">
               <Icon
