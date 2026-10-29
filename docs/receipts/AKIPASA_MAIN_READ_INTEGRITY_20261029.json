@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "observedAt": "2026-10-29T19:03:19.773294+00:00",
+  "baselineCommit": "4e71c62553b51d1bdf9ad79e92ef48224a29bcce",
+  "sourceDirty": true,
+  "testedWorkingTree": true,
+  "sourceHashes": {
+    ".github/workflows/tablet-browser.yml": "da2b2d8028d045dc93a96cb9c7fc108c03852368919aa4b3ff829263bb237473",
+    "scripts/test-business-home-read-browser.mjs": "fe70d4e8cc69bae1679056bb520d3ed8a17098280170e826cf374268ded88293",
+    "scripts/test-global-error-browser.mjs": "50088326999c55656d8e17fd5543b74d83f3acbbaa285c8c2abfa0196569910c",
+    "src/app/[locale]/admin/passports/prestige/actions.ts": "80dade273313c26f9b8f4bcfcfa7401deccd55894fcf1d6ba96e68207f4abbfb",
+    "src/app/[locale]/business/page.tsx": "b3db2f6386d410dfa6c3d3d43404c33662fe116a9f3f43a3c1cc9fbff62025b8",
+    "src/app/[locale]/community/creator-actions.ts": "da29b4cac5ce6d17aaf38076d1c9e5a6cc69355db48b2e08f820ace6f8e317da",
+    "src/app/api/v1/behaviour/events/route.ts": "2965182670f1924a23229ba1d7cf0ffae38c0abb9d832a70b94f9ef7db68d375",
+    "src/components/BusinessGrowthOverview.tsx": "264487b1c7dc4014b5655bf8c4f2e8ec109057e5fbba8d086d65661cf35198fc",
+    "src/components/BusinessHome.tsx": "ea4ec7bad300389c438c93ac9d9f1c5bc177578e6edf6a983f4677f7b59ef5ce",
+    "src/components/PasaCinematic.css": "e1ec61d919d508a0ce7e91aac057dd58bb9c31c18ec236c3ef268a62e0634eb0",
+    "tests/akisuite-behaviour-request-boundary.test.ts": "452df2b711570514b97bcf6d161c547fc95ad10259742eea9c8e05a515b836c8",
+    "tests/akisuite-business-home-partial-ui.test.tsx": "c82f0d2f75093a7a2733630837fa98001d0e9ba85062b6e4c8cee3ac521258a9",
+    "tests/akisuite-business-home-read-boundary.test.tsx": "5ca7b5d8bc9c4b66e0a1f30c319c3c28efeab7f69adbfb74fc86b3e3564e9c43",
+    "tests/akisuite-collection-validation-boundaries.test.ts": "5e195758dcf14303f9d2452220e3d6ba7ef9608642a0d0d1a2548f3bb449799d",
+    "tests/business-onboarding.test.ts": "c055d5983d90a8d6b1eb0cfea36fe4463c76ee6363f3c88f30725d98789fbe38",
+    "tests/e2e/pasa-privacy-clearance.spec.ts": "451cf01a7f5a163b8dbfd24a380e5a925d8ccd3c640ba96a6dd49a00c39f2f44",
+    "tests/e2e/pasa-route-fallbacks.spec.ts": "99da32057ae22b19f9cf23d7488c7b02b962d194ae01c724bd70f5246ca469d3",
+    "tests/fixtures/business-home-read-state.ts": "8a24b64d793bd40bcbd731a4648e27fecaef4169326867220e8adda16ffb71b0",
+    "tests/portal-home.test.tsx": "3d2f325d79ed3ada6a419cef7bfbac3443caf6b0350941c16878388748bf9595"
+  },
+  "checks": {
+    "fullCheck": {
+      "status": "passed",
+      "vitestPassed": 2485,
+      "log": "/tmp/akipasa-cycle3-combined-check-final.log",
+      "firstFailedRun": "/tmp/akipasa-cycle3-combined-check.log",
+      "repair": "Retained onboarding assertion now requires the complete read-guarded condition with whitespace normalization."
+    },
+    "dashboardBrowser": {
+      "status": "passed",
+      "cases": 160,
+      "receipt": "test-results/business-home-read/evidence.json",
+      "receiptSha256": "2d25a58be0c3324ba855d56b693daa01cc695706c3236275b4004b5dd7076772",
+      "log": "/tmp/akipasa-cycle3-business-integrated-browser.log",
+      "executableOverride": false,
+      "externalRequests": 0,
+      "pageErrors": 0
+    },
+    "affectedPublicBrowser": {
+      "status": "passed",
+      "cases": 56,
+      "skipped": 0,
+      "failed": 0,
+      "groups": {
+        "privacyHeader": 20,
+        "publicFamilies": 18,
+        "fallbacksAndRedirects": 18
+      },
+      "log": "/tmp/akipasa-cycle3-public-browser.log"
+    },
+    "portableRootError": {
+      "status": "passed",
+      "cases": 8,
+      "executableOverride": false,
+      "evidence": "/tmp/akipasa-global-error-portable-impact.md"
+    },
+    "guardEngineeringReview": {
+      "status": "no blocking findings",
+      "scope": "Independent source-only review and mocked-provider regressions; not release acceptance."
+    },
+    "strictAudit": {
+      "status": "failure expected",
+      "accepted": 0,
+      "inScope": 90
+    }
+  },
+  "inspectedScreenshots": {
+    "test-results/pasa-privacy-clearance-es-light-360-home.png": "66406e035ea7698d95d1fa89f56d7e8a710fd86e5e4979cf4aba09b9171ea3f3",
+    "test-results/pasa-route-fallback-es-390-light-localized.png": "4ced00f12856b81d09e58f52d29d1dd4a7678df7a695ec5a43eb704ca33801f5",
+    "test-results/pasa-route-fallback-en-1440-dark-root.png": "4eefc3da15d788812d64322162427ef6b205aa94e834ecf3858d4ac1ee91db3f",
+    "test-results/business-home-read/loyalty_programs-es-light-1440.png": "ec68f620603728dcba0521b676296014293a266c9d4b29c3add06a6899992d6a"
+  },
+  "release": {
+    "accepted": false,
+    "merged": false,
+    "deployed": false,
+    "newHeadCI": "pending commit",
+    "newHeadIndependentPackaging": "pending commit"
+  },
+  "limits": [
+    "Disposable fixtures are not live Auth/RLS/provider or physical Android proof.",
+    "Dependency inventory remains open; no blanket Zod or npm audit clearance.",
+    "Separate Awards action and compact-button patches are excluded from this source."
+  ]
+}

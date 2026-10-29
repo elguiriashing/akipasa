@@ -122,9 +122,9 @@ try {
     await new Promise((done) => setTimeout(done, 200));
   }
   browser = await chromium.launch({
-    executablePath:
-      process.env.BOOKING_BROWSER_PATH ||
-      "/home/agent/.cache/ms-playwright/chromium-1228/chrome-linux64/chrome",
+    ...(process.env.BOOKING_BROWSER_PATH
+      ? { executablePath: process.env.BOOKING_BROWSER_PATH }
+      : {}),
     headless: true,
   });
   for (const theme of ["light", "dark"])

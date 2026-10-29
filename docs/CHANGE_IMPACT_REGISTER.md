@@ -3695,3 +3695,53 @@ a source revert; physical Android and live authenticated acceptance remain open.
   exact committed source/CI are recorded after integration, not inferred here.
   Route statuses remain in progress; real Auth/RLS/physical Android/reviewer
   acceptance is separate. Rollback is source-only, retaining all history and data.
+
+## 2026-10-29 | Dashboard unknown states, mobile glyph contrast and bounded ingestion
+
+- **Dashboard dependencies:** Trace existing business account/membership, profile
+  roles, editorial/rental sources, venue event/media/categories, loyalty/programme
+  and redemption queues, claims, promotions, analytics and premium gates. Independent
+  failed reads must not hide known sibling rows or imply zero totals; unknown role
+  context must not admit editorial access. Retry retains only safe current view,
+  compose and validated venue context. Existing mutation payloads/authorization,
+  caller filters and distinct product boundaries remain authoritative.
+- **Measured visuals:** Actual full-app ES360 light capture showed search ink
+  rgb20,33,61 on the transparent trigger over rgb11,20,35 header. Pair mobile ink
+  rgb247,249,253 with opaque rgb20,35,57. Keep desktop, native inset, map position,
+  auth hiding and popover/query logic unchanged. Extend actual glyph contrast and
+  keyboard checks; preserve real missing-route PNGs, not ephemeral attachments.
+- **CI repair:** Hosted tablet consumer job123644948235 failed on a hardcoded
+  /home/agent browser path; remaining tablet jobs passed. Retain explicit path
+  override and use ordinary installed Playwright discovery when absent. Eight
+  real root-error states passed with the override removed; assertions/policies stay.
+- **Request boundary:** Actual public behaviour request validation trusted only
+  Content-Length; missing/understated length bypassed its intended byte limit,
+  and Zod3 traversed excessive arrays after max rejection. Reuse existing bounded
+  stream helper and reject more than25 raw events before element validation.
+  Preserve400 invalid batch,413 payload too large,415 media,403 origin,409 missing
+  session,204 account-consent denial,429 rate and503 backend contracts. Tests use
+  mocked providers and assert no schema/backend side effects on oversized input,
+  exact64000-byte/UTF8 handling and unchanged p_verified:false/consent payloads.
+- **Security limits/rollback:** No lock/dependency change or blanket advisory
+  clearance. Creator/Prestige arrays and reviewed Zod major migration remain
+  separate follow-ups. Revert source presentation/read/request adapters only;
+  preserve customer histories, consent, grants, XP, database and provider settings.
+  Final combined check/browser/new-head CI must be recorded before handoff.
+
+- **Additional guarded collections:** Existing creator categoryIds maximum6 and
+  Prestige configure achievement_keys maximum1000 now fail before per-item work.
+  Locale fallback, featuregate, exact validation responses, existing successful
+  schema/action/owner/admin/RPC and revalidation order remain intact. Raw oversized
+  inputs make no schema-item/auth/backend calls; legitimate0/6 categories and
+  1/1000 achievement payloads retain exact actor-bound values. Independent
+  read-only review and45 isolated action/render cases passed; no live mutation.
+
+- **Full-check repair and fixture truth:** The first combined check caught an
+  old contiguous source literal for the event-composer condition. Its assertion
+  now normalizes whitespace and additionally requires the new unavailable-input
+  guard; remaining onboarding checks remain active. Fresh complete check passed
+  2485 Vitest cases and configured security/SQL/automation/build checks. The
+  isolated desktop logo issue was reproduced with identical SVG bytes: missing
+  MIME failed decode, image/svg+xml succeeded. Fixture delivery now declares
+  actual MIME and asserts rendered-image decode;160 fresh integrated cases passed
+  without an executable override. Earlier incomplete-image captures stay archived.

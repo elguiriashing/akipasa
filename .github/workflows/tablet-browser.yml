@@ -33,6 +33,8 @@ jobs:
         run: node scripts/test-pasa-boundaries-browser.mjs
       - name: Verify root-layout failure recovery
         run: node scripts/test-global-error-browser.mjs
+      - name: Verify independent business dashboard read failures
+        run: node scripts/test-business-home-read-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -41,6 +43,7 @@ jobs:
             test-results/community-workflows
             test-results/pasa-boundaries-framework
             test-results/global-error
+            test-results/business-home-read
           retention-days: 7
 
   tablet-ui:

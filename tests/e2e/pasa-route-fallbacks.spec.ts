@@ -121,12 +121,11 @@ for (const locale of ["en", "es"]) {
           await expect(fallback).not.toContainText(
             /Error:|stack trace|service_role|token=|not-a-valid-venue-token/,
           );
+          const screenshot = `test-results/pasa-route-fallback-${locale}-${width}-${theme}-${path.includes("check-in") ? "localized" : "root"}.png`;
+          await page.screenshot({ path: screenshot, fullPage: true });
           await testInfo.attach(
             `${locale}-${width}-${theme}-${path.includes("check-in") ? "localized" : "root"}`,
-            {
-              body: await page.screenshot({ fullPage: true }),
-              contentType: "image/png",
-            },
+            { path: screenshot, contentType: "image/png" },
           );
         }
         expect(errors).toEqual([]);

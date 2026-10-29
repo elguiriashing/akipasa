@@ -3011,3 +3011,45 @@ loading boundary was rejected after an actual framework test changed404 to200;
 existing404/307 contracts remain mandatory and their assertions are retained.
 No production fault route, activation, database, grant, billing or provider change.
 Full integrated/browser/CI and final source/device acceptance remain required.
+
+## 2026-10-29 | Partial-read dashboard integrity and measured release repairs
+
+Business management keeps known authorized places usable when an independent
+membership/editorial/rental read fails; totals for an incomplete universe are
+unknown, never zero or a complete count. Individual loyalty programmes,
+redemptions, claims, categories, events, promotion and media reads have bounded
+localized retry states. Withhold only controls that depend on unknown inputs;
+a genuine new event composer remains usable when its own required reads succeed.
+Unknown profile roles remain fail-closed for editorial access. Known per-place
+analytics remain useful while incomplete aggregate totals stay unknown. Preserve
+all existing account/tenant filters, actions, premium entitlements and audits.
+
+Actual complete-app screenshots additionally exposed a dark mobile search glyph
+over a dark header in light mode. Its scoped mobile palette pairs opaque background
+and readable ink; the browser checks measure the real glyph/control colours,
+including alpha composition and minimum targets, and exercise keyboard search.
+Fallback captures are written to real artifact paths in addition to attachments.
+Root-error test browser discovery delegates to installed Playwright unless an
+explicit executable override is supplied; no machine-specific path is required.
+
+The behaviour-events ingestion endpoint applies the existing streaming64000-byte
+reader before parsing and rejects raw batches above25 before Zod element traversal.
+Origin/media/error/session/account-consent/settings/rate/RPC semantics remain
+unchanged; ingestion never becomes verified attendance. This mitigation does not
+claim that every Zod collection or dependency advisory is resolved. The source-
+backed dependency inventory is docs/AKIPASA_DEPENDENCY_AUDIT_20261029.md. Existing
+hash-guarded MapLibre attribution backport remains mandatory. No production data,
+consent, permission, dependency version, migration or deployment is changed.
+
+Validation and current-source evidence remain in the execution ledger. The layout
+checkpoint4e71 passed433 full-browser cases with29 explicit credential skips and
+independent clean Cloudflare packaging; its tablet workflow exposed a portable-
+browser harness defect subsequently repaired. No route/device acceptance implied.
+
+Creator profile category inputs above6 and Prestige configure achievement lists
+above1000 are also rejected before per-item Zod processing, using their unchanged
+validation destination/messages. Prestige locale/feature gates remain first;
+ordinary successful payloads still pass the existing authenticated-owner/admin
+checks. Independent review and45 isolated actual-action/render regressions passed.
+These guards are narrow runtime mitigations, not a claim that all Zod3 exposure
+or dependency advisories have been eliminated.

@@ -28,12 +28,15 @@ const schema = z.object({
   publish: z.enum(["draft", "published"]),
 });
 export async function saveCreatorProfile(formData: FormData) {
-  const parsed = schema.safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
+  const rawCategoryIds = formData.getAll("categoryIds");
+  if (rawCategoryIds.length > 6)
+    redirect(`/${locale}/community/creator?error=validation`);
+  const parsed = schema.safeParse(Object.fromEntries(formData));
   const categoryIds = z
     .array(z.string().uuid())
     .max(6)
-    .safeParse(formData.getAll("categoryIds"));
+    .safeParse(rawCategoryIds);
   if (!parsed.success || !categoryIds.success)
     redirect(`/${locale}/community/creator?error=validation`);
   const { supabase, user } = await requireUser(locale);

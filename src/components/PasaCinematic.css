@@ -369,6 +369,11 @@ html[data-theme="light"]
   .app-shell .app-topbar-mobile .brand-wordmark {
     color: #f7f9fd;
   }
+  .app-shell .global-search-trigger {
+    color: #f7f9fd;
+    background: #142339;
+    border-color: #415169;
+  }
   .app-shell .app-topbar-mobile .app-suite-mobile-trigger {
     display: inline-grid;
     place-items: center;

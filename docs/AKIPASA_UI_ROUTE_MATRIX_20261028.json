@@ -221,7 +221,7 @@
     "src/app/[locale]/business/page.tsx": {
       "scope": "operational",
       "status": "in-progress",
-      "note": "Existing authenticated WorkspaceShell/BusinessHome presentation retained after inspection. Team/role coverage and actual shell browser boundary fixtures added. Real signed-in business home populated/empty/error interactions, final responsive screenshot review and physical Android/Alex review remain outstanding; not accepted."
+      "note": "Independent membership/profile/editorial, catalogue/media, programme/redemption, claim and promotion errors now retain healthy siblings and known partial rows while complete counts stay unknown. New event creation only depends on its own known inputs; exact existing actions/roles/entitlements retained. 38 focused and 160 integrated disposable browser cases passed, including canonical Retry and real image decode. Real protected-role/device/source-reviewed release acceptance remains outstanding."
     },
     "src/app/[locale]/business/venue/[id]/page.tsx": {
       "scope": "operational",

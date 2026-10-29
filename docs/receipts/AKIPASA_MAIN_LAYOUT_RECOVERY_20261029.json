@@ -63,19 +63,41 @@
       "receipt": "test-results/global-error/evidence.json"
     },
     "integratedBrowser": {
-      "status": "running",
-      "discoveredCases": 462,
-      "log": "/tmp/akipasa-main-cycle2-integrated-browser.log"
+      "status": "passed",
+      "passed": 433,
+      "skipped": 29,
+      "failed": 0,
+      "duration": "16.4m",
+      "log": "/tmp/akipasa-main-cycle2-integrated-browser.log",
+      "evidenceManifest": "/workspace/akipasa-main-checkpoints/layout-4e71c62/manifest.json"
     },
     "strictReleaseAudit": {
       "exitCode": 2,
       "accepted": 0,
       "inScope": 90
+    },
+    "independentCloudflareBuild": {
+      "status": "passed",
+      "freshLockedPackages": 814,
+      "sourceStamp": "4e71c62553b51d1bdf9ad79e92ef48224a29bcce",
+      "trackedTreeCleanAtBuild": true,
+      "workerSha256": "d05223bf4d44c84108a102ab62aa3bc9c5568f0c3ac2064c37be5cc65c64bc45",
+      "log": "/tmp/akipasa-4e71c62-independent-cloudflare.log"
+    },
+    "hostedCI": {
+      "sourceCommit": "4e71c62553b51d1bdf9ad79e92ef48224a29bcce",
+      "ordinaryPassed": 9,
+      "ordinaryFailed": 1,
+      "failedRun": "https://github.com/elguiriashing/akipasa/actions/runs/40929814529",
+      "cause": "Root-error harness hardcoded /home/agent Chrome executable; portable repair separately tested8cases without override. Not all CI green.",
+      "strictGate": "failure expected0/90"
     }
   },
   "limits": [
     "Working-tree fixtures are not exact-commit hosted evidence.",
     "No physical Android or live protected-role acceptance.",
-    "No route signoff, merge or deployment."
-  ]
+    "No route signoff, merge or deployment.",
+    "Actual screenshot review found light mobile search icon contrast; next candidate fixes it and retains screenshots from this run separately."
+  ],
+  "validatedSourceCommit": "4e71c62553b51d1bdf9ad79e92ef48224a29bcce"
 }

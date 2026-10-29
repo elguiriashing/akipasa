@@ -2,6 +2,102 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 29 October 2026 UTC.
 
+## Read-integrity repair batch validated — 29 October 2026 19:03 UTC
+
+Implemented and tested, ready for the next coordinated commit: business independent
+read recovery/known partial rows/unknown totals; mobile search glyph contrast;
+persistent fallback PNG evidence; portable root-error browser discovery; bounded
+behaviour ingestion and creator/Prestige collection validation. No dependency,
+provider, consent-default, permission, schema, XP or production-data change.
+
+Complete fresh `npm run check` PASSED2485 Vitest cases and configured checks/build.
+Integrated dashboard160 browser cases passed with real image decode/no unexpected
+requests/actions. Full affected public suite PASSED56 with no skips/failures:
+privacy/header20, expanded public-family18 and real missing-route/redirect18.
+Actual ES360 light header, ES390 light fallback and desktop business images were
+inspected. Earlier4e71 full433-pass/29-skip evidence stays archived separately.
+Root's default-runner script fix passed8 root-error states without a path override.
+
+Receipt: docs/receipts/AKIPASA_MAIN_READ_INTEGRITY_20261029.json. This working-tree
+validation must be followed by a commit, push, fresh exact-head CI and independent
+clean Cloudflare source-stamped packaging. Strict route audit remains intentionally
+red:90 in progress,13 excluded,0accepted. No merge/deployment; current Worker is
+still884dda44-e95d-4266-8ce1-d7a4de5c54db at100% on latest read-only readback.
+
+Next executable cycle after committing: inspect/apply separate reviewed Awards
+auth-before-validation patch and compact handover-button refinement, then test
+that new source. Do not apply them retroactively to this validated receipt. Root
+owns integration through20:00UTC; AkiPals stays paused and Tonight default-off.
+Physical Android, independent final reviewer and disposable protected-provider
+access remain genuine external acceptance blockers.
+
+## Combined repair validation — 29 October 2026 19:03 UTC
+
+Fresh full check PASSED2485 Vitest cases plus contract/format/lint/types,
+security/SQL/automation and optimized Next packaging. Failed original source-
+contract run is retained; the fresh final log is
+/tmp/akipasa-cycle3-combined-check-final.log. Actual-source integrated dashboard
+160 browser cases passed, including known/unknown data, canonical Retry, correct
+SVG MIME/decoded branding, no external requests/page errors/actions and both
+handover labels at44px minimum. Source/style hashes match the integrated files.
+
+Explicit disposable-fixture build passed. The56-case affected public suite is
+RUNNING in independent browser contexts: privacy/header20 have passed, expanded
+public captures and actual fallback18 are not yet reported complete. Exact log:
+/tmp/akipasa-cycle3-public-browser.log. Final rebuilt ES360 light screenshot was
+inspected: search glyph is readable and privacy trigger unobscured. New desktop
+business capture also inspected; route/reviewer/physical-device acceptance remains
+separate. Do not commit as fully browser validated until this run finishes.
+
+A separate reviewed Awards auth-before-validation patch and a content-sized
+handover-button refinement are preserved in isolated worktrees for the next cycle;
+they are NOT part of this tested source and must not be silently applied during
+current browser validation. No acceptance, merge or deployment.
+
+## Integrated repair candidate — 29 October 2026 18:50 UTC
+
+Committed/pushed baseline remains4e71c62553b51d1bdf9ad79e92ef48224a29bcce,
+draft PR#332. Its complete integrated browser run PASSED433 with29 explicit
+credential skips; all prior source hashes matched. Independently installed814
+locked packages and Cloudflare packaging passed with exact4e71 source stamp.
+Nine ordinary hosted workflows passed; tablet consumer fixture failed because
+its root-error harness used a machine-specific browser path. Other tablet jobs
+passed. Portable discovery repair passed8 actual cases without an override;
+new-head hosted verification remains required. Strict visual is still red0/90.
+
+Current UNCOMMITTED candidate integrates independently reviewed business-home
+unknown/read-failure recovery, retained healthy siblings and partial known rows;
+clipped handover-button repair; measured mobile search contrast and keyboard
+regression; persistent real fallback screenshots; portable test-browser discovery;
+bounded behaviour ingestion and two raw-count creator/Prestige guards. No schema,
+provider, billing, consent-default, permission, XP or production-data changes.
+New tests use the existing mandatory alias-aware suite; the dashboard browser
+matrix is registered in the existing tablet consumer fixture job with artifacts.
+
+Independent evidence: dashboard38 new+21 existing regressions and final stronger
+160 browser cases passed; root-integrated dashboard41 targeted cases passed.
+Behaviour18 new+8 personalisation and creator/Prestige45 isolated regressions
+passed; independent review found no blocking guard/authority changes. First combined check found one stale source-contract literal in business
+onboarding: its old contiguous condition omitted the new required read guard.
+The assertion now checks the complete guarded condition with normalized whitespace;
+all other onboarding assertions remain. Fresh full rerun is required; the failed
+run /tmp/akipasa-cycle3-combined-check.log is not counted green. A fixture-only desktop logo delivery limitation is being repaired
+and recaptured separately; it is not complete-shell visual acceptance.
+
+A second brief environment restart returned ready with all files intact. Preserve
+/workspace/akipasa-main-checkpoints/cycle3-integration and the isolated patches.
+Root remains integration owner through20:00UTC; other sessions must not advance
+the shared branch. AkiPals remains user-paused; Tonight remains default-off with
+last verified real future supply zero. Production Worker884dda44-e95d-4266-8ce1-
+d7a4de5c54db remains100% active on fresh read-only readback; public HTTPS identity
+is still403 from this environment. No merge or deployment.
+
+Exact next action: finish the combined check and fix actual failures; build with
+explicit localhost fixture variables, run privacy/header, fallback and expanded
+public-family browser suites, inspect real PNGs, then commit/push validated source
+and obtain fresh exact-head CI plus independent clean Cloudflare packaging.
+Reviewer/physical Android/disposable protected-provider acceptance remains open.
+
 ## Workspace recovered; main layout batch validated — 29 October 2026 18:20 UTC
 
 The original workspace was restored with all previously uncommitted sources intact.
