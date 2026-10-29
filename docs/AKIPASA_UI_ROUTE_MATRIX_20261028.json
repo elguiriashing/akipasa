@@ -275,8 +275,8 @@
     },
     "src/app/[locale]/events/[slug]/book/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared responsive booking presentation committed; real authenticated EN/ES phone/desktop/Android visual and functional acceptance still missing. Guest-only redirect captures do not count."
     },
     "src/app/[locale]/events/[slug]/page.tsx": {
       "scope": "consumer",
@@ -420,8 +420,8 @@
     },
     "src/app/[locale]/venues/[slug]/book/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared responsive booking presentation committed; real authenticated EN/ES phone/desktop/Android visual and functional acceptance still missing. Guest-only redirect captures do not count."
     },
     "src/app/[locale]/venues/[slug]/page.tsx": {
       "scope": "consumer",
