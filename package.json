@@ -30,14 +30,18 @@
     "test:passport-db": "node scripts/test-passport-database.mjs",
     "test:booking:browser": "node scripts/test-booking-browser.mjs",
     "test:pals": "vitest run --config vitest.pals.config.ts",
-    "test:pals:browser": "node scripts/test-pals-browser.mjs",
+    "test:pals:browser": "npm run pals:3d:bundle && node scripts/test-pals-browser.mjs && node scripts/test-pals-identity-browser.mjs",
     "test:spotlight:browser": "node scripts/test-spotlight-browser.mjs",
     "test:akisuite": "vitest run --config vitest.akisuite.config.ts",
     "postinstall": "node scripts/maplibre-attribution-patch.mjs",
     "test:onboarding:browser": "node scripts/test-onboarding-browser.mjs",
     "test:suite-navigation": "node --experimental-strip-types --test tests/suite-navigation.test.mjs",
     "test:operations-billing": "node --test tests/operations-identity-deletion.test.mjs tests/operations-billing-core.test.mjs tests/operations-billing-db.test.mjs && vitest run --config vitest.akisuite.config.ts tests/akisuite-operations-checkout.test.ts tests/akisuite-operations-schedule.test.ts tests/akisuite-operations-recovery.test.ts tests/akisuite-operations-identity.test.ts tests/akisuite-operations-migration-command.test.ts",
-    "test:funnel-deployment": "node scripts/build-funnel-deployment.mjs --check && node --test scripts/build-funnel-deployment.test.mjs && node scripts/test-funnel-phased.mjs"
+    "test:funnel-deployment": "node scripts/build-funnel-deployment.mjs --check && node --test scripts/build-funnel-deployment.test.mjs && node scripts/test-funnel-phased.mjs",
+    "pals:3d:bundle": "node scripts/build-pals-3d.mjs",
+    "predev": "npm run pals:3d:bundle",
+    "prebuild": "npm run pals:3d:bundle",
+    "prebuild:cloudflare": "npm run pals:3d:bundle"
   },
   "dependencies": {
     "@supabase/ssr": "0.7.0",
@@ -49,6 +53,7 @@
     "qrcode": "1.5.4",
     "react": "19.1.10",
     "react-dom": "19.1.10",
+    "three": "0.186.1",
     "zod": "3.25.28"
   },
   "devDependencies": {
