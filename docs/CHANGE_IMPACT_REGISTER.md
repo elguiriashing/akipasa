@@ -36,6 +36,15 @@
   Reconcile full AkiPasa redesign #326 before any production release. Data and
   branch rollback preserve previous avatar and legacy saves.
 
+## 2026-10-29 | Passport weekly exploration milestones without XP writes
+
+- **Before:** Existing Passport displays XP, stamps, achievements, enrolments and reward claims, but no optional weekly exploration checkpoint.
+- **Change (candidate):** Read the signed-in user's own accepted, venue-credential-backed check-ins over the current Europe/Madrid week and count distinct venues into 1- and 2-venue milestones. Implement EN/ES light/dark branded cards, sign-out/error states and no-pressure copy.
+- **Security:** The underlying `check_ins_own_read` RLS/SELECT privilege is already present. Explicit `profile_id=user.id` plus accepted/credential/date filters and bounded query. No new public visit data, new RLS, migration, server mutation, user-to-user location signal, XP or rewards.
+- **Dependencies:** Existing Passport UI and Supabase auth, no AkiHQ/AkiBusiness/Stripe/Resend/FCM changes. PR #326 modifies Passport visual styling; reconcile at release.
+- **Tests:** Unit DST, duplicate, cooldown, GPS-only and future timestamp exclusions; full CI and authenticated owner/other-account negative acceptance still required. Passing source checks is not live proof.
+- **Rollback:** Remove optional panel/read, leaving existing check-ins, rewards, Passport, XP and history untouched. No migration reversal.
+
 ## 2026-10-28 | Shared, gated Duermo/Coches launch-waitlist backend
 
 - **Before:** Consumers could see ostensibly usable accommodation/car listings while those products were still under development, without a credible verified signup flow.

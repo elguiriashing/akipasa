@@ -6,11 +6,11 @@ The approved AkiPals reset now has a self-hosted Three.js WebGL studio with two
 CC0 rigged Quaternius base models stored under public/pals/models, and original
 procedural 3D hair, outfits, bags, shoes and facial feature meshes. Characters
 are rotatable/zoomable; edits preview locally, then owner-validated appearance
-is saved only upon explicit Save into RLS-isolated pals*avatar_profiles.
+is saved only upon explicit Save into RLS-isolated pals_avatar_profiles.
 Built-in local Three.js runtime bundling occurs before dev, Next and Cloudflare
 builds. The preceding flat SVG character is no longer served by the /pals UI,
 although old game endpoints/data are retained solely for rollback and must be
-reconciled in a future retirement gate. The screenshot reference is a \_concept*,
+reconciled in a future retirement gate. The screenshot reference is a *concept*,
 not finished in-game art. Actual GLB/browser screenshots, perf, final morphs,
 RLS migration and AkiPasa redesign PR #326 integration remain prerequisites.
 No commercial unlocks, payments, public social presence, GPS sharing or maps
@@ -23,8 +23,8 @@ mascot/gacha RPG. The replacement private /pals studio offers validated, origina
 illustrated features, proportions and free clothes; no XP, equipment stats,
 sockets, loot boxes, care tasks, stories or game economies are part of the v2
 experience. This PR introduces owner-only RLS storage in
-public.pals_avatar_profiles; the additive migration must be reviewed/applied
-before feature testing. Legacy game saves stay untouched for rollback, not as a
+public.pals_avatar_profiles; the additive migration has been applied and RLS verified in Supabase;
+private authenticated browser acceptance remains a release prerequisite. Legacy game saves stay untouched for rollback, not as a
 v2 mechanic. No public avatar, social graph, real-time user location, heatmap,
 commercial item or payments are enabled. Future Where's Poppin' heatmaps must
 be crowd-aggregated; any identifiable presence requires separate adult-only,
@@ -32,6 +32,12 @@ explicit, short-lived consent with no exact stranger GPS sharing. Reconcile
 AkiPasa redesign PR #326, run all CI/browser/Android acceptance, and obtain
 explicit release approval. See docs/AKIPALS_IDENTITY_V2_20261028.md and draft
 PR #327.
+
+## 2026-10-29 | AkiPassport weekly venue-credential quest preview (candidate, not live)
+
+The existing Passport `progress` view gains two **optional, informational** weekly exploration milestones, based only on caller-owned accepted venue-credential check-ins in `public.check_ins`. The week uses Europe/Madrid Monday civil-time boundaries including DST, and distinct venue IDs prevent duplicate scans counting twice. GPS-only acceptance, duplicate/cooldown, invalid or future records are rejected. Browser data never creates XP, credits, badges, entitlements, vouchers, commercial rewards, public presence, email, push or tracking; the existing check-in/XP ledger remains the only source of authority. Venue credentials are not equivalent to signed rotating proofs or verified commercial spend. Existing `check_ins_own_read` RLS and authenticated SELECT were inspected; the query explicitly scopes to the session profile and limits reads.
+
+Source: `src/lib/aki-weekly-quests.ts`, `src/components/WeeklyQuestPanel.tsx`, `src/app/[locale]/passports/page.tsx`. Test: `tests/aki-weekly-quests.test.ts`; security/DB migration none, but real authenticated RLS/browser acceptance is outstanding. Reconcile Passport presentation work in draft consumer redesign PR #326. Rollback removes only the optional panel and its own-history read without touching existing progress. See `docs/AKIPASSPORT_WEEKLY_QUEST_PILOT_20261029.md` and issue #314.
 
 ## 2026-10-28 | Secure cross-product launch waitlist (staged, not activated)
 

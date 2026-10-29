@@ -4,11 +4,16 @@ import "@testing-library/jest-dom/vitest";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 
-const state = vi.hoisted(() => ({ failed: "", from: vi.fn() }));
+const state = vi.hoisted(() => ({
+  failed: "",
+  signedIn: true,
+  from: vi.fn(),
+  filters: vi.fn(),
+}));
 
 vi.mock("@/lib/auth", () => ({
   optionalUser: async () => ({
-    user: { id: "explorer" },
+    user: state.signedIn ? { id: "explorer" } : null,
     supabase: { from: state.from },
   }),
 }));
@@ -101,24 +106,35 @@ const rows: Record<string, unknown[]> = {
   passport_progress: [],
   passport_enrollments: [],
   reward_claims: [],
+  check_ins: [],
 };
 
 beforeEach(() => {
+  vi.clearAllMocks();
   state.failed = "";
+  state.signedIn = true;
   rows.xp_ledger = [{ delta: 40 }];
   rows.loyalty_ledger = [{ program_id: "program-1", delta: 2 }];
+  rows.check_ins = [];
   state.from.mockImplementation((table: string) => {
     const result = {
-      data: rows[table] || [],
+      data: state.failed === table ? null : rows[table] || [],
       error: state.failed === table ? { message: "private failure" } : null,
     };
+    const filter = (method: string, args: unknown[]) => {
+      state.filters(table, method, ...args);
+      return query;
+    };
     const query = {
-      select: () => query,
-      eq: () => query,
-      in: () => query,
-      lte: () => query,
-      gte: () => query,
-      order: () => query,
+      select: (...args: unknown[]) => filter("select", args),
+      eq: (...args: unknown[]) => filter("eq", args),
+      in: (...args: unknown[]) => filter("in", args),
+      not: (...args: unknown[]) => filter("not", args),
+      lt: (...args: unknown[]) => filter("lt", args),
+      lte: (...args: unknown[]) => filter("lte", args),
+      gte: (...args: unknown[]) => filter("gte", args),
+      order: (...args: unknown[]) => filter("order", args),
+      limit: (...args: unknown[]) => filter("limit", args),
       then: (resolve: (value: unknown) => unknown) =>
         Promise.resolve(result).then(resolve),
     };
@@ -194,4 +210,69 @@ it("preserves confirmed zero values and available actions", async () => {
   );
   expect(screen.getByRole("button", { name: "Start passport" })).toBeEnabled();
   expect(screen.getByText("Badge progress loaded")).toBeVisible();
+});
+
+it("bounds weekly history to the caller and accepted venue credentials", async () => {
+  await renderPage();
+
+  expect(state.filters).toHaveBeenCalledWith(
+    "check_ins",
+    "eq",
+    "profile_id",
+    "explorer",
+  );
+  expect(state.filters).toHaveBeenCalledWith(
+    "check_ins",
+    "eq",
+    "state",
+    "accepted",
+  );
+  expect(state.filters).toHaveBeenCalledWith(
+    "check_ins",
+    "not",
+    "credential_id",
+    "is",
+    null,
+  );
+  expect(state.filters).toHaveBeenCalledWith("check_ins", "limit", 100);
+  for (const boundary of ["gte", "lt"]) {
+    expect(state.filters).toHaveBeenCalledWith(
+      "check_ins",
+      boundary,
+      "created_at",
+      expect.any(String),
+    );
+  }
+  expect(screen.getAllByRole("progressbar")).toHaveLength(2);
+  expect(screen.getByTestId("passport-book")).toHaveAttribute("data-xp", "40");
+});
+
+it.each(["en", "es"] as const)(
+  "does not turn unavailable weekly history into false zero progress in %s",
+  async (locale) => {
+    state.failed = "check_ins";
+    await renderPage(locale);
+
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      locale === "es"
+        ? "Ahora mismo no podemos consultar tus check-ins."
+        : "Your check-ins can't be loaded right now.",
+    );
+    expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
+    expect(screen.queryByText("private failure")).not.toBeInTheDocument();
+    expect(screen.getByTestId("passport-book")).toHaveAttribute(
+      "data-xp",
+      "40",
+    );
+  },
+);
+
+it("never queries private weekly history while signed out", async () => {
+  state.signedIn = false;
+  await renderPage();
+
+  expect(state.from).not.toHaveBeenCalledWith("check_ins");
+  expect(
+    screen.getByText("Sign in to see your visits from this week."),
+  ).toBeVisible();
 });
