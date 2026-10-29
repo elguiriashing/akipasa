@@ -151,7 +151,11 @@
   border: 1px solid rgba(255, 155, 87, 0.34);
   border-radius: clamp(1.2rem, 3vw, 2rem);
   background:
-    radial-gradient(ellipse at 100% 0%, rgba(255, 130, 55, 0.22), transparent 52%),
+    radial-gradient(
+      ellipse at 100% 0%,
+      rgba(255, 130, 55, 0.22),
+      transparent 52%
+    ),
     linear-gradient(135deg, #20344c, #0e1728 85%);
   box-shadow: 0 22px 60px rgba(0, 0, 0, 0.16);
 }
@@ -281,7 +285,11 @@
 :global(html[data-theme="light"]) .privacyHero {
   border-color: rgba(183, 82, 23, 0.3);
   background:
-    radial-gradient(ellipse at 100% 0%, rgba(255, 141, 79, 0.19), transparent 52%),
+    radial-gradient(
+      ellipse at 100% 0%,
+      rgba(255, 141, 79, 0.19),
+      transparent 52%
+    ),
     #fff9f1;
 }
 :global(html[data-theme="light"]) .privacyHero h1 {
