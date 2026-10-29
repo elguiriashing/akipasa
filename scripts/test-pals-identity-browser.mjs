@@ -157,6 +157,21 @@ try {
   await expect(
     page.getByRole("heading", { name: /Looking like.*yourself/i }),
   ).toBeVisible();
+  // A real 3D renderer must load the alternate rig when the user changes body frame.
+  await page.getByRole("tab", { name: "Face" }).click();
+  const maleMesh = page.waitForResponse(
+    (response) =>
+      response.url().includes("/pals/models/akipals-base-male.glb") &&
+      response.status() === 200,
+  );
+  await page.getByLabel("Body frame").selectOption("masculine");
+  await maleMesh;
+  await expect(page.locator("#avatar-stage")).toHaveAttribute("data-ready", "true");
+  await page.getByRole("tab", { name: "Outfit" }).click();
+  await page.getByRole("button", { name: "Night out" }).click();
+  await expect(page.getByLabel("Top")).toHaveValue("jacket");
+  await expect(page.getByLabel("Bottoms")).toHaveValue("tailored");
+  await page.getByRole("tab", { name: "Hair" }).click();
   await page.getByLabel("Hairstyle").selectOption("bun");
   await expect(page.locator("#save")).toBeEnabled();
   await page.locator("#save").click();
@@ -165,6 +180,11 @@ try {
   );
   await page.reload();
   await expect(page.getByLabel("Hairstyle")).toHaveValue("bun");
+  await page.getByRole("tab", { name: "Face" }).click();
+  await expect(page.getByLabel("Body frame")).toHaveValue("masculine");
+  await page.getByRole("tab", { name: "Outfit" }).click();
+  await expect(page.getByLabel("Top")).toHaveValue("jacket");
+  await page.getByRole("tab", { name: "Hair" }).click();
   await page.getByLabel("Hairstyle").selectOption("buzz");
   await page.locator("#reset").click();
   await expect(page.getByLabel("Hairstyle")).toHaveValue("bun");
