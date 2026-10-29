@@ -1462,3 +1462,170 @@ html[data-theme="light"] .app-shell .pasa-conversion-status {
     white-space: normal;
   }
 }
+
+/* Owner-only operational cockpit. Reuse existing Workspace and role gates. */
+.app-shell .app-content[data-pasa-surface="operations"] .owner-console-page {
+  width: min(100%, 84rem);
+  min-width: 0;
+  padding-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
+}
+.app-shell .app-content[data-pasa-surface="operations"] .owner-console-page .owner-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(1.2rem, 4vw, 3rem);
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+  border: 1px solid rgba(255, 153, 88, 0.32);
+  border-radius: 1.75rem;
+  background:
+    radial-gradient(circle at 91% 4%, rgba(255, 131, 49, 0.26), transparent 48%),
+    linear-gradient(135deg, #1e2b42, #0c1726 85%);
+  color: #f8fafc;
+}
+.app-shell .owner-console-page .owner-command-kicker {
+  display: block;
+  color: #ffbe8c;
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.app-shell .owner-console-page .owner-hero h2 {
+  max-width: 17ch;
+  margin: 0.75rem 0;
+  color: #fff;
+  font-size: clamp(2rem, 5vw, 3.7rem);
+  line-height: 1.06;
+  letter-spacing: -0.055em;
+  overflow-wrap: anywhere;
+}
+.app-shell .owner-console-page .owner-hero p {
+  max-width: 56ch;
+  color: #dce5f0;
+  line-height: 1.6;
+}
+.app-shell .owner-console-page .owner-command-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+.app-shell .owner-console-page .owner-command-actions a {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.1rem;
+  border: 1px solid rgba(255, 179, 118, 0.55);
+  border-radius: 0.85rem;
+  color: #fff;
+  font-weight: 800;
+  text-decoration: none;
+}
+.app-shell .owner-console-page .owner-command-actions a:first-child {
+  background: #ff963f;
+  border-color: #ff963f;
+  color: #1b202d;
+}
+.app-shell .owner-console-page .owner-command-actions a:focus-visible,
+.app-shell .owner-console-page .owner-launch-grid a:focus-visible {
+  outline: 3px solid #ffbc82;
+  outline-offset: 4px;
+}
+.app-shell .owner-console-page .owner-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding: 0;
+  border: 0;
+}
+.app-shell .owner-console-page .owner-metric-grid > article {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.1rem;
+  background: var(--pasa-ui-panel);
+  color: var(--pasa-ui-text);
+}
+.app-shell .owner-console-page .owner-metric-grid strong {
+  font-size: clamp(1.5rem, 3vw, 2.3rem);
+  overflow-wrap: anywhere;
+}
+.app-shell .owner-console-page .owner-console-grid {
+  gap: 1rem;
+}
+.app-shell .owner-console-page .owner-console-grid > section {
+  min-width: 0;
+  padding: clamp(1.1rem, 2vw, 1.8rem);
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.35rem;
+  background: var(--pasa-ui-panel);
+  color: var(--pasa-ui-text);
+}
+.app-shell .owner-console-page .owner-launch-grid {
+  gap: 0.65rem;
+}
+.app-shell .owner-console-page .owner-launch-grid > a {
+  min-width: 0;
+  min-height: 56px;
+  padding: 0.85rem;
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 0.85rem;
+  background: var(--pasa-ui-elevated);
+  color: var(--pasa-ui-text);
+  overflow-wrap: anywhere;
+}
+.app-shell .owner-console-page .owner-agent-radar article,
+.app-shell .owner-console-page .owner-activity-stream article {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+html[data-theme="light"] .app-shell .app-content[data-pasa-surface="operations"] .owner-console-page .owner-hero {
+  border-color: rgba(173, 79, 24, 0.27);
+  background:
+    radial-gradient(circle at 90% 5%, rgba(255, 135, 60, 0.16), transparent 49%),
+    #fff8f0;
+  color: #17283a;
+}
+html[data-theme="light"] .app-shell .owner-console-page .owner-hero h2 {
+  color: #17283a;
+}
+html[data-theme="light"] .app-shell .owner-console-page .owner-hero p {
+  color: #43536a;
+}
+html[data-theme="light"] .app-shell .owner-console-page .owner-command-kicker {
+  color: #9d420a;
+}
+html[data-theme="light"] .app-shell .owner-console-page .owner-command-actions a:not(:first-child) {
+  color: #6f300a;
+  border-color: rgba(154, 69, 18, 0.45);
+}
+@media (max-width: 900px) {
+  .app-shell .owner-console-page .owner-metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .app-shell .owner-console-page .owner-console-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .app-shell .app-content[data-pasa-surface="operations"] .owner-console-page .owner-hero {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 1.4rem;
+  }
+  .app-shell .owner-console-page .owner-hero-orbit {
+    display: none;
+  }
+  .app-shell .owner-console-page .owner-command-actions a {
+    flex: 1 1 100%;
+  }
+  .app-shell .owner-console-page .owner-metric-grid > article:last-child {
+    grid-column: 1 / -1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell .owner-console-page .owner-hero-orbit i {
+    animation: none;
+  }
+}
