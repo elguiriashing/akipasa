@@ -1,5 +1,5 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { expect, test } from "@playwright/test";
+import { expect, test, type APIRequestContext } from "@playwright/test";
 
 type Entry = {
   scope: "consumer" | "operational" | "cross-product" | "other-product";
@@ -20,7 +20,7 @@ function concretePath(path: string, locale: "en" | "es") {
     .replace(/^src\/app\//, "/")
     .replace(/\/page\.tsx$/, "")
     .replace(/\[(?:id|slug|token|publicId)\]/g, "00000000-0000-4000-8000-000000000001");
-  return pathname === "/" ? "/" : pathname;
+  return pathname || "/";
 }
 
 type Result = {
@@ -34,7 +34,7 @@ type Result = {
 async function sweep(
   locale: "en" | "es",
   routes: typeof inScope,
-  request: Parameters<Parameters<typeof test>[2]>[0]["request"],
+  request: APIRequestContext,
 ): Promise<Result[]> {
   const receipts: Result[] = [];
   // Bound fixture-server pressure while checking the entire route inventory.
