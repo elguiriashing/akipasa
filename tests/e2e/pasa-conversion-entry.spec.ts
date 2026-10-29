@@ -16,7 +16,7 @@ const devices = [
 const sampleCode = "AKIPASA2026";
 
 for (const locale of ["en", "es"] as const) {
-  test(`${locale} conversion links preserve the product and reject invalid codes`, async ({
+  test(`${locale} conversion links reject invalid codes`, async ({
     request,
   }) => {
     const badCode = await request.get(`/${locale}/referrals?ref=bad%3Cscript%3E`);
@@ -32,9 +32,7 @@ for (const locale of ["en", "es"] as const) {
       business.url(),
     );
     expect(businessTarget.hostname).toBe("business.akipasa.com");
-    expect(businessTarget.pathname).toBe(
-      `/${locale}/business/memberships`,
-    );
+    expect(businessTarget.pathname).toBe(`/${locale}/business/memberships`);
 
     const duermo = await request.get(`/${locale}/duermo/memberships`, {
       maxRedirects: 0,
@@ -111,8 +109,7 @@ for (const locale of ["en", "es"] as const) {
             "data-theme",
             theme,
           );
-          const membershipScreenshot =
-            `test-results/pasa-membership-entry-${locale}-${device.name}-${theme}.png`;
+          const membershipScreenshot = `test-results/pasa-membership-entry-${locale}-${device.name}-${theme}.png`;
           mkdirSync("test-results", { recursive: true });
           await page.screenshot({
             path: membershipScreenshot,
@@ -132,10 +129,7 @@ for (const locale of ["en", "es"] as const) {
           expect(referral?.status()).toBe(200);
           if (ready) {
             expect(gate.status()).toBe(307);
-            const location = new URL(
-              gate.headers().location || "",
-              baseURL,
-            );
+            const location = new URL(gate.headers().location || "", baseURL);
             expect(location.pathname).toBe(`/${locale}/auth`);
             expect(location.searchParams.get("next")).toBe(referralPath);
             expect(new URL(page.url()).pathname).toBe(`/${locale}/auth`);
@@ -154,7 +148,9 @@ for (const locale of ["en", "es"] as const) {
             await expect(
               page.locator('.pasa-conversion-status[role="status"]'),
             ).toBeVisible();
-            await expect(page.locator(".pasa-referral-entry form")).toHaveCount(0);
+            await expect(page.locator(".pasa-referral-entry form")).toHaveCount(
+              0,
+            );
             await expect(page.locator(".app-content")).toHaveAttribute(
               "data-pasa-surface",
               "referral",
@@ -169,8 +165,7 @@ for (const locale of ["en", "es"] as const) {
             `Overflow: ${JSON.stringify(dimensions)}`,
           ).toBeLessThanOrEqual(2);
 
-          const referralScreenshot =
-            `test-results/pasa-referral-entry-${locale}-${device.name}-${theme}.png`;
+          const referralScreenshot = `test-results/pasa-referral-entry-${locale}-${device.name}-${theme}.png`;
           await page.screenshot({
             path: referralScreenshot,
             animations: "disabled",
