@@ -8,10 +8,17 @@ import {
 
 export const dynamic = "force-dynamic";
 
-function outcome(request: Request, status: string, locale: string) {
+function outcome(
+  request: Request,
+  status: string,
+  locale: string,
+  product?: string | null,
+) {
   const url = new URL("/waitlist/confirm", request.url);
   url.searchParams.set("status", status);
   url.searchParams.set("lang", locale === "en" ? "en" : "es");
+  if (product === "duermo" || product === "coches")
+    url.searchParams.set("product", product);
   return Response.redirect(url, 303);
 }
 
@@ -53,14 +60,16 @@ export async function POST(request: Request) {
   const entry = form.get("entry") ?? "";
   const token = form.get("token") ?? "";
   const locale = form.get("lang") ?? "es";
+  const requestedProduct = form.get("product");
   if (!/^[a-f0-9-]{36}$/i.test(entry) || !/^[a-f0-9]{64}$/i.test(token))
-    return outcome(request, "invalid", locale);
+    return outcome(request, "invalid", locale, requestedProduct);
 
   const url =
     process.env.LAUNCH_WAITLIST_SUPABASE_URL ||
     process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) return outcome(request, "unavailable", locale);
+  if (!url || !key)
+    return outcome(request, "unavailable", locale, requestedProduct);
   const db = createClient(url, key, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
@@ -81,7 +90,7 @@ export async function POST(request: Request) {
     )
     .maybeSingle();
 
-  if (error) return outcome(request, "unavailable", locale);
+  if (error) return outcome(request, "unavailable", locale, requestedProduct);
   if (data && process.env.LAUNCH_WAITLIST_FOUNDER_NOTICES_ENABLED === "true") {
     // Only the first successful atomic confirmation reaches this branch.
     // Mail failure must not roll back a person's verified consent or allow replay.
@@ -104,5 +113,13 @@ export async function POST(request: Request) {
       console.error("Verified launch signup founder notice key unavailable");
     }
   }
-  return outcome(request, data ? "confirmed" : "invalid", locale);
+  // Only the database row, not the submitted product hint, identifies a
+  // successful confirmation. A failed proof may use a vetted product hint
+  // solely to return the visitor to the appropriate public site.
+  return outcome(
+    request,
+    data ? "confirmed" : "invalid",
+    locale,
+    data ? data.product : requestedProduct,
+  );
 }
