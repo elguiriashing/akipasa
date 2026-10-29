@@ -136,6 +136,55 @@ function makeHair(a) {
   }
   return group;
 }
+
+/** Lightweight first-party sculptural facial overlays for the editable preview. */
+function makeFaceDetails(a) {
+  const face = new THREE.Group();
+  face.name = "Editable facial feature geometry";
+  const skin = material(SKINS[a.skin], .75);
+  const eyebrows = material(HAIR[a.hairColor], .85);
+  const whites = material("#fffaf3", .35);
+  const iris = material(EYES[a.eyeColor], .3);
+  const lips = material("#a35b5b", .74);
+  const shadow = material("#634b49", .87);
+  const eyeY = a.bodyStyle === "masculine" ? 1.699 : 1.656;
+  const noseY = eyeY - .045;
+  const mouthY = eyeY - .097;
+  const faceZ = .115;
+  const eyeSize = a.eyes === "wide" ? .020 : a.eyes === "almond" ? .011 : .016;
+  const browRaise = a.brows === "arched" ? .013 : 0;
+  const browWidth = a.brows === "bold" ? .006 : .004;
+  for(const side of [-1,1]){
+    // Eye socket, eye white, coloured iris and catchlight are separate lit volumes.
+    addEllipsoid(face,{x:side*.048,y:eyeY,z:faceZ,rx:.024,ry:eyeSize+.004,rz:.011,mat:shadow,details:18});
+    addEllipsoid(face,{x:side*.048,y:eyeY,z:faceZ+.009,rx:.021,ry:eyeSize,rz:.012,mat:whites,details:20});
+    addEllipsoid(face,{x:side*.048,y:eyeY,z:faceZ+.019,rx:.009,ry:.011,rz:.009,mat:iris,details:18});
+    addEllipsoid(face,{x:side*.046,y:eyeY+.005,z:faceZ+.027,rx:.003,ry:.003,rz:.003,mat:whites,details:10});
+    curve(face,[
+      [side*.028,eyeY+.041+browRaise,faceZ+.001],
+      [side*.048,eyeY+.046+browRaise*1.5,faceZ+.007],
+      [side*.071,eyeY+.035+browRaise,faceZ]
+    ],browWidth,eyebrows,12);
+    const earWidth = a.ears==="prominent"?.031:a.ears==="small"?.015:.023;
+    addEllipsoid(face,{x:side*.111,y:eyeY-.025,z:.006,rx:earWidth,ry:.033,rz:.018,mat:skin,details:18});
+  }
+  const nose = a.nose==="straight"?.019:a.nose==="button"?.013:.016;
+  addEllipsoid(face,{x:0,y:noseY,z:faceZ+.006,rx:nose,ry:.030,rz:.024,mat:skin,details:20});
+  addEllipsoid(face,{x:0,y:noseY-.024,z:faceZ+.019,rx:nose*1.22,ry:.014,rz:.019,mat:skin,details:16});
+  const smile = a.mouth==="smile" ? .012 : a.mouth==="grin" ? .020 : 0;
+  curve(face,[
+    [-.031,mouthY+smile,faceZ+.007],[0,mouthY,faceZ+.026],[.031,mouthY+smile,faceZ+.007]
+  ],a.mouth==="grin"?.006:.004,lips,14);
+  if(a.chin!=="soft"){
+    addEllipsoid(face,{x:0,y:mouthY-.038,z:faceZ-.007,rx:a.chin==="square"?.036:.023,ry:.022,rz:.009,mat:skin,details:16});
+  }
+  if(a.neck==="broad"||a.neck==="slim"){
+    const radius=a.neck==="broad"?.058:.038;
+    addEllipsoid(face,{x:0,y:1.476,z:0,rx:radius,ry:.053,rz:.047,mat:skin,details:20});
+  }
+  return face;
+}
+
 function makeWardrobe(a) {
   const group = new THREE.Group();
   group.name = "AkiPals original clothing";
@@ -230,6 +279,7 @@ function applyBaseColors(base,a){
     if(node.material?.userData?.akipalsMutable)node.material.dispose();
     node.material=material(c, /eyes/i.test(node.name) ? .22 : .78);
     node.material.userData.akipalsMutable=true;
+    node.visible = !/^(Eyes|Eyebrows|Face|Face\.001)$/i.test(node.name);
     node.castShadow=true;
     node.receiveShadow=true;
   });
@@ -293,7 +343,7 @@ function create(container) {
   const ring=new THREE.Mesh(new THREE.TorusGeometry(.76,.008,6,80),ringMat);
   ring.rotation.x=-Math.PI/2;ring.position.y=-.058;scene.add(ring);
   const root=new THREE.Group();scene.add(root);
-  let base=null,cloth=null,hair=null,loadNumber=0,active=true,raf=0;
+  let base=null,cloth=null,hair=null,faceDetails=null,loadNumber=0,active=true,raf=0;
   let faceType=null,previousStyle=null;
   const resize=()=>{
     if(!active)return;
@@ -328,9 +378,9 @@ function create(container) {
       }
       if(!active||number!==loadNumber)return;
       applyBaseColors(base,a);
-      clearGroup(cloth);clearGroup(hair);
-      cloth=makeWardrobe(a);hair=makeHair(a);
-      root.add(cloth,hair);
+      clearGroup(cloth);clearGroup(hair);clearGroup(faceDetails);
+      cloth=makeWardrobe(a);hair=makeHair(a);faceDetails=makeFaceDetails(a);
+      root.add(cloth,hair,faceDetails);
       const frameWidth= a.build==="broad"?1.1:a.build==="slim"?.91:1;
       root.scale.set(frameWidth*(a.shoulders==="wide"?1.04:a.shoulders==="narrow"?.95:1),
         a.height==="tall"?1.055:a.height==="short"?.94:1,frameWidth*.96);
@@ -359,7 +409,7 @@ function create(container) {
     get currentStyle(){return previousStyle},
     dispose(){
       active=false;cancelAnimationFrame(raf);observer.disconnect();controls.dispose();
-      clearGroup(cloth);clearGroup(hair);floor.geometry.dispose();ring.geometry.dispose();
+      clearGroup(cloth);clearGroup(hair);clearGroup(faceDetails);floor.geometry.dispose();ring.geometry.dispose();
       floor.material.dispose();ring.material.dispose();renderer.dispose();container.replaceChildren();
     }
   };
