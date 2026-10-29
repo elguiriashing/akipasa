@@ -1,0 +1,49 @@
+.panel {
+  position: relative;
+}
+
+.fullscreen:global(.map-panel) :global(.map-legend) {
+  top: var(--map-legend-top, 76px);
+}
+
+.unavailable {
+  position: absolute;
+  z-index: 3;
+  top: var(--map-notice-top, 132px);
+  left: 1rem;
+  width: min(24rem, calc(100% - 5rem));
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-soft);
+}
+
+.panel .unavailable {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: auto;
+  margin: 1rem;
+}
+
+.unavailable p {
+  margin: 0 0 0.75rem;
+  line-height: 1.5;
+}
+
+.unavailable button {
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--surface-alt);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.unavailable button:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+}

@@ -15,6 +15,7 @@ import {
   AuthEmailInput,
   AuthSubmitButton,
 } from "@/components/AuthFormControls";
+import styles from "./auth-surfaces.module.css";
 
 export default async function AuthPage({
   params,
@@ -85,7 +86,7 @@ export default async function AuthPage({
     query.error === "password-policy" || query.error === "signin";
   return (
     <main
-      className={`auth-page auth-product-theme ${isStayHost ? "auth-theme-stay" : isConduzcoHost ? "auth-theme-conduzco" : isBusinessHost ? "auth-theme-business" : "auth-theme-akipasa"}`}
+      className={`${styles.auth} auth-page auth-product-theme ${isStayHost ? "auth-theme-stay" : isConduzcoHost ? "auth-theme-conduzco" : isBusinessHost ? "auth-theme-business" : "auth-theme-akipasa"}`}
     >
       <section className="auth-intro">
         <div className="auth-intro-copy">

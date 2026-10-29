@@ -2,6 +2,59 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 29 October 2026 UTC.
 
+## Current recovery state — environment restored
+
+The retained environment is connected again. Local commits, all seventeen pending
+files and browser evidence survived. Before any new edits, the integration owner
+created `/workspace/akipasa-recovery-20261029-110809/`, containing `history.bundle`,
+`working-tree.patch`, `working-source.tgz` (including untracked source),
+`browser-evidence.tgz` and `status.txt`. Do not delete these until final source and
+evidence are safely published.
+
+Remote checkpoint and rental guard work through `2673ee37` was merged with the
+local implementation history as `9030a40e3097a015068d07f4c18282b2747a7eaa` and
+**successfully pushed**. This publishes implementation batch `2be54486` and the
+preserved profile/rental integrations; prior statements that those commits were
+not confirmed pushed describe the earlier outage, not the current state. The
+pending Auth, Map, second-pass Pals, coverage and receipt changes remain under
+validation and must not be described as committed or accepted yet.
+
+Actual inventory after reconciliation: **90 in progress, zero pending, thirteen
+excluded, zero accepted**. Alex remains final visual and physical Android reviewer.
+PR #332 stays draft. No production merge or deployment has occurred in this work.
+
+The first next action is to finish the restored Auth and Map browser checks,
+validate private Pals back/forward lifecycle recovery, then run a fresh full check
+and clean-source Cloudflare package. New MapLibre outage browser coverage joins
+the existing tablet workflow without replacing any prior check. The remote rental
+source test and profile website test now join mandatory configuration coverage.
+
+### Restored validation batch
+
+All 73 targeted production-built Chromium cases now pass, including the eight
+grouped EN/ES dark/light phone/desktop Auth cases with all four modes, errors,
+workspace-heading contrast, keyboard, default consent and return checks. Actual
+phone/light sign-in output was inspected directly: controls and the workspace
+heading are readable on the dark photo. No auth action or consent logic changed.
+
+Map recovery now passes sixteen actual MapLibre cases with controlled failure and
+tileless success, normal tab clicks, resize, expanded/collapsed legend, keyboard
+retry, camera/type/filter preservation and telemetry deduplication. Forty-eight
+captures and a source-hash manifest are retained; phone/dark outage and desktop/
+light were inspected. Component/native-map/theme and navigation regressions pass.
+
+Private Pals passes 126 focused tests, the complete identity browser matrix and
+fifteen retained legacy scenarios. Persisted-return simulation now reloads the
+server-gated document, restores the saved identity and discards unsaved local
+drafts rather than leaving a disposed canvas and stale Save control. Real device
+return and premium artwork acceptance are still outstanding.
+
+An isolated original-art experiment is assigned to `/workspace/akipasa-avatar-lab`
+while the primary candidate remains frozen for integration checks. It must not
+overwrite the candidate or be represented as accepted artwork. Final full check,
+full browser regression, hosted exact-head CI and clean-source Cloudflare package
+are next; the strict 90-route visual gate remains deliberately unfulfilled.
+
 ## Candidate and release hold
 
 - Repository: `elguiriashing/akipasa`; coordinated draft PR: [#332](https://github.com/elguiriashing/akipasa/pull/332).
@@ -39,7 +92,7 @@ The fourth original recoverable feature stream is Passport, not a separately evi
 - Actual master trigger `88fe029a-45e9-4ab2-a3cb-9dbf6417316c` runs `npm run build:cloudflare`, then `npx wrangler deploy --keep-vars`. **Merging master publishes production.** Non-master trigger `7d9586cd` uploads versions instead.
 - Prior retained versions include `f612c338-ed71-414f-b6a8-095f7d734d23` and `0e01401f-743c-4d15-9c4a-9ffc2ff49d99`. Retention is verified; rollback rehearsal is not.
 - Connected Supabase project `vhpbvcfkcteswlsdjrfl` aggregate at `2026-10-29T10:05:41.911681Z`: 9 events, 10 occurrences, 0 future occurrences and 0 future published/scheduled occurrences. No customer records were changed.
-- **Mapping uncertainty:** live discovery uses `https://akipasa.supabase.co` and hybrid mode; only the waitlist binding explicitly points to the queried project, named AkiPasa Development. Resolve that mapping before calling these production discovery counts. No Tonight binding appeared in inspected live settings. Keep the production gate off.
+- **Mapping resolved at 10:42 UTC:** unauthenticated requests to the live alias `/auth/v1/health` and `/rest/v1/` returned expected HTTP 401 with `sb-project-ref: vhpbvcfkcteswlsdjrfl`, matching the connected project despite its Development display name. Fresh production-source aggregate at `2026-10-29T10:42:57.020752Z` confirms 9 events, 10 occurrences and zero future or future published/scheduled occurrences. No credentials/customer rows were requested. Keep the production Tonight gate off.
 
 ## Active ownership and next work
 
@@ -105,16 +158,13 @@ and hosted receipts must be recorded after the run completes.
 - Evidence is under ignored `test-results/` directories, with hashes in new role
   and mobility manifests. These working-tree captures are not exact-head reviewer
   sign-off. Fresh hosted artifacts are required after commit.
-- Full integrated check log: `/tmp/akipasa-integrated-check.log`; broad browser log:
-  `/tmp/akipasa-e2e.log`. The full-check parent shell was temporarily paused with
-  `kill -STOP 34698` so its final Next build cannot overwrite `.next` while E2E
-  serves it. Resume with `kill -CONT 34698` immediately after that E2E run exits.
+- Superseded partial integrated check log: `/tmp/akipasa-integrated-check.log`; broad browser log: `/tmp/akipasa-e2e.log`. The first broad run finished **341 passed / 9 font-transport failures / 29 skipped**. All eight Duermo failures passed a fresh-worker retry; the tablet retry is pending. The partially completed full check was stopped after remote source advanced, before its build could overwrite the served `.next`. No validation process remains intentionally paused; new-head full validation is required.
 
 ### Remaining release blockers
 
 All 90 route sign-offs; Alex's visual and physical Android review; premium avatar
 art; protected real-authenticated/provider journeys; staging-only full-site
-acceptance; definitive production Supabase alias mapping; final exact-head CI and
+acceptance; verified local event supply; final exact-head CI and
 reproducible Cloudflare package. No merge/deploy is permitted while these remain.
 
 ## Prioritized continuation
@@ -123,7 +173,7 @@ reproducible Cloudflare package. No merge/deploy is permitted while these remain
 2. Complete mobility branding/presentation and business/venue workspace defects while preserving actions, access and cross-product boundaries.
 3. Validate root and both membership aliases using actual redirect behavior, locale and origin attribution.
 4. Improve and inspect actual AkiPals rendering; retain owner-only persistence and restore compatibility.
-5. Resolve production discovery provider mapping; improve honest Tonight supply recovery without enabling launch or creating fictional inventory.
+5. Preserve the verified production-source supply receipt; improve honest Tonight supply recovery without enabling launch or creating fictional inventory.
 6. Integrate scoped changes, update master/impact evidence, run focused suites and full check, capture actual source-labelled browser output and inspect it.
 7. Commit validated batches, push without force, update #330, inspect new-head hosted checks and continue remaining screen families.
 8. Obtain Alex's final visual and physical Android acceptance on the completed candidate. Keep every unreviewed route unaccepted. Run strict audit, staging/role/provider tests and reproducible Cloudflare packaging before ready/merge.
@@ -144,7 +194,6 @@ npm run release:pasa-audit
 ```
 
 The strict audit is expected to exit 2 until genuine acceptance exists. Inspect `/tmp/akipasa-baseline-check.log` for this session's initial validation, then run new-source checks after integration. Do not reset or overwrite another agent's work. No session persistence or background automation is claimed beyond actually running tool sessions.
-
 
 ## Environment-loss recovery checkpoint — 29 October 2026
 

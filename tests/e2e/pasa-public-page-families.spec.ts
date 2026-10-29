@@ -100,6 +100,21 @@ test.describe("AkiPasa shared public page-family visuals", () => {
               "data-theme",
               theme,
             );
+            if (path === "/akipals") {
+              await expect(
+                page.getByRole("heading", { level: 1, name: "AkiPals." }),
+              ).toHaveCSS("color", "rgb(255, 255, 255)");
+            }
+            if (path === "/auth") {
+              await expect(page.locator(".auth-focus-panel")).toHaveCSS(
+                "background-color",
+                "rgb(16, 27, 45)",
+              );
+              await expect(page.locator(".auth-form-head h2")).toHaveCSS(
+                "color",
+                "rgb(244, 247, 255)",
+              );
+            }
             if (path === "" && device.width <= 850) {
               const header = page.locator(".app-topbar-mobile");
               const ribbon = page.getByRole("complementary", {

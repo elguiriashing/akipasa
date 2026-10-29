@@ -77,6 +77,8 @@ jobs:
         run: node scripts/test-workspace-role-browser.mjs
       - name: Verify AkiCoches rental workspace
         run: node scripts/test-business-mobility-browser.mjs
+      - name: Verify real MapLibre outage and recovery
+        run: node scripts/test-map-availability-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -85,6 +87,7 @@ jobs:
             test-results/portal-home
             test-results/workspace-role-browser
             test-results/business-mobility
+            test-results/map-availability
           retention-days: 7
 
   tablet-layout-and-spotlight:

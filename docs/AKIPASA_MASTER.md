@@ -1,5 +1,46 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-29 | Readable auth and resilient map/private-avatar return
+
+Auth's cinematic photo previously retained navy form text in light mode. A
+route-local module now supplies opaque readable AkiPasa form surfaces, labels,
+tabs, inputs, recovery/consent links, notices and workspace heading. The separate
+product auth skins, existing Google readiness, default unchecked terms, server
+actions and safe next/mode routing remain unchanged. The public AkiPals entrance
+has explicit light title text over its fixed dark artwork. Actual built-source
+browser checks cover EN/ES, light/dark, 360/1440px, all four auth modes, errors,
+keyboard focus, contrast and return continuity.
+
+ProductionMap handles asynchronous MapLibre style/tile errors as unavailable,
+offers explicit localized retry and preserves the current camera/zoom, selected
+place type and filter URL. Retry does not duplicate map-open telemetry. Scoped
+measured tab/legend offsets prevent narrow-screen wrapped labels from covering
+controls or the outage panel; listeners/observers and old map instances are
+cleaned up. Real MapLibre tests use controlled 404 and tileless success fixtures,
+not live tile-provider acceptance. No provider URL, data ranking, location consent
+or venue/event authority changes.
+
+The private avatar document disables save/export before renderer disposal. A
+persisted pageshow reloads the server-gated document and caller-owned saved
+appearance, avoiding a disposed canvas with stale enabled controls or another
+account's old local draft. EN/ES copy tells members to save before leaving;
+unsaved local edits are discarded on return. Saved identities and wardrobe state
+are unchanged. Synthetic persisted-event tests verify fresh document/identity
+reads; they are not evidence of actual device BFCache eligibility. Art remains
+subject to Alex's premium visual review.
+
+## 2026-10-29 | Live Supabase source mapping and verified empty future supply
+
+Read-only provider verification resolved the earlier alias uncertainty:
+unauthenticated `/auth/v1/health` and `/rest/v1/` requests to the Worker-configured
+`https://akipasa.supabase.co` returned expected HTTP 401 and
+`sb-project-ref: vhpbvcfkcteswlsdjrfl`. This matches the connected Supabase project,
+despite its Development display name. The fresh aggregate at
+`2026-10-29T10:42:57.020752Z` confirms nine events, ten occurrences and zero future
+occurrences, including zero future published/scheduled occurrences. No credentials
+or customer records were requested or changed. Tonight's supply blocker is now
+verified against the actual configured source, and its production gate stays off.
+
 ## 2026-10-29 | Truthful private workspaces and continuous identity presentation
 
 The coordinated candidate now gives the existing private rental desk scoped

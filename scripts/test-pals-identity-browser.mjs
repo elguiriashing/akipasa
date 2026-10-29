@@ -138,6 +138,65 @@ const server = createServer(async (request, response) => {
     response.end(String(error));
   }
 });
+async function verifySyntheticPersistedReturn(page, locale, expectedLook) {
+  // Synthetic PageTransitionEvents deterministically exercise the persisted
+  // branch. This is not proof of actual BFCache eligibility or physical-device
+  // navigation. The resulting private-document and identity HTTP reads are real.
+  const documentResponse = page.waitForResponse(
+    (response) =>
+      new URL(response.url()).pathname === "/pals" &&
+      response.request().isNavigationRequest(),
+  );
+  const identityResponse = page.waitForResponse(
+    (response) =>
+      new URL(response.url()).pathname === "/pals/identity" &&
+      response.request().method() === "GET",
+  );
+  const disposed = await page.evaluate(() => {
+    window.dispatchEvent(
+      new PageTransitionEvent("pagehide", { persisted: true }),
+    );
+    const state = {
+      saveDisabled: document.querySelector("#save").disabled,
+      exportDisabled: document.querySelector("#download").disabled,
+      canvases: document.querySelectorAll("#avatar-stage canvas").length,
+    };
+    setTimeout(() => {
+      window.dispatchEvent(
+        new PageTransitionEvent("pageshow", { persisted: true }),
+      );
+    }, 0);
+    return state;
+  });
+  expect(disposed).toEqual({
+    saveDisabled: true,
+    exportDisabled: true,
+    canvases: 0,
+  });
+  expect((await documentResponse).status()).toBe(200);
+  const response = await identityResponse;
+  expect(response.status()).toBe(200);
+  expect((await response.json()).appearance).toMatchObject(expectedLook);
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-ready",
+    "true",
+    { timeout: 30000 },
+  );
+  await expect(
+    page.getByLabel(locale === "es" ? "Peinado" : "Hairstyle"),
+  ).toHaveValue(expectedLook.hair);
+  await expect(page.locator("#save")).toBeDisabled();
+  await expect(page.locator("#download")).toBeEnabled();
+  await expect(
+    page.getByText(
+      locale === "es"
+        ? "Guarda antes de salir de esta página. Los cambios sin guardar se descartan al volver."
+        : "Save before leaving this page. Unsaved edits are discarded when you return.",
+      { exact: true },
+    ),
+  ).toBeVisible();
+  expect(saved).toMatchObject(expectedLook);
+}
 try {
   await new Promise((resolveReady) =>
     server.listen(0, "127.0.0.1", resolveReady),
@@ -265,6 +324,13 @@ try {
     "data-ready",
     "true",
   );
+  await page.getByLabel("Hairstyle").selectOption("crop");
+  await expect(page.locator("#save")).toBeEnabled();
+  await verifySyntheticPersistedReturn(page, "en", {
+    hair: "bun",
+    bodyStyle: "masculine",
+    top: "jacket",
+  });
   for (const width of [320, 360, 390, 820, 1440]) {
     await page.setViewportSize({ width, height: 850 });
     await expect(page.locator("#avatar-stage canvas")).toBeVisible();
@@ -346,6 +412,15 @@ try {
   await expect(page.getByLabel("Parte superior", { exact: true })).toHaveValue(
     "sweater",
   );
+  await page.getByRole("tab", { name: "Pelo", exact: true }).click();
+  await page.getByLabel("Peinado").selectOption("buzz");
+  await expect(page.locator("#save")).toBeEnabled();
+  await verifySyntheticPersistedReturn(page, "es", {
+    hair: "bun",
+    bodyStyle: "masculine",
+    top: "sweater",
+  });
+  await page.getByRole("tab", { name: "Ropa", exact: true }).click();
   for (const width of [320, 360, 390, 820, 1440]) {
     await page.setViewportSize({ width, height: 850 });
     expect(
@@ -398,6 +473,43 @@ try {
     await android.evaluate(() => document.documentElement.scrollWidth),
   ).toBeLessThanOrEqual(390);
   await android.close();
+  // High-resolution actual stage renders make donor-face shading, fitted hair
+  // and neck joins reviewable independently of the full editor screenshots.
+  const art = await browser.newPage({
+    viewport: { width: 1440, height: 1000 },
+    deviceScaleFactor: 2,
+    reducedMotion: "reduce",
+  });
+  art.on("pageerror", (error) => failures.push(error.message));
+  await art.goto("http://127.0.0.1:" + port + "/pals");
+  await expect(art.locator("#avatar-stage")).toHaveAttribute(
+    "data-ready",
+    "true",
+    { timeout: 30000 },
+  );
+  for (const bodyStyle of ["feminine", "masculine"]) {
+    for (const skin of ["porcelain", "deep"]) {
+      await art.getByRole("tab", { name: "Face", exact: true }).click();
+      await art.getByLabel("Body frame").selectOption(bodyStyle);
+      const tone = art.locator(
+        `button[data-field="skin"][data-value="${skin}"]`,
+      );
+      await tone.click();
+      await expect(tone).toHaveAttribute("aria-pressed", "true");
+      await art.getByRole("tab", { name: "Hair", exact: true }).click();
+      for (const hair of ["buzz", "crop", "quiff", "bun"]) {
+        await art.getByLabel("Hairstyle").selectOption(hair);
+        await expect(art.locator("#avatar-stage")).toHaveAttribute(
+          "data-ready",
+          "true",
+        );
+        await art.locator("#avatar-stage canvas").screenshot({
+          path: resolve(outputDir, `art-${bodyStyle}-${skin}-${hair}.png`),
+        });
+      }
+    }
+  }
+  await art.close();
   if (failures.length)
     throw new Error("Client-side errors: " + failures.join("; "));
   console.log(

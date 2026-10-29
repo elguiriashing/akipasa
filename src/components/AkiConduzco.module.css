@@ -798,7 +798,11 @@
   border: 1px solid var(--rental-border);
   border-radius: clamp(1rem, 2.5vw, 1.9rem);
   background:
-    radial-gradient(ellipse at 100% 0%, rgba(239, 70, 89, 0.19), transparent 58%),
+    radial-gradient(
+      ellipse at 100% 0%,
+      rgba(239, 70, 89, 0.19),
+      transparent 58%
+    ),
     linear-gradient(130deg, #fff, #fff8f6);
   box-shadow: 0 24px 60px rgba(37, 23, 34, 0.09);
 }
@@ -916,7 +920,11 @@
 }
 :global(html[data-theme="dark"]) .businessHeader {
   background:
-    radial-gradient(ellipse at 100% 0%, rgba(239, 73, 99, 0.21), transparent 58%),
+    radial-gradient(
+      ellipse at 100% 0%,
+      rgba(239, 73, 99, 0.21),
+      transparent 58%
+    ),
     linear-gradient(130deg, #202d44, #131f33);
 }
 :global(html[data-theme="dark"]) .businessBack,

@@ -163,17 +163,49 @@ export function makeHair(a) {
     mat: main,
     details: 32,
   };
-  addEllipsoid(group, crown);
+  // A fitted scalp cap exposes the forehead. The former full ellipsoid
+  // extended down across the brows and read as a separate hat.
+  const scalp = new THREE.Mesh(
+    new THREE.SphereGeometry(
+      1,
+      32,
+      18,
+      0,
+      Math.PI * 2,
+      0,
+      a.hair === "buzz" ? 2.3 : 2.15,
+    ),
+    main,
+  );
+  scalp.name = "AkiPals fitted scalp cap";
+  scalp.position.set(crown.x, crown.y, crown.z);
+  scalp.scale.set(crown.rx, crown.ry, crown.rz);
+  scalp.castShadow = true;
+  scalp.receiveShadow = true;
+  group.add(scalp);
+  if (["buzz", "crop", "quiff"].includes(a.hair)) {
+    for (const side of [-1, 1])
+      addEllipsoid(group, {
+        x: side * 0.095,
+        y: 1.71,
+        z: -0.034,
+        rx: 0.016,
+        ry: 0.036,
+        rz: 0.07,
+        mat: main,
+      });
+  }
   // Each style is real 3D geometry with volume, not a sprite or SVG.
   switch (a.hair) {
     case "buzz":
       break;
     case "crop":
     case "quiff": {
-      const spikes = a.hair === "quiff" ? 13 : 9;
+      const spikes = a.hair === "quiff" ? 9 : 7;
       for (let i = 0; i < spikes; i++) {
         const x = -0.101 + (i / (spikes - 1)) * 0.202;
-        const lift = a.hair === "quiff" ? 0.026 : 0.006;
+        const sweep = Math.sin((i / (spikes - 1)) * Math.PI);
+        const lift = (a.hair === "quiff" ? 0.026 : 0.006) * sweep;
         curve(
           group,
           [
@@ -182,7 +214,7 @@ export function makeHair(a) {
             [x * 0.86 + 0.029, 1.754 + lift * 0.6, 0.105],
             [x + 0.018, 1.721, 0.113],
           ],
-          0.016 + 0.004 * (i % 3),
+          0.012 + 0.008 * sweep,
           i % 2 ? main : shine,
           14,
         );
@@ -420,7 +452,7 @@ export function makeWardrobe(a) {
     group,
     [
       [0, 1.485, 0.002],
-      [0, a.bodyStyle === "masculine" ? 1.64 : 1.58, 0.002],
+      [0, a.bodyStyle === "masculine" ? 1.592 : 1.58, 0.002],
     ],
     [neckRadius, neckRadius * 0.9],
     skin,
@@ -429,7 +461,9 @@ export function makeWardrobe(a) {
   // animation authoring; the character-creation studio does not display it.
   for (const side of [-1, 1]) {
     const puffy = a.top === "hoodie" || a.top === "sweater";
-    const shoulder = [side * 0.153, 1.434, 0.007];
+    // Start inside the chest so the swept sleeve's cap is buried, rather
+    // than leaving a V-shaped opening between the sleeve and collar line.
+    const shoulder = [side * 0.09, 1.42, 0.007];
     const upper = [side * 0.229, 1.393, 0.01];
     const elbow = [side * 0.285, 1.263, 0.017];
     const wrist = [side * 0.315, 1.09, 0.07];
@@ -824,6 +858,54 @@ export function prepareBase(base) {
   });
 }
 
+/** Rebuild smooth normals without welding UV/rig vertices. Recomputing normals
+ * independently at each duplicate seam destroys the donor's smooth cheek/jaw
+ * shading. Only the retained head triangles contribute; hidden body faces and
+ * separate eye/brow meshes must not influence the portrait. */
+function smoothHeadNormals(geometry) {
+  const position = geometry.getAttribute("position");
+  const normal = geometry.getAttribute("normal");
+  const indices = geometry.index.array;
+  const keys = new Map(),
+    sums = new Map();
+  const used = new Set(indices);
+  for (const index of used) {
+    const key = [
+      position.getX(index),
+      position.getY(index),
+      position.getZ(index),
+    ]
+      .map((value) => Math.round(value * 1e6))
+      .join(",");
+    keys.set(index, key);
+    if (!sums.has(key)) sums.set(key, new THREE.Vector3());
+  }
+  const a = new THREE.Vector3(),
+    b = new THREE.Vector3(),
+    c = new THREE.Vector3();
+  for (let offset = 0; offset < indices.length; offset += 3) {
+    const first = indices[offset],
+      second = indices[offset + 1],
+      third = indices[offset + 2];
+    a.fromBufferAttribute(position, first);
+    b.fromBufferAttribute(position, second);
+    c.fromBufferAttribute(position, third);
+    // The unnormalized cross product weights each face by its actual area.
+    b.sub(a).cross(c.sub(a));
+    for (const index of [first, second, third])
+      sums.get(keys.get(index)).add(b);
+  }
+  for (const sum of sums.values()) {
+    if (sum.lengthSq() < 1e-18) sum.set(0, -1, 0);
+    else sum.normalize();
+  }
+  for (const index of used) {
+    const sum = sums.get(keys.get(index));
+    normal.setXYZ(index, sum.x, sum.y, sum.z);
+  }
+  normal.needsUpdate = true;
+}
+
 /** Bounded local sculpt deformations; always start from the original vertex
  * positions so switching looks never accumulates distortion in the cached GLB. */
 export function applyBaseColors(base, a) {
@@ -893,6 +975,7 @@ export function applyBaseColors(base, a) {
     }
     position.needsUpdate = true;
     node.geometry.computeVertexNormals();
+    if (!eye && !brow) smoothHeadNormals(node.geometry);
     node.geometry.computeBoundingSphere();
   });
 }
@@ -1102,6 +1185,9 @@ function create(container) {
       cloth = makeWardrobe(a);
       hair = makeHair(a);
       faceDetails = makeFaceDetails(a);
+      // The masculine donor's jaw sits higher than the feminine donor. Bring
+      // it toward the common garment collar instead of stretching the neck.
+      head.position.y = 1.5 * (1 - 1.4) - (model === "male" ? 0.048 : 0);
       root.add(cloth);
       head.add(hair, faceDetails);
       const headWear = cloth.getObjectByName("AkiPals fitted headwear");

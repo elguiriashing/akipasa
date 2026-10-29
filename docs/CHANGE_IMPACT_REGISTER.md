@@ -1,5 +1,53 @@
 # Change Impact Register
 
+## 2026-10-29 | Auth contrast, MapLibre recovery and private avatar return
+
+- **Observed/requested:** Real captures exposed unreadable light-theme auth text
+  and AkiPals title. An actual MapLibre fixture proved narrow legend/tab overlap;
+  source inspection found missing asynchronous failure feedback. Synthetic
+  persisted pagehide/pageshow reproduced a disposed avatar canvas with stale
+  enabled Save before the lifecycle repair.
+- **Auth dependencies:** Localized auth page gains AkiPasa-only module scope;
+  sibling product themes, original mode/next links, Google gate, unchecked consent,
+  server form fields/actions and recovery handling stay intact. Explicit dark
+  panels and paired foregrounds remove photo-dependent contrast. The public
+  AkiPals title is corrected without changing its private entry gate.
+- **Map dependencies:** Existing camera, place-type state, query filters,
+  geolocation/telemetry policy and provider interfaces remain. Explicit retry
+  replaces one map instance, cleans listeners/observers, retains current camera
+  and avoids duplicate map-open recording. Measured offsets remain component-local.
+  Tests cover controlled style failure/recovery and do not certify live tile data.
+- **Private identity dependencies:** Persisted return reloads the authenticated
+  private page and caller-owned identity before editing. Saved schema/appearance
+  IDs, owner/RLS checks, wardrobe and export authority stay unchanged. Unsaved
+  local edits intentionally do not survive that return; user copy explains this.
+  No billing, production record, consent, XP or production configuration changes.
+- **Validated source:** Restored optimized Next build passed. All 73 targeted
+  production-built Chromium cases passed, including eight grouped EN/ES auth
+  contrast/state cases. Map component three cases, native/theme 57 cases and 16
+  actual MapLibre responsive outage/retry/resize cases passed; 48 captures were
+  retained and samples inspected. Pals 126 focused tests, full identity matrix
+  with 16 art captures and 15 retained legacy browser scenarios passed. Independent
+  Auth/Map/private-return review found no blocker. Final full check and clean-source
+  Cloudflare packaging remain separate pending integration gates.
+- **Coverage and rollback:** Added MapLibre browser harness to tablet CI with
+  artifacts, and registered the new website/rental guards in mandatory unit suites.
+  Exact-head hosted formatting failures in ledger, rental CSS and rental test were
+  corrected locally without changing checks. Source revert rolls back presentation
+  and lifecycle only; no schema migration or provider rollout is required.
+
+## 2026-10-29 | Resolve live event-supply source without production mutation
+
+The live Worker discovery alias `https://akipasa.supabase.co` returned the same
+`sb-project-ref` header as connected project `vhpbvcfkcteswlsdjrfl` on two safe,
+unauthenticated health/REST reads (HTTP 401 without an API key). The fresh aggregate
+at `2026-10-29T10:42:57.020752Z` confirms nine events, ten occurrences and zero
+future occurrences or future published/scheduled occurrences. This resolves the
+earlier project-name/alias uncertainty without inspecting customer rows, reading
+secrets, changing data or enabling Tonight. The gate remains off; real supply
+onboarding and cancellation/freshness review remain prerequisites for launch.
+No application, schema, billing, consent, role or deployment change in this probe.
+
 ## 2026-10-29 | Coordinated private-workspace, identity and supply repairs
 
 - **Current/requested:** Preserve functioning consumer/business journeys while

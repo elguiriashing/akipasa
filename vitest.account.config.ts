@@ -10,6 +10,7 @@ export default defineConfig({
       "tests/account-unavailable.test.tsx",
       "tests/account-collections-ui.test.tsx",
       "tests/account-passport-redirect.test.ts",
+      "tests/account-profile-website.test.ts",
       "tests/account-collection-catalogue.test.ts",
       "tests/passport-read-recovery.test.tsx",
     ],

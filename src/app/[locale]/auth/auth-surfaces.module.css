@@ -1,0 +1,84 @@
+/* The consumer login keeps dark artwork in both themes. Give its actual form
+   surfaces explicit paired colours; sibling product logins retain their skin. */
+.auth:global(.auth-theme-akipasa) {
+  --auth-ink: #f4f7ff;
+  --muted: #c8d2e3;
+  --line: rgba(233, 241, 255, 0.24);
+  color: #f4f7ff;
+}
+
+.auth:global(.auth-theme-akipasa) :global(.auth-focus-panel) {
+  padding: clamp(1.1rem, 3vw, 2rem);
+  border: 1px solid #53637b;
+  border-radius: 1.4rem;
+  background: #101b2d;
+  color: #f4f7ff;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.2);
+}
+
+.auth:global(.auth-theme-akipasa) :global(.auth-modes a) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: #d8e0ec;
+}
+
+.auth:global(.auth-theme-akipasa) :global(.auth-modes a.active),
+.auth:global(.auth-theme-akipasa) :global(.aki-workspace-picker h2),
+.auth:global(.auth-theme-akipasa) :global(.auth-form-head h2),
+.auth:global(.auth-theme-akipasa) :global(.auth-focus-panel label),
+.auth:global(.auth-theme-akipasa) :global(.consent-row span),
+.auth:global(.auth-theme-akipasa) :global(.auth-focus-panel small) {
+  color: #f4f7ff;
+}
+
+.auth:global(.auth-theme-akipasa) :global(.auth-form-head > span),
+.auth:global(.auth-theme-akipasa) :global(.auth-secondary a),
+.auth:global(.auth-theme-akipasa) :global(.auth-label-line a),
+.auth:global(.auth-theme-akipasa) :global(.consent-row a) {
+  color: #ffbd8b;
+}
+
+.auth:global(.auth-theme-akipasa) :global(.auth-divider) {
+  color: #c8d2e3;
+}
+
+.auth:global(.auth-theme-akipasa) input:not([type="checkbox"]) {
+  min-width: 0;
+  border: 1px solid #95a3b8;
+  border-radius: 0.65rem;
+  background: #f8fafc;
+  color: #15243a;
+  font-size: 1rem;
+}
+
+.auth:global(.auth-theme-akipasa) input::placeholder {
+  color: #526277;
+  opacity: 1;
+}
+
+.auth:global(.auth-theme-akipasa) :global(.google-button) {
+  border: 1px solid #95a3b8;
+  background: #f8fafc;
+  color: #15243a;
+}
+
+.auth:global(.auth-theme-akipasa) :global(.consent-row) {
+  align-items: center;
+  min-height: 44px;
+}
+
+.auth:global(.auth-theme-akipasa) input[type="checkbox"] {
+  accent-color: #ff8d49;
+}
+
+.auth:global(.auth-theme-akipasa) :global(.notice) {
+  border: 1px solid #c997ae;
+  background: #382239;
+  color: #ffe4ec;
+}
+
+.auth:global(.auth-theme-akipasa) :is(a, button, input):focus-visible {
+  outline: 3px solid #ffd0ab;
+  outline-offset: 3px;
+}

@@ -58,6 +58,61 @@ describe("AkiPals actual 3D geometry, independent of WebGL", () => {
       });
       expect(count).toBe(1);
     });
+    it(`keeps the ${frame} head smooth across duplicate UV/rig seams without welding geometry`, () => {
+      const base = character(frame);
+      let geometry;
+      base.traverse((node) => {
+        if (node.isMesh && /Superhero_/i.test(node.name))
+          geometry = node.geometry;
+      });
+      const retained = Array.from(geometry.index.array);
+      const preserved = Object.fromEntries(
+        ["skinIndex", "skinWeight", "uv"].map((name) => [
+          name,
+          Array.from(geometry.getAttribute(name).array),
+        ]),
+      );
+      for (const face of ["oval", "round", "angular"]) {
+        applyBaseColors(base, {
+          ...DEFAULT_APPEARANCE,
+          bodyStyle: frame === "male" ? "masculine" : "feminine",
+          face,
+        });
+        const position = geometry.getAttribute("position"),
+          normal = geometry.getAttribute("normal"),
+          groups = new Map();
+        let seams = 0;
+        for (const index of new Set(retained)) {
+          const key = [
+            position.getX(index),
+            position.getY(index),
+            position.getZ(index),
+          ]
+            .map((value) => Math.round(value * 1e6))
+            .join(",");
+          const value = [
+            normal.getX(index),
+            normal.getY(index),
+            normal.getZ(index),
+          ];
+          expect(value.every(Number.isFinite)).toBe(true);
+          expect(Math.hypot(...value)).toBeCloseTo(1, 5);
+          const other = groups.get(key);
+          if (other) {
+            expect(
+              value.reduce((sum, part, i) => sum + part * other[i], 0),
+            ).toBeGreaterThan(0.99999);
+            seams++;
+          } else groups.set(key, value);
+        }
+        expect(seams).toBeGreaterThan(50);
+        expect(Array.from(geometry.index.array)).toEqual(retained);
+        for (const name of Object.keys(preserved))
+          expect(Array.from(geometry.getAttribute(name).array)).toEqual(
+            preserved[name],
+          );
+      }
+    });
   }
   for (const [key, value, mesh] of [
     ["face", "round", /Superhero_/i],

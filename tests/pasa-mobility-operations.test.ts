@@ -22,7 +22,12 @@ describe("rental operations visual integration", () => {
     expect(page).toContain('data-pasa-operation="rental-mobility"');
     expect(page).toContain("{!companyError && (");
     expect(page).toContain("{company ? (");
-    for (const anchor of ["#overview", "#fleet", "#availability", "#bookings"]) {
+    for (const anchor of [
+      "#overview",
+      "#fleet",
+      "#availability",
+      "#bookings",
+    ]) {
       expect(page).toContain(`href="${anchor}"`);
     }
     expect(page).toContain('href="#setup"');

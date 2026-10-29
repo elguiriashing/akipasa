@@ -44,6 +44,8 @@ const SPANISH: Record<string, string> = {
   "3D could not render on this device.":
     "No se ha podido mostrar el personaje 3D en este dispositivo.",
   "Saved character loaded.": "Se ha cargado tu personaje guardado.",
+  "Save before leaving this page. Unsaved edits are discarded when you return.":
+    "Guarda antes de salir de esta página. Los cambios sin guardar se descartan al volver.",
   "Free starter character ready. Customise and save!":
     "Tu personaje inicial gratis está listo. ¡Personalízalo y guárdalo!",
   "3D runtime not loaded. Refresh to retry.":
@@ -354,7 +356,11 @@ area.addEventListener("akipals:error",event=>showError(event.detail?.message||"3
   message(data.saved?"Saved character loaded.":"Free starter character ready. Customise and save!");
  }catch(error){showError(error.message||"Could not load the character studio.")}
 })();
-window.addEventListener("pagehide",()=>stage?.dispose(),{once:true});
+window.addEventListener("pagehide",()=>{rendering=true;buttons();stage?.dispose()},{once:true});
+// A BFCache-restored document contains a disposed canvas and may belong to an
+// earlier account session. Re-enter through the server's private access gate;
+// restore only the saved identity, never a cached unsaved local draft.
+window.addEventListener("pageshow",event=>{if(event.persisted)window.location.reload()});
 })();
 `;
 export function identityPreviewHtml(
@@ -368,7 +374,7 @@ export function identityPreviewHtml(
 <main><p class="eyebrow">${t("AkiPals / Your digital self")}</p><h1>${t("Looking like")} <em>${t("yourself.")}</em></h1>
 <p class="lede">${t("Your very own 3D character for AkiPasa. Rotate your look, customize your features and mix streetwear pieces.")}</p>
 <div class="grid"><section class="panel stage" aria-label="${t("Your avatar preview")}"><h2>✦ ${t("Real 3D preview")}</h2><div id="avatar-stage" aria-label="${t("Rotatable 3D avatar")}"></div><div id="stage-error" hidden></div><div class="stage-caption"><div><strong>${t("One of one. Yours.")}</strong><small>${t("Drag to rotate, pinch to zoom")}</small></div><button class="rotate" id="rotate" type="button">⤾ 360°</button></div></section>
-<section class="panel editor"><h2>${t("Make it yours.")}</h2><p>${t("Edit your real 3D character, then save your outfit and look to your account.")}</p><div class="tabstrip" role="tablist" aria-label="${t("Avatar customization")}"><button class="tab" type="button" data-tab="Face" role="tab">${t("Face")}</button><button class="tab" type="button" data-tab="Hair" role="tab" aria-selected="true">${t("Hair")}</button><button class="tab" type="button" data-tab="Body" role="tab">${t("Body")}</button><button class="tab" type="button" data-tab="Outfit" role="tab">${t("Outfit")}</button><button class="tab" type="button" data-tab="Extras" role="tab">${t("Extras")}</button></div><div id="fields" tabindex="-1" aria-label="${t("Avatar editor controls")}"></div><div class="actions"><button id="save" type="button" class="primary" disabled>${t("Save my look")}</button><button id="reset" type="button" disabled>${t("Restore saved look")}</button><button id="download" type="button">↓ ${t("Export a 3D preview image")}</button><span id="status" role="status" aria-live="polite">${t("Loading your 3D character\u2026")}</span></div></section></div>
+<section class="panel editor"><h2>${t("Make it yours.")}</h2><p>${t("Edit your real 3D character, then save your outfit and look to your account.")}</p><p>${t("Save before leaving this page. Unsaved edits are discarded when you return.")}</p><div class="tabstrip" role="tablist" aria-label="${t("Avatar customization")}"><button class="tab" type="button" data-tab="Face" role="tab">${t("Face")}</button><button class="tab" type="button" data-tab="Hair" role="tab" aria-selected="true">${t("Hair")}</button><button class="tab" type="button" data-tab="Body" role="tab">${t("Body")}</button><button class="tab" type="button" data-tab="Outfit" role="tab">${t("Outfit")}</button><button class="tab" type="button" data-tab="Extras" role="tab">${t("Extras")}</button></div><div id="fields" tabindex="-1" aria-label="${t("Avatar editor controls")}"></div><div class="actions"><button id="save" type="button" class="primary" disabled>${t("Save my look")}</button><button id="reset" type="button" disabled>${t("Restore saved look")}</button><button id="download" type="button">↓ ${t("Export a 3D preview image")}</button><span id="status" role="status" aria-live="polite">${t("Loading your 3D character\u2026")}</span></div></section></div>
 <div class="notes"><div class="note"><strong>✧ ${t("Personal wardrobe")}</strong><p>${t("Free starter clothes now. Earned city drops and optional individually priced branded collections later. No paid randomness.")}</p></div><div class="note"><strong>◎ ${t("Places become memories")}</strong><p>${t("Future verified check-ins can unlock profile keepsakes and cosmetics, without combat stats or RPG mechanics.")}</p></div><div class="note"><strong>◉ ${t("Where's Poppin'?")}</strong><p>${t("Aggregate venue activity and separate optional social presence are future features. No location-sharing in this preview.")}</p></div></div>
 </main><footer>${t("Private AkiPals 3D studio \u00b7 CC0 character bases \u00b7 No payments \u00b7 No location sharing")}</footer>
 <script nonce="${nonce}" src="/pals/runtime/creator.min.js"></script><script nonce="${nonce}">window.AKI_AVATAR_TEXT=${JSON.stringify(locale === "es" ? SPANISH : {})};window.AKI_AVATAR_OPTIONS=${JSON.stringify(APPEARANCE_OPTIONS)};${CLIENT}</script></body></html>`;
