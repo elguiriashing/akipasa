@@ -47,4 +47,14 @@ describe("AkiPasa shared redesign system", () => {
       expect(page).toContain("spotlight-detail.css");
     }
   });
+
+  it("retains event-card styles and a separate sponsored class after consolidation", () => {
+    const card = source("src/components/EventCard.tsx");
+    expect(card).toContain("card pasa-event-card event-plan-card");
+    expect(card).toContain('result.event.sponsored ? " card-featured" : ""');
+    expect(source("src/app/globals.css")).toContain("aki-event-cards.css");
+    expect(source("src/app/aki-event-cards.css")).toContain(
+      "prefers-reduced-motion: reduce",
+    );
+  });
 });
