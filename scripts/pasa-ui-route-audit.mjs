@@ -40,7 +40,8 @@ if (missing.length || removed.length || invalid.length) {
 }
 // An accepted checkbox is not evidence. Require a reviewed source commit plus
 // links to actual screenshot and functional-test results before release.
-const evidenceUrl = /^https:\/\/github\.com\/elguiriashing\/akipasa\/(actions\/runs|pull)\/\d+/;
+const evidenceUrl =
+  /^https:\/\/github\.com\/elguiriashing\/akipasa\/(actions\/runs|pull)\/\d+/;
 const unsupportedAcceptance = expected.filter((name) => {
   const entry = inventory.routes[name];
   if (entry.status !== "accepted" || entry.scope === "other-product") {

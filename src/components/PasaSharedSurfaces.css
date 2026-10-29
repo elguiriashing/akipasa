@@ -31,11 +31,7 @@ html:not([data-theme="light"]) .app-shell .workspace-shell {
   border: 1px solid var(--pasa-ui-border);
   border-radius: 1.35rem;
   background:
-    radial-gradient(
-      circle at 0 0,
-      rgba(255, 125, 49, 0.13),
-      transparent 50%
-    ),
+    radial-gradient(circle at 0 0, rgba(255, 125, 49, 0.13), transparent 50%),
     var(--pasa-ui-glass);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.16);
 }
@@ -68,23 +64,27 @@ html:not([data-theme="light"]) .app-shell .workspace-shell {
   text-wrap: balance;
 }
 
-.app-shell .workspace-grid-system
+.app-shell
+  .workspace-grid-system
   :is(.workspace-page-heading, .workspace-section-heading)
   :is(h1, h2) {
   letter-spacing: -0.05em;
   line-height: 1.1;
 }
 
-.app-shell .workspace-grid-system
+.app-shell
+  .workspace-grid-system
   :is(.workspace-page-heading, .workspace-section-heading)
-  > div > span {
+  > div
+  > span {
   color: var(--pasa-ui-highlight);
   font-weight: 750;
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
 
-.app-shell .workspace-grid-system
+.app-shell
+  .workspace-grid-system
   :is(.workspace-page-heading, .workspace-section-heading)
   p {
   max-width: 66ch;
@@ -95,7 +95,8 @@ html:not([data-theme="light"]) .app-shell .workspace-shell {
   min-width: 0;
 }
 
-.app-shell .workspace-grid-system
+.app-shell
+  .workspace-grid-system
   :is(.workspace-empty, .account-control-card, .queue-card) {
   min-width: 0;
   border: 1px solid var(--pasa-ui-border);
@@ -103,7 +104,8 @@ html:not([data-theme="light"]) .app-shell .workspace-shell {
   background: var(--pasa-ui-panel);
 }
 
-.app-shell .account-workspace
+.app-shell
+  .account-workspace
   :is(.account-control-card, .account-next-step, .account-collection-card) {
   border-color: var(--pasa-ui-border);
   border-radius: 1.3rem;
@@ -114,7 +116,8 @@ html:not([data-theme="light"]) .app-shell .workspace-shell {
   min-width: 0;
 }
 
-.app-shell .account-workspace
+.app-shell
+  .account-workspace
   :is(.account-controls-page, .account-collection-page)
   :is(input, select, textarea) {
   min-height: 44px;
@@ -122,45 +125,47 @@ html:not([data-theme="light"]) .app-shell .workspace-shell {
   border-radius: 0.8rem;
 }
 
-.app-shell .account-workspace
+.app-shell
+  .account-workspace
   :is(.account-controls-page, .account-collection-page)
   :is(button, .button, summary):focus-visible {
   outline: 3px solid #ffb783;
   outline-offset: 3px;
 }
 
-.app-shell :is(.admin-workspace, .staff-workspace)
+.app-shell
+  :is(.admin-workspace, .staff-workspace)
   :is(.operations-hero, .staff-dashboard-hero) {
   border: 1px solid rgba(255, 145, 81, 0.3);
   border-radius: 1.6rem;
   background:
-    radial-gradient(
-      circle at 92% 2%,
-      rgba(255, 121, 39, 0.2),
-      transparent 47%
-    ),
+    radial-gradient(circle at 92% 2%, rgba(255, 121, 39, 0.2), transparent 47%),
     linear-gradient(135deg, #20273b, #101a2a 85%);
 }
 
-.app-shell :is(.admin-workspace, .staff-workspace)
+.app-shell
+  :is(.admin-workspace, .staff-workspace)
   :is(.staff-dashboard-task, .staff-dashboard-metric, .managed-row) {
   border-color: var(--pasa-ui-border);
   border-radius: 1.15rem;
 }
 
-.app-shell :is(.admin-workspace, .staff-workspace)
+.app-shell
+  :is(.admin-workspace, .staff-workspace)
   :is(.managed-row, .staff-dashboard-task) {
   background: var(--pasa-ui-panel);
 }
 
-.app-shell :is(.admin-workspace, .staff-workspace)
+.app-shell
+  :is(.admin-workspace, .staff-workspace)
   :is(.staff-dashboard-task, .managed-row):focus-within {
   outline: 2px solid #ffac78;
   outline-offset: 2px;
 }
 
 /* Cards and page headings shared by public legal and secondary pages. */
-.app-shell .app-content
+.app-shell
+  .app-content
   :is(.legal-page, .privacy-page, .terms-page, .photo-credits-page)
   :is(.panel, .card) {
   border: 1px solid var(--pasa-ui-border);
@@ -168,7 +173,8 @@ html:not([data-theme="light"]) .app-shell .workspace-shell {
   background: var(--pasa-ui-panel);
 }
 
-.app-shell .app-content
+.app-shell
+  .app-content
   :is(.legal-page, .privacy-page, .terms-page, .photo-credits-page)
   h1 {
   font-size: clamp(2.15rem, 5vw, 3.8rem);
@@ -181,7 +187,9 @@ html:not([data-theme="light"]) .app-shell .workspace-shell {
   flex-wrap: wrap;
 }
 
-.app-shell .spotlight-page :is(.event-spotlight-about, .venue-spotlight-information) {
+.app-shell
+  .spotlight-page
+  :is(.event-spotlight-about, .venue-spotlight-information) {
   border-color: var(--pasa-ui-border);
 }
 
@@ -195,7 +203,8 @@ html[data-theme="light"] .app-shell {
   --pasa-ui-highlight: #a9470e;
 }
 
-html[data-theme="light"] .app-shell
+html[data-theme="light"]
+  .app-shell
   :is(.admin-workspace, .staff-workspace)
   :is(.operations-hero, .staff-dashboard-hero) {
   background:

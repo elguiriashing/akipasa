@@ -10,14 +10,14 @@ All AkiPasa consumer pages use `AppShell` and its canonical `PasaBottomDock` (Ho
 
 ## Route review batches
 
-| Group | Where | Evidence needed |
-| --- | --- | --- |
-| Discovery and launch | Home, Map, Check-in, Community, Roadmap and root redirects | English and Spanish; 360/390px phone, 820px tablet, 1440px desktop; real populated and honest empty states; filter preservation, accessible controls and proper SEO |
-| Venue and event detail | Venues and events including booking subpages | Event time/price truthfulness, real images and claims; booking flow, direction actions, mobile bottom bar and browser back; isolated Spotlight six-viewport fixture |
-| Personal journeys | Login/recover, onboarding, Profile and all Account subpages | OAuth and redirect return, settings, consent and privacy, clear error states, no cross-tenant data, light/dark, Android WebView inset and touch targets |
-| Collectibles and social | Passport, Prestige subpages, AkiPals and Community creators | Existing awards and wardrobe state preserved; truthful private AkiPals gate; no fictitious Friends graph or private location exposure |
-| Operations | Admin, Staff, owner and business entry routes | Real role gates, support/moderation/claims/billing read and write permissions, tablet and desktop navigation, error states and auditability |
-| Shared entrypoints | Root, /roadmap, /hq-login, waitlist confirmation | Redirects, consent, correct product identity and operational safety |
+| Group                   | Where                                                       | Evidence needed                                                                                                                                                     |
+| ----------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Discovery and launch    | Home, Map, Check-in, Community, Roadmap and root redirects  | English and Spanish; 360/390px phone, 820px tablet, 1440px desktop; real populated and honest empty states; filter preservation, accessible controls and proper SEO |
+| Venue and event detail  | Venues and events including booking subpages                | Event time/price truthfulness, real images and claims; booking flow, direction actions, mobile bottom bar and browser back; isolated Spotlight six-viewport fixture |
+| Personal journeys       | Login/recover, onboarding, Profile and all Account subpages | OAuth and redirect return, settings, consent and privacy, clear error states, no cross-tenant data, light/dark, Android WebView inset and touch targets             |
+| Collectibles and social | Passport, Prestige subpages, AkiPals and Community creators | Existing awards and wardrobe state preserved; truthful private AkiPals gate; no fictitious Friends graph or private location exposure                               |
+| Operations              | Admin, Staff, owner and business entry routes               | Real role gates, support/moderation/claims/billing read and write permissions, tablet and desktop navigation, error states and auditability                         |
+| Shared entrypoints      | Root, /roadmap, /hq-login, waitlist confirmation            | Redirects, consent, correct product identity and operational safety                                                                                                 |
 
 ## Evidence requirements
 
