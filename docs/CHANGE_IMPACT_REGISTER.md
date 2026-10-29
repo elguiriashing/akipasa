@@ -3865,3 +3865,52 @@ cleanup/replacement and no-op readiness receive targeted regressions.
 - **Safety/rollback:** Source-only revert. No production deployment/data, hosted
   credentials, billing, SQL, claims, private identities, XP or owner-focus controls
   changed. Local schema remains a documented partial synthetic test fixture.
+
+## 2026-10-29 | Full-suite contrast findings and remaining consumer surfaces
+
+- **Actual failure:** Hosted1b9 public job123720880851 failed8 unchanged Passport
+  city-label contrast cases (429passed/29skipped); worst-case Málaga caption ratio
+  was4.418789976880062 vs required4.5. Narrower public captures had passed but did
+  not cover that conservative contrast check.49 retains the same affected color;
+  new white captions repair source rather than weakening any assertion.
+- **Account audit:**56 actual AppShell/AccountLayout captures found a nested
+  workspace token reset still supplied navy on remaining collections/bookings/
+  settings/privacy surfaces, plus destructive Remove text below4.5. Account-only
+  paired palette/danger variables address these, preserving every existing query,
+  action, auth, form, consent and permission contract. The maintained browser
+  harness now includes the actual shared shell and stronger contrast/focus checks;
+  its default complete matrix remains intact.
+- **Spotlight audit:** Existing28 tests passed, but16 opened lower-section
+  captures exposed dark-on-dark light-mode venue/event card text, uncued pressed
+  menu navigation and cropped portrait posters. Theme-paired surfaces, correct
+  event contain/venue cover fitting and pressed-state CSS repair those defects.
+  New browser cases inspect actual Info/Perks/menu/Coming up text, keyboard
+  selection and poster fitting without modifying any catalogue or booking logic.
+- **Boundaries:** No billing, role, private identity, consent state, XP, schema,
+  production configuration, deployment or accepted-route record changes. All
+  generated fixture identities/artwork remain explicitly synthetic/decorative.
+- **Validation:** Focused actual rendering, full Passport browser regression and
+  fresh complete check/exact-head CI are required; no acceptance is implied by
+  existing screenshot artifacts. Source-only rollback.
+
+The first full local Passport rerun passed59/63 combined cases but correctly
+failed four phone-caption checks at4.076893006072547: white text alone was not
+sufficient in the smaller card geometry. The photographic scrim is strengthened
+and the existing conservative4.5:1 check now evaluates every city caption,
+including wrapped names, instead of only the Málaga sample. No predicate or
+threshold is weakened; fresh full Passport proof remains required.
+
+Final isolated validation: full default Account browser312/312; full Passport
+browser25/25 with every-city contrast assertions; Spotlight44/44 with396
+computed samples (minimum5.46). Complete npm check passed2,556 tests before the
+final intrinsic Account row alignment adjustment;312Account cases passed after it.
+Fresh integrated check and hosted CI remain required after reconciling master.
+
+The integrated follow-up adds a separate synthetic two-section event to prove
+actual catalogue content and selected/unselected visual changes with keyboard
+and pointer input. Existing single-section visibility assertions remain intact.
+Tablet CI now uploads the already-generated Staff/Stay/Support upgrade screenshot
+directories; previously those three executed families were absent from artifacts.
+No test, assertion, timeout, permission or production workflow is removed.
+The acceptance document records the explicit Home/Login staged exception without
+waiving the strict coordinated overhaul gate.

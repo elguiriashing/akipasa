@@ -4,6 +4,20 @@
 
 **Current status:** work in progress. Ordinary GitHub workflows being green is not a substitute for this checklist. Never mark an unreviewed route accepted or merge solely to make the site appear updated.
 
+## Current release precedence — 29 October 2026
+
+Alex explicitly approved the bounded Home/Login first release in PR #333 after
+its six exact-head CI workflows passed. Candidate
+`e2b537962193fcfe7a40967a10b58551dc58f8e4` merged as
+`39cd9bb42fd858dd54bd9f0d9e79a0504b15a0f2` and automatically deployed as Worker
+`8199ce83-b416-42d1-9568-9dc167601b6a`. Public source identity and bilingual
+Home/Login reads were verified. Physical Android follow-up remains outstanding.
+
+This explicit staged exception applies only to that eight-path application
+batch. It does not accept other routes or waive the strict coordinated #332
+requirements below. Keep #332 draft until its actual source, review and device
+requirements are satisfied. Preserve the live batch when reconciling master.
+
 ## Shared visual contract
 
 All AkiPasa consumer pages use `AppShell` and its canonical `PasaBottomDock` (Home / Map / Check-in / Community / Profile), `LaunchRibbon` and global visual tokens. Authenticated Account, Admin and Staff subpages reuse the existing `WorkspaceShell` and `PasaSharedSurfaces.css` rather than copying new menus, navbars or cards per page. Event and venue details use the existing Spotlight templates and tracked actions. No change is allowed to check-in proof, rewards ledger, permission logic, billing, RLS, consent or age gates without separate verification.

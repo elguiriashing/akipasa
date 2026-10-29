@@ -124,6 +124,9 @@ jobs:
             test-results/map-availability
             test-results/staff-pagination
             test-results/admin-review
+            test-results/staff-ui-upgrades
+            test-results/stay-ui-upgrades
+            test-results/support-ui-upgrades
           retention-days: 7
 
   tablet-layout-and-spotlight:

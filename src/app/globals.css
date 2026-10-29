@@ -15396,13 +15396,13 @@ html.theme-light .akibusiness-host .akibusiness-claim-submit p {
   background: color-mix(in srgb, var(--surface-alt) 65%, transparent);
 }
 
-.public-catalogue-tab[aria-selected="true"] {
+.public-catalogue-tab:is([aria-selected="true"], [aria-pressed="true"]) {
   border-color: color-mix(in srgb, var(--accent) 38%, var(--line));
   background: color-mix(in srgb, var(--accent) 12%, var(--surface));
   color: var(--ink);
 }
 
-.public-catalogue-tab[aria-selected="true"] small {
+.public-catalogue-tab:is([aria-selected="true"], [aria-pressed="true"]) small {
   background: color-mix(in srgb, var(--accent) 22%, var(--surface-alt));
   color: var(--ink);
 }

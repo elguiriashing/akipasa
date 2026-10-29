@@ -3129,3 +3129,19 @@ Personal Account's navigation header and external privacy control use coherent
 paired consumer colors, with redundant lower padding reduced while retaining
 final dock/privacy clearance. Physical Passport paper search placeholders receive
 an explicit readable color; the app's brightness tokens remain inherited.
+
+## 2026-10-29 | Extended consumer contrast and detail-surface recovery
+
+The complete hosted browser suite exposed a real paper city-caption regression:
+cream foregrounds fell below4.5:1 against the conservative photograph/scrim bound.
+City captions now use white over a stronger photographic scrim; the original
+reload/contrast assertions are retained and cover every city caption.
+The full Passport browser file is required for this correction.
+
+Account-only workspace tokens now pair neutral dark/light surfaces and readable
+destructive text across collections, bookings and privacy tools. Other products
+and staff/business workspaces retain their existing tokens. Spotlight light-mode
+cards use a light surface with inherited dark text, instead of a dark gradient
+behind dark labels. Portrait event posters remain contained; venue photographs
+retain cover fitting. Catalogue pressed buttons receive the existing selected
+visual treatment without changing button semantics or actions.

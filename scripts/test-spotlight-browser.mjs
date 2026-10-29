@@ -72,6 +72,7 @@ const venues = [
     slug: "spotlight-long-name",
     name: "Espacio cultural y gastronómico de Málaga — programación, exposiciones y actividades para toda la familia",
   },
+  { ...baseVenue, id: uuid(50), slug: "spotlight-multi-menu-venue" },
 ];
 const occurrence = (id, status = "scheduled", overrides = {}) => ({
   id: uuid(id),
@@ -110,6 +111,14 @@ const baseEvent = {
 };
 const events = [
   baseEvent,
+  {
+    ...baseEvent,
+    id: uuid(52),
+    venue_id: uuid(50),
+    slug: "spotlight-multi-menu",
+    catalogue_section_ids: [uuid(201), uuid(202)],
+    event_occurrences: [occurrence(352)],
+  },
   {
     ...baseEvent,
     id: uuid(12),

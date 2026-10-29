@@ -103,10 +103,23 @@ html[data-theme="light"] .app-shell {
   box-shadow: 0 18px 55px rgba(0, 0, 0, 0.26);
 }
 
-.app-shell
-  .spotlight-page
-  :is(.event-spotlight-poster-image, .venue-spotlight-art img) {
+.app-shell .spotlight-page .venue-spotlight-art img {
   object-fit: cover;
+}
+
+.app-shell .spotlight-page .event-spotlight-poster-image {
+  object-fit: contain;
+}
+
+html[data-theme="light"] .app-shell .spotlight-page {
+  --spotlight-orange-text: #a8420a;
+}
+
+html[data-theme="light"]
+  .app-shell
+  .spotlight-page
+  :is(.event-spotlight-card, .venue-spotlight-card) {
+  background: var(--spotlight-surface);
 }
 
 .app-shell

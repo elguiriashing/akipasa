@@ -1167,7 +1167,7 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(180deg, #06132308, #061323e8 85%);
+  background: linear-gradient(180deg, #06132366, #061323ef 85%);
 }
 .cityThumb {
   z-index: -2;
@@ -2304,13 +2304,13 @@
 }
 /* Original city photographs are destinations, not fabricated earned stamps. */
 .page:not(:has(.cover)) .cityIndex button {
-  color: #fff8e9;
+  color: #fff;
   border: 3px double #d2b180;
   border-radius: 4px;
   box-shadow: 2px 3px 0 #7f57351a;
 }
 .page:not(:has(.cover)) .cityIndex small {
-  color: #f2e4ce;
+  color: #fff;
 }
 /* Paper belongs to the physical book interior; interface appearance tokens
    remain inherited from the selected app theme. */

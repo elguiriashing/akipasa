@@ -1,3 +1,4 @@
+import { writeFile } from "node:fs/promises";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 type Locale = "en" | "es";
@@ -629,4 +630,259 @@ test.describe("Spotlight public route acceptance", () => {
       await touchAction(venue.locator(".venue-spotlight-book"));
     }
   });
+  for (const locale of ["en", "es"] as const) {
+    for (const theme of ["light", "dark"] as const) {
+      for (const width of [360, 1440]) {
+        test(`multi-section catalogue ${locale} ${theme} ${width}`, async ({
+          page,
+        }, info) => {
+          await page.setViewportSize({ width, height: 900 });
+          await page.emulateMedia({ colorScheme: theme });
+          await page.addInitScript(
+            (value) => localStorage.setItem("akipasa.theme", value),
+            theme,
+          );
+          await page.goto(`/${locale}/events/spotlight-multi-menu`);
+          const root = page.locator("main.spotlight-event");
+          const menu = root.locator(".event-spotlight-menu");
+          await menu.locator(":scope > summary").click();
+          const sections = menu.locator(".public-catalogue-tab");
+          await expect(sections).toHaveCount(2);
+          const burgers = sections.nth(0);
+          const shakes = sections.nth(1);
+          await expect(burgers).toContainText("Burgers");
+          await expect(shakes).toContainText(
+            locale === "es" ? "Batidos" : "Shakes",
+          );
+          const burger = menu.getByText(
+            locale === "es" ? "Burger de prueba" : "Test burger",
+            { exact: true },
+          );
+          const shake = menu.getByText(
+            locale === "es" ? "Batido de vainilla" : "Vanilla shake",
+            { exact: true },
+          );
+          const styles = () =>
+            sections.evaluateAll((buttons) =>
+              buttons.map((button) => {
+                const style = getComputedStyle(button);
+                return {
+                  background: style.backgroundColor,
+                  border: style.borderTopColor,
+                  badge: getComputedStyle(button.querySelector("small")!)
+                    .backgroundColor,
+                };
+              }),
+            );
+          await expect(burgers).toHaveAttribute("aria-pressed", "true");
+          await expect(shakes).toHaveAttribute("aria-pressed", "false");
+          await expect(burger).toBeVisible();
+          await expect(shake).toHaveCount(0);
+          const initial = await styles();
+          expect(initial[0].background).not.toBe(initial[1].background);
+          expect(initial[0].border).not.toBe(initial[1].border);
+          expect(initial[0].badge).not.toBe(initial[1].badge);
+
+          await shakes.focus();
+          await page.keyboard.press("Enter");
+          await expect(shakes).toBeFocused();
+          await expect(shakes).toHaveAttribute("aria-pressed", "true");
+          await expect(burgers).toHaveAttribute("aria-pressed", "false");
+          await expect(shake).toBeVisible();
+          await expect(burger).toHaveCount(0);
+          const switched = await styles();
+          expect(switched).toEqual([initial[1], initial[0]]);
+          await fitsViewport(page, root, width);
+          await page.screenshot({
+            path: `test-results/spotlight-routes/multi-section-${locale}-${theme}-${width}.png`,
+            fullPage: true,
+            animations: "disabled",
+          });
+
+          await burgers.click();
+          await expect(burgers).toHaveAttribute("aria-pressed", "true");
+          await expect(shakes).toHaveAttribute("aria-pressed", "false");
+          await expect(burger).toBeVisible();
+          await expect(shake).toHaveCount(0);
+          expect(await styles()).toEqual(initial);
+          await expect(
+            menu.getByText(
+              /Hidden test item|Oculto de prueba|Empty section|Sección vacía/,
+            ),
+          ).toHaveCount(0);
+          await info.attach("catalogue-state-styles", {
+            body: JSON.stringify({ initial, switched }, null, 2),
+            contentType: "application/json",
+          });
+        });
+        for (const kind of ["venue", "event"] as const) {
+          test(`visual continuity ${locale} ${theme} ${width} ${kind}`, async ({
+            page,
+          }, info) => {
+            await page.setViewportSize({ width, height: 900 });
+            await page.emulateMedia({ colorScheme: theme });
+            await page.addInitScript(
+              (value) => localStorage.setItem("akipasa.theme", value),
+              theme,
+            );
+            await page.goto(
+              `/${locale}/${kind === "venue" ? "venues" : "events"}/${kind === "venue" ? fixture.venue.slug : fixture.event.slug}`,
+            );
+            const root = page.locator(`main.spotlight-${kind}`);
+            await expect(root).toBeVisible();
+            const contrastEvidence: Array<{
+              text?: string;
+              foreground: number[];
+              backgrounds: number[][];
+              ratios: number[];
+            }> = [];
+            const contrast = async (selector: string) => {
+              for (const item of await root.locator(selector).all()) {
+                if (!(await item.isVisible())) continue;
+                const result = await item.evaluate((element) => {
+                  const rgb = (value: string) => {
+                    const values = (value.match(/[\d.]+/g) || []).map(Number);
+                    return value.startsWith("color(srgb")
+                      ? values.map((v, index) => (index < 3 ? v * 255 : v))
+                      : values;
+                  };
+                  const foreground = rgb(getComputedStyle(element).color);
+                  let node: Element | null = element;
+                  let backgrounds: number[][] = [];
+                  while (node) {
+                    const style = getComputedStyle(node);
+                    const color = rgb(style.backgroundColor);
+                    if (style.backgroundImage.includes("gradient")) {
+                      backgrounds = (
+                        style.backgroundImage.match(/rgba?\([^)]+\)/g) || []
+                      )
+                        .map(rgb)
+                        .filter((c) => c.length === 3 || c[3] === 1);
+                      if (backgrounds.length) break;
+                    }
+                    if (color.length === 3 || color[3] === 1) {
+                      backgrounds = [color];
+                      break;
+                    }
+                    node = node.parentElement;
+                  }
+                  const luminance = (color: number[]) =>
+                    color
+                      .slice(0, 3)
+                      .map((v) => {
+                        const s = v / 255;
+                        return s <= 0.04045
+                          ? s / 12.92
+                          : ((s + 0.055) / 1.055) ** 2.4;
+                      })
+                      .reduce(
+                        (sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i],
+                        0,
+                      );
+                  const a = luminance(foreground);
+                  return {
+                    text: element.textContent?.trim(),
+                    foreground,
+                    backgrounds,
+                    ratios: backgrounds.map((bg) => {
+                      const b = luminance(bg);
+                      return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+                    }),
+                  };
+                });
+                contrastEvidence.push(result);
+                expect(
+                  result.ratios.length,
+                  JSON.stringify(result),
+                ).toBeGreaterThan(0);
+                for (const ratio of result.ratios)
+                  expect(ratio, JSON.stringify(result)).toBeGreaterThanOrEqual(
+                    4.5,
+                  );
+              }
+            };
+            await contrast(
+              kind === "event"
+                ? ".event-spotlight-summary h1, .event-spotlight-facts dt span, .event-spotlight-facts dd, .event-spotlight-facts dd small, .event-spotlight-host-copy > *, .event-spotlight-host-action"
+                : ".venue-spotlight-title h1, .venue-spotlight-location, .venue-spotlight-access, .venue-spotlight-section-heading h2, .venue-spotlight-event h3, .venue-spotlight-event p, .venue-spotlight-event-date",
+            );
+            if (kind === "venue") {
+              await root
+                .locator(".venue-spotlight-categories button")
+                .first()
+                .click();
+            } else {
+              const poster = root.locator(".event-spotlight-poster-image");
+              await expect(poster).toHaveCSS("object-fit", "contain");
+              expect(
+                await poster.evaluate(
+                  (img) =>
+                    (img as HTMLImageElement).naturalHeight /
+                    (img as HTMLImageElement).naturalWidth,
+                ),
+              ).toBeGreaterThan(1);
+              await root.locator(".event-spotlight-menu > summary").click();
+              const selected = root.locator(
+                '.public-catalogue-tab[aria-pressed="true"]',
+              );
+              await expect(selected).toHaveCount(1);
+              const state = await selected.evaluate((el) => ({
+                color: getComputedStyle(el).color,
+                background: getComputedStyle(el).backgroundColor,
+              }));
+              expect(state.background).not.toBe("rgba(0, 0, 0, 0)");
+              await selected.focus();
+              await page.keyboard.press("Enter");
+              await expect(selected).toBeFocused();
+              await expect(selected).toHaveAttribute("aria-pressed", "true");
+            }
+            await root
+              .locator(".public-catalogue-item-details summary")
+              .first()
+              .click();
+            await contrast(
+              ".public-catalogue-item-head strong, .public-catalogue-item-head p, .public-catalogue-price, .public-catalogue-section-head h3",
+            );
+            await fitsViewport(page, root, width);
+            await page.screenshot({
+              path: `test-results/spotlight-routes/continuity-${kind}-${locale}-${theme}-${width}-menu.png`,
+              fullPage: true,
+              animations: "disabled",
+            });
+            if (kind === "venue") {
+              for (const name of [
+                locale === "es" ? "Información" : "Information",
+                locale === "es" ? "Ventajas" : "Perks",
+              ]) {
+                const tab = root.getByRole("tab", { name, exact: true });
+                await tab.focus();
+                await page.keyboard.press("Enter");
+                await expect(tab).toHaveAttribute("aria-selected", "true");
+                await contrast(
+                  ".venue-spotlight-information h2, .venue-spotlight-description, .venue-spotlight-perks h2, .venue-spotlight-perk h3, .venue-spotlight-perk p",
+                );
+                await page.screenshot({
+                  path: `test-results/spotlight-routes/continuity-venue-${locale}-${theme}-${width}-${name}.png`,
+                  fullPage: true,
+                  animations: "disabled",
+                });
+              }
+            }
+            await writeFile(
+              `test-results/spotlight-routes/contrast-${kind}-${locale}-${theme}-${width}.json`,
+              JSON.stringify(contrastEvidence, null, 2),
+            );
+            await info.attach("computed-text-contrast", {
+              body: JSON.stringify(contrastEvidence, null, 2),
+              contentType: "application/json",
+            });
+            await info.attach("source-context", {
+              body: "Actual Next Spotlight routes; disposable local synthetic public data. No authenticated booking/RLS or physical-device acceptance.",
+              contentType: "text/plain",
+            });
+          });
+        }
+      }
+    }
+  }
 });

@@ -9,7 +9,9 @@ import { resolve, extname } from "node:path";
 // Real async page loaders, AccountLayout, client components and production CSS.
 // Only Auth/database reads, Next routing/request headers and server actions are disposable adapters.
 // This verifies UI behavior; it does not claim live authentication/payment acceptance.
-const directory = resolve("test-results/account");
+const directory = resolve(
+  process.env.ACCOUNT_BROWSER_EVIDENCE || "test-results/account",
+);
 mkdirSync(directory, { recursive: true });
 const routes = [
   "overview",
@@ -42,6 +44,7 @@ const entry = `
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import AccountLayout from '${accountRoot}/layout';
+import {AppShell} from './src/components/AppShell';
 import RewardsPage from '${accountRoot}/rewards/page';
 import {AkiSuiteMembershipGrid} from './src/components/AkiSuiteMembershipGrid';
 ${routeImports}
@@ -65,7 +68,7 @@ async function renderRoute(){
     const content=handoff?<main style={{padding:16}}><AkiSuiteMembershipGrid locale={locale} purchaseMode="account" checkoutReady={new URLSearchParams(location.search).get("ready")==="true"} originatingApp="akiduermo" /></main>:await page(props);
     const shell=handoff?content:await AccountLayout({...props,children:content});
     // Next preserves a shared localized layout across child-route navigation.
-    root.render(React.createElement(React.Fragment,{key:locale},shell));
+    root.render(handoff?shell:React.createElement(AppShell,{key:locale,locale,signedIn:true,role:"consumer"},shell));
     requestAnimationFrame(()=>requestAnimationFrame(()=>{window.__accountReady=true;window.__accountReadiness++}));
   }catch(error){
     if(error.redirect){window.__accountRedirect=error.redirect;root.render(<p data-testid="redirect">{error.redirect}</p>);window.__accountReady=true;return}
@@ -218,7 +221,11 @@ const server = createServer((request, response) => {
   } else if (pathname.startsWith("/api/")) {
     response.statusCode = 500;
     response.end(`Unexpected fixture API request: ${pathname}`);
-  } else if (/^\/(brand|pwa)\/[a-z0-9-]+\.(png|svg|webp)$/.test(pathname)) {
+  } else if (
+    /^\/(brand|pwa)\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_.-]+\.(png|svg|webp)$/.test(
+      pathname,
+    )
+  ) {
     const file = resolve("public", pathname.slice(1));
     response.setHeader(
       "Content-Type",
@@ -403,6 +410,76 @@ async function checkBounds(page, context) {
     return [...new Set(failures)];
   });
   expect(problems, context).toEqual([]);
+  await expect(page.locator(".app-shell .account-workspace")).toBeVisible();
+  const palette = await page
+    .locator(".account-workspace")
+    .evaluate((element) => ({
+      surface: getComputedStyle(element).getPropertyValue("--surface").trim(),
+      light: document.documentElement.dataset.theme === "light",
+    }));
+  expect(palette.surface, `${context}: actual Account palette`).toBe(
+    palette.light ? "#ffffff" : "#131619",
+  );
+  const contrast = await page
+    .locator(".account-collection-remove")
+    .evaluateAll((elements) => {
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = 1;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      const luminance = (color) => {
+        ctx.clearRect(0, 0, 1, 1);
+        ctx.fillStyle = color;
+        ctx.fillRect(0, 0, 1, 1);
+        const rgba = ctx.getImageData(0, 0, 1, 1).data;
+        return [0.2126, 0.7152, 0.0722].reduce((sum, weight, index) => {
+          const value = rgba[index] / 255;
+          return (
+            sum +
+            weight *
+              (value <= 0.04045
+                ? value / 12.92
+                : ((value + 0.055) / 1.055) ** 2.4)
+          );
+        }, 0);
+      };
+      return elements.map((element) => {
+        const ink = luminance(getComputedStyle(element).color);
+        const panel = luminance(
+          getComputedStyle(element.closest(".account-collection-card"))
+            .backgroundColor,
+        );
+        return (Math.max(ink, panel) + 0.05) / (Math.min(ink, panel) + 0.05);
+      });
+    });
+  for (const ratio of contrast)
+    expect(
+      ratio,
+      `${context}: destructive label contrast`,
+    ).toBeGreaterThanOrEqual(4.5);
+  const remove = page.locator(".account-collection-remove:enabled").last();
+  if (await remove.count()) {
+    await remove.scrollIntoViewIfNeeded();
+    expect(
+      await remove.evaluate((element) => {
+        const box = element.getBoundingClientRect();
+        return element.contains(
+          document.elementFromPoint(
+            box.x + box.width / 2,
+            box.y + box.height / 2,
+          ),
+        );
+      }),
+      `${context}: removal remains reachable`,
+    ).toBe(true);
+    await remove.focus();
+    await expect(remove).toBeFocused();
+    await page.keyboard.press("Shift+Tab");
+    expect(
+      await page.evaluate(() => document.activeElement?.tagName !== "BODY"),
+    ).toBe(true);
+    await resetScroll(page);
+  }
+
   const heading = await page.locator(".workspace-content h1").boundingBox();
   expect(
     heading.y,
@@ -663,9 +740,14 @@ try {
   const selectedFixtures = process.env.ACCOUNT_BROWSER_FIXTURES?.split(",");
   const sizes = selectedFixtures
     ? []
-    : process.env.ACCOUNT_BROWSER_SMOKE
-      ? [viewports[0], viewports[4]]
-      : viewports;
+    : process.env.ACCOUNT_BROWSER_REFERENCE_MATRIX
+      ? [
+          [360, 800],
+          [1440, 900],
+        ]
+      : process.env.ACCOUNT_BROWSER_SMOKE
+        ? [viewports[0], viewports[4]]
+        : viewports;
   for (const locale of ["en", "es"]) {
     for (const theme of ["light", "dark"]) {
       for (const [width, height] of sizes) {
