@@ -1,5 +1,30 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-29 | Autonomous coordinated-release control and current precedence
+
+The single candidate is draft PR #332 on `work/coordinated-release-20261029`.
+Original PRs #326, #327 and #328 are closed unmerged and superseded with history
+preserved; Passport milestones #329 merged separately. Older entries below that
+refer to those drafts, mascot/game presentation or manual-only deployment are
+historical, not current release authority. Humanlike private 3D identities are the
+approved AkiPals direction; saved identities, legacy saves and wardrobe ownership
+must remain protected. AkiHQ and independent AkiBusiness remain separate products.
+
+The mission ledger is `docs/AKIPASA_AUTONOMOUS_EXECUTION_LEDGER.md`. At takeover,
+the matrix has 103 routes: 84 in progress, six pending, 13 separate-product
+exclusions and zero accepted. Final visual and physical Android approval belongs
+to Alex; automated captures and emulation do not substitute for that review.
+The strict audit remains mandatory. Cloudflare's actual master build trigger
+automatically deploys, so a merge is production-impacting. Keep the combined
+candidate draft and unmerged until all release prerequisites are satisfied.
+
+The connected Supabase project's timestamped aggregate has zero future event
+occurrences, but its mapping to the live hybrid discovery alias remains unproven.
+Do not describe that aggregate as conclusively verifying production discovery.
+Tonight remains default off; no invented events, activity, XP or rewards may be
+used to remove the release hold. Provider mapping and real-role/device acceptance
+are tracked explicitly in the mission ledger.
+
 ## 2026-10-29 | Private AkiPals 3D character engine (no public launch)
 
 The approved AkiPals reset now has a self-hosted Three.js WebGL studio with two

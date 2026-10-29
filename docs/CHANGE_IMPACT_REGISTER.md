@@ -1,5 +1,28 @@
 # Change Impact Register
 
+## 2026-10-29 | Autonomous mission control and release-source reconciliation
+
+- **Requested/current:** Continue the single coordinated #332 candidate, not
+  competing #326/#327/#328 releases. Reconstructed source boundaries include
+  merged Passport #329; no separately evidenced original backend-agent remit is
+  invented. Starting head is `aa30aa9af0f9e0dbd5b47a07b3c6f9a9b8750d65`.
+- **Change:** Added the autonomous execution ledger with isolated agent ownership,
+  exact restart commands, provider readbacks, evidence limits and ordered next
+  tasks. Clarified current precedence in the master contract. No acceptance was
+  awarded, production flag enabled, provider data changed or deployment performed.
+- **Dependencies:** All consumer/operational/cross-product route families, EN/ES,
+  private avatars, Tonight supply, role and tenant acceptance, GitHub checks and
+  Cloudflare automatic master publication. Alex remains final visual/device
+  reviewer. The live Supabase discovery alias is not yet mapped conclusively to
+  the project queried for aggregate event supply.
+- **Evidence:** GitHub head/read-only checks: 15 success, one strict acceptance
+  failure, one skipped staging regression. Cloudflare active version remains
+  `884dda44-e95d-4266-8ce1-d7a4de5c54db`; actual master trigger deploys automatically.
+  Local clone and locked install passed; full candidate validation is running and
+  must be recorded after integration. Contract integrity check passed.
+- **Rollback:** Documentation-only source revert; preserve all historical receipts.
+  No API, SQL, auth, role, storage, billing, consent or customer-record change.
+
 ## 2026-10-29 | AkiPals actual 3D creator replacing flat avatar preview
 
 - **Changed:** Build imports pinned Three.js from local npm, exports a self-hosted
