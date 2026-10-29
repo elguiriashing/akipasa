@@ -231,215 +231,30 @@ function makeHair(a) {
 }
 
 /** Lightweight first-party sculptural facial overlays for the editable preview. */
+/** Natural face details complement the sculpted head and eye meshes. */
 function makeFaceDetails(a) {
-  const face = new THREE.Group();
-  face.name = "Editable facial feature geometry";
-  const skin = material(SKINS[a.skin], 0.75);
-  const eyebrows = material(HAIR[a.hairColor], 0.85);
-  const whites = material("#fffaf3", 0.35);
-  const iris = material(EYES[a.eyeColor], 0.3);
-  const lips = material("#a35b5b", 0.74);
-  const shadow = material("#634b49", 0.87);
-  const eyeY = a.bodyStyle === "masculine" ? 1.699 : 1.656;
-  const noseY = eyeY - 0.045;
-  const mouthY = eyeY - 0.097;
-  const faceZ = 0.115;
-  const eyeSize =
-    a.eyes === "wide" ? 0.02 : a.eyes === "almond" ? 0.011 : 0.016;
-  const browRaise = a.brows === "arched" ? 0.013 : 0;
-  const browWidth = a.brows === "bold" ? 0.006 : 0.004;
-  for (const side of [-1, 1]) {
-    // Eye socket, eye white, coloured iris and catchlight are separate lit volumes.
-    addEllipsoid(face, {
-      x: side * 0.048,
-      y: eyeY,
-      z: faceZ,
-      rx: 0.024,
-      ry: eyeSize + 0.004,
-      rz: 0.011,
-      mat: shadow,
-      details: 18,
-    });
-    addEllipsoid(face, {
-      x: side * 0.048,
-      y: eyeY,
-      z: faceZ + 0.009,
-      rx: 0.021,
-      ry: eyeSize,
-      rz: 0.012,
-      mat: whites,
-      details: 20,
-    });
-    addEllipsoid(face, {
-      x: side * 0.048,
-      y: eyeY,
-      z: faceZ + 0.019,
-      rx: 0.009,
-      ry: 0.011,
-      rz: 0.009,
-      mat: iris,
-      details: 18,
-    });
-    addEllipsoid(face, {
-      x: side * 0.046,
-      y: eyeY + 0.005,
-      z: faceZ + 0.027,
-      rx: 0.003,
-      ry: 0.003,
-      rz: 0.003,
-      mat: whites,
-      details: 10,
-    });
-    curve(
-      face,
-      [
-        [side * 0.028, eyeY + 0.041 + browRaise, faceZ + 0.001],
-        [side * 0.048, eyeY + 0.046 + browRaise * 1.5, faceZ + 0.007],
-        [side * 0.071, eyeY + 0.035 + browRaise, faceZ],
-      ],
-      browWidth,
-      eyebrows,
-      12,
-    );
-    const earWidth =
-      a.ears === "prominent" ? 0.031 : a.ears === "small" ? 0.015 : 0.023;
-    addEllipsoid(face, {
-      x: side * 0.111,
-      y: eyeY - 0.025,
-      z: 0.006,
-      rx: earWidth,
-      ry: 0.033,
-      rz: 0.018,
-      mat: skin,
-      details: 18,
-    });
-  }
-  const nose =
-    a.nose === "straight" ? 0.019 : a.nose === "button" ? 0.013 : 0.016;
-  addEllipsoid(face, {
-    x: 0,
-    y: noseY,
-    z: faceZ + 0.006,
-    rx: nose,
-    ry: 0.03,
-    rz: 0.024,
-    mat: skin,
-    details: 20,
+  const group = new THREE.Group();
+  const lips = material("#9c615c", 0.89);
+  const skin = material(SKINS[a.skin], 0.86);
+  const male = a.bodyStyle === "masculine";
+  const noseY = male ? 1.647 : 1.614;
+  const mouthY = male ? 1.615 : 1.573;
+  const front = 0.116;
+  const noseShape = a.nose === "straight" ? [0.009, 0.017] :
+    a.nose === "button" ? [0.016, 0.011] : [0.012, 0.013];
+  addEllipsoid(group,{
+    x:0,y:noseY,z:front,
+    rx:noseShape[0],ry:noseShape[1],rz:0.013,mat:skin,details:16
   });
-  addEllipsoid(face, {
-    x: 0,
-    y: noseY - 0.024,
-    z: faceZ + 0.019,
-    rx: nose * 1.22,
-    ry: 0.014,
-    rz: 0.019,
-    mat: skin,
-    details: 16,
-  });
-  const smile = a.mouth === "smile" ? 0.012 : a.mouth === "grin" ? 0.02 : 0;
-  curve(
-    face,
-    [
-      [-0.031, mouthY + smile, faceZ + 0.007],
-      [0, mouthY, faceZ + 0.026],
-      [0.031, mouthY + smile, faceZ + 0.007],
-    ],
-    a.mouth === "grin" ? 0.006 : 0.004,
-    lips,
-    14,
-  );
-  if (a.chin !== "soft") {
-    addEllipsoid(face, {
-      x: 0,
-      y: mouthY - 0.038,
-      z: faceZ - 0.007,
-      rx: a.chin === "square" ? 0.036 : 0.023,
-      ry: 0.022,
-      rz: 0.009,
-      mat: skin,
-      details: 16,
-    });
-  }
-  if (a.neck === "broad" || a.neck === "slim") {
-    const radius = a.neck === "broad" ? 0.058 : 0.038;
-    addEllipsoid(face, {
-      x: 0,
-      y: 1.476,
-      z: 0,
-      rx: radius,
-      ry: 0.053,
-      rz: 0.047,
-      mat: skin,
-      details: 20,
-    });
-  }
-  return face;
+  const smile = a.mouth === "neutral" ? 0.001 :
+    a.mouth === "grin" ? 0.010 : 0.006;
+  curve(group,[
+    [-0.022,mouthY+smile,front + 0.003],
+    [0,mouthY,front + 0.012],
+    [0.022,mouthY+smile,front + 0.003]
+  ],0.0022,lips,12);
+  return group;
 }
-
-/**
- * Rotate the neutral-model arm bones into a relaxed standing pose.
- * Applying a delta in world space (then converting back into parent-local
- * space) works for both mirrored Quaternius skeletons without hard-coding
- * their exported bone quaternions.
- */
-function poseArmature(base) {
-  base.updateWorldMatrix(true, true);
-  const rotateBoneTowards = (bone, next, target) => {
-    if (!bone || !next || !bone.parent) return;
-    base.updateWorldMatrix(true, true);
-    const from = bone.getWorldPosition(new THREE.Vector3());
-    const to = next.getWorldPosition(new THREE.Vector3()).sub(from);
-    if (to.lengthSq() < 0.00001) return;
-    const desired = target.clone().normalize();
-    const deltaWorld = new THREE.Quaternion().setFromUnitVectors(
-      to.normalize(), desired,
-    );
-    const parentWorld = bone.parent.getWorldQuaternion(new THREE.Quaternion());
-    const localDelta = parentWorld.clone().invert()
-      .multiply(deltaWorld).multiply(parentWorld);
-    bone.quaternion.premultiply(localDelta).normalize();
-    base.updateWorldMatrix(true, true);
-  };
-  for (const side of ["l", "r"]) {
-    const shoulder = base.getObjectByName("upperarm_" + side);
-    const elbow = base.getObjectByName("lowerarm_" + side);
-    const hand = base.getObjectByName("hand_" + side);
-    if (!shoulder || !elbow || !hand) continue;
-    const origin = shoulder.getWorldPosition(new THREE.Vector3());
-    const wrist = elbow.getWorldPosition(new THREE.Vector3());
-    const handed = wrist.x < origin.x ? -1 : 1;
-    // Drop the elbows instead of showing the source-pack's default T-pose.
-    rotateBoneTowards(shoulder, elbow, new THREE.Vector3(handed * 0.18, -0.96, 0.06));
-    // A subtle elbow bend brings the relaxed hands just forward of the hips.
-    rotateBoneTowards(elbow, hand, new THREE.Vector3(handed * 0.045, -0.96, 0.28));
-  }
-}
-
-/** Rounded, tapering real garment geometry without the inflated sphere torso. */
-function shirtTorso(parent, a, cloth) {
-  const r = a.top === "hoodie" ? 1.10 : a.top === "jacket" ? 1.07 : 1;
-  const silhouette = [
-    [0, 1.047],
-    [0.155 * r, 1.047],
-    [0.177 * r, 1.12],
-    [0.182 * r, 1.27],
-    [0.200 * r, 1.37],
-    [0.178 * r, 1.455],
-    [0.107 * r, 1.51],
-    [0, 1.51],
-  ];
-  const geometry = new THREE.LatheGeometry(
-    silhouette.map(([radius, y]) => new THREE.Vector2(radius, y)),
-    40,
-  );
-  const mesh = new THREE.Mesh(geometry, cloth);
-  mesh.scale.z = 0.73;
-  mesh.castShadow = true;
-  mesh.receiveShadow = true;
-  parent.add(mesh);
-  return mesh;
-}
-
 function makeWardrobe(a) {
   const group = new THREE.Group();
   group.name = "AkiPals original clothing";
@@ -475,43 +290,38 @@ function makeWardrobe(a) {
     mat: skin,
     details: 24,
   });
+  // Relaxed arms and hands. The old skinned base uses a T-pose for
+  // animation authoring; the character-creation studio does not display it.
   for (const side of [-1, 1]) {
-    const radius = a.top === "hoodie" || a.top === "sweater" ? 0.091 : 0.069;
-    segment(
-      group,
-      [side * 0.201, 1.444, 0],
-      [side * 0.357, 1.187, 0],
-      radius,
-      radius * 0.82,
-      textile,
-    );
+    const puffy = a.top === "hoodie" || a.top === "sweater";
+    const radius = puffy ? 0.082 : 0.066;
+    const shoulder = [side * 0.205, 1.436, 0.007];
+    const elbow = [side * 0.294, 1.268, 0.015];
+    const wrist = [side * 0.315, 1.090, 0.07];
+    addEllipsoid(group,{
+      x:side * 0.210,y:1.440,z:0.008,
+      rx:radius * 1.2,ry:radius * 1.2,rz:radius * 1.1,mat:textile
+    });
     if (a.top === "tee") {
-      segment(
-        group,
-        [side * 0.2, 1.444, 0],
-        [side * 0.272, 1.315, 0],
-        radius,
-        radius * 0.96,
-        textile,
-      );
-      segment(
-        group,
-        [side * 0.272, 1.315, 0],
-        [side * 0.357, 1.187, 0],
-        0.057,
-        0.048,
-        skin,
-      );
+      segment(group,shoulder,elbow,radius,radius * 0.88,textile);
+      segment(group,elbow,wrist,0.055,0.042,skin);
     } else {
-      segment(
-        group,
-        [side * 0.356, 1.192, 0],
-        [side * 0.366, 1.164, 0],
-        radius * 0.75,
-        radius * 0.79,
-        trim,
-      );
+      segment(group,shoulder,elbow,radius,radius * 0.94,textile);
+      segment(group,elbow,wrist,radius * 0.94,radius * 0.72,textile);
+      addEllipsoid(group,{
+        x:wrist[0],y:wrist[1] + 0.014,z:wrist[2],
+        rx:radius * 0.79,ry:0.024,rz:radius * 0.77,mat:trim
+      });
     }
+    addEllipsoid(group,{
+      x:side * 0.318,y:1.021,z:0.073,
+      rx:0.050,ry:0.086,rz:0.038,mat:skin,details:24
+    });
+    // Rounded thumb, angled inward for a friendly idle silhouette.
+    addEllipsoid(group,{
+      x:side * 0.270,y:1.055,z:0.091,
+      rx:0.025,ry:0.041,rz:0.029,mat:skin,details:18
+    });
   }
   if (a.top === "hoodie") {
     addEllipsoid(group, {
@@ -784,7 +594,16 @@ function applyBaseColors(base, a) {
     if (node.material?.userData?.akipalsMutable) node.material.dispose();
     node.material = material(c, /eyes/i.test(node.name) ? 0.22 : 0.78);
     node.material.userData.akipalsMutable = true;
-    node.visible = !/^(Eyes|Eyebrows|Face|Face\.001)$/i.test(node.name);
+    // Keep the original sculpted head, eyes and brows; suppress the uncostumed
+    // rigged T-pose beneath the first-party 3D clothes and hands.
+    const isBody = /Superhero_|Retopology/i.test(node.name);
+    if (isBody) {
+      node.material.clippingPlanes = [
+        new THREE.Plane(new THREE.Vector3(0, 1, 0), -1.50),
+      ];
+      node.material.clipShadows = true;
+    }
+    node.visible = true;
     node.castShadow = true;
     node.receiveShadow = true;
   });
@@ -828,6 +647,7 @@ function create(container) {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.42;
+  renderer.localClippingEnabled = true;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.setClearColor(0x000000, 0);
