@@ -205,8 +205,8 @@
     },
     "src/app/[locale]/business/early-partner/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "AkiPasa-branded responsive early-partner form skin and EN/ES business-host claim-query guest handoff tests committed. Not accepted: authorized claimant rendering, consent/feedback mutations, Premium grant, mobile/desktop/light-dark screenshot review and physical Android are outstanding."
     },
     "src/app/[locale]/business/memberships/page.tsx": {
       "scope": "operational",
