@@ -19,6 +19,24 @@ jobs:
       - run: npm ci
       - run: npm ci --prefix automation
       - run: npm run check
+      # The check above remains required and red on formatting failures.
+      # Capture exact Prettier suggestions without editing tracked source.
+      - name: Capture read-only formatting suggestions on failure
+        if: failure()
+        shell: bash
+        run: |
+          while IFS= read -r path; do
+            [ -n "$path" ] || continue
+            mkdir -p "test-results/format-review/$(dirname "$path")"
+            node node_modules/prettier/bin/prettier.cjs "$path" > "test-results/format-review/$path"
+          done < <(node node_modules/prettier/bin/prettier.cjs --list-different . || true)
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: prettier-source-suggestions
+          path: test-results/format-review
+          if-no-files-found: ignore
+          retention-days: 2
       - uses: actions/cache@v4
         with:
           path: .next/cache
