@@ -57,6 +57,7 @@ export function WorkspaceSelector({
         locale={locale}
         intensity="subtle"
         showControls={false}
+        showBrowseArrows
         currentId={current}
         getOptionHref={(option) => {
           const item = workspaces.find(

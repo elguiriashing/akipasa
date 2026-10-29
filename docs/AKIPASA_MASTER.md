@@ -2555,6 +2555,62 @@ Follow-up asset integration: `public/brand/pasa-2026-traced.svg` is a vector tra
 
 The new `PlansFirstHero.tsx` EN/ES copy prioritizes live music, plans with friends and nearby activities for a Spain-first young-adult audience; all category, search, pricing, event, authentication, consent and age rules remain unchanged. Full brand/retention direction is recorded in `docs/AKIPASA_BRAND_RETENTION_20261028.md`. This branch is rebased conceptually on already merged app-first PR #320; it supersedes conflicting PR #319. Require the same six hosted CI workflows, responsive/browser accessibility review and exact-source Cloudflare verification before production. Rollback: restore only the prior hero copy. No DB, bulk marketing, analytics activation or billing changes.
 
+## 2026-10-26 | Mouse dragging, corner arrows and branded login names
+
+The public login AkiSelector supports primary-button mouse dragging alongside
+touch/pen swipes. Cards follow a bounded horizontal pointer offset; capture
+starts only after 10px of horizontal intent, leaving ordinary clicks and
+vertical touch scrolling intact. Release outside the scene is supported. A
+45px horizontal release browses one enabled option, with wraparound; shorter
+drags snap back and suppress their compatibility click. Pointer cancellation
+and capture loss clear temporary offsets. Modified/right/middle clicks retain
+ordinary link behavior, and starting a later pointer/keyboard action clears the
+click guard. Native HTML link/image dragging is prevented within the scene.
+
+Two localized, keyboard-accessible 44px circular arrows sit in the lower scene
+corners. They browse in place without submitting, navigating or replacing the
+login form; the separate footer/caption stays hidden. Generic lab callers opt
+in via showBrowseArrows. Names use the individual product accent and self-hosted
+Poppins Semibold 600, with a dark label backing for legibility over effects.
+The Latin WOFF2 is vendored from @fontsource/poppins 5.3.0 with its SIL OFL;
+requests stay on the app's own origin. Existing startup/idle artwork, motion-off,
+reduced motion, EN/ES/referral-safe hrefs, current-product semantics, drafts and
+auth/session/role behavior remain. No API, database, billing, analytics, provider
+or native Android binary change.
+
+Shared React engine, adapter, CSS and font assets are copied across four Next
+apps; Business has an equivalent DOM adapter and matching assets. Business
+engine/adapter CSS v4, JS v5 and paid release cache v158 include the font and
+retain production assertions. Acceptance covers real mouse capture/release
+outside the scene, follow-pointer geometry, short-drag suppression, immediate
+subsequent clicks, arrows/wraparound/keyboard, touch and cancelled gestures,
+loaded font/brand colours and responsive label bounds. Regression evidence is
+recorded in the PR; exact-head CI and production verification gate release.
+Rollback restores source with fresh static cache/asset versions; no data rollback.
+
+Capture-transfer follow-up: descendant lostpointercapture events are ignored;
+only loss on the scene cancels its gesture. Mouse movement with no primary
+button held clears a pending gesture after an uncaptured outside release.
+Acceptance now uses real Chromium touch input originating on a card descendant,
+and covers outside vertical release followed by ordinary mouse hover.
+
+CI follow-up: wait for the selected card’s finite transition before taking the
+drag baseline. Account acceptance passed 310 cases; the initial selector check
+measured a still-easing card on a busy runner. The >20px movement requirement
+and real pointer input remain unchanged.
+
+## 2026-10-29 | Selector drag reconciliation with consumer product reset
+
+PR #299 mouse/touch drag, corner-arrow and local-font improvements are reconciled with current master without restoring the retired HQ/Business consumer choices. AkiPasa login still presents exactly AkiPasa, AkiDuermo and AkiCoches; authenticated business handoffs remain separate. The browser pointer helper receives the expected product list explicitly, preserving wraparound, movement, outside-release, touch and font assertions for the three-product chooser. Focused selector suites pass 20/20 locally; real browser and combined exact-head CI remain required. No auth, data, provider, billing or deployment changes. Rollback reverts the presentation/harness changes only.
+
+## 2026-10-28 | Verified launch waitlist founder notifications
+
+On the shared AkiPasa backend, after a first successful atomic `POST /api/launch-waitlist/confirm` token consumption, send one idempotency-keyed, HTML-escaped operational notification to alex@akipasa.com and andrew@akipasa.com through the canonical Resend account. Include product, verified identity/contact, location, audience, interest, separately opted-in marketing status, timestamp and id. Do not email founders on raw unverified submissions, honeypot hits, repeated or expired tokens, or registration lookups; this prevents anonymous inbox floods and ensures uniqueness. A failed notice is logged but does not reverse verified subscriber state or enable token replay. No tracking pixels, no mass mailing, no new public data API, no SQL/secret changes. Validate Resend mocked payload, HTML escaping, concurrent proof, CI and actual delivery on controlled test signup before considering external signup activation. Existing subscriber consent and service-role database access remain authoritative.
+
+## 2026-10-29 | Verified waitlist notice acceptance and launch boundary
+
+Founder notices require the exact server-only `LAUNCH_WAITLIST_FOUNDER_NOTICES_ENABLED=true` setting. Missing or malformed values leave existing email confirmation operational without sending founder mail. Tests are registered in `npm test` and exercise atomic proof consumption, expired/replayed proof, missing storage, malformed requests and provider rejection/timeout. Subscriber consent is never rolled back to retry a notice. Delivery is best effort after confirmation, not a durable outbox or a guaranteed delivery promise; gated-off or failed historical notices are not automatically replayed. The one-off self-editing preparation workflow is removed from the candidate. A controlled signup and actual provider delivery acceptance remain required before activation. No schema, billing, public data exposure or production configuration change. Cleanup tracker: #330.
+
 ## 2026-10-27 | Automation Worker Node CI security baseline
 
 The Automation Worker checks and its manually dispatched production deployment workflow use an explicit Node.js 22.23.4 runtime, rather than an unbounded 22.x selector. This addresses the October 2026 Node.js Brotli security baseline in GitHub Actions. Cloudflare Workers run in their own runtime; this change neither claims a Workers engine vulnerability nor modifies their production code or cron schedule. No production deployment is implied. Verify the complete AkiSuite build-runtime inventory, and reconcile the 23 and 26 October Cloudflare Cron incidents separately in issue #305. GitHub PR #304 tracks CI acceptance.
