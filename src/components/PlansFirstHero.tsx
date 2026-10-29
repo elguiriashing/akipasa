@@ -1,15 +1,19 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Locale } from "@/lib/config";
 import { planShortcutHref, type PlanShortcut } from "@/lib/plans-first";
 import { discoveryViewHref } from "@/lib/discovery-navigation";
+import { DiscoverySearchTrigger } from "./DiscoverySearchTrigger";
 import styles from "./PlansFirstHero.module.css";
 
 /** Social-plans hero: short ES/EN promise, existing search routes unchanged. */
 export function PlansFirstHero({
   locale,
   location,
+  imageUrl,
 }: {
   locale: Locale;
+  imageUrl?: string;
   location: {
     locality: string;
     name: string;
@@ -34,16 +38,25 @@ export function PlansFirstHero({
   });
   return (
     <section className={styles.hero} aria-labelledby="plans-first-title">
-      <p className={styles.kicker}>
-        {es ? "Tu ciudad tiene plan." : "Your city has plans."}
-      </p>
+      <div className={styles.media} aria-hidden="true">
+        <Image
+          src={imageUrl || "/images/akipasa/nightlife-editorial.webp"}
+          alt=""
+          fill
+          priority
+          unoptimized
+          sizes="(max-width: 640px) 100vw, 1100px"
+        />
+      </div>
+      <DiscoverySearchTrigger locale={locale} />
+      <p className={styles.kicker}>{location.name}</p>
       <h1 id="plans-first-title">
         {es ? "¿Qué hacemos hoy?" : "What are we doing today?"}
       </h1>
       <p className={styles.description}>
         {es
-          ? "Música en directo, planes con amigos y cosas nuevas por descubrir. Mira qué pasa hoy en tu zona, empezando por la Costa del Sol."
-          : "Live music, plans with friends and something new to discover. See what’s happening near you today, starting on the Costa del Sol."}
+          ? "Buena música. Nuevos lugares. Mejores momentos."
+          : "Good music. New places. Better moments."}
       </p>
       <nav
         className={styles.shortcuts}

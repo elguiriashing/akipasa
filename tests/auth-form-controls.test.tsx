@@ -98,3 +98,38 @@ it("uses account-private sign-in feedback and marks both credentials", async () 
     "auth-error",
   );
 });
+
+it("keeps Google readiness and consumer return/consent gates across visual auth modes", async () => {
+  const { config } = await import("@/lib/config");
+  const previous = config.googleAuthEnabled;
+  try {
+    for (const locale of ["en", "es"] as const) {
+      for (const enabled of [false, true]) {
+        config.googleAuthEnabled = enabled;
+        for (const mode of ["signin", "signup", "magic", "recover"]) {
+          const next = `/${locale}/account/profile`;
+          const { container, unmount } = render(
+            await AuthPage({
+              params: Promise.resolve({ locale }),
+              searchParams: Promise.resolve({ mode, next }),
+            }),
+          );
+          expect(container.querySelectorAll(".google-button")).toHaveLength(
+            enabled && (mode === "signin" || mode === "signup") ? 1 : 0,
+          );
+          for (const input of container.querySelectorAll<HTMLInputElement>(
+            'input[name="next"]',
+          ))
+            expect(input.value).toBe(next);
+          for (const checkbox of container.querySelectorAll<HTMLInputElement>(
+            'input[type="checkbox"]',
+          ))
+            expect(checkbox.checked).toBe(false);
+          unmount();
+        }
+      }
+    }
+  } finally {
+    config.googleAuthEnabled = previous;
+  }
+});

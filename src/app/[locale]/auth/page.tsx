@@ -1,3 +1,5 @@
+import { AuthBrand } from "@/components/AuthBrand";
+import styles from "./auth-surfaces.module.css";
 import { WorkspaceSelector } from "@/components/WorkspaceSelector";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
@@ -85,8 +87,11 @@ export default async function AuthPage({
     query.error === "password-policy" || query.error === "signin";
   return (
     <main
-      className={`auth-page auth-product-theme ${isStayHost ? "auth-theme-stay" : isConduzcoHost ? "auth-theme-conduzco" : isBusinessHost ? "auth-theme-business" : "auth-theme-akipasa"}`}
+      className={`${!isStayHost && !isConduzcoHost && !isBusinessHost ? styles.auth : ""} auth-page auth-product-theme ${isStayHost ? "auth-theme-stay" : isConduzcoHost ? "auth-theme-conduzco" : isBusinessHost ? "auth-theme-business" : "auth-theme-akipasa"}`}
     >
+      {!isStayHost && !isConduzcoHost && !isBusinessHost && (
+        <AuthBrand locale={locale} />
+      )}
       <section className="auth-intro">
         <div className="auth-intro-copy">
           {(isStayHost || isConduzcoHost) && (
