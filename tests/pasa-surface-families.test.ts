@@ -42,9 +42,9 @@ describe("one AkiPasa surface system for the full route matrix", () => {
 
   it("uses only one route-aware parent and shared stylesheet", () => {
     const shell = readFileSync("src/components/AppShell.tsx", "utf8");
-    const css = readFileSync("src/components/PasaSecondarySurfaces.css", "utf8");
+    const css = readFileSync("src/components/PasaSharedSurfaces.css", "utf8");
     expect(shell).toContain('data-pasa-surface={pasaSurfaceFamily(pathname)}');
-    expect(shell).toContain('import "./PasaSecondarySurfaces.css"');
+    expect(shell).toContain('import "./PasaSharedSurfaces.css"');
     expect(css).toContain('data-pasa-surface="booking"');
     expect(css).toContain('data-pasa-surface="operations"');
     expect(css).toContain('data-pasa-surface="creators"');
