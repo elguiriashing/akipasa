@@ -267,6 +267,9 @@ for (const locale of ["en", "es"] as const) {
             confirmationForm.locator('input[name="lang"]'),
           ).toHaveValue(locale);
           await expect(
+            confirmationForm.locator('input[name="product"]'),
+          ).toHaveValue(waitlistProduct);
+          await expect(
             page.getByRole("link", {
               name:
                 locale === "es" ? "Volver a la web" : "Back to the website",
