@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
 
 type RouteRecord = {
@@ -12,7 +12,7 @@ const manifest = JSON.parse(
 
 const privateRoutes = Object.keys(manifest.routes)
   .filter((path) =>
-    /^src\/app\/\[locale\]\/(account|admin|staff)(?:\/.*)?\/page\.tsx$/.test(
+    /^src\/app\/\[locale\]\/(account|admin|staff|owner)(?:\/.*)?\/page\.tsx$/.test(
       path,
     ),
   )
@@ -26,7 +26,7 @@ const privateRoutes = Object.keys(manifest.routes)
 
 test.describe("AkiPasa private route matrix", () => {
   for (const locale of ["en", "es"] as const) {
-    test(`all ${locale} account, admin and staff pages enforce guest sign-in`, async ({
+    test(`all ${locale} account, admin, staff and owner pages enforce guest sign-in`, async ({
       request,
     }) => {
       test.setTimeout(180_000);
@@ -78,3 +78,92 @@ test.describe("AkiPasa private route matrix", () => {
     });
   }
 });
+
+const ownerDevices = [
+  { name: "phone-360", width: 360, height: 800, android: false },
+  { name: "tablet-820", width: 820, height: 1024, android: false },
+  { name: "desktop-1440", width: 1440, height: 900, android: false },
+  { name: "android-emulated", width: 390, height: 844, android: true },
+] as const;
+
+for (const locale of ["en", "es"] as const) {
+  for (const device of ownerDevices) {
+    for (const theme of ["light", "dark"] as const) {
+      test(`${locale} protected owner guest entry ${device.name}/${theme}`, async ({
+        browser,
+      }) => {
+        const baseURL =
+          process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:3100";
+        const context = await browser.newContext({
+          baseURL,
+          viewport: { width: device.width, height: device.height },
+          colorScheme: theme,
+          reducedMotion: "reduce",
+          ...(device.android
+            ? {
+                isMobile: true,
+                hasTouch: true,
+                deviceScaleFactor: 2.75,
+                userAgent:
+                  "Mozilla/5.0 (Linux; Android 14; Pixel 7; wv) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36",
+              }
+            : {}),
+        });
+        try {
+          const path = `/${locale}/owner`;
+          const gate = await context.request.get(path, { maxRedirects: 0 });
+          expect([303, 307]).toContain(gate.status());
+          const signIn = new URL(gate.headers().location || "", baseURL);
+          expect(signIn.origin).toBe(new URL(baseURL).origin);
+          expect(signIn.pathname).toBe(`/${locale}/auth`);
+          expect(signIn.searchParams.get("next")).toBe(path);
+          const page = await context.newPage();
+          await page.addInitScript((value) => {
+            localStorage.setItem("akipasa.theme", value);
+          }, theme);
+          const response = await page.goto(path, {
+            waitUntil: "domcontentloaded",
+          });
+          expect(response?.status()).toBe(200);
+          expect(new URL(page.url()).pathname).toBe(`/${locale}/auth`);
+          await expect(page.getByRole("main").first()).toBeVisible();
+          const dimensions = await page.evaluate(() => ({
+            viewport: document.documentElement.clientWidth,
+            content: document.documentElement.scrollWidth,
+          }));
+          expect(dimensions.content).toBeLessThanOrEqual(
+            dimensions.viewport + 2,
+          );
+          mkdirSync("test-results", { recursive: true });
+          const stem = `pasa-owner-guest-${locale}-${device.name}-${theme}`;
+          const screenshot = `test-results/${stem}.png`;
+          await page.screenshot({
+            path: screenshot,
+            fullPage: false,
+            animations: "disabled",
+          });
+          writeFileSync(
+            `test-results/${stem}.json`,
+            JSON.stringify(
+              {
+                sourceCommit: process.env.GITHUB_SHA || "local",
+                route: path,
+                locale,
+                device,
+                theme,
+                screenshot,
+                acceptance: "guest-auth-only",
+                authenticatedOwnerReviewed: false,
+                physicalAndroidReviewed: false,
+              },
+              null,
+              2,
+            ),
+          );
+        } finally {
+          await context.close();
+        }
+      });
+    }
+  }
+}
