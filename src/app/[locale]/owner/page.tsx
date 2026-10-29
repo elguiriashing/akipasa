@@ -158,9 +158,7 @@ export default async function OwnerConsolePage({
           <span className="owner-command-kicker">
             AkiPasa / {es ? "Centro de control" : "Control room"}
           </span>
-          <h2>
-            {es ? "Tu centro de operaciones" : "Your operations cockpit"}
-          </h2>
+          <h2>{es ? "Tu centro de operaciones" : "Your operations cockpit"}</h2>
           <p>
             {es
               ? "Accede a moderación, aprobaciones y personalización desde tu panel privado."
