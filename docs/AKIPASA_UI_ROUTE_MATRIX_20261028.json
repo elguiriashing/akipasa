@@ -345,13 +345,13 @@
     },
     "src/app/[locale]/photo-credits/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared EN/ES legal hero and reading/attribution surfaces implemented with targeted phone/tablet/desktop and emulated Android browser test source. Hosted screenshot review, functional inspection and real Android validation still required; NOT accepted."
     },
     "src/app/[locale]/privacy/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared EN/ES legal hero and reading/attribution surfaces implemented with targeted phone/tablet/desktop and emulated Android browser test source. Hosted screenshot review, functional inspection and real Android validation still required; NOT accepted."
     },
     "src/app/[locale]/privacy/prestige/page.tsx": {
       "scope": "consumer",
@@ -415,8 +415,8 @@
     },
     "src/app/[locale]/terms/page.tsx": {
       "scope": "consumer",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Shared EN/ES legal hero and reading/attribution surfaces implemented with targeted phone/tablet/desktop and emulated Android browser test source. Hosted screenshot review, functional inspection and real Android validation still required; NOT accepted."
     },
     "src/app/[locale]/venues/[slug]/book/page.tsx": {
       "scope": "consumer",
