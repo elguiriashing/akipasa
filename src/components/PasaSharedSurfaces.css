@@ -229,3 +229,102 @@ html[data-theme="light"] .app-shell
     background: var(--pasa-ui-panel);
   }
 }
+
+/* The profile introduction is a real-person hero, not an invented stats card. */
+.app-shell .account-workspace .account-welcome {
+  min-height: 145px;
+  gap: clamp(0.7rem, 2vw, 1.5rem);
+  padding: clamp(1rem, 2.5vw, 2rem);
+  border: 1px solid rgba(255, 129, 49, 0.32);
+  border-radius: 1.6rem;
+  background:
+    radial-gradient(
+      circle at 95% 15%,
+      rgba(255, 114, 35, 0.22),
+      transparent 48%
+    ),
+    linear-gradient(135deg, #1b2335, #0b1422);
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.22);
+}
+
+.app-shell .account-workspace .account-avatar {
+  width: clamp(3.8rem, 6vw, 5.5rem);
+  height: clamp(3.8rem, 6vw, 5.5rem);
+  border: 3px solid #ffa16f;
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  box-shadow: 0 0 0 6px rgba(255, 123, 44, 0.13);
+}
+
+.app-shell .account-workspace .account-welcome-copy h1 {
+  margin: 0.2rem 0;
+  color: #ffffff;
+  font-size: clamp(1.8rem, 4.1vw, 3rem);
+  font-weight: 850;
+  line-height: 1.08;
+  letter-spacing: -0.055em;
+  overflow-wrap: anywhere;
+}
+
+.app-shell .account-workspace .account-welcome-copy > span {
+  color: #ffa16b;
+}
+
+.app-shell .account-workspace .account-welcome-copy p {
+  color: #d6dfeb;
+  line-height: 1.5;
+}
+
+.app-shell .account-workspace .account-icon-link {
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid rgba(255, 179, 123, 0.3);
+  background: rgba(16, 29, 47, 0.86);
+  color: #fff;
+}
+
+.app-shell .account-workspace .account-next-step {
+  border: 1px solid rgba(255, 132, 52, 0.3);
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(255, 118, 39, 0.35),
+      transparent 45%
+    ),
+    linear-gradient(135deg, #22243a, #0b1728 77%);
+}
+
+.app-shell .account-workspace .account-shortcuts > a {
+  min-height: 5rem;
+  border-color: var(--pasa-ui-border);
+  background: var(--pasa-ui-panel);
+}
+
+.app-shell .account-workspace .account-shortcut-icon {
+  border-radius: 0.9rem;
+  background: rgba(255, 121, 40, 0.16);
+  color: #ffae79;
+}
+
+.app-shell .account-workspace .account-shortcuts > a:focus-visible {
+  outline: 3px solid #ffb783;
+  outline-offset: 3px;
+}
+
+html[data-theme="light"] .app-shell .account-workspace .account-welcome {
+  border-color: rgba(188, 90, 27, 0.25);
+  background:
+    radial-gradient(
+      circle at 95% 15%,
+      rgba(255, 133, 52, 0.14),
+      transparent 48%
+    ),
+    #fff9f1;
+}
+
+html[data-theme="light"] .app-shell .account-workspace .account-welcome-copy h1 {
+  color: #1b2a39;
+}
+
+html[data-theme="light"] .app-shell .account-workspace .account-welcome-copy p {
+  color: #4b5868;
+}
