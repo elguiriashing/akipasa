@@ -151,5 +151,4 @@ describe("AkiPasa shared redesign system", () => {
     expect(actions).toContain('status", "approved"');
     expect(actions).toContain('onConflict: "claim_id"');
   });
-
 });
