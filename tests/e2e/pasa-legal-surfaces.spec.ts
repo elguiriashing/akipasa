@@ -97,7 +97,9 @@ for (const locale of ["en", "es"] as const) {
               const cards = main.locator(".pasa-photo-credit-card");
               expect(await cards.count()).toBeGreaterThan(0);
               for (const card of await cards.all()) {
-                await expect(card.getByRole("heading", { level: 2 })).toBeVisible();
+                await expect(
+                  card.getByRole("heading", { level: 2 }),
+                ).toBeVisible();
                 expect(
                   await card.locator("a[href]").count(),
                   "Source and licence links must remain present",
@@ -115,7 +117,8 @@ for (const locale of ["en", "es"] as const) {
               geometry.width,
               `${route}: horizontal overflow ${JSON.stringify(geometry)}`,
             ).toBeLessThanOrEqual(geometry.viewport + 2);
-            const screenshot = `test-results/pasa-legal-${locale}-${surface.path.slice(1)}-${device.name}-${theme}.png`;
+            const screenshot =
+              `test-results/pasa-legal-${locale}-${surface.path.slice(1)}-${device.name}-${theme}.png`;
             mkdirSync("test-results", { recursive: true });
             await page.screenshot({
               path: screenshot,
