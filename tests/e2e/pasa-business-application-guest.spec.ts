@@ -10,9 +10,8 @@ const devices = [
 for (const locale of ["en", "es"] as const) {
   for (const device of devices) {
     for (const theme of ["dark", "light"] as const) {
-      test(`${locale} business application guest return on ${device.name}/${theme}`, async ({
-        browser,
-      }) => {
+      const title = `${locale} business guest on ${device.name}/${theme}`;
+      test(title, async ({ browser }) => {
         test.setTimeout(120_000);
         const baseURL =
           process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:3100";
@@ -58,19 +57,19 @@ for (const locale of ["en", "es"] as const) {
             viewport: document.documentElement.clientWidth,
             width: document.documentElement.scrollWidth,
           }));
-          expect(dimensions.width).toBeLessThanOrEqual(
-            dimensions.viewport + 2,
-          );
+          const overflow = dimensions.width - dimensions.viewport;
+          expect(overflow).toBeLessThanOrEqual(2);
 
           mkdirSync("test-results", { recursive: true });
-          const screenshot = `test-results/pasa-business-guest-${locale}-${device.name}-${theme}.png`;
+          const stem = `pasa-business-guest-${locale}-${device.name}-${theme}`;
+          const screenshot = `test-results/${stem}.png`;
           await page.screenshot({
             path: screenshot,
             animations: "disabled",
             fullPage: false,
           });
           writeFileSync(
-            `test-results/pasa-business-guest-${locale}-${device.name}-${theme}.json`,
+            `test-results/${stem}.json`,
             JSON.stringify(
               {
                 sourceCommit: process.env.GITHUB_SHA || "local",
