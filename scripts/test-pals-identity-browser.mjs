@@ -169,7 +169,7 @@ try {
   await expect(page.locator("#avatar-stage")).toHaveAttribute("data-ready", "true");
   await page.getByRole("tab", { name: "Outfit" }).click();
   await page.getByRole("button", { name: "Night out" }).click();
-  await expect(page.getByLabel("Top")).toHaveValue("jacket");
+  await expect(page.locator('select[name="top"]')).toHaveValue("jacket");
   await expect(page.getByLabel("Bottoms")).toHaveValue("tailored");
   await page.getByRole("tab", { name: "Hair" }).click();
   await page.getByLabel("Hairstyle").selectOption("bun");
@@ -183,7 +183,7 @@ try {
   await page.getByRole("tab", { name: "Face" }).click();
   await expect(page.getByLabel("Body frame")).toHaveValue("masculine");
   await page.getByRole("tab", { name: "Outfit" }).click();
-  await expect(page.getByLabel("Top")).toHaveValue("jacket");
+  await expect(page.locator('select[name="top"]')).toHaveValue("jacket");
   await page.getByRole("tab", { name: "Hair" }).click();
   await page.getByLabel("Hairstyle").selectOption("buzz");
   await page.locator("#reset").click();
