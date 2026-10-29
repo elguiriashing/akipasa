@@ -145,7 +145,9 @@ describe("AkiPasa shared redesign system", () => {
     expect(page).toContain('claim.status !== "approved"');
     expect(page).toContain("submitEarlyPartnerFeedback");
     expect(page).toContain("3 months of AkiPasa listing Premium");
-    expect(actions).toContain('contact_permission: parsed.data.contactPermission === "yes"');
+    expect(actions).toContain(
+      'contact_permission: parsed.data.contactPermission === "yes"',
+    );
     expect(actions).toContain('status", "approved"');
     expect(actions).toContain('onConflict: "claim_id"');
   });
