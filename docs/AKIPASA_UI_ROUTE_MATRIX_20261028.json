@@ -216,7 +216,7 @@
     "src/app/[locale]/business/mobility/page.tsx": {
       "scope": "operational",
       "status": "in-progress",
-      "note": "Private AkiCoches rental desk has scoped dark/light surfaces, canonical independent product links, truthful unavailable summaries, bounded data disclosure and localized request states. Seven component tests and 32 EN/ES 360/390/820/1440 populated/error browser fixture cases passed; final exact-source hosted evidence, real role/RLS workflow and physical Android/Alex review remain required. NOT accepted."
+      "note": "Private AkiCoches rental desk combines scoped light/dark responsive surfaces, canonical independent product links, truthful unavailable summaries, bounded data disclosure and localized request states. Conditional setup navigation and top-level availability-block error warning retained from concurrent work. Seven component tests and 32 EN/ES responsive populated/error fixture cases passed; additional guest business-host handoff/source guard tests retained. Final exact-source hosted evidence, real authenticated tenant/mutation workflows, physical Android and Alex visual review remain required. NOT accepted."
     },
     "src/app/[locale]/business/page.tsx": {
       "scope": "operational",
