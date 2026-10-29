@@ -2,6 +2,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { clone as cloneSkeleton } from "three/addons/utils/SkeletonUtils.js";
 
 const SKINS = {
   porcelain: "#f2d6c7", light: "#e8c1a8", warm: "#d6a181",
@@ -65,12 +66,11 @@ function makeHair(a) {
   const color = HAIR[a.hairColor];
   const main = material(color, 0.42);
   const shine = material(new THREE.Color(color).multiplyScalar(1.17), 0.45);
-  const crown = { x: 0, y: 1.728, z: -0.014, rx: .125, ry: .080, rz: .127, mat: main, details: 32 };
+  const crown = { x: 0, y: 1.728, z: -0.014, rx: .125, ry: a.hair==="buzz" ? .044 : .080, rz: .127, mat: main, details: 32 };
   addEllipsoid(group, crown);
   // Each style is real 3D geometry with volume, not a sprite or SVG.
   switch (a.hair) {
     case "buzz":
-      crown.ry = 0.042;
       break;
     case "crop":
     case "quiff": {
@@ -227,7 +227,9 @@ function applyBaseColors(base,a){
     let c=SKINS[a.skin];
     if(/eyes/i.test(node.name)) c=EYES[a.eyeColor];
     else if(/brow|face/i.test(node.name) && !/female|male/i.test(node.name)) c=HAIR[a.hairColor];
+    if(node.material?.userData?.akipalsMutable)node.material.dispose();
     node.material=material(c, /eyes/i.test(node.name) ? .22 : .78);
+    node.material.userData.akipalsMutable=true;
     node.castShadow=true;
     node.receiveShadow=true;
   });
@@ -291,7 +293,7 @@ function create(container) {
   const ring=new THREE.Mesh(new THREE.TorusGeometry(.76,.008,6,80),ringMat);
   ring.rotation.x=-Math.PI/2;ring.position.y=-.058;scene.add(ring);
   const root=new THREE.Group();scene.add(root);
-  let base=null,cloth=null,hair=null,desired=null,loadNumber=0,active=true,raf=0;
+  let base=null,cloth=null,hair=null,loadNumber=0,active=true,raf=0;
   let faceType=null,previousStyle=null;
   const resize=()=>{
     if(!active)return;
@@ -309,7 +311,6 @@ function create(container) {
   };
   tick();
   async function setAppearance(a){
-    desired={...a};
     const model=a.bodyStyle==="masculine"?"male":"female";
     const number=++loadNumber;
     try{
@@ -321,7 +322,7 @@ function create(container) {
         }
         if(!active||number!==loadNumber)return;
         if(base)root.remove(base);
-        base=cached.scene.clone(true);
+        base=cloneSkeleton(cached.scene);
         root.add(base);
         faceType=model;
       }
