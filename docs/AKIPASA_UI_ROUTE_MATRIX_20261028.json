@@ -215,8 +215,8 @@
     },
     "src/app/[locale]/business/mobility/page.tsx": {
       "scope": "operational",
-      "status": "pending",
-      "note": ""
+      "status": "in-progress",
+      "note": "Existing private rental operations route: new scoped light/dark responsive header/cards/nav, keyboard focus, safe-area and reduced-motion styles; setup nav only when company absent and anchors exist, no links to missing sections. EN/ES phone/tablet/desktop/Android-like Chromium public→business-host guest redirect/auth tests and source guard tests added. No company/RLS/vehicle/bookings mutation logic changed. Authentic business-host sessions, populated/empty/error operations, physical Android, screenshots and exact-head CI remain unreviewed; NOT accepted."
     },
     "src/app/[locale]/business/page.tsx": {
       "scope": "operational",
