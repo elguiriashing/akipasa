@@ -129,5 +129,4 @@ describe("AkiPasa shared redesign system", () => {
     expect(referral).toContain('name="product" value="akipasa"');
     expect(referral).toContain('name="code" value={code}');
   });
-
 });
