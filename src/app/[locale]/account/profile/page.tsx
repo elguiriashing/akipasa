@@ -143,9 +143,12 @@ export default async function ProfilePage({
                   {profile?.display_name || (es ? "Tu perfil" : "Your profile")}
                 </strong>
                 {profile?.username && <small>@{profile.username}</small>}
-                <span className="account-profile-visibility" aria-label={
-                  es ? "Visibilidad del perfil" : "Profile visibility"
-                }>
+                <span
+                  className="account-profile-visibility"
+                  aria-label={
+                    es ? "Visibilidad del perfil" : "Profile visibility"
+                  }
+                >
                   {profileVisibility}
                 </span>
               </div>
