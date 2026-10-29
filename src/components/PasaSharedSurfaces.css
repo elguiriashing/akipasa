@@ -426,7 +426,16 @@ html[data-theme="light"] .app-shell .account-workspace .account-welcome-copy p {
   .pasa-checkin-visit > .auth-panel {
   border: 1px solid var(--pasa-ui-border);
   background: var(--pasa-ui-panel);
+  color: var(--pasa-ui-text);
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+}
+
+html[data-theme="light"]
+  .app-shell
+  .app-content[data-pasa-surface="checkin"]
+  .pasa-checkin-visit > .auth-panel {
+  background: #fffaf4;
+  color: #1b2a39;
 }
 
 .app-shell
