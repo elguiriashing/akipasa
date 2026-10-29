@@ -1255,7 +1255,11 @@ html[data-theme="light"] .app-shell .pasa-terms-accept-version {
   border: 1px solid rgba(255, 160, 98, 0.32);
   border-radius: clamp(1.35rem, 2.8vw, 2rem);
   background:
-    radial-gradient(circle at 90% 3%, rgba(255, 135, 53, 0.3), transparent 48%),
+    radial-gradient(
+      circle at 90% 3%,
+      rgba(255, 135, 53, 0.3),
+      transparent 48%
+    ),
     linear-gradient(135deg, #1d2941, #0c1728 83%);
   color: #f7f9fd;
   box-shadow: 0 20px 55px rgba(0, 0, 0, 0.18);
@@ -1357,8 +1361,9 @@ html[data-theme="light"] .app-shell .pasa-terms-accept-version {
   text-underline-offset: 0.2em;
 }
 
-.app-shell
-  :is(.pasa-conversion-link, .pasa-conversion-submit, .pasa-conversion-secondary):focus-visible {
+.app-shell .pasa-conversion-link:focus-visible,
+.app-shell .pasa-conversion-submit:focus-visible,
+.app-shell .pasa-conversion-secondary:focus-visible {
   outline: 3px solid #ffb783;
   outline-offset: 4px;
 }
@@ -1424,7 +1429,11 @@ html[data-theme="light"] .app-shell .pasa-terms-accept-version {
 html[data-theme="light"] .app-shell .pasa-conversion-hero {
   border-color: rgba(169, 89, 33, 0.25);
   background:
-    radial-gradient(circle at 90% 3%, rgba(255, 132, 49, 0.16), transparent 49%),
+    radial-gradient(
+      circle at 90% 3%,
+      rgba(255, 132, 49, 0.16),
+      transparent 49%
+    ),
     #fff9f1;
   color: #1d2b3c;
 }
