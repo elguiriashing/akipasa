@@ -38,9 +38,8 @@ const viewports = [
 for (const locale of ["en", "es"] as const) {
   for (const device of viewports) {
     for (const theme of ["dark", "light"] as const) {
-      test(`${locale} legal pages render on ${device.name}/${theme}`, async ({
-        browser,
-      }) => {
+      const title = `${locale} legal pages on ${device.name}/${theme}`;
+      test(title, async ({ browser }) => {
         test.setTimeout(180_000);
         const context = await browser.newContext({
           baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:3100",
@@ -76,38 +75,30 @@ for (const locale of ["en", "es"] as const) {
               waitUntil: "domcontentloaded",
             });
             expect(response?.status(), route).toBe(200);
-            await expect(
-              page.getByRole("heading", {
-                name: surface.heading[locale],
-                level: 1,
-              }),
-            ).toBeVisible();
+            const heading = page.getByRole("heading", {
+              name: surface.heading[locale],
+              level: 1,
+            });
+            await expect(heading).toBeVisible();
             const main = page.locator("main.pasa-legal-page");
             await expect(main, route).toBeVisible();
             await expect(main.locator(".pasa-legal-hero")).toBeVisible();
-            await expect(page.locator("html")).toHaveAttribute(
-              "data-theme",
-              theme,
-            );
-            await expect(main.locator(".pasa-legal-hero")).toHaveCSS(
-              "color",
-              theme === "light" ? "rgb(24, 43, 59)" : "rgb(255, 255, 255)",
-            );
-            await expect(main.locator(".pasa-legal-hero h1")).toHaveCSS(
-              "color",
-              theme === "light" ? "rgb(24, 43, 59)" : "rgb(255, 255, 255)",
-            );
+            const html = page.locator("html");
+            await expect(html).toHaveAttribute("data-theme", theme);
+            const expectedColor =
+              theme === "light" ? "rgb(24, 43, 59)" : "rgb(255, 255, 255)";
+            const hero = main.locator(".pasa-legal-hero");
+            const heroHeading = main.locator(".pasa-legal-hero h1");
+            await expect(hero).toHaveCSS("color", expectedColor);
+            await expect(heroHeading).toHaveCSS("color", expectedColor);
             if (surface.path === "/photo-credits") {
               const cards = main.locator(".pasa-photo-credit-card");
               expect(await cards.count()).toBeGreaterThan(0);
               for (const card of await cards.all()) {
-                await expect(
-                  card.getByRole("heading", { level: 2 }),
-                ).toBeVisible();
-                expect(
-                  await card.locator("a[href]").count(),
-                  "Source and licence links must remain present",
-                ).toBeGreaterThanOrEqual(2);
+                const cardHeading = card.getByRole("heading", { level: 2 });
+                await expect(cardHeading).toBeVisible();
+                const linkCount = await card.locator("a[href]").count();
+                expect(linkCount).toBeGreaterThanOrEqual(2);
               }
             } else {
               await expect(main.locator(".pasa-legal-prose")).toBeVisible();
