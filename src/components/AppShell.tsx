@@ -14,6 +14,8 @@ import { PasaBottomDock, pasaDestinations } from "./PasaBottomDock";
 import "./PasaBottomDock.css";
 import "./PasaCinematic.css";
 import "./PasaSharedSurfaces.css";
+import "./PasaSecondarySurfaces.css";
+import { pasaSurfaceFamily } from "../lib/pasa-surface-families";
 import { ThemeToggle } from "./ThemeModeControls";
 import { signOut } from "../app/[locale]/auth/actions";
 import { ConsoleSwitcher, type ConsoleKey } from "./ConsoleSwitcher";
@@ -401,7 +403,9 @@ export function AppShell({
         ["map", "community", "venues", "events"].includes(section)) && (
         <LaunchRibbon locale={locale} />
       )}
-      <div className="app-content">{children}</div>
+      <div className="app-content" data-pasa-surface={pasaSurfaceFamily(pathname)}>
+        {children}
+      </div>
 
       {/* One shared mobile dock across the complete consumer shell. */}
       <Suspense fallback={null}>
