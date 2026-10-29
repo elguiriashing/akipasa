@@ -21,7 +21,10 @@ export default async function ModerationCompatibilityPage({
     commercial: `/${locale}/staff/promotions`,
     audit: `/${locale}/admin/audit`,
   };
-  const selected = query.view ? destinations[query.view] : undefined;
+  const selected =
+    query.view && Object.hasOwn(destinations, query.view)
+      ? destinations[query.view]
+      : undefined;
   const destination =
     selected ||
     `/${locale}/staff/moderation${query.queue ? `?queue=${encodeURIComponent(query.queue)}` : ""}`;
