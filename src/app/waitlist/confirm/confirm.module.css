@@ -9,6 +9,8 @@
   --confirm-panel: #172336;
   --confirm-border: rgb(223 236 255 / 19%);
   --confirm-control: #26364c;
+  --confirm-story: linear-gradient(145deg, #1b2a40 3%, #101a2a 82%);
+  --confirm-grid: rgb(243 251 255 / 3%);
   color-scheme: dark;
   min-height: 100svh;
   display: grid;
@@ -60,7 +62,7 @@
   padding: clamp(1.5rem, 4.5vw, 3.5rem);
   background:
     radial-gradient(ellipse at 87% 12%, var(--accent-muted), transparent 54%),
-    linear-gradient(145deg, #1b2a40 3%, #101a2a 82%);
+    var(--confirm-story);
 }
 
 .story::after {
@@ -68,7 +70,7 @@
   position: absolute;
   z-index: -1;
   inset: 0;
-  background-image: linear-gradient(rgb(243 251 255 / 3%) 1px, transparent 1px);
+  background-image: linear-gradient(var(--confirm-grid) 1px, transparent 1px);
   background-size: 100% 3.5rem;
   opacity: 0.5;
   pointer-events: none;
@@ -315,6 +317,10 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .panel {
+    order: -1;
+  }
+
   .story {
     gap: 1rem;
   }
@@ -381,21 +387,21 @@
     --confirm-panel: #fff;
     --confirm-border: rgb(29 51 77 / 20%);
     --confirm-control: #e9eef5;
+    --confirm-story: linear-gradient(145deg, #fdfaf5, #e7eef6 95%);
+    --confirm-grid: rgb(12 25 45 / 5%);
     color-scheme: light;
   }
 
-  .story {
-    background:
-      radial-gradient(ellipse at 87% 12%, var(--accent-muted), transparent 54%),
-      linear-gradient(145deg, #fdfaf5, #e7eef6 95%);
-  }
-
-  .story::after {
-    background-image: linear-gradient(rgb(12 25 45 / 5%) 1px, transparent 1px);
-  }
-
-  .page:not([data-product="duermo"]):not([data-product="coches"]) {
+  .page[data-product="pasa"] {
     --accent: #9b3c07;
+  }
+
+  .page[data-product="duermo"] {
+    --accent: #08695f;
+  }
+
+  .page[data-product="coches"] {
+    --accent: #922f42;
   }
 }
 
@@ -406,6 +412,8 @@
   --confirm-panel: #172336;
   --confirm-border: rgb(223 236 255 / 19%);
   --confirm-control: #26364c;
+  --confirm-story: linear-gradient(145deg, #1b2a40 3%, #101a2a 82%);
+  --confirm-grid: rgb(243 251 255 / 3%);
   color-scheme: dark;
 }
 
@@ -416,5 +424,19 @@
   --confirm-panel: #fff;
   --confirm-border: rgb(29 51 77 / 20%);
   --confirm-control: #e9eef5;
+  --confirm-story: linear-gradient(145deg, #fdfaf5, #e7eef6 95%);
+  --confirm-grid: rgb(12 25 45 / 5%);
   color-scheme: light;
+}
+
+:global(html[data-theme="light"]) .page[data-product="pasa"] {
+  --accent: #9b3c07;
+}
+
+:global(html[data-theme="light"]) .page[data-product="duermo"] {
+  --accent: #08695f;
+}
+
+:global(html[data-theme="light"]) .page[data-product="coches"] {
+  --accent: #922f42;
 }
