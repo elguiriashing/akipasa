@@ -40,16 +40,22 @@ for (const locale of ["en", "es"] as const) {
             maxRedirects: 0,
           });
           expect([303, 307], route).toContain(gate.status());
-          const signIn = new URL(gate.headers().location || "", baseURL);
-          expect(signIn.origin).toBe(new URL(baseURL).origin);
-          expect(signIn.pathname).toBe(`/${locale}/auth`);
-          expect(signIn.searchParams.get("next")).toBe(route);
+          // The AkiPasa public origin intentionally hands /business/* to its
+          // legacy business subdomain. Do not assert a same-origin auth gate,
+          // or follow the external host from a disposable local CI fixture.
+          const canonical = new URL(gate.headers().location || "", baseURL);
+          expect(canonical.origin).toBe("https://business.akipasa.com");
+          expect(canonical.pathname).toBe(route);
 
-          const response = await page.goto(route, {
+          // The AkiPasa sign-in shell is safe to screenshot locally, but this
+          // is NOT authenticated acceptance of the business-host application.
+          const localSignIn = `/${locale}/auth?next=${encodeURIComponent(route)}`;
+          const response = await page.goto(localSignIn, {
             waitUntil: "domcontentloaded",
           });
           expect(response?.status()).toBe(200);
           const destination = new URL(page.url());
+          expect(destination.origin).toBe(new URL(baseURL).origin);
           expect(destination.pathname).toBe(`/${locale}/auth`);
           expect(destination.searchParams.get("next")).toBe(route);
           await expect(page.getByRole("main").first()).toBeVisible();
@@ -74,13 +80,16 @@ for (const locale of ["en", "es"] as const) {
               {
                 sourceCommit: process.env.GITHUB_SHA || "local",
                 route,
-                signInPath: destination.pathname,
+                canonicalBusinessOrigin: canonical.origin,
+                canonicalBusinessPath: canonical.pathname,
+                localPreviewSignInPath: destination.pathname,
                 returnPath: destination.searchParams.get("next"),
                 locale,
                 device,
                 theme,
                 screenshot,
-                acceptance: "guest-auth-only",
+                acceptance: "canonical-handoff-and-local-auth-preview-only",
+                businessHostAuthReviewed: false,
                 physicalAndroidReviewed: false,
                 authenticatedBusinessPageReviewed: false,
               },
