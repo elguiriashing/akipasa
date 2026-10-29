@@ -106,4 +106,28 @@ describe("AkiPasa shared redesign system", () => {
     expect(actions).toContain("accept_current_terms");
     expect(actions).toContain('formData.get("acceptTerms") !== "accepted"');
   });
+
+  it("uses shared conversion surfaces while keeping plan and referral gates server-owned", () => {
+    const css = source("src/components/PasaSharedSurfaces.css");
+    const membership = source("src/app/[locale]/membership/page.tsx");
+    const referral = source("src/app/[locale]/referrals/page.tsx");
+    expect(css).toContain(".pasa-conversion-hero");
+    expect(css).toContain(".pasa-conversion-panel");
+    expect(css).toContain(".pasa-membership-intro");
+    expect(css).toContain(".pasa-referral-entry");
+    expect(css).toContain("safe-area-inset-bottom");
+    expect(css).toContain('html[data-theme="light"]');
+    expect(membership).toContain("pasa-membership-intro");
+    expect(membership).toContain("AkiSuiteMembershipGrid");
+    expect(membership).toContain("akiSuiteCheckoutReady");
+    expect(membership).toContain("personalPremiumLaunchOpen()");
+    expect(membership).toContain("optionalUser()");
+    expect(referral).toContain("referralCode((await searchParams).ref)");
+    expect(referral).toContain('AKISUITE_REFERRALS_READY === "true"');
+    expect(referral).toContain("requireUser(locale");
+    expect(referral).toContain("captureReferral");
+    expect(referral).toContain('name="product" value="akipasa"');
+    expect(referral).toContain('name="code" value={code}');
+  });
+
 });
