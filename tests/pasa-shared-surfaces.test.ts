@@ -129,12 +129,15 @@ describe("AkiPasa shared redesign system", () => {
     expect(referral).toContain('name="product" value="akipasa"');
     expect(referral).toContain('name="code" value={code}');
   });
+
   it("keeps early-partner visual improvements separate from claim-owner and consent rules", () => {
     const css = source(
       "src/app/[locale]/business/early-partner/early-partner.module.css",
     );
     const page = source("src/app/[locale]/business/early-partner/page.tsx");
-    const actions = source("src/app/[locale]/business/early-partner/actions.ts");
+    const actions = source(
+      "src/app/[locale]/business/early-partner/actions.ts",
+    );
     expect(css).toContain("--partner-accent");
     expect(css).toContain('html[data-theme="light"]');
     expect(css).toContain("safe-area-inset-bottom");
