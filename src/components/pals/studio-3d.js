@@ -376,6 +376,70 @@ function makeFaceDetails(a) {
   return face;
 }
 
+/**
+ * Rotate the neutral-model arm bones into a relaxed standing pose.
+ * Applying a delta in world space (then converting back into parent-local
+ * space) works for both mirrored Quaternius skeletons without hard-coding
+ * their exported bone quaternions.
+ */
+function poseArmature(base) {
+  base.updateWorldMatrix(true, true);
+  const rotateBoneTowards = (bone, next, target) => {
+    if (!bone || !next || !bone.parent) return;
+    base.updateWorldMatrix(true, true);
+    const from = bone.getWorldPosition(new THREE.Vector3());
+    const to = next.getWorldPosition(new THREE.Vector3()).sub(from);
+    if (to.lengthSq() < 0.00001) return;
+    const desired = target.clone().normalize();
+    const deltaWorld = new THREE.Quaternion().setFromUnitVectors(
+      to.normalize(), desired,
+    );
+    const parentWorld = bone.parent.getWorldQuaternion(new THREE.Quaternion());
+    const localDelta = parentWorld.clone().invert()
+      .multiply(deltaWorld).multiply(parentWorld);
+    bone.quaternion.premultiply(localDelta).normalize();
+    base.updateWorldMatrix(true, true);
+  };
+  for (const side of ["l", "r"]) {
+    const shoulder = base.getObjectByName("upperarm_" + side);
+    const elbow = base.getObjectByName("lowerarm_" + side);
+    const hand = base.getObjectByName("hand_" + side);
+    if (!shoulder || !elbow || !hand) continue;
+    const origin = shoulder.getWorldPosition(new THREE.Vector3());
+    const wrist = elbow.getWorldPosition(new THREE.Vector3());
+    const handed = wrist.x < origin.x ? -1 : 1;
+    // Drop the elbows instead of showing the source-pack's default T-pose.
+    rotateBoneTowards(shoulder, elbow, new THREE.Vector3(handed * 0.18, -0.96, 0.06));
+    // A subtle elbow bend brings the relaxed hands just forward of the hips.
+    rotateBoneTowards(elbow, hand, new THREE.Vector3(handed * 0.045, -0.96, 0.28));
+  }
+}
+
+/** Rounded, tapering real garment geometry without the inflated sphere torso. */
+function shirtTorso(parent, a, cloth) {
+  const r = a.top === "hoodie" ? 1.10 : a.top === "jacket" ? 1.07 : 1;
+  const silhouette = [
+    [0, 1.047],
+    [0.155 * r, 1.047],
+    [0.177 * r, 1.12],
+    [0.182 * r, 1.27],
+    [0.200 * r, 1.37],
+    [0.178 * r, 1.455],
+    [0.107 * r, 1.51],
+    [0, 1.51],
+  ];
+  const geometry = new THREE.LatheGeometry(
+    silhouette.map(([radius, y]) => new THREE.Vector2(radius, y)),
+    40,
+  );
+  const mesh = new THREE.Mesh(geometry, cloth);
+  mesh.scale.z = 0.73;
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  parent.add(mesh);
+  return mesh;
+}
+
 function makeWardrobe(a) {
   const group = new THREE.Group();
   group.name = "AkiPals original clothing";
@@ -389,34 +453,25 @@ function makeWardrobe(a) {
   const gold = material("#f8aa61", 0.42, 0.3);
   const footwear = material(shoes[a.shoes] || shoes.sneakers, 0.45);
   const skin = material(SKINS[a.skin], 0.79);
-  // Curved cloth volume and a visible ribbed collar, not a painted bodysuit.
+  // Tapered 3D jersey with a human silhouette, rather than an oval blob.
+  shirtTorso(group, a, textile);
   addEllipsoid(group, {
     x: 0,
-    y: 1.305,
-    z: 0,
-    rx: 0.21,
-    ry: 0.263,
-    rz: 0.145,
-    mat: textile,
-    details: 32,
-  });
-  addEllipsoid(group, {
-    x: 0,
-    y: 1.485,
+    y: 1.482,
     z: 0.023,
-    rx: 0.143,
-    ry: 0.061,
-    rz: 0.104,
+    rx: 0.115,
+    ry: 0.026,
+    rz: 0.090,
     mat: trim,
-    details: 24,
+    details: 28,
   });
   addEllipsoid(group, {
     x: 0,
-    y: 1.502,
-    z: 0.028,
-    rx: 0.104,
-    ry: 0.044,
-    rz: 0.085,
+    y: 1.510,
+    z: 0.025,
+    rx: 0.067,
+    ry: 0.047,
+    rz: 0.062,
     mat: skin,
     details: 24,
   });
@@ -889,6 +944,7 @@ function create(container) {
         if (base) root.remove(base);
         base = cloneSkeleton(cached.scene);
         root.add(base);
+        poseArmature(base);
         faceType = model;
       }
       if (!active || number !== loadNumber) return;
