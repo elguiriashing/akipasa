@@ -3355,3 +3355,12 @@ three exact paper journal mappings once each; actual browser token/contrast/boun
 checks and two synthetic earned-city cases guard this boundary. No actions, real
 awards, database permissions or shared shells change. Final validation is recorded
 in the concrete release proposal; explicit owner exception remains required.
+
+## 2026-10-30 | Portable desktop release navigation assertion
+
+- A development-port literal caused a false link failure on another localhost
+  port; the actual destination/path/query were correct.
+- The test derives its running origin while explicitly enforcing same origin,
+  locale path, locality and exact destination. No runtime or SQL change.
+- Two desktop cases pass at CI-default3100; failure/success logs and source hashes
+  are retained. Fresh immutable-head CI remains required.

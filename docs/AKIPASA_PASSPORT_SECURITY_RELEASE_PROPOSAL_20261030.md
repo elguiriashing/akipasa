@@ -151,3 +151,13 @@ audit success is claimed, and the full integration branch's gate is unchanged.
 Exact-head hosted CI/Cloudflare build, independent review and explicit staged owner
 approval remain before publication/merge/SQL/release. No physical-device or real
 protected-provider acceptance is manufactured from these local fixtures.
+
+## Portable CI-origin regression
+
+After publishing61bfea5, the same desktop test on a second local port exposed a
+hardcoded3107 expectation. The app navigated to the correct same-origin URL.
+The test now derives the expected origin from its running page, explicitly checks
+same origin/path/locality, and still compares the complete destination. Both
+desktop cases pass on CI-default3100 (5.3s); runtime/SQL hashes are unchanged.
+The original failure and successful rerun are retained. Fresh exact-head hosted
+checks, including the full check, are required after this test-only repair.

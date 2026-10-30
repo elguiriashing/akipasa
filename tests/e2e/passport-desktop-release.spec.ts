@@ -207,9 +207,12 @@ for (const [locale, theme] of [
       exact: true,
     });
     const destination = await explore.getAttribute("href");
+    const origin = new URL(page.url()).origin;
+    const expectedDestination = new URL(destination!, origin);
+    expect(expectedDestination.origin).toBe(origin);
+    expect(expectedDestination.pathname).toBe(`/${locale}`);
+    expect(expectedDestination.searchParams.get("locality")).toBe("malaga");
     await explore.click();
-    await expect(page).toHaveURL(
-      new URL(destination!, "http://127.0.0.1:3107").href,
-    );
+    await expect(page).toHaveURL(expectedDestination.href);
   });
 }

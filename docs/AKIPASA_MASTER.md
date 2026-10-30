@@ -2688,3 +2688,7 @@ three exact paper journal mappings once each; actual browser token/contrast/boun
 checks and two synthetic earned-city cases guard this boundary. No actions, real
 awards, database permissions or shared shells change. Final validation is recorded
 in the concrete release proposal; explicit owner exception remains required.
+
+The release desktop navigation assertion is portable across local/CI origins,
+while still enforcing the same origin, locale path, locality and full destination.
+This is test-only; runtime and terms SQL hashes remain unchanged.
