@@ -312,3 +312,112 @@
     font-size: 1.4rem;
   }
 }
+
+/* Explicit hero surfaces/ink also repair the old white-on-cream light mode. */
+html body .app-shell .staff-workspace .staff-dashboard .staff-dashboard-hero {
+  padding: clamp(24px, 3.5vw, 44px);
+  min-height: 260px;
+  color: #fff4e8;
+  border: 1px solid #6c452d;
+  border-radius: 26px;
+  background:
+    radial-gradient(ellipse at 100% 0, #55301b 0, transparent 65%), #15100c;
+}
+
+html
+  body
+  .app-shell
+  .staff-workspace
+  .staff-dashboard
+  .staff-dashboard-hero
+  h2 {
+  margin: 0;
+  max-width: 22ch;
+  color: #fff4e8;
+  font-size: clamp(30px, 3.7vw, 50px);
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+}
+
+html body .app-shell .staff-workspace .staff-dashboard .staff-dashboard-hero p {
+  color: #e2cdbb;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+html body .app-shell .staff-workspace .staff-dashboard-hero-actions > a {
+  min-height: 48px;
+  color: #ffe1c9;
+  border: 1px solid #96643f;
+  border-radius: 999px;
+  background: #251a11;
+}
+
+html
+  body
+  .app-shell
+  .staff-workspace
+  .staff-dashboard-hero-actions
+  > .staff-dashboard-hero-primary {
+  color: #211105;
+  background: #ff812e;
+  border-color: transparent;
+}
+
+html body .app-shell .staff-workspace .staff-dashboard-hero-actions > a:hover {
+  color: #fff4e8;
+  background: #472d19;
+}
+
+html
+  body
+  .app-shell
+  .staff-workspace
+  .staff-dashboard-hero-actions
+  > .staff-dashboard-hero-primary:hover {
+  color: #211105;
+  background: #ffa15f;
+}
+
+html
+  body
+  .app-shell
+  .staff-workspace
+  :is(.staff-dashboard-task-icon, .staff-dashboard-metric-icon) {
+  color: #ffad72;
+  background: #2c1c10;
+  border-radius: 50%;
+}
+
+html body .app-shell .staff-workspace .staff-dashboard-task-count {
+  color: #ffd7ba;
+  background: #332214;
+}
+
+@media (max-width: 650px) {
+  .staff-workspace .staff-dashboard-metric {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto auto;
+    gap: 10px;
+  }
+  .staff-workspace .staff-dashboard-metric-icon {
+    grid-column: 1;
+    grid-row: 1;
+    width: 36px;
+    height: 36px;
+  }
+  .staff-workspace .staff-dashboard-metric strong {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .staff-workspace .staff-dashboard-metric-label {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    overflow-wrap: normal;
+    line-height: 1.4;
+  }
+  .staff-workspace .staff-dashboard-metric > svg {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}

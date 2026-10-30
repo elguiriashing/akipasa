@@ -3642,3 +3642,33 @@ native focus visible, with no forced clicks or JavaScript focus interception.
 Maintained regressions retain existing assertions and exercise native Name→Username
 Tab and three-point control hit tests. Final24source-rendered cases and28maintained
 Profile cases pass; exact last-source hashes are recorded in the Account receipt.
+
+## 2026-10-30 | Consistent Staff, Admin and Owner screen presentation
+
+Staff now uses scoped charcoal/orange surfaces through navigation, queues, forms
+and lower panels. A reproduced light-theme hero contrast failure (1.008:1) is
+corrected to at least7.35:1 in measured maintained fixtures. The maintained browser
+runner retains all80 original cases and adds actual overview/AppShell and820tablet
+coverage for120 passing cases; real drawer keyboard/focus and action hit targets
+are checked. Its zero-open-editor assertion is scoped to the workspace body after
+real AppShell added unrelated GlobalSearch details; the original assertion remains.
+
+Admin's local neutral tokens cover nested workbenches and lower fields. Three
+Spanish Privacy option labels are localized, retaining exact state values, actual
+handler, required reason and unchecked deletion confirmation. Owner's route-local
+skin preserves every selected accent/base background, existing role guard, reads,
+private controls and distinct AkiBusiness destination. The client launcher restores
+only the server-provided signed selected image, JSON-quotes the CSS URL, and clears
+private URL/flag on withdrawal or unmount. Photo overlay remains separate from base
+background selection; no new storage URL/read or permission is introduced. Owner-only
+ancestor styling reveals the existing body canvas without restyling other routes.
+
+Exact227 CI found a personal Account test locator matching both valid Edit profile
+links. It now checks the unique identity CTA and unique navigation link separately
+with their original destination assertions; all32 local cases pass, independently
+rerun by root. Neither link is hidden or removed. Fresh integrated check and new-head
+CI are required; prior-head10 ordinary workflow successes and public browser shards
+do not accept new bytes. No route acceptance, merge, deployment or SQL application.
+See receipts/AKIPASA_OPERATIONS_SCREEN_INTEGRATION_20261030.json for source hashes
+and actual test limitations. Physical Android and protected provider journeys remain
+separate from the disposable read/action browser adapters.

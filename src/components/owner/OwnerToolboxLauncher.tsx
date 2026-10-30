@@ -31,6 +31,30 @@ export function OwnerToolboxLauncher(props: {
     root.dataset.ownerGlass = String(preferences.glass);
   }, [preferences]);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    const imageUrl = preferences.backgroundImageUrl?.trim();
+    // Only a server-restored private selection enables the photo canvas.
+    // JSON quoting keeps the signed URL inside one CSS url() value.
+    if (!preferences.backgroundImagePath || !imageUrl) {
+      root.style.removeProperty("--owner-background-image");
+      delete root.dataset.ownerCustomBackground;
+      return;
+    }
+    const image = `url(${JSON.stringify(imageUrl)})`;
+    root.style.setProperty("--owner-background-image", image);
+    root.dataset.ownerCustomBackground = "true";
+    return () => {
+      // Clear our private URL on withdrawal/logout, without removing a newer
+      // renderer's canvas or unrelated product/theme preferences.
+      if (root.style.getPropertyValue("--owner-background-image") === image) {
+        root.style.removeProperty("--owner-background-image");
+        if (root.dataset.ownerCustomBackground === "true")
+          delete root.dataset.ownerCustomBackground;
+      }
+    };
+  }, [preferences.backgroundImagePath, preferences.backgroundImageUrl]);
+
   const open = useCallback(async () => {
     if (pending.current) return;
     pending.current = true;

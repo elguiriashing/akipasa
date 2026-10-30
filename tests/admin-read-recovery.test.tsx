@@ -2,7 +2,13 @@
 import React, { type ComponentProps } from "react";
 import "@testing-library/jest-dom/vitest";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 
 const state = vi.hoisted(() => ({ failed: "", from: vi.fn(), rpc: vi.fn() }));
 vi.mock("@/lib/auth", () => ({
@@ -31,6 +37,8 @@ vi.mock("../src/app/[locale]/admin/actions", () => ({
 vi.mock("../src/app/[locale]/admin/business-applications/actions", () => ({
   reviewBusinessApplication: vi.fn(),
 }));
+
+import { updateDeletionRequest } from "../src/app/[locale]/admin/actions";
 
 import CataloguePage from "../src/app/[locale]/admin/catalogue/page";
 import SettingsPage from "../src/app/[locale]/admin/settings/page";
@@ -265,5 +273,73 @@ it.each(["en", "es"] as const)(
     expect(screen.getByRole("alert")).toHaveTextContent(
       locale === "es" ? "guardar" : "saved",
     );
+  },
+);
+
+it.each(["en", "es"] as const)(
+  "%s privacy status labels preserve request action values and safeguards",
+  async (locale) => {
+    const action = vi.mocked(updateDeletionRequest);
+    action.mockReset();
+    state.from.mockImplementation(() => {
+      const result = {
+        data: [
+          {
+            id: "synthetic-request",
+            profile_id: "synthetic-profile",
+            state: "requested",
+            profiles: { display_name: "Synthetic privacy request" },
+          },
+        ],
+        error: null,
+      };
+      const query = {
+        select: () => query,
+        in: () => query,
+        order: () => query,
+        then: (resolve: (value: unknown) => unknown) =>
+          Promise.resolve(result).then(resolve),
+      };
+      return query;
+    });
+    render(
+      await PrivacyPage({
+        params: Promise.resolve({ locale }),
+        searchParams: Promise.resolve({}),
+      }),
+    );
+    const detail = document.querySelector("details")!;
+    detail.open = true;
+    const select = screen.getByRole("combobox", {
+      name: locale === "es" ? "Estado" : "State",
+    });
+    expect(
+      Array.from(select.querySelectorAll("option"), (option) => [
+        option.value,
+        option.textContent,
+      ]),
+    ).toEqual([
+      ["processing", locale === "es" ? "En proceso" : "Processing"],
+      ["completed", locale === "es" ? "Completada" : "Completed"],
+      ["cancelled", locale === "es" ? "Cancelada" : "Cancelled"],
+    ]);
+    const reason = screen.getByRole("textbox", {
+      name: locale === "es" ? "Motivo y registro" : "Reason and record",
+    });
+    expect(reason).toBeRequired();
+    expect(reason).toHaveAttribute("minlength", "10");
+    const confirmation = screen.getByRole("checkbox");
+    expect(confirmation).toHaveAttribute("name", "confirmedDeleted");
+    expect(confirmation).not.toBeChecked();
+    fireEvent.change(reason, {
+      target: { value: "Synthetic fixture review only" },
+    });
+    fireEvent.submit(select.closest("form")!);
+    await waitFor(() => expect(action).toHaveBeenCalledOnce());
+    const data = action.mock.calls[0][0] as FormData;
+    expect(data.get("state")).toBe("processing");
+    expect(data.get("requestId")).toBe("synthetic-request");
+    expect(data.get("locale")).toBe(locale);
+    expect(data.get("confirmedDeleted")).toBeNull();
   },
 );

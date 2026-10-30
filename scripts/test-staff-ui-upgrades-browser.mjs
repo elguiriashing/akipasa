@@ -3,8 +3,9 @@ import postcss from "postcss";
 import tailwind from "@tailwindcss/postcss";
 import { chromium, expect } from "@playwright/test";
 import { createServer } from "node:http";
-import { readFileSync, mkdirSync } from "node:fs";
-import { resolve } from "node:path";
+import { readFileSync, mkdirSync, writeFileSync, existsSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { resolve, extname } from "node:path";
 
 // Real async Staff/Admin loaders, workspace layouts and production CSS.
 // Auth/database reads and actions are disposable; no production writes or provider calls.
@@ -13,19 +14,22 @@ mkdirSync(directory, { recursive: true });
 const entry = `
 import React from 'react';import{createRoot}from'react-dom/client';
 import StaffLayout from './src/app/[locale]/staff/layout';
+import OverviewPage from './src/app/[locale]/staff/page';
+import {AppShell} from './src/components/AppShell';
+import {requireUser} from '@/lib/auth';
 import AdminLayout from './src/app/[locale]/admin/layout';
 import SupportPage from './src/app/[locale]/staff/support/page';
 import CreatorPage from './src/app/[locale]/staff/creators/page';
 import CataloguePage from './src/app/[locale]/staff/catalogue/page';
 import VenuePage from './src/app/[locale]/staff/catalogue/venues/[id]/page';
 import AdminPage from './src/app/[locale]/admin/page';
-const pages={support:SupportPage,creators:CreatorPage,catalogue:CataloguePage,venue:VenuePage,admin:AdminPage};
+const pages={overview:OverviewPage,support:SupportPage,creators:CreatorPage,catalogue:CataloguePage,venue:VenuePage,admin:AdminPage};
 const query=new URLSearchParams(location.search);const locale=location.pathname.startsWith('/es/')?'es':'en';
-const route=query.get('route')||'support';const root=createRoot(document.getElementById('root'));
+const route=query.get('route')||'support';document.documentElement.lang=locale;document.documentElement.dataset.theme=query.get('theme')||'dark';const root=createRoot(document.getElementById('root'));
 (async()=>{try{
  const props={params:Promise.resolve({locale,id:'10000000-0000-4000-8000-000000000001'}),searchParams:Promise.resolve(Object.fromEntries(query))};
  const content=await pages[route](props);const Layout=route==='admin'?AdminLayout:StaffLayout;
- root.render(await Layout({...props,children:content}));
+ const {supabase,user}=await requireUser();const actor=await supabase.from('profiles').select('app_role').eq('id',user.id).maybeSingle();root.render(<AppShell locale={locale} signedIn={Boolean(user)} role={actor.data.app_role}>{await Layout({...props,children:content})}</AppShell>);
  requestAnimationFrame(()=>requestAnimationFrame(()=>{window.__staffUIReady=true}));
 }catch(error){window.__staffUIError=String(error.stack||error);console.error(error)}})();`;
 const authAdapter = `
@@ -33,9 +37,9 @@ const event={id:'20000000-0000-4000-8000-000000000001',venue_id:'10000000-0000-4
 export async function requireUser(){const query=new URLSearchParams(location.search);const route=query.get('route');const failed=query.get('fixture')!=='success';return{user:{id:'staff-browser-fixture'},supabase:{from(table){
  const data=table==='profiles'?{app_role:'administrator'}:table==='venues'&&route==='venue'?{id:event.venue_id,name:'Fixture venue',slug:'fixture-venue',address:'Fixture street 1',status:'published',verified:true,description_es:'Descripción de un local de ejemplo',description_en:'Description of a sample venue'}:table==='events'?[event]:[];
  const failedTable={support:'reports',creators:'creator_profiles',catalogue:'events',admin:'business_applications'}[route];
- const result=()=>({data,error:failed&&table===failedTable?{message:'Private fixture error'}:null,count:table==='account_deletion_requests'?2:0});
+ const result=()=>({data,error:failed&&table===failedTable?{message:'Private fixture error'}:null,count:route==='overview'&&['venues','events','offers','event_submissions','car_rental_companies','reports'].includes(table)?3:table==='account_deletion_requests'?2:0});
  const request={select:()=>request,eq:()=>request,in:()=>request,order:()=>request,limit:()=>request,or:()=>request,ilike:()=>request,maybeSingle:async()=>result(),then:r=>Promise.resolve(result()).then(r)};return request;
-}}}}`;
+},rpc:async()=>({data:0,error:null})}}}`;
 const bundle = await build({
   stdin: { contents: entry, resolveDir: process.cwd(), loader: "tsx" },
   bundle: true,
@@ -53,10 +57,13 @@ const bundle = await build({
           path: "auth",
           namespace: "staff-fixture",
         }));
-        builder.onResolve({ filter: /^next\/(link|navigation)$/ }, (args) => ({
-          path: args.path,
-          namespace: "staff-fixture",
-        }));
+        builder.onResolve(
+          { filter: /^next\/(link|navigation|image)$/ },
+          (args) => ({
+            path: args.path,
+            namespace: "staff-fixture",
+          }),
+        );
         builder.onResolve(
           { filter: /^@\/components\/SpainAddressAutocomplete$/ },
           () => ({ path: "address", namespace: "staff-fixture" }),
@@ -72,12 +79,14 @@ const bundle = await build({
               args.path === "auth"
                 ? authAdapter
                 : args.path === "actions"
-                  ? "export async function resolveReport(){}export async function moderateCreator(){}export async function reviewBusinessApplication(){}export async function operatorDeleteCatalogueItem(){}export async function operatorUpdateEvent(){}export async function operatorUpdateVenue(){}"
+                  ? "export async function signOut(){throw new Error('Sign-out is outside disposable staff fixture scope')}export async function resolveReport(){}export async function moderateCreator(){}export async function reviewBusinessApplication(){}export async function operatorDeleteCatalogueItem(){}export async function operatorUpdateEvent(){}export async function operatorUpdateVenue(){}"
                   : args.path === "address"
                     ? 'import React from "react";export function SpainAddressAutocomplete(){return <input aria-label="Address" defaultValue="Fixture street 1"/>}'
-                    : args.path === "next/link"
-                      ? 'import React from "react";export default function Link({children,prefetch,replace,scroll,...props}){return <a {...props}>{children}</a>}'
-                      : 'export function usePathname(){return location.pathname}export function useSearchParams(){return new URLSearchParams(location.search)}export function notFound(){throw new Error("not-found")}export function redirect(href){throw new Error("redirect:"+href)}',
+                    : args.path === "next/image"
+                      ? 'import React from "react";export default function Image({fill,priority,sizes,unoptimized,...props}){return <img {...props}/>;} '
+                      : args.path === "next/link"
+                        ? 'import React from "react";export default function Link({children,prefetch,replace,scroll,...props}){return <a {...props}>{children}</a>}'
+                        : 'export function useRouter(){return{push(){},refresh(){}}}export function usePathname(){return location.pathname}export function useSearchParams(){return new URLSearchParams(location.search)}export function notFound(){throw new Error("not-found")}export function redirect(href){throw new Error("redirect:"+href)}',
             loader: "jsx",
             resolveDir: process.cwd(),
           }),
@@ -98,12 +107,165 @@ const css =
         "src/app/[locale]/admin/admin-suite.css",
         "src/app/[locale]/admin/admin-compact.css",
       ]
+        .concat(
+          [
+            ...readFileSync("src/app/layout.tsx", "utf8").matchAll(
+              /import\s+["'](\.\/[^"']+\.css)["'];/g,
+            ),
+          ]
+            .map((match) => resolve("src/app", match[1]))
+            .filter(
+              (path) =>
+                ![
+                  "globals.css",
+                  "compact-app.css",
+                  "brand.css",
+                  "appearance.css",
+                  "tablet-responsive.css",
+                ].includes(path.split("/").at(-1)),
+            ),
+        )
         .map((path) => readFileSync(path, "utf8"))
         .join("\n"),
       { from: resolve("src/app/globals.css") },
     )
   ).css +
   (bundle.outputFiles.find((file) => file.path.endsWith(".css"))?.text || "");
+const records = [];
+const sourcePaths = [
+  "scripts/test-staff-ui-upgrades-browser.mjs",
+  "src/app/[locale]/staff/page.tsx",
+  "src/app/[locale]/staff/layout.tsx",
+  "src/app/[locale]/staff/staff-ui.css",
+  "src/app/[locale]/staff/staff-overview.css",
+  "src/components/AppShell.tsx",
+  "src/components/WorkspaceShell.tsx",
+  "src/components/PasaCinematic.css",
+  "src/components/PasaSharedSurfaces.css",
+];
+const sourceHashes = () =>
+  Object.fromEntries(
+    sourcePaths.map((path) => [
+      path,
+      createHash("sha256").update(readFileSync(path)).digest("hex"),
+    ]),
+  );
+const initialHashes = sourceHashes();
+function rgba(value) {
+  const parts = value.match(/[\d.]+/g).map(Number);
+  return [...parts.slice(0, 3), parts[3] ?? 1];
+}
+function composite(foreground, background) {
+  return foreground
+    .slice(0, 3)
+    .map(
+      (channel, index) =>
+        channel * foreground[3] + background[index] * (1 - foreground[3]),
+    );
+}
+function luminance(color) {
+  return color
+    .map((channel) => {
+      const v = channel / 255;
+      return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+    })
+    .reduce((sum, v, index) => sum + v * [0.2126, 0.7152, 0.0722][index], 0);
+}
+function contrast(foreground, background) {
+  const a = luminance(composite(foreground, background)),
+    b = luminance(background);
+  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+}
+async function assertStaffOverview(page, state) {
+  await expect(page.locator(".staff-dashboard-hero h2")).toContainText(
+    state.locale === "es" ? "15 asuntos" : "15 items",
+  );
+  expect(
+    await page.locator(".staff-dashboard-metric strong").allTextContents(),
+  ).toEqual(["15", "0", "3", "3", "3"]);
+  const paint = await page.locator(".staff-dashboard-hero").evaluate((hero) => {
+    const heroStyle = getComputedStyle(hero);
+    return [
+      ...hero.querySelectorAll(
+        ".staff-dashboard-hero-copy p,.staff-dashboard-hero-actions a",
+      ),
+    ].map((element) => {
+      const style = getComputedStyle(element);
+      return {
+        text: element.textContent,
+        foreground: style.color,
+        background: style.backgroundColor,
+        image: style.backgroundImage,
+        heroBackground: heroStyle.backgroundColor,
+        heroImage: heroStyle.backgroundImage,
+      };
+    });
+  });
+  for (const item of paint) {
+    const base = rgba(item.heroBackground);
+    expect(base[3], "hero has an opaque base for compositing").toBe(1);
+    let backgrounds = [
+      base.slice(0, 3),
+      ...[...item.heroImage.matchAll(/rgba?\([^)]+\)/g)].map((match) =>
+        composite(rgba(match[0]), base),
+      ),
+    ];
+    const own = rgba(item.background);
+    backgrounds = backgrounds.map((background) => composite(own, background));
+    // Include conservative channel bounds, covering all gradient interpolations.
+    backgrounds.push(
+      [0, 1, 2].map((i) => Math.max(...backgrounds.map((bg) => bg[i]))),
+      [0, 1, 2].map((i) => Math.min(...backgrounds.map((bg) => bg[i]))),
+    );
+    const minimum = Math.min(
+      ...backgrounds.map((background) =>
+        contrast(rgba(item.foreground), background),
+      ),
+    );
+    expect(
+      minimum,
+      JSON.stringify({ state, item, minimum }),
+    ).toBeGreaterThanOrEqual(4.5);
+    item.minimumContrast = minimum;
+  }
+  const trigger = page.locator(".workspace-mobile-trigger");
+  if (await trigger.isVisible()) {
+    await trigger.focus();
+    await page.keyboard.press("Enter");
+    await expect(trigger).toHaveAttribute("aria-expanded", "true");
+    await expect(page.locator(".workspace-drawer")).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    await expect(trigger).toBeFocused();
+    await expect(page.locator(".workspace-drawer")).toHaveCount(0);
+  }
+  const links = page.locator(".staff-dashboard-hero-actions a");
+  const hitTargets = [];
+  for (const link of await links.all()) {
+    await link.scrollIntoViewIfNeeded();
+    await link.focus();
+    const hit = await link.evaluate((element) => ({
+      href: element.getAttribute("href"),
+      rectangles: [...element.getClientRects()].map((rect) => ({
+        height: rect.height,
+        hit: element.contains(
+          document.elementFromPoint(
+            rect.x + rect.width / 2,
+            rect.y + rect.height / 2,
+          ),
+        ),
+      })),
+    }));
+    for (const rect of hit.rectangles) {
+      expect(rect.height).toBeGreaterThanOrEqual(44);
+      expect(rect.hit, "hero action unobscured by closed drawer/dock").toBe(
+        true,
+      );
+    }
+    hitTargets.push(hit);
+  }
+  records.push({ ...state, paint, hitTargets });
+}
 const server = createServer((req, res) => {
   if (req.url === "/bundle.js") {
     res.setHeader("Content-Type", "text/javascript");
@@ -111,6 +273,25 @@ const server = createServer((req, res) => {
   } else if (req.url === "/styles.css") {
     res.setHeader("Content-Type", "text/css");
     res.end(css);
+  } else if (
+    /^\/(?:brand|images)\/[a-z0-9/-]+\.(svg|png|webp)$/.test(
+      new URL(req.url, "http://localhost").pathname,
+    ) &&
+    existsSync(
+      resolve("public", new URL(req.url, "http://localhost").pathname.slice(1)),
+    )
+  ) {
+    const asset = resolve(
+      "public",
+      new URL(req.url, "http://localhost").pathname.slice(1),
+    );
+    res.setHeader(
+      "Content-Type",
+      extname(asset) === ".svg"
+        ? "image/svg+xml"
+        : "image/" + extname(asset).slice(1),
+    );
+    res.end(readFileSync(asset));
   } else {
     res.setHeader("Content-Type", "text/html");
     res.end(
@@ -133,10 +314,12 @@ try {
       for (const [width, height] of [
         [360, 800],
         [600, 960],
+        [820, 1180],
         [1536, 960],
         [640, 400],
       ])
         for (const route of [
+          "overview",
           "support",
           "creators",
           "catalogue",
@@ -144,10 +327,16 @@ try {
           "admin",
         ]) {
           const page = await browser.newPage({ viewport: { width, height } });
+          await page.route("**/*", (request) =>
+            new URL(request.request().url()).origin === "http://127.0.0.1:3197"
+              ? request.continue()
+              : request.abort(),
+          );
           const pageErrors = [];
           page.on("pageerror", (error) => pageErrors.push(error.message));
           const query = new URLSearchParams({
             route,
+            theme,
             kind: "events",
             q: "Summer & sun",
             status: "published",
@@ -155,7 +344,7 @@ try {
             event: "20000000-0000-4000-8000-000000000001",
           });
           await page.goto(
-            `http://127.0.0.1:3197/${locale}/${route === "admin" ? "admin" : `staff/${route}`}?${query}`,
+            `http://127.0.0.1:3197/${locale}/${route === "admin" ? "admin" : route === "overview" ? "staff" : `staff/${route}`}?${query}`,
           );
           await page.waitForFunction(
             () => window.__staffUIReady || window.__staffUIError,
@@ -181,8 +370,10 @@ try {
               `http://127.0.0.1:3197/${locale}/staff/venue?route=venue&event=30000000-0000-4000-8000-000000000001`,
             );
             await page.waitForFunction(() => window.__staffUIReady);
-            await expect(page.locator("details[open]")).toHaveCount(0);
-          } else {
+            await expect(
+              page.locator(".workspace-grid-body details[open]"),
+            ).toHaveCount(0);
+          } else if (route !== "overview") {
             const retry = page.getByRole("link", {
               name: locale === "es" ? "Reintentar" : "Retry",
             });
@@ -216,7 +407,7 @@ try {
               0,
             );
           }
-          if (route !== "admin") {
+          if (route !== "admin" && route !== "overview") {
             await expect(page.locator(".workspace-page-heading")).toHaveCount(
               0,
             );
@@ -250,7 +441,9 @@ try {
             ),
           ).toBe(true);
           expect(pageErrors).toEqual([]);
-          if (width === 360 || width === 1536)
+          if (route === "overview")
+            await assertStaffOverview(page, { locale, theme, width, height });
+          if (route === "overview" || width === 360 || width === 1536)
             await page.screenshot({
               path: `${directory}/${route}-${locale}-${theme}-${width}.png`,
               fullPage: true,
@@ -265,4 +458,25 @@ try {
 } finally {
   await browser?.close();
   await new Promise((resolve) => server.close(resolve));
+  const finalHashes = sourceHashes();
+  writeFileSync(
+    resolve(directory, "staff-overview-evidence.json"),
+    JSON.stringify(
+      {
+        fixtureOnly: true,
+        actualNext: false,
+        productionAuthRLS: false,
+        physicalAndroid: false,
+        initialHashes,
+        finalHashes,
+        records,
+        count,
+      },
+      null,
+      2,
+    ),
+  );
+  expect(finalHashes, "source frozen during browser run").toEqual(
+    initialHashes,
+  );
 }

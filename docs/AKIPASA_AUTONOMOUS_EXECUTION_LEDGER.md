@@ -2,6 +2,58 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 30 October 15:42 UTC — recovered operations integration ready to publish
+
+Retained workspace recovered intact at227267a. All11 frozen implementation/test
+source hashes match after completed npmcheck EXIT0:2717Vitest/17groups,132initial
+Node cases and optimized193route build. Full log SHA256 and individual source hashes
+are in AKIPASA_OPERATIONS_SCREEN_INTEGRATION_20261030.json. No runtime source changed
+after validation. Only final evidence/ledger updates and formatting follow.
+
+Published Account CI locator failure is repaired without dropping either link;32
+author and32root browser cases pass. Staff120browser/46unit, Admin32contexts/41unit,
+Owner24states/144base/120accent/38unit pass. Independent Profile/Settings and Staff/
+Admin visual review is positive; apparent navy fullpage sidebar strip proved a
+capture artifact in actual scrolled viewport. Real protected/device acceptance
+remains distinct. No route promotion from these fixture checks.
+
+Accelerated directive now assigns Consumer, Discovery, Social, Operations runtime
+paths exclusively, with separate read-only-runtime QA/gallery owner. Root owns shared
+files, matrix and commits. Agents inspect only until this batch publishes. No new
+backend archaeology, avatar work, infrastructure, redundant audits or competing PRs.
+Next: push validated batch, send exact source to owners; targeted repairs and one
+navigable source-bound review package per family, then one fullcheck per frozen
+integration boundary. Track implemented/technically verified/accepted separately.
+Acceptance remains5/90 plus6fallback gaps;332staysdraft; production335unchanged.
+
+## 30 October 15:30 UTC — operations screen batch and real CI repair
+
+Published head227267a63885d6162206480f74e9f9e1eb6d4cd2 is the completed consumer
+screen batch, not live. Exact-head10 ordinary workflows pass; both public browser
+shards and aggregate pass. Account workflow fails at a distinct personal harness
+ambiguous Edit profile locator after its main360-case matrix passes. The repaired
+harness independently asserts both unique links/destinations;32 local cases pass
+again under root. Cloudflare4371e804 packaging/version upload succeeds; production
+remains approved335source3d87/Worker26e, no branch traffic deployment.
+
+Next working-tree batch: Staff hero contrast and full workspace presentation, Admin
+neutral workbenches/localized labels, Owner route presentation/private photo restore,
+and Account CI harness repair. Source frozen11 implementation/test files before
+full npmcheck. Staff120browser+36supplemental contexts+46Vitest, Admin32contexts/64
+captures+41Vitest, Owner final checks reported separately. Fixtures are explicit;
+protected actualNext/Auth/RLS/provider/device acceptance is not inferred. Source
+hashes are in AKIPASA_OPERATIONS_SCREEN_INTEGRATION_20261030.json.
+
+Acceptance unchanged5/90,85 inprogress,13excluded and6fallback gaps. Strict gate
+correctly stays red. AkiPals paused, Tonight off, new staff SQL remains unapplied.
+No backend expansion or competing release. Root sole integration writer; scheduled
+writer lease extended through17:30UTC while active.
+
+NEXT: finish root fullcheck/sourcefreeze verification, preserve actual Owner render
+and cleanup regression results, commit/push this batch without force, inspect fresh
+exactheadCI/Cloudflare and continue independent remaining route visual review. No
+full332ready/merge/deploy until real release requirements are satisfied.
+
 ## 30 October 14:49 UTC — final screen integration check passed
 
 Branchwork/coordinated-release-20261029, implementation parentc10d7ad. FINALnpmcheck

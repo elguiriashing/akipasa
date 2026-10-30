@@ -287,12 +287,34 @@ try {
           ).toBe(true);
           if (route === "overview") {
             await expect(page.locator("[data-personal-account]")).toBeVisible();
-            await expect(
-              page.getByRole("link", {
+            const overviewEdit = page
+              .locator("[data-personal-account]")
+              .getByRole("link", {
                 name: locale === "es" ? "Editar perfil" : "Edit profile",
                 exact: true,
-              }),
-            ).toHaveAttribute("href", `/${locale}/account/profile`);
+              });
+            await expect(overviewEdit).toHaveCount(1);
+            await expect(overviewEdit).toHaveAttribute(
+              "href",
+              `/${locale}/account/profile`,
+            );
+            const sectionEdit = page
+              .getByRole("navigation", {
+                name:
+                  locale === "es"
+                    ? "Secciones de tu cuenta"
+                    : "Your account sections",
+                exact: true,
+              })
+              .getByRole("link", {
+                name: locale === "es" ? "Editar" : "Edit",
+                exact: true,
+              });
+            await expect(sectionEdit).toHaveCount(1);
+            await expect(sectionEdit).toHaveAttribute(
+              "href",
+              `/${locale}/account/profile`,
+            );
             await expect(
               page.locator(".account-pulse strong").nth(0),
             ).not.toHaveText("—");

@@ -1,3 +1,4 @@
+import "./owner.css";
 import { suiteHref } from "@/lib/suite-navigation";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -122,7 +123,7 @@ export default async function OwnerConsolePage({
     (pendingCommunity.count || 0);
 
   return (
-    <main className="owner-console-page">
+    <main className="owner-console-page owner-console-v3">
       <WorkspacePageHeader
         eyebrow="OWNER / DEV"
         title={es ? "Consola de Alex" : "Alex owner console"}
@@ -186,29 +187,29 @@ export default async function OwnerConsolePage({
         aria-label={es ? "Estado operativo" : "Operational status"}
       >
         <article>
-          <span>AI</span>
+          <span>{es ? "IA" : "AI"}</span>
           <strong>{workingAgents}</strong>
           <small>{es ? "agentes trabajando" : "agents working"}</small>
         </article>
         <article>
-          <span>QUEUE</span>
+          <span>{es ? "COLA" : "QUEUE"}</span>
           <strong>{pendingTasks.count || 0}</strong>
           <small>{es ? "tareas activas" : "active tasks"}</small>
         </article>
         <article>
-          <span>TRUST</span>
+          <span>{es ? "CONFIANZA" : "TRUST"}</span>
           <strong>{moderationTotal}</strong>
           <small>
-            {es ? "pendientes de moderaci\u00f3n" : "pending moderation"}
+            {es ? "pendientes de moderación" : "pending moderation"}
           </small>
         </article>
         <article className={failedAgents ? "owner-metric-alert" : ""}>
-          <span>HEALTH</span>
+          <span>{es ? "ESTADO" : "HEALTH"}</span>
           <strong>{failedAgents}</strong>
           <small>{es ? "agentes con error" : "agents in error"}</small>
         </article>
         <article>
-          <span>APPROVAL</span>
+          <span>{es ? "APROBACIÓN" : "APPROVAL"}</span>
           <strong>{pendingApprovals.count || 0}</strong>
           <small>{es ? "aprobaciones esperando" : "approvals waiting"}</small>
         </article>
@@ -219,10 +220,10 @@ export default async function OwnerConsolePage({
           <div className="owner-section-heading">
             <span>01</span>
             <div>
-              <h2>Launchpad</h2>
+              <h2>{es ? "Tus herramientas" : "Your tools"}</h2>
               <p>
                 {es
-                  ? "Saltos directos a las superficies que mas importan."
+                  ? "Saltos directos a las superficies que más importan."
                   : "Direct jumps to the surfaces that matter most."}
               </p>
             </div>
@@ -232,36 +233,40 @@ export default async function OwnerConsolePage({
               <strong>AI</strong>
               <span>
                 {es ? "Equipo IA" : "AI Team"}
-                <small>{agentRows.length} agents</small>
+                <small>
+                  {agentRows.length} {es ? "agentes" : "agents"}
+                </small>
               </span>
             </Link>
             <Link href={`/${locale}/staff/moderation`}>
               <strong>MD</strong>
               <span>
-                {es ? "Moderaci\u00f3n" : "Moderation"}
-                <small>{moderationTotal} pending</small>
+                {es ? "Moderación" : "Moderation"}
+                <small>
+                  {moderationTotal} {es ? "pendientes" : "pending"}
+                </small>
               </span>
             </Link>
             <Link href={`/${locale}/admin/personalisation`}>
               <strong>AN</strong>
               <span>
-                Analytics
+                {es ? "Analítica" : "Analytics"}
                 <small>
-                  {es ? "Senales y perfiles" : "Signals and profiles"}
+                  {es ? "Señales y perfiles" : "Signals and profiles"}
                 </small>
               </span>
             </Link>
             <Link href={`/${locale}/admin/catalogue`}>
               <strong>CT</strong>
               <span>
-                {es ? "Catalogo" : "Catalogue"}
+                {es ? "Catálogo" : "Catalogue"}
                 <small>{es ? "Locales y eventos" : "Venues and events"}</small>
               </span>
             </Link>
             <Link href={`/${locale}/admin/audit`}>
               <strong>AU</strong>
               <span>
-                {es ? "Auditoria" : "Audit"}
+                {es ? "Auditoría" : "Audit"}
                 <small>{es ? "Historial sensible" : "Sensitive history"}</small>
               </span>
             </Link>
@@ -270,9 +275,12 @@ export default async function OwnerConsolePage({
               target="_blank"
               rel="noreferrer"
             >
-              <strong>HQ</strong>
+              <strong>AB</strong>
               <span>
-                AkiBusiness<small>CRM + operations -&gt;</small>
+                AkiBusiness
+                <small>
+                  {es ? "CRM + operaciones ↗" : "CRM + operations ↗"}
+                </small>
               </span>
             </a>
           </div>
@@ -282,7 +290,7 @@ export default async function OwnerConsolePage({
           <div className="owner-section-heading">
             <span>02</span>
             <div>
-              <h2>{es ? "Personaliza AkiPasa" : "Pimp AkiPasa"}</h2>
+              <h2>{es ? "Tu apariencia" : "Your appearance"}</h2>
               <p>
                 {es
                   ? "Tu fondo y acento viajan contigo por todo el sitio."
@@ -304,7 +312,7 @@ export default async function OwnerConsolePage({
               <h2>{es ? "Radar de agentes" : "Agent radar"}</h2>
               <p>
                 {es
-                  ? "Estado rapido sin abrir la consola completa."
+                  ? "Estado rápido sin abrir la consola completa."
                   : "Quick status without opening the full console."}
               </p>
             </div>
@@ -330,7 +338,7 @@ export default async function OwnerConsolePage({
               <h2>{es ? "Pulso reciente" : "Recent pulse"}</h2>
               <p>
                 {es
-                  ? "Los ultimos latidos del equipo de IA."
+                  ? "Los últimos latidos del equipo de IA."
                   : "The latest AI-team heartbeats."}
               </p>
             </div>
@@ -361,7 +369,7 @@ export default async function OwnerConsolePage({
         <p>
           <strong>{es ? "Toolbox global" : "Global toolbox"}</strong>
           {es
-            ? "Pulsa Ctrl/Cmd + Shift + O en cualquier pagina. Prueba cuadricula, enfoque, copiar URL y celebracion."
+            ? "Pulsa Ctrl/Cmd + Shift + O en cualquier página. Prueba cuadrícula, enfoque, copiar URL y celebración."
             : "Press Ctrl/Cmd + Shift + O on any page. Try grid, focus, copy URL, and celebration."}
         </p>
       </section>

@@ -1,0 +1,375 @@
+/* The cinematic shell must not cover this owner’s restored private canvas. */
+html[data-owner-background]
+  .app-shell:has(.owner-console-page.owner-console-v3) {
+  background: transparent;
+}
+
+/* Owner route skin only. Selected accent, canvas and private image stay inherited. */
+.owner-console-v3 {
+  --owner-ui-panel: #111619;
+  --owner-ui-raised: #1b2125;
+  --owner-ui-line: #30383d;
+  --owner-ui-ink: #f7f7f4;
+  --owner-ui-muted: #b6c0c6;
+  --owner-ui-brand: #ffad76;
+}
+html[data-theme="light"] .owner-console-v3 {
+  --owner-ui-panel: #fffdf9;
+  --owner-ui-raised: #f1eee8;
+  --owner-ui-line: #d6d8d5;
+  --owner-ui-ink: #19262b;
+  --owner-ui-muted: #52616b;
+  --owner-ui-brand: #9a400c;
+}
+.app-shell
+  .app-content[data-pasa-surface="operations"]
+  .owner-console-page.owner-console-v3 {
+  display: grid;
+  gap: 1.2rem;
+  width: min(100%, 78rem);
+  padding: clamp(1rem, 2.5vw, 2rem) clamp(0.25rem, 1.6vw, 1rem) 2rem;
+  color: var(--owner-ui-ink);
+}
+.app-shell .owner-console-page.owner-console-v3 > .workspace-section-heading {
+  margin: 0;
+  padding: 0.4rem 0 0.6rem;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+.app-shell
+  .owner-console-page.owner-console-v3
+  > .workspace-section-heading
+  h1 {
+  color: var(--owner-ui-ink);
+  font-size: clamp(1.8rem, 3.6vw, 2.8rem);
+  line-height: 1.12;
+  letter-spacing: -0.045em;
+}
+.app-shell .owner-console-page.owner-console-v3 > .workspace-section-heading p,
+.app-shell .owner-console-page.owner-console-v3 .owner-section-heading p {
+  color: var(--owner-ui-muted);
+  line-height: 1.6;
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-verified-pill {
+  color: var(--primary-text, var(--owner-ui-brand));
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--owner-ui-line));
+  background: color-mix(in srgb, var(--primary) 9%, var(--owner-ui-panel));
+}
+.app-shell
+  .app-content[data-pasa-surface="operations"]
+  .owner-console-page.owner-console-v3
+  .owner-hero {
+  min-height: 0;
+  margin: 0;
+  padding: clamp(1.4rem, 3.5vw, 2.8rem);
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--owner-ui-line));
+  border-radius: 1.5rem;
+  background:
+    radial-gradient(
+      ellipse at 95% 0%,
+      color-mix(in srgb, var(--primary) 13%, transparent),
+      transparent 62%
+    ),
+    var(--owner-ui-panel);
+  color: var(--owner-ui-ink);
+  box-shadow: none;
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-command-kicker {
+  color: var(--owner-ui-brand);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-hero h2 {
+  max-width: 20ch;
+  margin: 0.7rem 0 0.9rem;
+  color: var(--owner-ui-ink);
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  line-height: 1.06;
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-hero p {
+  color: var(--owner-ui-muted);
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-command-actions a {
+  min-height: 46px;
+  border-color: var(--owner-ui-line);
+  background: var(--owner-ui-raised);
+  color: var(--owner-ui-ink);
+}
+.app-shell
+  .owner-console-page.owner-console-v3
+  .owner-command-actions
+  a:first-child {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--primary-contrast, #14213d);
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-hero-orbit {
+  width: 9rem;
+  height: 9rem;
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-hero-orbit strong {
+  inset: 2rem;
+  color: var(--primary-contrast, #14213d);
+  box-shadow: 0 0 2.5rem color-mix(in srgb, var(--primary) 16%, transparent);
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-metric-grid {
+  margin: 0;
+  gap: 0.65rem;
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-metric-grid > article {
+  gap: 0.35rem;
+  padding: 1rem;
+  border: 1px solid var(--owner-ui-line);
+  border-radius: 1rem;
+  background: var(--owner-ui-panel);
+  color: var(--owner-ui-ink);
+  box-shadow: none;
+}
+.app-shell
+  .owner-console-page.owner-console-v3
+  .owner-metric-grid
+  > article
+  > span {
+  color: var(--primary-text, var(--owner-ui-brand));
+  font-family: inherit;
+  font-size: 0.65rem;
+  letter-spacing: 0.09em;
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-metric-grid strong {
+  font-size: clamp(1.7rem, 3vw, 2.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-metric-grid small {
+  color: var(--owner-ui-muted);
+  line-height: 1.45;
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-metric-alert {
+  border-color: #b95b53;
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-console-grid {
+  align-items: start;
+  gap: 1rem;
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-console-grid > section {
+  padding: clamp(1.1rem, 2.5vw, 1.65rem);
+  border: 1px solid var(--owner-ui-line);
+  border-radius: 1.2rem;
+  background: var(--owner-ui-panel);
+  color: var(--owner-ui-ink);
+  box-shadow: none;
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-section-heading > span {
+  flex: none;
+  color: var(--primary-text, var(--owner-ui-brand));
+  background: color-mix(in srgb, var(--primary) 10%, var(--owner-ui-panel));
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-section-heading h2 {
+  color: var(--owner-ui-ink);
+  font-size: 1.2rem;
+  letter-spacing: -0.025em;
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-launch-grid {
+  gap: 0;
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-launch-grid > a {
+  min-height: 76px;
+  gap: 0.8rem;
+  padding: 0.85rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--owner-ui-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--owner-ui-ink);
+}
+.app-shell
+  .owner-console-page.owner-console-v3
+  .owner-launch-grid
+  > a:nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+.app-shell
+  .owner-console-page.owner-console-v3
+  .owner-launch-grid
+  > a
+  > strong {
+  flex: none;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 0.8rem;
+  color: var(--primary-text, var(--owner-ui-brand));
+  background: var(--owner-ui-raised);
+  font-size: 0.8rem;
+}
+.app-shell
+  .owner-console-page.owner-console-v3
+  :is(
+    .owner-launch-grid small,
+    .owner-preferences-form legend,
+    .owner-swatch span,
+    .owner-toggle-row,
+    .owner-private-backgrounds p,
+    .owner-background-empty,
+    .owner-background-upload small,
+    .owner-agent-radar small,
+    .owner-agent-radar em,
+    .owner-activity-stream small,
+    .owner-activity-stream time
+  ) {
+  color: var(--owner-ui-muted);
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-toggle-row {
+  gap: 0.5rem 1rem;
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-toggle-row label {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 0.5rem;
+}
+.app-shell
+  .owner-console-page.owner-console-v3
+  :is(.owner-private-backgrounds, .owner-shortcut-note) {
+  border-color: var(--owner-ui-line);
+}
+.app-shell
+  .owner-console-page.owner-console-v3
+  :is(
+    .owner-background-upload,
+    .owner-background-gallery article,
+    .owner-agent-radar article,
+    .owner-activity-stream article
+  ) {
+  border-color: var(--owner-ui-line);
+  background: var(--owner-ui-raised);
+  color: var(--owner-ui-ink);
+  box-shadow: none;
+}
+.app-shell
+  .owner-console-page.owner-console-v3
+  .owner-background-gallery
+  article.active {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 20%, transparent);
+}
+.app-shell
+  .owner-console-page.owner-console-v3
+  .owner-background-gallery
+  article
+  > span {
+  color: var(--owner-ui-muted);
+}
+.app-shell
+  .owner-console-page.owner-console-v3
+  :is(
+    input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]),
+    select,
+    textarea
+  ) {
+  min-height: 44px;
+  border-color: var(--owner-ui-line);
+  background-color: var(--owner-ui-raised);
+  color: var(--owner-ui-ink);
+}
+.app-shell
+  .owner-console-page.owner-console-v3
+  input[type="file"]::file-selector-button {
+  min-height: 36px;
+  margin-right: 0.65rem;
+  border: 1px solid var(--owner-ui-line);
+  border-radius: 0.6rem;
+  background: var(--owner-ui-panel);
+  color: var(--owner-ui-ink);
+}
+.app-shell .owner-console-page.owner-console-v3 :is(button, .button) {
+  min-height: 44px;
+  border-color: var(--owner-ui-line);
+  background: var(--owner-ui-raised);
+  color: var(--owner-ui-ink);
+}
+.app-shell .owner-console-page.owner-console-v3 .button-strong {
+  background: var(--primary);
+  color: var(--primary-contrast, #14213d);
+  border-color: var(--primary);
+}
+.app-shell .owner-console-page.owner-console-v3 .danger {
+  color: #ffaaa1;
+}
+html[data-theme="light"]
+  .app-shell
+  .owner-console-page.owner-console-v3
+  .danger {
+  color: #a72f23;
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-shortcut-note {
+  margin: 0;
+  padding: 1rem 1.2rem;
+  background: var(--owner-ui-panel);
+  color: var(--owner-ui-muted);
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-shortcut-note > span {
+  flex: none;
+  color: var(--primary-contrast, #14213d);
+}
+.app-shell .owner-console-page.owner-console-v3 .owner-shortcut-note strong {
+  color: var(--owner-ui-ink);
+}
+.app-shell
+  .owner-console-page.owner-console-v3
+  :is(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid var(--primary-text, var(--owner-ui-brand));
+  outline-offset: 4px;
+}
+.app-shell
+  .owner-console-page.owner-console-v3
+  :is(.owner-swatch, .owner-accent)
+  input:focus-visible
+  + i {
+  outline: 3px solid var(--primary-text, var(--owner-ui-brand));
+  outline-offset: 4px;
+}
+@media (max-width: 700px) {
+  .app-shell
+    .app-content[data-pasa-surface="operations"]
+    .owner-console-page.owner-console-v3 {
+    width: 100%;
+    padding-inline: 1rem;
+  }
+  .app-shell
+    .owner-console-page.owner-console-v3
+    .owner-launch-grid
+    > a:not(:last-child) {
+    border-bottom: 1px solid var(--owner-ui-line);
+  }
+  .app-shell
+    .owner-console-page.owner-console-v3
+    .owner-metric-grid
+    > article:last-child {
+    grid-column: 1 / -1;
+  }
+  .app-shell .owner-console-page.owner-console-v3 .owner-agent-radar article {
+    flex-wrap: wrap;
+  }
+  .app-shell
+    .owner-console-page.owner-console-v3
+    .owner-agent-radar
+    article
+    > span {
+    min-width: 0;
+  }
+}
+
+.app-shell .owner-console-page.owner-console-v3 .owner-accent {
+  display: grid;
+  min-width: 44px;
+  min-height: 44px;
+  place-items: center;
+}
+.app-shell
+  .owner-console-page.owner-console-v3
+  :is(button, input, select):disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
