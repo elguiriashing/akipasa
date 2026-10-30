@@ -3269,3 +3269,35 @@ labels, overflow, keyboard/reduced motion, source hashes and navigation across
 ledger/receipt; implementation alone does not grant route acceptance. A fresh
 read-only aggregate at00:02UTC still found zero future occurrences; Tonight stays
 default-off (AKIPASA_EVENT_SUPPLY_20261030.json).
+
+## 2026-10-30 | Protected Passport chapter readability repair
+
+The isolated small-release investigation rendered the actual async Passport page
+and actual book with disposable identity/read/action adapters. Unlike guest-only
+captures, populated/error/empty protected chapter captures exposed white metric
+numbers on paper and overly broad brown paragraph rules inside dark embedded
+cards. Metric children now use paper ink; paragraph overrides apply only to
+paper panels, and the independently dark badge collection retains its own readable
+ink through its existing semantic landmark. XP, reward actions, authorization,
+private reads and stored records remain unchanged. A light-theme badge search
+placeholder measured2.1183:1 before its explicit opaque text repair.
+The protected fixture is visual
+and caller-filter evidence, not production authorization or physical-device proof.
+
+The short-tablet regression additionally reproduced an unreachable cover action
+at820×900: normal scrolling left the button with zero viewport intersection.
+The app locks Passport content through850px, while the book's small-screen
+interior previously stopped at700px. Only the701–850px book atlas now provides
+contained vertical scrolling. Other app scroll locks and chapter layouts remain.
+The maintained four EN/ES/theme checks require full viewport visibility and an
+ordinary click, emulated tap or keyboard Enter into the city index; no forced
+click or enlarged viewport.
+
+Desktop and populated-city review also found pale journal text and a category
+control extending beyond the paper. The journal alone maps the three Passport
+object tokens to paper ink/muted/surface, with a local light native-control scheme.
+The photographic object and interface outside the journal inherit their existing
+appearance. Desktop spread tracks now shrink within the available paper width.
+The owner-appearance guard still rejects generic and broad palette overrides;
+it permits only those exact three values on the exact top-level paper-journal
+selector and verifies the mapping. No owner theme, role or data rule is relaxed.

@@ -4045,3 +4045,46 @@ This is scoped Creator/Auth/RLS proof, not complete canonical migration parity.
 - Supply: fresh00:02UTC aggregate remains0future occurrences. No production write
   or feature-gate change. Rollback is the prior markup/module removal; no data
   or permission rollback is involved.
+
+## 2026-10-30 | Protected Passport paper and embedded-card contrast
+
+- Trigger: real page/book rendering with disposable populated and unavailable
+  chapter data exposed metric and nested dark-card contrast defects missed by
+  guest coverage. Original failing captures remain archived.
+- Repair: PassportBook scoped CSS only. Explicit paper metric children, paragraphs
+  scoped to paper panels and readable inherited ink for the dark badge collection.
+  No application action, data, XP, reward, consent, role or private read change.
+- Validation: actual component fixture adds computed contrast assertions for
+  metric, weekly-quest, section and badge labels; final results/source hashes are
+  recorded in the release proposal and mission ledger. Not real Auth/RLS proof.
+- Additional measured defect: light-theme achievement search placeholder2.1183:1;
+  scoped opaque placeholder ink and browser-native CSS colour/alpha assertion.
+- Rollback: revert scoped CSS only; no database or customer-record action.
+
+### Short-tablet Passport action reachability
+
+- Actual Next820×900 regression reproduced ratio0 for OpenPassport after native
+  scrolling; original geometry/screenshot/failure log retained.
+- Root cause: shell scroll lock extends to850px, but immersive book internals
+  start at700px. An overflowing desk was clipped in the intermediate range.
+- Repair: only701–850px book atlas gets contained vertical auto-scroll; no global
+  shell lock, viewport, action or source permission changes.
+- Four bounded EN/ES/theme regression cases require full action visibility and
+  native click/tap/Enter navigation. Do not hide the defect with force or a taller
+  test screen.
+
+### City journal palette and desktop control containment
+
+- Real desktop review found pale journal text and a select extending beyond the
+  paper despite no document-level overflow. Earned-city fixture coverage was
+  added; photo-object colors remain independent from journal paper.
+- Journal-only three Passport object-token mappings and local light control
+  scheme; no generic interface palette override. Existing desktop spread tracks
+  use shrinkable zero minima, retaining their proportions and responsive layout.
+- The former blanket object-token prohibition was refined into an exact
+  selector/value/root-scope assertion while retaining the complete prohibition
+  for generic/broad overrides. Passport-muted is additionally checked; no test
+  is skipped or existing owner/accent/appearance assertion removed.
+- Actual Next desktop guards check journal contrast, control bounds, unchanged
+  interface/photo ink and ordinary discovery-link navigation. Protected fixture
+  explicitly distinguishes original192 chapter cases from2earned-city cases.

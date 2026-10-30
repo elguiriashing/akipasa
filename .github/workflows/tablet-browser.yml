@@ -151,3 +151,22 @@ jobs:
           name: tablet-browser-evidence
           path: test-results
           retention-days: 7
+  passport-release-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Actual protected chapter components with disposable adapters
+        run: node scripts/test-passport-chapter-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: passport-small-release-evidence
+          path: test-results/passport-protected-chapters
+          retention-days: 7

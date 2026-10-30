@@ -2,6 +2,70 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## Protected Passport repair validated; isolated PR335 awaiting release checks
+
+Recorded implementation parent8f78b33ab07bf60b30530f08391cb943d856ee9f on
+work/coordinated-release-20261029. The next source commit contains the final
+Passport paper/embedded-card/journal contrast, contained short-tablet scrolling,
+desktop grid containment and maintained regression guards. Exact final CSS SHA256
+e4b661f8452f5d0aa4310b8849e66689e776f9cb2a7ff29ff216051c17d43dec.
+This supersedes the earlier intermediate047/c4 snapshots and failed attempts.
+
+TESTED final runtime: full npmcheck EXIT0,2,639 Vitest cases plus required checks
+and optimized Next build.194actual-page/book fixture cases PASS (192protected
+chapter states and2synthetic earned-city/detail cases); six actualNext cases PASS
+on3118, including four820x900EN/ES/themes with full viewport visibility and native
+click/tap/Enter, plus two explicit desktop journal contrast/bounds/image/discovery
+journeys. Initial exact port mismatch was a test-only3107 literal; dynamic running
+origin plus explicit same-origin/path/locality/full-destination assertions now
+pass on3100 and3118. Original failures, source snapshots and geometry remain.
+Receipt: docs/receipts/AKIPASA_PROTECTED_PASSPORT_CONTRAST_20261030.json.
+
+Real defects repaired: white metrics on parchment; blanket brown paragraphs in
+independent dark quests; dark badge inherited ink; light badge placeholder2.1183:1;
+short-tablet cover action ratio0; pale city-journal text and select clipped within
+the paper despite document-level overflow passing. Generic/shared appearance
+remains inherited. Only three exact Passport object mappings on the exact
+root-level physical-paper journal selector are permitted, positively asserted,
+unique/no!important; all generic/broad/media/theme overrides still fail. Source
+roles/reads/XP/rewards/actions/consent remain unchanged. Device/RLS/owner visual
+acceptance is not inferred from fixture rendering; all90routes stay in-progress.
+
+One coordinated small release is draft PR335, production-based branch
+work/pasa-passport-security-release-20261030, head
+79dacc3b0b2ca2685789dc4966576f0cce1f775e (test-only portability repair after
+61bfea5252a3ab9a5ecf926cdc45055ec3ab37e0). Exactly four runtime files: Home
+card block/module and Passport view allowlist/book module. Full frozen check
+2,145Vitest PASS;58actualNext plus2ordinary desktop rerun and194adapter casesPASS;
+portable-origin desktop2PASS at default3100. Runtime/SQL files are byte-identical
+between61bfea5 and79dacc3. Fresh79 exact-head CI/Cloudflare are required; previous
+61 clean nonproduction CF40f72c30-d2a5-483d-a2d2-0ff66861d506 succeeded, not live.
+Independent immutable61 source review found no blocking issue; no acceptance.
+
+PR335 includes the exact reviewed334 two-column terms patch, both mirrors SHA256
+7fe0fa1aa1346cc3877e9693b60a6f1a382f09bf37ebbe33e0bea951b8eeeb75.
+Standalone334 remains immutable892/draft, not a second deployment/application.
+Owner has NOT approved this new staged UI exception or terms SQL. Only approved
+Home/Login333 remains live39cd9bb/Worker8199ce83-b416-42d1-9568-9dc167601b6a.
+No merge, deployment, remote SQL or customer-record mutation occurred.
+
+NEXT: publish this validated main repair, obtain fresh exact-head CI/Cloudflare
+for both branches and repair actual failures. Preserve main's strict90-route gate;
+it correctly stays red until owner/device/reviewer requirements exist. When335
+is concretely ready, ask explicit owner approval for this bounded Home/Passport
+exception AND exact production terms-permission fix. Then fresh master/head/live
+metadata/RPC fingerprints, expected-head merge, verify automatic source deployment
+before manual paths, apply immutable guarded SQL once and verify metadata only.
+Never merge/apply334 as duplicate. Keep Worker8199 as immediate UI rollback.
+
+Root exclusive integration lease through02:00UTC30October in the existing single
+continuation task; no guaranteed next-run/background claim. Runtime interruption
+was detected and the release agent explicitly resumed; check live agent status
+rather than assuming queued messages restart an interrupted agent. Canonical
+replay and static acceptance protocol checkpoints are retained outside tracked
+source; neither raw migration counts nor agent reviewer strings replace actual
+schema parity or Alex's reserved final visual/physical-device approval.
+
 ## Home directory continuity — validated working-tree candidate
 
 Baseline f489be663ac896da9451c8a61b44dd46d98dd74d; branch

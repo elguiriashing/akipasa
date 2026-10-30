@@ -592,7 +592,10 @@
 .chapter :global(.reward-card-list) {
   grid-template-columns: 1fr;
 }
-.chapter :global(p) {
+.chapter :global(.panel p),
+.chapter :global(.passport-card p),
+.chapter :global(.stamp-card p),
+.chapter :global(.notice p) {
   color: #afc3d3;
 }
 .chapter :global(.status-pill) {
@@ -1441,7 +1444,7 @@
   }
   .spread {
     min-height: calc(100vh - 210px);
-    grid-template-columns: minmax(390px, 0.82fr) minmax(450px, 1.18fr);
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
     gap: clamp(44px, 6vw, 110px);
     align-items: center;
   }
@@ -1703,7 +1706,10 @@
 .chapter :global(.console-section-heading) {
   color: var(--passport-ink);
 }
-.chapter :global(p) {
+.chapter :global(.panel p),
+.chapter :global(.passport-card p),
+.chapter :global(.stamp-card p),
+.chapter :global(.notice p) {
   color: var(--passport-muted);
 }
 .bookmarks .motionControls button[aria-pressed="true"],
@@ -2327,7 +2333,10 @@
 .page:not(:has(.cover)) .chapter :global(.console-section-heading) {
   color: var(--paper-ink);
 }
-.page:not(:has(.cover)) .chapter :global(p) {
+.page:not(:has(.cover)) .chapter :global(.panel p),
+.page:not(:has(.cover)) .chapter :global(.passport-card p),
+.page:not(:has(.cover)) .chapter :global(.stamp-card p),
+.page:not(:has(.cover)) .chapter :global(.notice p) {
   color: var(--paper-muted);
 }
 .chapter :global(.console-section-header) {
@@ -2353,6 +2362,44 @@
   color: #30251d;
   box-shadow: none;
 }
+.chapter :global(.console-section-header h2) {
+  color: var(--paper-ink, #30251d);
+}
+.chapter :global(.console-section-header > div > span) {
+  color: var(--paper-muted, #685442);
+}
+.chapter :global(.console-section-header > div > p) {
+  color: #9e4215;
+}
+/* This self-contained collection is a dark object in both app themes. Give its
+   inherited headings/body ink without recolouring unrelated chapter content. */
+.chapter :global(section[aria-labelledby="badge-collection-heading"]),
+.chapter :global(section[aria-labelledby="badge-collection-heading"] h3),
+.chapter :global(section[aria-labelledby="badge-collection-heading"] h4) {
+  color: #f3f5ef;
+}
+.chapter :global(section[aria-labelledby="badge-collection-heading"] p) {
+  color: #c3d6cf;
+}
+.chapter :global(section[aria-labelledby="badge-collection-heading"] a) {
+  color: #d8efe4;
+}
+.chapter
+  :global(
+    section[aria-labelledby="badge-collection-heading"] input::placeholder
+  ) {
+  color: #b9c9d5;
+  opacity: 1;
+}
+.chapter :global(.metric-card > strong),
+.chapter :global(.metric-card > .metric) {
+  color: var(--paper-ink, #30251d);
+}
+.chapter :global(.metric-card > span),
+.chapter :global(.metric-card > small) {
+  color: var(--paper-muted, #685442);
+}
+
 .bookmarks,
 .mobileMenuButton {
   background: #141311;
@@ -2398,6 +2445,67 @@
   }
   .page:not(:has(.cover)) .pageTitle {
     margin-block: 12px;
+  }
+}
+.page:not(:has(.cover)) .journal {
+  --passport-ink: var(--paper-ink);
+  --passport-muted: var(--paper-muted);
+  --passport-surface: var(--paper-panel);
+  color-scheme: light;
+}
+.page:not(:has(.cover)) .journal,
+.page:not(:has(.cover)) .journal > section,
+.page:not(:has(.cover)) .journal h3,
+.page:not(:has(.cover)) .journal h4 {
+  color: var(--paper-ink);
+}
+.page:not(:has(.cover)) .journal p,
+.page:not(:has(.cover)) .journal small,
+.page:not(:has(.cover)) .credit {
+  color: var(--paper-muted);
+}
+.page:not(:has(.cover)) .journal small,
+.page:not(:has(.cover)) .journal > section > div:first-child > span {
+  opacity: 1;
+}
+.page:not(:has(.cover)) .journal > section > div:first-child > span {
+  color: var(--paper-muted);
+}
+.page:not(:has(.cover)) .journal a:not(.explore) {
+  color: #854015;
+}
+.journal > section,
+.journal label {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.journal label {
+  grid-template-columns: minmax(0, 1fr);
+}
+.page:not(:has(.cover)) .journal select {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  background: var(--paper-panel);
+  color: var(--paper-ink);
+  border-color: var(--paper-line);
+}
+/* The fixed desktop interface summary needs its own inherited-theme surface
+   when the physical paper extends underneath it. */
+.summary {
+  padding: 8px 12px;
+  border: 1px solid var(--passport-line);
+  border-radius: 9px;
+  background: var(--passport-panel);
+  color: var(--passport-ink);
+}
+/* The app contains Passport through850px; the compact inner layout starts at
+  700px. Intermediate tablets need their own bounded scroll, not clipped content. */
+@media (min-width: 701px) and (max-width: 850px) {
+  .atlas {
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-width: thin;
   }
 }
 @media (prefers-reduced-motion: reduce) {

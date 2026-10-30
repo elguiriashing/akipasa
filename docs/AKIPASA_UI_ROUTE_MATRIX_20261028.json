@@ -321,7 +321,7 @@
     "src/app/[locale]/passports/page.tsx": {
       "scope": "consumer",
       "status": "in-progress",
-      "note": "Generated cover/index chapter URLs now survive server reload; existing invalid/default/city/feedback behavior retained. Photo-card city captions corrected for contrast; no check-in/XP mutations. 25 isolated production browser cases passed; final integrated source/reviewer/device acceptance remains outstanding. Physical paper interiors and black/orange chapter chrome implemented while preserving inherited app theme tokens, closed cover, real XP/stamps/privacy/actions.46focused tests passed after unchanged theme regression identified and repaired. Final source visual/device acceptance pending."
+      "note": "Generated cover/index chapter URLs now survive server reload; existing invalid/default/city/feedback behavior retained. Photo-card city captions corrected for contrast; no check-in/XP mutations. 25 isolated production browser cases passed; final integrated source/reviewer/device acceptance remains outstanding. Physical paper interiors and black/orange chapter chrome implemented while preserving inherited app theme tokens, closed cover, real XP/stamps/privacy/actions.46focused tests passed after unchanged theme regression identified and repaired. Final source visual/device acceptance pending. Additional actual-page/book adapter checks cover192 protected chapter states and2 synthetic earned-city cases. Short-tablet820x900 cover clipping was reproduced and repaired; four native click/tap/Enter and two explicit desktop journal checks pass. These are scoped source/visual proofs, not owner/device or live provider acceptance."
     },
     "src/app/[locale]/passports/places/page.tsx": {
       "scope": "consumer",

@@ -1,0 +1,90 @@
+{
+  "observedAt": "2026-10-30T01:39:37.780791+00:00",
+  "baselineCommit": "8f78b33ab07bf60b30530f08391cb943d856ee9f",
+  "testedWorkingTree": true,
+  "sourceHashes": {
+    "src/app/[locale]/passports/page.tsx": "de9e3a07b0a628d31d07c6b1e9574be7f70450f1e95fc6d978a64b15891a378e",
+    "src/components/PassportBook.tsx": "b17b21ce39a297787f139221a43635681df2073563c0e63212a4554643e1649c",
+    "src/components/PassportBook.module.css": "e4b661f8452f5d0aa4310b8849e66689e776f9cb2a7ff29ff216051c17d43dec",
+    "scripts/test-passport-chapter-browser.mjs": "3efee640732fcf7d4b9d107ac3c38ef6d445116a369cb70e93839e3fb7bd0b7b"
+  },
+  "supportingSourceHashes": {
+    "src/app/globals.css": "53e2f4b7dec5fa5469e328d81ee0f2773f06d4998967e0dd47d58e9d54c62402",
+    "src/app/appearance.css": "21c3d1bb922511fac75f6f55fc31c3a23a73eeb894e9a0be9c322cfcdd63b8e1",
+    ".github/workflows/tablet-browser.yml": "727f441f28cffd8a5a51106e39b4578a75e9e02a7ede85be779d14c28264b928",
+    "tests/owner-console.test.ts": "4b635e5d61afa73def31b688ad1be5382da40e2875b41fe70a269a8e4679475b",
+    "tests/e2e/passport-book.spec.ts": "f21caad0123c4151068e1e391e8fdac15a35819dc074363e48bdf9fcc1b68c93",
+    "tests/e2e/passport-desktop-release.spec.ts": "0ed6f0a7cd4cb8f1f90a2a65c86335070446d66657eb57384ba728c05beecd7b"
+  },
+  "passed": 194,
+  "failed": 0,
+  "locales": ["en", "es"],
+  "themes": ["dark", "light"],
+  "widths": [360, 390, 820, 1440],
+  "states": ["populated", "empty", "unavailable"],
+  "chapters": ["progress", "passports", "stamps", "badges"],
+  "scope": "Actual async Passport page, book and chapter components; identity, provider reads and actions use disposable adapters; shell classes and source styles, not a complete authenticated Next/customer journey",
+  "assertions": [
+    "own-profile filters retained for six private reads",
+    "no reward/enrollment writes",
+    "no raw private provider error shown",
+    "no horizontal overflow or browser errors",
+    "metric, weekly quest, console and populated achievement labels meet 4.5:1",
+    "badge placeholder including alpha/native CSS colour conversion meets 4.5:1",
+    "Two additional synthetic earned-city/detail cases test journal stamp/control contrast",
+    "Exact paper-only Passport token mapping retains generic/interface prohibitions"
+  ],
+  "physicalAndroid": false,
+  "providerRLSAcceptance": false,
+  "routeAcceptance": false,
+  "blockedRequests": [],
+  "pageErrors": [],
+  "resultReceipt": {
+    "path": "test-results/passport-protected-chapters/results.json",
+    "sha256": "48dfc4c99300928535e191f22521161128cda1988504ee33cb6d66365b051972"
+  },
+  "integrationOwnerVisualReview": {
+    "reviewer": "Codex /root",
+    "scope": "Representative after-repair captures; no blocking defect observed, no route acceptance",
+    "screenshots": {
+      "test-results/passport-protected-chapters/en-dark-390-populated-progress.png": "e04ea94494d07cbffc735694c051426772db08e3fa796cc3845c978deb198aec",
+      "test-results/passport-protected-chapters/es-light-390-populated-badges.png": "d38d5f932e518381574f014717b2a000f3c0df71f201837c32cd25c24b98c649"
+    }
+  },
+  "beforeEvidence": "Retained in separate proposal worktree test-results/passport-protected-before-readability-fix, passport-protected-before-placeholder-fix; initial provider/selector/test-environment logs retained",
+  "productionChanges": false,
+  "recordedAt": "2026-10-30T01:55:29.964251+00:00",
+  "chapterCases": 192,
+  "additionalEarnedCityCases": [
+    {
+      "locale": "en",
+      "theme": "dark",
+      "width": 1440,
+      "state": "populated",
+      "chapter": "city",
+      "file": "/workspace/akipasa/test-results/passport-protected-chapters/en-dark-1440-populated-city.png"
+    },
+    {
+      "locale": "es",
+      "theme": "light",
+      "width": 1440,
+      "state": "populated",
+      "chapter": "city",
+      "file": "/workspace/akipasa/test-results/passport-protected-chapters/es-light-1440-populated-city.png"
+    }
+  ],
+  "actualNextRegression": {
+    "passed": 6,
+    "scope": "Four820x900 EN/ES/theme cases with full viewport visibility plus native click/tap/Enter, two explicit desktop cases with journal contrast/bounds, image decode and unforced discovery-link navigation",
+    "port": 3118,
+    "log": "/tmp/akipasa-passport-main-portable-final-next-20261030.log",
+    "logSha256": "942b8aae9b2282918ce1f126230eaba7e1ea74f992289a0e674cd082f3ee8ae2",
+    "priorPortOnlyFailureRetained": true
+  },
+  "fullRequiredCheck": {
+    "passed": true,
+    "vitestCases": 2639,
+    "log": "/tmp/akipasa-passport-main-frozen-e4-check-20261030.log",
+    "scope": "Frozen final runtime and owner/appearance guard; later desktop test-only origin repair passed scoped lint/type and actual Next rerun"
+  }
+}
