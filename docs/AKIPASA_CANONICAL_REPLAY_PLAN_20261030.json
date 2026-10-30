@@ -9,8 +9,8 @@
   "scope": "Hash inventory and candidate prefix only; not an approved migration executor, production chronology or complete eligibility list.",
   "inventoryRoots": ["database/migrations", "supabase/migrations"],
   "inventoryFingerprints": {
-    "database/migrations": "9e46e33ed812812c17eac31bc3205e7538e0527404888e62c7232d4df1d5b820",
-    "supabase/migrations": "7885454f8a78439a0f79fd78d35705972a2172d2cb88f3f3791a50e9e92e3189"
+    "database/migrations": "f58a249d501697031942367be6cea23080a47c6323d8f66c3510131efb42dc63",
+    "supabase/migrations": "ef10371fada249f8d3ef9d4e57e6b9c6bff513cca662e8e3ec253abf5ec69925"
   },
   "evidence": {
     "checkpoint": "canonical-replay-next-20261030.md",
@@ -1803,6 +1803,17 @@
       "filenameVersion": "20261029232451"
     },
     {
+      "path": "database/migrations/20261030114106_protect_staff_claim_account_eligibility.sql",
+      "sha256": "154fe91bf7a8a80d433a0a6c5827f22a90bac1ac3e2de99e95063afea24fa160",
+      "classification": "unresolved",
+      "requires": [
+        "database/migrations/20261027001500_founder_push_claims.sql",
+        "database/migrations/20261020170448_account_completion_age_declaration.sql"
+      ],
+      "filenameVersion": "20261030114106",
+      "reason": "New validated staff account-gate repair source, not applied to production. Requires the existing exact lookup and canonical account helper; remains outside any approved fresh execution prefix."
+    },
+    {
       "path": "supabase/migrations/20260811120431_remote_history.sql",
       "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
       "classification": "unresolved",
@@ -3193,6 +3204,15 @@
       "aliasOf": "database/migrations/20261029232451_protect_profile_terms_acceptance_columns.sql",
       "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
       "filenameVersion": "20261029232451"
+    },
+    {
+      "path": "supabase/migrations/20261030114106_protect_staff_claim_account_eligibility.sql",
+      "sha256": "154fe91bf7a8a80d433a0a6c5827f22a90bac1ac3e2de99e95063afea24fa160",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261030114106_protect_staff_claim_account_eligibility.sql",
+      "filenameVersion": "20261030114106",
+      "reason": "Exact byte mirror only; never apply twice or infer live application/fresh canonical eligibility."
     }
   ]
 }

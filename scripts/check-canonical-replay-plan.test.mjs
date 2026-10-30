@@ -40,9 +40,9 @@ test("current repository inventory validates only as a blocked partial plan", ()
   assert.equal(result.fullCanonicalParity, false);
   assert.equal(result.executable, false);
   assert.equal(result.databaseExecutionSupported, false);
-  assert.equal(result.inventoryCount, 337);
+  assert.equal(result.inventoryCount, 339);
   assert.equal(result.candidateSourceCount, 97);
-  assert.equal(result.unresolvedSourceCount, 150);
+  assert.equal(result.unresolvedSourceCount, 151);
   assert.equal(frozen.evidence.scopedCreatorCounts.applicationSql, 78);
   assert.equal(frozen.evidence.scopedCreatorCounts.officialStorageSql, 17);
   assert.equal(frozen.evidence.scopedCreatorCounts.selectedTotal, 95);

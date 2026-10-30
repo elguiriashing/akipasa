@@ -1,0 +1,45 @@
+{
+  "baselineCommit": "db3f0be5c0db756c9c3cdb4cf51a5a5cbd8fca89",
+  "testedWorkingTree": true,
+  "beforeWorkflowRun": 41047845921,
+  "beforePublicJob": 124036234347,
+  "beforeOutcome": "cancelled at20minute job budget before collection completed; no assertion failure recorded",
+  "fullCollection": 546,
+  "shard1": 288,
+  "shard2": 258,
+  "duplicateCases": 0,
+  "missingCases": 0,
+  "extraCases": 0,
+  "testMembershipFingerprint": "76124e8a21106946594312384bae90e25abbe200810b0b9bc29672ab3f5188fd",
+  "workflowHash": "ce7352249a2ae2f776d1e257d98e8d682d96fba7356d427f2a7aa824a9b32dcb",
+  "requiredContextPreserved": "public-ui",
+  "allShardsRequired": true,
+  "matrixFailFast": false,
+  "originalTimeoutUnchanged": 20,
+  "assertionsChanged": false,
+  "collectionOnly": true,
+  "runtimeCiPending": true,
+  "releaseAcceptanceGranted": false,
+  "collectionFiles": {
+    "/tmp/akipasa-public-ui-full-collection-20261030.json": "9dea0f071607468e1268ee2b9f3ce7be0b855bd20707a531b19401726fb31a6c",
+    "/tmp/akipasa-public-ui-shard-1-collection-20261030.json": "799d33133ea6b99612e0608c2d35db5033cc03dd95a8d650496d3fd4c70327ed",
+    "/tmp/akipasa-public-ui-shard-2-collection-20261030.json": "919b359256099dd421e2459c58e267d8b871d118b2c24a046dc25de822fcf86d"
+  },
+  "collectionEnvironment": {
+    "PW_TEST_SCREENSHOT_NO_FONTS_READY": "1",
+    "NEXT_PUBLIC_DATA_PROVIDER": "fixtures",
+    "NEXT_PUBLIC_SUPABASE_URL": "http://127.0.0.1:3999",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "public-ui-local-disposable",
+    "AKIPASA_TONIGHT_ENABLED": "true",
+    "NEXT_PUBLIC_GOOGLE_AUTH_ENABLED": "true"
+  },
+  "initialDefaultEnvironmentCases": 526,
+  "initialDefaultListingsPreserved": true,
+  "aggregateGateExitCodes": {
+    "success": 0,
+    "failure": 1,
+    "cancelled": 1,
+    "skipped": 1,
+    "empty": 1
+  }
+}

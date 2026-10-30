@@ -3439,3 +3439,44 @@ APIs predate age/onboarding/terms wrappers and must never be exposed standalone.
 Current migration/seed/test/deployment scanners do not execute this directory;
 new global SQL globs would require explicit review. Existing live terms/RLS/XP/
 private identity/customer records and all original fixtures are untouched.
+
+## 2026-10-30 | Staff exact-claim lookup honors canonical account eligibility
+
+A bounded actual-source review/SQL proof confirmed the later exactclaim RPC skipped
+onboarding eligibility while its list sibling and staff page enforce it. Supported
+administrator role assignment can promote cohort-pending/underage consumers without
+removing their lock; with a known pendingUUID those staff could use the older
+lookup for claimant details. This is conditional/preconditioned source behavior,
+not evidence of current affected production identities or exploitation. Production
+metadata only was read; no private claim rows or live actor operations were used.
+
+Mirrored forward20261030114106adds only the central fail-closed eligibility gate
+after the original rolecheck, preserving exact filters/results/owner/OID/ACL/stable
+empty-search-path definer and eligible legacy/completed staff. Trusted known-body/
+helper/ACL preconditions and postverification fail atomically on drift; reapplication
+is idempotent.37actual-source PGlite regressions pass, including canonical promotion,
+negative states, unchanged records/helper/list,17drift cases andNULL fail-closed.
+SQL permission audit reports0findings. The existing founder suite adds these tests;
+no older test, check or gate is removed. Canonical inventory now includes339actual
+migration paths,151unresolved/87mirrors; no new source is declared fresh-executable.
+No production SQL, cohort/role/consent/customer data/XP/billing/notification changed.
+Current-terms policy is outside this helper and is not claimed repaired. See
+AKIPASA_STAFF_CLAIM_ACCOUNT_BOUNDARY_20261030.md and paired SQL receipt.
+
+## 2026-10-30 | Complete public browser collection sharded without lowering gates
+
+Exactdb3public-ui job124036234347 was cancelled at its20minute budget before the
+546case collection completed; logs record no assertion failure. Evidence archive
+was preserved. The same collection/environment now runs as two parallel shards,
+with the original20minute budget per job and fail-fastfalse. Original public-ui
+required context remains an always-run aggregate that succeeds only if allshards
+succeed. Failed/cancelled/skipped/empty results fail the aggregate; no assertion,
+case, workflow, permission or branch-protection requirement was removed.
+
+Actual Playwright collection comparison under exactCI fixture flags gives546unique
+cases split288/258, zero omissions/duplicates/extras. The initial default-env526
+listing is retained separately; the difference is CI's existing test-only flags,
+not omitted tests. Per-shard artifact names preserve both archives without upload
+collisions, same paths/retention. Runtime CI is required on the resulting commit;
+collection equivalence alone is not a browser pass or route acceptance. See
+receipts/AKIPASA_PUBLIC_UI_SHARD_COVERAGE_20261030.json.
