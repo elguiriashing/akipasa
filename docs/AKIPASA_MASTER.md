@@ -2692,3 +2692,16 @@ in the concrete release proposal; explicit owner exception remains required.
 The release desktop navigation assertion is portable across local/CI origins,
 while still enforcing the same origin, locale path, locality and full destination.
 This is test-only; runtime and terms SQL hashes remain unchanged.
+
+### 2026-10-30 | Local next Community proposal
+
+A separate local-only Community candidate based on immutable335 source79dacc3
+imports exactly four Community route/scoped presentation files fromb07aa15.
+Public Community becomes a truthful landing; existing contribution/report/history
+operations keep their actions, caller filters, feature gates, auth returns and draft
+recovery. Existing AuthSubmitButton supplies deferred pending/idle feedback without
+shared component edits. Scoped light accent/placeholder contrast fixes follow actual
+browser measurements. No Creator/shared shell/schema/assets or retention activation.
+See docs/AKIPASA_COMMUNITY_NEXT_RELEASE_PROPOSAL_20261030.md for tested scope/gaps.
+This is not a new owner exception or production approval;335 remains separately
+controlled by the integration owner, and the full90-route acceptance gate is intact.

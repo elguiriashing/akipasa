@@ -119,3 +119,23 @@ jobs:
           name: passport-small-release-evidence
           path: test-results/passport-protected-chapters
           retention-days: 7
+
+  community-release-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Actual Community workflows with disposable adapters
+        run: node scripts/test-community-workflows-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: community-small-release-evidence
+          path: test-results/community-workflows
+          retention-days: 7

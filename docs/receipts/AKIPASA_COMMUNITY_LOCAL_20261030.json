@@ -1,0 +1,89 @@
+{
+  "recordedAt": "2026-10-30T02:25:03.541537+00:00",
+  "baselineCommit": "79dacc3b0b2ca2685789dc4966576f0cce1f775e",
+  "testedWorkingTree": true,
+  "runtimeFiles": [
+    "src/app/[locale]/community/page.tsx",
+    "src/app/[locale]/community/community-workflows.module.css",
+    "src/components/community/CommunityLanding.tsx",
+    "src/components/community/CommunityLanding.module.css"
+  ],
+  "sourceHashes": {
+    "src/app/[locale]/community/page.tsx": "90357fd6f6ac167d117c33e82d88b980236428d186c85867823d411d0badc222",
+    "src/app/[locale]/community/community-workflows.module.css": "4bd62c8e7de68b75800f3b5bbfebefbe6e4446ce6ea78250eb0d5fdc75314b8d",
+    "src/components/community/CommunityLanding.tsx": "74a36ea81801f16306933a15d7054a2d500a38bf9255a364706bcd5a9b8e8a25",
+    "src/components/community/CommunityLanding.module.css": "f2b540579a127496058e26a9266bd00c63759808c7958891c4e72d4b0435946a"
+  },
+  "workflowSourceHashes": {
+    "src/app/[locale]/community/page.tsx": "90357fd6f6ac167d117c33e82d88b980236428d186c85867823d411d0badc222",
+    "src/app/[locale]/community/community-workflows.module.css": "4bd62c8e7de68b75800f3b5bbfebefbe6e4446ce6ea78250eb0d5fdc75314b8d",
+    "src/components/community/ContributionDraftForm.tsx": "0c5ebb8a9485c5a8fc6c9af20d2e1024bfc5a4b850088e4709a2c6507804752a",
+    "src/components/SpainAddressAutocomplete.tsx": "d8f865939e4b4ce777922796e2e5c4024e5219b21849bcb848b06d05cb92ed8e",
+    "scripts/test-community-workflows-browser.mjs": "ced0a67d049e9b25dee746c57a1c481ec2b666cdb2d4709c4b993016e517527a"
+  },
+  "fullCheck": {
+    "exitCode": 0,
+    "totalVitestCases": 2150,
+    "optimizedNextBuild": true
+  },
+  "actualNext": {
+    "passed": 29,
+    "communityCases": 22,
+    "maintainedReadinessCases": 7
+  },
+  "workflowFixtures": {
+    "passed": 272,
+    "identityAndReadsAndActionsAreAdapters": true,
+    "pendingResolvedToIdle": true,
+    "callerFiltersExplicitlyAsserted": [
+      "event_submissions.submitter_id=fixture-user",
+      "reports.reporter_id=fixture-user"
+    ]
+  },
+  "focusedUnitTests": 63,
+  "logs": {
+    "fullCheck": {
+      "path": "/tmp/akipasa-community-release-frozen-fullcheck.log",
+      "sha256": "74767c60f0d0d3ae728911e4f1f8b8ed8a656dce86f5cdf24ada083a271e1964"
+    },
+    "actualNextReadiness": {
+      "path": "/tmp/akipasa-community-release-final-next-readiness.log",
+      "sha256": "9c30408ce239e48cdf65c2e44067c1fe722efdc533a0174cc24184d87e05c206"
+    },
+    "workflow": {
+      "path": "/tmp/akipasa-community-release-workflows-own-filter-final.log",
+      "sha256": "a701527b81157329657301b90be63b80a018373278364da9a1c354f35cae7ef1"
+    },
+    "focused": {
+      "path": "/tmp/akipasa-community-release-focused-frozen.log",
+      "sha256": "1504e41f112ea8e85b468f1634238c4c65cde65e51e79eac6dab0f310b6da014"
+    },
+    "lateTestTypes": {
+      "path": "/tmp/akipasa-community-release-final-test-types.log",
+      "sha256": "06d36fc536debf36ebfbae80681047d5c5e9d50d6b1d84a0f91a620219178339"
+    }
+  },
+  "review": {
+    "reviewer": "Codex /root",
+    "scope": "Three representative lower-page/form/pending captures; no blocking readability or overflow defect observed in this scope, not final aesthetic/device acceptance",
+    "screenshots": {
+      "test-results/community-public/es-light-1440-lower.png": "4557bf74741156666327fab5aaf8f9d83d67fb2870c2b63a5beeedc585a55b7b",
+      "test-results/community-workflows/es-light-390-suggest-populated.png": "7a01d81644553b8ae82053333e112d760aa60a816fda3225c4b6b4aee92c9110",
+      "test-results/community-workflows/en-dark-1440-report-pending.png": "f04463fa6ec793d666072f653f30275d42d19a89b420efa3a21f6a47092ee55a"
+    }
+  },
+  "physicalAndroid": false,
+  "productionAuthRLSAcceptance": false,
+  "accepted": false,
+  "published": false,
+  "merged": false,
+  "deployed": false,
+  "newSQL": false,
+  "productionWrites": false,
+  "notes": [
+    "Public Community root intentionally changes from Creator redirect to200landing; readiness asserts200andrealCreatorlink while existing private gates remain",
+    "Opt-in production contribution test uses explicit?view=suggest; assertion remains and no real authenticated production session was run",
+    "Source four-file boundary; shared AuthSubmitButton reused unchanged for localized pending feedback",
+    "All owner approvals and hosted exact-head CI remain separate;335notyetmerged and this future branch is local-only"
+  ]
+}

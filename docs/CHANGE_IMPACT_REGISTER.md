@@ -3364,3 +3364,24 @@ in the concrete release proposal; explicit owner exception remains required.
   locale path, locality and exact destination. No runtime or SQL change.
 - Two desktop cases pass at CI-default3100; failure/success logs and source hashes
   are retained. Fresh immutable-head CI remains required.
+
+## 2026-10-30 | Local next Community family candidate
+
+- Scope: four Community runtime files only, isolated branch based79dacc3. Public
+  entry changes from Creator redirect to its own Community landing; polished scoped
+  contribution/report forms and own history, localized review/status copy.
+- Dependencies: existing WorkspaceShell/header, Icons, city imagery/helpers,
+  ContributionDraftForm/address component and unchanged AuthSubmitButton. No shared
+  component, Creator/action/provider/schema/role/grant changes or new media.
+- Safety: preserve form payloads, caller profile filters, target search/return,
+  draft recovery, rate limits and feature gates. Real pending feedback uses existing
+  form status; empty report targets stay disabled. Friends remain future copy,
+  editorial illustration disclosed, Tonight off and AkiPals paused.
+- Evidence: actual Next public/guest-return matrix and actual protected components
+  with disposable reads/actions; measured light accent/placeholder contrast fixes.
+  Proposal records exact counts/commands/source hashes and honest provider/device
+  limitations. No production writes, fake activity or route acceptance.
+- Release: local commit only, no push/PR/merge/SQL/deploy. Any later publication
+  requires its own owner boundary, exact source checks and335 disposition. Revert
+  only scoped UI/public-entry files for visual rollback; retain customer data and
+  independently protected consent/terms permissions.

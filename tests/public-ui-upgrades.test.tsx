@@ -73,6 +73,18 @@ vi.mock("@/components/WorkspaceShell", () => ({
   WorkspaceShell: ({ children }: { children: ReactNode }) => (
     <main>{children}</main>
   ),
+  WorkspacePageHeader: ({
+    title,
+    description,
+  }: {
+    title: string;
+    description: string;
+  }) => (
+    <header>
+      <h1>{title}</h1>
+      <p>{description}</p>
+    </header>
+  ),
 }));
 vi.mock("@/components/community/CreatorDirectoryPage", () => ({
   communityCreatorItems: () => [],
@@ -441,8 +453,8 @@ describe("community workflow return paths", () => {
       expect(
         screen.getByText(
           locale === "es"
-            ? "Enviado correctamente para revision."
-            : "Submitted successfully for review.",
+            ? "Consulta abajo el estado actual de tu envío."
+            : "Check your submission’s current status below.",
         ),
       ).toBeInTheDocument();
       expect(
@@ -480,8 +492,8 @@ describe("community workflow return paths", () => {
         expect(
           screen.getByText(
             locale === "es"
-              ? "Enviado correctamente para revision."
-              : "Submitted successfully for review.",
+              ? "Consulta abajo el estado actual de tu envío."
+              : "Check your submission’s current status below.",
           ),
         ).toBeInTheDocument();
         expect(
@@ -608,14 +620,19 @@ describe("community workflow return paths", () => {
       },
     );
     it(
-      "retains default community creator navigation in " + locale,
+      "renders a public Community landing rather than redirecting in " + locale,
       async () => {
-        await expect(
-          CommunityPage({
-            params: Promise.resolve({ locale }),
-            searchParams: Promise.resolve({}),
+        const landing = await CommunityPage({
+          params: Promise.resolve({ locale }),
+          searchParams: Promise.resolve({}),
+        });
+        render(landing);
+        expect(
+          screen.getByRole("link", {
+            name: locale === "es" ? /Explorar creadores/ : /Explore creators/,
           }),
-        ).rejects.toThrow(`redirect:/${locale}/community/creators`);
+        ).toHaveAttribute("href", `/${locale}/community/creators`);
+        expect(mocks.redirect).not.toHaveBeenCalled();
         expect(mocks.requireUser).not.toHaveBeenCalled();
       },
     );
@@ -691,5 +708,84 @@ describe("community catalogue recovery", () => {
     expect(eventFilter).toContain("\\\\%");
     expect(eventFilter).toContain('\\"central\\"');
     expect(screen.getByLabelText("Item")).toHaveValue(reportTarget);
+  });
+});
+
+describe("community workflow presentation", () => {
+  afterEach(() => {
+    reads.reports = [];
+    reads.event_submissions = [];
+  });
+  it.each(["en", "es"] as const)(
+    "renders one task heading and localized history labels in %s without changing source values",
+    async (locale) => {
+      reads.reports = [
+        {
+          id: "report-a",
+          target_type: "event",
+          reason: "incorrect",
+          state: "open",
+          created_at: "2026-10-29T12:00:00Z",
+        },
+      ];
+      render(await CommunityPage(communityProps(locale, { view: "reports" })));
+      expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+      expect(
+        screen.getByRole("heading", {
+          level: 1,
+          name: locale === "es" ? "Problemas comunicados" : "Reported problems",
+        }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          locale === "es"
+            ? "Evento · Datos incorrectos"
+            : "Event · Incorrect details",
+        ),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(locale === "es" ? "Abierto" : "Open"),
+      ).toBeInTheDocument();
+      expect(reads.reports[0]).toMatchObject({
+        target_type: "event",
+        reason: "incorrect",
+        state: "open",
+      });
+    },
+  );
+  it("localizes Spanish report options while preserving the submitted enum values", async () => {
+    render(
+      await CommunityPage(
+        communityProps("es", { view: "report", target: reportTarget }),
+      ),
+    );
+    expect(screen.getByRole("option", { name: "Estafa" })).toHaveValue("scam");
+    expect(screen.getByLabelText("Elemento")).toHaveValue(reportTarget);
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+  });
+  it("does not turn an untrusted created query into a successful submission claim", async () => {
+    render(
+      await CommunityPage(
+        communityProps("en", { view: "reports", created: "report" }),
+      ),
+    );
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Check your submission’s current status below.",
+    );
+    expect(screen.getByText("No reports submitted yet.")).toBeInTheDocument();
+    expect(
+      screen.queryByText("Submitted successfully for review."),
+    ).not.toBeInTheDocument();
+  });
+  it("describes suggestion review without promising publication", async () => {
+    render(await CommunityPage(communityProps("es", { view: "suggest" })));
+    expect(
+      screen.getByText(/La publicación depende de su aprobación/),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Título del evento")).toBeInTheDocument();
+    expect(screen.getByLabelText("Descripción")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Enviar a revisión" }),
+    ).toBeInTheDocument();
   });
 });

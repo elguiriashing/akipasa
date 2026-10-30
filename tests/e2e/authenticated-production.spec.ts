@@ -32,7 +32,7 @@ test.describe("disposable authenticated production acceptance", () => {
       page.getByRole("link", { name: "Passports and rewards" }),
     ).toBeVisible();
 
-    await page.goto("/en/community");
+    await page.goto("/en/community?view=suggest");
     await expect(
       page.getByRole("button", { name: "Submit for review" }),
     ).toBeVisible();
