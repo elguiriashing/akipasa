@@ -1,0 +1,53 @@
+{
+  "recordedAt": "2026-10-30T10:34:00Z",
+  "pullRequest": 335,
+  "reviewedHead": "79dacc3b0b2ca2685789dc4966576f0cce1f775e",
+  "mergedCommit": "3d87eb7c995fbd0947cb25a771a43376d9462645",
+  "ownerApproval": "Explicit Yes to shipping Home/Passport, physical Android to follow, and included terms fix",
+  "cloudflare": {
+    "build": "02a7ae83-9f5c-4b6f-9ad3-ebb637e60a6c",
+    "buildOutcome": "success",
+    "workerVersion": "26e51e72-bb1e-49e9-a307-243e0203ef8d",
+    "deployment": "6c484b23-6734-4cf8-a779-2a62be2cbd67",
+    "trafficPercent": 100,
+    "sourceVerifiedAt": "https://akipasa.com/api/bookings/release",
+    "sourceCommit": "3d87eb7c995fbd0947cb25a771a43376d9462645",
+    "manualDeploymentInvoked": false,
+    "rollbackWorker": "8199ce83-b416-42d1-9568-9dc167601b6a"
+  },
+  "database": {
+    "project": "vhpbvcfkcteswlsdjrfl",
+    "migrationVersion": "20261030102908",
+    "name": "protect_profile_terms_acceptance_columns",
+    "sqlSha256": "7fe0fa1aa1346cc3877e9693b60a6f1a382f09bf37ebbe33e0bea951b8eeeb75",
+    "appliedOnce": true,
+    "postCheckAt": "2026-10-30T10:29:39.951787Z",
+    "authenticatedTermsVersionUpdate": false,
+    "authenticatedTermsAcceptedAtUpdate": false,
+    "anonTermsVersionUpdate": false,
+    "anonTermsAcceptedAtUpdate": false,
+    "rlsEnabled": true,
+    "authenticatedRpcExecute": true,
+    "rpcDefinitionMd5": "ad5ac02b43c833218be2e826dd380adc",
+    "rpcAclMd5": "d1707186c8e5f1577bde2338d7541aec",
+    "customerRecordTestMutation": false
+  },
+  "publicSmoke": {
+    "method": "Cloudflare Browser Rendering content over public HTTPS; 390x844 touch/mobile emulation",
+    "routes": [
+      "/en",
+      "/es",
+      "/en/auth",
+      "/es/auth",
+      "/en/passports?view=index",
+      "/es/passports?view=cover"
+    ],
+    "allSuccessful": true,
+    "expectedPageMarkers": true,
+    "serverExceptionPage": false,
+    "physicalAndroid": false,
+    "realAuthenticatedProviderAcceptance": false
+  },
+  "fullOverhaulAccepted": false,
+  "routeStatusesChanged": false
+}

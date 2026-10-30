@@ -3301,3 +3301,55 @@ appearance. Desktop spread tracks now shrink within the available paper width.
 The owner-appearance guard still rejects generic and broad palette overrides;
 it permits only those exact three values on the exact top-level paper-journal
 selector and verifies the mapping. No owner theme, role or data rule is relaxed.
+
+## 2026-10-30 | Unapproved small Home-directory/Passport plus terms-security candidate
+
+A separate review branch starts at immutable892a1948bb739d3ae6e88d091e085e88a940a294
+(the deployed Home/Login source plus the reviewed, unapplied terms-record fix).
+It imports only PassportBook.module.css and the Passport page's existing cover/
+index query admission from overhaul source8f78b33ab07bf60b30530f08391cb943d856ee9f.
+Paper colours stay local to physical book interiors; inherited application-theme
+controls, real city photographs, earned/private progression, chapter navigation,
+motion preferences, XP/check-in/reward authority and server actions remain intact.
+The separately bounded Home directory card diff f489be6..8f78b33 and its scoped
+stylesheet are included; the twelve earlier unshipped Home changes are excluded.
+No shared shell or avatar/retention activation is included.
+The original ninety-route acceptance gate remains unchanged and unfulfilled.
+The earlier Home/Login exception does not authorize this Passport or SQL batch.
+A new explicit owner decision, exact candidate validation and independent source/
+device/provider review remain required before merge, SQL application or release.
+
+Protected real-component captures found inherited metric/header ink unreadable on
+paper, paragraph ink leaking into dark weekly cards, dark inherited badge titles,
+and a2.118:1 light-theme badge placeholder. The Passport-local stylesheet scopes
+paper text to its actual panels and gives the independent dark achievement object
+readable text/placeholder. Synthetic protected component cases assert text and
+placeholder contrast; no progression/read/action authority changes. Before proof
+is retained. These repairs remain subject to the same explicit staged approval.
+
+Measured release-candidate follow-up:820×900 cover access required bounded scroll
+only on the701–850px Passport atlas. Desktop city journal text/control overflow
+required a journal-only paper semantic palette/light native control scheme and
+shrinkable proportional city columns. Photo stamps/interface tokens stay inherited.
+The inherited-interface source test retains its prohibitions, allowing only the
+three exact paper journal mappings once each; actual browser token/contrast/bounds
+checks and two synthetic earned-city cases guard this boundary. No actions, real
+awards, database permissions or shared shells change. Final validation is recorded
+in the concrete release proposal; explicit owner exception remains required.
+
+The release desktop navigation assertion is portable across local/CI origins,
+while still enforcing the same origin, locale path, locality and full destination.
+This is test-only; runtime and terms SQL hashes remain unchanged.
+
+## 2026-10-30 | Approved Home/Passport production verification
+
+Alex explicitly approved PR335 and its exact terms-record permission repair.
+Reviewed79dacc3 merged as3d87eb7c995fbd0947cb25a771a43376d9462645 and automatically
+deployed as Worker26e51e72-bb1e-49e9-a307-243e0203ef8d at100%; public release-source
+and six EN/ES guest Home/Auth/Passport reads verified. Exact guarded terms SQL
+7fe0fa1a applied once as20261030102908. Post-checks deny direct client terms edits,
+preserve ordinary editing/RLS and the unchanged trusted acceptance RPC definition
+and ACL. No customer-record mutation was used for evidence. Prior Worker8199 is
+UI rollback; retain RPC-only terms protection on rollback. Full332 route/device
+acceptance remains outstanding; Community336 is a draft follow-on, not deployed.
+Full receipt: docs/receipts/AKIPASA_PRODUCTION_335_20261030.json.

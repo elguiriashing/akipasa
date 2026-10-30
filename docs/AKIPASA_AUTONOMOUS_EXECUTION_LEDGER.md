@@ -2,6 +2,44 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 30 October 10:34 UTC — approved Home/Passport batch verified live
+
+Alex explicitly answered Yes to the exact Home/Passport staged release, physical
+Android to follow, and included terms permission repair. PR335 reviewed head79dacc3
+merged as `3d87eb7c995fbd0947cb25a771a43376d9462645`. Automatic Cloudflare build
+`02a7ae83-9f5c-4b6f-9ad3-ebb637e60a6c` succeeded. Deployment
+`6c484b23-6734-4cf8-a779-2a62be2cbd67` serves Worker
+`26e51e72-bb1e-49e9-a307-243e0203ef8d` at100%. Public release endpoint returns
+exact merge source3d87eb7. Six EN/ES Home/Auth/Passport public HTTPS browser reads
+succeeded with expected markers and no server-exception page. No manual duplicate
+deployment. Keep prior Worker8199ce83-b416-42d1-9568-9dc167601b6a for UI rollback.
+
+Exact guarded SQL SHA7fe0fa1a was applied once using apply_migration, recorded as
+production version20261030102908. Metadata verification denies both terms-column
+UPDATE permissions to authenticated and anon, retains RLS/no broad table UPDATE,
+trusted RPC ownership/EXECUTE, unchanged definition/ACL fingerprints and remaining
+ordinary Profile editing. No customer rows were mutated to test this. PR334 source
+is included by ancestry in335 and GitHub now records it merged through that source;
+no independent duplicate release or migration was performed.
+Receipt: docs/receipts/AKIPASA_PRODUCTION_335_20261030.json.
+
+Main is reconciling this production commit without changing runtime files. Merge
+conflicts were documentation/test-only: retained both contract histories, the
+additive protected CI job, all imported capture states and native short-tablet
+regressions. Full npm run check PASSED (exit0), including all tests, required checks and
+optimized193-route Next build. Log:
+/tmp/akipasa-post335-reconciliation-check-20261030.log. Hosted results must still
+be fresh for the resulting integration commit.
+Community follow-on now draft PR336 at09408e828204ccaf076122c41dad4ca30cc55344,
+rebased by a non-destructive production-base merge; runtime/test bytes unchanged
+from locally validated0ce4d91. Fresh hosted CI/builds pending; Community is not
+approved for production. Full332 remains draft,90routes unaccepted; Tonight off,
+AkiPals paused. Physical Android and final owner acceptance remain outstanding.
+
+NEXT: finish reconciliation checks, repair failures, commit/push expected history;
+review336 exact-head CI/builds and integrate its scoped Community fixes into332.
+The specific335 approval does not approve a whole-overhaul merge or336 deployment.
+
 ## 30 October 10:27 UTC — release reverified; automatic merge approval blocked
 
 Current main implementation head: `b07aa158c26ae450cdfadbd28622bb4a63ad281e`;

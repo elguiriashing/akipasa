@@ -1,4 +1,55 @@
+import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { devices, expect, test, type Page } from "@playwright/test";
+
+async function waitForVisiblePassportImages(page: Page) {
+  await expect
+    .poll(
+      async () =>
+        page.locator("main.passport-experience img").evaluateAll((images) =>
+          images
+            .filter((image) => {
+              const box = image.getBoundingClientRect();
+              let left = Math.max(0, box.left),
+                right = Math.min(innerWidth, box.right),
+                top = Math.max(0, box.top),
+                bottom = Math.min(innerHeight, box.bottom);
+              let parent = image.parentElement;
+              while (parent) {
+                const style = getComputedStyle(parent),
+                  clip = parent.getBoundingClientRect();
+                if (/auto|scroll|hidden|clip/.test(style.overflowX)) {
+                  left = Math.max(left, clip.left);
+                  right = Math.min(right, clip.right);
+                }
+                if (/auto|scroll|hidden|clip/.test(style.overflowY)) {
+                  top = Math.max(top, clip.top);
+                  bottom = Math.min(bottom, clip.bottom);
+                }
+                parent = parent.parentElement;
+              }
+              return right > left + 1 && bottom > top + 1;
+            })
+            .filter(
+              (image) =>
+                !(image as HTMLImageElement).complete ||
+                (image as HTMLImageElement).naturalWidth === 0,
+            )
+            .map(
+              (image) =>
+                (image as HTMLImageElement).currentSrc ||
+                (image as HTMLImageElement).src,
+            ),
+        ),
+      {
+        timeout: 20_000,
+        message:
+          "Every image actually visible through the Passport nested scroll viewport must decode",
+      },
+    )
+    .toEqual([]);
+}
 
 async function openPassportMenu(page: Page, locale: "en" | "es" = "en") {
   if ((page.viewportSize()?.width ?? 0) <= 700) {
@@ -472,7 +523,7 @@ for (const locale of ["en", "es"] as const) {
 }
 
 for (const locale of ["en", "es"] as const) {
-  for (const width of [360, 1440]) {
+  for (const width of [360, 390, 820, 1440]) {
     for (const theme of ["dark", "light"] as const) {
       test(`${locale} ${width}/${theme} generated chapter links survive reload and city labels stay readable`, async ({
         page,
@@ -561,9 +612,10 @@ for (const locale of ["en", "es"] as const) {
             result.ratio,
             `${result.label}: worst-case photo contrast`,
           ).toBeGreaterThanOrEqual(4.5);
+        await waitForVisiblePassportImages(page);
         await page.screenshot({
           path: `test-results/passport-city-contrast-${locale}-${width}-${theme}.png`,
-          fullPage: true,
+          fullPage: false,
           animations: "disabled",
         });
         await card.click();
@@ -585,6 +637,86 @@ for (const locale of ["en", "es"] as const) {
             exact: true,
           }),
         ).toBeVisible();
+        const captures = [];
+        const chapters = [
+          "cover",
+          "index",
+          "progress",
+          "passports",
+          "stamps",
+          "badges",
+        ];
+        for (const [index, chapter] of chapters.entries()) {
+          const navigation = await openPassportMenu(page, locale);
+          const button = navigation.locator(":scope > button").nth(index);
+          await button.focus();
+          await button.press("Enter");
+          await expect(page).toHaveURL(new RegExp(`view=${chapter}`));
+          await expect(
+            page
+              .getByRole("main", {
+                name:
+                  locale === "es"
+                    ? "Pasaporte interactivo"
+                    : "Interactive passport",
+                exact: true,
+              })
+              .locator("h2")
+              .first(),
+          ).toBeVisible();
+          expect(
+            await page.evaluate(
+              () => document.documentElement.scrollWidth <= innerWidth,
+            ),
+          ).toBe(true);
+          const file = `test-results/passport-release/${locale}-${width}-${theme}-${chapter}.png`;
+          mkdirSync("test-results/passport-release", { recursive: true });
+          await waitForVisiblePassportImages(page);
+          await page.screenshot({
+            path: file,
+            fullPage: false,
+            animations: "disabled",
+          });
+          captures.push({ chapter, file });
+        }
+        const files = [
+          "src/components/PassportBook.module.css",
+          "src/app/[locale]/passports/page.tsx",
+          "src/components/PassportBook.tsx",
+          "src/lib/passport-collection.ts",
+          "tests/e2e/passport-book.spec.ts",
+        ];
+        writeFileSync(
+          `test-results/passport-release/${locale}-${width}-${theme}.json`,
+          JSON.stringify(
+            {
+              sourceCommit: execFileSync("git", ["rev-parse", "HEAD"], {
+                encoding: "utf8",
+              }).trim(),
+              sourceDirty: Boolean(
+                execFileSync("git", ["status", "--porcelain"], {
+                  encoding: "utf8",
+                }).trim(),
+              ),
+              sourceHashes: Object.fromEntries(
+                files.map((file) => [
+                  file,
+                  createHash("sha256").update(readFileSync(file)).digest("hex"),
+                ]),
+              ),
+              locale,
+              width,
+              theme,
+              role: "guest",
+              syntheticBackend: true,
+              physicalAndroid: false,
+              providerRLSAcceptance: false,
+              captures,
+            },
+            null,
+            2,
+          ),
+        );
       });
     }
   }

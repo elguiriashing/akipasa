@@ -4088,3 +4088,65 @@ This is scoped Creator/Auth/RLS proof, not complete canonical migration parity.
 - Actual Next desktop guards check journal contrast, control bounds, unchanged
   interface/photo ink and ordinary discovery-link navigation. Protected fixture
   explicitly distinguishes original192 chapter cases from2earned-city cases.
+
+## 2026-10-30 | Isolated Home-directory/Passport presentation and terms-security proposal
+
+- Before: deployed39cd9bb Home/Login has the original Passport skin and rejects
+  its own generated cover/index query destinations. Terms client-column protection
+  is separately reviewed at immutable892a194 and has not been applied remotely.
+- Scope: PassportBook.module.css and passports/page.tsx imported from8f78b33,
+  plus only the bounded Home-card diff f489be6..8f78b33 and new scoped CSS;
+  maintained Passport browser/read-recovery regressions accompany them. The base's
+  terms migration/security tests are preserved byte-for-byte; no new SQL mutation.
+- Dependencies: existing PassportBook/CityStamps/domain data, EN/ES query parsing,
+  optionalUser/caller-owned reads, RLS, private collection and real XP/stamp values,
+  existing reduced-motion/sensor preferences and shared app/consent/navigation.
+  No shared shell, API, action, grants, analytics or billing behaviour changes.
+- Evidence: validation results and honest fixture/device limits are recorded in
+  AKIPASA_PASSPORT_SECURITY_RELEASE_PROPOSAL_20261030.md after execution. The new
+  candidate requires its own build/browser/CI results; parent-branch results alone
+  do not certify this isolated source. No route acceptance is manufactured.
+- Authority/rollback: new explicit staged-release and terms-SQL approval required.
+  Preserve prior Worker/source. Revert only presentation/query files for visual
+  rollback; do not restore direct client terms edits as a cosmetic rollback.
+
+- Protected visual correction: actual Page/Book fixtures exposed unreadable metric/
+  console child ink and dark nested achievement/weekly paragraphs; broad chapter
+  paragraph overrides are replaced with paper-panel scope. The badge object's
+  semantic landmark supplies its own readable ink and placeholder. The measured
+  light placeholder2.118:1 failure is repaired locally; computed4.5:1 checks cover
+  real metrics, weekly/header/badge text and placeholders. Only the same Passport
+  runtime module changes. Fixture inputs are disposable; no real awards or RLS/
+  device acceptance. Preliminary failed screenshots/tests remain preserved.
+
+Measured release-candidate follow-up:820×900 cover access required bounded scroll
+only on the701–850px Passport atlas. Desktop city journal text/control overflow
+required a journal-only paper semantic palette/light native control scheme and
+shrinkable proportional city columns. Photo stamps/interface tokens stay inherited.
+The inherited-interface source test retains its prohibitions, allowing only the
+three exact paper journal mappings once each; actual browser token/contrast/bounds
+checks and two synthetic earned-city cases guard this boundary. No actions, real
+awards, database permissions or shared shells change. Final validation is recorded
+in the concrete release proposal; explicit owner exception remains required.
+
+## 2026-10-30 | Portable desktop release navigation assertion
+
+- A development-port literal caused a false link failure on another localhost
+  port; the actual destination/path/query were correct.
+- The test derives its running origin while explicitly enforcing same origin,
+  locale path, locality and exact destination. No runtime or SQL change.
+- Two desktop cases pass at CI-default3100; failure/success logs and source hashes
+  are retained. Fresh immutable-head CI remains required.
+
+## 2026-10-30 | Approved Home/Passport production verification
+
+Alex explicitly approved PR335 and its exact terms-record permission repair.
+Reviewed79dacc3 merged as3d87eb7c995fbd0947cb25a771a43376d9462645 and automatically
+deployed as Worker26e51e72-bb1e-49e9-a307-243e0203ef8d at100%; public release-source
+and six EN/ES guest Home/Auth/Passport reads verified. Exact guarded terms SQL
+7fe0fa1a applied once as20261030102908. Post-checks deny direct client terms edits,
+preserve ordinary editing/RLS and the unchanged trusted acceptance RPC definition
+and ACL. No customer-record mutation was used for evidence. Prior Worker8199 is
+UI rollback; retain RPC-only terms protection on rollback. Full332 route/device
+acceptance remains outstanding; Community336 is a draft follow-on, not deployed.
+Full receipt: docs/receipts/AKIPASA_PRODUCTION_335_20261030.json.
