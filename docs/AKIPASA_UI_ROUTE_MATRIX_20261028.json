@@ -500,18 +500,40 @@
     },
     "src/app/page.tsx": {
       "scope": "cross-product",
-      "status": "in-progress",
-      "note": "Permanent default /es redirect retained. Executable root and middleware tests verify default locale and safe query preservation; production-server HTTP cases added. Final reviewer/HTTP evidence required; no fictional page screenshot or acceptance claimed."
+      "status": "accepted",
+      "note": "Redirect-only route: independently reviewed actual308 response and exact /es target at6a923495. No page/screenshot exists. Actions link records HTTP evidence, not an invented image. Does not accept destination page, authenticated/device journeys or full release.",
+      "acceptance": {
+        "reviewer": "Codex canonical_plan \u2014 independent redirect review",
+        "reviewedCommit": "6a9234952542bc3fd59456fb2a43638183c2af7a",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41053750511",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41053750511",
+        "evidenceType": "redirect-only HTTP; screenshot not applicable",
+        "sourceSha256": "bb0131d4999839a20fbbf54c65d9d8e31ea64cea059cc69a19d10b8730fc6b7b",
+        "expectedStatus": 308,
+        "expectedLocation": "/es",
+        "fullReleaseAccepted": false
+      }
     },
     "src/app/roadmap/page.tsx": {
       "scope": "cross-product",
-      "status": "in-progress",
-      "note": "Public /roadmap entry redirect to /es/roadmap; verify SEO and redirect."
+      "status": "accepted",
+      "note": "Redirect-only route: independently reviewed actual308 response and exact /es/roadmap target at6a923495. No page/screenshot exists. Actions link records HTTP evidence, not an invented image. Does not accept destination page, authenticated/device journeys or full release.",
+      "acceptance": {
+        "reviewer": "Codex canonical_plan \u2014 independent redirect review",
+        "reviewedCommit": "6a9234952542bc3fd59456fb2a43638183c2af7a",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41053750511",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41053750511",
+        "evidenceType": "redirect-only HTTP; screenshot not applicable",
+        "sourceSha256": "dfe0a98f22a0d440223973174093e848544bcb1892376752aff5f0508de6ac10",
+        "expectedStatus": 308,
+        "expectedLocation": "/es/roadmap",
+        "fullReleaseAccepted": false
+      }
     },
     "src/app/waitlist/confirm/page.tsx": {
       "scope": "cross-product",
       "status": "in-progress",
-      "note": "Cinematic responsive EN/ES confirmation for AkiPasa/AkiDuermo/AkiCoches committed. Real defect repaired: POST success redirect now derives product from verified database row, not caller hint; failure product hint allowlisted. Non-mutating Playwright cases cover invalid links, 360/390/1440 and Android-style emulation, dark/light. Exact-head CI/screenshot inspection, physical Android and genuine signup→email→verification acceptance still pending. In-progress, not accepted."
+      "note": "Cinematic responsive EN/ES confirmation for AkiPasa/AkiDuermo/AkiCoches committed. Real defect repaired: POST success redirect now derives product from verified database row, not caller hint; failure product hint allowlisted. Non-mutating Playwright cases cover invalid links, 360/390/1440 and Android-style emulation, dark/light. Exact-head CI/screenshot inspection, physical Android and genuine signup\u2192email\u2192verification acceptance still pending. In-progress, not accepted."
     },
     "src/app/[locale]/tonight/page.tsx": {
       "scope": "consumer",

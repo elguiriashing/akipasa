@@ -2,6 +2,84 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 30 October 12:44 UTC — Map occurrence continuity and source reproduction
+
+Validated working tree based on6a923495; resulting commit follows this record.
+Map pins previously dropped the selected recurring occurrence, opening the detail
+selector's earlier default date. Reuse of existing occurrenceHref fixes that link
+only. Before-regression log:3failed/59passed. After:81discovery/selection/booking
+cases PASS; independent actualMapPage/helper4cases plus8realMapLibre popup/click
+states pass EN/ES, light/dark,390/1440. Root inspected390dark popup. Synthetic
+provider/tileless component fixture omits AppShell/livebasemap; no fullMap aesthetic
+or physicalAndroid acceptance implied. Receipt: AKIPASA_MAP_OCCURRENCE_20261030.json.
+
+Seventeen historical officialStorage SQL sources now have exact upstream-matched
+replay-only bytes, original filenames, Apache2LICENSE/provenance and fixed readonly
+checker. Independent root comparison matches all17reviewed upstream hash records.
+13newNode regressions PASS; noSQL/network/subprocess/apply path. Existing339migration
+inventory unchanged; freshAuth/platform/order/accountcoverage/StorageHTTP STOPs
+remain unresolved. Nothing applied to existing fixtures/production. Protected
+original source and existing173/95proof remain untouched.
+
+Full npmcheck EXIT0:2,678Vitest across17groups,132Node cases in the existing initial
+group (including43plan/source guards), all required checks, optimized193routebuild.
+Focused29canonical+Storage Node cases also PASS. Format/lint/typecheck unchanged
+assertions; original before-failure retained. Post-check edits are evidence/route
+matrix docs only and receive fresh scoped formatting/audit. New exact-head CI and
+Cloudflare build are required after publishing, never inherited from6a.
+
+Independent source/actualHTTP review genuinely accepts ONLY root308→/es and
+unlocalizedRoadmap308→/es/roadmap at6a. ActualCI merge tree equals reviewed source;
+HTTP proof/campaign preservation recorded without claiming nonexistent screenshots.
+Matrix now2accepted,88inprogress,13excluded; six fallback gaps remain. Strictaudit
+still EXIT2, no gate bypass. HQ rendered200gateway remainsinprogress. Publicsuite6a
+result is493passed/53existingconditional skips,546collected; not546passed.
+
+NEXT: commit/push this validated batch to332; inspect fresh exact-head workflows/
+Cloudflare, fix actual failures. Continue HQ gateway820tablet/capture review and
+remaining protected route/source-order work. NewstaffSQL stillUNAPPLIED, production
+staysapproved3353d87/Worker26e; no full332merge/deploy. Root soleintegrationowner.
+
+## 30 October 12:36 UTC — exact-head browser timeout repair verified
+
+Branch `work/coordinated-release-20261029`, verified source
+`6a9234952542bc3fd59456fb2a43638183c2af7a`, clean and pushed before this evidence
+update. All 11 ordinary exact-head workflows completed successfully. Account/public
+run `41053750511` passed both actual browser shards, account/onboarding jobs and
+the original required `public-ui` aggregate. The unchanged collection contains
+546 collected unique tests, split 288/258 with no omissions or duplicates. Actual
+execution was 493 passed/53 existing conditional skips, not546passed. Skipped
+role/provider/device paths remain unverified. The collection
+receipt now separately records real runtime success; original cancelled db3 logs
+remain historical failures. Cloudflare nonproduction build
+`f80311f9-315d-42dd-a8bf-082b51a34882` succeeded with version upload only.
+
+Full local check at the verified source passed 2,676 Vitest plus 30 plan/source
+Node regressions and the optimized 193-route build. Fresh strict audit still exits
+2 with 90 awaiting release acceptance; 13 separate-product exclusions and six
+fallback gaps remain. No acceptance status was promoted. The new staff migration
+is committed and tested but UNAPPLIED; no production approval is inferred from
+#335's previous terms-only approval. Production stays at approved 3d87/Worker26e.
+PR332 description and required coordination issue330 comment6522951907 reflect
+these states. The acceptance contract now records both actual bounded approvals.
+
+Independent source/platform reproduction review found only 427MB free on the
+workspace and Docker vfs. Root rechecked task ownership, absence of active local
+builds, no symlinks and Git ignore status, then removed ONLY seven disposable
+`.next/cache/webpack` directories named in the feasibility checkpoint. Available
+space is now 3.4GB. Source, compiled output outside webpack caches, screenshots,
+receipts, existing containers/images/volumes and two unproven copied directories
+were preserved. Receipt: `/tmp/akipasa-webpack-cache-cleanup-20261030.json`.
+This restores engineering headroom, not proof that a complete fresh stack fits.
+
+NEXT: root integrates remaining Map/detail visual QA findings and independently
+reviewed pinned Storage source admission. No new fixture allocation until source,
+ordering, image and resource preflight are reviewed. Preserve coverage-once order
+and all canonical STOPs. Owner/physical Android, full protected-provider journeys,
+final aesthetics, canonical replay and strict sign-offs remain release blockers.
+Root retains exclusive integration ownership; scheduled lease through14:00UTC.
+No full-overhaul merge/deployment or new live SQL occurred.
+
 ## 30 October 12:12 UTC — staff boundary repaired; browser timeout fixed
 
 Recorded implementation parentdb3f0be5c0db756c9c3cdb4cf51a5a5cbd8fca89. New mirrored

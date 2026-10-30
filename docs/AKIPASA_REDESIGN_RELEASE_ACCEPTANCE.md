@@ -18,6 +18,24 @@ batch. It does not accept other routes or waive the strict coordinated #332
 requirements below. Keep #332 draft until its actual source, review and device
 requirements are satisfied. Preserve the live batch when reconciling master.
 
+## Subsequent bounded release — 30 October 2026
+
+Alex separately approved the Home/Passport batch in #335 and its included terms
+record permission repair. Reviewed head `79dacc3b0b2ca2685789dc4966576f0cce1f775e`
+merged as `3d87eb7c995fbd0947cb25a771a43376d9462645` and automatically deployed as
+Worker `26e51e72-bb1e-49e9-a307-243e0203ef8d`. Exact public source and six EN/ES
+Home/Auth/Passport HTTPS reads were verified. The terms repair was applied once
+as production migration `20261030102908`; do not reapply it or separately release
+inherited #334. Physical Android follow-up remains outstanding. See
+`docs/receipts/AKIPASA_PRODUCTION_335_20261030.json`.
+
+This second explicit exception accepts only that approved batch. It does not
+accept all Passport routes, authorize the new staff SQL, or waive #332's full
+release requirements. Alex's latest instruction is to consolidate the remaining
+overhaul in #332 and release when clear; Community #336 was closed unmerged as
+incorporated. The live Worker above is the rollback reference for a future full
+release. Keep #332 draft until its actual remaining gates pass.
+
 ## Shared visual contract
 
 All AkiPasa consumer pages use `AppShell` and its canonical `PasaBottomDock` (Home / Map / Check-in / Community / Profile), `LaunchRibbon` and global visual tokens. Authenticated Account, Admin and Staff subpages reuse the existing `WorkspaceShell` and `PasaSharedSurfaces.css` rather than copying new menus, navbars or cards per page. Event and venue details use the existing Spotlight templates and tracked actions. No change is allowed to check-in proof, rewards ledger, permission logic, billing, RLS, consent or age gates without separate verification.
@@ -58,6 +76,8 @@ A route may move to `in-progress` when its common component or visual styling is
 ```
 
 Replace the placeholders only with real evidence. A missing or malformed record is rejected by `scripts/pasa-ui-route-audit.mjs`.
+
+For a verified redirect-only route, Alex explicitly requires correct redirect evidence instead of fabricated screenshots. The legacy `screenshots` URL field may point to the actual Actions HTTP-test evidence, with `evidenceType` explicitly recording that no page/image exists. This does not accept the destination page. Root and unlocalized Roadmap have independent exact-source 308/target review at `6a923495`; 88 other routes and all six fallback states remain outstanding.
 
 ## Actual screenshot inspection checkpoint
 

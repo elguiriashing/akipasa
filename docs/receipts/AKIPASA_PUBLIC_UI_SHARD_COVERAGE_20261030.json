@@ -18,7 +18,7 @@
   "originalTimeoutUnchanged": 20,
   "assertionsChanged": false,
   "collectionOnly": true,
-  "runtimeCiPending": true,
+  "runtimeCiPending": false,
   "releaseAcceptanceGranted": false,
   "collectionFiles": {
     "/tmp/akipasa-public-ui-full-collection-20261030.json": "9dea0f071607468e1268ee2b9f3ce7be0b855bd20707a531b19401726fb31a6c",
@@ -41,5 +41,38 @@
     "cancelled": 1,
     "skipped": 1,
     "empty": 1
+  },
+  "runtimeVerification": {
+    "sourceCommit": "6a9234952542bc3fd59456fb2a43638183c2af7a",
+    "checkedAt": "2026-10-30T12:34:00Z",
+    "workflowRun": 41053750511,
+    "workflowUrl": "https://github.com/elguiriashing/akipasa/actions/runs/41053750511",
+    "jobs": {
+      "account-ui": 124055972385,
+      "onboarding-ui": 124055972681,
+      "public-ui-shards (1)": 124055972810,
+      "public-ui-shards (2)": 124055972688,
+      "public-ui": 124062313651
+    },
+    "allListedJobs": "completed/success",
+    "ordinaryWorkflowsPassed": 11,
+    "strictVisualGate": "failure;90 routes remain unaccepted",
+    "cloudflareNonProductionBuild": "f80311f9-315d-42dd-a8bf-082b51a34882",
+    "cloudflareOutcome": "success;version upload only",
+    "productionChanged": false,
+    "publicBrowserResults": {
+      "shard1": {
+        "passed": 287,
+        "skipped": 1
+      },
+      "shard2": {
+        "passed": 206,
+        "skipped": 52
+      },
+      "totalPassed": 493,
+      "totalSkipped": 53,
+      "collected": 546,
+      "note": "Existing conditional skips retained;546 collected is not546 executed/passed. Passing jobs do not establish skipped role/provider/device acceptance."
+    }
   }
 }

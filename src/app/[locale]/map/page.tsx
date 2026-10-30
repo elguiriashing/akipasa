@@ -12,6 +12,7 @@ import type { TimeWindow } from "@/lib/domain";
 import { translated } from "@/lib/domain";
 import { discoveryLocationFromQuery } from "@/lib/discovery-location";
 import { eventPriceLabel } from "@/lib/event-price";
+import { occurrenceHref } from "@/lib/event-occurrence";
 import { msg } from "@/lib/messages";
 import { recommendDiscovery } from "@/lib/personalisation/server";
 import { nearbyVenuePage } from "@/lib/unclaimed-venues";
@@ -121,7 +122,10 @@ export default async function MapPage({
     longitude: result.event.location?.longitude ?? result.venue.longitude,
     title: translated(result.event.title, locale),
     venue: result.event.location?.label || result.venue.name,
-    href: `/${locale}/events/${result.event.slug}`,
+    href: occurrenceHref(
+      `/${locale}/events/${result.event.slug}`,
+      result.occurrence.id,
+    ),
     category: result.event.category,
     startsAt: result.occurrence.startsAt,
     priceLabel: eventPriceLabel(result.event, locale) ?? undefined,

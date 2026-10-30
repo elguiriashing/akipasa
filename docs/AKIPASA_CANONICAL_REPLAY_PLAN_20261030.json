@@ -147,7 +147,16 @@
     {
       "id": "stop:platform-baseline",
       "resolved": false,
-      "reason": "Pinned real platform/Auth, PostGIS, pg_cron and official Storage0002-0018 must be admitted and verified in a new pristine no-egress fixture. External snapshots are evidence, not committed inputs."
+      "reason": "Pinned real platform/Auth, PostGIS and pg_cron require fresh pristine no-egress verification. Official Storage0002-0018 bytes are now archived outside migration roots with exact upstream/license pins; this is source integrity only. Fresh Auth/platform/order/account-guard and actual Storage HTTP image/migration/upload/download acceptance remain unresolved.",
+      "replayOnlyStorageSourceAdmission": {
+        "path": "database/replay-only/official-storage",
+        "upstreamCommit": "96aec65e7e22573befef05728327ad4d8e7207b2",
+        "sourceIntegrityChecker": "scripts/check-storage-replay-sources.mjs",
+        "sourceCount": 17,
+        "databaseExecutionSupported": false,
+        "storageHttpAcceptance": false,
+        "freshOrderedGuardAcceptance": false
+      }
     },
     {
       "id": "stop:synthetic-admin-bootstrap",

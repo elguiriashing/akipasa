@@ -55,7 +55,7 @@ historical-version mappings.
 The earlier scoped Creator evidence is **78 application SQL +17 official Storage
 SQL =95 selected sources**, not95of167 canonical application migrations. The JSON
 pins the scoped manifest's hash and17 external Storage snapshot names/hashes;
-those snapshots are **not committed/admitted execution inputs**. The checker never
+those snapshots now have an exact upstream-matched replay-only archive, but are **not admitted execution inputs**. The checker never
 reads external QA paths. The immutable checkpoint and reconciliation artifact
 hashes are provenance references, not claims that their uncommitted contents can
 be reconstructed from this repository alone.
@@ -146,3 +146,16 @@ which requires an already-wrapped capture body. Later forwards need explicit gua
 closure. Never move coverage blindly after the whole tail, reapply it to a retained
 proof DB, run both canonical/native historical alternatives, or treat prior fixture
 passes as eligibility. Remaining source-order/exemption decisions stay unresolved.
+
+## Official Storage bytes now reproducible as source
+
+All 17 historical Storage inputs are preserved unmodified under
+`database/replay-only/official-storage/`, with the Apache 2.0 license and pinned
+upstream commit `96aec65e7e22573befef05728327ad4d8e7207b2`. Independent fetches matched
+original QA and scoped snapshots exactly, without normalization. The fixed local
+checker pins every SQL/license byte, provenance, prerequisite and explicit order;
+13 Node regressions reject drift, traversal, symlinks, forged readiness and apply
+flags. `--check` exit0 means source integrity only. The application migration
+inventory stays 339; no archive is scheduled or applied. The platform STOP remains
+unresolved pending fresh Auth, reviewed ownership/bootstrap/order, current account
+guards and actual Storage HTTP version/migration/upload/download evidence.

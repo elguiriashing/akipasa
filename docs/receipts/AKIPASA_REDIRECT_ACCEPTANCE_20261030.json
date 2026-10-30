@@ -1,0 +1,24 @@
+{
+  "reviewedCommit": "6a9234952542bc3fd59456fb2a43638183c2af7a",
+  "reviewer": "Codex canonical_plan \u2014 independent redirect source/functional review",
+  "checkpointSha256": "756541fb4a3710e5a38014af6bda34ab80cc63e7fa7ee298d87b228b8d49c290",
+  "routes": {
+    "/": {
+      "status": 308,
+      "target": "/es"
+    },
+    "/roadmap": {
+      "status": 308,
+      "target": "/es/roadmap"
+    }
+  },
+  "httpEvidence": "https://github.com/elguiriashing/akipasa/actions/runs/41053750511",
+  "ciMergeCommit": "869035d15b0a14c17c8389e9147bf036638b34e4",
+  "identicalSourceTree": "008a0a620c0e46f633665eec7286ff2d118de76d",
+  "screenshotNotApplicable": true,
+  "destinationPagesAccepted": false,
+  "hqGatewayAccepted": false,
+  "fullReleaseAccepted": false,
+  "supplementalFocusedTestsPassed": 20,
+  "initialWrongConfigFailurePreserved": true
+}

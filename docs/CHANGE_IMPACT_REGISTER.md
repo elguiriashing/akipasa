@@ -4277,3 +4277,42 @@ not omitted tests. Per-shard artifact names preserve both archives without uploa
 collisions, same paths/retention. Runtime CI is required on the resulting commit;
 collection equivalence alone is not a browser pass or route acceptance. See
 receipts/AKIPASA_PUBLIC_UI_SHARD_COVERAGE_20261030.json.
+
+## 2026-10-30 | Map pins preserve the selected recurring event date
+
+Actual MapPage supplied the event-only URL to ProductionMap, while its list cards
+already used occurrenceHref. A later date-filtered recurring occurrence therefore
+opened the detail selector's earlier default night. Map pins now reuse the existing
+helper with the recommended occurrence ID; filters, recommendation authority,
+coordinates, map rendering, price labels, auth, bookings and XP are unchanged.
+The existing pin regression is strengthened; two EN/ES actual-page-to-real-selector
+cases prove a second selected night survives even when an earlier future night
+would be default. Before: three failures/59 passes. After: 81 discovery/selection/
+booking-continuity cases pass. Synthetic identity/provider/render substitutions
+are explicit; no live event data, availability or production acceptance is claimed.
+
+## 2026-10-30 | Official Storage replay source archive, no execution
+
+Seventeen unmodified upstream SQL inputs (15,011 bytes) are archived outside both
+application migration roots with exact upstream commit, original filenames,
+Apache 2.0 LICENSE and attribution. Independent pinned fetches match original QA
+and scoped snapshots exactly; no normalization or customer credentials involved.
+The fixed-allowlist checker pins SQL/license bytes, complete provenance, explicit
+numeric order (00010 follows0009), nonexecution flags and prerequisites. Thirteen
+Node cases cover changed/missing/extra/duplicate inputs, symlinks/path traversal,
+forged provenance/readiness/license, order and apply refusal. Added to existing
+check without replacing tests or gates. No network/DB/subprocess/apply capability
+exists in the checker. Source integrity exit0 is not canonical replay, current
+platform or Storage HTTP acceptance. The 339 application-path inventory and all
+unresolved STOPs remain; no fixtures, migrations, policies or production changed.
+
+## 2026-10-30 | Two redirect-only routes independently accepted
+
+Only root and unlocalized Roadmap move to accepted after independent exact-source
+review at6a923495 and actualNext308/target/campaign HTTP proof in successful run 41053750511. Reviewed CI merge tree equals source tree. User explicitly requires
+redirect evidence rather than screenshots of nonexistent pages; existing URL field
+links the real HTTP run and evidenceType makes that distinction explicit. Neither
+destination page nor HQ gateway is accepted. HQ is a rendered200page and retains
+its visual/tablet/external-access/device gaps. Matrix now2accepted/88inprogress/
+13excluded; six fallback states and full owner/device/strict gates remain. No audit
+assertion, workflow, schema, consent, role or production boundary was weakened.

@@ -92,6 +92,8 @@ vi.mock("@/components/community/CreatorDirectoryPage", () => ({
 
 import DiscoverPage from "../src/app/[locale]/page";
 import MapPage from "../src/app/[locale]/map/page";
+import { selectEventOccurrence } from "@/lib/event-occurrence";
+import type { Occurrence } from "@/lib/domain";
 import CommunityPage from "../src/app/[locale]/community/page";
 import {
   submitCommunityEvent,
@@ -282,13 +284,89 @@ it("uses the filtered recommendation set for map pins", async () => {
       points: [
         expect.objectContaining({
           id: "event-filtered",
-          href: "/en/events/filtered-event",
+          href: "/en/events/filtered-event?occurrence=occurrence-filtered",
           category: "music",
         }),
       ],
     }),
   );
 });
+
+it.each(["en", "es"] as const)(
+  "opens the date-filtered recurring event occurrence from its %s map pin",
+  async (locale) => {
+    const occurrences: Occurrence[] = [
+      {
+        id: "first-night",
+        startsAt: "2026-11-01T18:00:00Z",
+        endsAt: "2026-11-01T21:00:00Z",
+        status: "scheduled",
+      },
+      {
+        id: "selected-night",
+        startsAt: "2026-11-08T18:00:00Z",
+        endsAt: "2026-11-08T21:00:00Z",
+        status: "scheduled",
+      },
+    ];
+    mocks.recommend.mockResolvedValueOnce({
+      requestId: "synthetic-filtered-recurring-event",
+      items: [
+        {
+          reasonCodes: [],
+          result: {
+            event: {
+              id: "recurring-event",
+              slug: "recurring-show",
+              title: { en: "Synthetic recurring show", es: "Evento de prueba" },
+              category: "music",
+              priceCents: 0,
+              currency: "EUR",
+              source: "verified_venue",
+              venueId: "synthetic-venue",
+            },
+            venue: {
+              name: "Synthetic venue",
+              latitude: 36.72,
+              longitude: -4.42,
+            },
+            occurrence: occurrences[1],
+          },
+        },
+      ],
+    });
+    render(
+      await MapPage(
+        pageProps(locale, {
+          dateFrom: "2026-11-08",
+          dateTo: "2026-11-08",
+          category: "music",
+        }),
+      ),
+    );
+    const point = mocks.mapProps.mock.calls[0][0].points[0];
+    const destination = new URL(point.href, "https://example.test");
+    expect(destination.pathname).toBe(`/${locale}/events/recurring-show`);
+    expect(destination.searchParams.get("occurrence")).toBe("selected-night");
+    expect(point.startsAt).toBe(occurrences[1].startsAt);
+    const now = new Date("2026-10-30T12:00:00Z");
+    // The real detail selector defaults to the earlier night without context.
+    expect(selectEventOccurrence(occurrences, undefined, now)?.id).toBe(
+      "first-night",
+    );
+    expect(
+      selectEventOccurrence(
+        occurrences,
+        destination.searchParams.get("occurrence"),
+        now,
+      ),
+    ).toBe(occurrences[1]);
+    expect(mocks.recommend.mock.calls[0][0].query.dateFrom.toISOString()).toBe(
+      "2026-11-07T23:00:00.000Z",
+    );
+    expect(mocks.discover).not.toHaveBeenCalled();
+  },
+);
 
 it("keeps every active filter in the empty-state Map handoff", async () => {
   render(
