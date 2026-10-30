@@ -47,10 +47,14 @@ The existing synthetic local Auth backend confirms consumer identity/profile,
 terms, creator profile reads/eligibility and administrator-only Prestige denial.
 The original partial local replay omitted official initial default privileges and
 retains those explicit permission failures. A separate clean scoped fixture now
-applies the immutable official baseline before92 unchanged source artifacts;
+applies the immutable official baseline before95 selected source paths (96 execution records including a superseded
+guard revision);
 39 actual Auth/REST probes pass, including owner isolation and forged/reassignment/
 verification/category-write rejection. No retroactive grant or feature-switch
-workaround was used. This scoped fixture is not full canonical164-file parity.
+workaround was used. This scoped fixture is not full canonical schema parity. Its95 selected paths
+contain78 application SQL files and17 official Storage files; the current raw
+database directory has166 SQL files, including two known historical bundles that
+must not be applied. A raw file count is not an approved execution manifest.
 Production credentials/customer rows are not test data.
 
 Creator fixture captures import actual page exports and actions, but substitute
@@ -59,15 +63,19 @@ states that scope. Account's maintained harness also includes AppShell; neither
 harness is physical Android or production authorization evidence.
 
 Actual Next Creator coverage now additionally passes five real local Auth/save/
-private/terms/pending-review journeys, plus39Auth/REST and10Profile boundary probes,
+private/terms/pending-review journeys, plus39Auth/REST and11Profile boundary probes,
 after the narrowly reviewed source grant repair. See
 AKIPASA_PROFILE_EDIT_REPLAY_20261029.md and its sanitized receipt. This does not
 replace all-role/provider/device acceptance or complete canonical schema replay.
 
 ## Next execution
 
-Finish the current Creator return regressions, full integrated browser suites and
-exact-head CI, preserve source-stamped Cloudflare build evidence, then use this
-index for final review and device/provider acceptance. Keep #332 draft until the
+Creator return regressions and integrated full check now pass (2,639 tests);
+the latest integrated source is f489be663ac896da9451c8a61b44dd46d98dd74d.
+Finish its remaining exact-head Account/public CI result, improve Home below-fold
+venue-card continuity with real browser evidence, and preserve source-stamped
+Cloudflare build results. Security-only PR334 is separately tested and still
+requires explicit owner approval before merge/production SQL. Use this index for
+final route review and device/provider acceptance. Keep #332 draft until the
 strict gate and all release prerequisites actually pass. Preserve the known-good
 production Worker and check automatic deployment identity before any manual path.

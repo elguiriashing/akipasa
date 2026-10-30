@@ -3251,3 +3251,21 @@ owner RPC's availability; postconditions ensure effective client denial and
 continued RPC-owner access. Unsupported/inherited privileges fail atomically.
 This source is prepared for independent review and explicit production approval;
 no live SQL or customer-data change has occurred. The larger overhaul stays draft.
+
+## 2026-10-30 | Home directory visual continuity
+
+The Home nearby-business fallback now uses a scoped responsive card grid instead
+of the legacy generic rows below the cinematic discovery section. A dark opaque
+surface and restrained orange location accents remain consistent in both themes;
+listing names, addresses, distances, claim status and destinations remain supplied
+by the existing nearby RPC. That response has no photos, so the decoration does
+not imply venue photography, open status, popularity or an event tonight.
+
+The change affects consumer Home only: no query, pagination, backend/RLS, provider,
+account, XP, consent, product boundary or Tonight gate changes. EN/ES labels and
+20-card result pagination remain. The new actual-Next browser spec checks readable
+labels, overflow, keyboard/reduced motion, source hashes and navigation across
+360/390/820/1440 widths. Results and reviewer limitations belong in the execution
+ledger/receipt; implementation alone does not grant route acceptance. A fresh
+read-only aggregate at00:02UTC still found zero future occurrences; Tonight stays
+default-off (AKIPASA_EVENT_SUPPLY_20261030.json).

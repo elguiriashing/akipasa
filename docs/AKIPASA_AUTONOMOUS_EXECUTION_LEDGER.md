@@ -1,11 +1,61 @@
 # AkiPasa autonomous execution ledger
 
-Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 29 October 2026 UTC.
+Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
+
+## Home directory continuity — validated working-tree candidate
+
+Baseline f489be663ac896da9451c8a61b44dd46d98dd74d; branch
+work/coordinated-release-20261029. The next commit contains the scoped Home
+nearby-business card grid, maintained actual-Next browser spec and source-stamped
+receipt AKIPASA_HOME_DIRECTORY_CONTINUITY_20261030.json. Existing listing data,
+20-card pagination, location queries and venue destinations remain. No backend,
+permission, event, XP, consent or provider change; no invented venue photographs.
+
+TESTED:23 browser cases PASS (16EN/ES/theme/width +4unchanged shared-search +3
+unchanged pagination/map). Phones use Android-like Chromium contexts,820 is a
+touch-enabled desktop-UA viewport and1440 is a desktop Chromium context. None
+establishes physical-device testing.1,280 actual text/gradient-bound contrast
+samples have minimum8.748350409473417:1. First card centre is unobscured in normal
+scrolled view; keyboard Enter/Back and reduced motion pass. Root inspected normal
+ENdark390,ESlight360 andENlight1440 plus opening/full-directory captures; no
+blocking defect was observed in that scope. No independent route sign-off.
+
+The first runner attempt failed because a device spread selected a worker-level
+fixture inside describe; the second could not find system Chrome. Both adapter/
+environment failures are retained. Final explicit device-context options and the
+existing cached Chromium passed all23 without changing assertions. The required
+fullcheck initially could not run test subprocesses in the restricted sandbox;
+a process-enabled retry PASSED2,639 Vitest cases, every required check and the
+optimized Next build (exit0).
+Full logs are retained under /tmp/akipasa-home-directory-full-check-20261030\*.log.
+No acceptance statuses changed; only Home's implementation note was updated.
+
+NEXT: receipt source hashes match; commit validated changes and push without
+force, then fetch fresh exact-head CI/Cloudflare build results.
+Separate security-only PR334 remains immutable892 and needs explicit owner
+approval before merge/production SQL. Existing production source39cd9bb and
+Worker8199 remain the live and rollback references. Full-overhaul gates stay.
+
+## 30 October supply and continuity checkpoint
+
+At2026-10-30T00:02:28.045585Z, a fresh read-only production aggregate returned
+9events,10occurrences,0future occurrences and0future published/scheduled.
+Tonight remains default-off; no rows, event fixtures or gate settings changed.
+Receipt: docs/receipts/AKIPASA_EVENT_SUPPLY_20261030.json.
+Cloudflare deployment metadata at00:01 still showed the approved Home/Login
+Worker8199ce83-b416-42d1-9568-9dc167601b6a at100%; no additional deployment.
+
+The current95-path protected fixture comprises78 application SQL files and17
+official Storage files, not95 of the application migrations. The current raw
+database directory has166 SQL files after the two new source repairs; two are
+known historical bundles, and the remaining unselected paths still require
+classification. Neither a raw count nor applying every SQL file proves canonical
+replay. Do not glob all migrations or overwrite existing fixtures to claim parity.
 
 ## Terms-record security patch prepared, production approval pending
 
-Committed integration baseline `6b7f2f8be21a3848a2f6e49c59b279f0353ba6a1` on
-`work/coordinated-release-20261029`. This commit integrates the exact reviewed
+Committed integration head `f489be663ac896da9451c8a61b44dd46d98dd74d` on
+`work/coordinated-release-20261029`. This head integrates the exact reviewed
 terms patch from separate draft PR334, source
 `892a1948bb739d3ae6e88d091e085e88a940a294`, into the unmerged full overhaul.
 PR334 is based solely on production39cd9bb; its8changedpaths include no runtime
@@ -35,20 +85,28 @@ rows/RPC/policies/editorprivileges retained. Crossportal immutable source checks
 AkiPasa main3a046967 and separateAkiHQba33054c found compatible RPCuse, no direct
 terms writes. This is not physical/provider acceptance or all164canonical parity.
 
-UNMERGED / UNDEPLOYED: require fresh exact-head CI for both candidates. PR332's
+UNMERGED / UNDEPLOYED: PR334 has all six exact-head workflows green and clean
+Cloudflare nonproduction build34ba7a02-a8ed-426d-a673-227f1cd954cc succeeded.
+PR332 f489 has all eleven ordinary workflows green, including Account/public
+40975039009 (freshly verified after00:05UTC). Its clean nonproduction build
+d76137dc-74f9-4a64-b4fb-7236a65c08ff succeeded. These builds upload versions only;
+no production traffic change is implied. PR332's
 strict90route/6fallback gate remains unchanged,0accepted. AkiPals user-paused,
 Tonightdefaultoff. Production still only approved #333 source39cd9bb / Worker
 8199ce83-b416-42d1-9568-9dc167601b6a. Immediate rollback reference is that current
 Home/Login Worker; older884dda44 remains historical prior to Home/Login.
 
-NEXT: integrate/push this immutable patch history, verify all fresh CI and CF
-nonproduction builds. Then request explicit owner approval for standalone334
+NEXT: preserve the separate immutable892 security candidate and the completed
+f489 ordinary-CI checkpoint. Request explicit owner approval for standalone334
 merge/productiontwo-columnSQL ONLY, as required by AGENTS.md production rule.
 Do NOTapply remote SQL or merge while approvalpending. After approval recheck
 currentmaster/expectedhead/liveguardmetadata, apply exacttransactiononce, verify
 ACL/RPC/policies/rowswithoutmutatingcustomerrecords and automaticWorker source;
 never duplicate manualdeployment. Full-overhaul reviewer/device gates stay.
-Root integration owner lease through00:15UTC30October; checkpoint in existing
+Independent work continues on truthful Home venue-card continuity below the
+cinematic hero; route_audit owns scoped markup/CSS/browser evidence and root owns
+integration/docs. No acceptance or release is implied by that assignment.
+Root integration owner lease through00:30UTC30October; checkpoint in existing
 single continuation task, no duplicate or guaranteedbackgroundcoding claim.
 
 ## Existing Profile grant replay repaired — 29 October 2026 23:22 UTC

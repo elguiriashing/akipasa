@@ -4027,3 +4027,21 @@ This is scoped Creator/Auth/RLS proof, not complete canonical migration parity.
 - Production/rollback: explicit approval required before any remote application.
   Guard failures roll back all ACL changes. Do not regrant acceptance-field edits
   as a cosmetic rollback; keep ordinary profile edits and RPC acceptance working.
+
+## 2026-10-30 | Truthful Home directory continuity
+
+- Trigger: below the cinematic hero, nearby-business fallback cards reverted to
+  generic rows, most visibly in light-mode mobile captures.
+- Scope: localized Home markup and an isolated CSS module; existing result/API,
+  query/pagination, venue destinations and real listing metadata are preserved.
+- Theme: responsive dark location cards with orange accents in both page themes,
+  readable addresses/distance/claim status, visible keyboard focus and reduced
+  motion. No invented venue images, schedules, crowds, availability or rewards.
+- Dependencies: existing nearby RPC and ResultPagination unchanged; no schema,
+  auth/role, analytics/consent, provider, billing, storage or cross-portal behavior.
+- Regression: actual Next/source-stamped browser checks and existing pagination
+  contract; evidence and complete-check outcome are recorded in the ledger.
+  Screenshots are implementation evidence, not independent route acceptance.
+- Supply: fresh00:02UTC aggregate remains0future occurrences. No production write
+  or feature-gate change. Rollback is the prior markup/module removal; no data
+  or permission rollback is involved.

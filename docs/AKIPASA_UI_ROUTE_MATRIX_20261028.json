@@ -316,7 +316,7 @@
     "src/app/[locale]/page.tsx": {
       "scope": "consumer",
       "status": "in-progress",
-      "note": " Reference-driven photographic Home opening, compact search/date shortcuts and launch strip implemented. Decorative generated artwork is not catalogue evidence. Real shared-search keyboard behavior tested; final source review and device acceptance remain pending."
+      "note": "Reference-driven photographic Home opening, compact search/date shortcuts and launch strip implemented. Decorative generated artwork is not catalogue evidence. Real shared-search keyboard behavior tested; final source review and device acceptance remain pending. Nearby catalogue now retains dark/orange card continuity in both themes without invented photos; 23 actual-Next fixture browser cases cover EN/ES, responsive contrast, keyboard, shared search and unchanged pagination. Source-stamped screenshots/receipt are implementation evidence; independent final-source and physical-device acceptance remain pending."
     },
     "src/app/[locale]/passports/page.tsx": {
       "scope": "consumer",

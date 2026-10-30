@@ -1,5 +1,7 @@
 import { madridLocalDateTimeSchema } from "@/lib/time";
 import { ResultPagination } from "@/components/ResultPagination";
+import { Icon } from "@/components/Icons";
+import homeVenues from "./home-venues.module.css";
 import { resultPage, resultSlice } from "@/lib/result-pagination";
 import { publicPageMetadata } from "@/lib/page-metadata";
 import { notFound } from "next/navigation";
@@ -270,49 +272,68 @@ export default async function DiscoverPage({
       />
 
       {venuePage.total ? (
-        <section id="venue-results" aria-labelledby="nearby-venues-title">
-          <div className="section-head">
-            <h2 id="nearby-venues-title">
-              {locale === "es" ? "Negocios cerca de ti" : "Businesses near you"}
-            </h2>
+        <section
+          id="venue-results"
+          className={homeVenues.directory}
+          aria-labelledby="nearby-venues-title"
+        >
+          <div className={`section-head ${homeVenues.heading}`}>
+            <div>
+              <span className={homeVenues.eyebrow}>
+                {locale === "es" ? "Explora tu zona" : "Around your corner"}
+              </span>
+              <h2 id="nearby-venues-title">
+                {locale === "es"
+                  ? "Negocios cerca de ti"
+                  : "Businesses near you"}
+              </h2>
+            </div>
             <span className="count">{venuePage.total}</span>
           </div>
-          <div className="grid">
+          <p className={homeVenues.intro}>
+            {locale === "es"
+              ? "Descubre los lugares de tu zona y encuentra tu próximo plan."
+              : "Get to know the places around you and find your next plan."}
+          </p>
+          <div className={homeVenues.grid}>
             {venuePage.rows.map((venue) => (
               <Link
                 key={venue.id}
-                className="card venue-card"
+                className={`card venue-card ${homeVenues.card}`}
+                data-home-venue-card
+                data-claim-status={venue.claimStatus}
                 href={`/${locale}/venues/${venue.slug}`}
               >
-                <div className="card-media">
-                  <div className="card-media-fallback" aria-hidden>
-                    <span>{venue.name.slice(0, 1).toUpperCase()}</span>
-                  </div>
-                  <div className="card-media-scrim" aria-hidden />
-                  <div className="card-media-badges">
-                    <span className="pill card-pill-date">
-                      {venue.claimStatus === "claimed"
-                        ? locale === "es"
-                          ? "Local"
-                          : "Venue"
-                        : locale === "es"
-                          ? "No reclamado"
-                          : "Unclaimed"}
-                    </span>
-                  </div>
+                <div className={homeVenues.cardTop}>
+                  <span className={homeVenues.mark} aria-hidden="true">
+                    <Icon name="venue" size={24} />
+                  </span>
+                  <span className={homeVenues.claim}>
+                    {venue.claimStatus === "claimed"
+                      ? locale === "es"
+                        ? "Local"
+                        : "Venue"
+                      : locale === "es"
+                        ? "No reclamado"
+                        : "Unclaimed"}
+                  </span>
                 </div>
-                <div className="card-body">
+                <div className={homeVenues.identity}>
                   <h3>{venue.name}</h3>
-                  <p className="card-venue">{venue.address}</p>
-                  <p className="card-distance">
-                    {`${venue.distanceKm.toFixed(1)} km`}
-                  </p>
-                  <div className="card-footer">
-                    <span className="card-arrow">
-                      {locale === "es" ? "Ver negocio" : "View business"}
-                    </span>
-                  </div>
+                  <p className={homeVenues.address}>{venue.address}</p>
                 </div>
+                <div className={homeVenues.cardBottom}>
+                  <span className={homeVenues.distance}>
+                    <Icon name="map" size={14} aria-hidden="true" />
+                    {`${venue.distanceKm.toFixed(1)} km`}
+                  </span>
+                  <span className={homeVenues.arrow} aria-hidden="true">
+                    <Icon name="arrow-right" size={18} />
+                  </span>
+                </div>
+                <span className={homeVenues.destination}>
+                  {locale === "es" ? "Ver negocio" : "View business"}
+                </span>
               </Link>
             ))}
           </div>
