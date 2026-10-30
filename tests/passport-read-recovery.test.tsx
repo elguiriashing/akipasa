@@ -32,6 +32,8 @@ vi.mock("next/link", () => ({
 }));
 vi.mock("@/components/PassportBook", () => ({
   PassportBook: ({
+    initialView,
+    initialCity,
     totalXp,
     totalStamps,
     progress,
@@ -39,6 +41,8 @@ vi.mock("@/components/PassportBook", () => ({
     stamps,
     badges,
   }: {
+    initialView: string;
+    initialCity?: string;
     totalXp: number | null;
     totalStamps: number | null;
     progress: ReactNode;
@@ -48,6 +52,8 @@ vi.mock("@/components/PassportBook", () => ({
   }) => (
     <main
       data-testid="passport-book"
+      data-view={initialView}
+      data-city={initialCity}
       data-xp={totalXp === null ? "unknown" : totalXp}
       data-stamps={totalStamps === null ? "unknown" : totalStamps}
     >
@@ -143,11 +149,14 @@ beforeEach(() => {
 });
 afterEach(cleanup);
 
-async function renderPage(locale: "en" | "es" = "en") {
+async function renderPage(
+  locale: "en" | "es" = "en",
+  query: Record<string, string | undefined> = {},
+) {
   render(
     await PassportsPage({
       params: Promise.resolve({ locale }),
-      searchParams: Promise.resolve({}),
+      searchParams: Promise.resolve(query),
     }),
   );
 }
@@ -276,3 +285,48 @@ it("never queries private weekly history while signed out", async () => {
     screen.getByText("Sign in to see your visits from this week."),
   ).toBeVisible();
 });
+
+it.each(["en", "es"] as const)(
+  "preserves all generated %s chapter URLs and feedback defaults",
+  async (locale) => {
+    for (const view of [
+      "cover",
+      "index",
+      "progress",
+      "passports",
+      "stamps",
+      "badges",
+    ]) {
+      await renderPage(locale, { view });
+      expect(screen.getByTestId("passport-book")).toHaveAttribute(
+        "data-view",
+        view,
+      );
+      cleanup();
+    }
+    for (const [query, expected] of [
+      [{}, "cover"],
+      [{ view: "unsupported" }, "progress"],
+      [{ checkin: "verified" }, "progress"],
+      [{ reward: "ready" }, "progress"],
+      [{ passport: "started" }, "progress"],
+      [{ view: "index", reward: "ready" }, "index"],
+    ] as const) {
+      await renderPage(locale, query);
+      expect(screen.getByTestId("passport-book")).toHaveAttribute(
+        "data-view",
+        expected,
+      );
+      cleanup();
+    }
+    await renderPage(locale, { city: "malaga", view: "cover" });
+    expect(screen.getByTestId("passport-book")).toHaveAttribute(
+      "data-city",
+      "malaga",
+    );
+    expect(screen.getByTestId("passport-book")).toHaveAttribute(
+      "data-view",
+      "cover",
+    );
+  },
+);

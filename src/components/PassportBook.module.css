@@ -592,7 +592,10 @@
 .chapter :global(.reward-card-list) {
   grid-template-columns: 1fr;
 }
-.chapter :global(p) {
+.chapter :global(.panel p),
+.chapter :global(.passport-card p),
+.chapter :global(.stamp-card p),
+.chapter :global(.notice p) {
   color: #afc3d3;
 }
 .chapter :global(.status-pill) {
@@ -1167,7 +1170,7 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(180deg, #06132308, #061323e8 85%);
+  background: linear-gradient(180deg, #06132366, #061323ef 85%);
 }
 .cityThumb {
   z-index: -2;
@@ -1441,7 +1444,7 @@
   }
   .spread {
     min-height: calc(100vh - 210px);
-    grid-template-columns: minmax(390px, 0.82fr) minmax(450px, 1.18fr);
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
     gap: clamp(44px, 6vw, 110px);
     align-items: center;
   }
@@ -1703,7 +1706,10 @@
 .chapter :global(.console-section-heading) {
   color: var(--passport-ink);
 }
-.chapter :global(p) {
+.chapter :global(.panel p),
+.chapter :global(.passport-card p),
+.chapter :global(.stamp-card p),
+.chapter :global(.notice p) {
   color: var(--passport-muted);
 }
 .bookmarks .motionControls button[aria-pressed="true"],
@@ -2224,5 +2230,286 @@
 
   .search {
     margin-top: 14px;
+  }
+}
+
+/* Travel-book finish: paper is a physical object in either app theme. Keep
+   these local tokens together so every real chapter inherits the same paper. */
+.page:not(:has(.cover)) {
+  --paper-ink: #30251d;
+  --paper-muted: #685442;
+  --paper-panel: #fff5df;
+  --paper-surface: #f6e7ca;
+  --paper-line: #bda180;
+  --paper-selected: #f6d6a8;
+}
+.intro {
+  color: var(--ink, #f2eee6);
+}
+.page:has(.cover) {
+  color: #f7e9d6;
+  background: #171512;
+  border-color: #5a4634;
+}
+.page:has(.cover) .pageTitle {
+  color: #f7e9d6;
+}
+.book {
+  border-color: #755139;
+  border-left-color: #573a2c;
+  border-radius: 18px;
+  background: #573c2b;
+  box-shadow:
+    0 24px 60px #0005,
+    2px 3px 0 #e5cda2,
+    4px 5px 0 #805d40;
+}
+.page:not(:has(.cover)) {
+  background:
+    radial-gradient(ellipse at 0% 5%, #a26d3d24, transparent 55%),
+    repeating-linear-gradient(1deg, #6f492606 0 1px, transparent 1px 5px),
+    #f6e7ca;
+  color: var(--paper-ink);
+  border: 1px solid #8a5d3b33;
+}
+.page:not(:has(.cover)) .pageHeader,
+.page:not(:has(.cover)) .pageFooter {
+  color: #735b45;
+  border-color: #6d503338;
+}
+.page:not(:has(.cover)) .pageTitle {
+  color: #33251e;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
+  margin-block: 14px 18px;
+}
+.page:not(:has(.cover)) .index > p,
+.page:not(:has(.cover)) .chapter > :global(p) {
+  color: #594737;
+}
+.page:not(:has(.cover)) .search {
+  color: #604d3c;
+  margin-block: 16px 12px;
+}
+.page:not(:has(.cover)) .search input {
+  border-color: #ad9374;
+  background: #fffaed;
+  color: #32251c;
+}
+.page:not(:has(.cover)) .search input::placeholder {
+  color: #735e48;
+  opacity: 1;
+}
+.page:not(:has(.cover)) .chapterList button {
+  border-color: #a88b6e;
+  background: #fff5df;
+  color: #35271c;
+}
+.page:not(:has(.cover)) .chapterList b {
+  color: #ae4d1f;
+}
+/* Original city photographs are destinations, not fabricated earned stamps. */
+.page:not(:has(.cover)) .cityIndex button {
+  color: #fff;
+  border: 3px double #d2b180;
+  border-radius: 4px;
+  box-shadow: 2px 3px 0 #7f57351a;
+}
+.page:not(:has(.cover)) .cityIndex small {
+  color: #fff;
+}
+/* Paper belongs to the physical book interior; interface appearance tokens
+   remain inherited from the selected app theme. */
+.page:not(:has(.cover)) .chapter :global(.panel),
+.page:not(:has(.cover)) .chapter :global(.passport-card),
+.page:not(:has(.cover)) .chapter :global(.stamp-card),
+.page:not(:has(.cover)) .chapter :global(.console-section-header),
+.page:not(:has(.cover)) .chapter :global(.notice),
+.page:not(:has(.cover)) .chapter :global(.status-pill) {
+  color: var(--paper-ink);
+  background: var(--paper-panel);
+  border-color: var(--paper-line);
+}
+.page:not(:has(.cover)) .chapter :global(.console-section-heading) {
+  color: var(--paper-ink);
+}
+.page:not(:has(.cover)) .chapter :global(.panel p),
+.page:not(:has(.cover)) .chapter :global(.passport-card p),
+.page:not(:has(.cover)) .chapter :global(.stamp-card p),
+.page:not(:has(.cover)) .chapter :global(.notice p) {
+  color: var(--paper-muted);
+}
+.chapter :global(.console-section-header) {
+  border-radius: 8px;
+  box-shadow: none;
+}
+.chapter :global(.panel),
+.chapter :global(.passport-card),
+.chapter :global(.stamp-card) {
+  border-radius: 8px;
+  box-shadow: 0 3px 0 #8e684215;
+}
+.chapter :global(.stamp-card) {
+  border-style: dashed;
+  border-width: 2px;
+}
+.chapter :global(.metrics-grid) {
+  gap: 10px;
+}
+.chapter :global(.metric-card) {
+  background: #fff5df;
+  border-color: #bda180;
+  color: #30251d;
+  box-shadow: none;
+}
+.chapter :global(.console-section-header h2) {
+  color: var(--paper-ink, #30251d);
+}
+.chapter :global(.console-section-header > div > span) {
+  color: var(--paper-muted, #685442);
+}
+.chapter :global(.console-section-header > div > p) {
+  color: #9e4215;
+}
+/* This self-contained collection is a dark object in both app themes. Give its
+   inherited headings/body ink without recolouring unrelated chapter content. */
+.chapter :global(section[aria-labelledby="badge-collection-heading"]),
+.chapter :global(section[aria-labelledby="badge-collection-heading"] h3),
+.chapter :global(section[aria-labelledby="badge-collection-heading"] h4) {
+  color: #f3f5ef;
+}
+.chapter :global(section[aria-labelledby="badge-collection-heading"] p) {
+  color: #c3d6cf;
+}
+.chapter :global(section[aria-labelledby="badge-collection-heading"] a) {
+  color: #d8efe4;
+}
+.chapter
+  :global(
+    section[aria-labelledby="badge-collection-heading"] input::placeholder
+  ) {
+  color: #b9c9d5;
+  opacity: 1;
+}
+.chapter :global(.metric-card > strong),
+.chapter :global(.metric-card > .metric) {
+  color: var(--paper-ink, #30251d);
+}
+.chapter :global(.metric-card > span),
+.chapter :global(.metric-card > small) {
+  color: var(--paper-muted, #685442);
+}
+
+.bookmarks,
+.mobileMenuButton {
+  background: #141311;
+  border-color: #5a4634;
+  color: #fff3df;
+}
+.bookmarks button,
+.bookmarks button .bookmarkNumber,
+.bookmarks .motionControls .motionButton,
+.bookmarks .privacyControls button {
+  color: #f7e9d6;
+  background: #211d18;
+  border-color: #5a4634;
+}
+.bookmarks button[aria-current] {
+  color: #21160b;
+  border-color: #ff9c4a;
+  background: #ff923e;
+}
+.bookmarks button[aria-current] .bookmarkNumber {
+  color: #40240e;
+}
+.bookmarks .motionControls button[aria-pressed="true"],
+.bookmarks .privacyControls button:hover {
+  color: #fff3df;
+  background: #634021;
+}
+@media (max-width: 700px) {
+  .book {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+  .page:not(:has(.cover)) {
+    border-radius: 12px 12px 0 0;
+  }
+  .cityIndex {
+    gap: 9px;
+  }
+  .cityIndex button {
+    min-height: 124px;
+  }
+  .page:not(:has(.cover)) .pageTitle {
+    margin-block: 12px;
+  }
+}
+.page:not(:has(.cover)) .journal {
+  --passport-ink: var(--paper-ink);
+  --passport-muted: var(--paper-muted);
+  --passport-surface: var(--paper-panel);
+  color-scheme: light;
+}
+.page:not(:has(.cover)) .journal,
+.page:not(:has(.cover)) .journal > section,
+.page:not(:has(.cover)) .journal h3,
+.page:not(:has(.cover)) .journal h4 {
+  color: var(--paper-ink);
+}
+.page:not(:has(.cover)) .journal p,
+.page:not(:has(.cover)) .journal small,
+.page:not(:has(.cover)) .credit {
+  color: var(--paper-muted);
+}
+.page:not(:has(.cover)) .journal small,
+.page:not(:has(.cover)) .journal > section > div:first-child > span {
+  opacity: 1;
+}
+.page:not(:has(.cover)) .journal > section > div:first-child > span {
+  color: var(--paper-muted);
+}
+.page:not(:has(.cover)) .journal a:not(.explore) {
+  color: #854015;
+}
+.journal > section,
+.journal label {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.journal label {
+  grid-template-columns: minmax(0, 1fr);
+}
+.page:not(:has(.cover)) .journal select {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  background: var(--paper-panel);
+  color: var(--paper-ink);
+  border-color: var(--paper-line);
+}
+/* The fixed desktop interface summary needs its own inherited-theme surface
+   when the physical paper extends underneath it. */
+.summary {
+  padding: 8px 12px;
+  border: 1px solid var(--passport-line);
+  border-radius: 9px;
+  background: var(--passport-panel);
+  color: var(--passport-ink);
+}
+/* The app contains Passport through850px; the compact inner layout starts at
+  700px. Intermediate tablets need their own bounded scroll, not clipped content. */
+@media (min-width: 701px) and (max-width: 850px) {
+  .atlas {
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-width: thin;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .book .page {
+    animation: none;
   }
 }

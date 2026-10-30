@@ -60,9 +60,14 @@ export default async function PassportsPage({
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
   const es = locale === "es";
-  const view = ["progress", "passports", "stamps", "badges"].includes(
-    query.view || "",
-  )
+  const view = [
+    "cover",
+    "index",
+    "progress",
+    "passports",
+    "stamps",
+    "badges",
+  ].includes(query.view || "")
     ? query.view!
     : "progress";
   const { supabase, user } = await optionalUser();

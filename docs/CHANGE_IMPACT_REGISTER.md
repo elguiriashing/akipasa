@@ -3315,3 +3315,43 @@ Founder notices require the exact server-only `LAUNCH_WAITLIST_FOUNDER_NOTICES_E
 - Production/rollback: explicit approval required before any remote application.
   Guard failures roll back all ACL changes. Do not regrant acceptance-field edits
   as a cosmetic rollback; keep ordinary profile edits and RPC acceptance working.
+
+## 2026-10-30 | Isolated Home-directory/Passport presentation and terms-security proposal
+
+- Before: deployed39cd9bb Home/Login has the original Passport skin and rejects
+  its own generated cover/index query destinations. Terms client-column protection
+  is separately reviewed at immutable892a194 and has not been applied remotely.
+- Scope: PassportBook.module.css and passports/page.tsx imported from8f78b33,
+  plus only the bounded Home-card diff f489be6..8f78b33 and new scoped CSS;
+  maintained Passport browser/read-recovery regressions accompany them. The base's
+  terms migration/security tests are preserved byte-for-byte; no new SQL mutation.
+- Dependencies: existing PassportBook/CityStamps/domain data, EN/ES query parsing,
+  optionalUser/caller-owned reads, RLS, private collection and real XP/stamp values,
+  existing reduced-motion/sensor preferences and shared app/consent/navigation.
+  No shared shell, API, action, grants, analytics or billing behaviour changes.
+- Evidence: validation results and honest fixture/device limits are recorded in
+  AKIPASA_PASSPORT_SECURITY_RELEASE_PROPOSAL_20261030.md after execution. The new
+  candidate requires its own build/browser/CI results; parent-branch results alone
+  do not certify this isolated source. No route acceptance is manufactured.
+- Authority/rollback: new explicit staged-release and terms-SQL approval required.
+  Preserve prior Worker/source. Revert only presentation/query files for visual
+  rollback; do not restore direct client terms edits as a cosmetic rollback.
+
+- Protected visual correction: actual Page/Book fixtures exposed unreadable metric/
+  console child ink and dark nested achievement/weekly paragraphs; broad chapter
+  paragraph overrides are replaced with paper-panel scope. The badge object's
+  semantic landmark supplies its own readable ink and placeholder. The measured
+  light placeholder2.118:1 failure is repaired locally; computed4.5:1 checks cover
+  real metrics, weekly/header/badge text and placeholders. Only the same Passport
+  runtime module changes. Fixture inputs are disposable; no real awards or RLS/
+  device acceptance. Preliminary failed screenshots/tests remain preserved.
+
+Measured release-candidate follow-up:820×900 cover access required bounded scroll
+only on the701–850px Passport atlas. Desktop city journal text/control overflow
+required a journal-only paper semantic palette/light native control scheme and
+shrinkable proportional city columns. Photo stamps/interface tokens stay inherited.
+The inherited-interface source test retains its prohibitions, allowing only the
+three exact paper journal mappings once each; actual browser token/contrast/bounds
+checks and two synthetic earned-city cases guard this boundary. No actions, real
+awards, database permissions or shared shells change. Final validation is recorded
+in the concrete release proposal; explicit owner exception remains required.
