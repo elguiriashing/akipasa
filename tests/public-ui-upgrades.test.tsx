@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import React, { type ComponentProps, type ReactNode } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import "@testing-library/jest-dom/vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen, within } from "@testing-library/react";
@@ -608,14 +609,16 @@ describe("community workflow return paths", () => {
       },
     );
     it(
-      "retains default community creator navigation in " + locale,
+      "retains creator navigation from the public community home in " + locale,
       async () => {
-        await expect(
-          CommunityPage({
+        const markup = renderToStaticMarkup(
+          await CommunityPage({
             params: Promise.resolve({ locale }),
             searchParams: Promise.resolve({}),
           }),
-        ).rejects.toThrow(`redirect:/${locale}/community/creators`);
+        );
+        expect(markup).toContain(`href="/${locale}/community/creators"`);
+        expect(markup).toContain(locale === "es" ? "Comunidad" : "Community");
         expect(mocks.requireUser).not.toHaveBeenCalled();
       },
     );

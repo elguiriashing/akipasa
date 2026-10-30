@@ -10,14 +10,14 @@ export default async function TermsPage({
   if (!isLocale(locale)) notFound();
   const es = locale === "es";
   return (
-    <main className="shell legal">
-      <section className="hero">
+    <main className="shell legal pasa-legal-page">
+      <section className="hero pasa-legal-hero">
         <div className="eyebrow">{es ? "Condiciones" : "Terms"}</div>
         <h1>
           {es ? "Uso responsable de AkiPasa" : "Using AkiPasa responsibly"}
         </h1>
       </section>
-      <section className="panel prose">
+      <section className="panel prose pasa-legal-prose">
         <h2>{es ? "Contenido" : "Content"}</h2>
         <p>
           {es

@@ -1,0 +1,194 @@
+/* Public policy and roadmap presentation only; no shared app or workspace skin. */
+.app-shell .pasa-legal-page {
+  --legal-panel: #111213;
+  --legal-ink: #faf7f3;
+  --legal-muted: #c9c5bf;
+  --legal-line: rgba(255, 177, 124, 0.18);
+  --legal-link: #ffb17c;
+  width: min(100%, 78rem);
+  min-width: 0;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+  padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+}
+
+.app-shell .pasa-legal-page.shell.legal > .pasa-legal-hero.hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: clamp(1.75rem, 5vw, 4rem);
+  border: 1px solid rgba(255, 159, 94, 0.32);
+  border-radius: clamp(1.25rem, 3vw, 2rem);
+  background:
+    radial-gradient(
+      ellipse at 90% 0%,
+      rgba(255, 131, 50, 0.25),
+      transparent 54%
+    ),
+    linear-gradient(135deg, #211611, #090a0b 82%);
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.16);
+  color: #ffffff;
+}
+
+.app-shell .pasa-legal-page.shell.legal > .pasa-legal-hero.hero h1 {
+  max-width: 21ch;
+  margin-block: 0.5rem 0.85rem;
+  color: inherit;
+  font-size: clamp(2rem, 5.5vw, 4rem);
+  line-height: 1.08;
+  letter-spacing: -0.055em;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.app-shell .pasa-legal-page.shell.legal > .pasa-legal-hero.hero .eyebrow {
+  color: #ffb37d;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.app-shell .pasa-legal-page.shell.legal > .pasa-legal-hero.hero :is(p, .lede) {
+  max-width: 67ch;
+  color: #ded8d1;
+  line-height: 1.65;
+}
+
+.app-shell .pasa-legal-page .pasa-legal-prose {
+  width: 100%;
+  max-width: none;
+  margin-inline: auto;
+  margin-block: clamp(1rem, 2.5vw, 2rem);
+  padding: clamp(1.35rem, 3.5vw, 2.7rem);
+  border: 1px solid var(--legal-line);
+  border-radius: clamp(1.2rem, 3vw, 1.8rem);
+  background: var(--legal-panel);
+  color: var(--legal-ink);
+  line-height: 1.75;
+}
+
+.app-shell .pasa-legal-page .pasa-legal-prose h2 {
+  margin-block: 1.5rem 0.5rem;
+  color: var(--legal-ink);
+  font-size: clamp(1.25rem, 2.5vw, 1.65rem);
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+.app-shell .pasa-legal-prose h2:first-child {
+  margin-top: 0;
+}
+
+.app-shell .pasa-legal-page .pasa-legal-prose p {
+  margin-block: 0.45rem 1rem;
+  color: var(--legal-muted);
+  overflow-wrap: anywhere;
+}
+
+.app-shell .pasa-legal-page .pasa-photo-credit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: clamp(0.8rem, 2vw, 1.35rem);
+  margin-block: clamp(1rem, 2.5vw, 2rem);
+  min-width: 0;
+}
+
+.app-shell .pasa-legal-page .pasa-photo-credit-card {
+  min-width: 0;
+  padding: clamp(1.25rem, 2.4vw, 1.85rem);
+  border: 1px solid var(--legal-line);
+  border-radius: 1.35rem;
+  background: var(--legal-panel);
+  color: var(--legal-ink);
+  box-shadow: 0 12px 33px rgba(0, 0, 0, 0.1);
+}
+
+.app-shell .pasa-legal-page .pasa-photo-credit-card h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.2rem, 2vw, 1.55rem);
+  overflow-wrap: anywhere;
+}
+
+.app-shell .pasa-legal-page .pasa-photo-credit-card p {
+  color: var(--legal-muted);
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+
+.app-shell .pasa-legal-page .pasa-photo-credit-card a {
+  display: inline-block;
+  max-width: 100%;
+  color: var(--legal-link);
+  font-weight: 750;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  overflow-wrap: anywhere;
+}
+
+html[data-theme="light"]
+  .app-shell
+  .pasa-legal-page.shell.legal
+  > .pasa-legal-hero.hero {
+  border-color: rgba(180, 79, 23, 0.26);
+  background:
+    radial-gradient(
+      ellipse at 92% 0%,
+      rgba(253, 154, 75, 0.19),
+      transparent 53%
+    ),
+    #fff9f1;
+  color: #241e19;
+  box-shadow: 0 16px 35px rgba(65, 43, 20, 0.09);
+}
+
+html[data-theme="light"]
+  .app-shell
+  .pasa-legal-page.shell.legal
+  > .pasa-legal-hero.hero
+  .eyebrow {
+  color: #a34514;
+}
+
+html[data-theme="light"]
+  .app-shell
+  .pasa-legal-page.shell.legal
+  > .pasa-legal-hero.hero
+  :is(p, .lede) {
+  color: #5e534b;
+}
+
+/* Policy pages read as one centered editorial column; credits keep their grid. */
+.app-shell .pasa-legal-page:has(.pasa-legal-prose) {
+  max-width: 62rem;
+}
+html[data-theme="light"] .app-shell .pasa-legal-page {
+  --legal-panel: #fffdfa;
+  --legal-ink: #241e19;
+  --legal-muted: #5e534b;
+  --legal-line: rgba(111, 66, 34, 0.2);
+  --legal-link: #963e10;
+}
+.app-shell .pasa-legal-page a:focus-visible {
+  outline: 3px solid var(--legal-link);
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+
+@media (max-width: 600px) {
+  .app-shell .pasa-legal-page.shell.legal > .pasa-legal-hero.hero {
+    padding: 1.4rem;
+  }
+  .app-shell .pasa-legal-page .pasa-legal-prose {
+    padding: 1.25rem;
+  }
+}
+
+#roadmap-main {
+  --pasa-ui-text: #faf7f3;
+  --pasa-ui-subtle: #c7c1bb;
+  --pasa-ui-highlight: #ffb17c;
+}
+html[data-theme="light"] #roadmap-main {
+  --pasa-ui-text: #27211c;
+  --pasa-ui-subtle: #5e534b;
+  --pasa-ui-highlight: #a34514;
+}

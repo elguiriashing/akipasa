@@ -119,17 +119,20 @@ describe("catalogue sitemaps", () => {
       throw new Error("must not query catalogue");
     });
     const doc = document(await response.text());
-    expect(doc.querySelectorAll("url")).toHaveLength(12);
+    expect(doc.querySelectorAll("url")).toHaveLength(16);
     expect(doc.querySelectorAll("lastmod")).toHaveLength(0);
     const urls = [...doc.querySelectorAll("loc")].map(
       (loc) => loc.textContent!,
     );
+    for (const locale of ["en", "es"])
+      for (const path of ["roadmap", "photo-credits"])
+        expect(urls).toContain(`https://akipasa.com/${locale}/${path}`);
     expect(urls.every((url) => !shouldNoindex(new URL(url).pathname))).toBe(
       true,
     );
     expect(
       doc.getElementsByTagNameNS("http://www.w3.org/1999/xhtml", "link"),
-    ).toHaveLength(36);
+    ).toHaveLength(48);
   });
 
   it("escapes XML, preserves real change dates and omits invented dates", () => {

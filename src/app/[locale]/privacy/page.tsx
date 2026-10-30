@@ -10,8 +10,8 @@ export default async function PrivacyPage({
   if (!isLocale(locale)) notFound();
   const es = locale === "es";
   return (
-    <main className="shell legal">
-      <section className="hero">
+    <main className="shell legal pasa-legal-page">
+      <section className="hero pasa-legal-hero">
         <div className="eyebrow">{es ? "Privacidad" : "Privacy"}</div>
         <h1>
           {es
@@ -24,7 +24,7 @@ export default async function PrivacyPage({
             : "AkiPasa privacy summary for the public preview."}
         </p>
       </section>
-      <section className="panel prose">
+      <section className="panel prose pasa-legal-prose">
         <h2>{es ? "Qué guardamos" : "What we store"}</h2>
         <p>
           {es

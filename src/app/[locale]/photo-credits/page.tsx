@@ -1,3 +1,4 @@
+import { publicPageMetadata } from "@/lib/page-metadata";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/config";
 import { majorCities } from "@/lib/city-discovery";
@@ -11,16 +12,22 @@ export default async function PhotoCredits({
   if (!isLocale(locale)) notFound();
   const es = locale === "es";
   return (
-    <main className="shell">
-      <h1>{es ? "Créditos de las fotografías" : "Photo credits"}</h1>
-      <p>
-        {es
-          ? "Fotografías de Wikimedia Commons, reducidas y convertidas a WebP. El encuadre se adapta a cada pantalla. Cada imagen conserva su licencia original."
-          : "Photographs from Wikimedia Commons, resized and converted to WebP. The crop adapts to each screen. Each image retains its original license."}
-      </p>
-      <div className="grid">
+    <main className="shell legal pasa-legal-page">
+      <section className="hero pasa-legal-hero">
+        <div className="eyebrow">{es ? "Atribuciones" : "Attributions"}</div>
+        <h1>{es ? "Créditos de las fotografías" : "Photo credits"}</h1>
+        <p>
+          {es
+            ? "Fotografías de Wikimedia Commons, reducidas y convertidas a WebP. El encuadre se adapta a cada pantalla. Cada imagen conserva su licencia original."
+            : "Photographs from Wikimedia Commons, resized and converted to WebP. The crop adapts to each screen. Each image retains its original license."}
+        </p>
+      </section>
+      <div
+        className="pasa-photo-credit-grid grid"
+        aria-label={es ? "Licencias de fotografías" : "Photo licences"}
+      >
         {majorCities.map((city) => (
-          <article key={city.key} className="panel">
+          <article key={city.key} className="panel pasa-photo-credit-card">
             <h2>{city[locale]}</h2>
             <p>
               <a href={city.photo.source}>{city.photo.title}</a>
@@ -33,3 +40,5 @@ export default async function PhotoCredits({
     </main>
   );
 }
+
+export const generateMetadata = publicPageMetadata("/photo-credits");

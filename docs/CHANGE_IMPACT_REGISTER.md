@@ -3364,3 +3364,34 @@ in the concrete release proposal; explicit owner exception remains required.
   locale path, locality and exact destination. No runtime or SQL change.
 - Two desktop cases pass at CI-default3100; failure/success logs and source hashes
   are retained. Fresh immutable-head CI remains required.
+
+## 2026-10-30 | Finished public screens for the owner-authorized staged release
+
+- **Authority/base:** Alex explicitly asks finished independently tested screens
+  live before the full overhaul. Isolated candidate starts from actual live335
+  master3d87eb7; #332 stays separate/draft and retains its full90-route strict gate.
+- **Public behavior:** Community home now renders the truthful editorial landing
+  instead of redirecting to Creators; public Creator navigation remains available
+  and links to the new Roadmap. Roadmap/root redirect, public directory/profile/
+  safe alias, legal/credits and HQ entry presentation are included. Existing public
+  data reads/field contracts, AkiHQ/AkiBusiness separation and actual future-event
+  supply are preserved; no fake production profiles/events/social/XP are created.
+- **Isolation:** Protected Community body is byte-identical after requireUser.
+  Home/Login/Passport/AppShell/search/auth/actions/privateStudio/config/middleware/
+  package files remain master bytes. Legal/roadmap stylesheet selectors are local,
+  Creator styles require a new public-only wrapper, Community uses its hashed CSS
+  module. No full AppShell/shared1765CSS, private workflow, waitlistAPI, migration,
+  RLS, billing, consent/version, OAuth/provider or production customer changes.
+- **Proof:**93focused tests pass. Actual initial Next run passed45/46; the remaining
+  unchanged Auth assertion expected the Google form that the local build's flag
+  omitted (existing CI sets it true). No Auth code/assertion weakened; final build
+  must match that CI flag. Actual screenshots exposed missing Creator light mode
+  and singular-count wording, both fixed within the public scope before release.
+  New browser tests cover ENES/themes/four widths, upper/lower content, image decode,
+  native Roadmap return, public aliases/404, HQ external boundaries and unchanged
+  protected guest returns. Final fullcheck/browser/exactCI/review remain mandatory.
+- **Rollback/publication:** Expected-head merge only after genuine candidate
+  verification; master automatically publishes Cloudflare. Verify exact source/
+  Worker/HTTPS, do not duplicate manual deployment. Retain335Worker26e51e72/source
+  3d87; UI revert requires no data rollback or client-terms privilege change. This
+  entry does not claim merge, deployment, full-overhaul or physical-device success.

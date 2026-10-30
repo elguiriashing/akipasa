@@ -8,8 +8,10 @@ export const publicPagePaths = [
   "/map",
   "/membership",
   "/passports",
+  "/roadmap",
   "/privacy",
   "/terms",
+  "/photo-credits",
 ] as const;
 
 export function languageUrls(path: string) {

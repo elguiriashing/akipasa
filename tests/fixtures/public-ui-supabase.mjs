@@ -51,6 +51,35 @@ function knownVenueFilter(value) {
 
 function publicDetailRead(url) {
   const table = url.pathname.replace(/^\/rest\/v1\//, "");
+  if (
+    table === "creator_profiles" &&
+    url.searchParams.get("state") === "eq.published"
+  ) {
+    // Disposable public profile for browser rendering only. No Auth or writes.
+    const creator = {
+      profile_id: "10000000-0000-4000-8000-000000000001",
+      slug: "ana-local",
+      display_name: "Synthetic creator for interface testing",
+      headline_es: "Perfil sintético de prueba",
+      headline_en: "Synthetic test profile",
+      bio_es: "Contenido sintético usado solo en pruebas aisladas de interfaz.",
+      bio_en: "Synthetic content used only for isolated interface tests.",
+      locality: "Málaga",
+      province: "Málaga",
+      avatar_url: "/brand/v3/pasa-192.png",
+      cover_url: "/images/akipasa/nightlife-editorial.webp",
+      website_url: null,
+      instagram_url: null,
+      youtube_url: null,
+      verification_state: "unverified",
+      updated_at: "2026-10-14T00:00:00Z",
+      creator_categories: [],
+      creator_reviews: [],
+      events: [],
+    };
+    const slug = url.searchParams.get("slug");
+    return !slug || slug === "eq.ana-local" ? [creator] : [];
+  }
   if (table === "venues" && url.searchParams.get("status") === "eq.published") {
     const slug = url.searchParams.get("slug");
     const id = url.searchParams.get("id");
