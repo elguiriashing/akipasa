@@ -90,9 +90,27 @@
     "physicalAndroid": false,
     "independentReview": "All reviewed final public UI defects resolved; qualified for bounded release subject exact-head CI",
     "reviewReceiptSha256": "353e0877ff108928458167ada8b66de4aed3bc1a728030e53b97cf667dbd2e44",
-    "exactHeadCI": "pending published candidate",
+    "exactHeadCI": "Fresh published repair head required before merge",
     "merged": false,
-    "deployed": false
+    "deployed": false,
+    "initialPublishedCI": {
+      "source": "e99f9b22c576f142c9c4572b3c79929440b851b7",
+      "fiveOtherWorkflows": "PASS including full npm run check",
+      "publicBrowser": {
+        "passed": 271,
+        "conditionalSkipped": 29,
+        "failed": 1,
+        "failure": "Duplicate Search Console sitemap expectation still required 12 URLs after four approved localized Roadmap/Photo Credits additions.",
+        "run": "https://github.com/elguiriashing/akipasa/actions/runs/41139841435"
+      },
+      "cloudflarePackaging": "PASS; stored version only, not deployed"
+    },
+    "sitemapRepair": {
+      "runtimeChanged": false,
+      "assertions": "Require 16 URLs and all four localized Roadmap/Photo Credits URLs; existing privacy, cookie, hreflang and malformed route assertions retained.",
+      "targetedBrowserPassed": 5,
+      "logSha256": "0c322021292c5bf3d02c7fc6733f4cc9b5e147be724338eecdf37f88577ef8ae"
+    }
   },
   "localLogHashes": {
     "/tmp/akipasa-finished-public-final3-check-20261030/npm-check.log": "c82b6e44faa24845d3b900d7133cb1e460f7c6a8ca95fe5c953d11bd9e4b5c28",
