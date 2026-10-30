@@ -1,5 +1,35 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-30 | Completed family batch and owner-authorized public releases
+
+The completed batch covers actual Terms/AppShell32states+6safe returns, Passport
+Places48states+9input probes, Mobility48(retaining32+16no-company), and Staff184
+(retaining120+64healthy Support/Creator states). All new browser fixtures declare
+synthetic identities/reads and forbidden actions; none certifies real providers,
+RLS, private writes, XP or physical Android. Required existing Account/Passport
+jobs now run the two maintained new scripts with small accessible artifacts.
+
+Real rendering defects repaired: five Terms-specific selector priorities restore
+intended brown/cream hero and readable eyebrow/version (light version was1.3243:1;
+final four-text minimum6.5706light/9.2375dark). Staff creator decisions use auto
+flexbasis/48pxminimum and a readable local badge (actual48–56.8px/contrast>=16.395).
+Only own-award singular/plural copy changes in Prestige Privacy. No legal version,
+consent, Auth, role, action, query, payment, schema or production change.
+
+Frozen nine-file full check passes2887Vitest/17groups,140initialNode and193-route
+build. Actual2b3CI passes all11ordinary workflows; strict remains red. Subscription
+and Staff venue have real corrected hosted evidence and individual reviews:
+46/90accepted,44remaining,all6fallbacks accepted. New family scripts await actual
+next-head hosted proof, never fabricated future acceptance.
+
+Alex now explicitly authorizes deploying finished independent public batches
+before the full overhaul. Root is isolating a candidate from live335source3d87 in
+work/pasa-finished-public-release-20261030. This does not waive #332's full strict
+gate or authorize pending SQL/private features. Preserve Home/Login/Passport and
+all protected master behavior; use only safe public route dependencies, fresh
+candidate tests/CI/review and expected-head merge. Master automatically deploys;
+verify its exact source/Worker before any manual fallback. Closed336 is preserved.
+
 ## 2026-10-30 | Native Account controls, genuine loading readiness and privacy charcoal
 
 Desktop Account Search clicks were intercepted by its menu. An Account-only

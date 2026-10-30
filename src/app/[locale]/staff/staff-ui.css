@@ -242,3 +242,26 @@ html
   background: #9f2d2d;
   color: #fff;
 }
+
+/* Creator review keeps compact actions and readable locality in both themes. */
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  .creator-review-queue
+  .pill-muted {
+  color: var(--staff-ink);
+  background: var(--staff-raised);
+  border-color: var(--staff-edge);
+}
+
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  .creator-review-queue
+  .inline-actions
+  > .button {
+  flex: 0 1 auto;
+  min-height: 48px;
+}

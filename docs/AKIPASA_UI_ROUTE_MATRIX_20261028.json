@@ -139,8 +139,16 @@
     },
     "src/app/[locale]/account/subscription/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
+      "status": "accepted",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review. Individually accepted after actual2b3hosted504Account/120Staff evidence and independent control/screenshot review. See AKIPASA_SUBSCRIPTION_STAFF_ACCEPTANCE_20261030.json; real provider/tenant/private writes/device/full release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex canonical_plan (independent responsible tester)",
+        "reviewedCommit": "2b3cc9bbe225f927f3097c7e0aefc805c1ccae6d",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41128463570/artifacts/13012461415",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41128463570/job/124312947738",
+        "evidenceType": "actual-consumer-component-and-native-controls-with-disposable-adapters",
+        "scope": "Protected consumer Subscription presentation, safe default-gated plan catalogue/nativeaudiencetabs, read-error recovery and separate product links using syntheticread/actionadapters. No actualAuth/RLS/tenant/payment/provider/device or fullrelease acceptance inferred."
+      }
     },
     "src/app/[locale]/admin/accommodation-review/page.tsx": {
       "scope": "operational",
@@ -675,8 +683,18 @@
     },
     "src/app/[locale]/staff/catalogue/venues/[id]/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually accepted after actual2b3hosted504Account/120Staff evidence and independent control/screenshot review. See AKIPASA_SUBSCRIPTION_STAFF_ACCEPTANCE_20261030.json; real provider/tenant/private writes/device/full release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex venue_event_screens independent responsible UI/function tester",
+        "reviewedCommit": "2b3cc9bbe225f927f3097c7e0aefc805c1ccae6d",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41128463517/artifacts/13011853192",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41128463517/job/124312948649",
+        "sourceSha256": "327970accb99bd9d9820e344ca96f83fc104e99e71ccebab3c012d34b49c4bb8",
+        "evidenceType": "Actual page export+StaffLayout+AppShell in disposable UI fixture; corrected actualtheme/query navigation; responsible screenshot/function review",
+        "realAuthRlsMutationProviderAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/staff/creators/page.tsx": {
       "scope": "operational",

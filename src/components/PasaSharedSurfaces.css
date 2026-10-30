@@ -1162,7 +1162,10 @@ html[data-theme="light"]
   padding-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
 }
 
-.app-shell .shell.pasa-terms-accept-page > .hero.pasa-terms-accept-hero {
+.app-shell
+  .app-content[data-pasa-surface]
+  .shell.pasa-terms-accept-page
+  > .hero.pasa-terms-accept-hero {
   padding: clamp(1.5rem, 4.8vw, 3.5rem);
   border: 1px solid rgba(255, 151, 86, 0.3);
   border-radius: clamp(1.25rem, 3vw, 2rem);
@@ -1186,7 +1189,11 @@ html[data-theme="light"]
   line-height: 1.65;
 }
 
-.app-shell .pasa-terms-accept-version {
+.app-shell
+  .app-content[data-pasa-surface]
+  .shell.pasa-terms-accept-page
+  > .hero.pasa-terms-accept-hero
+  .pasa-terms-accept-version {
   display: inline-flex;
   width: fit-content;
   padding: 0.4rem 0.85rem;
@@ -1282,7 +1289,11 @@ html[data-theme="light"]
   font-weight: 800;
 }
 
-.app-shell .pasa-terms-accept-hero .eyebrow {
+.app-shell
+  .app-content[data-pasa-surface]
+  .shell.pasa-terms-accept-page
+  > .hero.pasa-terms-accept-hero
+  .eyebrow {
   color: var(--pasa-ui-highlight);
 }
 
@@ -1297,6 +1308,7 @@ html[data-theme="light"] .app-shell .pasa-terms-accept-page {
 
 html[data-theme="light"]
   .app-shell
+  .app-content[data-pasa-surface]
   .shell.pasa-terms-accept-page
   > .hero.pasa-terms-accept-hero {
   border-color: rgba(178, 92, 28, 0.24);
@@ -1312,7 +1324,12 @@ html[data-theme="light"]
   color: #64584d;
 }
 
-html[data-theme="light"] .app-shell .pasa-terms-accept-version {
+html[data-theme="light"]
+  .app-shell
+  .app-content[data-pasa-surface]
+  .shell.pasa-terms-accept-page
+  > .hero.pasa-terms-accept-hero
+  .pasa-terms-accept-version {
   color: #93400e;
   border-color: rgba(153, 73, 20, 0.32);
 }

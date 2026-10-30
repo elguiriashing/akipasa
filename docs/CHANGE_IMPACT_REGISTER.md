@@ -4747,3 +4747,31 @@ AKIPASA_THEME_FALLBACK_ACCEPTANCE_20261030.json.
   No schema/customer/consent/billing/production change. Existing335Worker/source
   and retained rollback remain; source revert is local repair rollback. No merge,
   deploy or reapplication of335TermsSQL. Exact receipts record proof and limits.
+
+## 2026-10-30 | Four completed families and safe partial-release authorization
+
+- **Actual defects:** Actual Terms/AppShell hierarchy overrode the intended hero
+  and version ink. Five Terms-only selector priorities restore brown/cream and
+  four readable texts (lightVersion1.3243→minimum6.5706;dark9.2375). Staff creator
+  mobile decisions were~190px; scoped auto flexbasis now48–56.8px and local badge
+  contrast>=16.395. No broad generic rule, consent/version, role or action changes.
+- **Batch proof:** Terms32+6safe returns, Places48+9input probes/388nativeTab/
+  48wheelmoves, Mobility48(original32+16no-company), Staff184(original120+64healthy
+  Support/Creators). Original assertions and zero-action boundaries retained.
+  Existing required Account/Passport jobs gain maintained new runners+small
+  artifacts; all real provider/RLS/private-write/device limits remain explicit.
+  Private Prestige own-award singular/plural only changes;122states pass.
+- **Integrated validation:** Nine files frozen through full npmcheck EXIT0:
+  2887Vitest17groups/140initialNode/193build. All11ordinary2b3workflows pass; strict
+  remains red. Two actualhosted individual reviews addSubscription/Staffvenue:
+  46accepted/44remaining,all6fallbacks accepted. No future hosted acceptance assumed.
+- **New owner release boundary:** Alex explicitly asks finished independent public
+  screens live before full332. One root integrator isolates a master3d87candidate
+  in work/pasa-finished-public-release-20261030, preserves approvedHome/Login/
+  Passport/protected master behavior and excludes private/SQL/waitlistAPI/whole
+  sharedCSS rewrites. Its own build/browser/fullcheck/exactCI/review must pass
+  before expected-headmerge. #332 strict gate unchanged. Closed336 not revived.
+- **Production:** No merge/deploy/remoteSQL/customer/consent/payment/resource change
+  in this main batch. Master automatic deploy trigger remains; verify exactsource
+  and Worker before considering manual workflow. Current335Worker26e rollback and
+  terms-record security remain; never regrant client terms fields or duplicateSQL.

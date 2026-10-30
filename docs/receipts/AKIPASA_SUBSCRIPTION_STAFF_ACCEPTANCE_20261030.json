@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "reviewedCommit": "2b3cc9bbe225f927f3097c7e0aefc805c1ccae6d",
+  "newRouteAcceptances": {
+    "src/app/[locale]/account/subscription/page.tsx": {
+      "reviewer": "Codex canonical_plan (independent responsible tester)",
+      "reviewedCommit": "2b3cc9bbe225f927f3097c7e0aefc805c1ccae6d",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41128463570/artifacts/13012461415",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41128463570/job/124312947738",
+      "evidenceType": "actual-consumer-component-and-native-controls-with-disposable-adapters",
+      "scope": "Protected consumer Subscription presentation, safe default-gated plan catalogue/nativeaudiencetabs, read-error recovery and separate product links using syntheticread/actionadapters. No actualAuth/RLS/tenant/payment/provider/device or fullrelease acceptance inferred."
+    },
+    "src/app/[locale]/staff/catalogue/venues/[id]/page.tsx": {
+      "reviewer": "Codex venue_event_screens independent responsible UI/function tester",
+      "reviewedCommit": "2b3cc9bbe225f927f3097c7e0aefc805c1ccae6d",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41128463517/artifacts/13011853192",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41128463517/job/124312948649",
+      "sourceSha256": "327970accb99bd9d9820e344ca96f83fc104e99e71ccebab3c012d34b49c4bb8",
+      "evidenceType": "Actual page export+StaffLayout+AppShell in disposable UI fixture; corrected actualtheme/query navigation; responsible screenshot/function review",
+      "realAuthRlsMutationProviderAcceptance": false,
+      "physicalDeviceAcceptance": false
+    }
+  },
+  "externalReviewHashes": {
+    "subscription-hosted-2b3cc9b-acceptance-recommendation-20261030.json": "73a5fdd27f0cfe2e2049783d23bae7c32386599c1913a1f112a7a67680efbb64",
+    "staff-venue-independent-acceptance-2b3cc9b-20261030.json": "9016cc1ceca97bb26e9cc720291222cabeff34986f7dec78158731d96d6521c1"
+  },
+  "limits": [
+    "Actual new hosted504Account+120Staff evidence; source-bound screenshot/functional reviews.",
+    "Hosted Subscription lower image absent: existing exact-scoped lower capture plus new native control proof honestly supplements it.",
+    "RealAuth/RLS/tenant/payment/provider/private mutation and candidate physical-device/final owner approval are not inferred."
+  ]
+}

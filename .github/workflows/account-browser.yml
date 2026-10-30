@@ -27,6 +27,8 @@ jobs:
         run: node scripts/test-account-personal-browser.mjs
       - name: Verify password recovery page fixtures and safe return
         run: node scripts/test-recovery-browser.mjs
+      - name: Verify terms confirmation and consent control presentation
+        run: node scripts/test-terms-accept-browser.mjs
       - name: AkiSelector login acceptance
         env:
           SELECTOR_EVIDENCE_DIR: test-results/account/workspace-selector
@@ -39,12 +41,19 @@ jobs:
             test-results/account
             test-results/account-personal
             test-results/recovery-browser
+            test-results/terms-accept-browser
           retention-days: 7
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: recovery-route-evidence
           path: test-results/recovery-browser
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: terms-accept-route-evidence
+          path: test-results/terms-accept-browser
           retention-days: 7
   public-ui-shards:
     runs-on: ubuntu-latest

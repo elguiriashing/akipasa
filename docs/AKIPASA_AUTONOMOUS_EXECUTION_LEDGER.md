@@ -2,6 +2,50 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 30 October 21:35 UTC —46 accepted; finished public release authorized
+
+Published parent2b3cc9bbe225f927f3097c7e0aefc805c1ccae6d:all11ordinary workflows
+GREEN;strict genuinely red. Actual525publicPASS77conditional,504+32Account,
+136nativeFallback,120Staff,122Prestige/176lowercontrols. Exact CFpackage stored
+1571a078-5584-41b1-b51a-316c618b1201,versionsuploadonly;live33526eunchanged.
+
+NEXTNINEFILES fullyfrozen/tested:fullnpmcheckEXIT0,2887Vitest17groups/140initialNode/
+193build. TermsactualAppShell32+6safe destinations, fourtextcontrast>=6.57light/
+9.24dark after narrow selector repairs; old lightversion1.3243 retained as failure.
+Places48+9,388nativeTab,64clearlinks/48wheelmoves,41sourcebindings; historical old
+fixture was36not48, preserved. Mobility48=32original+16no-company, nativefocus and
+exact standaloneAkiCocheslinks/no venue prerequisite. Staff184=120original+64healthy
+Support/Creators; two actual defects repaired (190pxmobile decisions/white locality
+badge), new48–56.8px/contrast>=16.395. Before source-freeze failure preserved, not
+passed. Private Prestige singular/plural ENES copy only,122maintainedstates pass.
+Required existing Account/Passport CI steps+smallartifacts registered, no weaker
+assertions/permissions/policies. Newfamilyhostedproof stillpendingactualnewhead.
+
+Two genuine source2b hosted individual acceptances closeSubscription andStaffvenue:
+current46/90accepted(51.1%),44inprogress,13excluded,6/6fallbacks accepted. Overall
+realAuth/RLS/providers/privatewrites/tenant/XP/device are not inferred. No sourceSQL
+applied; no testdatabase created/cost approval; TonightOFF/AkiPalsdevelopmentpaused.
+
+NEWOWNERDIRECTIVE: deploy finished independent public screens ahead of full332 for
+investor demonstration. Root alone owns integration/merge/deploy. Created isolated
+MASTER3d87worktree/workspace/akipasa-public-release-20261030, branch
+work/pasa-finished-public-release-20261030. Public Community home only (preserve
+all Master protectedworkflow), Roadmap, legal/photo credits, HQgateway and safely
+scoped publicCreators selected. Do NOT copy881lineprotectedCommunityrewrite,
+entireAppShell/shared1765CSS, privateCreatorStudio styles, waitlistPOST/API changes,
+pendingSQL or private features. Home/Login/Passport remain approved335bytes.
+Closed336 stays closed/unmerged. This partial authorization does NOTwaive full332
+strict90-route gate. Master lacks that fullbranch-only gate; normal existing
+master CI and extra meaningful public tests must all pass naturally, not bypassed.
+
+NEXT: commit/push thisvalidatedmainbatch, then finish isolated publiccandidate,
+single build/reused preview/ENES-theme-width-keyboard reviews, fullcheck and exact
+candidateCI. Only after reviewer/test requirements clear expected-head merge and
+verify actual automaticCloudflare source/Worker/HTTPS journeys; no duplicate manual
+deploy. Preserve26e/current3d87 rollback. Rootlease22:30UTC, extendifstillactive.
+ConditionalpollerNOTcontinuousbackgroundengineering. Workspace readyafterstarting;
+all main dirty work/publicworktree/evidence recovered intact. No release done yet.
+
 ## 30 October 21:05 UTC —44 routes accepted; native-control and real CI repairs
 
 Branchwork/coordinated-release-20261029; published parent/exact head

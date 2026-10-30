@@ -174,9 +174,17 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - name: Actual protected chapter components with disposable adapters
         run: node scripts/test-passport-chapter-browser.mjs
+      - name: Actual Passport Places states and native controls
+        run: node scripts/test-passport-places-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: passport-small-release-evidence
           path: test-results/passport-protected-chapters
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: passport-places-route-evidence
+          path: test-results/passport-places
           retention-days: 7

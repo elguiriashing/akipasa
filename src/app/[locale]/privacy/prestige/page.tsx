@@ -83,7 +83,14 @@ export default async function PrestigePrivacyPage({
               </p>
             </div>
             <span className={styles.privacyCount}>
-              {awards.length} {es ? "reconocimientos" : "awards"}
+              {awards.length}{" "}
+              {awards.length === 1
+                ? es
+                  ? "reconocimiento"
+                  : "award"
+                : es
+                  ? "reconocimientos"
+                  : "awards"}
             </span>
           </div>
           {awards.length === 0 ? (

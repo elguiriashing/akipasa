@@ -24,7 +24,7 @@ import CataloguePage from './src/app/[locale]/staff/catalogue/page';
 import VenuePage from './src/app/[locale]/staff/catalogue/venues/[id]/page';
 import AdminPage from './src/app/[locale]/admin/page';
 const pages={overview:OverviewPage,support:SupportPage,creators:CreatorPage,catalogue:CataloguePage,venue:VenuePage,admin:AdminPage};
-const query=new URLSearchParams(location.search);const locale=location.pathname.startsWith('/es/')?'es':'en';
+const query=new URLSearchParams(location.search);const locale=location.pathname.startsWith('/es/')?'es':'en';window.__staffFixtureWrites=[];
 const route=query.get('route')||'support';document.documentElement.lang=locale;document.documentElement.dataset.theme=query.get('theme')||'dark';const root=createRoot(document.getElementById('root'));
 (async()=>{try{
  const props={params:Promise.resolve({locale,id:'10000000-0000-4000-8000-000000000001'}),searchParams:Promise.resolve(Object.fromEntries(query))};
@@ -34,8 +34,10 @@ const route=query.get('route')||'support';document.documentElement.lang=locale;d
 }catch(error){window.__staffUIError=String(error.stack||error);console.error(error)}})();`;
 const authAdapter = `
 const event={id:'20000000-0000-4000-8000-000000000001',venue_id:'10000000-0000-4000-8000-000000000001',title_es:'Concierto de verano',title_en:'Summer concert',description_es:'Descripción de un evento de ejemplo',description_en:'Description of a sample event',status:'published',price_cents:0,booking_url:'',venues:{name:'Fixture venue'}};
-export async function requireUser(){const query=new URLSearchParams(location.search);const route=query.get('route');const failed=query.get('fixture')!=='success';return{user:{id:'staff-browser-fixture'},supabase:{from(table){
- const data=table==='profiles'?{app_role:'administrator'}:table==='venues'&&route==='venue'?{id:event.venue_id,name:'Fixture venue',slug:'fixture-venue',address:'Fixture street 1',status:'published',verified:true,description_es:'Descripción de un local de ejemplo',description_en:'Description of a sample venue'}:table==='events'?[event]:[];
+export async function requireUser(){const query=new URLSearchParams(location.search);const route=query.get('route'),fixture=query.get('fixture');const healthy=['healthy-populated','healthy-empty'].includes(fixture),populated=fixture==='healthy-populated';const failed=fixture!=='success'&&!healthy;return{user:{id:'staff-browser-fixture'},supabase:{from(table){
+ const report={id:'95000000-0000-4000-8000-000000000081',target_type:'event',target_id:event.id,reason:'incorrect',details:'Disposable report: verify this submitted information before resolving.',state:'open',created_at:'2026-10-29T12:00:00Z'};
+ const creator={profile_id:'95000000-0000-4000-8000-000000000082',slug:'disposable-review-creator',display_name:'Disposable creator review',headline_es:'Creador de prueba para revisión',headline_en:'Disposable creator awaiting review',bio_es:'Biografía de prueba para revisar identidad y presencia pública.',bio_en:'Disposable biography for identity and public-presence review.',locality:'Málaga',province:'Málaga',avatar_url:null,website_url:'https://example.invalid/creator',instagram_url:'https://example.invalid/instagram',youtube_url:'https://example.invalid/youtube',updated_at:'2026-10-29T12:00:00Z'};
+ const data=table==='profiles'?{app_role:'administrator'}:healthy&&table==='reports'&&route==='support'?(populated?[report]:[]):healthy&&table==='creator_profiles'&&route==='creators'?(populated?[creator]:[]):table==='venues'&&route==='venue'?{id:event.venue_id,name:'Fixture venue',slug:'fixture-venue',address:'Fixture street 1',status:'published',verified:true,description_es:'Descripción de un local de ejemplo',description_en:'Description of a sample venue'}:table==='events'?[event]:[];
  const failedTable={support:'reports',creators:'creator_profiles',catalogue:'events',admin:'business_applications'}[route];
  const result=()=>({data,error:failed&&table===failedTable?{message:'Private fixture error'}:null,count:route==='overview'&&['venues','events','offers','event_submissions','car_rental_companies','reports'].includes(table)?3:table==='account_deletion_requests'?2:0});
  const request={select:()=>request,eq:()=>request,in:()=>request,order:()=>request,limit:()=>request,or:()=>request,ilike:()=>request,maybeSingle:async()=>result(),then:r=>Promise.resolve(result()).then(r)};return request;
@@ -79,7 +81,7 @@ const bundle = await build({
               args.path === "auth"
                 ? authAdapter
                 : args.path === "actions"
-                  ? "export async function signOut(){throw new Error('Sign-out is outside disposable staff fixture scope')}export async function resolveReport(){}export async function moderateCreator(){}export async function reviewBusinessApplication(){}export async function operatorDeleteCatalogueItem(){}export async function operatorUpdateEvent(){}export async function operatorUpdateVenue(){}"
+                  ? "export async function signOut(){throw new Error('Sign-out is outside disposable staff fixture scope')}export async function resolveReport(){window.__staffFixtureWrites.push('resolveReport');throw Error('Staff fixture forbids actions')}export async function moderateCreator(){window.__staffFixtureWrites.push('moderateCreator');throw Error('Staff fixture forbids actions')}export async function reviewBusinessApplication(){}export async function operatorDeleteCatalogueItem(){}export async function operatorUpdateEvent(){}export async function operatorUpdateVenue(){}"
                   : args.path === "address"
                     ? 'import React from "react";export function SpainAddressAutocomplete(){return <input aria-label="Address" defaultValue="Fixture street 1"/>}'
                     : args.path === "next/image"
@@ -132,12 +134,17 @@ const css =
   ).css +
   (bundle.outputFiles.find((file) => file.path.endsWith(".css"))?.text || "");
 const records = [];
+const healthyQueueRecords = [];
 const sourcePaths = [
   "scripts/test-staff-ui-upgrades-browser.mjs",
   "src/app/[locale]/staff/page.tsx",
   "src/app/[locale]/staff/layout.tsx",
   "src/app/[locale]/staff/staff-ui.css",
   "src/app/[locale]/staff/staff-overview.css",
+  "src/app/[locale]/staff/support/page.tsx",
+  "src/app/[locale]/staff/creators/page.tsx",
+  "src/app/[locale]/staff/creators/actions.ts",
+  "src/app/[locale]/moderation/actions.ts",
   "src/components/AppShell.tsx",
   "src/components/WorkspaceShell.tsx",
   "src/components/PasaCinematic.css",
@@ -474,11 +481,276 @@ try {
             `PASS staff/admin ${route} ${locale} ${theme} ${width}x${height}`,
           );
         }
+  expect(count, "preserve every original Staff/Admin case").toBe(120);
   console.log(`PASS ${count} Staff/Admin browser combinations`);
+  for (const locale of ["en", "es"])
+    for (const theme of ["light", "dark"])
+      for (const width of [360, 390, 820, 1440])
+        for (const route of ["support", "creators"])
+          for (const state of ["populated", "empty"]) {
+            const page = await browser.newPage({
+              viewport: { width, height: 900 },
+              reducedMotion: "reduce",
+              ...(width < 700 ? { isMobile: true, hasTouch: true } : {}),
+            });
+            const pageErrors = [],
+              externalRequests = [],
+              mutationRequests = [];
+            page.on("pageerror", (error) => pageErrors.push(error.message));
+            await page.route("**/*", (request) => {
+              const actual = request.request();
+              if (new URL(actual.url()).origin !== "http://127.0.0.1:3197") {
+                externalRequests.push(actual.url());
+                return request.abort();
+              }
+              if (!["GET", "HEAD"].includes(actual.method())) {
+                mutationRequests.push(actual.method());
+                return request.abort();
+              }
+              return request.continue();
+            });
+            const query = new URLSearchParams({
+              route,
+              theme,
+              fixture: `healthy-${state}`,
+            });
+            await page.goto(
+              `http://127.0.0.1:3197/${locale}/staff/${route}?${query}`,
+            );
+            await page.waitForFunction(
+              () => window.__staffUIReady || window.__staffUIError,
+            );
+            expect(
+              await page.evaluate(() => window.__staffUIError || null),
+            ).toBeNull();
+            await page.evaluate((value) => {
+              document.documentElement.dataset.theme = value;
+              document.documentElement.classList.toggle(
+                "dark",
+                value === "dark",
+              );
+            }, theme);
+            await expect(page.locator("html")).toHaveAttribute(
+              "data-theme",
+              theme,
+            );
+            await expect(page.locator(".staff-workspace h1")).toHaveCount(1);
+            await expect(page.getByRole("alert")).toHaveCount(0);
+            const forms = page.locator(".staff-workspace form");
+            const decisionHeights = [];
+            let localityBadgeContrast = null;
+            await expect(forms).toHaveCount(state === "populated" ? 1 : 0);
+            if (state === "empty") {
+              await expect(
+                page.getByText(
+                  route === "support"
+                    ? locale === "es"
+                      ? "Sin casos abiertos"
+                      : "No open cases"
+                    : locale === "es"
+                      ? "No hay solicitudes pendientes."
+                      : "No pending requests.",
+                  { exact: true },
+                ),
+              ).toBeVisible();
+            } else {
+              const form = forms.first();
+              const field = form.locator(
+                route === "support" ? '[name="resolution"]' : '[name="reason"]',
+              );
+              await expect(field).toHaveAttribute("required", "");
+              await expect(field).toHaveAttribute("minlength", "3");
+              await expect(form.locator('[name="locale"]')).toHaveValue(locale);
+              await expect(
+                form.locator(
+                  route === "support"
+                    ? '[name="reportId"]'
+                    : '[name="profileId"]',
+                ),
+              ).toHaveValue(
+                route === "support"
+                  ? "95000000-0000-4000-8000-000000000081"
+                  : "95000000-0000-4000-8000-000000000082",
+              );
+              expect(await form.evaluate((node) => node.checkValidity())).toBe(
+                false,
+              );
+              await field.fill("no");
+              expect(await form.evaluate((node) => node.checkValidity())).toBe(
+                false,
+              );
+              await field.fill(
+                "Detailed disposable review reason. No action is submitted.",
+              );
+              expect(await form.evaluate((node) => node.checkValidity())).toBe(
+                true,
+              );
+              const decisions = form.locator('button[name="decision"]');
+              expect(
+                await decisions.evaluateAll((nodes) =>
+                  nodes.map((node) => node.value),
+                ),
+              ).toEqual(
+                route === "support"
+                  ? ["resolved", "dismissed"]
+                  : ["verified", "rejected"],
+              );
+              await field.focus();
+              await page.keyboard.press("Tab");
+              await expect(decisions.first()).toBeFocused();
+              for (const button of await decisions.all()) {
+                await button.scrollIntoViewIfNeeded();
+                const hit = await button.evaluate((node) => {
+                  const box = node.getBoundingClientRect();
+                  return node.contains(
+                    document.elementFromPoint(
+                      box.x + box.width / 2,
+                      box.y + box.height / 2,
+                    ),
+                  );
+                });
+                expect(
+                  hit,
+                  "decision button remains reachable without submitting",
+                ).toBe(true);
+                const size = await button.boundingBox();
+                decisionHeights.push(size.height);
+                expect(
+                  size.height,
+                  "native decision target minimum",
+                ).toBeGreaterThanOrEqual(44);
+                expect(
+                  size.height,
+                  "single-line decisions must not inflate into tall panels",
+                ).toBeLessThanOrEqual(72);
+              }
+              if (route === "support") {
+                await expect(
+                  page.getByText(
+                    "Disposable report: verify this submitted information before resolving.",
+                  ),
+                ).toBeVisible();
+              } else {
+                await expect(
+                  page.getByRole("heading", {
+                    name: "Disposable creator review",
+                  }),
+                ).toBeVisible();
+                await expect(
+                  page.getByText(
+                    locale === "es"
+                      ? "Biografía de prueba para revisar identidad y presencia pública."
+                      : "Disposable biography for identity and public-presence review.",
+                  ),
+                ).toBeVisible();
+                for (const link of await page
+                  .locator(".creator-socials a")
+                  .all()) {
+                  expect(await link.getAttribute("href")).toMatch(
+                    /^https:\/\/example\.invalid\//,
+                  );
+                  await expect(link).toHaveAttribute("target", "_blank");
+                  await expect(link).toHaveAttribute("rel", "noreferrer");
+                }
+                const badgePaint = await page
+                  .locator(".creator-review-queue .pill-muted")
+                  .evaluate((badge) => {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = canvas.height = 1;
+                    const context = canvas.getContext("2d");
+                    const style = getComputedStyle(badge);
+                    context.fillStyle = getComputedStyle(
+                      badge.closest(".panel"),
+                    ).backgroundColor;
+                    context.fillRect(0, 0, 1, 1);
+                    context.fillStyle = style.backgroundColor;
+                    context.fillRect(0, 0, 1, 1);
+                    const background = [
+                      ...context.getImageData(0, 0, 1, 1).data,
+                    ].slice(0, 3);
+                    context.clearRect(0, 0, 1, 1);
+                    context.fillStyle = style.color;
+                    context.fillRect(0, 0, 1, 1);
+                    const foreground = [
+                      ...context.getImageData(0, 0, 1, 1).data,
+                    ];
+                    foreground[3] /= 255;
+                    return { foreground, background };
+                  });
+                localityBadgeContrast = contrast(
+                  badgePaint.foreground,
+                  badgePaint.background,
+                );
+                expect(
+                  localityBadgeContrast,
+                  "creator locality badge text contrast",
+                ).toBeGreaterThanOrEqual(4.5);
+              }
+            }
+            const geometry = await page.evaluate(() => ({
+              width: innerWidth,
+              document: document.documentElement.scrollWidth,
+            }));
+            expect(geometry.document).toBeLessThanOrEqual(width);
+            expect(
+              await page.evaluate(() => window.__staffFixtureWrites),
+            ).toEqual([]);
+            expect(pageErrors).toEqual([]);
+            expect(externalRequests).toEqual([]);
+            expect(mutationRequests).toEqual([]);
+            const name = `${route}-${locale}-${theme}-${width}-healthy-${state}`;
+            await page.screenshot({
+              path: `${directory}/${name}-full.png`,
+              fullPage: true,
+            });
+            await page.evaluate(() => window.scrollTo(0, 0));
+            await page.screenshot({ path: `${directory}/${name}-upper.png` });
+            healthyQueueRecords.push({
+              name,
+              locale,
+              theme,
+              width,
+              route,
+              state,
+              geometry,
+              nativeValidityChecked: state === "populated",
+              decisionHeights,
+              localityBadgeContrast,
+              writes: [],
+              externalRequests,
+              mutationRequests,
+              pageErrors,
+            });
+            await page.close();
+          }
+  expect(healthyQueueRecords).toHaveLength(64);
+  console.log(
+    `PASS ${healthyQueueRecords.length} healthy Support/Creators cases; zero actions`,
+  );
 } finally {
   await browser?.close();
   await new Promise((resolve) => server.close(resolve));
   const finalHashes = sourceHashes();
+  writeFileSync(
+    resolve(directory, "staff-healthy-queues-evidence.json"),
+    JSON.stringify(
+      {
+        fixtureOnly: true,
+        actualNext: false,
+        productionAuthRLS: false,
+        physicalAndroid: false,
+        sourceCommit: process.env.GITHUB_SHA || null,
+        initialHashes,
+        finalHashes,
+        records: healthyQueueRecords,
+        count: healthyQueueRecords.length,
+        scope:
+          "Actual Support/Creator page exports and AppShell/StaffLayout; synthetic DTOs and forbidden actions. Native form validity and focus only; no decisions submitted.",
+      },
+      null,
+      2,
+    ),
+  );
   writeFileSync(
     resolve(directory, "staff-overview-evidence.json"),
     JSON.stringify(
