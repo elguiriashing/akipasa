@@ -3353,3 +3353,34 @@ and ACL. No customer-record mutation was used for evidence. Prior Worker8199 is
 UI rollback; retain RPC-only terms protection on rollback. Full332 route/device
 acceptance remains outstanding; Community336 is a draft follow-on, not deployed.
 Full receipt: docs/receipts/AKIPASA_PRODUCTION_335_20261030.json.
+
+## 2026-10-30 | Integrated Community pending and contrast regressions
+
+Ported only the reviewed Community follow-on fixes into the broader overhaul:
+existing AuthSubmitButton supplies localized disabled/pending-to-idle feedback;
+empty report targets stay disabled; light accent text and form placeholders use
+readable scoped ink. No payload, action, caller filter, permission, data, rate-limit,
+consent, XP or feature-gate changes. The main browser harness keeps both actual
+main-only cinematic/shared styles and now asserts placeholder contrast, original
+caller filters and deferred submission resolution.272fixture cases pass; actual
+page/identity/action adapters are documented, not live provider/RLS/device proof.
+
+Passport capture readiness now waits for decoded loaded images and two browser
+render frames before screenshots. Offscreen lazy images remain lazy; no runtime
+loading or layout changes. Original early blank-image captures remain retained.
+Full check/actual Next results are recorded in the ledger after execution.
+No route acceptance or Community deployment is implied. See
+receipts/AKIPASA_COMMUNITY_MAIN_INTEGRATION_20261030.json.
+
+## 2026-10-30 | Community support repair integrated into coordinated candidate
+
+The independent Community review found partial support/map overlap on390px; its
+center narrowly remained usable. The public landing alone now places help in
+normal flow with a visible label. Shared shell, support action/dialog and all
+other routes remain unchanged; owner-focus hiding is retained. The added actual
+Next Community suite covers full rectangle nonintersection, EN/ES/themes/widths,
+truthful editorial/future copy and guest return boundaries. Full2639-case check
+and optimized build plus35combined actualNext cases pass on this integrated
+working tree; fixture272case evidence remains separate. No Community deployment
+or final route/device acceptance. Alex's latest direction is consolidation into
+PR332; PR336 remains supporting review evidence, not a competing release.

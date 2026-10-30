@@ -172,6 +172,73 @@ async function ready(page) {
     document: document.documentElement.scrollWidth,
   }));
   expect(size.document).toBeLessThanOrEqual(size.width + 1);
+  const placeholderContrast = await page
+    .locator("input[placeholder],textarea[placeholder]")
+    .evaluateAll((nodes) =>
+      nodes.map((node) => {
+        const rgba = (value) => {
+          const canvas = document.createElement("canvas");
+          canvas.width = canvas.height = 1;
+          const context = canvas.getContext("2d");
+          context.fillStyle = value;
+          context.fillRect(0, 0, 1, 1);
+          const pixel = context.getImageData(0, 0, 1, 1).data;
+          return [pixel[0], pixel[1], pixel[2], pixel[3] / 255];
+        };
+        const style = getComputedStyle(node, "::placeholder"),
+          ink = rgba(style.color);
+        let bg = [255, 255, 255],
+          current = node;
+        const chain = [];
+        while (current) {
+          chain.unshift(current);
+          current = current.parentElement;
+        }
+        for (const layer of chain) {
+          const surface = rgba(getComputedStyle(layer).backgroundColor);
+          bg = surface
+            .slice(0, 3)
+            .map((v, i) => v * surface[3] + bg[i] * (1 - surface[3]));
+        }
+        ink[3] *= Number(style.opacity);
+        const lum = (rgb) =>
+          rgb
+            .slice(0, 3)
+            .map((v) => v / 255)
+            .map((v) =>
+              v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4,
+            )
+            .reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
+        const fg = lum(
+            ink.slice(0, 3).map((v, i) => v * ink[3] + bg[i] * (1 - ink[3])),
+          ),
+          back = lum(bg);
+        return {
+          placeholder: node.getAttribute("placeholder"),
+          color: style.color,
+          background: getComputedStyle(node).backgroundColor,
+          ratio: (Math.max(fg, back) + 0.05) / (Math.min(fg, back) + 0.05),
+        };
+      }),
+    );
+  for (const text of placeholderContrast)
+    expect(text.ratio, JSON.stringify(text)).toBeGreaterThanOrEqual(4.5);
+  const ownReads = await page.evaluate(() =>
+    window.__reads.filter((read) => read.operation === "eq"),
+  );
+  for (const [table, field] of [
+    ["event_submissions", "submitter_id"],
+    ["reports", "reporter_id"],
+  ])
+    expect(
+      ownReads.some(
+        (read) =>
+          read.table === table &&
+          read.field === field &&
+          read.value === "fixture-user",
+      ),
+      `${table} must retain caller filter`,
+    ).toBe(true);
   return size;
 }
 try {
@@ -315,6 +382,24 @@ try {
         if (width === 390) await submit.tap();
         else await submit.click();
         await page.waitForFunction(() => window.__writes.length === 1);
+        await expect(
+          page.getByRole("button", {
+            name: es ? "Enviando a revisión…" : "Submitting for review…",
+            exact: true,
+          }),
+        ).toBeDisabled();
+        await capture(page, prefix + "-suggest-pending");
+        results.push({
+          name: prefix + "-suggest-pending",
+          syntheticActionPending: true,
+        });
+        await page.evaluate(() => window.__resolveAction());
+        await expect(
+          page.getByRole("button", {
+            name: es ? "Enviar a revisión" : "Submit for review",
+            exact: true,
+          }),
+        ).toBeEnabled();
         const suggestion = await page.evaluate(() => window.__writes[0]);
         expect(suggestion).toEqual({
           action: "suggest",
@@ -398,6 +483,24 @@ try {
         if (width === 390) await reportButton.tap();
         else await page.keyboard.press("Enter");
         await page.waitForFunction(() => window.__writes.length === 1);
+        await expect(
+          page.getByRole("button", {
+            name: es ? "Enviando aviso…" : "Submitting report…",
+            exact: true,
+          }),
+        ).toBeDisabled();
+        await capture(page, prefix + "-report-pending");
+        results.push({
+          name: prefix + "-report-pending",
+          syntheticActionPending: true,
+        });
+        await page.evaluate(() => window.__resolveAction());
+        await expect(
+          page.getByRole("button", {
+            name: es ? "Enviar aviso" : "Submit report",
+            exact: true,
+          }),
+        ).toBeEnabled();
         const report = await page.evaluate(() => window.__writes[0]);
         expect(report).toEqual({
           action: "report",

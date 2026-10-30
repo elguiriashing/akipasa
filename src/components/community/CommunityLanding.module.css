@@ -5,6 +5,7 @@
   --community-line: #ffffff16;
   --community-surface: #12161c;
   --community-accent: #ff7a26;
+  --community-accent-ink: #ff7a26;
   width: min(100%, 980px);
   min-width: 0;
   margin: 0 auto;
@@ -86,7 +87,7 @@
   border: 1px solid #ff7a2666;
   border-radius: 50%;
   background: var(--community-surface);
-  color: var(--community-accent);
+  color: var(--community-accent-ink);
   box-shadow:
     0 0 0 3px var(--community-bg),
     0 0 0 4px var(--community-line);
@@ -125,7 +126,7 @@
   height: 35px;
   border: 1px solid #ff7a2644;
   border-radius: 50%;
-  color: var(--community-accent);
+  color: var(--community-accent-ink);
   background: var(--community-surface);
 }
 .byline > div {
@@ -255,7 +256,7 @@
   align-items: center;
   gap: 6px;
   min-height: 44px;
-  color: var(--community-accent);
+  color: var(--community-accent-ink);
   text-decoration: none;
   font-size: 11px;
   font-weight: 650;
@@ -324,7 +325,7 @@
   width: 39px;
   height: 39px;
   flex: none;
-  color: var(--community-accent);
+  color: var(--community-accent-ink);
   background: var(--community-surface);
   border-radius: 50%;
 }
@@ -380,7 +381,7 @@
   flex: none;
   padding-top: 2px;
   font-size: 10px;
-  color: var(--community-accent);
+  color: var(--community-accent-ink);
 }
 .page :where(a):focus-visible {
   outline: 2px solid var(--community-accent);
@@ -389,7 +390,7 @@
 @media (hover: hover) {
   .tabs a:hover,
   .actions a:hover {
-    color: var(--community-accent);
+    color: var(--community-accent-ink);
   }
   .tabs a[aria-current]:hover {
     color: #17100b;
@@ -410,6 +411,7 @@
   --community-line: #18202b20;
   --community-surface: #eee9e2;
   --community-accent: #f87524;
+  --community-accent-ink: #a13d0c;
 }
 @media (max-width: 700px) {
   .page {
@@ -464,4 +466,24 @@
   font-size: 10px;
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+/* Keep help available without floating over Community's map and plan actions.
+   The hashed landing selector confines this to the public Community entrance. */
+:global(body):has(.page) :global(.global-support-trigger) {
+  position: static;
+  align-self: center;
+  width: auto;
+  height: auto;
+  margin: 1rem auto;
+  padding: 0.7rem 1rem;
+  display: inline-flex;
+  overflow: visible;
+  font-size: 0.9rem;
+}
+:global(body):has(.page) :global(.global-support-label) {
+  display: inline;
+}
+:global(body):has(.page) :global(.global-support-icon) {
+  display: none;
 }

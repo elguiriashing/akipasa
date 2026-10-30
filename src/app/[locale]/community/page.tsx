@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { CommunityLanding } from "@/components/community/CommunityLanding";
 import Link from "next/link";
 import { Icon } from "@/components/Icons";
+import { AuthSubmitButton } from "@/components/AuthFormControls";
 import styles from "./community-workflows.module.css";
 import {
   WorkspaceShell,
@@ -312,9 +313,13 @@ export default async function CommunityPage({
                           placeholder="https://"
                         />
                       </label>
-                      <button className={styles.submit} type="submit">
-                        {es ? "Enviar a revisión" : "Submit for review"}
-                      </button>
+                      <AuthSubmitButton
+                        className={styles.submit}
+                        idle={es ? "Enviar a revisión" : "Submit for review"}
+                        pending={
+                          es ? "Enviando a revisión…" : "Submitting for review…"
+                        }
+                      />
                     </ContributionDraftForm>
                   ) : (
                     <p className={styles.notice} role="status">
@@ -458,13 +463,23 @@ export default async function CommunityPage({
                         {es ? "Detalles" : "Details"}
                         <textarea name="details" required minLength={10} />
                       </label>
-                      <button
-                        className={styles.submit}
-                        type="submit"
-                        disabled={!hasReportableItems}
-                      >
-                        {es ? "Enviar aviso" : "Submit report"}
-                      </button>
+                      {hasReportableItems ? (
+                        <AuthSubmitButton
+                          className={styles.submit}
+                          idle={es ? "Enviar aviso" : "Submit report"}
+                          pending={
+                            es ? "Enviando aviso…" : "Submitting report…"
+                          }
+                        />
+                      ) : (
+                        <button
+                          className={styles.submit}
+                          type="submit"
+                          disabled
+                        >
+                          {es ? "Enviar aviso" : "Submit report"}
+                        </button>
+                      )}
                     </ContributionDraftForm>
                   )}
                 </section>

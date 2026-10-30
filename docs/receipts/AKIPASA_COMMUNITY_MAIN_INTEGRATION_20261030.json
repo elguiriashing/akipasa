@@ -1,0 +1,40 @@
+{
+  "baselineCommit": "be29c8bfde5afe7978151d7b476020370677c58e",
+  "testedWorkingTree": true,
+  "sourceHashes": {
+    "src/app/[locale]/community/page.tsx": "90357fd6f6ac167d117c33e82d88b980236428d186c85867823d411d0badc222",
+    "src/app/[locale]/community/community-workflows.module.css": "4bd62c8e7de68b75800f3b5bbfebefbe6e4446ce6ea78250eb0d5fdc75314b8d",
+    "src/components/community/CommunityLanding.module.css": "b7982b0324e444079363491817ae04d369a2a07c13d72d2d8445caff3c70b9fe",
+    "scripts/test-community-workflows-browser.mjs": "e031027ce6b9b00f3eb8aa6e5443c13f1eedad0fe86fbc0d2deeb123bc3316a0",
+    "tests/e2e/passport-book.spec.ts": "ad737e418f3bffc205ba9d9352dc5263486ac5b4aa8c000cd35f9b8ed99bb6df",
+    "tests/e2e/community-release.spec.ts": "a2200758e6a1b8ca0d89045c95de5e6006b30d41b6b334948bcb9ab0eb6efa8b"
+  },
+  "communityWorkflowCasesPassed": 272,
+  "workflowLog": "/tmp/akipasa-main-community-final-20261030.log",
+  "mainStylesPreserved": [
+    "src/components/PasaCinematic.css",
+    "src/components/PasaSharedSurfaces.css"
+  ],
+  "sourceOfScopedFixes": "09408e828204ccaf076122c41dad4ca30cc55344",
+  "physicalAndroid": false,
+  "productionAuthRLS": false,
+  "accepted": false,
+  "deployed": false,
+  "manualReview": [
+    "test-results/community-workflows/es-light-390-suggest-populated.png",
+    "test-results/community-workflows/en-dark-1440-report-pending.png"
+  ],
+  "limits": "Actual page/forms with disposable identity/read/action adapters; no live writes or route acceptance. Passport screenshot readiness follow-up requires actual Next verification.",
+  "fullCheckPassed": true,
+  "vitestCasesPassed": 2639,
+  "fullCheckLog": "/tmp/akipasa-main-community-support-final-check-20261030.log",
+  "actualNextCombinedCasesPassed": 35,
+  "actualNextCombinedLog": "/tmp/akipasa-main-combined-final-next-20261030.log",
+  "independentSupportRepairReview": "community_release_review confirmed partial overlap resolved in fresh candidate captures with identical CSS hash; no new blocking finding; not final aesthetic/device acceptance",
+  "communitySupportingPr": 336,
+  "communitySupportingHead": "c0d485d",
+  "productionRelease335": "3d87eb7c995fbd0947cb25a771a43376d9462645",
+  "passportCaptureAndNativeTabletCasesPassed": 20,
+  "passportCaptureLog": "/tmp/akipasa-main-passport-capture-final-20261030.log",
+  "actualNextTotal": 55
+}

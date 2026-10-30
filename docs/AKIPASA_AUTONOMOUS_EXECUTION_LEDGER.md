@@ -2,6 +2,50 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 30 October 10:55 UTC — Community repair finished and consolidated into332
+
+Recorded integration parent `be29c8bfde5afe7978151d7b476020370677c58e` on
+work/coordinated-release-20261029. This commit adds the three scoped Community
+runtime pending/contrast repairs, the landing-only in-flow help repair, stronger
+272-case workflow harness and additive22-case actualNext landing suite. Main's
+cinematic/shared styles and all existing action, caller-filter, payload, feature,
+rate-limit, consent and authorization boundaries remain. No schema/data change.
+Independent review found partial390px support/map intersection in candidate094;
+CSS b7982b0324e444079363491817ae04d369a2a07c13d72d2d8445caff3c70b9fe repairs it.
+Reviewer confirmed clear mobile action and desktop in-flow support; no new blocking
+finding. Owner-focus hiding and full rectangle nonintersection are asserted.
+
+TESTED final integrated source: full npmcheck EXIT0,2,639 Vitest cases/17stages,
+required checks and optimized193-route Next build.272actual-page/form fixture cases
+PASS with own submitter/reporter filters, pending-to-idle and computed placeholder
+contrast.55actualNext cases PASS:35Community/Home/Passport-desktop/public readiness,
+plus20Passport chapter-capture/native820x900 cases. Loaded images now decode and
+paint before screenshots; offscreen lazy loading is unchanged. Source hashes and
+logs: docs/receipts/AKIPASA_COMMUNITY_MAIN_INTEGRATION_20261030.json. Failures and
+before captures retained. No real customer write or physical Android/production
+Auth-RLS/final aesthetic acceptance is claimed; no route status promoted.
+
+Alex's latest instruction is to finish current work and consolidate the big332
+before production. Community336 headc0d485d8b5d29239d21ca72814854a538b9a31ac is
+supporting draft/source evidence; no separate Community production rollout. It
+has the same final scoped runtime/CSS,29fresh actualNext checks/build PASS; older
+094all6CI/CFgreen do not certify c0. Fresh c0 checks pending. Once this integration
+is pushed and verified, retire336 as incorporated without an independent master
+merge/deployment. Full332 retains its strict90-route gate, all90unaccepted plus
+6fallback evidence gaps. Fresh strict local audit reports release blocked.
+
+Verified production remains ONLY approved335 source3d87eb7 / Worker26e51e72 at100%.
+The terms fix is already applied once as20261030102908; never reapply inherited SQL.
+Root keeps one continuation task updated; writer lease through11:10UTC. Parallel
+canonical-plan agent owns only four NEW no-DB planning files; do not add its work
+until reviewed/tested. It must retain explicit unresolved/excluded STOP boundaries,
+not claim that the95-path scoped fixture proves166-path canonical parity.
+
+NEXT: push validated integration and inspect fresh exact-head CI/Cloudflare; fix
+actual failures without weakening gates. Prepare real exact-source legal-route
+review captures using the maintained suite, then review the no-DB replay planner.
+Obtain genuine final owner/device evidence before any332ready/merge/deployment.
+
 ## 30 October 10:34 UTC — approved Home/Passport batch verified live
 
 Alex explicitly answered Yes to the exact Home/Passport staged release, physical

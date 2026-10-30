@@ -102,6 +102,11 @@
   line-height: 1.5;
 }
 
+.form :is(input, textarea)::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
 .form textarea {
   min-height: 9rem;
   resize: vertical;

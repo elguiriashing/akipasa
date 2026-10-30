@@ -49,6 +49,24 @@ async function waitForVisiblePassportImages(page: Page) {
       },
     )
     .toEqual([]);
+  // Loaded dimensions alone can precede image decoding and the final paint.
+  // Decode only loaded assets: offscreen lazy images must remain lazy.
+  await page
+    .locator("main.passport-experience img")
+    .evaluateAll(async (images) => {
+      await Promise.all(
+        images
+          .map((image) => image as HTMLImageElement)
+          .filter((image) => image.complete && image.naturalWidth > 0)
+          .map((image) => image.decode()),
+      );
+    });
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+      ),
+  );
 }
 
 async function openPassportMenu(page: Page, locale: "en" | "es" = "en") {
