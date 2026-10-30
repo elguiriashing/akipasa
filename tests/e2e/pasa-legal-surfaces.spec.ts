@@ -75,6 +75,28 @@ for (const locale of ["en", "es"] as const) {
               waitUntil: "domcontentloaded",
             });
             expect(response?.status(), route).toBe(200);
+            await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+              "href",
+              `https://akipasa.com${route}`,
+            );
+            for (const language of ["en", "es", "x-default"] as const) {
+              await expect(
+                page.locator(`link[rel="alternate"][hreflang="${language}"]`),
+              ).toHaveAttribute(
+                "href",
+                `https://akipasa.com/${language === "x-default" ? "es" : language}${surface.path}`,
+              );
+            }
+            await expect(
+              page.locator('meta[property="og:url"]'),
+            ).toHaveAttribute("content", `https://akipasa.com${route}`);
+            if (surface.path === "/photo-credits") {
+              await expect(page).toHaveTitle(
+                locale === "es"
+                  ? "Créditos de las fotografías · AkiPasa"
+                  : "Photo credits · AkiPasa",
+              );
+            }
             const heading = page.getByRole("heading", {
               name: surface.heading[locale],
               level: 1,

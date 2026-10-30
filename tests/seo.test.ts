@@ -73,6 +73,8 @@ describe("public search metadata", () => {
       "/en/membership",
       "/es/passports",
       "/es/terms",
+      "/en/photo-credits",
+      "/es/photo-credits",
       "/en/venues/business-cafe",
       "/en/events/community-party",
       "/sitemap.xml",
@@ -128,6 +130,8 @@ describe("catalogue sitemaps", () => {
       (loc) => loc.textContent!,
     );
     expect(urls).toContain("https://akipasa.com/en/roadmap");
+    expect(urls).toContain("https://akipasa.com/en/photo-credits");
+    expect(urls).toContain("https://akipasa.com/es/photo-credits");
     expect(urls).toContain("https://akipasa.com/es/roadmap");
     expect(urls.every((url) => !shouldNoindex(new URL(url).pathname))).toBe(
       true,

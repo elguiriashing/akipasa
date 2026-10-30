@@ -3384,3 +3384,35 @@ and optimized build plus35combined actualNext cases pass on this integrated
 working tree; fixture272case evidence remains separate. No Community deployment
 or final route/device acceptance. Alex's latest direction is consolidation into
 PR332; PR336 remains supporting review evidence, not a competing release.
+
+## 2026-10-30 | Photo Credits localized metadata and sitemap coverage
+
+Actual source9533 review found Photo Credits inherited the generic Spanish brand
+head, no canonical/hreflang and the root OpenGraph URL in both locales. Privacy
+and Terms already had correct localized metadata. Photo Credits now uses the same
+existing publicPageMetadata pattern, localized title/description and public static
+sitemap registration. Public attribution content and licensing links are unchanged;
+no auth, data, consent, provider or private indexing predicate changes. The existing
+legal actualNext suite now asserts every legal route's canonical, reciprocal
+EN/ES/x-default alternates and own OpenGraph URL, plus localized Photo Credits title.
+The strengthened390px regression fails against the prior built source at the
+missing canonical;8focused SEO/sitemap cases pass. Fresh full check/build/browser
+results are recorded in the ledger after execution; no acceptance is inferred.
+
+## 2026-10-30 | Hash-pinned canonical replay planning, no database execution
+
+The new explicit partial replay manifest pins337raw SQL paths across both source
+trees:97reviewed candidate-prefix paths,150unresolved,86exact-byte transports and
+4excluded paths representing two mirrored historical bundles. The original95-source
+Creator proof remains78application plus17external Storage inputs; it is not full
+canonical parity. Platform/bootstrap, missing operating-source, history, conditional
+coverage, external HQ and final security/customer-journey stops remain unresolved.
+
+The checker is plan-only and cannot contact a database/network, load credentials,
+spawn an apply process or change data. A structurally valid partial plan exits2
+and always reports executable:false/fullCanonicalParity:false; drift exits1.
+16focused regression cases guard hashes, ordering, excluded/unresolved sources,
+false transport/completion claims, required stops, safe paths and apply refusal.
+They are added to the existing check command without replacing any check/gate.
+No SQL, production history, permissions, fixtures or customer records changed.
+Source: AKIPASA_CANONICAL_REPLAY_PLAN_20261030.md and corresponding JSON/checker.

@@ -2,6 +2,50 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 30 October 11:07 UTC — legal metadata repaired; safe replay plan admitted
+
+Recorded source parent9533e2c0e0e6ffe21082db1458f0a9ba5e3dc13e. Community336 is
+closed unmerged as incorporated, with all four runtime files and the regression
+byte-identical to9533. One full candidate remains332. Current application repair:
+Photo Credits now uses existing public metadata with localized title/description,
+correct own canonical/EN-ES-x-default alternates/OpenGraph URL and public static
+sitemap entry. Actual before-source regression fails on missing canonical. Public
+attribution content/66cards/132source-license links and all private indexing,
+auth/data/consent rules remain unchanged. No legal text or legal approval invented.
+
+TESTED: full npmcheck EXIT0,2,639Vitest cases plus required checks/optimized build;
+8focused SEO/sitemap cases PASS;20legal browser cases/60page states PASS across
+EN/ES/dark/light/360/390/820/1440 and explicit Android-WebView-like context, now with
+exact metadata assertions. Independent review of9533 captures/lower-content found
+no blocking legal-surface issue other than the repaired metadata. Real external
+license availability, professional legal approval, consent-provider operations,
+physical Android and final owner acceptance are not established by this suite.
+No route status is promoted. Receipt: AKIPASA_LEGAL_CANONICAL_20261030.json.
+
+Backend reproducibility planning now lives in committed-source-shaped files:
+AKIPASA_CANONICAL_REPLAY_PLAN_20261030.json/.md and plan-only checker/tests.337raw
+SQL paths are pinned:97candidate-prefix,150unresolved,86exact-byte transports,
+4excluded paths for two mirrored historical bundles. Root reviewed checker,
+manifest count/fingerprints, tests and documented STOPs.16focused Node cases PASS
+and are additively registered in check; scoped format/lint PASS. Root plan returns
+expected EXIT2 with structurallyValid:true, executable:false and
+fullCanonicalParity:false. No DB/network/credential/apply capability, SQL execution,
+production-history rewrite or retained-fixture mutation. Partial95-path proof is
+still78app+17Storage, not full canonical parity. Existing source admission,
+platform/bootstrap/coverage/history/HQ/customer-journey STOPs remain unresolved.
+
+CI at9533:10ordinary workflows PASS, Account/public pending, strict gate correctly
+red. Clean nonproductionCF7a80b2ab-554f-4699-a3c6-4ed465c54166 SUCCESS. New head
+requires fresh results. Production remains approved335 source3d87/Worker26e51e72,
+terms migration already applied ONCE20261030102908. No further production change.
+
+NEXT: push this validated batch, inspect every fresh exact-head workflow/CF build,
+repair real failures; continue replay-only source-admission investigation from
+parallel read-only checkpoint and prepare complete route review evidence. Preserve
+full332 draft until genuine owner/device/protected-provider/strict-gate conditions
+are met. Future full-release rollback is current approved Worker26e51e72; older8199
+is rollback for335UI. Root continues integration; refresh single-task lease/state.
+
 ## 30 October 10:55 UTC — Community repair finished and consolidated into332
 
 Recorded integration parent `be29c8bfde5afe7978151d7b476020370677c58e` on

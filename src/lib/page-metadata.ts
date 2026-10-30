@@ -63,6 +63,16 @@ const copy = {
       "Learn how AkiPasa handles your data and how to manage your privacy.",
     ],
   },
+  "/photo-credits": {
+    es: [
+      "Créditos de las fotografías",
+      "Consulta las fuentes, autores y licencias de las fotografías de ciudades utilizadas en AkiPasa.",
+    ],
+    en: [
+      "Photo credits",
+      "View the sources, authors and licences for the city photographs used on AkiPasa.",
+    ],
+  },
   "/terms": {
     es: [
       "Condiciones de uso",

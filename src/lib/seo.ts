@@ -11,6 +11,7 @@ export const publicPagePaths = [
   "/roadmap",
   "/privacy",
   "/terms",
+  "/photo-credits",
 ] as const;
 
 export function languageUrls(path: string) {

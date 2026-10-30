@@ -1,3 +1,4 @@
+import { publicPageMetadata } from "@/lib/page-metadata";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/config";
 import { majorCities } from "@/lib/city-discovery";
@@ -39,3 +40,5 @@ export default async function PhotoCredits({
     </main>
   );
 }
+
+export const generateMetadata = publicPageMetadata("/photo-credits");

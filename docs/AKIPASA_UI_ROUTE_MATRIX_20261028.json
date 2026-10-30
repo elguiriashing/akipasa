@@ -346,7 +346,7 @@
     "src/app/[locale]/photo-credits/page.tsx": {
       "scope": "consumer",
       "status": "in-progress",
-      "note": "Shared EN/ES legal hero and reading/attribution surfaces implemented with targeted phone/tablet/desktop and emulated Android browser test source. Hosted screenshot review, functional inspection and real Android validation still required; NOT accepted."
+      "note": "Shared EN/ES legal hero and reading/attribution surfaces implemented with targeted phone/tablet/desktop and emulated Android browser test source. Hosted screenshot review, functional inspection and real Android validation still required; NOT accepted. Actual legal review found missing localized title/canonical/hreflang and root OG URL. Standard public metadata and static sitemap coverage repaired; 8 focused SEO and 20 legal browser cases (60 page states) pass, including exact head-tag checks in both locales/themes and Android-like emulation. Original failing regression retained. Owner/device/final-source acceptance remains outstanding."
     },
     "src/app/[locale]/privacy/page.tsx": {
       "scope": "consumer",
