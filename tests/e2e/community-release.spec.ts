@@ -57,6 +57,33 @@ for (const locale of ["en", "es"] as const)
               { exact: true },
             ),
           ).toBeVisible();
+          const support = page.locator(".global-support-trigger");
+          // The launcher must not cover any part of the normal map touch target.
+          const map = landing.getByRole("link", {
+            name: es ? "Ver mapa" : "View map",
+            exact: true,
+          });
+          const overlap = await map.evaluate((link) => {
+            const button = document.querySelector(".global-support-trigger")!;
+            const a = link.getBoundingClientRect(),
+              b = button.getBoundingClientRect();
+            return (
+              Math.min(a.right, b.right) > Math.max(a.left, b.left) &&
+              Math.min(a.bottom, b.bottom) > Math.max(a.top, b.top)
+            );
+          });
+          expect(
+            overlap,
+            "Support must not overlap the map link rectangle",
+          ).toBe(false);
+          await expect(support).toHaveCSS("position", "static");
+          await page.evaluate(
+            () => (document.documentElement.dataset.ownerFocus = "true"),
+          );
+          await expect(support).toBeHidden();
+          await page.evaluate(
+            () => delete document.documentElement.dataset.ownerFocus,
+          );
           const creators = landing.getByRole("link", {
             name: es ? /Explorar creadores/ : /Explore creators/,
           });

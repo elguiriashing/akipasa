@@ -3385,3 +3385,16 @@ in the concrete release proposal; explicit owner exception remains required.
   requires its own owner boundary, exact source checks and335 disposition. Revert
   only scoped UI/public-entry files for visual rollback; retain customer data and
   independently protected consent/terms permissions.
+
+## 2026-10-30 | Community help launcher no longer overlaps map action
+
+Independent candidate review confirmed partial390px support/map touch-target
+intersection. CommunityLanding's hashed selector now places the shared launcher
+in normal flow with a visible label on this public entrance only. Owner-focus
+hiding remains authoritative; launcher/dialog/auth/consent actions and all other
+routes remain unchanged. Fresh optimized build and29actualNext Community/readiness
+cases pass, including full rectangle nonintersection across EN/ES/themes/widths.
+No real customer writes, schema changes, physical-device or final route acceptance.
+Record: receipts/AKIPASA_COMMUNITY_SUPPORT_REPAIR_20261030.json. Alex's latest
+instruction consolidates remaining work into332; this draft is supporting evidence,
+not approval for a separate Community deployment.

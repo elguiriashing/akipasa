@@ -467,3 +467,23 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* Keep help available without floating over Community's map and plan actions.
+   The hashed landing selector confines this to the public Community entrance. */
+:global(body):has(.page) :global(.global-support-trigger) {
+  position: static;
+  align-self: center;
+  width: auto;
+  height: auto;
+  margin: 1rem auto;
+  padding: 0.7rem 1rem;
+  display: inline-flex;
+  overflow: visible;
+  font-size: 0.9rem;
+}
+:global(body):has(.page) :global(.global-support-label) {
+  display: inline;
+}
+:global(body):has(.page) :global(.global-support-icon) {
+  display: none;
+}

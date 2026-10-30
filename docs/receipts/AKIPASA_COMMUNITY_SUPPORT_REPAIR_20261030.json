@@ -1,0 +1,39 @@
+{
+  "baselineCommit": "09408e828204ccaf076122c41dad4ca30cc55344",
+  "testedWorkingTree": true,
+  "sourceHashes": {
+    "src/components/community/CommunityLanding.module.css": "b7982b0324e444079363491817ae04d369a2a07c13d72d2d8445caff3c70b9fe",
+    "tests/e2e/community-release.spec.ts": "a2200758e6a1b8ca0d89045c95de5e6006b30d41b6b334948bcb9ab0eb6efa8b"
+  },
+  "independentReview": "Codex community_release_review, actual candidate390x900 partial support/map overlap confirmed; no auth/data blocker found",
+  "beforeMapRect": {
+    "x": 303.453,
+    "y": 802.766,
+    "width": 71.547,
+    "height": 44
+  },
+  "beforeSupportRect": {
+    "x": 332,
+    "y": 779.609,
+    "width": 46,
+    "height": 46
+  },
+  "repair": "Public Community-scoped normal-flow support with visible label; shared shell unchanged",
+  "buildPassed": true,
+  "buildLog": "/tmp/akipasa-community-support-final-build-20261030.log",
+  "actualNextCasesPassed": 29,
+  "browserLog": "/tmp/akipasa-community-support-final-browser-20261030.log",
+  "regressions": [
+    "full map/support rectangle nonintersection",
+    "support normal-flow position",
+    "owner-focus hiding",
+    "EN/ES dark/light 360/390/820/1440",
+    "unchanged guest returns and public readiness"
+  ],
+  "physicalAndroid": false,
+  "productionAuthRLSAcceptance": false,
+  "accepted": false,
+  "merged": false,
+  "deployed": false,
+  "releaseDirection": "Finish source review and consolidate into332; no independent336 production rollout approved"
+}

@@ -2705,3 +2705,16 @@ browser measurements. No Creator/shared shell/schema/assets or retention activat
 See docs/AKIPASA_COMMUNITY_NEXT_RELEASE_PROPOSAL_20261030.md for tested scope/gaps.
 This is not a new owner exception or production approval;335 remains separately
 controlled by the integration owner, and the full90-route acceptance gate is intact.
+
+## 2026-10-30 | Community help launcher no longer overlaps map action
+
+Independent candidate review confirmed partial390px support/map touch-target
+intersection. CommunityLanding's hashed selector now places the shared launcher
+in normal flow with a visible label on this public entrance only. Owner-focus
+hiding remains authoritative; launcher/dialog/auth/consent actions and all other
+routes remain unchanged. Fresh optimized build and29actualNext Community/readiness
+cases pass, including full rectangle nonintersection across EN/ES/themes/widths.
+No real customer writes, schema changes, physical-device or final route acceptance.
+Record: receipts/AKIPASA_COMMUNITY_SUPPORT_REPAIR_20261030.json. Alex's latest
+instruction consolidates remaining work into332; this draft is supporting evidence,
+not approval for a separate Community deployment.

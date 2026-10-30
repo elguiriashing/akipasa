@@ -98,3 +98,20 @@ source/Worker identity and rollback before any approved publication.
 A visual rollback reverts only these four files and the public-entry behavior.
 Preserve all existing private contributions/reports, consent/terms records, XP,
 identity and permissions. Never restore direct terms editing as a visual rollback.
+
+## Independent review and current consolidation direction
+
+Alex's latest direction is to finish the current work and consolidate the remaining
+overhaul in PR332 before production. This PR is supporting draft/source evidence,
+not authorization for another independent production rollout.
+
+Independent read-only review of09408e8 found no blocking auth/data boundary change,
+but reproduced partial support-button overlap with the390x900 View-map target:
+link303.45,802.77,71.55x44; launcher332,779.61,46x46; intersection roughly43x23.
+The center narrowly remained usable; this was partial obstruction, not a fully
+inaccessible action. The public landing's hashed CSS now puts help in normal flow
+and restores its readable label. No shared shell or other route is changed.
+The browser regression checks rectangle nonintersection, static support placement
+and owner-focus hiding across locales/themes/viewports. Fresh build/browser and
+hosted results must be recorded after this repair; old094 green checks alone
+cannot certify it. Terms protection is already live and must not be reapplied.
