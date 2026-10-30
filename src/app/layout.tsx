@@ -6,6 +6,7 @@ import "./brand.css";
 import "./appearance.css";
 import "./tablet-responsive.css";
 import "./portal-unity.css";
+import "@/components/pasa-finished-public.css";
 import type { Metadata, Viewport } from "next";
 import { ConsentAnalytics } from "@/components/ConsentAnalytics";
 import { PersonalisationConsent } from "@/components/PersonalisationConsent";

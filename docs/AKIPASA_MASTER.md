@@ -1,5 +1,29 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-30 | Finished public-screen release, isolated from the full overhaul
+
+Alex explicitly authorizes shipping finished independent public screens ahead of
+the full #332 overhaul for investor demonstrations. This master3d87-based batch
+contains Community home, public Creator directory/profile and alias, Roadmap and
+root redirect, Privacy/Terms/Photo Credits, and the HQ entry screen. The full332
+strict90-route gate remains unchanged on its own integration branch.
+
+Community's protected workflow after requireUser remains byte-identical to master;
+only its public home dispatch changes. Fifteen key master files are unchanged,
+including Home, Login/actions, Passport, AppShell/search, private Creator Studio/
+actions, auth/config/middleware and package/lockfile. No SQL, RLS, roles, consent,
+payments, provider configuration or real data changes. Scoped legal/roadmap CSS
+and a public-only Creator wrapper avoid porting the full shared overhaul skin.
+Existing assets are reused. Test-only public profile/media is synthetic/read-only.
+
+Validation and source hashes are recorded in
+receipts/AKIPASA_FINISHED_PUBLIC_RELEASE_20261030.json. The candidate requires its
+own full check, actual EN/ES dark/light360/390/820/1440 browser/source review, and
+all fresh exact-head master CI before expected-head merge. Master automatically
+deploys: verify exact deployed source/Worker and public HTTPS before any manual
+fallback. Preserve approved335source3d87/Worker26e51e72 for rollback; no security
+rollback or repeat Terms SQL. Browser emulation is not a physical Android claim.
+
 ## 2026-10-29 | AkiPassport weekly venue-credential quest preview (candidate, not live)
 
 The existing Passport `progress` view gains two **optional, informational** weekly exploration milestones, based only on caller-owned accepted venue-credential check-ins in `public.check_ins`. The week uses Europe/Madrid Monday civil-time boundaries including DST, and distinct venue IDs prevent duplicate scans counting twice. GPS-only acceptance, duplicate/cooldown, invalid or future records are rejected. Browser data never creates XP, credits, badges, entitlements, vouchers, commercial rewards, public presence, email, push or tracking; the existing check-in/XP ledger remains the only source of authority. Venue credentials are not equivalent to signed rotating proofs or verified commercial spend. Existing `check_ins_own_read` RLS and authenticated SELECT were inspected; the query explicitly scopes to the session profile and limits reads.

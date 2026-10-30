@@ -8,5 +8,20 @@ export default async function LegacyCreatorPage({
 }) {
   const { locale, slug } = await params;
   if (!isLocale(locale)) notFound();
-  redirect(`/${locale}/community/creators/${encodeURIComponent(slug)}`);
+  let decodedSlug: string;
+  try {
+    decodedSlug = decodeURIComponent(slug);
+  } catch {
+    notFound();
+  }
+  if (
+    !decodedSlug ||
+    decodedSlug === "." ||
+    decodedSlug === ".." ||
+    decodedSlug.includes("/") ||
+    decodedSlug.includes("\\")
+  ) {
+    notFound();
+  }
+  redirect(`/${locale}/community/creators/${encodeURIComponent(decodedSlug)}`);
 }

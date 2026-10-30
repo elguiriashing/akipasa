@@ -1,0 +1,742 @@
+/* Public canonical creator routes only. Never imported by private Studio. */
+/* Creator pages share the AkiPasa palette, without restyling other workspaces. */
+.app-shell .public-creators-release .community-workspace {
+  --creator-paper: var(--pasa-ui-panel, var(--surface));
+  --creator-soft: var(--pasa-ui-elevated, var(--surface-alt));
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  :is(.creator-directory, .creator-studio-page) {
+  width: 100%;
+  min-width: 0;
+  gap: clamp(1rem, 2.5vw, 1.65rem);
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  :is(.creator-discovery-intro, .creator-studio-hero) {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  min-height: 220px;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  overflow: hidden;
+  border: 1px solid var(--pasa-ui-border, var(--line));
+  border-radius: 1.5rem;
+  background:
+    radial-gradient(ellipse at 95% 15%, #fa752731, transparent 55%),
+    linear-gradient(125deg, #191715, #090b0d);
+  color: #f7f9fd;
+  box-shadow: 0 18px 45px #0002;
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  :is(.creator-discovery-intro, .creator-studio-hero)
+  > div:first-child {
+  display: block;
+  min-width: 0;
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  :is(.creator-discovery-intro, .creator-studio-hero)
+  .eyebrow {
+  display: block;
+  color: #ffac79;
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  :is(.creator-discovery-intro, .creator-studio-hero)
+  h2 {
+  max-width: 19ch;
+  margin: 0.6rem 0 0.75rem;
+  color: #f7f9fd;
+  font-size: clamp(1.85rem, 4vw, 3.4rem);
+  line-height: 1.06;
+  letter-spacing: -0.05em;
+  overflow-wrap: anywhere;
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  :is(.creator-discovery-intro, .creator-studio-hero)
+  p {
+  display: block;
+  max-width: 55ch;
+  margin: 0;
+  color: #c3d0e0;
+  line-height: 1.55;
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  :is(.creator-search, .creator-recovery) {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--pasa-ui-border, var(--line));
+  border-radius: 1.2rem;
+  background: var(--creator-paper);
+  color: var(--pasa-ui-text, var(--ink));
+}
+
+.app-shell .public-creators-release .community-workspace .creator-search {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 0.75rem;
+}
+
+.app-shell .public-creators-release .community-workspace .creator-search label {
+  min-width: 0;
+  padding: 0;
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  .creator-search
+  input:not([type="hidden"]) {
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+  border: 1px solid var(--pasa-ui-border, var(--line));
+  background: var(--creator-soft);
+  color: var(--pasa-ui-text, var(--ink));
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  .creator-category-nav
+  a {
+  min-height: 44px;
+  border-color: var(--pasa-ui-border, var(--line));
+  background: var(--creator-paper);
+  color: var(--pasa-ui-subtle, var(--muted));
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  .creator-category-nav
+  a[aria-current="page"] {
+  border-color: var(--pasa-ui-highlight, var(--accent));
+  background: color-mix(
+    in srgb,
+    var(--pasa-ui-highlight, var(--accent)) 13%,
+    var(--creator-paper)
+  );
+  color: var(--pasa-ui-highlight, var(--accent));
+}
+
+.app-shell .public-creators-release .community-workspace .creator-card-v2 {
+  min-width: 0;
+  border: 1px solid var(--pasa-ui-border, var(--line));
+  border-radius: 1.3rem;
+  background: var(--creator-paper);
+  color: var(--pasa-ui-text, var(--ink));
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  .creator-card-v2
+  .creator-card-media {
+  height: 180px;
+  background:
+    radial-gradient(ellipse at 90% 0, #d86c3138, transparent 70%), #151719;
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  .creator-card-v2
+  .creator-card-body {
+  padding: 1rem;
+}
+
+.app-shell .public-creators-release .community-workspace .creator-profile-v2 {
+  border: 1px solid var(--pasa-ui-border, var(--line));
+  border-radius: 1.5rem;
+  background: var(--creator-paper);
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  .creator-profile-v2
+  .creator-cover {
+  min-height: 300px;
+  padding: clamp(1.1rem, 3vw, 2rem);
+  background-color: #101214;
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  .creator-profile-v2
+  .creator-profile-title
+  h1 {
+  color: #fff;
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  .creator-profile-v2
+  :is(
+    .creator-profile-main,
+    .creator-profile-summary,
+    .creator-events,
+    .creator-profile-footer-card,
+    .creator-review-form
+  ) {
+  min-width: 0;
+  border-color: var(--pasa-ui-border, var(--line));
+  background-color: var(--creator-paper);
+  color: var(--pasa-ui-text, var(--ink));
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  :is(
+    .creator-card-title,
+    .creator-profile-main,
+    .creator-contact-card,
+    .creator-event-grid > a > div,
+    .creator-review-grid article
+  ) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  :is(.creator-studio-form, .profile-media-manager, .creator-event-manager) {
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid var(--pasa-ui-border, var(--line));
+  border-radius: 1.25rem;
+  background: var(--creator-paper);
+}
+
+.app-shell .public-creators-release .community-workspace .studio-tab-list {
+  padding: 0.35rem;
+  border: 1px solid var(--pasa-ui-border, var(--line));
+  background: var(--creator-soft);
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  .studio-tab-list
+  [aria-selected="true"] {
+  background: var(--creator-paper);
+  color: var(--pasa-ui-highlight, var(--accent));
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  :is(
+    .creator-search,
+    .creator-studio-page,
+    .creator-directory,
+    .creator-profile
+  )
+  :is(button, a, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--pasa-ui-highlight, var(--accent));
+  outline-offset: 3px;
+}
+
+/* A sticky end-of-form submit can otherwise rise over the first mobile fields. */
+.app-shell
+  .public-creators-release
+  .community-workspace
+  .creator-studio-form
+  > .studio-save {
+  position: static;
+  min-width: 0;
+  margin-top: 0.5rem;
+  box-shadow: none;
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  .creator-verification-callout {
+  min-width: 0;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-color: var(--pasa-ui-border, var(--line));
+  border-radius: 1.25rem;
+  background: var(--creator-paper);
+}
+
+.app-shell
+  .public-creators-release
+  .community-workspace
+  .creator-verification-callout
+  .button {
+  min-height: 44px;
+  min-width: 0;
+  flex-shrink: 0;
+  border-radius: 0.85rem;
+  white-space: normal;
+  line-height: 1.35;
+}
+
+@media (max-width: 760px) {
+  .app-shell
+    .public-creators-release
+    .community-workspace
+    :is(.creator-discovery-intro, .creator-studio-hero) {
+    min-height: 0;
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .app-shell .public-creators-release .community-workspace .creator-search {
+    grid-template-columns: 1fr;
+  }
+
+  .app-shell
+    .public-creators-release
+    .community-workspace
+    .creator-profile-v2
+    .creator-cover {
+    min-height: 260px;
+  }
+
+  .app-shell
+    .public-creators-release
+    .community-workspace
+    .creator-profile-identity {
+    flex-wrap: wrap;
+  }
+
+  .app-shell
+    .public-creators-release
+    .community-workspace
+    .creator-verification-callout {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .app-shell
+    .public-creators-release
+    .community-workspace
+    .creator-verification-callout
+    .button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell .public-creators-release .community-workspace .creator-card:hover,
+  .app-shell
+    .public-creators-release
+    .community-workspace
+    .creator-card-v2:hover
+    .creator-card-media
+    > img {
+    transform: none;
+  }
+}
+
+/* Keep creator workspaces within the consumer night palette. */
+html:not([data-theme="light"])
+  .app-shell
+  .public-creators-release
+  .community-workspace {
+  --pasa-ui-panel: var(--pasa-ink);
+  --pasa-ui-elevated: var(--pasa-raised);
+  --pasa-ui-glass: var(--pasa-ink);
+}
+
+/* Yellow accent is decorative; small venue labels need readable themed ink. */
+.app-shell .public-creators-release .community-workspace .creator-event-venue {
+  color: var(--pasa-ui-highlight);
+}
+
+.public-creators-release {
+  color: #fff4e8;
+  background: #080909;
+}
+html body .public-creators-release .workspace-shell.community-workspace {
+  --pasa-ui-panel: #12100e;
+  --pasa-ui-elevated: #1d1712;
+  --pasa-ui-glass: #15110e;
+  --pasa-ui-border: #49382b;
+  --pasa-ui-text: #fff4e8;
+  --pasa-ui-subtle: #cbbcaf;
+  --pasa-ui-highlight: #ffad72;
+  --creator-paper: #12100e;
+  --creator-soft: #1d1712;
+  --surface: #12100e;
+  --surface-alt: #1d1712;
+  --consumer-soft: #0b0b0a;
+  --consumer-line: #49382b;
+  --ink: #fff4e8;
+  --muted: #cbbcaf;
+  --line: #49382b;
+  --primary: #ff812e;
+  --primary-strong: #ffad72;
+  color: #fff4e8;
+  background: transparent;
+}
+html body .app-shell:has(.public-creators-release),
+html body .app-content:has(.public-creators-release) {
+  background: #080909;
+}
+html
+  body
+  .public-creators-release
+  .community-workspace
+  :is(.workspace-sidebar, .workspace-mobile-trigger, .workspace-drawer) {
+  color: #fff4e8;
+  background: #15110e;
+  border-color: #49382b;
+  box-shadow: none;
+}
+html
+  body
+  .public-creators-release
+  .community-workspace
+  .workspace-navigation
+  a {
+  color: #cbbcaf;
+}
+html
+  body
+  .public-creators-release
+  .community-workspace
+  .workspace-navigation
+  a.active {
+  color: #ffb27b;
+  background: #302013;
+  border-radius: 999px;
+}
+html
+  body
+  .public-creators-release
+  .community-workspace
+  :is(
+    .panel,
+    .creator-search,
+    .creator-card,
+    .creator-profile,
+    .creator-profile-main,
+    .creator-profile-summary,
+    .creator-profile-footer-card,
+    .creator-review-form,
+    .creator-faq-list details,
+    .creator-review-grid article
+  ) {
+  color: #fff4e8;
+  border: 1px solid #49382b;
+  background: #12100e;
+  box-shadow: none;
+}
+html
+  body
+  .public-creators-release
+  .community-workspace
+  .creator-discovery-intro {
+  padding: clamp(24px, 4vw, 44px);
+  border: 1px solid #68452d;
+  border-radius: 26px;
+  background:
+    radial-gradient(ellipse at 100% 0, #55301b, transparent 65%), #15100c;
+}
+html
+  body
+  .public-creators-release
+  .community-workspace
+  .creator-discovery-intro
+  h2 {
+  color: #fff4e8;
+  font-size: clamp(30px, 4.2vw, 54px);
+  letter-spacing: -0.05em;
+  line-height: 1.05;
+}
+html
+  body
+  .public-creators-release
+  .community-workspace
+  :is(
+    .creator-discovery-intro p,
+    .creator-card-body p,
+    .creator-profile-main p,
+    .creator-profile-summary span,
+    .creator-reviews-section p,
+    .creator-faq-list p
+  ) {
+  color: #cbbcaf;
+  line-height: 1.65;
+}
+html
+  body
+  .public-creators-release
+  .community-workspace
+  :is(.eyebrow, .creator-card-open, .creator-location, .creator-event-venue) {
+  color: #ffb27b;
+}
+html
+  body
+  .public-creators-release
+  .community-workspace
+  :is(.creator-category-nav a, .creator-tags span) {
+  color: #efcfb6;
+  background: #261b12;
+  border-color: #68482f;
+  border-radius: 999px;
+}
+html
+  body
+  .public-creators-release
+  .community-workspace
+  .creator-category-nav
+  a.active {
+  color: #211105;
+  background: #ff812e;
+  border-color: transparent;
+}
+html body .public-creators-release .community-workspace .button {
+  color: #211105;
+  background: #ff812e;
+  border-color: transparent;
+  border-radius: 999px;
+  min-height: 48px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+html body .public-creators-release .community-workspace .button.secondary {
+  color: #ffe1c9;
+  background: #251a11;
+  border: 1px solid #745034;
+}
+html
+  body
+  .public-creators-release
+  .community-workspace
+  :is(input, textarea, select) {
+  color: #fff4e8;
+  font-size: 16px;
+}
+html
+  body
+  .public-creators-release
+  .community-workspace
+  :is(input, textarea)::placeholder {
+  color: #baaa9b;
+  opacity: 1;
+}
+html
+  body
+  .public-creators-release
+  .community-workspace
+  :is(a, button, input, textarea, select, summary):focus-visible {
+  outline: 3px solid #ffb27b;
+  outline-offset: 4px;
+}
+
+html
+  body
+  .public-creators-release
+  .community-workspace
+  .creator-cover:not(.has-image) {
+  background:
+    radial-gradient(ellipse at 90% 0, #55301b, transparent 65%), #15100c;
+}
+html body .public-creators-release .community-workspace .creator-cover::after {
+  background: linear-gradient(transparent, #080909b8);
+}
+html body .public-creators-release .community-workspace .creator-card-gradient {
+  background: linear-gradient(180deg, transparent 40%, #080909c7);
+}
+html
+  body
+  .public-creators-release
+  .community-workspace
+  .creator-events-v2
+  > header
+  > span {
+  color: #211105;
+  background: #ff812e;
+}
+html body .public-creators-release .community-workspace .creator-review-form {
+  padding: 20px;
+  border-radius: 18px;
+}
+
+/* Light follows the public shell; photographic covers retain their dark overlay. */
+html[data-theme="light"] body .public-creators-release {
+  color: #29221c;
+  background: #faf7f2;
+}
+html[data-theme="light"]
+  body
+  :is(.app-shell, .app-content):has(.public-creators-release) {
+  background: #faf7f2;
+}
+html[data-theme="light"] body .public-creators-release .community-workspace {
+  --pasa-ui-panel: #fffdf9;
+  --pasa-ui-elevated: #f2e9df;
+  --pasa-ui-glass: #fffdf9;
+  --pasa-ui-border: #d3c0ad;
+  --pasa-ui-text: #29221c;
+  --pasa-ui-subtle: #685646;
+  --pasa-ui-highlight: #934214;
+  --creator-paper: #fffdf9;
+  --creator-soft: #f2e9df;
+  --surface: #fffdf9;
+  --surface-alt: #f2e9df;
+  --consumer-soft: #f7f0e7;
+  --consumer-line: #d3c0ad;
+  --ink: #29221c;
+  --muted: #685646;
+  --line: #d3c0ad;
+  --primary: #b94308;
+  --primary-strong: #934214;
+  color: #29221c;
+}
+html[data-theme="light"]
+  body
+  .public-creators-release
+  .community-workspace
+  :is(
+    .workspace-sidebar,
+    .workspace-mobile-trigger,
+    .workspace-drawer,
+    .panel,
+    .creator-search,
+    .creator-card,
+    .creator-profile,
+    .creator-profile-main,
+    .creator-profile-summary,
+    .creator-profile-footer-card,
+    .creator-review-form,
+    .creator-faq-list details,
+    .creator-review-grid article
+  ) {
+  color: #29221c;
+  background: #fffdf9;
+  border-color: #d3c0ad;
+}
+html[data-theme="light"]
+  body
+  .public-creators-release
+  .community-workspace
+  :is(
+    .workspace-navigation a,
+    .creator-card-body p,
+    .creator-profile-main p,
+    .creator-profile-summary span,
+    .creator-reviews-section p,
+    .creator-faq-list p
+  ) {
+  color: #685646;
+}
+html[data-theme="light"]
+  body
+  .public-creators-release
+  .community-workspace
+  :is(
+    .workspace-navigation a.active,
+    .eyebrow,
+    .creator-card-open,
+    .creator-location,
+    .creator-event-venue
+  ) {
+  color: #934214;
+}
+html[data-theme="light"]
+  body
+  .public-creators-release
+  .community-workspace
+  :is(
+    .workspace-navigation a.active,
+    .creator-category-nav a,
+    .creator-tags span,
+    .button.secondary
+  ) {
+  color: #78390f;
+  background: #f6e8d9;
+  border-color: #c5a88d;
+}
+html[data-theme="light"]
+  body
+  .public-creators-release
+  .community-workspace
+  .creator-category-nav
+  a.active {
+  color: #211105;
+  background: #ff812e;
+}
+html[data-theme="light"]
+  body
+  .public-creators-release
+  .community-workspace
+  :is(input, textarea, select) {
+  color: #29221c;
+  background: #fffdf9;
+  border-color: #b9a18a;
+}
+html[data-theme="light"]
+  body
+  .public-creators-release
+  .community-workspace
+  :is(input, textarea)::placeholder {
+  color: #75614f;
+}
+html[data-theme="light"]
+  body
+  .public-creators-release
+  .community-workspace
+  :is(a, button, input, textarea, select, summary):focus-visible {
+  outline-color: #934214;
+}
+/* Intro remains an intentional cinematic feature, with readable warm highlights. */
+html[data-theme="light"]
+  body
+  .public-creators-release
+  .community-workspace
+  .creator-discovery-intro
+  :is(h2, p, .eyebrow) {
+  color: #fff4e8;
+}
+
+/* Warm hero accents stay light on the retained cinematic backgrounds. */
+html[data-theme="light"]
+  body
+  .public-creators-release
+  .community-workspace
+  .creator-directory-v2
+  .creator-discovery-intro
+  .eyebrow,
+html[data-theme="light"]
+  body
+  .public-creators-release
+  .community-workspace
+  .creator-profile-v2
+  .creator-cover
+  .creator-location {
+  color: #ffb17c;
+}

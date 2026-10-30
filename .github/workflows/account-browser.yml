@@ -57,6 +57,15 @@ jobs:
           name: public-ui-evidence
           path: test-results
           retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: finished-public-screen-evidence
+          path: |
+            test-results/finished-public-release
+            test-results/community-public
+            test-results/finished-public-webview
+          retention-days: 7
 
   onboarding-ui:
     runs-on: ubuntu-latest

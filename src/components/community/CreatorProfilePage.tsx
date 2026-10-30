@@ -156,6 +156,7 @@ export async function CommunityCreatorPage({
   return (
     <WorkspaceShell
       title={c.display_name}
+      hidePageHeading
       eyebrow={es ? "Página de creador" : "Creator page"}
       description={headline}
       navigationTitle={es ? "Comunidad" : "Community"}

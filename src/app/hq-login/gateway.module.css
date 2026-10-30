@@ -3,7 +3,10 @@
   min-height: 100dvh;
   display: grid;
   place-items: center;
-  padding: clamp(20px, 5vw, 72px);
+  padding: max(1.25rem, env(safe-area-inset-top, 0px))
+    max(1rem, env(safe-area-inset-right, 0px))
+    max(1.25rem, env(safe-area-inset-bottom, 0px))
+    max(1rem, env(safe-area-inset-left, 0px));
   background:
     radial-gradient(
       ellipse at 80% 10%,
@@ -15,8 +18,12 @@
 }
 
 .shell {
-  width: min(100%, 700px);
-  padding: clamp(26px, 6vw, 62px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  align-items: center;
+  gap: clamp(1.3rem, 4vw, 3.2rem);
+  width: min(100%, 1080px);
+  padding: clamp(1.5rem, 4.2vw, 3.5rem);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 28px;
   background: rgba(18, 26, 38, 0.86);
@@ -121,5 +128,192 @@
       opacity: 0;
       transform: translateY(12px);
     }
+  }
+}
+
+.content {
+  min-width: 0;
+}
+
+.guide {
+  min-width: 0;
+  padding: clamp(1.35rem, 3vw, 2.3rem);
+  border: 1px solid rgba(255, 173, 117, 0.28);
+  border-radius: 1.5rem;
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(255, 138, 65, 0.18),
+      transparent 54%
+    ),
+    #142337;
+  color: #f6f9fd;
+}
+
+.guideKicker {
+  color: #ffb87f;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.guide h2 {
+  max-width: 17ch;
+  margin: 0.75rem 0;
+  font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+  line-height: 1.14;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.guideIntro,
+.guideFootnote,
+.steps p {
+  color: #d5e0ed;
+  line-height: 1.6;
+}
+
+.steps {
+  display: grid;
+  gap: 1rem;
+  padding: 0;
+  margin-block: 1.7rem;
+  list-style: none;
+}
+
+.steps li {
+  display: grid;
+  grid-template-columns: 2.3rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.steps li > span {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border: 1px solid rgba(255, 176, 119, 0.35);
+  border-radius: 0.7rem;
+  background: rgba(255, 144, 63, 0.13);
+  color: #ffc298;
+  font-weight: 800;
+}
+
+.steps strong {
+  display: block;
+  font-size: 1rem;
+}
+
+.steps p {
+  margin: 0.25rem 0 0;
+  font-size: 0.92rem;
+}
+
+.guideFootnote {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 0.88rem;
+}
+
+html[data-theme="light"] .gateway {
+  background:
+    radial-gradient(
+      circle at 85% 10%,
+      rgba(245, 127, 47, 0.17),
+      transparent 48%
+    ),
+    #f5f1ec;
+  color: #1a2a3a;
+}
+
+html[data-theme="light"] .shell {
+  border-color: rgba(47, 65, 82, 0.15);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 24px 70px rgba(52, 49, 43, 0.12);
+}
+
+html[data-theme="light"] .brand,
+html[data-theme="light"] .title,
+html[data-theme="light"] .note a {
+  color: #182a3b;
+}
+
+html[data-theme="light"] .description,
+html[data-theme="light"] .note {
+  color: #475769;
+}
+
+html[data-theme="light"] .kicker {
+  color: #a64713;
+}
+
+html[data-theme="light"] .secondary {
+  border-color: rgba(42, 61, 79, 0.28);
+  color: #192b3b;
+}
+
+html[data-theme="light"] .guide {
+  border-color: rgba(173, 100, 55, 0.25);
+  background: #fff7ef;
+  color: #1e2c3d;
+}
+
+html[data-theme="light"] .guideKicker {
+  color: #9b4818;
+}
+
+html[data-theme="light"] .guideIntro,
+html[data-theme="light"] .guideFootnote,
+html[data-theme="light"] .steps p {
+  color: #495b6b;
+}
+
+html[data-theme="light"] .steps li > span {
+  border-color: rgba(157, 78, 27, 0.22);
+  background: rgba(246, 130, 51, 0.12);
+  color: #9e4716;
+}
+
+html[data-theme="light"] .guideFootnote {
+  border-top-color: rgba(34, 57, 82, 0.17);
+}
+
+@media (max-width: 780px) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .brand {
+    margin-bottom: 1.5rem;
+  }
+
+  .guide {
+    margin-top: 0.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .shell {
+    padding: 1.35rem;
+    border-radius: 1.4rem;
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .primary,
+  .secondary {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell {
+    animation: none;
   }
 }
