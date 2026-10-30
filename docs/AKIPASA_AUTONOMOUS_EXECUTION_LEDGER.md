@@ -2,6 +2,46 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 30 October 18:28 UTC — native redirect defects repaired and verified
+
+Branch `work/coordinated-release-20261029`; published parent/head at start
+`2f06eae6cf669e6803a6c130d2f8a9af62975337`, matching freshly fetched origin.
+Master remains approved335source `3d87eb7c995fbd0947cb25a771a43376d9462645`.
+
+Implemented: Creator alias decode-once/encode-once with malformed/path escape
+rejection; trusted middleware-derived Staff/Admin task/query return reused by
+parent and leaf user guards. Identity, onboarding, terms, roles and tenant checks
+are preserved. Eight independent EN/ES native HTTP contracts pass, including
+encoded slugs/queues, repeated filters and forged return-header replacement.
+
+Tested:85 focused tests plus132 relevant existing regressions pass. Full
+`npm run check` EXIT0:2868Vitest/17groups,140initialNode and193-route optimized
+build. Initial sandbox child-process failure is preserved; the authorized
+escalated invocation passes. Nine runtime/test/config files were frozen; the
+subsequent test-only downloadable HTTP-result attachment has its own native
+rerun/typecheck evidence and no app-runtime changes. Receipt:
+`docs/receipts/AKIPASA_COMPATIBILITY_RETURNS_20261030.json`.
+
+Accepted:5/90 unchanged at this checkpoint; strict audit EXIT2,85 routes and six
+fallback states remain formally unaccepted. Responsible testers are reviewing
+current native static/discovery captures rather than promoting stale image pins.
+Four fallback states have bounded independent visual/functional review; two have
+specific native integration gaps. General owner acknowledgement of looking at
+the full gallery is not invented per-route/provider/device approval.
+
+Merged/deployed:neither. Live Worker26e51e72 remains rollback source, no SQL applied.
+Staff eligibility and venue-preview SQL remain source-only; terms protection was
+already applied once in335 and must not be repeated. The concrete existing-SQL
+apply/rollback plan is outside the source tree in main-checkpoints. Real isolated
+Auth/role/tenant/verified-XP/provider checks and candidate Android remain external
+release dependencies. No paid resource, production customer or consent mutation.
+
+NEXT: commit/push verified repair normally, obtain fresh exact-head hosted CI and
+Cloudflare upload evidence, regenerate source-bound review pack, and record only
+individual responsible-tester acceptances supported by accessible actual evidence.
+Continue missing native fallback/static captures on the shared isolated preview.
+Root sole integrator; no competing PR, force push, gate waiver or premature merge.
+
 ## 30 October 17:18 UTC — all layouts catalogued; safe preview source validated
 
 Current published3cd2c944858915da2893223866b0a7b59aafc2b0 passes all11ordinary

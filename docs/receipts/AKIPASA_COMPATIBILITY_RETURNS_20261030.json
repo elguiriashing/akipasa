@@ -1,0 +1,164 @@
+{
+  "reviewer": "Codex account_screens",
+  "baselineCommit": "2f06eae6cf669e6803a6c130d2f8a9af62975337",
+  "testedWorkingTree": true,
+  "binding": "Baseline2fplusfiveexplicitcopiedfiles; NOTunchanged2fsource. Allfivehashesmatchcurrentrootandtestedexport. Integrationmustbindnextcommittoactualtestedbytes.",
+  "sourceHashes": {
+    "src/lib/auth.ts": "d3db5cb802bc82bd74c7ca6b982d1f9418cd7f34664c93683ea58a962f843f29",
+    "src/middleware.ts": "6e45992c94cc054e07a529d6dee073c96b031a6f2598ade080a4758fa21ec011",
+    "src/lib/workspace-return-path.ts": "94ce5b7497ecfe5fb8aaaf1c3e8017628137fb4b93dc0502a140c2b485854a91",
+    "src/app/[locale]/creators/[slug]/page.tsx": "cebfb68f367e23da83a4c4b544e08ba57a3b93679902db11e2bfc90aecb2842b",
+    "tests/e2e/pasa-compatibility-redirects.spec.ts": "8a81fecfa074d0424244b0f55c57f62c74542c81b95c1355de3cd316070c07e4"
+  },
+  "build": {
+    "passed": true,
+    "staticPages": 193,
+    "BUILD_ID": "AK1p5zoKe22roilzzvHpg",
+    "log": "/tmp/akipasa-compat-workspace-eight-build.log",
+    "isolatedDirectory": "/tmp/akipasa-compat-2f06eae",
+    "rootNextTouched": false
+  },
+  "tests": {
+    "file": "tests/e2e/pasa-compatibility-redirects.spec.ts",
+    "passed": 8,
+    "failed": 0,
+    "locale": ["en", "es"],
+    "contracts": [
+      "Creatoralias307 encodedonce,sameorigincanonical,noexternalnext",
+      "Moderation307support/audit/encodedqueueboundaries",
+      "Staffaudit307Authprecisetask/queryreturn, external/wronglocaleheaderreplacement",
+      "Adminaudit307Authprecisetask/queryreturn,external/wronglocaleheaderreplacement"
+    ],
+    "syntheticHTTPRequestsAsserted": 20,
+    "scope": "GuestHTTPonly; notauthenticatedAdmin/Staffauthorizationoractualdestinationpageacceptance."
+  },
+  "rawObservedHTTPResponses": [
+    {
+      "path": "/en/creators/artist%20%26%20company?next=https%3A%2F%2Fevil.invalid",
+      "status": 307,
+      "location": "/en/community/creators/artist%20%26%20company"
+    },
+    {
+      "path": "/en/moderation?view=support&queue=claims",
+      "status": 307,
+      "location": "/en/staff/support"
+    },
+    {
+      "path": "/en/moderation?view=audit",
+      "status": 307,
+      "location": "/en/admin/audit"
+    },
+    {
+      "path": "/en/moderation?queue=claims%26show%3Dprivate",
+      "status": 307,
+      "location": "/en/staff/moderation?queue=claims%26show%3Dprivate"
+    },
+    {
+      "path": "/en/staff/audit",
+      "status": 307,
+      "location": "/en/auth?next=%2Fen%2Fstaff%2Faudit"
+    },
+    {
+      "path": "/en/staff/audit?queue=claims%26show%3Dprivate&period=30&tag=a&tag=b",
+      "status": 307,
+      "location": "/en/auth?next=%2Fen%2Fstaff%2Faudit%3Fqueue%3Dclaims%2526show%253Dprivate%26period%3D30%26tag%3Da%26tag%3Db"
+    },
+    {
+      "path": "/en/staff/audit?queue=claims%26show%3Dprivate&period=30&tag=a&tag=b",
+      "status": 307,
+      "location": "/en/auth?next=%2Fen%2Fstaff%2Faudit%3Fqueue%3Dclaims%2526show%253Dprivate%26period%3D30%26tag%3Da%26tag%3Db"
+    },
+    {
+      "path": "/es/creators/artist%20%26%20company?next=https%3A%2F%2Fevil.invalid",
+      "status": 307,
+      "location": "/es/community/creators/artist%20%26%20company"
+    },
+    {
+      "path": "/es/moderation?view=support&queue=claims",
+      "status": 307,
+      "location": "/es/staff/support"
+    },
+    {
+      "path": "/es/moderation?view=audit",
+      "status": 307,
+      "location": "/es/admin/audit"
+    },
+    {
+      "path": "/es/moderation?queue=claims%26show%3Dprivate",
+      "status": 307,
+      "location": "/es/staff/moderation?queue=claims%26show%3Dprivate"
+    },
+    {
+      "path": "/es/staff/audit",
+      "status": 307,
+      "location": "/es/auth?next=%2Fes%2Fstaff%2Faudit"
+    },
+    {
+      "path": "/es/staff/audit?queue=claims%26show%3Dprivate&period=30&tag=a&tag=b",
+      "status": 307,
+      "location": "/es/auth?next=%2Fes%2Fstaff%2Faudit%3Fqueue%3Dclaims%2526show%253Dprivate%26period%3D30%26tag%3Da%26tag%3Db"
+    },
+    {
+      "path": "/es/staff/audit?queue=claims%26show%3Dprivate&period=30&tag=a&tag=b",
+      "status": 307,
+      "location": "/es/auth?next=%2Fes%2Fstaff%2Faudit%3Fqueue%3Dclaims%2526show%253Dprivate%26period%3D30%26tag%3Da%26tag%3Db"
+    }
+  ],
+  "observerScope": "14Creator/Moderation/Staff responses logged by behavior-preservingServerResponse observer. SixAdminresponses verifiedbyactualHTTPassertions(namedPASS), notseparatelylogged; no fabricatedrawvalues.",
+  "log": "/tmp/akipasa-compat-workspace-eight-http.log",
+  "ownPortsClosed": {
+    "3197": true,
+    "4039": true
+  },
+  "originalFailuresRetained": [
+    "/tmp/akipasa-compat-2f06eae-http-tests.log",
+    "/tmp/akipasa-compat-2f06eae-encoding-diagnostic.log",
+    "/tmp/akipasa-compat-patched-alias-http.log"
+  ],
+  "externalMutations": false,
+  "nextAction": "Rootcommitvalidatedsourceandobtainnewexact-headCI; maintain authenticatedstaging/device/routeacceptancegates.",
+  "focusedTests": {
+    "creatorAlias": 45,
+    "workspaceReturnPath": 10,
+    "actualAuthAndMiddleware": 30,
+    "additionalRegressions": 132
+  },
+  "fullCheck": {
+    "status": "passed",
+    "log": "/tmp/akipasa-workspace-return-FINAL-escalated-20261030.log",
+    "sandboxedFailurePreserved": "/tmp/akipasa-workspace-return-FINAL-integrated-20261030.log",
+    "exitCode": 0,
+    "vitestTests": 2868,
+    "vitestGroups": 17,
+    "initialNodeTests": 140,
+    "builtRoutes": 193
+  },
+  "production": {
+    "merged": false,
+    "deployed": false,
+    "sqlApplied": false,
+    "source": "3d87eb7c995fbd0947cb25a771a43376d9462645",
+    "worker": "26e51e72-bb1e-49e9-a307-243e0203ef8d"
+  },
+  "acceptance": {
+    "formalRoutes": 5,
+    "totalInScope": 90,
+    "fallbacksPending": 6,
+    "redirectEvidenceAwaitingPublishedHeadCI": true
+  },
+  "strictReleaseAudit": {
+    "exitCode": 2,
+    "unacceptedRoutes": 85,
+    "pendingFallbackStates": 6,
+    "waived": false
+  },
+  "namedHttpArtifacts": {
+    "passed": 8,
+    "observed307Responses": 20,
+    "testOnlyFollowup": true,
+    "runtimeRebuilt": false,
+    "typecheckLintFormat": "passed",
+    "localSourceLabel": "local-working-tree-2f06eae",
+    "bindingNote": "Runtime stayed frozen after full check. Spec-only result attachments were typechecked and native HTTP suite rerun; hosted CI will label actual published GITHUB_SHA."
+  }
+}

@@ -1,5 +1,27 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-30 | Creator encoding and exact workspace task returns
+
+Creator compatibility aliases normalize the route slug once before encoding the
+canonical creator segment. Malformed encodings, separators and dot-only segments
+fail closed; literal encoded percent text remains stable. Actual built Next HTTP
+requests now preserve an encoded creator slug rather than double-encoding it.
+
+Staff/Admin parent layouts previously replaced a guest's Audit destination with
+the workspace root. Middleware removes incoming workspace-return headers and sets
+a bounded same-locale, same-workspace path/query derived from the actual request.
+The shared user guard revalidates that navigation target before the unchanged
+identity, onboarding and current-terms checks. Parent and leaf guards retain the
+same task and filters. Workspace role/tenant authorization remains unchanged;
+this header grants no access. Consumer and separate-product returns are unchanged.
+
+Eight independent EN/ES HTTP contracts pass on the isolated built fixture source,
+including forged-header replacement and repeated/encoded query parameters. The
+85 focused alias, sanitizer and actual guard/middleware tests pass; additional
+132 booking/token/onboarding/navigation regressions pass. Exact published-head CI,
+formal route acceptance and protected/provider/device evidence remain distinct.
+No production migration, merge or deployment follows from these local results.
+
 ## 2026-10-29 | Avatar artwork rejected; functional evidence is not art approval
 
 Alex rejected the retained private-avatar artwork and the isolated original

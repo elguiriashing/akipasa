@@ -8,11 +8,24 @@ import {
 } from "@/lib/akiconduzco-routing";
 import { shouldNoindex } from "@/lib/seo";
 import { accountReturnPath } from "@/lib/account-return-path";
+import { workspaceReturnPath } from "@/lib/workspace-return-path";
 import { akiSuiteMembershipReturnPath } from "@/lib/akisuite-catalogue";
 
 export async function middleware(request: NextRequest) {
   request.headers.delete("x-akipasa-membership-next");
   request.headers.delete("x-akipasa-account-next");
+  request.headers.delete("x-akipasa-workspace-next");
+  const workspace = request.nextUrl.pathname.match(
+    /^\/(en|es)\/(staff|admin)(?:\/|$)/,
+  );
+  if (workspace) {
+    const next = workspaceReturnPath(
+      workspace[1] === "en" ? "en" : "es",
+      workspace[2] === "staff" ? "staff" : "admin",
+      request.nextUrl.pathname + request.nextUrl.search,
+    );
+    if (next) request.headers.set("x-akipasa-workspace-next", next);
+  }
   const accountLocale = request.nextUrl.pathname.match(
     /^\/(en|es)\/account(?:\/|$)/,
   )?.[1];

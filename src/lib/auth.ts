@@ -1,7 +1,8 @@
 import { readOnboardingStatus } from "./account-onboarding-server";
 import { onboardingUrl } from "./account-onboarding";
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
+import { workspaceReturnPath } from "./workspace-return-path";
 import { config, type Locale } from "./config";
 import { hasSupabaseAuthCookie } from "./supabase/auth-cookie";
 import { createSupabasePublicClient } from "./supabase/public";
@@ -34,6 +35,18 @@ export async function requireIdentity(
 }
 
 export async function requireUser(locale: Locale, next = `/${locale}/account`) {
+  const workspace = next.match(
+    new RegExp(`^/${locale}/(staff|admin)(?:/|[?]|$)`),
+  )?.[1];
+  if (workspace === "staff" || workspace === "admin") {
+    const requestHeaders = await headers();
+    next =
+      workspaceReturnPath(
+        locale,
+        workspace,
+        requestHeaders.get("x-akipasa-workspace-next"),
+      ) ?? next;
+  }
   const { supabase, user } = await requireIdentity(locale, next);
   const eligibility = await readOnboardingStatus(supabase);
   if (eligibility === "pending" || eligibility === "underage")

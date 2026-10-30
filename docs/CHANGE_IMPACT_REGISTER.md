@@ -4569,3 +4569,23 @@ direction at197source, not a merge or SQL change.5formal route acceptances remai
 Only the connected main Supabase project exists; a requested schema-only QA branch
 cost confirmation expired, and re-listing confirms no branch/resource was created.
 Actual isolated signed-in/provider and physical-device tests remain external gaps.
+
+## 2026-10-30 | Preserve Creator aliases and Staff/Admin return journeys
+
+Actual HTTP tests exposed double-encoded creator slugs and parent workspace auth
+guards losing Audit destinations. Normalize only the creator segment once, reject
+malformed/path-escaping values, and retain canonical localized redirects. Add a
+middleware-derived, bounded Staff/Admin navigation header, remove any supplied
+header first, and revalidate locale/namespace in requireUser before existing
+identity/onboarding/terms guards. No workspace role, tenant filter, database,
+storage, consent, XP, billing, provider or separate-product boundary is changed.
+
+Validation:45 actual alias-export tests,10 sanitizer tests and30 actual shared
+auth/middleware tests pass;132 bounded existing regressions pass. The isolated
+193-route optimized build and eight actual EN/ES HTTP contracts pass, including
+same-origin exact task/query returns and forged external/wrong-locale headers.
+Original failures and the initial sandboxed child-process check failure are
+preserved. Full integrated check and published exact-head CI are recorded in
+`docs/receipts/AKIPASA_COMPATIBILITY_RETURNS_20261030.json`; never treat local
+fixture results as authenticated provider, physical-device or full acceptance.
+No production data/schema changes, merge or deployment occurred.
