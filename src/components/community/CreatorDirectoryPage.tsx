@@ -313,8 +313,8 @@ export async function CreatorDirectoryPage({
                 <h2>
                   {creators.length
                     ? es
-                      ? `${creators.length} creadores para descubrir`
-                      : `${creators.length} creators to discover`
+                      ? `${creators.length} ${creators.length === 1 ? "creador" : "creadores"} para descubrir`
+                      : `${creators.length} ${creators.length === 1 ? "creator" : "creators"} to discover`
                     : es
                       ? "No encontramos coincidencias"
                       : "No matches yet"}

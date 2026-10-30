@@ -33,8 +33,9 @@ test("sitemap index and root-level child files are crawlable XML without session
   expect(child.headers()["set-cookie"]).toBeUndefined();
   const xml = await child.text();
   expect(xml.match(/<url>/g)).toHaveLength(publicPagePaths.length * 2);
-  expect(xml).toContain("/en/roadmap");
-  expect(xml).toContain("/es/roadmap");
+  for (const locale of ["en", "es"])
+    for (const path of ["roadmap", "photo-credits"])
+      expect(xml).toContain(`https://akipasa.com/${locale}/${path}`);
   expect(xml).toContain('hreflang="x-default"');
   expect(xml).not.toContain("/account");
   expect((await request.get("/sitemap-venues--1.xml")).status()).toBe(404);

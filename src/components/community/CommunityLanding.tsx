@@ -206,6 +206,10 @@ export function CommunityLanding({ locale }: { locale: "en" | "es" }) {
           {es ? "En desarrollo" : "In development"}
         </span>
       </aside>
+      <Link className={styles.roadmapLink} href={`/${locale}/roadmap`}>
+        {es ? "Consulta nuestro plan de lanzamiento" : "See our launch roadmap"}
+        <Icon name="arrow-right" size={18} />
+      </Link>
     </main>
   );
 }

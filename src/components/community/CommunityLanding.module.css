@@ -487,3 +487,18 @@
 :global(body):has(.page) :global(.global-support-icon) {
   display: none;
 }
+
+.roadmapLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 48px;
+  margin-top: 1rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--community-line);
+  border-radius: 1rem;
+  color: var(--community-accent-ink);
+  font-size: 0.9rem;
+  font-weight: 750;
+}

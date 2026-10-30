@@ -110,6 +110,14 @@ jobs:
         run: node scripts/test-staff-pagination-browser.mjs
       - name: Verify native administrator review layouts and decisions
         run: node scripts/test-admin-review-browser.mjs
+      - name: Verify administrator achievement palettes and native disclosures
+        run: node scripts/test-admin-achievement-palette-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: admin-achievement-palette-evidence
+          path: test-results/admin-achievement-palette
+          retention-days: 7
       - run: node scripts/test-stay-ui-upgrades-browser.mjs
       - run: node scripts/test-support-ui-upgrades-browser.mjs
       - uses: actions/upload-artifact@v4
@@ -136,6 +144,7 @@ jobs:
             test-results/map-availability
             test-results/staff-pagination
             test-results/admin-review
+            test-results/admin-achievement-palette
             test-results/staff-ui-upgrades
             test-results/stay-ui-upgrades
             test-results/support-ui-upgrades

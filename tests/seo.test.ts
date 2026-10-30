@@ -129,10 +129,9 @@ describe("catalogue sitemaps", () => {
     const urls = [...doc.querySelectorAll("loc")].map(
       (loc) => loc.textContent!,
     );
-    expect(urls).toContain("https://akipasa.com/en/roadmap");
-    expect(urls).toContain("https://akipasa.com/en/photo-credits");
-    expect(urls).toContain("https://akipasa.com/es/photo-credits");
-    expect(urls).toContain("https://akipasa.com/es/roadmap");
+    for (const locale of ["en", "es"])
+      for (const path of ["roadmap", "photo-credits"])
+        expect(urls).toContain(`https://akipasa.com/${locale}/${path}`);
     expect(urls.every((url) => !shouldNoindex(new URL(url).pathname))).toBe(
       true,
     );

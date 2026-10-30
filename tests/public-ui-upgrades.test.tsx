@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import React, { type ComponentProps, type ReactNode } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import "@testing-library/jest-dom/vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen, within } from "@testing-library/react";
@@ -705,6 +706,9 @@ describe("community workflow return paths", () => {
           searchParams: Promise.resolve({}),
         });
         render(landing);
+        const markup = renderToStaticMarkup(landing);
+        expect(markup).toContain(`href="/${locale}/community/creators"`);
+        expect(markup).toContain(locale === "es" ? "Comunidad" : "Community");
         expect(
           screen.getByRole("link", {
             name: locale === "es" ? /Explorar creadores/ : /Explore creators/,

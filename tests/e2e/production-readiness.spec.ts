@@ -76,6 +76,13 @@ test("root, invalid content and all guest gates resolve safely", async ({
   expect(communityHtml).toContain("Explore creators");
   expect(communityHtml).toContain("/en/community/creators");
   expect((await page.request.get("/en/community/creators")).status()).toBe(200);
+  const suggestion = await page.request.get("/en/community?view=suggest", {
+    maxRedirects: 0,
+  });
+  expect(suggestion.status()).toBe(307);
+  const auth = new URL(suggestion.headers().location, "https://akipasa.com");
+  expect(auth.pathname).toBe("/en/auth");
+  expect(auth.searchParams.get("next")).toBe("/en/community?view=suggest");
 
   const relevanceApi = await page.request.get("/api/admin/venue-relevance");
   expect(relevanceApi.status()).toBe(401);

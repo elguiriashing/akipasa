@@ -1,0 +1,129 @@
+{
+  "version": 1,
+  "baseCommit": "3d87eb7c995fbd0947cb25a771a43376d9462645",
+  "approvedDesignSource": "2b3cc9bbe225f927f3097c7e0aefc805c1ccae6d",
+  "status": "Local candidate verified; exact-head CI and production publication pending",
+  "runtimeHashes": {
+    "src/app/[locale]/community/creators/[slug]/page.tsx": "c2da65234945f05d3832b54032301ff4504be6cbeda00a594e9988793f338e79",
+    "src/app/[locale]/community/creators/page.tsx": "b029b37498c745735c2fdc178bc95377546a747ec27a7568462b1f2b74ee161c",
+    "src/app/[locale]/community/page.tsx": "87255453838e7971a6104da5ea3178eae62bd8f73a9d9acd69b37dcde6c97ad2",
+    "src/app/[locale]/creators/[slug]/page.tsx": "cebfb68f367e23da83a4c4b544e08ba57a3b93679902db11e2bfc90aecb2842b",
+    "src/app/[locale]/photo-credits/page.tsx": "bedc3da3f4ddbe9d9b5cab7089f71264cc87e1538f5343844ed832f855e7166e",
+    "src/app/[locale]/privacy/page.tsx": "c2e7e0be2fd25c9da0ea6a4e1e923431e46fceb4cebb8585d323c439ba1680b8",
+    "src/app/[locale]/roadmap/page.tsx": "e4b2db2bdfac0c2e5bcd6347321b77a79a315448c523504d16ca7c9310d950c4",
+    "src/app/[locale]/roadmap/roadmap.module.css": "cc4df020ac775b528f9c296c1d94c3eddebcf2722fe525ecf5c10c929af82e34",
+    "src/app/[locale]/terms/page.tsx": "bb7d64502dd92edf39fef79bf92db60a43940ea5d3b33d420b3ec1f8ca028bdf",
+    "src/app/hq-login/gateway.module.css": "af4174437acaa3ce7f442f5082c2ec50ed664811aef5a6de328249e1447db9a0",
+    "src/app/hq-login/page.tsx": "51949d32ef7b5b789ac37d84c2104d23946b94ca67834cb624bf74037338d077",
+    "src/app/layout.tsx": "9d149e355abfd9346aa3330dc963b8c2fbc1f93b8a2ea03d7ed3d59bb85e8042",
+    "src/app/roadmap/page.tsx": "dfe0a98f22a0d440223973174093e848544bcb1892376752aff5f0508de6ac10",
+    "src/components/community/CommunityLanding.module.css": "9c6857f07fe101b773d4af31bfc729b1b49902a16c608ee0b64aacae52360cb7",
+    "src/components/community/CommunityLanding.tsx": "4066bd9d928fe42be6b11f31f4f215e7fc146a455ecfe91035b86b1140a0b958",
+    "src/components/community/CreatorDirectoryPage.tsx": "5789173c40ce7d436523d0a5acf0937252f410b1716340915d7dcb01b88cad33",
+    "src/components/community/CreatorProfilePage.tsx": "fde4e86ab9b927c4131d7e3e11b22926a482f19058926b63b9eee7036cfb63ee",
+    "src/components/community/public-creators-release.css": "6e8c72f7fd455ad5329880df3234db18dd0270aa7b72c273eb579b94f27135bb",
+    "src/components/pasa-finished-public.css": "28346381838b70482e92b393326d8bbf5c86a19698508a665c44085359166980",
+    "src/lib/page-metadata.ts": "acb5b226374c3155be9cbb13f19e1fcc248454075d4d8aa54fc4bb6217dfc3dc",
+    "src/lib/pasa-roadmap.ts": "000a3724e8ac64ba1b2e5421e78c78c1dd39975ab35e95289b6d6a1a911d49b6",
+    "src/lib/seo.ts": "398aee95bae42b424038ab821171ca9c313f1bd12aca46aad80ab21ecf3e1ceb"
+  },
+  "unchangedProtectedMasterFiles": {
+    "src/components/AppShell.tsx": "d0c624257334b64c8c300505faff0baf3200300292b18dcb09954ee178e6a40f",
+    "src/components/GlobalSearch.tsx": "43009af8842c7bbe248d5e35b9a8f8bb2f3883ba5f4865c33437dd4d50b42f43",
+    "src/app/[locale]/page.tsx": "751a06c4ec9b3a3dc73665ca5d3286934903d9d15532334021b95670a7ed60ce",
+    "src/app/[locale]/auth/page.tsx": "cbe8545caf3e67aef2ddd13696f9d8dc9b57aaa0f76a33593c4b880603b6865d",
+    "src/app/[locale]/auth/actions.ts": "4921a9c6e3e199af08a16c8cb443303fff3eb95a254ee0dbbf3e4b2588d0bcd9",
+    "src/app/[locale]/passports/page.tsx": "de9e3a07b0a628d31d07c6b1e9574be7f70450f1e95fc6d978a64b15891a378e",
+    "src/components/PassportBook.module.css": "e4b661f8452f5d0aa4310b8849e66689e776f9cb2a7ff29ff216051c17d43dec",
+    "src/app/[locale]/community/actions.ts": "32bf7f85696e238ffe0527e495765934e3c1c17b7b5bd7f24b7f078ebfa7d2bb",
+    "src/app/[locale]/community/creator-actions.ts": "0b4da64beff924aa277658c871c80d457b5293131e9bf1cf37d67a0c3a5c9ef4",
+    "src/app/[locale]/community/creator/page.tsx": "4a2eae479c8d0666b9e49e20f6379d7b157dd97c00fe3bc901b9fd88169a575e",
+    "src/lib/auth.ts": "5e9db531a2c1040c912dcd000f4e8e0afdc196bdd0df1f75adc8e197813edd9a",
+    "src/lib/config.ts": "99bcd28eb21688269d1115aef445e529f5eb5bc7b2bcb09303e19a8fd845a5db",
+    "src/middleware.ts": "6e3dfa1cea9f1bde61e18b1e2ff86bff9f1cc9e83aa13898a44ae64f5a709f61",
+    "package.json": "27d7a8273f97d20cb4f469008edff9784d8d7c2ba553a2f8d4a05d24d4ed0a4d",
+    "package-lock.json": "7e62f52e0aa8354473eff83bd1004f9e416bbf8e17f69583c57b3ad4c23d97c2"
+  },
+  "protectedCommunityTailByteIdentical": true,
+  "routes": [
+    "/[locale]/community",
+    "/[locale]/community/creators",
+    "/[locale]/community/creators/[slug]",
+    "/[locale]/creators/[slug] (redirect-only)",
+    "/[locale]/roadmap",
+    "/roadmap (redirect-only)",
+    "/[locale]/privacy",
+    "/[locale]/terms",
+    "/[locale]/photo-credits",
+    "/hq-login"
+  ],
+  "boundaries": [
+    "No migration, DB/RLS, role, auth/callback/action, payment, consent or event-supply change.",
+    "No full332 AppShell or broad shared skin; legal CSS only legal/roadmap selectors, Creators only public wrapper, Community hashed module.",
+    "Master Community protected workflow unchanged byte for byte after identity boundary.",
+    "No new asset or package/dependency; synthetic profile/media used only by read-only test fixture.",
+    "Closed336 remains closed; owner newly authorizes finished independent batches, full332 strict gate unchanged.",
+    "Prior production source335 and Worker26e51e72 retained for rollback."
+  ],
+  "preliminaryTests": {
+    "focusedVitestPassed": 93,
+    "firstActualNextPassed": 45,
+    "firstActualNextFailed": 1,
+    "failure": "Existing Auth test expected both email and Google consent forms; local build omitted the Google flag that existing CI sets true. No Auth code/assertion changed; final build must match CI flag.",
+    "typecheckFirstFailure": "New Testing Library role query used unsupported exact option; removed option, string accessible-name match remains exact by default.",
+    "priorBuildId": "ghD41C6Y7k0i-T_qrI5Eq",
+    "publicCreatorQaFixes": "Light surfaces and singular counts corrected after actual screenshots; final captures pending."
+  },
+  "finalValidation": {
+    "localUnitTestsPassed": 2125,
+    "localVitestStagesPassed": 14,
+    "finalFocusedUnitTestsPassed": 93,
+    "typecheck": "PASS; separate final tsc --noEmit --incremental false",
+    "localFullCommand": "Earlier unit/security/SQL/type/format stages passed; aggregate stopped at missing isolated automation Hono dependency. Identical automation lockfile dependencies linked, remaining automation check and optimized build passed. Exact-head CI must run whole npm run check before merge.",
+    "automationCheck": "PASS including dry-run only, no deployment",
+    "optimizedBuild": "PASS",
+    "BUILD_ID": "vEuHgmvl1OzFqs1tYby37",
+    "browserTestsPassed": 46,
+    "webViewTestsPassed": 8,
+    "targetedFinalLightThemeTestsPassed": 4,
+    "browserSourceScope": "46+8 ran before final CSS-only light hero accent repair; four language/viewport light cases reran on final build. Exact-head CI reruns the entire collection.",
+    "physicalAndroid": false,
+    "independentReview": "All reviewed final public UI defects resolved; qualified for bounded release subject exact-head CI",
+    "reviewReceiptSha256": "353e0877ff108928458167ada8b66de4aed3bc1a728030e53b97cf667dbd2e44",
+    "exactHeadCI": "Fresh published repair head required before merge",
+    "merged": false,
+    "deployed": false,
+    "initialPublishedCI": {
+      "source": "e99f9b22c576f142c9c4572b3c79929440b851b7",
+      "fiveOtherWorkflows": "PASS including full npm run check",
+      "publicBrowser": {
+        "passed": 271,
+        "conditionalSkipped": 29,
+        "failed": 1,
+        "failure": "Duplicate Search Console sitemap expectation still required 12 URLs after four approved localized Roadmap/Photo Credits additions.",
+        "run": "https://github.com/elguiriashing/akipasa/actions/runs/41139841435"
+      },
+      "cloudflarePackaging": "PASS; stored version only, not deployed"
+    },
+    "sitemapRepair": {
+      "runtimeChanged": false,
+      "assertions": "Require 16 URLs and all four localized Roadmap/Photo Credits URLs; existing privacy, cookie, hreflang and malformed route assertions retained.",
+      "targetedBrowserPassed": 5,
+      "logSha256": "0c322021292c5bf3d02c7fc6733f4cc9b5e147be724338eecdf37f88577ef8ae"
+    }
+  },
+  "localLogHashes": {
+    "/tmp/akipasa-finished-public-final3-check-20261030/npm-check.log": "c82b6e44faa24845d3b900d7133cb1e460f7c6a8ca95fe5c953d11bd9e4b5c28",
+    "/tmp/akipasa-public-automation-complete-20261030.log": "8c209bb88dfe502063963962272b7fae8d7d846d1bd339930b028edc7b90a524",
+    "/tmp/akipasa-public-hero-contrast-build-20261030.log": "3b213a6976f1a766ad5ce903843b4f3e721bb5b0537e6649743e1f8fdcddfddb",
+    "/tmp/akipasa-finished-public-browser-final-20261030.log": "f978f0b8dfa9b199fb0dfc5018a23bfa0c4f7b32d2906bba7e24444eee609bdf",
+    "/tmp/akipasa-public-webview-final-20261030.log": "9826d528acdb33ff700db0a2a82fe41cda73cbfd21d0c240a505ff054e3ba073",
+    "/tmp/akipasa-public-hero-contrast-browser-20261030.log": "fa6172a54a0bba9affae8d2d461792ac20d87c3480db849608d598633716c8a4"
+  },
+  "publicHttpsBeforeRelease": {
+    "normalBrowserStatus": 200,
+    "path": "https://akipasa.com/en",
+    "credentialOrConsentOperation": false,
+    "newReleaseVerification": "mandatory after actual deployment"
+  }
+}

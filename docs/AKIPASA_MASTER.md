@@ -1,5 +1,23 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-30 | Public337 production and normal overhaul reconciliation
+
+Owner-authorized public release337 passed all6exact-head workflows and merged
+as c51cba991292eb8759e0bcea73f03b2d0408cb64, identical testedtree. Automatic
+Cloudflare Worker980f4d74-9dca-42be-b096-03979c749e63 serves100%;22+12realanonymous
+HTTPSchecks pass with savedprivacy unchanged. Existing26e retainedrollback; no
+manual duplicate deploy or database/customer/consent/payment change. See exact
+production receipt and its physicaldevice/console/footer-review limitations.
+
+Production is reconciled normally into332, preserving stronger tests/artifacts
+and main protected workflows. Two proven Business presentation defects repair
+160pxSave→48px and lighttextcontrast1.19→4.95 with160maintainedcases. SharedAdmin
+achievementtoolbar/venue rows use existing semantic surface/ink/line/muted values;
+24portable browsercases pass(mincontrast6.05), retaininggeometry/forms/actions.
+Existing mandatorytabletjob gains this maintained24runner+artifact, no test policy
+weakening. Full33249routeacceptances/6fallbacks remain separate from privateprovider,
+RLS, XP, device and final-owner release requirements; no fullrelease approved.
+
 ## 2026-10-30 | Fresh route reviews and confirmed Staff visual repair
 
 Actual b7 hosted evidence and responsible screenshot/function review approve
@@ -378,6 +396,30 @@ PR #327.
 AkiTonight adds localized read-only `/[locale]/tonight` guided intent and social-context filters to the existing `recommendDiscovery` event service and published `public_nearby_venue_page` RPC. Its queries are strictly allowlisted and reuse authoritative scheduled occurrences and consent-based existing ranking. A separate nearby venue fallback makes NO claim that a venue is open, meets a selected activity, has space for a group or offers a bookable event. Sponsorship labels continue to come from `EventCard`; no new telemetry, notifications, XP, reward grants, subscription fees, merchant campaigns or RLS functions are introduced. The public route is noindex until credible local event supply exists. Phase-1 audit found **zero future scheduled event occurrences** in the linked project on 2026-10-29; venue directory records must not be treated as event availability.
 
 Source: `src/lib/aki-tonight.ts`, `src/app/[locale]/tonight`, existing `PlansFirstHero`. Test: `tests/aki-tonight.test.ts`, new isolated CI plus full `npm run check`. The source overlaps PR #326's homepage/route-matrix work, and **must be explicitly reconciled with #326** and have bilingual mobile, Android, empty/error, sponsor/consent and real-inventory acceptance before merge/release. No migration or configuration change. Roll back by removing the hero CTA and route; retained existing events and customer records are unaffected. Track `docs/AKIPASA_RETENTION_IMPLEMENTATION_20261029.md`.
+
+## 2026-10-30 | Finished public-screen release, isolated from the full overhaul
+
+Alex explicitly authorizes shipping finished independent public screens ahead of
+the full #332 overhaul for investor demonstrations. This master3d87-based batch
+contains Community home, public Creator directory/profile and alias, Roadmap and
+root redirect, Privacy/Terms/Photo Credits, and the HQ entry screen. The full332
+strict90-route gate remains unchanged on its own integration branch.
+
+Community's protected workflow after requireUser remains byte-identical to master;
+only its public home dispatch changes. Fifteen key master files are unchanged,
+including Home, Login/actions, Passport, AppShell/search, private Creator Studio/
+actions, auth/config/middleware and package/lockfile. No SQL, RLS, roles, consent,
+payments, provider configuration or real data changes. Scoped legal/roadmap CSS
+and a public-only Creator wrapper avoid porting the full shared overhaul skin.
+Existing assets are reused. Test-only public profile/media is synthetic/read-only.
+
+Validation and source hashes are recorded in
+receipts/AKIPASA_FINISHED_PUBLIC_RELEASE_20261030.json. The candidate requires its
+own full check, actual EN/ES dark/light360/390/820/1440 browser/source review, and
+all fresh exact-head master CI before expected-head merge. Master automatically
+deploys: verify exact deployed source/Worker and public HTTPS before any manual
+fallback. Preserve approved335source3d87/Worker26e51e72 for rollback; no security
+rollback or repeat Terms SQL. Browser emulation is not a physical Android claim.
 
 ## 2026-10-29 | AkiPassport weekly venue-credential quest preview (candidate, not live)
 

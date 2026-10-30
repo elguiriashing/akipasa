@@ -4790,3 +4790,64 @@ AKIPASA_THEME_FALLBACK_ACCEPTANCE_20261030.json.
 - **Release:** PublicPR337 has separate authorized scope and freshCI gates. Full332
   strictgate unchanged; sourceSQL unapplied, TonightOFF, AkiPals paused. No new
   merge/deploy/customer/paidresource operation claimed by this entry.
+
+## 2026-10-30 | Finished public screens for the owner-authorized staged release
+
+- **Authority/base:** Alex explicitly asks finished independently tested screens
+  live before the full overhaul. Isolated candidate starts from actual live335
+  master3d87eb7; #332 stays separate/draft and retains its full90-route strict gate.
+- **Public behavior:** Community home now renders the truthful editorial landing
+  instead of redirecting to Creators; public Creator navigation remains available
+  and links to the new Roadmap. Roadmap/root redirect, public directory/profile/
+  safe alias, legal/credits and HQ entry presentation are included. Existing public
+  data reads/field contracts, AkiHQ/AkiBusiness separation and actual future-event
+  supply are preserved; no fake production profiles/events/social/XP are created.
+- **Isolation:** Protected Community body is byte-identical after requireUser.
+  Home/Login/Passport/AppShell/search/auth/actions/privateStudio/config/middleware/
+  package files remain master bytes. Legal/roadmap stylesheet selectors are local,
+  Creator styles require a new public-only wrapper, Community uses its hashed CSS
+  module. No full AppShell/shared1765CSS, private workflow, waitlistAPI, migration,
+  RLS, billing, consent/version, OAuth/provider or production customer changes.
+- **Proof:**93focused tests pass. Actual initial Next run passed45/46; the remaining
+  unchanged Auth assertion expected the Google form that the local build's flag
+  omitted (existing CI sets it true). No Auth code/assertion weakened; final build
+  must match that CI flag. Actual screenshots exposed missing Creator light mode
+  and singular-count wording, both fixed within the public scope before release.
+  New browser tests cover ENES/themes/four widths, upper/lower content, image decode,
+  native Roadmap return, public aliases/404, HQ external boundaries and unchanged
+  protected guest returns. Final fullcheck/browser/exactCI/review remain mandatory.
+- **Rollback/publication:** Expected-head merge only after genuine candidate
+  verification; master automatically publishes Cloudflare. Verify exact source/
+  Worker/HTTPS, do not duplicate manual deployment. Retain335Worker26e51e72/source
+  3d87; UI revert requires no data rollback or client-terms privilege change. This
+  entry does not claim merge, deployment, full-overhaul or physical-device success.
+
+## 2026-10-30 | Live public337, reconciliation and proven Business/Admin visual repairs
+
+- **Production:** Approved isolated337 exact2506 passed6workflows, mergedc51cba9,
+  automaticCF980f4d74 at100%, exactsource/tree/rollbackverified.22+12anonymous
+  HTTPSbrowserreads pass; Close-only privacy UI proved savedstorage unchanged.
+  No SQL, realcustomer, consentchoice, billing or duplicate deployment mutation.
+- **Normal integration:** ReconcileMasterc51 into332, preserve stronger main
+  assertions/shardaggregate and all artifacts, addpublicstyles/URLassertions.
+  Both Creatorpublic wrappers retain mainmodule and publicscopedclass; existing
+  privatequeries/actions/guardlogic remain main. Fresh combinedtests required.
+- **Business:** ScopedAkiBusiness hostsubmit flex-basis:auto/min48px fixes actual
+  160pxSave; lightheading/eyebrow semanticgoldcontrast4.95.160maintainedstates,
+  144nativeRetry,16nativeSave/3point hit and88contrast checks pass. No navigation
+  patch for incompletefixture shell, no productbranding/auth/action/data change.
+- **Admin:** AchievementCSSonly existingsemantic palette fixes navyrow/darktext
+  onlight.24actualpage/layoutbrowsercases,36contrast>=6.05,12nativeEnter pass.
+  Portablemaintainedrunner registered in existingrequiredtabletjob+artifact.
+  Geometry, roles, handlers, forms and queries unchanged; no provider/device proof
+  inferred from syntheticreadonly adapters. Full332strictgate remains unchanged.
+
+- **Native privacy trigger:** Actualproduction EN/ES360/390 legacydock covered
+  nativeTab/pointer privacytrigger. Legacyonlysafe-area padding/scrollmargin now
+  excludescanonicaldock/Map/Auth/Passport/ownerfocus. Existingmaincanonical7rem
+  padding alreadyclearedpointer but nativeTab scrolledbackbeneathdock; ordinary
+  canonicaltrigger nowalsohas scrollmargin only. ExistingClose remains no-choice
+  dismiss; no savedconsent/permission/security change. Eight maintained realNext
+  cases assert actualvisible dock, wholebutton/center hit/nativeTab/storage
+  unchanged and prohibitPOST. Ephemeral2canonical+8legacy proof passes; final
+  compiledsuite is required, originaloldbuild8failures retained as failures.

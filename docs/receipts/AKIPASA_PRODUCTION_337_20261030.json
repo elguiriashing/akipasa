@@ -1,0 +1,190 @@
+{
+  "pullRequest": 337,
+  "testedHead": "2506e48140ff27c6f7e94c07d9d34813bca3e5a9",
+  "mergeSource": "c51cba991292eb8759e0bcea73f03b2d0408cb64",
+  "worker": "980f4d74-9dca-42be-b096-03979c749e63",
+  "deployment": "1ae15c63-319a-464f-b124-6225f629b8c1",
+  "merged": true,
+  "deployed": true,
+  "productionTrafficPercent": 100,
+  "deploymentMethod": "Existing automatic master trigger, no duplicate/manual deployment",
+  "independentCloudflareProof": {
+    "reviewer": "public_release_source_review",
+    "readOnly": true,
+    "verifiedAt": "2026-10-30T23:18:59.887Z",
+    "repo": "elguiriashing/akipasa",
+    "pr": 337,
+    "reviewedHead": "2506e48140ff27c6f7e94c07d9d34813bca3e5a9",
+    "mergeCommit": "c51cba991292eb8759e0bcea73f03b2d0408cb64",
+    "testedTree": "de1ac61353c022dd023851fd43308f9ea3816838",
+    "mergeTree": "de1ac61353c022dd023851fd43308f9ea3816838",
+    "mergeTreeEqualsTestedHead": true,
+    "accountId": "501bc9434d8ae555a6ac984a26dd2725",
+    "scriptName": "akipasa",
+    "scriptTag": "ddd52cc0b72240fdb04068b82b3326f2",
+    "build": {
+      "uuid": "4d042726-5a25-4a30-ad65-07abc865a860",
+      "status": "stopped",
+      "outcome": "success",
+      "started": "2026-10-30T23:15:55.151Z",
+      "finished": "2026-10-30T23:18:37.838Z",
+      "branch": "master",
+      "commit": "c51cba991292eb8759e0bcea73f03b2d0408cb64",
+      "source": "push_event",
+      "command": "npm run build:cloudflare",
+      "deployCommand": "npx wrangler deploy --keep-vars"
+    },
+    "deployment": {
+      "id": "1ae15c63-319a-464f-b124-6225f629b8c1",
+      "created_on": "2026-10-30T23:18:23.294054Z",
+      "versions": [
+        {
+          "version_id": "980f4d74-9dca-42be-b096-03979c749e63",
+          "percentage": 100
+        }
+      ]
+    },
+    "newVersion": {
+      "id": "980f4d74-9dca-42be-b096-03979c749e63",
+      "number": 2898,
+      "metadata": {
+        "created_on": "2026-10-30T23:18:19.526279Z",
+        "source": "wrangler",
+        "author_id": "7fdf41548c6022ed6c392bde11a12532",
+        "author_email": "alexashing1@gmail.com",
+        "has_preview": false
+      },
+      "annotations": {
+        "workers/triggered_by": "version_upload"
+      }
+    },
+    "versionToBuildRead": {
+      "success": true,
+      "version": "980f4d74-9dca-42be-b096-03979c749e63",
+      "build": "4d042726-5a25-4a30-ad65-07abc865a860",
+      "source": "c51cba991292eb8759e0bcea73f03b2d0408cb64"
+    },
+    "rollback": {
+      "retained": true,
+      "readStatus": 200,
+      "version": "26e51e72-bb1e-49e9-a307-243e0203ef8d",
+      "source": "3d87eb7c995fbd0947cb25a771a43376d9462645",
+      "executed": false
+    },
+    "manualDeploymentInvoked": false,
+    "publicHttpsSmoke": "Root separately verifies actual public browser responses; this receipt is source/deployment identity only."
+  },
+  "exactHeadCI": {
+    "pr": 337,
+    "reviewedHead": "2506e48140ff27c6f7e94c07d9d34813bca3e5a9",
+    "priorBase": "3d87eb7c995fbd0947cb25a771a43376d9462645",
+    "mergedMaster": "c51cba991292eb8759e0bcea73f03b2d0408cb64",
+    "workflowsPassed": 6,
+    "runs": [
+      {
+        "conclusion": "success",
+        "databaseId": 41141732088,
+        "headSha": "2506e48140ff27c6f7e94c07d9d34813bca3e5a9",
+        "status": "completed",
+        "url": "https://github.com/elguiriashing/akipasa/actions/runs/41141732088",
+        "workflowName": "AkiPasa contract gate"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 41141732020,
+        "headSha": "2506e48140ff27c6f7e94c07d9d34813bca3e5a9",
+        "status": "completed",
+        "url": "https://github.com/elguiriashing/akipasa/actions/runs/41141732020",
+        "workflowName": "Format master documentation PR"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 41141731963,
+        "headSha": "2506e48140ff27c6f7e94c07d9d34813bca3e5a9",
+        "status": "completed",
+        "url": "https://github.com/elguiriashing/akipasa/actions/runs/41141731963",
+        "workflowName": "Booking browser acceptance"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 41141731965,
+        "headSha": "2506e48140ff27c6f7e94c07d9d34813bca3e5a9",
+        "status": "completed",
+        "url": "https://github.com/elguiriashing/akipasa/actions/runs/41141731965",
+        "workflowName": "AkiSuite tablet acceptance"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 41141731985,
+        "headSha": "2506e48140ff27c6f7e94c07d9d34813bca3e5a9",
+        "status": "completed",
+        "url": "https://github.com/elguiriashing/akipasa/actions/runs/41141731985",
+        "workflowName": "Verify public AkiSuite app"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 41141731984,
+        "headSha": "2506e48140ff27c6f7e94c07d9d34813bca3e5a9",
+        "status": "completed",
+        "url": "https://github.com/elguiriashing/akipasa/actions/runs/41141731984",
+        "workflowName": "Account and public UI acceptance"
+      }
+    ],
+    "publicBrowser": {
+      "passed": 272,
+      "conditionalSkipped": 29,
+      "failed": 0,
+      "job": 124357376451
+    },
+    "accountBrowser": {
+      "passed": 310,
+      "selector": 12,
+      "job": 124357376189
+    },
+    "fullNpmCheckAndCloudflareBuildCI": "success job124357376019; fullsavedlog",
+    "reviewThreads": 0,
+    "reviews": 0,
+    "approvalClaim": "None; explicit owner staged release authorization handled by root",
+    "conditionalJobSkip": "site-regression existing condition; not counted passed",
+    "sourceComparison": "/workspace/akipasa-main-checkpoints/public337-2506e48-merge-checkout-source-comparison.json",
+    "mergedTreeEquivalence": "/workspace/akipasa-main-checkpoints/public337-merged-master-c51cba9-source-comparison.json",
+    "tree": "de1ac61353c022dd023851fd43308f9ea3816838",
+    "nonproductionCloudflare": "/workspace/akipasa-main-checkpoints/cloudflare-readonly-public337-2506e48-20261030.json",
+    "screenArtifact": {
+      "id": 13019971959,
+      "name": "finished-public-screen-evidence",
+      "bytes": 266373222,
+      "declaredDigest": "0a3550304ea4dd56df9619081c44c3d7cc1f08aea64c1a195e80a474b8eb8210",
+      "indexOnly": "/workspace/akipasa-main-checkpoints/ci-public337-2506e48-index/selected-account-receipt.json",
+      "archiveDigestVerified": false
+    },
+    "predecessorFailurePreserved": "/workspace/akipasa-main-checkpoints/public337-e99f9b2-job-124351158283-FAILED.log",
+    "deployment": "Root monitoring actual automatic master deployment separately; no success inferred from merge",
+    "agentActions": "Read-only; no merge/deploy/resources/SQL/source writes."
+  },
+  "actualBrowserSmoke": {
+    "initialAnonymousReads": 22,
+    "afterCloseOnlyReads": 12,
+    "allFinalHttp200": true,
+    "horizontalOverflow": false,
+    "uncaughtPageErrors": 0,
+    "consentChoicesOrSavedPrivacyChanged": false,
+    "afterDismissStorageChecksAllEqual": true,
+    "physicalAndroid": false,
+    "actualScreenshotsViewed": [
+      "en-dark-390--en-community-upper.png",
+      "en-dark-390--en-community-lower.png",
+      "en-dark-390--en-auth-upper.png",
+      "es-light-1440--es-community-creators-upper.png",
+      "es-light-1440--es-roadmap-lower.png",
+      "es-light-1440--es-passports-upper.png"
+    ],
+    "limits": "Anonymous reads/guest boundaries only, no actual sign-in/private writes. Original screenshots retain untouched initial privacy panel; follow-up uses existing Close, proven storage unchanged. Console observations retained: intentional blocked non-GET requests and one inherited Home cross-domain prefetch CSP warning; not a zero-console claim. Current Master navy footer and possible mobile Privacy trigger overlap are under separate actual geometry review; no broad AppShell change was included in this public release.",
+    "inheritedPrivacyTriggerFinding": "ActualEN/ES360/390 native geometry review confirms legacy dock intercepts Privacychoices center; nativeTab reaches but remains obscured. Consent/storage unchanged. Mainnewdock has existing clearance; scoped legacy-dock presentation repair is a subsequent batch, no consent logic change."
+  },
+  "rollbackRetainedWorker": "26e51e72-bb1e-49e9-a307-243e0203ef8d",
+  "full332ReleaseApproved": false,
+  "mainRouteAccepted": 49,
+  "mainRoutePending": 41,
+  "fallbackAccepted": 6
+}

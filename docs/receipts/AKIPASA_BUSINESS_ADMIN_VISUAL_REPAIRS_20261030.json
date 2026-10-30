@@ -1,0 +1,120 @@
+{
+  "business": {
+    "completedAt": "2026-10-30T23:21:05.680455+00:00",
+    "owner": "Codex mobility_evidence_finish, exclusive two-file delegation from root",
+    "baseBeforeWorkingChanges": "4c4ab884a670bc6ba77295de71e5aa862a400ae0",
+    "sourceState": "Root-owned master reconciliation plus explicitly authorized uncommitted two-file scoped repair; final published SHA remains root responsibility.",
+    "trackedFilesChanged": [
+      "src/app/portal-unity.css",
+      "scripts/test-business-home-read-browser.mjs"
+    ],
+    "ownedFileHashes": {
+      "src/app/portal-unity.css": "a7cf5e13a0118a4cdf367ca91ad8626e1670d59eb0ab9bdaf0bf0f4a0572778a",
+      "scripts/test-business-home-read-browser.mjs": "88ed6e5aafcbf66724855a3e374467bfb18ff073d2f8b4d9ce68db12142ed403"
+    },
+    "changes": [
+      "AkiBusiness focused-form submit flex-basis:auto/min-height48px;160px accidental mobile/tablet height removed without changing own brand color or actions.",
+      "Only light AkiBusiness workspace/event eyebrow uses #8a5a00 for readable contrast.",
+      "Retain all160 original contexts and assertions; add16 nativeTab/threepoint Save geometry checks and88 conservative computed-text contrast checks."
+    ],
+    "tests": {
+      "command": "BOOKING_BROWSER_PATH=/home/agent/.cache/ms-playwright/chromium-1228/chrome-linux64/chrome node scripts/test-business-home-read-browser.mjs",
+      "exit": 0,
+      "passedCases": 160,
+      "nativeRetryRecoveries": 144,
+      "saveNativeTabThreePointContexts": 16,
+      "saveMeasuredHeights": [48],
+      "contrastLabelsChecked": 88,
+      "conservativeMinimumContrast": 4.9510064344510925,
+      "externalRequests": [],
+      "pageErrors": [],
+      "fixtureActions": 0,
+      "assertionsRemoved": 0,
+      "contextsRemoved": 0,
+      "scopedPrettier": "PASS after formatting both owned files",
+      "scopedEslint": "PASS",
+      "gitDiffCheck": "PASS",
+      "resultsPath": "/workspace/akipasa-main-checkpoints/business-family-b7-readonly-review-20261030/maintained160-final/evidence.json",
+      "resultsSha256": "dfb4dd6e1c79f003abb5f490bfa8e65a2408fda029650b56d0842a2813ab6e38",
+      "log": "/tmp/akipasa-business-controls-maintained160-20261030.log",
+      "logSha256": "e99e4573e19899903d4ee6fb73cb6951fa040eca25ba781beca8e6c5c0738436",
+      "sourceHashesVerifiedAfterRun": {
+        "src/app/[locale]/business/page.tsx": "9a516f2516ba9faca39e47b201aff550b2b9067d6f4c087157257c3ad0870e88",
+        "src/components/BusinessHome.tsx": "ea4ec7bad300389c438c93ac9d9f1c5bc177578e6edf6a983f4677f7b59ef5ce",
+        "src/components/BusinessGrowthOverview.tsx": "264487b1c7dc4014b5655bf8c4f2e8ec109057e5fbba8d086d65661cf35198fc",
+        "src/components/PasaSharedSurfaces.css": "e6335b16f87d65d3ba6d64212343678d4a5db25662b7e75cecc3122ef4e26fa6",
+        "src/components/BrandLogo.tsx": "04f2de22ee6163137aaedcde12a080bfe74bcbda6e6ff47aec5249fb3995b328",
+        "public/brand/pasa-2026-traced.svg": "013f77b49e0633a9bf5254dfefda3421d5e174dfe6ab38743bf0109ca4ea9f5a",
+        "tests/fixtures/business-home-read-state.ts": "8a24b64d793bd40bcbd731a4648e27fecaef4169326867220e8adda16ffb71b0",
+        "scripts/test-business-home-read-browser.mjs": "88ed6e5aafcbf66724855a3e374467bfb18ff073d2f8b4d9ce68db12142ed403",
+        "/workspace/akipasa/src/app/globals.css": "53e2f4b7dec5fa5469e328d81ee0f2773f06d4998967e0dd47d58e9d54c62402",
+        "/workspace/akipasa/src/app/compact-app.css": "27a788fe1172acd6ff1e9f764a2790e63c345fb3090008ab46e12e372dca892c",
+        "/workspace/akipasa/src/app/brand.css": "ef68eb546410c4af273e06e6f5ed80c456c6507599f710273efaf2671268dd24",
+        "/workspace/akipasa/src/app/appearance.css": "21c3d1bb922511fac75f6f55fc31c3a23a73eeb894e9a0be9c322cfcdd63b8e1",
+        "/workspace/akipasa/src/app/tablet-responsive.css": "60f09d70e2c4b53d0d8dd8f6aca9b6b33a8841bfcc87405ebb74214272308737",
+        "/workspace/akipasa/src/app/portal-unity.css": "a7cf5e13a0118a4cdf367ca91ad8626e1670d59eb0ab9bdaf0bf0f4a0572778a"
+      }
+    },
+    "screenshotsInspected": [
+      {
+        "path": "/workspace/akipasa-main-checkpoints/business-family-b7-readonly-review-20261030/maintained160-final/empty-en-dark-360.png",
+        "sha256": "da2f06afd0bbfb74d723615dfd1aac87bcc707e106690a0d9e0b1bfe69367299"
+      },
+      {
+        "path": "/workspace/akipasa-main-checkpoints/business-family-b7-readonly-review-20261030/maintained160-final/empty-es-light-820.png",
+        "sha256": "fa9d4f1e49aa842341d97b7c9f5c632f69dce55bc9126c2a476aeee0e8567f86"
+      },
+      {
+        "path": "/workspace/akipasa-main-checkpoints/business-family-b7-readonly-review-20261030/maintained160-final/managed-events-es-light-1440.png",
+        "sha256": "f064f6f1f497794e41e1b1dfcb6104ec73452baaa199b55c4c5f7c656fb5a61e"
+      },
+      {
+        "path": "/workspace/akipasa-main-checkpoints/business-family-b7-readonly-review-20261030/maintained160-final/profiles-es-light-1440.png",
+        "sha256": "7c94c880856fb21bc35a220a3e3014a4ff24b1f60422259bdbb4f4ea34c711ca"
+      }
+    ],
+    "beforeEvidencePreserved": "Fresh hosted b7 screenshots in ci-b7dda61-business-home-review and outside candidate before screenshots remain untouched. Earlier first-mobile-only proposal failures and diagnostic logs remain preserved.",
+    "limits": [
+      "Standalone actual route with existing disposable adapters; not actual Next/full BusinessHeader/AppShell, realAuth/RLS/actions/tenant/payment/provider or physical Android certification.",
+      "No runtime nav repair: fixture lacks real BusinessHeader and its reserved sticky topbar offset, so heading overlap not proven as a real-host defect.",
+      "No source commit/PR/matrix acceptance/deployment/SQL/resource change by this agent.",
+      "Full required root checks, documentation and exact final-head CI remain root integration tasks."
+    ]
+  },
+  "admin": {
+    "state": "implemented-tested-not-accepted-not-merged-not-deployed",
+    "runtimeFile": "/workspace/akipasa/src/app/[locale]/admin/achievements/achievements.module.css",
+    "sha256": "a35949aefb5e37fd03795b1bc9a8ca73934f104ab592057b10c36d71d490c3cc",
+    "reviewer": "canonical_plan responsible tester and CSS implementation owner",
+    "browserContexts": 24,
+    "screenshots": 48,
+    "contrastMeasurements": 36,
+    "minimumMeasuredContrast": 6.059853841655164,
+    "nativeEnterOpenedVenueDisclosures": 12,
+    "browserErrors": 0,
+    "overflowCases": 0,
+    "mutations": 0,
+    "unitTestsPassed": 14,
+    "prettier": "pass",
+    "diffCheck": "pass",
+    "actualNext": false,
+    "realAuthRLSProviderDevice": false,
+    "scope": "Only module toolbar and venue row semantic color tokens; same geometry/native controls/handlers. Existing108context matrix initial fixture corrections retained; no blanket route acceptance.",
+    "sourceBinding": "4c Admin source plus declared single CSS change and independently declared public-only/rootBusiness style integration differences; not fulltreeidentity.",
+    "results": "/workspace/akipasa-main-checkpoints/admin-achievements-palette-after-20261030/results.json",
+    "resultsSha256": "486419e39c6b76ee2ec802301f43d727cde6fd35c5ffa6995d56053e99192f1b",
+    "initialFamilyReview": "/workspace/akipasa-main-checkpoints/admin18-readonly-final-20261030.json",
+    "beforeImage": "/workspace/akipasa-main-checkpoints/admin18-readonly-20261030/es-light-1440-achievements-venues-ready-lower.png",
+    "afterImage": "/workspace/akipasa-main-checkpoints/admin-achievements-palette-after-20261030/es-light-1440-achievements-venues-ready-lower.png"
+  },
+  "externalAdmin18QA": {
+    "receiptPath": "/workspace/akipasa-main-checkpoints/admin18-readonly-final-20261030.json",
+    "renderedContexts": 104,
+    "renderedImages": 208,
+    "missingRecordDenialProbes": 4,
+    "limitations": "Explicit synthetic read-only actual-component adapters, not actual Auth/RLS/provider/fullrelease approval. Fixture DTO and locator failures retained separately. New24 maintained portable runner is the regression for the actual discovered palette defect."
+  },
+  "formalRouteAcceptanceAdded": 0,
+  "fullCombinedSourceValidation": "Required after normalproductionmerge and all scopedfixes freeze",
+  "deployed": false
+}

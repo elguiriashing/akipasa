@@ -38,6 +38,25 @@ overhaul in #332 and release when clear; Community #336 was closed unmerged as
 incorporated. The live Worker above is the rollback reference for a future full
 release. Keep #332 draft until its actual remaining gates pass.
 
+## Owner-authorized finished public release — 30 October 2026
+
+Alex explicitly authorized independent finished public screens live for investor
+review before the full overhaul. PR337 testedhead2506e48140ff27c6f7e94c07d9d34813bca3e5a9
+passedall6workflows and independent source/visual review, then expected-headmerged
+as c51cba991292eb8759e0bcea73f03b2d0408cb64. Automatic Cloudflare publication serves
+Worker980f4d74-9dca-42be-b096-03979c749e63 at100%; tested and merged trees identical.
+22initial+12Close-only anonymous EN/ES realbrowserHTTPS reads passed; unchanged
+savedprivacy verified. No new physical-device/private-provider claim. Production
+receipt records precise console observations and inherited footer/privacy-button
+spacing follow-up. Current legacy-dock geometry repair changes presentation only,
+not permissions, consent choices or security. Previous26e retained for rollback.
+
+This explicit exception covers the isolated Community/publicCreators/Roadmap/legal/
+PhotoCredits/HQ presentation batch only. Full332 stays draft;49individualroute
+reviews and6fallbacks do not waive remaining Auth/RLS/provider/privatewrite/XP/
+device/final-owner requirements or strict audit. No pending Staff/previewSQL, paid
+resource, billing or customer mutation is authorized by the public release.
+
 ## Shared visual contract
 
 All AkiPasa consumer pages use `AppShell` and its canonical `PasaBottomDock` (Home / Map / Check-in / Community / Profile), `LaunchRibbon` and global visual tokens. Authenticated Account, Admin and Staff subpages reuse the existing `WorkspaceShell` and `PasaSharedSurfaces.css` rather than copying new menus, navbars or cards per page. Event and venue details use the existing Spotlight templates and tracked actions. No change is allowed to check-in proof, rewards ledger, permission logic, billing, RLS, consent or age gates without separate verification.

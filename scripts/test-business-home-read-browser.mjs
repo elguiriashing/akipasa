@@ -173,6 +173,80 @@ let browser;
 const cases = [],
   external = [],
   pageErrors = [];
+
+async function businessEyebrowContrast(element) {
+  const paint = await element.evaluate((node) => {
+    const paints = [];
+    for (let current = node; current; current = current.parentElement) {
+      const style = getComputedStyle(current);
+      paints.push({
+        color: style.backgroundColor,
+        image: style.backgroundImage,
+      });
+    }
+    return {
+      foreground: getComputedStyle(node).color,
+      paints: paints.reverse(),
+    };
+  });
+  const rgba = (value) => {
+    const parts = value.match(/[\d.]+/g).map(Number);
+    return [...parts.slice(0, 3), parts[3] ?? 1];
+  };
+  const composite = (foreground, background) =>
+    foreground
+      .slice(0, 3)
+      .map(
+        (channel, index) =>
+          channel * foreground[3] + background[index] * (1 - foreground[3]),
+      );
+  let backgrounds = [[255, 255, 255]];
+  for (const item of paint.paints) {
+    backgrounds = backgrounds.map((background) =>
+      composite(rgba(item.color), background),
+    );
+    const stops = [...item.image.matchAll(/rgba?\([^)]+\)/g)].map((match) =>
+      rgba(match[0]),
+    );
+    backgrounds = backgrounds.flatMap((background) => [
+      background,
+      ...stops.map((stop) => composite(stop, background)),
+    ]);
+    backgrounds = [
+      [0, 1, 2].map((index) =>
+        Math.min(...backgrounds.map((background) => background[index])),
+      ),
+      [0, 1, 2].map((index) =>
+        Math.max(...backgrounds.map((background) => background[index])),
+      ),
+    ];
+  }
+  const luminance = (color) =>
+    color
+      .map((channel) => {
+        const value = channel / 255;
+        return value <= 0.04045
+          ? value / 12.92
+          : ((value + 0.055) / 1.055) ** 2.4;
+      })
+      .reduce(
+        (sum, value, index) => sum + value * [0.2126, 0.7152, 0.0722][index],
+        0,
+      );
+  return Math.min(
+    ...backgrounds.map((background) => {
+      const foreground = luminance(
+        composite(rgba(paint.foreground), background),
+      );
+      const base = luminance(background);
+      return (
+        (Math.max(foreground, base) + 0.05) /
+        (Math.min(foreground, base) + 0.05)
+      );
+    }),
+  );
+}
+
 const scenarios = [
   ["loyalty_programs", "loyalty", "loyalty"],
   ["reward_redemptions", "loyalty", "redemptions"],
@@ -382,6 +456,59 @@ try {
             await expect(page.locator(".akibusiness-claim-form")).toHaveCount(
               0,
             );
+          let programmeControl;
+          if (key === "empty") {
+            const save = page.getByRole("button", {
+              name: es ? "Guardar programa" : "Save programme",
+              exact: true,
+            });
+            programmeControl = await save.boundingBox();
+            expect(programmeControl.height).toBeGreaterThanOrEqual(48);
+            expect(programmeControl.height).toBeLessThanOrEqual(80);
+            let nativeFocused = false;
+            for (let step = 0; step < 50; step++) {
+              await page.keyboard.press("Tab");
+              if (
+                await save.evaluate(
+                  (button) => button === document.activeElement,
+                )
+              ) {
+                nativeFocused = true;
+                break;
+              }
+            }
+            expect(nativeFocused).toBe(true);
+            const hits = await save.evaluate((button) => {
+              const bounds = button.getBoundingClientRect();
+              return [0.2, 0.5, 0.8].map((fraction) => {
+                const target = document.elementFromPoint(
+                  bounds.left + bounds.width * fraction,
+                  bounds.top + bounds.height / 2,
+                );
+                return (
+                  !!target && (target === button || button.contains(target))
+                );
+              });
+            });
+            expect(hits).toEqual([true, true, true]);
+            programmeControl = { ...programmeControl, nativeFocused, hits };
+          }
+          const eyebrowContrasts = [];
+          if (theme === "light") {
+            for (const label of await page
+              .locator(
+                ".workspace-page-heading > div > span, .event-studio-hero .eyebrow",
+              )
+              .all()) {
+              if (!(await label.isVisible())) continue;
+              const ratio = await businessEyebrowContrast(label);
+              expect(
+                ratio,
+                "Business eyebrow conservative text contrast",
+              ).toBeGreaterThanOrEqual(4.5);
+              eyebrowContrasts.push(ratio);
+            }
+          }
           const bounds = await page.evaluate(() => ({
             width: document.documentElement.clientWidth,
             scroll: document.documentElement.scrollWidth,
@@ -438,6 +565,8 @@ try {
             screenshot,
             retryRecovered: key !== "empty",
             handoverBounds,
+            programmeControl,
+            eyebrowContrasts,
             loadedImages,
           });
         }
