@@ -1,0 +1,219 @@
+/* Nearby catalogue cards contain only authoritative listing metadata.
+ * Abstract lighting is decorative, never a venue photo or availability claim. */
+.directory {
+  min-width: 0;
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+  scroll-margin-top: 6rem;
+}
+
+.directory .heading {
+  align-items: center;
+  margin-bottom: 0.55rem;
+  gap: 1rem;
+}
+
+.heading > div {
+  min-width: 0;
+}
+
+.heading h2 {
+  margin: 0.35rem 0 0;
+  font-size: clamp(1.25rem, 2.5vw, 1.8rem);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+
+.eyebrow {
+  color: #a9470e;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+:global(html:not([data-theme="light"])) .eyebrow {
+  color: #ffac79;
+}
+
+.intro {
+  max-width: 48ch;
+  margin: 0 0 1.25rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.directory .grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 0.75rem;
+}
+
+.directory .grid .card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+  min-width: 0;
+  min-height: 230px;
+  margin: 0;
+  padding: 1rem;
+  overflow: hidden;
+  border: 1px solid #43403b;
+  border-radius: 1.15rem;
+  background:
+    radial-gradient(ellipse at 115% -10%, #ff762822, transparent 65%), #111416;
+  color: #faf7f2;
+  text-decoration: none;
+  box-shadow: 0 8px 24px #00000014;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.directory .grid .card:nth-child(3n + 2) {
+  background:
+    radial-gradient(ellipse at 105% -15%, #eaa36622, transparent 65%), #111416;
+}
+
+.directory .grid .card:hover {
+  border-color: #ff9b62;
+  box-shadow: 0 10px 26px #00000026;
+}
+
+.directory .grid .card:focus-visible {
+  outline: 3px solid #ff9b62;
+  outline-offset: 3px;
+}
+
+.cardTop {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.mark {
+  display: grid;
+  flex: 0 0 auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border: 1px solid #a7663d;
+  border-radius: 0.85rem;
+  background: #2d211b;
+  color: #ffac79;
+}
+
+.claim {
+  max-width: 10ch;
+  padding-top: 0.2rem;
+  color: #d8c8ba;
+  font-size: 0.65rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.identity {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+  margin-top: auto;
+}
+
+.directory .card h3 {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: #faf7f2;
+  font-size: clamp(1rem, 1.8vw, 1.3rem);
+  font-weight: 750;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.address {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: #c5c8ca;
+  font-size: 0.77rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.cardBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.15rem;
+}
+
+.distance {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #e5d7cb;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.arrow {
+  display: grid;
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid #a7663d;
+  border-radius: 50%;
+  color: #ffac79;
+}
+
+.destination {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+@media (min-width: 700px) {
+  .directory .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .directory .grid .card {
+    min-height: 250px;
+    padding: 1.25rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .directory .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .directory .grid .card {
+    transition: none;
+    transform: none;
+  }
+}

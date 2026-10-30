@@ -2636,3 +2636,59 @@ This is a concrete staged-release proposal, not approval to bypass PR332's
 90-route gate. Alex must explicitly approve changing the original single-release
 boundary before this separate batch is published. Existing master checks, exact
 reviewed source, production configuration preservation and rollback apply.
+
+## 2026-10-29 | Preserve RPC-only terms acceptance records
+
+Read-only live metadata found direct authenticated UPDATE privileges on both
+profiles.terms_version and terms_accepted_at, despite0022/0033's RPC-only contract.
+Owner RLS and existing BEFORE triggers do not protect those fields. This allows
+own-user acceptance markers to be changed outside the intended server-stamped
+RPC; it does not establish an age/onboarding or cross-account bypass.
+
+The security-only mirrored migration20261029232451 revokes UPDATE on just those
+two columns from PUBLIC/anon/authenticated. It preserves the existing RPC body,
+execution ACL, policies, ordinary editing rights and all stored acceptance rows.
+Preconditions verify RLS, no broad client table UPDATE, and the existing trusted
+owner RPC's availability; postconditions ensure effective client denial and
+continued RPC-owner access. Unsupported/inherited privileges fail atomically.
+This source is prepared for independent review and explicit production approval;
+no live SQL or customer-data change has occurred. The larger overhaul stays draft.
+
+## 2026-10-30 | Unapproved small Home-directory/Passport plus terms-security candidate
+
+A separate review branch starts at immutable892a1948bb739d3ae6e88d091e085e88a940a294
+(the deployed Home/Login source plus the reviewed, unapplied terms-record fix).
+It imports only PassportBook.module.css and the Passport page's existing cover/
+index query admission from overhaul source8f78b33ab07bf60b30530f08391cb943d856ee9f.
+Paper colours stay local to physical book interiors; inherited application-theme
+controls, real city photographs, earned/private progression, chapter navigation,
+motion preferences, XP/check-in/reward authority and server actions remain intact.
+The separately bounded Home directory card diff f489be6..8f78b33 and its scoped
+stylesheet are included; the twelve earlier unshipped Home changes are excluded.
+No shared shell or avatar/retention activation is included.
+The original ninety-route acceptance gate remains unchanged and unfulfilled.
+The earlier Home/Login exception does not authorize this Passport or SQL batch.
+A new explicit owner decision, exact candidate validation and independent source/
+device/provider review remain required before merge, SQL application or release.
+
+Protected real-component captures found inherited metric/header ink unreadable on
+paper, paragraph ink leaking into dark weekly cards, dark inherited badge titles,
+and a2.118:1 light-theme badge placeholder. The Passport-local stylesheet scopes
+paper text to its actual panels and gives the independent dark achievement object
+readable text/placeholder. Synthetic protected component cases assert text and
+placeholder contrast; no progression/read/action authority changes. Before proof
+is retained. These repairs remain subject to the same explicit staged approval.
+
+Measured release-candidate follow-up:820×900 cover access required bounded scroll
+only on the701–850px Passport atlas. Desktop city journal text/control overflow
+required a journal-only paper semantic palette/light native control scheme and
+shrinkable proportional city columns. Photo stamps/interface tokens stay inherited.
+The inherited-interface source test retains its prohibitions, allowing only the
+three exact paper journal mappings once each; actual browser token/contrast/bounds
+checks and two synthetic earned-city cases guard this boundary. No actions, real
+awards, database permissions or shared shells change. Final validation is recorded
+in the concrete release proposal; explicit owner exception remains required.
+
+The release desktop navigation assertion is portable across local/CI origins,
+while still enforcing the same origin, locale path, locality and full destination.
+This is test-only; runtime and terms SQL hashes remain unchanged.

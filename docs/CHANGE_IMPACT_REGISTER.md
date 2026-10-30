@@ -3296,3 +3296,71 @@ Founder notices require the exact server-only `LAUNCH_WAITLIST_FOUNDER_NOTICES_E
   requirement; no acceptance records or CI gates are weakened in this proposal.
 - **Rollback:** Revert this limited source batch or restore the existing verified
   Worker884dda44-e95d-4266-8ce1-d7a4de5c54db. No data/schema rollback necessary.
+
+## 2026-10-29 | Terms-record ACL drift correction (security-only proposal)
+
+- Evidence: live schema/privilege/trigger metadata only, no customer rows or
+  mutation. Authenticated can update both own terms markers; owner RLS and live
+  authority/tier triggers do not prevent it. Existing source reserves these
+  fields to accept_current_terms(text,text).
+- Scope: revoke only two client column-update permissions. No RPC body/execution
+  ACL, row policy, editing field, acceptance row, onboarding, role or billing change.
+- Fail closed: enabledRLS, no broad clienttableUPDATE, trusted tableowner RPC with
+  required privileges; verify effective client denial and RPC availability after.
+- Tests:19actual SQL cases cover observed drift, denial, normal server-stamped
+  RPC, unchanged rows/ACL/policies, idempotence and unsupported-state rollback.
+  Separate real local39Auth/REST,5Next and11security-boundary checks pass.
+- Cross-portal: consumer Terms/OAuth uses the existing RPC; other portal callers
+  must be checked before production. No live application is authorized by this entry.
+- Production/rollback: explicit approval required before any remote application.
+  Guard failures roll back all ACL changes. Do not regrant acceptance-field edits
+  as a cosmetic rollback; keep ordinary profile edits and RPC acceptance working.
+
+## 2026-10-30 | Isolated Home-directory/Passport presentation and terms-security proposal
+
+- Before: deployed39cd9bb Home/Login has the original Passport skin and rejects
+  its own generated cover/index query destinations. Terms client-column protection
+  is separately reviewed at immutable892a194 and has not been applied remotely.
+- Scope: PassportBook.module.css and passports/page.tsx imported from8f78b33,
+  plus only the bounded Home-card diff f489be6..8f78b33 and new scoped CSS;
+  maintained Passport browser/read-recovery regressions accompany them. The base's
+  terms migration/security tests are preserved byte-for-byte; no new SQL mutation.
+- Dependencies: existing PassportBook/CityStamps/domain data, EN/ES query parsing,
+  optionalUser/caller-owned reads, RLS, private collection and real XP/stamp values,
+  existing reduced-motion/sensor preferences and shared app/consent/navigation.
+  No shared shell, API, action, grants, analytics or billing behaviour changes.
+- Evidence: validation results and honest fixture/device limits are recorded in
+  AKIPASA_PASSPORT_SECURITY_RELEASE_PROPOSAL_20261030.md after execution. The new
+  candidate requires its own build/browser/CI results; parent-branch results alone
+  do not certify this isolated source. No route acceptance is manufactured.
+- Authority/rollback: new explicit staged-release and terms-SQL approval required.
+  Preserve prior Worker/source. Revert only presentation/query files for visual
+  rollback; do not restore direct client terms edits as a cosmetic rollback.
+
+- Protected visual correction: actual Page/Book fixtures exposed unreadable metric/
+  console child ink and dark nested achievement/weekly paragraphs; broad chapter
+  paragraph overrides are replaced with paper-panel scope. The badge object's
+  semantic landmark supplies its own readable ink and placeholder. The measured
+  light placeholder2.118:1 failure is repaired locally; computed4.5:1 checks cover
+  real metrics, weekly/header/badge text and placeholders. Only the same Passport
+  runtime module changes. Fixture inputs are disposable; no real awards or RLS/
+  device acceptance. Preliminary failed screenshots/tests remain preserved.
+
+Measured release-candidate follow-up:820×900 cover access required bounded scroll
+only on the701–850px Passport atlas. Desktop city journal text/control overflow
+required a journal-only paper semantic palette/light native control scheme and
+shrinkable proportional city columns. Photo stamps/interface tokens stay inherited.
+The inherited-interface source test retains its prohibitions, allowing only the
+three exact paper journal mappings once each; actual browser token/contrast/bounds
+checks and two synthetic earned-city cases guard this boundary. No actions, real
+awards, database permissions or shared shells change. Final validation is recorded
+in the concrete release proposal; explicit owner exception remains required.
+
+## 2026-10-30 | Portable desktop release navigation assertion
+
+- A development-port literal caused a false link failure on another localhost
+  port; the actual destination/path/query were correct.
+- The test derives its running origin while explicitly enforcing same origin,
+  locale path, locality and exact destination. No runtime or SQL change.
+- Two desktop cases pass at CI-default3100; failure/success logs and source hashes
+  are retained. Fresh immutable-head CI remains required.

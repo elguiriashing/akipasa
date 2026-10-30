@@ -186,14 +186,35 @@ describe("appearance readability", () => {
     const passport = postcss.parse(
       read("src/components/PassportBook.module.css"),
     );
+    const paperMappings = {
+      "--passport-ink": "var(--paper-ink)",
+      "--passport-muted": "var(--paper-muted)",
+      "--passport-surface": "var(--paper-panel)",
+    } as const;
+    const found = new Set<string>();
     passport.walkDecls(
-      /^--(ink|muted|surface|surface-alt|passport-ink|passport-surface)$/,
-      () => {
+      /^--(ink|muted|surface|surface-alt|passport-ink|passport-muted|passport-surface)$/,
+      (declaration) => {
+        const parent = declaration.parent;
+        if (
+          declaration.prop in paperMappings &&
+          parent?.type === "rule" &&
+          parent.parent?.type === "root" &&
+          parent.selector === ".page:not(:has(.cover)) .journal" &&
+          declaration.value ===
+            paperMappings[declaration.prop as keyof typeof paperMappings] &&
+          !declaration.important &&
+          !found.has(declaration.prop)
+        ) {
+          found.add(declaration.prop);
+          return;
+        }
         throw new Error(
-          "Passport must inherit appearance instead of defining a dark-only subtree",
+          "Passport must inherit appearance; only the physical paper journal may map its three semantic tokens",
         );
       },
     );
+    expect([...found].sort()).toEqual(Object.keys(paperMappings).sort());
     expect(tokens(":root")["--passport-page"]).not.toEqual(
       tokens('html[data-theme="light"]')["--passport-page"],
     );

@@ -1,0 +1,68 @@
+{
+  "recordedAt": "2026-10-30T01:39:09.159456+00:00",
+  "baselineCommit": "892a1948bb739d3ae6e88d091e085e88a940a294",
+  "testedWorkingTree": true,
+  "sourceDirty": true,
+  "sourceHashes": {
+    "src/app/[locale]/page.tsx": "751a06c4ec9b3a3dc73665ca5d3286934903d9d15532334021b95670a7ed60ce",
+    "src/app/[locale]/home-venues.module.css": "534c059d08b1838e873e905602dc60e6bc74c05f95e97ebccdf93dd9f208ab3e",
+    "src/app/[locale]/passports/page.tsx": "de9e3a07b0a628d31d07c6b1e9574be7f70450f1e95fc6d978a64b15891a378e",
+    "src/components/PassportBook.module.css": "e4b661f8452f5d0aa4310b8849e66689e776f9cb2a7ff29ff216051c17d43dec",
+    "scripts/test-passport-chapter-browser.mjs": "3efee640732fcf7d4b9d107ac3c38ef6d445116a369cb70e93839e3fb7bd0b7b",
+    "tests/e2e/passport-desktop-release.spec.ts": "0ed6f0a7cd4cb8f1f90a2a65c86335070446d66657eb57384ba728c05beecd7b",
+    "tests/owner-console.test.ts": "4b635e5d61afa73def31b688ad1be5382da40e2875b41fe70a269a8e4679475b"
+  },
+  "runtimeFiles": [
+    "src/app/[locale]/page.tsx",
+    "src/app/[locale]/home-venues.module.css",
+    "src/app/[locale]/passports/page.tsx",
+    "src/components/PassportBook.module.css"
+  ],
+  "fullCheck": {
+    "exitCode": 0,
+    "log": "/tmp/akipasa-passport-release-frozen-fullcheck.log",
+    "npmTestVitestAssertions": 2069,
+    "npmTestNodeTests": 82
+  },
+  "actualNextBrowser": {
+    "passed": 58,
+    "log": "/tmp/akipasa-passport-release-final-targeted.log",
+    "explicitDesktopClickRerunPassed": 2,
+    "desktopRerunLog": "/tmp/akipasa-passport-desktop-final-cta.log",
+    "androidLikeViewportMatrixIsNotDesktopUAProof": true
+  },
+  "protectedAdapters": {
+    "passed": 194,
+    "chapterCases": 192,
+    "syntheticEarnedCityCases": 2,
+    "receipt": "test-results/passport-protected-chapters/results.json",
+    "log": "/tmp/akipasa-passport-protected-journal-contained.log"
+  },
+  "termsSQLSha256": "7fe0fa1aa1346cc3877e9693b60a6f1a382f09bf37ebbe33e0bea951b8eeeb75",
+  "accepted": false,
+  "merged": false,
+  "deployed": false,
+  "productionSQLApplied": false,
+  "ownerExceptionApproved": false,
+  "physicalDeviceAcceptance": false,
+  "providerRLSAcceptance": false,
+  "full332RouteAcceptance": 0,
+  "limitations": [
+    "Existing strict332 gate not included in production-based package and remains unchanged on integration branch",
+    "Protected city/chapter reads and identity are disposable adapters, not live private provider proof",
+    "Fixed summary may visually overlap initial desktop bottom viewport; ordinary unforced Explore click scrolls and succeeds",
+    "Hosted exact-head CI and Cloudflare build still required"
+  ],
+  "portableDesktopOriginRegression": {
+    "recordedAt": "2026-10-30T01:49:38.386489+00:00",
+    "baselineCommit": "61bfea5252a3ab9a5ecf926cdc45055ec3ab37e0",
+    "prior58RunDesktopGuardHash": "76f2ccab705b3b0ca7b4bef7201a1d02a59874a966cee9b1b094747bf91f78a2",
+    "currentGuardHash": "0ed6f0a7cd4cb8f1f90a2a65c86335070446d66657eb57384ba728c05beecd7b",
+    "runtimeFilesUnchanged": true,
+    "passed": 2,
+    "testPort": 3100,
+    "log": "/tmp/akipasa-passport-default-port-regression-20261030.log",
+    "logSha256": "502c3793d8c52a927e5bae722131e2444948a953dbf58b386f59a7792a6c97ec",
+    "reason": "Prior test assumed development port3107; actual navigation was correct on3118. Expected origin now comes from the running page while exact same-origin, path, locality and full destination assertions remain."
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "finding": "Existing deployed terms-record column privileges drift from RPC-only source contract",
+  "productionEvidence": "Read-only privilege, owner policy, trigger/function metadata; no customer rows, exploit or mutation",
+  "exposureScope": "Caller-owned terms marker/timestamp integrity; no established age/onboarding/cross-user bypass",
+  "migration": "20261029232451_protect_profile_terms_acceptance_columns.sql",
+  "migrationSha256": "7fe0fa1aa1346cc3877e9693b60a6f1a382f09bf37ebbe33e0bea951b8eeeb75",
+  "sqlTestsPassed": 19,
+  "localActualAuthRestPassed": 39,
+  "localActualNextPassed": 5,
+  "localProfileBoundaryPassed": 11,
+  "sourceAudit": {
+    "akipasaMain": "3a046967d6d162e43f357265b0ecb1d83f98ecf9",
+    "akihq": "ba33054c4df0a40c93192656f0d21ee86cc99693",
+    "incompatibleDirectTermsWritesFound": false,
+    "physicalProviderAcceptance": false
+  },
+  "runtimeAppChanges": false,
+  "packageChanges": false,
+  "productionApplied": false,
+  "productionApproval": "Required for this separate security-only patch; full overhaul approval not waived",
+  "rollback": "Guard failures leave ACL unchanged. Preserve server-stamped RPC and ordinary edits; do not reintroduce direct terms-field writes as UI rollback."
+}
