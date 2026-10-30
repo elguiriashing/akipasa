@@ -2,6 +2,49 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 30 October 10:27 UTC — release reverified; automatic merge approval blocked
+
+Current main implementation head: `b07aa158c26ae450cdfadbd28622bb4a63ad281e`;
+this checkpoint changes documentation only. PR335 reviewed candidate remains
+`79dacc3b0b2ca2685789dc4966576f0cce1f775e`, current master remains
+`39cd9bb42fd858dd54bd9f0d9e79a0504b15a0f2`. All seven exact-head workflows
+were freshly verified successful; no review submissions or unresolved threads.
+PR335 was marked ready for review, but is NOT merged, accepted or deployed.
+
+Alex requested continuing to get everything merged and live. The integration
+owner attempted the exact-head merge with that instruction as authorization.
+Automatic approval review rejected the merge because it triggers production,
+the specific Home/Passport plus terms-security release was considered unapproved,
+and Alex's visual/device sign-off is outstanding. Do not bypass this rejection
+through another tool, Git push, indirect workflow or production SQL. Explicit
+approval of this bounded staged exception and included two-column SQL is pending.
+The full PR332 remains draft; no route statuses or strict gates were changed.
+
+Read-only production verification at 10:25:45 UTC confirmed enabled Profile RLS,
+no broad client table UPDATE, unchanged trusted RPC owner/SECURITY DEFINER,
+authenticated EXECUTE and exact RPC fingerprints:
+`ad5ac02b43c833218be2e826dd380adc` (definition),
+`d1707186c8e5f1577bde2338d7541aec` (ACL). Direct client terms-column UPDATE
+still exists; the guarded repair has NOT been applied. SQL mirror SHA256 remains
+`7fe0fa1aa1346cc3877e9693b60a6f1a382f09bf37ebbe33e0bea951b8eeeb75`.
+Actual master trigger still deploys automatically with wrangler deploy --keep-vars;
+other branches upload versions only. Live Worker remains
+`8199ce83-b416-42d1-9568-9dc167601b6a` at 100%; keep it for UI rollback.
+
+Community work remains locally validated at
+`0ce4d91268b97894f4a50e0b7932a982ad1b36e5`; no competing release was published.
+Full overhaul: 90 routes awaiting genuine acceptance; Tonight off, AkiPals paused.
+Terminal Git fetch failed because the configured proxy was unavailable; current
+master was independently read using the connected GitHub commit API. No proxy,
+authentication, customer data or security configuration was modified.
+
+NEXT EXECUTABLE ACTION: after specific owner approval, recheck PR335 exact head,
+master, CI, live metadata and SQL hash; retry only the reviewed merge through the
+approved tool. If allowed, verify exact automatic deployment before any manual
+path, apply the immutable guarded migration once and verify metadata invariants.
+Never merge/apply334 as a duplicate. No background progress is implied by this
+checkpoint, and no deployment success is claimed.
+
 ## Protected Passport repair validated; isolated PR335 awaiting release checks
 
 Recorded implementation parent8f78b33ab07bf60b30530f08391cb943d856ee9f on
