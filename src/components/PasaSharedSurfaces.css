@@ -1329,6 +1329,27 @@ html[data-theme="light"] .app-shell .pasa-terms-accept-version {
 
 /* Consumer conversion entrypoints. Shared presentation, existing checkout and
  * referral actions remain server-owned and independently gated. */
+/* Local conversion tokens never alter other AppShell routes or sister hosts. */
+.app-shell :is(.pasa-referral-entry, .pasa-membership-page) {
+  --conversion-panel: #111314;
+  --conversion-raised: #1d1e1f;
+  --conversion-edge: #423b33;
+  --conversion-ink: #faf7f3;
+  --conversion-muted: #c8c1b9;
+  --conversion-accent: #ffb17c;
+}
+
+html[data-theme="light"]
+  .app-shell
+  :is(.pasa-referral-entry, .pasa-membership-page) {
+  --conversion-panel: #fffdf9;
+  --conversion-raised: #f3eee7;
+  --conversion-edge: #dacdbd;
+  --conversion-ink: #29231d;
+  --conversion-muted: #62574d;
+  --conversion-accent: #98400d;
+}
+
 .app-shell .pasa-conversion-hero {
   position: relative;
   isolation: isolate;
@@ -1339,14 +1360,14 @@ html[data-theme="light"] .app-shell .pasa-terms-accept-version {
   border-radius: clamp(1.35rem, 2.8vw, 2rem);
   background:
     radial-gradient(circle at 90% 3%, rgba(255, 135, 53, 0.3), transparent 48%),
-    linear-gradient(135deg, #1d2941, #0c1728 83%);
-  color: #f7f9fd;
+    linear-gradient(135deg, #201913, #0d0f10 83%);
+  color: var(--conversion-ink);
   box-shadow: 0 20px 55px rgba(0, 0, 0, 0.18);
 }
 
 .app-shell .pasa-conversion-kicker {
   display: block;
-  color: #ffbf8f;
+  color: var(--conversion-accent);
   font-size: 0.78rem;
   font-weight: 850;
   letter-spacing: 0.12em;
@@ -1356,7 +1377,7 @@ html[data-theme="light"] .app-shell .pasa-terms-accept-version {
 .app-shell .pasa-conversion-hero h1 {
   max-width: 20ch;
   margin-block: 0.7rem 1rem;
-  color: #fff;
+  color: var(--conversion-ink);
   font-size: clamp(2rem, 5vw, 3.85rem);
   font-weight: 850;
   line-height: 1.1;
@@ -1368,7 +1389,7 @@ html[data-theme="light"] .app-shell .pasa-terms-accept-version {
 .app-shell .pasa-conversion-hero p {
   max-width: 66ch;
   margin-block: 0.65rem 1rem;
-  color: #e1e9f4;
+  color: var(--conversion-muted);
   line-height: 1.65;
 }
 
@@ -1389,10 +1410,10 @@ html[data-theme="light"] .app-shell .pasa-terms-accept-version {
   min-width: 0;
   gap: 1rem;
   padding: clamp(1.35rem, 3vw, 2.4rem);
-  border: 1px solid var(--pasa-ui-border);
+  border: 1px solid var(--conversion-edge);
   border-radius: 1.45rem;
-  background: var(--pasa-ui-panel);
-  color: var(--pasa-ui-text);
+  background: var(--conversion-panel);
+  color: var(--conversion-ink);
 }
 
 .app-shell .pasa-conversion-panel h2 {
@@ -1405,7 +1426,7 @@ html[data-theme="light"] .app-shell .pasa-terms-accept-version {
 .app-shell .pasa-conversion-panel p {
   max-width: 68ch;
   margin: 0;
-  color: var(--pasa-ui-subtle);
+  color: var(--conversion-muted);
   line-height: 1.6;
 }
 
@@ -1434,7 +1455,7 @@ html[data-theme="light"] .app-shell .pasa-terms-accept-version {
   display: inline-flex;
   min-height: 48px;
   align-items: center;
-  color: var(--pasa-ui-highlight);
+  color: var(--conversion-accent);
   font-weight: 750;
   text-decoration: underline;
   text-underline-offset: 0.2em;
@@ -1458,7 +1479,7 @@ html[data-theme="light"] .app-shell .pasa-terms-accept-version {
 }
 
 .app-shell .pasa-referral-code-label {
-  color: var(--pasa-ui-subtle);
+  color: var(--conversion-muted);
   font-weight: 750;
 }
 
@@ -1466,10 +1487,10 @@ html[data-theme="light"] .app-shell .pasa-terms-accept-version {
   width: fit-content;
   max-width: 100%;
   padding: 0.7rem 1.1rem;
-  border: 1px solid var(--pasa-ui-border);
+  border: 1px solid var(--conversion-edge);
   border-radius: 0.85rem;
-  background: var(--pasa-ui-elevated);
-  color: var(--pasa-ui-text);
+  background: var(--conversion-raised);
+  color: var(--conversion-ink);
   font-size: clamp(1.25rem, 3vw, 2rem);
   letter-spacing: 0.08em;
   overflow-wrap: anywhere;
@@ -1514,15 +1535,15 @@ html[data-theme="light"] .app-shell .pasa-conversion-hero {
       transparent 49%
     ),
     #fff9f1;
-  color: #1d2b3c;
+  color: var(--conversion-ink);
 }
 
 html[data-theme="light"] .app-shell .pasa-conversion-hero h1 {
-  color: #1d2b3c;
+  color: var(--conversion-ink);
 }
 
 html[data-theme="light"] .app-shell .pasa-conversion-hero p {
-  color: #415167;
+  color: var(--conversion-muted);
 }
 
 html[data-theme="light"] .app-shell .pasa-conversion-kicker,

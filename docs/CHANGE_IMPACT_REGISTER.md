@@ -4589,3 +4589,39 @@ preserved. Full integrated check and published exact-head CI are recorded in
 `docs/receipts/AKIPASA_COMPATIBILITY_RETURNS_20261030.json`; never treat local
 fixture results as authenticated provider, physical-device or full acceptance.
 No production data/schema changes, merge or deployment occurred.
+
+## 2026-10-30 | Conversion consistency, Account status contrast and usable review evidence
+
+Repair demonstrated navy/purple consumer Membership/Referrals/Subscription cards
+with consumer-only palette variables/adapters. Shared studios/sister products,
+prices and guarded billing actions are untouched;32 HQ comparisons remain pixel
+identical. Fix actual Account light success/error notice contrast1.51:1 with
+scoped darker ink, preserving existing state, messages, fields, actions and dark
+mode. Actual conversion text samples and32 Account notice states meet4.5:1;
+Account minimum6.33:1, conversion minimum4.99:1. No database/API/storage/analytics,
+consent, eligibility, role, private identity, XP or product boundary changes.
+
+Preserve all432 Account browser cases and add32 notice-state cases plus native
+password/sign-out interaction assertions;464 pass. Preserve88 fallback cases and
+add48 native root error/recovery/Admin-shell loading cases;136 pass. The synthetic
+Admin adapter is labeled and not real identity/RLS proof. Preserve60 dedicated
+Spotlight tests and add16 populated Event/date/price/keyboard return/back/404
+cases;76 pass. A test-only follow-up waits for mobile dock or actual desktop
+navigation before screenshots;16 rerun pass with typecheck/lint/format. Synthetic
+fixture events are never inserted into production, and Tonight stays gated off.
+
+Full application check2868Vitest/17groups,140initialNode,193build passes with
+runtime frozen. One test-only post-freeze readiness change has separate native and
+typing proof; fresh exact-head CI is required after publication. Existing full
+public archives exceeded the connector512MiB cap. Additional small named HTTP
+JSON/static screenshot artifacts preserve original archives, assertions, jobs,
+required contexts, permissions and retention. Blocked transport was not bypassed.
+
+Eight individually reviewed Account routes receive c3b5835 source-bound acceptance
+using real hosted Account screenshots/432result records plus lower/state review.
+Total13/90 accepted;77 routes and six fallback sign-offs remain. Later scoped
+conversion/notice selectors do not match the accepted routes' reviewed notices.
+Provider/RLS/payment/device gates remain separate and unapproved. Production and
+all source-only pending SQL remain unchanged. Receipts:
+`AKIPASA_ACCOUNT_RESPONSIBLE_ACCEPTANCE_20261030.json` and
+`AKIPASA_PRESENTATION_FINAL_REPAIRS_20261030.json` under docs/receipts.

@@ -66,6 +66,29 @@ jobs:
           name: public-ui-evidence-${{ matrix.shard }}
           path: test-results
           retention-days: 7
+      # Keep the full archive above; small review packs remain downloadable by
+      # clients that cannot transfer the complete browser/video collection.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: public-http-contracts-${{ matrix.shard }}
+          path: test-results/**/http-contract-result.json
+          if-no-files-found: ignore
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: public-static-review-${{ matrix.shard }}
+          path: |
+            test-results/pasa-legal-*.png
+            test-results/pasa-legal-*.json
+            test-results/pasa-membership-entry-*.png
+            test-results/pasa-referral-entry-*.png
+            test-results/pasa-hq-gateway-*.png
+            test-results/pasa-waitlist-confirm-*.png
+            test-results/pasa-conversion-*.json
+          if-no-files-found: ignore
+          retention-days: 7
 
   # Preserve the original required context: every browser shard must succeed.
   public-ui:

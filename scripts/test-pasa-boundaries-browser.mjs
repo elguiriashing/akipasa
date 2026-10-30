@@ -32,6 +32,20 @@ const sources = [
   "src/app/[locale]/not-found.tsx",
   "src/app/[locale]/error.tsx",
   "src/app/[locale]/admin/loading.tsx",
+  "src/app/[locale]/admin/layout.tsx",
+  "src/app/[locale]/admin/admin-suite.css",
+  "src/app/[locale]/admin/admin-compact.css",
+  "src/components/WorkspaceShell.tsx",
+  "src/lib/roles.ts",
+  "src/app/globals.css",
+  "src/app/discovery-redesign.css",
+  "src/app/aki-app-first.css",
+  "src/app/aki-event-cards.css",
+  "src/app/compact-app.css",
+  "src/app/brand.css",
+  "src/app/appearance.css",
+  "src/app/tablet-responsive.css",
+  "src/app/portal-unity.css",
 ];
 const hashes = {};
 for (const path of sources) {
@@ -93,10 +107,23 @@ await file(
     exclude: ["node_modules"],
   }),
 );
-await file("src/lib/config.ts", `export type Locale='en'|'es';`);
+await file(
+  "postcss.config.mjs",
+  `export default {plugins:{'@tailwindcss/postcss':{}}};`,
+);
+await file(
+  "src/lib/config.ts",
+  `export type Locale='en'|'es';export function isLocale(value:string):value is Locale{return value==='en'||value==='es'}`,
+);
+// Disposable authorization/reads only. The real Admin layout and role predicate
+// execute against this explicit synthetic administrator, never customer data.
+await file(
+  "src/lib/auth.ts",
+  `export async function requireUser(..._args:unknown[]){return {user:{id:'synthetic-admin-boundary-fixture'},supabase:{from(table:string){return {select(..._args:unknown[]){return {eq(..._args:unknown[]){return {async maybeSingle(){return {data:table==='profiles'?{app_role:'administrator'}:null}}}},async in(..._args:unknown[]){return {count:0,data:[]}}}}}}}}}`,
+);
 await file(
   "src/app/layout.tsx",
-  `import{headers}from'next/headers';import{FixtureProvider}from'@/components/FixtureProvider';import './fixture.css';export default async function Root({children}:{children:React.ReactNode}){const h=await headers(),locale=h.get('x-fixture-locale')==='en'?'en':'es',product=h.get('x-fixture-product');return <html lang={locale} data-theme={h.get('x-fixture-theme')==='light'?'light':'dark'}><body data-android-app={/AkiPasaAndroid\\//.test(h.get('user-agent')||'')?'true':undefined}><FixtureProvider locale={locale} product={product}>{children}</FixtureProvider></body></html>}`,
+  `import{headers}from'next/headers';import{FixtureProvider}from'@/components/FixtureProvider';import './globals.css';import './compact-app.css';import './brand.css';import './appearance.css';import './tablet-responsive.css';import './portal-unity.css';import './fixture.css';export default async function Root({children}:{children:React.ReactNode}){const h=await headers(),locale=h.get('x-fixture-locale')==='en'?'en':'es',product=h.get('x-fixture-product');return <html lang={locale} data-theme={h.get('x-fixture-theme')==='light'?'light':'dark'}><body data-android-app={/AkiPasaAndroid\\//.test(h.get('user-agent')||'')?'true':undefined}><FixtureProvider locale={locale} product={product}>{children}</FixtureProvider></body></html>}`,
 );
 await file(
   "src/components/FixtureProvider.tsx",
@@ -116,7 +143,7 @@ await file(
 );
 await file(
   "src/middleware.ts",
-  `import{NextResponse,type NextRequest}from'next/server';export function middleware(request:NextRequest){const headers=new Headers(request.headers);const path=request.nextUrl.pathname.split('/')[1],lang=request.nextUrl.searchParams.get('lang');headers.set('x-fixture-locale',path==='en'||path==='es'?path:headers.get('x-fixture-product')!=='akipasa'&&(lang==='en'||lang==='es')?lang:'es');return NextResponse.next({request:{headers}})}export const config={matcher:['/((?!_next|brand).*)']};`,
+  `import{NextResponse,type NextRequest}from'next/server';export function middleware(request:NextRequest){const headers=new Headers(request.headers);const path=request.nextUrl.pathname.split('/')[1],lang=request.nextUrl.searchParams.get('lang');headers.set('x-fixture-locale',path==='root-failure'?(lang==='en'?'en':'es'):path==='en'||path==='es'?path:headers.get('x-fixture-product')!=='akipasa'&&(lang==='en'||lang==='es')?lang:'es');return NextResponse.next({request:{headers}})}export const config={matcher:['/((?!_next|brand).*)']};`,
 );
 await file(
   "src/app/[locale]/layout.tsx",
@@ -150,11 +177,23 @@ await file(
   "src/app/[locale]/slow/page.tsx",
   `export const dynamic='force-dynamic';export default async function Slow(){await fetch(process.env.BOUNDARY_FIXTURE_BACKEND+'/hold',{cache:'no-store'});return <main className="fixture-content"><h1>Loaded fixture page</h1></main>}`,
 );
+// Top-level failure bypasses [locale]/error.tsx so the copied root error
+// boundary itself performs a native refresh/reset against a held GET read.
+await file(
+  "src/app/root-failure/page.tsx",
+  `export const dynamic='force-dynamic';export default async function Failure(){const response=await fetch(process.env.BOUNDARY_FIXTURE_BACKEND+'/failure',{cache:'no-store'});if((await response.text())==='fail')throw Error('PRIVATE_ROOT_CHILD_ERROR token=secret');return <main className="fixture-content"><h1>Recovered root fixture page</h1></main>}`,
+);
+await file(
+  "src/app/[locale]/admin/slow/page.tsx",
+  `export const dynamic='force-dynamic';export default async function AdminSlow(){await fetch(process.env.BOUNDARY_FIXTURE_BACKEND+'/hold',{cache:'no-store'});return <section data-admin-loaded><h1>Loaded Admin fixture page</h1></section>}`,
+);
+const backendMethods = [];
 let failed = true,
   held = [],
   recovering = false,
   recoveryHeld = [];
 const backend = createServer((req, res) => {
+  backendMethods.push(req.method);
   res.setHeader("Content-Type", "text/plain");
   if (req.url === "/hold") {
     held.push(res);
@@ -274,7 +313,7 @@ try {
             ),
           ).toBe(true);
           const name = `${locale}-${width}-${theme}-${state}.png`;
-          if (state === "loading") {
+          if (state === "loading" || state === "admin-loading") {
             // FontFaceSet.ready waits for the held document to finish even with
             // no web fonts. Capture the actual in-flight pixels via CDP instead.
             expect(await page.evaluate(() => document.fonts.size)).toBe(0);
@@ -381,6 +420,94 @@ try {
         await expect(
           page.getByRole("heading", { name: "Loaded fixture page" }),
         ).toBeVisible();
+        failed = true;
+        await page.goto(`${origin}/root-failure?lang=${locale}`);
+        await expect(
+          page.locator('[data-route-fallback="error"]'),
+        ).toBeVisible();
+        await expect(page.locator("body")).not.toContainText(
+          /PRIVATE_ROOT_CHILD_ERROR|token=secret/,
+        );
+        await expect(page.locator("html")).toHaveAttribute("lang", locale);
+        await expect(
+          page.getByRole("link", {
+            name: locale === "es" ? "Volver al inicio" : "Back to the start",
+            exact: true,
+          }),
+        ).toHaveAttribute("href", `/${locale}`);
+        const rootRetry = page.getByRole("button", {
+          name: locale === "es" ? "Reintentar" : "Try again",
+          exact: true,
+        });
+        await rootRetry.focus();
+        await expect(rootRetry).toBeFocused();
+        await capture("root-error");
+        failed = false;
+        recovering = true;
+        await page.keyboard.press("Enter");
+        await expect(
+          page.getByRole("button", {
+            name: locale === "es" ? "Reintentando…" : "Trying again…",
+            exact: true,
+          }),
+        ).toBeDisabled();
+        await capture("root-retrying");
+        recovering = false;
+        recoveryHeld.splice(0).forEach((response) => response.end("healthy"));
+        await expect(
+          page.getByRole("heading", { name: "Recovered root fixture page" }),
+        ).toBeVisible();
+        await expect(page.locator('[data-route-fallback="error"]')).toHaveCount(
+          0,
+        );
+
+        await page.goto(`${origin}/${locale}/admin/slow`, {
+          waitUntil: "commit",
+        });
+        const adminShell = page.locator("main.admin-workspace");
+        await expect(adminShell).toBeVisible();
+        await expect(adminShell).toHaveAttribute(
+          "aria-label",
+          locale === "es" ? "Administración" : "Administration",
+        );
+        await expect(page.locator("main")).toHaveCount(1);
+        const adminStatus = adminShell.getByRole("status");
+        await expect(adminStatus).toContainText(
+          locale === "es" ? "Cargando página" : "Loading page",
+        );
+        const adminMenu = adminShell.locator(".workspace-mobile-trigger");
+        if (await adminMenu.isVisible()) {
+          await adminMenu.focus();
+          await page.keyboard.press("Enter");
+          await expect(adminMenu).toHaveAttribute("aria-expanded", "true");
+          await expect(
+            adminShell.locator(".workspace-drawer").getByRole("link", {
+              name: locale === "es" ? "Auditoría" : "Audit history",
+              exact: true,
+            }),
+          ).toHaveAttribute("href", `/${locale}/admin/audit`);
+          await page.keyboard.press("Escape");
+          await expect(adminMenu).toHaveAttribute("aria-expanded", "false");
+          await expect(adminMenu).toBeFocused();
+          await expect(adminStatus).toBeVisible();
+        } else {
+          await expect(
+            adminShell.getByRole("link", {
+              name: locale === "es" ? "Auditoría" : "Audit history",
+              exact: true,
+            }),
+          ).toHaveAttribute("href", `/${locale}/admin/audit`);
+        }
+        await capture("admin-loading");
+        held.splice(0).forEach((response) => response.end("ready"));
+        await expect(
+          adminShell.getByRole("heading", {
+            name: "Loaded Admin fixture page",
+          }),
+        ).toBeVisible();
+        await expect(adminStatus).toHaveCount(0);
+        await expect(adminShell).toBeVisible();
+        await expect(page.locator("main")).toHaveCount(1);
         await page.close();
       }
   {
@@ -493,7 +620,14 @@ try {
       });
       await page.close();
     }
+  expect(backendMethods.length).toBeGreaterThan(0);
+  expect(backendMethods.every((method) => method === "GET")).toBe(true);
   const receipt = {
+    syntheticAdministratorOnly: true,
+    realAuthenticatedAdminOrRlsAcceptance: false,
+    backendReadMethods: [...new Set(backendMethods)],
+    nativeRootErrorRecovery: true,
+    nativeAdminShellLoadingRetained: true,
     timestamp: new Date().toISOString(),
     scope:
       "Actual production Next routing/reset/loading with copied real boundary files and public-context fixture layouts. No production routes, provider credentials or data. Full-app/host/native acceptance remains separate.",

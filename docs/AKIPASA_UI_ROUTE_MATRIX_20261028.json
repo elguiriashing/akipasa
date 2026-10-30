@@ -5,18 +5,36 @@
   "routes": {
     "src/app/[locale]/account/activity/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
+      "status": "accepted",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review. Individually accepted by responsible tester at c3b5835 after fresh hosted upper screenshots, full-size lower and actual empty/error/free/pending state review plus maintained functional evidence. Overall real-provider, RLS, payment and device release checks remain separate.",
+      "acceptance": {
+        "reviewer": "Codex community_release_review (responsible tester)",
+        "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549"
+      }
     },
     "src/app/[locale]/account/bookings/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
+      "status": "accepted",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review. Individually accepted by responsible tester at c3b5835 after fresh hosted upper screenshots, full-size lower and actual empty/error/free/pending state review plus maintained functional evidence. Overall real-provider, RLS, payment and device release checks remain separate.",
+      "acceptance": {
+        "reviewer": "Codex community_release_review (responsible tester)",
+        "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549"
+      }
     },
     "src/app/[locale]/account/following/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
+      "status": "accepted",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review. Individually accepted by responsible tester at c3b5835 after fresh hosted upper screenshots, full-size lower and actual empty/error/free/pending state review plus maintained functional evidence. Overall real-provider, RLS, payment and device release checks remain separate.",
+      "acceptance": {
+        "reviewer": "Codex community_release_review (responsible tester)",
+        "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549"
+      }
     },
     "src/app/[locale]/account/membership/page.tsx": {
       "scope": "consumer",
@@ -30,23 +48,47 @@
     },
     "src/app/[locale]/account/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Current shared account presentation retained; obsolete mascot/adventure shortcut copy replaced with 3D avatar/private wardrobe in EN/ES, preserving gated destination. Rendered regression tests pass. Actual final-source visual and physical-device approval remains required; not accepted. Compact personal profile, truthful saved/following/plan, existing bio and real activity destinations implemented; no fake interests/friend/XP data.94focused tests and32isolated responsive page/layout renders passed. Final integrated protected-provider and reviewer/device acceptance pending."
+      "status": "accepted",
+      "note": "Current shared account presentation retained; obsolete mascot/adventure shortcut copy replaced with 3D avatar/private wardrobe in EN/ES, preserving gated destination. Rendered regression tests pass. Actual final-source visual and physical-device approval remains required; not accepted. Compact personal profile, truthful saved/following/plan, existing bio and real activity destinations implemented; no fake interests/friend/XP data.94focused tests and32isolated responsive page/layout renders passed. Final integrated protected-provider and reviewer/device acceptance pending. Responsible tester reviewed source-bound hosted AppShell screenshots, full/lower-page states, native focus and actual fixture/function results at c3b5835; route acceptance recorded 30 October. This does not certify overall provider/storage/RLS/device release gates.",
+      "acceptance": {
+        "reviewer": "Codex community_release_review (responsible tester)",
+        "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549"
+      }
     },
     "src/app/[locale]/account/premium/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
+      "status": "accepted",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review. Individually accepted by responsible tester at c3b5835 after fresh hosted upper screenshots, full-size lower and actual empty/error/free/pending state review plus maintained functional evidence. Overall real-provider, RLS, payment and device release checks remain separate.",
+      "acceptance": {
+        "reviewer": "Codex community_release_review (responsible tester)",
+        "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549"
+      }
     },
     "src/app/[locale]/account/privacy/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
+      "status": "accepted",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review. Individually accepted by responsible tester at c3b5835 after fresh hosted upper screenshots, full-size lower and actual empty/error/free/pending state review plus maintained functional evidence. Overall real-provider, RLS, payment and device release checks remain separate.",
+      "acceptance": {
+        "reviewer": "Codex community_release_review (responsible tester)",
+        "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549"
+      }
     },
     "src/app/[locale]/account/profile/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review. Biography maxlength now matches existing 2000-character server contract, retaining editable legacy500-character values. Shared menu closes after browser history/route changes. Focused tests and selected EN-ES browser cases pass; final release acceptance remains outstanding. Personal editor scoped styling aligned with consumer profile; existing fields/actions/2000-character biography contract retained. Included in32isolated actual page/layout renders. Protected-provider and reviewer/device acceptance pending."
+      "status": "accepted",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review. Biography maxlength now matches existing 2000-character server contract, retaining editable legacy500-character values. Shared menu closes after browser history/route changes. Focused tests and selected EN-ES browser cases pass; final release acceptance remains outstanding. Personal editor scoped styling aligned with consumer profile; existing fields/actions/2000-character biography contract retained. Included in32isolated actual page/layout renders. Protected-provider and reviewer/device acceptance pending. Responsible tester reviewed source-bound hosted AppShell screenshots, full/lower-page states, native focus and actual fixture/function results at c3b5835; route acceptance recorded 30 October. This does not certify overall provider/storage/RLS/device release gates.",
+      "acceptance": {
+        "reviewer": "Codex community_release_review (responsible tester)",
+        "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549"
+      }
     },
     "src/app/[locale]/account/referrals/page.tsx": {
       "scope": "consumer",
@@ -60,8 +102,14 @@
     },
     "src/app/[locale]/account/saved/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
+      "status": "accepted",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review. Individually accepted by responsible tester at c3b5835 after fresh hosted upper screenshots, full-size lower and actual empty/error/free/pending state review plus maintained functional evidence. Overall real-provider, RLS, payment and device release checks remain separate.",
+      "acceptance": {
+        "reviewer": "Codex community_release_review (responsible tester)",
+        "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549"
+      }
     },
     "src/app/[locale]/account/settings/page.tsx": {
       "scope": "consumer",
@@ -213,7 +261,7 @@
       "status": "accepted",
       "note": "Redirect-only, independently reviewed EN/ES actual HTTP chain/targets, source and15route-export tests. No standalone image claimed; destination routes separate.",
       "acceptance": {
-        "reviewer": "Codex business_screens \u2014 independent business entry review",
+        "reviewer": "Codex business_screens — independent business entry review",
         "reviewedCommit": "c10d7adcb45c0add6c82accfe398bdedec2dd0f6",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
@@ -282,7 +330,7 @@
       "status": "accepted",
       "note": "Redirect-only, independently reviewed EN/ES actual HTTP chain/targets, source and15route-export tests. No standalone image claimed; destination routes separate.",
       "acceptance": {
-        "reviewer": "Codex business_screens \u2014 independent business entry review",
+        "reviewer": "Codex business_screens — independent business entry review",
         "reviewedCommit": "c10d7adcb45c0add6c82accfe398bdedec2dd0f6",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
@@ -516,7 +564,7 @@
       "status": "accepted",
       "note": "Independent public-gateway review:20actualNext EN/ES themes/viewports/WebView-like states,40captures, nativekeyboard/threecorrectlinks/noindex/nooverflow. AkiHQ remains separate from AkiBusiness; no destination authenticated-operation or fullrelease acceptance inferred.",
       "acceptance": {
-        "reviewer": "Codex business_screens \u2014 independent business entry review",
+        "reviewer": "Codex business_screens — independent business entry review",
         "reviewedCommit": "c10d7adcb45c0add6c82accfe398bdedec2dd0f6",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
@@ -530,7 +578,7 @@
       "status": "accepted",
       "note": "Redirect-only route: independently reviewed actual308 response and exact /es target at6a923495. No page/screenshot exists. Actions link records HTTP evidence, not an invented image. Does not accept destination page, authenticated/device journeys or full release.",
       "acceptance": {
-        "reviewer": "Codex canonical_plan \u2014 independent redirect review",
+        "reviewer": "Codex canonical_plan — independent redirect review",
         "reviewedCommit": "6a9234952542bc3fd59456fb2a43638183c2af7a",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41053750511",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41053750511",
@@ -546,7 +594,7 @@
       "status": "accepted",
       "note": "Redirect-only route: independently reviewed actual308 response and exact /es/roadmap target at6a923495. No page/screenshot exists. Actions link records HTTP evidence, not an invented image. Does not accept destination page, authenticated/device journeys or full release.",
       "acceptance": {
-        "reviewer": "Codex canonical_plan \u2014 independent redirect review",
+        "reviewer": "Codex canonical_plan — independent redirect review",
         "reviewedCommit": "6a9234952542bc3fd59456fb2a43638183c2af7a",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41053750511",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41053750511",
@@ -560,7 +608,7 @@
     "src/app/waitlist/confirm/page.tsx": {
       "scope": "cross-product",
       "status": "in-progress",
-      "note": "Cinematic responsive EN/ES confirmation for AkiPasa/AkiDuermo/AkiCoches committed. Real defect repaired: POST success redirect now derives product from verified database row, not caller hint; failure product hint allowlisted. Non-mutating Playwright cases cover invalid links, 360/390/1440 and Android-style emulation, dark/light. Exact-head CI/screenshot inspection, physical Android and genuine signup\u2192email\u2192verification acceptance still pending. In-progress, not accepted."
+      "note": "Cinematic responsive EN/ES confirmation for AkiPasa/AkiDuermo/AkiCoches committed. Real defect repaired: POST success redirect now derives product from verified database row, not caller hint; failure product hint allowlisted. Non-mutating Playwright cases cover invalid links, 360/390/1440 and Android-style emulation, dark/light. Exact-head CI/screenshot inspection, physical Android and genuine signup→email→verification acceptance still pending. In-progress, not accepted."
     },
     "src/app/[locale]/tonight/page.tsx": {
       "scope": "consumer",

@@ -1,5 +1,40 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-30 | Coherent conversion panels and readable Account status states
+
+Consumer Membership, Referrals and Account Subscription use scoped charcoal and
+orange surfaces, with warm readable light-theme equivalents. The adapter changes
+only the consumer shell/AkiPasa offer cards; shared canonical studios, sister
+products, prices, checkout readiness and billing actions remain intact. Actual
+public-page and Subscription component states, text contrast and unchanged HQ
+pixel comparisons were reviewed. Account light-theme success/error notices use
+dark green/crimson ink over existing pale fills; messages, actions and dark mode
+are unchanged. A real 1.51:1 failure now measures at least6.33:1 in tested states.
+
+Eight Account routes now have individual responsible-tester acceptance at source
+c3b5835 with actual hosted screenshots and functional results. The matrix records
+13 accepted /77 outstanding in-scope routes, with all six fallback acceptances
+still pending fresh hosted evidence. This is not full provider/device approval.
+The expanded maintained Account suite passes464 cases, retaining432 existing
+cases and adding32 notice states/native password-reset/sign-out controls.
+
+The native fallback harness retains88 cases and adds48 root-error/retry/Admin
+loading states;136 pass. Admin shell evidence uses a declared synthetic identity
+adapter and does not prove real RLS. The required dedicated Spotlight runner
+retains60 tests and adds16 current populated Event cases;76 pass, with a final
+16-case screenshot-readiness follow-up covering mobile dock/desktop navigation.
+Declared synthetic events remain confined to a loopback adapter; production
+Tonight stays default-off. No real booking, XP, customer or payment mutation.
+
+Full local application check passes2868Vitest/17groups,140initialNode cases and
+193-route optimized build. The one test-only readiness follow-up is separately
+typechecked and executed; new exact-head hosted checks remain required. Small HTTP
+and static screenshot artifacts supplement the original full archives, preserving
+all assertions, required contexts, policies and seven-day retention. This repairs
+the observed512MiB connector transfer ceiling without bypassing blocked transport.
+Source-only Staff/preview SQL, real isolated Auth/tenant/provider transactions,
+remaining route review, candidate Android and strict release gates remain open.
+
 ## 2026-10-30 | Creator encoding and exact workspace task returns
 
 Creator compatibility aliases normalize the route slug once before encoding the

@@ -2,6 +2,49 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 30 October 19:05 UTC — eight genuine Account acceptances; coherent presentation batch
+
+Branchwork/coordinated-release-20261029. Published baseline/exact tested Account
+review sourcec3b583519b7fb16062d7dd6a763ec5ef05dc08c7. All11ordinary workflows
+pass atc3b; strict remains correctlyred. Public570collected=509PASS61conditional
+SKIP0FAIL; dedicatedSpotlight60passed separately. Synthetic merge208775d has the
+same Git tree325831912eea32b03d50fd6e276cb32ba498ee9b. CFupload0a6ca475 succeeds;
+verified live source3353d87/Worker26e remains unchanged.
+
+Accepted:8Account routes individually reviewed from actual fresh hosted upper
+screenshots, full-size lower and empty/error/free/pending evidence plus functions.
+Matrix now13accepted/77inprogress/13excluded. Six fallback formal records pending;
+no mass promotion. Current conversion/notice changes do not match those accepted
+routes' relevant reviewed selectors. Receipt records actual reviewer/source/links.
+
+Implemented/tested nextbatch: consumer Membership/Referrals/Subscription neutral
+palette (32actualpublic+16Subscription states,208contrast samples>=4.99,32/32 HQ
+pixel-identical comparisons); Account light notices corrected from1.51to>=6.33,
+464maintained Account cases pass retaining432. Native boundaries136PASS retain88
+and add48 actual root error/pending retry/Admin-shell loader states; synthetic
+Admin role is not RLS proof. Dedicated Spotlight76PASS retain60 and add16 actual
+populated Event keyboard/date/price/back/404 cases. Final16test-only mobile-dock/
+desktop-nav readiness rerun passes; original wrong desktop-dock wait failure is
+preserved. No application runtime changed during the frozen full check.
+
+Full npmcheckEXIT0:2868Vitest/17groups,140initialNode,193-route build. The one
+post-freeze test-only readiness change separately passes typecheck/lint/format
+and16native cases; do not call the initial eight-file snapshot byte-identical.
+A prior superseded check was terminated during build after Subscription scope was
+corrected; its log is retained, not claimed a final pass. Final receipt stores
+all actual hashes and proof. New tiny HTTP/static CI artifacts complement the
+oversized original archives; no blocked egress, assertion/job/policy waiver.
+
+NEXT: publish this validated batch normally, obtain exact new-head hosted CI and
+small artifacts, independently record eligible public aliases/static/fallback
+acceptances, regenerate one source-bound reviewpack. Social responsible review
+has just identified a genuine bare/unstructured Prestige certificate error state;
+repair that next in the existing page/workspace without changing its RPC/gates.
+Continue all independent review/repairs; real isolated Auth/tenant/provider/verified
+XP tests, pending Staff/preview SQL approvals and candidate Android remain external
+release dependencies. No merge, deploy, SQL, paid resource or realcustomer change.
+Root soleintegrator; active writer lease through19:30UTC, extend ifstillworking.
+
 ## 30 October 18:28 UTC — native redirect defects repaired and verified
 
 Branch `work/coordinated-release-20261029`; published parent/head at start

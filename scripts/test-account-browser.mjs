@@ -563,6 +563,23 @@ async function interactions(page, route, locale) {
       locale,
       email: "changed.disposable@example.test",
     });
+    for (const [label, action] of [
+      [
+        es ? "Cambiar mi contraseña" : "Change my password",
+        "requestAccountPasswordReset",
+      ],
+      [es ? "Cerrar sesión" : "Sign out", "signOut"],
+    ]) {
+      const button = page.getByRole("button", { name: label, exact: true });
+      await button.scrollIntoViewIfNeeded();
+      await button.focus();
+      await expect(button).toBeFocused();
+      await page.keyboard.press("Enter");
+      await lastAction(page, action, { locale });
+      expect(await page.evaluate(() => window.__accountAction.fields)).toEqual({
+        locale,
+      });
+    }
   } else if (route === "profile") {
     const bio = page.locator('textarea[name="bio"]');
     await bio.fill("A".repeat(500));
@@ -1305,6 +1322,158 @@ try {
           await page.close();
         }
       }
+  if (selected.includes("settings") && !selectedFixtures) {
+    for (const locale of ["en", "es"])
+      for (const theme of ["light", "dark"])
+        for (const width of [390, 1440])
+          for (const [query, role, message] of [
+            [
+              "email=confirmed",
+              "status",
+              locale === "es"
+                ? "Correo actualizado correctamente."
+                : "Email updated successfully.",
+            ],
+            [
+              "password=sent",
+              "status",
+              locale === "es"
+                ? "Enlace enviado. Revisa tu correo para cambiar la contraseña."
+                : "Link sent. Check your email to change your password.",
+            ],
+            [
+              "error=password-provider",
+              "alert",
+              locale === "es"
+                ? "No pudimos enviar el enlace de cambio de contraseña."
+                : "We could not send the password-change link.",
+            ],
+            [
+              "error=email-validation",
+              "alert",
+              locale === "es"
+                ? "Introduce una dirección de correo válida."
+                : "Enter a valid email address.",
+            ],
+          ]) {
+            const page = await browser.newPage({
+              viewport: { width, height: 900 },
+              colorScheme: theme,
+              reducedMotion: "reduce",
+            });
+            await page.route("**/*", (request) =>
+              new URL(request.request().url()).origin === origin
+                ? request.continue()
+                : request.abort(),
+            );
+            await page.addInitScript((value) => {
+              localStorage.setItem("akipasa.theme", value);
+              document.addEventListener("DOMContentLoaded", () => {
+                document.documentElement.dataset.theme = value;
+                document.documentElement.classList.toggle(
+                  "dark",
+                  value === "dark",
+                );
+              });
+            }, theme);
+            const tag = `settings-${locale}-${theme}-${width}-${query.replace("=", "-")}`;
+            try {
+              await page.goto(`${origin}/${locale}/account/settings?${query}`);
+              await ready(page);
+              await checkBounds(page, tag);
+              const notice = page.getByRole(role).filter({ hasText: message });
+              await expect(notice).toHaveText(message);
+              await notice.scrollIntoViewIfNeeded();
+              await expect(notice).toBeVisible();
+              const contrast = await notice.evaluate((element) => {
+                const canvas = document.createElement("canvas");
+                canvas.width = canvas.height = 1;
+                const context = canvas.getContext("2d", {
+                  willReadFrequently: true,
+                });
+                const rgba = (color) => {
+                  context.clearRect(0, 0, 1, 1);
+                  context.fillStyle = color;
+                  context.fillRect(0, 0, 1, 1);
+                  return Array.from(context.getImageData(0, 0, 1, 1).data);
+                };
+                const over = (foreground, background) =>
+                  foreground
+                    .slice(0, 3)
+                    .map(
+                      (value, index) =>
+                        (value * foreground[3]) / 255 +
+                        background[index] * (1 - foreground[3] / 255),
+                    );
+                const chain = [];
+                for (let node = element; node; node = node.parentElement)
+                  chain.push(node);
+                let background = [255, 255, 255];
+                for (const node of chain.reverse())
+                  background = over(
+                    rgba(getComputedStyle(node).backgroundColor),
+                    background,
+                  );
+                const foreground = over(
+                  rgba(getComputedStyle(element).color),
+                  background,
+                );
+                const luminance = (color) =>
+                  color.reduce((sum, value, index) => {
+                    const channel = value / 255;
+                    return (
+                      sum +
+                      [0.2126, 0.7152, 0.0722][index] *
+                        (channel <= 0.04045
+                          ? channel / 12.92
+                          : ((channel + 0.055) / 1.055) ** 2.4)
+                    );
+                  }, 0);
+                const a = luminance(foreground),
+                  b = luminance(background);
+                return {
+                  ratio: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05),
+                  foreground,
+                  background,
+                };
+              });
+              expect(
+                contrast.ratio,
+                `${tag}: actual alpha-composited notice ${JSON.stringify(contrast)}`,
+              ).toBeGreaterThanOrEqual(4.5);
+              expect(
+                await notice.evaluate((element) => {
+                  const rect = element.getBoundingClientRect();
+                  const target = document.elementFromPoint(
+                    rect.left + rect.width / 2,
+                    rect.top + rect.height / 2,
+                  );
+                  return target === element || element.contains(target);
+                }),
+              ).toBe(true);
+              const editor = page.locator(".account-email-card details");
+              if (query === "error=email-validation") {
+                await expect(editor).toHaveAttribute("open", "");
+                await expect(page.locator('input[name="email"]')).toBeVisible();
+              } else await expect(editor).not.toHaveAttribute("open");
+              expect(
+                await page.evaluate(() => window.__accountActions),
+              ).toEqual([]);
+              await page.screenshot({ path: resolve(directory, `${tag}.png`) });
+              results.push({
+                route: "settings-notice",
+                locale,
+                theme,
+                width,
+                query,
+                contrast,
+                pass: true,
+              });
+            } finally {
+              await page.close();
+            }
+          }
+  }
   console.log(`Account browser acceptance: ${results.length} cases passed`);
 } finally {
   writeFileSync(

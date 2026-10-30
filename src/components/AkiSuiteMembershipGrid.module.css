@@ -78,3 +78,160 @@
   opacity: 0.55;
   cursor: not-allowed;
 }
+
+/* AkiPasa consumer adapter only. Canonical shared studios and sister hosts keep
+   their original product themes, prices, audiences and checkout behavior. */
+:global(.app-shell)
+  :global(:is(.pasa-membership-page, .subscription-app))
+  .root {
+  --membership-panel: #111314;
+  --membership-raised: #1d1e1f;
+  --membership-edge: #423b33;
+  --membership-ink: #faf7f3;
+  --membership-muted: #c8c1b9;
+  --membership-accent: #ffb17c;
+}
+
+:global(html[data-theme="light"])
+  :global(.app-shell)
+  :global(:is(.pasa-membership-page, .subscription-app))
+  .root {
+  --membership-panel: #fffdf9;
+  --membership-raised: #f3eee7;
+  --membership-edge: #dacdbd;
+  --membership-ink: #29231d;
+  --membership-muted: #62574d;
+  --membership-accent: #98400d;
+}
+
+:global(.app-shell)
+  :global(:is(.pasa-membership-page, .subscription-app))
+  .root
+  > [data-product="AkiPasa"] {
+  --accent: var(--membership-accent);
+  --wash: color-mix(in srgb, var(--membership-accent) 10%, transparent);
+  color: var(--membership-ink);
+  border-color: var(--membership-edge);
+  background:
+    radial-gradient(ellipse at 92% 0, var(--wash), transparent 50%),
+    var(--membership-panel);
+}
+
+:global(.app-shell)
+  :global(:is(.pasa-membership-page, .subscription-app))
+  .root
+  [data-product="AkiPasa"]
+  :is(h1, h2, h3, strong) {
+  color: var(--membership-ink);
+}
+
+:global(.app-shell)
+  :global(:is(.pasa-membership-page, .subscription-app))
+  .root
+  [data-product="AkiPasa"]
+  :is(p, li, small, footer, span) {
+  color: var(--membership-muted);
+}
+
+:global(.app-shell)
+  :global(:is(.pasa-membership-page, .subscription-app))
+  .root
+  [data-product="AkiPasa"]
+  :is(header, ul) {
+  border-color: var(--membership-edge);
+}
+
+:global(.app-shell)
+  :global(:is(.pasa-membership-page, .subscription-app))
+  .root
+  [data-product="AkiPasa"]
+  [data-offer] {
+  background: var(--membership-raised);
+  border-color: var(--membership-edge);
+}
+
+:global(.app-shell)
+  :global(:is(.pasa-membership-page, .subscription-app))
+  .root
+  [data-product="AkiPasa"]
+  [data-offer][data-highlighted] {
+  border-color: var(--membership-accent);
+  background: color-mix(
+    in srgb,
+    var(--membership-accent) 8%,
+    var(--membership-panel)
+  );
+}
+
+:global(.app-shell)
+  :global(:is(.pasa-membership-page, .subscription-app))
+  .root
+  [data-product="AkiPasa"]
+  :is(header > span, [data-offer] > p:first-child) {
+  color: var(--membership-accent);
+}
+
+:global(.app-shell)
+  :global(:is(.pasa-membership-page, .subscription-app))
+  .root
+  [data-product="AkiPasa"]
+  [role="tablist"] {
+  border-color: var(--membership-edge);
+  background: var(--membership-raised);
+}
+
+:global(.app-shell)
+  :global(:is(.pasa-membership-page, .subscription-app))
+  .root
+  [data-product="AkiPasa"]
+  [role="tab"] {
+  color: var(--membership-muted);
+}
+
+:global(.app-shell)
+  :global(:is(.pasa-membership-page, .subscription-app))
+  .root
+  [data-product="AkiPasa"]
+  [role="tab"][aria-selected="true"] {
+  color: #23180e;
+  background: #ff893c;
+}
+
+:global(.app-shell)
+  :global(:is(.pasa-membership-page, .subscription-app))
+  .root
+  [data-product="AkiPasa"]
+  :is([data-offer] a, [data-offer] button, aside a) {
+  color: var(--membership-ink);
+  background: var(--membership-panel);
+  border-color: var(--membership-edge);
+}
+
+:global(.app-shell)
+  :global(:is(.pasa-membership-page, .subscription-app))
+  .root
+  :is(.workspaceChoice, .footnote, .personalPromo p) {
+  color: var(--membership-muted);
+}
+
+:global(.app-shell)
+  :global(:is(.pasa-membership-page, .subscription-app))
+  .root
+  :is(
+    .workspaceChoice select,
+    .personalPromo,
+    .personalAction a,
+    .personalAction button
+  ) {
+  color: var(--membership-ink);
+  background: var(--membership-raised);
+  border-color: var(--membership-edge);
+}
+
+:global(.app-shell)
+  :global(:is(.pasa-membership-page, .subscription-app))
+  .root
+  [data-product="AkiPasa"]
+  :is(a, button, select):focus-visible {
+  outline-color: var(--membership-accent);
+}

@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "reviewedCandidate": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+  "reviewer": "Codex community_release_review (responsible tester; no matrix write)",
+  "hosted": {
+    "run": 41107436549,
+    "job": 124240879437,
+    "conclusion": "success",
+    "artifact": 13003080584,
+    "name": "account-responsive-evidence",
+    "declaredSha256": "b99cab7bcd2441cd9dfb02bfbf6e330da36ffb1a07587d22968611159a9018fe",
+    "verifiedBy": "Fresh source-associated hosted6 main-AppShell screenshots manually inspected;432result records parsed,0fail",
+    "extraction": {
+      "directory": "/workspace/akipasa-main-checkpoints/ci-c3b583-account-selected",
+      "rangeBytes": 1472027,
+      "archiveBytes": 48133658,
+      "zipEntryCRCVerified": true,
+      "wholeArchiveShaVerified": false,
+      "selectedReceipt": "selected-account-receipt.json",
+      "mainCases": 432,
+      "mainFailed": 0,
+      "personalCases": 32
+    }
+  },
+  "binding": {
+    "finalManifestSevenSourceHashesMatchC3": true,
+    "lowerCatalogueAll21SourceHashesMatchC3": true,
+    "oldLocalAccountResultsExcluded": "2026-10-29T22:41:34; not fresh c3 evidence",
+    "oldStandalonePersonalImagesExcluded": true
+  },
+  "acceptedRoutes": {
+    "src/app/[locale]/account/page.tsx": {
+      "reviewer": "Codex community_release_review (responsible tester)",
+      "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549"
+    },
+    "src/app/[locale]/account/profile/page.tsx": {
+      "reviewer": "Codex community_release_review (responsible tester)",
+      "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549"
+    },
+    "src/app/[locale]/account/saved/page.tsx": {
+      "reviewer": "Codex community_release_review (responsible tester)",
+      "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549"
+    },
+    "src/app/[locale]/account/following/page.tsx": {
+      "reviewer": "Codex community_release_review (responsible tester)",
+      "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549"
+    },
+    "src/app/[locale]/account/bookings/page.tsx": {
+      "reviewer": "Codex community_release_review (responsible tester)",
+      "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549"
+    },
+    "src/app/[locale]/account/activity/page.tsx": {
+      "reviewer": "Codex community_release_review (responsible tester)",
+      "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549"
+    },
+    "src/app/[locale]/account/premium/page.tsx": {
+      "reviewer": "Codex community_release_review (responsible tester)",
+      "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549"
+    },
+    "src/app/[locale]/account/privacy/page.tsx": {
+      "reviewer": "Codex community_release_review (responsible tester)",
+      "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549"
+    }
+  },
+  "qualifications": [
+    "Responsible-tester acceptance covers the eight explicitly recorded routes and actual source-bound UI/functional fixture evidence.",
+    "Real-provider, storage/RLS, payment and candidate physical-device checks remain separate overall release gates.",
+    "Settings, referrals and separate-product operations are not accepted by this receipt."
+  ],
+  "sourceImpactAfterReview": "Account light notice-success/error overrides do not match Overview/Profile notice classes; conversion CSS is separately scoped. Overall release is unapproved.",
+  "additionalReview": {
+    "freshHostedUpperImages": 6,
+    "individualLowerImages": 12,
+    "reviewedStateImages": 12,
+    "actualStateReplayCases": 24,
+    "reviewedStates": ["empty", "read-error", "free", "pending"],
+    "sourceReceipt": "account-consumer-c3b-acceptance-review-20261030.json",
+    "sourceReceiptSha256": "16dcc4ed9810d7162be51b6ec9ef6cb34ce4b561310d1d80daec43ee8eddc487"
+  }
+}

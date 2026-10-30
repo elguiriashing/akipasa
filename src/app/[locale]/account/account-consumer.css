@@ -803,3 +803,19 @@ html[data-theme="light"] body:has(.pasa-consumer-account) {
     scroll-margin-bottom: 6rem;
   }
 }
+
+/* Pale status fills need darker text in the consumer light theme. Keep the
+   existing state, message, borders and dark-theme colors unchanged. */
+html[data-theme="light"]
+  .pasa-consumer-account
+  .account-controls-page
+  .notice-error {
+  color: #a11d28 !important;
+}
+
+html[data-theme="light"]
+  .pasa-consumer-account
+  .account-controls-page
+  .notice-success {
+  color: #176336 !important;
+}

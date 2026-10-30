@@ -556,6 +556,7 @@ try {
     "node_modules/@playwright/test/cli.js",
     "test",
     "tests/e2e/spotlight-public-layout.spec.ts",
+    "tests/e2e/event-candidate-review.spec.ts",
     "--workers=1",
     "--output=test-results/spotlight-routes",
     ...process.argv.slice(2),
