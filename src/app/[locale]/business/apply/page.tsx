@@ -1,3 +1,4 @@
+import styles from "./apply.module.css";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth";
@@ -82,7 +83,9 @@ export default async function BusinessApplicationPage({
           ? "No hemos podido enviar la solicitud. Inténtalo de nuevo o pide ayuda."
           : "We could not send the application. Try again or ask for help.";
   return (
-    <main className="shell dashboard business-application-page">
+    <main
+      className={`shell dashboard business-application-page ${styles.page}`}
+    >
       <section className="hero business-application-hero">
         <div>
           <div className="eyebrow">

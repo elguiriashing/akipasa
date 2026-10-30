@@ -40,9 +40,16 @@ test("current repository inventory validates only as a blocked partial plan", ()
   assert.equal(result.fullCanonicalParity, false);
   assert.equal(result.executable, false);
   assert.equal(result.databaseExecutionSupported, false);
-  assert.equal(result.inventoryCount, 339);
+  assert.equal(result.inventoryCount, 341);
   assert.equal(result.candidateSourceCount, 97);
-  assert.equal(result.unresolvedSourceCount, 151);
+  assert.equal(result.unresolvedSourceCount, 152);
+  const preview = frozen.entries.find(
+    (entry) =>
+      entry.path ===
+      "database/migrations/20261030163000_add_checkin_venue_preview.sql",
+  );
+  assert.equal(preview.classification, "unresolved");
+  assert(!frozen.candidateOrder.includes(preview.path));
   assert.equal(frozen.evidence.scopedCreatorCounts.applicationSql, 78);
   assert.equal(frozen.evidence.scopedCreatorCounts.officialStorageSql, 17);
   assert.equal(frozen.evidence.scopedCreatorCounts.selectedTotal, 95);

@@ -7,6 +7,7 @@ export default defineConfig({
     include: [
       "tests/founder-push*.test.ts",
       "tests/staff-claim-account-eligibility.test.ts",
+      "tests/checkin-venue-preview-sql.test.ts",
     ],
     environment: "node",
   },

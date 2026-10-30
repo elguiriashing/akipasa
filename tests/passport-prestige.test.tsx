@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
+import type { ComponentProps } from "react";
 import {
   cleanup,
   fireEvent,
@@ -12,14 +13,29 @@ import {
   prestigeEnabled,
   prestigeShareSvg,
 } from "../src/lib/passport-prestige";
-const { action, privacyAction } = vi.hoisted(() => ({
+const { action, privacyAction, publicRpc } = vi.hoisted(() => ({
   action: vi.fn(),
   privacyAction: vi.fn(),
+  publicRpc: vi.fn(),
 }));
 vi.mock("../src/app/[locale]/passports/prestige/actions", () => ({
   prestigeMemberAction: action,
   prestigePrivacyAction: privacyAction,
 }));
+vi.mock("@/lib/supabase/server", () => ({
+  createSupabaseServerClient: async () => ({ rpc: publicRpc }),
+}));
+vi.mock("next/link", () => ({
+  default: ({ children, ...props }: ComponentProps<"a">) => (
+    <a {...props}>{children}</a>
+  ),
+}));
+vi.mock("next/navigation", () => ({
+  notFound: () => {
+    throw new Error("not-found");
+  },
+}));
+import HallPage from "../src/app/[locale]/passports/prestige/hall/page";
 import { PrestigeControls } from "../src/app/[locale]/passports/prestige/PrestigeControls";
 const award = {
   id: "10000000-0000-0000-0000-000000000001",
@@ -259,4 +275,45 @@ describe("shipping privacy and intake presentation", () => {
     );
     expect(action).not.toHaveBeenCalled();
   });
+});
+
+describe("Hall certificate link accessibility", () => {
+  for (const locale of ["en", "es"] as const) {
+    for (const alias of ["Explorer", null]) {
+      it(`names the ${locale} certificate link with ${alias ? "its public alias" : "the public title alone"}`, async () => {
+        vi.stubEnv("AKIPASA_PRESTIGE_ENABLED", "true");
+        publicRpc.mockResolvedValue({
+          data: [
+            {
+              public_id: award.public_id,
+              serial: award.serial,
+              title_es: award.title_es,
+              title_en: award.title_en,
+              public_alias: alias,
+              awarded_at: award.awarded_at,
+            },
+          ],
+          error: null,
+        });
+        render(
+          await HallPage({
+            params: Promise.resolve({ locale }),
+            searchParams: Promise.resolve({}),
+          }),
+        );
+        const title = locale === "es" ? award.title_es : award.title_en;
+        const link = screen.getByRole("link", {
+          name: alias ? `${title} · ${alias}` : title,
+        });
+        expect(link.getAttribute("href")).toBe(
+          `/${locale}/passports/prestige/certificate/${award.public_id}`,
+        );
+        expect(publicRpc).toHaveBeenCalledWith("prestige_public", {
+          p_page: 1,
+        });
+        expect(action).not.toHaveBeenCalled();
+        expect(privacyAction).not.toHaveBeenCalled();
+      });
+    }
+  }
 });

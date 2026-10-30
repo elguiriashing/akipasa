@@ -1,0 +1,18 @@
+{
+  "reviewer": "Alex Ashing",
+  "reviewedSourceCommit": "197dc36a093cd6a4fe3320676913ac81b5a39058",
+  "reviewedArtifact": "akipasa-review-packs-20261030.zip",
+  "artifactSha256": "fbf3d1d5fba29de526ead429abcabe8a88f485f587438af9b17719f4e240858e",
+  "quote": "The visual direction is right",
+  "scope": ["Profile overview", "Edit profile", "Settings"],
+  "sourcePaths": [
+    "src/app/[locale]/account/page.tsx",
+    "src/app/[locale]/account/profile/page.tsx",
+    "src/app/[locale]/account/settings/page.tsx"
+  ],
+  "approvalKind": "visual-direction feedback only",
+  "finalRouteAcceptance": false,
+  "mergeApproved": false,
+  "databaseChangeApproved": false,
+  "physicalDeviceApprovalForCandidate": false
+}

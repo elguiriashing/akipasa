@@ -217,3 +217,28 @@ html
     gap: 12px;
   }
 }
+
+/* A column's flex basis is height: keep the permanent-delete control compact. */
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  .catalogue-danger-card
+  .form-actions-right
+  > .button.danger {
+  flex: 0 1 auto;
+  min-height: 48px;
+  border-radius: 12px;
+}
+
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  .catalogue-danger-card
+  .form-actions-right
+  > .button.danger:not(:disabled) {
+  border-color: #b95858;
+  background: #9f2d2d;
+  color: #fff;
+}

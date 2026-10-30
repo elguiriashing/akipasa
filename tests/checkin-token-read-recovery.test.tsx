@@ -6,9 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   client: vi.fn(),
-  from: vi.fn(),
-  select: vi.fn(),
-  eq: vi.fn(),
+  rpc: vi.fn(),
   read: vi.fn(),
   flags: vi.fn(),
   uuid: vi.fn(() => "fixture-idempotency-key"),
@@ -26,9 +24,7 @@ vi.mock("node:crypto", async (importOriginal) => {
     randomUUID: mocks.uuid,
   };
 });
-vi.mock("@/lib/supabase/server", () => ({
-  createSupabaseServerClient: mocks.client,
-}));
+vi.mock("@/lib/auth", () => ({ requireUser: mocks.client }));
 vi.mock("@/lib/feature-flags", () => ({ loadFeatureFlags: mocks.flags }));
 vi.mock("../src/app/[locale]/check-in/[token]/CheckInForm", () => ({
   CheckInForm: (props: unknown) => {
@@ -39,18 +35,16 @@ vi.mock("../src/app/[locale]/check-in/[token]/CheckInForm", () => ({
 import CheckInPage from "../src/app/[locale]/check-in/[token]/page";
 const token = "91000000-0000-4000-8000-000000000001";
 const credential = {
-  id: "private-credential-id",
-  venues: { id: "private-venue-id", name: "Private fixture venue" },
+  venue_id: "private-venue-id",
+  venue_name: "Private fixture venue",
 };
-const chain = { select: mocks.select, eq: mocks.eq, maybeSingle: mocks.read };
+const chain = { maybeSingle: mocks.read };
 const page = (locale: string, value = token) =>
   CheckInPage({ params: Promise.resolve({ locale, token: value }) });
 beforeEach(() => {
   vi.clearAllMocks();
-  mocks.client.mockResolvedValue({ from: mocks.from });
-  mocks.from.mockReturnValue(chain);
-  mocks.select.mockReturnValue(chain);
-  mocks.eq.mockReturnValue(chain);
+  mocks.client.mockResolvedValue({ supabase: { rpc: mocks.rpc } });
+  mocks.rpc.mockReturnValue(chain);
   mocks.flags.mockResolvedValue({ loyalty_check_ins: true });
   mocks.read.mockResolvedValue({ data: credential, error: null });
 });
@@ -91,7 +85,7 @@ for (const locale of ["en", "es"])
     });
     it("retains hidden joined venue 404", async () => {
       mocks.read.mockResolvedValue({
-        data: { ...credential, venues: null },
+        data: { ...credential, venue_name: null },
         error: null,
       });
       await expect(page(locale)).rejects.toThrow("not-found");
@@ -100,13 +94,15 @@ for (const locale of ["en", "es"])
     it("preserves successful active credential form and query scope", async () => {
       render(await page(locale));
       expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-        credential.venues.name,
+        credential.venue_name,
       );
-      expect(mocks.from).toHaveBeenCalledWith("venue_checkin_credentials");
-      expect(mocks.eq.mock.calls).toEqual([
-        ["token", token],
-        ["active", true],
-      ]);
+      expect(mocks.client).toHaveBeenCalledWith(
+        locale,
+        `/${locale}/check-in/${token}`,
+      );
+      expect(mocks.rpc).toHaveBeenCalledWith("checkin_venue_preview", {
+        p_token: token,
+      });
       expect(mocks.form).toHaveBeenCalledWith({
         locale,
         token,

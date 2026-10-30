@@ -2,6 +2,41 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 30 October 17:18 UTC — all layouts catalogued; safe preview source validated
+
+Current published3cd2c944858915da2893223866b0a7b59aafc2b0 passes all11ordinary
+workflows and CFupload bddcb1c0; production remains335source3d87/Worker26e100%.
+The next16-file source batch passes fullcheck2783Vitest/17groups/140initialNode/
+193routebuild with exact frozen hashes. It adds the source-only authenticated
+minimal venue preview RPC, guarded UI caller, Hall accessible link, compact semantic
+Staff danger control and consumer-only Business application lower surfaces. SQL
+SHA8f863eb6 is UNAPPLIED; existingstaffSQL also remainsUNAPPLIED. No production
+customer/role/consent/XP/billing/credential table permissions changed.
+
+Two true typing failures and old inventory-count assertion failure were repaired
+and preserved; final16source hashes match. New2locale compatibility HTTP tests are
+collected; actual configured CI execution still needed. Current canonical inventory
+341raw/97prefix/152unresolved/88mirrors/4excluded; no new replay or stop waiver.
+
+All90route+6fallback records have bounded review material:93image/HTTP+3export-only
+redirect proof. No full provider/device/technical completeness inferred. Source
+implementation is complete for90; token has external migration/provider dependency,
+so89ready/1externallyblocked. All5formal acceptances stayunchanged. Alex's exact
+visual-direction approval for Profile/Edit/Settings is recorded separately at197.
+
+Only Supabase main project/branch exists in CostaPromo(Pro). Schema-onlyQAbranch
+cost-confirmation request EXPIRED; tool returnederror and freshlist confirms no
+resource created. Do not infer cost/creation/production migration approval or
+retry paid creation automatically. Required real sign-in/provider tests are blocked
+on a genuine isolated project/disposable identities. Physical Android review of the
+full candidate and remaining visual sign-offs are still needed.
+
+NEXT: commit/push this validated batch; regenerate published-source reviewpack and
+obtain new exact-head CI/CF includingactual2HTTPcases. Continue independent gaps
+without realcustomer mutations. Obtain explicit QA resource cost approval and
+separate reviewed productionSQL approval when appropriate. Never merge/deploy until
+strict acceptance/reviews/provider/device/rollback gatespass. Root sole integrator.
+
 ## 30 October 16:27 UTC — token error repair validated; private preview dependency
 
 Published parent197dc36 has successful Cloudflare upload versioncc576bf3, traffic

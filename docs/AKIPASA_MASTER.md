@@ -3731,3 +3731,44 @@ preview RPC is being prepared as source only, preserving private table permissio
 and existing canonical account_features_allowed() legacy/eligibility behavior. It
 requires separate production migration approval and protected disposable-role proof
 before release. Do not claim the retry presentation fixes that authorization gap.
+
+## 2026-10-30 | Safe consumer Check-in preview and final discovered UI defects
+
+The signed consumer token page now validates locale/token syntax, authenticates
+with its localized return path, and reads only checkin_venue_preview(uuid). It no
+longer selects private credential rows. The new source-only RPC uses existing
+auth.uid/account_features_allowed() fail-closed eligibility, preserving intentionally
+eligible legacy profiles. It returns only active-token published venue ID/name,
+never credential IDs/tokens, private coordinates or profiles. Empty search_path,
+explicit owner/schema/helper preconditions, authenticated-only nondelegable EXECUTE
+and atomic postconditions preserve the private table's RLS/ACL and all existing
+attendance/XP functions. Known Supabase service_role function defaults are explicitly
+revoked on this new function; unknown default delegates cause atomic refusal.
+No production SQL was applied. Deployment requires separate approval and target
+preflight; missing RPC/errors render the existing generic unavailable/no-form state.
+
+Actual enabled-page QA also found and repaired Hall's unnamed certificate link
+using only its existing public title/alias; native Tab/Enter reaches the correct
+certificate. Staff's permanent-delete control had a160px column flex basis and
+incorrect orange primary styling; the venue danger-card-only override makes it
+48px/crimson/white without changing required reason/DELETE validation or disabled
+states. Business application panels/fields now use scoped consumer-shell tokens;
+16separate AkiBusiness-host controls remain pixel-identical. No product merging,
+form-action/consent/billing changes or destructive test submission occurred.
+
+Fullcheck2783Vitest/17groups,140initialNode and193routebuild passes on16frozen
+implementation/test/schema/inventory files.11PostgreSQL and23route tests,48token
+render states,15Hall tests/8native keyboard cases and50Business/Staff tests pass.
+Real inventory and two typing failures are preserved, repaired and retested, not
+ignored. New2locale actual-HTTP compatibility tests are collected but still require
+their configured CI run; unconfigured local500 is not counted as redirect proof.
+The source-only inventory now341raw paths;97candidateprefix/152unresolved/88mirrors/
+4excluded, all existing STOPs/nonexecution flags unchanged.
+
+All90route layouts plus6fallbacks now have bounded review material:93image/HTTP
+records and3export-only redirects with HTTP gaps explicit. This is not complete
+Auth/provider/device acceptance. Alex approved only the Profile/Edit/Settings visual
+direction at197source, not a merge or SQL change.5formal route acceptances remain.
+Only the connected main Supabase project exists; a requested schema-only QA branch
+cost confirmation expired, and re-listing confirms no branch/resource was created.
+Actual isolated signed-in/provider and physical-device tests remain external gaps.
