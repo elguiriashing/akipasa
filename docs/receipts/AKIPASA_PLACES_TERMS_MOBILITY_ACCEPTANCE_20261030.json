@@ -1,0 +1,399 @@
+{
+  "version": 1,
+  "reviewedCommit": "b7dda61e31546cc0dcc89e9b01ba0a8fefd6f7ba",
+  "newRouteAcceptances": {
+    "src/app/[locale]/passports/places/page.tsx": {
+      "reviewer": "Codex community_release_review (responsible tester)",
+      "reviewedCommit": "b7dda61e31546cc0dcc89e9b01ba0a8fefd6f7ba",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41132880734",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41132880734",
+      "evidenceType": "Responsible tester actual source-bound hosted screenshot and disposable-functional review",
+      "realProviderAndPhysicalDeviceAcceptance": false
+    },
+    "src/app/[locale]/terms/accept/page.tsx": {
+      "reviewer": "Codex business_screens (responsible tester)",
+      "reviewedCommit": "b7dda61e31546cc0dcc89e9b01ba0a8fefd6f7ba",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41132880605/artifacts/13014545860",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41132880605",
+      "evidenceType": "Responsible tester actual source-bound hosted screenshot and disposable-functional review",
+      "realProviderAndPhysicalDeviceAcceptance": false
+    },
+    "src/app/[locale]/business/mobility/page.tsx": {
+      "reviewer": "Codex mobility_evidence_finish (responsible tester)",
+      "reviewedCommit": "b7dda61e31546cc0dcc89e9b01ba0a8fefd6f7ba",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41132880734/artifacts/13014491011",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41132880734",
+      "evidenceType": "Responsible tester actual source-bound hosted screenshot and disposable-functional review",
+      "realProviderAndPhysicalDeviceAcceptance": false
+    }
+  },
+  "responsibleReviews": {
+    "places-b7dda61-responsible-tester-review-20261030.json": {
+      "sha256": "144d8f1b95565230951335192e13cb3a11db779113c6c182ac7274e503f49b3a",
+      "review": {
+        "route": "src/app/[locale]/passports/places/page.tsx",
+        "decision": "eligible for bounded read-only route-level acceptance",
+        "acceptance": {
+          "reviewer": "Codex community_release_review (responsible tester)",
+          "reviewedCommit": "b7dda61e31546cc0dcc89e9b01ba0a8fefd6f7ba",
+          "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41132880734",
+          "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41132880734"
+        },
+        "reviewerOwnershipDisclosure": "Reviewer contributed historic route-local Places presentation in an earlier batch; this review freshly inspects current hosted images/source and did not author this new48+9 harness augmentation. Responsible tester recommendation, not unrelated independent design approval.",
+        "hosted": {
+          "run": 41132880734,
+          "job": 124328040489,
+          "artifact": 13014206727,
+          "actualSourceHead": "adf7e264a405c9152202051569a945b7889c73b5",
+          "reviewedSourceHead": "b7dda61e31546cc0dcc89e9b01ba0a8fefd6f7ba",
+          "fullTreeComparison": "/workspace/akipasa-main-checkpoints/b7dda61-merge-checkout-source-comparison.json",
+          "complete": true,
+          "cases": 48,
+          "inputBoundaryProbes": 9,
+          "sourceHashesVerified": 41,
+          "initialFinalSourceHashesEqual": true
+        },
+        "imagesActuallyViewed": [
+          {
+            "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-places/en-dark-390-empty-full.png",
+            "sha256": "690d57f98b94dfcffaf36afde68dcdedc466faccde6dc42fcb20b4c5272d933c",
+            "matchesHostedResult": true,
+            "actuallyViewed": true
+          },
+          {
+            "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-places/en-dark-390-empty-lower.png",
+            "sha256": "522cd581e4cce50df9628e158e7589004c0c88596110cd8c45ce8d688d67effa",
+            "matchesHostedResult": true,
+            "actuallyViewed": true
+          },
+          {
+            "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-places/en-dark-390-error-full.png",
+            "sha256": "2cd23e9bf791f984633b33e6dcd4a652e976c1658dc21605fb1f19f4425d9569",
+            "matchesHostedResult": true,
+            "actuallyViewed": true
+          },
+          {
+            "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-places/en-dark-390-error-lower.png",
+            "sha256": "2a96a7b011f2a17c3eed4217629f3b75e04a1761239892fdf0b4fee106a43bc0",
+            "matchesHostedResult": true,
+            "actuallyViewed": true
+          },
+          {
+            "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-places/en-dark-390-ready-full.png",
+            "sha256": "42eca5b7192695eadafb9777422e8e448ecdf9302a16937f977ff0e3682ed266",
+            "matchesHostedResult": true,
+            "actuallyViewed": true
+          },
+          {
+            "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-places/en-dark-390-ready-lower.png",
+            "sha256": "e3ae9fcedd604bf0b939d2a13a61c2b82f828ad8a52eb1b815f6ad69ee249632",
+            "matchesHostedResult": true,
+            "actuallyViewed": true
+          },
+          {
+            "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-places/es-light-1440-empty-full.png",
+            "sha256": "1df900cb772953d6866f393412525347479206f09653dc31395e33d922a243b3",
+            "matchesHostedResult": true,
+            "actuallyViewed": true
+          },
+          {
+            "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-places/es-light-1440-empty-lower.png",
+            "sha256": "196d8254db3ed405b91ea8717d2ab5ea24d125a731b76980917deb029251a19b",
+            "matchesHostedResult": true,
+            "actuallyViewed": true
+          },
+          {
+            "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-places/es-light-1440-error-full.png",
+            "sha256": "18285e36c73286cfa9cb299be5d47a52bbc3ace1e7d204fc210edc1c325149b9",
+            "matchesHostedResult": true,
+            "actuallyViewed": true
+          },
+          {
+            "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-places/es-light-1440-error-lower.png",
+            "sha256": "7c50ccf9c66f7377f50d38ae2cf2a613eb739ccc2ebf9687ebf713ea3b1d3770",
+            "matchesHostedResult": true,
+            "actuallyViewed": true
+          },
+          {
+            "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-places/es-light-1440-ready-full.png",
+            "sha256": "68a36b7eba9c07359d8f88dd5c21160b1ab6155fd58d27ffab2913ea0f3bf0d0",
+            "matchesHostedResult": true,
+            "actuallyViewed": true
+          },
+          {
+            "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-places/es-light-1440-ready-lower.png",
+            "sha256": "a4c0d8edbc02ea4e1be5d8e1f08347158ca4ba6355210263b314e5f1584f16ad",
+            "matchesHostedResult": true,
+            "actuallyViewed": true
+          }
+        ],
+        "basis": [
+          "Twelve individual actual hosted full/lower images viewed: ENdark390/ESlight1440 ready/empty/error; continuous charcoal/orange hero and paper collection, correctly wrapping synthetic venue label, truthful1/0/no-error-count, readable empty/error notices, visible native focus outlines and unobscured lower links.",
+          "Maintained actual async route+real AppShell48case matrix covers ENES/darklight/3603908201440/reducedmotion/touch capability; native Tab focus-visible,44px link targets and real wheel-scroll/center hit checks preserve collection and venue destinations.",
+          "Actual route is public read-only: createSupabasePublicClient only passport_places RPC scoped to validated city/category; no actor-private query, no authentication requirement, no mutating form/action/XP. Valid on-site check-in copy does not award progress for page views.",
+          "Nine actual-export input probes cover category filtering and missing/invalid city/category/locale before provider read; failed provider response suppresses private diagnostic and venue list/count instead of claiming empty supply.",
+          "All41 hosted dependency hashes match current reviewed b7 tree and initial/final artifact hashes; all12 selected PNG hashes match hosted results."
+        ],
+        "remainingReleaseGates": [
+          "Fixture replaces provider/session boundaries; no real Supabase public RPC/RLS/data publication, actual Next HTTP404/status/cache, XP/check-in backend or physical Android acceptance inferred.",
+          "Native links are verified by exact destination/focus/hit geometry; this page review does not accept linked venue detail/Passport destination or fabricate real participating venues.",
+          "Selected ZIP entry CRC and file hashes verified by artifact reader; whole archive download/digest not independently recomputed."
+        ],
+        "blockingFindings": [],
+        "runtimeChanged": false,
+        "matrixChanged": false,
+        "merged": false,
+        "deployed": false
+      }
+    },
+    "terms-accept-hosted-responsible-review-b7dda61-20261030.json": {
+      "sha256": "896b6696ded71f4fb903ab41cd4b65d0f9116f2037695366f9b5bd7ab1875761",
+      "review": {
+        "route": "src/app/[locale]/terms/accept/page.tsx",
+        "decision": "ACCEPTED individual implemented/tested Terms acceptance screen and safe action behavior",
+        "reviewer": "business_screens",
+        "reviewedSourceSha": "b7dda61e31546cc0dcc89e9b01ba0a8fefd6f7ba",
+        "hostedSourceSha": "adf7e264a405c9152202051569a945b7889c73b5",
+        "sourceBinding": "b7dda61-merge-checkout-source-comparison.json: source and PR merge share full tree e779ab79e11f96a0ee2e803163b3264b20dc4456; all44fixture hashes also equal currentsource",
+        "artifactUrl": "https://github.com/elguiriashing/akipasa/actions/runs/41132880605/artifacts/13014545860",
+        "workflowRun": "https://github.com/elguiriashing/akipasa/actions/runs/41132880605",
+        "jobId": 124328040116,
+        "artifactId": 13014545860,
+        "actualReviewedImages": [
+          {
+            "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-terms/en-dark-390-unchecked-upper.png",
+            "sha256": "0d17a621197a30425381d42ac248dbb4ea8dd698e124952563f0e72118166423"
+          },
+          {
+            "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-terms/en-dark-390-error-lower.png",
+            "sha256": "f6bc72247641f57100e69de9bf6710ea66ac71273c0d931cdd2119deee9a50a7"
+          },
+          {
+            "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-terms/es-light-1440-unchecked-upper.png",
+            "sha256": "6bc1a13c3ece53f2bb20662c4f79399a1e4881a00457b583837ce8c4bea805f3"
+          },
+          {
+            "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-terms/es-light-1440-error-lower.png",
+            "sha256": "5009f8c654f7608fa183dbb53739858c366c36b2ff5efa9da2bc33b7571444f4"
+          }
+        ],
+        "visualFinding": "No blocking defect in reviewed upper/lower/default/error states. Charcoal/warm-orange dark theme, cream/burnt-orange light theme, readable configuredversion/legal documents/error/checkbox; desktop and mobile controls visible and unobscured. Prior navyhero and paleversion selector failures repaired and actualcomputed regressions pass.",
+        "browserProof": {
+          "states": 32,
+          "destinations": 6,
+          "locales": ["en", "es"],
+          "viewports": [360, 390, 820, 1440],
+          "themes": ["dark", "light"],
+          "reducedMotion": true,
+          "nativeRequiredConsentUnchecked": true,
+          "nativeSpaceCheckedThenReset": true,
+          "nativeTabCheckboxLegalLinksSubmit": true,
+          "submitThreePointHit": true,
+          "overflow": false,
+          "minimumContrast": {
+            "dark": 9.237483360708838,
+            "light": 6.570621439677573
+          }
+        },
+        "functionalEvidence": [
+          "tests/terms-accept-action.test.ts imports actual exported action with disposable request/Auth/RPC: unchecked no client/RPC;guest noRPC/nestedreturn;configuredversion/ENESlocale and forgedidentityignored;sanitizedRPCfailure;safeinternal/sisterdestinations;externalnextrejected",
+          "tests/profile-terms-grants-sql.test.ts actual disposable PGlite verifies authenticated own acceptance/server timestamp/cross-profile isolation/privilege protections",
+          "tests/e2e/pasa-terms-accept-guest.spec.ts actual guest gate preserves protected return and rejects unsafe task"
+        ],
+        "actualAppShell": true,
+        "actualNext": false,
+        "providerOrConsentMutation": false,
+        "physicalDevice": false,
+        "scopeLimits": "Hosted browser fixture executes actual async Page and hydrated AppShell/production CSS with disposable signed identity/router and throw-only actions. Not production provider, actual consent transaction, full Next LocaleLayout, real RLS or physical-phone proof. Global release gates remain separate, not falsely waived by screen acceptance.",
+        "sourceHashes": {
+          "src/app/appearance.css": "21c3d1bb922511fac75f6f55fc31c3a23a73eeb894e9a0be9c322cfcdd63b8e1",
+          "src/app/brand.css": "ef68eb546410c4af273e06e6f5ed80c456c6507599f710273efaf2671268dd24",
+          "src/app/compact-app.css": "27a788fe1172acd6ff1e9f764a2790e63c345fb3090008ab46e12e372dca892c",
+          "src/app/globals.css": "53e2f4b7dec5fa5469e328d81ee0f2773f06d4998967e0dd47d58e9d54c62402",
+          "src/app/portal-unity.css": "df7f53c297febb2b2c6c2f959654c3736120be41ed7f745a9b1c750439be6e2c",
+          "src/app/tablet-responsive.css": "60f09d70e2c4b53d0d8dd8f6aca9b6b33a8841bfcc87405ebb74214272308737",
+          "scripts/test-terms-accept-browser.mjs": "e8561d98cfcceee3d21febb4fd7863bbb9c69967f26af186fd3ec3096a716d40",
+          "src/app/[locale]/terms/accept/actions.ts": "5159ef93beb6d9337b42fd54c7ad7b8f793b9b6478e5cadfc1c6abf1b5bab4ba",
+          "src/app/[locale]/terms/accept/page.tsx": "f18976885966a49709b1139c855d78a6a6c4c62f92e99f0c0ff939a4ede7f641",
+          "src/components/AppShell.tsx": "4d5d2f42369751f4968a640d5f7aa80c6157b64d72bcf26162427abfbfff5072",
+          "src/components/BrandLogo.tsx": "04f2de22ee6163137aaedcde12a080bfe74bcbda6e6ff47aec5249fb3995b328",
+          "src/components/ConsoleSwitcher.tsx": "8921ab7985be62de2d4a031b4e1cbc80c31382eb72adfd85429dd5d3cd282386",
+          "src/components/DiscoveryNavigation.css": "01fe38a052504d652d8c146bd842322f45524c988691bb8df9c79f20698d30d6",
+          "src/components/DiscoveryNavigation.tsx": "803922b858552e11c31fc8359b4078ac401ce8243461361adbfc89debb399450",
+          "src/components/GlobalSearch.tsx": "43009af8842c7bbe248d5e35b9a8f8bb2f3883ba5f4865c33437dd4d50b42f43",
+          "src/components/Icons.tsx": "084e97961811c62f6ffd59515e4b92defdac5d9d6d686f36a2bd6b2f57eedb49",
+          "src/components/LanguageLink.tsx": "223ec2a8ecd59a150d632b4e81a5d58a9524ed6b404d95b09f969d849ffd9fe5",
+          "src/components/LaunchRibbon.module.css": "b6a0109cc591b9894b65a6a27af3b0d66d4e0410f124b35c8916ecfc2a112aeb",
+          "src/components/LaunchRibbon.tsx": "31c2bf74a858233ba5e38dea2623adc066954b068e6452103bb69c914a3eff49",
+          "src/components/PasaBottomDock.css": "d4c8b7f404e19fd8b98d8b1d0e03f9e14de00539ddeb2c25a98a7ce5c5eee94f",
+          "src/components/PasaBottomDock.tsx": "a126a218965fce74b8f6b72b7562196e1e1de69316b36fb09fe81ac152908e52",
+          "src/components/PasaCinematic.css": "f5b80b832b3626f5864473d8764f04bcea6d4993c9dc7d1ee6f583b5196e8368",
+          "src/components/PasaDiscoveryNavigation.css": "d926665f1f5fd95db51946e532658f8291b70860bc4d00cd266d4bf7050c0829",
+          "src/components/PasaSharedSurfaces.css": "e6335b16f87d65d3ba6d64212343678d4a5db25662b7e75cecc3122ef4e26fa6",
+          "src/components/SpainLocationPicker.tsx": "cf444cc8609d499eb6aa02cf795d31b772736e49cf728acc69fabf8c8be0ed17",
+          "src/components/ThemeModeControls.tsx": "a4d3755ecf378624b2f05eb709d2b2352c7f2a5571bc943dbf3f162f37883d2a",
+          "src/components/UseMyLocation.tsx": "a5292859389a1da01091f364bfd0fa5b826fa28a555a19d73480ff7b84ca87f1",
+          "src/components/VenueQuickSearch.module.css": "457e290f4636d87b8ea183dae433d17e718dc083f90f7e4daf316045151cc753",
+          "src/components/VenueQuickSearch.tsx": "815202272f371eb2c820534ce7bffd2594ee5e7825a1aaa56335473b357e2099",
+          "src/components/useSuiteReferral.ts": "1becd06f429135bd89fe9cee1cbc39f54b22350211a263432422241a7e4d24a1",
+          "src/lib/akiconduzco-routing.ts": "e12defa49408227516b112d3966e6b2c98ede59fef3eeea5e9241053ba6fae37",
+          "src/lib/akiduermo-routing.ts": "a6b91984454ba29405416f0c22829fa27d04246916c5d9af739f08068e10bbc3",
+          "src/lib/auth-security.ts": "addad5274b3d8af9a7f4fa63727703affe0b8859eb1d7c86b0ebdbdb76b5c611",
+          "src/lib/config.ts": "99bcd28eb21688269d1115aef445e529f5eb5bc7b2bcb09303e19a8fd845a5db",
+          "src/lib/discovery-filter-validation.ts": "80c8f43c70e85dfc4e67c77f08e18b6d3d3ca8feb547b4d732e0fd998d8557cc",
+          "src/lib/discovery-location.ts": "e3f759f3e4bb8499b2fb505dd642b7feaab2d040dc7276889a54d00ee4da5c36",
+          "src/lib/discovery-navigation.ts": "3b528c5ec8d99ac65f5b8b3a960f829e88b0da6d354920666b6ca6a8610c9ca8",
+          "src/lib/geo.ts": "b8100ba0b7973e801b5cb62eb71429f544bfb51d99b70cefb1fb864570e985aa",
+          "src/lib/locations.ts": "5b501ceb4f3e980dfde9b64f6fb90dc0a59fb34d60d9564da9e8ad834f2afb85",
+          "src/lib/messages.ts": "3df3aaf5608bcbd291ed897abf84b4b13b14e0ba564bff9edaa953c6c45e2c4f",
+          "src/lib/pasa-surface-families.ts": "5f426f2be2d4da92bfb1ccf5f8152bdd4ae3ebb8530f7da175c38f323ab97f7a",
+          "src/lib/roles.ts": "6e0bc650d1125662984c221f1cc07cd0a6bbf89bf6bd624f01d552d7b454332d",
+          "src/lib/suite-navigation.ts": "20841a17472e926949746d57b9c03f42ba0c45570fe96082f5fab4b1c96bac9a",
+          "src/lib/supabase/server.ts": "9e8dde00629e5e1cd58f23deb0c178fe3341f64adca2b52ec1844983a9c805e7"
+        }
+      }
+    },
+    "mobility-b7dda61-responsible-tester-review-20261030.json": {
+      "sha256": "a27edf2dc807f7df56551fc19a2994523ada3f7db6a7d8f0d97df227680269b0",
+      "review": {
+        "reviewer": "Codex mobility_evidence_finish (responsible tester)",
+        "reviewedAt": "2026-10-30T23:02:52.062455+00:00",
+        "reviewedCommit": "b7dda61e31546cc0dcc89e9b01ba0a8fefd6f7ba",
+        "route": "src/app/[locale]/business/mobility/page.tsx",
+        "decision": "Qualified individual route presentation and disposable-fixture functional review approved; full operational/provider/device release acceptance remains separate.",
+        "releaseAuthorization": false,
+        "productionReadyClaim": false,
+        "matrixModified": false,
+        "trackedSourceModified": false,
+        "evidence": {
+          "workflow": "https://github.com/elguiriashing/akipasa/actions/runs/41132880734",
+          "jobId": 124328040848,
+          "jobConclusion": "success, freshly read from GitHub jobs collection",
+          "artifactId": 13014491011,
+          "resultsPath": "/workspace/akipasa-main-checkpoints/ci-b7dda61-mobility-empty-review/business-mobility/results.json",
+          "resultsSha256": "bcf8b129cc299f0e308a476e10bab0823fea09f1d302e269739f237a22df2a20",
+          "actualCheckout": "adf7e264a405c9152202051569a945b7889c73b5",
+          "checkoutQualification": "GitHub PR merge checkout adf7e264a405c9152202051569a945b7889c73b5 has same tree e779ab79e11f96a0ee2e803163b3264b20dc4456 as b7dda61 per preserved comparison; all seven exact runtime/runner source pins independently verified against reviewedCommit.",
+          "comparisonReceipt": "/workspace/akipasa-main-checkpoints/b7dda61-merge-checkout-source-comparison.json",
+          "sourcePins": [
+            {
+              "path": "src/app/[locale]/business/mobility/page.tsx",
+              "sha256": "21733e0a4ecae04512405c9e04e71334991bbda5c435e30330e6a9a76517a464",
+              "matchesReviewedCommit": true
+            },
+            {
+              "path": "src/app/[locale]/business/mobility/mobility-desk.module.css",
+              "sha256": "cfa185ea8da36acd5ffa2052cba32a4295fe9bedaf813513c2797022d9cc9599",
+              "matchesReviewedCommit": true
+            },
+            {
+              "path": "src/components/AkiConduzco.module.css",
+              "sha256": "633c1d8a877b28ded1327034f7f54d955d48e1e5949efe9509bfd1d358270c5d",
+              "matchesReviewedCommit": true
+            },
+            {
+              "path": "src/lib/suite-navigation.ts",
+              "sha256": "20841a17472e926949746d57b9c03f42ba0c45570fe96082f5fab4b1c96bac9a",
+              "matchesReviewedCommit": true
+            },
+            {
+              "path": "src/app/globals.css",
+              "sha256": "53e2f4b7dec5fa5469e328d81ee0f2773f06d4998967e0dd47d58e9d54c62402",
+              "matchesReviewedCommit": true
+            },
+            {
+              "path": "src/app/appearance.css",
+              "sha256": "21c3d1bb922511fac75f6f55fc31c3a23a73eeb894e9a0be9c322cfcdd63b8e1",
+              "matchesReviewedCommit": true
+            },
+            {
+              "path": "scripts/test-business-mobility-browser.mjs",
+              "sha256": "3dd7d2b93d16fc9873bd9dc5c345bb6fbb77feb4a5db0ea73b65969397f189ec",
+              "matchesReviewedCommit": true
+            }
+          ],
+          "screenshotsActuallyViewed": [
+            {
+              "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-mobility-empty-review/business-mobility/en-dark-390-no-company-lower.png",
+              "sha256": "2547a030746d1bfa88105ced8d4b8394b76fd62fca4230eebd7d63c88f2b015b",
+              "reviewed": true,
+              "provenance": "Fresh b7-hosted artifact13014491011, selective archive extraction; whole archive digest not verified"
+            },
+            {
+              "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-mobility-empty-review/business-mobility/en-dark-390-no-company.png",
+              "sha256": "2e6ab5e77715c2511612f29d5308d2c95317c0d78f11e98cf85be5f7d0aa6c2d",
+              "reviewed": true,
+              "provenance": "Fresh b7-hosted artifact13014491011, selective archive extraction; whole archive digest not verified"
+            },
+            {
+              "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-mobility-empty-review/business-mobility/es-light-1440-no-company-lower.png",
+              "sha256": "5fbccbb532d6225fa91c0bcb66cb527209d2584b7399f6f82780429cbc8cfa4c",
+              "reviewed": true,
+              "provenance": "Fresh b7-hosted artifact13014491011, selective archive extraction; whole archive digest not verified"
+            },
+            {
+              "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-mobility-empty-review/business-mobility/es-light-1440-no-company.png",
+              "sha256": "30cfbd0409a0da2f4b2aac8e60b458f6518576e285d2d059fc4e2e9d0d4bfd78",
+              "reviewed": true,
+              "provenance": "Fresh b7-hosted artifact13014491011, selective archive extraction; whole archive digest not verified"
+            },
+            {
+              "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-mobility-360/business-mobility/en-dark-360-no-company-lower.png",
+              "sha256": "b9480f5e4f4df5e54651526f30d1188e276c36dd1ac61a52bc9540c126a83dcf",
+              "reviewed": true,
+              "provenance": "Fresh b7-hosted artifact13014491011, selective archive extraction; whole archive digest not verified"
+            },
+            {
+              "path": "/workspace/akipasa-main-checkpoints/ci-b7dda61-mobility-360/business-mobility/en-dark-360-no-company.png",
+              "sha256": "80b2e2df588a67382926494b946cb09b4ede0dc9715bdf267ec8a38559bb5731",
+              "reviewed": true,
+              "provenance": "Fresh b7-hosted artifact13014491011, selective archive extraction; whole archive digest not verified"
+            }
+          ]
+        },
+        "coverage": {
+          "actualRouteWithDisposableAdapters": true,
+          "actualNextOrAppShell": false,
+          "cases": 48,
+          "languages": ["en", "es"],
+          "themes": ["dark", "light"],
+          "widths": [360, 390, 820, 1440],
+          "populated": 16,
+          "error": 16,
+          "noCompany": 16,
+          "androidLikeEmulationCases": 12,
+          "physicalAndroid": false,
+          "observedFixtureActions": 0,
+          "browserErrors": 0,
+          "horizontalOverflowCases": 0,
+          "minimumMeasuredControlHeight": 44,
+          "noCompanyNativeTabCases": 16,
+          "noCompanyThreePointHitCases": 16,
+          "noCompanyTabStepsPerCase": 9
+        },
+        "visualFindings": {
+          "openDefects": [],
+          "observed": "Fresh360/390 dark no-company upper/lower and Spanish1440 light upper/lower show readable unclipped form, visible native focus, clear independent AkiCoches CTA, no required venue claim, footer and setup lower state. Operational burgundy/navy skin belongs to explicitly separate AkiCoches brand, not consumer discovery.",
+          "supplementalHistoricalImages": [
+            "ci-1e7b71f-operations-images/business-mobility/en-dark-390-populated.png",
+            "ci-1e7b71f-operations-images/business-mobility/es-light-1440-error.png"
+          ],
+          "historicalQualification": "Historical images were visually viewed as supplementary context only; not mislabeled as fresh b7 hosted captures. Current b7 JSON independently reruns populated and error states16each."
+        },
+        "limits": [
+          "No actual authenticated role or tenant isolation/RLS certification; identities and reads are synthetic disposable adapters.",
+          "No real company creation, booking, payment, fleet mutation or external AkiCoches availability verified; fixture actions forbidden and observed zero.",
+          "Rendered route standalone, not integrated AppShell/actual Next.",
+          "No physical Android test, owner final visual approval, merge or deployment inferred.",
+          "Fresh screenshot subsets represent six inspected images, not manual inspection of all48context screenshots.",
+          "Full PR332 strict gate and remaining protected/provider/device requirements must stay intact."
+        ]
+      }
+    }
+  },
+  "limits": [
+    "Individual implemented presentation and disposable-functional approval only.",
+    "No actual hosted Auth/RLS/tenant/provider/private writes/device acceptance inferred.",
+    "Full332 strict release gate and final owner requirements remain."
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "parentSource": "b7dda61e31546cc0dcc89e9b01ba0a8fefd6f7ba",
+  "sourceHashesUnchangedDuringFullCheck": {
+    "docs/AKIPASA_AUTONOMOUS_EXECUTION_LEDGER.md": "3a3ca0abee77bcbcca2aa810131382831a31ed5b1406c96d2cbf9c4375140629",
+    "docs/AKIPASA_MASTER.md": "9453db82b780c91c4a38ff0853abd1e1a10851f0c52f1eba16b4e3150a49f01d",
+    "docs/AKIPASA_UI_ROUTE_MATRIX_20261028.json": "dd5e3fb5985187ef02eadd82bf42375cf1ff4a873cbda26f247ec2c881f97301",
+    "docs/CHANGE_IMPACT_REGISTER.md": "58697602b3b09ebc730aa4d409e6b3294b084502286a00369b247a90b85a780d",
+    "scripts/test-staff-ui-upgrades-browser.mjs": "8ee3b80f84e6d19b752679d0c40cb4f45ea2adea9a4621bb5623270cdc4d0d35",
+    "src/app/[locale]/staff/staff-ui.css": "ba7b8b123350e2885ce9807bfba9b2942ac13719dac18f66f5cb7d62e34138f6",
+    "docs/receipts/AKIPASA_PLACES_TERMS_MOBILITY_ACCEPTANCE_20261030.json": "0886ca07afab8e4d0e394e5d11ac0eba4848c3d49e75d898c56b38873a6bfd71"
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "exit": 0,
+    "logSha256": "6c5bd07badd9c2b4596e3013ebac9e3f1822b16fd9cfb2fd34f039a4ffc37329",
+    "vitestStages": 17,
+    "vitestTests": 2887,
+    "optimizedBuild": "PASS",
+    "restrictedAttempt": "Earlier restricted invocation failed six child-process testfiles without diagnostics; original log retained. Same frozen source passed with subprocess/local-browser permissions."
+  },
+  "targetedVitestPassed": 39,
+  "staffBrowserPassed": 184,
+  "healthyBrowserPassed": 64,
+  "actualReview": {
+    "baseCommit": "b7dda61e31546cc0dcc89e9b01ba0a8fefd6f7ba",
+    "sourceState": "uncommitted frozen two-file repair; final integration head CI and hosted review still required",
+    "reviewer": "Codex staff_evidence_finish implementation/actual screenshot reviewer",
+    "changedFiles": [
+      "src/app/[locale]/staff/staff-ui.css",
+      "scripts/test-staff-ui-upgrades-browser.mjs"
+    ],
+    "repairs": [
+      "Scoped rounded Creator review card18\u201326px padding; no fullsharedstyle change.",
+      "Scoped activeStaffglyph inherits existingwarmink; no permission/navtarget change."
+    ],
+    "validation": {
+      "command": "BOOKING_BROWSER_PATH=/home/agent/.cache/ms-playwright/chromium-1228/chrome-linux64/chrome node scripts/test-staff-ui-upgrades-browser.mjs",
+      "exit": 0,
+      "baselineCasesRetainedPassed": 120,
+      "healthyCasesRetainedPassed": 64,
+      "healthyNativeDecisionHeights": [48, 56.796875],
+      "minimumCreatorGutter": 18,
+      "glyphContexts": 16,
+      "minimumGlyphContrast": 8.874050256631321,
+      "frozenSourceHashes": true,
+      "zeroWritesExternalMutationPageErrors": true,
+      "all64NoHorizontalOverflow": true,
+      "eslintPrettier": "PASS"
+    },
+    "sourceHashes": {
+      "scripts/test-staff-ui-upgrades-browser.mjs": "8ee3b80f84e6d19b752679d0c40cb4f45ea2adea9a4621bb5623270cdc4d0d35",
+      "src/app/[locale]/staff/page.tsx": "4819ae6fe5752dbb51775ea9a25322d7533a57c9e1ff70773d68db9feb277520",
+      "src/app/[locale]/staff/layout.tsx": "429e82fab77032b5783cbb03f5b972d5df6c195bb09b7fc96ed3aad1fd1d2865",
+      "src/app/[locale]/staff/staff-ui.css": "ba7b8b123350e2885ce9807bfba9b2942ac13719dac18f66f5cb7d62e34138f6",
+      "src/app/[locale]/staff/staff-overview.css": "4794e74c2759f5cf3e49ce10fb390dd2ad1dfb78d2d6426f0c6f1a9badc978f5",
+      "src/app/[locale]/staff/support/page.tsx": "b3224a09b24df9a51769014e7370252b2b63d8dd3e4526248ead77f20c339a5f",
+      "src/app/[locale]/staff/creators/page.tsx": "2dcb2cd8d78ab4746f6d35cfb52099ab0f933003359e9b3bf6dc0da0581c3fef",
+      "src/app/[locale]/staff/creators/actions.ts": "940c57222250d875ef567f554b80edd3c5b59fbd54b4bff961aa94eb610f547e",
+      "src/app/[locale]/moderation/actions.ts": "3e8cb8adbd1c4c2a97b2c4783eec16bc0da87dc4a3e6f8cd4a61fd2eb71c0f94",
+      "src/components/AppShell.tsx": "4d5d2f42369751f4968a640d5f7aa80c6157b64d72bcf26162427abfbfff5072",
+      "src/components/WorkspaceShell.tsx": "a48978c34c3b184dfe82c1f7ef8dd7607a575afee3e402a9268431c27a69b3a2",
+      "src/components/PasaCinematic.css": "f5b80b832b3626f5864473d8764f04bcea6d4993c9dc7d1ee6f583b5196e8368",
+      "src/components/PasaSharedSurfaces.css": "e6335b16f87d65d3ba6d64212343678d4a5db25662b7e75cecc3122ef4e26fa6"
+    },
+    "screenshotsActuallyViewed": [
+      {
+        "path": "/workspace/akipasa-main-checkpoints/staff-gutter-icon-final-20261030/support-en-dark-390-healthy-populated-full.png",
+        "sha256": "60211d3050184beb0acd6df98b1bf2f5dec414a7d8d04d672adac7eef269c361"
+      },
+      {
+        "path": "/workspace/akipasa-main-checkpoints/staff-gutter-icon-final-20261030/support-en-dark-390-healthy-empty-full.png",
+        "sha256": "735523d09b534b9ba3df959b0bdf6c16b014c6e69de3ea05751b978c6d7353e8"
+      },
+      {
+        "path": "/workspace/akipasa-main-checkpoints/staff-gutter-icon-final-20261030/support-es-light-1440-healthy-populated-full.png",
+        "sha256": "2198b7c159600d270abe9181e5c6d8deb2cceb7166370d0978a3c241eff761fa"
+      },
+      {
+        "path": "/workspace/akipasa-main-checkpoints/staff-gutter-icon-final-20261030/support-es-light-1440-healthy-empty-full.png",
+        "sha256": "815c8d7f6d22ea8fd296b3403ec1b305713967ff153b26074540ce35962e60fc"
+      },
+      {
+        "path": "/workspace/akipasa-main-checkpoints/staff-gutter-icon-final-20261030/creators-en-dark-390-healthy-populated-full.png",
+        "sha256": "c8fc17fe8843ca35e33a36145eae371f2b2f62f54fb24eb380150dd93b7746a0"
+      },
+      {
+        "path": "/workspace/akipasa-main-checkpoints/staff-gutter-icon-final-20261030/creators-en-dark-390-healthy-empty-full.png",
+        "sha256": "bd20487ac3832cdeb905991751407991362719fac568790b8effb44b96a18205"
+      },
+      {
+        "path": "/workspace/akipasa-main-checkpoints/staff-gutter-icon-final-20261030/creators-es-light-1440-healthy-populated-full.png",
+        "sha256": "2864b88d274ea43a0eabefe4a22c13c1c734496656cddedbe57f9c5d4bdeaa72"
+      },
+      {
+        "path": "/workspace/akipasa-main-checkpoints/staff-gutter-icon-final-20261030/creators-es-light-1440-healthy-empty-full.png",
+        "sha256": "2cc01ed09e30ab89522d8125a2d5e40857951c56b1b31bb400ed3fbd7c334d01"
+      }
+    ],
+    "visualConclusion": "All8 relevant final mobile/desktop ENdark390+ESlight1440 populated/empty screenshots actually viewed. Creator content now inset, decision controls visible below fold and not clipped; activeStafficons warm/readable onbrown; Support layout unaffected. No remaining defect observed in this bounded repair.",
+    "log": {
+      "path": "/tmp/akipasa-staff-gutter-icon-repair-20261030.log",
+      "sha256": "9709105bd22fa570a884346275378989de2dd217f472ea58fb5e0a435530dcf7"
+    },
+    "preservedPriorEvidence": "/workspace/akipasa-main-checkpoints/staff-pre-gutter-icon-repair-20261030",
+    "limits": [
+      "Local fixture actualasync pageexports/AppShell/StaffLayout with synthetic reads and forbidden actions. Not actualNext/Auth/RLS/provider/decision-write acceptance.",
+      "No physicalAndroid, productioncustomer/action/SQL/deployment operations.",
+      "Not formal owner visualacceptance; currentmain exactheadCI/strictgate remains integrationowner responsibility."
+    ],
+    "matrixOrCommitsChangedByAgent": false
+  },
+  "newFormalRouteApprovals": 3,
+  "matrixAccepted": 49,
+  "matrixInProgress": 41,
+  "fallbackAccepted": 6,
+  "exactHeadCI": "Required after publication",
+  "merged": false,
+  "deployed": false
+}

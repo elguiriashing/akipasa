@@ -332,7 +332,7 @@
       "status": "accepted",
       "note": "Redirect-only, independently reviewed EN/ES actual HTTP chain/targets, source and15route-export tests. No standalone image claimed; destination routes separate.",
       "acceptance": {
-        "reviewer": "Codex business_screens — independent business entry review",
+        "reviewer": "Codex business_screens \u2014 independent business entry review",
         "reviewedCommit": "c10d7adcb45c0add6c82accfe398bdedec2dd0f6",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
@@ -343,8 +343,16 @@
     },
     "src/app/[locale]/business/mobility/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Private AkiCoches rental desk combines scoped light/dark responsive surfaces, canonical independent product links, truthful unavailable summaries, bounded data disclosure and localized request states. Conditional setup navigation and top-level availability-block error warning retained from concurrent work. Seven component tests and 32 EN/ES responsive populated/error fixture cases passed; additional guest business-host handoff/source guard tests retained. Final exact-source hosted evidence, real authenticated tenant/mutation workflows, physical Android and Alex visual review remain required. NOT accepted."
+      "status": "accepted",
+      "note": "Private AkiCoches rental desk combines scoped light/dark responsive surfaces, canonical independent product links, truthful unavailable summaries, bounded data disclosure and localized request states. Conditional setup navigation and top-level availability-block error warning retained from concurrent work. Seven component tests and 32 EN/ES responsive populated/error fixture cases passed; additional guest business-host handoff/source guard tests retained. Final exact-source hosted evidence, real authenticated tenant/mutation workflows, physical Android and Alex visual review remain required. NOT accepted. Individually reviewed at b7dda61 against real hosted source-bound images and functional evidence; see AKIPASA_PLACES_TERMS_MOBILITY_ACCEPTANCE_20261030.json. This route-level review does not certify real Auth/RLS/provider/private mutation or physical-device/full-release acceptance.",
+      "acceptance": {
+        "reviewer": "Codex mobility_evidence_finish (responsible tester)",
+        "reviewedCommit": "b7dda61e31546cc0dcc89e9b01ba0a8fefd6f7ba",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41132880734/artifacts/13014491011",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41132880734",
+        "evidenceType": "Responsible tester actual source-bound hosted screenshot and disposable-functional review",
+        "realProviderAndPhysicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/business/page.tsx": {
       "scope": "operational",
@@ -420,7 +428,7 @@
       "status": "accepted",
       "note": "Canonical creator components receive a shared scoped cinematic theme and retain filtered navigation; private studio fails closed on unavailable reads. Focused regression tests passed. Real responsive/browser and authenticated visual acceptance remain required; aliases preserve locale and canonical redirects. Individually accepted after responsible-tester source, actual hosted image/HTTP and functional review. See AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json; destination pages and overall provider/device/production approval are not inferred.",
       "acceptance": {
-        "reviewer": "Codex venue_event_screens — independent redirect HTTP review",
+        "reviewer": "Codex venue_event_screens \u2014 independent redirect HTTP review",
         "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/artifacts/13004526929",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/job/124257651856",
@@ -450,7 +458,7 @@
       "status": "accepted",
       "note": "Redirect-only, independently reviewed EN/ES actual HTTP chain/targets, source and15route-export tests. No standalone image claimed; destination routes separate.",
       "acceptance": {
-        "reviewer": "Codex business_screens — independent business entry review",
+        "reviewer": "Codex business_screens \u2014 independent business entry review",
         "reviewedCommit": "c10d7adcb45c0add6c82accfe398bdedec2dd0f6",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
@@ -501,7 +509,7 @@
       "status": "accepted",
       "note": "Legacy redirect-only compatibility route: validated locale, allowlisted canonical destinations and safe queue encoding; EN/ES auth-gated redirect and phone/desktop/Android-like guest handoff tests added. No standalone screen exists. Destination role permissions, authenticated queue interactions, final source browser evidence and physical Android review remain unaccepted. Individually accepted after responsible-tester source, actual hosted image/HTTP and functional review. See AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json; destination pages and overall provider/device/production approval are not inferred.",
       "acceptance": {
-        "reviewer": "Codex venue_event_screens — independent redirect HTTP review",
+        "reviewer": "Codex venue_event_screens \u2014 independent redirect HTTP review",
         "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/artifacts/13004526929",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/job/124257651856",
@@ -567,8 +575,16 @@
     },
     "src/app/[locale]/passports/places/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES."
+      "status": "accepted",
+      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES. Individually reviewed at b7dda61 against real hosted source-bound images and functional evidence; see AKIPASA_PLACES_TERMS_MOBILITY_ACCEPTANCE_20261030.json. This route-level review does not certify real Auth/RLS/provider/private mutation or physical-device/full-release acceptance.",
+      "acceptance": {
+        "reviewer": "Codex community_release_review (responsible tester)",
+        "reviewedCommit": "b7dda61e31546cc0dcc89e9b01ba0a8fefd6f7ba",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41132880734",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41132880734",
+        "evidenceType": "Responsible tester actual source-bound hosted screenshot and disposable-functional review",
+        "realProviderAndPhysicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/passports/prestige/certificate/[publicId]/page.tsx": {
       "scope": "consumer",
@@ -734,8 +750,16 @@
     },
     "src/app/[locale]/terms/accept/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Auth-scoped shared terms-confirmation layout and EN/ES responsive guest-return tests implemented. Pending genuine signed-in terms form review, submission/error handling, consent records, browser light/dark screenshots and physical Android proof; not accepted."
+      "status": "accepted",
+      "note": "Auth-scoped shared terms-confirmation layout and EN/ES responsive guest-return tests implemented. Pending genuine signed-in terms form review, submission/error handling, consent records, browser light/dark screenshots and physical Android proof; not accepted. Individually reviewed at b7dda61 against real hosted source-bound images and functional evidence; see AKIPASA_PLACES_TERMS_MOBILITY_ACCEPTANCE_20261030.json. This route-level review does not certify real Auth/RLS/provider/private mutation or physical-device/full-release acceptance.",
+      "acceptance": {
+        "reviewer": "Codex business_screens (responsible tester)",
+        "reviewedCommit": "b7dda61e31546cc0dcc89e9b01ba0a8fefd6f7ba",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41132880605/artifacts/13014545860",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41132880605",
+        "evidenceType": "Responsible tester actual source-bound hosted screenshot and disposable-functional review",
+        "realProviderAndPhysicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/terms/page.tsx": {
       "scope": "consumer",
@@ -839,7 +863,7 @@
       "status": "accepted",
       "note": "Independent public-gateway review:20actualNext EN/ES themes/viewports/WebView-like states,40captures, nativekeyboard/threecorrectlinks/noindex/nooverflow. AkiHQ remains separate from AkiBusiness; no destination authenticated-operation or fullrelease acceptance inferred.",
       "acceptance": {
-        "reviewer": "Codex business_screens — independent business entry review",
+        "reviewer": "Codex business_screens \u2014 independent business entry review",
         "reviewedCommit": "c10d7adcb45c0add6c82accfe398bdedec2dd0f6",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
@@ -853,7 +877,7 @@
       "status": "accepted",
       "note": "Redirect-only route: independently reviewed actual308 response and exact /es target at6a923495. No page/screenshot exists. Actions link records HTTP evidence, not an invented image. Does not accept destination page, authenticated/device journeys or full release.",
       "acceptance": {
-        "reviewer": "Codex canonical_plan — independent redirect review",
+        "reviewer": "Codex canonical_plan \u2014 independent redirect review",
         "reviewedCommit": "6a9234952542bc3fd59456fb2a43638183c2af7a",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41053750511",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41053750511",
@@ -869,7 +893,7 @@
       "status": "accepted",
       "note": "Redirect-only route: independently reviewed actual308 response and exact /es/roadmap target at6a923495. No page/screenshot exists. Actions link records HTTP evidence, not an invented image. Does not accept destination page, authenticated/device journeys or full release.",
       "acceptance": {
-        "reviewer": "Codex canonical_plan — independent redirect review",
+        "reviewer": "Codex canonical_plan \u2014 independent redirect review",
         "reviewedCommit": "6a9234952542bc3fd59456fb2a43638183c2af7a",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41053750511",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41053750511",
@@ -883,7 +907,7 @@
     "src/app/waitlist/confirm/page.tsx": {
       "scope": "cross-product",
       "status": "accepted",
-      "note": "Cinematic responsive EN/ES confirmation for AkiPasa/AkiDuermo/AkiCoches committed. Real defect repaired: POST success redirect now derives product from verified database row, not caller hint; failure product hint allowlisted. Non-mutating Playwright cases cover invalid links, 360/390/1440 and Android-style emulation, dark/light. Exact-head CI/screenshot inspection, physical Android and genuine signup→email→verification acceptance still pending. In-progress, not accepted. Individually accepted after responsible-tester source, actual hosted image/HTTP and functional review. See AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json; destination pages and overall provider/device/production approval are not inferred.",
+      "note": "Cinematic responsive EN/ES confirmation for AkiPasa/AkiDuermo/AkiCoches committed. Real defect repaired: POST success redirect now derives product from verified database row, not caller hint; failure product hint allowlisted. Non-mutating Playwright cases cover invalid links, 360/390/1440 and Android-style emulation, dark/light. Exact-head CI/screenshot inspection, physical Android and genuine signup\u2192email\u2192verification acceptance still pending. In-progress, not accepted. Individually accepted after responsible-tester source, actual hosted image/HTTP and functional review. See AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json; destination pages and overall provider/device/production approval are not inferred.",
       "acceptance": {
         "reviewer": "Codex canonical_plan (independent responsible tester)",
         "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",

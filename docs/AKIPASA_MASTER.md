@@ -1,5 +1,20 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-30 | Fresh route reviews and confirmed Staff visual repair
+
+Actual b7 hosted evidence and responsible screenshot/function review approve
+Passport Places, Terms Accept and Business Mobility individually:49/90 accepted,
+41remaining,all6fallbacks accepted. Embedded source-bound reviews retain explicit
+real Auth/RLS/provider/private-write/device limits. Staff184 tests passed but
+actual reviewed images show zero Creator gutters and unreadable activeglyph;
+Staff-only padding and inheritedwarmink repairs plus computed browser regressions
+address these two presentation defects. No role/action/query/auth/data change.
+
+Isolated publicPR337 exact2506 changes only the duplicate sitemap E2E expectation
+and its receipt after initial published271publicPASS/29conditional/1failure.
+All five targeted SearchConsole cases pass. Fresh candidateCI and actual expected-
+head merge/deployment identity remain required; no production claim inferred.
+
 ## 2026-10-30 | Completed family batch and owner-authorized public releases
 
 The completed batch covers actual Terms/AppShell32states+6safe returns, Passport

@@ -539,6 +539,46 @@ try {
             const forms = page.locator(".staff-workspace form");
             const decisionHeights = [];
             let localityBadgeContrast = null;
+            let creatorCardGutters = null;
+            const activeGlyphContrasts = [];
+            for (const glyph of await page
+              .locator(
+                ".staff-workspace .workspace-navigation a.active .workspace-glyph",
+              )
+              .all()) {
+              if (!(await glyph.isVisible())) continue;
+              const paint = await glyph.evaluate((node) => {
+                const canvas = document.createElement("canvas");
+                canvas.width = canvas.height = 1;
+                const context = canvas.getContext("2d");
+                context.fillStyle = getComputedStyle(
+                  node.closest("a"),
+                ).backgroundColor;
+                context.fillRect(0, 0, 1, 1);
+                context.fillStyle = getComputedStyle(node).backgroundColor;
+                context.fillRect(0, 0, 1, 1);
+                const background = [
+                  ...context.getImageData(0, 0, 1, 1).data,
+                ].slice(0, 3);
+                context.clearRect(0, 0, 1, 1);
+                context.fillStyle = getComputedStyle(node).color;
+                context.fillRect(0, 0, 1, 1);
+                const foreground = [...context.getImageData(0, 0, 1, 1).data];
+                foreground[3] /= 255;
+                return { foreground, background };
+              });
+              const ratio = contrast(paint.foreground, paint.background);
+              expect(
+                ratio,
+                "active Staff navigation icon contrast",
+              ).toBeGreaterThanOrEqual(3);
+              activeGlyphContrasts.push(ratio);
+            }
+            if (width === 1440)
+              expect(
+                activeGlyphContrasts,
+                "desktop active navigation glyph is present",
+              ).toHaveLength(1);
             await expect(forms).toHaveCount(state === "populated" ? 1 : 0);
             if (state === "empty") {
               await expect(
@@ -652,6 +692,27 @@ try {
                   await expect(link).toHaveAttribute("target", "_blank");
                   await expect(link).toHaveAttribute("rel", "noreferrer");
                 }
+                creatorCardGutters = await page
+                  .locator(".creator-review-queue > .panel")
+                  .evaluate((card) => {
+                    const style = getComputedStyle(card);
+                    const bounds = card.getBoundingClientRect();
+                    const copy = card.firstElementChild.getBoundingClientRect();
+                    const form = card
+                      .querySelector("form")
+                      .getBoundingClientRect();
+                    return {
+                      paddingLeft: parseFloat(style.paddingLeft),
+                      paddingRight: parseFloat(style.paddingRight),
+                      copyInset: copy.left - bounds.left,
+                      formRightInset: bounds.right - form.right,
+                    };
+                  });
+                for (const [edge, inset] of Object.entries(creatorCardGutters))
+                  expect(
+                    inset,
+                    `creator rounded card ${edge} gutter`,
+                  ).toBeGreaterThanOrEqual(18);
                 const badgePaint = await page
                   .locator(".creator-review-queue .pill-muted")
                   .evaluate((badge) => {
@@ -716,6 +777,8 @@ try {
               nativeValidityChecked: state === "populated",
               decisionHeights,
               localityBadgeContrast,
+              creatorCardGutters,
+              activeGlyphContrasts,
               writes: [],
               externalRequests,
               mutationRequests,

@@ -4775,3 +4775,18 @@ AKIPASA_THEME_FALLBACK_ACCEPTANCE_20261030.json.
   in this main batch. Master automatic deploy trigger remains; verify exactsource
   and Worker before considering manual workflow. Current335Worker26e rollback and
   terms-record security remain; never regrant client terms fields or duplicateSQL.
+
+## 2026-10-30 | Three source-bound route reviews and Staff visual defects
+
+- **Acceptance:** Actual b7 hosted Places48+9, Terms32+6 and Mobility48+16native
+  evidence plus responsible real screenshot reviews add three individual routes;
+  49accepted/41remaining,6fallbacks accepted. Embedded review details preserve
+  actualfixture/hostedsource bindings and all realprovider/device limitations.
+- **Demonstrated Staff issue:** Independent hostedPNG review found Creator content
+  against roundedborder and active navglyph inheritednavy on brown (1.02:1).
+  Scoped Staff-only18–26pxgutters and inheritedwarmink are paired with meaningful
+  computedpadding/contentedge/activeglyphcontrast browser regressions. No shared
+  globalCSS, auth/role/actions/queries/schema/consent/payment change.
+- **Release:** PublicPR337 has separate authorized scope and freshCI gates. Full332
+  strictgate unchanged; sourceSQL unapplied, TonightOFF, AkiPals paused. No new
+  merge/deploy/customer/paidresource operation claimed by this entry.

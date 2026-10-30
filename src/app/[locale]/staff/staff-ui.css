@@ -265,3 +265,25 @@ html
   flex: 0 1 auto;
   min-height: 48px;
 }
+
+/* Keep rounded creator review cards inset from their content. */
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  .creator-review-queue
+  > .panel {
+  padding: clamp(18px, 2.2vw, 26px);
+}
+
+/* Staff uses dark surfaces in both themes; inherit its readable active ink. */
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  .workspace-navigation
+  a.active
+  .workspace-glyph {
+  color: inherit;
+  background: transparent;
+}

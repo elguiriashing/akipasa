@@ -2,6 +2,43 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 30 October 23:10 UTC — public release candidate; 49 individual routes accepted
+
+Main published parent is b7dda61e31546cc0dcc89e9b01ba0a8fefd6f7ba;
+all11ordinary exact-head workflows passed, strict release remains genuinely red.
+Three fresh responsible reviews add Passport Places, Terms Accept and Business
+Mobility:49/90 individually accepted,41remaining,all6fallbacks accepted. Source
+and actual hosted screenshot/function evidence are embedded in
+receipts/AKIPASA_PLACES_TERMS_MOBILITY_ACCEPTANCE_20261030.json. These are individual
+presentation/disposable-functional approvals, not real Auth/RLS/provider/device
+or full-release acceptance. Staff184 hosted tests passed but independent actual
+image review found zero Creator card gutters and active glyph contrast1.02:1;
+scoped repairs and meaningful computed regressions are being tested, not accepted.
+
+Investor public slice is draftPR337, branchwork/pasa-finished-public-release-20261030,
+exact2506e48140ff27c6f7e94c07d9d34813bca3e5a9, masterbase3d87.22runtimefiles
+retain15protectedMasterfiles and entire CommunityafterrequireUser byte-identical.
+Initiale99 publishedCI passed5of6workflows including fullnpmcheck; one duplicate
+SearchConsole sitemap assertion12vs16 failed, with271publicPASS29conditionalSKIP.
+2506 changes ONLY that assertion/explicit fourlocalizedURLchecks and honestreceipt;
+all5targetedbrowser tests pass. Fresh sixworkflow CI and Cloudflare packaging are
+required before merge; CF2506 stored131b2f4e-3c25-42aa-bda7-277aa4a04243 uploadonly.
+Independent finalsource review confirms all22runtimehashes match reviewedvisuals,
+all15protectedfiles matchliveMaster; no reviews/unresolvedthreads atreadtime.
+No newpublicmerge or productiondeployment claimed at this checkpoint.
+
+NEXT root-only action: after actual all-six fresh2506CI success and freshbase/
+review/conflict checks, mark337ready and expected-headmerge. User already authorizes
+this independent safe batch; full332 gate is unchanged. Verify automaticCloudflare
+MERGEsource/Worker100% plus realanonymousHTTPSbrowser journeys; retainlive335
+Worker26e51e72-bb1e-49e9-a307-243e0203ef8d rollback. Never duplicate auto deployment.
+Read-only live smoke prepared outside repo and requires verifiedsource/Worker.
+Then normally reconcileMaster into332 preservingall work and continue next
+Account10route11file surgicalUIbatch, prepared outside repo but not testedrelease.
+Rootexclusive writerlease extended to31October01:00UTC; hourlyconditionalwatch is
+not continuous background coding. AkiPals paused, TonightOFF, pendingSQL unapplied,
+no paidQAbranch authorized/created, no productioncustomer/consent/payment changes.
+
 ## 30 October 21:35 UTC —46 accepted; finished public release authorized
 
 Published parent2b3cc9bbe225f927f3097c7e0aefc805c1ccae6d:all11ordinary workflows
