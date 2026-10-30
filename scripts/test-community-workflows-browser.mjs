@@ -8,7 +8,7 @@ import { createServer } from "node:http";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 
-// Actual workflow, draft and address components; disposable reads/actions only.
+// Actual workflow, AppShell, draft and address components; disposable reads/actions only.
 // Public landing is outside this fixture. No production account or mutation.
 const dir = resolve("test-results/community-workflows");
 mkdirSync(dir, { recursive: true });
@@ -35,13 +35,27 @@ const address = {
   longitude: -4.62,
 };
 const auth = `export async function requireUser(){const q=new URLSearchParams(location.search),state=q.get('state');window.__reads=[];const values={events:[{id:'95000000-0000-4000-8000-000000000001',title_es:'Evento de prueba',title_en:'Disposable event'}],venues:[{id:'95000000-0000-4000-8000-000000000002',name:'Disposable venue'}],event_submissions:[{id:'suggestion-a',title:'Disposable proposed event',state:'pending',created_at:'2026-10-29T12:00:00Z'}],reports:[{id:'report-a',target_type:'event',reason:'incorrect',state:'open',created_at:'2026-10-29T12:00:00Z'}],categories:[{id:'${categoryId}',slug:'music',name_es:'Música',name_en:'Music'}],feature_flags:state==='paused'?[{key:'community_submissions',enabled:false}]:[]};return{user:{id:'fixture-user'},supabase:{from(table){const response={data:state==='empty'&&table!=='categories'?[]:values[table]||[],error:state==='unavailable'?{message:'Disposable unavailable'}:null};const query={select(fields){window.__reads.push({table,operation:'select',fields});return query},eq(field,value){window.__reads.push({table,operation:'eq',field,value});return query},order(){return query},limit(){return query},or(){return query},ilike(){return query},maybeSingle(){return Promise.resolve({data:table==='events'?{id:'${eventId}',title_es:'Evento enlazado de prueba',title_en:'Linked fixture event'}:null,error:response.error})},then(resolve){return Promise.resolve(response).then(resolve)}};return query}}}}`;
-const entry = `import React from 'react';import{createRoot}from'react-dom/client';import Page from './src/app/[locale]/community/page';const q=new URLSearchParams(location.search),locale=q.get('lang')||location.pathname.split('/')[1]||'en';const theme=q.get('theme')||localStorage.getItem('fixture-theme')||'dark';localStorage.setItem('fixture-theme',theme);document.documentElement.dataset.theme=theme;document.body.dataset.theme=theme;document.documentElement.classList.add('theme-'+theme);document.body.classList.add('theme-'+theme);document.documentElement.lang=locale;window.__writes=[];Page({params:Promise.resolve({locale}),searchParams:Promise.resolve(Object.fromEntries(q))}).then(screen=>createRoot(document.getElementById('root')).render(<div className='app-shell'>{screen}</div>));`;
+const entry = `import React from 'react';import{createRoot}from'react-dom/client';import{AppShell}from'./src/components/AppShell';import Page from './src/app/[locale]/community/page';const q=new URLSearchParams(location.search),locale=q.get('lang')||location.pathname.split('/')[1]||'en';const theme=q.get('theme')||localStorage.getItem('fixture-theme')||'dark';localStorage.setItem('fixture-theme',theme);document.documentElement.dataset.theme=theme;document.body.dataset.theme=theme;document.documentElement.classList.add('theme-'+theme);document.body.classList.add('theme-'+theme);document.documentElement.lang=locale;window.__writes=[];Page({params:Promise.resolve({locale}),searchParams:Promise.resolve(Object.fromEntries(q))}).then(screen=>createRoot(document.getElementById('root')).render(<AppShell locale={locale} signedIn role="consumer">{screen}</AppShell>));`;
 const files = [
   "src/app/[locale]/community/page.tsx",
   "src/app/[locale]/community/community-workflows.module.css",
   "src/components/community/ContributionDraftForm.tsx",
   "src/components/SpainAddressAutocomplete.tsx",
   "scripts/test-community-workflows-browser.mjs",
+  "src/components/AppShell.tsx",
+  "src/components/WorkspaceShell.tsx",
+  "src/components/PasaBottomDock.tsx",
+  "src/components/PasaBottomDock.css",
+  "src/components/PasaCinematic.css",
+  "src/components/PasaSharedSurfaces.css",
+  ...[
+    "globals",
+    "compact-app",
+    "brand",
+    "appearance",
+    "tablet-responsive",
+    "portal-unity",
+  ].map((name) => `src/app/${name}.css`),
 ];
 const sourceHashes = Object.fromEntries(
   files.map((f) => [
@@ -69,6 +83,10 @@ const bundle = await build({
           path: "auth",
           namespace: "fixture",
         }));
+        b.onResolve({ filter: /\/auth\/actions$/ }, () => ({
+          path: "shell-actions",
+          namespace: "fixture",
+        }));
         b.onResolve({ filter: /^\.\/actions$/ }, (a) =>
           a.importer.endsWith("/community/page.tsx")
             ? { path: "actions", namespace: "fixture" }
@@ -82,7 +100,7 @@ const bundle = await build({
           { filter: /^@\/components\/community\/CreatorDirectoryPage$/ },
           () => ({ path: "nav", namespace: "fixture" }),
         );
-        b.onResolve({ filter: /^next\/(link|navigation)$/ }, (a) => ({
+        b.onResolve({ filter: /^next\/(link|navigation|image)$/ }, (a) => ({
           path: a.path,
           namespace: "fixture",
         }));
@@ -92,15 +110,19 @@ const bundle = await build({
           contents:
             a.path === "auth"
               ? auth
-              : a.path === "actions"
-                ? `function record(action,form){window.__writes.push({action,values:Object.fromEntries(form)});return new Promise(resolve=>window.__resolveAction=resolve)}export function submitCommunityEvent(form){return record('suggest',form)}export function submitReport(form){return record('report',form)}`
-                : a.path === "unrendered-landing"
-                  ? `export function CommunityLanding(){throw Error('Public landing outside workflow fixture')}`
-                  : a.path === "nav"
-                    ? nav
-                    : a.path.endsWith("navigation")
-                      ? `export function notFound(){throw Error('not-found')}export function usePathname(){return'/'+(new URLSearchParams(location.search).get('lang')||location.pathname.split('/')[1]||'en')+'/community'}export function useSearchParams(){return new URLSearchParams(location.search)}`
-                      : `import React from'react';export default function Link({children,...props}){return<a {...props}>{children}</a>}`,
+              : a.path === "shell-actions"
+                ? `export function signOut(){throw Error('Global signout is outside the read-only Community fixture')}`
+                : a.path === "next/image"
+                  ? `import React from 'react';export default function Image({fill,priority,sizes,...props}){return<img {...props}/>} `
+                  : a.path === "actions"
+                    ? `function record(action,form){window.__writes.push({action,values:Object.fromEntries(form)});return new Promise(resolve=>window.__resolveAction=resolve)}export function submitCommunityEvent(form){return record('suggest',form)}export function submitReport(form){return record('report',form)}`
+                    : a.path === "unrendered-landing"
+                      ? `export function CommunityLanding(){throw Error('Public landing outside workflow fixture')}`
+                      : a.path === "nav"
+                        ? nav
+                        : a.path.endsWith("navigation")
+                          ? `export function notFound(){throw Error('not-found')}export function usePathname(){return'/'+(new URLSearchParams(location.search).get('lang')||location.pathname.split('/')[1]||'en')+'/community'}export function useSearchParams(){return new URLSearchParams(location.search)}export function useRouter(){return{push(href){location.assign(href)},prefetch(){},replace(href){location.replace(href)}}}`
+                          : `import React from'react';export default function Link({children,...props}){return<a {...props}>{children}</a>}`,
         }));
       },
     },
@@ -164,6 +186,57 @@ const results = [];
 async function capture(page, name) {
   await page.evaluate(() => scrollTo(0, 0));
   await page.screenshot({ path: resolve(dir, name + ".png"), fullPage: true });
+  const workspace = page.locator(".community-workspace");
+  const palette = await workspace.evaluate((element) => ({
+    panel: getComputedStyle(element).getPropertyValue("--pasa-ui-panel").trim(),
+    elevated: getComputedStyle(element)
+      .getPropertyValue("--pasa-ui-elevated")
+      .trim(),
+    theme: document.documentElement.dataset.theme,
+  }));
+  if (palette.theme === "dark") {
+    expect(palette.panel, `${name}: actual Community charcoal panel`).toBe(
+      "#131619",
+    );
+    expect(
+      palette.elevated,
+      `${name}: actual Community charcoal controls`,
+    ).toBe("#1c1a18");
+  }
+  await expect(page.locator(".app-shell .community-workspace")).toBeVisible();
+  const controls = workspace.locator(
+    "button:not(:disabled),a[href],input:not([type=hidden]):not(:disabled),select:not(:disabled),textarea:not(:disabled),summary",
+  );
+  let lower;
+  for (let index = (await controls.count()) - 1; index >= 0; index--) {
+    const control = controls.nth(index);
+    if (await control.isVisible()) {
+      lower = control;
+      break;
+    }
+  }
+  if (lower) {
+    await lower.scrollIntoViewIfNeeded();
+    await expect
+      .poll(
+        () =>
+          lower.evaluate((element) => {
+            const rect = element.getBoundingClientRect();
+            return [0.2, 0.5, 0.8].map((fraction) => {
+              const target = document.elementFromPoint(
+                rect.left + rect.width * fraction,
+                rect.top + rect.height / 2,
+              );
+              return target === element || element.contains(target);
+            });
+          }),
+        {
+          message: `${name}: lower enabled control stays clear of the actual dock`,
+        },
+      )
+      .toEqual([true, true, true]);
+    await page.screenshot({ path: resolve(dir, name + "-lower.png") });
+  }
 }
 async function ready(page) {
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
@@ -173,7 +246,9 @@ async function ready(page) {
   }));
   expect(size.document).toBeLessThanOrEqual(size.width + 1);
   const placeholderContrast = await page
-    .locator("input[placeholder],textarea[placeholder]")
+    .locator(
+      ".community-workspace input[placeholder],.community-workspace textarea[placeholder]",
+    )
     .evaluateAll((nodes) =>
       nodes.map((node) => {
         const rgba = (value) => {
@@ -291,11 +366,32 @@ try {
         const errors = [];
         page.on("pageerror", (e) => errors.push(e.message));
         const prefix = `${locale}-${theme}-${width}`;
+        console.log(`Checking Community workflows ${prefix}`);
         for (const view of ["suggest", "report", "suggestions", "reports"]) {
           await page.goto(
             `${origin}/?lang=${locale}&theme=${theme}&view=${view}`,
           );
           await ready(page);
+          if (view === "suggest") {
+            const opener = page.locator(
+              ".community-workspace .workspace-mobile-trigger",
+            );
+            if (await opener.isVisible()) {
+              await opener.focus();
+              if (width === 390) await opener.tap();
+              else await page.keyboard.press("Enter");
+              await expect(opener).toHaveAttribute("aria-expanded", "true");
+              await page.keyboard.press("Tab");
+              await expect(
+                page
+                  .locator(".community-workspace .workspace-drawer a:visible")
+                  .first(),
+              ).toBeFocused();
+              await page.keyboard.press("Escape");
+              await expect(opener).toHaveAttribute("aria-expanded", "false");
+              await expect(opener).toBeFocused();
+            }
+          }
           if (view === "reports") {
             await expect(
               page.getByText(
@@ -307,7 +403,9 @@ try {
             ).toBeVisible();
           }
           const controls = await page
-            .locator("input:not([type=hidden]),select,textarea,form button")
+            .locator(
+              ".community-workspace input:not([type=hidden]),.community-workspace select,.community-workspace textarea,.community-workspace form button",
+            )
             .evaluateAll((nodes) =>
               nodes.map((e) => ({
                 name: e.name,
@@ -437,9 +535,9 @@ try {
         await expect(page.locator("[name=addressProviderId]")).toHaveValue(
           address.id,
         );
-        await expect(page.locator("[name=latitude]")).toHaveValue(
-          String(address.latitude),
-        );
+        await expect(
+          page.locator(".community-workspace [name=latitude]"),
+        ).toHaveValue(String(address.latitude));
         await capture(page, prefix + "-suggest-recovered");
         results.push({
           name: prefix + "-suggest-recovered",

@@ -2,11 +2,11 @@
  * Presentation only: age gating, consent and data deletion remain server-owned.
  */
 .account-completion {
-  --onboarding-ink: #f4f8ff;
-  --onboarding-muted: #b9c9df;
-  --onboarding-panel: #1b2c49;
-  --onboarding-control: #14223a;
-  --onboarding-line: rgba(180, 204, 232, 0.23);
+  --onboarding-ink: #faf7f3;
+  --onboarding-muted: #c5bcb2;
+  --onboarding-panel: #181715;
+  --onboarding-control: #211e1b;
+  --onboarding-line: rgba(217, 192, 167, 0.23);
   --onboarding-accent: #ff994d;
   min-height: 100dvh;
   display: grid;
@@ -24,10 +24,10 @@
     ),
     radial-gradient(
       ellipse at 1% 100%,
-      rgba(64, 121, 192, 0.16),
+      rgba(151, 69, 25, 0.08),
       transparent 50%
     ),
-    #101a30;
+    #090b0d;
 }
 html[data-theme="light"] .account-completion {
   --onboarding-ink: #17283b;
@@ -251,4 +251,14 @@ html[data-theme="light"] .account-completion {
     transition-duration: 0.01ms;
     animation-duration: 0.01ms;
   }
+}
+
+html:not([data-theme="light"]) .account-completion .button.secondary {
+  background: var(--onboarding-control);
+  color: var(--onboarding-ink);
+  border-color: var(--onboarding-line);
+}
+html:not([data-theme="light"]):has(.account-completion) {
+  background-color: #090b0d;
+  scrollbar-color: #65574b #090b0d;
 }

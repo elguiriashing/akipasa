@@ -113,8 +113,14 @@
     },
     "src/app/[locale]/account/settings/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
+      "status": "accepted",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review. Settings individually accepted from actual source67bd hosted32 notice screenshots/464cases, native actions and measured contrast, preserving global provider/device requirements.",
+      "acceptance": {
+        "reviewer": "Codex community_release_review (responsible tester)",
+        "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492"
+      }
     },
     "src/app/[locale]/account/subscription/operations/page.tsx": {
       "scope": "consumer",
@@ -238,8 +244,14 @@
     },
     "src/app/[locale]/auth/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES. Consumer entrance now uses decorative nightlife art, compact branding and opaque near-black readable form surfaces; provider/action/consent/return contracts retained. Isolated72cases and initial integrated EN/ES contrast passed; final source visual/device approval remains pending."
+      "status": "accepted",
+      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES. Consumer entrance now uses decorative nightlife art, compact branding and opaque near-black readable form surfaces; provider/action/consent/return contracts retained. Isolated72cases and initial integrated EN/ES contrast passed; final source visual/device approval remains pending. Individually reviewed actual hosted499 Auth images, unchanged lower/error/native keyboard states and maintained action/contrast tests. Overall provider and physical-device approval is not inferred.",
+      "acceptance": {
+        "reviewer": "Codex business_screens (responsible tester)",
+        "reviewedCommit": "4994310941ab7c07482a5abbb122e9d68be74d82",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41116585338/artifacts/13007376903",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41116585338/job/124272267202"
+      }
     },
     "src/app/[locale]/auth/recover/page.tsx": {
       "scope": "consumer",

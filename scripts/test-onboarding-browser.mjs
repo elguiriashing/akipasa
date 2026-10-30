@@ -20,7 +20,7 @@ mkdirSync(out, { recursive: true });
 const bundle = resolve(out, "render.cjs");
 await build({
   stdin: {
-    contents: `import React from 'react';import{renderToStaticMarkup}from'react-dom/server';import Page from './src/app/[locale]/onboarding/page';import Privacy from './src/app/[locale]/onboarding/privacy/page';export async function render(locale,status,route){globalThis.onboardingVisualStatus=status;if(route==='privacy')return renderToStaticMarkup(await Privacy({params:Promise.resolve({locale}),searchParams:Promise.resolve(status==='requested'?{requested:'1'}:{})}));return renderToStaticMarkup(await Page({params:Promise.resolve({locale}),searchParams:Promise.resolve({next:'/'+locale+'/account/subscription'})}));}`,
+    contents: `import React from 'react';import{renderToStaticMarkup}from'react-dom/server';import Page from './src/app/[locale]/onboarding/page';import Privacy from './src/app/[locale]/onboarding/privacy/page';export async function render(locale,status,route){globalThis.onboardingVisualStatus=status==='error'?'pending':status;if(route==='privacy')return renderToStaticMarkup(await Privacy({params:Promise.resolve({locale}),searchParams:Promise.resolve(status==='requested'?{requested:'1'}:status==='error'?{error:'request'}:{})}));return renderToStaticMarkup(await Page({params:Promise.resolve({locale}),searchParams:Promise.resolve({next:'/'+locale+'/account/subscription',...(status==='error'?{error:'username'}:{})})}));}`,
     resolveDir: process.cwd(),
     loader: "tsx",
   },
@@ -92,7 +92,7 @@ const server = createServer(async (req, res) => {
   try {
     const url = new URL(req.url, "http://127.0.0.1");
     const locale = url.searchParams.get("locale") === "es" ? "es" : "en";
-    const status = ["underage", "requested"].includes(
+    const status = ["underage", "requested", "error"].includes(
       url.searchParams.get("status"),
     )
       ? url.searchParams.get("status")
@@ -125,18 +125,21 @@ try {
     for (const { route, status } of [
       { route: "onboarding", status: "pending" },
       { route: "onboarding", status: "underage" },
+      { route: "onboarding", status: "error" },
       { route: "privacy", status: "default" },
       { route: "privacy", status: "requested" },
+      { route: "privacy", status: "error" },
     ])
       for (const theme of ["light", "dark"])
         for (const [width, height] of [
           [360, 800],
-          [800, 1280],
-          [1280, 800],
+          [390, 844],
+          [820, 1180],
           [1440, 900],
         ]) {
           const page = await browser.newPage({
             viewport: { width, height },
+            reducedMotion: "reduce",
             ...(width === 360
               ? { isMobile: true, hasTouch: true, deviceScaleFactor: 3 }
               : {}),
@@ -145,6 +148,11 @@ try {
             `http://127.0.0.1:${port}/?locale=${locale}&status=${status}&theme=${theme}&route=${route}`,
           );
           await page.locator("h1").waitFor();
+          if (
+            status === "error" &&
+            (await page.locator('[role="alert"]').count()) !== 1
+          )
+            throw new Error("Validation error must render an actual alert");
           const overflow = await page.evaluate(
             () => document.documentElement.scrollWidth > innerWidth,
           );
@@ -152,9 +160,64 @@ try {
             throw new Error(
               `Horizontal overflow ${locale}/${route}/${status}/${theme}/${width}`,
             );
+          const palette = await page
+            .locator(".account-completion")
+            .evaluate((element) => {
+              const style = getComputedStyle(element);
+              const rgb = (value) =>
+                value
+                  .match(/[\d.]+/g)
+                  .slice(0, 3)
+                  .map(Number);
+              const luminance = (value) =>
+                rgb(value)
+                  .map((n) => n / 255)
+                  .map((n) =>
+                    n <= 0.04045 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4,
+                  )
+                  .reduce(
+                    (sum, n, i) => sum + n * [0.2126, 0.7152, 0.0722][i],
+                    0,
+                  );
+              const resolveColor = (token) => {
+                const probe = document.createElement("span");
+                probe.style.color = style.getPropertyValue(token);
+                element.append(probe);
+                const color = getComputedStyle(probe).color;
+                probe.remove();
+                return color;
+              };
+              const panel = resolveColor("--onboarding-panel");
+              const contrasts = [
+                "--onboarding-ink",
+                "--onboarding-muted",
+                "--onboarding-accent",
+              ].map((token) => {
+                const color = resolveColor(token);
+                const a = luminance(color),
+                  b = luminance(panel);
+                return {
+                  token,
+                  color,
+                  ratio: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05),
+                };
+              });
+              return {
+                panel,
+                control: resolveColor("--onboarding-control"),
+                contrasts,
+              };
+            });
+          if (palette.contrasts.some(({ ratio }) => ratio < 4.5))
+            throw new Error(
+              `Onboarding text contrast failed: ${JSON.stringify(palette)}`,
+            );
           const inputs = await page.locator('input[name="adult"]').count();
           if (
-            inputs !== (route === "onboarding" && status === "pending" ? 2 : 0)
+            inputs !==
+            (route === "onboarding" && ["pending", "error"].includes(status)
+              ? 2
+              : 0)
           )
             throw new Error("Unexpected declaration controls");
           if (route === "privacy") {
@@ -214,7 +277,7 @@ try {
                 `Undersized mobile controls: ${JSON.stringify(shortTargets)}`,
               );
           }
-          if (width === 360 || width === 1280) {
+          {
             await page.screenshot({
               path: resolve(
                 out,
@@ -236,6 +299,7 @@ try {
             height,
             overflow: false,
             controls: inputs,
+            palette,
           });
           await page.close();
         }

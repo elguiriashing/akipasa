@@ -2,6 +2,37 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 30 October 20:10 UTC —24 routes and all6 fallbacks accepted; final theme repairs
+
+Published baseline4994310941ab7c07482a5abbb122e9d68be74d82: all11ordinary workflows
+GREEN; strict remains red; current local matrix has66routegap. Actual586public=509PASS77conditional,
+464+32Account,76dedicated,136native. Cloudflare stored25676609 matches499 upload;
+production remains3353d87/26e100%, previewsdisabled, rollback retained.
+
+Next validated6filebatch: Communitydark scoped workflow tokens+realAppShell272
+cases (nativekeyboard/menu/touch/lowerhits), Onboarding/restrictedPrivacy dark
+charcoal96cases (all4widths/2languages/2themes, actualerrors, guards/reducedmotion),
+32lightpixelpairsidentical, contrast8.46dark/5.62light. Existing logic/age/consent/
+checkboxdefaults unchanged. Maintained94Prestigeactualasyncpage/AppShell fixtures
+and12nativeGET checks added to existingrequiredconsumerjob+smallartifact; explicit
+syntheticAuth/RPC, NOTactualNext/provider/RLS/award/device proof. Fullfrozen6file
+npmcheckEXIT0:2876Vitest/17groups,140Node,193build; allhashesmatch.
+
+Actual individual hosted review addsSettings/Auth and all6fallback contracts:
+24/90accepted,66inprogress,13excluded,6/6fallbackaccepted. No destinationapproval
+fromaliases, no overallAuth/tenant/provider/payment/devicewaiver. OneCommunity
+pendinglabel assertionfailedonce, preserved; unchangeddeferred/assertion passed
+17isolated+272fullrerun. Causeunproven, no inventedfixturefix; watchnewCI.
+
+NEXT: commit/push thisvalidatedbatch and currentgenuineacceptances, verifyactual
+freshCI. FixRoadmap actualdesktopSearch/backlinkoverlap next, addmeaningfulTerms
+serveraction tests, and publishRecoveryfixtureproof forformalreview; don'tinvent
+hostedRecoveryevidence fromlocalimages. Remainingprovider/role/tenant/verifiedXP
+stagingblocked on separate testdatabase approval/configuration; onlyliveDBexists.
+PendingStaff/previewSQLunapplied, termsalreadyapplied335once, candidateAndroidstill
+needed. No merge/deploy/SQL/resource/customer changes. Rootsoleintegrator, lease
+20:45UTC; extendifstillworking. Existinghourlytaskisconditionalpollingonly.
+
 ## 30 October 19:33 UTC —22 genuine routes accepted; certificate/Admin defects closed
 
 Published baseline67bd0fa141b16a058515ff48f94ab50c41bbf7a9 passes11ordinary exact-head

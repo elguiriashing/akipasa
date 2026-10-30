@@ -1,5 +1,29 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-30 | Complete Community and onboarding theme consistency
+
+Community Suggest/Reports/history use dark charcoal tokens scoped by the existing
+local workflow marker; public landing, Creator pages, light mode and sister
+products are unaffected.272 maintained cases pass with the real AppShell, native
+menu/keyboard/touch and lower-control checks. A one-off pending-label failure is
+retained; the unchanged deferred fixture/assertion passed17 isolated and272 full
+rerun cases. Its cause is not invented; watch fresh CI for recurrence.
+
+Onboarding/restricted Privacy use dark charcoal panels/controls/scrollbars while
+all32 light comparisons remain pixel-identical.96 maintained cases pass across
+EN/ES, both themes, four widths, reduced motion, real error alerts and guards.
+Minimum tested contrast8.46dark/5.62light. Age, consent, terms, actions, redirects
+and checkbox defaults are unchanged. The existing required consumer job now runs
+94 actual Prestige-page/AppShell fixture cases with12 native retry GET checks;
+synthetic adapters are explicitly not actual Next/Auth/RLS/provider certification.
+Full six-file frozen check passes2876Vitest/17groups,140Node and193-route build.
+
+Individual hosted review now records24/90 routes and all six fallback contracts
+accepted.66 routes remain; overall provider, tenant, payment and physical-device
+approval is not inferred. Roadmap has a real desktop Search/backlink overlap;
+Terms needs direct action branch tests; Recovery needs hosted screenshots. These
+specific gaps stay open. Production, pending SQL and paid resources are unchanged.
+
 ## 2026-10-30 | Complete certificate failure journeys and readable Admin headings
 
 Prestige certificate provider errors retain the existing workspace, localized

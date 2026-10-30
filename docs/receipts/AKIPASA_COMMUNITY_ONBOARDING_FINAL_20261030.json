@@ -1,0 +1,101 @@
+{
+  "version": 1,
+  "baselineCommit": "4994310941ab7c07482a5abbb122e9d68be74d82",
+  "sourceHashes": {
+    "src/app/[locale]/community/community-workflows.module.css": "8d2bb3b7250ceaf46daa6b96f608f3e61068d6b07e917612009d194e88a620ce",
+    "scripts/test-community-workflows-browser.mjs": "af91bfe9f3cb053eec2b13c3e377df8419866fa3f77f85f8d4913e7e465f6040",
+    "src/app/[locale]/onboarding/onboarding.css": "75818fbf1c2f58b51a952f59c038d5a17e2b2a5775294a8907803db2d535b94c",
+    "scripts/test-onboarding-browser.mjs": "85d7d4266f62a724ae624a0bf0ab15ebd13c7df751a4ac5c77a4cc86d1c3a24b",
+    "scripts/test-prestige-routes-browser.mjs": "d9a84fac3fc9009fe42dc08479027e0cd6ef18f8ef8fb4974f730af6a4abaaa8",
+    ".github/workflows/tablet-browser.yml": "d83043d30a32282cc896abf3c0f475a7ff4d12e866727101bef69b881e1a91cd"
+  },
+  "fullCheck": {
+    "exitCode": 0,
+    "vitestTests": 2876,
+    "vitestGroups": 17,
+    "initialNodeTests": 140,
+    "builtRoutes": 193,
+    "allSixFilesUnchanged": true,
+    "log": "/tmp/akipasa-community-onboarding-FROZEN-check-20261030.log"
+  },
+  "community": {
+    "maintainedCasesPassed": 272,
+    "originalCasesAndAssertionsRetained": true,
+    "actualAppShellAdded": true,
+    "scope": "Dark-only local workflow ancestor tokens; public landing, Creator pages and sister products do not match.",
+    "verified": [
+      "Native menu Tab/Escape",
+      "Touch control",
+      "Below-fold three-point control hits",
+      "EN/ES and both themes"
+    ],
+    "oneOffPendingAssertion": {
+      "failedLog": "/tmp/akipasa-community-charcoal-final2-20261030.log",
+      "boundedUnchangedCasesPassed": 17,
+      "fullUnchangedCasesPassed": 272,
+      "syntheticDeferredAndPendingAssertionUnchanged": true,
+      "rootCauseNotInvented": true,
+      "watchNextHostedRunForRecurrence": true
+    }
+  },
+  "onboarding": {
+    "maintainedCasesPassed": 96,
+    "viewports": [360, 390, 820, 1440],
+    "locales": ["en", "es"],
+    "themes": ["dark", "light"],
+    "minimumDarkContrast": 8.4588,
+    "minimumLightContrast": 5.624,
+    "lightPixelIdenticalPairs": 32,
+    "positiveOverflow": 0,
+    "scope": "Dark charcoal palette and scoped controls/scrollbars; age/consent/terms/actions/redirects and checkbox defaults unchanged.",
+    "actualErrorAlertsAsserted": true,
+    "fixtureErrorAllowlistCorrectionNotAppBehaviorChange": true
+  },
+  "prestige": {
+    "maintainedActualPageFixtureCasesPassed": 94,
+    "actualRoutes": 4,
+    "nativeKeyboardGetRetries": 12,
+    "scope": "Actual async page exports and AppShell with synthetic Auth/RPC/action adapters. Not actual Next transport, real Auth/RLS/database/awards or device proof.",
+    "requiredExistingConsumerJobStepAdded": true,
+    "dedicatedArtifact": "prestige-route-evidence",
+    "existingStepsAssertionsArchivesAndPermissionsRetained": true
+  },
+  "acceptance": {
+    "totalAcceptedRoutes": 24,
+    "remainingInScopeRoutes": 66,
+    "acceptedFallbackStates": 6,
+    "remainingFallbackStates": 0,
+    "receipt": "AKIPASA_THEME_FALLBACK_ACCEPTANCE_20261030.json"
+  },
+  "priorHeadCI": {
+    "source": "4994310941ab7c07482a5abbb122e9d68be74d82",
+    "ordinaryWorkflowsPassed": 11,
+    "strict": "genuine remaining-route failure",
+    "publicCollected": 586,
+    "publicPassed": 509,
+    "publicConditionalSkips": 77,
+    "accountPassed": 464,
+    "profilePassed": 32,
+    "spotlightPassed": 76,
+    "nativeFallbackPassed": 136,
+    "cloudflareStoredVersion": "25676609-3a86-4a4d-a093-dd57c8ece3aa"
+  },
+  "unresolved": [
+    "Roadmap actual desktop Search/backlink overlap requires route-local repair",
+    "Terms acceptance needs executable server-action branch tests",
+    "Recovery needs accessible hosted screenshots rather than local-only proof",
+    "Safe isolated Auth/role/tenant/provider/verified-XP staging, pending SQL approvals and candidate Android remain external release dependencies"
+  ],
+  "production": {
+    "merged": false,
+    "deployed": false,
+    "sqlApplied": false,
+    "source": "3d87eb7c995fbd0947cb25a771a43376d9462645",
+    "worker": "26e51e72-bb1e-49e9-a307-243e0203ef8d"
+  },
+  "sealedExternalReceiptHashes": {
+    "community-prestige-maintained-final-20261030.json": "797bfabf07016569871331c712c92704f46c6d8e09d78a922d2c58f7a2ae5575",
+    "onboarding-charcoal-final-20261030/responsible-review.json": "3a48164291f9d7f7390a6d9148df64530a017c4562442539ff507c2a27c2f18c",
+    "4994310-ci-verification-20261030.json": "e6d51381fa3e01cceedd58e62f4f57afdbfb7b880b1c7f071d635f88c1a6b741"
+  }
+}

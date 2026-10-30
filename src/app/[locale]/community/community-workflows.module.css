@@ -1,3 +1,15 @@
+:global(html:not([data-theme="light"]))
+  :global(.app-shell)
+  :global(.community-workspace):has(.workflow) {
+  --pasa-ui-panel: #131619;
+  --pasa-ui-elevated: #1c1a18;
+  --pasa-ui-glass: rgb(19 22 25 / 96%);
+  --pasa-ui-border: #484039;
+  --pasa-ui-text: #faf7f3;
+  --pasa-ui-subtle: #c7beb4;
+  --pasa-ui-highlight: #ffad73;
+}
+
 .workflow,
 .section,
 .content {
