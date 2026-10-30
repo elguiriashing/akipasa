@@ -2,6 +2,32 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 30 October 12:54 UTC — missing tablet entry journeys verified
+
+Current application source61b08c159e42192613f9eba8a4431c3a2b312082; only additive
+browser coverage/capture readiness and these receipts/docs follow. Four new820tablet
+actualNext EN/ES ×dark/light cases pass18.2s, preserving existing546browser members
+and every assertion; total550collected, zero removed. HQbrand capture now waits
+for decoded SVG and two paintframes; dimensions alone previously raced finalpaint.
+No runtime image/loading/style change. Twelve supplemental360/820/1440HQguest
+states show361orange logo pixels and unobscured real linkfragments/actioncenters,
+nooverflow. Root inspected en-dark360upper andes-light820lower. Original multiline
+inline-anchor union-center probe failure retained; actualfragments correctly pass.
+No externalAuth/realpermission/device/owner acceptance claimed. Scopedlint/format
+and finaltypecheck PASS. Receipt: AKIPASA_HQ_TABLET_20261030.json.
+
+61bfullcheck2678Vitest/132initialNode/193routebuildPASS; cleanCloudflare branchbuild
+7d40463c-5555-41b9-9304-4a1f45b7ddf8SUCCESSversionsuploadonly. Tenordinary61bworkflows
+passed at12:52; Account/publicshards stillrunning, notclaimedgreen. Strict remains
+expectedred88routesawaiting+6fallbackstates. No new acceptance promotion beyond two
+redirects.3353d87/Worker26eproduction unchanged, newstaffSQLUNAPPLIED/unapproved.
+
+NEXT: publish validatedtestcoverage, inspect resultingexactheadCI/CF and repair
+actualfailures. Rootreviews newpristine97prefixharness before any fresh local
+resourceallocation; no2oldfixturesmutated. Canonicalagent owns ONLY newoutside-repo
+harnesspath during preparation; noSQLexecution/resourcecreation yet. Independent
+reproduction/role/provider/device/ownerfinalapproval remain genuinefullreleasegaps.
+
 ## 30 October 12:44 UTC — Map occurrence continuity and source reproduction
 
 Validated working tree based on6a923495; resulting commit follows this record.

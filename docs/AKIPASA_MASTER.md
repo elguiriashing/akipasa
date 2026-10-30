@@ -3519,3 +3519,18 @@ destination page nor HQ gateway is accepted. HQ is a rendered200page and retains
 its visual/tablet/external-access/device gaps. Matrix now2accepted/88inprogress/
 13excluded; six fallback states and full owner/device/strict gates remain. No audit
 assertion, workflow, schema, consent, role or production boundary was weakened.
+
+## 2026-10-30 | Complete conversion tablet coverage and stable HQ captures
+
+Existing conversion browser matrix lacked820tablet. Added exactly four EN/ES ×
+light/dark820x1180 cases while retaining all previous546collection members; current
+collection550, zero removed. Four new actualNext cases pass, covering membership,
+referral, HQgateway and confirmation entrypoints. A screenshot could capture the
+SVGlogo before final decoded paint: capture now waits for complete/naturalWidth,
+decode and two browser renderframes, no arbitrary sleep/runtime loading change.
+Twelve supplemental HQ guest states at360/820/1440 show decoded branding, nooverflow
+and actualinline-fragment/control hit-test access. Initial multiline-anchor union
+center false-positive is preserved; correct fragment checks pass. No runtime,
+provider, cross-host authorization, payment/customer data or productbranding change.
+AkiHQ remains separate from AkiBusiness. Root reviewed phone/tablet captures;
+physicalAndroid/owner/fullroute/protectedpermission acceptance remains outstanding.

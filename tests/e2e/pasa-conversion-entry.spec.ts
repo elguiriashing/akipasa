@@ -9,6 +9,7 @@ import { expect, test } from "@playwright/test";
 const devices = [
   { name: "phone-360", width: 360, height: 800, android: false },
   { name: "phone-390", width: 390, height: 844, android: false },
+  { name: "tablet-820", width: 820, height: 1180, android: false },
   { name: "desktop-1440", width: 1440, height: 900, android: false },
   { name: "android-webview-emulated", width: 390, height: 844, android: true },
 ] as const;
@@ -216,6 +217,25 @@ for (const locale of ["en", "es"] as const) {
             gatewayDimensions.scroll - gatewayDimensions.viewport,
             `HQ gateway overflow: ${JSON.stringify(gatewayDimensions)}`,
           ).toBeLessThanOrEqual(2);
+          const gatewayBrand = page.locator("main img").first();
+          await expect(gatewayBrand).toHaveJSProperty("complete", true);
+          expect(
+            await gatewayBrand.evaluate(
+              (image: HTMLImageElement) => image.naturalWidth,
+            ),
+          ).toBeGreaterThan(0);
+          await gatewayBrand.evaluate((image: HTMLImageElement) =>
+            image.decode(),
+          );
+          // Asset dimensions can precede the decoded SVG's final browser paint.
+          await page.evaluate(
+            () =>
+              new Promise<void>((resolve) =>
+                requestAnimationFrame(() =>
+                  requestAnimationFrame(() => resolve()),
+                ),
+              ),
+          );
           const gatewayScreenshot = `test-results/pasa-hq-gateway-${locale}-${device.name}-${theme}.png`;
           await page.screenshot({
             path: gatewayScreenshot,
