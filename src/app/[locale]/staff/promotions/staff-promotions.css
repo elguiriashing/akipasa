@@ -25,8 +25,8 @@
   border: 1px solid rgb(255 255 255 / 9%);
   border-radius: 1.5rem;
   background:
-    radial-gradient(ellipse at 94% 5%, rgb(0 210 184 / 15%), transparent 49%),
-    linear-gradient(125deg, #192341, #262046);
+    radial-gradient(ellipse at 94% 5%, rgb(255 118 40 / 18%), transparent 49%),
+    linear-gradient(125deg, #261c15, #121314);
   color: #f7f8fd;
 }
 
@@ -34,7 +34,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  color: #69e3d0;
+  color: #ffb17c;
   font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 0.12em;
@@ -65,7 +65,7 @@
 .staff-promotions-intro p {
   max-width: 55ch;
   margin: 0.55rem 0 0;
-  color: #d5d8e8;
+  color: #e1d8d0;
   font-size: 0.92rem;
   line-height: 1.55;
 }
@@ -84,7 +84,7 @@
 }
 
 .staff-promotions-total span {
-  color: #c5cadd;
+  color: #cec4bb;
   font-size: 0.75rem;
   font-weight: 700;
 }

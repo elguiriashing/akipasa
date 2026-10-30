@@ -1,0 +1,1164 @@
+{
+  "baselineCommit": "2949a2e555920ac5db5c11cd3d292270786180a0",
+  "definition": "Owner-audited implementation readiness with bounded passing tests, not formal acceptance or complete real-provider/device proof. No matrix status inferred.",
+  "classificationCounts": {
+    "1": 89,
+    "2": 1
+  },
+  "implementedReadyRoutes": 89,
+  "knownTechnicalRepairRoutes": 1,
+  "technicallyVerified": {
+    "completeRequiredEvidenceRouteCount": null,
+    "boundedPassingAutomatedEvidenceRoutes": 89,
+    "reason": "Full per-route required state/role/provider evidence is not yet reconciled; passing scoped fixtures must not manufacture a complete technical-verification count."
+  },
+  "acceptedRoutes": 5,
+  "routes": {
+    "src/app/[locale]/account/activity/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "account-family-completion-20261030.json",
+        "account-consumer-independent-qc-20261030.json"
+      ],
+      "missingProof": [
+        "Hosted head227 maintained Account360 passed; final personal32 passed after selector repair. Provider/RLS/live upload/payment not proven by disposable presentation fixtures."
+      ],
+      "sourceSha256": "d7c5e4e3558c4d48ed646e049981cb7b8b01c86880a69af21655b8620b9a77d5",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/account/bookings/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "account-family-completion-20261030.json",
+        "account-consumer-independent-qc-20261030.json"
+      ],
+      "missingProof": [
+        "Hosted head227 maintained Account360 passed; final personal32 passed after selector repair. Provider/RLS/live upload/payment not proven by disposable presentation fixtures."
+      ],
+      "sourceSha256": "5687d1e88bf394d9abef9492b5c853b7683df9f06a43ededa8d6ffd7c2613cd6",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/account/following/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "account-family-completion-20261030.json",
+        "account-consumer-independent-qc-20261030.json"
+      ],
+      "missingProof": [
+        "Hosted head227 maintained Account360 passed; final personal32 passed after selector repair. Provider/RLS/live upload/payment not proven by disposable presentation fixtures."
+      ],
+      "sourceSha256": "7a527cbf83347b97a1e5feff585c4840cbe589295e9be4e12afb1e7e3656a2b9",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/account/membership/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "tests/account-passport-redirect.test.ts",
+        "tests/akisuite-account-child-return.test.tsx",
+        "tests/akisuite-awards-auth-boundary.test.ts"
+      ],
+      "missingProof": [
+        "Redirect-only: review actual redirect/auth destination assertions rather than page screenshots. See exact-head CI unit results; no fabricated page image."
+      ],
+      "sourceSha256": "9afef6346c4c7d8c20cf9740f44871b63b504357c4793ee7ddfdbec8286eeb84",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/account/memberships/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "tests/account-passport-redirect.test.ts",
+        "tests/akisuite-account-child-return.test.tsx",
+        "tests/akisuite-awards-auth-boundary.test.ts"
+      ],
+      "missingProof": [
+        "Redirect-only: review actual redirect/auth destination assertions rather than page screenshots. See exact-head CI unit results; no fabricated page image."
+      ],
+      "sourceSha256": "e266baa95ad52e9c578f12fc395593e189a51144a0fe09703a606a1a8f3fd36e",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/account/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "account-family-completion-20261030.json",
+        "account-consumer-independent-qc-20261030.json"
+      ],
+      "missingProof": [
+        "Hosted head227 maintained Account360 passed; final personal32 passed after selector repair. Provider/RLS/live upload/payment not proven by disposable presentation fixtures."
+      ],
+      "sourceSha256": "61d0956c1d69ede2d1a706c08d12d6eda69f86bb1608db64d228add0d549019c",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/account/premium/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "account-family-completion-20261030.json",
+        "account-consumer-independent-qc-20261030.json"
+      ],
+      "missingProof": [
+        "Hosted head227 maintained Account360 passed; final personal32 passed after selector repair. Provider/RLS/live upload/payment not proven by disposable presentation fixtures."
+      ],
+      "sourceSha256": "e527d804d89b2449caaf414d265ae6cc54fcd8c153d5e11418e7574f6c5c8150",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/account/privacy/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "account-family-completion-20261030.json",
+        "account-consumer-independent-qc-20261030.json"
+      ],
+      "missingProof": [
+        "Hosted head227 maintained Account360 passed; final personal32 passed after selector repair. Provider/RLS/live upload/payment not proven by disposable presentation fixtures."
+      ],
+      "sourceSha256": "2ca69145e52eb7aa0dd2a37123abd7d66dad3363d3b341f3b2884ad0b4355abf",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/account/profile/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "account-family-completion-20261030.json",
+        "account-consumer-independent-qc-20261030.json"
+      ],
+      "missingProof": [
+        "Hosted head227 maintained Account360 passed; final personal32 passed after selector repair. Provider/RLS/live upload/payment not proven by disposable presentation fixtures."
+      ],
+      "sourceSha256": "606c9f4f497a9303cf3c206de3156f73dac47b043be6ce06ae387813fcdc331f",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/account/referrals/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": ["account-current-gap-final-20261030/results.json"],
+      "missingProof": [
+        "Guest/restricted redirect probe is adapter-supplied; does not independently certify auth/RLS. Enabled referral representative state, real checkout and provider actions not executed; production launch gates remain off."
+      ],
+      "sourceSha256": "3b78291fe853fe796ed889d158b0e4fcad123185583ef8a93f198e461f9ca9bd",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/account/rewards/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "tests/account-passport-redirect.test.ts",
+        "tests/akisuite-account-child-return.test.tsx",
+        "tests/akisuite-awards-auth-boundary.test.ts"
+      ],
+      "missingProof": [
+        "Redirect-only: review actual redirect/auth destination assertions rather than page screenshots. See exact-head CI unit results; no fabricated page image."
+      ],
+      "sourceSha256": "b960c1ec17f27cf000b15d19957461edd67a4db89f3a5fc6507ca62620e9ccad",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/account/saved/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "account-family-completion-20261030.json",
+        "account-consumer-independent-qc-20261030.json"
+      ],
+      "missingProof": [
+        "Hosted head227 maintained Account360 passed; final personal32 passed after selector repair. Provider/RLS/live upload/payment not proven by disposable presentation fixtures."
+      ],
+      "sourceSha256": "dd603f7bd7d6b1a1c9916ba4f10a71a18c88e13aa1201d341eb2f69ea85efcc4",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/account/settings/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "account-family-completion-20261030.json",
+        "account-consumer-independent-qc-20261030.json"
+      ],
+      "missingProof": [
+        "Hosted head227 maintained Account360 passed; final personal32 passed after selector repair. Provider/RLS/live upload/payment not proven by disposable presentation fixtures."
+      ],
+      "sourceSha256": "dbbb209da73c23c5f1755886be54df0da05413446105bdcae8031819c3644e49",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/account/subscription/operations/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": ["account-current-gap-final-20261030/results.json"],
+      "missingProof": [
+        "Guest/restricted redirect probe is adapter-supplied; does not independently certify auth/RLS. Enabled referral representative state, real checkout and provider actions not executed; production launch gates remain off."
+      ],
+      "sourceSha256": "61202fc54ad62d2357501628dd7ca6614cc51ae9aa09262f911d349a32a97b79",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/account/subscription/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "account-family-completion-20261030.json",
+        "account-consumer-independent-qc-20261030.json"
+      ],
+      "missingProof": [
+        "Hosted head227 maintained Account360 passed; final personal32 passed after selector repair. Provider/RLS/live upload/payment not proven by disposable presentation fixtures."
+      ],
+      "sourceSha256": "275914add854da1728913f697eb3a2d71a4addbac3286a8f66e69e7f30c0a811",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/auth/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "support-auth-membership-review-20261030.md",
+        "support-collision-20261030/results.json",
+        "support-keyboard-20261030/results.json"
+      ],
+      "missingProof": [
+        "Independent reviewed actual Next signin/signup/magic/reset-request and guest returns. No new provider credential login; earlier owner physical Home/Login/Passport applies only live batch."
+      ],
+      "sourceSha256": "cbe8545caf3e67aef2ddd13696f9d8dc9b57aaa0f76a33593c4b880603b6865d",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/auth/recover/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "recovery-consumer-20261030/results.json",
+        "/tmp/akipasa-recovery-vitest-20261030.log"
+      ],
+      "missingProof": [
+        "New scoped presentation working source; root integration/build/exact-head CI and independent review pending. Disposable recovery session/actions; real email token/provider update/LocaleLayout/physical device not exercised."
+      ],
+      "sourceSha256": "632239de9f2419a6b542b83a23888bd69ff6ab5320446f284b1124a51d428981",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/membership/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "support-auth-membership-review-20261030.md",
+        "test-results/pasa-conversion-en-phone-390-dark.json",
+        "hq-conversion-tablet-review-20261030.md"
+      ],
+      "missingProof": [
+        "Actual Next guest UI/keyboard and conversion route states; no checkout purchase or private subscription evidence."
+      ],
+      "sourceSha256": "37abd67d7e352b1f9a3cc6b06f88c88164e5f464aec4a0020972bdd32f290877",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/onboarding/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "test-results/onboarding-browser/evidence.json",
+        "/tmp/akipasa-recovery-vitest-20261030.log"
+      ],
+      "missingProof": [
+        "390/820 protected full LocaleLayout renders not independently captured; component source/styles implemented and tested, genuine authenticated provider flow remains separate."
+      ],
+      "sourceSha256": "9f586bebe17623d8debc9f38c1f4f7e30cd7f78d9d02f2b0bc6ec2f5bc31cbba",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/onboarding/privacy/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "test-results/onboarding-browser/evidence.json",
+        "/tmp/akipasa-recovery-vitest-20261030.log"
+      ],
+      "missingProof": [
+        "390/820 protected full LocaleLayout renders not independently captured; component source/styles implemented and tested, genuine authenticated provider flow remains separate."
+      ],
+      "sourceSha256": "2f9dfe38b0f92bdb6dfec08a54394c3308b106b556ac17ae8a4186dc85da443b",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/referrals/page.tsx": {
+      "owner": "Consumer",
+      "classification": 1,
+      "scopeEvidence": [
+        "test-results/pasa-conversion-en-phone-390-dark.json",
+        "hq-conversion-tablet-review-20261030.md",
+        "tests/akisuite-referral-pages.test.tsx"
+      ],
+      "missingProof": [
+        "Enabled attribution guarded state has unit/disposable evidence; actual enabled signed-in full-shell browser capture and programme launch approvals remain separate; gate remains off."
+      ],
+      "sourceSha256": "7f21a85160d09151d9f869ce354580a677ef2aa1a9e4130e66f5b345453b7e90",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/accommodation-review/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof",
+        "Ten-route actual source/AdminLayout/AppShell pack: ENdark390/ESlight1440 synthetic empty/error input; consumer role denied via actual guard; operations-admin-gap-completion-20261030.md defines state limitations"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "e9e60ab02e46476289c378e07ffd86b3ba63ffcecb46bfe2b9142ef6cdf3b9db",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/achievements/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof",
+        "Ten-route actual source/AdminLayout/AppShell pack: ENdark390/ESlight1440 synthetic empty/error input; consumer role denied via actual guard; operations-admin-gap-completion-20261030.md defines state limitations"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "1670e83bb9924baf58596600bdf2490ed6ac2667933d4da7e7b799d6d6f6b1b4",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/achievements/venues/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof",
+        "Ten-route actual source/AdminLayout/AppShell pack: ENdark390/ESlight1440 synthetic empty/error input; consumer role denied via actual guard; operations-admin-gap-completion-20261030.md defines state limitations"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "2a36fa1f5d199fa71e0e18e168661173ef215a1ed6f4121d977a8f47196ef8a0",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/ai-team/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "117707dcebc59b97a11750b5e7460c15ba455e9f8181f5092fa24ebc730f56ec",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/audit/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof",
+        "Ten-route actual source/AdminLayout/AppShell pack: ENdark390/ESlight1440 synthetic empty/error input; consumer role denied via actual guard; operations-admin-gap-completion-20261030.md defines state limitations"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "9c123fbc6871d787f46cc9f64a1e1f893ff5db5be7c38b5a135d19c37cedc4cc",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/business-applications/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof",
+        "Ten-route actual source/AdminLayout/AppShell pack: ENdark390/ESlight1440 synthetic empty/error input; consumer role denied via actual guard; operations-admin-gap-completion-20261030.md defines state limitations"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "d733fedad8d189afa3a21a6f6e6b2af4997c0073849a4baf2836102a9fd8ace1",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/catalogue/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "3cc6717c09af0592f6d2a888ed71f68242ddbfda103e4eb4eeff149406095d68",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/listing-review/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof",
+        "Ten-route actual source/AdminLayout/AppShell pack: ENdark390/ESlight1440 synthetic empty/error input; consumer role denied via actual guard; operations-admin-gap-completion-20261030.md defines state limitations"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "a6d283e844c92d9e1ab5cba84cb846ed7f3d677d6e4308366327163c4906b212",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "cb79735616e0e23c0c35575f24e120b23ffbfb7f09cff13133a3e37f076aff1b",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/passports/awards/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "bef48f0aacee24bb7902f6fdd9637727e251f48706ee4d83a9c712cfeef0879d",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/passports/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof",
+        "Ten-route actual source/AdminLayout/AppShell pack: ENdark390/ESlight1440 synthetic empty/error input; consumer role denied via actual guard; operations-admin-gap-completion-20261030.md defines state limitations"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "984faae12207a936cfe18d212abd017cf1fadb634844b43b0ce0e604e207d836",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/passports/prestige/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "0bd2f879481c9b4624b122ce67888040e1848784a2801ca4fd7f6e188103f905",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/personalisation/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof",
+        "Ten-route actual source/AdminLayout/AppShell pack: ENdark390/ESlight1440 synthetic empty/error input; consumer role denied via actual guard; operations-admin-gap-completion-20261030.md defines state limitations"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "1adffe2864e9b95bcdb173b2c5152771f82724af97be2e93b57826d079b79fa4",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/privacy/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "3a3036e66174184cf6a03e0fe6dc85ad881ec514d0fed2384f180a080f6c244d",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/promotions/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof",
+        "Actual-source error fixture reproduced ignored read errors: false zero counts, healthy empty lists and exposed scheduling form; no unavailable notice/retry. Evidence operations-admin-gap-20261030/en-dark-390-error-promotions-upper.png",
+        "Ten-route actual source/AdminLayout/AppShell pack: ENdark390/ESlight1440 synthetic empty/error input; consumer role denied via actual guard; operations-admin-gap-completion-20261030.md defines state limitations",
+        "Demonstrated read-error defect repaired with root approval; new before2fail\u2192final30pass; independent healthy siblings/editor protection; final4component-browser contexts"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "2fee3dcae19d08b262624dc596dea9da2617e857c5497cbdba8dd4aec6f12d95",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/referrals/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "d0fe901da9ab34b8e4ceafd28d3eceeaf03ecbc0d2161aa6b19e921ba7b51afd",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/selector-lab/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "6829a8ade634da71276c23ba81d388ac9a1864f78262c1b1e01447f59d8bfd20",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/settings/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof",
+        "Ten-route actual source/AdminLayout/AppShell pack: ENdark390/ESlight1440 synthetic empty/error input; consumer role denied via actual guard; operations-admin-gap-completion-20261030.md defines state limitations"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "4c26081efda9b3fcfa9cfdd197c0229fd6a9a2883e7eec95e3f24766ce3593be",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/users/[id]/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "ffa872c1eef46e6ce83939bfe2876479f667dd10985aa4ed8407397d0895a417",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/users/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "ab25c630310aa0f867764be03564f6322efa9e8907ef4daa806de7b9754a4114",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/admin/venue-relevance/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Full candidate suite at published 2949; generic admin neutral skin actual-component representative review; not per-route browser proof"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "3201418dd3fb704819164adeef0666772c374894b640df969716ca6572497d10",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/business/apply/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "See matrix note: Shared responsive business application hero, 3-stage progress strip, form/help panels and light/dark styles implemented. EN/ES phone/desktop/Android-emulated guest-return browser tests authored; authenticated applicant, actual form submission, visual screenshots and physical Android review still outstanding; NOT accepted."
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "7da0f8319d34d0282dcdf170e5262fc061dace8f6a6cbcf8ff2592b834b78c6a",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/business/early-partner/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "See matrix note: AkiPasa-branded responsive early-partner form skin and EN/ES business-host claim-query guest handoff tests committed. Not accepted: authorized claimant rendering, consent/feedback mutations, Premium grant, mobile/desktop/light-dark screenshot review and physical Android are outstanding.",
+        "Actual approved-claim form through synthetic authorized adapter EN/ES themes390/820/1440; no real claims or premium actions"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "0c961bb4c40a33cd74403c60f06ac5730b162407ac14f85e68893dc0c109f970",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/business/memberships/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Existing unchanged reviewed c10 public gateway/HTTP evidence, recorded in matrix"
+      ],
+      "missingProof": [],
+      "sourceSha256": "f1def7671f877cebba0a5244919c9883c092d3d41582f135bd0626090fd042fd",
+      "formalStatus": "accepted"
+    },
+    "src/app/[locale]/business/mobility/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "See matrix note: Private AkiCoches rental desk combines scoped light/dark responsive surfaces, canonical independent product links, truthful unavailable summaries, bounded data disclosure and localized request states. Conditional setup navigation and top-level availability-block error warning retained from concurrent work. Seven component tests and 32 EN/ES responsive populated/error fixture cases passed; additional guest business-host handoff/source guard tests retained. Final exact-source hosted evidence, real authenticated tenant/mutation workflows, physical Android and Alex visual review remain required. NOT accepted."
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "21733e0a4ecae04512405c9e04e71334991bbda5c435e30330e6a9a76517a464",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/business/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "See matrix note: Independent membership/profile/editorial, catalogue/media, programme/redemption, claim and promotion errors now retain healthy siblings and known partial rows while complete counts stay unknown. New event creation only depends on its own known inputs; exact existing actions/roles/entitlements retained. 38 focused and 160 integrated disposable browser cases passed, including canonical Retry and real image decode. Real protected-role/device/source-reviewed release acceptance remains outstanding."
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "9a516f2516ba9faca39e47b201aff550b2b9067d6f4c087157257c3ad0870e88",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/business/venue/[id]/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "See matrix note: Existing authorized VenueDashboard retained. Failed catalogue reads now withhold dependent catalogue/event editors, show localized same-section retry and unknown count rather than false zero; successful missing catalogue stays editable. Actual loader and dashboard regression tests pass. Real owner/editor/manager role, populated/error browser workflow and final screenshot/device review still required; not accepted. Booking settings/notification/inventory failures now withhold dependent editors and expose localized retry; recovered settings and unknown pending counts retain truthfulness. 112 isolated browser failure/default states passed; production role/device acceptance remains outstanding."
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "43bf96ebf8ca0534c9bd7f489b40e1c2e97a0ec17d8b8af6697244ad6d9bc20a",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/duermo/memberships/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Existing unchanged reviewed c10 public gateway/HTTP evidence, recorded in matrix"
+      ],
+      "missingProof": [],
+      "sourceSha256": "21ca9ceae3a85a29fa747cc49c9ac5160cd147164fa6a8dc39d0f01dc86af797",
+      "formalStatus": "accepted"
+    },
+    "src/app/[locale]/moderation/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Redirect-only compatibility source and maintained guest handoff tests; authenticated canonical queue destination separate"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "fd4c62bccf1b6de2c1f388f8a2b346552c732b1f5e4c2cd7498d6c6035fefcb7",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/owner/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "38 Owner tests;24actual-component default/private-photo states;144base+120accent previews; no actual Next mutation proof"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "46428c322bbc31460ca6808a5355904e74fa2016628530eab03f4a356573c510",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/staff/audit/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Maintained Staff role/queue/UI suites; generic family skin review; route-specific states vary"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "90bb6b33f905aaa22674b51ae683d713737bb5825264bc665209308466c5f42f",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/staff/catalogue/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Maintained Staff role/queue/UI suites; generic family skin review; route-specific states vary"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "6c8ff815bb112939389515a6a3b5590b9ddff1da307b94622f8c1e77183b5e51",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/staff/catalogue/venues/[id]/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Maintained Staff role/queue/UI suites; generic family skin review; route-specific states vary"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "327970accb99bd9d9820e344ca96f83fc104e99e71ccebab3c012d34b49c4bb8",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/staff/creators/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Maintained Staff role/queue/UI suites; generic family skin review; route-specific states vary"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "2dcb2cd8d78ab4746f6d35cfb52099ab0f933003359e9b3bf6dc0da0581c3fef",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/staff/moderation/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Maintained Staff role/queue/UI suites; generic family skin review; route-specific states vary",
+        "Actual populated claim subview source component EN/ES themes390/820/1440;6claims tests; generic venue queue reviewed separately"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "2b7dd29c1ebd6e1ecb906151751c41658489020a2884dbd1090da42acff0d239",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/staff/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Maintained Staff role/queue/UI suites; generic family skin review; route-specific states vary"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "4819ae6fe5752dbb51775ea9a25322d7533a57c9e1ff70773d68db9feb277520",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/staff/promotions/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Maintained Staff role/queue/UI suites; generic family skin review; route-specific states vary",
+        "Actual populated inbox source component EN/ES themes390/820/1440; dedicated inbox tests"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "74a15231a43c74997cad021bb9fede0d2c2ac0ca34be1bdbf4655fc2d79cc226",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/staff/support/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Maintained Staff role/queue/UI suites; generic family skin review; route-specific states vary"
+      ],
+      "missingProof": [
+        "Final independent human visual review; real authorized role/server mutation or read acceptance as applicable; physical device where required",
+        "Generic shared tests/representative images do not prove every route or loading/error/populated state"
+      ],
+      "sourceSha256": "b3224a09b24df9a51769014e7370252b2b63d8dd3e4526248ead77f20c339a5f",
+      "formalStatus": "in-progress"
+    },
+    "src/app/hq-login/page.tsx": {
+      "owner": "Operations",
+      "classification": 1,
+      "scopeEvidence": [
+        "Existing unchanged reviewed c10 public gateway/HTTP evidence, recorded in matrix"
+      ],
+      "missingProof": [],
+      "sourceSha256": "51949d32ef7b5b789ac37d84c2104d23946b94ca67834cb624bf74037338d077",
+      "formalStatus": "accepted"
+    },
+    "src/app/[locale]/community/page.tsx": {
+      "owner": "Social",
+      "classification": 1,
+      "scopeEvidence": [
+        "test-results/community-public",
+        "test-results/community-workflows"
+      ],
+      "missingProof": [
+        "Current commit-specific gallery review and protected live-role/provider/physical-device evidence remain separate."
+      ],
+      "sourceSha256": "90357fd6f6ac167d117c33e82d88b980236428d186c85867823d411d0badc222",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/community/creator/page.tsx": {
+      "owner": "Social",
+      "classification": 1,
+      "scopeEvidence": [
+        "/workspace/akipasa-main-checkpoints/creator-studio-after-20261030",
+        "test-results/creator-routes"
+      ],
+      "missingProof": [
+        "Private actual Next/Auth/RLS/upload/device evidence is not proved by synthetic studio actions."
+      ],
+      "sourceSha256": "2801b2949bfdc147282c626af4a254c300eced8d9eba2f69d4cacc72fc5c2fc0",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/community/creators/page.tsx": {
+      "owner": "Social",
+      "classification": 1,
+      "scopeEvidence": [
+        "test-results/creator-routes/*-directory-*.png",
+        "/workspace/akipasa-main-checkpoints/social-creators-before-20261030"
+      ],
+      "missingProof": [
+        "Filtered-empty fixture uses a genuine no-match category over synthetic published records; not evidence of production supply."
+      ],
+      "sourceSha256": "3d02cb3a31d8b3f2aae8d3aac6392985f17e6d4768e15127c26081f2b3304725",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/community/creators/[slug]/page.tsx": {
+      "owner": "Social",
+      "classification": 1,
+      "scopeEvidence": [
+        "test-results/creator-routes/*-detail-*.png",
+        "/workspace/akipasa-main-checkpoints/social-creators-before-20261030"
+      ],
+      "missingProof": [
+        "Public signed media/provider and real review submission acceptance remain outside fixtures."
+      ],
+      "sourceSha256": "93bd38c0b79cc28c69bec8af98a4d1b6a0040c594f192021736985e15d2b2c74",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/creators/page.tsx": {
+      "owner": "Social",
+      "classification": 1,
+      "scopeEvidence": [
+        "/workspace/akipasa-main-checkpoints/creator-alias-proof-20261030.json",
+        "tests/e2e/pasa-public-page-families.spec.ts:568"
+      ],
+      "missingProof": [
+        "Fresh alias-export proof is not fresh exact-commit HTTP evidence. Redirect-only: do not fabricate screenshots."
+      ],
+      "sourceSha256": "616dcae3dd4d1dd109447cd6312becc96d297701f7eba1c744870c0d03730c67",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/creators/[slug]/page.tsx": {
+      "owner": "Social",
+      "classification": 1,
+      "scopeEvidence": [
+        "/workspace/akipasa-main-checkpoints/creator-alias-proof-20261030.json"
+      ],
+      "missingProof": [
+        "No fresh actual Next HTTP proof for slug alias in this batch. Redirect-only: no screenshot exists."
+      ],
+      "sourceSha256": "aff93febe6df5e992a93463a6138ef6dda0aef48fc03192c30b9c52db1e06ab7",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/passports/page.tsx": {
+      "owner": "Social",
+      "classification": 1,
+      "scopeEvidence": [
+        "test-results/pasa-passport-*.png",
+        "test-results/pasa-passport-chapter-bottom-evidence.json"
+      ],
+      "missingProof": [
+        "Existing bound paper-book evidence reused; source-specific owner/device/live-provider acceptance remains separate."
+      ],
+      "sourceSha256": "de9e3a07b0a628d31d07c6b1e9574be7f70450f1e95fc6d978a64b15891a378e",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/passports/places/page.tsx": {
+      "owner": "Social",
+      "classification": 1,
+      "scopeEvidence": [
+        "/workspace/akipasa-main-checkpoints/passport-places-before-20261030",
+        "/workspace/akipasa-main-checkpoints/passport-places-after-20261030/results.json"
+      ],
+      "missingProof": [
+        "Actual page fixture36 states proves RPC args/links/error/empty/access; not actual Next/live participating-venue supply."
+      ],
+      "sourceSha256": "1e6e2830d03c56a3b5cce933fb731e0636066cd23470935374c212d33c09546e",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/passports/prestige/page.tsx": {
+      "owner": "Social",
+      "classification": 1,
+      "scopeEvidence": [
+        "test-results/prestige/member-*.png",
+        "tests/passport-prestige*.test.*"
+      ],
+      "missingProof": [
+        "Existing Prestige component/action fixtures; actual enabled complete member route screenshot is missing. Default-off gates remain unchanged."
+      ],
+      "sourceSha256": "56a3af85f98e413f331ac26ac438233ffe926c202548f89a404d1924c875ad0a",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/passports/prestige/hall/page.tsx": {
+      "owner": "Social",
+      "classification": 1,
+      "scopeEvidence": [
+        "test-results/prestige/member-*.png",
+        "tests/passport-prestige*.test.*"
+      ],
+      "missingProof": [
+        "Component card proof is not actual Hall route screenshot or public-award opt-in/RLS evidence."
+      ],
+      "sourceSha256": "8a57b8897a2065c81a58e0d38b65fd4a41a572e7339fd6ba95b72dbbd72e4a33",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/passports/prestige/certificate/[publicId]/page.tsx": {
+      "owner": "Social",
+      "classification": 1,
+      "scopeEvidence": [
+        "test-results/prestige/member-*.png",
+        "tests/passport-prestige*.test.*"
+      ],
+      "missingProof": [
+        "Component card/download proof is not actual certificate route success/error screenshot or live certificate verification."
+      ],
+      "sourceSha256": "7e3413453fb614d30a2f0341cbfe01270bbfe6d2ab3c3c15808e5b3bd6384af5",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/privacy/prestige/page.tsx": {
+      "owner": "Social",
+      "classification": 1,
+      "scopeEvidence": [
+        "test-results/pasa-prestige-privacy-guest-*.png",
+        "test-results/prestige/*"
+      ],
+      "missingProof": [
+        "Guest-gate and component evidence only; actual authenticated page award/address deletion/visibility states not independently rendered in this batch."
+      ],
+      "sourceSha256": "06a9d3616f32736c4c481d05af3bb2912897282be69cc378e4edc621d27c6e03",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/akipals/page.tsx": {
+      "owner": "Social",
+      "classification": 1,
+      "scopeEvidence": [
+        "/workspace/akipasa-main-checkpoints/pals-entrance-before-20261030",
+        "/workspace/akipasa-main-checkpoints/pals-entrance-after-20261030/results.json",
+        "tests/pals-entry.test.ts"
+      ],
+      "missingProof": [
+        "Entrance palette/gates only. Engine paused, rejected avatar artwork remains unaccepted; no engine/wardrobe/RLS/device acceptance claimed."
+      ],
+      "sourceSha256": "93f5cd274e1bcad890fd54624b4ad82c3ce2729da122110a2c1de16a9183b6f6",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/page.tsx": {
+      "owner": "Discovery",
+      "classification": 1,
+      "scopeEvidence": [
+        "docs/receipts/AKIPASA_HOME_DIRECTORY_CONTINUITY_20261030.json",
+        "docs/receipts/AKIPASA_HOME_PASSPORT_LOCAL_20261030.json"
+      ],
+      "missingProof": [],
+      "sourceSha256": "903fccde4c539e44090c94c87d98d1dfeeb6d8a323f021d052991b33a02676f3",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/map/page.tsx": {
+      "owner": "Discovery",
+      "classification": 1,
+      "scopeEvidence": [
+        "docs/receipts/AKIPASA_MAP_LOCATION_INTENT_20261030.json",
+        "/workspace/akipasa-main-checkpoints/map-drawer-final-20261030/results.json"
+      ],
+      "missingProof": [],
+      "sourceSha256": "2019c458fee66f78d73b890a2d01ef8cf4a3aa654800555fa1db110896c64b41",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/check-in/page.tsx": {
+      "owner": "Discovery",
+      "classification": 1,
+      "scopeEvidence": [
+        "/workspace/akipasa-main-checkpoints/checkin-entry-final-20261030/results.json"
+      ],
+      "missingProof": [],
+      "sourceSha256": "0f85750e71d9121ec8e63cb2286c7359ad746a1bc4869738bb477b92e29f2bbf",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/tonight/page.tsx": {
+      "owner": "Discovery",
+      "classification": 1,
+      "scopeEvidence": [
+        "/workspace/akipasa-main-checkpoints/checkin-entry-final-20261030/results.json",
+        "/workspace/akipasa-main-checkpoints/discovery-screens-final-20261030/results.json"
+      ],
+      "missingProof": [],
+      "sourceSha256": "f581bb1c87ce75f47259c4969e78bf831aac44e0ce1a8c09b53520ae966750c3",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/events/[slug]/page.tsx": {
+      "owner": "Discovery",
+      "classification": 1,
+      "scopeEvidence": [
+        "docs/receipts/AKIPASA_SPOTLIGHT_SCREEN_REDESIGN_20261030.json"
+      ],
+      "missingProof": [],
+      "sourceSha256": "9240fc19dcb4cc1c87b585c066288c53c5ccbd9c0c63aefd255643a34a0b7f57",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/venues/[slug]/page.tsx": {
+      "owner": "Discovery",
+      "classification": 1,
+      "scopeEvidence": [
+        "docs/receipts/AKIPASA_SPOTLIGHT_SCREEN_REDESIGN_20261030.json"
+      ],
+      "missingProof": [],
+      "sourceSha256": "0a8f917886d288753662d44935149030def7be553b72e68c2e956ed0d95cf1fe",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/events/[slug]/book/page.tsx": {
+      "owner": "Discovery",
+      "classification": 1,
+      "scopeEvidence": [
+        "/workspace/akipasa-main-checkpoints/consumer-booking-final-20261030/results.json"
+      ],
+      "missingProof": [],
+      "sourceSha256": "a2414fc6ffe1bcdfce3bcc9f97b50bfa7810e60d7c3eafa3650bd805c1603d64",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/venues/[slug]/book/page.tsx": {
+      "owner": "Discovery",
+      "classification": 1,
+      "scopeEvidence": [
+        "/workspace/akipasa-main-checkpoints/consumer-action-pages-final-20261030/results.json"
+      ],
+      "missingProof": [],
+      "sourceSha256": "00099bb9b8e20acee23f00f7f0d0c8935387c725a9a4d98116fcaf512c1efd83",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/check-in/[token]/page.tsx": {
+      "owner": "Discovery",
+      "classification": 2,
+      "scopeEvidence": [
+        "tests/checkin-form.test.tsx",
+        "tests/e2e/pasa-booking-guest-journeys.spec.ts",
+        "/workspace/akipasa-main-checkpoints/consumer-action-pages-final-20261030/results.json"
+      ],
+      "missingProof": [],
+      "sourceSha256": "47c6ca112a48ffec4ea27ea2ac7a904cb24fd6683033d1e2837b4006cd7c80b0",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/photo-credits/page.tsx": {
+      "owner": "Static/fallback QA",
+      "classification": 1,
+      "scopeEvidence": [
+        "Existing source-bound static/browser/HTTP evidence; terms and waitlist refreshed72 states"
+      ],
+      "missingProof": [
+        "Final source binding, owner visual/device review; Terms authenticated provider and waitlist actual token action not exercised"
+      ],
+      "sourceSha256": "bedc3da3f4ddbe9d9b5cab7089f71264cc87e1538f5343844ed832f855e7166e",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/privacy/page.tsx": {
+      "owner": "Static/fallback QA",
+      "classification": 1,
+      "scopeEvidence": [
+        "Existing source-bound static/browser/HTTP evidence; terms and waitlist refreshed72 states"
+      ],
+      "missingProof": [
+        "Final source binding, owner visual/device review; Terms authenticated provider and waitlist actual token action not exercised"
+      ],
+      "sourceSha256": "c2e7e0be2fd25c9da0ea6a4e1e923431e46fceb4cebb8585d323c439ba1680b8",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/roadmap/page.tsx": {
+      "owner": "Static/fallback QA",
+      "classification": 1,
+      "scopeEvidence": [
+        "Existing source-bound static/browser/HTTP evidence; terms and waitlist refreshed72 states"
+      ],
+      "missingProof": [
+        "Final source binding, owner visual/device review; Terms authenticated provider and waitlist actual token action not exercised"
+      ],
+      "sourceSha256": "e4b2db2bdfac0c2e5bcd6347321b77a79a315448c523504d16ca7c9310d950c4",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/terms/accept/page.tsx": {
+      "owner": "Static/fallback QA",
+      "classification": 1,
+      "scopeEvidence": [
+        "Existing source-bound static/browser/HTTP evidence; terms and waitlist refreshed72 states"
+      ],
+      "missingProof": [
+        "Final source binding, owner visual/device review; Terms authenticated provider and waitlist actual token action not exercised"
+      ],
+      "sourceSha256": "f18976885966a49709b1139c855d78a6a6c4c62f92e99f0c0ff939a4ede7f641",
+      "formalStatus": "in-progress"
+    },
+    "src/app/[locale]/terms/page.tsx": {
+      "owner": "Static/fallback QA",
+      "classification": 1,
+      "scopeEvidence": [
+        "Existing source-bound static/browser/HTTP evidence; terms and waitlist refreshed72 states"
+      ],
+      "missingProof": [
+        "Final source binding, owner visual/device review; Terms authenticated provider and waitlist actual token action not exercised"
+      ],
+      "sourceSha256": "bb7d64502dd92edf39fef79bf92db60a43940ea5d3b33d420b3ec1f8ca028bdf",
+      "formalStatus": "in-progress"
+    },
+    "src/app/page.tsx": {
+      "owner": "Static/fallback QA",
+      "classification": 1,
+      "scopeEvidence": [
+        "Existing source-bound static/browser/HTTP evidence; terms and waitlist refreshed72 states"
+      ],
+      "missingProof": [
+        "Final source binding, owner visual/device review; Terms authenticated provider and waitlist actual token action not exercised"
+      ],
+      "sourceSha256": "bb0131d4999839a20fbbf54c65d9d8e31ea64cea059cc69a19d10b8730fc6b7b",
+      "formalStatus": "accepted"
+    },
+    "src/app/roadmap/page.tsx": {
+      "owner": "Static/fallback QA",
+      "classification": 1,
+      "scopeEvidence": [
+        "Existing source-bound static/browser/HTTP evidence; terms and waitlist refreshed72 states"
+      ],
+      "missingProof": [
+        "Final source binding, owner visual/device review; Terms authenticated provider and waitlist actual token action not exercised"
+      ],
+      "sourceSha256": "dfe0a98f22a0d440223973174093e848544bcb1892376752aff5f0508de6ac10",
+      "formalStatus": "accepted"
+    },
+    "src/app/waitlist/confirm/page.tsx": {
+      "owner": "Static/fallback QA",
+      "classification": 1,
+      "scopeEvidence": [
+        "Existing source-bound static/browser/HTTP evidence; terms and waitlist refreshed72 states"
+      ],
+      "missingProof": [
+        "Final source binding, owner visual/device review; Terms authenticated provider and waitlist actual token action not exercised"
+      ],
+      "sourceSha256": "f8cb93b0d04d23d0a2c146ecab667a985a49f5ec9de1e0c7392734b4d29f204b",
+      "formalStatus": "in-progress"
+    }
+  }
+}

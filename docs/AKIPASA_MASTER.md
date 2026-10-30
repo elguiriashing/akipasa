@@ -3672,3 +3672,42 @@ do not accept new bytes. No route acceptance, merge, deployment or SQL applicati
 See receipts/AKIPASA_OPERATIONS_SCREEN_INTEGRATION_20261030.json for source hashes
 and actual test limitations. Physical Android and protected provider journeys remain
 separate from the disposable read/action browser adapters.
+
+## 2026-10-30 | Accelerated screen-family completion and truthful read failures
+
+Six nonoverlapping workers completed consumer, discovery, social, operations,
+review-gallery and static/fallback QA lanes under one integration owner. Fourteen
+route presentations/technical defects and three fallback states are repaired in
+this batch: protected recovery; Creator directory/profile; Passport Places; existing
+AkiPals entrance palette only; Event/Venue booking and token Check-in presentation;
+Staff claims/promotions; early-partner; Admin Promotions read recovery; Terms
+acceptance and AkiPasa waitlist confirmation. Other brands remain separate.
+
+Venue booking now distinguishes failed/malformed availability and venue reads from
+genuine empty/missing data, supplies safe localized Retry and withholds the wizard
+when capacity is unknown. Auth, external booking, genuine404, action payloads and
+remaining values are preserved. Admin Promotions independently reports unknown
+failed-read counts and withholds only dependent editors, retaining healthy sibling
+lists and existing action fields/defaults. No provider/customer mutation is used.
+
+Terms/waitlist keep unchecked required consent, version/token/return/POST behavior.
+Actual light-theme review caught invisible waitlist headings; explicit AkiPasa-only
+heading ink fixes it. Sixteen sibling-product captures remain pixel-identical.
+Fallback error/loading now match warm404 tokens, with88native fixture cases and
+six unchanged sibling-product captures. Shared edits are scoped; auth/RLS/billing/
+verified visits/XP/private identities and all remaining gates are preserved.
+
+Fullcheck EXIT0:2745Vitest/17groups,140initialNode cases,193routebuild. All runtime,
+test and config source bytes stayed frozen. A later offline-only gallery text-wrap
+correction has8focused tests/lint/format and independent390/1440 gallery validation;
+its separate source hash is explicit rather than falsely attributing it to the
+earlier fullcheck. Fresh exact-head CI remains required. Original failed/incorrect
+fixture captures are retained; only actual-theme/source-bound finals support review.
+
+Owner inventory covers90routes:89implementation-ready with scoped passing evidence,
+one known token-read error recovery gap. This is not89formal acceptances or full
+provider/device proof. The complete required-technical-evidence count is explicitly
+unreconciled;5formal acceptances remain unchanged. Portable family galleries list
+real source hashes, actual screenshots, CI links and missing/stale evidence. They
+do not promote matrix status. No merge, deploy, new SQL or backend expansion.
+See AKIPASA_SCREEN_FAMILY_READINESS_20261030.json and accelerated batch receipt.

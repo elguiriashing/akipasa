@@ -460,3 +460,59 @@
 :global(html[data-theme="dark"]) .page[data-product="coches"] {
   --accent: #ff9295;
 }
+
+/* AkiPasa verification stays warm and neutral; sibling products retain their palette. */
+.page[data-product="pasa"] {
+  --confirm-ink: #faf7f3;
+  --confirm-muted: #cec6bd;
+  --confirm-backdrop: #08090a;
+  --confirm-panel: #111213;
+  --confirm-border: rgb(226 211 195 / 22%);
+  --confirm-control: #1c1a18;
+  --confirm-story: linear-gradient(145deg, #201a16 3%, #101112 82%);
+  --confirm-grid: rgb(250 239 225 / 3%);
+  background:
+    radial-gradient(ellipse at 8% -15%, var(--accent-muted), transparent 48%),
+    radial-gradient(ellipse at 96% 105%, rgb(135 71 30 / 15%), transparent 58%),
+    var(--confirm-backdrop);
+}
+
+@media (prefers-color-scheme: light) {
+  .page[data-product="pasa"] {
+    --confirm-ink: #27211c;
+    --confirm-muted: #64584d;
+    --confirm-backdrop: #f8f6f2;
+    --confirm-panel: #fffdfa;
+    --confirm-border: #d3c3b3;
+    --confirm-control: #f5ede4;
+    --confirm-story: linear-gradient(145deg, #fffdfa, #f1e8dc 95%);
+    --confirm-grid: rgb(39 33 28 / 5%);
+  }
+}
+
+:global(html[data-theme="dark"]) .page[data-product="pasa"] {
+  --confirm-ink: #faf7f3;
+  --confirm-muted: #cec6bd;
+  --confirm-backdrop: #08090a;
+  --confirm-panel: #111213;
+  --confirm-border: rgb(226 211 195 / 22%);
+  --confirm-control: #1c1a18;
+  --confirm-story: linear-gradient(145deg, #201a16 3%, #101112 82%);
+  --confirm-grid: rgb(250 239 225 / 3%);
+}
+
+:global(html[data-theme="light"]) .page[data-product="pasa"] {
+  --confirm-ink: #27211c;
+  --confirm-muted: #64584d;
+  --confirm-backdrop: #f8f6f2;
+  --confirm-panel: #fffdfa;
+  --confirm-border: #d3c3b3;
+  --confirm-control: #f5ede4;
+  --confirm-story: linear-gradient(145deg, #fffdfa, #f1e8dc 95%);
+  --confirm-grid: rgb(39 33 28 / 5%);
+}
+
+.page[data-product="pasa"] .panel h1,
+.page[data-product="pasa"] .story h2 {
+  color: var(--confirm-ink);
+}

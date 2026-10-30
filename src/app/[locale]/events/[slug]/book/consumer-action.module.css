@@ -1,0 +1,118 @@
+.page {
+  --surface: #111411;
+  --surface-alt: #191d19;
+  --ink: #faf7f2;
+  --muted: #bec5bd;
+  --line: rgba(240, 232, 216, 0.16);
+  --pasa-ui-panel: #111411;
+  --pasa-ui-elevated: #191d19;
+  --pasa-ui-border: rgba(240, 232, 216, 0.16);
+  --pasa-ui-text: #faf7f2;
+  --pasa-ui-subtle: #bec5bd;
+  --action-accent: #ff8a43;
+  --action-accent-ink: #ffad78;
+  --action-selected: rgba(255, 138, 67, 0.13);
+  color: var(--ink);
+  margin-inline: auto;
+  padding-block: clamp(1.5rem, 4vw, 3rem);
+}
+
+:global(.app-shell .app-content[data-pasa-surface]) .page {
+  width: min(calc(100% - 2rem), 880px);
+}
+
+.intro {
+  margin: 0 0 1.5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.kicker {
+  margin: 0 0 0.75rem;
+  color: var(--action-accent-ink);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.intro h1 {
+  max-width: 22ch;
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(2rem, 6vw, 3.7rem);
+  line-height: 1.06;
+  letter-spacing: -0.05em;
+  font-weight: 850;
+  overflow-wrap: anywhere;
+}
+
+.intro p {
+  max-width: 56ch;
+  margin: 0.85rem 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.page :global(.booking-wizard-steps button.active) {
+  border-color: var(--action-accent);
+}
+
+.page :global(.booking-wizard-steps button.active span) {
+  background: var(--action-accent);
+  color: #1b1007;
+}
+
+.page :global(.booking-date-grid button.active),
+.page :global(.booking-time-grid button.active) {
+  border-color: var(--action-accent);
+  background: var(--action-selected);
+  color: var(--ink);
+}
+
+.page :global(.booking-wizard-summary) {
+  color: var(--ink);
+}
+
+.page :global(.booking-wizard-footer) {
+  border-color: var(--line);
+}
+
+.returnLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-block: 0.5rem;
+  color: var(--action-accent-ink);
+  font-weight: 750;
+}
+
+:global(.app-shell .app-content[data-pasa-surface])
+  .page
+  :global(:is(.button, button, input, textarea, a):focus-visible) {
+  outline: 3px solid var(--action-accent-ink);
+  outline-offset: 4px;
+}
+
+:global(html[data-theme="light"]) .page {
+  --surface: #fffefb;
+  --surface-alt: #faf7f1;
+  --ink: #28211c;
+  --muted: #6b5d51;
+  --line: rgba(92, 62, 39, 0.2);
+  --pasa-ui-panel: #fffefb;
+  --pasa-ui-elevated: #faf7f1;
+  --pasa-ui-border: rgba(92, 62, 39, 0.2);
+  --pasa-ui-text: #28211c;
+  --pasa-ui-subtle: #6b5d51;
+  --action-accent: #b8480d;
+  --action-accent-ink: #a53d08;
+  --action-selected: #fff0e3;
+}
+
+:global(html[data-theme="light"])
+  .page
+  :global(.booking-wizard-steps button.active span) {
+  background: #ff8a43;
+}

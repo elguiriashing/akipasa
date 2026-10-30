@@ -9,7 +9,10 @@ import { resolve } from "node:path";
 
 // Real event server component + shared client wizard. Only auth/database reads,
 // Next navigation and mutation transport use disposable in-process fixtures.
-const directory = resolve("test-results/event-booking-browser");
+const directory = resolve(
+  process.env.AKIPASA_EVENT_BOOKING_EVIDENCE_DIR ||
+    "test-results/event-booking-browser",
+);
 mkdirSync(directory, { recursive: true });
 const entry = `import React from 'react';import{createRoot}from'react-dom/client';import Page from './src/app/[locale]/events/[slug]/book/page';
 const q=new URLSearchParams(location.search),locale=q.get('locale')||'en';
@@ -25,6 +28,8 @@ const output = await build({
   stdin: { contents: entry, resolveDir: process.cwd(), loader: "tsx" },
   bundle: true,
   write: false,
+  outdir: "/tmp/akipasa-event-booking-browser-assets",
+  loader: { ".css": "local-css" },
   platform: "browser",
   format: "iife",
   jsx: "automatic",
@@ -74,15 +79,23 @@ const cssFiles = [
   "src/app/appearance.css",
   "src/app/tablet-responsive.css",
   "src/app/portal-unity.css",
+  "src/components/PasaCinematic.css",
   "src/components/PasaSharedSurfaces.css",
 ];
-const css = (
-  await postcss([tailwind()]).process(
-    cssFiles.map((path) => readFileSync(path, "utf8")).join("\n"),
-    { from: resolve("src/app/globals.css") },
-  )
-).css;
-const javascript = output.outputFiles[0].text;
+const css =
+  (
+    await postcss([tailwind()]).process(
+      cssFiles.map((path) => readFileSync(path, "utf8")).join("\n"),
+      { from: resolve("src/app/globals.css") },
+    )
+  ).css +
+  output.outputFiles
+    .filter((file) => file.path.endsWith(".css"))
+    .map((file) => file.text)
+    .join("\n");
+const javascript = output.outputFiles.find((file) =>
+  file.path.endsWith(".js"),
+).text;
 const server = createServer((req, res) => {
   if (req.url === "/bundle.js") {
     res.setHeader("Content-Type", "text/javascript");
@@ -116,6 +129,7 @@ let activePage = null;
 const sourceFiles = [
   "src/app/[locale]/events/[slug]/book/page.tsx",
   "src/app/[locale]/events/[slug]/book/actions.ts",
+  "src/app/[locale]/events/[slug]/book/consumer-action.module.css",
   "src/components/BookingWizard.tsx",
   "scripts/test-event-booking-browser.mjs",
   ...cssFiles,

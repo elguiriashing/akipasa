@@ -13,11 +13,11 @@
   background:
     radial-gradient(
       circle at 76% 42%,
-      #6f2d39 0%,
-      #35213c 30%,
+      #663212 0%,
+      #2c1b10 30%,
       transparent 63%
     ),
-    linear-gradient(130deg, #121c2a 0%, #090f1a 80%);
+    linear-gradient(130deg, #19110c 0%, #080909 80%);
   color: #fff;
 }
 .copy {
@@ -46,7 +46,7 @@
 .lede {
   max-width: 34ch;
   margin: 0 0 2rem;
-  color: #d7dae9;
+  color: #e2cdbb;
   font-size: clamp(1.05rem, 2vw, 1.3rem);
   line-height: 1.55;
 }
@@ -68,9 +68,9 @@
 .notice {
   max-width: 42ch;
   padding: 1rem;
-  border: 1px solid #8b7084;
+  border: 1px solid #765034;
   border-radius: 1rem;
-  color: #f6d5e2;
+  color: #ffe1c9;
 }
 .links {
   display: flex;
@@ -79,7 +79,7 @@
   margin-top: 1.4rem;
 }
 .links a {
-  color: #e8ebf8;
+  color: #ffe1c9;
 }
 .portrait {
   display: flex;
@@ -107,13 +107,13 @@
   aspect-ratio: 1;
   border: 2px solid rgba(255, 139, 68, 0.36);
   border-radius: 50%;
-  background: radial-gradient(circle, #df7336, #3a2340 70%);
+  background: radial-gradient(circle, #df7336, #2c1b10 70%);
   color: #fce4bf;
   box-shadow: 0 0 90px rgba(255, 122, 42, 0.3);
 }
 .caption {
   margin-top: 1rem;
-  color: #e6cbd8;
+  color: #e2cdbb;
   font-size: 0.85rem;
 }
 .page a:focus-visible {
@@ -131,4 +131,9 @@
   .character {
     width: min(180px, 48vw);
   }
+}
+
+:global(html) :global(body) :global(.app-shell):has(.page),
+:global(html) :global(body) :global(.app-content):has(.page) {
+  background: #080909;
 }

@@ -1,0 +1,156 @@
+{
+  "baselineCommit": "2949a2e555920ac5db5c11cd3d292270786180a0",
+  "fullCheck": {
+    "exitCode": 0,
+    "vitestPassed": 2745,
+    "vitestGroups": 17,
+    "initialNodeTests": 140,
+    "optimizedNextRoutes": 193,
+    "log": "/tmp/akipasa-accelerated-FINAL-integrated-20261030.log",
+    "logSha256": "0712a28cb2e3290ea9d6d23d5ebed7d34b6972957435aadc8839ecaf27ff7c3d"
+  },
+  "fullCheckFrozenSource": {
+    "package.json": "1298af849c9dbff52f6c3f391386dbce9519e2bb12677e4e8bb42348c7114c43",
+    "scripts/build-pasa-review-packs.mjs": "2faef0db45659c60ec0844211923ab1ac26d604350ed9b653b3856b1e6444bff",
+    "scripts/build-pasa-review-packs.test.mjs": "781f7976022198f76e8daabc2aa024b1695fe0d8c14fe7583421fb1f287baafa",
+    "scripts/test-creator-routes-browser.mjs": "46f9414d7a34c21dc4caa591830d69993e1cdf37db1b3665815a821e1bd1b865",
+    "scripts/test-event-booking-browser.mjs": "379142b1efbb62b37943d83d59e2ca0a0de31531c6359860ca934da5fff50f74",
+    "src/app/[locale]/admin/promotions/page.tsx": "2fee3dcae19d08b262624dc596dea9da2617e857c5497cbdba8dd4aec6f12d95",
+    "src/app/[locale]/akipals/akipals.module.css": "ae1c175defcf171090ab3a90ecf3f12e10a6ae070f3ec38d630de531475355c5",
+    "src/app/[locale]/auth/recover/page.tsx": "632239de9f2419a6b542b83a23888bd69ff6ab5320446f284b1124a51d428981",
+    "src/app/[locale]/auth/recover/recovery.module.css": "4da76f61ed26b0ca5bf24fbb00772e6179eecd5f2bd61f988ed93190286d90cc",
+    "src/app/[locale]/business/early-partner/early-partner.module.css": "ad727539e344f01ebf9bc6319ede3f0f3c32ba92047e0c67ccb5dcdbe79011c7",
+    "src/app/[locale]/check-in/[token]/page.tsx": "47c6ca112a48ffec4ea27ea2ac7a904cb24fd6683033d1e2837b4006cd7c80b0",
+    "src/app/[locale]/community/creators/[slug]/page.tsx": "93bd38c0b79cc28c69bec8af98a4d1b6a0040c594f192021736985e15d2b2c74",
+    "src/app/[locale]/community/creators/creator-public.module.css": "ecd54aad8057d571ef3689f25898d182c8f05f5399edfa83c5592aea48f0f41b",
+    "src/app/[locale]/community/creators/page.tsx": "3d02cb3a31d8b3f2aae8d3aac6392985f17e6d4768e15127c26081f2b3304725",
+    "src/app/[locale]/events/[slug]/book/consumer-action.module.css": "97c1a14becc4a94225968ca8c4a461133668a89ae74f51b1dc892fb79b93e66a",
+    "src/app/[locale]/events/[slug]/book/page.tsx": "a2414fc6ffe1bcdfce3bcc9f97b50bfa7810e60d7c3eafa3650bd805c1603d64",
+    "src/app/[locale]/passports/places/page.tsx": "1e6e2830d03c56a3b5cce933fb731e0636066cd23470935374c212d33c09546e",
+    "src/app/[locale]/passports/places/places.module.css": "b2b0fbc49faeff7ba2943f133fd63973f827a67cb99e9aae34de92fc032a728d",
+    "src/app/[locale]/staff/claim-review.css": "104f7dadbb28519e03f127dbfa828f23b235ff90562ee7b0584568b8747c3432",
+    "src/app/[locale]/staff/promotions/staff-promotions.css": "bdd4653a1cb6b3330dbbe402bb6aaefe3b7fe5d6d8321a3db82f1cc9bae8500e",
+    "src/app/[locale]/venues/[slug]/book/page.tsx": "00099bb9b8e20acee23f00f7f0d0c8935387c725a9a4d98116fcaf512c1efd83",
+    "src/app/waitlist/confirm/confirm.module.css": "3d4db4ca06a0e0a3ec457a67c27df75a460c6e40d5c741e72ceea52be23cf539",
+    "src/components/PasaRouteFallback.module.css": "1c38b7d5454abadbf22de0dc16e20708eca2e26cd6e25ab5bf5280ab3dc4c952",
+    "src/components/PasaSharedSurfaces.css": "288cbc55cca1b0fe49df1da8927c7573e5d35baf085a374f8580112cad341518",
+    "tests/admin-read-recovery.test.tsx": "693e9fc7309c8d5d384c075777f718e2d55beb755c7cf804a9c369c1a2a5df44",
+    "tests/venue-booking-read-recovery.test.tsx": "0c9f280af25f436c408189afb9520bad30a070e941e6beb3031083fb07e9d882",
+    "vitest.spotlight.config.ts": "27d8d6fdaa3be67908f75aa9906d15452c4940be6a08224f605265a579b5b524"
+  },
+  "finalSource": {
+    "package.json": "1298af849c9dbff52f6c3f391386dbce9519e2bb12677e4e8bb42348c7114c43",
+    "scripts/build-pasa-review-packs.mjs": "a112ae0a30ec469e667bf31c816ae2c86681113f620d170a602b3f9e61684178",
+    "scripts/build-pasa-review-packs.test.mjs": "781f7976022198f76e8daabc2aa024b1695fe0d8c14fe7583421fb1f287baafa",
+    "scripts/test-creator-routes-browser.mjs": "46f9414d7a34c21dc4caa591830d69993e1cdf37db1b3665815a821e1bd1b865",
+    "scripts/test-event-booking-browser.mjs": "379142b1efbb62b37943d83d59e2ca0a0de31531c6359860ca934da5fff50f74",
+    "src/app/[locale]/admin/promotions/page.tsx": "2fee3dcae19d08b262624dc596dea9da2617e857c5497cbdba8dd4aec6f12d95",
+    "src/app/[locale]/akipals/akipals.module.css": "ae1c175defcf171090ab3a90ecf3f12e10a6ae070f3ec38d630de531475355c5",
+    "src/app/[locale]/auth/recover/page.tsx": "632239de9f2419a6b542b83a23888bd69ff6ab5320446f284b1124a51d428981",
+    "src/app/[locale]/auth/recover/recovery.module.css": "4da76f61ed26b0ca5bf24fbb00772e6179eecd5f2bd61f988ed93190286d90cc",
+    "src/app/[locale]/business/early-partner/early-partner.module.css": "ad727539e344f01ebf9bc6319ede3f0f3c32ba92047e0c67ccb5dcdbe79011c7",
+    "src/app/[locale]/check-in/[token]/page.tsx": "47c6ca112a48ffec4ea27ea2ac7a904cb24fd6683033d1e2837b4006cd7c80b0",
+    "src/app/[locale]/community/creators/[slug]/page.tsx": "93bd38c0b79cc28c69bec8af98a4d1b6a0040c594f192021736985e15d2b2c74",
+    "src/app/[locale]/community/creators/creator-public.module.css": "ecd54aad8057d571ef3689f25898d182c8f05f5399edfa83c5592aea48f0f41b",
+    "src/app/[locale]/community/creators/page.tsx": "3d02cb3a31d8b3f2aae8d3aac6392985f17e6d4768e15127c26081f2b3304725",
+    "src/app/[locale]/events/[slug]/book/consumer-action.module.css": "97c1a14becc4a94225968ca8c4a461133668a89ae74f51b1dc892fb79b93e66a",
+    "src/app/[locale]/events/[slug]/book/page.tsx": "a2414fc6ffe1bcdfce3bcc9f97b50bfa7810e60d7c3eafa3650bd805c1603d64",
+    "src/app/[locale]/passports/places/page.tsx": "1e6e2830d03c56a3b5cce933fb731e0636066cd23470935374c212d33c09546e",
+    "src/app/[locale]/passports/places/places.module.css": "b2b0fbc49faeff7ba2943f133fd63973f827a67cb99e9aae34de92fc032a728d",
+    "src/app/[locale]/staff/claim-review.css": "104f7dadbb28519e03f127dbfa828f23b235ff90562ee7b0584568b8747c3432",
+    "src/app/[locale]/staff/promotions/staff-promotions.css": "bdd4653a1cb6b3330dbbe402bb6aaefe3b7fe5d6d8321a3db82f1cc9bae8500e",
+    "src/app/[locale]/venues/[slug]/book/page.tsx": "00099bb9b8e20acee23f00f7f0d0c8935387c725a9a4d98116fcaf512c1efd83",
+    "src/app/waitlist/confirm/confirm.module.css": "3d4db4ca06a0e0a3ec457a67c27df75a460c6e40d5c741e72ceea52be23cf539",
+    "src/components/PasaRouteFallback.module.css": "1c38b7d5454abadbf22de0dc16e20708eca2e26cd6e25ab5bf5280ab3dc4c952",
+    "src/components/PasaSharedSurfaces.css": "288cbc55cca1b0fe49df1da8927c7573e5d35baf085a374f8580112cad341518",
+    "tests/admin-read-recovery.test.tsx": "693e9fc7309c8d5d384c075777f718e2d55beb755c7cf804a9c369c1a2a5df44",
+    "tests/venue-booking-read-recovery.test.tsx": "0c9f280af25f436c408189afb9520bad30a070e941e6beb3031083fb07e9d882",
+    "vitest.spotlight.config.ts": "27d8d6fdaa3be67908f75aa9906d15452c4940be6a08224f605265a579b5b524"
+  },
+  "postCheckChange": {
+    "file": "scripts/build-pasa-review-packs.mjs",
+    "scope": "Offline review-gallery CSS only: wrap long SHA/source headings and prevent mobile overflow. No public app runtime change.",
+    "verification": "8 focused tests + scoped ESLint/Prettier passed; all14 gallery pages checked390/1440 after correction. Fresh exact-head CI still required."
+  },
+  "newlyRepairedRoutes": 14,
+  "newlyRepairedFallbackStates": 3,
+  "newlyAcceptedRoutes": 0,
+  "targeted": {
+    "creatorBrowser": 192,
+    "placesBrowser": 36,
+    "palsEntranceBrowser": 48,
+    "recoveryBrowser": 32,
+    "accountGapCases": 56,
+    "operationsBespokeBrowser": 36,
+    "adminGapContexts": 40,
+    "adminReadRecoveryTests": 30,
+    "eventBookingBrowser": 208,
+    "venueTokenBrowser": 80,
+    "venueBookingAndContinuityTests": 40,
+    "nativeFallbackBrowser": 88,
+    "termsWaitlistBrowser": 72,
+    "waitlistSiblingPixelIdentical": 16,
+    "offlineGalleryTests": 8
+  },
+  "priorHeadCI": {
+    "ordinaryWorkflowsPassed": 11,
+    "strictReleaseGate": "expected red85routes+6fallbacks",
+    "genericPublicBrowser": {
+      "collected": 562,
+      "passed": 501,
+      "skipped": 61
+    },
+    "dedicatedSpotlightBrowserPassed": 60,
+    "skipExplanation": "60 generic Spotlight cases are separately run in dedicated job; one authenticated production fixture case remains conditional. No skip counted as pass.",
+    "cloudflareBuild": "a011d6a7-f272-4103-a833-a6e4896c9c52 terminated during initialization before running; independent investigation pending, not packaging success."
+  },
+  "readiness": {
+    "implementedReady": 89,
+    "requiredTechnicalProofCompleteCount": null,
+    "formalAccepted": 5,
+    "knownRemainingTechnicalIssue": "Token credential lookup errors become404; hidden/missing behavior and effective RLS require bounded verification before changing."
+  },
+  "evidence": {
+    "operations-bespoke-completion-20261030.md": {
+      "path": "/workspace/akipasa-main-checkpoints/operations-bespoke-completion-20261030.md",
+      "sha256": "5e8d90bd7cc65b32aa649b0884d778494eca0a6387cd0b14098a46e1024c3b3f"
+    },
+    "operations-admin-gap-completion-20261030.md": {
+      "path": "/workspace/akipasa-main-checkpoints/operations-admin-gap-completion-20261030.md",
+      "sha256": "d242ab872c0a4cf45698e4477ea540eb958730fddf4a0e3acc99864b5294c40f"
+    },
+    "social-cinematic-implementation-20261030.md": {
+      "path": "/workspace/akipasa-main-checkpoints/social-cinematic-implementation-20261030.md",
+      "sha256": "20413a2be2af022d904b237aca212e101e7441c7b90f8406960437a6670e0f4f"
+    },
+    "consumer-independent-qc-20261030.md": {
+      "path": "/workspace/akipasa-main-checkpoints/consumer-independent-qc-20261030.md",
+      "sha256": "3a7136b51e5e24aeceb6bb3cf701d49708fb9cbfe4c73df15e78a6d8931b2363"
+    },
+    "consumer-review-images-20261030/final-review-receipt.json": {
+      "path": "/workspace/akipasa-main-checkpoints/consumer-review-images-20261030/final-review-receipt.json",
+      "sha256": "dd81d79e556c8ed2670dd81f54badb484bf3c05b74baf7324628b72caa42ea7c"
+    },
+    "consumer-action-pages-final-20261030/results.json": {
+      "path": "/workspace/akipasa-main-checkpoints/consumer-action-pages-final-20261030/results.json",
+      "sha256": "761f32c2d11dfaccb885a05f12b8ce1a56a32e3fe659e86c8e9b37a2321735dc"
+    },
+    "static-fallback-gallery-2949a2e-20261030/native-neutral-after-88.json": {
+      "path": "/workspace/akipasa-main-checkpoints/static-fallback-gallery-2949a2e-20261030/native-neutral-after-88.json",
+      "sha256": "aac00484e756d1ae87c647435d560ad0ac13d40e4809bd44a8da7162fdcf8307"
+    },
+    "terms-waitlist-fixture-final-theme-20261030/catalog.json": {
+      "path": "/workspace/akipasa-main-checkpoints/terms-waitlist-fixture-final-theme-20261030/catalog.json",
+      "sha256": "328f87ec0fa06dcfa5869492c51992672463ba2077ca516384ccea816053572c"
+    }
+  },
+  "merged": false,
+  "deployed": false,
+  "productionChanged": false,
+  "limits": [
+    "Mocked/component presentation is not real Auth/RLS/provider/device acceptance.",
+    "AkiPals change is entrance palette only; engine paused.",
+    "No SQL/billing/consent/XP/customer data changes.",
+    "Final reviewed commit and exact-head CI remain required."
+  ]
+}

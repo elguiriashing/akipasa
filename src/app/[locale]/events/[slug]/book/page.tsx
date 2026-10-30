@@ -1,3 +1,4 @@
+import styles from "./consumer-action.module.css";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BookingWizard } from "@/components/BookingWizard";
@@ -121,9 +122,11 @@ export default async function EventBookingPage({
     : settings?.instructions_en || settings?.instructions_es;
 
   return (
-    <main className="shell narrow-page">
-      <section className="hero">
-        <div className="eyebrow">AkiPasa · {es ? "Reservas" : "Bookings"}</div>
+    <main className={`shell narrow-page ${styles.page}`}>
+      <header className={styles.intro}>
+        <div className={`eyebrow ${styles.kicker}`}>
+          AkiPasa · {es ? "Reservas" : "Bookings"}
+        </div>
         <h1>
           {event
             ? es
@@ -139,7 +142,7 @@ export default async function EventBookingPage({
               ? "Elige cuándo quieres venir."
               : "Choose when you want to visit.")}
         </p>
-      </section>
+      </header>
       {query.requested && (
         <p className="notice" role="status">
           {es
@@ -211,7 +214,7 @@ export default async function EventBookingPage({
           </p>
         </section>
       )}
-      <Link className="back-link" href={detailPath}>
+      <Link className={`back-link ${styles.returnLink}`} href={detailPath}>
         {es ? "Volver al evento" : "Back to event"}
       </Link>
     </main>

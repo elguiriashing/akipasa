@@ -1,3 +1,4 @@
+import styles from "../../events/[slug]/book/consumer-action.module.css";
 import { randomUUID } from "node:crypto";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/config";
@@ -28,16 +29,16 @@ export default async function CheckInPage({
   } | null;
   if (!venue) notFound();
   return (
-    <main className="shell pasa-checkin-visit">
-      <section className="hero">
-        <div className="eyebrow">Check-in</div>
+    <main className={`shell pasa-checkin-visit ${styles.page}`}>
+      <header className={styles.intro}>
+        <div className={`eyebrow ${styles.kicker}`}>Check-in</div>
         <h1>{venue.name}</h1>
         <p className="lede">
           {es
             ? "Comprueba el nombre del local y confirma tu ubicación. La visita se verificará al enviar el check-in."
             : "Check the venue name and share your location. Your visit is verified when you submit the check-in."}
         </p>
-      </section>
+      </header>
       <section className="panel auth-panel">
         <p>
           {es

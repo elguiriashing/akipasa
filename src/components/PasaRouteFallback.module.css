@@ -325,8 +325,8 @@
   opacity: 0.75;
 }
 
-/* Quiet, warm AkiPasa 404s. Other products and reset/error states keep their identity. */
-.surface[data-boundary-product="akipasa"][data-route-fallback="not-found"] {
+/* Warm AkiPasa states throughout; other products keep their existing palette. */
+.surface[data-boundary-product="akipasa"] {
   --fallback-panel: #111213;
   --fallback-elevated: #1c1a18;
   --fallback-ink: #faf7f3;
@@ -339,8 +339,7 @@
   ) {
   background: #08090a;
 }
-:global(html[data-theme="light"])
-  .surface[data-boundary-product="akipasa"][data-route-fallback="not-found"] {
+:global(html[data-theme="light"]) .surface[data-boundary-product="akipasa"] {
   --fallback-panel: #fffdfa;
   --fallback-elevated: #f5ede4;
   --fallback-ink: #27211c;

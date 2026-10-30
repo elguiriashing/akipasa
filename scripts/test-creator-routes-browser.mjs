@@ -19,12 +19,13 @@ const entry = `import React from 'react';import {createRoot} from 'react-dom/cli
 import {AppShell} from './src/components/AppShell';
 import Detail from './src/app/[locale]/community/creators/[slug]/page';
 import Studio from './src/app/[locale]/community/creator/page';
+import Directory from './src/app/[locale]/community/creators/page';
 import './src/components/PasaCinematic.css';import './src/components/PasaSharedSurfaces.css';
 import {resetFixture} from '${adapter}';
 window.__creatorDocumentId=crypto.randomUUID();const root=createRoot(document.getElementById('root'));resetFixture();
 window.__creatorNavigate=async href=>{const target=new URL(href,location.href);if(target.origin!==location.origin)throw new Error('External fixture navigation rejected');const existing=new URLSearchParams(location.search);for(const key of ['fixture','user'])if(existing.has(key)&&!target.searchParams.has(key))target.searchParams.set(key,existing.get(key));history.pushState({},'',target.pathname+target.search);await render();};
 async function render(){window.__creatorReady=false;window.__creatorRedirect=null;window.__creatorMissing=false;window.__creatorError=null;const locale=location.pathname.startsWith('/es/')?'es':'en';document.documentElement.lang=locale;
-try{if(location.pathname.endsWith('/auth')){window.__creatorRedirect=window.__creatorActionResults.at(-1)?.href||location.pathname+location.search;root.render(<p data-fixture-auth-handoff>Actual creator action requested authentication. Auth is outside this disposable route fixture.</p>);requestAnimationFrame(()=>requestAnimationFrame(()=>window.__creatorReady=true));return;}const detail=location.pathname.includes('/creators/');const query=Object.fromEntries(new URLSearchParams(location.search));const props={params:Promise.resolve({locale,slug:'ana-fixture'}),searchParams:Promise.resolve(query)};const content=await (detail?Detail:Studio)(props);root.render(<AppShell locale={locale} signedIn={query.user!=="guest"} role="consumer"><p className="fixture-notice">Disposable creator fixture · no real people, activity or database</p>{content}</AppShell>);}
+try{if(location.pathname.endsWith('/auth')){window.__creatorRedirect=window.__creatorActionResults.at(-1)?.href||location.pathname+location.search;root.render(<p data-fixture-auth-handoff>Actual creator action requested authentication. Auth is outside this disposable route fixture.</p>);requestAnimationFrame(()=>requestAnimationFrame(()=>window.__creatorReady=true));return;}const directory=location.pathname.endsWith('/community/creators');const detail=location.pathname.includes('/creators/');const query=Object.fromEntries(new URLSearchParams(location.search));const props={params:Promise.resolve({locale,slug:'ana-fixture'}),searchParams:Promise.resolve(query)};const content=await (directory?Directory:detail?Detail:Studio)(props);root.render(<AppShell locale={locale} signedIn={query.user!=="guest"} role="consumer"><p className="fixture-notice">Disposable creator fixture · no real people, activity or database</p>{content}</AppShell>);}
 catch(error){if(error.fixtureRedirect){window.__creatorRedirect=error.fixtureRedirect;root.render(<p data-fixture-redirect>{error.fixtureRedirect}</p>);}else if(error.fixtureNotFound){window.__creatorMissing=true;root.render(<p data-fixture-missing>Fixture observed actual notFound()</p>);}else{window.__creatorError=String(error.stack||error);console.error(error);}}
 requestAnimationFrame(()=>requestAnimationFrame(()=>window.__creatorReady=true));}
 window.addEventListener('popstate',render);render();`;
@@ -123,6 +124,8 @@ if (process.argv.includes("--build-only")) {
 const sourceFiles = [
   "scripts/test-creator-routes-browser.mjs",
   "tests/fixtures/creator-route-browser-data.mjs",
+  "src/app/[locale]/community/creators/page.tsx",
+  "src/app/[locale]/community/creators/creator-public.module.css",
   "src/app/[locale]/community/creator/page.tsx",
   "src/app/[locale]/community/creator/creator.module.css",
   "src/app/[locale]/community/creator-actions.ts",
@@ -292,11 +295,18 @@ async function geometry(page) {
   return state;
 }
 async function run(page, { route, fixture, locale, width, theme, user }) {
-  const base = `/${locale}/community/${route === "detail" ? "creators/ana-fixture" : "creator"}`;
+  const base = `/${locale}/community/${route === "detail" ? "creators/ana-fixture" : route === "directory" ? "creators" : "creator"}`;
   const query = new URLSearchParams({
     fixture,
     theme,
     ...(user ? { user } : {}),
+    ...(route === "directory"
+      ? {
+          q: "Synthetic",
+          locality: "Fixture area",
+          ...(fixture === "empty" ? { category: "no-matches" } : {}),
+        }
+      : {}),
   });
   await page.goto(origin + base + "?" + query);
   await ready(page);
@@ -322,7 +332,63 @@ async function run(page, { route, fixture, locale, width, theme, user }) {
     await expect(page.locator(".pasa-dock")).toBeVisible();
   }
   const errors = page.getByRole("alert");
-  if (route === "detail") {
+  if (route === "directory") {
+    if (fixture === "profile-error") {
+      await expect(errors).toContainText(
+        locale === "es"
+          ? "No se pudo cargar el directorio"
+          : "directory could not be loaded",
+      );
+      const retry = page.getByRole("link", {
+        name: locale === "es" ? "Reintentar" : "Retry",
+        exact: true,
+      });
+      const href = new URL(await retry.getAttribute("href"), origin);
+      expect(href.pathname).toBe(base);
+      expect(href.searchParams.get("q")).toBe("Synthetic");
+      expect(href.searchParams.get("locality")).toBe("Fixture area");
+      await expect(page.locator(".creator-card")).toHaveCount(0);
+    } else {
+      await expect(page.locator('.creator-search input[name="q"]')).toHaveValue(
+        "Synthetic",
+      );
+      await expect(
+        page.locator('.creator-search input[name="locality"]'),
+      ).toHaveValue("Fixture area");
+      if (fixture === "empty") {
+        await expect(page.locator(".creator-empty")).toBeVisible();
+        await expect(
+          page.locator(".creator-card-grid .creator-card"),
+        ).toHaveCount(0);
+        await expect(
+          page.locator('.creator-search input[name="category"]'),
+        ).toHaveValue("no-matches");
+      } else {
+        await expect(
+          page.locator(".creator-card-grid .creator-card"),
+        ).toHaveCount(1);
+        await expect(
+          page.locator(".creator-card-grid .creator-card"),
+        ).toHaveAttribute("href", `/${locale}/community/creators/ana-fixture`);
+        for (const link of await page
+          .locator(".creator-category-nav a")
+          .all()) {
+          const href = new URL(await link.getAttribute("href"), origin);
+          expect(href.searchParams.get("q")).toBe("Synthetic");
+          expect(href.searchParams.get("locality")).toBe("Fixture area");
+        }
+      }
+    }
+    expect(await page.evaluate(() => window.__creatorWrites)).toEqual([]);
+    const reads = await page.evaluate(() =>
+      window.__creatorReads.filter((read) => read.table === "creator_profiles"),
+    );
+    expect(reads.length).toBeGreaterThan(0);
+    for (const read of reads) {
+      expect(read.publicRead).toBe(true);
+      expect(read.filters).toContainEqual(["state", "published"]);
+    }
+  } else if (route === "detail") {
     if (fixture === "profile-error") {
       await expect(errors).toContainText(
         locale === "es" ? "No se pudo cargar" : "could not be loaded",
@@ -660,6 +726,9 @@ try {
         const pageErrors = [];
         page.on("pageerror", (error) => pageErrors.push(error.message));
         const matrix = [
+          ["directory", "ready"],
+          ["directory", "empty"],
+          ["directory", "profile-error"],
           ["detail", "ready"],
           ["detail", "empty"],
           ["detail", "profile-error"],

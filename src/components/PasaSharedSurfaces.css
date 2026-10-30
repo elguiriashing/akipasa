@@ -1149,6 +1149,12 @@ html[data-theme="light"]
 /* Protected terms confirmation reuses the Pasa auth shell and legal visual
  * tokens. Neither the recorded terms version nor the server action changes. */
 .app-shell .pasa-terms-accept-page {
+  --pasa-ui-panel: #111213;
+  --pasa-ui-elevated: #1c1a18;
+  --pasa-ui-text: #faf7f3;
+  --pasa-ui-subtle: #cec6bd;
+  --pasa-ui-border: #484039;
+  --pasa-ui-highlight: #ffb17c;
   width: min(100%, 70rem);
   min-width: 0;
   margin-inline: auto;
@@ -1160,7 +1166,7 @@ html[data-theme="light"]
   padding: clamp(1.5rem, 4.8vw, 3.5rem);
   border: 1px solid rgba(255, 151, 86, 0.3);
   border-radius: clamp(1.25rem, 3vw, 2rem);
-  background: linear-gradient(135deg, #202b42, #0d1626);
+  background: linear-gradient(135deg, #291d15, #0d0e0f);
   color: #fff;
 }
 
@@ -1176,7 +1182,7 @@ html[data-theme="light"]
 
 .app-shell .shell.pasa-terms-accept-page > .hero.pasa-terms-accept-hero .lede {
   max-width: 64ch;
-  color: #e3eaf4;
+  color: #ded5cb;
   line-height: 1.65;
 }
 
@@ -1276,13 +1282,26 @@ html[data-theme="light"]
   font-weight: 800;
 }
 
+.app-shell .pasa-terms-accept-hero .eyebrow {
+  color: var(--pasa-ui-highlight);
+}
+
+html[data-theme="light"] .app-shell .pasa-terms-accept-page {
+  --pasa-ui-panel: #fffdfa;
+  --pasa-ui-elevated: #f5ede4;
+  --pasa-ui-text: #27211c;
+  --pasa-ui-subtle: #64584d;
+  --pasa-ui-border: #d3c3b3;
+  --pasa-ui-highlight: #974010;
+}
+
 html[data-theme="light"]
   .app-shell
   .shell.pasa-terms-accept-page
   > .hero.pasa-terms-accept-hero {
   border-color: rgba(178, 92, 28, 0.24);
   background: #fff9f2;
-  color: #182b3b;
+  color: #27211c;
 }
 
 html[data-theme="light"]
@@ -1290,7 +1309,7 @@ html[data-theme="light"]
   .shell.pasa-terms-accept-page
   > .hero.pasa-terms-accept-hero
   .lede {
-  color: #415269;
+  color: #64584d;
 }
 
 html[data-theme="light"] .app-shell .pasa-terms-accept-version {

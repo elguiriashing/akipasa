@@ -10,7 +10,12 @@ import {
   waitFor,
 } from "@testing-library/react";
 
-const state = vi.hoisted(() => ({ failed: "", from: vi.fn(), rpc: vi.fn() }));
+const state = vi.hoisted(() => ({
+  failed: "",
+  rows: {} as Record<string, unknown>,
+  from: vi.fn(),
+  rpc: vi.fn(),
+}));
 vi.mock("@/lib/auth", () => ({
   requireUser: async () => ({
     user: { id: "operator" },
@@ -33,6 +38,8 @@ vi.mock("../src/app/[locale]/admin/actions", () => ({
   updateFeatureFlag: vi.fn(),
   updateDeletionRequest: vi.fn(),
   createPassport: vi.fn(),
+  createFeatureSlot: vi.fn(),
+  updatePromotion: vi.fn(),
 }));
 vi.mock("../src/app/[locale]/admin/business-applications/actions", () => ({
   reviewBusinessApplication: vi.fn(),
@@ -46,14 +53,19 @@ import PrivacyPage from "../src/app/[locale]/admin/privacy/page";
 import AuditPage from "../src/app/[locale]/admin/audit/page";
 import ApplicationsPage from "../src/app/[locale]/admin/business-applications/page";
 import PersonalisationPage from "../src/app/[locale]/admin/personalisation/page";
+import PromotionsPage from "../src/app/[locale]/admin/promotions/page";
 import PassportsPage from "../src/app/[locale]/admin/passports/page";
 
 beforeEach(() => {
   state.failed = "";
+  state.rows = {};
   state.rpc.mockResolvedValue({ data: null, error: null });
   state.from.mockImplementation((table: string) => {
     const result = {
-      data: table === "profiles" ? { app_role: "administrator" } : [],
+      data:
+        table === "profiles"
+          ? { app_role: "administrator" }
+          : state.rows[table] || [],
       error:
         state.failed === table ? { message: "Private internal failure" } : null,
     };
@@ -341,5 +353,134 @@ it.each(["en", "es"] as const)(
     expect(data.get("requestId")).toBe("synthetic-request");
     expect(data.get("locale")).toBe(locale);
     expect(data.get("confirmedDeleted")).toBeNull();
+  },
+);
+
+it.each(["en", "es"] as const)(
+  "%s promotion read failures are truthful and independently recoverable",
+  async (locale) => {
+    for (const table of ["promotion_requests", "feature_slots", "events"]) {
+      state.failed = table;
+      const view = render(
+        await PromotionsPage({
+          params: Promise.resolve({ locale }),
+          searchParams: Promise.resolve({ error: "untrusted-query" }),
+        }),
+      );
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        locale === "es" ? "no está disponible" : "unavailable",
+      );
+      expect(
+        screen.getByRole("link", {
+          name: locale === "es" ? "Reintentar" : "Retry",
+        }),
+      ).toHaveAttribute("href", `/${locale}/admin/promotions`);
+      expect(screen.queryByText("Private internal failure")).toBeNull();
+      const counts = [
+        ...document.querySelectorAll(".workspace-stat strong"),
+      ].map((x) => x.textContent);
+      expect(counts).toEqual([
+        table === "promotion_requests" ? "—" : "0",
+        table === "feature_slots" ? "—" : "0",
+      ]);
+      expect(
+        document.querySelector('form select[name="eventId"]') !== null,
+      ).toBe(table !== "events");
+      view.unmount();
+    }
+  },
+);
+
+it.each(["en", "es"] as const)(
+  "%s promotion failures preserve healthy lists and independent editors",
+  async (locale) => {
+    state.rows = {
+      promotion_requests: [
+        {
+          id: "ordinary",
+          venue_id: "venue",
+          service: "event_promotion",
+          state: "new",
+          venues: { name: "Ordinary fixture" },
+          events: null,
+          feature_slots: null,
+        },
+        {
+          id: "featured",
+          venue_id: "venue",
+          event_id: "event",
+          service: "featured_listing",
+          state: "contacted",
+          venues: { name: "Featured fixture" },
+          events: null,
+          feature_slots: {
+            starts_at: "2026-10-30T20:00:00Z",
+            ends_at: "2026-10-31T01:00:00Z",
+          },
+        },
+      ],
+      feature_slots: [
+        {
+          id: "slot",
+          event_id: "event",
+          label_en: "Fixture slot",
+          label_es: "Destacado de prueba",
+          starts_at: "2026-10-30T20:00:00Z",
+          ends_at: "2026-10-31T01:00:00Z",
+        },
+      ],
+      events: [
+        {
+          id: "event",
+          venue_id: "venue",
+          title_en: "Fixture event",
+          title_es: "Evento de prueba",
+        },
+      ],
+    };
+    for (const table of ["promotion_requests", "feature_slots", "events"]) {
+      state.failed = table;
+      const view = render(
+        await PromotionsPage({
+          params: Promise.resolve({ locale }),
+          searchParams: Promise.resolve({}),
+        }),
+      );
+      for (const detail of document.querySelectorAll("details"))
+        detail.open = true;
+      const formIds = [
+        ...document.querySelectorAll('form input[name="requestId"]'),
+      ].map((x) => x.getAttribute("value"));
+      expect(formIds).toEqual(
+        table === "promotion_requests"
+          ? []
+          : table === "events"
+            ? ["ordinary"]
+            : ["ordinary", "featured"],
+      );
+      expect(
+        document.querySelector(
+          'form input[name="startsAt"][type="datetime-local"]',
+        ) !== null,
+      ).toBe(table !== "events");
+      const counts = [
+        ...document.querySelectorAll(".workspace-stat strong"),
+      ].map((x) => x.textContent);
+      expect(counts).toEqual([
+        table === "promotion_requests" ? "—" : "1",
+        table === "feature_slots" ? "—" : "1",
+      ]);
+      if (table === "events")
+        expect(
+          document.querySelector('form input[name="service"]'),
+        ).toHaveValue("event_promotion");
+      if (table === "feature_slots")
+        expect(
+          document.querySelector(
+            'form input[name="startsAt"][type="datetime-local"][value]',
+          ),
+        ).toHaveAttribute("value", "2026-10-30T21:00");
+      view.unmount();
+    }
   },
 );
