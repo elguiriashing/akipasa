@@ -1,5 +1,32 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-30 | Uncovered Roadmap navigation and maintained recovery/consent proof
+
+The localized Roadmap reserves64px for desktop Search at the existing851px
+breakpoint.16actual Next browser cases cover EN/ES, both themes and360/390/820/1440,
+native keyboard return and three pointer positions. Two negative controls restore
+the403.125px² overlap without the gutter; the repair has zero intersection.
+
+Eleven actual Terms server-action tests now run in the required onboarding suite:
+explicit consent, guest return, configured version/locale, forged fields, safe
+consumer/sister-product destinations and sanitized failures. No consent is changed
+in production. Maintained Recovery presentation proof adds32cases and3sibling
+guards to the existing Account job and a small artifact. Its disposable adapters
+do not certify actual token/provider/LocaleLayout/device behavior; formal Recovery
+acceptance awaits accessible new hosted evidence.
+
+Prestige coverage retains94cases and adds28at360px:122pass, including16native GET
+retries. Runtime pages are unchanged. Full seven-file frozen check passes2887
+Vitest tests/17groups,140initialNode tests and193-route build. Published1e7b71f
+passes all11ordinary workflows; strict remains blocked on real route acceptance.
+Individually reviewed onboarding/privacy, Community, Hall, Certificate and two
+redirect-only aliases raise the
+recorded total to31/90; all6fallbacks remain accepted. Destinations and overall
+provider/RLS/device release approval are separate. Fresh20:24UTC aggregate finds
+zero future occurrences and zero published events; Tonight stays off. No merge,
+deployment, SQL, paid resource or customer change. See the new roadmap/recovery/
+terms and onboarding/alias receipts for exact hashes and actual evidence.
+
 ## 2026-10-30 | Complete Community and onboarding theme consistency
 
 Community Suggest/Reports/history use dark charcoal tokens scoped by the existing

@@ -47,6 +47,12 @@
 .back svg {
   transform: rotate(180deg);
 }
+/* The desktop AppShell fixes Search above the page's upper-right corner. */
+@media (min-width: 851px) {
+  .topline {
+    padding-inline-end: 64px;
+  }
+}
 .hero {
   position: relative;
   display: grid;

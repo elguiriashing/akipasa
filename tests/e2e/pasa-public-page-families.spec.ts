@@ -5,6 +5,133 @@ import {
   type PasaSurfaceFamily,
 } from "../../src/lib/pasa-surface-families";
 
+test.describe("Roadmap back link remains clear of shared Search", () => {
+  for (const locale of ["en", "es"] as const) {
+    for (const width of [360, 390, 820, 1440]) {
+      for (const theme of ["dark", "light"] as const) {
+        test(`${locale} Roadmap back link at ${width}/${theme}`, async ({
+          page,
+        }) => {
+          const height =
+            width === 360
+              ? 800
+              : width === 390
+                ? 844
+                : width === 820
+                  ? 1180
+                  : 900;
+          await page.setViewportSize({ width, height });
+          await page.emulateMedia({
+            colorScheme: theme,
+            reducedMotion: "reduce",
+          });
+          await page.addInitScript((value) => {
+            localStorage.setItem("akipasa.theme", value);
+          }, theme);
+          await page.context().addCookies([
+            {
+              name: "ak_consent_version",
+              value: "2",
+              url: process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:3100",
+            },
+          ]);
+          const response = await page.goto(`/${locale}/roadmap`, {
+            waitUntil: "domcontentloaded",
+          });
+          expect(response?.status()).toBe(200);
+          const back = page.getByRole("link", {
+            name: locale === "es" ? "Volver a explorar" : "Back to exploring",
+            exact: true,
+          });
+          await expect(back).toBeVisible();
+          await expect(back).toHaveAttribute("href", `/${locale}`);
+          const search = page.locator(".global-search-trigger");
+          await expect(search).toBeVisible();
+          await expect(search).toBeEnabled();
+          const backBox = await back.boundingBox();
+          const searchBox = await search.boundingBox();
+          expect(backBox).not.toBeNull();
+          expect(searchBox).not.toBeNull();
+          const overlap =
+            Math.max(
+              0,
+              Math.min(
+                backBox!.x + backBox!.width,
+                searchBox!.x + searchBox!.width,
+              ) - Math.max(backBox!.x, searchBox!.x),
+            ) *
+            Math.max(
+              0,
+              Math.min(
+                backBox!.y + backBox!.height,
+                searchBox!.y + searchBox!.height,
+              ) - Math.max(backBox!.y, searchBox!.y),
+            );
+          expect(
+            overlap,
+            "Search must not cover any part of the back link",
+          ).toBe(0);
+          const hitTargets = await back.evaluate((link) => {
+            const box = link.getBoundingClientRect();
+            return [2, box.width / 2, box.width - 2].map((offset) =>
+              link.contains(
+                document.elementFromPoint(
+                  box.x + offset,
+                  box.y + box.height / 2,
+                ),
+              ),
+            );
+          });
+          expect(
+            hitTargets,
+            "The entire back link must receive pointer hits",
+          ).toEqual([true, true, true]);
+          mkdirSync("test-results", { recursive: true });
+          const stem = `test-results/pasa-roadmap-back-${locale}-${width}-${theme}`;
+          await page.screenshot({
+            path: `${stem}.png`,
+            animations: "disabled",
+          });
+          let reachedBack = false;
+          for (let step = 0; step < 60 && !reachedBack; step++) {
+            await page.keyboard.press("Tab");
+            reachedBack = await back.evaluate(
+              (link) => document.activeElement === link,
+            );
+          }
+          expect(reachedBack, "Native Tab must reach the back link").toBe(true);
+          await expect(back).toBeFocused();
+          await page.keyboard.press("Enter");
+          await expect
+            .poll(() => new URL(page.url()).pathname)
+            .toBe(`/${locale}`);
+          writeFileSync(
+            `${stem}.json`,
+            JSON.stringify(
+              {
+                sourceCommit: process.env.GITHUB_SHA || "local-working-tree",
+                locale,
+                theme,
+                width,
+                backBox,
+                searchBox,
+                overlap,
+                hitTargets,
+                nativeTabEnterDestination: new URL(page.url()).pathname,
+                screenshot: `${stem}.png`,
+                proof:
+                  "actual-next-browser; no physical-device acceptance inferred",
+              },
+              null,
+              2,
+            ),
+          );
+        });
+      }
+    }
+  }
+});
+
 /**
  * Source-backed visual coverage for real public surfaces. These captures
  * are review evidence, NOT automatic visual acceptance or invented user data.

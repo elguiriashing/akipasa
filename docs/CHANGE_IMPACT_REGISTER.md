@@ -4685,3 +4685,32 @@ Recovery hosted screenshot proof. No production SQL/customer/billing/consent/XP
 mutation, paid resource, merge or deployment. Receipts:
 AKIPASA_COMMUNITY_ONBOARDING_FINAL_20261030.json and
 AKIPASA_THEME_FALLBACK_ACCEPTANCE_20261030.json.
+
+## 2026-10-30 | Roadmap usable return and maintained consent/recovery proof
+
+- **Observed repair:** Desktop global Search covered the Roadmap back link.
+  A route-local64px gutter uses the existing851px breakpoint; mobile/shared docks,
+  route targets, layout guards and sister products are unchanged.16actual Next
+  EN/ES/theme/four-width cases pass native keyboard/three-point hits;2negative
+  controls reproduce403.125px² overlap without the gutter and zero with it.
+- **Consent:**11tests call the actual exported Terms action with disposable
+  request/Auth/RPC adapters. They verify explicit checkbox, guest return, exact
+  configured version/locale, rejected forged identity/version, safe product
+  destinations, denied external redirects and sanitized errors. Registered in the
+  existing required onboarding Vitest suite; no live consent write or SQL apply.
+- **Recovery and Prestige:**32Recovery presentation cases+3sibling guards now run
+  in the existing Account job with a small source-bound artifact; actions throw
+  and real token/provider/LocaleLayout/device acceptance is not inferred.
+  Prestige keeps all94original assertions and adds28at360px:122pass/16native GET
+  retries. Actual async pages/AppShell use synthetic identity/RPC, not real RLS.
+- **Validation:** Full seven-file frozen check EXIT0:2887Vitest/17groups,
+  140initialNode tests,193-route build; all implementation/test/CI hashes match.
+  Predecessor1e7 passes all11ordinary workflows; strict remains honestly blocked.
+  Seven individual actual-hosted source-bound reviews raise acceptance to31/90,
+  with all6fallbacks accepted. Recovery awaits new hosted proof; no future CI or
+  final production approval is invented. Exact hashes and limits in receipts.
+- **Data/deployment boundaries:** Fresh aggregate20:24UTC has no future event
+  occurrences or published events, so Tonight remains off. No Auth/RLS/billing,
+  private storage, XP, schema, production customer or paid resource mutation.
+  Master/Worker remain approved335. Source revert is rollback; never reapply the
+  already-live335Terms migration, merge early or duplicate an automatic deploy.

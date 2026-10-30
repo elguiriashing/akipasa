@@ -1,0 +1,88 @@
+{
+  "version": 1,
+  "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+  "newRouteAcceptances": {
+    "src/app/[locale]/onboarding/page.tsx": {
+      "reviewer": "Codex venue_event_screens independent responsible UI/function tester",
+      "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/artifacts/13009061066",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/job/124287759880",
+      "sourceSha256": "9f586bebe17623d8debc9f38c1f4f7e30cd7f78d9d02f2b0bc6ec2f5bc31cbba",
+      "evidenceType": "actual server page exports and application CSS in isolated disposable identity/action UI fixture; maintained action/SQL contracts separately reviewed",
+      "realAuthenticatedIdentityOrRlsAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    "src/app/[locale]/onboarding/privacy/page.tsx": {
+      "reviewer": "Codex venue_event_screens independent responsible UI/function tester",
+      "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/artifacts/13009061066",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/job/124287759880",
+      "sourceSha256": "2f9dfe38b0f92bdb6dfec08a54394c3308b106b556ac17ae8a4186dc85da443b",
+      "evidenceType": "actual server page exports and application CSS in isolated disposable identity/action UI fixture; maintained action/SQL contracts separately reviewed",
+      "realAuthenticatedIdentityOrRlsAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    "src/app/[locale]/account/memberships/page.tsx": {
+      "reviewer": "Codex root independent redirect HTTP/source tester",
+      "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/artifacts/13007584781",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610",
+      "evidenceType": "redirect-only actual EN/ES HTTP; no standalone screenshot applicable",
+      "sourceSha256": "e266baa95ad52e9c578f12fc395593e189a51144a0fe09703a606a1a8f3fd36e",
+      "expectedStatus": 307,
+      "destinationAcceptance": false
+    },
+    "src/app/[locale]/creators/page.tsx": {
+      "reviewer": "Codex root independent redirect HTTP/source tester",
+      "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/artifacts/13007584781",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610",
+      "evidenceType": "redirect-only actual EN/ES HTTP; no standalone screenshot applicable",
+      "sourceSha256": "616dcae3dd4d1dd109447cd6312becc96d297701f7eba1c744870c0d03730c67",
+      "expectedStatus": 307,
+      "destinationAcceptance": false
+    }
+  },
+  "redirectObservations": [
+    {
+      "sourcePath": "src/app/[locale]/account/memberships/page.tsx",
+      "route": "/en/account/memberships",
+      "scope": "consumer",
+      "status": 307,
+      "location": "/en/account/subscription"
+    },
+    {
+      "sourcePath": "src/app/[locale]/account/memberships/page.tsx",
+      "route": "/es/account/memberships",
+      "scope": "consumer",
+      "status": 307,
+      "location": "/es/account/subscription"
+    },
+    {
+      "sourcePath": "src/app/[locale]/creators/page.tsx",
+      "route": "/en/creators",
+      "scope": "consumer",
+      "status": 307,
+      "location": "/en/community/creators"
+    },
+    {
+      "sourcePath": "src/app/[locale]/creators/page.tsx",
+      "route": "/es/creators",
+      "scope": "consumer",
+      "status": 307,
+      "location": "/es/community/creators"
+    }
+  ],
+  "sourceBinding": {
+    "actualActionsCheckout": "98caac388050c8f1deb5f7c24c7b8c82ef205f74",
+    "publishedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+    "identicalFullTree": "441c9bbe0cfa450284bc8999c63a9f3fb7fbe5cc",
+    "changedFiles": 0
+  },
+  "limits": [
+    "Redirect targets have separate acceptance; no invented screenshots.",
+    "Onboarding fixtures use disposable identity/actions; no actual provider, deletion, storage, RLS or physical-device certification.",
+    "Overall release gates remain required."
+  ],
+  "externalIndependentReviewSha256": "472381ddf22507e7687c5e8dce15f69a122b906644e258eb0785608ac1efba01"
+}

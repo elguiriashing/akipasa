@@ -1,0 +1,102 @@
+{
+  "version": 1,
+  "baselineCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+  "sourceHashes": {
+    ".github/workflows/account-browser.yml": "ac962bc046e8e3b7d83576a1b537b43675faf62ae0cc251881f0216f988d6ab9",
+    "scripts/test-prestige-routes-browser.mjs": "262cdd3293ecf3832ca1958f279fdf79c00fdd7c1aabee78ea4e40b4a6f7d42b",
+    "src/app/[locale]/roadmap/roadmap.module.css": "cc4df020ac775b528f9c296c1d94c3eddebcf2722fe525ecf5c10c929af82e34",
+    "tests/e2e/pasa-public-page-families.spec.ts": "6f56ba59b7e65610918030979876e17c43b6f1bd5bc0005b798084f3e03cecee",
+    "vitest.onboarding.config.ts": "8d6a14193960cf11922bb9de2070fbbf884baa94abef23aa011ad73246ffddcc",
+    "scripts/test-recovery-browser.mjs": "7f622f119911237f1b2a0f4e444007b99bc2b4f46774bccb1ea8ca385f1a6631",
+    "tests/terms-accept-action.test.ts": "c1afe75ed09f4c060f520791e767ccef783e4190f75fd93a996463d8bceadffc"
+  },
+  "fullCheck": {
+    "exitCode": 0,
+    "vitestTests": 2887,
+    "vitestGroups": 17,
+    "initialNodeTests": 140,
+    "builtRoutes": 193,
+    "allSevenFilesUnchanged": true,
+    "log": "/tmp/akipasa-fifth-check-20261030/npm-check.log",
+    "logSha256": "42d6726890cbaef40f0f242796c071631263027ab7b1f7ee917fb318a52f21a0"
+  },
+  "roadmap": {
+    "actualNextBrowserCasesPassed": 16,
+    "locales": ["en", "es"],
+    "themes": ["dark", "light"],
+    "widths": [360, 390, 820, 1440],
+    "negativeControlsPassed": 2,
+    "beforeOverlapSquarePixels": 403.125,
+    "afterOverlapSquarePixels": 0,
+    "nativeKeyboardAndThreePointerHits": true,
+    "scope": "Route-local desktop gutter at existing851px Search breakpoint. No shared navigation or redirects changed."
+  },
+  "terms": {
+    "actualExportedActionTestsPassed": 11,
+    "registeredInRequiredOnboardingVitestConfig": true,
+    "verified": [
+      "explicit checkbox before RPC",
+      "guest return through sign-in",
+      "configured version and locale; forged identity/version ignored",
+      "sanitized RPC errors",
+      "allowed consumer and sister-product returns",
+      "external return URLs denied"
+    ],
+    "productionConsentMutation": false
+  },
+  "recovery": {
+    "maintainedBrowserCasesPassed": 32,
+    "sisterProductGuardCasesPassed": 3,
+    "requiredExistingAccountJobStep": true,
+    "dedicatedSmallArtifact": "recovery-route-evidence",
+    "scope": "Actual protected page/CSS, disposable identity and throw-only action; NOT actual Next/LocaleLayout/provider/token/device proof",
+    "formalAcceptance": "HOLD until matching actual new hosted artifacts reviewed"
+  },
+  "prestige": {
+    "actualPageFixtureCasesPassed": 122,
+    "new360Cases": 28,
+    "nativeGetRetries": 16,
+    "allOriginal94CasesAndAssertionsRetained": true,
+    "runtimeUnchangedFromBaseline": true,
+    "scope": "Actual async pages/AppShell; compile-local flag and synthetic identity/RPC; actions forbidden. NOT actual Next/real Auth/RLS/database/awards/device proof.",
+    "interruptedPartialRun": "Preserved and not counted as completed evidence"
+  },
+  "priorHeadCI": {
+    "source": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+    "ordinaryWorkflowsPassed": 11,
+    "strictGate": "genuine remaining-route failure",
+    "publicCollected": 586,
+    "publicPassed": 509,
+    "publicConditionalSkips": 77,
+    "accountPassed": 464,
+    "personalProfilePassed": 32,
+    "dedicatedSpotlightPassed": 76,
+    "nativeFallbackPassed": 136,
+    "communityPassed": 272,
+    "onboardingPassed": 96,
+    "prestigePassed": 94
+  },
+  "freshTonightSupply": {
+    "queriedAtUtc": "2026-10-30T20:24:24.403104Z",
+    "totalEvents": 9,
+    "publishedEvents": 0,
+    "totalOccurrences": 10,
+    "rawFutureOccurrences": 0,
+    "scheduledPublishedFutureOccurrences": 0,
+    "productionGate": "remains default off"
+  },
+  "production": {
+    "merged": false,
+    "deployed": false,
+    "sqlApplied": false,
+    "paidResourcesCreated": false,
+    "source": "3d87eb7c995fbd0947cb25a771a43376d9462645",
+    "worker": "26e51e72-bb1e-49e9-a307-243e0203ef8d"
+  },
+  "externalReceiptHashes": {
+    "roadmap-overlap-repair-20261030/receipt.json": "c79e013bd7a6e4dcb8f829cd3f84302f5e2f6e8fec2a7d8fdc388092dc7dd07d",
+    "prestige-360-extension-final-20261030.json": "43e61dbbaeaf106303d6253a57d82c4f40f9392502747935e41ed622038f1025",
+    "1e7b71f-ci-verification-20261030.json": "96303e57f7b02fe5ca82ddf7cc44c9785d06847c3ea5b48f61a55ee0b9bc925a",
+    "tonight-live-supply-recheck-20261030T202424Z.json": "6627566df233d6cb716f1577ad773da3d792f37a097798668ea6ebe51eaf7fa0"
+  }
+}

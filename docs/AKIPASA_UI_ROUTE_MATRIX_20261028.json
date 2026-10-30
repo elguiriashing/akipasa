@@ -43,8 +43,18 @@
     },
     "src/app/[locale]/account/memberships/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
+      "status": "accepted",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review. Individually reviewed against published 1e7b71f and actual hosted source-bound evidence; see AKIPASA_ONBOARDING_ALIAS_ACCEPTANCE_20261030.json. Destination routes and overall real-provider/RLS/device release approval are separate.",
+      "acceptance": {
+        "reviewer": "Codex root independent redirect HTTP/source tester",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/artifacts/13007584781",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610",
+        "evidenceType": "redirect-only actual EN/ES HTTP; no standalone screenshot applicable",
+        "sourceSha256": "e266baa95ad52e9c578f12fc395593e189a51144a0fe09703a606a1a8f3fd36e",
+        "expectedStatus": 307,
+        "destinationAcceptance": false
+      }
     },
     "src/app/[locale]/account/page.tsx": {
       "scope": "consumer",
@@ -342,8 +352,19 @@
     },
     "src/app/[locale]/community/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Private task forms/history now use continuous WorkspaceShell panels, localized display labels, approval-conditional copy and neutral created-query feedback. Existing caller/action/target/draft boundaries retained; 63 focused and 240 disposable browser cases passed. Full integrated exact-source/reviewer/device acceptance remains outstanding. Image-led editorial landing, compact orange destination pills and circular real navigation implemented without invented social activity. Decorative illustration explicitly labelled; real city photographs retain credits. Isolated16responsive cases and initial integrated captures passed; final reviewer/device acceptance pending. Scoped submission pending-to-idle and readable light accent/placeholder repairs are integrated; 272 caller-filter/workflow fixture cases and 35 combined actual-Next Community/Home/Passport/readiness cases pass. Independent review found partial mobile help/map overlap, repaired with Community-only in-flow support; rectangle nonintersection and owner-focus regressions pass. Full 2639-case check/build passed. Physical Android and final owner/source acceptance remain outstanding; no acceptance granted."
+      "status": "accepted",
+      "note": "Private task forms/history now use continuous WorkspaceShell panels, localized display labels, approval-conditional copy and neutral created-query feedback. Existing caller/action/target/draft boundaries retained; 63 focused and 240 disposable browser cases passed. Full integrated exact-source/reviewer/device acceptance remains outstanding. Image-led editorial landing, compact orange destination pills and circular real navigation implemented without invented social activity. Decorative illustration explicitly labelled; real city photographs retain credits. Isolated16responsive cases and initial integrated captures passed; final reviewer/device acceptance pending. Scoped submission pending-to-idle and readable light accent/placeholder repairs are integrated; 272 caller-filter/workflow fixture cases and 35 combined actual-Next Community/Home/Passport/readiness cases pass. Independent review found partial mobile help/map overlap, repaired with Community-only in-flow support; rectangle nonintersection and owner-focus regressions pass. Full 2639-case check/build passed. Physical Android and final owner/source acceptance remain outstanding; no acceptance granted. Individually reviewed at1e7 against actual hosted screenshots/functions and exact source binding; see AKIPASA_COMMUNITY_PRESTIGE_ACCEPTANCE_20261030.json. Existing default-off gates remain; real Auth/RLS/provider/device and overall release approval are separate.",
+      "acceptance": {
+        "reviewer": "Codex venue_event_screens independent responsible UI/function tester",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/artifacts/13009346667",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/job/124287760201",
+        "sourceSha256": "90357fd6f6ac167d117c33e82d88b980236428d186c85867823d411d0badc222",
+        "additionalScreenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/artifacts/13008643484",
+        "evidenceType": "actual public Next guest page plus actualAppShell protected workflow disposable fixtures, responsibly reviewed",
+        "realAuthenticatedIdentityOrRlsAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/creators/[slug]/page.tsx": {
       "scope": "consumer",
@@ -362,8 +383,18 @@
     },
     "src/app/[locale]/creators/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Canonical creator components receive a shared scoped cinematic theme and retain filtered navigation; private studio fails closed on unavailable reads. Focused regression tests passed. Real responsive/browser and authenticated visual acceptance remain required; aliases preserve locale and canonical redirects."
+      "status": "accepted",
+      "note": "Canonical creator components receive a shared scoped cinematic theme and retain filtered navigation; private studio fails closed on unavailable reads. Focused regression tests passed. Real responsive/browser and authenticated visual acceptance remain required; aliases preserve locale and canonical redirects. Individually reviewed against published 1e7b71f and actual hosted source-bound evidence; see AKIPASA_ONBOARDING_ALIAS_ACCEPTANCE_20261030.json. Destination routes and overall real-provider/RLS/device release approval are separate.",
+      "acceptance": {
+        "reviewer": "Codex root independent redirect HTTP/source tester",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/artifacts/13007584781",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610",
+        "evidenceType": "redirect-only actual EN/ES HTTP; no standalone screenshot applicable",
+        "sourceSha256": "616dcae3dd4d1dd109447cd6312becc96d297701f7eba1c744870c0d03730c67",
+        "expectedStatus": 307,
+        "destinationAcceptance": false
+      }
     },
     "src/app/[locale]/duermo/memberships/page.tsx": {
       "scope": "consumer",
@@ -416,13 +447,33 @@
     },
     "src/app/[locale]/onboarding/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared onboarding layout now supplies the intended responsive visual system to setup and restricted privacy, with EN/ES fixture and consent/deletion UI regression tests. Actual authenticated/device screenshot review and functional acceptance still required."
+      "status": "accepted",
+      "note": "Shared onboarding layout now supplies the intended responsive visual system to setup and restricted privacy, with EN/ES fixture and consent/deletion UI regression tests. Actual authenticated/device screenshot review and functional acceptance still required. Individually reviewed against published 1e7b71f and actual hosted source-bound evidence; see AKIPASA_ONBOARDING_ALIAS_ACCEPTANCE_20261030.json. Destination routes and overall real-provider/RLS/device release approval are separate.",
+      "acceptance": {
+        "reviewer": "Codex venue_event_screens independent responsible UI/function tester",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/artifacts/13009061066",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/job/124287759880",
+        "sourceSha256": "9f586bebe17623d8debc9f38c1f4f7e30cd7f78d9d02f2b0bc6ec2f5bc31cbba",
+        "evidenceType": "actual server page exports and application CSS in isolated disposable identity/action UI fixture; maintained action/SQL contracts separately reviewed",
+        "realAuthenticatedIdentityOrRlsAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/onboarding/privacy/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared onboarding layout now supplies the intended responsive visual system to setup and restricted privacy, with EN/ES fixture and consent/deletion UI regression tests. Actual authenticated/device screenshot review and functional acceptance still required."
+      "status": "accepted",
+      "note": "Shared onboarding layout now supplies the intended responsive visual system to setup and restricted privacy, with EN/ES fixture and consent/deletion UI regression tests. Actual authenticated/device screenshot review and functional acceptance still required. Individually reviewed against published 1e7b71f and actual hosted source-bound evidence; see AKIPASA_ONBOARDING_ALIAS_ACCEPTANCE_20261030.json. Destination routes and overall real-provider/RLS/device release approval are separate.",
+      "acceptance": {
+        "reviewer": "Codex venue_event_screens independent responsible UI/function tester",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/artifacts/13009061066",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/job/124287759880",
+        "sourceSha256": "2f9dfe38b0f92bdb6dfec08a54394c3308b106b556ac17ae8a4186dc85da443b",
+        "evidenceType": "actual server page exports and application CSS in isolated disposable identity/action UI fixture; maintained action/SQL contracts separately reviewed",
+        "realAuthenticatedIdentityOrRlsAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/owner/page.tsx": {
       "scope": "operational",
@@ -446,13 +497,31 @@
     },
     "src/app/[locale]/passports/prestige/certificate/[publicId]/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES."
+      "status": "accepted",
+      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES. Individually reviewed at1e7 against actual hosted screenshots/functions and exact source binding; see AKIPASA_COMMUNITY_PRESTIGE_ACCEPTANCE_20261030.json. Existing default-off gates remain; real Auth/RLS/provider/device and overall release approval are separate.",
+      "acceptance": {
+        "reviewer": "Codex discovery_screens (independent responsible tester)",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254618",
+        "evidenceType": "Existing default-off/gated read-only public certificate and safe recovery/download presentation. No physical prize promise or launch approval.",
+        "realAuthenticatedIdentityOrRlsAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/passports/prestige/hall/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES."
+      "status": "accepted",
+      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES. Individually reviewed at1e7 against actual hosted screenshots/functions and exact source binding; see AKIPASA_COMMUNITY_PRESTIGE_ACCEPTANCE_20261030.json. Existing default-off gates remain; real Auth/RLS/provider/device and overall release approval are separate.",
+      "acceptance": {
+        "reviewer": "Codex discovery_screens (independent responsible tester)",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254618",
+        "evidenceType": "Existing default-off/gated, read-only public Hall UI; optional published projection only. Does not approve activation, award issuance, real provider or physical device.",
+        "realAuthenticatedIdentityOrRlsAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/passports/prestige/page.tsx": {
       "scope": "consumer",

@@ -25,6 +25,8 @@ jobs:
       - run: node scripts/test-account-browser.mjs
       - name: Verify personal profile presentation and preserved controls
         run: node scripts/test-account-personal-browser.mjs
+      - name: Verify password recovery page fixtures and safe return
+        run: node scripts/test-recovery-browser.mjs
       - name: AkiSelector login acceptance
         env:
           SELECTOR_EVIDENCE_DIR: test-results/account/workspace-selector
@@ -36,6 +38,13 @@ jobs:
           path: |
             test-results/account
             test-results/account-personal
+            test-results/recovery-browser
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: recovery-route-evidence
+          path: test-results/recovery-browser
           retention-days: 7
   public-ui-shards:
     runs-on: ubuntu-latest
@@ -91,6 +100,8 @@ jobs:
             test-results/pasa-waitlist-confirm-*.png
             test-results/pasa-conversion-*.json
             test-results/pasa-review-*-roadmap-*.png
+            test-results/pasa-roadmap-back-*.png
+            test-results/pasa-roadmap-back-*.json
             test-results/pasa-route-evidence-*.json
           if-no-files-found: ignore
           retention-days: 7

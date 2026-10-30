@@ -186,7 +186,7 @@ try {
   });
   for (const locale of ["en", "es"])
     for (const theme of ["dark", "light"])
-      for (const width of [390, 820, 1440]) {
+      for (const width of [360, 390, 820, 1440]) {
         const c = await browser.newContext({
           viewport: { width, height: width === 820 ? 1180 : 900 },
           colorScheme: theme,
