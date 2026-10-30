@@ -143,7 +143,11 @@ export default async function ProfilePage({
                     unoptimized
                   />
                 ) : (
-                  <Icon name="person" />
+                  <span aria-hidden="true">
+                    {(profile?.display_name || user.email || "AkiPasa")
+                      .slice(0, 1)
+                      .toUpperCase()}
+                  </span>
                 )}
               </span>
               <div>

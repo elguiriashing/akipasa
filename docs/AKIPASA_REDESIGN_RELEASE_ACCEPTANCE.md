@@ -11,7 +11,7 @@ its six exact-head CI workflows passed. Candidate
 `e2b537962193fcfe7a40967a10b58551dc58f8e4` merged as
 `39cd9bb42fd858dd54bd9f0d9e79a0504b15a0f2` and automatically deployed as Worker
 `8199ce83-b416-42d1-9568-9dc167601b6a`. Public source identity and bilingual
-Home/Login reads were verified. Physical Android follow-up remains outstanding.
+Home/Login reads were verified. Alex subsequently reported a successful physical Android Home/Login/Passport check on30October for the combined live335batch; draft332changes remain separate.
 
 This explicit staged exception applies only to that eight-path application
 batch. It does not accept other routes or waive the strict coordinated #332
@@ -26,8 +26,10 @@ merged as `3d87eb7c995fbd0947cb25a771a43376d9462645` and automatically deployed 
 Worker `26e51e72-bb1e-49e9-a307-243e0203ef8d`. Exact public source and six EN/ES
 Home/Auth/Passport HTTPS reads were verified. The terms repair was applied once
 as production migration `20261030102908`; do not reapply it or separately release
-inherited #334. Physical Android follow-up remains outstanding. See
-`docs/receipts/AKIPASA_PRODUCTION_335_20261030.json`.
+inherited #334. Alex reported on30October that Home, sign-in and Passport all work on his physical
+Android phone without broken/covered controls. Device/browser model was not supplied.
+This check applies to the live335batch; draft332changes remain separate. See
+`docs/receipts/AKIPASA_PRODUCTION_335_ANDROID_20261030.json` and production receipt.
 
 This second explicit exception accepts only that approved batch. It does not
 accept all Passport routes, authorize the new staff SQL, or waive #332's full

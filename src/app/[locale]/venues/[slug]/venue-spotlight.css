@@ -1,3 +1,35 @@
+/* Keep public detail surfaces in AkiPasa's charcoal and ember palette.
+   The legacy blue token remains the shared link/tab contract, with warm ink. */
+.app-detail-page.spotlight-page.spotlight-venue {
+  --spotlight-surface: #101010;
+  --spotlight-surface-alt: #181715;
+  --spotlight-ink: #f9f5f0;
+  --spotlight-muted: #c0b9b0;
+  --spotlight-line: rgb(255 245 230 / 14%);
+  --spotlight-blue: #ffad78;
+  --spotlight-orange-text: #ffad78;
+}
+
+html[data-theme="light"] .app-detail-page.spotlight-page.spotlight-venue,
+html.theme-light .app-detail-page.spotlight-page.spotlight-venue {
+  --spotlight-surface: #fffefc;
+  --spotlight-surface-alt: #f5f0e9;
+  --spotlight-ink: #25201d;
+  --spotlight-muted: #695d54;
+  --spotlight-line: rgb(87 55 31 / 18%);
+  --spotlight-blue: #9c3b0e;
+  --spotlight-orange-text: #9c3b0e;
+}
+
+.app-detail-page.spotlight-page.spotlight-venue .venue-spotlight-card {
+  background: var(--spotlight-surface);
+}
+
+.app-detail-page.spotlight-page.spotlight-venue .spotlight-mobile-actions {
+  border-color: var(--spotlight-line);
+  background: color-mix(in srgb, var(--spotlight-surface) 97%, transparent);
+}
+
 /* Aki Spotlight venue composition. All rules stay inside this public page. */
 .spotlight-venue {
   container-name: venue-detail;
@@ -446,7 +478,7 @@ html.theme-light .spotlight-venue .venue-spotlight-status .verified-badge {
   position: absolute;
   inset: auto 0 0;
   padding-top: 24px;
-  background: linear-gradient(transparent, rgb(3 18 35 / 88%));
+  background: linear-gradient(transparent, rgb(5 5 5 / 92%));
   color: #fff;
 }
 

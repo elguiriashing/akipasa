@@ -867,3 +867,52 @@ describe("community workflow presentation", () => {
     ).toBeInTheDocument();
   });
 });
+
+describe("Map search-location intent", () => {
+  const cases: Array<
+    [string, Record<string, string | string[] | undefined>, boolean]
+  > = [
+    ["implicit fallback", {}, true],
+    ["valid selected locality", { locality: "malaga" }, false],
+    ["another selected locality", { locality: "madrid" }, false],
+    ["unknown locality fallback", { locality: "not-a-city" }, true],
+    ["array locality fallback", { locality: ["malaga"] }, true],
+    [
+      "validated custom centre",
+      { latitude: "36.7213", longitude: "-4.4214" },
+      false,
+    ],
+    [
+      "custom centre with unknown locality",
+      { locality: "not-a-city", latitude: "36.7213", longitude: "-4.4214" },
+      false,
+    ],
+    [
+      "invalid latitude fallback",
+      { latitude: "90", longitude: "-4.4214" },
+      true,
+    ],
+    [
+      "array coordinates fallback",
+      { latitude: ["36.7213"], longitude: "-4.4214" },
+      true,
+    ],
+    [
+      "out-of-region coordinates fallback",
+      { latitude: "36.7213", longitude: "51.389" },
+      true,
+    ],
+    [
+      "selected locality with invalid coordinates",
+      { locality: "malaga", latitude: "90", longitude: "51.389" },
+      false,
+    ],
+  ];
+  for (const locale of ["en", "es"] as const)
+    it.each(cases)(locale + ": %s", async (_name, query, autoLocate) => {
+      render(await MapPage(pageProps(locale, query)));
+      expect(mocks.mapProps).toHaveBeenCalledWith(
+        expect.objectContaining({ autoLocate }),
+      );
+    });
+});

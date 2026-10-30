@@ -108,7 +108,7 @@ for (const locale of ["en", "es"] as const) {
             const html = page.locator("html");
             await expect(html).toHaveAttribute("data-theme", theme);
             const expectedColor =
-              theme === "light" ? "rgb(24, 43, 59)" : "rgb(255, 255, 255)";
+              theme === "light" ? "rgb(36, 30, 25)" : "rgb(255, 255, 255)";
             const hero = main.locator(".pasa-legal-hero");
             const heroHeading = main.locator(".pasa-legal-hero h1");
             await expect(hero).toHaveCSS("color", expectedColor);

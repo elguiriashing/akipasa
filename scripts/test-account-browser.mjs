@@ -32,6 +32,9 @@ const viewports = [
   [1024, 768],
   [1536, 960],
   [640, 400],
+  [390, 844],
+  [820, 1180],
+  [1440, 900],
 ];
 const accountRoot = "./src/app/[locale]/account";
 const routeImports = routes
@@ -222,7 +225,7 @@ const server = createServer((request, response) => {
     response.statusCode = 500;
     response.end(`Unexpected fixture API request: ${pathname}`);
   } else if (
-    /^\/(brand|pwa)\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_.-]+\.(png|svg|webp)$/.test(
+    /^\/(brand|pwa|images)\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_.-]+\.(png|svg|webp)$/.test(
       pathname,
     )
   ) {
@@ -581,6 +584,71 @@ async function interactions(page, route, locale) {
       displayName: "María ÁÉÍÓÚ Ñ Ç",
       bio: "A".repeat(499),
     });
+    const username = page.locator('input[name="username"]');
+    await resetScroll(page);
+    await name.focus();
+    await page.keyboard.press("Tab");
+    await expect(username).toBeFocused();
+    await expect
+      .poll(
+        () =>
+          username.evaluate((element) => {
+            const rect = element.getBoundingClientRect();
+            return [0.1, 0.5, 0.9].map((fraction) => {
+              const target = document.elementFromPoint(
+                rect.left + rect.width * fraction,
+                rect.top + rect.height / 2,
+              );
+              return target === element || element.contains(target);
+            });
+          }),
+        {
+          message:
+            "Native Tab focus into Profile username remains above the dock",
+        },
+      )
+      .toEqual([true, true, true]);
+    // The consumer menu must travel with its section links, never float over
+    // lower Profile fields after the section row has left the viewport.
+    await page.evaluate(() =>
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "instant",
+      }),
+    );
+    const sectionRow = await page
+      .locator(".account-section-links")
+      .boundingBox();
+    const menu = await page
+      .locator(".workspace-mobile-navigation")
+      .boundingBox();
+    if (sectionRow && menu && sectionRow.y + sectionRow.height < 0) {
+      expect(
+        menu.y + menu.height,
+        "Account menu must leave with its section row",
+      ).toBeLessThanOrEqual(0);
+    }
+    await username.evaluate((element) =>
+      element.scrollIntoView({ block: "center", behavior: "instant" }),
+    );
+    await expect
+      .poll(
+        () =>
+          username.evaluate((element) => {
+            const rect = element.getBoundingClientRect();
+            return [0.1, 0.5, 0.9].map((fraction) => {
+              const target = document.elementFromPoint(
+                rect.left + rect.width * fraction,
+                rect.top + rect.height / 2,
+              );
+              return target === element || element.contains(target);
+            });
+          }),
+        {
+          message: "Profile username remains unobscured after native scrolling",
+        },
+      )
+      .toEqual([true, true, true]);
   } else if (route === "privacy") {
     const checkbox = page.getByRole("checkbox", { name: /recom/ });
     await reveal(page, checkbox);
@@ -802,6 +870,29 @@ try {
               await checkBounds(page, `${tag} after interaction`);
             }
             expect(errors).toEqual([]);
+            if (route === "overview") {
+              await page
+                .locator(".account-next-step")
+                .evaluate(async (element) => {
+                  const urls = Array.from(
+                    getComputedStyle(element).backgroundImage.matchAll(
+                      /url\(["']?([^"')]+)["']?\)/g,
+                    ),
+                    (match) => match[1],
+                  );
+                  for (const url of urls) {
+                    const image = new Image();
+                    image.src = url;
+                    await image.decode();
+                  }
+                });
+              await page.evaluate(
+                () =>
+                  new Promise((done) =>
+                    requestAnimationFrame(() => requestAnimationFrame(done)),
+                  ),
+              );
+            }
             await resetScroll(page);
             await page.screenshot({
               path: resolve(directory, `${tag}.png`),

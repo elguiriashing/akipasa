@@ -218,6 +218,7 @@ export function ProductionMap({
   points,
   styleUrl,
   center,
+  autoLocate = true,
   initialVertical = "activities",
   showVerticalTabs = true,
   fullScreen = false,
@@ -226,6 +227,7 @@ export function ProductionMap({
   stayFilters,
 }: {
   locale: Locale;
+  autoLocate?: boolean;
   venueDestination?: "akipasa" | "akiduermo";
   venueIds?: ReadonlySet<string> | null;
   stayFilters?: { type: string; q: string };
@@ -250,6 +252,9 @@ export function ProductionMap({
   const container = useRef<HTMLDivElement>(null);
   const verticalTabs = useRef<HTMLDivElement>(null);
   const legend = useRef<HTMLDetailsElement>(null);
+  // Initial GPS is optional search behavior, not part of map lifetime/camera.
+  const autoLocateRef = useRef(autoLocate);
+  autoLocateRef.current = autoLocate;
   const initialCenterRef = useRef(center);
   const initialPointsRef = useRef(points);
   const [venueStatus, setVenueStatus] = useState<"loading" | "ready" | "error">(
@@ -399,10 +404,14 @@ export function ProductionMap({
           new maplibregl.NavigationControl({ showCompass: false }),
           "top-right",
         );
-        if (mapAttempt === 0 && stayFiltersRef.current.type === undefined)
+        if (
+          autoLocateRef.current &&
+          mapAttempt === 0 &&
+          stayFiltersRef.current.type === undefined
+        )
           navigator.geolocation?.getCurrentPosition(
             ({ coords }) => {
-              if (disposed) return;
+              if (disposed || !autoLocateRef.current) return;
               map.jumpTo({
                 center: [coords.longitude, coords.latitude],
                 zoom: 10.5,

@@ -1,0 +1,82 @@
+{
+  "baselineCommit": "c10d7adcb45c0add6c82accfe398bdedec2dd0f6",
+  "testedWorkingTree": true,
+  "reviewer": "Codex discovery_screens",
+  "sourceHashes": {
+    "src/app/[locale]/check-in/page.tsx": "0f85750e71d9121ec8e63cb2286c7359ad746a1bc4869738bb477b92e29f2bbf",
+    "src/app/[locale]/check-in/check-in.module.css": "8c5b187de364084226bfbdceba1f5c273189fb57ca179c9dfcc0ced6201731cb",
+    "src/components/CheckInScanner.tsx": "4f2cc19dd141fb079ff43513bce4f853c55ef0892de0b7fa7ba82b48a37ae175",
+    "src/components/PasaCinematic.css": "a571bb1e6c4835412f9592488e821cda66ebc6eefbc4b0ebf69b1dfef91205ab",
+    "src/components/PasaSharedSurfaces.css": "538407373e5210f718d481498d46db5b49105537a540c89a34dc8db6780213d3",
+    "src/app/globals.css": "53e2f4b7dec5fa5469e328d81ee0f2773f06d4998967e0dd47d58e9d54c62402",
+    "src/app/[locale]/map/page.tsx": "16f02da0b64c779048c95ce5b2827f4b8d62e97684ff331d2f0ae64db5460850",
+    "src/app/[locale]/tonight/page.tsx": "f581bb1c87ce75f47259c4969e78bf831aac44e0ce1a8c09b53520ae966750c3",
+    "src/app/[locale]/tonight/tonight.module.css": "d60f965ebc49e065a7df36cbc7b84ea22bc0aa9fd8b2487ce800150f930d0bca"
+  },
+  "checkinImplementation": "page+newmoduleonly",
+  "isolatedBuild": "193routesPASS",
+  "existingQrAndProofTests": {
+    "passed": 6,
+    "log": "/tmp/akipasa-checkin-scanner-regressions-20261030.log"
+  },
+  "fullMatrix": {
+    "cases": 48,
+    "routes": ["map", "check-in", "tonight"],
+    "languages": ["en", "es"],
+    "themes": ["dark", "light"],
+    "widths": [360, 390, 820, 1440],
+    "reducedMotion": true,
+    "allPassedAssertions": true,
+    "results": "/workspace/akipasa-main-checkpoints/discovery-screens-final-20261030/results.json"
+  },
+  "cameraLifecycle": {
+    "viewCombinations": 16,
+    "states": [
+      "idle",
+      "unsupported",
+      "permission-denied",
+      "syntheticsoftwarevideostream",
+      "stopped"
+    ],
+    "keyboardActivation": true,
+    "MapLinkUnobscured": true,
+    "genuineCameraHardware": false,
+    "physicalAndroid": false,
+    "results": "/workspace/akipasa-main-checkpoints/checkin-entry-final-20261030/results.json"
+  },
+  "disabledTonight": [
+    {
+      "locale": "en",
+      "status": 404,
+      "queryCannotEnable": true,
+      "providerRpcCalls": 0,
+      "homepageLinkAbsent": true
+    },
+    {
+      "locale": "es",
+      "status": 404,
+      "queryCannotEnable": true,
+      "providerRpcCalls": 0,
+      "homepageLinkAbsent": true
+    }
+  ],
+  "mapBlockingFinding": {
+    "theme": "light",
+    "problem": "Forceddarkdrawerbackgroundwithnavyheading/noticetext",
+    "source": "src/components/PasaCinematic.css:79",
+    "screenshot": "/workspace/akipasa-main-checkpoints/discovery-screens-final-20261030/es-light-820-map-list.png",
+    "fixOwner": "root sharedCSS",
+    "acceptanceGranted": false,
+    "resolved": true,
+    "repairOwner": "root",
+    "repairedCssSha256": "f5b80b832b3626f5864473d8764f04bcea6d4993c9dc7d1ee6f583b5196e8368",
+    "actualBrowserVerification": "8ENES/theme/390820statesPASS;4maintained820regressionsPASS;mincontrast5.9057light/10.999dark",
+    "repairEvidence": "/workspace/akipasa-main-checkpoints/map-drawer-final-20261030/results.json",
+    "remainingReleaseEvidence": "LivebasemapproviderandphysicalAndroidMap\u2192detail/backnotestablishedbytilelessfixture"
+  },
+  "checkinRecommendation": "Implementation/visual+browserfunctionalreview complete; bindexactnewsourcecommit+freshCIartifactbefore formalacceptance. Tokenproofroute separate.",
+  "tonightRecommendation": "Acceptonlytheexplicitproductiondefault-offboundary atc10; broadactivation/populatedliveeventacceptance withheld. Realroute404/querycannotenable/noRPCcalls/Homeentryabsent proven bothlanguages; previewplanner16states reviewed.",
+  "fullReleaseAccepted": false,
+  "noProductionMutations": true,
+  "ownedTestChanges": "tests/e2e/discovery.spec.ts:4newtests;alloldassertionsretained"
+}

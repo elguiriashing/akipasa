@@ -1,0 +1,725 @@
+{
+  "sourceCommit": "c10d7adcb45c0add6c82accfe398bdedec2dd0f6",
+  "project": "akipasa-pristine-qa-20261030",
+  "harnessDirectory": "/workspace/akipasa-pristine-local-qa-20261030",
+  "manifestSha256": "c8456714e562561a0a4ec5b0c9e607eb1f8cc7411de4b9461f5c623b87d7dc3b",
+  "executionReceiptSha256": "7f7d9cbd9cb14e54331d64835224afbdffaf871ae2f032bfda74179ac590cfe0",
+  "applicationSourcesPassed": 97,
+  "officialStorageSourcesPassed": 17,
+  "authMigrations": 75,
+  "realAuthHelpersPresent": true,
+  "newNormalAuthSyntheticAdmin": true,
+  "firstPassNoFailureReceipts": true,
+  "tailApplied": false,
+  "accountCoverageApplied": false,
+  "newStaffSqlApplied": false,
+  "storageHttpAcceptance": false,
+  "fullCanonicalParity": false,
+  "productionChanged": false,
+  "existingFixturesTouched": false,
+  "privateFilesExcluded": [
+    "private/credentials.json",
+    "private/runtime.env",
+    "private/bootstrap.sql"
+  ],
+  "sourceExecutionReceipts": [
+    {
+      "timestamp": 1793365430.7799196,
+      "kind": "storage-source-pass",
+      "file": "0002-storage-schema.sql",
+      "sha256": "c638dbaccf8829122fc2e05148bcb82596baf288cd497bed7a2cdaa5a4d99e09"
+    },
+    {
+      "timestamp": 1793365430.950521,
+      "kind": "storage-source-pass",
+      "file": "0003-pathtoken-column.sql",
+      "sha256": "db57ad79bd7ecf1ea6a8099b38bf376886d6b2181ba65b9e9c0556ed245dea8b"
+    },
+    {
+      "timestamp": 1793365431.1416998,
+      "kind": "storage-source-pass",
+      "file": "0004-add-migrations-rls.sql",
+      "sha256": "05b32aad858e4644202e6ac43413cfee30e61d7e9ad51c42b082cfb21235c7bd"
+    },
+    {
+      "timestamp": 1793365431.3282738,
+      "kind": "storage-source-pass",
+      "file": "0005-add-size-functions.sql",
+      "sha256": "ce7f8b2e360f49df2a0f7d8ed0fd4bc63c6907f2890e84cfc377d9050118fb06"
+    },
+    {
+      "timestamp": 1793365431.5009348,
+      "kind": "storage-source-pass",
+      "file": "0006-change-column-name-in-get-size.sql",
+      "sha256": "d4acac148b3a952336a9f739cdbdee22a573bca5cda247a8272beacd0b6a1aa0"
+    },
+    {
+      "timestamp": 1793365431.6535225,
+      "kind": "storage-source-pass",
+      "file": "0007-add-rls-to-buckets.sql",
+      "sha256": "c87aa8ea3c6509171728880538cc26e7233896a8f927af3bc5b351a1706610e3"
+    },
+    {
+      "timestamp": 1793365431.8402727,
+      "kind": "storage-source-pass",
+      "file": "0008-add-public-to-buckets.sql",
+      "sha256": "1d881092aea62e83493f1a9c4cb4f101f3035a08d62be84a7e7970ee0c6f0f48"
+    },
+    {
+      "timestamp": 1793365431.9933734,
+      "kind": "storage-source-pass",
+      "file": "0009-fix-search-function.sql",
+      "sha256": "841c3ee6ed4885bc59f55db8d6eec293c6188a670d049737552c03a0ba714dc9"
+    },
+    {
+      "timestamp": 1793365432.1769168,
+      "kind": "storage-source-pass",
+      "file": "00010-search-files-search-function.sql",
+      "sha256": "41d2b264437766b360ad421c4b1b80e5bb34c1503779408eefe5827238b2a098"
+    },
+    {
+      "timestamp": 1793365432.3871071,
+      "kind": "storage-source-pass",
+      "file": "0011-add-trigger-to-auto-update-updated_at-column.sql",
+      "sha256": "922302d623209192a5a85c6bdd0bf21b64cc3bded6e1d048c66d98c7dfdd83eb"
+    },
+    {
+      "timestamp": 1793365432.5583608,
+      "kind": "storage-source-pass",
+      "file": "0012-add-automatic-avif-detection-flag.sql",
+      "sha256": "55ba2318864bfc0cc1f4db871d0874c70d445fa8f2b12e4543960403bd88ee9a"
+    },
+    {
+      "timestamp": 1793365432.7293868,
+      "kind": "storage-source-pass",
+      "file": "0013-add-bucket-custom-limits.sql",
+      "sha256": "07d0b1e8299b70eeeda0841969772aecdbd0788eda9dbada7806afdc8ed9d06e"
+    },
+    {
+      "timestamp": 1793365432.910911,
+      "kind": "storage-source-pass",
+      "file": "0014-use-bytes-for-max-size.sql",
+      "sha256": "9e34ab4fc380e1cdd4748bcac368cd628c247962bdd58f8311a44f1b29e918ec"
+    },
+    {
+      "timestamp": 1793365433.0757294,
+      "kind": "storage-source-pass",
+      "file": "0015-add-can-insert-object-function.sql",
+      "sha256": "572c4c802fce193ed5d63eba166922b5469d863d1eae460dd06cdcb1594bab9a"
+    },
+    {
+      "timestamp": 1793365433.2334847,
+      "kind": "storage-source-pass",
+      "file": "0016-add-version.sql",
+      "sha256": "a4c7a068bb3212a015879859f3c7b8e1ed92998a671fbf3a9bdfd827cf5e0e67"
+    },
+    {
+      "timestamp": 1793365433.3989413,
+      "kind": "storage-source-pass",
+      "file": "0017-drop-owner-foreign-key.sql",
+      "sha256": "00edfd4aefba445959c977fd1a510bd7900dcf9679bbc24615d43ad9768dd0da"
+    },
+    {
+      "timestamp": 1793365433.5693917,
+      "kind": "storage-source-pass",
+      "file": "0018-add_owner_id_column_deprecate_owner.sql",
+      "sha256": "c895bce18e7900b793a61a8bac57e02d18a51ac3683ddcf6e169919164025c8f"
+    },
+    {
+      "timestamp": 1793365433.8089442,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0001_foundation.sql",
+      "sha256": "bd5ca62505a17b7bfd81acdeb70987bf01e75a7e8b1aa8102310f1e7df22d370"
+    },
+    {
+      "timestamp": 1793365434.0271199,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0002_identity_and_business.sql",
+      "sha256": "c1a7f504de3eaa8c7bc24ae195cfc9b85236d6310b7596b2b3860c11a37bf352"
+    },
+    {
+      "timestamp": 1793365434.2289305,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0003_community_and_moderation.sql",
+      "sha256": "c2cd1a3be816cbc077fb6952b43d407438d796eb5728b8323fb72c9bfe3dbeb8"
+    },
+    {
+      "timestamp": 1793365434.4046175,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0004_accounts_and_roles.sql",
+      "sha256": "4455f50322386df232483666376073e671295519dbc3aadae757df20c61c631d"
+    },
+    {
+      "timestamp": 1793365434.6099067,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0005_spain_and_account_controls.sql",
+      "sha256": "0b7374f56ee403ef5553ac4f376f906b61c08669e0771dcf949583bd7c99229d"
+    },
+    {
+      "timestamp": 1793365434.8255506,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0006_loyalty_passports.sql",
+      "sha256": "5c8e152d6c0e983181e0a6fb7a8c6e9e76ee7f54bfe49bd9134c892020beb9f7"
+    },
+    {
+      "timestamp": 1793365435.0138755,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0007_promotions_analytics.sql",
+      "sha256": "2154333595fd27324a76d9c4b0dc18c0400ff2b291202710b7d1d1e633d96de0"
+    },
+    {
+      "timestamp": 1793365435.1832662,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0008_business_operations.sql",
+      "sha256": "63d68fb47bf4a22510d9b14bb8c0077df64c2bd456e915cf3d114afe9da47a53"
+    },
+    {
+      "timestamp": 1793365435.3334033,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0009_public_catalogue.sql",
+      "sha256": "4db0c7a0b27adbc72f2102bc5186877da8e98feaee130d828371d51ef8a32d7f"
+    },
+    {
+      "timestamp": 1793365435.5008862,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0010_recent_event_refs.sql",
+      "sha256": "4e12f00a5e0c2325d40a02cdd309924672f4e0f92819a6ceb6ac16ed9681eb21"
+    },
+    {
+      "timestamp": 1793365435.676818,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0011_resolve_report_parameter_fix.sql",
+      "sha256": "7b0b14f3a42eb826cc36bf903e85fe3ec4c9fad1e7fef255d552cf3b21f17d4b"
+    },
+    {
+      "timestamp": 1793365435.9083188,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0012_event_expiry_cron.sql",
+      "sha256": "0988cc9581309f0a850cd6ea3dad240aee742e46aa3a5859184ce12ba379cb04"
+    },
+    {
+      "timestamp": 1793365436.101246,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0013_event_expiry_status_fix.sql",
+      "sha256": "ace0d87c494f4a0855d6abff32baf1f016dda28d629df953b8312b6170a2290c"
+    },
+    {
+      "timestamp": 1793365436.2842486,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0014_owned_event_recurrence.sql",
+      "sha256": "1400d231c446455a84a67f0d8903f0c009f875aff49810c4c2d8d600491e2f87"
+    },
+    {
+      "timestamp": 1793365436.4687672,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0015_rpc_execute_hardening.sql",
+      "sha256": "796ee41e5647d1bb70fa3ea0233c8d3433407dc334b6e306119216e897f9961a"
+    },
+    {
+      "timestamp": 1793365436.6366842,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0016_venue_contacts_and_public_media.sql",
+      "sha256": "5c59ebf47b5f29cfa63c9348476f9cc15c86250aa550a06fb7fdd2955702fbcf"
+    },
+    {
+      "timestamp": 1793365436.7976358,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0017_event_safety_details.sql",
+      "sha256": "099e7ed2d0ce16863fd672aacd44535e3647e2ddec0c8bb5ff1558b88c45aa50"
+    },
+    {
+      "timestamp": 1793365436.9623783,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0018_administrator_inherited_venue_access.sql",
+      "sha256": "cc7db32469b0a3d6a2ef892d52339ff4ab776e6590402a084abfe65280ad8a67"
+    },
+    {
+      "timestamp": 1793365437.1295094,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0019_venue_media_team_management.sql",
+      "sha256": "4f1ca30fd8dc5d4a5967dbe788d102dd1c470ff4ee0b5e3e31e7bb4678fa2603"
+    },
+    {
+      "timestamp": 1793365437.3116581,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0020_admin_catalogue_and_feature_flags.sql",
+      "sha256": "53781fe8c3bf70819eae1b78c5995a588d1b30f900471b805499315f6a7a6d12"
+    },
+    {
+      "timestamp": 1793365437.4648654,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0021_community_abuse_limits.sql",
+      "sha256": "883bb1d68ed6517a9efc2a3182a27c9a948a5aa7c5e14015e93dd3eb679e18cd"
+    },
+    {
+      "timestamp": 1793365437.633577,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0022_terms_acceptance_versioning.sql",
+      "sha256": "a39d318e71419df0d594f882cac04f8dda296854137fa302461fa0e095834789"
+    },
+    {
+      "timestamp": 1793365437.7938838,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0023_deletion_request_operations.sql",
+      "sha256": "eaf4f428b750190bef0b6d886b19af652eb721ae250555798be698335484bde0"
+    },
+    {
+      "timestamp": 1793365437.9558089,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0024_staff_operations_moderation.sql",
+      "sha256": "cbf7a353ada83b64242a53ef0c30003a4254a83c69db39f1b68aec23840c1af2"
+    },
+    {
+      "timestamp": 1793365438.1145916,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0025_owned_catalogue_deletion.sql",
+      "sha256": "e3b0f7beec79b3b5e420f399b5dfef58a153c25095a78351772761184d885c0e"
+    },
+    {
+      "timestamp": 1793365438.282713,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0026_promote_launch_catalogue.sql",
+      "sha256": "b1279a9f99939e5e5e6cc3253ac47699dfe912420d34ecac1b546232b7622b46"
+    },
+    {
+      "timestamp": 1793365438.4458447,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0027_admin_user_crm.sql",
+      "sha256": "a861f8220e171a5fbc95c09c941685f3eedeac1a0a84982b231df485490a534f"
+    },
+    {
+      "timestamp": 1793365438.6432707,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0028_profile_operations_and_business_onboarding.sql",
+      "sha256": "8e78cab338c7527e242a16846868fca595e0de653f50de36bdb300ca13c6482d"
+    },
+    {
+      "timestamp": 1793365438.825429,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0029_stripe_billing.sql",
+      "sha256": "f9e4dc3b7453a2b41b8f580d10ec0af33ae409cbc599454be6fbd9d9cd120e2e"
+    },
+    {
+      "timestamp": 1793365438.9807162,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0030_atomic_stripe_webhook_claim.sql",
+      "sha256": "c68832436b4a226ff60880a93f9ea3dc189285e63270f5b68b1200129a311ed5"
+    },
+    {
+      "timestamp": 1793365439.1679645,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0031_crm_staff_data.sql",
+      "sha256": "51acabac28cc91290e844d6ace20c1fda029cc5731106fa8af71647fd381aea7"
+    },
+    {
+      "timestamp": 1793365439.3381162,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0032_workspace_snapshots_sharing.sql",
+      "sha256": "1f52db1e7bfa5ebd7b27b8e9bb874871511392db5bd1cde934d9f6ed8346fd0b"
+    },
+    {
+      "timestamp": 1793365439.5128763,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0033_premium_entitlements.sql",
+      "sha256": "8bde7021c9a71805c091282637517e00346ecac6c0afb502ae6ccc4b23e505b0"
+    },
+    {
+      "timestamp": 1793365439.753072,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0034_ai_team.sql",
+      "sha256": "74f538009b0a7fc481e8bc736fab87bee8182b617d723ab7f9a1ef4c18cbd4f1"
+    },
+    {
+      "timestamp": 1793365439.9254372,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0035_ai_team_autonomy.sql",
+      "sha256": "9e17cfa132edc8072356c0591fb2a20db845bea879f237045c958890dea331d7"
+    },
+    {
+      "timestamp": 1793365440.0853436,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0036_ai_team_manager_reporting.sql",
+      "sha256": "97f1c11ff05386867d292b135fd308f2d22d24f236f2e30ae3875baee11e639f"
+    },
+    {
+      "timestamp": 1793365440.2417033,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0037_ai_team_rpc_permissions.sql",
+      "sha256": "8687c8e5916484c84302218d9ffde76b18ef6111e8d3bf034d29d763664d803b"
+    },
+    {
+      "timestamp": 1793365440.4116216,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0038_ai_team_crm_workspace.sql",
+      "sha256": "bd3e894fa62eaaaf6048c45fd7756f9b2ba8762721bebf49319db467369acaf3"
+    },
+    {
+      "timestamp": 1793365440.567464,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0039_ai_model_pricing_refresh.sql",
+      "sha256": "e402bfb860f2ccc926f098baff601ea928aad2fd549fd9b2cb096b47c7fb8907"
+    },
+    {
+      "timestamp": 1793365440.7352242,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0040_ai_budget_reservation_ambiguity.sql",
+      "sha256": "146e845b7a21da133a27e937dd285ce2d22dfadc54b73bdf8ee2aea8dc33c801"
+    },
+    {
+      "timestamp": 1793365440.9097311,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0041_ai_failed_request_costs.sql",
+      "sha256": "7e3f3154e46cb69bed84dad654267f67436bae1a98953006c2bb58216fdfac56"
+    },
+    {
+      "timestamp": 1793365441.063313,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0042_spain_address_search.sql",
+      "sha256": "135be4540e9909e6f1f417f3342c03dfd7753117328a488f592f2dd181aee78a"
+    },
+    {
+      "timestamp": 1793365441.2170913,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0043_harden_spain_address_permissions.sql",
+      "sha256": "4bd26cdb17fe80e879be629b7073924423e84b426efba72af9bad514f6c7642a"
+    },
+    {
+      "timestamp": 1793365441.3931355,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0044_fix_featured_event_promotion_flow.sql",
+      "sha256": "3030d1cef2560fd40048f4b7bd8d11f6e38bee6243fbfe656e2e7ba6c1ce26f2"
+    },
+    {
+      "timestamp": 1793365441.5431619,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0045_harden_featured_promotion_rpc.sql",
+      "sha256": "0485e471a0bfb547ee85ffcb2c636954300a29e2c2b617ee2a2440bcda8e39f5"
+    },
+    {
+      "timestamp": 1793365441.7608368,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0046_personalisation_foundation.sql",
+      "sha256": "9dd9f35878563181064f9676639b19c1069138975f7dc1b3f7db7616d05e8209"
+    },
+    {
+      "timestamp": 1793365441.9164114,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0047_harden_personalisation_function_permissions.sql",
+      "sha256": "565d1758560b8443a47ba2949b54ee78145bf65f69771cc18b1856613febbc5f"
+    },
+    {
+      "timestamp": 1793365442.0824077,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0048_personalisation_foreign_key_indexes.sql",
+      "sha256": "37a7d522669bda643f8270e4705d39e25409b2e32c15f96bc8b4dff0afd5905d"
+    },
+    {
+      "timestamp": 1793365442.227601,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0049_crm_personalisation_analytics.sql",
+      "sha256": "084a9c57afaf719b3b4160e814655fe1daf8443a75dd5360a33509dda8261102"
+    },
+    {
+      "timestamp": 1793365442.4014983,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0050_crm_durable_workspace_records.sql",
+      "sha256": "e51c58158f029ade94821acb823d45923295d0ec8fc260ee9252e163077e9658"
+    },
+    {
+      "timestamp": 1793365442.559895,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0051_harden_crm_updated_at_trigger.sql",
+      "sha256": "1617f76687935eb15da7de23ee79dbb5cb587e35386b5e36631fdaadcdde54a1"
+    },
+    {
+      "timestamp": 1793365442.718754,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0052_ai_coder_and_durable_outputs.sql",
+      "sha256": "1abaad84f895f9c0688ae0778b4a0e526bd269ff76078a385cd7c0d232ab72a4"
+    },
+    {
+      "timestamp": 1793365442.8903785,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0053_raise_ai_provider_round_limit.sql",
+      "sha256": "6d8790ff10c89ed434e4e354f3eca3da3512d04b59a73dd112867219a0c0c4bb"
+    },
+    {
+      "timestamp": 1793365443.0915496,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0054_publish_geocoded_community_events.sql",
+      "sha256": "e2e19a14a4ef8af4f385837562851950bda224cf2daee67a14099a817eacaff5"
+    },
+    {
+      "timestamp": 1793365443.2669346,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0055_ai_web_research.sql",
+      "sha256": "153162386455c06d1b43146c58b9c8029920f2e5984e038a50fd1d7360db94e9"
+    },
+    {
+      "timestamp": 1793365443.4278634,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0056_ai_workspace_management.sql",
+      "sha256": "9f14388c218e15f8018bfe0bba5a83557889fbdf6d81c1dba01a53bef8a91ede"
+    },
+    {
+      "timestamp": 1793365443.6173346,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0057_ai_full_workspace_and_agent_configuration.sql",
+      "sha256": "1124f304866cff390071d3caae8b6894ea4066c89b0ab4226e57c32095327c79"
+    },
+    {
+      "timestamp": 1793365443.7906473,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0058_consent_aware_advertising_profiles.sql",
+      "sha256": "c32d1d1e349b1d446e877da385134883f7c8abdc302f53de7b14b437eabf4b0d"
+    },
+    {
+      "timestamp": 1793365443.9495523,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0059_admin_individual_analytics_search.sql",
+      "sha256": "83d7c0baa145528e034e279764e0fa2b03e60d9bd128720a256eddef6ed176a4"
+    },
+    {
+      "timestamp": 1793365444.1236804,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0060_crm_unclaimed_catalogue_and_cascade_deletion.sql",
+      "sha256": "455f696a94adb07a3c331964bbe72aa29da3bc2aac976ba81754f9a60a9a2f24"
+    },
+    {
+      "timestamp": 1793365444.2927814,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0061_revoke_anonymous_catalogue_deletion.sql",
+      "sha256": "7a57ad98a17b7db3a9b40ad8978901513a01932e7046b596e0970daff6f2db4c"
+    },
+    {
+      "timestamp": 1793365444.4564295,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0062_venue_location_resolver_agent.sql",
+      "sha256": "54726bfae835b1be24a0d953cca8b5fff22090196948c9da401e1c73270999e2"
+    },
+    {
+      "timestamp": 1793365444.619152,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0063_repair_unclaimed_venue_spanish_text.sql",
+      "sha256": "ddc80ec9aa9ad0a86e0a25c2d37bd50667806d0ae4f05ae6014bfedeb042f44e"
+    },
+    {
+      "timestamp": 1793365444.7734077,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0064_increase_admin_ai_throughput.sql",
+      "sha256": "2e975b4765e747bd87fa212061a2b2a051a63b9d816bb93f3629b55543d80cec"
+    },
+    {
+      "timestamp": 1793365444.9634037,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0065_automatic_catalogue_moderation.sql",
+      "sha256": "da336e1b041ceecdfa4c2b3df919ffe8bb24443326eed3777c6fd566541f42ff"
+    },
+    {
+      "timestamp": 1793365445.1359305,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0066_owner_console.sql",
+      "sha256": "d1d5560d467909fb50bc6b8b934d0126e83342af1f862cd071a12b38d99baf9a"
+    },
+    {
+      "timestamp": 1793365445.2957582,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0067_private_owner_backgrounds.sql",
+      "sha256": "ad7c642b35ef0a563722f933dc2309b8fd3aee0eb1ef5deafe23a3c7beac974d"
+    },
+    {
+      "timestamp": 1793365445.480246,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0068_creator_community.sql",
+      "sha256": "683259d66550906ecfd02d2a7c99930e77e8f552be12c76a5cb74604b9024883"
+    },
+    {
+      "timestamp": 1793365445.686627,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0069_product_contract_loyalty_profiles.sql",
+      "sha256": "3eec646e7a630d3ffd0111e0d354d72ee45d0a6d55a32d67db391c6ec9e5a905"
+    },
+    {
+      "timestamp": 1793365445.8699234,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0070_complete_questionnaire_contract.sql",
+      "sha256": "cb588cb6a1076b9c6f23e8c95a4def29cfb508c389dc1c4cc43c03de0ad46501"
+    },
+    {
+      "timestamp": 1793365446.022842,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0071_fix_booking_request_rpc.sql",
+      "sha256": "2f2467c0561a292ac58904b6b35bfaf86b4dbaab79c076bb3b215f4dbec99d03"
+    },
+    {
+      "timestamp": 1793365446.1815305,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0072_refine_venue_location_address_fallback.sql",
+      "sha256": "b6d163987c3e90fb7e79167feef2867398352d887a1b8a3c08323087d8e1b34e"
+    },
+    {
+      "timestamp": 1793365446.3314385,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0073_unclaim_owned_venue.sql",
+      "sha256": "18a2c2ebcb3660fbd39290795b640dc8372710c3e912da033547f5869aae0806"
+    },
+    {
+      "timestamp": 1793365446.7016227,
+      "kind": "fresh-normal-auth-admin",
+      "syntheticOnly": true
+    },
+    {
+      "timestamp": 1793365446.9382246,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0074_crm_multi_tenant_workspaces.sql",
+      "sha256": "21993ebf6c040fbf1d586d1aa28d75c1fe67a700c66f3486a3fb6d6d95c4c3a6"
+    },
+    {
+      "timestamp": 1793365447.1069062,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0075_harden_crm_authenticated_grants.sql",
+      "sha256": "7e0d41e9d86e8e7513ebfa05bc9682841e2cd72509c2ba01162145fef0d9b6ba"
+    },
+    {
+      "timestamp": 1793365447.2615652,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0076_harden_crm_function_grants.sql",
+      "sha256": "d5df6e2de86d961e38dc691319ca3119c78a9110ba4f343817deebc223d3b64b"
+    },
+    {
+      "timestamp": 1793365447.4282517,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0077_optimize_crm_policies_and_foreign_keys.sql",
+      "sha256": "0260377c7f3c9afc4126f73a28b61c47143f9d94a4dfbdd6bbd74613d885dbdc"
+    },
+    {
+      "timestamp": 1793365447.5823321,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0078_sync_platform_crm_membership.sql",
+      "sha256": "6a91a524f5704f0f0221db87b29507aa98aabfdce3f677566bababa8507ae040"
+    },
+    {
+      "timestamp": 1793365447.7361982,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0079_crm_inventory_commerce_fields.sql",
+      "sha256": "00a1ed29a7f7127c5037b2ec728e733367adf2cafa17aa1ac59d3d9d1a22bdf8"
+    },
+    {
+      "timestamp": 1793365447.8980849,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0079_rate_limit_public_analytics.sql",
+      "sha256": "9d9ba81ac92932140d0f259ac233874278f0e5e64f9f9ab6f24e7ba9deba62c5"
+    },
+    {
+      "timestamp": 1793365448.091011,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0080_crm_role_templates_and_packages.sql",
+      "sha256": "2b36c9956e71f091156857d30ee75699bf65cbce311ea17a5eff0e0eed31cf3b"
+    },
+    {
+      "timestamp": 1793365448.2384727,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0081_revoke_legacy_business_application_rpc.sql",
+      "sha256": "cae65d85a51783ccd9044f44cca7e366d06f436d1eb5062b7f78191b50752ebd"
+    },
+    {
+      "timestamp": 1793365448.4241164,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0082_free_venue_access_and_billing_repair.sql",
+      "sha256": "96b0be09f9e165da82c8cf20e5ef20ab375333faaa04d2131e0aa0ffde06c821"
+    },
+    {
+      "timestamp": 1793365448.6092038,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0083_catalogue_venue_search.sql",
+      "sha256": "85b41015c2ec1418c5fe1032732ce2bbc0ff5cbc3cabfd919bcfeb59faa77503"
+    },
+    {
+      "timestamp": 1793365448.790958,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0084_product_readiness_loyalty_reporting.sql",
+      "sha256": "64df15848c97cd35c2956e5e8602e297371666b81475f0dbe2c9cdf117fe47af"
+    },
+    {
+      "timestamp": 1793365448.995715,
+      "kind": "application-source-pass",
+      "file": "supabase/migrations/20260923000739_accommodation_vertical.sql",
+      "sha256": "9090f9e47438a064bab07ba503af35947f3a6f34cc17ca6cb9c8d63edede70ce"
+    },
+    {
+      "timestamp": 1793365449.1776009,
+      "kind": "application-source-pass",
+      "file": "supabase/migrations/20260923002500_accommodation_review_queue.sql",
+      "sha256": "b4540fa99dac0cd7aaaa45ed7afb0ecf1c11014c1db0af18de85f5ea37c650fa"
+    },
+    {
+      "timestamp": 1793365449.393149,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0085_venue_relevance_audit.sql",
+      "sha256": "9296636dd3bfb7bdd1827794d79805dade5bd420ab6335a6248b7c906f42cbf5"
+    },
+    {
+      "timestamp": 1793365449.5696225,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0086_venue_relevance_discovery.sql",
+      "sha256": "cbe438e2e6b2b9a5a0b444a9a1da9461e6e30283cdd41e8d3595d9a43bac8cea"
+    },
+    {
+      "timestamp": 1793365449.7438805,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0087_venue_member_email_invites.sql",
+      "sha256": "04bade631d580596816160e7af31c682d1ad22a1cbe6076262693f549f51adbd"
+    },
+    {
+      "timestamp": 1793365449.9227402,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0088_catalogue_translation_metadata_fingerprint.sql",
+      "sha256": "b250da1a2f90d4c9748b2a43da16386dd70372338c794f9c386ad2b0b319c9f9"
+    },
+    {
+      "timestamp": 1793365450.1214552,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0089_repair_akipasa_selection_admin_publish.sql",
+      "sha256": "ce7bc7ea1aa2e002744d9f84fd972a783286d2dcc7a37262c10872ae5d5948e4"
+    },
+    {
+      "timestamp": 1793365450.3080626,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0090_media_library_event_price_display.sql",
+      "sha256": "26db88bf78c2973fdba50fd50f88ecff85fbc4f4e14cd6193f34ef35b9db3c9c"
+    },
+    {
+      "timestamp": 1793365450.4994833,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0091_five_slot_media_studios.sql",
+      "sha256": "21731590d0a0c6b7306cfcbe100d9afeac0cdc515ae5954224f6afbdd4640dfc"
+    },
+    {
+      "timestamp": 1793365450.6788208,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0092_verified_venue_trust.sql",
+      "sha256": "cd51329a0610bdba1376bf997e96342813512142c96f2f060cfcf41cdf81b4c4"
+    },
+    {
+      "timestamp": 1793365450.8508818,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0093_event_media_slot_semantics.sql",
+      "sha256": "b2627f046d9059d3d92a715cb078da7d526e2c91e42b91a12e8d8db77b90dfd3"
+    },
+    {
+      "timestamp": 1793365451.0178323,
+      "kind": "application-source-pass",
+      "file": "database/migrations/0102_event_catalogue_sections.sql",
+      "sha256": "774cc7e3ec54ddc10dc455fcbe5b7d4e9a301e7d71fd26d24ce632b1b008b28b"
+    },
+    {
+      "timestamp": 1793365451.0178924,
+      "kind": "bounded-prefix-stop",
+      "applicationSources": 97,
+      "storageSources": 17,
+      "fullCanonicalParity": false,
+      "tailApplied": false,
+      "storageHttpAcceptance": false
+    }
+  ]
+}

@@ -124,6 +124,7 @@ const sourceFiles = [
   "scripts/test-creator-routes-browser.mjs",
   "tests/fixtures/creator-route-browser-data.mjs",
   "src/app/[locale]/community/creator/page.tsx",
+  "src/app/[locale]/community/creator/creator.module.css",
   "src/app/[locale]/community/creator-actions.ts",
   "src/app/[locale]/community/creators/[slug]/page.tsx",
   "src/components/community/CreatorProfilePage.tsx",
@@ -159,7 +160,7 @@ const server = createServer((request, response) => {
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500"><rect width="800" height="500" fill="#25201b"/><circle cx="400" cy="180" r="100" fill="#fb7624"/><text x="80" y="400" fill="white" font-size="40">Synthetic test illustration</text></svg>',
     );
   } else if (
-    /^\/brand\/[a-z0-9/-]+\.(svg|png|webp)$/.test(url.pathname) &&
+    /^\/(?:brand|images)\/[a-z0-9/-]+\.(svg|png|webp)$/.test(url.pathname) &&
     existsSync(resolve("public", url.pathname.slice(1)))
   ) {
     response.setHeader(

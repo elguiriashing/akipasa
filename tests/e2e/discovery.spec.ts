@@ -508,3 +508,115 @@ test("public responses include baseline security headers", async ({ page }) => {
     "strict-origin-when-cross-origin",
   );
 });
+
+for (const locale of ["en", "es"] as const) {
+  for (const theme of ["dark", "light"] as const) {
+    test(`${locale} ${theme} Map results drawer keeps readable text`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 820, height: 900 });
+      await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
+      await page.addInitScript(
+        (value) => localStorage.setItem("akipasa.theme", value),
+        theme,
+      );
+      // This tests the real MapLibre/dialog UI without depending on live tiles.
+      await page.route(
+        "https://tiles.openfreemap.org/styles/liberty",
+        (route) =>
+          route.fulfill({
+            contentType: "application/json",
+            body: JSON.stringify({ version: 8, sources: {}, layers: [] }),
+          }),
+      );
+      const response = await page.goto(
+        `/${locale}/map?category=music&radius=25`,
+        {
+          waitUntil: "domcontentloaded",
+        },
+      );
+      expect(response?.status()).toBe(200);
+      await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
+      const toggle = page.locator(".map-list-toggle");
+      await toggle.click();
+      const drawer = page.locator("#map-results-drawer");
+      await expect(drawer).toBeVisible();
+      await expect(page).toHaveURL(/category=music/);
+      await expect(page).toHaveURL(/radius=25/);
+      const samples = await drawer
+        .locator("h2, .map-drawer-hint, .notice")
+        .evaluateAll((elements) => {
+          const canvas = document.createElement("canvas");
+          canvas.width = canvas.height = 1;
+          const context = canvas.getContext("2d", { willReadFrequently: true });
+          if (!context) throw new Error("Colour conversion canvas unavailable");
+          const rgba = (value: string) => {
+            context.clearRect(0, 0, 1, 1);
+            context.fillStyle = value;
+            context.fillRect(0, 0, 1, 1);
+            const [r, g, b, alpha] = context.getImageData(0, 0, 1, 1).data;
+            return [r, g, b, alpha / 255];
+          };
+          const composite = (front: number[], back: number[]) =>
+            front
+              .slice(0, 3)
+              .map((v, i) => v * front[3] + back[i] * (1 - front[3]));
+          const luminance = (rgb: number[]) =>
+            rgb
+              .slice(0, 3)
+              .map((v) => {
+                const channel = v / 255;
+                return channel <= 0.04045
+                  ? channel / 12.92
+                  : ((channel + 0.055) / 1.055) ** 2.4;
+              })
+              .reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
+          return elements.map((element) => {
+            const layers: number[][] = [];
+            for (
+              let node: Element | null = element;
+              node;
+              node = node.parentElement
+            ) {
+              const style = getComputedStyle(node);
+              if (style.backgroundImage !== "none")
+                throw new Error(
+                  "Drawer text contrast requires a verified flat backdrop",
+                );
+              const colour = rgba(style.backgroundColor);
+              layers.push(colour);
+              if (colour[3] === 1) break;
+            }
+            if (layers.at(-1)?.[3] !== 1)
+              throw new Error("No opaque drawer contrast base");
+            let background = layers.pop()!.slice(0, 3);
+            for (const layer of layers.reverse())
+              background = composite(layer, background);
+            const foreground = composite(
+              rgba(getComputedStyle(element).color),
+              background,
+            );
+            const front = luminance(foreground),
+              back = luminance(background);
+            return {
+              text: element.textContent?.trim(),
+              ratio:
+                (Math.max(front, back) + 0.05) / (Math.min(front, back) + 0.05),
+            };
+          });
+        });
+      expect(samples.length).toBeGreaterThanOrEqual(4);
+      for (const sample of samples)
+        expect(
+          sample.ratio,
+          `${sample.text}: Map drawer text contrast`,
+        ).toBeGreaterThanOrEqual(4.5);
+      await page.screenshot({
+        path: `test-results/map-drawer-contrast-${locale}-${theme}-820.png`,
+      });
+      await page.keyboard.press("Escape");
+      await expect(drawer).not.toBeVisible();
+      await expect(toggle).toBeFocused();
+    });
+  }
+}

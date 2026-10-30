@@ -22,6 +22,7 @@ const viewports = [
   { name: "portrait-tablet", width: 820, height: 1312 },
   { name: "landscape-tablet", width: 1280, height: 800 },
   { name: "desktop", width: 1536, height: 960 },
+  { name: "required-desktop", width: 1440, height: 900 },
 ] as const;
 
 test.describe("Spotlight public route acceptance", () => {
@@ -252,24 +253,16 @@ test.describe("Spotlight public route acceptance", () => {
     viewport: (typeof viewports)[number],
     kind: "venue" | "event",
   ) {
-    const representative =
-      (locale === "en" && theme === "light" && viewport.name === "desktop") ||
-      (locale === "es" && theme === "dark" && viewport.name === "phone") ||
-      (locale === "es" &&
-        theme === "light" &&
-        viewport.name === "landscape-tablet" &&
-        kind === "venue") ||
-      (locale === "en" &&
-        theme === "dark" &&
-        viewport.name === "portrait-tablet" &&
-        kind === "event");
-    if (representative) {
-      await page.screenshot({
-        path: `test-results/spotlight-routes/${kind}-${locale}-${theme}-${viewport.name}.png`,
-        fullPage: false,
-        animations: "disabled",
-      });
-    }
+    await page.screenshot({
+      path: `test-results/spotlight-routes/${kind}-${locale}-${theme}-${viewport.name}.png`,
+      fullPage: false,
+      animations: "disabled",
+    });
+    await page.screenshot({
+      path: `test-results/spotlight-routes/${kind}-${locale}-${theme}-${viewport.name}-full.png`,
+      fullPage: true,
+      animations: "disabled",
+    });
   }
 
   for (const locale of ["en", "es"] as const) {
@@ -527,6 +520,109 @@ test.describe("Spotlight public route acceptance", () => {
     }
   }
 
+  for (const locale of ["en", "es"] as const) {
+    test(`${locale} guest booking entry preserves exact return context`, async ({
+      request,
+    }) => {
+      const paths = [
+        `/${locale}/venues/${fixture.venue.slug}/book`,
+        `/${locale}/events/${fixture.event.slug}/book?occurrence=${fixture.event.occurrenceId}`,
+      ];
+      for (const path of paths) {
+        const response = await request.get(path, { maxRedirects: 0 });
+        expect(response.status()).toBe(307);
+        const target = new URL(
+          response.headers().location || "",
+          fixture.siteUrl,
+        );
+        expect(target.origin).toBe(fixture.siteUrl);
+        expect(target.pathname).toBe(`/${locale}/auth`);
+        expect(target.searchParams.get("next")).toBe(path);
+      }
+    });
+    test(`${locale} sparse and unavailable event states remain truthful`, async ({
+      page,
+      request,
+    }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      for (const theme of ["light", "dark"] as const) {
+        await page.emulateMedia({ colorScheme: theme });
+        await page.addInitScript(
+          (value) => localStorage.setItem("akipasa.theme", value),
+          theme,
+        );
+        for (const [path, notice] of [
+          [
+            `/${locale}/events/spotlight-cancelled-event`,
+            locale === "es"
+              ? "Este evento está cancelado."
+              : "This event is cancelled.",
+          ],
+          [
+            `/${locale}/events/spotlight-sold-out-event`,
+            locale === "es"
+              ? "Este evento está agotado."
+              : "This event is sold out.",
+          ],
+          [
+            `/${locale}/events/${fixture.event.slug}?occurrence=00000000-0000-4000-8000-000000000301`,
+            locale === "es"
+              ? "Este evento ha terminado."
+              : "This event has ended.",
+          ],
+        ]) {
+          await page.goto(path);
+          const event = page.locator("main.spotlight-event");
+          await expect(event.locator(".event-spotlight-status")).toHaveText(
+            notice,
+          );
+          await expect(event.locator(".event-spotlight-booking")).toHaveCount(
+            0,
+          );
+          await expect(
+            event.locator(".event-spotlight-primary-action a"),
+          ).toHaveAccessibleName(
+            locale === "es" ? "Cómo llegar" : "Directions",
+          );
+          await fitsViewport(page, event, 390);
+          const state = path.includes("occurrence=")
+            ? "ended"
+            : path.includes("cancelled")
+              ? "cancelled"
+              : "sold-out";
+          await page.screenshot({
+            path: `test-results/spotlight-routes/state-${locale}-${theme}-${state}.png`,
+            fullPage: true,
+            animations: "disabled",
+          });
+        }
+        await page.goto(`/${locale}/venues/spotlight-empty`);
+        const venue = page.locator("main.spotlight-venue");
+        await expect(venue.getByRole("tab")).toHaveCount(1);
+        await expect(
+          venue.getByRole("tab", {
+            name: locale === "es" ? "Información" : "Information",
+          }),
+        ).toHaveAttribute("aria-selected", "true");
+        await expect(venue.locator(".venue-spotlight-book")).toHaveCount(0);
+        await expect(venue.locator(".venue-spotlight-art img")).toHaveCount(0);
+        await expect(venue.getByText(/Abierto ahora|Open now/)).toHaveCount(0);
+        await fitsViewport(page, venue, 390);
+        await page.screenshot({
+          path: `test-results/spotlight-routes/state-${locale}-${theme}-sparse.png`,
+          fullPage: true,
+          animations: "disabled",
+        });
+      }
+      for (const segment of ["venues", "events"]) {
+        const missing = await request.get(
+          `/${locale}/${segment}/spotlight-missing`,
+        );
+        expect(missing.status()).toBe(404);
+      }
+    });
+  }
+
   test("sparse venues retain useful information without fabricated menu, hours or booking", async ({
     page,
   }) => {
@@ -730,6 +826,19 @@ test.describe("Spotlight public route acceptance", () => {
             );
             const root = page.locator(`main.spotlight-${kind}`);
             await expect(root).toBeVisible();
+            // Detail links and selected tabs retain the approved ember palette.
+            await expect(
+              kind === "event"
+                ? root.locator(".event-spotlight-venue-link")
+                : root.getByRole("tab", { selected: true }).first(),
+            ).toHaveCSS(
+              "color",
+              theme === "light" ? "rgb(156, 59, 14)" : "rgb(255, 173, 120)",
+            );
+            await expect(root.locator(`.${kind}-spotlight-card`)).toHaveCSS(
+              "background-color",
+              theme === "light" ? "rgb(255, 254, 252)" : "rgb(16, 16, 16)",
+            );
             const contrastEvidence: Array<{
               text?: string;
               foreground: number[];

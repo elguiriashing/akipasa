@@ -83,6 +83,22 @@ html[data-theme="light"] .app-shell {
   color: #f8fafc;
 }
 
+/* The results sheet follows the selected theme, including inherited notices. */
+html[data-theme="light"] .app-shell:has(.map-page) .map-results-drawer {
+  --surface: #fffefc;
+  --surface-alt: #f8f6f2;
+  --ink: #25201d;
+  --muted: #695d54;
+  --line: rgba(87, 55, 31, 0.18);
+  background: var(--surface-alt);
+  color: var(--ink);
+}
+
+.app-shell:has(.map-page) .map-results-drawer .card-media-fallback {
+  background: #17130f;
+  color: #ff9b62;
+}
+
 .app-shell:has(.map-page) .map-results-drawer .map-drawer-content {
   max-width: 100%;
 }

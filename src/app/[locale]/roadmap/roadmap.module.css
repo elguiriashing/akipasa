@@ -1,7 +1,7 @@
 .main {
   --road-orange: #ff762b;
   --road-ink: var(--pasa-ui-text, #f9f6f2);
-  --road-muted: var(--pasa-ui-subtle, #bac3d3);
+  --road-muted: var(--pasa-ui-subtle, #c7c1bb);
   --road-line: rgba(255, 255, 255, 0.14);
   width: min(100%, 1250px);
   margin: 0 auto;
@@ -62,7 +62,7 @@
       rgba(255, 106, 30, 0.25),
       transparent 43%
     ),
-    linear-gradient(125deg, #152234, #0a0f1a 76%);
+    linear-gradient(125deg, #1d1612, #08090a 76%);
   box-shadow: 0 32px 90px rgba(0, 0, 0, 0.22);
 }
 .heroCopy {
@@ -191,7 +191,7 @@
   padding: 17px 20px;
   border: 1px solid rgba(255, 182, 138, 0.28);
   border-radius: 18px;
-  background: rgba(11, 17, 28, 0.92);
+  background: rgba(12, 12, 12, 0.94);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.27);
   backdrop-filter: blur(18px);
 }
@@ -253,7 +253,7 @@
   padding: 22px;
   border: 1px solid var(--road-line);
   border-radius: 20px;
-  background: linear-gradient(155deg, #1a2839, #101826);
+  background: linear-gradient(155deg, #1b1a19, #101112);
 }
 .phase[data-status="current"] {
   border-color: rgba(255, 128, 49, 0.65);
@@ -263,7 +263,7 @@
       rgba(255, 112, 39, 0.22),
       transparent 56%
     ),
-    #192332;
+    #181716;
 }
 .phaseTop {
   display: flex;
@@ -297,7 +297,7 @@
   color: #171519;
 }
 .phaseEyebrow {
-  color: #8eabc5;
+  color: #c0b7ae;
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -337,12 +337,12 @@
   padding: 22px;
   border: 1px solid var(--road-line);
   border-radius: 18px;
-  background: #121d2b;
+  background: #111213;
 }
 .featureStatus {
   padding: 0;
   border: 0;
-  color: #bacada;
+  color: #c9c0b7;
 }
 .statusDot {
   width: 7px;
@@ -354,7 +354,7 @@
   background: #b89aff;
 }
 .featureStatus[data-state="planned"] .statusDot {
-  background: #8799ad;
+  background: #a69d94;
 }
 .feature h3 {
   margin: 0;
@@ -375,7 +375,7 @@
   padding: clamp(23px, 4vw, 36px);
   border: 1px solid rgba(255, 147, 74, 0.32);
   border-radius: 24px;
-  background: linear-gradient(105deg, #222235, #172132 70%);
+  background: linear-gradient(105deg, #251b16, #111213 70%);
 }
 .expansionMark {
   display: grid;
@@ -495,7 +495,7 @@
 @media (prefers-reduced-transparency: reduce) {
   .heroTag {
     backdrop-filter: none;
-    background: #101a29;
+    background: #121313;
   }
 }
 @media (prefers-reduced-motion: reduce) {

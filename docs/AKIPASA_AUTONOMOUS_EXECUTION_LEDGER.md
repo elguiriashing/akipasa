@@ -2,6 +2,87 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 30 October 14:49 UTC — final screen integration check passed
+
+Branchwork/coordinated-release-20261029, implementation parentc10d7ad. FINALnpmcheck
+EXIT0:2,704Vitest across17groups,132initialNode cases, allrequiredchecks andoptimized
+193routeNextbuild. Application/testsourcefreeze25changed/newfiles verifiedunchanged
+fromstarttofinish. This restored a fresh rootbuild afterthepreservedQA cwd failures.
+Log/tmp/akipasa-consumer-screen-batch-FINAL-integrated-20261030.log; sourcehashes/log
+hash in AKIPASA_CONSUMER_SCREEN_BATCH_INTEGRATION_20261030.json. Browsercollection
+550→562, alloldcasesretained,12added, zero removed. No gate/assertion disabled.
+
+Implementedandtested6screenfamilies plusrealMaplocationfix are now ready to commit
+asoneconsolidated332batch. Actualbeforefailures, final screenshots/sourcehashes,
+fixture/role/provider/device limits and intendedlightinkassertion are preserved.
+FinalAccountnativeTab checkskeepusernameaboveDockwithoutforcedclicks; Menu scrolls
+withtabs. No rawprivatecredentials or customerfixtures areincluded. All sourceowners
+froze their files; root retains integration/matrix/commit ownership.
+
+AcceptedstillONLY5previouslyreviewedunchangedentryroutes;85routes+6fallbackgaps
+remain strict-blocked untilgenuinesource/hosted-evidencebinding. FreshnewheadCI/CF
+required afterpublication, notinferredfromc10green. Nofull332ready/merge/deploy ornew
+productionSQL. Live335source3d87/Worker26e100% andAlexreportedAndroidpassstand.
+
+NEXTEXECUTABLE: commit/push thisvalidatedbatch; inspectnewexpectedhead andallCI/CF;
+bindcompletedindependentfamilyreviews toactualnewsource/captureswhenjobsfinish.
+Read-onlynextfamilyQAalreadyfoundStaff/Owner/Adminlegacytones andalightStaffhero
+contrastbug; authorizeonlynextscopedpresentationrepairsafterthischeckpointpublishes.
+
+## 30 October 14:40 UTC — screen redesign batch frozen for final integration
+
+Published parentc10d7adcb45c0add6c82accfe398bdedec2dd0f6 passed all11ordinary workflows
+and CFd939e4a1, public550collected497passed53existingconditional skips. The following
+working-tree batch is new source and requires fresh validation/CI; it is not live.
+Alex rejected the old Account workbench screenshot and required the approved
+cinematic consumer direction throughout. Infrastructure expansion stopped after
+bounded local proof. Five parallel owners completed actual page families without
+changing permissions, private data contracts, verified XP or purchase controls.
+
+Implemented: consumer Account/Profile/Edit/Settings chrome and rows, camera-first
+Check-in, image-led Creator Studio, charcoal/orange Venue/Event details, full-page
+Roadmap/legal/credits/missing-state consistency, readable Map light drawer, and
+explicit-location GPS preservation. Reused existing licensed editorial art;
+identity/activity/counts remain real caller data or explicitly labelled fixtures.
+Root owns integration/matrix/docs; agents own non-overlapping route files and tests.
+No source or private configuration was overwritten by another source owner.
+
+Tested locally: first integratedcheck2678Vitest/132initialNode/193routebuild PASS
+before finalstatic/focus/GPS corrections. FinalAccount24cases/32three-pointhit targets/
+8nativeTab/28maintainedProfilecases pass; earlier232/16/174 source-scoped results
+retained. Creator144maintained/33targeted pass, initial source-drift failure preserved.
+Checkin16responsive camera lifecycles+6QR/proof pass; Map8drawer states mincontrast
+5.9057light/10.999dark and4maintained cases pass. Spotlight60actualNext+16palette/
+2illustrative fixture cases pass,52original→60/zero removed. Static20legal+18fallback+
+16Roadmap+48lowerlegal contexts and5unit pass,172actualimages reviewed. GPS147focused
+checks pass after before-fail proofs. Fresh final fullcheck results follow separately.
+
+Real defects corrected during review: missingAccountgutters, stickyMenu/keyboardDock
+occlusion, Maplightdark-on-dark sheet, oldblue/navy belowfold fallbacks, coverpreview
+clipping, fullCreatorcanvas width, and automaticGPS overriding selectedMálaga.
+Liveproviderstreets/PBF actually200; local403/1010 is not claimed as a provideroutage.
+Two mistaken QA commands touched generated root.next; sources/production remained
+untouched, failures preserved and remaining builds isolated in/tmp. The final root
+build must restore a new reproducible artifact; no partial build is release evidence.
+
+Accepted: ONLY5routes (2earlierroot shortcuts+HQpublicgateway+2membershipredirects)
+at their actual reviewedsource/HTTP/screenshot proofs.85others and6fallbackstates
+still await formal candidate-source/hosted evidence. No newUI status fabricated.
+Alex's physicalAndroid LIVE335Home/Login/Passport result is now'I checked—all three
+work'; model/browser not supplied, full draft332device/aesthetic approval not inferred.
+Production remains3d87/Worker26e100%, independently re-read. NewstaffSQLUNAPPLIED.
+
+Separate bounded local proof:97app+17Storage first-pass sources and4Passport
+prerequisites pass with realAuth75/helpers/3synthetic users, zeroXP/acceptedvisits/
+permanentawards and unchanged prefix116receipts. No full canonical/StorageHTTP or
+late-accountcoverage proof, no oldfixture/production writes. All further backend
+expansion is stopped while this screen batch completes. Private0600files excluded.
+
+NEXT: root final fullcheck with source freeze guard, fix actual failures, commit/push
+this consolidated UI batch into332, inspect new exact-head CI/Cloudflare, bind genuine
+screen-family reviews to the new source/screenshots, and continue remaining routes.
+No full merge/deploy until genuine gates clear. Scheduled root writerlease15:30UTC.
+
 ## 30 October 12:54 UTC — missing tablet entry journeys verified
 
 Current application source61b08c159e42192613f9eba8a4431c3a2b312082; only additive

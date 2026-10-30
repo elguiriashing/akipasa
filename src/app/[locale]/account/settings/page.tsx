@@ -37,9 +37,9 @@ export default async function AccountSettingsPage({
           : null;
 
   return (
-    <div className="account-controls-page">
+    <div className="account-controls-page account-settings-screen">
       <AccountPageHeader
-        eyebrow={es ? "Preferencias" : "Preferences"}
+        eyebrow={es ? "A tu manera" : "Make it yours"}
         title={es ? "Ajustes" : "Settings"}
         description={
           es

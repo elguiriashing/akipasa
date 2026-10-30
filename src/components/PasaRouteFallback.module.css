@@ -324,3 +324,26 @@
   cursor: wait;
   opacity: 0.75;
 }
+
+/* Quiet, warm AkiPasa 404s. Other products and reset/error states keep their identity. */
+.surface[data-boundary-product="akipasa"][data-route-fallback="not-found"] {
+  --fallback-panel: #111213;
+  --fallback-elevated: #1c1a18;
+  --fallback-ink: #faf7f3;
+  --fallback-muted: #cec6bd;
+  --fallback-line: #484039;
+}
+:global(html:not([data-theme="light"]))
+  :global(body):has(
+    .standalone[data-boundary-product="akipasa"][data-route-fallback="not-found"]
+  ) {
+  background: #08090a;
+}
+:global(html[data-theme="light"])
+  .surface[data-boundary-product="akipasa"][data-route-fallback="not-found"] {
+  --fallback-panel: #fffdfa;
+  --fallback-elevated: #f5ede4;
+  --fallback-ink: #27211c;
+  --fallback-muted: #64584d;
+  --fallback-line: #d3c3b3;
+}

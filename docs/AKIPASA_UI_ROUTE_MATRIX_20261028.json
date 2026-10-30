@@ -210,8 +210,17 @@
     },
     "src/app/[locale]/business/memberships/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Redirect-only compatibility entry preserves locale and fixed akibusiness membership origin. Executable route and middleware tests added; final production-server HTTP evidence and Alex sign-off still required. No standalone screen or acceptance claimed."
+      "status": "accepted",
+      "note": "Redirect-only, independently reviewed EN/ES actual HTTP chain/targets, source and15route-export tests. No standalone image claimed; destination routes separate.",
+      "acceptance": {
+        "reviewer": "Codex business_screens \u2014 independent business entry review",
+        "reviewedCommit": "c10d7adcb45c0add6c82accfe398bdedec2dd0f6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
+        "evidenceType": "redirect-only HTTP evidence; screenshot not applicable",
+        "sourceSha256": "f1def7671f877cebba0a5244919c9883c092d3d41582f135bd0626090fd042fd",
+        "fullReleaseAccepted": false
+      }
     },
     "src/app/[locale]/business/mobility/page.tsx": {
       "scope": "operational",
@@ -270,8 +279,17 @@
     },
     "src/app/[locale]/duermo/memberships/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Redirect-only compatibility entry preserves EN/ES and fixed akiduermo membership origin without trusting caller attribution. Executable route tests and production-server HTTP cases added; final Alex review and exact-source hosted evidence still required. No standalone screen or acceptance claimed."
+      "status": "accepted",
+      "note": "Redirect-only, independently reviewed EN/ES actual HTTP chain/targets, source and15route-export tests. No standalone image claimed; destination routes separate.",
+      "acceptance": {
+        "reviewer": "Codex business_screens \u2014 independent business entry review",
+        "reviewedCommit": "c10d7adcb45c0add6c82accfe398bdedec2dd0f6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
+        "evidenceType": "redirect-only HTTP evidence; screenshot not applicable",
+        "sourceSha256": "21ca9ceae3a85a29fa747cc49c9ac5160cd147164fa6a8dc39d0f01dc86af797",
+        "fullReleaseAccepted": false
+      }
     },
     "src/app/[locale]/events/[slug]/book/page.tsx": {
       "scope": "consumer",
@@ -495,8 +513,17 @@
     },
     "src/app/hq-login/page.tsx": {
       "scope": "cross-product",
-      "status": "in-progress",
-      "note": "Responsive bilingual AkiHQ gateway and access guide implemented; guest links, phone/tablet/desktop, dark/light and Android-like Chromium checks added. Physical Android, authenticated cross-host handoff and exact-source screenshot review are still REQUIRED. No acceptance granted."
+      "status": "accepted",
+      "note": "Independent public-gateway review:20actualNext EN/ES themes/viewports/WebView-like states,40captures, nativekeyboard/threecorrectlinks/noindex/nooverflow. AkiHQ remains separate from AkiBusiness; no destination authenticated-operation or fullrelease acceptance inferred.",
+      "acceptance": {
+        "reviewer": "Codex business_screens \u2014 independent business entry review",
+        "reviewedCommit": "c10d7adcb45c0add6c82accfe398bdedec2dd0f6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
+        "evidenceType": "actualNext public gateway screenshots/keyboard/links",
+        "sourceSha256": "51949d32ef7b5b789ac37d84c2104d23946b94ca67834cb624bf74037338d077",
+        "fullReleaseAccepted": false
+      }
     },
     "src/app/page.tsx": {
       "scope": "cross-product",

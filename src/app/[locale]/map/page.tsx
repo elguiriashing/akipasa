@@ -11,6 +11,7 @@ import { config, isLocale } from "@/lib/config";
 import type { TimeWindow } from "@/lib/domain";
 import { translated } from "@/lib/domain";
 import { discoveryLocationFromQuery } from "@/lib/discovery-location";
+import { isSpainLocation } from "@/lib/locations";
 import { eventPriceLabel } from "@/lib/event-price";
 import { occurrenceHref } from "@/lib/event-occurrence";
 import { msg } from "@/lib/messages";
@@ -54,6 +55,9 @@ export default async function MapPage({
 
   const selectedLocation = discoveryLocationFromQuery(query, locale);
   const { locality, center: searchCenter } = selectedLocation;
+  const explicitLocality =
+    typeof query.locality === "string" && isSpainLocation(query.locality);
+  const autoLocate = !explicitLocality && !selectedLocation.custom;
   const requestedRadius = Number(
     typeof query.radius === "string" ? query.radius : 25,
   );
@@ -144,6 +148,7 @@ export default async function MapPage({
         points={mapPoints}
         styleUrl={config.mapStyleUrl}
         center={searchCenter}
+        autoLocate={autoLocate}
       />
 
       <MapResultsDrawer

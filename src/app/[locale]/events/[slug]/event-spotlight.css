@@ -1,3 +1,35 @@
+/* Keep public detail surfaces in AkiPasa's charcoal and ember palette.
+   The legacy blue token remains the shared link/tab contract, with warm ink. */
+.app-detail-page.spotlight-page.spotlight-event {
+  --spotlight-surface: #101010;
+  --spotlight-surface-alt: #181715;
+  --spotlight-ink: #f9f5f0;
+  --spotlight-muted: #c0b9b0;
+  --spotlight-line: rgb(255 245 230 / 14%);
+  --spotlight-blue: #ffad78;
+  --spotlight-orange-text: #ffad78;
+}
+
+html[data-theme="light"] .app-detail-page.spotlight-page.spotlight-event,
+html.theme-light .app-detail-page.spotlight-page.spotlight-event {
+  --spotlight-surface: #fffefc;
+  --spotlight-surface-alt: #f5f0e9;
+  --spotlight-ink: #25201d;
+  --spotlight-muted: #695d54;
+  --spotlight-line: rgb(87 55 31 / 18%);
+  --spotlight-blue: #9c3b0e;
+  --spotlight-orange-text: #9c3b0e;
+}
+
+.app-detail-page.spotlight-page.spotlight-event .event-spotlight-card {
+  background: var(--spotlight-surface);
+}
+
+.app-detail-page.spotlight-page.spotlight-event .spotlight-mobile-actions {
+  border-color: var(--spotlight-line);
+  background: color-mix(in srgb, var(--spotlight-surface) 97%, transparent);
+}
+
 /* Event detail: real artwork, a clear date, then the action for this occurrence. */
 .spotlight-event .event-spotlight-breadcrumb {
   display: flex;
@@ -64,7 +96,7 @@
   padding: clamp(24px, 4vw, 42px);
   background:
     radial-gradient(ellipse at 95% 0, rgb(242 107 29 / 23%), transparent 60%),
-    #102749;
+    #17130f;
   color: #fff;
 }
 
@@ -80,7 +112,7 @@
 }
 
 .spotlight-event .event-spotlight-poster-placeholder > span:last-child {
-  color: #c6d5eb;
+  color: #d2c6bb;
   font-size: 0.85rem;
 }
 
@@ -104,7 +136,7 @@
   gap: 20px;
   min-width: 0;
   padding: 16px 20px;
-  background: #102749;
+  background: #17130f;
   color: #fff;
 }
 
@@ -144,7 +176,7 @@
 
 .spotlight-event .event-spotlight-ribbon-info > span,
 .spotlight-event .event-spotlight-ribbon-info small {
-  color: #cfdbed;
+  color: #d2c6bb;
   font-size: 0.72rem;
   line-height: 1.35;
 }

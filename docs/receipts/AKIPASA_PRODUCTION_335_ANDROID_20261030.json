@@ -1,0 +1,16 @@
+{
+  "reportedBy": "Alex Ashing",
+  "evidenceType": "user-reported physical Android check",
+  "reportedDate": "2026-10-30",
+  "userAnswer": "I checked\u2014all three work",
+  "checkedJourneys": [
+    "Home opens normally",
+    "Sign in works",
+    "Passport displays without broken/covered controls"
+  ],
+  "sourceScope": "approved live #335/source3d87eb7c995fbd0947cb25a771a43376d9462645;Home/Login inherited #333",
+  "deviceModel": "not supplied",
+  "browserVersion": "not supplied",
+  "fullDraft332Accepted": false,
+  "remainingDraftChangesDeviceTested": false
+}

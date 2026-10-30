@@ -17,10 +17,13 @@ const mock = vi.hoisted(() => ({
     handlers: Map<string, () => void>;
     remove: ReturnType<typeof vi.fn>;
     off: ReturnType<typeof vi.fn>;
+    jumpTo: ReturnType<typeof vi.fn>;
+    addControl: ReturnType<typeof vi.fn>;
   }>,
   router: {},
   track: vi.fn(),
   failConstruction: false,
+  manualGeolocate: { kind: "manual-geolocate-control" },
 }));
 vi.mock("next/navigation", () => ({ useRouter: () => mock.router }));
 vi.mock("@/lib/personalisation/client", () => ({ trackBehaviour: mock.track }));
@@ -29,7 +32,7 @@ vi.mock("@/lib/map-theme", () => ({
   readMapTheme: () => "light",
 }));
 vi.mock("@/lib/map-geolocation", () => ({
-  createMapGeolocateControl: () => ({}),
+  createMapGeolocateControl: () => mock.manualGeolocate,
   mapGeolocationLocale: () => ({}),
 }));
 vi.mock("@/lib/map-tiles", () => ({ MapTileLoader: class {} }));
@@ -46,7 +49,8 @@ vi.mock("maplibre-gl", () => ({
       this.handlers.set(name, handler);
     }
     once() {}
-    addControl() {}
+    addControl = vi.fn();
+    jumpTo = vi.fn();
     getCenter() {
       return { lat: 36.6, lng: -4.7 };
     }
@@ -69,7 +73,14 @@ const props = {
   center: { latitude: 36.54, longitude: -4.62 },
 };
 
+const originalGeolocation = Object.getOwnPropertyDescriptor(
+  navigator,
+  "geolocation",
+);
 afterEach(() => {
+  if (originalGeolocation)
+    Object.defineProperty(navigator, "geolocation", originalGeolocation);
+  else Reflect.deleteProperty(navigator, "geolocation");
   cleanup();
   mock.instances.length = 0;
   mock.failConstruction = false;
@@ -133,5 +144,109 @@ describe("asynchronous basemap availability", () => {
     fireEvent.click(screen.getByRole("button", { name: "Retry map" }));
     await waitFor(() => expect(mock.instances).toHaveLength(1));
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+});
+
+describe("selected map location takes precedence over automatic GPS", () => {
+  function outsideSpainGps(deliverImmediately = true) {
+    const getCurrentPosition = vi.fn(
+      (
+        success: (position: {
+          coords: { latitude: number; longitude: number };
+        }) => void,
+      ) => {
+        if (deliverImmediately)
+          success({ coords: { latitude: 35.6892, longitude: 51.389 } });
+      },
+    );
+    Object.defineProperty(navigator, "geolocation", {
+      configurable: true,
+      value: { getCurrentPosition },
+    });
+    return getCurrentPosition;
+  }
+
+  it.each(["en", "es"] as const)(
+    "%s: keeps a selected search centre and retains the manual location control",
+    async (locale) => {
+      const gps = outsideSpainGps();
+      window.history.replaceState(
+        {},
+        "",
+        `/${locale}/map?locality=malaga&category=music`,
+      );
+      render(<ProductionMap {...props} locale={locale} autoLocate={false} />);
+      await waitFor(() => expect(mock.instances).toHaveLength(1));
+      expect(gps).not.toHaveBeenCalled();
+      expect(mock.instances[0].jumpTo).not.toHaveBeenCalled();
+      expect(mock.instances[0].options.center).toEqual([-4.62, 36.54]);
+      expect(mock.instances[0].addControl).toHaveBeenCalledWith(
+        mock.manualGeolocate,
+        "top-right",
+      );
+      expect(window.location.search).toBe("?locality=malaga&category=music");
+    },
+  );
+
+  it("ignores an in-flight GPS result when the query becomes explicit without rebuilding the live map", async () => {
+    const gps = outsideSpainGps(false);
+    window.history.replaceState({}, "", "/en/map");
+    const { rerender } = render(<ProductionMap {...props} />);
+    await waitFor(() => expect(mock.instances).toHaveLength(1));
+    expect(gps).toHaveBeenCalledOnce();
+    const current = mock.instances[0];
+    // Model opening List at the existing, user-positioned camera.
+    current.jumpTo({ center: [-4.7, 36.6], zoom: 12 });
+    rerender(
+      <ProductionMap
+        {...props}
+        autoLocate={false}
+        center={{ latitude: 36.6, longitude: -4.7 }}
+      />,
+    );
+    await act(async () => {
+      await Promise.resolve();
+    });
+    act(() =>
+      gps.mock.calls[0][0]({
+        coords: { latitude: 35.6892, longitude: 51.389 },
+      }),
+    );
+    expect(mock.instances).toHaveLength(1);
+    expect(current.remove).not.toHaveBeenCalled();
+    expect(current.jumpTo).toHaveBeenCalledExactlyOnceWith({
+      center: [-4.7, 36.6],
+      zoom: 12,
+    });
+    expect(gps).toHaveBeenCalledOnce();
+    expect(mock.track).toHaveBeenCalledOnce();
+  });
+
+  it("retains implicit GPS behavior and never repeats it on provider retry", async () => {
+    const gps = outsideSpainGps();
+    render(<ProductionMap {...props} />);
+    await waitFor(() => expect(mock.instances).toHaveLength(1));
+    expect(gps).toHaveBeenCalledOnce();
+    expect(mock.instances[0].jumpTo).toHaveBeenCalledWith({
+      center: [51.389, 35.6892],
+      zoom: 10.5,
+    });
+    expect(mock.instances[0].addControl).toHaveBeenCalledWith(
+      mock.manualGeolocate,
+      "top-right",
+    );
+    act(() => mock.instances[0].handlers.get("error")?.());
+    fireEvent.click(screen.getByRole("button", { name: "Retry map" }));
+    await waitFor(() => expect(mock.instances).toHaveLength(2));
+    expect(gps).toHaveBeenCalledOnce();
+    expect(mock.instances[1].jumpTo).not.toHaveBeenCalled();
+    expect(mock.instances[1].options).toMatchObject({
+      center: [-4.7, 36.6],
+      zoom: 12,
+    });
+    expect(mock.instances[1].addControl).toHaveBeenCalledWith(
+      mock.manualGeolocate,
+      "top-right",
+    );
   });
 });

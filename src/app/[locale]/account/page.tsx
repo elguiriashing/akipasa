@@ -111,7 +111,7 @@ export default async function AccountOverview({
           )}
         </div>
         <div className="account-welcome-copy">
-          <span>{es ? "Tu mundo AkiPasa" : "Your AkiPasa world"}</span>
+          <span>{es ? "Tu perfil AkiPasa" : "Your AkiPasa profile"}</span>
           <h1>{displayName}</h1>
           {profile?.username ? (
             <p className="pasa-profile-handle">@{profile.username}</p>
@@ -139,7 +139,7 @@ export default async function AccountOverview({
 
       <section
         className="account-pulse"
-        aria-label={es ? "Tu actividad" : "Your activity"}
+        aria-label={es ? "Tus planes" : "Your plans"}
       >
         <Link href={`/${locale}/account/saved`}>
           <strong>{savedError ? "—" : (savedCount ?? 0)}</strong>
@@ -182,7 +182,7 @@ export default async function AccountOverview({
         >
           <header>
             <h2 id="account-activity-title">
-              {es ? "Tu actividad" : "Your activity"}
+              {es ? "Tus planes" : "Your plans"}
             </h2>
             <Link href={`/${locale}/account/activity`}>
               {es ? "Ver actividad" : "View activity"}
@@ -202,7 +202,13 @@ export default async function AccountOverview({
             </Link>
           </div>
         </section>
-        <section className="account-next-step">
+        <section
+          className="account-next-step"
+          style={{
+            backgroundImage:
+              "linear-gradient(0deg, #050708f5, #05070812), url('/images/akipasa/nightlife-editorial.webp')",
+          }}
+        >
           <div>
             <span>{es ? "Siguiente plan" : "Find your next plan"}</span>
             <h2>

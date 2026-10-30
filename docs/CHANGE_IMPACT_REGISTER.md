@@ -4331,3 +4331,111 @@ center false-positive is preserved; correct fragment checks pass. No runtime,
 provider, cross-host authorization, payment/customer data or productbranding change.
 AkiHQ remains separate from AkiBusiness. Root reviewed phone/tablet captures;
 physicalAndroid/owner/fullroute/protectedpermission acceptance remains outstanding.
+
+## 2026-10-30 | Consumer screen completion against the approved visual references
+
+Alex rejected the prior Account/Profile/Settings candidate as a management dashboard.
+Passing functional tests did not accept that design. Account now has a route-scoped
+consumer presentation: compact Profile/Edit/Settings sections, the existing complete
+authorized Menu, stronger caller identity, focused security rows and an illustrative
+Discover CTA using existing licensed editorial artwork. Actual saved counts/identity
+remain authoritative; no friends, visits, verification badges or activity is invented.
+Auth, accountReturnPath, role-filtered destinations, database reads, form actions,
+privacy/terms defaults and separate-product behavior are preserved. The measured
+low-contrast active glyph/light label and missing mobile gutters are corrected in
+Account-local CSS. The maintained harness adds390/820/1440 without removing its six
+old sizes and serves only safe public image paths for real artwork captures.
+
+Check-in replaces the generic navy hero/empty box with a compact camera-first
+black/orange surface, decorative camera standby, meaningful three-step instructions,
+clear camera opt-in and explicit verification/no-XP-on-open-or-scan notice. Scanner,
+QR validation, geolocation/confirmation and reward logic are unchanged. The secondary
+Map link moved above the camera after actual tablet keyboard testing found bottom
+Dock overlap. Sixteen real-browser responsive camera lifecycle states and the six
+existing QR/proof regressions pass in the isolated build; physical camera/GPS is a
+separate acceptance requirement, not established by a synthetic software feed.
+
+Creator Studio now has licensed editorial imagery, existing caller identity, orange
+studio tabs and consistent editor/media/programme surfaces through the page bottom.
+Portrait stays circular; cover preview becomes a readable wide banner. Only page
+presentation, its module and safe local browser-asset support change. All queries,
+actions, privacy/ownership/eligibility fields and defaults remain intact. The full
+144-case maintained browser run and33targeted tests pass. A source-drift failure
+caused by the independently fixed Map CSS is preserved; the reconciled run passes.
+
+Venue/Event details preserve their photographic structure and interactions while
+replacing legacy navy/blue below-fold panels, links/tabs and date ribbon with scoped
+charcoal/orange and readable warm light ink. Sixty actualNext cases pass, retaining
+all52original cases and adding1440/guest-return/event-state coverage;16additional
+palette checks pass. Illustrative fixture artwork is labelled and changes no actual
+venue/event data. Booking subroute authorization remains independently assessed.
+
+Map's light results drawer had navy text on a forced dark panel. A Map-only shared
+CSS override restores warm light surfaces/ink and readable fallback initials;
+queries, pins, location consent and controls are untouched. Eight browser states
+pass, measured text contrast at least5.9057light/10.999dark, nativeEscape/focus restore
+pass; four maintained EN/ES/theme contrast cases are added without removing tests.
+
+These implementations require the new integrated source check and fresh exact-head
+CI. Prior c10 green workflows remain historical evidence, not approval of this dirty
+working tree. All final screenshot/source hashes and remaining scope limits belong
+in the integration ledger/receipts; no full-overhaul merge or deployment occurred.
+
+## 2026-10-30 | Genuine business entry acceptance and live Android follow-up
+
+Independent review accepts ONLY HQ's public gateway and the two Business/Duermo
+membership redirect routes at reviewedc10source. Twenty gateway states,40captures,
+native keyboard/three link destinations, noindex/nooverflow and native HTTP host
+redirect chains are verified. Destination membership/external authenticated workspaces
+and other protected business pages are not accepted by those entrypoint checks.
+Matrix now5accepted/85inprogress/13excluded; six fallback states remain pending.
+
+Alex explicitly reported that live Home, sign-in and Passport work on his physical
+Android phone without broken/covered controls. This applies to approved335source3d87
+and Worker26e only; device/browser version was not supplied. It does not accept the
+new332screens. Fresh Cloudflare deployment metadata confirms26e still serves100%.
+
+The separate disposable fixture also completed97application foundation sources plus
+17officialStorage inputs and then four achievement/Passport prerequisites with real
+GoTrue75migrations/helpers, normal synthetic Auth identities, negative permissions
+and rollback-only cross-profile RLS probes. XP/accepted visits/permanent awards stay
+zero; prefix receipts remain unchanged. Source4's missing native transaction boundary
+uses explicit psql single-transaction without modifying bytes; a fixture-only schema
+cache reload is recorded. This is bounded precoverage evidence, not full canonical
+parity/StorageHTTP/current account-guard acceptance. Production/retained fixtures and
+newstaffSQL application state are unchanged. Further backend expansion stopped to
+prioritize the screen work Alex requested.
+
+## 2026-10-30 | Complete static-page styling and preserve Map search intent
+
+Terms, Privacy and Photo Credits now use legal-only neutral charcoal/warm orange
+surfaces with centered, aligned editorial columns and readable attribution grids.
+Roadmap's hero, phases, feature cards and final CTA no longer fall back to navy;
+AkiPasa missing-page canvas/cards use neutral black. Other product branding,
+legal wording, links, consent actions, HTTP404/noindex and recovery semantics are
+unchanged. The exact light-hero ink assertion changes from old navy to intended
+warm neutral rgb36/30/25, retaining the strict assertion. Focused legal20/fallback18,
+Roadmap16contexts/5unit and48lowerlegal contexts pass;172actualcaptures reviewed.
+The original strict old-color failures and build working-directory mistakes remain
+recorded. Final source binding and candidate acceptance require fresh hosted CI.
+
+Actual public Chromium confirmed live Map streets, labels, glyphs and vector tiles
+render successfully; a local curl403/1010 was a browser fingerprint restriction,
+not proof of a production basemap outage. It also reproduced a real bug: granted
+GPS could override an explicit Málaga search and move the map to the test browser's
+location. MapPage now disables automatic GPS for a valid explicit Spanish locality
+or validated custom coordinates. ProductionMap's optional initial-location policy
+uses a current ref, preserving default implicit behavior and all manual controls.
+Late callbacks respect changed search intent; changing the policy does not recreate
+the map, reset camera/filter state or duplicate telemetry. Retry keeps its prior
+camera and does not trigger GPS again. Before proofs and147focused source/control
+checks are recorded; query validation, privacy, venue access and analytics consent
+remain unchanged. This fix is unmerged/undeployed until the candidate clears release.
+
+Account's final visual review additionally caught a sticky Menu covering the
+username and native Tab focusing a field under the fixed dock. Menu now scrolls
+with its section navigation; mobile/tablet Account-only scroll padding/margins keep
+native focus visible, with no forced clicks or JavaScript focus interception.
+Maintained regressions retain existing assertions and exercise native Name→Username
+Tab and three-point control hit tests. Final24source-rendered cases and28maintained
+Profile cases pass; exact last-source hashes are recorded in the Account receipt.
