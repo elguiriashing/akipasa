@@ -2,6 +2,59 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 30 October 21:05 UTC —44 routes accepted; native-control and real CI repairs
+
+Branchwork/coordinated-release-20261029; published parent/exact head
+a7be14b96f142679f3b153f26bd71b8df80ca8cf. Actual602public=525PASS77conditional;
+Account464+32,Recovery32+3sibling,Community272,Creator192,Prestige122,dedicated76
+passed. Ten ordinary workflows passed; Tablet failed native Admin Enter before
+hydration. Native136 was NOT counted passed at that failed head; no rerun hides it.
+The next batch fixes the proven readiness cause and needs fresh exact-head CI.
+
+All six source/test files frozen through full npmcheck EXIT0:2887Vitest/17groups,
+140initialNode tests,193-route build. Account desktop Search intercepted by Menu
+is repaired by scoped4rem gutter at851px:504main+32personal pass, retaining464and
+adding40at851.160real nativeSearch/Menu contexts across10routes/ENES/themes/four
+desktop widths, plus16independent native probes, pass. Billing/actions/guards and
+mobile layout unchanged. Historical Account acceptances do not waive this new
+mandatory native control proof or matching final-head CI.
+
+Boundary136/12native hydration checks now pass: actual isolated Next chunk-hold
+proved SSRvisibility/providerMounts0 loses Enter while unchanged Shell opens after
+hydration. Wait existing fixture provider, retain loading/focus/singleEnter and
+Escape assertions; no retry/weakening/runtime change. Staff120pass after preserving
+theme/q on missing-event navigation; old mislabeled light screenshots rejected.
+Dark Prestige Privacy charcoal/orange now persists below fold;122/16GET/176native
+controls/32lower captures pass, contrast>=7.56, all control geometry unchanged.
+Pixelcomparison94identical/32intentional/28Search54pixelAAvariance honestly retained.
+
+Thirteen genuine new individual records: Membership, Referrals, Recovery, five
+Operations screens, Home, Event detail, Venue detail, default-off Tonight, Roadmap.
+Current44/90accepted,46inprogress,13excluded;6/6fallbacks accepted. Scoped fixtures
+do not certify real Auth/RLS/providers/payments/private mutations/device. Important
+holds: member Passport/Prestige private writes; Places current image gap; Owner
+no current fixture; Support/Creators healthy-state gaps; Mobility no-company state;
+Staff venue corrected hosted proof; actual protected role/tenant/XP and Android.
+
+NEXT: commit/push this validated batch, verify new exact-head11ordinary workflows,
+new504/136/120/122control evidence; independently review Subscription against that
+published source and actual artifacts. Do not claim future passes or merge early.
+Consolidate a source-labelled review pack, then complete isolated role/provider QA.
+
+Only connected Supabase is live. Official branch quote0.01344/hour (~0.32256/day)
+plus usage; approval NOT received, resource NOT created, no production data copy.
+Names-only Actions secret/variable metadata read403: presence UNKNOWN, not absent.
+Staff/preview SQL remains unapplied; never repeat already-live335TermsSQL. Tonight
+fresh zero supply stays OFF, AkiPalsdevelopment paused. No merge/deploy/SQL/customer
+mutation. Approved live335source3d87/Worker26e remains rollback; old versions kept.
+
+All ignored browser evidence was moved intact to private
+/tmp/akipasa-preserved-browser-evidence-20261030/test-results with original
+/workspace/akipasa/test-results symlink after workspace near exhaustion; nothing
+tracked or evidentiary deleted. Workspace2.4GBfree/tmp2.4GBfree at move. Next cache
+already safely offloaded. Root sole integrator lease21:30UTC; conditional hourly
+poller is not continuous background engineering. Extend if still active.
+
 ## 30 October 20:43 UTC — frozen full check passes; recovery/terms/Roadmap batch
 
 Branchwork/coordinated-release-20261029; published parent/head

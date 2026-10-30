@@ -223,6 +223,7 @@ const env = {
 const next = resolve("node_modules/next/dist/bin/next");
 let server, browser, activePage;
 const results = [];
+const adminMenuHydrationChecks = [];
 const logs = createWriteStream(
   resolve(directory, `next-fixture-${Date.now()}.log`),
 );
@@ -477,7 +478,23 @@ try {
         );
         const adminMenu = adminShell.locator(".workspace-mobile-trigger");
         if (await adminMenu.isVisible()) {
+          // commit + visible streamed HTML does not imply React has attached
+          // native event handling. The existing fixture provider records its
+          // mount without releasing the held Admin server read/loading state.
+          await page.waitForFunction(() => window.__providerMounts > 0);
+          await expect(adminStatus).toBeVisible();
           await adminMenu.focus();
+          await expect(adminMenu).toBeFocused();
+          adminMenuHydrationChecks.push({
+            locale,
+            width,
+            theme,
+            providerMounts: await page.evaluate(() => window.__providerMounts),
+            loadingStillVisible: await adminStatus.isVisible(),
+            focused: await adminMenu.evaluate(
+              (element) => document.activeElement === element,
+            ),
+          });
           await page.keyboard.press("Enter");
           await expect(adminMenu).toHaveAttribute("aria-expanded", "true");
           await expect(
@@ -628,6 +645,7 @@ try {
     backendReadMethods: [...new Set(backendMethods)],
     nativeRootErrorRecovery: true,
     nativeAdminShellLoadingRetained: true,
+    adminMenuHydrationChecks,
     timestamp: new Date().toISOString(),
     scope:
       "Actual production Next routing/reset/loading with copied real boundary files and public-context fixture layouts. No production routes, provider credentials or data. Full-app/host/native acceptance remains separate.",

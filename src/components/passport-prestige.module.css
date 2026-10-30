@@ -371,6 +371,20 @@
   margin: 0;
   color: var(--prestige-private-muted);
 }
+/* Keep private controls in the consumer charcoal palette without changing
+   public trophies, member progression or the light privacy theme. */
+:global(html:not([data-theme="light"])) .privacyWorkspace {
+  --prestige-private-ink: #faf7f3;
+  --prestige-private-muted: #c7beb4;
+  --prestige-private-panel: #181716;
+  --prestige-private-line: #584335;
+}
+:global(html:not([data-theme="light"])) .privacyWorkspace .privacyHero {
+  background: linear-gradient(135deg, #29201a, #121415 85%);
+}
+:global(html:not([data-theme="light"])) .privacyWorkspace .privacyHero p {
+  color: var(--prestige-private-muted);
+}
 :global(html[data-theme="light"]) .privacyWorkspace {
   --prestige-private-ink: #203145;
   --prestige-private-muted: #485a6c;

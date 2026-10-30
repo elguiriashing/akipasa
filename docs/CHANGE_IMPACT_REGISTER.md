@@ -4714,3 +4714,36 @@ AKIPASA_THEME_FALLBACK_ACCEPTANCE_20261030.json.
   private storage, XP, schema, production customer or paid resource mutation.
   Master/Worker remain approved335. Source revert is rollback; never reapply the
   already-live335Terms migration, merge early or duplicate an automatic deploy.
+
+## 2026-10-30 | Unobstructed Account navigation and source-bound lower-page proof
+
+- **Account defect:** Native Search clicks opened the overlapping desktop menu.
+  Account-only4rem gutter at851px preserves mobile/shared workspaces, layout guards,
+  form payloads, subscriptions, billing and sister-product destinations.504main+
+  32personal cases pass; original464 retained,40new851 contexts,160Search/Menu
+  native contexts across10routes/ENES/themes/four desktop widths. Four original
+  probes reproduced1604.88px² overlap;16independent repaired probes pass.
+- **Actual CI failure:** a7Tablet Admin loading fixture pressed Enter after SSR
+  visibility but before hydration. A deterministic real Next12-chunk hold proved
+  that readiness cause. Wait existing provider mount and assert loading/focus,
+  then retain the original singleEnter/Escape checks.136cases/12native checks
+  pass; no retries, runtime guards or assertion weakening. Failed a7 evidence kept.
+- **Staff fixture accuracy:** Venue second navigation now copies all query/theme
+  fields and changes only missing event; asserts actual html theme.120cases pass.
+  Earlier mislabeled light screenshots are rejected, not accepted by filename.
+- **Prestige Privacy:** Only dark privacyWorkspace descendant tokens/hero change
+  to charcoal/warmorange. Light and other route selectors unchanged; no shipping,
+  public sharing, exports, authorization, RPC, programme flag or award mutations.
+  122states/16GET/32lower captures/176native focus/hit checks pass;176rectangles
+  unchanged, conservative text contrast>=7.56.154pixelpairs:94identical,32intended,
+  28with54globalSearch antialias pixels each; no false whole-image identity.
+- **Validation and scope:** Frozen six-file npmcheck EXIT0:2887Vitest/17groups,
+  140initialNode/193route build, all source hashes unchanged.13individual actual
+  hosted reviews raise accepted routes31→44, six fallbacks retained. RealAuth/RLS,
+  provider/private writes, role/tenant/XP/device/final owner acceptance remain
+  separate. a7has10ordinary green/1real failure; new-headCI must freshly pass.
+- **Release boundaries:** Strict gate unchanged/red. Only live DB connected;
+  data-less test branch quoted0.01344/hour plus usage, no approval/resource yet.
+  No schema/customer/consent/billing/production change. Existing335Worker/source
+  and retained rollback remain; source revert is local repair rollback. No merge,
+  deploy or reapplication of335TermsSQL. Exact receipts record proof and limits.

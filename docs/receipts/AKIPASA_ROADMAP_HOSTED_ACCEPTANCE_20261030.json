@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "newRouteAcceptances": {
+    "src/app/[locale]/roadmap/page.tsx": {
+      "reviewer": "Codex canonical_plan (responsible tester)",
+      "reviewedCommit": "a7be14b96f142679f3b153f26bd71b8df80ca8cf",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41125453489/artifacts/13011491154",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41125453489/job/124302689429",
+      "evidenceType": "actual-next-public-roadmap-and-native-navigation",
+      "scope": "Public bilingual truthful roadmap presentation/responsive navigation. No fullrelease/provider/physicaldevice acceptance inferred."
+    }
+  },
+  "externalReviewSha256": "1b964e961af41202402ffa33f12aec81492755fb9b6f1ea4b65de0f3e2b63f64",
+  "actualHostedNativeCases": 16,
+  "overlapSquarePixels": 0,
+  "allThreePointerHits": true,
+  "nativeKeyboardReturnLocalizedHome": true,
+  "reviewerDisclosure": "Implementation owner and responsible tester; not claimed independent code author.",
+  "sourceHashes": {
+    "src/app/[locale]/roadmap/page.tsx": "e4b2db2bdfac0c2e5bcd6347321b77a79a315448c523504d16ca7c9310d950c4",
+    "src/app/[locale]/roadmap/roadmap.module.css": "cc4df020ac775b528f9c296c1d94c3eddebcf2722fe525ecf5c10c929af82e34",
+    "tests/e2e/pasa-public-page-families.spec.ts": "6f56ba59b7e65610918030979876e17c43b6f1bd5bc0005b798084f3e03cecee"
+  },
+  "limits": [
+    "Overall provider/device and final coordinated release approval remain separate.",
+    "Actual a7 hosted screenshot/test source; future Account CSS not relabelled as part of that run."
+  ]
+}

@@ -793,6 +793,15 @@ html[data-theme="light"] body:has(.pasa-consumer-account) {
 }
 
 /* Keep native keyboard focus inside the visible area above the consumer dock. */
+@media (min-width: 851px) {
+  .app-shell
+    .pasa-consumer-account
+    .account-workspace
+    .workspace-mobile-navigation {
+    margin-inline-end: 4rem;
+  }
+}
+
 @media (max-width: 850px) {
   html:has(.pasa-consumer-account) {
     scroll-padding-top: 4rem;

@@ -144,8 +144,19 @@
     },
     "src/app/[locale]/admin/accommodation-review/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Scoped shared review card/form design, visible heading and accessible decision pending/error states; exact revision/admin/reason checks and read-only orphan boundary retained. Responsive browser evidence under review; not accepted."
+      "status": "accepted",
+      "note": "Scoped shared review card/form design, visible heading and accessible decision pending/error states; exact revision/admin/reason checks and read-only orphan boundary retained. Responsive browser evidence under review; not accepted. Individually reviewed actual hosted source-bound screenshots/functions; see AKIPASA_CONVERSION_OPERATIONS_RECOVERY_ACCEPTANCE_20261030.json. Real providers/RLS/payments/private mutations/device and final coordinated release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex venue_event_screens independent responsible UI/function tester",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/artifacts/13007764897",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/job/124287760544",
+        "sourceSha256": "e9e60ab02e46476289c378e07ffd86b3ba63ffcecb46bfe2b9142ef6cdf3b9db",
+        "evidenceType": "Actual route/layout/CSS disposable browser fixture; responsible bounded screen UI/native-control review",
+        "scope": "70native review contexts withENES/themes3603908201440, populated/orphan/empty/error; realreason validity,keyboarddecision focus/hittest,pendingduplicateprevention,stalerecovery/payload,guest/user/staff denied. Conditionalfeatureactivation only,not liveapproval.",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/achievements/page.tsx": {
       "scope": "operational",
@@ -179,13 +190,35 @@
     },
     "src/app/[locale]/admin/listing-review/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Scoped responsive review cards replace undefined legacy grid styling; existing administrator/read-only signal boundary retained. EN-ES/theme/viewport browser evidence under review; final source/reviewer/device acceptance required."
+      "status": "accepted",
+      "note": "Scoped responsive review cards replace undefined legacy grid styling; existing administrator/read-only signal boundary retained. EN-ES/theme/viewport browser evidence under review; final source/reviewer/device acceptance required. Individually reviewed actual hosted source-bound screenshots/functions; see AKIPASA_CONVERSION_OPERATIONS_RECOVERY_ACCEPTANCE_20261030.json. Real providers/RLS/payments/private mutations/device and final coordinated release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex venue_event_screens independent responsible UI/function tester",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/artifacts/13007764897",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/job/124287760544",
+        "sourceSha256": "a6d283e844c92d9e1ab5cba84cb846ed7f3d677d6e4308366327163c4906b212",
+        "evidenceType": "Actual route/layout/CSS disposable browser fixture; responsible bounded screen UI/native-control review",
+        "scope": "Same70native contexts; read-only signals explicitly not proof ofabuse, missingeventfallback, canonicalreviewlink; empty/errortruth/nativekeyboardroles/contrasts. No automaticmoderationaction.",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed actual hosted source-bound screenshots/functions; see AKIPASA_CONVERSION_OPERATIONS_RECOVERY_ACCEPTANCE_20261030.json. Real providers/RLS/payments/private mutations/device and final coordinated release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex venue_event_screens independent responsible UI/function tester",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/artifacts/13007764897",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/job/124287760544",
+        "sourceSha256": "cb79735616e0e23c0c35575f24e120b23ffbfb7f09cff13133a3e37f076aff1b",
+        "evidenceType": "Actual route/layout/CSS disposable browser fixture; responsible bounded screen UI/native-control review",
+        "scope": "Actual error/healthy-sibling count presentation, dash for unavailable,priority linktoPrivacy, real safe retry retained; admin-read-recovery healthy/error unitcontracts separatelyreviewed.",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/passports/awards/page.tsx": {
       "scope": "operational",
@@ -265,8 +298,16 @@
     },
     "src/app/[locale]/auth/recover/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES."
+      "status": "accepted",
+      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES. Individually reviewed actual hosted source-bound screenshots/functions; see AKIPASA_CONVERSION_OPERATIONS_RECOVERY_ACCEPTANCE_20261030.json. Real providers/RLS/payments/private mutations/device and final coordinated release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex business_screens (responsible tester)",
+        "reviewedCommit": "a7be14b96f142679f3b153f26bd71b8df80ca8cf",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41125453489/artifacts/13011595052",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41125453489/job/124302690060",
+        "sourceSha256": "632239de9f2419a6b542b83a23888bd69ff6ab5320446f284b1124a51d428981",
+        "evidenceType": "Hosted esbuild actualprotectedcomponent +productionCSS with disposable session/throw-onlyactions; not fullLocaleLayout, actualNext, provider password mutation, token lifecycle orphysical Android. Overallrelease gate remains distinct."
+      }
     },
     "src/app/[locale]/business/apply/page.tsx": {
       "scope": "operational",
@@ -417,8 +458,17 @@
     },
     "src/app/[locale]/events/[slug]/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Existing spotlight detail design + common cinematic surface applied; isolated multi-viewport spotlight suite available; individual real-data acceptance pending."
+      "status": "accepted",
+      "note": "Existing spotlight detail design + common cinematic surface applied; isolated multi-viewport spotlight suite available; individual real-data acceptance pending. Individual current hosted source-bound public UI/function review recorded; see AKIPASA_PUBLIC_DISCOVERY_ACCEPTANCE_20261030.json. Tonight remains default off. Booking subroutes, authenticated transactions, GPS/provider/device and final release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex discovery_screens (independent responsible tester)",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675",
+        "sourceSha256": "9240fc19dcb4cc1c87b585c066288c53c5ccbd9c0c63aefd255643a34a0b7f57",
+        "evidenceType": "Public event detail and guest entry journeys. Booking subpage mutations and signed engagement transactions are separate and not accepted here.",
+        "realProviderOrPhysicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/map/page.tsx": {
       "scope": "consumer",
@@ -427,8 +477,16 @@
     },
     "src/app/[locale]/membership/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared cinematic conversion header integrated with existing AkiSuite membership grid and unchanged checkout/launch guards. EN/ES phone/desktop/emulated Android browser evidence and real sign-off pending."
+      "status": "accepted",
+      "note": "Shared cinematic conversion header integrated with existing AkiSuite membership grid and unchanged checkout/launch guards. EN/ES phone/desktop/emulated Android browser evidence and real sign-off pending. Individually reviewed actual hosted source-bound screenshots/functions; see AKIPASA_CONVERSION_OPERATIONS_RECOVERY_ACCEPTANCE_20261030.json. Real providers/RLS/payments/private mutations/device and final coordinated release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex canonical_plan (independent responsible tester)",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/artifacts/13009790036",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/job/124287760069",
+        "evidenceType": "actual-next-public-default-gated-conversion",
+        "scope": "Public EN/ES default-gated consumer conversion presentation and existing safe navigation/nativeaudiencetabs. No purchase, enabled referral attribution, realAuth/RLS/provider/tenant/device acceptance inferred."
+      }
     },
     "src/app/[locale]/moderation/page.tsx": {
       "scope": "consumer",
@@ -482,8 +540,17 @@
     },
     "src/app/[locale]/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Reference-driven photographic Home opening, compact search/date shortcuts and launch strip implemented. Decorative generated artwork is not catalogue evidence. Real shared-search keyboard behavior tested; final source review and device acceptance remain pending. Nearby catalogue now retains dark/orange card continuity in both themes without invented photos; 23 actual-Next fixture browser cases cover EN/ES, responsive contrast, keyboard, shared search and unchanged pagination. Source-stamped screenshots/receipt are implementation evidence; independent final-source and physical-device acceptance remain pending."
+      "status": "accepted",
+      "note": "Reference-driven photographic Home opening, compact search/date shortcuts and launch strip implemented. Decorative generated artwork is not catalogue evidence. Real shared-search keyboard behavior tested; final source review and device acceptance remain pending. Nearby catalogue now retains dark/orange card continuity in both themes without invented photos; 23 actual-Next fixture browser cases cover EN/ES, responsive contrast, keyboard, shared search and unchanged pagination. Source-stamped screenshots/receipt are implementation evidence; independent final-source and physical-device acceptance remain pending. Individual current hosted source-bound public UI/function review recorded; see AKIPASA_PUBLIC_DISCOVERY_ACCEPTANCE_20261030.json. Tonight remains default off. Booking subroutes, authenticated transactions, GPS/provider/device and final release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex discovery_screens (independent responsible tester)",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610",
+        "sourceSha256": "903fccde4c539e44090c94c87d98d1dfeeb6d8a323f021d052991b33a02676f3",
+        "evidenceType": "Plans-first Home with truthful zero-event state and real-data-shaped synthetic venue directory; no live activity claims.",
+        "realProviderOrPhysicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/passports/page.tsx": {
       "scope": "consumer",
@@ -561,13 +628,29 @@
     },
     "src/app/[locale]/referrals/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared EN/ES referral entry for disabled and enabled programmes; server-owned feature, user and attribution gates retained. Guest/browser evidence pending, authenticated flow and physical Android unreviewed."
+      "status": "accepted",
+      "note": "Shared EN/ES referral entry for disabled and enabled programmes; server-owned feature, user and attribution gates retained. Guest/browser evidence pending, authenticated flow and physical Android unreviewed. Individually reviewed actual hosted source-bound screenshots/functions; see AKIPASA_CONVERSION_OPERATIONS_RECOVERY_ACCEPTANCE_20261030.json. Real providers/RLS/payments/private mutations/device and final coordinated release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex canonical_plan (independent responsible tester)",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/artifacts/13009790036",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/job/124287760069",
+        "evidenceType": "actual-next-public-default-gated-conversion",
+        "scope": "Public EN/ES default-gated consumer conversion presentation and existing safe navigation/nativeaudiencetabs. No purchase, enabled referral attribution, realAuth/RLS/provider/tenant/device acceptance inferred."
+      }
     },
     "src/app/[locale]/roadmap/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Human 3D identity copy replaces stale mascot wording; AkiPals engineering remains paused. Expanded public tests visit lazy content and full page, rather than opening viewport alone. No release acceptance claimed."
+      "status": "accepted",
+      "note": "Human 3D identity copy replaces stale mascot wording; AkiPals engineering remains paused. Expanded public tests visit lazy content and full page, rather than opening viewport alone. No release acceptance claimed. Actual a7 source-bound hosted16native responsive tests and screenshots reviewed after desktop Search/backlink gutter repair. See AKIPASA_ROADMAP_HOSTED_ACCEPTANCE_20261030.json; full release/device approval separate.",
+      "acceptance": {
+        "reviewer": "Codex canonical_plan (responsible tester)",
+        "reviewedCommit": "a7be14b96f142679f3b153f26bd71b8df80ca8cf",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41125453489/artifacts/13011491154",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41125453489/job/124302689429",
+        "evidenceType": "actual-next-public-roadmap-and-native-navigation",
+        "scope": "Public bilingual truthful roadmap presentation/responsive navigation. No fullrelease/provider/physicaldevice acceptance inferred."
+      }
     },
     "src/app/[locale]/staff/audit/page.tsx": {
       "scope": "operational",
@@ -576,8 +659,19 @@
     },
     "src/app/[locale]/staff/catalogue/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed actual hosted source-bound screenshots/functions; see AKIPASA_CONVERSION_OPERATIONS_RECOVERY_ACCEPTANCE_20261030.json. Real providers/RLS/payments/private mutations/device and final coordinated release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex venue_event_screens independent responsible UI/function tester",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/artifacts/13007764897",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/job/124287760544",
+        "sourceSha256": "6c8ff815bb112939389515a6a3b5590b9ddff1da307b94622f8c1e77183b5e51",
+        "evidenceType": "Actual route/layout/CSS disposable browser fixture; responsible bounded screen UI/native-control review",
+        "scope": "Current fullroute/AppShell readerror+savederror panels/search/status tabs/nativeGETform,retry preservesq/status,44pxtargets/headertypography; maintainedstaffUI/unit search contracts separatelyreviewed. No actual catalogue mutation accepted.",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/staff/catalogue/venues/[id]/page.tsx": {
       "scope": "operational",
@@ -596,8 +690,19 @@
     },
     "src/app/[locale]/staff/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed actual hosted source-bound screenshots/functions; see AKIPASA_CONVERSION_OPERATIONS_RECOVERY_ACCEPTANCE_20261030.json. Real providers/RLS/payments/private mutations/device and final coordinated release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex venue_event_screens independent responsible UI/function tester",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/artifacts/13007764897",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/job/124287760544",
+        "sourceSha256": "4819ae6fe5752dbb51775ea9a25322d7533a57c9e1ff70773d68db9feb277520",
+        "evidenceType": "Actual route/layout/CSS disposable browser fixture; responsible bounded screen UI/native-control review",
+        "scope": "20 dedicated overviewresponsive/paint/focus records plusfull120maintainedbrowser suite; actualcount cards/tasklinks,44px/focus/rolepredicate fixtures; fixturecounter data only.",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/staff/promotions/page.tsx": {
       "scope": "operational",
@@ -634,8 +739,17 @@
     },
     "src/app/[locale]/venues/[slug]/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Existing spotlight detail design + common cinematic surface applied; isolated multi-viewport spotlight suite available; individual real-data acceptance pending."
+      "status": "accepted",
+      "note": "Existing spotlight detail design + common cinematic surface applied; isolated multi-viewport spotlight suite available; individual real-data acceptance pending. Individual current hosted source-bound public UI/function review recorded; see AKIPASA_PUBLIC_DISCOVERY_ACCEPTANCE_20261030.json. Tonight remains default off. Booking subroutes, authenticated transactions, GPS/provider/device and final release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex discovery_screens (independent responsible tester)",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675",
+        "sourceSha256": "0a8f917886d288753662d44935149030def7be553b72e68c2e956ed0d95cf1fe",
+        "evidenceType": "Public venue detail, menus/events/info, directions and guest booking entry. Claim/owner management and booking submission remain separate.",
+        "realProviderOrPhysicalDeviceAcceptance": false
+      }
     },
     "src/app/akiconduzco/account/page.tsx": {
       "scope": "other-product",
@@ -763,8 +877,18 @@
     },
     "src/app/[locale]/tonight/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "notes": "Default-off gate retained. Tonight explicitly uses live discovery with no hybrid/fixture fallback; localized retry preserves sanitized preferences, empty states link to moderated suggestions and roadmap. Source-selection/outage tests pass; production supply alias mapping, final integrated browser and reviewer acceptance remain outstanding."
+      "status": "accepted",
+      "notes": "Default-off gate retained. Tonight explicitly uses live discovery with no hybrid/fixture fallback; localized retry preserves sanitized preferences, empty states link to moderated suggestions and roadmap. Source-selection/outage tests pass; production supply alias mapping, final integrated browser and reviewer acceptance remain outstanding.",
+      "acceptance": {
+        "reviewer": "Codex discovery_screens (independent responsible tester)",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254636",
+        "sourceSha256": "f581bb1c87ce75f47259c4969e78bf831aac44e0ce1a8c09b53520ae966750c3",
+        "evidenceType": "Preserve production default-off gate; truthful zero-verified-event preview/retry/planning filters only. This does not authorize broad Tonight activation or invent event supply.",
+        "realProviderOrPhysicalDeviceAcceptance": false
+      },
+      "note": " Individual current hosted source-bound public UI/function review recorded; see AKIPASA_PUBLIC_DISCOVERY_ACCEPTANCE_20261030.json. Tonight remains default off. Booking subroutes, authenticated transactions, GPS/provider/device and final release remain separate."
     }
   },
   "releaseStatus": "blocked-pending-visual-and-functional-acceptance",

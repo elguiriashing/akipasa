@@ -528,6 +528,69 @@ async function checkNavigation(page, locale, width) {
   await resetScroll(page);
 }
 
+async function checkDesktopSearchAndMenu(page, context) {
+  const search = page.locator(".global-search-trigger");
+  const menu = page.locator(".workspace-mobile-trigger");
+  const panel = page.locator("#site-search-panel");
+  await resetScroll(page);
+  await expect(search).toBeEnabled();
+  await expect(menu).toHaveAttribute("aria-expanded", "false");
+  const geometry = await page.evaluate(() => {
+    const search = document.querySelector(".global-search-trigger");
+    const menu = document.querySelector(".workspace-mobile-trigger");
+    const a = search.getBoundingClientRect();
+    const b = menu.getBoundingClientRect();
+    const hit = (element) => {
+      const rect = element.getBoundingClientRect();
+      return [0.2, 0.5, 0.8].map((fraction) => {
+        const target = document.elementFromPoint(
+          rect.left + rect.width * fraction,
+          rect.top + rect.height / 2,
+        );
+        return target === element || element.contains(target);
+      });
+    };
+    return {
+      overlap:
+        Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) *
+        Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)),
+      searchHits: hit(search),
+      menuHits: hit(menu),
+    };
+  });
+  expect(geometry.overlap, `${context}: Search/Menu overlap`).toBe(0);
+  expect(geometry.searchHits, `${context}: Search pointer targets`).toEqual([
+    true,
+    true,
+    true,
+  ]);
+  expect(geometry.menuHits, `${context}: Menu pointer targets`).toEqual([
+    true,
+    true,
+    true,
+  ]);
+  await search.click();
+  await expect(panel).toBeVisible();
+  await expect(menu).toHaveAttribute("aria-expanded", "false");
+  await page.keyboard.press("Escape");
+  await expect(panel).not.toBeVisible();
+  await search.focus();
+  await page.keyboard.press("Enter");
+  await expect(panel).toBeVisible();
+  await expect(menu).toHaveAttribute("aria-expanded", "false");
+  await page.keyboard.press("Escape");
+  await expect(panel).not.toBeVisible();
+  await menu.click();
+  await expect(menu).toHaveAttribute("aria-expanded", "true");
+  await expect(page.locator(".workspace-drawer")).toBeVisible();
+  await expect(panel).not.toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(menu).toHaveAttribute("aria-expanded", "false");
+  await expect(menu).toBeFocused();
+  await resetScroll(page);
+  return geometry;
+}
+
 async function reveal(page, field) {
   const sections = page.locator("details").filter({ has: field });
   for (const section of await sections.all()) {
@@ -864,6 +927,7 @@ try {
               `${origin}/${locale}/account${route === "overview" ? "" : `/${route}`}`,
             );
             await ready(page);
+            if (width >= 851) await checkDesktopSearchAndMenu(page, tag);
             await checkBounds(page, tag);
             await expect(
               page.locator('a[href$="/account/rewards"]'),
@@ -947,6 +1011,53 @@ try {
     }
   }
   // Separate boundary cases keep the main matrix focused and the run bounded.
+  if (!selectedFixtures)
+    for (const locale of ["en", "es"])
+      for (const theme of ["light", "dark"]) {
+        const context = await browser.newContext({
+          viewport: { width: 851, height: 900 },
+          colorScheme: theme,
+          reducedMotion: "reduce",
+        });
+        await context.route("**/*", (route) =>
+          new URL(route.request().url()).origin === origin
+            ? route.continue()
+            : route.abort(),
+        );
+        await context.addInitScript((value) => {
+          localStorage.setItem("akipasa.theme", value);
+          document.addEventListener("DOMContentLoaded", () => {
+            document.documentElement.dataset.theme = value;
+            document.documentElement.classList.toggle("dark", value === "dark");
+          });
+        }, theme);
+        try {
+          for (const route of selected) {
+            const page = await context.newPage();
+            const tag = `search-menu-${route}-${locale}-${theme}-851`;
+            try {
+              await page.goto(
+                `${origin}/${locale}/account${route === "overview" ? "" : `/${route}`}`,
+              );
+              await ready(page);
+              const geometry = await checkDesktopSearchAndMenu(page, tag);
+              await page.screenshot({ path: resolve(directory, `${tag}.png`) });
+              results.push({
+                route,
+                locale,
+                theme,
+                width: 851,
+                geometry,
+                pass: true,
+              });
+            } finally {
+              await page.close();
+            }
+          }
+        } finally {
+          await context.close();
+        }
+      }
   for (const locale of ["en", "es"]) {
     const page = await browser.newPage({
       viewport: { width: 360, height: 800 },

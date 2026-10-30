@@ -317,6 +317,152 @@ try {
             forms: document.querySelectorAll("form").length,
           }));
           expect(geometry.overflow).toBeLessThanOrEqual(1);
+          let privacyDarkContrast = null;
+          if (route === "privacy" && theme === "dark") {
+            privacyDarkContrast = await p
+              .locator("main")
+              .last()
+              .evaluate((main) => {
+                const rgb = (value) =>
+                  value
+                    .match(/[\d.]+/g)
+                    .slice(0, 3)
+                    .map(Number);
+                const luminance = (values) =>
+                  values
+                    .map((value) => {
+                      const normalized = value / 255;
+                      return normalized <= 0.04045
+                        ? normalized / 12.92
+                        : ((normalized + 0.055) / 1.055) ** 2.4;
+                    })
+                    .reduce(
+                      (sum, value, index) =>
+                        sum + value * [0.2126, 0.7152, 0.0722][index],
+                      0,
+                    );
+                const contrast = (foreground, background) => {
+                  const a = luminance(foreground),
+                    b = luminance(background);
+                  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+                };
+                const style = getComputedStyle(main);
+                // #29201a is the lightest actual endpoint of the opaque hero
+                // gradient; it conservatively bounds all charcoal surfaces.
+                const samples = Array.from(
+                  main.querySelectorAll("h1,h2,h3,p,button,a,span"),
+                )
+                  .filter(
+                    (node) =>
+                      node.textContent.trim() &&
+                      node.getBoundingClientRect().height,
+                  )
+                  .map((node) => {
+                    const computed = getComputedStyle(node);
+                    const isOrangeAction =
+                      computed.backgroundColor === "rgb(255, 141, 73)";
+                    return {
+                      text: node.textContent.trim(),
+                      ratio: contrast(
+                        rgb(computed.color),
+                        isOrangeAction ? [255, 141, 73] : [41, 32, 26],
+                      ),
+                    };
+                  });
+                return {
+                  panel: style
+                    .getPropertyValue("--prestige-private-panel")
+                    .trim(),
+                  muted: style
+                    .getPropertyValue("--prestige-private-muted")
+                    .trim(),
+                  samples,
+                };
+              });
+            expect(privacyDarkContrast.panel).toBe("#181716");
+            expect(privacyDarkContrast.muted).toBe("#c7beb4");
+            expect(privacyDarkContrast.samples.length).toBeGreaterThan(5);
+            for (const sample of privacyDarkContrast.samples)
+              expect(sample.ratio).toBeGreaterThanOrEqual(4.5);
+          }
+          const lowerControlProof = [];
+          let lowerImage = null;
+          if (state === "ready" && ["member", "privacy"].includes(route)) {
+            const workspace = p.locator("main").last();
+            const controls = workspace.locator(
+              'a[href],button:not(:disabled),input:not([type="hidden"]):not(:disabled)',
+            );
+            expect(await controls.count()).toBe(route === "member" ? 8 : 3);
+            for (let i = 0; i < (await controls.count()); i++) {
+              const control = controls.nth(i);
+              let reached = false;
+              let tabs = 0;
+              for (; tabs < 100; tabs++) {
+                await p.keyboard.press("Tab");
+                if (
+                  await control.evaluate((el) => el === document.activeElement)
+                ) {
+                  reached = true;
+                  break;
+                }
+              }
+              expect(reached).toBe(true);
+              // Native focused controls can sit behind a fixed dock until the
+              // owner scrolls farther. Center the actual scrollable ancestor;
+              // never submit privacy, claim, withdrawal or deletion actions.
+              await control.evaluate((el) =>
+                el.scrollIntoView({ block: "center", inline: "nearest" }),
+              );
+              const proof = await control.evaluate((el) => {
+                const rect = el.getBoundingClientRect();
+                return {
+                  name: (
+                    el.textContent ||
+                    el.getAttribute("name") ||
+                    ""
+                  ).trim(),
+                  focused: el === document.activeElement,
+                  focusVisible: el.matches(":focus-visible"),
+                  rect: {
+                    x: rect.x,
+                    y: rect.y,
+                    width: rect.width,
+                    height: rect.height,
+                  },
+                  clearHits: [0.2, 0.5, 0.8].map((fraction) => {
+                    const hit = document.elementFromPoint(
+                      rect.left + rect.width * fraction,
+                      rect.top + rect.height / 2,
+                    );
+                    return hit === el || el.contains(hit);
+                  }),
+                  scrollers: Array.from(document.querySelectorAll("*"))
+                    .filter(
+                      (node) =>
+                        node.scrollHeight > node.clientHeight + 10 &&
+                        ["auto", "scroll"].includes(
+                          getComputedStyle(node).overflowY,
+                        ),
+                    )
+                    .map((node) => ({
+                      tag: node.tagName,
+                      scrollTop: node.scrollTop,
+                    })),
+                };
+              });
+              expect(proof.focused).toBe(true);
+              expect(proof.focusVisible).toBe(true);
+              expect(proof.clearHits).toEqual([true, true, true]);
+              expect(proof.rect.y).toBeGreaterThanOrEqual(0);
+              expect(proof.rect.y + proof.rect.height).toBeLessThanOrEqual(
+                width === 820 ? 1180 : 900,
+              );
+              lowerControlProof.push({ nativeTabSteps: tabs + 1, ...proof });
+            }
+            lowerImage = out + "/" + stem + "-lower.png";
+            await p.screenshot({ path: lowerImage, animations: "disabled" });
+            expect(await p.evaluate(() => window.fixtureActions)).toEqual([]);
+          }
           let retryProof = null;
           if (route === "certificate" && state === "error") {
             const href = `/${locale}/passports/prestige/certificate/10000000-0000-4000-8000-000000000002`,
@@ -397,6 +543,14 @@ try {
               .update(readFileSync(image))
               .digest("hex"),
             retryProof,
+            lowerControlProof,
+            privacyDarkContrast,
+            lowerImage,
+            lowerImageSha256: lowerImage
+              ? createHash("sha256")
+                  .update(readFileSync(lowerImage))
+                  .digest("hex")
+              : null,
           });
           persist();
         }

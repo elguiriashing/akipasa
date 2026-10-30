@@ -1,5 +1,40 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-30 | Native Account controls, genuine loading readiness and privacy charcoal
+
+Desktop Account Search clicks were intercepted by its menu. An Account-only
+4rem gutter at851px clears both controls without changing authorization, billing,
+mobile layouts or shared WorkspaceShell.504maintained cases pass, preserving464
+and adding40at851px.160native Search/Menu contexts cover all10routes, EN/ES,
+both themes and851/1024/1440/1536; original personal-profile32also pass. Four
+original1440click probes reproduced the defect;16independent repaired probes pass.
+Historical Account reviews do not substitute for the new control regression.
+
+The actual a7Tablet failure was pre-hydration native Enter on visible streamed
+Admin HTML. A deterministic real Next diagnostic held12JavaScript chunks and
+proved the cause. The boundary fixture now waits its existing provider mount,
+asserts the loading screen and focused trigger, then performs the original single
+Enter/Escape assertions. All136cases and12native hydration checks pass; no retry,
+runtime guard or assertion removal. Staff venue's second fixture navigation now
+preserves theme/query and asserts the actual theme:120cases pass. Earlier dark
+screenshots labelled light are rejected rather than used as acceptance evidence.
+
+Dark Prestige Privacy panels now use scoped charcoal/warm-orange styles. Light
+Privacy and other Prestige selectors are unchanged.122states/16native GET retries,
+32lower captures and176keyboard/three-point checks pass; all176control rectangles
+unchanged, conservative dark contrast>=7.56:1. Of154before/after pairs,94are exactly
+identical,32are intended dark Privacy changes,28differ only in54global Search
+antialias pixels each; whole-image identity is not claimed. No private action runs.
+
+Full six-file frozen check passes2887Vitest/17groups,140initialNode and193-route
+build. Thirteen more individually reviewed records bring acceptance to44/90,
+with all6fallbacks accepted;46routes still need genuine completion/evidence.
+Sourcea7CI has10ordinary passes and one real Tablet failure repaired in this batch;
+fresh new-head CI remains mandatory. Strict gate stays red. Only connected DB is
+live; a separate data-less test branch costs0.01344/hour plus usage and remains
+unapproved/uncreated. Production/SQL/customer/consent/billing unchanged. See native
+controls, conversion/operations/recovery, public discovery and Roadmap receipts.
+
 ## 2026-10-30 | Uncovered Roadmap navigation and maintained recovery/consent proof
 
 The localized Roadmap reserves64px for desktop Search at the existing851px

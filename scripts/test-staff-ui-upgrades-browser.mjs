@@ -356,6 +356,10 @@ try {
             document.documentElement.dataset.theme = value;
             document.documentElement.classList.toggle("dark", value === "dark");
           }, theme);
+          await expect(page.locator("html")).toHaveAttribute(
+            "data-theme",
+            theme,
+          );
           if (route === "venue") {
             const event = page.locator(
               "#event-20000000-0000-4000-8000-000000000001",
@@ -366,10 +370,26 @@ try {
                 name: locale === "es" ? "Guardar evento" : "Save event",
               }),
             ).toBeVisible();
+            const missingEventQuery = new URLSearchParams(query);
+            missingEventQuery.set(
+              "event",
+              "30000000-0000-4000-8000-000000000001",
+            );
             await page.goto(
-              `http://127.0.0.1:3197/${locale}/staff/venue?route=venue&event=30000000-0000-4000-8000-000000000001`,
+              `http://127.0.0.1:3197/${locale}/staff/venue?${missingEventQuery}`,
             );
             await page.waitForFunction(() => window.__staffUIReady);
+            await page.evaluate((value) => {
+              document.documentElement.dataset.theme = value;
+              document.documentElement.classList.toggle(
+                "dark",
+                value === "dark",
+              );
+            }, theme);
+            await expect(page.locator("html")).toHaveAttribute(
+              "data-theme",
+              theme,
+            );
             await expect(
               page.locator(".workspace-grid-body details[open]"),
             ).toHaveCount(0);
