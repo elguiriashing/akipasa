@@ -1,11 +1,15 @@
 # Community: local next-release proposal
 
-Implemented and validated locally. Not accepted, published,
-merged or deployed. No new owner release exception has been granted.
+Implemented and validated locally; now prepared for draft review against the live
+production base. Community is not accepted, merged or deployed. No Community
+production release exception has been granted.
 
 Branch:work/pasa-community-next-20261030. Base:
 79dacc3b0b2ca2685789dc4966576f0cce1f775e, the immutable Home/Passport/terms proposal335
-candidate, not proof of production deployment. Existing335 worktree is untouched.
+candidate. PR335 is now merged as3d87eb7c995fbd0947cb25a771a43376d9462645
+and verified live at Worker26e51e72-bb1e-49e9-a307-243e0203ef8d. This Community
+branch merges that exact production commit without changing its runtime/test tree.
+Existing335 worktree is untouched.
 Community source import:b07aa15. Root integration owner alone controls publication;
 this local preparation must not become a competing release while335 awaits approval.
 
@@ -81,8 +85,11 @@ its inherited335 terms migration remains the exact separately reviewed base.
 
 ## Publication boundary and rollback
 
-Do not push, create a PR, merge, apply SQL or deploy from this preparation. First
-finish335 disposition and recheck this candidate against the resulting exact source.
+PR335 disposition is complete: source3d87eb7 is live, and the exact approved terms
+fix was applied once as migration20261030102908. Comparison before/after merging
+that base confirms no Community runtime/test/script/workflow difference. Publish
+this proposal for draft review and fresh exact-head CI/builds; do not merge, apply
+SQL or deploy Community without its own bounded release approval.
 Any further staged exception must explicitly cover Community; earlier Home/Login
 approval and pending335 approval do not extend automatically. Master merges may
 trigger Cloudflare production. Root must review actual triggers, exact-head checks,
