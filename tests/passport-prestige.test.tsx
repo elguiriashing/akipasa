@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import "@testing-library/jest-dom/vitest";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ComponentProps } from "react";
 import {
@@ -36,6 +37,7 @@ vi.mock("next/navigation", () => ({
   },
 }));
 import HallPage from "../src/app/[locale]/passports/prestige/hall/page";
+import CertificatePage from "../src/app/[locale]/passports/prestige/certificate/[publicId]/page";
 import { PrestigeControls } from "../src/app/[locale]/passports/prestige/PrestigeControls";
 const award = {
   id: "10000000-0000-0000-0000-000000000001",
@@ -55,6 +57,79 @@ afterEach(() => {
   cleanup();
   vi.unstubAllEnvs();
   vi.clearAllMocks();
+});
+describe("certificate verification recovery", () => {
+  for (const locale of ["en", "es"] as const) {
+    const params = { locale, publicId: award.public_id };
+    it(`keeps ${locale} verification failures in a named workspace with safe recovery`, async () => {
+      vi.stubEnv("AKIPASA_PRESTIGE_ENABLED", "true");
+      publicRpc.mockResolvedValue({
+        data: null,
+        error: { message: "private diagnostic must not leak" },
+      });
+      render(await CertificatePage({ params: Promise.resolve(params) }));
+      const main = screen.getByRole("main");
+      expect(main).toContainElement(
+        screen.getByRole("heading", {
+          level: 1,
+          name:
+            locale === "es"
+              ? "Certificado de logro"
+              : "Achievement certificate",
+        }),
+      );
+      expect(main).toContainElement(screen.getByRole("alert"));
+      expect(
+        screen.getByRole("link", {
+          name: locale === "es" ? "Reintentar" : "Retry",
+        }),
+      ).toHaveAttribute(
+        "href",
+        `/${locale}/passports/prestige/certificate/${award.public_id}`,
+      );
+      expect(
+        screen.getByRole("link", {
+          name: locale === "es" ? "Salón de la Fama" : "Hall of Fame",
+        }),
+      ).toHaveAttribute("href", `/${locale}/passports/prestige/hall`);
+      expect(
+        screen.getByRole("link", {
+          name: locale === "es" ? "Pasaporte" : "Passport",
+        }),
+      ).toHaveAttribute("href", `/${locale}/passports`);
+      expect(screen.queryByText(/private diagnostic/)).not.toBeInTheDocument();
+      expect(screen.queryByRole("button")).not.toBeInTheDocument();
+      expect(publicRpc).toHaveBeenCalledExactlyOnceWith("prestige_public", {
+        p_public_id: award.public_id,
+      });
+    });
+    it(`keeps disabled ${locale} certificates unavailable before any read`, async () => {
+      vi.stubEnv("AKIPASA_PRESTIGE_ENABLED", "false");
+      await expect(
+        CertificatePage({ params: Promise.resolve(params) }),
+      ).rejects.toThrow("not-found");
+      expect(publicRpc).not.toHaveBeenCalled();
+    });
+    it(`rejects malformed ${locale} identifiers before any read`, async () => {
+      vi.stubEnv("AKIPASA_PRESTIGE_ENABLED", "true");
+      await expect(
+        CertificatePage({
+          params: Promise.resolve({ locale, publicId: "../private-profile" }),
+        }),
+      ).rejects.toThrow("not-found");
+      expect(publicRpc).not.toHaveBeenCalled();
+    });
+    it(`preserves ${locale} not-found for a genuinely absent public award`, async () => {
+      vi.stubEnv("AKIPASA_PRESTIGE_ENABLED", "true");
+      publicRpc.mockResolvedValue({ data: [], error: null });
+      await expect(
+        CertificatePage({ params: Promise.resolve(params) }),
+      ).rejects.toThrow("not-found");
+      expect(publicRpc).toHaveBeenCalledExactlyOnceWith("prestige_public", {
+        p_public_id: award.public_id,
+      });
+    });
+  }
 });
 describe("prestige presentation and privacy", () => {
   it("defaults launch off and only accepts explicit activation", () => {

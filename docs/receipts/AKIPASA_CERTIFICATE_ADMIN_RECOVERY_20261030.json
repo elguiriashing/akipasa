@@ -1,0 +1,98 @@
+{
+  "version": 1,
+  "baselineCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+  "sourceHashes": {
+    "src/app/[locale]/admin/achievements/achievements.module.css": "85cbf0dc0a01797a2576fb2855b8032e54df9bf4056cba799e0873b50eb60bee",
+    "src/app/[locale]/passports/prestige/certificate/[publicId]/page.tsx": "7d784c9ef8140e7f40c7cc764190807e5d28ba84b2678ead82cc684ac524cc6e",
+    "tests/passport-prestige.test.tsx": "cba3ad761db4f5710c4c88f9cedb26d0cc56e01eda2f61c797a6561a4c739898"
+  },
+  "fullCheck": {
+    "exitCode": 0,
+    "vitestTests": 2876,
+    "vitestGroups": 17,
+    "initialNodeTests": 140,
+    "builtRoutes": 193,
+    "allThreeSourceHashesUnchanged": true,
+    "log": "/tmp/akipasa-certificate-admin-FROZEN-check-20261030.log"
+  },
+  "certificate": {
+    "focusedTestsPassed": 23,
+    "prestigeConfigTestsPassed": 54,
+    "actualBrowserStatesPassed": 60,
+    "nativeKeyboardRetries": 12,
+    "eachRetry": "Exactly one fresh same-URL document GET and new fixture prestige_public read; no actions.",
+    "scope": "Existing workspace/title/alert and safe navigation on provider failure; native retry link; RPC, feature/locale/UUID gates, missing-award notFound, private fields and success view unchanged."
+  },
+  "adminEyebrow": {
+    "beforeLightMinimum": 1.6222,
+    "beforeFailingContexts": 8,
+    "afterContextsPassed": 32,
+    "viewports": [360, 390, 820, 1440],
+    "locales": ["en", "es"],
+    "themes": ["dark", "light"],
+    "afterLightMinimum": 6.6786,
+    "afterDarkMinimum": 11.1983,
+    "positiveHorizontalOverflow": 0,
+    "actionsInvoked": 0,
+    "sourceChange": "Three-line light-only module-scoped eyebrow ink override.",
+    "matchedGeometryContexts": 16,
+    "darkPixelIdentical": 6,
+    "darkPixelCompared": 8,
+    "allDarkPixelsIdenticalNotClaimed": true,
+    "syntheticAuthIsNotRealRlsProof": true
+  },
+  "individualAcceptance": {
+    "newReviewedRoutes": 9,
+    "totalAccepted": 22,
+    "inScope": 90,
+    "remainingRoutes": 68,
+    "fallbackStatesPending": 6,
+    "receipt": "AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json"
+  },
+  "priorHeadCI": {
+    "source": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+    "ordinaryWorkflowsPassed": 11,
+    "publicCollected": 586,
+    "publicPassed": 509,
+    "publicConditionalSkips": 77,
+    "publicFailed": 0,
+    "accountMaintainedPassed": 464,
+    "personalProfilePassed": 32,
+    "spotlightDedicatedPassed": 76,
+    "nativeFallbackPassed": 136,
+    "httpNamedResultsRead": 8,
+    "httpObserved307": 20,
+    "httpEntireZipHashVerified": true,
+    "staticRoutesHostedScreenshotsRead": 4,
+    "roadmapTinyArtifactMissing": true
+  },
+  "artifactFollowup": {
+    "onlyDeliveryConfigurationChanged": true,
+    "formatAndYamlParse": "passed",
+    "originalJobsAssertionsRequiredContextsPermissionsAndArchivesRetained": true,
+    "changes": [
+      "Include omitted Roadmap PNG and existing route smoke/legacy JSON",
+      "Add separate small discovery PNG/source-JSON archive"
+    ],
+    "exactNewHeadHostedChecks": "required; not inferred"
+  },
+  "globalRelease": {
+    "merged": false,
+    "deployed": false,
+    "productionSqlApplied": false,
+    "productionSource": "3d87eb7c995fbd0947cb25a771a43376d9462645",
+    "rollbackWorker": "26e51e72-bb1e-49e9-a307-243e0203ef8d",
+    "remaining": [
+      "Isolated real Auth/role/tenant/provider/verified-XP test environment and tests",
+      "Separate pending Staff and preview SQL staging/production approval",
+      "Candidate physical Android review",
+      "Remaining route/fallback formal evidence",
+      "Strict exact-head release gate"
+    ]
+  },
+  "externalSealedReceiptHashes": {
+    "certificate-recovery-final-20261030.json": "31b4d968b6f8cf33f3bf0abd2f58388448d8c90bee0cd5c856fd780b9da1002b",
+    "admin-achievements-eyebrow-review-20261030.json": "638bd3f2b39e1f3b7120aa01846c92bc4ae7462851759f20c2598e795a6f7bb6",
+    "67bd0fa-ci-verification-20261030.json": "097e225b337b81858fc386967d5d1bd0535a40cae52c54da76245a0840966352"
+  }
+}

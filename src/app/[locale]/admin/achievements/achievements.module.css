@@ -24,6 +24,9 @@
   letter-spacing: 0.12em;
   color: var(--accent);
 }
+:global(html[data-theme="light"]) .eyebrow {
+  color: #98400d;
+}
 .hero h2 {
   display: flex;
   align-items: center;

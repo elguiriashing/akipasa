@@ -4625,3 +4625,35 @@ Provider/RLS/payment/device gates remain separate and unapproved. Production and
 all source-only pending SQL remain unchanged. Receipts:
 `AKIPASA_ACCOUNT_RESPONSIBLE_ACCEPTANCE_20261030.json` and
 `AKIPASA_PRESENTATION_FINAL_REPAIRS_20261030.json` under docs/receipts.
+
+## 2026-10-30 | Certificate error recovery and Admin light eyebrow contrast
+
+Replace the Prestige public certificate's bare provider-error paragraph with its
+existing workspace/title/alert and validated same-path native Retry plus Hall and
+Passport returns. Preserve public RPC/gates/UUID validation/notFound, success
+rendering, privacy and download/award authority.23 focused/54Prestige/60 actual
+browser states pass, including12 native keyboard retries each performing one
+fresh document GET and fixture RPC read. No mutating action or production award.
+
+Change only the achievements module's light-theme eyebrow ink: actual contrast
+1.62:1 becomes6.68:1 across32 EN/ES theme/viewport contexts, zero overflow/actions.
+Dark source styling and16 matched geometries are unchanged; only6/8 dark PNG
+pairs are byte-identical, so full pixel identity is not claimed. Synthetic Admin
+identity adapters prove presentation, not actual Auth/RLS/tenant enforcement.
+Three implementation/test files stay frozen through full npmcheckEXIT0:
+2876Vitest/17groups,140initialNode and193-route optimized build.
+
+Individually record nine genuine route acceptances with actual reviewed source,
+hosted images/HTTP and functions: total22/90,68 outstanding. No destination-page
+approval from redirects, no global provider/device waiver. Source67bd all11
+ordinary workflows pass; actual586publiccases=509PASS77conditionalSKIP0FAIL,
+464Account+32personal,76dedicatedSpotlight and136nativefallback pass. TinyHTTP
+artifact's8JSON/20responses and entireZIP digest were verified. Four static hosted
+image sets were read; Roadmap was omitted and stays unaccepted. Add its exact
+PNG glob, existing native smoke/legacy JSON, and a separate small discovery PNG/
+JSON artifact; original archives/jobs/assertions/contexts/permissions remain.
+Delivery-only follow-up YAML parses/formats; fresh exact-head checks still required.
+Receipts: AKIPASA_CERTIFICATE_ADMIN_RECOVERY_20261030.json and
+AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json. No API/schema/customer/consent,
+billing/XP mutation or production release occurred. Next Community palette fix
+must stay isolated from public landing, Creator pages and sister products.

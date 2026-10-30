@@ -297,18 +297,36 @@
     },
     "src/app/[locale]/community/creator/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Canonical creator components receive a shared scoped cinematic theme and retain filtered navigation; private studio fails closed on unavailable reads. Focused regression tests passed. Real responsive/browser and authenticated visual acceptance remain required; aliases preserve locale and canonical redirects. Shell-backed actual page/action fixture matrix144 passed across EN/ES360/390/820/1440 light/dark; safe studio/review returns, owner scope, keyboard and truthful empty/error states tested. Venue labels measured minimum5.842:1. Final source/RLS/provider/device review remains outstanding; no acceptance granted. See Creator return/contrast receipt."
+      "status": "accepted",
+      "note": "Canonical creator components receive a shared scoped cinematic theme and retain filtered navigation; private studio fails closed on unavailable reads. Focused regression tests passed. Real responsive/browser and authenticated visual acceptance remain required; aliases preserve locale and canonical redirects. Shell-backed actual page/action fixture matrix144 passed across EN/ES360/390/820/1440 light/dark; safe studio/review returns, owner scope, keyboard and truthful empty/error states tested. Venue labels measured minimum5.842:1. Final source/RLS/provider/device review remains outstanding; no acceptance granted. See Creator return/contrast receipt. Individually accepted after responsible-tester source, actual hosted image/HTTP and functional review. See AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json; destination pages and overall provider/device/production approval are not inferred.",
+      "acceptance": {
+        "reviewer": "Codex community_release_review (responsible tester)",
+        "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436179",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436179"
+      }
     },
     "src/app/[locale]/community/creators/[slug]/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Canonical creator components receive a shared scoped cinematic theme and retain filtered navigation; private studio fails closed on unavailable reads. Focused regression tests passed. Real responsive/browser and authenticated visual acceptance remain required; aliases preserve locale and canonical redirects. Shell-backed actual page/action fixture matrix144 passed across EN/ES360/390/820/1440 light/dark; safe studio/review returns, owner scope, keyboard and truthful empty/error states tested. Venue labels measured minimum5.842:1. Final source/RLS/provider/device review remains outstanding; no acceptance granted. See Creator return/contrast receipt."
+      "status": "accepted",
+      "note": "Canonical creator components receive a shared scoped cinematic theme and retain filtered navigation; private studio fails closed on unavailable reads. Focused regression tests passed. Real responsive/browser and authenticated visual acceptance remain required; aliases preserve locale and canonical redirects. Shell-backed actual page/action fixture matrix144 passed across EN/ES360/390/820/1440 light/dark; safe studio/review returns, owner scope, keyboard and truthful empty/error states tested. Venue labels measured minimum5.842:1. Final source/RLS/provider/device review remains outstanding; no acceptance granted. See Creator return/contrast receipt. Individually accepted after responsible-tester source, actual hosted image/HTTP and functional review. See AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json; destination pages and overall provider/device/production approval are not inferred.",
+      "acceptance": {
+        "reviewer": "Codex community_release_review (responsible tester)",
+        "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436179",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436179"
+      }
     },
     "src/app/[locale]/community/creators/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Canonical creator components receive a shared scoped cinematic theme and retain filtered navigation; private studio fails closed on unavailable reads. Focused regression tests passed. Real responsive/browser and authenticated visual acceptance remain required; aliases preserve locale and canonical redirects."
+      "status": "accepted",
+      "note": "Canonical creator components receive a shared scoped cinematic theme and retain filtered navigation; private studio fails closed on unavailable reads. Focused regression tests passed. Real responsive/browser and authenticated visual acceptance remain required; aliases preserve locale and canonical redirects. Individually accepted after responsible-tester source, actual hosted image/HTTP and functional review. See AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json; destination pages and overall provider/device/production approval are not inferred.",
+      "acceptance": {
+        "reviewer": "Codex community_release_review (responsible tester)",
+        "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436179",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436179"
+      }
     },
     "src/app/[locale]/community/page.tsx": {
       "scope": "consumer",
@@ -317,8 +335,18 @@
     },
     "src/app/[locale]/creators/[slug]/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Canonical creator components receive a shared scoped cinematic theme and retain filtered navigation; private studio fails closed on unavailable reads. Focused regression tests passed. Real responsive/browser and authenticated visual acceptance remain required; aliases preserve locale and canonical redirects."
+      "status": "accepted",
+      "note": "Canonical creator components receive a shared scoped cinematic theme and retain filtered navigation; private studio fails closed on unavailable reads. Focused regression tests passed. Real responsive/browser and authenticated visual acceptance remain required; aliases preserve locale and canonical redirects. Individually accepted after responsible-tester source, actual hosted image/HTTP and functional review. See AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json; destination pages and overall provider/device/production approval are not inferred.",
+      "acceptance": {
+        "reviewer": "Codex venue_event_screens — independent redirect HTTP review",
+        "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/artifacts/13004526929",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/job/124257651856",
+        "evidenceType": "redirect-only actual guest HTTP; screenshot not applicable",
+        "sourceSha256": "cebfb68f367e23da83a4c4b544e08ba57a3b93679902db11e2bfc90aecb2842b",
+        "expectedStatus": 307,
+        "destinationAcceptance": false
+      }
     },
     "src/app/[locale]/creators/page.tsx": {
       "scope": "consumer",
@@ -361,8 +389,18 @@
     },
     "src/app/[locale]/moderation/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Legacy redirect-only compatibility route: validated locale, allowlisted canonical destinations and safe queue encoding; EN/ES auth-gated redirect and phone/desktop/Android-like guest handoff tests added. No standalone screen exists. Destination role permissions, authenticated queue interactions, final source browser evidence and physical Android review remain unaccepted."
+      "status": "accepted",
+      "note": "Legacy redirect-only compatibility route: validated locale, allowlisted canonical destinations and safe queue encoding; EN/ES auth-gated redirect and phone/desktop/Android-like guest handoff tests added. No standalone screen exists. Destination role permissions, authenticated queue interactions, final source browser evidence and physical Android review remain unaccepted. Individually accepted after responsible-tester source, actual hosted image/HTTP and functional review. See AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json; destination pages and overall provider/device/production approval are not inferred.",
+      "acceptance": {
+        "reviewer": "Codex venue_event_screens — independent redirect HTTP review",
+        "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/artifacts/13004526929",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/job/124257651856",
+        "evidenceType": "redirect-only actual guest HTTP; screenshot not applicable",
+        "sourceSha256": "fd4c62bccf1b6de2c1f388f8a2b346552c732b1f5e4c2cd7498d6c6035fefcb7",
+        "expectedStatus": 307,
+        "destinationAcceptance": false
+      }
     },
     "src/app/[locale]/onboarding/page.tsx": {
       "scope": "consumer",
@@ -411,13 +449,29 @@
     },
     "src/app/[locale]/photo-credits/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared EN/ES legal hero and reading/attribution surfaces implemented with targeted phone/tablet/desktop and emulated Android browser test source. Hosted screenshot review, functional inspection and real Android validation still required; NOT accepted. Actual legal review found missing localized title/canonical/hreflang and root OG URL. Standard public metadata and static sitemap coverage repaired; 8 focused SEO and 20 legal browser cases (60 page states) pass, including exact head-tag checks in both locales/themes and Android-like emulation. Original failing regression retained. Owner/device/final-source acceptance remains outstanding."
+      "status": "accepted",
+      "note": "Shared EN/ES legal hero and reading/attribution surfaces implemented with targeted phone/tablet/desktop and emulated Android browser test source. Hosted screenshot review, functional inspection and real Android validation still required; NOT accepted. Actual legal review found missing localized title/canonical/hreflang and root OG URL. Standard public metadata and static sitemap coverage repaired; 8 focused SEO and 20 legal browser cases (60 page states) pass, including exact head-tag checks in both locales/themes and Android-like emulation. Original failing regression retained. Owner/device/final-source acceptance remains outstanding. Individually accepted after responsible-tester source, actual hosted image/HTTP and functional review. See AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json; destination pages and overall provider/device/production approval are not inferred.",
+      "acceptance": {
+        "reviewer": "Codex canonical_plan (independent responsible tester)",
+        "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/artifacts/13005750279",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/job/124257651856",
+        "evidenceType": "actual-next-public-static-ui",
+        "scope": "Public static presentation and route-specific safe functionality; no full-release, legal-professional, real email/provider, private Account workflow or physical-device acceptance inferred."
+      }
     },
     "src/app/[locale]/privacy/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared EN/ES legal hero and reading/attribution surfaces implemented with targeted phone/tablet/desktop and emulated Android browser test source. Hosted screenshot review, functional inspection and real Android validation still required; NOT accepted."
+      "status": "accepted",
+      "note": "Shared EN/ES legal hero and reading/attribution surfaces implemented with targeted phone/tablet/desktop and emulated Android browser test source. Hosted screenshot review, functional inspection and real Android validation still required; NOT accepted. Individually accepted after responsible-tester source, actual hosted image/HTTP and functional review. See AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json; destination pages and overall provider/device/production approval are not inferred.",
+      "acceptance": {
+        "reviewer": "Codex canonical_plan (independent responsible tester)",
+        "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/artifacts/13005750279",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/job/124257651856",
+        "evidenceType": "actual-next-public-static-ui",
+        "scope": "Public static presentation and route-specific safe functionality; no full-release, legal-professional, real email/provider, private Account workflow or physical-device acceptance inferred."
+      }
     },
     "src/app/[locale]/privacy/prestige/page.tsx": {
       "scope": "consumer",
@@ -481,8 +535,16 @@
     },
     "src/app/[locale]/terms/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared EN/ES legal hero and reading/attribution surfaces implemented with targeted phone/tablet/desktop and emulated Android browser test source. Hosted screenshot review, functional inspection and real Android validation still required; NOT accepted."
+      "status": "accepted",
+      "note": "Shared EN/ES legal hero and reading/attribution surfaces implemented with targeted phone/tablet/desktop and emulated Android browser test source. Hosted screenshot review, functional inspection and real Android validation still required; NOT accepted. Individually accepted after responsible-tester source, actual hosted image/HTTP and functional review. See AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json; destination pages and overall provider/device/production approval are not inferred.",
+      "acceptance": {
+        "reviewer": "Codex canonical_plan (independent responsible tester)",
+        "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/artifacts/13005750279",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/job/124257651856",
+        "evidenceType": "actual-next-public-static-ui",
+        "scope": "Public static presentation and route-specific safe functionality; no full-release, legal-professional, real email/provider, private Account workflow or physical-device acceptance inferred."
+      }
     },
     "src/app/[locale]/venues/[slug]/book/page.tsx": {
       "scope": "consumer",
@@ -607,8 +669,16 @@
     },
     "src/app/waitlist/confirm/page.tsx": {
       "scope": "cross-product",
-      "status": "in-progress",
-      "note": "Cinematic responsive EN/ES confirmation for AkiPasa/AkiDuermo/AkiCoches committed. Real defect repaired: POST success redirect now derives product from verified database row, not caller hint; failure product hint allowlisted. Non-mutating Playwright cases cover invalid links, 360/390/1440 and Android-style emulation, dark/light. Exact-head CI/screenshot inspection, physical Android and genuine signup→email→verification acceptance still pending. In-progress, not accepted."
+      "status": "accepted",
+      "note": "Cinematic responsive EN/ES confirmation for AkiPasa/AkiDuermo/AkiCoches committed. Real defect repaired: POST success redirect now derives product from verified database row, not caller hint; failure product hint allowlisted. Non-mutating Playwright cases cover invalid links, 360/390/1440 and Android-style emulation, dark/light. Exact-head CI/screenshot inspection, physical Android and genuine signup→email→verification acceptance still pending. In-progress, not accepted. Individually accepted after responsible-tester source, actual hosted image/HTTP and functional review. See AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json; destination pages and overall provider/device/production approval are not inferred.",
+      "acceptance": {
+        "reviewer": "Codex canonical_plan (independent responsible tester)",
+        "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/artifacts/13005750279",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/job/124257651856",
+        "evidenceType": "actual-next-public-static-ui",
+        "scope": "Public static presentation and route-specific safe functionality; no full-release, legal-professional, real email/provider, private Account workflow or physical-device acceptance inferred."
+      }
     },
     "src/app/[locale]/tonight/page.tsx": {
       "scope": "consumer",

@@ -2,6 +2,43 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 30 October 19:33 UTC —22 genuine routes accepted; certificate/Admin defects closed
+
+Published baseline67bd0fa141b16a058515ff48f94ab50c41bbf7a9 passes11ordinary exact-head
+workflows; strict remains honestly red. Actual public586=509PASS77conditionalSKIP,
+0FAIL;464Account+32personal,76dedicated and136nativeboundary pass. SmallHTTP8JSON/
+20actual307 responses were read and fullZIPdigest verified; four static hosted
+screenshots/metadata read. Roadmap's omitted tinyartifact PNG remains an explicit
+missing-proof gap, fixed by exact upload glob only in the next candidate.
+
+Accepted9more individually reviewed records:3Creator/4static/2publicaliases.
+Total22accepted/68inprogress/13excluded; six fallback statuses still pendingactual
+hosted independentreview. Redirect images are not invented and their destinations
+are not accepted by alias proof. Account/Creator c3 and static/alias67 reviewed
+source IDs, actual Actions links and reviewers are recorded per route.
+
+Implemented/tested nextbatch: Certificate provider errors retain workspace/title,
+safe alert, same-path native GET Retry and Hall/Passport returns. Existing RPC/
+privacy/UUID/flags/missingaward404 and success/download behavior unchanged.23focus,
+54Prestige and60actualbrowser cases pass, including12nativeTabEnterGET+fixtureRPC
+retries. Admin light eyebrow contrast1.62→6.68 across32ENES/lightdark/4width states,
+zerooverflow/actions, matchedgeometry unchanged. Synthetic Admin is not realRLS.
+Full frozen3source npmcheckEXIT0:2876Vitest/17groups,140Node,193routebuild. Separate
+artifact-only YAML followup parses/formats; original jobs/gates/archives retained.
+
+NEXT: commit/push validated3file repair + individual9acceptances + delivery-only
+artifact followup, then inspect fresh exacthead checks. Community Suggest/Reports
+currentsource actualnavy palette is next concrete UI repair; scope it only to that
+page's existing workflow marker, preserving already-reviewed Creator and public
+landing/sisterproduct views. Sixfallback acceptance records require hosted136/
+source/images actualreview, not assumptions from localproof. Continue proofwork.
+
+No merge/deploy/SQL/paidresource/customer changes. Only linked DB is live; safe
+isolated realAuth/tenant/provider/verified-XP tests remain blocked until separate
+test database cost/configuration approval. Terms already applied once335, don't
+repeat; Staff/preview sourceSQL stillunapplied. CandidateAndroid and strict/full
+release signoffs remain required. Root writerlease20:00UTC; extend ifstillactive.
+
 ## 30 October 19:05 UTC — eight genuine Account acceptances; coherent presentation batch
 
 Branchwork/coordinated-release-20261029. Published baseline/exact tested Account

@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "newIndividualAcceptances": 9,
+  "totalAcceptedRoutes": 22,
+  "remainingInScopeRoutes": 68,
+  "sourceReceipts": {
+    "redirect-independent-acceptance-review-20261030.json": "730d9b39c37a35e7ac350bb66b4264a084cae47642446c689c5f18353ab8867a",
+    "static-four-hosted-67bd-acceptance-recommendations-20261030.json": "8239d0fd82406e3e515f43f62a92bf5f3efcd4e4c5f8edf9a919cc3ee63d6ab1",
+    "social-c3b-responsible-tester-review-20261030.json": "91be252ce2cb71f6230b3002c5b1875bfa688de12505692441555cf53e3eb7d2"
+  },
+  "acceptedRoutes": {
+    "src/app/[locale]/creators/[slug]/page.tsx": {
+      "reviewer": "Codex venue_event_screens — independent redirect HTTP review",
+      "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/artifacts/13004526929",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/job/124257651856",
+      "evidenceType": "redirect-only actual guest HTTP; screenshot not applicable",
+      "sourceSha256": "cebfb68f367e23da83a4c4b544e08ba57a3b93679902db11e2bfc90aecb2842b",
+      "expectedStatus": 307,
+      "destinationAcceptance": false
+    },
+    "src/app/[locale]/moderation/page.tsx": {
+      "reviewer": "Codex venue_event_screens — independent redirect HTTP review",
+      "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/artifacts/13004526929",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/job/124257651856",
+      "evidenceType": "redirect-only actual guest HTTP; screenshot not applicable",
+      "sourceSha256": "fd4c62bccf1b6de2c1f388f8a2b346552c732b1f5e4c2cd7498d6c6035fefcb7",
+      "expectedStatus": 307,
+      "destinationAcceptance": false
+    },
+    "src/app/[locale]/privacy/page.tsx": {
+      "reviewer": "Codex canonical_plan (independent responsible tester)",
+      "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/artifacts/13005750279",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/job/124257651856",
+      "evidenceType": "actual-next-public-static-ui",
+      "scope": "Public static presentation and route-specific safe functionality; no full-release, legal-professional, real email/provider, private Account workflow or physical-device acceptance inferred."
+    },
+    "src/app/[locale]/terms/page.tsx": {
+      "reviewer": "Codex canonical_plan (independent responsible tester)",
+      "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/artifacts/13005750279",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/job/124257651856",
+      "evidenceType": "actual-next-public-static-ui",
+      "scope": "Public static presentation and route-specific safe functionality; no full-release, legal-professional, real email/provider, private Account workflow or physical-device acceptance inferred."
+    },
+    "src/app/[locale]/photo-credits/page.tsx": {
+      "reviewer": "Codex canonical_plan (independent responsible tester)",
+      "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/artifacts/13005750279",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/job/124257651856",
+      "evidenceType": "actual-next-public-static-ui",
+      "scope": "Public static presentation and route-specific safe functionality; no full-release, legal-professional, real email/provider, private Account workflow or physical-device acceptance inferred."
+    },
+    "src/app/waitlist/confirm/page.tsx": {
+      "reviewer": "Codex canonical_plan (independent responsible tester)",
+      "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/artifacts/13005750279",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/job/124257651856",
+      "evidenceType": "actual-next-public-static-ui",
+      "scope": "Public static presentation and route-specific safe functionality; no full-release, legal-professional, real email/provider, private Account workflow or physical-device acceptance inferred."
+    },
+    "src/app/[locale]/community/creator/page.tsx": {
+      "reviewer": "Codex community_release_review (responsible tester)",
+      "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436179",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436179"
+    },
+    "src/app/[locale]/community/creators/page.tsx": {
+      "reviewer": "Codex community_release_review (responsible tester)",
+      "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436179",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436179"
+    },
+    "src/app/[locale]/community/creators/[slug]/page.tsx": {
+      "reviewer": "Codex community_release_review (responsible tester)",
+      "reviewedCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41107436179",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41107436179"
+    }
+  },
+  "qualifications": [
+    "Each object represents an individually reviewed route, not a blanket status promotion.",
+    "Redirect-only evidence has no invented page image and does not accept destination pages.",
+    "Overall real Auth/RLS/tenant/payment/provider, physical Android and remaining release gates are not waived.",
+    "Six fallback records await independent hosted-artifact review."
+  ]
+}

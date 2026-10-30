@@ -1,5 +1,6 @@
 import { PassportPrestigeDownload } from "@/components/PassportPrestigeDownload";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { z } from "zod";
 import { isLocale } from "@/lib/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -29,11 +30,34 @@ export default async function CertificatePage({
   });
   if (error)
     return (
-      <p role="alert">
-        {locale === "es"
-          ? "No se pudo verificar el certificado. Reinténtalo."
-          : "Could not verify the certificate. Please retry."}
-      </p>
+      <main className={styles.workspace}>
+        <h1>
+          {locale === "es" ? "Certificado de logro" : "Achievement certificate"}
+        </h1>
+        <p role="alert">
+          {locale === "es"
+            ? "No se pudo verificar el certificado. Reinténtalo."
+            : "Could not verify the certificate. Please retry."}
+        </p>
+        <nav
+          className={styles.privacyNavigation}
+          aria-label={
+            locale === "es"
+              ? "Navegación del certificado"
+              : "Certificate navigation"
+          }
+        >
+          <a href={`/${locale}/passports/prestige/certificate/${publicId}`}>
+            {locale === "es" ? "Reintentar" : "Retry"}
+          </a>
+          <Link href={`/${locale}/passports/prestige/hall`}>
+            {locale === "es" ? "Salón de la Fama" : "Hall of Fame"}
+          </Link>
+          <Link href={`/${locale}/passports`}>
+            {locale === "es" ? "Pasaporte" : "Passport"}
+          </Link>
+        </nav>
+      </main>
     );
   const award = (data as PublicPrestigeAward[] | null)?.[0];
   if (!award) notFound();

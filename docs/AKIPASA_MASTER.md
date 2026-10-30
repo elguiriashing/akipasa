@@ -1,5 +1,35 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-30 | Complete certificate failure journeys and readable Admin headings
+
+Prestige certificate provider errors retain the existing workspace, localized
+heading and safe alert, with native same-path Retry and Hall/Passport navigation.
+Native keyboard retry performs a fresh document GET and fixture RPC read. Existing
+locale/UUID/default-off gates, missing-award404, RPC arguments, success certificate,
+private fields and award/download authority are unchanged.23 focused tests,54
+Prestige tests and60 browser states pass, including12 real keyboard GET retries.
+
+Admin achievements/venue-category eyebrow text uses darker orange only in light
+mode.32 actual route/layout fixture contexts pass across EN/ES, both themes and
+360/390/820/1440 widths; contrast improves from1.62:1 to6.68:1. Layout, dark ink,
+forms, data, actions and authorization are unchanged; synthetic role fixtures are
+not real Auth/RLS certification. Full frozen three-file check passes2876Vitest/
+17groups,140initialNode and193-route build.
+
+Nine more routes now have individually reviewed acceptance: three Creator pages,
+four public static pages and two redirect-only aliases. Total22/90 accepted;68
+remain in progress and six fallback formal records await actual hosted review.
+Source67bd passes all11 ordinary workflows; its eight hosted HTTP JSON records
+and four static screenshot subsets were actually read. Roadmap evidence was
+omitted from the small artifact, so it stays unaccepted while the exact glob is
+added. A separate small public discovery archive and existing smoke/legacy JSON
+improve access without dropping original evidence or changing CI policies.
+
+The next known visual repair is Community's Suggest/Reports workspace palette;
+public landing and already-reviewed Creator pages must remain unaffected. Pending
+isolated provider/role/tenant/verified-XP, SQL application, Android and strict
+release requirements remain intact. No production merge, deployment or SQL change.
+
 ## 2026-10-30 | Coherent conversion panels and readable Account status states
 
 Consumer Membership, Referrals and Account Subscription use scoped charcoal and
