@@ -1,0 +1,37 @@
+{
+  "baselineCommit": "197dc36a093cd6a4fe3320676913ac81b5a39058",
+  "fullCheck": {
+    "exitCode": 0,
+    "vitestPassed": 2760,
+    "vitestGroups": 17,
+    "initialNodeTests": 140,
+    "optimizedNextRoutes": 193,
+    "log": "/tmp/akipasa-token-FINAL-integrated-20261030.log",
+    "logSha256": "2afdbfb3ff5ee832182018d4284064faebabfcb54463a911493cc24327e65362"
+  },
+  "sourceFreezeVerified": true,
+  "sourceFiles": {
+    "src/app/[locale]/check-in/[token]/page.tsx": "5df811dc4c4e5ba97c7d353eff042041a1b2c0738bd3cc02cd422fb26dc59364",
+    "tests/checkin-token-read-recovery.test.tsx": "d04e2d0bcf6cbc947767728fc5feabd214c7902619ed7d3938cb60a945280085",
+    "vitest.spotlight.config.ts": "b31a24d28b54b2b906fde724711e82dd465bdbe0b7580e3562c3e67db79e2e06"
+  },
+  "targeted": {
+    "beforeFailed": 4,
+    "beforePassed": 11,
+    "afterPassed": 15,
+    "browserStatesPassed": 16
+  },
+  "behavior": "Actual credential read errors show generic unavailable/Retry before using stale data; hidden/missing rows still404; no venue/error/token leakage or form/UUID when unknown.",
+  "unchanged": [
+    "credential RLS/grants",
+    "ordinary server client",
+    "successful CheckInForm/flag behavior",
+    "verified attendance/XP functions",
+    "customer data"
+  ],
+  "remainingReleaseDependency": "Connected project credential policy allows only managers/owners/platform roles; ordinary consumers cannot use the direct-table preview. Safe authenticated read-only preview repair is being prepared SOURCE ONLY; no RLS widening or production SQL authorized.",
+  "evidence": "/workspace/akipasa-main-checkpoints/token-read-recovery-final-20261030/results.json",
+  "merged": false,
+  "deployed": false,
+  "productionChanged": false
+}

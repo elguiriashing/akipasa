@@ -3711,3 +3711,23 @@ unreconciled;5formal acceptances remain unchanged. Portable family galleries lis
 real source hashes, actual screenshots, CI links and missing/stale evidence. They
 do not promote matrix status. No merge, deploy, new SQL or backend expansion.
 See AKIPASA_SCREEN_FAMILY_READINESS_20261030.json and accelerated batch receipt.
+
+## 2026-10-30 | Check-in token errors fail safely before rendering a form
+
+Actual credential read errors previously became404 or, with stale returned data,
+could render venue details and the submission form. The page now handles errors
+first with generic localized unavailable/Retry copy. It emits no venue/error/token
+values or form/idempotency UUID for an unknown read. Hidden/missing credentials and
+hidden venue joins still404; successful flag/form behavior and verified attendance
+authority are unchanged. Fifteen targeted regressions pass (four failed before),
+16browser states pass, and fullcheck2760Vitest/17groups/140initialNode/193routebuild
+passes against three frozen source files. No policy/grant or production write.
+
+Separate bounded metadata review confirmed a real release dependency: the linked
+project's private credential table permits managers/owners/platform roles, so normal
+consumers cannot use this direct preview lookup. Existing check_in_by_token mutates
+attendance/XP and must never be called to preview. A minimal authenticated read-only
+preview RPC is being prepared as source only, preserving private table permissions
+and existing canonical account_features_allowed() legacy/eligibility behavior. It
+requires separate production migration approval and protected disposable-role proof
+before release. Do not claim the retry presentation fixes that authorization gap.

@@ -15,14 +15,34 @@ export default async function CheckInPage({
   if (!isLocale(locale) || !/^[0-9a-f-]{36}$/i.test(token)) notFound();
   const supabase = await createSupabaseServerClient();
   const flags = await loadFeatureFlags(supabase);
-  const { data: credential } = await supabase
+  const { data: credential, error: credentialError } = await supabase
     .from("venue_checkin_credentials")
     .select("id,venues(id,name)")
     .eq("token", token)
     .eq("active", true)
     .maybeSingle();
-  if (!credential) notFound();
   const es = locale === "es";
+  if (credentialError) {
+    return (
+      <main className={`shell pasa-checkin-visit ${styles.page}`}>
+        <header className={styles.intro}>
+          <div className={`eyebrow ${styles.kicker}`}>Check-in</div>
+          <h1>
+            {es ? "No se puede cargar el check-in" : "Check-in unavailable"}
+          </h1>
+          <p className="lede">
+            {es
+              ? "No podemos cargar el check-in en este momento. No se ha registrado ninguna visita. Inténtalo de nuevo."
+              : "We cannot load check-in right now. No visit has been recorded. Please try again."}
+          </p>
+        </header>
+        <a className="button" href={`/${locale}/check-in/${token}`}>
+          {es ? "Reintentar" : "Retry"}
+        </a>
+      </main>
+    );
+  }
+  if (!credential) notFound();
   const venue = credential.venues as unknown as {
     id: string;
     name: string;

@@ -2,6 +2,32 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 30 October 16:27 UTC — token error repair validated; private preview dependency
+
+Published parent197dc36 has successful Cloudflare upload versioncc576bf3, traffic
+unchanged26e. Ten ordinary workflows passed and final public shard was still running
+at last independent read; do not claim allgreen until final result. Consumer/family
+review packs are delivered at197source:14families/59records with actual evidence,
+37explicit gaps,96total; portable ZIP independently verified390/1440 and all links.
+Alex has a nonblocking visual-feedback request for Profile/Edit/Settings.
+
+Current three-file token read-error repair:15targeted/16browser PASS, fullcheckEXIT0
+2760Vitest/17groups/140initialNode/193routebuild, frozenhashes unchanged. Commit/push
+next. Missing/hidden404 and RLS/XP unchanged; no private data form on failed reads.
+
+Known remaining token class2 now concerns actual consumer preview authorization,
+not merely error presentation. Metadata on linked project confirms sole manager/
+owner/platform credential read policy; no safe read-only resolver exists. Source-only
+authenticated minimal preview RPC is assigned to Operations, using existing canonical
+account_features_allowed() (NOT invented enabled(uid)), retaining legacy eligibility.
+No production SQL/customer mutation/service-role lookup is authorized. Root will
+review concrete SQL/tests and obtain separate approval only after it is reviewable.
+
+Other external proof: sole skipped authenticated test needs isolated nonproduction
+Supabase/disposable administrator+venue secure configuration. Do not use production
+customer accounts or label component adapters real Auth/RLS acceptance. Fullroute
+acceptance stays5/90; no full332merge/deploy until strict/reviewer/device gates pass.
+
 ## 30 October 16:13 UTC — accelerated fourteen-route batch validated
 
 Published parent2949a2e passes all11ordinary exact-head workflows. Generic public

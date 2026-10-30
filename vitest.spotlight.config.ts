@@ -15,6 +15,7 @@ export default defineConfig({
       "tests/event-occurrence.test.ts",
       "tests/event-booking-occurrence.test.ts",
       "tests/venue-booking-read-recovery.test.tsx",
+      "tests/checkin-token-read-recovery.test.tsx",
       "tests/global-search-validation.test.tsx",
       "tests/discovery-filter-validation.test.ts",
       "tests/staff-ui-upgrades.test.tsx",
