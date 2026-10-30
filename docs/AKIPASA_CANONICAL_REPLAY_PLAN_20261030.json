@@ -160,7 +160,15 @@
       "historicalVersion": "20261016092914",
       "historicalName": "private_operating_location",
       "recoveredSha256": "0436f81e3f15ff88c2b68b6eedeeb15bba6f9188423b4be751d6af57db72a97a",
-      "reason": "Reviewed recovered operating definition is absent from committed source. Admit immutable source and provenance before planning checkout lifecycle."
+      "reason": "Immutable recovered project DDL is now vendored outside migration roots with exact raw-history byte binding. This STOP remains unresolved: fresh ordered dependency/current account-wrapper/ACL acceptance is still required before any fixture execution or exposure. Source-byte integrity is not current security or full canonical parity.",
+      "replayOnlySourceAdmission": {
+        "path": "database/replay-only/recovered-operating/20261016092914_private_operating_location.sql",
+        "snapshotSha256": "0436f81e3f15ff88c2b68b6eedeeb15bba6f9188423b4be751d6af57db72a97a",
+        "rawHistorySha256": "c5c02a15d34f558d64228aff4902a2c3581c1bd26691dd4e4949c8f517d0a838",
+        "rawHistoryTransform": "snapshot-minus-exactly-one-final-LF-byte",
+        "sourceIntegrityChecker": "scripts/check-operating-replay-sources.mjs",
+        "freshOrderedGuardAcceptance": false
+      }
     },
     {
       "id": "stop:operating-organisations",
@@ -168,7 +176,15 @@
       "historicalVersion": "20261016093118",
       "historicalName": "operating_organisations",
       "recoveredSha256": "b9d06ab3b40ac3614d739bb8cc386680e9692f878a14c0163a22ecfbd9f79317",
-      "reason": "Reviewed recovered operating definition is absent from committed source. No automatic historical replacement or production CREATE replay."
+      "reason": "Immutable recovered project DDL is now vendored outside migration roots with exact raw-history byte binding. This STOP remains unresolved: fresh ordered dependency/current account-wrapper/ACL acceptance is still required before any fixture execution or exposure. Source-byte integrity is not current security or full canonical parity.",
+      "replayOnlySourceAdmission": {
+        "path": "database/replay-only/recovered-operating/20261016093118_operating_organisations.sql",
+        "snapshotSha256": "b9d06ab3b40ac3614d739bb8cc386680e9692f878a14c0163a22ecfbd9f79317",
+        "rawHistorySha256": "5093d6814cd8be936ce81112839b448325e8b2e076b1e86b0e174b593163124a",
+        "rawHistoryTransform": "snapshot-minus-exactly-one-final-LF-byte",
+        "sourceIntegrityChecker": "scripts/check-operating-replay-sources.mjs",
+        "freshOrderedGuardAcceptance": false
+      }
     },
     {
       "id": "stop:rental-operating-location",
@@ -176,7 +192,15 @@
       "historicalVersion": "20261016093336",
       "historicalName": "rental_operating_location",
       "recoveredSha256": "90e765599a4f276395c81a9b3e58b031918e4dfd157393c05394cbf7437d36c5",
-      "reason": "Reviewed recovered operating definition is absent from committed source. Preserve operating ownership and later account wrappers."
+      "reason": "Immutable recovered project DDL is now vendored outside migration roots with exact raw-history byte binding. This STOP remains unresolved: fresh ordered dependency/current account-wrapper/ACL acceptance is still required before any fixture execution or exposure. Source-byte integrity is not current security or full canonical parity.",
+      "replayOnlySourceAdmission": {
+        "path": "database/replay-only/recovered-operating/20261016093336_rental_operating_location.sql",
+        "snapshotSha256": "90e765599a4f276395c81a9b3e58b031918e4dfd157393c05394cbf7437d36c5",
+        "rawHistorySha256": "3de7c127197c430ccc8954ab9b197d4bc670bd4dfe8934cfa8a6009f2c67d367",
+        "rawHistoryTransform": "snapshot-minus-exactly-one-final-LF-byte",
+        "sourceIntegrityChecker": "scripts/check-operating-replay-sources.mjs",
+        "freshOrderedGuardAcceptance": false
+      }
     },
     {
       "id": "stop:complete-foundations-before-coverage",

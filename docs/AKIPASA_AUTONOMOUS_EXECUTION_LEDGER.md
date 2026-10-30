@@ -2,6 +2,54 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 30 October 11:24 UTC — recovered source preserved; full check passed
+
+Recorded implementation parent6bd725e4d8455c0b9fb5360859484332d5da064d. Three
+immutable recovered operating DDL snapshots, non-sensitive provenance and README
+are now reviewable under database/replay-only/recovered-operating, outside all
+migration roots. Fresh authorized production-history metadata SELECT retrieved
+only three version/name/statement-count/byte-length/SHA256 records. Root and peer
+independently verified each protected snapshot equals the exact raw statement
+plus ONE terminalLF; no comment/whitespace/case normalization. Snapshot/raw hashes
+are separately pinned. Original0700/0600artifacts are unchanged. No recovered DDL,
+customer operation, new migration, history rewrite or fixture mutation occurred.
+
+Independent full-byte review found no embedded credentials/customer literals or
+provider/destructive top-level operations. Historical APIs lack later account
+eligibility wrappers: the bundle explicitly forbids standalone/current use and
+requires pristine ordering, all current account guards/ACLs and fresh acceptance.
+Current migration/test/seed/deployment scanners do not auto-execute this folder.
+The fixed-allowlist checker has no DB/network/subprocess/apply path; root verified
+EXIT0 means source integrity ONLY, with databaseExecutionSupported:false,
+freshOrderedGuardAcceptance:false and fullCanonicalParity:false.14new focused
+cases guard byte/path/provenance/readiness drift. All are added to check without
+removing any existing assertion or workflow. Canonical plan remains337rawmigration
+paths/150unresolved, EXIT2partial/blocked; operating STOPs now reference admitted
+bytes but resolved remainsfalse. Source admission is not full schema parity.
+
+TESTED this exact working tree: full npmcheck EXIT0,2,639Vitest cases plus16canonical
+and14source-integrity Node cases, required checks and optimized build. No runtime
+application file changed since6bd's verified legal metadata fix. The legal review
+pack seals60actual screenshots and route/helper/test hashes for application6bd,
+with explicit physical-device/owner/consent-provider/external-license gaps; no
+route acceptance was granted. Receipts: AKIPASA_OPERATING_SOURCE_ADMISSION_20261030
+and AKIPASA_LEGAL_REVIEW_PACK_20261030 JSON. New source needs fresh hosted checks.
+
+Current6bd hosted state:10ordinaryworkflowsPASS, Account/publicpending; strict90
+route gate correctlyred. Clean nonproductionCFd8879683-0e83-4c8f-a428-029f95d75137
+SUCCESS.9533all11ordinaryPASS/strictred. Production remains approved335source3d87
+and Worker26e51e72 at100%, with terms repair already applied ONCE20261030102908.
+No further deployment or SQL application was performed.
+
+NEXT: publish this validated source/evidence batch; inspect all fresh exact-head
+CI/CF and fix real failures. Read-only parallel reviews cover Account/Profile
+current components and69unresolved database-tail sources; only checkpoint files
+are permitted for those agents. Review their concrete findings before edits or
+classification changes. Full332 remains draft until genuine route/device/provider/
+reproducibility/strict-audit conditions exist. One integration owner/root; current
+single-task lease through11:45UTC. Preserve all history/fixtures/private identities,
+Tonightoff and AkiPalsowner-paused; no competing release or duplicate335SQL.
+
 ## 30 October 11:07 UTC — legal metadata repaired; safe replay plan admitted
 
 Recorded source parent9533e2c0e0e6ffe21082db1458f0a9ba5e3dc13e. Community336 is

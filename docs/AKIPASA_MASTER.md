@@ -3416,3 +3416,26 @@ false transport/completion claims, required stops, safe paths and apply refusal.
 They are added to the existing check command without replacing any check/gate.
 No SQL, production history, permissions, fixtures or customer records changed.
 Source: AKIPASA_CANONICAL_REPLAY_PLAN_20261030.md and corresponding JSON/checker.
+
+## 2026-10-30 | Recovered operating DDL admitted as source only
+
+Three recovered operating definitions are preserved byte-for-byte under
+`database/replay-only/recovered-operating/`, never in production migration roots.
+Independent source review found no embedded credentials/customer literals or
+destructive top-level/provider operations. Fresh authorized history metadata
+SELECT pinned each raw statement SHA256/length/version/name; every retained copy
+matches those exact bytes plus one finalLF. No lowercasing/comment/whitespace
+normalization or invented upstream origin/license is used. Protected originals
+and their permissions remain unchanged. No recovered DDL or customer write ran.
+
+The source checker is fixed-allowlist/read-only and refuses hash/path/extra-file/
+false-readiness changes and apply flags. Exit0 is source integrity only; no database
+capability, standalone execution, fresh guard acceptance or canonical parity is
+asserted.14focused Node cases pass and are added to check without replacing checks.
+The canonical337-path inventory remains unchanged. Its three operating STOPs now
+reference the source bundle but remain unresolved until fresh ordering/current
+account coverage/ACL/customer-journey evidence exists. Historical authenticated
+APIs predate age/onboarding/terms wrappers and must never be exposed standalone.
+Current migration/seed/test/deployment scanners do not execute this directory;
+new global SQL globs would require explicit review. Existing live terms/RLS/XP/
+private identity/customer records and all original fixtures are untouched.

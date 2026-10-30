@@ -116,3 +116,15 @@ The restricted sandbox's subprocess attempt failed without executing the suite;
 the separate process-enabled run is the meaningful test result. Neither attempt
 contacted a database. Root records final count/source/format/lint results in the
 integration ledger; full application CI remains the integration owner's task.
+
+## Recovered operating bytes now available for review
+
+The three operating definitions are now immutable replay-only source artifacts in
+`database/replay-only/recovered-operating/`, outside both migration roots. Their
+separate checker pins retained-snapshot bytes and fresh raw-history SHA256/length
+bindings with exactly one added terminalLF, no semantic normalization. The plan
+inventory remains337migration paths; this bundle is not automatically appended.
+The three STOP records now reference admitted source, but resolved remainsfalse:
+fresh ordering, later account guards, ACLs and pristine fixture proof are still
+outstanding. Source integrity alone does not resolve those requirements. No DDL
+was executed and no retained fixture or production history was changed.
