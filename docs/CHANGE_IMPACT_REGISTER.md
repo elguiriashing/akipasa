@@ -3431,3 +3431,24 @@ in the concrete release proposal; explicit owner exception remains required.
   fixesonlyits existingaria-hiddenarrow. All4sharedmembershipcontracts pass;
   eightfreshSubscriptionstates/4nativeprobes/94sourcepins pass and actualmobile/
   desktopglyphs reviewedclear. Newhead mustfreshly passall6CI beforemerge.
+
+## 2026-10-31 | Two public detail stylesheet whole-page palette isolation
+
+- **Scope:** Only event-spotlight.css and venue-spotlight.css runtime changes.
+  Initial 69-line Main palette left inherited Master navy lower panels/canvas;
+  independent review required scoped detail-root aliases and guarded parent
+  chrome/canvas finish. Owner focus/custom background and Privacy dialog preserved.
+  No broad shared stylesheet or Map drawer/controller changes.
+- **Protected:** 1,004 Master runtime/schema/workflow/package/runner paths pinned
+  unchanged, including pages, actions, auth, booking, consent, check-in/XP,
+  dependencies, assets and provider configuration. No customer or SQL writes.
+- **Evidence:** 17 focused tests and fresh actual Next Spotlight 32 cases pass;
+  original assertions kept, 1440/full-page captures and actual composed surface/
+  chrome contrast assertions added. Sparse/cancelled/sold-out captures now exist
+  and were reviewed. Synthetic artwork is explicitly a fixture. Small inherited
+  navy footer buttons and floating Support edge proximity remain observations;
+  no unsupported claim of a new full shell or physical Android/provider proof.
+- **Release:** Owner authorizes independent finished batches. Full check and all
+  fresh published exact-head CI/review remain required; full332 stays draft with
+  41 pending route acceptances. Map and conversions are excluded for functional
+  differences. Rollback is previous live338 Worker/source, no data rollback.

@@ -1,3 +1,44 @@
+/* Keep public detail surfaces in AkiPasa's charcoal and ember palette.
+   The legacy blue token remains the shared link/tab contract, with warm ink. */
+.app-detail-page.spotlight-page.spotlight-venue {
+  /* Generic lower panels and the business prompt inherit the same page palette. */
+  --surface: var(--spotlight-surface);
+  --surface-alt: var(--spotlight-surface-alt);
+  --surface-card: var(--spotlight-surface);
+  --surface-muted: var(--spotlight-surface-alt);
+  --panel: var(--spotlight-surface);
+  --ink: var(--spotlight-ink);
+  --muted: var(--spotlight-muted);
+  --line: var(--spotlight-line);
+  --spotlight-surface: #101010;
+  --spotlight-surface-alt: #181715;
+  --spotlight-ink: #f9f5f0;
+  --spotlight-muted: #c0b9b0;
+  --spotlight-line: rgb(255 245 230 / 14%);
+  --spotlight-blue: #ffad78;
+  --spotlight-orange-text: #ffad78;
+}
+
+html[data-theme="light"] .app-detail-page.spotlight-page.spotlight-venue,
+html.theme-light .app-detail-page.spotlight-page.spotlight-venue {
+  --spotlight-surface: #fffefc;
+  --spotlight-surface-alt: #f5f0e9;
+  --spotlight-ink: #25201d;
+  --spotlight-muted: #695d54;
+  --spotlight-line: rgb(87 55 31 / 18%);
+  --spotlight-blue: #9c3b0e;
+  --spotlight-orange-text: #9c3b0e;
+}
+
+.app-detail-page.spotlight-page.spotlight-venue .venue-spotlight-card {
+  background: var(--spotlight-surface);
+}
+
+.app-detail-page.spotlight-page.spotlight-venue .spotlight-mobile-actions {
+  border-color: var(--spotlight-line);
+  background: color-mix(in srgb, var(--spotlight-surface) 97%, transparent);
+}
+
 /* Aki Spotlight venue composition. All rules stay inside this public page. */
 .spotlight-venue {
   container-name: venue-detail;
@@ -446,7 +487,7 @@ html.theme-light .spotlight-venue .venue-spotlight-status .verified-badge {
   position: absolute;
   inset: auto 0 0;
   padding-top: 24px;
-  background: linear-gradient(transparent, rgb(3 18 35 / 88%));
+  background: linear-gradient(transparent, rgb(5 5 5 / 92%));
   color: #fff;
 }
 
@@ -1018,4 +1059,120 @@ html.theme-light .spotlight-venue .venue-spotlight-status .verified-badge {
   .spotlight-venue * {
     scroll-behavior: auto;
   }
+}
+
+/* The existing shell remains byte-identical. Paint only this active detail's
+   surrounding chrome; do not change generic body tokens or consent-panel styles. */
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-venue) {
+  --spotlight-chrome-canvas: #07090b;
+  --spotlight-chrome-surface: #101010;
+  --spotlight-chrome-raised: #181715;
+  --spotlight-chrome-ink: #f9f5f0;
+  --spotlight-chrome-muted: #c0b9b0;
+  --spotlight-chrome-line: rgb(255 245 230 / 14%);
+}
+
+html[data-theme="light"]:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-venue),
+html.theme-light:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-venue) {
+  --spotlight-chrome-canvas: #f8f6f2;
+  --spotlight-chrome-surface: #fffefc;
+  --spotlight-chrome-raised: #f5f0e9;
+  --spotlight-chrome-ink: #25201d;
+  --spotlight-chrome-muted: #695d54;
+  --spotlight-chrome-line: rgb(87 55 31 / 18%);
+}
+
+html:not([data-owner-focus="true"]):has(
+    .app-detail-page.spotlight-page.spotlight-venue
+  ) {
+  background-color: #07090b;
+}
+html[data-theme="light"]:not([data-owner-focus="true"]):has(
+    .app-detail-page.spotlight-page.spotlight-venue
+  ),
+html.theme-light:not([data-owner-focus="true"]):has(
+    .app-detail-page.spotlight-page.spotlight-venue
+  ) {
+  background-color: #f8f6f2;
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-venue) {
+  color: var(--spotlight-chrome-ink);
+}
+/* A deliberately selected private Owner image still owns its canvas. */
+html:not([data-owner-focus="true"]):not([data-owner-custom-background="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-venue) {
+  background: var(--spotlight-chrome-canvas);
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-venue)
+  :is(.app-shell, .app-content) {
+  background: transparent;
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-venue)
+  :is(
+    .app-topbar-mobile,
+    .app-bottom-nav,
+    .suite-discovery-nav[data-product="pasa"]
+  ) {
+  color: var(--spotlight-chrome-ink);
+  background: var(--spotlight-chrome-surface);
+  border-color: var(--spotlight-chrome-line);
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-venue)
+  .app-bottom-nav
+  :is(a, button) {
+  color: var(--spotlight-chrome-muted);
+}
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-venue)
+  .app-bottom-nav
+  .active {
+  color: var(--primary-text, var(--primary));
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-venue)
+  :is(
+    .global-search-trigger,
+    .app-topbar-mobile > button,
+    .suite-discovery-tools > button,
+    .suite-discovery-tools > a,
+    .suite-discovery-menu > summary
+  ) {
+  color: var(--spotlight-chrome-ink);
+  background: var(--spotlight-chrome-raised);
+  border-color: var(--spotlight-chrome-line);
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-venue)
+  .footer {
+  color: var(--spotlight-chrome-muted);
+  background: transparent;
+  border-color: var(--spotlight-chrome-line);
+}
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-venue)
+  .footer
+  :is(a, button) {
+  color: var(--spotlight-chrome-muted);
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-venue)
+  > .privacy-preferences:not(.privacy-preferences--passport)
+  > button {
+  color: var(--spotlight-chrome-ink);
+  background: var(--spotlight-chrome-raised);
+  border-color: var(--spotlight-chrome-line);
 }

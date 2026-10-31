@@ -1,0 +1,33 @@
+{
+  "base": "9e7da60fae3c24037a076e2998761a25eb8d436c",
+  "sourceReference": "994a975313f0d4b6d81630606a4d9fca7fd69044",
+  "runtimeOnly": [
+    "src/app/[locale]/events/[slug]/event-spotlight.css",
+    "src/app/[locale]/venues/[slug]/venue-spotlight.css"
+  ],
+  "protectedMasterPaths": 1004,
+  "protectedVerifier": "PASS after final whole-page refinement; 1004 protected Master paths unchanged",
+  "focusedTestsPassed": 17,
+  "actualCandidateBrowser": {
+    "result": "PASS",
+    "cases": 32,
+    "log": "/tmp/akipasa-public-detail-whole-page-browser-20261031.log",
+    "source": "actual Next build of candidate; original assertions preserved, additive full-page/1440/palette assertions",
+    "viewports": [360, 390, 820, 1024, 1280, 1440],
+    "states": ["ready", "sparse", "cancelled", "sold-out"]
+  },
+  "independentReview": "Actual final full-page screenshots reviewed; final sealed receipt pending",
+  "exactHeadCI": "required afterpublication",
+  "merged": false,
+  "deployed": false,
+  "runtimeSha256": {
+    "venue": "a2b20674078cef6ea940c513eb69f6f2fa01503e09964e07322ba0107a0bb8ea",
+    "event": "d4c7e74d12da9980b153885495ae9038c22f036e20cb873e30a95a3fb571f15c"
+  },
+  "fullCheck": "running; not claimed passed",
+  "limitations": [
+    "Synthetic fixture imagery; not production event supply",
+    "No physical Android or real payment/provider acceptance inferred",
+    "Existing minor navy footer link backgrounds and floating Support edge proximity explicitly reviewed"
+  ]
+}
