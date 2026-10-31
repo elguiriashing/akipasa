@@ -5,6 +5,63 @@ import {
   type PasaSurfaceFamily,
 } from "../../src/lib/pasa-surface-families";
 
+test.describe("Public shared-account deletion instructions", () => {
+  for (const locale of ["en", "es"] as const) {
+    for (const width of [390, 1440]) {
+      test(`${locale} deletion link works without signing in at ${width}`, async ({
+        page,
+        request,
+      }) => {
+        const response = await request.get(`/${locale}/account-deletion`, {
+          maxRedirects: 0,
+        });
+        expect(response.status()).toBe(307);
+        expect(response.headers().location).toBe(
+          `/${locale}/privacy#account-deletion`,
+        );
+        await page.setViewportSize({ width, height: 900 });
+        const destination = await page.goto(`/${locale}/account-deletion`);
+        expect(destination?.status()).toBe(200);
+        await expect(page).toHaveURL(
+          new RegExp(`/${locale}/privacy#account-deletion$`),
+        );
+        const main = page.getByRole("main");
+        await expect(
+          main.getByRole("heading", {
+            name:
+              locale === "es"
+                ? "Solicitar la eliminación de tu cuenta"
+                : "Request account deletion",
+            exact: true,
+          }),
+        ).toBeVisible();
+        await expect(
+          main.locator('a[href="mailto:support@akipasa.com"]'),
+        ).toBeVisible();
+        await expect(
+          main.locator(`a[href="/${locale}/account/privacy"]`),
+        ).toBeVisible();
+        await expect(main).toContainText("AkiPasa Marketing S.L.");
+        await expect(main).toContainText(
+          locale === "es"
+            ? "no elimina la cuenta de inmediato"
+            : "does not immediately delete the account",
+        );
+        expect(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= window.innerWidth,
+          ),
+        ).toBe(true);
+        await page.screenshot({
+          path: `test-results/public-deletion-${locale}-${width}.png`,
+          fullPage: true,
+          animations: "disabled",
+        });
+      });
+    }
+  }
+});
+
 test.describe("Roadmap back link remains clear of shared Search", () => {
   for (const locale of ["en", "es"] as const) {
     for (const width of [360, 390, 820, 1440]) {
