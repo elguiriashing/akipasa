@@ -1,0 +1,46 @@
+name: Transfer prepared AkiPals assets for review
+on:
+  push:
+    branches: [work/pals-professional-assets-20261031]
+    paths: [".github/workflows/pals-asset-transport.yml"]
+permissions:
+  contents: write
+jobs:
+  encode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Encode existing reviewed binaries for text-only workspace transport
+        run: |
+          python - <<'PY'
+          import base64, hashlib, json
+          from pathlib import Path
+          root = Path("public/pals/models/professional")
+          manifest = json.loads((root / "manifest.json").read_text())
+          out = Path("docs/receipts/pals-asset-transfer")
+          out.mkdir(parents=True, exist_ok=True)
+          transfers = []
+          for model in manifest["models"]:
+              path = Path("public" + model["url"])
+              blob = path.read_bytes()
+              assert hashlib.sha256(blob).hexdigest() == model["sha256"]
+              encoded = base64.b64encode(blob).decode("ascii")
+              parts = []
+              for index, start in enumerate(range(0, len(encoded), 960000)):
+                  name = model["id"] + "." + str(index).zfill(3) + ".b64"
+                  (out / name).write_text(encoded[start:start+960000])
+                  parts.append(name)
+              transfers.append({"id":model["id"],"url":model["url"],"sha256":model["sha256"],"bytes":len(blob),"parts":parts})
+          (out / "transfer.json").write_text(json.dumps(transfers, indent=2) + "\n")
+          PY
+      - name: Checkpoint transfer only on the preparation branch
+        run: |
+          test "$GITHUB_REF_NAME" = 'work/pals-professional-assets-20261031'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- docs/receipts/pals-asset-transfer
+          git commit -m 'build(pals): encode prepared assets for workspace visual review'
+          git push origin HEAD:refs/heads/work/pals-professional-assets-20261031
