@@ -1,5 +1,23 @@
 # Change Impact Register
 
+## 2026-10-31 | Owner-authorized restricted AkiPals World playtest
+
+Alex explicitly requested live testing of AkiPals World and Wardrobe. This
+release is assembled on production 76cb96df21bf9404d50db373cf57bb0287fd9a80, importing only
+the reviewed avatar/World source from 125a38db785ce8bbb5ad228e8e5e3c63c850c599; it does not
+merge the separate consumer overhaul #332 or restore older public application files.
+The existing server-side administrator/invitation gate, owner-only avatar RLS,
+public-only venue RPC, and legacy saves are preserved. No migrations are executed.
+Precise GPS is opt-in and in-memory; callbacks after Stop/background/unmount are
+invalidated, stale/inaccurate fixes cannot reposition the avatar, and the Stop
+control remains visible while inspecting a venue. World HTTP headers are private,
+no-store and noindex. Venue lookups use rounded map centres; map providers receive
+tile-area requests. No AR recording, rewards, public location sharing or payments.
+Full source check, real WebGL browser fixtures and exact-source Cloudflare packaging
+are mandatory before merge. Fixture tests are not physical Android/GPS or real
+authenticated production acceptance. Read docs/AKIPALS_PRIVATE_RELEASE_20261031.md.
+Rollback reverts this scoped release without deleting avatar or legacy saves.
+
 ## 2026-10-29 | Passport weekly exploration milestones without XP writes
 
 - **Before:** Existing Passport displays XP, stamps, achievements, enrolments and reward claims, but no optional weekly exploration checkpoint.
