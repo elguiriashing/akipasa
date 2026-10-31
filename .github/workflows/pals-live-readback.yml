@@ -1,0 +1,65 @@
+name: Read back merged AkiPals production
+on:
+  push:
+    branches: [work/pals-professional-assets-20261031]
+    paths: [".github/workflows/pals-live-readback.yml"]
+permissions:
+  contents: read
+jobs:
+  readback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify current production bytes and access headers
+        run: |
+          python - <<'PY'
+          import hashlib, json, urllib.request, urllib.error
+          from urllib.parse import urlparse, parse_qs
+          ORIGIN="https://akipasa.com"
+          EXPECTED="80ec55b135c0170a3796fcfa7b72a9823286a27d"
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, req, fp, code, msg, headers, newurl): return None
+          opener=urllib.request.build_opener(NoRedirect)
+          def get(path):
+              req=urllib.request.Request(ORIGIN+path,headers={"Cache-Control":"no-cache","User-Agent":"AkiPals-release-verifier/1.0"})
+              try: response=opener.open(req,timeout=20)
+              except urllib.error.HTTPError as error: response=error
+              data=response.read(13*1024*1024)
+              print(json.dumps({"path":path,"status":response.code,"bytes":len(data)}),flush=True)
+              return response.code,response.headers,data
+          status,headers,data=get("/release-source.json?verify="+EXPECTED)
+          assert status==200 and json.loads(data)["sourceCommit"]==EXPECTED
+          for path in ["/pals","/pals/identity","/pals/world/venues?lat=36.54&lng=-4.62"]:
+              status,headers,data=get(path)
+              assert status==401
+              assert "no-store" in headers.get("Cache-Control","")
+              assert "noindex" in headers.get("X-Robots-Tag","")
+          status,headers,data=get("/pals/world")
+          assert status in [302,303,307]
+          target=urlparse(headers["Location"])
+          assert target.path=="/en/auth" and parse_qs(target.query)["next"]==["/pals/world"]
+          assert "noindex" in headers.get("X-Robots-Tag","")
+          assert "connect-src 'self' blob:" in headers.get("Content-Security-Policy","")
+          status,headers,data=get("/pals/runtime/creator.min.js?v=20261031-professional-1")
+          assert status==200 and len(data)>100000 and b"rain-v3" in data and b"snow-v4" in data
+          status,headers,data=get("/pals/models/professional/manifest.json")
+          assert status==200
+          manifest=json.loads(data)
+          assert sorted(m["id"] for m in manifest["models"])==["rain-v3","snow-v4"]
+          for model in manifest["models"]:
+              assert model["url"].startswith("/pals/models/professional/") and model["url"].endswith(".glb")
+              status,headers,data=get(model["url"])
+              assert status==200 and data[:4]==b"glTF"
+              assert len(data)==model["bytes"] and hashlib.sha256(data).hexdigest()==model["sha256"]
+              print(json.dumps({"model":model["id"],"sha256":model["sha256"],"verified":True}),flush=True)
+          status,headers,data=get("/pals/models/professional/ATTRIBUTION.txt")
+          assert status==200 and b"Rain Rig" in data and b"Snow Rig" in data and b"Blender Foundation" in data
+          for path in ["/en","/es"]:
+              status,headers,data=get(path)
+              assert status==200
+              connect=next(x for x in headers.get("Content-Security-Policy","").split(";") if x.strip().startswith("connect-src"))
+              assert "blob:" not in connect
+              assert b'href="/pals' not in data and b"href='/pals" not in data
+          print(json.dumps({"source":EXPECTED,"privateWorld":True,"modelHashesVerified":True,"scopedCsp":True,"publicHomepages":True,"authenticatedOrPhysicalDeviceAcceptance":False}),flush=True)
+          
+          PY
